@@ -1,0 +1,5070 @@
+[
+  {
+    "id": "act2_archive_cross_reference",
+    "name": "Archive Cross-Reference",
+    "class": "bureaucrat",
+    "type": "form",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Apply 4 Paperwork. Gain 5 Block.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 4
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 5
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "bureaucracy",
+      "paperwork",
+      "block"
+    ]
+  },
+  {
+    "id": "act2_senior_filing_authority",
+    "name": "Senior Filing Authority",
+    "class": "bureaucrat",
+    "type": "form",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Gain 2 Strength. Apply 4 Paperwork.",
+    "effects": [
+      {
+        "type": "gain_strength",
+        "target": "self",
+        "amount": 2
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 4
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "bureaucracy",
+      "strength",
+      "paperwork"
+    ]
+  },
+  {
+    "id": "act2_corrected_hex_form",
+    "name": "Corrected Hex Form",
+    "class": "witch_clerk",
+    "type": "curse",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Apply 3 Doubt. Gain 7 Block.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 3
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 7
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "curse",
+      "doubt",
+      "block"
+    ]
+  },
+  {
+    "id": "act2_moonlit_minutes",
+    "name": "Moonlit Minutes",
+    "class": "witch_clerk",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Deal 6 damage for each Doubt on the target.",
+    "effects": [
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount_per_stack": 6
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "spell",
+      "doubt",
+      "payoff"
+    ]
+  },
+  {
+    "id": "act2_lantern_lineup",
+    "name": "Lantern Lineup",
+    "class": "night_watch_recruit",
+    "type": "action",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Deal 10 damage. Apply 2 Doubt.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 10
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "watch",
+      "attack",
+      "doubt"
+    ]
+  },
+  {
+    "id": "act2_watch_sergeant_silence",
+    "name": "Watch Sergeant's Silence",
+    "class": "night_watch_recruit",
+    "type": "argument",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Gain 2 Strength and 10 Block.",
+    "effects": [
+      {
+        "type": "gain_strength",
+        "target": "self",
+        "amount": 2
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 10
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "watch",
+      "strength",
+      "block"
+    ]
+  },
+  {
+    "id": "act2_bramble_bookmark",
+    "name": "Bramble Bookmark",
+    "class": "hedge_witch",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Apply 4 Poison. Gain 5 Block.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 4
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 5
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "witch",
+      "poison",
+      "block"
+    ]
+  },
+  {
+    "id": "act2_old_root_precedent",
+    "name": "Old Root Precedent",
+    "class": "hedge_witch",
+    "type": "curse",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Deal 6 damage for each Poison on the target.",
+    "effects": [
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount_per_stack": 6
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "witch",
+      "poison",
+      "payoff"
+    ]
+  },
+  {
+    "id": "act2_signed_black_invitation",
+    "name": "Signed Black Invitation",
+    "class": "guild_assassin_apprentice",
+    "type": "action",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Deal 14 damage. Apply 1 Doubt.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 14
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "assassin",
+      "attack",
+      "doubt"
+    ]
+  },
+  {
+    "id": "act2_quiet_staircase_clause",
+    "name": "Quiet Staircase Clause",
+    "class": "guild_assassin_apprentice",
+    "type": "action",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Gain 2 Strength. Deal 12 damage.",
+    "effects": [
+      {
+        "type": "gain_strength",
+        "target": "self",
+        "amount": 2
+      },
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 12
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "assassin",
+      "strength",
+      "attack"
+    ]
+  },
+  {
+    "id": "act2_annotated_misfire",
+    "name": "Annotated Misfire",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Deal 15 damage. Apply 1 Panic to yourself.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 15
+      },
+      {
+        "type": "apply_status",
+        "target": "self",
+        "status": "panic",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "spell",
+      "risky",
+      "attack"
+    ]
+  },
+  {
+    "id": "act2_improbable_binding",
+    "name": "Improbable Binding",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Apply 4 Paperwork and 3 Doubt.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 4
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "spell",
+      "paperwork",
+      "doubt"
+    ]
+  },
+  {
+    "id": "act2_undercity_treaty_addendum",
+    "name": "Undercity Treaty Addendum",
+    "class": "sewer_diplomat",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Apply 4 Poison and 2 Doubt.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 4
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "sewer",
+      "poison",
+      "doubt"
+    ]
+  },
+  {
+    "id": "act2_ambassadorial_backflow",
+    "name": "Ambassadorial Backflow",
+    "class": "sewer_diplomat",
+    "type": "argument",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Deal 6 damage for each Poison on the target.",
+    "effects": [
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount_per_stack": 6
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "sewer",
+      "poison",
+      "payoff"
+    ]
+  },
+  {
+    "id": "act2_bell_for_the_unfiled",
+    "name": "Bell for the Unfiled",
+    "class": "mortuary_apprentice",
+    "type": "form",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Apply 4 Paperwork. Gain 6 Block.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 4
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 6
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "mortuary",
+      "paperwork",
+      "block"
+    ]
+  },
+  {
+    "id": "act2_receipt_for_a_life",
+    "name": "Receipt for a Life",
+    "class": "mortuary_apprentice",
+    "type": "argument",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Deal 6 damage for each Paperwork on the target.",
+    "effects": [
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount_per_stack": 6
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "mortuary",
+      "paperwork",
+      "payoff"
+    ]
+  },
+  {
+    "id": "act2_spore_marked_page",
+    "name": "Spore-Marked Page",
+    "class": "shroomancer",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Apply 5 Poison.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 5
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "shroom",
+      "poison",
+      "setup"
+    ]
+  },
+  {
+    "id": "act2_fungal_appendix",
+    "name": "Fungal Appendix",
+    "class": "shroomancer",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Gain 2 Strength. Apply 3 Poison.",
+    "effects": [
+      {
+        "type": "gain_strength",
+        "target": "self",
+        "amount": 2
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "shroom",
+      "strength",
+      "poison"
+    ]
+  },
+  {
+    "id": "act2_bureaucrat_dusty_cover_sheet",
+    "name": "Dusty Cover Sheet",
+    "class": "bureaucrat",
+    "type": "form",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Gain 8 Block. Apply 2 Paperwork.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 8
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "block",
+      "bureaucracy",
+      "paperwork"
+    ]
+  },
+  {
+    "id": "act2_bureaucrat_shelf_request",
+    "name": "Shelf Request",
+    "class": "bureaucrat",
+    "type": "form",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 3 Paperwork.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "bureaucracy",
+      "paperwork",
+      "setup"
+    ]
+  },
+  {
+    "id": "act2_bureaucrat_missing_stamp",
+    "name": "Missing Stamp",
+    "class": "bureaucrat",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Deal 9 damage. Apply 1 Doubt.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 9
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "attack",
+      "bureaucracy",
+      "doubt"
+    ]
+  },
+  {
+    "id": "act2_bureaucrat_archive_counter",
+    "name": "Archive Counter",
+    "class": "bureaucrat",
+    "type": "form",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Gain 10 Block.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 10
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "block",
+      "bureaucracy"
+    ]
+  },
+  {
+    "id": "act2_bureaucrat_red_tape_loop",
+    "name": "Red Tape Loop",
+    "class": "bureaucrat",
+    "type": "form",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 2 Paperwork. Draw 1.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 2
+      },
+      {
+        "type": "draw_cards",
+        "target": "self",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "bureaucracy",
+      "draw",
+      "paperwork"
+    ]
+  },
+  {
+    "id": "act2_bureaucrat_inked_receipt",
+    "name": "Inked Receipt",
+    "class": "bureaucrat",
+    "type": "form",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Deal 7 damage. Gain 7 Block.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 7
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 7
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "attack",
+      "block",
+      "bureaucracy"
+    ]
+  },
+  {
+    "id": "act2_bureaucrat_index_tab",
+    "name": "Index Tab",
+    "class": "bureaucrat",
+    "type": "form",
+    "cost": 0,
+    "rarity": "common",
+    "text": "Apply 1 Paperwork. Draw 1.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 1
+      },
+      {
+        "type": "draw_cards",
+        "target": "self",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "bureaucracy",
+      "draw",
+      "paperwork",
+      "zero_cost"
+    ]
+  },
+  {
+    "id": "act2_bureaucrat_counter_queue",
+    "name": "Counter Queue",
+    "class": "bureaucrat",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 2 Doubt. Gain 6 Block.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 2
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 6
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "block",
+      "bureaucracy",
+      "doubt"
+    ]
+  },
+  {
+    "id": "act2_bureaucrat_docket_mark",
+    "name": "Docket Mark",
+    "class": "bureaucrat",
+    "type": "form",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Deal 11 damage. Apply 1 Paperwork.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 11
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "attack",
+      "bureaucracy",
+      "paperwork"
+    ]
+  },
+  {
+    "id": "act2_bureaucrat_minor_clarification",
+    "name": "Minor Clarification",
+    "class": "bureaucrat",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 2 Doubt. Draw 1.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 2
+      },
+      {
+        "type": "draw_cards",
+        "target": "self",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "bureaucracy",
+      "doubt",
+      "draw"
+    ]
+  },
+  {
+    "id": "act2_bureaucrat_section_subsection",
+    "name": "Section and Subsection",
+    "class": "bureaucrat",
+    "type": "form",
+    "cost": 2,
+    "rarity": "uncommon",
+    "text": "Apply 5 Paperwork. Gain 10 Block.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 5
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 10
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "block",
+      "bureaucracy",
+      "paperwork"
+    ]
+  },
+  {
+    "id": "act2_bureaucrat_archival_precedent",
+    "name": "Archival Precedent",
+    "class": "bureaucrat",
+    "type": "form",
+    "cost": 2,
+    "rarity": "uncommon",
+    "text": "Gain 1 Strength. Apply 4 Paperwork.",
+    "effects": [
+      {
+        "type": "gain_strength",
+        "target": "self",
+        "amount": 1
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 4
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "bureaucracy",
+      "paperwork",
+      "strength"
+    ]
+  },
+  {
+    "id": "act2_bureaucrat_stamped_denial",
+    "name": "Stamped Denial",
+    "class": "bureaucrat",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Apply 4 Doubt.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 4
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "bureaucracy",
+      "doubt"
+    ]
+  },
+  {
+    "id": "act2_bureaucrat_file_under_later",
+    "name": "File Under Later",
+    "class": "bureaucrat",
+    "type": "form",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Gain 14 Block. Draw 1.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 14
+      },
+      {
+        "type": "draw_cards",
+        "target": "self",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "block",
+      "bureaucracy",
+      "draw"
+    ]
+  },
+  {
+    "id": "act2_bureaucrat_backdated_permission",
+    "name": "Backdated Permission",
+    "class": "bureaucrat",
+    "type": "form",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Deal 14 damage. Apply 3 Paperwork.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 14
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "attack",
+      "bureaucracy",
+      "paperwork"
+    ]
+  },
+  {
+    "id": "act2_bureaucrat_filing_cabinet_lock",
+    "name": "Filing Cabinet Lock",
+    "class": "bureaucrat",
+    "type": "form",
+    "cost": 2,
+    "rarity": "uncommon",
+    "text": "Gain 22 Block.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 22
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "block",
+      "bureaucracy"
+    ]
+  },
+  {
+    "id": "act2_bureaucrat_appendix_pressure",
+    "name": "Appendix Pressure",
+    "class": "bureaucrat",
+    "type": "argument",
+    "cost": 2,
+    "rarity": "uncommon",
+    "text": "Deal 5 damage for each Paperwork on the target.",
+    "effects": [
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount_per_stack": 5
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "bureaucracy",
+      "paperwork",
+      "payoff"
+    ]
+  },
+  {
+    "id": "act2_bureaucrat_ink_drying_period",
+    "name": "Ink-Drying Period",
+    "class": "bureaucrat",
+    "type": "form",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Apply 3 Paperwork. Apply 2 Doubt.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 3
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "bureaucracy",
+      "doubt",
+      "paperwork"
+    ]
+  },
+  {
+    "id": "act2_bureaucrat_cross_indexed_clause",
+    "name": "Cross-Indexed Clause",
+    "class": "bureaucrat",
+    "type": "form",
+    "cost": 2,
+    "rarity": "uncommon",
+    "text": "Deal 15 damage. Gain 15 Block.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 15
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 15
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "attack",
+      "block",
+      "bureaucracy"
+    ]
+  },
+  {
+    "id": "act2_bureaucrat_emergency_subcommittee",
+    "name": "Emergency Subcommittee",
+    "class": "bureaucrat",
+    "type": "form",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Gain 2 Strength. Gain 16 Block.",
+    "effects": [
+      {
+        "type": "gain_strength",
+        "target": "self",
+        "amount": 2
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 16
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "block",
+      "bureaucracy",
+      "scaling",
+      "strength"
+    ]
+  },
+  {
+    "id": "act2_bureaucrat_grand_stampede",
+    "name": "Grand Stampede",
+    "class": "bureaucrat",
+    "type": "form",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Deal 22 damage. Apply 6 Paperwork.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 22
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 6
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "attack",
+      "bureaucracy",
+      "paperwork"
+    ]
+  },
+  {
+    "id": "act2_bureaucrat_fully_authorized_delay",
+    "name": "Fully Authorized Delay",
+    "class": "bureaucrat",
+    "type": "argument",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Apply 6 Doubt. Gain 20 Block.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 6
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 20
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "block",
+      "bureaucracy",
+      "control",
+      "doubt"
+    ]
+  },
+  {
+    "id": "act2_bureaucrat_court_of_forms",
+    "name": "Court of Forms",
+    "class": "bureaucrat",
+    "type": "form",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Apply 4 Paperwork. Deal 7 damage for each Paperwork on the target.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 4
+      },
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount_per_stack": 7
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "bureaucracy",
+      "paperwork",
+      "payoff"
+    ]
+  },
+  {
+    "id": "act2_failed_wizard_marginal_spark",
+    "name": "Marginal Spark",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Deal 10 damage. Apply 1 Panic to yourself.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 10
+      },
+      {
+        "type": "apply_status",
+        "target": "self",
+        "status": "panic",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "attack",
+      "panic",
+      "risky",
+      "spell"
+    ]
+  },
+  {
+    "id": "act2_failed_wizard_smudged_rune",
+    "name": "Smudged Rune",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 2 Doubt. Draw 1.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 2
+      },
+      {
+        "type": "draw_cards",
+        "target": "self",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "doubt",
+      "draw",
+      "spell"
+    ]
+  },
+  {
+    "id": "act2_failed_wizard_borrowed_chalk",
+    "name": "Borrowed Chalk",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Gain 8 Block. Draw 1.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 8
+      },
+      {
+        "type": "draw_cards",
+        "target": "self",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "block",
+      "draw",
+      "spell"
+    ]
+  },
+  {
+    "id": "act2_failed_wizard_footnote_flare",
+    "name": "Footnote Flare",
+    "class": "failed_wizard",
+    "type": "footnote",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Deal 8 damage. Apply 2 Paperwork.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 8
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "attack",
+      "footnote",
+      "paperwork"
+    ]
+  },
+  {
+    "id": "act2_failed_wizard_wrong_asterisk",
+    "name": "Wrong Asterisk",
+    "class": "failed_wizard",
+    "type": "footnote",
+    "cost": 0,
+    "rarity": "common",
+    "text": "Apply 1 Doubt. Draw 1.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 1
+      },
+      {
+        "type": "draw_cards",
+        "target": "self",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "doubt",
+      "draw",
+      "footnote",
+      "zero_cost"
+    ]
+  },
+  {
+    "id": "act2_failed_wizard_slightly_warm_hat",
+    "name": "Slightly Warm Hat",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Gain 1 Strength. Apply 1 Panic to yourself.",
+    "effects": [
+      {
+        "type": "gain_strength",
+        "target": "self",
+        "amount": 1
+      },
+      {
+        "type": "apply_status",
+        "target": "self",
+        "status": "panic",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "panic",
+      "risky",
+      "spell",
+      "strength"
+    ]
+  },
+  {
+    "id": "act2_failed_wizard_errant_glow",
+    "name": "Errant Glow",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Deal 7 damage. Gain 7 Block.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 7
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 7
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "attack",
+      "block",
+      "spell"
+    ]
+  },
+  {
+    "id": "act2_failed_wizard_forbidden_margin",
+    "name": "Forbidden Margin",
+    "class": "failed_wizard",
+    "type": "footnote",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Apply 4 Doubt. Draw 1.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 4
+      },
+      {
+        "type": "draw_cards",
+        "target": "self",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "doubt",
+      "draw",
+      "footnote"
+    ]
+  },
+  {
+    "id": "act2_failed_wizard_unwise_diagram",
+    "name": "Unwise Diagram",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "uncommon",
+    "text": "Deal 18 damage. Apply 1 Panic to yourself.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 18
+      },
+      {
+        "type": "apply_status",
+        "target": "self",
+        "status": "panic",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "attack",
+      "panic",
+      "risky",
+      "spell"
+    ]
+  },
+  {
+    "id": "act2_failed_wizard_thaumic_bookmark",
+    "name": "Thaumic Bookmark",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Draw 2. Gain 8 Block.",
+    "effects": [
+      {
+        "type": "draw_cards",
+        "target": "self",
+        "amount": 2
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 8
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "block",
+      "draw",
+      "spell"
+    ]
+  },
+  {
+    "id": "act2_failed_wizard_squint_at_destiny",
+    "name": "Squint at Destiny",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Gain 2 Strength. Apply 1 Panic to yourself.",
+    "effects": [
+      {
+        "type": "gain_strength",
+        "target": "self",
+        "amount": 2
+      },
+      {
+        "type": "apply_status",
+        "target": "self",
+        "status": "panic",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "panic",
+      "risky",
+      "spell",
+      "strength"
+    ]
+  },
+  {
+    "id": "act2_failed_wizard_recursive_incantation",
+    "name": "Recursive Incantation",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "uncommon",
+    "text": "Apply 3 Paperwork and 3 Doubt.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 3
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "doubt",
+      "paperwork",
+      "spell"
+    ]
+  },
+  {
+    "id": "act2_failed_wizard_library_lightning",
+    "name": "Library Lightning",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "uncommon",
+    "text": "Deal 20 damage.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 20
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "attack",
+      "spell"
+    ]
+  },
+  {
+    "id": "act2_failed_wizard_clause_of_combustion",
+    "name": "Clause of Combustion",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "uncommon",
+    "text": "Deal 5 damage for each Doubt on the target.",
+    "effects": [
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount_per_stack": 5
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "doubt",
+      "payoff",
+      "spell"
+    ]
+  },
+  {
+    "id": "act2_failed_wizard_unlicensed_miracle",
+    "name": "Unlicensed Miracle",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Deal 30 damage. Apply 2 Panic to yourself.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 30
+      },
+      {
+        "type": "apply_status",
+        "target": "self",
+        "status": "panic",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "attack",
+      "burst",
+      "panic",
+      "risky",
+      "spell"
+    ]
+  },
+  {
+    "id": "act2_failed_wizard_dean_would_object",
+    "name": "The Dean Would Object",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Gain 3 Strength. Draw 2.",
+    "effects": [
+      {
+        "type": "gain_strength",
+        "target": "self",
+        "amount": 3
+      },
+      {
+        "type": "draw_cards",
+        "target": "self",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "draw",
+      "scaling",
+      "spell",
+      "strength"
+    ]
+  },
+  {
+    "id": "act2_failed_wizard_citation_from_nowhere",
+    "name": "Citation from Nowhere",
+    "class": "failed_wizard",
+    "type": "footnote",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Apply 4 Doubt. Deal 7 damage for each Doubt on the target.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 4
+      },
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount_per_stack": 7
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "doubt",
+      "footnote",
+      "payoff"
+    ]
+  },
+  {
+    "id": "act2_assassin_black_glove_note",
+    "name": "Black-Glove Note",
+    "class": "guild_assassin_apprentice",
+    "type": "action",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Deal 10 damage. Apply 1 Doubt.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 10
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "assassin",
+      "attack",
+      "doubt"
+    ]
+  },
+  {
+    "id": "act2_assassin_rooftop_step",
+    "name": "Rooftop Step",
+    "class": "guild_assassin_apprentice",
+    "type": "action",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Gain 8 Block. Draw 1.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 8
+      },
+      {
+        "type": "draw_cards",
+        "target": "self",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "assassin",
+      "block",
+      "draw"
+    ]
+  },
+  {
+    "id": "act2_assassin_discreet_pin",
+    "name": "Discreet Pin",
+    "class": "guild_assassin_apprentice",
+    "type": "action",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 3 Poison.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "assassin",
+      "poison"
+    ]
+  },
+  {
+    "id": "act2_assassin_guest_list_mark",
+    "name": "Guest-List Mark",
+    "class": "guild_assassin_apprentice",
+    "type": "form",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 2 Doubt. Draw 1.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 2
+      },
+      {
+        "type": "draw_cards",
+        "target": "self",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "assassin",
+      "doubt",
+      "draw"
+    ]
+  },
+  {
+    "id": "act2_assassin_balcony_exit",
+    "name": "Balcony Exit",
+    "class": "guild_assassin_apprentice",
+    "type": "action",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Deal 7 damage. Gain 7 Block.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 7
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 7
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "assassin",
+      "attack",
+      "block"
+    ]
+  },
+  {
+    "id": "act2_assassin_silent_bell",
+    "name": "Silent Bell",
+    "class": "guild_assassin_apprentice",
+    "type": "action",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Deal 12 damage.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 12
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "assassin",
+      "attack"
+    ]
+  },
+  {
+    "id": "act2_assassin_inked_initial",
+    "name": "Inked Initial",
+    "class": "guild_assassin_apprentice",
+    "type": "form",
+    "cost": 0,
+    "rarity": "common",
+    "text": "Apply 1 Doubt. Gain 5 Block.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 1
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 5
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "assassin",
+      "block",
+      "doubt",
+      "zero_cost"
+    ]
+  },
+  {
+    "id": "act2_assassin_curtain_shadow",
+    "name": "Curtain Shadow",
+    "class": "guild_assassin_apprentice",
+    "type": "action",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Gain 1 Strength. Deal 6 damage.",
+    "effects": [
+      {
+        "type": "gain_strength",
+        "target": "self",
+        "amount": 1
+      },
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 6
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "assassin",
+      "attack",
+      "strength"
+    ]
+  },
+  {
+    "id": "act2_assassin_poisoned_seal",
+    "name": "Poisoned Seal",
+    "class": "guild_assassin_apprentice",
+    "type": "form",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Apply 5 Poison.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 5
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "assassin",
+      "poison"
+    ]
+  },
+  {
+    "id": "act2_assassin_knife_in_the_index",
+    "name": "Knife in the Index",
+    "class": "guild_assassin_apprentice",
+    "type": "action",
+    "cost": 2,
+    "rarity": "uncommon",
+    "text": "Deal 18 damage. Apply 2 Doubt.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 18
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "assassin",
+      "attack",
+      "doubt"
+    ]
+  },
+  {
+    "id": "act2_assassin_excellent_alibi",
+    "name": "Excellent Alibi",
+    "class": "guild_assassin_apprentice",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Gain 16 Block. Draw 1.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 16
+      },
+      {
+        "type": "draw_cards",
+        "target": "self",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "assassin",
+      "block",
+      "draw"
+    ]
+  },
+  {
+    "id": "act2_assassin_appointment_after_midnight",
+    "name": "Appointment After Midnight",
+    "class": "guild_assassin_apprentice",
+    "type": "form",
+    "cost": 2,
+    "rarity": "uncommon",
+    "text": "Apply 3 Poison and 3 Doubt.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 3
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "assassin",
+      "doubt",
+      "poison"
+    ]
+  },
+  {
+    "id": "act2_assassin_locked_window_method",
+    "name": "Locked-Window Method",
+    "class": "guild_assassin_apprentice",
+    "type": "action",
+    "cost": 2,
+    "rarity": "uncommon",
+    "text": "Deal 5 damage for each Doubt on the target.",
+    "effects": [
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount_per_stack": 5
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "assassin",
+      "doubt",
+      "payoff"
+    ]
+  },
+  {
+    "id": "act2_assassin_vellum_deathmark",
+    "name": "Vellum Deathmark",
+    "class": "guild_assassin_apprentice",
+    "type": "form",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Apply 5 Doubt. Deal 18 damage.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 5
+      },
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 18
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "assassin",
+      "attack",
+      "doubt"
+    ]
+  },
+  {
+    "id": "act2_assassin_quiet_balustrade",
+    "name": "Quiet Balustrade",
+    "class": "guild_assassin_apprentice",
+    "type": "action",
+    "cost": 1,
+    "rarity": "rare",
+    "text": "Gain 2 Strength. Draw 2.",
+    "effects": [
+      {
+        "type": "gain_strength",
+        "target": "self",
+        "amount": 2
+      },
+      {
+        "type": "draw_cards",
+        "target": "self",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "assassin",
+      "draw",
+      "scaling",
+      "strength"
+    ]
+  },
+  {
+    "id": "act2_assassin_last_invitation",
+    "name": "Last Invitation",
+    "class": "guild_assassin_apprentice",
+    "type": "action",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Deal 28 damage. Apply 4 Poison.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 28
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 4
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "assassin",
+      "attack",
+      "poison"
+    ]
+  },
+  {
+    "id": "act2_hedge_witch_nettle_marker",
+    "name": "Nettle Marker",
+    "class": "hedge_witch",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 3 Poison. Gain 5 Block.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 3
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 5
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "block",
+      "poison",
+      "witch"
+    ]
+  },
+  {
+    "id": "act2_hedge_witch_cupboard_curse",
+    "name": "Cupboard Curse",
+    "class": "hedge_witch",
+    "type": "curse",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 2 Doubt. Draw 1.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 2
+      },
+      {
+        "type": "draw_cards",
+        "target": "self",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "curse",
+      "doubt",
+      "draw",
+      "witch"
+    ]
+  },
+  {
+    "id": "act2_hedge_witch_thorn_receipt",
+    "name": "Thorn Receipt",
+    "class": "hedge_witch",
+    "type": "curse",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Deal 8 damage. Apply 2 Poison.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 8
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "attack",
+      "poison",
+      "witch"
+    ]
+  },
+  {
+    "id": "act2_hedge_witch_old_broom_guard",
+    "name": "Old Broom Guard",
+    "class": "hedge_witch",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Gain 11 Block.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 11
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "block",
+      "witch"
+    ]
+  },
+  {
+    "id": "act2_hedge_witch_practical_glare",
+    "name": "Practical Glare",
+    "class": "hedge_witch",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 3 Doubt.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "control",
+      "doubt",
+      "witch"
+    ]
+  },
+  {
+    "id": "act2_hedge_witch_jar_label",
+    "name": "Jar Label",
+    "class": "hedge_witch",
+    "type": "spell",
+    "cost": 0,
+    "rarity": "common",
+    "text": "Apply 1 Poison. Draw 1.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 1
+      },
+      {
+        "type": "draw_cards",
+        "target": "self",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "draw",
+      "poison",
+      "witch",
+      "zero_cost"
+    ]
+  },
+  {
+    "id": "act2_hedge_witch_cottage_threshold",
+    "name": "Cottage Threshold",
+    "class": "hedge_witch",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Gain 7 Block. Apply 1 Doubt.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 7
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "block",
+      "doubt",
+      "witch"
+    ]
+  },
+  {
+    "id": "act2_hedge_witch_blackberry_scratch",
+    "name": "Blackberry Scratch",
+    "class": "hedge_witch",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Deal 10 damage. Apply 1 Poison.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 10
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "attack",
+      "poison",
+      "witch"
+    ]
+  },
+  {
+    "id": "act2_hedge_witch_dried_sage_note",
+    "name": "Dried Sage Note",
+    "class": "hedge_witch",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Draw 1. Gain 8 Block.",
+    "effects": [
+      {
+        "type": "draw_cards",
+        "target": "self",
+        "amount": 1
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 8
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "block",
+      "draw",
+      "witch"
+    ]
+  },
+  {
+    "id": "act2_hedge_witch_pinch_of_spite",
+    "name": "Pinch of Spite",
+    "class": "hedge_witch",
+    "type": "curse",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 2 Poison and 1 Doubt.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 2
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "doubt",
+      "poison",
+      "witch"
+    ]
+  },
+  {
+    "id": "act2_hedge_witch_crow_foot_clause",
+    "name": "Crow-Foot Clause",
+    "class": "hedge_witch",
+    "type": "curse",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Apply 5 Poison.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 5
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "poison",
+      "witch"
+    ]
+  },
+  {
+    "id": "act2_hedge_witch_iron_pot_stand",
+    "name": "Iron Pot Stand",
+    "class": "hedge_witch",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Gain 16 Block. Draw 1.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 16
+      },
+      {
+        "type": "draw_cards",
+        "target": "self",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "block",
+      "draw",
+      "witch"
+    ]
+  },
+  {
+    "id": "act2_hedge_witch_lantern_of_bad_weather",
+    "name": "Lantern of Bad Weather",
+    "class": "hedge_witch",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "uncommon",
+    "text": "Apply 4 Doubt. Gain 12 Block.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 4
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 12
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "block",
+      "doubt",
+      "witch"
+    ]
+  },
+  {
+    "id": "act2_hedge_witch_briar_precedent",
+    "name": "Briar Precedent",
+    "class": "hedge_witch",
+    "type": "curse",
+    "cost": 2,
+    "rarity": "uncommon",
+    "text": "Apply 4 Poison and 3 Doubt.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 4
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "doubt",
+      "poison",
+      "witch"
+    ]
+  },
+  {
+    "id": "act2_hedge_witch_firm_tea",
+    "name": "Firm Tea",
+    "class": "hedge_witch",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Gain 1 Strength. Gain 12 Block.",
+    "effects": [
+      {
+        "type": "gain_strength",
+        "target": "self",
+        "amount": 1
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 12
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "block",
+      "strength",
+      "witch"
+    ]
+  },
+  {
+    "id": "act2_hedge_witch_rootbound_warning",
+    "name": "Rootbound Warning",
+    "class": "hedge_witch",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "uncommon",
+    "text": "Deal 5 damage for each Poison on the target.",
+    "effects": [
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount_per_stack": 5
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "payoff",
+      "poison",
+      "witch"
+    ]
+  },
+  {
+    "id": "act2_hedge_witch_necessary_unpleasantness",
+    "name": "Necessary Unpleasantness",
+    "class": "hedge_witch",
+    "type": "curse",
+    "cost": 2,
+    "rarity": "uncommon",
+    "text": "Deal 16 damage. Apply 4 Poison.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 16
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 4
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "attack",
+      "poison",
+      "witch"
+    ]
+  },
+  {
+    "id": "act2_hedge_witch_granny_would_approve",
+    "name": "Granny Would Approve",
+    "class": "hedge_witch",
+    "type": "argument",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Gain 2 Strength. Draw 2.",
+    "effects": [
+      {
+        "type": "gain_strength",
+        "target": "self",
+        "amount": 2
+      },
+      {
+        "type": "draw_cards",
+        "target": "self",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "draw",
+      "scaling",
+      "strength",
+      "witch"
+    ]
+  },
+  {
+    "id": "act2_hedge_witch_greenhouse_verdict",
+    "name": "Greenhouse Verdict",
+    "class": "hedge_witch",
+    "type": "curse",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Apply 6 Poison. Deal 6 damage for each Poison on the target.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 6
+      },
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount_per_stack": 6
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "payoff",
+      "poison",
+      "witch"
+    ]
+  },
+  {
+    "id": "act2_mortuary_name_tag",
+    "name": "Name Tag",
+    "class": "mortuary_apprentice",
+    "type": "form",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 3 Paperwork.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "mortuary",
+      "paperwork"
+    ]
+  },
+  {
+    "id": "act2_mortuary_clean_sheet",
+    "name": "Clean Sheet",
+    "class": "mortuary_apprentice",
+    "type": "form",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Gain 10 Block.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 10
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "block",
+      "mortuary"
+    ]
+  },
+  {
+    "id": "act2_mortuary_quiet_bell",
+    "name": "Quiet Bell",
+    "class": "mortuary_apprentice",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 2 Doubt. Draw 1.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 2
+      },
+      {
+        "type": "draw_cards",
+        "target": "self",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "doubt",
+      "draw",
+      "mortuary"
+    ]
+  },
+  {
+    "id": "act2_mortuary_cold_signature",
+    "name": "Cold Signature",
+    "class": "mortuary_apprentice",
+    "type": "form",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Deal 9 damage. Apply 2 Paperwork.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 9
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "attack",
+      "mortuary",
+      "paperwork"
+    ]
+  },
+  {
+    "id": "act2_mortuary_black_ribbon_tag",
+    "name": "Black Ribbon Tag",
+    "class": "mortuary_apprentice",
+    "type": "form",
+    "cost": 0,
+    "rarity": "common",
+    "text": "Apply 1 Paperwork. Draw 1.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 1
+      },
+      {
+        "type": "draw_cards",
+        "target": "self",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "draw",
+      "mortuary",
+      "paperwork",
+      "zero_cost"
+    ]
+  },
+  {
+    "id": "act2_mortuary_respectful_pause",
+    "name": "Respectful Pause",
+    "class": "mortuary_apprentice",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Gain 7 Block. Apply 1 Doubt.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 7
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "block",
+      "doubt",
+      "mortuary"
+    ]
+  },
+  {
+    "id": "act2_mortuary_ledger_corner",
+    "name": "Ledger Corner",
+    "class": "mortuary_apprentice",
+    "type": "form",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Deal 7 damage. Gain 7 Block.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 7
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 7
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "attack",
+      "block",
+      "mortuary"
+    ]
+  },
+  {
+    "id": "act2_mortuary_due_procession",
+    "name": "Due Procession",
+    "class": "mortuary_apprentice",
+    "type": "action",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 2 Paperwork. Gain 6 Block.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 2
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 6
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "block",
+      "mortuary",
+      "paperwork"
+    ]
+  },
+  {
+    "id": "act2_mortuary_late_condolence",
+    "name": "Late Condolence",
+    "class": "mortuary_apprentice",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 3 Doubt.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "doubt",
+      "mortuary"
+    ]
+  },
+  {
+    "id": "act2_mortuary_archival_autopsy",
+    "name": "Archival Autopsy",
+    "class": "mortuary_apprentice",
+    "type": "form",
+    "cost": 2,
+    "rarity": "uncommon",
+    "text": "Apply 5 Paperwork. Draw 1.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 5
+      },
+      {
+        "type": "draw_cards",
+        "target": "self",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "draw",
+      "mortuary",
+      "paperwork"
+    ]
+  },
+  {
+    "id": "act2_mortuary_careful_inventory",
+    "name": "Careful Inventory",
+    "class": "mortuary_apprentice",
+    "type": "form",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Gain 15 Block. Apply 2 Paperwork.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 15
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "block",
+      "mortuary",
+      "paperwork"
+    ]
+  },
+  {
+    "id": "act2_mortuary_solemn_clause",
+    "name": "Solemn Clause",
+    "class": "mortuary_apprentice",
+    "type": "argument",
+    "cost": 2,
+    "rarity": "uncommon",
+    "text": "Deal 5 damage for each Paperwork on the target.",
+    "effects": [
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount_per_stack": 5
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "mortuary",
+      "paperwork",
+      "payoff"
+    ]
+  },
+  {
+    "id": "act2_mortuary_final_notice",
+    "name": "Final Notice",
+    "class": "mortuary_apprentice",
+    "type": "form",
+    "cost": 2,
+    "rarity": "uncommon",
+    "text": "Apply 3 Paperwork and 3 Doubt.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 3
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "doubt",
+      "mortuary",
+      "paperwork"
+    ]
+  },
+  {
+    "id": "act2_mortuary_wake_register",
+    "name": "Wake Register",
+    "class": "mortuary_apprentice",
+    "type": "form",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Draw 2. Gain 8 Block.",
+    "effects": [
+      {
+        "type": "draw_cards",
+        "target": "self",
+        "amount": 2
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 8
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "block",
+      "draw",
+      "mortuary"
+    ]
+  },
+  {
+    "id": "act2_mortuary_undertakers_margin",
+    "name": "Undertaker's Margin",
+    "class": "mortuary_apprentice",
+    "type": "argument",
+    "cost": 2,
+    "rarity": "uncommon",
+    "text": "Deal 16 damage. Apply 4 Paperwork.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 16
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 4
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "attack",
+      "mortuary",
+      "paperwork"
+    ]
+  },
+  {
+    "id": "act2_mortuary_bureau_of_last_words",
+    "name": "Bureau of Last Words",
+    "class": "mortuary_apprentice",
+    "type": "form",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Gain 2 Strength. Apply 4 Paperwork.",
+    "effects": [
+      {
+        "type": "gain_strength",
+        "target": "self",
+        "amount": 2
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 4
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "mortuary",
+      "paperwork",
+      "strength"
+    ]
+  },
+  {
+    "id": "act2_mortuary_receipt_book_of_souls",
+    "name": "Receipt Book of Souls",
+    "class": "mortuary_apprentice",
+    "type": "form",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Apply 5 Paperwork. Deal 7 damage for each Paperwork on the target.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 5
+      },
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount_per_stack": 7
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "mortuary",
+      "paperwork",
+      "payoff"
+    ]
+  },
+  {
+    "id": "act2_mortuary_long_black_coat",
+    "name": "Long Black Coat",
+    "class": "mortuary_apprentice",
+    "type": "action",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Gain 24 Block. Draw 2.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 24
+      },
+      {
+        "type": "draw_cards",
+        "target": "self",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "block",
+      "draw",
+      "mortuary"
+    ]
+  },
+  {
+    "id": "act2_watch_lantern_check",
+    "name": "Lantern Check",
+    "class": "night_watch_recruit",
+    "type": "action",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Deal 9 damage. Apply 1 Doubt.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 9
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "attack",
+      "doubt",
+      "watch"
+    ]
+  },
+  {
+    "id": "act2_watch_cobble_patrol",
+    "name": "Cobble Patrol",
+    "class": "night_watch_recruit",
+    "type": "action",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Gain 10 Block.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 10
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "block",
+      "watch"
+    ]
+  },
+  {
+    "id": "act2_watch_whistle_note",
+    "name": "Whistle Note",
+    "class": "night_watch_recruit",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 3 Doubt.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "doubt",
+      "watch"
+    ]
+  },
+  {
+    "id": "act2_watch_boot_print",
+    "name": "Boot Print",
+    "class": "night_watch_recruit",
+    "type": "action",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Deal 11 damage.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 11
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "attack",
+      "watch"
+    ]
+  },
+  {
+    "id": "act2_watch_raincloak_guard",
+    "name": "Raincloak Guard",
+    "class": "night_watch_recruit",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Gain 7 Block. Draw 1.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 7
+      },
+      {
+        "type": "draw_cards",
+        "target": "self",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "block",
+      "draw",
+      "watch"
+    ]
+  },
+  {
+    "id": "act2_watch_night_report",
+    "name": "Night Report",
+    "class": "night_watch_recruit",
+    "type": "form",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 2 Doubt. Gain 5 Block.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 2
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 5
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "block",
+      "doubt",
+      "watch"
+    ]
+  },
+  {
+    "id": "act2_watch_door_knock",
+    "name": "Door Knock",
+    "class": "night_watch_recruit",
+    "type": "action",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Deal 8 damage. Apply 1 Paperwork.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 8
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "attack",
+      "paperwork",
+      "watch"
+    ]
+  },
+  {
+    "id": "act2_watch_street_corner",
+    "name": "Street Corner",
+    "class": "night_watch_recruit",
+    "type": "argument",
+    "cost": 0,
+    "rarity": "common",
+    "text": "Gain 5 Block. Draw 1.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 5
+      },
+      {
+        "type": "draw_cards",
+        "target": "self",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "block",
+      "draw",
+      "watch",
+      "zero_cost"
+    ]
+  },
+  {
+    "id": "act2_watch_coppers_hunch",
+    "name": "Copper's Hunch",
+    "class": "night_watch_recruit",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 1 Doubt. Draw 1.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 1
+      },
+      {
+        "type": "draw_cards",
+        "target": "self",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "doubt",
+      "draw",
+      "watch"
+    ]
+  },
+  {
+    "id": "act2_watch_statement_taken",
+    "name": "Statement Taken",
+    "class": "night_watch_recruit",
+    "type": "form",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Apply 4 Doubt. Gain 8 Block.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 4
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 8
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "block",
+      "doubt",
+      "watch"
+    ]
+  },
+  {
+    "id": "act2_watch_archive_warrant",
+    "name": "Archive Warrant",
+    "class": "night_watch_recruit",
+    "type": "argument",
+    "cost": 2,
+    "rarity": "uncommon",
+    "text": "Deal 18 damage. Apply 2 Doubt.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 18
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "attack",
+      "doubt",
+      "watch"
+    ]
+  },
+  {
+    "id": "act2_watch_sergeants_frown",
+    "name": "Sergeant's Frown",
+    "class": "night_watch_recruit",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Gain 1 Strength. Gain 12 Block.",
+    "effects": [
+      {
+        "type": "gain_strength",
+        "target": "self",
+        "amount": 1
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 12
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "block",
+      "strength",
+      "watch"
+    ]
+  },
+  {
+    "id": "act2_watch_case_lantern",
+    "name": "Case Lantern",
+    "class": "night_watch_recruit",
+    "type": "action",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Draw 2. Apply 2 Doubt.",
+    "effects": [
+      {
+        "type": "draw_cards",
+        "target": "self",
+        "amount": 2
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "doubt",
+      "draw",
+      "watch"
+    ]
+  },
+  {
+    "id": "act2_watch_minor_arrest",
+    "name": "Minor Arrest",
+    "class": "night_watch_recruit",
+    "type": "action",
+    "cost": 2,
+    "rarity": "uncommon",
+    "text": "Deal 5 damage for each Doubt on the target.",
+    "effects": [
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount_per_stack": 5
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "doubt",
+      "payoff",
+      "watch"
+    ]
+  },
+  {
+    "id": "act2_watch_watchhouse_wall",
+    "name": "Watchhouse Wall",
+    "class": "night_watch_recruit",
+    "type": "argument",
+    "cost": 2,
+    "rarity": "uncommon",
+    "text": "Gain 22 Block.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 22
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "block",
+      "watch"
+    ]
+  },
+  {
+    "id": "act2_watch_half_brick_logic",
+    "name": "Half-Brick Logic",
+    "class": "night_watch_recruit",
+    "type": "action",
+    "cost": 2,
+    "rarity": "uncommon",
+    "text": "Deal 20 damage. Gain 8 Block.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 20
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 8
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "attack",
+      "block",
+      "watch"
+    ]
+  },
+  {
+    "id": "act2_watch_city_ordinance",
+    "name": "City Ordinance",
+    "class": "night_watch_recruit",
+    "type": "form",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Apply 5 Doubt. Gain 18 Block.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 5
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 18
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "block",
+      "doubt",
+      "watch"
+    ]
+  },
+  {
+    "id": "act2_watch_old_sergeants_lesson",
+    "name": "Old Sergeant's Lesson",
+    "class": "night_watch_recruit",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "rare",
+    "text": "Gain 2 Strength. Draw 2.",
+    "effects": [
+      {
+        "type": "gain_strength",
+        "target": "self",
+        "amount": 2
+      },
+      {
+        "type": "draw_cards",
+        "target": "self",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "draw",
+      "scaling",
+      "strength",
+      "watch"
+    ]
+  },
+  {
+    "id": "act2_watch_dawn_arrest",
+    "name": "Dawn Arrest",
+    "class": "night_watch_recruit",
+    "type": "action",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Apply 4 Doubt. Deal 7 damage for each Doubt on the target.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 4
+      },
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount_per_stack": 7
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "doubt",
+      "payoff",
+      "watch"
+    ]
+  },
+  {
+    "id": "act2_sewer_diplomat_damp_signature",
+    "name": "Damp Signature",
+    "class": "sewer_diplomat",
+    "type": "form",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 3 Poison.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "poison",
+      "sewer"
+    ]
+  },
+  {
+    "id": "act2_sewer_diplomat_ratified_note",
+    "name": "Ratified Note",
+    "class": "sewer_diplomat",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 2 Doubt. Draw 1.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 2
+      },
+      {
+        "type": "draw_cards",
+        "target": "self",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "doubt",
+      "draw",
+      "sewer"
+    ]
+  },
+  {
+    "id": "act2_sewer_diplomat_grate_protocol",
+    "name": "Grate Protocol",
+    "class": "sewer_diplomat",
+    "type": "form",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Gain 9 Block. Apply 1 Poison.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 9
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "block",
+      "poison",
+      "sewer"
+    ]
+  },
+  {
+    "id": "act2_sewer_diplomat_sludge_sample",
+    "name": "Sludge Sample",
+    "class": "sewer_diplomat",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Deal 8 damage. Apply 2 Poison.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 8
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "attack",
+      "poison",
+      "sewer"
+    ]
+  },
+  {
+    "id": "act2_sewer_diplomat_undercity_clause",
+    "name": "Undercity Clause",
+    "class": "sewer_diplomat",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 1 Poison and 2 Doubt.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 1
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "doubt",
+      "poison",
+      "sewer"
+    ]
+  },
+  {
+    "id": "act2_sewer_diplomat_rusty_badge",
+    "name": "Rusty Badge",
+    "class": "sewer_diplomat",
+    "type": "form",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Gain 7 Block. Draw 1.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 7
+      },
+      {
+        "type": "draw_cards",
+        "target": "self",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "block",
+      "draw",
+      "sewer"
+    ]
+  },
+  {
+    "id": "act2_sewer_diplomat_pipe_echo",
+    "name": "Pipe Echo",
+    "class": "sewer_diplomat",
+    "type": "argument",
+    "cost": 0,
+    "rarity": "common",
+    "text": "Apply 1 Doubt. Draw 1.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 1
+      },
+      {
+        "type": "draw_cards",
+        "target": "self",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "doubt",
+      "draw",
+      "sewer",
+      "zero_cost"
+    ]
+  },
+  {
+    "id": "act2_sewer_diplomat_courteous_backwash",
+    "name": "Courteous Backwash",
+    "class": "sewer_diplomat",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Deal 7 damage. Gain 7 Block.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 7
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 7
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "attack",
+      "block",
+      "sewer"
+    ]
+  },
+  {
+    "id": "act2_sewer_diplomat_rat_council_minutes",
+    "name": "Rat Council Minutes",
+    "class": "sewer_diplomat",
+    "type": "form",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Apply 4 Poison. Draw 1.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 4
+      },
+      {
+        "type": "draw_cards",
+        "target": "self",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "draw",
+      "poison",
+      "sewer"
+    ]
+  },
+  {
+    "id": "act2_sewer_diplomat_embassy_mud",
+    "name": "Embassy Mud",
+    "class": "sewer_diplomat",
+    "type": "argument",
+    "cost": 2,
+    "rarity": "uncommon",
+    "text": "Apply 4 Poison and 3 Doubt.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 4
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "doubt",
+      "poison",
+      "sewer"
+    ]
+  },
+  {
+    "id": "act2_sewer_diplomat_gracious_leak",
+    "name": "Gracious Leak",
+    "class": "sewer_diplomat",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Gain 1 Strength. Apply 3 Poison.",
+    "effects": [
+      {
+        "type": "gain_strength",
+        "target": "self",
+        "amount": 1
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "poison",
+      "sewer",
+      "strength"
+    ]
+  },
+  {
+    "id": "act2_sewer_diplomat_back_channel_rat",
+    "name": "Back-Channel Rat",
+    "class": "sewer_diplomat",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Draw 2. Gain 8 Block.",
+    "effects": [
+      {
+        "type": "draw_cards",
+        "target": "self",
+        "amount": 2
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 8
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "block",
+      "draw",
+      "sewer"
+    ]
+  },
+  {
+    "id": "act2_sewer_diplomat_sluice_argument",
+    "name": "Sluice Argument",
+    "class": "sewer_diplomat",
+    "type": "argument",
+    "cost": 2,
+    "rarity": "uncommon",
+    "text": "Deal 5 damage for each Poison on the target.",
+    "effects": [
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount_per_stack": 5
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "payoff",
+      "poison",
+      "sewer"
+    ]
+  },
+  {
+    "id": "act2_sewer_diplomat_formal_backflow",
+    "name": "Formal Backflow",
+    "class": "sewer_diplomat",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "uncommon",
+    "text": "Deal 16 damage. Apply 4 Poison.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 16
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 4
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "attack",
+      "poison",
+      "sewer"
+    ]
+  },
+  {
+    "id": "act2_sewer_diplomat_treaty_of_the_deep_drain",
+    "name": "Treaty of the Deep Drain",
+    "class": "sewer_diplomat",
+    "type": "argument",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Apply 6 Poison. Deal 6 damage for each Poison on the target.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 6
+      },
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount_per_stack": 6
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "payoff",
+      "poison",
+      "sewer"
+    ]
+  },
+  {
+    "id": "act2_sewer_diplomat_king_rat_seal",
+    "name": "King Rat Seal",
+    "class": "sewer_diplomat",
+    "type": "form",
+    "cost": 1,
+    "rarity": "rare",
+    "text": "Gain 2 Strength. Draw 2.",
+    "effects": [
+      {
+        "type": "gain_strength",
+        "target": "self",
+        "amount": 2
+      },
+      {
+        "type": "draw_cards",
+        "target": "self",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "draw",
+      "scaling",
+      "sewer",
+      "strength"
+    ]
+  },
+  {
+    "id": "act2_sewer_diplomat_flooded_chamber_vote",
+    "name": "Flooded Chamber Vote",
+    "class": "sewer_diplomat",
+    "type": "argument",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Apply 5 Doubt. Gain 20 Block.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 5
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 20
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "block",
+      "control",
+      "doubt",
+      "sewer"
+    ]
+  },
+  {
+    "id": "act2_shroomancer_spore_ledger",
+    "name": "Spore Ledger",
+    "class": "shroomancer",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 3 Poison.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "poison",
+      "shroom"
+    ]
+  },
+  {
+    "id": "act2_shroomancer_mildew_note",
+    "name": "Mildew Note",
+    "class": "shroomancer",
+    "type": "form",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Draw 1. Apply 2 Poison.",
+    "effects": [
+      {
+        "type": "draw_cards",
+        "target": "self",
+        "amount": 1
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "draw",
+      "poison",
+      "shroom"
+    ]
+  },
+  {
+    "id": "act2_shroomancer_cap_shelter",
+    "name": "Cap Shelter",
+    "class": "shroomancer",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Gain 10 Block.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 10
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "block",
+      "shroom"
+    ]
+  },
+  {
+    "id": "act2_shroomancer_soft_rot_touch",
+    "name": "Soft-Rot Touch",
+    "class": "shroomancer",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Deal 8 damage. Apply 2 Poison.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 8
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "attack",
+      "poison",
+      "shroom"
+    ]
+  },
+  {
+    "id": "act2_shroomancer_mycelial_receipt",
+    "name": "Mycelial Receipt",
+    "class": "shroomancer",
+    "type": "form",
+    "cost": 0,
+    "rarity": "common",
+    "text": "Apply 1 Poison. Draw 1.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 1
+      },
+      {
+        "type": "draw_cards",
+        "target": "self",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "draw",
+      "poison",
+      "shroom",
+      "zero_cost"
+    ]
+  },
+  {
+    "id": "act2_shroomancer_damp_palm",
+    "name": "Damp Palm",
+    "class": "shroomancer",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Gain 7 Block. Apply 1 Doubt.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 7
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "block",
+      "doubt",
+      "shroom"
+    ]
+  },
+  {
+    "id": "act2_shroomancer_fruiting_margin",
+    "name": "Fruiting Margin",
+    "class": "shroomancer",
+    "type": "form",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 2 Poison. Gain 6 Block.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 2
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 6
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "block",
+      "poison",
+      "shroom"
+    ]
+  },
+  {
+    "id": "act2_shroomancer_toadstool_stamp",
+    "name": "Toadstool Stamp",
+    "class": "shroomancer",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Deal 11 damage.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 11
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "attack",
+      "shroom"
+    ]
+  },
+  {
+    "id": "act2_shroomancer_spore_sneeze",
+    "name": "Spore Sneeze",
+    "class": "shroomancer",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 1 Poison and 2 Doubt.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 1
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "doubt",
+      "poison",
+      "shroom"
+    ]
+  },
+  {
+    "id": "act2_shroomancer_mushroom_index",
+    "name": "Mushroom Index",
+    "class": "shroomancer",
+    "type": "form",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Apply 4 Poison. Draw 1.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 4
+      },
+      {
+        "type": "draw_cards",
+        "target": "self",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "draw",
+      "poison",
+      "shroom"
+    ]
+  },
+  {
+    "id": "act2_shroomancer_deep_root_annotation",
+    "name": "Deep-Root Annotation",
+    "class": "shroomancer",
+    "type": "form",
+    "cost": 2,
+    "rarity": "uncommon",
+    "text": "Apply 5 Poison. Gain 12 Block.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 5
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 12
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "block",
+      "poison",
+      "shroom"
+    ]
+  },
+  {
+    "id": "act2_shroomancer_old_logic_cap",
+    "name": "Old Logic Cap",
+    "class": "shroomancer",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Gain 1 Strength. Apply 3 Poison.",
+    "effects": [
+      {
+        "type": "gain_strength",
+        "target": "self",
+        "amount": 1
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "poison",
+      "shroom",
+      "strength"
+    ]
+  },
+  {
+    "id": "act2_shroomancer_black_mold_clause",
+    "name": "Black-Mold Clause",
+    "class": "shroomancer",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "uncommon",
+    "text": "Deal 5 damage for each Poison on the target.",
+    "effects": [
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount_per_stack": 5
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "payoff",
+      "poison",
+      "shroom"
+    ]
+  },
+  {
+    "id": "act2_shroomancer_fairy_ring_minutes",
+    "name": "Fairy-Ring Minutes",
+    "class": "shroomancer",
+    "type": "form",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Draw 2. Gain 8 Block.",
+    "effects": [
+      {
+        "type": "draw_cards",
+        "target": "self",
+        "amount": 2
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 8
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "block",
+      "draw",
+      "shroom"
+    ]
+  },
+  {
+    "id": "act2_shroomancer_puffball_objection",
+    "name": "Puffball Objection",
+    "class": "shroomancer",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "uncommon",
+    "text": "Deal 18 damage. Apply 3 Poison.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 18
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "attack",
+      "poison",
+      "shroom"
+    ]
+  },
+  {
+    "id": "act2_shroomancer_colony_vote",
+    "name": "Colony Vote",
+    "class": "shroomancer",
+    "type": "form",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Apply 6 Poison. Deal 6 damage for each Poison on the target.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 6
+      },
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount_per_stack": 6
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "payoff",
+      "poison",
+      "shroom"
+    ]
+  },
+  {
+    "id": "act2_witch_clerk_moonlit_receipt",
+    "name": "Moonlit Receipt",
+    "class": "witch_clerk",
+    "type": "form",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 2 Paperwork and 1 Doubt.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 2
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "clerk",
+      "doubt",
+      "paperwork",
+      "witch"
+    ]
+  },
+  {
+    "id": "act2_witch_clerk_tidied_hex",
+    "name": "Tidied Hex",
+    "class": "witch_clerk",
+    "type": "curse",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 3 Doubt.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "clerk",
+      "doubt",
+      "witch"
+    ]
+  },
+  {
+    "id": "act2_witch_clerk_broom_label",
+    "name": "Broom Label",
+    "class": "witch_clerk",
+    "type": "form",
+    "cost": 0,
+    "rarity": "common",
+    "text": "Apply 1 Paperwork. Draw 1.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 1
+      },
+      {
+        "type": "draw_cards",
+        "target": "self",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "clerk",
+      "draw",
+      "paperwork",
+      "witch",
+      "zero_cost"
+    ]
+  },
+  {
+    "id": "act2_witch_clerk_candle_margin",
+    "name": "Candle Margin",
+    "class": "witch_clerk",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Gain 8 Block. Apply 1 Doubt.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 8
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "block",
+      "clerk",
+      "doubt",
+      "witch"
+    ]
+  },
+  {
+    "id": "act2_witch_clerk_ink_prickle",
+    "name": "Ink Prickle",
+    "class": "witch_clerk",
+    "type": "curse",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Deal 8 damage. Apply 2 Doubt.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 8
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "attack",
+      "clerk",
+      "doubt",
+      "witch"
+    ]
+  },
+  {
+    "id": "act2_witch_clerk_coven_memo",
+    "name": "Coven Memo",
+    "class": "witch_clerk",
+    "type": "form",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Draw 1. Gain 7 Block.",
+    "effects": [
+      {
+        "type": "draw_cards",
+        "target": "self",
+        "amount": 1
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 7
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "block",
+      "clerk",
+      "draw",
+      "witch"
+    ]
+  },
+  {
+    "id": "act2_witch_clerk_black_pin",
+    "name": "Black Pin",
+    "class": "witch_clerk",
+    "type": "curse",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 2 Doubt. Gain 5 Block.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 2
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 5
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "block",
+      "clerk",
+      "doubt",
+      "witch"
+    ]
+  },
+  {
+    "id": "act2_witch_clerk_wrong_salutation",
+    "name": "Wrong Salutation",
+    "class": "witch_clerk",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 2 Paperwork. Draw 1.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 2
+      },
+      {
+        "type": "draw_cards",
+        "target": "self",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "clerk",
+      "draw",
+      "paperwork",
+      "witch"
+    ]
+  },
+  {
+    "id": "act2_witch_clerk_polite_malediction",
+    "name": "Polite Malediction",
+    "class": "witch_clerk",
+    "type": "curse",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Deal 10 damage. Apply 1 Paperwork.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 10
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "attack",
+      "clerk",
+      "paperwork",
+      "witch"
+    ]
+  },
+  {
+    "id": "act2_witch_clerk_bell_and_book",
+    "name": "Bell and Book",
+    "class": "witch_clerk",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 1 Doubt and 1 Paperwork. Gain 5 Block.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 1
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 1
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 5
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "block",
+      "clerk",
+      "doubt",
+      "paperwork",
+      "witch"
+    ]
+  },
+  {
+    "id": "act2_witch_clerk_coven_cross_reference",
+    "name": "Coven Cross-Reference",
+    "class": "witch_clerk",
+    "type": "form",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Apply 4 Doubt. Draw 1.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 4
+      },
+      {
+        "type": "draw_cards",
+        "target": "self",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "clerk",
+      "doubt",
+      "draw",
+      "witch"
+    ]
+  },
+  {
+    "id": "act2_witch_clerk_hexed_minute_book",
+    "name": "Hexed Minute Book",
+    "class": "witch_clerk",
+    "type": "curse",
+    "cost": 2,
+    "rarity": "uncommon",
+    "text": "Apply 4 Paperwork and 3 Doubt.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 4
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "clerk",
+      "doubt",
+      "paperwork",
+      "witch"
+    ]
+  },
+  {
+    "id": "act2_witch_clerk_marginal_moon",
+    "name": "Marginal Moon",
+    "class": "witch_clerk",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Gain 1 Strength. Apply 3 Doubt.",
+    "effects": [
+      {
+        "type": "gain_strength",
+        "target": "self",
+        "amount": 1
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "clerk",
+      "doubt",
+      "strength",
+      "witch"
+    ]
+  },
+  {
+    "id": "act2_witch_clerk_filing_hex",
+    "name": "Filing Hex",
+    "class": "witch_clerk",
+    "type": "curse",
+    "cost": 2,
+    "rarity": "uncommon",
+    "text": "Deal 5 damage for each Doubt on the target.",
+    "effects": [
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount_per_stack": 5
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "clerk",
+      "doubt",
+      "payoff",
+      "witch"
+    ]
+  },
+  {
+    "id": "act2_witch_clerk_straightened_broom",
+    "name": "Straightened Broom",
+    "class": "witch_clerk",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Gain 16 Block. Draw 1.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 16
+      },
+      {
+        "type": "draw_cards",
+        "target": "self",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "block",
+      "clerk",
+      "draw",
+      "witch"
+    ]
+  },
+  {
+    "id": "act2_witch_clerk_stamp_of_thorns",
+    "name": "Stamp of Thorns",
+    "class": "witch_clerk",
+    "type": "curse",
+    "cost": 2,
+    "rarity": "uncommon",
+    "text": "Deal 16 damage. Apply 4 Paperwork.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 16
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 4
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "attack",
+      "clerk",
+      "paperwork",
+      "witch"
+    ]
+  },
+  {
+    "id": "act2_witch_clerk_midnight_filing_cabinet",
+    "name": "Midnight Filing Cabinet",
+    "class": "witch_clerk",
+    "type": "form",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Apply 5 Paperwork. Deal 6 damage for each Paperwork on the target.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 5
+      },
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount_per_stack": 6
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "clerk",
+      "paperwork",
+      "payoff",
+      "witch"
+    ]
+  },
+  {
+    "id": "act2_witch_clerk_coven_chairwoman",
+    "name": "Coven Chairwoman",
+    "class": "witch_clerk",
+    "type": "argument",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Gain 2 Strength. Draw 2.",
+    "effects": [
+      {
+        "type": "gain_strength",
+        "target": "self",
+        "amount": 2
+      },
+      {
+        "type": "draw_cards",
+        "target": "self",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive_reward",
+      "clerk",
+      "draw",
+      "scaling",
+      "strength",
+      "witch"
+    ]
+  }
+]

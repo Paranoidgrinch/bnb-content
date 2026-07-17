@@ -1,0 +1,20 @@
+{
+  "id": "guild_assassin_apprentice",
+  "name": "Guild Assassin Apprentice",
+  "max_hp": 64,
+  "starting_energy": 3,
+  "starting_relic": null,
+  "starting_deck": [
+    "polite_stab",
+    "polite_stab",
+    "polite_stab",
+    "polite_stab",
+    "black_cloak",
+    "black_cloak",
+    "black_cloak",
+    "black_cloak",
+    "marked_name",
+    "needle_in_the_dark"
+  ],
+  "starting_resources": {}
+}

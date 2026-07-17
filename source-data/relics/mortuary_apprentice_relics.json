@@ -1,0 +1,300 @@
+[
+  {
+    "id": "undertakers_stamp",
+    "name": "Undertaker's Stamp",
+    "description": "At the start of each combat, apply 1 Paperwork to all enemies.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "paperwork",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "mortuary_apprentice",
+      "certificate",
+      "paperwork",
+      "mortuary"
+    ],
+    "allowed_classes": [
+      "mortuary_apprentice"
+    ]
+  },
+  {
+    "id": "black_ribbon_spool",
+    "name": "Black Ribbon Spool",
+    "description": "At the start of each combat, add a Black Ribbon to your hand.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "black_ribbon",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "mortuary_apprentice",
+      "mourning",
+      "veil",
+      "block",
+      "zero_cost"
+    ],
+    "allowed_classes": [
+      "mortuary_apprentice"
+    ]
+  },
+  {
+    "id": "small_bell_clapper",
+    "name": "Small Bell Clapper",
+    "description": "At the start of each combat, add a Small Bell Echo to your draw pile.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "small_bell_echo",
+        "destination": "draw_pile",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "mortuary_apprentice",
+      "bell",
+      "paperwork",
+      "payoff"
+    ],
+    "allowed_classes": [
+      "mortuary_apprentice"
+    ]
+  },
+  {
+    "id": "drawer_of_spare_bones",
+    "name": "Drawer of Spare Bones",
+    "description": "At the start of each combat, add a Bone Splinter to your hand.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "bone_splinter",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "mortuary_apprentice",
+      "bone",
+      "attack",
+      "zero_cost"
+    ],
+    "allowed_classes": [
+      "mortuary_apprentice"
+    ]
+  },
+  {
+    "id": "mourning_pin",
+    "name": "Mourning Pin",
+    "description": "At the start of each combat, gain 5 Block and apply 1 Paperwork to all enemies.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 5
+      },
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "paperwork",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "mortuary_apprentice",
+      "mourning",
+      "block",
+      "paperwork"
+    ],
+    "allowed_classes": [
+      "mortuary_apprentice"
+    ]
+  },
+  {
+    "id": "death_certificate_pad",
+    "name": "Death Certificate Pad",
+    "description": "At the start of each combat, add a Death Certificate to your hand.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "death_certificate",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "mortuary_apprentice",
+      "certificate",
+      "paperwork",
+      "zero_cost"
+    ],
+    "allowed_classes": [
+      "mortuary_apprentice"
+    ]
+  },
+  {
+    "id": "quiet_hearse_key",
+    "name": "Quiet Hearse Key",
+    "description": "At the start of each combat, gain 1 Energy and add an Unfinished Obituary to your discard pile.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "gain_energy_at_combat_start",
+        "amount": 1
+      },
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "unfinished_obituary",
+        "destination": "discard_pile",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "mortuary_apprentice",
+      "spirit",
+      "energy",
+      "obituary",
+      "junk",
+      "risk_reward"
+    ],
+    "allowed_classes": [
+      "mortuary_apprentice"
+    ]
+  },
+  {
+    "id": "embalming_linen",
+    "name": "Embalming Linen",
+    "description": "At the start of each combat, gain 8 Block.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 8
+      }
+    ],
+    "tags": [
+      "mortuary_apprentice",
+      "embalming",
+      "grave_calm",
+      "block"
+    ],
+    "allowed_classes": [
+      "mortuary_apprentice"
+    ]
+  },
+  {
+    "id": "ledger_of_the_recently_late",
+    "name": "Ledger of the Recently Late",
+    "description": "At the start of each combat, apply 1 Paperwork to all enemies and add a Death Certificate to your draw pile.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "paperwork",
+        "amount": 1
+      },
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "death_certificate",
+        "destination": "draw_pile",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "mortuary_apprentice",
+      "certificate",
+      "paperwork",
+      "ledger"
+    ],
+    "allowed_classes": [
+      "mortuary_apprentice"
+    ]
+  },
+  {
+    "id": "silver_funeral_bell",
+    "name": "Silver Funeral Bell",
+    "description": "At the start of each combat, add a Small Bell Echo to your hand.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "small_bell_echo",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "mortuary_apprentice",
+      "bell",
+      "paperwork",
+      "payoff",
+      "zero_cost"
+    ],
+    "allowed_classes": [
+      "mortuary_apprentice"
+    ]
+  },
+  {
+    "id": "borrowed_spirit_lantern",
+    "name": "Borrowed Spirit Lantern",
+    "description": "At the start of each combat, gain 1 Energy and add an Unfinished Obituary to your discard pile.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "gain_energy_at_combat_start",
+        "amount": 1
+      },
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "unfinished_obituary",
+        "destination": "discard_pile",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "mortuary_apprentice",
+      "spirit",
+      "energy",
+      "doubt"
+    ],
+    "allowed_classes": [
+      "mortuary_apprentice"
+    ]
+  },
+  {
+    "id": "coffin_nail_collection",
+    "name": "Coffin Nail Collection",
+    "description": "At the start of each combat, gain 1 Strength and add a Bone Splinter to your hand.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "gain_strength_at_combat_start",
+        "amount": 1
+      },
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "bone_splinter",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "mortuary_apprentice",
+      "bone",
+      "strength",
+      "attack",
+      "zero_cost"
+    ],
+    "allowed_classes": [
+      "mortuary_apprentice"
+    ]
+  }
+]

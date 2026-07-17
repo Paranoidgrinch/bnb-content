@@ -1,0 +1,20 @@
+{
+  "id": "sewer_diplomat",
+  "name": "Sewer Diplomat",
+  "max_hp": 68,
+  "starting_energy": 3,
+  "starting_relic": null,
+  "starting_deck": [
+    "nibbled_clause",
+    "nibbled_clause",
+    "nibbled_clause",
+    "nibbled_clause",
+    "underfloor_scurry",
+    "underfloor_scurry",
+    "underfloor_scurry",
+    "underfloor_scurry",
+    "call_the_cousins",
+    "cheese_based_treaty"
+  ],
+  "starting_resources": {}
+}

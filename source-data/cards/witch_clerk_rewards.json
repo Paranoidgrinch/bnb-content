@@ -1,0 +1,1200 @@
+[
+  {
+    "id": "hexed_stamp",
+    "name": "Hexed Stamp",
+    "class": "witch_clerk",
+    "type": "spell",
+    "cost": 0,
+    "rarity": "starter",
+    "text": "Apply 1 Paperwork. Exhaust.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "generated",
+      "stamp",
+      "paperwork",
+      "hex",
+      "zero_cost",
+      "exhaust"
+    ]
+  },
+  {
+    "id": "tea_charm",
+    "name": "Tea Charm",
+    "class": "witch_clerk",
+    "type": "form",
+    "cost": 0,
+    "rarity": "starter",
+    "text": "Gain 3 Block. Exhaust.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "generated",
+      "tea",
+      "charm",
+      "block",
+      "zero_cost",
+      "exhaust"
+    ]
+  },
+  {
+    "id": "ink_splatter",
+    "name": "Ink Splatter",
+    "class": "witch_clerk",
+    "type": "spell",
+    "cost": 0,
+    "rarity": "starter",
+    "text": "Apply 1 Doubt. Exhaust.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "generated",
+      "ink",
+      "doubt",
+      "zero_cost",
+      "exhaust"
+    ]
+  },
+  {
+    "id": "office_familiar",
+    "name": "Office Familiar",
+    "class": "witch_clerk",
+    "type": "spell",
+    "cost": 0,
+    "rarity": "starter",
+    "text": "Deal 2 damage to all enemies. Exhaust.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "all_enemies",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "generated",
+      "familiar",
+      "attack",
+      "aoe",
+      "zero_cost",
+      "exhaust"
+    ]
+  },
+  {
+    "id": "misfiled_hex",
+    "name": "Misfiled Hex",
+    "class": "witch_clerk",
+    "type": "curse",
+    "cost": 0,
+    "rarity": "starter",
+    "text": "Unplayable.",
+    "effects": [],
+    "tags": [
+      "generated",
+      "hex",
+      "junk",
+      "unplayable"
+    ]
+  },
+  {
+    "id": "archive_breeze",
+    "name": "Archive Breeze",
+    "class": "witch_clerk",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Gain 4 Block. Apply 2 Paperwork.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 4
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "paperwork",
+      "archive",
+      "block",
+      "minor_magic"
+    ],
+    "upgrades_to": "archive_breeze_plus"
+  },
+  {
+    "id": "archive_breeze_plus",
+    "name": "Archive Breeze+",
+    "class": "witch_clerk",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Gain 6 Block. Apply 3 Paperwork.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 6
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "paperwork",
+      "archive",
+      "block",
+      "minor_magic",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "cauldron_stamp",
+    "name": "Cauldron Stamp",
+    "class": "witch_clerk",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 4 Paperwork.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 4
+      }
+    ],
+    "tags": [
+      "paperwork",
+      "stamp",
+      "cauldron",
+      "setup"
+    ],
+    "upgrades_to": "cauldron_stamp_plus"
+  },
+  {
+    "id": "cauldron_stamp_plus",
+    "name": "Cauldron Stamp+",
+    "class": "witch_clerk",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 6 Paperwork.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 6
+      }
+    ],
+    "tags": [
+      "paperwork",
+      "stamp",
+      "cauldron",
+      "setup",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "hexed_post_it",
+    "name": "Hexed Post-it",
+    "class": "witch_clerk",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Apply 2 Doubt. Gain 3 Block.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 2
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "hex",
+      "doubt",
+      "block",
+      "paperwork"
+    ],
+    "upgrades_to": "hexed_post_it_plus"
+  },
+  {
+    "id": "hexed_post_it_plus",
+    "name": "Hexed Post-it+",
+    "class": "witch_clerk",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Apply 3 Doubt. Gain 5 Block.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 3
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 5
+      }
+    ],
+    "tags": [
+      "hex",
+      "doubt",
+      "block",
+      "paperwork",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "broom_audit",
+    "name": "Broom Audit",
+    "class": "witch_clerk",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "uncommon",
+    "text": "Deal 3 damage per Paperwork on the target.",
+    "effects": [
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount_per_stack": 3
+      }
+    ],
+    "tags": [
+      "attack",
+      "paperwork",
+      "payoff",
+      "broom",
+      "audit"
+    ],
+    "upgrades_to": "broom_audit_plus"
+  },
+  {
+    "id": "broom_audit_plus",
+    "name": "Broom Audit+",
+    "class": "witch_clerk",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "uncommon",
+    "text": "Deal 4 damage per Paperwork on the target.",
+    "effects": [
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount_per_stack": 4
+      }
+    ],
+    "tags": [
+      "attack",
+      "paperwork",
+      "payoff",
+      "broom",
+      "audit",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "official_hex_notice",
+    "name": "Official Hex Notice",
+    "class": "witch_clerk",
+    "type": "argument",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Apply 4 Paperwork and 3 Doubt.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 4
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "paperwork",
+      "hex",
+      "doubt",
+      "notice",
+      "setup"
+    ],
+    "upgrades_to": "official_hex_notice_plus"
+  },
+  {
+    "id": "official_hex_notice_plus",
+    "name": "Official Hex Notice+",
+    "class": "witch_clerk",
+    "type": "argument",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Apply 6 Paperwork and 4 Doubt.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 6
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 4
+      }
+    ],
+    "tags": [
+      "paperwork",
+      "hex",
+      "doubt",
+      "notice",
+      "setup",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "signed_in_moonlight",
+    "name": "Signed in Moonlight",
+    "class": "witch_clerk",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 2 Paperwork. Add a Hexed Stamp to your hand.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 2
+      },
+      {
+        "type": "create_card",
+        "card_id": "hexed_stamp",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "paperwork",
+      "form",
+      "stamp",
+      "zero_cost"
+    ],
+    "upgrades_to": "signed_in_moonlight_plus"
+  },
+  {
+    "id": "signed_in_moonlight_plus",
+    "name": "Signed in Moonlight+",
+    "class": "witch_clerk",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 3 Paperwork. Add a Hexed Stamp to your hand.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 3
+      },
+      {
+        "type": "create_card",
+        "card_id": "hexed_stamp",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "paperwork",
+      "form",
+      "stamp",
+      "zero_cost",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "moth_eaten_file",
+    "name": "Moth-Eaten File",
+    "class": "witch_clerk",
+    "type": "form",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Draw 1. Gain 5 Block.",
+    "effects": [
+      {
+        "type": "draw_cards",
+        "amount": 1
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 5
+      }
+    ],
+    "tags": [
+      "archive",
+      "form",
+      "draw",
+      "block"
+    ],
+    "upgrades_to": "moth_eaten_file_plus"
+  },
+  {
+    "id": "moth_eaten_file_plus",
+    "name": "Moth-Eaten File+",
+    "class": "witch_clerk",
+    "type": "form",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Draw 1. Gain 8 Block.",
+    "effects": [
+      {
+        "type": "draw_cards",
+        "amount": 1
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 8
+      }
+    ],
+    "tags": [
+      "archive",
+      "form",
+      "draw",
+      "block",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "index_of_omens",
+    "name": "Index of Omens",
+    "class": "witch_clerk",
+    "type": "form",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Draw 2. Add an Ink Splatter to your hand.",
+    "effects": [
+      {
+        "type": "draw_cards",
+        "amount": 2
+      },
+      {
+        "type": "create_card",
+        "card_id": "ink_splatter",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "archive",
+      "omen",
+      "draw",
+      "ink",
+      "zero_cost"
+    ],
+    "upgrades_to": "index_of_omens_plus"
+  },
+  {
+    "id": "index_of_omens_plus",
+    "name": "Index of Omens+",
+    "class": "witch_clerk",
+    "type": "form",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Draw 3. Add an Ink Splatter to your hand.",
+    "effects": [
+      {
+        "type": "draw_cards",
+        "amount": 3
+      },
+      {
+        "type": "create_card",
+        "card_id": "ink_splatter",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "archive",
+      "omen",
+      "draw",
+      "ink",
+      "zero_cost",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "cross_referenced_curse",
+    "name": "Cross-Referenced Curse",
+    "class": "witch_clerk",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Apply 2 Paperwork to all enemies.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "all_enemies",
+        "status": "paperwork",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "archive",
+      "curse",
+      "paperwork",
+      "aoe"
+    ],
+    "upgrades_to": "cross_referenced_curse_plus"
+  },
+  {
+    "id": "cross_referenced_curse_plus",
+    "name": "Cross-Referenced Curse+",
+    "class": "witch_clerk",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Apply 3 Paperwork to all enemies.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "all_enemies",
+        "status": "paperwork",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "archive",
+      "curse",
+      "paperwork",
+      "aoe",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "emergency_ward",
+    "name": "Emergency Ward",
+    "class": "witch_clerk",
+    "type": "form",
+    "cost": 2,
+    "rarity": "common",
+    "text": "Gain 10 Block.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 10
+      }
+    ],
+    "tags": [
+      "ward",
+      "charm",
+      "block"
+    ],
+    "upgrades_to": "emergency_ward_plus"
+  },
+  {
+    "id": "emergency_ward_plus",
+    "name": "Emergency Ward+",
+    "class": "witch_clerk",
+    "type": "form",
+    "cost": 2,
+    "rarity": "common",
+    "text": "Gain 15 Block.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 15
+      }
+    ],
+    "tags": [
+      "ward",
+      "charm",
+      "block",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "certified_tea_break",
+    "name": "Certified Tea Break",
+    "class": "witch_clerk",
+    "type": "form",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Gain 6 Block. Add a Tea Charm to your hand.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 6
+      },
+      {
+        "type": "create_card",
+        "card_id": "tea_charm",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "tea",
+      "charm",
+      "block",
+      "zero_cost"
+    ],
+    "upgrades_to": "certified_tea_break_plus"
+  },
+  {
+    "id": "certified_tea_break_plus",
+    "name": "Certified Tea Break+",
+    "class": "witch_clerk",
+    "type": "form",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Gain 9 Block. Add a Tea Charm to your hand.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 9
+      },
+      {
+        "type": "create_card",
+        "card_id": "tea_charm",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "tea",
+      "charm",
+      "block",
+      "zero_cost",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "polite_little_hex",
+    "name": "Polite Little Hex",
+    "class": "witch_clerk",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 2 Doubt. Apply 1 Paperwork.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 2
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "hex",
+      "doubt",
+      "paperwork",
+      "charm"
+    ],
+    "upgrades_to": "polite_little_hex_plus"
+  },
+  {
+    "id": "polite_little_hex_plus",
+    "name": "Polite Little Hex+",
+    "class": "witch_clerk",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 3 Doubt. Apply 2 Paperwork.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 3
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "hex",
+      "doubt",
+      "paperwork",
+      "charm",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "three_sugars_and_a_curse",
+    "name": "Three Sugars and a Curse",
+    "class": "witch_clerk",
+    "type": "spell",
+    "cost": 0,
+    "rarity": "rare",
+    "text": "Apply 2 Doubt. Exhaust.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "tea",
+      "curse",
+      "doubt",
+      "zero_cost",
+      "exhaust"
+    ],
+    "upgrades_to": "three_sugars_and_a_curse_plus"
+  },
+  {
+    "id": "three_sugars_and_a_curse_plus",
+    "name": "Three Sugars and a Curse+",
+    "class": "witch_clerk",
+    "type": "spell",
+    "cost": 0,
+    "rarity": "rare",
+    "text": "Apply 3 Doubt. Exhaust.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "tea",
+      "curse",
+      "doubt",
+      "zero_cost",
+      "exhaust",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "inkpad_hex",
+    "name": "Inkpad Hex",
+    "class": "witch_clerk",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 2 Paperwork. Apply 1 Doubt.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 2
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "ink",
+      "stamp",
+      "paperwork",
+      "doubt"
+    ],
+    "upgrades_to": "inkpad_hex_plus"
+  },
+  {
+    "id": "inkpad_hex_plus",
+    "name": "Inkpad Hex+",
+    "class": "witch_clerk",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 3 Paperwork. Apply 2 Doubt.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 3
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "ink",
+      "stamp",
+      "paperwork",
+      "doubt",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "stamp_twice",
+    "name": "Stamp Twice",
+    "class": "witch_clerk",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Add 2 Hexed Stamps to your hand.",
+    "effects": [
+      {
+        "type": "create_card",
+        "card_id": "hexed_stamp",
+        "destination": "hand",
+        "copies": 2
+      }
+    ],
+    "tags": [
+      "stamp",
+      "paperwork",
+      "zero_cost"
+    ],
+    "upgrades_to": "stamp_twice_plus"
+  },
+  {
+    "id": "stamp_twice_plus",
+    "name": "Stamp Twice+",
+    "class": "witch_clerk",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Add 3 Hexed Stamps to your hand.",
+    "effects": [
+      {
+        "type": "create_card",
+        "card_id": "hexed_stamp",
+        "destination": "hand",
+        "copies": 3
+      }
+    ],
+    "tags": [
+      "stamp",
+      "paperwork",
+      "zero_cost",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "forbidden_carbon_copy",
+    "name": "Forbidden Carbon Copy",
+    "class": "witch_clerk",
+    "type": "argument",
+    "cost": 0,
+    "rarity": "rare",
+    "text": "Gain 1 Energy. Add a Misfiled Hex to your discard pile. Exhaust.",
+    "effects": [
+      {
+        "type": "gain_resource",
+        "resource": "energy",
+        "amount": 1
+      },
+      {
+        "type": "create_card",
+        "card_id": "misfiled_hex",
+        "destination": "discard_pile",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "ink",
+      "form",
+      "energy",
+      "junk",
+      "zero_cost",
+      "exhaust"
+    ],
+    "upgrades_to": "forbidden_carbon_copy_plus"
+  },
+  {
+    "id": "forbidden_carbon_copy_plus",
+    "name": "Forbidden Carbon Copy+",
+    "class": "witch_clerk",
+    "type": "argument",
+    "cost": 0,
+    "rarity": "rare",
+    "text": "Gain 1 Energy. Draw 1. Add a Misfiled Hex to your discard pile. Exhaust.",
+    "effects": [
+      {
+        "type": "gain_resource",
+        "resource": "energy",
+        "amount": 1
+      },
+      {
+        "type": "draw_cards",
+        "amount": 1
+      },
+      {
+        "type": "create_card",
+        "card_id": "misfiled_hex",
+        "destination": "discard_pile",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "ink",
+      "form",
+      "energy",
+      "draw",
+      "junk",
+      "zero_cost",
+      "exhaust",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "familiar_errand",
+    "name": "Familiar Errand",
+    "class": "witch_clerk",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Deal 4 damage to all enemies.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "all_enemies",
+        "amount": 4
+      }
+    ],
+    "tags": [
+      "familiar",
+      "attack",
+      "aoe"
+    ],
+    "upgrades_to": "familiar_errand_plus"
+  },
+  {
+    "id": "familiar_errand_plus",
+    "name": "Familiar Errand+",
+    "class": "witch_clerk",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Deal 6 damage to all enemies.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "all_enemies",
+        "amount": 6
+      }
+    ],
+    "tags": [
+      "familiar",
+      "attack",
+      "aoe",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "summon_filing_imp",
+    "name": "Summon Filing Imp",
+    "class": "witch_clerk",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Add 2 Office Familiars to your hand.",
+    "effects": [
+      {
+        "type": "create_card",
+        "card_id": "office_familiar",
+        "destination": "hand",
+        "copies": 2
+      }
+    ],
+    "tags": [
+      "familiar",
+      "attack",
+      "aoe",
+      "zero_cost"
+    ],
+    "upgrades_to": "summon_filing_imp_plus"
+  },
+  {
+    "id": "summon_filing_imp_plus",
+    "name": "Summon Filing Imp+",
+    "class": "witch_clerk",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Add 3 Office Familiars to your hand.",
+    "effects": [
+      {
+        "type": "create_card",
+        "card_id": "office_familiar",
+        "destination": "hand",
+        "copies": 3
+      }
+    ],
+    "tags": [
+      "familiar",
+      "attack",
+      "aoe",
+      "zero_cost",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "broom_delivery",
+    "name": "Broom Delivery",
+    "class": "witch_clerk",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Deal 5 damage. Draw 1.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 5
+      },
+      {
+        "type": "draw_cards",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "broom",
+      "familiar",
+      "attack",
+      "draw"
+    ],
+    "upgrades_to": "broom_delivery_plus"
+  },
+  {
+    "id": "broom_delivery_plus",
+    "name": "Broom Delivery+",
+    "class": "witch_clerk",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Deal 8 damage. Draw 1.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 8
+      },
+      {
+        "type": "draw_cards",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "broom",
+      "familiar",
+      "attack",
+      "draw",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "desk_drawer_familiar",
+    "name": "Desk-Drawer Familiar",
+    "class": "witch_clerk",
+    "type": "form",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Draw 2. Add a Tea Charm to your hand.",
+    "effects": [
+      {
+        "type": "draw_cards",
+        "amount": 2
+      },
+      {
+        "type": "create_card",
+        "card_id": "tea_charm",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "familiar",
+      "draw",
+      "tea",
+      "charm",
+      "zero_cost"
+    ],
+    "upgrades_to": "desk_drawer_familiar_plus"
+  },
+  {
+    "id": "desk_drawer_familiar_plus",
+    "name": "Desk-Drawer Familiar+",
+    "class": "witch_clerk",
+    "type": "form",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Draw 3. Add a Tea Charm to your hand.",
+    "effects": [
+      {
+        "type": "draw_cards",
+        "amount": 3
+      },
+      {
+        "type": "create_card",
+        "card_id": "tea_charm",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "familiar",
+      "draw",
+      "tea",
+      "charm",
+      "zero_cost",
+      "upgraded"
+    ]
+  }
+]

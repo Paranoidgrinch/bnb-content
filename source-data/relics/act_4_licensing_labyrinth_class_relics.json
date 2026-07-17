@@ -1,0 +1,1745 @@
+[
+  {
+    "id": "act4_bureaucrat_red_docket_thread",
+    "name": "Red Docket Thread",
+    "description": "At the start of each combat, apply 3 Paperwork to all enemies and gain 8 Block.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "paperwork",
+        "amount": 3
+      },
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 8
+      }
+    ],
+    "tags": [
+      "act_4",
+      "licensing_labyrinth",
+      "pyramid",
+      "class_specific",
+      "bureaucrat",
+      "paperwork",
+      "block",
+      "red_thread",
+      "labyrinth"
+    ],
+    "allowed_classes": [
+      "bureaucrat"
+    ]
+  },
+  {
+    "id": "act4_bureaucrat_memory_palace_ledger",
+    "name": "Memory Palace Ledger",
+    "description": "At the start of each combat, add a Burial License Appeal to your hand and apply 2 Paperwork to all enemies.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "burial_license_appeal",
+        "destination": "hand",
+        "copies": 1
+      },
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "paperwork",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "act_4",
+      "licensing_labyrinth",
+      "pyramid",
+      "class_specific",
+      "bureaucrat",
+      "paperwork",
+      "memory",
+      "card_creation",
+      "labyrinth"
+    ],
+    "allowed_classes": [
+      "bureaucrat"
+    ]
+  },
+  {
+    "id": "act4_bureaucrat_sun_lamp_of_authority",
+    "name": "Sun Lamp of Authority",
+    "description": "At the start of each combat, apply 2 Paperwork and 2 Doubt to all enemies.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "paperwork",
+        "amount": 2
+      },
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "doubt",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "act_4",
+      "licensing_labyrinth",
+      "pyramid",
+      "class_specific",
+      "bureaucrat",
+      "paperwork",
+      "doubt",
+      "light",
+      "sun"
+    ],
+    "allowed_classes": [
+      "bureaucrat"
+    ]
+  },
+  {
+    "id": "act4_bureaucrat_sealed_water_flask",
+    "name": "Sealed Water Flask",
+    "description": "At the start of each combat, gain 1 Energy and 6 Block.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "gain_energy_at_combat_start",
+        "amount": 1
+      },
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 6
+      }
+    ],
+    "tags": [
+      "act_4",
+      "licensing_labyrinth",
+      "pyramid",
+      "class_specific",
+      "bureaucrat",
+      "energy",
+      "block",
+      "water",
+      "survival"
+    ],
+    "allowed_classes": [
+      "bureaucrat"
+    ]
+  },
+  {
+    "id": "act4_bureaucrat_cartouche_seal_case",
+    "name": "Cartouche Seal Case",
+    "description": "At the start of each combat, add a Cartouche of Authority to your hand.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "cartouche_of_authority",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "licensing_labyrinth",
+      "pyramid",
+      "class_specific",
+      "bureaucrat",
+      "cartouche",
+      "block",
+      "paperwork",
+      "card_creation"
+    ],
+    "allowed_classes": [
+      "bureaucrat"
+    ]
+  },
+  {
+    "id": "act4_bureaucrat_threaded_reward_map",
+    "name": "Threaded Reward Map",
+    "description": "Card rewards contain 1 additional card. At the start of each combat, apply 1 Paperwork to all enemies.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "increase_card_reward_count",
+        "amount": 1
+      },
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "paperwork",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "licensing_labyrinth",
+      "pyramid",
+      "class_specific",
+      "bureaucrat",
+      "reward",
+      "paperwork",
+      "red_thread",
+      "labyrinth"
+    ],
+    "allowed_classes": [
+      "bureaucrat"
+    ]
+  },
+  {
+    "id": "act4_witch_clerk_moonlit_thread_charm",
+    "name": "Moonlit Thread Charm",
+    "description": "At the start of each combat, apply 2 Doubt and 1 Paperwork to all enemies.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "doubt",
+        "amount": 2
+      },
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "paperwork",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "licensing_labyrinth",
+      "pyramid",
+      "labyrinth",
+      "class_specific",
+      "witch_clerk",
+      "doubt",
+      "paperwork",
+      "red_thread",
+      "charm"
+    ],
+    "allowed_classes": [
+      "witch_clerk"
+    ]
+  },
+  {
+    "id": "act4_witch_clerk_canopic_tea_lantern",
+    "name": "Canopic Tea Lantern",
+    "description": "At the start of each combat, gain 1 Energy and add a Tea Charm to your hand.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "gain_energy_at_combat_start",
+        "amount": 1
+      },
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "tea_charm",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "licensing_labyrinth",
+      "pyramid",
+      "class_specific",
+      "witch_clerk",
+      "tea",
+      "light",
+      "energy",
+      "charm"
+    ],
+    "allowed_classes": [
+      "witch_clerk"
+    ]
+  },
+  {
+    "id": "act4_witch_clerk_sandstone_hex_stamp",
+    "name": "Sandstone Hex Stamp",
+    "description": "At the start of each combat, add a Hexed Stamp to your hand and apply 2 Doubt to all enemies.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "hexed_stamp",
+        "destination": "hand",
+        "copies": 1
+      },
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "doubt",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "act_4",
+      "licensing_labyrinth",
+      "pyramid",
+      "class_specific",
+      "witch_clerk",
+      "hex",
+      "stamp",
+      "doubt",
+      "card_creation"
+    ],
+    "allowed_classes": [
+      "witch_clerk"
+    ]
+  },
+  {
+    "id": "act4_witch_clerk_burial_mouse_permit",
+    "name": "Burial Mouse Permit",
+    "description": "At the start of each combat, add an Office Familiar to your hand and gain 8 Block.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "office_familiar",
+        "destination": "hand",
+        "copies": 1
+      },
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 8
+      }
+    ],
+    "tags": [
+      "act_4",
+      "licensing_labyrinth",
+      "pyramid",
+      "class_specific",
+      "witch_clerk",
+      "familiar",
+      "block",
+      "permit",
+      "burial"
+    ],
+    "allowed_classes": [
+      "witch_clerk"
+    ]
+  },
+  {
+    "id": "act4_witch_clerk_memory_kettle",
+    "name": "Memory Kettle",
+    "description": "At the start of each combat, add a Canopic Tea Ward to your hand.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "canopic_tea_ward",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "licensing_labyrinth",
+      "pyramid",
+      "labyrinth",
+      "class_specific",
+      "witch_clerk",
+      "memory",
+      "tea",
+      "card_creation"
+    ],
+    "allowed_classes": [
+      "witch_clerk"
+    ]
+  },
+  {
+    "id": "act4_witch_clerk_blessed_water_inkpot",
+    "name": "Blessed Water Inkpot",
+    "description": "At the start of each combat, gain 1 Energy and add an Ink Splatter to your hand.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "gain_energy_at_combat_start",
+        "amount": 1
+      },
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "ink_splatter",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "licensing_labyrinth",
+      "pyramid",
+      "class_specific",
+      "witch_clerk",
+      "water",
+      "ink",
+      "energy",
+      "doubt"
+    ],
+    "allowed_classes": [
+      "witch_clerk"
+    ]
+  },
+  {
+    "id": "act4_night_watch_recruit_lantern_of_the_inner_stair",
+    "name": "Lantern of the Inner Stair",
+    "description": "At the start of each combat, apply 3 Doubt to all enemies and gain 6 Block.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "doubt",
+        "amount": 3
+      },
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 6
+      }
+    ],
+    "tags": [
+      "act_4",
+      "licensing_labyrinth",
+      "pyramid",
+      "class_specific",
+      "night_watch_recruit",
+      "light",
+      "lantern",
+      "doubt",
+      "block"
+    ],
+    "allowed_classes": [
+      "night_watch_recruit"
+    ]
+  },
+  {
+    "id": "act4_night_watch_recruit_approved_patrol_rope",
+    "name": "Approved Patrol Rope",
+    "description": "At the start of each combat, add a Watch Whistle and a Backup Constable to your hand.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "watch_whistle",
+        "destination": "hand",
+        "copies": 1
+      },
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "backup_constable",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "licensing_labyrinth",
+      "pyramid",
+      "labyrinth",
+      "class_specific",
+      "night_watch_recruit",
+      "backup",
+      "red_thread",
+      "patrol"
+    ],
+    "allowed_classes": [
+      "night_watch_recruit"
+    ]
+  },
+  {
+    "id": "act4_night_watch_recruit_watchmans_water_skin",
+    "name": "Watchman's Water Skin",
+    "description": "At the start of each combat, gain 1 Energy and 10 Block.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "gain_energy_at_combat_start",
+        "amount": 1
+      },
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 10
+      }
+    ],
+    "tags": [
+      "act_4",
+      "licensing_labyrinth",
+      "pyramid",
+      "class_specific",
+      "night_watch_recruit",
+      "water",
+      "energy",
+      "block",
+      "survival"
+    ],
+    "allowed_classes": [
+      "night_watch_recruit"
+    ]
+  },
+  {
+    "id": "act4_night_watch_recruit_granite_truncheon",
+    "name": "Granite Truncheon",
+    "description": "At the start of each combat, gain 1 Strength and add a Loose Cobblestone to your hand.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "gain_strength_at_combat_start",
+        "amount": 1
+      },
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "loose_cobblestone",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "licensing_labyrinth",
+      "pyramid",
+      "class_specific",
+      "night_watch_recruit",
+      "strength",
+      "cudgel",
+      "stone",
+      "attack"
+    ],
+    "allowed_classes": [
+      "night_watch_recruit"
+    ]
+  },
+  {
+    "id": "act4_night_watch_recruit_tomb_incident_log",
+    "name": "Tomb Incident Log",
+    "description": "At the start of each combat, add a Sealed Stair Patrol and an Incident Report to your hand.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "sealed_stair_patrol",
+        "destination": "hand",
+        "copies": 1
+      },
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "incident_report",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "licensing_labyrinth",
+      "pyramid",
+      "class_specific",
+      "night_watch_recruit",
+      "patrol",
+      "draw",
+      "block",
+      "card_creation"
+    ],
+    "allowed_classes": [
+      "night_watch_recruit"
+    ]
+  },
+  {
+    "id": "act4_night_watch_recruit_colossus_boots",
+    "name": "Colossus Boots",
+    "description": "At the start of each combat, gain 1 Strength and 12 Block.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "gain_strength_at_combat_start",
+        "amount": 1
+      },
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 12
+      }
+    ],
+    "tags": [
+      "act_4",
+      "licensing_labyrinth",
+      "pyramid",
+      "class_specific",
+      "night_watch_recruit",
+      "strength",
+      "block",
+      "boots",
+      "labyrinth"
+    ],
+    "allowed_classes": [
+      "night_watch_recruit"
+    ]
+  },
+  {
+    "id": "act4_hedge_witch_red_root_thread",
+    "name": "Red Root Thread",
+    "description": "At the start of each combat, apply 2 Poison and 1 Doubt to all enemies.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "poison",
+        "amount": 2
+      },
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "doubt",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "licensing_labyrinth",
+      "pyramid",
+      "labyrinth",
+      "class_specific",
+      "hedge_witch",
+      "red_thread",
+      "poison",
+      "doubt",
+      "root"
+    ],
+    "allowed_classes": [
+      "hedge_witch"
+    ]
+  },
+  {
+    "id": "act4_hedge_witch_desert_poultice_satchel",
+    "name": "Desert Poultice Satchel",
+    "description": "At the start of each combat, add a Warm Poultice and a Bitter Draught to your hand.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "warm_poultice",
+        "destination": "hand",
+        "copies": 1
+      },
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "bitter_draught",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "licensing_labyrinth",
+      "pyramid",
+      "class_specific",
+      "hedge_witch",
+      "poultice",
+      "brew",
+      "water",
+      "survival"
+    ],
+    "allowed_classes": [
+      "hedge_witch"
+    ]
+  },
+  {
+    "id": "act4_hedge_witch_canopic_crow_perch",
+    "name": "Canopic Crow Perch",
+    "description": "At the start of each combat, add a Crow Feather to your hand and gain 1 Energy.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "crow_feather",
+        "destination": "hand",
+        "copies": 1
+      },
+      {
+        "type": "gain_energy_at_combat_start",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "licensing_labyrinth",
+      "pyramid",
+      "class_specific",
+      "hedge_witch",
+      "familiar",
+      "crow",
+      "energy",
+      "canopic"
+    ],
+    "allowed_classes": [
+      "hedge_witch"
+    ]
+  },
+  {
+    "id": "act4_hedge_witch_memory_herb_tablet",
+    "name": "Memory Herb Tablet",
+    "description": "At the start of each combat, add a Canopic Knot Charm to your hand.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "canopic_knot_charm",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "licensing_labyrinth",
+      "pyramid",
+      "labyrinth",
+      "class_specific",
+      "hedge_witch",
+      "memory",
+      "knot",
+      "charm",
+      "card_creation"
+    ],
+    "allowed_classes": [
+      "hedge_witch"
+    ]
+  },
+  {
+    "id": "act4_hedge_witch_moon_water_gourd",
+    "name": "Moon-Water Gourd",
+    "description": "At the start of each combat, gain 1 Energy and 8 Block.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "gain_energy_at_combat_start",
+        "amount": 1
+      },
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 8
+      }
+    ],
+    "tags": [
+      "act_4",
+      "licensing_labyrinth",
+      "pyramid",
+      "class_specific",
+      "hedge_witch",
+      "water",
+      "energy",
+      "block",
+      "survival"
+    ],
+    "allowed_classes": [
+      "hedge_witch"
+    ]
+  },
+  {
+    "id": "act4_hedge_witch_scorpion_brew_lamp",
+    "name": "Scorpion Brew Lamp",
+    "description": "At the start of each combat, add a Scorpion Jar Brew to your hand and apply 1 Poison to all enemies.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "scorpion_jar_brew",
+        "destination": "hand",
+        "copies": 1
+      },
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "poison",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "licensing_labyrinth",
+      "pyramid",
+      "class_specific",
+      "hedge_witch",
+      "light",
+      "brew",
+      "poison",
+      "scorpion"
+    ],
+    "allowed_classes": [
+      "hedge_witch"
+    ]
+  },
+  {
+    "id": "act4_guild_assassin_silk_labyrinth_thread",
+    "name": "Silk Labyrinth Thread",
+    "description": "At the start of each combat, apply 2 Doubt and 1 Poison to all enemies.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "doubt",
+        "amount": 2
+      },
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "poison",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "licensing_labyrinth",
+      "pyramid",
+      "labyrinth",
+      "class_specific",
+      "guild_assassin_apprentice",
+      "red_thread",
+      "doubt",
+      "poison",
+      "contract"
+    ],
+    "allowed_classes": [
+      "guild_assassin_apprentice"
+    ]
+  },
+  {
+    "id": "act4_guild_assassin_death_mask_alibi_case",
+    "name": "Death Mask Alibi Case",
+    "description": "At the start of each combat, add a Death Mask Alibi and a False Alibi to your hand.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "death_mask_alibi",
+        "destination": "hand",
+        "copies": 1
+      },
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "false_alibi",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "licensing_labyrinth",
+      "pyramid",
+      "class_specific",
+      "guild_assassin_apprentice",
+      "alibi",
+      "death_mask",
+      "block",
+      "card_creation"
+    ],
+    "allowed_classes": [
+      "guild_assassin_apprentice"
+    ]
+  },
+  {
+    "id": "act4_guild_assassin_black_water_vial",
+    "name": "Black Water Vial",
+    "description": "At the start of each combat, gain 1 Energy and apply 2 Poison to all enemies.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "gain_energy_at_combat_start",
+        "amount": 1
+      },
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "poison",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "act_4",
+      "licensing_labyrinth",
+      "pyramid",
+      "class_specific",
+      "guild_assassin_apprentice",
+      "water",
+      "poison",
+      "energy",
+      "vial"
+    ],
+    "allowed_classes": [
+      "guild_assassin_apprentice"
+    ]
+  },
+  {
+    "id": "act4_guild_assassin_cartouche_contract_case",
+    "name": "Cartouche Contract Case",
+    "description": "At the start of each combat, add a Cartouche Contract and a Calling Card to your hand.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "cartouche_contract",
+        "destination": "hand",
+        "copies": 1
+      },
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "calling_card",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "licensing_labyrinth",
+      "pyramid",
+      "class_specific",
+      "guild_assassin_apprentice",
+      "cartouche",
+      "contract",
+      "doubt",
+      "card_creation"
+    ],
+    "allowed_classes": [
+      "guild_assassin_apprentice"
+    ]
+  },
+  {
+    "id": "act4_guild_assassin_silent_entry_memory_map",
+    "name": "Silent Entry Memory Map",
+    "description": "At the start of each combat, add a Silent Tomb Entry to your hand and gain 6 Block.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "silent_tomb_entry",
+        "destination": "hand",
+        "copies": 1
+      },
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 6
+      }
+    ],
+    "tags": [
+      "act_4",
+      "licensing_labyrinth",
+      "pyramid",
+      "labyrinth",
+      "class_specific",
+      "guild_assassin_apprentice",
+      "memory",
+      "map",
+      "energy",
+      "block"
+    ],
+    "allowed_classes": [
+      "guild_assassin_apprentice"
+    ]
+  },
+  {
+    "id": "act4_guild_assassin_serpent_pin_reliquary",
+    "name": "Serpent Pin Reliquary",
+    "description": "At the start of each combat, add a Poisoned Burial Pin to your hand and gain 1 Strength.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "poisoned_burial_pin",
+        "destination": "hand",
+        "copies": 1
+      },
+      {
+        "type": "gain_strength_at_combat_start",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "licensing_labyrinth",
+      "pyramid",
+      "class_specific",
+      "guild_assassin_apprentice",
+      "poison",
+      "pin",
+      "strength",
+      "reliquary"
+    ],
+    "allowed_classes": [
+      "guild_assassin_apprentice"
+    ]
+  },
+  {
+    "id": "act4_failed_wizard_sun_rune_lens",
+    "name": "Sun Rune Lens",
+    "description": "At the start of each combat, add a Borrowed Sun Rune to your hand and gain 4 Block.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "borrowed_sun_rune",
+        "destination": "hand",
+        "copies": 1
+      },
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 4
+      }
+    ],
+    "tags": [
+      "act_4",
+      "licensing_labyrinth",
+      "pyramid",
+      "class_specific",
+      "failed_wizard",
+      "sun",
+      "rune",
+      "light",
+      "misfire"
+    ],
+    "allowed_classes": [
+      "failed_wizard"
+    ]
+  },
+  {
+    "id": "act4_failed_wizard_memory_glyph_tablet",
+    "name": "Memory Glyph Tablet",
+    "description": "At the start of each combat, add a Pyramid Fragment Cascade to your hand.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "pyramid_fragment_cascade",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "licensing_labyrinth",
+      "pyramid",
+      "labyrinth",
+      "class_specific",
+      "failed_wizard",
+      "memory",
+      "spell_fragment",
+      "card_creation"
+    ],
+    "allowed_classes": [
+      "failed_wizard"
+    ]
+  },
+  {
+    "id": "act4_failed_wizard_sealed_water_thaum_flask",
+    "name": "Sealed Water Thaum Flask",
+    "description": "At the start of each combat, gain 1 Energy and add a Half-Remembered Spell to your hand.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "gain_energy_at_combat_start",
+        "amount": 1
+      },
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "half_remembered_spell",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "licensing_labyrinth",
+      "pyramid",
+      "class_specific",
+      "failed_wizard",
+      "water",
+      "energy",
+      "spell_fragment",
+      "survival"
+    ],
+    "allowed_classes": [
+      "failed_wizard"
+    ]
+  },
+  {
+    "id": "act4_failed_wizard_unstable_torch_sconce",
+    "name": "Unstable Torch Sconce",
+    "description": "At the start of each combat, gain 1 Strength and add a Smoking Rune to your discard pile.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "gain_strength_at_combat_start",
+        "amount": 1
+      },
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "smoking_rune",
+        "destination": "discard_pile",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "licensing_labyrinth",
+      "pyramid",
+      "class_specific",
+      "failed_wizard",
+      "strength",
+      "light",
+      "misfire",
+      "risk_reward"
+    ],
+    "allowed_classes": [
+      "failed_wizard"
+    ]
+  },
+  {
+    "id": "act4_failed_wizard_incorrect_hieroglyph_rubbing",
+    "name": "Incorrect Hieroglyph Rubbing",
+    "description": "At the start of each combat, add an Incorrect Hieroglyph to your hand and apply 1 Panic to yourself.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "incorrect_hieroglyph",
+        "destination": "hand",
+        "copies": 1
+      },
+      {
+        "type": "apply_status_to_player_at_combat_start",
+        "status": "panic",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "licensing_labyrinth",
+      "pyramid",
+      "class_specific",
+      "failed_wizard",
+      "hieroglyph",
+      "panic",
+      "energy",
+      "risk_reward"
+    ],
+    "allowed_classes": [
+      "failed_wizard"
+    ]
+  },
+  {
+    "id": "act4_failed_wizard_blueprint_that_misremembers",
+    "name": "Blueprint That Misremembers",
+    "description": "At the start of each combat, add an Escaped Syllable and 2 Loose Sparks to your hand.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "escaped_syllable",
+        "destination": "hand",
+        "copies": 1
+      },
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "loose_spark",
+        "destination": "hand",
+        "copies": 2
+      }
+    ],
+    "tags": [
+      "act_4",
+      "licensing_labyrinth",
+      "pyramid",
+      "labyrinth",
+      "class_specific",
+      "failed_wizard",
+      "memory",
+      "spell_fragment",
+      "unstable"
+    ],
+    "allowed_classes": [
+      "failed_wizard"
+    ]
+  },
+  {
+    "id": "act4_sewer_diplomat_red_rat_thread",
+    "name": "Red Rat Thread",
+    "description": "At the start of each combat, add a Rat Cousin to your hand and apply 1 Paperwork to all enemies.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "rat_cousin",
+        "destination": "hand",
+        "copies": 1
+      },
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "paperwork",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "licensing_labyrinth",
+      "pyramid",
+      "labyrinth",
+      "class_specific",
+      "sewer_diplomat",
+      "red_thread",
+      "rat",
+      "paperwork"
+    ],
+    "allowed_classes": [
+      "sewer_diplomat"
+    ]
+  },
+  {
+    "id": "act4_sewer_diplomat_canopic_cheese_cache",
+    "name": "Canopic Cheese Cache",
+    "description": "At the start of each combat, add a Canopic Cheese Favour and a Cheese Favor to your hand.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "canopic_cheese_favour",
+        "destination": "hand",
+        "copies": 1
+      },
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "cheese_favor",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "licensing_labyrinth",
+      "pyramid",
+      "class_specific",
+      "sewer_diplomat",
+      "cheese",
+      "canopic",
+      "bribe",
+      "block"
+    ],
+    "allowed_classes": [
+      "sewer_diplomat"
+    ]
+  },
+  {
+    "id": "act4_sewer_diplomat_hidden_drain_memory_map",
+    "name": "Hidden Drain Memory Map",
+    "description": "At the start of each combat, add a Hidden Drain under the Tomb and a Sewer Map to your hand.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "hidden_drain_under_the_tomb",
+        "destination": "hand",
+        "copies": 1
+      },
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "sewer_map",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "licensing_labyrinth",
+      "pyramid",
+      "labyrinth",
+      "class_specific",
+      "sewer_diplomat",
+      "memory",
+      "map",
+      "sewer_route"
+    ],
+    "allowed_classes": [
+      "sewer_diplomat"
+    ]
+  },
+  {
+    "id": "act4_sewer_diplomat_black_water_canteen",
+    "name": "Black Water Canteen",
+    "description": "At the start of each combat, gain 1 Energy and apply 1 Poison to all enemies.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "gain_energy_at_combat_start",
+        "amount": 1
+      },
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "poison",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "licensing_labyrinth",
+      "pyramid",
+      "class_specific",
+      "sewer_diplomat",
+      "water",
+      "energy",
+      "poison",
+      "survival"
+    ],
+    "allowed_classes": [
+      "sewer_diplomat"
+    ]
+  },
+  {
+    "id": "act4_sewer_diplomat_rat_king_cartouche",
+    "name": "Rat-King Cartouche",
+    "description": "At the start of each combat, add 2 Rat Cousins to your hand and apply 2 Paperwork to all enemies.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "rat_cousin",
+        "destination": "hand",
+        "copies": 2
+      },
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "paperwork",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "act_4",
+      "licensing_labyrinth",
+      "pyramid",
+      "class_specific",
+      "sewer_diplomat",
+      "rat",
+      "cartouche",
+      "paperwork",
+      "swarm"
+    ],
+    "allowed_classes": [
+      "sewer_diplomat"
+    ]
+  },
+  {
+    "id": "act4_sewer_diplomat_tomb_gutter_lantern",
+    "name": "Tomb Gutter Lantern",
+    "description": "At the start of each combat, gain 10 Block and apply 1 Doubt and 1 Poison to all enemies.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 10
+      },
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "doubt",
+        "amount": 1
+      },
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "poison",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "licensing_labyrinth",
+      "pyramid",
+      "class_specific",
+      "sewer_diplomat",
+      "light",
+      "block",
+      "diplomacy",
+      "filth"
+    ],
+    "allowed_classes": [
+      "sewer_diplomat"
+    ]
+  },
+  {
+    "id": "act4_mortuary_canopic_certificate_box",
+    "name": "Canopic Certificate Box",
+    "description": "At the start of each combat, add a Canopic Death Certificate and a Death Certificate to your hand.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "canopic_death_certificate",
+        "destination": "hand",
+        "copies": 1
+      },
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "death_certificate",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "licensing_labyrinth",
+      "pyramid",
+      "class_specific",
+      "mortuary_apprentice",
+      "certificate",
+      "canopic",
+      "paperwork",
+      "card_creation"
+    ],
+    "allowed_classes": [
+      "mortuary_apprentice"
+    ]
+  },
+  {
+    "id": "act4_mortuary_black_linen_thread",
+    "name": "Black Linen Thread",
+    "description": "At the start of each combat, apply 2 Paperwork to all enemies and add a Black Ribbon to your hand.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "paperwork",
+        "amount": 2
+      },
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "black_ribbon",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "licensing_labyrinth",
+      "pyramid",
+      "labyrinth",
+      "class_specific",
+      "mortuary_apprentice",
+      "red_thread",
+      "mourning",
+      "paperwork"
+    ],
+    "allowed_classes": [
+      "mortuary_apprentice"
+    ]
+  },
+  {
+    "id": "act4_mortuary_spirit_lantern_of_the_scale",
+    "name": "Spirit Lantern of the Scale",
+    "description": "At the start of each combat, gain 1 Energy and apply 2 Doubt to all enemies.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "gain_energy_at_combat_start",
+        "amount": 1
+      },
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "doubt",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "act_4",
+      "licensing_labyrinth",
+      "pyramid",
+      "class_specific",
+      "mortuary_apprentice",
+      "light",
+      "energy",
+      "doubt",
+      "scale"
+    ],
+    "allowed_classes": [
+      "mortuary_apprentice"
+    ]
+  },
+  {
+    "id": "act4_mortuary_water_for_the_named_dead",
+    "name": "Water for the Named Dead",
+    "description": "At the start of each combat, gain 12 Block and add a Small Bell Echo to your hand.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 12
+      },
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "small_bell_echo",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "licensing_labyrinth",
+      "pyramid",
+      "class_specific",
+      "mortuary_apprentice",
+      "water",
+      "block",
+      "bell",
+      "survival"
+    ],
+    "allowed_classes": [
+      "mortuary_apprentice"
+    ]
+  },
+  {
+    "id": "act4_mortuary_bone_memory_tablet",
+    "name": "Bone Memory Tablet",
+    "description": "At the start of each combat, add a Weigh the Named Remains and a Bone Splinter to your hand.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "weigh_the_named_remains",
+        "destination": "hand",
+        "copies": 1
+      },
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "bone_splinter",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "licensing_labyrinth",
+      "pyramid",
+      "labyrinth",
+      "class_specific",
+      "mortuary_apprentice",
+      "memory",
+      "bone",
+      "payoff"
+    ],
+    "allowed_classes": [
+      "mortuary_apprentice"
+    ]
+  },
+  {
+    "id": "act4_mortuary_unfinished_obelisk_record",
+    "name": "Unfinished Obelisk Record",
+    "description": "At the start of each combat, gain 1 Strength and add an Unfinished Burial Record to your hand.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "gain_strength_at_combat_start",
+        "amount": 1
+      },
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "unfinished_burial_record",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "licensing_labyrinth",
+      "pyramid",
+      "class_specific",
+      "mortuary_apprentice",
+      "strength",
+      "obituary",
+      "obelisk",
+      "risk_reward"
+    ],
+    "allowed_classes": [
+      "mortuary_apprentice"
+    ]
+  },
+  {
+    "id": "act4_shroomancer_red_mycelium_thread",
+    "name": "Red Mycelium Thread",
+    "description": "At the start of each combat, apply 2 Poison to all enemies and add a Loose Spore to your hand.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "poison",
+        "amount": 2
+      },
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "loose_spore",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "licensing_labyrinth",
+      "pyramid",
+      "labyrinth",
+      "class_specific",
+      "shroomancer",
+      "red_thread",
+      "mycelium",
+      "poison"
+    ],
+    "allowed_classes": [
+      "shroomancer"
+    ]
+  },
+  {
+    "id": "act4_shroomancer_tomb_bloom_satchel",
+    "name": "Tomb Bloom Satchel",
+    "description": "At the start of each combat, add a Tomb Bloom Spores and a Loose Spore to your hand.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "tomb_bloom_spores",
+        "destination": "hand",
+        "copies": 1
+      },
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "loose_spore",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "licensing_labyrinth",
+      "pyramid",
+      "class_specific",
+      "shroomancer",
+      "spore",
+      "poison",
+      "tomb",
+      "card_creation"
+    ],
+    "allowed_classes": [
+      "shroomancer"
+    ]
+  },
+  {
+    "id": "act4_shroomancer_cool_water_mushroom_skin",
+    "name": "Cool-Water Mushroom Skin",
+    "description": "At the start of each combat, gain 1 Energy and add a Soft Cap to your hand.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "gain_energy_at_combat_start",
+        "amount": 1
+      },
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "soft_cap",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "licensing_labyrinth",
+      "pyramid",
+      "class_specific",
+      "shroomancer",
+      "water",
+      "energy",
+      "cap",
+      "survival"
+    ],
+    "allowed_classes": [
+      "shroomancer"
+    ]
+  },
+  {
+    "id": "act4_shroomancer_luminous_mould_lantern",
+    "name": "Luminous Mould Lantern",
+    "description": "At the start of each combat, apply 1 Poison and 1 Doubt to all enemies and gain 8 Block.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "poison",
+        "amount": 1
+      },
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "doubt",
+        "amount": 1
+      },
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 8
+      }
+    ],
+    "tags": [
+      "act_4",
+      "licensing_labyrinth",
+      "pyramid",
+      "class_specific",
+      "shroomancer",
+      "light",
+      "mould",
+      "doubt",
+      "block"
+    ],
+    "allowed_classes": [
+      "shroomancer"
+    ]
+  },
+  {
+    "id": "act4_shroomancer_memory_spore_map",
+    "name": "Memory Spore Map",
+    "description": "At the start of each combat, add a Mycelium under the Pyramid and a Mycelium Thread to your hand.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "mycelium_under_the_pyramid",
+        "destination": "hand",
+        "copies": 1
+      },
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "mycelium_thread",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "licensing_labyrinth",
+      "pyramid",
+      "labyrinth",
+      "class_specific",
+      "shroomancer",
+      "memory",
+      "map",
+      "mycelium"
+    ],
+    "allowed_classes": [
+      "shroomancer"
+    ]
+  },
+  {
+    "id": "act4_shroomancer_canopic_compost_jar",
+    "name": "Canopic Compost Jar",
+    "description": "At the start of each combat, gain 1 Energy and add a Canopic Compost Conditions to your hand.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "gain_energy_at_combat_start",
+        "amount": 1
+      },
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "canopic_compost_conditions",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "licensing_labyrinth",
+      "pyramid",
+      "class_specific",
+      "shroomancer",
+      "canopic",
+      "compost",
+      "energy",
+      "risk_reward"
+    ],
+    "allowed_classes": [
+      "shroomancer"
+    ]
+  }
+]

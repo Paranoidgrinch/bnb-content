@@ -1,0 +1,614 @@
+[
+  {
+    "id": "act_4_shop",
+    "name": "The Sealed Sun Bazaar",
+    "act": 4,
+    "event_type": "risk_reward",
+    "weight": 1,
+    "text": "A narrow counter unfolds from a sealed wall. Behind it, a veiled merchant polishes relics with desert water and quotes prices from a tablet older than money.",
+    "choices": [
+      {
+        "id": "browse_sun_sealed_wares",
+        "text": "Browse the sun-sealed wares.",
+        "result_text": "The goods are excellent. The prices are punitive. The receipt is carved in stone.",
+        "effects": [
+          {
+            "type": "open_shop"
+          }
+        ]
+      },
+      {
+        "id": "decline_the_stone_receipt",
+        "text": "Decline the stone receipt.",
+        "result_text": "The counter folds back into the wall before a browsing fee can be assessed.",
+        "effects": [
+          {
+            "type": "none"
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "act_4",
+      "pyramid",
+      "shop",
+      "positive_option",
+      "licensing_labyrinth",
+      "expensive"
+    ]
+  },
+  {
+    "id": "act_4_red_linen_thread",
+    "name": "Red Linen Thread",
+    "act": 4,
+    "event_type": "risk_reward",
+    "weight": 1,
+    "text": "A red thread runs through a crack in the limestone, vanishing into several corridors at once. It twitches when you look away.",
+    "choices": [
+      {
+        "id": "follow_the_thread",
+        "text": "Follow the thread through the narrow passage.",
+        "result_text": "The thread remembers a route your feet have not yet taken. Something useful waits in the dust, but the passage cuts deep.",
+        "effects": [
+          {
+            "type": "lose_percent_max_hp",
+            "amount": 8
+          },
+          {
+            "type": "gain_card_reward",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "mark_the_wall_instead",
+        "text": "Mark the wall instead.",
+        "result_text": "Your mark immediately appears on three other walls, each less helpful than the last.",
+        "effects": [
+          {
+            "type": "none"
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "act_4",
+      "pyramid",
+      "labyrinth",
+      "red_thread",
+      "risk_reward",
+      "positive_option",
+      "licensing_labyrinth"
+    ]
+  },
+  {
+    "id": "act_4_fountain_of_recorded_water",
+    "name": "Fountain of Recorded Water",
+    "act": 4,
+    "event_type": "risk_reward",
+    "weight": 1,
+    "text": "A dry fountain demands proof of thirst. Its basin is full of names scratched by petitioners who survived long enough to complain.",
+    "choices": [
+      {
+        "id": "drink_after_signing",
+        "text": "Sign the thirst register and drink.",
+        "result_text": "The water is real, cold, and offended by your lack of notarized dehydration.",
+        "effects": [
+          {
+            "type": "lose_percent_max_hp",
+            "amount": 5
+          },
+          {
+            "type": "gain_max_hp",
+            "amount": 6
+          }
+        ]
+      },
+      {
+        "id": "leave_the_basin_dry",
+        "text": "Leave the basin dry.",
+        "result_text": "The fountain adds your restraint to its records. It files no reward.",
+        "effects": [
+          {
+            "type": "none"
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "act_4",
+      "pyramid",
+      "water",
+      "survival",
+      "risk_reward",
+      "positive_option",
+      "licensing_labyrinth"
+    ]
+  },
+  {
+    "id": "act_4_cartouche_repair_bench",
+    "name": "Cartouche Repair Bench",
+    "act": 4,
+    "event_type": "deck",
+    "weight": 1,
+    "text": "A stone bench holds chisels, wax, and several official cartouches with the names carefully scraped away.",
+    "choices": [
+      {
+        "id": "repair_a_name",
+        "text": "Repair one approved name.",
+        "result_text": "The cartouche accepts the correction. One of your procedures becomes harder to dispute.",
+        "effects": [
+          {
+            "type": "lose_percent_max_hp",
+            "amount": 6
+          },
+          {
+            "type": "upgrade_card",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "do_not_touch_the_names",
+        "text": "Do not touch the names.",
+        "result_text": "The empty cartouches continue pretending they have always been complete.",
+        "effects": [
+          {
+            "type": "none"
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "act_4",
+      "pyramid",
+      "cartouche",
+      "deck",
+      "positive_option",
+      "licensing_labyrinth"
+    ]
+  },
+  {
+    "id": "act_4_weighing_room_mercy",
+    "name": "Weighing Room Mercy",
+    "act": 4,
+    "event_type": "deck",
+    "weight": 1,
+    "text": "A scale waits in a quiet chamber. One pan is shaped like a heart. The other is shaped like an objection form.",
+    "choices": [
+      {
+        "id": "remove_one_burden",
+        "text": "Remove one burden from the record.",
+        "result_text": "The scale takes a little of you with it, but one useless burden is struck from the ledger.",
+        "effects": [
+          {
+            "type": "lose_percent_max_hp",
+            "amount": 8
+          },
+          {
+            "type": "remove_card",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "keep_every_burden",
+        "text": "Keep every burden.",
+        "result_text": "The scale balances perfectly. This is not a compliment.",
+        "effects": [
+          {
+            "type": "none"
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "act_4",
+      "pyramid",
+      "scale",
+      "deck",
+      "positive_option",
+      "licensing_labyrinth"
+    ]
+  },
+  {
+    "id": "act_4_brittle_floor_register",
+    "name": "Brittle Floor Register",
+    "act": 4,
+    "event_type": "risk_reward",
+    "weight": 3,
+    "text": "The corridor floor is covered in cracked stone tiles, each stamped with a different visitor number.",
+    "choices": [
+      {
+        "id": "cross_on_the_low_numbers",
+        "text": "Cross on the low numbers.",
+        "result_text": "The low numbers give way first. The bureaucracy had been counting down.",
+        "effects": [
+          {
+            "type": "lose_percent_max_hp",
+            "amount": 9
+          }
+        ]
+      },
+      {
+        "id": "crawl_along_the_wall",
+        "text": "Crawl along the wall.",
+        "result_text": "You avoid the worst collapse, but the wall records the indignity in permanent dust.",
+        "effects": [
+          {
+            "type": "lose_percent_max_hp",
+            "amount": 5
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "act_4",
+      "pyramid",
+      "trap",
+      "floor",
+      "negative",
+      "licensing_labyrinth"
+    ]
+  },
+  {
+    "id": "act_4_tomb_robber_snare",
+    "name": "Tomb-Robber Snare",
+    "act": 4,
+    "event_type": "risk_reward",
+    "weight": 3,
+    "text": "A trap designed for grave robbers snaps shut around a corridor you were officially permitted to enter.",
+    "choices": [
+      {
+        "id": "argue_that_you_are_not_a_robber",
+        "text": "Argue that you are not a robber.",
+        "result_text": "The trap accepts your argument and tightens as a procedural precaution.",
+        "effects": [
+          {
+            "type": "lose_percent_max_hp",
+            "amount": 8
+          }
+        ]
+      },
+      {
+        "id": "wait_for_automatic_release",
+        "text": "Wait for automatic release.",
+        "result_text": "The automatic release was scheduled for a dynasty that no longer exists.",
+        "effects": [
+          {
+            "type": "lose_percent_max_hp",
+            "amount": 6
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "act_4",
+      "pyramid",
+      "trap",
+      "tomb_robber",
+      "negative",
+      "licensing_labyrinth"
+    ]
+  },
+  {
+    "id": "act_4_false_door_queue",
+    "name": "False Door Queue",
+    "act": 4,
+    "event_type": "narrative",
+    "weight": 3,
+    "text": "A line of ghosts waits before a painted door. The door is false. The queue is not.",
+    "choices": [
+      {
+        "id": "take_a_number",
+        "text": "Take a number.",
+        "result_text": "Your number has already been called and penalized for absence.",
+        "effects": [
+          {
+            "type": "lose_percent_max_hp",
+            "amount": 6
+          }
+        ]
+      },
+      {
+        "id": "refuse_the_queue",
+        "text": "Refuse the queue.",
+        "result_text": "The ghosts let you pass, but only after taking your refusal down in triplicate.",
+        "effects": [
+          {
+            "type": "lose_percent_max_hp",
+            "amount": 4
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "act_4",
+      "pyramid",
+      "queue",
+      "false_door",
+      "negative",
+      "licensing_labyrinth"
+    ]
+  },
+  {
+    "id": "act_4_sand_filled_permit_office",
+    "name": "Sand-Filled Permit Office",
+    "act": 4,
+    "event_type": "risk_reward",
+    "weight": 3,
+    "text": "A permit office lies buried under fine sand. Somewhere beneath it, a clerk continues stamping.",
+    "choices": [
+      {
+        "id": "dig_for_the_counter",
+        "text": "Dig for the counter.",
+        "result_text": "You find the counter, the stamp, and enough sand to remember this mistake for several rooms.",
+        "effects": [
+          {
+            "type": "lose_percent_max_hp",
+            "amount": 10
+          }
+        ]
+      },
+      {
+        "id": "leave_it_buried",
+        "text": "Leave it buried.",
+        "result_text": "The buried clerk stamps your absence as suspicious.",
+        "effects": [
+          {
+            "type": "lose_percent_max_hp",
+            "amount": 5
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "act_4",
+      "pyramid",
+      "sand",
+      "permit",
+      "negative",
+      "licensing_labyrinth"
+    ]
+  },
+  {
+    "id": "act_4_scarab_tax_swarm",
+    "name": "Scarab Tax Swarm",
+    "act": 4,
+    "event_type": "risk_reward",
+    "weight": 3,
+    "text": "A swarm of scarabs pours from a tax niche, each carrying a tiny receipt for a service you never requested.",
+    "choices": [
+      {
+        "id": "pay_in_blood",
+        "text": "Pay in blood.",
+        "result_text": "The scarabs accept payment and issue a receipt with your name misspelled.",
+        "effects": [
+          {
+            "type": "lose_percent_max_hp",
+            "amount": 7
+          }
+        ]
+      },
+      {
+        "id": "dispute_the_fee",
+        "text": "Dispute the fee.",
+        "result_text": "The swarm escalates the matter to Collections.",
+        "effects": [
+          {
+            "type": "lose_percent_max_hp",
+            "amount": 11
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "act_4",
+      "pyramid",
+      "scarab",
+      "tax",
+      "negative",
+      "licensing_labyrinth"
+    ]
+  },
+  {
+    "id": "act_4_hieroglyphic_complaint_wall",
+    "name": "Hieroglyphic Complaint Wall",
+    "act": 4,
+    "event_type": "narrative",
+    "weight": 3,
+    "text": "An entire wall is carved with complaints from previous adventurers. The newest complaint is about you.",
+    "choices": [
+      {
+        "id": "read_your_complaint",
+        "text": "Read your complaint.",
+        "result_text": "It is accurate, cruel, and somehow already signed by a witness.",
+        "effects": [
+          {
+            "type": "lose_percent_max_hp",
+            "amount": 6
+          }
+        ]
+      },
+      {
+        "id": "file_a_counter_complaint",
+        "text": "File a counter-complaint.",
+        "result_text": "The wall adds a rebuttal footnote directly beneath your ribs.",
+        "effects": [
+          {
+            "type": "lose_percent_max_hp",
+            "amount": 9
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "act_4",
+      "pyramid",
+      "complaint",
+      "hieroglyph",
+      "negative",
+      "licensing_labyrinth"
+    ]
+  },
+  {
+    "id": "act_4_granite_bridge_of_forms",
+    "name": "Granite Bridge of Forms",
+    "act": 4,
+    "event_type": "risk_reward",
+    "weight": 3,
+    "text": "A narrow bridge crosses a dark shaft. Each stone slab requires a different form before bearing weight.",
+    "choices": [
+      {
+        "id": "walk_quickly",
+        "text": "Walk quickly.",
+        "result_text": "Several slabs object to the pace and file themselves into the shaft.",
+        "effects": [
+          {
+            "type": "lose_percent_max_hp",
+            "amount": 8
+          }
+        ]
+      },
+      {
+        "id": "test_each_slab",
+        "text": "Test each slab.",
+        "result_text": "The bridge appreciates the caution and punishes the delay.",
+        "effects": [
+          {
+            "type": "lose_percent_max_hp",
+            "amount": 6
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "act_4",
+      "pyramid",
+      "bridge",
+      "forms",
+      "negative",
+      "licensing_labyrinth"
+    ]
+  },
+  {
+    "id": "act_4_sealed_air_shaft",
+    "name": "Sealed Air Shaft",
+    "act": 4,
+    "event_type": "risk_reward",
+    "weight": 3,
+    "text": "A draft whispers through a sealed shaft. The air smells old, official, and barely breathable.",
+    "choices": [
+      {
+        "id": "break_the_seal",
+        "text": "Break the seal.",
+        "result_text": "Air rushes out. Unfortunately, the useful part of it left centuries ago.",
+        "effects": [
+          {
+            "type": "lose_percent_max_hp",
+            "amount": 7
+          }
+        ]
+      },
+      {
+        "id": "hold_your_breath_and_pass",
+        "text": "Hold your breath and pass.",
+        "result_text": "The shaft records your breathing violation anyway.",
+        "effects": [
+          {
+            "type": "lose_percent_max_hp",
+            "amount": 5
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "act_4",
+      "pyramid",
+      "air_shaft",
+      "sealed",
+      "negative",
+      "licensing_labyrinth"
+    ]
+  },
+  {
+    "id": "act_4_crocodile_appeal_pit",
+    "name": "Crocodile Appeal Pit",
+    "act": 4,
+    "event_type": "risk_reward",
+    "weight": 2,
+    "text": "A pit of crocodiles sits beneath a sign reading APPEALS ACCEPTED BELOW.",
+    "choices": [
+      {
+        "id": "submit_the_appeal",
+        "text": "Submit the appeal below.",
+        "result_text": "The crocodiles review your case thoroughly and without mercy.",
+        "effects": [
+          {
+            "type": "lose_percent_max_hp",
+            "amount": 10
+          }
+        ]
+      },
+      {
+        "id": "withdraw_the_appeal",
+        "text": "Withdraw the appeal.",
+        "result_text": "A crocodile stamps WITHDRAWN on the nearest available limb.",
+        "effects": [
+          {
+            "type": "lose_percent_max_hp",
+            "amount": 6
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "act_4",
+      "pyramid",
+      "crocodile",
+      "appeal",
+      "negative",
+      "licensing_labyrinth"
+    ]
+  },
+  {
+    "id": "act_4_arrow_slit_audit",
+    "name": "Arrow-Slit Audit",
+    "act": 4,
+    "event_type": "risk_reward",
+    "weight": 2,
+    "text": "Thin arrow slits line the hallway. Each is labeled with a different audit category.",
+    "choices": [
+      {
+        "id": "duck_under_the_financial_audit",
+        "text": "Duck under the financial audit.",
+        "result_text": "The physical audit was lower.",
+        "effects": [
+          {
+            "type": "lose_percent_max_hp",
+            "amount": 7
+          }
+        ]
+      },
+      {
+        "id": "raise_your_hands_for_inspection",
+        "text": "Raise your hands for inspection.",
+        "result_text": "The arrows appreciate the clear target profile.",
+        "effects": [
+          {
+            "type": "lose_percent_max_hp",
+            "amount": 9
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "act_4",
+      "pyramid",
+      "trap",
+      "audit",
+      "negative",
+      "licensing_labyrinth"
+    ]
+  }
+]

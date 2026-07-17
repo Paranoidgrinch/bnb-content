@@ -1,0 +1,192 @@
+[
+  {
+    "id": "cudgel_warning",
+    "name": "Cudgel Warning",
+    "class": "night_watch_recruit",
+    "type": "action",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Deal 7 damage.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 7
+      }
+    ],
+    "tags": [
+      "attack",
+      "cudgel",
+      "patrol"
+    ],
+    "upgrades_to": "cudgel_warning_plus"
+  },
+  {
+    "id": "cudgel_warning_plus",
+    "name": "Cudgel Warning+",
+    "class": "night_watch_recruit",
+    "type": "action",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Deal 10 damage.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 10
+      }
+    ],
+    "tags": [
+      "attack",
+      "cudgel",
+      "patrol",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "raised_shield",
+    "name": "Raised Shield",
+    "class": "night_watch_recruit",
+    "type": "form",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Gain 6 Block.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 6
+      }
+    ],
+    "tags": [
+      "block",
+      "shield",
+      "patrol"
+    ],
+    "upgrades_to": "raised_shield_plus"
+  },
+  {
+    "id": "raised_shield_plus",
+    "name": "Raised Shield+",
+    "class": "night_watch_recruit",
+    "type": "form",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Gain 9 Block.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 9
+      }
+    ],
+    "tags": [
+      "block",
+      "shield",
+      "patrol",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "read_the_riot_act",
+    "name": "Read the Riot Act",
+    "class": "night_watch_recruit",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Apply 3 Doubt.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "doubt",
+      "riot_act",
+      "authority",
+      "setup"
+    ],
+    "upgrades_to": "read_the_riot_act_plus"
+  },
+  {
+    "id": "read_the_riot_act_plus",
+    "name": "Read the Riot Act+",
+    "class": "night_watch_recruit",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Apply 5 Doubt.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 5
+      }
+    ],
+    "tags": [
+      "doubt",
+      "riot_act",
+      "authority",
+      "setup",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "boots_on_cobblestones",
+    "name": "Boots on Cobblestones",
+    "class": "night_watch_recruit",
+    "type": "action",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Deal 5 damage. Gain 5 Block.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 5
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 5
+      }
+    ],
+    "tags": [
+      "attack",
+      "block",
+      "patrol"
+    ],
+    "upgrades_to": "boots_on_cobblestones_plus"
+  },
+  {
+    "id": "boots_on_cobblestones_plus",
+    "name": "Boots on Cobblestones+",
+    "class": "night_watch_recruit",
+    "type": "action",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Deal 8 damage. Gain 8 Block.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 8
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 8
+      }
+    ],
+    "tags": [
+      "attack",
+      "block",
+      "patrol",
+      "upgraded"
+    ]
+  }
+]

@@ -1,0 +1,297 @@
+[
+  {
+    "id": "tin_watch_badge",
+    "name": "Tin Watch Badge",
+    "description": "At the start of each combat, gain 6 Block.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 6
+      }
+    ],
+    "tags": [
+      "night_watch_recruit",
+      "watch",
+      "shield",
+      "block"
+    ],
+    "allowed_classes": [
+      "night_watch_recruit"
+    ]
+  },
+  {
+    "id": "watch_whistle_cord",
+    "name": "Watch Whistle Cord",
+    "description": "At the start of each combat, add a Watch Whistle to your hand.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "watch_whistle",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "night_watch_recruit",
+      "watch",
+      "backup",
+      "doubt",
+      "zero_cost"
+    ],
+    "allowed_classes": [
+      "night_watch_recruit"
+    ]
+  },
+  {
+    "id": "patched_shield_strap",
+    "name": "Patched Shield Strap",
+    "description": "At the start of each combat, add a Backup Constable to your hand.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "backup_constable",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "night_watch_recruit",
+      "shield",
+      "backup",
+      "block",
+      "zero_cost"
+    ],
+    "allowed_classes": [
+      "night_watch_recruit"
+    ]
+  },
+  {
+    "id": "patrol_lantern",
+    "name": "Patrol Lantern",
+    "description": "At the start of each combat, apply 1 Doubt to all enemies and gain 3 Block.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "doubt",
+        "amount": 1
+      },
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "night_watch_recruit",
+      "patrol",
+      "lantern",
+      "doubt",
+      "block"
+    ],
+    "allowed_classes": [
+      "night_watch_recruit"
+    ]
+  },
+  {
+    "id": "old_cudgel_grip",
+    "name": "Old Cudgel Grip",
+    "description": "At the start of each combat, gain 1 Strength.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "gain_strength_at_combat_start",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "night_watch_recruit",
+      "cudgel",
+      "arrest",
+      "strength"
+    ],
+    "allowed_classes": [
+      "night_watch_recruit"
+    ]
+  },
+  {
+    "id": "sergeants_notebook",
+    "name": "Sergeant's Notebook",
+    "description": "At the start of each combat, add an Incident Report to your hand.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "incident_report",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "night_watch_recruit",
+      "patrol",
+      "backup",
+      "draw"
+    ],
+    "allowed_classes": [
+      "night_watch_recruit"
+    ]
+  },
+  {
+    "id": "riot_helmet",
+    "name": "Riot Helmet",
+    "description": "At the start of each combat, gain 10 Block and apply 1 Doubt to all enemies.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 10
+      },
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "doubt",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "night_watch_recruit",
+      "riot_act",
+      "shield",
+      "block",
+      "doubt"
+    ],
+    "allowed_classes": [
+      "night_watch_recruit"
+    ]
+  },
+  {
+    "id": "beat_map",
+    "name": "Beat Map",
+    "description": "At the start of each combat, gain 1 Energy and add an Incident Report to your discard pile.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "gain_energy_at_combat_start",
+        "amount": 1
+      },
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "incident_report",
+        "destination": "discard_pile",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "night_watch_recruit",
+      "patrol",
+      "energy",
+      "draw"
+    ],
+    "allowed_classes": [
+      "night_watch_recruit"
+    ]
+  },
+  {
+    "id": "bell_tower_token",
+    "name": "Bell Tower Token",
+    "description": "At the start of each combat, apply 2 Doubt to all enemies.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "doubt",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "night_watch_recruit",
+      "riot_act",
+      "authority",
+      "doubt"
+    ],
+    "allowed_classes": [
+      "night_watch_recruit"
+    ]
+  },
+  {
+    "id": "captains_old_breastplate",
+    "name": "Captain's Old Breastplate",
+    "description": "At the start of each combat, gain 14 Block.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 14
+      }
+    ],
+    "tags": [
+      "night_watch_recruit",
+      "shield",
+      "block",
+      "defense"
+    ],
+    "allowed_classes": [
+      "night_watch_recruit"
+    ]
+  },
+  {
+    "id": "emergency_backup_roster",
+    "name": "Emergency Backup Roster",
+    "description": "At the start of each combat, add a Watch Whistle and a Backup Constable to your hand.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "watch_whistle",
+        "destination": "hand",
+        "copies": 1
+      },
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "backup_constable",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "night_watch_recruit",
+      "backup",
+      "doubt",
+      "block",
+      "zero_cost"
+    ],
+    "allowed_classes": [
+      "night_watch_recruit"
+    ]
+  },
+  {
+    "id": "very_official_truncheon",
+    "name": "Very Official Truncheon",
+    "description": "At the start of each combat, gain 1 Strength and add a Loose Cobblestone to your hand.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "gain_strength_at_combat_start",
+        "amount": 1
+      },
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "loose_cobblestone",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "night_watch_recruit",
+      "cudgel",
+      "arrest",
+      "strength",
+      "zero_cost"
+    ],
+    "allowed_classes": [
+      "night_watch_recruit"
+    ]
+  }
+]

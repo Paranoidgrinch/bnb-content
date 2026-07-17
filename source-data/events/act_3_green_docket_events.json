@@ -1,0 +1,952 @@
+[
+  {
+    "id": "green_docket_nap_in_the_sun",
+    "name": "A Nap in the Sun",
+    "act": 3,
+    "event_type": "narrative",
+    "weight": 3,
+    "text": "A warm patch of sunlight lies across the road with the authority of an official appointment.\nFor once, nobody asks you to justify being tired.",
+    "choices": [
+      {
+        "id": "sleep_for_a_while",
+        "text": "Sleep for a while.",
+        "result_text": "The world continues without you for a few blessed minutes. This is suspiciously kind of it.",
+        "effects": [
+          {
+            "type": "gain_max_hp",
+            "amount": 4
+          }
+        ]
+      },
+      {
+        "id": "stay_professional",
+        "text": "Stay professional.",
+        "result_text": "You remain upright, awake, and faintly worse for it.",
+        "effects": [
+          {
+            "type": "upgrade_card",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "move_on_quietly",
+        "text": "Move on quietly.",
+        "result_text": "The sunlight accepts your refusal without filing a complaint.",
+        "effects": []
+      }
+    ],
+    "tags": [
+      "green_docket",
+      "nature",
+      "rest",
+      "sunlight",
+      "healing"
+    ]
+  },
+  {
+    "id": "green_docket_stargazing",
+    "name": "Stargazing",
+    "act": 3,
+    "event_type": "narrative",
+    "weight": 3,
+    "text": "Night settles over the road. The stars arrange themselves into shapes that might be omens, diagrams, or a very old filing system.",
+    "choices": [
+      {
+        "id": "read_the_constellations",
+        "text": "Read the constellations.",
+        "result_text": "The stars offer guidance. They do not apologize for the handwriting.",
+        "effects": [
+          {
+            "type": "gain_card_reward",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "make_a_wish_with_procedure",
+        "text": "Make a wish with procedure.",
+        "result_text": "A wish properly submitted is still a wish. One of your methods improves.",
+        "effects": [
+          {
+            "type": "upgrade_card",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "sleep_under_the_sky",
+        "text": "Sleep under the sky.",
+        "result_text": "You wake cold, calm, and slightly more durable.",
+        "effects": [
+          {
+            "type": "gain_max_hp",
+            "amount": 3
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "green_docket",
+      "nature",
+      "stars",
+      "rest",
+      "healing"
+    ]
+  },
+  {
+    "id": "green_docket_clear_stream",
+    "name": "A Clear Stream",
+    "act": 3,
+    "event_type": "deck",
+    "weight": 3,
+    "text": "A clear stream crosses the road, singing over pale stones.\nFor a moment, every stamp, stain, and obligation looks washable.",
+    "choices": [
+      {
+        "id": "wash_away_a_mistake",
+        "text": "Wash away a mistake.",
+        "result_text": "The stream carries off something that had been clinging to your procedures.",
+        "effects": [
+          {
+            "type": "remove_card",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "fill_a_bottle",
+        "text": "Fill a bottle.",
+        "result_text": "The water tastes like weather, moss, and a very quiet kind of courage.",
+        "effects": [
+          {
+            "type": "gain_max_hp",
+            "amount": 4
+          }
+        ]
+      },
+      {
+        "id": "follow_it_for_a_while",
+        "text": "Follow it for a while.",
+        "result_text": "The detour is pleasant and only mildly unauthorized.",
+        "effects": [
+          {
+            "type": "gain_card_reward",
+            "amount": 1
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "green_docket",
+      "nature",
+      "stream",
+      "deck",
+      "healing"
+    ]
+  },
+  {
+    "id": "green_docket_quiet_meadow",
+    "name": "The Quiet Meadow",
+    "act": 3,
+    "event_type": "deck",
+    "weight": 2,
+    "text": "A meadow opens beside the path. Bees work without complaint. Grass moves in the wind. Nothing here appears to require a signature.",
+    "choices": [
+      {
+        "id": "practice_in_peace",
+        "text": "Practice in peace.",
+        "result_text": "Without witnesses, your technique becomes much less embarrassing.",
+        "effects": [
+          {
+            "type": "upgrade_card",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "let_something_go",
+        "text": "Let something go.",
+        "result_text": "The meadow accepts one burden and makes no comment.",
+        "effects": [
+          {
+            "type": "remove_card",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "leave_it_undisturbed",
+        "text": "Leave it undisturbed.",
+        "result_text": "The meadow remains quiet. This feels like a gift.",
+        "effects": []
+      }
+    ],
+    "tags": [
+      "green_docket",
+      "nature",
+      "meadow",
+      "rest",
+      "deck"
+    ]
+  },
+  {
+    "id": "green_docket_moonlit_mushrooms",
+    "name": "Moonlit Mushrooms",
+    "act": 3,
+    "event_type": "risk_reward",
+    "weight": 2,
+    "text": "A ring of mushrooms glows beside the road. They hum in committee, occasionally reaching quorum in soft blue light.",
+    "choices": [
+      {
+        "id": "step_inside_the_circle",
+        "text": "Step inside the circle.",
+        "result_text": "The mushrooms vote to improve your destiny, then invoice your sense of balance.",
+        "effects": [
+          {
+            "type": "lose_percent_max_hp",
+            "amount": 8
+          },
+          {
+            "type": "gain_card_reward",
+            "amount": 2
+          }
+        ]
+      },
+      {
+        "id": "take_one_carefully",
+        "text": "Take one carefully.",
+        "result_text": "The mushroom is edible in the philosophical sense. You feel sturdier.",
+        "effects": [
+          {
+            "type": "gain_max_hp",
+            "amount": 5
+          }
+        ]
+      },
+      {
+        "id": "do_not_join_the_committee",
+        "text": "Do not join the committee.",
+        "result_text": "The mushrooms record your abstention.",
+        "effects": []
+      }
+    ],
+    "tags": [
+      "green_docket",
+      "mushrooms",
+      "nature",
+      "risk_reward",
+      "healing"
+    ]
+  },
+  {
+    "id": "green_docket_toll_bridge_without_bridge",
+    "name": "The Toll Bridge Without a Bridge",
+    "act": 3,
+    "event_type": "risk_reward",
+    "weight": 2,
+    "text": "A small toll booth stands beside an entirely ordinary patch of road.\nThe sign reads: 'Bridge Temporarily Conceptual.'",
+    "choices": [
+      {
+        "id": "pay_the_conceptual_toll",
+        "text": "Pay the conceptual toll.",
+        "result_text": "The booth accepts your compliance and opens a drawer full of very real wares.",
+        "effects": [
+          {
+            "type": "open_shop"
+          }
+        ]
+      },
+      {
+        "id": "argue_that_no_bridge_exists",
+        "text": "Argue that no bridge exists.",
+        "result_text": "The booth admits nothing, but your argument sharpens one of your techniques.",
+        "effects": [
+          {
+            "type": "upgrade_card",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "walk_around_the_idea",
+        "text": "Walk around the idea.",
+        "result_text": "You pass without paying. Somewhere, an accountant feels a disturbance.",
+        "effects": []
+      }
+    ],
+    "tags": [
+      "green_docket",
+      "bureaucracy",
+      "road",
+      "shop",
+      "risk_reward"
+    ]
+  },
+  {
+    "id": "green_docket_hedge_requires_notice",
+    "name": "The Hedge That Requires Notice",
+    "act": 3,
+    "event_type": "deck",
+    "weight": 2,
+    "text": "A hedge blocks the path. A notice pinned to it explains that passage requires prior notice, which must be delivered beyond the hedge.",
+    "choices": [
+      {
+        "id": "prune_a_legal_gap",
+        "text": "Prune a legal gap.",
+        "result_text": "The hedge parts just enough to let you and one fewer bad habit through.",
+        "effects": [
+          {
+            "type": "remove_card",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "submit_retroactive_notice",
+        "text": "Submit retroactive notice.",
+        "result_text": "The hedge dislikes the precedent but respects the audacity.",
+        "effects": [
+          {
+            "type": "gain_card_reward",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "respect_the_hedge",
+        "text": "Respect the hedge.",
+        "result_text": "You take the long way around. The hedge rustles smugly.",
+        "effects": []
+      }
+    ],
+    "tags": [
+      "green_docket",
+      "bureaucracy",
+      "hedge",
+      "deck",
+      "road"
+    ]
+  },
+  {
+    "id": "green_docket_rangers_form",
+    "name": "The Ranger's Form",
+    "act": 3,
+    "event_type": "risk_reward",
+    "weight": 2,
+    "text": "A ranger emerges from behind a tree and presents a form printed on bark.\nIt asks whether your journey is heroic, commercial, educational, or other.",
+    "choices": [
+      {
+        "id": "tick_other_with_confidence",
+        "text": "Tick 'Other' with confidence.",
+        "result_text": "The ranger nods. Nobody who ticks 'Other' is entirely harmless.",
+        "effects": [
+          {
+            "type": "gain_card_reward",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "request_guidance",
+        "text": "Request guidance.",
+        "result_text": "The ranger corrects your route, your posture, and one card.",
+        "effects": [
+          {
+            "type": "upgrade_card",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "admit_to_being_lost",
+        "text": "Admit to being lost.",
+        "result_text": "The ranger appreciates the honesty. The form does not.",
+        "effects": [
+          {
+            "type": "lose_percent_max_hp",
+            "amount": 5
+          },
+          {
+            "type": "gain_max_hp",
+            "amount": 5
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "green_docket",
+      "bureaucracy",
+      "ranger",
+      "road",
+      "risk_reward"
+    ]
+  },
+  {
+    "id": "green_docket_public_footpath_dispute",
+    "name": "The Public Footpath Dispute",
+    "act": 3,
+    "event_type": "risk_reward",
+    "weight": 2,
+    "text": "Two old signposts argue about whether the path is public, private, ceremonial, or technically a river during leap years.",
+    "choices": [
+      {
+        "id": "mediate_the_dispute",
+        "text": "Mediate the dispute.",
+        "result_text": "The signs accept a compromise and point somewhere useful for once.",
+        "effects": [
+          {
+            "type": "gain_card_reward",
+            "amount": 1
+          },
+          {
+            "type": "upgrade_card",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "declare_temporary_access",
+        "text": "Declare temporary access.",
+        "result_text": "The signs are too impressed to stop you.",
+        "effects": [
+          {
+            "type": "upgrade_card",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "avoid_the_argument",
+        "text": "Avoid the argument.",
+        "result_text": "You leave before anyone asks for a precedent.",
+        "effects": []
+      }
+    ],
+    "tags": [
+      "green_docket",
+      "bureaucracy",
+      "road",
+      "risk_reward"
+    ]
+  },
+  {
+    "id": "green_docket_campsite_committee",
+    "name": "The Campsite Committee",
+    "act": 3,
+    "event_type": "deck",
+    "weight": 2,
+    "text": "At dusk you find a campsite already occupied by a kettle, three stools, and a committee of invisible campers.",
+    "choices": [
+      {
+        "id": "accept_their_minutes",
+        "text": "Accept their minutes.",
+        "result_text": "The minutes are concise, useful, and only partly haunted.",
+        "effects": [
+          {
+            "type": "gain_card_reward",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "take_the_warm_stool",
+        "text": "Take the warm stool.",
+        "result_text": "The stool improves your outlook and one of your cards.",
+        "effects": [
+          {
+            "type": "upgrade_card",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "sleep_near_the_fire",
+        "text": "Sleep near the fire.",
+        "result_text": "You wake smelling of smoke, tea, and better judgment.",
+        "effects": [
+          {
+            "type": "gain_max_hp",
+            "amount": 4
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "green_docket",
+      "camp",
+      "rest",
+      "deck",
+      "healing"
+    ]
+  },
+  {
+    "id": "green_docket_travelling_chandler",
+    "name": "The Travelling Chandler",
+    "act": 3,
+    "event_type": "risk_reward",
+    "weight": 2,
+    "text": "A cart of candles rattles along the path. The chandler sells light, warmth, warding wax, and plausible deniability.",
+    "choices": [
+      {
+        "id": "browse_the_cart",
+        "text": "Browse the cart.",
+        "result_text": "The cart unfolds into a small shop with far too many drawers.",
+        "effects": [
+          {
+            "type": "open_shop"
+          }
+        ]
+      },
+      {
+        "id": "ask_for_a_travellers_flame",
+        "text": "Ask for a traveller's flame.",
+        "result_text": "The chandler lights a candle that seems to know where you are going.",
+        "effects": [
+          {
+            "type": "gain_card_reward",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "decline_the_waxwork_receipt",
+        "text": "Decline the waxwork receipt.",
+        "result_text": "The chandler looks disappointed, but not surprised.",
+        "effects": []
+      }
+    ],
+    "tags": [
+      "green_docket",
+      "road",
+      "shop",
+      "traveller"
+    ]
+  },
+  {
+    "id": "green_docket_witch_at_the_milestone",
+    "name": "The Witch at the Milestone",
+    "act": 3,
+    "event_type": "deck",
+    "weight": 2,
+    "text": "An old witch sits on a milestone, knitting something that might be a scarf, a map, or a warning.",
+    "choices": [
+      {
+        "id": "ask_for_a_knot",
+        "text": "Ask for a knot.",
+        "result_text": "She ties a knot in the road behind you and a useful thought in your head.",
+        "effects": [
+          {
+            "type": "upgrade_card",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "offer_a_bad_memory",
+        "text": "Offer a bad memory.",
+        "result_text": "She knits it into the scarf. It looks better there.",
+        "effects": [
+          {
+            "type": "remove_card",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "do_not_interrupt",
+        "text": "Do not interrupt.",
+        "result_text": "The witch smiles, which may have been the lesson.",
+        "effects": []
+      }
+    ],
+    "tags": [
+      "green_docket",
+      "witch",
+      "road",
+      "deck"
+    ]
+  },
+  {
+    "id": "green_docket_ant_queue",
+    "name": "The Ant Queue",
+    "act": 3,
+    "event_type": "risk_reward",
+    "weight": 2,
+    "text": "An ant road crosses yours. Every ant carries a crumb, a permit, and an expression of tremendous civic responsibility.",
+    "choices": [
+      {
+        "id": "wait_your_turn",
+        "text": "Wait your turn.",
+        "result_text": "The ants appreciate discipline. Waiting teaches you something annoyingly useful.",
+        "effects": [
+          {
+            "type": "upgrade_card",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "step_over_the_line",
+        "text": "Step over the line.",
+        "result_text": "The ants object in several thousand small voices. You escape with a prize and many bites.",
+        "effects": [
+          {
+            "type": "lose_percent_max_hp",
+            "amount": 10
+          },
+          {
+            "type": "gain_card_reward",
+            "amount": 2
+          }
+        ]
+      },
+      {
+        "id": "take_a_different_path",
+        "text": "Take a different path.",
+        "result_text": "The ants continue civilization without you.",
+        "effects": []
+      }
+    ],
+    "tags": [
+      "green_docket",
+      "ants",
+      "road",
+      "risk_reward"
+    ]
+  },
+  {
+    "id": "green_docket_spider_clause",
+    "name": "A Spider's Clause",
+    "act": 3,
+    "event_type": "risk_reward",
+    "weight": 2,
+    "text": "A silver web stretches between two branches. At its center hangs a clause so small and precise that reading it feels dangerous.",
+    "choices": [
+      {
+        "id": "read_the_clause",
+        "text": "Read the clause.",
+        "result_text": "The clause catches on your thoughts, but it contains a powerful exception.",
+        "effects": [
+          {
+            "type": "lose_percent_max_hp",
+            "amount": 8
+          },
+          {
+            "type": "gain_card_reward",
+            "amount": 1
+          },
+          {
+            "type": "upgrade_card",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "cut_the_web",
+        "text": "Cut the web.",
+        "result_text": "The web parts. So does one small problem in your deck.",
+        "effects": [
+          {
+            "type": "remove_card",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "duck_under_it",
+        "text": "Duck under it.",
+        "result_text": "You pass beneath the fine print, which is usually where it gets you.",
+        "effects": []
+      }
+    ],
+    "tags": [
+      "green_docket",
+      "spider",
+      "clause",
+      "deck",
+      "risk_reward"
+    ]
+  },
+  {
+    "id": "green_docket_fallen_tree_permit",
+    "name": "The Fallen Tree Permit",
+    "act": 3,
+    "event_type": "deck",
+    "weight": 2,
+    "text": "A fallen tree blocks the road. A small brass plaque explains that removal requires Form Root-17b.",
+    "choices": [
+      {
+        "id": "complete_form_root_17b",
+        "text": "Complete Form Root-17b.",
+        "result_text": "The tree rolls aside with a bureaucratic groan. Your handwriting improves under pressure.",
+        "effects": [
+          {
+            "type": "upgrade_card",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "climb_over_it",
+        "text": "Climb over it.",
+        "result_text": "You scrape your shins and find something useful in the bark.",
+        "effects": [
+          {
+            "type": "lose_percent_max_hp",
+            "amount": 5
+          },
+          {
+            "type": "gain_card_reward",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "rest_against_it",
+        "text": "Rest against it.",
+        "result_text": "The tree is comfortable in a way furniture never manages.",
+        "effects": [
+          {
+            "type": "gain_max_hp",
+            "amount": 3
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "green_docket",
+      "tree",
+      "bureaucracy",
+      "rest",
+      "deck"
+    ]
+  },
+  {
+    "id": "green_docket_rain_under_one_tree",
+    "name": "Rain Under One Tree",
+    "act": 3,
+    "event_type": "narrative",
+    "weight": 2,
+    "text": "Rain falls everywhere except beneath one enormous tree. The dry ground under it smells of leaves, old stories, and temporary safety.",
+    "choices": [
+      {
+        "id": "wait_out_the_rain",
+        "text": "Wait out the rain.",
+        "result_text": "The pause does not solve the journey, but it makes the next part feel possible.",
+        "effects": [
+          {
+            "type": "gain_max_hp",
+            "amount": 4
+          }
+        ]
+      },
+      {
+        "id": "study_the_bark_marks",
+        "text": "Study the bark marks.",
+        "result_text": "The marks form a practical diagram of how not to repeat yourself.",
+        "effects": [
+          {
+            "type": "remove_card",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "walk_back_into_the_rain",
+        "text": "Walk back into the rain.",
+        "result_text": "The rain approves of commitment and soaks your paperwork evenly.",
+        "effects": []
+      }
+    ],
+    "tags": [
+      "green_docket",
+      "rain",
+      "tree",
+      "rest",
+      "healing"
+    ]
+  },
+  {
+    "id": "green_docket_buried_waystone",
+    "name": "The Buried Waystone",
+    "act": 3,
+    "event_type": "deck",
+    "weight": 2,
+    "text": "Half-buried in moss, an old waystone points to places that have changed names several times and one that has not been invented.",
+    "choices": [
+      {
+        "id": "clean_the_inscription",
+        "text": "Clean the inscription.",
+        "result_text": "The letters brighten. So does one of your ideas.",
+        "effects": [
+          {
+            "type": "upgrade_card",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "follow_the_old_name",
+        "text": "Follow the old name.",
+        "result_text": "The old name leads to an unexpected opportunity.",
+        "effects": [
+          {
+            "type": "gain_card_reward",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "leave_the_past_buried",
+        "text": "Leave the past buried.",
+        "result_text": "The stone sinks one inch deeper, satisfied.",
+        "effects": []
+      }
+    ],
+    "tags": [
+      "green_docket",
+      "road",
+      "waystone",
+      "deck"
+    ]
+  },
+  {
+    "id": "green_docket_foresters_notice_board",
+    "name": "The Forester's Notice Board",
+    "act": 3,
+    "event_type": "risk_reward",
+    "weight": 2,
+    "text": "A notice board stands at a crossroads. Its notices include warnings, missing goats, forbidden shortcuts, and a surprisingly detailed shop inventory.",
+    "choices": [
+      {
+        "id": "read_the_warnings",
+        "text": "Read the warnings.",
+        "result_text": "Several warnings are useful. One is about you, but from next week.",
+        "effects": [
+          {
+            "type": "gain_card_reward",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "follow_the_inventory",
+        "text": "Follow the inventory.",
+        "result_text": "Behind the board waits a small, legal-looking shop.",
+        "effects": [
+          {
+            "type": "open_shop"
+          }
+        ]
+      },
+      {
+        "id": "remove_an_old_notice",
+        "text": "Remove an old notice.",
+        "result_text": "The board relaxes. So does your deck.",
+        "effects": [
+          {
+            "type": "remove_card",
+            "amount": 1
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "green_docket",
+      "bureaucracy",
+      "notice_board",
+      "shop",
+      "deck"
+    ]
+  },
+  {
+    "id": "green_docket_ombudsmans_warning",
+    "name": "The Ombudsman's Warning",
+    "act": 3,
+    "event_type": "narrative",
+    "weight": 1,
+    "text": "A leaf drops into your hand. Veins crawl across it until they form a message: 'All complaints are being gathered.'",
+    "choices": [
+      {
+        "id": "prepare_a_response",
+        "text": "Prepare a response.",
+        "result_text": "You prepare a statement that may not save you, but will at least be formatted correctly.",
+        "effects": [
+          {
+            "type": "upgrade_card",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "keep_the_leaf",
+        "text": "Keep the leaf.",
+        "result_text": "The leaf folds itself into a small, alarming reminder.",
+        "effects": [
+          {
+            "type": "gain_card_reward",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "drop_it_quietly",
+        "text": "Drop it quietly.",
+        "result_text": "The road says nothing. That is not the same as approval.",
+        "effects": []
+      }
+    ],
+    "tags": [
+      "green_docket",
+      "forest_ombudsman",
+      "foreshadowing",
+      "narrative"
+    ]
+  },
+  {
+    "id": "green_docket_birds_at_first_light",
+    "name": "Birds at First Light",
+    "act": 3,
+    "event_type": "narrative",
+    "weight": 2,
+    "text": "At dawn, birds begin arguing in the branches above you. Their song is beautiful, complicated, and almost certainly about jurisdiction.",
+    "choices": [
+      {
+        "id": "listen_until_it_makes_sense",
+        "text": "Listen until it makes sense.",
+        "result_text": "It never quite makes sense, but the rhythm steadies your thoughts.",
+        "effects": [
+          {
+            "type": "gain_max_hp",
+            "amount": 3
+          }
+        ]
+      },
+      {
+        "id": "answer_in_kind",
+        "text": "Answer in kind.",
+        "result_text": "Your reply is not musical, but it is legally distinct from silence.",
+        "effects": [
+          {
+            "type": "gain_card_reward",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "let_the_morning_pass",
+        "text": "Let the morning pass.",
+        "result_text": "The birds reach no conclusion. Somehow, this helps.",
+        "effects": []
+      }
+    ],
+    "tags": [
+      "green_docket",
+      "nature",
+      "birds",
+      "morning",
+      "rest",
+      "healing"
+    ]
+  }
+]

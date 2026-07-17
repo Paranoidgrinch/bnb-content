@@ -1,0 +1,186 @@
+[
+  {
+    "id": "polite_stab",
+    "name": "Polite Stab",
+    "class": "guild_assassin_apprentice",
+    "type": "action",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Deal 8 damage.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 8
+      }
+    ],
+    "tags": [
+      "attack",
+      "precision",
+      "polite"
+    ],
+    "upgrades_to": "polite_stab_plus"
+  },
+  {
+    "id": "polite_stab_plus",
+    "name": "Polite Stab+",
+    "class": "guild_assassin_apprentice",
+    "type": "action",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Deal 11 damage.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 11
+      }
+    ],
+    "tags": [
+      "attack",
+      "precision",
+      "polite",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "black_cloak",
+    "name": "Black Cloak",
+    "class": "guild_assassin_apprentice",
+    "type": "form",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Gain 6 Block.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 6
+      }
+    ],
+    "tags": [
+      "block",
+      "cloak",
+      "escape"
+    ],
+    "upgrades_to": "black_cloak_plus"
+  },
+  {
+    "id": "black_cloak_plus",
+    "name": "Black Cloak+",
+    "class": "guild_assassin_apprentice",
+    "type": "form",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Gain 9 Block.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 9
+      }
+    ],
+    "tags": [
+      "block",
+      "cloak",
+      "escape",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "marked_name",
+    "name": "Marked Name",
+    "class": "guild_assassin_apprentice",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Apply 4 Doubt.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 4
+      }
+    ],
+    "tags": [
+      "doubt",
+      "contract",
+      "setup",
+      "mark"
+    ],
+    "upgrades_to": "marked_name_plus"
+  },
+  {
+    "id": "marked_name_plus",
+    "name": "Marked Name+",
+    "class": "guild_assassin_apprentice",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Apply 6 Doubt.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 6
+      }
+    ],
+    "tags": [
+      "doubt",
+      "contract",
+      "setup",
+      "mark",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "needle_in_the_dark",
+    "name": "Needle in the Dark",
+    "class": "guild_assassin_apprentice",
+    "type": "action",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Deal 5 damage per Doubt on the target.",
+    "effects": [
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount_per_stack": 5
+      }
+    ],
+    "tags": [
+      "attack",
+      "doubt",
+      "payoff",
+      "precision"
+    ],
+    "upgrades_to": "needle_in_the_dark_plus"
+  },
+  {
+    "id": "needle_in_the_dark_plus",
+    "name": "Needle in the Dark+",
+    "class": "guild_assassin_apprentice",
+    "type": "action",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Deal 7 damage per Doubt on the target.",
+    "effects": [
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount_per_stack": 7
+      }
+    ],
+    "tags": [
+      "attack",
+      "doubt",
+      "payoff",
+      "precision",
+      "upgraded"
+    ]
+  }
+]

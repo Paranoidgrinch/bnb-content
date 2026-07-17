@@ -1,0 +1,202 @@
+[
+  {
+    "id": "ritual_memo",
+    "name": "Ritual Memo",
+    "class": "witch_clerk",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Deal 5 damage. Apply 1 Paperwork.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 5
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "attack",
+      "paperwork",
+      "memo",
+      "minor_magic"
+    ],
+    "upgrades_to": "ritual_memo_plus"
+  },
+  {
+    "id": "ritual_memo_plus",
+    "name": "Ritual Memo+",
+    "class": "witch_clerk",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Deal 7 damage. Apply 1 Paperwork.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 7
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "attack",
+      "paperwork",
+      "memo",
+      "minor_magic",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "broom_shield",
+    "name": "Broom Shield",
+    "class": "witch_clerk",
+    "type": "form",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Gain 5 Block.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 5
+      }
+    ],
+    "tags": [
+      "block",
+      "broom",
+      "ward"
+    ],
+    "upgrades_to": "broom_shield_plus"
+  },
+  {
+    "id": "broom_shield_plus",
+    "name": "Broom Shield+",
+    "class": "witch_clerk",
+    "type": "form",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Gain 8 Block.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 8
+      }
+    ],
+    "tags": [
+      "block",
+      "broom",
+      "ward",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "suspicious_charm",
+    "name": "Suspicious Charm",
+    "class": "witch_clerk",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Apply 2 Doubt.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "doubt",
+      "charm",
+      "hex",
+      "setup"
+    ],
+    "upgrades_to": "suspicious_charm_plus"
+  },
+  {
+    "id": "suspicious_charm_plus",
+    "name": "Suspicious Charm+",
+    "class": "witch_clerk",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Apply 3 Doubt.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "doubt",
+      "charm",
+      "hex",
+      "setup",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "stamped_incantation",
+    "name": "Stamped Incantation",
+    "class": "witch_clerk",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "starter",
+    "text": "Deal 2 damage per Paperwork on the target.",
+    "effects": [
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount_per_stack": 2
+      }
+    ],
+    "tags": [
+      "attack",
+      "paperwork",
+      "payoff",
+      "stamp",
+      "incantation"
+    ],
+    "upgrades_to": "stamped_incantation_plus"
+  },
+  {
+    "id": "stamped_incantation_plus",
+    "name": "Stamped Incantation+",
+    "class": "witch_clerk",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "starter",
+    "text": "Deal 3 damage per Paperwork on the target.",
+    "effects": [
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount_per_stack": 3
+      }
+    ],
+    "tags": [
+      "attack",
+      "paperwork",
+      "payoff",
+      "stamp",
+      "incantation",
+      "upgraded"
+    ]
+  }
+]

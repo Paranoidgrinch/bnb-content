@@ -1,0 +1,156 @@
+[
+  {
+    "id": "paper_cut",
+    "name": "Paper Cut",
+    "class": "bureaucrat",
+    "type": "action",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Deal 6 damage.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 6
+      }
+    ],
+    "tags": ["attack", "bureaucracy"],
+    "upgrades_to": "paper_cut_plus"
+  },
+  {
+    "id": "paper_cut_plus",
+    "name": "Paper Cut+",
+    "class": "bureaucrat",
+    "type": "action",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Deal 8 damage.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 8
+      }
+    ],
+    "tags": ["attack", "bureaucracy", "upgraded"]
+  },
+  {
+    "id": "cower_behind_a_desk",
+    "name": "Cower Behind a Desk",
+    "class": "bureaucrat",
+    "type": "action",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Gain 5 Block.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 5
+      }
+    ],
+    "tags": ["block", "cowardice", "office"],
+    "upgrades_to": "cower_behind_a_desk_plus"
+  },
+  {
+    "id": "cower_behind_a_desk_plus",
+    "name": "Cower Behind a Desk+",
+    "class": "bureaucrat",
+    "type": "action",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Gain 7 Block.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 7
+      }
+    ],
+    "tags": ["block", "cowardice", "office", "upgraded"]
+  },
+  {
+    "id": "strong_binder",
+    "name": "Strong Binder",
+    "class": "bureaucrat",
+    "type": "form",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Gain 7 Block. Apply 1 Doubt.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 7
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 1
+      }
+    ],
+    "tags": ["block", "argument", "doubt"],
+    "upgrades_to": "strong_binder_plus"
+  },
+  {
+    "id": "strong_binder_plus",
+    "name": "Strong Binder+",
+    "class": "bureaucrat",
+    "type": "form",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Gain 9 Block. Apply 2 Doubt.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 9
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 2
+      }
+    ],
+    "tags": ["block", "argument", "doubt", "upgraded"]
+  },
+  {
+    "id": "permit_a38",
+    "name": "Permit A38",
+    "class": "bureaucrat",
+    "type": "form",
+    "cost": 2,
+    "rarity": "starter",
+    "text": "Apply 5 Paperwork.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 5
+      }
+    ],
+    "tags": ["bureaucracy", "paperwork"],
+    "upgrades_to": "permit_a38_plus"
+  },
+  {
+    "id": "permit_a38_plus",
+    "name": "Permit A38+",
+    "class": "bureaucrat",
+    "type": "form",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Apply 5 Paperwork.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 5
+      }
+    ],
+    "tags": ["bureaucracy", "paperwork", "upgraded"]
+  }
+]

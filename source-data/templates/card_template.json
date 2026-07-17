@@ -1,0 +1,18 @@
+{
+  "id": "example_card",
+  "name": "Example Card",
+  "class": "bureaucrat",
+  "type": "action",
+  "cost": 1,
+  "rarity": "common",
+  "text": "Deal 6 damage.",
+  "effects": [
+    {
+      "type": "deal_damage",
+      "target": "enemy",
+      "amount": 6
+    }
+  ],
+  "tags": [],
+  "upgrades_to": "example_card_plus"
+}

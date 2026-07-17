@@ -1,0 +1,9 @@
+{
+  "id": "example_status",
+  "name": "Example Status",
+  "description": "Describe the effect in player-facing English.",
+  "stacking": "intensity",
+  "trigger": "none",
+  "is_negative": true,
+  "tags": []
+}

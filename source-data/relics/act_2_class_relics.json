@@ -1,0 +1,2493 @@
+[
+  {
+    "id": "act2_bureaucrat_triplicate_stamp",
+    "name": "Triplicate Stamp",
+    "description": "At the start of each combat, apply 1 Paperwork to all enemies.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "paperwork",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "bureaucracy",
+      "class_specific",
+      "paperwork"
+    ],
+    "allowed_classes": [
+      "bureaucrat"
+    ]
+  },
+  {
+    "id": "act2_bureaucrat_counter_bell",
+    "name": "Counter Bell",
+    "description": "At the start of each combat, gain 8 Block.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 8
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "block",
+      "bureaucracy",
+      "class_specific"
+    ],
+    "allowed_classes": [
+      "bureaucrat"
+    ]
+  },
+  {
+    "id": "act2_bureaucrat_minor_fee_schedule",
+    "name": "Minor Fee Schedule",
+    "description": "Gain 6 additional Gold after each victorious combat.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "increase_gold_rewards",
+        "amount": 6
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "bureaucracy",
+      "class_specific",
+      "gold"
+    ],
+    "allowed_classes": [
+      "bureaucrat"
+    ]
+  },
+  {
+    "id": "act2_bureaucrat_blue_ink_authority",
+    "name": "Blue-Ink Authority",
+    "description": "At the start of each combat, apply 2 Paperwork to all enemies and gain 6 Block.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "paperwork",
+        "amount": 2
+      },
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 6
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "block",
+      "bureaucracy",
+      "class_specific",
+      "paperwork"
+    ],
+    "allowed_classes": [
+      "bureaucrat"
+    ]
+  },
+  {
+    "id": "act2_bureaucrat_queue_divider_rope",
+    "name": "Queue-Divider Rope",
+    "description": "At the start of each combat, apply 1 Doubt and 1 Paperwork to all enemies.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "doubt",
+        "amount": 1
+      },
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "paperwork",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "bureaucracy",
+      "class_specific",
+      "doubt",
+      "paperwork"
+    ],
+    "allowed_classes": [
+      "bureaucrat"
+    ]
+  },
+  {
+    "id": "act2_bureaucrat_senior_clipboard",
+    "name": "Senior Clipboard",
+    "description": "Card rewards contain 1 additional card.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "increase_card_reward_count",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "bureaucracy",
+      "class_specific",
+      "reward"
+    ],
+    "allowed_classes": [
+      "bureaucrat"
+    ]
+  },
+  {
+    "id": "act2_bureaucrat_gilded_procedure_manual",
+    "name": "Gilded Procedure Manual",
+    "description": "At the start of each combat, gain 1 Strength and apply 2 Paperwork to all enemies.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "gain_strength_at_combat_start",
+        "amount": 1
+      },
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "paperwork",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "bureaucracy",
+      "class_specific",
+      "paperwork",
+      "strength"
+    ],
+    "allowed_classes": [
+      "bureaucrat"
+    ]
+  },
+  {
+    "id": "act2_bureaucrat_appeals_office_key",
+    "name": "Appeals Office Key",
+    "description": "Shop prices are reduced by 20%. At the start of each combat, gain 8 Block.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "shop_price_discount",
+        "amount": 20
+      },
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 8
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "block",
+      "bureaucracy",
+      "class_specific",
+      "shop"
+    ],
+    "allowed_classes": [
+      "bureaucrat"
+    ]
+  },
+  {
+    "id": "act2_failed_wizard_singed_bookmark",
+    "name": "Singed Bookmark",
+    "description": "At the start of each combat, gain 1 Strength and apply 1 Panic to yourself.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "gain_strength_at_combat_start",
+        "amount": 1
+      },
+      {
+        "type": "apply_status_to_player_at_combat_start",
+        "status": "panic",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "class_specific",
+      "panic",
+      "risk_reward",
+      "strength",
+      "wizard"
+    ],
+    "allowed_classes": [
+      "failed_wizard"
+    ]
+  },
+  {
+    "id": "act2_failed_wizard_cracked_wand_case",
+    "name": "Cracked Wand Case",
+    "description": "At the start of each combat, gain 7 Block.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 7
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "block",
+      "class_specific",
+      "wizard"
+    ],
+    "allowed_classes": [
+      "failed_wizard"
+    ]
+  },
+  {
+    "id": "act2_failed_wizard_wrong_page_ribbon",
+    "name": "Wrong-Page Ribbon",
+    "description": "At the start of each combat, apply 1 Doubt to all enemies.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "doubt",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "class_specific",
+      "doubt",
+      "wizard"
+    ],
+    "allowed_classes": [
+      "failed_wizard"
+    ]
+  },
+  {
+    "id": "act2_failed_wizard_borrowed_copper_hatpin",
+    "name": "Borrowed Copper Hatpin",
+    "description": "When picked up, gain 18 Gold.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "gain_gold_on_pickup",
+        "amount": 18
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "class_specific",
+      "gold",
+      "wizard"
+    ],
+    "allowed_classes": [
+      "failed_wizard"
+    ]
+  },
+  {
+    "id": "act2_failed_wizard_unsafe_spell_index",
+    "name": "Unsafe Spell Index",
+    "description": "At the start of each combat, gain 1 Energy and apply 1 Panic to yourself.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "gain_energy_at_combat_start",
+        "amount": 1
+      },
+      {
+        "type": "apply_status_to_player_at_combat_start",
+        "status": "panic",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "class_specific",
+      "energy",
+      "panic",
+      "risk_reward",
+      "wizard"
+    ],
+    "allowed_classes": [
+      "failed_wizard"
+    ]
+  },
+  {
+    "id": "act2_failed_wizard_smoking_inkpot",
+    "name": "Smoking Inkpot",
+    "description": "At the start of each combat, apply 2 Doubt to all enemies.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "doubt",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "class_specific",
+      "doubt",
+      "wizard"
+    ],
+    "allowed_classes": [
+      "failed_wizard"
+    ]
+  },
+  {
+    "id": "act2_failed_wizard_tutor_warning_note",
+    "name": "Tutor's Warning Note",
+    "description": "At the start of each combat, gain 12 Block and apply 1 Panic to yourself.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 12
+      },
+      {
+        "type": "apply_status_to_player_at_combat_start",
+        "status": "panic",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "block",
+      "class_specific",
+      "panic",
+      "risk_reward",
+      "wizard"
+    ],
+    "allowed_classes": [
+      "failed_wizard"
+    ]
+  },
+  {
+    "id": "act2_failed_wizard_illegal_asterisk",
+    "name": "Illegal Asterisk",
+    "description": "At the start of each combat, gain 1 Strength and apply 2 Doubt to all enemies.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "gain_strength_at_combat_start",
+        "amount": 1
+      },
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "doubt",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "class_specific",
+      "doubt",
+      "strength",
+      "wizard"
+    ],
+    "allowed_classes": [
+      "failed_wizard"
+    ]
+  },
+  {
+    "id": "act2_failed_wizard_hat_of_second_chances",
+    "name": "Hat of Second Chances",
+    "description": "At the start of each combat, gain 1 Energy and 10 Block. Apply 1 Panic to yourself.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "gain_energy_at_combat_start",
+        "amount": 1
+      },
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 10
+      },
+      {
+        "type": "apply_status_to_player_at_combat_start",
+        "status": "panic",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "block",
+      "class_specific",
+      "energy",
+      "panic",
+      "risk_reward",
+      "wizard"
+    ],
+    "allowed_classes": [
+      "failed_wizard"
+    ]
+  },
+  {
+    "id": "act2_failed_wizard_deans_disapproval",
+    "name": "Dean's Disapproval",
+    "description": "Card rewards contain 1 additional card. When picked up, heal 20 HP.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "increase_card_reward_count",
+        "amount": 1
+      },
+      {
+        "type": "heal_on_pickup",
+        "amount": 20
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "class_specific",
+      "healing",
+      "reward",
+      "wizard"
+    ],
+    "allowed_classes": [
+      "failed_wizard"
+    ]
+  },
+  {
+    "id": "act2_assassin_black_silk_button",
+    "name": "Black-Silk Button",
+    "description": "At the start of each combat, apply 1 Doubt to all enemies.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "doubt",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "assassin",
+      "class_specific",
+      "doubt"
+    ],
+    "allowed_classes": [
+      "guild_assassin_apprentice"
+    ]
+  },
+  {
+    "id": "act2_assassin_rooftop_chalk_mark",
+    "name": "Rooftop Chalk Mark",
+    "description": "At the start of each combat, gain 1 Strength.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "gain_strength_at_combat_start",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "assassin",
+      "class_specific",
+      "strength"
+    ],
+    "allowed_classes": [
+      "guild_assassin_apprentice"
+    ]
+  },
+  {
+    "id": "act2_assassin_folding_balustrade_hook",
+    "name": "Folding Balustrade Hook",
+    "description": "At the start of each combat, gain 8 Block.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 8
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "assassin",
+      "block",
+      "class_specific"
+    ],
+    "allowed_classes": [
+      "guild_assassin_apprentice"
+    ]
+  },
+  {
+    "id": "act2_assassin_small_black_receipt",
+    "name": "Small Black Receipt",
+    "description": "Gain 6 additional Gold after each victorious combat.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "increase_gold_rewards",
+        "amount": 6
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "assassin",
+      "class_specific",
+      "gold"
+    ],
+    "allowed_classes": [
+      "guild_assassin_apprentice"
+    ]
+  },
+  {
+    "id": "act2_assassin_poisoned_bookplate",
+    "name": "Poisoned Bookplate",
+    "description": "At the start of each combat, apply 2 Poison to all enemies.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "poison",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "assassin",
+      "class_specific",
+      "poison"
+    ],
+    "allowed_classes": [
+      "guild_assassin_apprentice"
+    ]
+  },
+  {
+    "id": "act2_assassin_invitation_seal",
+    "name": "Invitation Seal",
+    "description": "At the start of each combat, apply 2 Doubt to all enemies and gain 6 Block.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "doubt",
+        "amount": 2
+      },
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 6
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "assassin",
+      "block",
+      "class_specific",
+      "doubt"
+    ],
+    "allowed_classes": [
+      "guild_assassin_apprentice"
+    ]
+  },
+  {
+    "id": "act2_assassin_quiet_landing_boots",
+    "name": "Quiet-Landing Boots",
+    "description": "At the start of each combat, gain 1 Energy and apply 1 Doubt to yourself.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "gain_energy_at_combat_start",
+        "amount": 1
+      },
+      {
+        "type": "apply_status_to_player_at_combat_start",
+        "status": "doubt",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "assassin",
+      "class_specific",
+      "energy",
+      "risk_reward"
+    ],
+    "allowed_classes": [
+      "guild_assassin_apprentice"
+    ]
+  },
+  {
+    "id": "act2_assassin_alibi_card_case",
+    "name": "Alibi Card Case",
+    "description": "Shop prices are reduced by 12%. When picked up, gain 15 Gold.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "shop_price_discount",
+        "amount": 12
+      },
+      {
+        "type": "gain_gold_on_pickup",
+        "amount": 15
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "assassin",
+      "class_specific",
+      "gold",
+      "shop"
+    ],
+    "allowed_classes": [
+      "guild_assassin_apprentice"
+    ]
+  },
+  {
+    "id": "act2_assassin_guild_black_ribbon",
+    "name": "Guild Black Ribbon",
+    "description": "At the start of each combat, gain 1 Strength and apply 2 Doubt to all enemies.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "gain_strength_at_combat_start",
+        "amount": 1
+      },
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "doubt",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "assassin",
+      "class_specific",
+      "doubt",
+      "strength"
+    ],
+    "allowed_classes": [
+      "guild_assassin_apprentice"
+    ]
+  },
+  {
+    "id": "act2_assassin_silvered_rooftop_key",
+    "name": "Silvered Rooftop Key",
+    "description": "At the start of each combat, gain 1 Energy.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "gain_energy_at_combat_start",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "assassin",
+      "class_specific",
+      "energy"
+    ],
+    "allowed_classes": [
+      "guild_assassin_apprentice"
+    ]
+  },
+  {
+    "id": "act2_assassin_examiner_eye",
+    "name": "Examiner's Eye",
+    "description": "Card rewards contain 1 additional card. At the start of each combat, gain 8 Block.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "increase_card_reward_count",
+        "amount": 1
+      },
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 8
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "assassin",
+      "block",
+      "class_specific",
+      "reward"
+    ],
+    "allowed_classes": [
+      "guild_assassin_apprentice"
+    ]
+  },
+  {
+    "id": "act2_hedge_witch_nettle_pouch",
+    "name": "Nettle Pouch",
+    "description": "At the start of each combat, apply 1 Poison to all enemies.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "poison",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "class_specific",
+      "poison",
+      "witch"
+    ],
+    "allowed_classes": [
+      "hedge_witch"
+    ]
+  },
+  {
+    "id": "act2_hedge_witch_chipped_teacup",
+    "name": "Chipped Teacup",
+    "description": "At the start of each combat, gain 7 Block.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 7
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "block",
+      "class_specific",
+      "witch"
+    ],
+    "allowed_classes": [
+      "hedge_witch"
+    ]
+  },
+  {
+    "id": "act2_hedge_witch_string_of_rowan",
+    "name": "String of Rowan",
+    "description": "At the start of each combat, heal 2 HP.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "heal_at_combat_start",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "class_specific",
+      "healing",
+      "witch"
+    ],
+    "allowed_classes": [
+      "hedge_witch"
+    ]
+  },
+  {
+    "id": "act2_hedge_witch_jar_of_spite",
+    "name": "Jar of Spite",
+    "description": "At the start of each combat, apply 1 Doubt to all enemies.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "doubt",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "class_specific",
+      "doubt",
+      "witch"
+    ],
+    "allowed_classes": [
+      "hedge_witch"
+    ]
+  },
+  {
+    "id": "act2_hedge_witch_blackthorn_brooch",
+    "name": "Blackthorn Brooch",
+    "description": "At the start of each combat, apply 2 Poison to all enemies and gain 5 Block.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "poison",
+        "amount": 2
+      },
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 5
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "block",
+      "class_specific",
+      "poison",
+      "witch"
+    ],
+    "allowed_classes": [
+      "hedge_witch"
+    ]
+  },
+  {
+    "id": "act2_hedge_witch_kettle_that_knows",
+    "name": "Kettle That Knows",
+    "description": "At the start of each combat, gain 1 Strength.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "gain_strength_at_combat_start",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "class_specific",
+      "strength",
+      "witch"
+    ],
+    "allowed_classes": [
+      "hedge_witch"
+    ]
+  },
+  {
+    "id": "act2_hedge_witch_well_swept_threshold",
+    "name": "Well-Swept Threshold",
+    "description": "At the start of each combat, gain 12 Block.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 12
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "block",
+      "class_specific",
+      "witch"
+    ],
+    "allowed_classes": [
+      "hedge_witch"
+    ]
+  },
+  {
+    "id": "act2_hedge_witch_bad_weather_string",
+    "name": "Bad-Weather String",
+    "description": "Card rewards contain 1 additional card.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "increase_card_reward_count",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "class_specific",
+      "reward",
+      "witch"
+    ],
+    "allowed_classes": [
+      "hedge_witch"
+    ]
+  },
+  {
+    "id": "act2_hedge_witch_granny_approved_hatpin",
+    "name": "Granny-Approved Hatpin",
+    "description": "At the start of each combat, gain 1 Strength and apply 2 Poison to all enemies.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "gain_strength_at_combat_start",
+        "amount": 1
+      },
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "poison",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "class_specific",
+      "poison",
+      "strength",
+      "witch"
+    ],
+    "allowed_classes": [
+      "hedge_witch"
+    ]
+  },
+  {
+    "id": "act2_hedge_witch_cottage_door_key",
+    "name": "Cottage Door Key",
+    "description": "At the start of each combat, gain 1 Energy and apply 1 Doubt to yourself.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "gain_energy_at_combat_start",
+        "amount": 1
+      },
+      {
+        "type": "apply_status_to_player_at_combat_start",
+        "status": "doubt",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "class_specific",
+      "energy",
+      "risk_reward",
+      "witch"
+    ],
+    "allowed_classes": [
+      "hedge_witch"
+    ]
+  },
+  {
+    "id": "act2_hedge_witch_old_iron_hearth",
+    "name": "Old Iron Hearth",
+    "description": "At the start of each combat, heal 4 HP and gain 10 Block.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "heal_at_combat_start",
+        "amount": 4
+      },
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 10
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "block",
+      "class_specific",
+      "healing",
+      "witch"
+    ],
+    "allowed_classes": [
+      "hedge_witch"
+    ]
+  },
+  {
+    "id": "act2_mortuary_black_ribbon_spool",
+    "name": "Black Ribbon Spool",
+    "description": "At the start of each combat, apply 1 Paperwork to all enemies.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "paperwork",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "class_specific",
+      "mortuary",
+      "paperwork"
+    ],
+    "allowed_classes": [
+      "mortuary_apprentice"
+    ]
+  },
+  {
+    "id": "act2_mortuary_clean_white_sheet",
+    "name": "Clean White Sheet",
+    "description": "At the start of each combat, gain 8 Block.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 8
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "block",
+      "class_specific",
+      "mortuary"
+    ],
+    "allowed_classes": [
+      "mortuary_apprentice"
+    ]
+  },
+  {
+    "id": "act2_mortuary_small_bell_clapper",
+    "name": "Small Bell Clapper",
+    "description": "At the start of each combat, apply 1 Doubt to all enemies.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "doubt",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "class_specific",
+      "doubt",
+      "mortuary"
+    ],
+    "allowed_classes": [
+      "mortuary_apprentice"
+    ]
+  },
+  {
+    "id": "act2_mortuary_condolence_envelope",
+    "name": "Condolence Envelope",
+    "description": "When picked up, gain 20 Gold.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "gain_gold_on_pickup",
+        "amount": 20
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "class_specific",
+      "gold",
+      "mortuary"
+    ],
+    "allowed_classes": [
+      "mortuary_apprentice"
+    ]
+  },
+  {
+    "id": "act2_mortuary_orderly_register",
+    "name": "Orderly Register",
+    "description": "At the start of each combat, apply 2 Paperwork to all enemies.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "paperwork",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "class_specific",
+      "mortuary",
+      "paperwork"
+    ],
+    "allowed_classes": [
+      "mortuary_apprentice"
+    ]
+  },
+  {
+    "id": "act2_mortuary_undertakers_gloves",
+    "name": "Undertaker's Gloves",
+    "description": "At the start of each combat, gain 12 Block and heal 2 HP.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 12
+      },
+      {
+        "type": "heal_at_combat_start",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "block",
+      "class_specific",
+      "healing",
+      "mortuary"
+    ],
+    "allowed_classes": [
+      "mortuary_apprentice"
+    ]
+  },
+  {
+    "id": "act2_mortuary_final_receipt_clip",
+    "name": "Final Receipt Clip",
+    "description": "Gain 8 additional Gold after each victorious combat.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "increase_gold_rewards",
+        "amount": 8
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "class_specific",
+      "gold",
+      "mortuary"
+    ],
+    "allowed_classes": [
+      "mortuary_apprentice"
+    ]
+  },
+  {
+    "id": "act2_mortuary_reserved_silence_card",
+    "name": "Reserved Silence Card",
+    "description": "Card rewards contain 1 additional card.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "increase_card_reward_count",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "class_specific",
+      "mortuary",
+      "reward"
+    ],
+    "allowed_classes": [
+      "mortuary_apprentice"
+    ]
+  },
+  {
+    "id": "act2_mortuary_ledger_of_quiet_names",
+    "name": "Ledger of Quiet Names",
+    "description": "At the start of each combat, gain 1 Strength and apply 2 Paperwork to all enemies.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "gain_strength_at_combat_start",
+        "amount": 1
+      },
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "paperwork",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "class_specific",
+      "mortuary",
+      "paperwork",
+      "strength"
+    ],
+    "allowed_classes": [
+      "mortuary_apprentice"
+    ]
+  },
+  {
+    "id": "act2_mortuary_key_to_the_quiet_room",
+    "name": "Key to the Quiet Room",
+    "description": "At the start of each combat, gain 1 Energy and apply 1 Doubt to yourself.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "gain_energy_at_combat_start",
+        "amount": 1
+      },
+      {
+        "type": "apply_status_to_player_at_combat_start",
+        "status": "doubt",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "class_specific",
+      "energy",
+      "mortuary",
+      "risk_reward"
+    ],
+    "allowed_classes": [
+      "mortuary_apprentice"
+    ]
+  },
+  {
+    "id": "act2_mortuary_senior_coat_button",
+    "name": "Senior Coat Button",
+    "description": "At the start of each combat, gain 18 Block and apply 1 Paperwork to all enemies.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 18
+      },
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "paperwork",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "block",
+      "class_specific",
+      "mortuary",
+      "paperwork"
+    ],
+    "allowed_classes": [
+      "mortuary_apprentice"
+    ]
+  },
+  {
+    "id": "act2_mortuary_sealed_last_words",
+    "name": "Sealed Last Words",
+    "description": "At the start of each combat, apply 2 Doubt and 1 Paperwork to all enemies.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "doubt",
+        "amount": 2
+      },
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "paperwork",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "class_specific",
+      "doubt",
+      "mortuary",
+      "paperwork"
+    ],
+    "allowed_classes": [
+      "mortuary_apprentice"
+    ]
+  },
+  {
+    "id": "act2_watch_dented_badge",
+    "name": "Dented Badge",
+    "description": "At the start of each combat, gain 8 Block.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 8
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "block",
+      "class_specific",
+      "watch"
+    ],
+    "allowed_classes": [
+      "night_watch_recruit"
+    ]
+  },
+  {
+    "id": "act2_watch_rain_lantern",
+    "name": "Rain Lantern",
+    "description": "At the start of each combat, apply 1 Doubt to all enemies.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "doubt",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "class_specific",
+      "doubt",
+      "watch"
+    ],
+    "allowed_classes": [
+      "night_watch_recruit"
+    ]
+  },
+  {
+    "id": "act2_watch_bootlace_knot",
+    "name": "Bootlace Knot",
+    "description": "At the start of each combat, gain 1 Strength.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "gain_strength_at_combat_start",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "class_specific",
+      "strength",
+      "watch"
+    ],
+    "allowed_classes": [
+      "night_watch_recruit"
+    ]
+  },
+  {
+    "id": "act2_watch_half_brick_token",
+    "name": "Half-Brick Token",
+    "description": "Gain 6 additional Gold after each victorious combat.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "increase_gold_rewards",
+        "amount": 6
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "class_specific",
+      "gold",
+      "watch"
+    ],
+    "allowed_classes": [
+      "night_watch_recruit"
+    ]
+  },
+  {
+    "id": "act2_watch_sergeants_whistle",
+    "name": "Sergeant's Whistle",
+    "description": "At the start of each combat, apply 2 Doubt to all enemies and gain 5 Block.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "doubt",
+        "amount": 2
+      },
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 5
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "block",
+      "class_specific",
+      "doubt",
+      "watch"
+    ],
+    "allowed_classes": [
+      "night_watch_recruit"
+    ]
+  },
+  {
+    "id": "act2_watch_city_map_with_teeth",
+    "name": "City Map with Teeth",
+    "description": "Card rewards contain 1 additional card.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "increase_card_reward_count",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "class_specific",
+      "reward",
+      "watch"
+    ],
+    "allowed_classes": [
+      "night_watch_recruit"
+    ]
+  },
+  {
+    "id": "act2_watch_oiled_mail_patch",
+    "name": "Oiled Mail Patch",
+    "description": "At the start of each combat, gain 14 Block.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 14
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "block",
+      "class_specific",
+      "watch"
+    ],
+    "allowed_classes": [
+      "night_watch_recruit"
+    ]
+  },
+  {
+    "id": "act2_watch_warrant_stub",
+    "name": "Warrant Stub",
+    "description": "At the start of each combat, apply 1 Paperwork and 1 Doubt to all enemies.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "paperwork",
+        "amount": 1
+      },
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "doubt",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "class_specific",
+      "doubt",
+      "paperwork",
+      "watch"
+    ],
+    "allowed_classes": [
+      "night_watch_recruit"
+    ]
+  },
+  {
+    "id": "act2_watch_captains_old_truncheon",
+    "name": "Captain's Old Truncheon",
+    "description": "At the start of each combat, gain 1 Strength and 10 Block.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "gain_strength_at_combat_start",
+        "amount": 1
+      },
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 10
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "block",
+      "class_specific",
+      "strength",
+      "watch"
+    ],
+    "allowed_classes": [
+      "night_watch_recruit"
+    ]
+  },
+  {
+    "id": "act2_watch_gatehouse_key",
+    "name": "Gatehouse Key",
+    "description": "At the start of each combat, gain 1 Energy and apply 1 Doubt to yourself.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "gain_energy_at_combat_start",
+        "amount": 1
+      },
+      {
+        "type": "apply_status_to_player_at_combat_start",
+        "status": "doubt",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "class_specific",
+      "energy",
+      "risk_reward",
+      "watch"
+    ],
+    "allowed_classes": [
+      "night_watch_recruit"
+    ]
+  },
+  {
+    "id": "act2_watch_coppers_notebook",
+    "name": "Copper's Notebook",
+    "description": "At the start of each combat, apply 3 Doubt to all enemies.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "doubt",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "class_specific",
+      "doubt",
+      "watch"
+    ],
+    "allowed_classes": [
+      "night_watch_recruit"
+    ]
+  },
+  {
+    "id": "act2_watch_watchhouse_stove",
+    "name": "Watchhouse Stove",
+    "description": "At the start of each combat, heal 4 HP and gain 10 Block.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "heal_at_combat_start",
+        "amount": 4
+      },
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 10
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "block",
+      "class_specific",
+      "healing",
+      "watch"
+    ],
+    "allowed_classes": [
+      "night_watch_recruit"
+    ]
+  },
+  {
+    "id": "act2_sewer_diplomat_rusty_envoy_badge",
+    "name": "Rusty Envoy Badge",
+    "description": "At the start of each combat, apply 1 Poison to all enemies.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "poison",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "class_specific",
+      "poison",
+      "sewer"
+    ],
+    "allowed_classes": [
+      "sewer_diplomat"
+    ]
+  },
+  {
+    "id": "act2_sewer_diplomat_rat_courier_tag",
+    "name": "Rat Courier Tag",
+    "description": "Gain 6 additional Gold after each victorious combat.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "increase_gold_rewards",
+        "amount": 6
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "class_specific",
+      "gold",
+      "sewer"
+    ],
+    "allowed_classes": [
+      "sewer_diplomat"
+    ]
+  },
+  {
+    "id": "act2_sewer_diplomat_grate_shield",
+    "name": "Grate Shield",
+    "description": "At the start of each combat, gain 8 Block.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 8
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "block",
+      "class_specific",
+      "sewer"
+    ],
+    "allowed_classes": [
+      "sewer_diplomat"
+    ]
+  },
+  {
+    "id": "act2_sewer_diplomat_courteous_pipe_echo",
+    "name": "Courteous Pipe Echo",
+    "description": "At the start of each combat, apply 1 Doubt to all enemies.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "doubt",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "class_specific",
+      "doubt",
+      "sewer"
+    ],
+    "allowed_classes": [
+      "sewer_diplomat"
+    ]
+  },
+  {
+    "id": "act2_sewer_diplomat_ratified_drain_map",
+    "name": "Ratified Drain Map",
+    "description": "At the start of each combat, apply 2 Poison to all enemies and gain 5 Block.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "poison",
+        "amount": 2
+      },
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 5
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "block",
+      "class_specific",
+      "poison",
+      "sewer"
+    ],
+    "allowed_classes": [
+      "sewer_diplomat"
+    ]
+  },
+  {
+    "id": "act2_sewer_diplomat_ambassadorial_seal",
+    "name": "Ambassadorial Seal",
+    "description": "Card rewards contain 1 additional card.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "increase_card_reward_count",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "class_specific",
+      "reward",
+      "sewer"
+    ],
+    "allowed_classes": [
+      "sewer_diplomat"
+    ]
+  },
+  {
+    "id": "act2_sewer_diplomat_mudproof_papers",
+    "name": "Mudproof Papers",
+    "description": "Shop prices are reduced by 12%. When picked up, gain 15 Gold.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "shop_price_discount",
+        "amount": 12
+      },
+      {
+        "type": "gain_gold_on_pickup",
+        "amount": 15
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "class_specific",
+      "gold",
+      "sewer",
+      "shop"
+    ],
+    "allowed_classes": [
+      "sewer_diplomat"
+    ]
+  },
+  {
+    "id": "act2_sewer_diplomat_sluice_gate_token",
+    "name": "Sluice-Gate Token",
+    "description": "At the start of each combat, apply 1 Poison and 1 Doubt to all enemies.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "poison",
+        "amount": 1
+      },
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "doubt",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "class_specific",
+      "doubt",
+      "poison",
+      "sewer"
+    ],
+    "allowed_classes": [
+      "sewer_diplomat"
+    ]
+  },
+  {
+    "id": "act2_sewer_diplomat_king_rat_warrant",
+    "name": "King Rat Warrant",
+    "description": "At the start of each combat, gain 1 Strength and apply 2 Poison to all enemies.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "gain_strength_at_combat_start",
+        "amount": 1
+      },
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "poison",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "class_specific",
+      "poison",
+      "sewer",
+      "strength"
+    ],
+    "allowed_classes": [
+      "sewer_diplomat"
+    ]
+  },
+  {
+    "id": "act2_sewer_diplomat_underflow_pass",
+    "name": "Underflow Pass",
+    "description": "At the start of each combat, gain 1 Energy and apply 1 Doubt to yourself.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "gain_energy_at_combat_start",
+        "amount": 1
+      },
+      {
+        "type": "apply_status_to_player_at_combat_start",
+        "status": "doubt",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "class_specific",
+      "energy",
+      "risk_reward",
+      "sewer"
+    ],
+    "allowed_classes": [
+      "sewer_diplomat"
+    ]
+  },
+  {
+    "id": "act2_sewer_diplomat_gilded_grate_key",
+    "name": "Gilded Grate Key",
+    "description": "Shop prices are reduced by 20%. At the start of each combat, apply 1 Poison to all enemies.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "shop_price_discount",
+        "amount": 20
+      },
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "poison",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "class_specific",
+      "poison",
+      "sewer",
+      "shop"
+    ],
+    "allowed_classes": [
+      "sewer_diplomat"
+    ]
+  },
+  {
+    "id": "act2_sewer_diplomat_council_of_squeaks",
+    "name": "Council of Squeaks",
+    "description": "At the start of each combat, apply 2 Doubt and 2 Poison to all enemies.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "doubt",
+        "amount": 2
+      },
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "poison",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "class_specific",
+      "doubt",
+      "poison",
+      "sewer"
+    ],
+    "allowed_classes": [
+      "sewer_diplomat"
+    ]
+  },
+  {
+    "id": "act2_shroomancer_spore_paperweight",
+    "name": "Spore Paperweight",
+    "description": "At the start of each combat, apply 1 Poison to all enemies.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "poison",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "class_specific",
+      "poison",
+      "shroom"
+    ],
+    "allowed_classes": [
+      "shroomancer"
+    ]
+  },
+  {
+    "id": "act2_shroomancer_soft_cap_cushion",
+    "name": "Soft-Cap Cushion",
+    "description": "At the start of each combat, gain 8 Block.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 8
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "block",
+      "class_specific",
+      "shroom"
+    ],
+    "allowed_classes": [
+      "shroomancer"
+    ]
+  },
+  {
+    "id": "act2_shroomancer_damp_pocket_soil",
+    "name": "Damp Pocket Soil",
+    "description": "At the start of each combat, heal 2 HP.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "heal_at_combat_start",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "class_specific",
+      "healing",
+      "shroom"
+    ],
+    "allowed_classes": [
+      "shroomancer"
+    ]
+  },
+  {
+    "id": "act2_shroomancer_faintly_glowing_receipt",
+    "name": "Faintly Glowing Receipt",
+    "description": "Gain 6 additional Gold after each victorious combat.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "increase_gold_rewards",
+        "amount": 6
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "class_specific",
+      "gold",
+      "shroom"
+    ],
+    "allowed_classes": [
+      "shroomancer"
+    ]
+  },
+  {
+    "id": "act2_shroomancer_mycelial_bookmark",
+    "name": "Mycelial Bookmark",
+    "description": "At the start of each combat, apply 2 Poison to all enemies and gain 5 Block.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "poison",
+        "amount": 2
+      },
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 5
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "block",
+      "class_specific",
+      "poison",
+      "shroom"
+    ],
+    "allowed_classes": [
+      "shroomancer"
+    ]
+  },
+  {
+    "id": "act2_shroomancer_fairy_ring_stamp",
+    "name": "Fairy-Ring Stamp",
+    "description": "Card rewards contain 1 additional card.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "increase_card_reward_count",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "class_specific",
+      "reward",
+      "shroom"
+    ],
+    "allowed_classes": [
+      "shroomancer"
+    ]
+  },
+  {
+    "id": "act2_shroomancer_mushroom_court_seal",
+    "name": "Mushroom Court Seal",
+    "description": "At the start of each combat, apply 1 Poison and 1 Doubt to all enemies.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "poison",
+        "amount": 1
+      },
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "doubt",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "class_specific",
+      "doubt",
+      "poison",
+      "shroom"
+    ],
+    "allowed_classes": [
+      "shroomancer"
+    ]
+  },
+  {
+    "id": "act2_shroomancer_old_growth_sash",
+    "name": "Old-Growth Sash",
+    "description": "At the start of each combat, gain 12 Block.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 12
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "block",
+      "class_specific",
+      "shroom"
+    ],
+    "allowed_classes": [
+      "shroomancer"
+    ]
+  },
+  {
+    "id": "act2_shroomancer_deep_colony_crown",
+    "name": "Deep Colony Crown",
+    "description": "At the start of each combat, gain 1 Strength and apply 2 Poison to all enemies.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "gain_strength_at_combat_start",
+        "amount": 1
+      },
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "poison",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "class_specific",
+      "poison",
+      "shroom",
+      "strength"
+    ],
+    "allowed_classes": [
+      "shroomancer"
+    ]
+  },
+  {
+    "id": "act2_shroomancer_root_network_key",
+    "name": "Root-Network Key",
+    "description": "At the start of each combat, gain 1 Energy and apply 1 Doubt to yourself.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "gain_energy_at_combat_start",
+        "amount": 1
+      },
+      {
+        "type": "apply_status_to_player_at_combat_start",
+        "status": "doubt",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "class_specific",
+      "energy",
+      "risk_reward",
+      "shroom"
+    ],
+    "allowed_classes": [
+      "shroomancer"
+    ]
+  },
+  {
+    "id": "act2_shroomancer_archive_rot_engine",
+    "name": "Archive Rot Engine",
+    "description": "At the start of each combat, apply 3 Poison to all enemies.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "poison",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "class_specific",
+      "poison",
+      "shroom"
+    ],
+    "allowed_classes": [
+      "shroomancer"
+    ]
+  },
+  {
+    "id": "act2_witch_clerk_moonlit_stamp",
+    "name": "Moonlit Stamp",
+    "description": "At the start of each combat, apply 1 Doubt to all enemies.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "doubt",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "class_specific",
+      "clerk",
+      "doubt",
+      "witch"
+    ],
+    "allowed_classes": [
+      "witch_clerk"
+    ]
+  },
+  {
+    "id": "act2_witch_clerk_tidy_pin_cushion",
+    "name": "Tidy Pin Cushion",
+    "description": "At the start of each combat, gain 8 Block.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 8
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "block",
+      "class_specific",
+      "clerk",
+      "witch"
+    ],
+    "allowed_classes": [
+      "witch_clerk"
+    ]
+  },
+  {
+    "id": "act2_witch_clerk_broom_cupboard_key",
+    "name": "Broom-Cupboard Key",
+    "description": "When picked up, heal 18 HP.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "heal_on_pickup",
+        "amount": 18
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "class_specific",
+      "clerk",
+      "healing",
+      "witch"
+    ],
+    "allowed_classes": [
+      "witch_clerk"
+    ]
+  },
+  {
+    "id": "act2_witch_clerk_formal_black_cat_hair",
+    "name": "Formal Black-Cat Hair",
+    "description": "At the start of each combat, apply 1 Paperwork to all enemies.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "paperwork",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "class_specific",
+      "clerk",
+      "paperwork",
+      "witch"
+    ],
+    "allowed_classes": [
+      "witch_clerk"
+    ]
+  },
+  {
+    "id": "act2_witch_clerk_coven_minute_seal",
+    "name": "Coven Minute Seal",
+    "description": "At the start of each combat, apply 2 Doubt to all enemies and gain 5 Block.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "doubt",
+        "amount": 2
+      },
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 5
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "block",
+      "class_specific",
+      "clerk",
+      "doubt",
+      "witch"
+    ],
+    "allowed_classes": [
+      "witch_clerk"
+    ]
+  },
+  {
+    "id": "act2_witch_clerk_ink_black_thimble",
+    "name": "Ink-Black Thimble",
+    "description": "At the start of each combat, apply 1 Doubt and 1 Paperwork to all enemies.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "doubt",
+        "amount": 1
+      },
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "paperwork",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "class_specific",
+      "clerk",
+      "doubt",
+      "paperwork",
+      "witch"
+    ],
+    "allowed_classes": [
+      "witch_clerk"
+    ]
+  },
+  {
+    "id": "act2_witch_clerk_chairwomans_agenda",
+    "name": "Chairwoman's Agenda",
+    "description": "Card rewards contain 1 additional card.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "increase_card_reward_count",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "class_specific",
+      "clerk",
+      "reward",
+      "witch"
+    ],
+    "allowed_classes": [
+      "witch_clerk"
+    ]
+  },
+  {
+    "id": "act2_witch_clerk_straight_edge_broom",
+    "name": "Straight-Edge Broom",
+    "description": "At the start of each combat, gain 12 Block.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 12
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "block",
+      "class_specific",
+      "clerk",
+      "witch"
+    ],
+    "allowed_classes": [
+      "witch_clerk"
+    ]
+  },
+  {
+    "id": "act2_witch_clerk_coven_stamp_matrix",
+    "name": "Coven Stamp Matrix",
+    "description": "At the start of each combat, gain 1 Strength and apply 2 Doubt to all enemies.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "gain_strength_at_combat_start",
+        "amount": 1
+      },
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "doubt",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "class_specific",
+      "clerk",
+      "doubt",
+      "strength",
+      "witch"
+    ],
+    "allowed_classes": [
+      "witch_clerk"
+    ]
+  },
+  {
+    "id": "act2_witch_clerk_midnight_registry_key",
+    "name": "Midnight Registry Key",
+    "description": "At the start of each combat, gain 1 Energy and apply 1 Doubt to yourself.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "gain_energy_at_combat_start",
+        "amount": 1
+      },
+      {
+        "type": "apply_status_to_player_at_combat_start",
+        "status": "doubt",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "class_specific",
+      "clerk",
+      "energy",
+      "risk_reward",
+      "witch"
+    ],
+    "allowed_classes": [
+      "witch_clerk"
+    ]
+  },
+  {
+    "id": "act2_witch_clerk_bureau_coven_charter",
+    "name": "Bureau-Coven Charter",
+    "description": "At the start of each combat, apply 2 Paperwork and 2 Doubt to all enemies.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "paperwork",
+        "amount": 2
+      },
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "doubt",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "class_specific",
+      "clerk",
+      "doubt",
+      "paperwork",
+      "witch"
+    ],
+    "allowed_classes": [
+      "witch_clerk"
+    ]
+  },
+  {
+    "id": "act2_witch_clerk_very_polite_grimoire",
+    "name": "Very Polite Grimoire",
+    "description": "Shop prices are reduced by 20%. At the start of each combat, gain 8 Block.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "shop_price_discount",
+        "amount": 20
+      },
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 8
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "block",
+      "class_specific",
+      "clerk",
+      "shop",
+      "witch"
+    ],
+    "allowed_classes": [
+      "witch_clerk"
+    ]
+  }
+]

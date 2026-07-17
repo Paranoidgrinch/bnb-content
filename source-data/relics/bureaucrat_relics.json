@@ -1,0 +1,217 @@
+[
+  {
+    "id": "brass_filing_tray",
+    "name": "Brass Filing Tray",
+    "description": "At the start of each combat, add a Temporary Authorization to your hand.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "temporary_authorization",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "bureaucrat",
+      "bureaucracy",
+      "form",
+      "zero_cost",
+      "block"
+    ],
+    "allowed_classes": [
+      "bureaucrat"
+    ]
+  },
+  {
+    "id": "deputy_seal",
+    "name": "Deputy Seal",
+    "description": "At the start of each combat, apply 1 Paperwork to all enemies and add a Form 12-B to your hand.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "paperwork",
+        "amount": 1
+      },
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "form_12_b",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "bureaucrat",
+      "bureaucracy",
+      "paperwork",
+      "form",
+      "zero_cost"
+    ],
+    "allowed_classes": [
+      "bureaucrat"
+    ]
+  },
+  {
+    "id": "queue_bell",
+    "name": "Queue Bell",
+    "description": "At the start of each combat, gain 5 Block and apply 1 Doubt to all enemies.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 5
+      },
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "doubt",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "bureaucrat",
+      "bureaucracy",
+      "queue",
+      "block",
+      "doubt"
+    ],
+    "allowed_classes": [
+      "bureaucrat"
+    ]
+  },
+  {
+    "id": "carbon_copy_pad",
+    "name": "Carbon Copy Pad",
+    "description": "At the start of each combat, add a Counter Signature to your hand and a Duplicate Copy to your discard pile.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "counter_signature",
+        "destination": "hand",
+        "copies": 1
+      },
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "duplicate_copy",
+        "destination": "discard_pile",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "bureaucrat",
+      "bureaucracy",
+      "junk",
+      "zero_cost",
+      "draw"
+    ],
+    "allowed_classes": [
+      "bureaucrat"
+    ]
+  },
+  {
+    "id": "archive_key",
+    "name": "Archive Key",
+    "description": "At the start of each combat, add an Archive the Evidence to your hand.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "archive_the_evidence",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "bureaucrat",
+      "bureaucracy",
+      "junk",
+      "block",
+      "exhaust_payoff"
+    ],
+    "allowed_classes": [
+      "bureaucrat"
+    ]
+  },
+  {
+    "id": "red_tape_dispenser",
+    "name": "Red Tape Dispenser",
+    "description": "At the start of each combat, gain 1 Energy and add Red Tape to your hand.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "gain_energy_at_combat_start",
+        "amount": 1
+      },
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "red_tape",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "bureaucrat",
+      "bureaucracy",
+      "energy",
+      "junk",
+      "risk_reward"
+    ],
+    "allowed_classes": [
+      "bureaucrat"
+    ]
+  },
+  {
+    "id": "permit_cabinet",
+    "name": "Permit Cabinet",
+    "description": "At the start of each combat, add an Expedited Stamp to your hand.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "expedited_stamp",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "bureaucrat",
+      "bureaucracy",
+      "paperwork",
+      "form",
+      "zero_cost"
+    ],
+    "allowed_classes": [
+      "bureaucrat"
+    ]
+  },
+  {
+    "id": "bottomless_inbox_tray",
+    "name": "Bottomless Inbox Tray",
+    "description": "At the start of each combat, apply 2 Paperwork to all enemies and add an Unsigned Form to your hand.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "paperwork",
+        "amount": 2
+      },
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "unsigned_form",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "bureaucrat",
+      "bureaucracy",
+      "paperwork",
+      "junk",
+      "risk_reward"
+    ],
+    "allowed_classes": [
+      "bureaucrat"
+    ]
+  }
+]

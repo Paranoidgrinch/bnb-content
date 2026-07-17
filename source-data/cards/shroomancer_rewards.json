@@ -1,0 +1,1078 @@
+[
+  {
+    "id": "loose_spore",
+    "name": "Loose Spore",
+    "class": "shroomancer",
+    "type": "spell",
+    "cost": 0,
+    "rarity": "starter",
+    "text": "Apply 1 Poison. Exhaust.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "generated",
+      "spore",
+      "poison",
+      "zero_cost",
+      "exhaust"
+    ]
+  },
+  {
+    "id": "soft_cap",
+    "name": "Soft Cap",
+    "class": "shroomancer",
+    "type": "form",
+    "cost": 0,
+    "rarity": "starter",
+    "text": "Gain 2 Block. Exhaust.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "generated",
+      "cap",
+      "mycelium",
+      "block",
+      "zero_cost",
+      "exhaust"
+    ]
+  },
+  {
+    "id": "mould_flake",
+    "name": "Mould Flake",
+    "class": "shroomancer",
+    "type": "spell",
+    "cost": 0,
+    "rarity": "starter",
+    "text": "Apply 1 Doubt. Exhaust.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "generated",
+      "mould",
+      "rot",
+      "doubt",
+      "zero_cost",
+      "exhaust"
+    ]
+  },
+  {
+    "id": "mycelium_thread",
+    "name": "Mycelium Thread",
+    "class": "shroomancer",
+    "type": "form",
+    "cost": 0,
+    "rarity": "starter",
+    "text": "Draw 1. Exhaust.",
+    "effects": [
+      {
+        "type": "draw_cards",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "generated",
+      "mycelium",
+      "draw",
+      "zero_cost",
+      "exhaust"
+    ]
+  },
+  {
+    "id": "soggy_compost",
+    "name": "Soggy Compost",
+    "class": "shroomancer",
+    "type": "curse",
+    "cost": 0,
+    "rarity": "starter",
+    "text": "Unplayable.",
+    "effects": [],
+    "tags": [
+      "generated",
+      "rot",
+      "junk",
+      "unplayable"
+    ]
+  },
+  {
+    "id": "toxic_cap",
+    "name": "Toxic Cap",
+    "class": "shroomancer",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 3 Poison.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "poison",
+      "cap",
+      "setup"
+    ],
+    "upgrades_to": "toxic_cap_plus"
+  },
+  {
+    "id": "toxic_cap_plus",
+    "name": "Toxic Cap+",
+    "class": "shroomancer",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 5 Poison.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 5
+      }
+    ],
+    "tags": [
+      "poison",
+      "cap",
+      "setup",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "spore_cloud",
+    "name": "Spore Cloud",
+    "class": "shroomancer",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 1 Poison to all enemies.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "all_enemies",
+        "status": "poison",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "poison",
+      "spore",
+      "aoe",
+      "setup"
+    ],
+    "upgrades_to": "spore_cloud_plus"
+  },
+  {
+    "id": "spore_cloud_plus",
+    "name": "Spore Cloud+",
+    "class": "shroomancer",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 2 Poison to all enemies.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "all_enemies",
+        "status": "poison",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "poison",
+      "spore",
+      "aoe",
+      "setup",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "pinch_of_spores",
+    "name": "Pinch of Spores",
+    "class": "shroomancer",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 1 Poison. Add a Loose Spore to your hand.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 1
+      },
+      {
+        "type": "create_card",
+        "card_id": "loose_spore",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "poison",
+      "spore",
+      "zero_cost",
+      "setup"
+    ],
+    "upgrades_to": "pinch_of_spores_plus"
+  },
+  {
+    "id": "pinch_of_spores_plus",
+    "name": "Pinch of Spores+",
+    "class": "shroomancer",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 2 Poison. Add a Loose Spore to your hand.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 2
+      },
+      {
+        "type": "create_card",
+        "card_id": "loose_spore",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "poison",
+      "spore",
+      "zero_cost",
+      "setup",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "brown_spore_purse",
+    "name": "Brown Spore Purse",
+    "class": "shroomancer",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Apply 4 Poison to all enemies.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "all_enemies",
+        "status": "poison",
+        "amount": 4
+      }
+    ],
+    "tags": [
+      "poison",
+      "spore",
+      "aoe",
+      "setup"
+    ],
+    "upgrades_to": "brown_spore_purse_plus"
+  },
+  {
+    "id": "brown_spore_purse_plus",
+    "name": "Brown Spore Purse+",
+    "class": "shroomancer",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Apply 6 Poison to all enemies.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "all_enemies",
+        "status": "poison",
+        "amount": 6
+      }
+    ],
+    "tags": [
+      "poison",
+      "spore",
+      "aoe",
+      "setup",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "mushroom_carapace",
+    "name": "Mushroom Carapace",
+    "class": "shroomancer",
+    "type": "form",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Gain 8 Block.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 8
+      }
+    ],
+    "tags": [
+      "block",
+      "mycelium",
+      "cap"
+    ],
+    "upgrades_to": "mushroom_carapace_plus"
+  },
+  {
+    "id": "mushroom_carapace_plus",
+    "name": "Mushroom Carapace+",
+    "class": "shroomancer",
+    "type": "form",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Gain 11 Block.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 11
+      }
+    ],
+    "tags": [
+      "block",
+      "mycelium",
+      "cap",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "symbiotic_guard",
+    "name": "Symbiotic Guard",
+    "class": "shroomancer",
+    "type": "form",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Gain 6 Block. Apply 1 Poison.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 6
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "block",
+      "mycelium",
+      "poison",
+      "symbiosis"
+    ],
+    "upgrades_to": "symbiotic_guard_plus"
+  },
+  {
+    "id": "symbiotic_guard_plus",
+    "name": "Symbiotic Guard+",
+    "class": "shroomancer",
+    "type": "form",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Gain 9 Block. Apply 2 Poison.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 9
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "block",
+      "mycelium",
+      "poison",
+      "symbiosis",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "threaded_roots",
+    "name": "Threaded Roots",
+    "class": "shroomancer",
+    "type": "form",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Gain 5 Block. Draw 1.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 5
+      },
+      {
+        "type": "draw_cards",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "block",
+      "mycelium",
+      "draw"
+    ],
+    "upgrades_to": "threaded_roots_plus"
+  },
+  {
+    "id": "threaded_roots_plus",
+    "name": "Threaded Roots+",
+    "class": "shroomancer",
+    "type": "form",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Gain 8 Block. Draw 1.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 8
+      },
+      {
+        "type": "draw_cards",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "block",
+      "mycelium",
+      "draw",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "soft_cap_cluster",
+    "name": "Soft Cap Cluster",
+    "class": "shroomancer",
+    "type": "form",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Gain 4 Block. Add a Soft Cap to your hand.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 4
+      },
+      {
+        "type": "create_card",
+        "card_id": "soft_cap",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "block",
+      "mycelium",
+      "cap",
+      "zero_cost"
+    ],
+    "upgrades_to": "soft_cap_cluster_plus"
+  },
+  {
+    "id": "soft_cap_cluster_plus",
+    "name": "Soft Cap Cluster+",
+    "class": "shroomancer",
+    "type": "form",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Gain 7 Block. Add a Soft Cap to your hand.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 7
+      },
+      {
+        "type": "create_card",
+        "card_id": "soft_cap",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "block",
+      "mycelium",
+      "cap",
+      "zero_cost",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "fertile_decay",
+    "name": "Fertile Decay",
+    "class": "shroomancer",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "uncommon",
+    "text": "Deal 2 damage per Poison on the target.",
+    "effects": [
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount_per_stack": 2
+      }
+    ],
+    "tags": [
+      "attack",
+      "poison",
+      "payoff",
+      "decay"
+    ],
+    "upgrades_to": "fertile_decay_plus"
+  },
+  {
+    "id": "fertile_decay_plus",
+    "name": "Fertile Decay+",
+    "class": "shroomancer",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "uncommon",
+    "text": "Deal 3 damage per Poison on the target.",
+    "effects": [
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount_per_stack": 3
+      }
+    ],
+    "tags": [
+      "attack",
+      "poison",
+      "payoff",
+      "decay",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "sudden_bloom",
+    "name": "Sudden Bloom",
+    "class": "shroomancer",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Deal 3 damage. Apply 1 Poison.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 3
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "attack",
+      "poison",
+      "bloom"
+    ],
+    "upgrades_to": "sudden_bloom_plus"
+  },
+  {
+    "id": "sudden_bloom_plus",
+    "name": "Sudden Bloom+",
+    "class": "shroomancer",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Deal 5 damage. Apply 2 Poison.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 5
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "attack",
+      "poison",
+      "bloom",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "fruiting_body",
+    "name": "Fruiting Body",
+    "class": "shroomancer",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Apply 2 Poison. Gain 4 Block.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 2
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 4
+      }
+    ],
+    "tags": [
+      "poison",
+      "bloom",
+      "block"
+    ],
+    "upgrades_to": "fruiting_body_plus"
+  },
+  {
+    "id": "fruiting_body_plus",
+    "name": "Fruiting Body+",
+    "class": "shroomancer",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Apply 3 Poison. Gain 6 Block.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 3
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 6
+      }
+    ],
+    "tags": [
+      "poison",
+      "bloom",
+      "block",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "perfect_conditions",
+    "name": "Perfect Conditions",
+    "class": "shroomancer",
+    "type": "form",
+    "cost": 0,
+    "rarity": "rare",
+    "text": "Gain 1 Energy. Add Soggy Compost to your discard pile. Exhaust.",
+    "effects": [
+      {
+        "type": "gain_resource",
+        "resource": "energy",
+        "amount": 1
+      },
+      {
+        "type": "create_card",
+        "card_id": "soggy_compost",
+        "destination": "discard_pile",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "bloom",
+      "energy",
+      "junk",
+      "zero_cost",
+      "exhaust"
+    ],
+    "upgrades_to": "perfect_conditions_plus"
+  },
+  {
+    "id": "perfect_conditions_plus",
+    "name": "Perfect Conditions+",
+    "class": "shroomancer",
+    "type": "form",
+    "cost": 0,
+    "rarity": "rare",
+    "text": "Gain 1 Energy. Draw 1. Add Soggy Compost to your discard pile. Exhaust.",
+    "effects": [
+      {
+        "type": "gain_resource",
+        "resource": "energy",
+        "amount": 1
+      },
+      {
+        "type": "draw_cards",
+        "amount": 1
+      },
+      {
+        "type": "create_card",
+        "card_id": "soggy_compost",
+        "destination": "discard_pile",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "bloom",
+      "energy",
+      "draw",
+      "junk",
+      "zero_cost",
+      "exhaust",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "mouldy_argument",
+    "name": "Mouldy Argument",
+    "class": "shroomancer",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 2 Doubt.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "rot",
+      "mould",
+      "doubt",
+      "poison"
+    ],
+    "upgrades_to": "mouldy_argument_plus"
+  },
+  {
+    "id": "mouldy_argument_plus",
+    "name": "Mouldy Argument+",
+    "class": "shroomancer",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 3 Doubt. Apply 1 Poison.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 3
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "rot",
+      "mould",
+      "doubt",
+      "poison",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "spreading_mould",
+    "name": "Spreading Mould",
+    "class": "shroomancer",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Apply 1 Doubt to all enemies.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "all_enemies",
+        "status": "doubt",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "rot",
+      "mould",
+      "doubt",
+      "poison",
+      "aoe"
+    ],
+    "upgrades_to": "spreading_mould_plus"
+  },
+  {
+    "id": "spreading_mould_plus",
+    "name": "Spreading Mould+",
+    "class": "shroomancer",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Apply 2 Doubt to all enemies.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "all_enemies",
+        "status": "doubt",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "rot",
+      "mould",
+      "doubt",
+      "poison",
+      "aoe",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "compost_paperwork",
+    "name": "Compost Paperwork",
+    "class": "shroomancer",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Apply 3 Paperwork. Add a Mould Flake to your hand.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 3
+      },
+      {
+        "type": "create_card",
+        "card_id": "mould_flake",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "rot",
+      "mould",
+      "paperwork",
+      "doubt",
+      "zero_cost"
+    ],
+    "upgrades_to": "compost_paperwork_plus"
+  },
+  {
+    "id": "compost_paperwork_plus",
+    "name": "Compost Paperwork+",
+    "class": "shroomancer",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Apply 4 Paperwork. Add a Mould Flake to your hand.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 4
+      },
+      {
+        "type": "create_card",
+        "card_id": "mould_flake",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "rot",
+      "mould",
+      "paperwork",
+      "doubt",
+      "zero_cost",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "shaking_gills",
+    "name": "Shaking Gills",
+    "class": "shroomancer",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Add 2 Loose Spores to your hand.",
+    "effects": [
+      {
+        "type": "create_card",
+        "card_id": "loose_spore",
+        "destination": "hand",
+        "copies": 2
+      }
+    ],
+    "tags": [
+      "spore",
+      "swarm",
+      "zero_cost"
+    ],
+    "upgrades_to": "shaking_gills_plus"
+  },
+  {
+    "id": "shaking_gills_plus",
+    "name": "Shaking Gills+",
+    "class": "shroomancer",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Add 3 Loose Spores to your hand.",
+    "effects": [
+      {
+        "type": "create_card",
+        "card_id": "loose_spore",
+        "destination": "hand",
+        "copies": 3
+      }
+    ],
+    "tags": [
+      "spore",
+      "swarm",
+      "zero_cost",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "cap_ring",
+    "name": "Cap Ring",
+    "class": "shroomancer",
+    "type": "form",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Gain 3 Block. Add a Soft Cap to your hand.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 3
+      },
+      {
+        "type": "create_card",
+        "card_id": "soft_cap",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "cap",
+      "swarm",
+      "block",
+      "zero_cost"
+    ],
+    "upgrades_to": "cap_ring_plus"
+  },
+  {
+    "id": "cap_ring_plus",
+    "name": "Cap Ring+",
+    "class": "shroomancer",
+    "type": "form",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Gain 5 Block. Add 2 Soft Caps to your hand.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 5
+      },
+      {
+        "type": "create_card",
+        "card_id": "soft_cap",
+        "destination": "hand",
+        "copies": 2
+      }
+    ],
+    "tags": [
+      "cap",
+      "swarm",
+      "block",
+      "zero_cost",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "mycelium_whisper",
+    "name": "Mycelium Whisper",
+    "class": "shroomancer",
+    "type": "form",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Draw 2. Add a Mycelium Thread to your hand.",
+    "effects": [
+      {
+        "type": "draw_cards",
+        "amount": 2
+      },
+      {
+        "type": "create_card",
+        "card_id": "mycelium_thread",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "mycelium",
+      "swarm",
+      "draw",
+      "zero_cost"
+    ],
+    "upgrades_to": "mycelium_whisper_plus"
+  },
+  {
+    "id": "mycelium_whisper_plus",
+    "name": "Mycelium Whisper+",
+    "class": "shroomancer",
+    "type": "form",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Draw 3. Add a Mycelium Thread to your hand.",
+    "effects": [
+      {
+        "type": "draw_cards",
+        "amount": 3
+      },
+      {
+        "type": "create_card",
+        "card_id": "mycelium_thread",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "mycelium",
+      "swarm",
+      "draw",
+      "zero_cost",
+      "upgraded"
+    ]
+  }
+]

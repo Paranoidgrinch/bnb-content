@@ -1,0 +1,21 @@
+{
+  "id": "example_event",
+  "name": "Example Event",
+  "act": 1,
+  "event_type": "narrative",
+  "weight": 1,
+  "text": "You find a suspiciously well-organized queue.",
+  "choices": [
+    {
+      "id": "wait_patiently",
+      "text": "Wait patiently.",
+      "result_text": "Nothing happens, but it happens officially.",
+      "effects": [
+        {
+          "type": "none"
+        }
+      ]
+    }
+  ],
+  "tags": []
+}

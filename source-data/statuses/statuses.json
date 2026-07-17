@@ -1,0 +1,75 @@
+[
+  {
+    "id": "paperwork",
+    "name": "Paperwork",
+    "description": "At the end of the enemy turn, this character loses HP equal to its Paperwork. This ignores Block.",
+    "stacking": "intensity",
+    "trigger": "enemy_turn_end",
+    "is_negative": true,
+    "tags": [
+      "bureaucracy",
+      "damage_over_time"
+    ]
+  },
+  {
+    "id": "doubt",
+    "name": "Doubt",
+    "description": "The next attack made by this character deals 25% less damage. One stack is removed when this triggers.",
+    "stacking": "intensity",
+    "trigger": "before_owner_attack",
+    "is_negative": true,
+    "tags": [
+      "argument",
+      "attack_reduction"
+    ]
+  },
+  {
+    "id": "panic",
+    "name": "Panic",
+    "description": "At the start of the player's turn, draw 1 fewer card. One stack is removed when this triggers.",
+    "stacking": "intensity",
+    "trigger": "player_turn_start",
+    "is_negative": true,
+    "tags": [
+      "mental",
+      "draw_reduction"
+    ]
+  },
+  {
+    "id": "fatigue",
+    "name": "Fatigue",
+    "description": "At the start of the player's turn, lose 1 Energy. One stack is removed when this triggers.",
+    "stacking": "intensity",
+    "trigger": "player_turn_start",
+    "is_negative": true,
+    "tags": [
+      "mental",
+      "energy_reduction",
+      "delay"
+    ]
+  },
+  {
+    "id": "strength",
+    "name": "Strength",
+    "description": "This character's attacks deal additional damage equal to its Strength.",
+    "stacking": "intensity",
+    "trigger": "none",
+    "is_negative": false,
+    "tags": [
+      "buff",
+      "attack"
+    ]
+  },
+  {
+    "id": "poison",
+    "name": "Poison",
+    "description": "At the end of the enemy turn, loses HP equal to Poison, then Poison is reduced by 1.",
+    "stacking": "intensity",
+    "trigger": "enemy_turn_end",
+    "is_negative": true,
+    "tags": [
+      "debuff",
+      "damage_over_time"
+    ]
+  }
+]

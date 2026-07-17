@@ -1,0 +1,2437 @@
+[
+  {
+    "id": "grand_codex_of_forms",
+    "name": "Grand Codex of Forms",
+    "class": "bureaucrat",
+    "type": "form",
+    "cost": 2,
+    "rarity": "epic",
+    "text": "Deal 7 damage for each Paperwork on the target.",
+    "effects": [
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount_per_stack": 7
+      }
+    ],
+    "tags": [
+      "build_defining",
+      "bureaucracy",
+      "epic",
+      "paperwork",
+      "payoff",
+      "transition_reward"
+    ]
+  },
+  {
+    "id": "absolute_procedure",
+    "name": "Absolute Procedure",
+    "class": "bureaucrat",
+    "type": "form",
+    "cost": 2,
+    "rarity": "epic",
+    "text": "Apply 8 Paperwork and 2 Doubt.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 8
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "build_defining",
+      "bureaucracy",
+      "doubt",
+      "epic",
+      "paperwork",
+      "transition_reward"
+    ]
+  },
+  {
+    "id": "chair_of_minor_authority",
+    "name": "Chair of Minor Authority",
+    "class": "bureaucrat",
+    "type": "argument",
+    "cost": 2,
+    "rarity": "epic",
+    "text": "Gain 18 Block and 2 Strength.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 18
+      },
+      {
+        "type": "gain_strength",
+        "target": "self",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "block",
+      "build_defining",
+      "bureaucracy",
+      "epic",
+      "strength",
+      "transition_reward"
+    ]
+  },
+  {
+    "id": "perfectly_tidy_curse",
+    "name": "Perfectly Tidy Curse",
+    "class": "witch_clerk",
+    "type": "curse",
+    "cost": 2,
+    "rarity": "epic",
+    "text": "Apply 5 Doubt and 5 Paperwork.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 5
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 5
+      }
+    ],
+    "tags": [
+      "build_defining",
+      "curse",
+      "doubt",
+      "epic",
+      "paperwork",
+      "transition_reward"
+    ]
+  },
+  {
+    "id": "borrowed_coven_minutes",
+    "name": "Borrowed Coven Minutes",
+    "class": "witch_clerk",
+    "type": "form",
+    "cost": 1,
+    "rarity": "epic",
+    "text": "Gain 12 Block. Draw 2 cards.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 12
+      },
+      {
+        "type": "draw_cards",
+        "target": "self",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "block",
+      "build_defining",
+      "draw",
+      "epic",
+      "transition_reward",
+      "witch"
+    ]
+  },
+  {
+    "id": "polite_hexing_protocol",
+    "name": "Polite Hexing Protocol",
+    "class": "witch_clerk",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "epic",
+    "text": "Deal 8 damage for each Doubt on the target.",
+    "effects": [
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount_per_stack": 8
+      }
+    ],
+    "tags": [
+      "build_defining",
+      "doubt",
+      "epic",
+      "payoff",
+      "spell",
+      "transition_reward"
+    ]
+  },
+  {
+    "id": "bell_at_closing_time",
+    "name": "Bell at Closing Time",
+    "class": "night_watch_recruit",
+    "type": "action",
+    "cost": 2,
+    "rarity": "epic",
+    "text": "Deal 24 damage. Apply 3 Doubt.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 24
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "attack",
+      "build_defining",
+      "doubt",
+      "epic",
+      "transition_reward",
+      "watch"
+    ]
+  },
+  {
+    "id": "watchhouse_second_wind",
+    "name": "Watchhouse Second Wind",
+    "class": "night_watch_recruit",
+    "type": "action",
+    "cost": 2,
+    "rarity": "epic",
+    "text": "Gain 20 Block and 2 Strength.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 20
+      },
+      {
+        "type": "gain_strength",
+        "target": "self",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "block",
+      "build_defining",
+      "epic",
+      "strength",
+      "transition_reward",
+      "watch"
+    ]
+  },
+  {
+    "id": "warrant_with_teeth",
+    "name": "Warrant with Teeth",
+    "class": "night_watch_recruit",
+    "type": "argument",
+    "cost": 2,
+    "rarity": "epic",
+    "text": "Deal 7 damage for each Doubt on the target.",
+    "effects": [
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount_per_stack": 7
+      }
+    ],
+    "tags": [
+      "build_defining",
+      "doubt",
+      "epic",
+      "payoff",
+      "transition_reward",
+      "watch"
+    ]
+  },
+  {
+    "id": "old_nettle_brew",
+    "name": "Old Nettle Brew",
+    "class": "hedge_witch",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "epic",
+    "text": "Apply 7 Poison. Gain 12 Block.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 7
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 12
+      }
+    ],
+    "tags": [
+      "block",
+      "build_defining",
+      "epic",
+      "poison",
+      "transition_reward",
+      "witch"
+    ]
+  },
+  {
+    "id": "cottage_door_standoff",
+    "name": "Cottage Door Standoff",
+    "class": "hedge_witch",
+    "type": "argument",
+    "cost": 2,
+    "rarity": "epic",
+    "text": "Gain 22 Block and 1 Strength.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 22
+      },
+      {
+        "type": "gain_strength",
+        "target": "self",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "block",
+      "build_defining",
+      "epic",
+      "strength",
+      "transition_reward",
+      "witch"
+    ]
+  },
+  {
+    "id": "practical_curse_bundle",
+    "name": "Practical Curse Bundle",
+    "class": "hedge_witch",
+    "type": "curse",
+    "cost": 2,
+    "rarity": "epic",
+    "text": "Apply 5 Poison and 4 Doubt.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 5
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 4
+      }
+    ],
+    "tags": [
+      "build_defining",
+      "curse",
+      "doubt",
+      "epic",
+      "poison",
+      "transition_reward"
+    ]
+  },
+  {
+    "id": "black_ribbon_contract",
+    "name": "Black Ribbon Contract",
+    "class": "guild_assassin_apprentice",
+    "type": "action",
+    "cost": 2,
+    "rarity": "epic",
+    "text": "Deal 32 damage.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 32
+      }
+    ],
+    "tags": [
+      "assassin",
+      "attack",
+      "build_defining",
+      "epic",
+      "transition_reward"
+    ]
+  },
+  {
+    "id": "marked_in_triplicate",
+    "name": "Marked in Triplicate",
+    "class": "guild_assassin_apprentice",
+    "type": "form",
+    "cost": 2,
+    "rarity": "epic",
+    "text": "Apply 5 Doubt and 4 Poison.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 5
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 4
+      }
+    ],
+    "tags": [
+      "assassin",
+      "build_defining",
+      "doubt",
+      "epic",
+      "poison",
+      "transition_reward"
+    ]
+  },
+  {
+    "id": "quiet_knife_lesson",
+    "name": "Quiet Knife Lesson",
+    "class": "guild_assassin_apprentice",
+    "type": "action",
+    "cost": 1,
+    "rarity": "epic",
+    "text": "Gain 2 Strength. Deal 10 damage.",
+    "effects": [
+      {
+        "type": "gain_strength",
+        "target": "self",
+        "amount": 2
+      },
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 10
+      }
+    ],
+    "tags": [
+      "assassin",
+      "attack",
+      "build_defining",
+      "epic",
+      "strength",
+      "transition_reward"
+    ]
+  },
+  {
+    "id": "inadvisable_grimoire",
+    "name": "Inadvisable Grimoire",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "epic",
+    "text": "Draw 3 cards. Apply 1 Panic to yourself.",
+    "effects": [
+      {
+        "type": "draw_cards",
+        "target": "self",
+        "amount": 3
+      },
+      {
+        "type": "apply_status",
+        "target": "self",
+        "status": "panic",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "build_defining",
+      "draw",
+      "epic",
+      "risky",
+      "spell",
+      "transition_reward"
+    ]
+  },
+  {
+    "id": "epic_exploding_footnote",
+    "name": "Exploding Footnote",
+    "class": "failed_wizard",
+    "type": "footnote",
+    "cost": 2,
+    "rarity": "epic",
+    "text": "Deal 22 damage. Apply 4 Paperwork.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 22
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 4
+      }
+    ],
+    "tags": [
+      "build_defining",
+      "epic",
+      "footnote",
+      "paperwork",
+      "spell",
+      "transition_reward"
+    ]
+  },
+  {
+    "id": "borrowed_hat_of_power",
+    "name": "Borrowed Hat of Power",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "epic",
+    "text": "Gain 3 Strength. Apply 1 Panic to yourself.",
+    "effects": [
+      {
+        "type": "gain_strength",
+        "target": "self",
+        "amount": 3
+      },
+      {
+        "type": "apply_status",
+        "target": "self",
+        "status": "panic",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "build_defining",
+      "epic",
+      "risky",
+      "spell",
+      "strength",
+      "transition_reward"
+    ]
+  },
+  {
+    "id": "treaty_of_mutual_leakage",
+    "name": "Treaty of Mutual Leakage",
+    "class": "sewer_diplomat",
+    "type": "argument",
+    "cost": 2,
+    "rarity": "epic",
+    "text": "Apply 6 Poison and 3 Doubt.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 6
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "build_defining",
+      "doubt",
+      "epic",
+      "poison",
+      "sewer",
+      "transition_reward"
+    ]
+  },
+  {
+    "id": "ratified_alliance",
+    "name": "Ratified Alliance",
+    "class": "sewer_diplomat",
+    "type": "form",
+    "cost": 2,
+    "rarity": "epic",
+    "text": "Gain 18 Block and 2 Strength.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 18
+      },
+      {
+        "type": "gain_strength",
+        "target": "self",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "block",
+      "build_defining",
+      "epic",
+      "sewer",
+      "strength",
+      "transition_reward"
+    ]
+  },
+  {
+    "id": "ambassadorial_sludge",
+    "name": "Ambassadorial Sludge",
+    "class": "sewer_diplomat",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "epic",
+    "text": "Deal 7 damage for each Poison on the target.",
+    "effects": [
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount_per_stack": 7
+      }
+    ],
+    "tags": [
+      "build_defining",
+      "epic",
+      "payoff",
+      "poison",
+      "sewer",
+      "transition_reward"
+    ]
+  },
+  {
+    "id": "final_receipt",
+    "name": "Final Receipt",
+    "class": "mortuary_apprentice",
+    "type": "form",
+    "cost": 2,
+    "rarity": "epic",
+    "text": "Deal 8 damage for each Paperwork on the target.",
+    "effects": [
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount_per_stack": 8
+      }
+    ],
+    "tags": [
+      "build_defining",
+      "epic",
+      "mortuary",
+      "paperwork",
+      "payoff",
+      "transition_reward"
+    ]
+  },
+  {
+    "id": "borrowed_last_words",
+    "name": "Borrowed Last Words",
+    "class": "mortuary_apprentice",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "epic",
+    "text": "Apply 4 Doubt. Draw 2 cards.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 4
+      },
+      {
+        "type": "draw_cards",
+        "target": "self",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "build_defining",
+      "doubt",
+      "draw",
+      "epic",
+      "mortuary",
+      "transition_reward"
+    ]
+  },
+  {
+    "id": "epic_quiet_procession",
+    "name": "Quiet Procession",
+    "class": "mortuary_apprentice",
+    "type": "action",
+    "cost": 2,
+    "rarity": "epic",
+    "text": "Gain 20 Block. Apply 4 Paperwork.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 20
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 4
+      }
+    ],
+    "tags": [
+      "block",
+      "build_defining",
+      "epic",
+      "mortuary",
+      "paperwork",
+      "transition_reward"
+    ]
+  },
+  {
+    "id": "king_under_the_floorboards",
+    "name": "King Under the Floorboards",
+    "class": "shroomancer",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "epic",
+    "text": "Apply 8 Poison.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 8
+      }
+    ],
+    "tags": [
+      "build_defining",
+      "epic",
+      "poison",
+      "shroom",
+      "transition_reward"
+    ]
+  },
+  {
+    "id": "blooming_court",
+    "name": "Blooming Court",
+    "class": "shroomancer",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "epic",
+    "text": "Deal 8 damage for each Poison on the target.",
+    "effects": [
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount_per_stack": 8
+      }
+    ],
+    "tags": [
+      "build_defining",
+      "epic",
+      "payoff",
+      "poison",
+      "shroom",
+      "transition_reward"
+    ]
+  },
+  {
+    "id": "mycelial_recollection",
+    "name": "Mycelial Recollection",
+    "class": "shroomancer",
+    "type": "form",
+    "cost": 1,
+    "rarity": "epic",
+    "text": "Draw 3 cards. Gain 8 Block.",
+    "effects": [
+      {
+        "type": "draw_cards",
+        "target": "self",
+        "amount": 3
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 8
+      }
+    ],
+    "tags": [
+      "block",
+      "build_defining",
+      "draw",
+      "epic",
+      "shroom",
+      "transition_reward"
+    ]
+  },
+  {
+    "id": "epic_bureaucrat_mandatory_audit",
+    "name": "Mandatory Audit",
+    "class": "bureaucrat",
+    "type": "form",
+    "cost": 2,
+    "rarity": "epic",
+    "text": "Apply 8 Paperwork. Gain 12 Block.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 8
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 12
+      }
+    ],
+    "tags": [
+      "block",
+      "build_defining",
+      "bureaucracy",
+      "epic",
+      "paperwork",
+      "setup",
+      "transition_reward"
+    ]
+  },
+  {
+    "id": "epic_bureaucrat_rewritten_mandate",
+    "name": "Rewritten Mandate",
+    "class": "bureaucrat",
+    "type": "form",
+    "cost": 1,
+    "rarity": "epic",
+    "text": "Gain 3 Strength. Draw 2.",
+    "effects": [
+      {
+        "type": "gain_strength",
+        "target": "self",
+        "amount": 3
+      },
+      {
+        "type": "draw_cards",
+        "target": "self",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "build_defining",
+      "bureaucracy",
+      "draw",
+      "epic",
+      "scaling",
+      "strength",
+      "transition_reward"
+    ]
+  },
+  {
+    "id": "epic_bureaucrat_infinite_queue",
+    "name": "Infinite Queue",
+    "class": "bureaucrat",
+    "type": "argument",
+    "cost": 2,
+    "rarity": "epic",
+    "text": "Apply 6 Doubt and 3 Paperwork.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 6
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "build_defining",
+      "bureaucracy",
+      "control",
+      "doubt",
+      "epic",
+      "paperwork",
+      "queue",
+      "transition_reward"
+    ]
+  },
+  {
+    "id": "epic_bureaucrat_approval_in_principle",
+    "name": "Approval in Principle",
+    "class": "bureaucrat",
+    "type": "form",
+    "cost": 1,
+    "rarity": "epic",
+    "text": "Gain 3 Strength. Gain 8 Block.",
+    "effects": [
+      {
+        "type": "gain_strength",
+        "target": "self",
+        "amount": 3
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 8
+      }
+    ],
+    "tags": [
+      "block",
+      "build_defining",
+      "bureaucracy",
+      "epic",
+      "strength",
+      "transition_reward"
+    ]
+  },
+  {
+    "id": "epic_bureaucrat_triplicate_doom",
+    "name": "Triplicate Doom",
+    "class": "bureaucrat",
+    "type": "form",
+    "cost": 2,
+    "rarity": "epic",
+    "text": "Apply 3 Paperwork. Deal 9 damage for each Paperwork on the target.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 3
+      },
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount_per_stack": 9
+      }
+    ],
+    "tags": [
+      "attack",
+      "build_defining",
+      "bureaucracy",
+      "epic",
+      "paperwork",
+      "payoff",
+      "transition_reward"
+    ]
+  },
+  {
+    "id": "epic_bureaucrat_procedural_avalanche",
+    "name": "Procedural Avalanche",
+    "class": "bureaucrat",
+    "type": "form",
+    "cost": 2,
+    "rarity": "epic",
+    "text": "Deal 24 damage. Apply 5 Paperwork.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 24
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 5
+      }
+    ],
+    "tags": [
+      "attack",
+      "build_defining",
+      "bureaucracy",
+      "epic",
+      "paperwork",
+      "setup",
+      "transition_reward"
+    ]
+  },
+  {
+    "id": "epic_failed_wizard_syllabus_of_accidents",
+    "name": "Syllabus of Accidents",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "epic",
+    "text": "Draw 3. Apply 2 Panic to yourself.",
+    "effects": [
+      {
+        "type": "draw_cards",
+        "target": "self",
+        "amount": 3
+      },
+      {
+        "type": "apply_status",
+        "target": "self",
+        "status": "panic",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "build_defining",
+      "draw",
+      "epic",
+      "panic",
+      "risky",
+      "spell",
+      "transition_reward"
+    ]
+  },
+  {
+    "id": "epic_failed_wizard_luggage_of_spells",
+    "name": "Luggage of Spells",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "epic",
+    "text": "Deal 30 damage. Apply 3 Paperwork.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 30
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "attack",
+      "build_defining",
+      "epic",
+      "paperwork",
+      "spell",
+      "transition_reward"
+    ]
+  },
+  {
+    "id": "epic_failed_wizard_hexadecimal_mispronunciation",
+    "name": "Hexadecimal Mispronunciation",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "epic",
+    "text": "Deal 9 damage for each Doubt on the target. Apply 1 Panic to yourself.",
+    "effects": [
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount_per_stack": 9
+      },
+      {
+        "type": "apply_status",
+        "target": "self",
+        "status": "panic",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "build_defining",
+      "doubt",
+      "epic",
+      "panic",
+      "payoff",
+      "risky",
+      "spell",
+      "transition_reward"
+    ]
+  },
+  {
+    "id": "epic_failed_wizard_borrowed_thaumic_credit",
+    "name": "Borrowed Thaumic Credit",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "epic",
+    "text": "Gain 4 Strength. Apply 2 Panic to yourself.",
+    "effects": [
+      {
+        "type": "gain_strength",
+        "target": "self",
+        "amount": 4
+      },
+      {
+        "type": "apply_status",
+        "target": "self",
+        "status": "panic",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "build_defining",
+      "epic",
+      "panic",
+      "risky",
+      "scaling",
+      "spell",
+      "strength",
+      "transition_reward"
+    ]
+  },
+  {
+    "id": "epic_failed_wizard_annotation_storm",
+    "name": "Annotation Storm",
+    "class": "failed_wizard",
+    "type": "footnote",
+    "cost": 2,
+    "rarity": "epic",
+    "text": "Apply 5 Doubt. Draw 2.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 5
+      },
+      {
+        "type": "draw_cards",
+        "target": "self",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "build_defining",
+      "doubt",
+      "draw",
+      "epic",
+      "footnote",
+      "setup",
+      "transition_reward"
+    ]
+  },
+  {
+    "id": "epic_failed_wizard_smoke_from_the_wrong_end",
+    "name": "Smoke from the Wrong End",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "epic",
+    "text": "Deal 38 damage. Apply 1 Panic to yourself.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 38
+      },
+      {
+        "type": "apply_status",
+        "target": "self",
+        "status": "panic",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "attack",
+      "build_defining",
+      "burst",
+      "epic",
+      "panic",
+      "risky",
+      "spell",
+      "transition_reward"
+    ]
+  },
+  {
+    "id": "epic_assassin_black_bow_contract",
+    "name": "Black-Bow Contract",
+    "class": "guild_assassin_apprentice",
+    "type": "action",
+    "cost": 2,
+    "rarity": "epic",
+    "text": "Deal 42 damage. Apply 3 Doubt.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 42
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "assassin",
+      "attack",
+      "build_defining",
+      "burst",
+      "doubt",
+      "epic",
+      "transition_reward"
+    ]
+  },
+  {
+    "id": "epic_assassin_silence_between_footsteps",
+    "name": "Silence Between Footsteps",
+    "class": "guild_assassin_apprentice",
+    "type": "action",
+    "cost": 1,
+    "rarity": "epic",
+    "text": "Gain 3 Strength. Draw 2.",
+    "effects": [
+      {
+        "type": "gain_strength",
+        "target": "self",
+        "amount": 3
+      },
+      {
+        "type": "draw_cards",
+        "target": "self",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "assassin",
+      "build_defining",
+      "draw",
+      "epic",
+      "scaling",
+      "strength",
+      "transition_reward"
+    ]
+  },
+  {
+    "id": "epic_assassin_poisoned_introduction",
+    "name": "Poisoned Introduction",
+    "class": "guild_assassin_apprentice",
+    "type": "action",
+    "cost": 2,
+    "rarity": "epic",
+    "text": "Apply 8 Poison and 3 Doubt.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 8
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "assassin",
+      "build_defining",
+      "doubt",
+      "epic",
+      "poison",
+      "setup",
+      "transition_reward"
+    ]
+  },
+  {
+    "id": "epic_assassin_name_crossed_out",
+    "name": "Name Crossed Out",
+    "class": "guild_assassin_apprentice",
+    "type": "form",
+    "cost": 2,
+    "rarity": "epic",
+    "text": "Apply 2 Doubt. Deal 10 damage for each Doubt on the target.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 2
+      },
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount_per_stack": 10
+      }
+    ],
+    "tags": [
+      "assassin",
+      "attack",
+      "build_defining",
+      "doubt",
+      "epic",
+      "payoff",
+      "transition_reward"
+    ]
+  },
+  {
+    "id": "epic_assassin_rooftop_escape_clause",
+    "name": "Rooftop Escape Clause",
+    "class": "guild_assassin_apprentice",
+    "type": "action",
+    "cost": 2,
+    "rarity": "epic",
+    "text": "Deal 18 damage. Gain 20 Block.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 18
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 20
+      }
+    ],
+    "tags": [
+      "assassin",
+      "attack",
+      "block",
+      "build_defining",
+      "epic",
+      "transition_reward"
+    ]
+  },
+  {
+    "id": "epic_assassin_finishing_school_exam",
+    "name": "Finishing School Exam",
+    "class": "guild_assassin_apprentice",
+    "type": "argument",
+    "cost": 2,
+    "rarity": "epic",
+    "text": "Gain 2 Strength. Deal 26 damage.",
+    "effects": [
+      {
+        "type": "gain_strength",
+        "target": "self",
+        "amount": 2
+      },
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 26
+      }
+    ],
+    "tags": [
+      "assassin",
+      "attack",
+      "build_defining",
+      "epic",
+      "strength",
+      "transition_reward"
+    ]
+  },
+  {
+    "id": "epic_hedge_witch_cottage_law",
+    "name": "Cottage Law",
+    "class": "hedge_witch",
+    "type": "argument",
+    "cost": 2,
+    "rarity": "epic",
+    "text": "Gain 30 Block. Apply 3 Doubt.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 30
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "block",
+      "build_defining",
+      "control",
+      "doubt",
+      "epic",
+      "transition_reward",
+      "witch"
+    ]
+  },
+  {
+    "id": "epic_hedge_witch_grandmother_brew",
+    "name": "Grandmother Brew",
+    "class": "hedge_witch",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "epic",
+    "text": "Apply 10 Poison. Draw 1.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 10
+      },
+      {
+        "type": "draw_cards",
+        "target": "self",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "build_defining",
+      "draw",
+      "epic",
+      "poison",
+      "setup",
+      "transition_reward",
+      "witch"
+    ]
+  },
+  {
+    "id": "epic_hedge_witch_thorns_remember",
+    "name": "Thorns Remember",
+    "class": "hedge_witch",
+    "type": "curse",
+    "cost": 2,
+    "rarity": "epic",
+    "text": "Deal 9 damage for each Poison on the target. Gain 12 Block.",
+    "effects": [
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount_per_stack": 9
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 12
+      }
+    ],
+    "tags": [
+      "block",
+      "build_defining",
+      "epic",
+      "payoff",
+      "poison",
+      "transition_reward",
+      "witch"
+    ]
+  },
+  {
+    "id": "epic_hedge_witch_iron_kettle_oath",
+    "name": "Iron Kettle Oath",
+    "class": "hedge_witch",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "epic",
+    "text": "Gain 2 Strength. Apply 5 Poison.",
+    "effects": [
+      {
+        "type": "gain_strength",
+        "target": "self",
+        "amount": 2
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 5
+      }
+    ],
+    "tags": [
+      "build_defining",
+      "epic",
+      "poison",
+      "scaling",
+      "strength",
+      "transition_reward",
+      "witch"
+    ]
+  },
+  {
+    "id": "epic_hedge_witch_three_kind_words",
+    "name": "Three Kind Words",
+    "class": "hedge_witch",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "epic",
+    "text": "Draw 3. Gain 15 Block.",
+    "effects": [
+      {
+        "type": "draw_cards",
+        "target": "self",
+        "amount": 3
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 15
+      }
+    ],
+    "tags": [
+      "block",
+      "build_defining",
+      "draw",
+      "epic",
+      "support",
+      "transition_reward",
+      "witch"
+    ]
+  },
+  {
+    "id": "epic_hedge_witch_bad_luck_in_a_jar",
+    "name": "Bad Luck in a Jar",
+    "class": "hedge_witch",
+    "type": "curse",
+    "cost": 1,
+    "rarity": "epic",
+    "text": "Apply 6 Poison and 4 Doubt. Apply 1 Doubt to yourself.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 6
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 4
+      },
+      {
+        "type": "apply_status",
+        "target": "self",
+        "status": "doubt",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "build_defining",
+      "doubt",
+      "epic",
+      "poison",
+      "risk_reward",
+      "transition_reward",
+      "witch"
+    ]
+  },
+  {
+    "id": "epic_mortuary_last_counter_signature",
+    "name": "Last Counter-Signature",
+    "class": "mortuary_apprentice",
+    "type": "form",
+    "cost": 2,
+    "rarity": "epic",
+    "text": "Apply 8 Paperwork and 3 Doubt.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 8
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "build_defining",
+      "doubt",
+      "epic",
+      "mortuary",
+      "paperwork",
+      "setup",
+      "transition_reward"
+    ]
+  },
+  {
+    "id": "epic_mortuary_death_certificate_chain",
+    "name": "Death Certificate Chain",
+    "class": "mortuary_apprentice",
+    "type": "form",
+    "cost": 2,
+    "rarity": "epic",
+    "text": "Deal 10 damage for each Paperwork on the target.",
+    "effects": [
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount_per_stack": 10
+      }
+    ],
+    "tags": [
+      "attack",
+      "build_defining",
+      "epic",
+      "mortuary",
+      "paperwork",
+      "payoff",
+      "transition_reward"
+    ]
+  },
+  {
+    "id": "epic_mortuary_respectful_procession",
+    "name": "Respectful Procession",
+    "class": "mortuary_apprentice",
+    "type": "action",
+    "cost": 2,
+    "rarity": "epic",
+    "text": "Gain 28 Block. Draw 1.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 28
+      },
+      {
+        "type": "draw_cards",
+        "target": "self",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "block",
+      "build_defining",
+      "draw",
+      "epic",
+      "mortuary",
+      "support",
+      "transition_reward"
+    ]
+  },
+  {
+    "id": "epic_mortuary_bell_that_answers_back",
+    "name": "Bell That Answers Back",
+    "class": "mortuary_apprentice",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "epic",
+    "text": "Apply 5 Paperwork. Gain 2 Strength.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 5
+      },
+      {
+        "type": "gain_strength",
+        "target": "self",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "build_defining",
+      "epic",
+      "mortuary",
+      "paperwork",
+      "strength",
+      "transition_reward"
+    ]
+  },
+  {
+    "id": "epic_mortuary_ledger_of_final_debts",
+    "name": "Ledger of Final Debts",
+    "class": "mortuary_apprentice",
+    "type": "argument",
+    "cost": 2,
+    "rarity": "epic",
+    "text": "Apply 6 Doubt. Deal 6 damage for each Doubt on the target.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 6
+      },
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount_per_stack": 6
+      }
+    ],
+    "tags": [
+      "attack",
+      "build_defining",
+      "doubt",
+      "epic",
+      "mortuary",
+      "payoff",
+      "transition_reward"
+    ]
+  },
+  {
+    "id": "epic_mortuary_the_quiet_room",
+    "name": "The Quiet Room",
+    "class": "mortuary_apprentice",
+    "type": "form",
+    "cost": 1,
+    "rarity": "epic",
+    "text": "Draw 2. Gain 20 Block. Apply 1 Doubt to yourself.",
+    "effects": [
+      {
+        "type": "draw_cards",
+        "target": "self",
+        "amount": 2
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 20
+      },
+      {
+        "type": "apply_status",
+        "target": "self",
+        "status": "doubt",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "block",
+      "build_defining",
+      "draw",
+      "epic",
+      "mortuary",
+      "risk_reward",
+      "transition_reward"
+    ]
+  },
+  {
+    "id": "epic_watch_sergeants_notebook",
+    "name": "Sergeant's Notebook",
+    "class": "night_watch_recruit",
+    "type": "form",
+    "cost": 1,
+    "rarity": "epic",
+    "text": "Gain 3 Strength. Gain 12 Block.",
+    "effects": [
+      {
+        "type": "gain_strength",
+        "target": "self",
+        "amount": 3
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 12
+      }
+    ],
+    "tags": [
+      "block",
+      "build_defining",
+      "epic",
+      "scaling",
+      "strength",
+      "transition_reward",
+      "watch"
+    ]
+  },
+  {
+    "id": "epic_watch_lantern_at_noon",
+    "name": "Lantern at Noon",
+    "class": "night_watch_recruit",
+    "type": "action",
+    "cost": 2,
+    "rarity": "epic",
+    "text": "Apply 6 Doubt. Gain 10 Block.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 6
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 10
+      }
+    ],
+    "tags": [
+      "block",
+      "build_defining",
+      "control",
+      "doubt",
+      "epic",
+      "transition_reward",
+      "watch"
+    ]
+  },
+  {
+    "id": "epic_watch_doors_kicked_politely",
+    "name": "Doors Kicked Politely",
+    "class": "night_watch_recruit",
+    "type": "action",
+    "cost": 2,
+    "rarity": "epic",
+    "text": "Deal 28 damage. Apply 2 Doubt.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 28
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "attack",
+      "build_defining",
+      "doubt",
+      "epic",
+      "transition_reward",
+      "watch"
+    ]
+  },
+  {
+    "id": "epic_watch_riot_of_one",
+    "name": "Riot of One",
+    "class": "night_watch_recruit",
+    "type": "action",
+    "cost": 2,
+    "rarity": "epic",
+    "text": "Deal 32 damage. Gain 16 Block.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 32
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 16
+      }
+    ],
+    "tags": [
+      "attack",
+      "block",
+      "build_defining",
+      "epic",
+      "transition_reward",
+      "watch"
+    ]
+  },
+  {
+    "id": "epic_watch_oath_under_rain",
+    "name": "Oath Under Rain",
+    "class": "night_watch_recruit",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "epic",
+    "text": "Gain 24 Block. Draw 2.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 24
+      },
+      {
+        "type": "draw_cards",
+        "target": "self",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "block",
+      "build_defining",
+      "draw",
+      "epic",
+      "support",
+      "transition_reward",
+      "watch"
+    ]
+  },
+  {
+    "id": "epic_watch_old_boot_authority",
+    "name": "Old-Boot Authority",
+    "class": "night_watch_recruit",
+    "type": "argument",
+    "cost": 2,
+    "rarity": "epic",
+    "text": "Apply 2 Doubt. Deal 9 damage for each Doubt on the target.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 2
+      },
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount_per_stack": 9
+      }
+    ],
+    "tags": [
+      "attack",
+      "build_defining",
+      "doubt",
+      "epic",
+      "payoff",
+      "transition_reward",
+      "watch"
+    ]
+  },
+  {
+    "id": "epic_sewer_embassy_under_the_grate",
+    "name": "Embassy Under the Grate",
+    "class": "sewer_diplomat",
+    "type": "argument",
+    "cost": 2,
+    "rarity": "epic",
+    "text": "Apply 7 Poison. Gain 12 Block.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 7
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 12
+      }
+    ],
+    "tags": [
+      "block",
+      "build_defining",
+      "epic",
+      "poison",
+      "sewer",
+      "transition_reward"
+    ]
+  },
+  {
+    "id": "epic_sewer_royal_rat_treaty",
+    "name": "Royal Rat Treaty",
+    "class": "sewer_diplomat",
+    "type": "form",
+    "cost": 1,
+    "rarity": "epic",
+    "text": "Gain 2 Strength. Draw 2.",
+    "effects": [
+      {
+        "type": "gain_strength",
+        "target": "self",
+        "amount": 2
+      },
+      {
+        "type": "draw_cards",
+        "target": "self",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "alliance",
+      "build_defining",
+      "draw",
+      "epic",
+      "sewer",
+      "strength",
+      "transition_reward"
+    ]
+  },
+  {
+    "id": "epic_sewer_flooded_negotiation",
+    "name": "Flooded Negotiation",
+    "class": "sewer_diplomat",
+    "type": "argument",
+    "cost": 2,
+    "rarity": "epic",
+    "text": "Apply 9 Poison and 3 Doubt.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 9
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "build_defining",
+      "doubt",
+      "epic",
+      "poison",
+      "setup",
+      "sewer",
+      "transition_reward"
+    ]
+  },
+  {
+    "id": "epic_sewer_back_channel_current",
+    "name": "Back-Channel Current",
+    "class": "sewer_diplomat",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "epic",
+    "text": "Apply 5 Poison. Draw 2.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 5
+      },
+      {
+        "type": "draw_cards",
+        "target": "self",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "build_defining",
+      "draw",
+      "epic",
+      "poison",
+      "sewer",
+      "tempo",
+      "transition_reward"
+    ]
+  },
+  {
+    "id": "epic_sewer_sludge_clause",
+    "name": "Sludge Clause",
+    "class": "sewer_diplomat",
+    "type": "argument",
+    "cost": 2,
+    "rarity": "epic",
+    "text": "Deal 9 damage for each Poison on the target. Gain 10 Block.",
+    "effects": [
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount_per_stack": 9
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 10
+      }
+    ],
+    "tags": [
+      "block",
+      "build_defining",
+      "epic",
+      "payoff",
+      "poison",
+      "sewer",
+      "transition_reward"
+    ]
+  },
+  {
+    "id": "epic_sewer_unanimous_squeaking",
+    "name": "Unanimous Squeaking",
+    "class": "sewer_diplomat",
+    "type": "argument",
+    "cost": 2,
+    "rarity": "epic",
+    "text": "Apply 4 Doubt. Draw 2.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 4
+      },
+      {
+        "type": "draw_cards",
+        "target": "self",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "build_defining",
+      "doubt",
+      "draw",
+      "epic",
+      "sewer",
+      "transition_reward"
+    ]
+  },
+  {
+    "id": "epic_shroom_mushroom_parliament",
+    "name": "Mushroom Parliament",
+    "class": "shroomancer",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "epic",
+    "text": "Apply 6 Poison. Draw 2.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 6
+      },
+      {
+        "type": "draw_cards",
+        "target": "self",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "build_defining",
+      "draw",
+      "epic",
+      "poison",
+      "shroom",
+      "transition_reward"
+    ]
+  },
+  {
+    "id": "epic_shroom_deep_spore_court",
+    "name": "Deep Spore Court",
+    "class": "shroomancer",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "epic",
+    "text": "Apply 11 Poison.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 11
+      }
+    ],
+    "tags": [
+      "build_defining",
+      "epic",
+      "poison",
+      "setup",
+      "shroom",
+      "transition_reward"
+    ]
+  },
+  {
+    "id": "epic_shroom_hyphal_memory",
+    "name": "Hyphal Memory",
+    "class": "shroomancer",
+    "type": "form",
+    "cost": 1,
+    "rarity": "epic",
+    "text": "Draw 3. Gain 8 Block.",
+    "effects": [
+      {
+        "type": "draw_cards",
+        "target": "self",
+        "amount": 3
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 8
+      }
+    ],
+    "tags": [
+      "block",
+      "build_defining",
+      "draw",
+      "epic",
+      "shroom",
+      "tempo",
+      "transition_reward"
+    ]
+  },
+  {
+    "id": "epic_shroom_rot_into_bloom",
+    "name": "Rot into Bloom",
+    "class": "shroomancer",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "epic",
+    "text": "Deal 9 damage for each Poison on the target.",
+    "effects": [
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount_per_stack": 9
+      }
+    ],
+    "tags": [
+      "attack",
+      "build_defining",
+      "epic",
+      "payoff",
+      "poison",
+      "shroom",
+      "transition_reward"
+    ]
+  },
+  {
+    "id": "epic_shroom_puffball_coup",
+    "name": "Puffball Coup",
+    "class": "shroomancer",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "epic",
+    "text": "Deal 24 damage. Apply 3 Poison.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 24
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "attack",
+      "build_defining",
+      "epic",
+      "poison",
+      "shroom",
+      "transition_reward"
+    ]
+  },
+  {
+    "id": "epic_shroom_old_cap_network",
+    "name": "Old-Cap Network",
+    "class": "shroomancer",
+    "type": "form",
+    "cost": 1,
+    "rarity": "epic",
+    "text": "Gain 2 Strength. Gain 15 Block.",
+    "effects": [
+      {
+        "type": "gain_strength",
+        "target": "self",
+        "amount": 2
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 15
+      }
+    ],
+    "tags": [
+      "block",
+      "build_defining",
+      "epic",
+      "scaling",
+      "shroom",
+      "strength",
+      "transition_reward"
+    ]
+  },
+  {
+    "id": "epic_witch_clerk_coven_stamp",
+    "name": "Coven Stamp",
+    "class": "witch_clerk",
+    "type": "curse",
+    "cost": 2,
+    "rarity": "epic",
+    "text": "Apply 5 Doubt and 3 Paperwork.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 5
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "build_defining",
+      "clerk",
+      "doubt",
+      "epic",
+      "paperwork",
+      "transition_reward",
+      "witch"
+    ]
+  },
+  {
+    "id": "epic_witch_clerk_ink_black_curse",
+    "name": "Ink-Black Curse",
+    "class": "witch_clerk",
+    "type": "curse",
+    "cost": 2,
+    "rarity": "epic",
+    "text": "Apply 3 Paperwork. Deal 9 damage for each Doubt on the target.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 3
+      },
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount_per_stack": 9
+      }
+    ],
+    "tags": [
+      "build_defining",
+      "clerk",
+      "doubt",
+      "epic",
+      "paperwork",
+      "payoff",
+      "transition_reward",
+      "witch"
+    ]
+  },
+  {
+    "id": "epic_witch_clerk_lunar_filing_error",
+    "name": "Lunar Filing Error",
+    "class": "witch_clerk",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "epic",
+    "text": "Draw 3. Gain 10 Block. Apply 1 Doubt to yourself.",
+    "effects": [
+      {
+        "type": "draw_cards",
+        "target": "self",
+        "amount": 3
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 10
+      },
+      {
+        "type": "apply_status",
+        "target": "self",
+        "status": "doubt",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "block",
+      "build_defining",
+      "clerk",
+      "draw",
+      "epic",
+      "risk_reward",
+      "transition_reward",
+      "witch"
+    ]
+  },
+  {
+    "id": "epic_witch_clerk_silent_minutes",
+    "name": "Silent Minutes",
+    "class": "witch_clerk",
+    "type": "form",
+    "cost": 1,
+    "rarity": "epic",
+    "text": "Gain 22 Block. Apply 3 Doubt.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 22
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "block",
+      "build_defining",
+      "clerk",
+      "doubt",
+      "epic",
+      "transition_reward",
+      "witch"
+    ]
+  },
+  {
+    "id": "epic_witch_clerk_broom_closet_coven",
+    "name": "Broom-Closet Coven",
+    "class": "witch_clerk",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "epic",
+    "text": "Gain 2 Strength. Apply 4 Paperwork.",
+    "effects": [
+      {
+        "type": "gain_strength",
+        "target": "self",
+        "amount": 2
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 4
+      }
+    ],
+    "tags": [
+      "build_defining",
+      "clerk",
+      "epic",
+      "paperwork",
+      "scaling",
+      "strength",
+      "transition_reward",
+      "witch"
+    ]
+  },
+  {
+    "id": "epic_witch_clerk_clause_with_teeth",
+    "name": "Clause with Teeth",
+    "class": "witch_clerk",
+    "type": "curse",
+    "cost": 2,
+    "rarity": "epic",
+    "text": "Deal 20 damage. Deal 4 damage for each Paperwork on the target.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 20
+      },
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount_per_stack": 4
+      }
+    ],
+    "tags": [
+      "attack",
+      "build_defining",
+      "clerk",
+      "epic",
+      "paperwork",
+      "payoff",
+      "transition_reward",
+      "witch"
+    ]
+  }
+]

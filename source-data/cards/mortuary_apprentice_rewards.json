@@ -1,0 +1,1215 @@
+[
+  {
+    "id": "death_certificate",
+    "name": "Death Certificate",
+    "class": "mortuary_apprentice",
+    "type": "argument",
+    "cost": 0,
+    "rarity": "starter",
+    "text": "Apply 1 Paperwork. Exhaust.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "generated",
+      "certificate",
+      "paperwork",
+      "zero_cost",
+      "exhaust"
+    ]
+  },
+  {
+    "id": "black_ribbon",
+    "name": "Black Ribbon",
+    "class": "mortuary_apprentice",
+    "type": "form",
+    "cost": 0,
+    "rarity": "starter",
+    "text": "Gain 3 Block. Exhaust.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "generated",
+      "mourning",
+      "veil",
+      "block",
+      "zero_cost",
+      "exhaust"
+    ]
+  },
+  {
+    "id": "small_bell_echo",
+    "name": "Small Bell Echo",
+    "class": "mortuary_apprentice",
+    "type": "spell",
+    "cost": 0,
+    "rarity": "starter",
+    "text": "Deal 1 damage per Paperwork on the target. Exhaust.",
+    "effects": [
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount_per_stack": 1
+      }
+    ],
+    "tags": [
+      "generated",
+      "bell",
+      "paperwork",
+      "payoff",
+      "zero_cost",
+      "exhaust"
+    ]
+  },
+  {
+    "id": "bone_splinter",
+    "name": "Bone Splinter",
+    "class": "mortuary_apprentice",
+    "type": "action",
+    "cost": 0,
+    "rarity": "starter",
+    "text": "Deal 3 damage. Exhaust.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "generated",
+      "bone",
+      "attack",
+      "zero_cost",
+      "exhaust"
+    ]
+  },
+  {
+    "id": "unfinished_obituary",
+    "name": "Unfinished Obituary",
+    "class": "mortuary_apprentice",
+    "type": "curse",
+    "cost": 0,
+    "rarity": "starter",
+    "text": "Unplayable.",
+    "effects": [],
+    "tags": [
+      "generated",
+      "obituary",
+      "junk",
+      "unplayable"
+    ]
+  },
+  {
+    "id": "pale_knell",
+    "name": "Pale Knell",
+    "class": "mortuary_apprentice",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 2 Paperwork.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "paperwork",
+      "bell",
+      "certificate",
+      "setup"
+    ],
+    "upgrades_to": "pale_knell_plus"
+  },
+  {
+    "id": "pale_knell_plus",
+    "name": "Pale Knell+",
+    "class": "mortuary_apprentice",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 4 Paperwork.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 4
+      }
+    ],
+    "tags": [
+      "paperwork",
+      "bell",
+      "certificate",
+      "setup",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "death_in_triplicate",
+    "name": "Death in Triplicate",
+    "class": "mortuary_apprentice",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 1 Paperwork. Add a Death Certificate to your hand.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 1
+      },
+      {
+        "type": "create_card",
+        "card_id": "death_certificate",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "paperwork",
+      "certificate",
+      "zero_cost",
+      "setup"
+    ],
+    "upgrades_to": "death_in_triplicate_plus"
+  },
+  {
+    "id": "death_in_triplicate_plus",
+    "name": "Death in Triplicate+",
+    "class": "mortuary_apprentice",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 2 Paperwork. Add a Death Certificate to your hand.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 2
+      },
+      {
+        "type": "create_card",
+        "card_id": "death_certificate",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "paperwork",
+      "certificate",
+      "zero_cost",
+      "setup",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "sealed_cause_of_death",
+    "name": "Sealed Cause of Death",
+    "class": "mortuary_apprentice",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Apply 3 Paperwork. Apply 1 Doubt.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 3
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "paperwork",
+      "doubt",
+      "certificate",
+      "setup"
+    ],
+    "upgrades_to": "sealed_cause_of_death_plus"
+  },
+  {
+    "id": "sealed_cause_of_death_plus",
+    "name": "Sealed Cause of Death+",
+    "class": "mortuary_apprentice",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Apply 4 Paperwork. Apply 2 Doubt.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 4
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "paperwork",
+      "doubt",
+      "certificate",
+      "setup",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "posthumous_formality",
+    "name": "Posthumous Formality",
+    "class": "mortuary_apprentice",
+    "type": "argument",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Apply 3 Paperwork to all enemies.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "all_enemies",
+        "status": "paperwork",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "paperwork",
+      "certificate",
+      "aoe",
+      "setup"
+    ],
+    "upgrades_to": "posthumous_formality_plus"
+  },
+  {
+    "id": "posthumous_formality_plus",
+    "name": "Posthumous Formality+",
+    "class": "mortuary_apprentice",
+    "type": "argument",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Apply 5 Paperwork to all enemies.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "all_enemies",
+        "status": "paperwork",
+        "amount": 5
+      }
+    ],
+    "tags": [
+      "paperwork",
+      "certificate",
+      "aoe",
+      "setup",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "obituary_draft",
+    "name": "Obituary Draft",
+    "class": "mortuary_apprentice",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Deal 6 damage. Apply 1 Paperwork.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 6
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "attack",
+      "paperwork",
+      "obituary",
+      "last_rites"
+    ],
+    "upgrades_to": "obituary_draft_plus"
+  },
+  {
+    "id": "obituary_draft_plus",
+    "name": "Obituary Draft+",
+    "class": "mortuary_apprentice",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Deal 9 damage. Apply 2 Paperwork.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 9
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "attack",
+      "paperwork",
+      "obituary",
+      "last_rites",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "proper_condolences",
+    "name": "Proper Condolences",
+    "class": "mortuary_apprentice",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 2 Doubt. Gain 5 Block.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 2
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 5
+      }
+    ],
+    "tags": [
+      "doubt",
+      "block",
+      "mourning",
+      "last_rites"
+    ],
+    "upgrades_to": "proper_condolences_plus"
+  },
+  {
+    "id": "proper_condolences_plus",
+    "name": "Proper Condolences+",
+    "class": "mortuary_apprentice",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 3 Doubt. Gain 8 Block.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 3
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 8
+      }
+    ],
+    "tags": [
+      "doubt",
+      "block",
+      "mourning",
+      "last_rites",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "final_words",
+    "name": "Final Words",
+    "class": "mortuary_apprentice",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Apply 2 Paperwork. Add a Small Bell Echo to your hand.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 2
+      },
+      {
+        "type": "create_card",
+        "card_id": "small_bell_echo",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "paperwork",
+      "bell",
+      "last_rites",
+      "payoff",
+      "zero_cost"
+    ],
+    "upgrades_to": "final_words_plus"
+  },
+  {
+    "id": "final_words_plus",
+    "name": "Final Words+",
+    "class": "mortuary_apprentice",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Apply 3 Paperwork. Add a Small Bell Echo to your hand.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 3
+      },
+      {
+        "type": "create_card",
+        "card_id": "small_bell_echo",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "paperwork",
+      "bell",
+      "last_rites",
+      "payoff",
+      "zero_cost",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "last_rites",
+    "name": "Last Rites",
+    "class": "mortuary_apprentice",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Apply 4 Paperwork. Apply 2 Doubt.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 4
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "paperwork",
+      "doubt",
+      "last_rites",
+      "setup"
+    ],
+    "upgrades_to": "last_rites_plus"
+  },
+  {
+    "id": "last_rites_plus",
+    "name": "Last Rites+",
+    "class": "mortuary_apprentice",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Apply 5 Paperwork. Apply 3 Doubt.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 5
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "paperwork",
+      "doubt",
+      "last_rites",
+      "setup",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "grave_calm",
+    "name": "Grave Calm",
+    "class": "mortuary_apprentice",
+    "type": "form",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Gain 8 Block.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 8
+      }
+    ],
+    "tags": [
+      "block",
+      "grave_calm",
+      "veil"
+    ],
+    "upgrades_to": "grave_calm_plus"
+  },
+  {
+    "id": "grave_calm_plus",
+    "name": "Grave Calm+",
+    "class": "mortuary_apprentice",
+    "type": "form",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Gain 11 Block.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 11
+      }
+    ],
+    "tags": [
+      "block",
+      "grave_calm",
+      "veil",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "quiet_procession",
+    "name": "Quiet Procession",
+    "class": "mortuary_apprentice",
+    "type": "form",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Gain 6 Block. Apply 1 Paperwork.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 6
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "block",
+      "paperwork",
+      "grave_calm",
+      "procession"
+    ],
+    "upgrades_to": "quiet_procession_plus"
+  },
+  {
+    "id": "quiet_procession_plus",
+    "name": "Quiet Procession+",
+    "class": "mortuary_apprentice",
+    "type": "form",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Gain 9 Block. Apply 2 Paperwork.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 9
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "block",
+      "paperwork",
+      "grave_calm",
+      "procession",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "black_crepe",
+    "name": "Black Crepe",
+    "class": "mortuary_apprentice",
+    "type": "form",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Gain 5 Block. Add a Black Ribbon to your hand.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 5
+      },
+      {
+        "type": "create_card",
+        "card_id": "black_ribbon",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "block",
+      "mourning",
+      "veil",
+      "zero_cost"
+    ],
+    "upgrades_to": "black_crepe_plus"
+  },
+  {
+    "id": "black_crepe_plus",
+    "name": "Black Crepe+",
+    "class": "mortuary_apprentice",
+    "type": "form",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Gain 8 Block. Add a Black Ribbon to your hand.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 8
+      },
+      {
+        "type": "create_card",
+        "card_id": "black_ribbon",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "block",
+      "mourning",
+      "veil",
+      "zero_cost",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "respectful_silence",
+    "name": "Respectful Silence",
+    "class": "mortuary_apprentice",
+    "type": "form",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Gain 7 Block. Draw 1.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 7
+      },
+      {
+        "type": "draw_cards",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "block",
+      "draw",
+      "grave_calm"
+    ],
+    "upgrades_to": "respectful_silence_plus"
+  },
+  {
+    "id": "respectful_silence_plus",
+    "name": "Respectful Silence+",
+    "class": "mortuary_apprentice",
+    "type": "form",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Gain 10 Block. Draw 1.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 10
+      },
+      {
+        "type": "draw_cards",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "block",
+      "draw",
+      "grave_calm",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "bone_accounting",
+    "name": "Bone Accounting",
+    "class": "mortuary_apprentice",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "uncommon",
+    "text": "Deal 3 damage per Paperwork on the target.",
+    "effects": [
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount_per_stack": 3
+      }
+    ],
+    "tags": [
+      "attack",
+      "paperwork",
+      "payoff",
+      "bone"
+    ],
+    "upgrades_to": "bone_accounting_plus"
+  },
+  {
+    "id": "bone_accounting_plus",
+    "name": "Bone Accounting+",
+    "class": "mortuary_apprentice",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "uncommon",
+    "text": "Deal 4 damage per Paperwork on the target.",
+    "effects": [
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount_per_stack": 4
+      }
+    ],
+    "tags": [
+      "attack",
+      "paperwork",
+      "payoff",
+      "bone",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "knuckle_count",
+    "name": "Knuckle Count",
+    "class": "mortuary_apprentice",
+    "type": "action",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Deal 8 damage.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 8
+      }
+    ],
+    "tags": [
+      "attack",
+      "bone"
+    ],
+    "upgrades_to": "knuckle_count_plus"
+  },
+  {
+    "id": "knuckle_count_plus",
+    "name": "Knuckle Count+",
+    "class": "mortuary_apprentice",
+    "type": "action",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Deal 12 damage.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 12
+      }
+    ],
+    "tags": [
+      "attack",
+      "bone",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "rattle_the_drawer",
+    "name": "Rattle the Drawer",
+    "class": "mortuary_apprentice",
+    "type": "action",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Deal 5 damage. Add a Bone Splinter to your hand.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 5
+      },
+      {
+        "type": "create_card",
+        "card_id": "bone_splinter",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "attack",
+      "bone",
+      "zero_cost"
+    ],
+    "upgrades_to": "rattle_the_drawer_plus"
+  },
+  {
+    "id": "rattle_the_drawer_plus",
+    "name": "Rattle the Drawer+",
+    "class": "mortuary_apprentice",
+    "type": "action",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Deal 8 damage. Add a Bone Splinter to your hand.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 8
+      },
+      {
+        "type": "create_card",
+        "card_id": "bone_splinter",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "attack",
+      "bone",
+      "zero_cost",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "closing_the_coffin",
+    "name": "Closing the Coffin",
+    "class": "mortuary_apprentice",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Deal 10 damage. Deal 2 damage per Paperwork on the target.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 10
+      },
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount_per_stack": 2
+      }
+    ],
+    "tags": [
+      "attack",
+      "paperwork",
+      "payoff",
+      "bone",
+      "coffin"
+    ],
+    "upgrades_to": "closing_the_coffin_plus"
+  },
+  {
+    "id": "closing_the_coffin_plus",
+    "name": "Closing the Coffin+",
+    "class": "mortuary_apprentice",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Deal 15 damage. Deal 3 damage per Paperwork on the target.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 15
+      },
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount_per_stack": 3
+      }
+    ],
+    "tags": [
+      "attack",
+      "paperwork",
+      "payoff",
+      "bone",
+      "coffin",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "spirit_debt",
+    "name": "Spirit Debt",
+    "class": "mortuary_apprentice",
+    "type": "spell",
+    "cost": 0,
+    "rarity": "uncommon",
+    "text": "Gain 1 Energy. Add an Unfinished Obituary to your discard pile. Exhaust.",
+    "effects": [
+      {
+        "type": "gain_resource",
+        "resource": "energy",
+        "amount": 1
+      },
+      {
+        "type": "create_card",
+        "card_id": "unfinished_obituary",
+        "destination": "discard_pile",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "spirit",
+      "energy",
+      "obituary",
+      "junk",
+      "zero_cost",
+      "exhaust"
+    ],
+    "upgrades_to": "spirit_debt_plus"
+  },
+  {
+    "id": "spirit_debt_plus",
+    "name": "Spirit Debt+",
+    "class": "mortuary_apprentice",
+    "type": "spell",
+    "cost": 0,
+    "rarity": "uncommon",
+    "text": "Gain 1 Energy. Draw 1. Add an Unfinished Obituary to your discard pile. Exhaust.",
+    "effects": [
+      {
+        "type": "gain_resource",
+        "resource": "energy",
+        "amount": 1
+      },
+      {
+        "type": "draw_cards",
+        "amount": 1
+      },
+      {
+        "type": "create_card",
+        "card_id": "unfinished_obituary",
+        "destination": "discard_pile",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "spirit",
+      "energy",
+      "draw",
+      "obituary",
+      "junk",
+      "zero_cost",
+      "exhaust",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "funeral_register",
+    "name": "Funeral Register",
+    "class": "mortuary_apprentice",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Draw 2. Add a Death Certificate to your hand.",
+    "effects": [
+      {
+        "type": "draw_cards",
+        "amount": 2
+      },
+      {
+        "type": "create_card",
+        "card_id": "death_certificate",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "draw",
+      "certificate",
+      "paperwork",
+      "zero_cost"
+    ],
+    "upgrades_to": "funeral_register_plus"
+  },
+  {
+    "id": "funeral_register_plus",
+    "name": "Funeral Register+",
+    "class": "mortuary_apprentice",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Draw 3. Add a Death Certificate to your hand.",
+    "effects": [
+      {
+        "type": "draw_cards",
+        "amount": 3
+      },
+      {
+        "type": "create_card",
+        "card_id": "death_certificate",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "draw",
+      "certificate",
+      "paperwork",
+      "zero_cost",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "embalming_invoice",
+    "name": "Embalming Invoice",
+    "class": "mortuary_apprentice",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 2 Paperwork. Gain 5 Block.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 2
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 5
+      }
+    ],
+    "tags": [
+      "paperwork",
+      "block",
+      "embalming",
+      "invoice"
+    ],
+    "upgrades_to": "embalming_invoice_plus"
+  },
+  {
+    "id": "embalming_invoice_plus",
+    "name": "Embalming Invoice+",
+    "class": "mortuary_apprentice",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 3 Paperwork. Gain 8 Block.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 3
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 8
+      }
+    ],
+    "tags": [
+      "paperwork",
+      "block",
+      "embalming",
+      "invoice",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "unclaimed_estate",
+    "name": "Unclaimed Estate",
+    "class": "mortuary_apprentice",
+    "type": "argument",
+    "cost": 0,
+    "rarity": "rare",
+    "text": "Apply 2 Paperwork. Exhaust.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "paperwork",
+      "certificate",
+      "zero_cost",
+      "exhaust"
+    ],
+    "upgrades_to": "unclaimed_estate_plus"
+  },
+  {
+    "id": "unclaimed_estate_plus",
+    "name": "Unclaimed Estate+",
+    "class": "mortuary_apprentice",
+    "type": "argument",
+    "cost": 0,
+    "rarity": "rare",
+    "text": "Apply 3 Paperwork. Exhaust.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "paperwork",
+      "certificate",
+      "zero_cost",
+      "exhaust",
+      "upgraded"
+    ]
+  }
+]

@@ -1,0 +1,13 @@
+{
+  "id": "example_relic",
+  "name": "Example Relic",
+  "description": "At the start of each combat, gain 3 Block.",
+  "rarity": "common",
+  "effects": [
+    {
+      "type": "gain_block_at_combat_start",
+      "amount": 3
+    }
+  ],
+  "tags": []
+}

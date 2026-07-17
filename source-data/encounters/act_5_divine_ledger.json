@@ -1,0 +1,42 @@
+[
+  {
+    "id": "act_5_nisaba_keeper_of_the_first_tablet",
+    "name": "The First Tablet",
+    "act": 5,
+    "difficulty": "boss",
+    "enemies": [
+      "nisaba_keeper_of_the_first_tablet"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "act_5_inanna_mistress_of_the_eanna_ledger",
+    "name": "The Ledger of Eanna",
+    "act": 5,
+    "difficulty": "boss",
+    "enemies": [
+      "inanna_mistress_of_the_eanna_ledger"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "act_5_nanshe_auditor_of_the_just_ration",
+    "name": "The Just Ration",
+    "act": 5,
+    "difficulty": "boss",
+    "enemies": [
+      "nanshe_auditor_of_the_just_ration"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "act_5_nanna_sin_moon_seal_of_ur",
+    "name": "The Moon Seal of Ur",
+    "act": 5,
+    "difficulty": "boss",
+    "enemies": [
+      "nanna_sin_moon_seal_of_ur"
+    ],
+    "weight": 1
+  }
+]

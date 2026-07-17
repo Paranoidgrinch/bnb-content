@@ -1,0 +1,522 @@
+[
+  {
+    "id": "archive_easy_01",
+    "name": "A Footnote That Followed You",
+    "act": 2,
+    "difficulty": "easy",
+    "enemies": [
+      "footnote_familiar"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "archive_easy_02",
+    "name": "A Dusty Matter",
+    "act": 2,
+    "difficulty": "easy",
+    "enemies": [
+      "dust_indexer"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "archive_normal_01",
+    "name": "Misfiled and Slightly Hungry",
+    "act": 2,
+    "difficulty": "normal",
+    "enemies": [
+      "misfiled_ghoul"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "archive_normal_02",
+    "name": "Margins Full of Teeth",
+    "act": 2,
+    "difficulty": "normal",
+    "enemies": [
+      "ledger_rat_swarm",
+      "footnote_familiar"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "archive_normal_03",
+    "name": "Indexing Incident",
+    "act": 2,
+    "difficulty": "normal",
+    "enemies": [
+      "dust_indexer",
+      "footnote_familiar"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "archive_elite_01",
+    "name": "The Lich Who Kept Receipts",
+    "act": 2,
+    "difficulty": "elite",
+    "enemies": [
+      "archivist_lich"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "archive_mimic_01",
+    "name": "The Cabinet That Was Too Quiet",
+    "act": 2,
+    "difficulty": "elite",
+    "enemies": [
+      "sealed_cabinet_mimic"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "archive_boss_01",
+    "name": "The Grand Cross-Reference",
+    "act": 2,
+    "difficulty": "boss",
+    "enemies": [
+      "grand_cross_reference"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "archive_easy_03",
+    "name": "The Ink Has Wings",
+    "act": 2,
+    "difficulty": "easy",
+    "enemies": [
+      "ink_moth"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "archive_easy_04",
+    "name": "A Notice Comes Back",
+    "act": 2,
+    "difficulty": "easy",
+    "enemies": [
+      "returned_notice"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "archive_easy_05",
+    "name": "A Small Index Problem",
+    "act": 2,
+    "difficulty": "easy",
+    "enemies": [
+      "index_imp"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "archive_normal_04",
+    "name": "Whispers Between Shelves",
+    "act": 2,
+    "difficulty": "normal",
+    "enemies": [
+      "whispering_catalogue"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "archive_normal_05",
+    "name": "A Matter of Redaction",
+    "act": 2,
+    "difficulty": "normal",
+    "enemies": [
+      "redaction_beetle",
+      "footnote_familiar"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "archive_normal_06",
+    "name": "The Shelf Remembers",
+    "act": 2,
+    "difficulty": "normal",
+    "enemies": [
+      "shelf_wight"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "archive_normal_07",
+    "name": "Receipts on the Loose",
+    "act": 2,
+    "difficulty": "normal",
+    "enemies": [
+      "loose_receipt_elemental"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "archive_normal_08",
+    "name": "Late and Sorry",
+    "act": 2,
+    "difficulty": "normal",
+    "enemies": [
+      "overdue_apology",
+      "returned_notice"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "archive_normal_09",
+    "name": "Slow Paperwork",
+    "act": 2,
+    "difficulty": "normal",
+    "enemies": [
+      "vellum_snail"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "archive_normal_10",
+    "name": "Cross-Reference Bite",
+    "act": 2,
+    "difficulty": "normal",
+    "enemies": [
+      "catalogue_lamprey",
+      "index_imp"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "archive_normal_11",
+    "name": "Black Ink and Bad Memory",
+    "act": 2,
+    "difficulty": "normal",
+    "enemies": [
+      "ink_moth",
+      "shelf_wight"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "archive_normal_12",
+    "name": "The Catalogue Refuses Silence",
+    "act": 2,
+    "difficulty": "normal",
+    "enemies": [
+      "whispering_catalogue",
+      "redaction_beetle"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "archive_elite_02",
+    "name": "The Shelves Walk",
+    "act": 2,
+    "difficulty": "elite",
+    "enemies": [
+      "shelf_golem"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "archive_elite_03",
+    "name": "A Catalogue with Scales",
+    "act": 2,
+    "difficulty": "elite",
+    "enemies": [
+      "chain_catalogue_serpent"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "archive_elite_04",
+    "name": "The Debt of a Borrowed Book",
+    "act": 2,
+    "difficulty": "elite",
+    "enemies": [
+      "overdue_oathkeeper"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "archive_elite_05",
+    "name": "A Lich and Its Footnote",
+    "act": 2,
+    "difficulty": "elite",
+    "enemies": [
+      "archivist_lich",
+      "footnote_familiar"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "archive_boss_02",
+    "name": "Chief Under-Archivist",
+    "act": 2,
+    "difficulty": "boss",
+    "enemies": [
+      "chief_under_archivist"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "archive_boss_03",
+    "name": "The Living Index",
+    "act": 2,
+    "difficulty": "boss",
+    "enemies": [
+      "living_index"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "archive_easy_06",
+    "name": "A Slip of the Wrong Colour",
+    "act": 2,
+    "difficulty": "easy",
+    "enemies": [
+      "blue_slip_sprite"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "archive_easy_07",
+    "name": "Booklice in the Binding",
+    "act": 2,
+    "difficulty": "easy",
+    "enemies": [
+      "booklice_cloud"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "archive_easy_08",
+    "name": "The Stamp Wakes Up",
+    "act": 2,
+    "difficulty": "easy",
+    "enemies": [
+      "sleepy_stamp_golem"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "archive_easy_09",
+    "name": "A Note in the Margin",
+    "act": 2,
+    "difficulty": "easy",
+    "enemies": [
+      "unpaid_margin_note"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "archive_easy_10",
+    "name": "Raven in the Sorting Room",
+    "act": 2,
+    "difficulty": "easy",
+    "enemies": [
+      "sorting_raven"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "archive_easy_11",
+    "name": "A Pencil Starts Screaming",
+    "act": 2,
+    "difficulty": "easy",
+    "enemies": [
+      "pencil_mandrake"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "archive_easy_12",
+    "name": "Property of the Dead",
+    "act": 2,
+    "difficulty": "easy",
+    "enemies": [
+      "bookplate_ghost"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "archive_normal_13",
+    "name": "The Oath Indexes You",
+    "act": 2,
+    "difficulty": "normal",
+    "enemies": [
+      "oathbound_indexer"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "archive_normal_14",
+    "name": "A Scholar Gone Soft",
+    "act": 2,
+    "difficulty": "normal",
+    "enemies": [
+      "mildew_scholar"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "archive_normal_15",
+    "name": "Return Slot with Teeth",
+    "act": 2,
+    "difficulty": "normal",
+    "enemies": [
+      "brass_return_slot"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "archive_normal_16",
+    "name": "White Branches in the Records",
+    "act": 2,
+    "difficulty": "normal",
+    "enemies": [
+      "erasure_dryad"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "archive_normal_17",
+    "name": "Too Much Red String",
+    "act": 2,
+    "difficulty": "normal",
+    "enemies": [
+      "red_string_oracle"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "archive_normal_18",
+    "name": "A Cupboard of Small Problems",
+    "act": 2,
+    "difficulty": "normal",
+    "enemies": [
+      "cupboard_of_minor_dooms"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "archive_normal_19",
+    "name": "A Codex Refuses Translation",
+    "act": 2,
+    "difficulty": "normal",
+    "enemies": [
+      "untranslated_codex"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "archive_normal_20",
+    "name": "One Person Queue",
+    "act": 2,
+    "difficulty": "normal",
+    "enemies": [
+      "queue_of_one",
+      "blue_slip_sprite"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "archive_normal_21",
+    "name": "Corrections with Teeth",
+    "act": 2,
+    "difficulty": "normal",
+    "enemies": [
+      "errata_jackal",
+      "unpaid_margin_note"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "archive_elite_06",
+    "name": "Silence Is Enforced",
+    "act": 2,
+    "difficulty": "elite",
+    "enemies": [
+      "silence_enforcer"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "archive_elite_07",
+    "name": "The Redacted Riddle",
+    "act": 2,
+    "difficulty": "elite",
+    "enemies": [
+      "redaction_sphinx"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "archive_elite_08",
+    "name": "The Stacks Begin to Roll",
+    "act": 2,
+    "difficulty": "elite",
+    "enemies": [
+      "rolling_stacks_colossus"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "archive_elite_09",
+    "name": "The Drawer Comes Back",
+    "act": 2,
+    "difficulty": "elite",
+    "enemies": [
+      "drawer_of_infinite_returns_sentinel"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "archive_elite_10",
+    "name": "A Trolley with Intent",
+    "act": 2,
+    "difficulty": "elite",
+    "enemies": [
+      "catalogue_trolley_runaway"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "archive_boss_04",
+    "name": "Curator of Misplaced Hours",
+    "act": 2,
+    "difficulty": "boss",
+    "enemies": [
+      "curator_of_misplaced_hours"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "archive_boss_05",
+    "name": "The Shelf That Shelves Back",
+    "act": 2,
+    "difficulty": "boss",
+    "enemies": [
+      "shelf_that_shelves_back"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "archive_boss_06",
+    "name": "Catalogue of Unwise Names",
+    "act": 2,
+    "difficulty": "boss",
+    "enemies": [
+      "catalogue_of_unwise_names"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "archive_boss_07",
+    "name": "Auditor of Returned Lives",
+    "act": 2,
+    "difficulty": "boss",
+    "enemies": [
+      "auditor_of_returned_lives"
+    ],
+    "weight": 1
+  }
+]

@@ -1,0 +1,278 @@
+[
+  {
+    "id": "calling_card_case",
+    "name": "Calling Card Case",
+    "description": "At the start of each combat, add a Calling Card to your hand and gain 2 Block.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "calling_card",
+        "destination": "hand",
+        "copies": 1
+      },
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "guild_assassin_apprentice",
+      "contract",
+      "doubt",
+      "zero_cost"
+    ],
+    "allowed_classes": [
+      "guild_assassin_apprentice"
+    ]
+  },
+  {
+    "id": "polished_stiletto",
+    "name": "Polished Stiletto",
+    "description": "At the start of each combat, gain 1 Strength.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "gain_strength_at_combat_start",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "guild_assassin_apprentice",
+      "precision",
+      "strength",
+      "attack"
+    ],
+    "allowed_classes": [
+      "guild_assassin_apprentice"
+    ]
+  },
+  {
+    "id": "smoke_pellet_case",
+    "name": "Smoke Pellet Case",
+    "description": "At the start of each combat, add a False Alibi to your hand and gain 2 Block.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "false_alibi",
+        "destination": "hand",
+        "copies": 1
+      },
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "guild_assassin_apprentice",
+      "cloak",
+      "escape",
+      "block",
+      "zero_cost"
+    ],
+    "allowed_classes": [
+      "guild_assassin_apprentice"
+    ]
+  },
+  {
+    "id": "vial_ring",
+    "name": "Vial Ring",
+    "description": "At the start of each combat, add a Poisoned Pin to your hand.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "poisoned_pin",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "guild_assassin_apprentice",
+      "poison",
+      "quiet_kill",
+      "zero_cost"
+    ],
+    "allowed_classes": [
+      "guild_assassin_apprentice"
+    ]
+  },
+  {
+    "id": "black_silk_gloves",
+    "name": "Black Silk Gloves",
+    "description": "At the start of each combat, gain 6 Block and apply 1 Doubt to all enemies.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 6
+      },
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "doubt",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "guild_assassin_apprentice",
+      "cloak",
+      "doubt",
+      "block",
+      "intimidation"
+    ],
+    "allowed_classes": [
+      "guild_assassin_apprentice"
+    ]
+  },
+  {
+    "id": "contract_ledger",
+    "name": "Contract Ledger",
+    "description": "At the start of each combat, apply 2 Doubt to all enemies.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "doubt",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "guild_assassin_apprentice",
+      "contract",
+      "mark",
+      "doubt"
+    ],
+    "allowed_classes": [
+      "guild_assassin_apprentice"
+    ]
+  },
+  {
+    "id": "poisoners_teaspoon",
+    "name": "Poisoner's Teaspoon",
+    "description": "At the start of each combat, apply 2 Poison to all enemies.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "poison",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "guild_assassin_apprentice",
+      "poison",
+      "quiet_kill",
+      "aoe"
+    ],
+    "allowed_classes": [
+      "guild_assassin_apprentice"
+    ]
+  },
+  {
+    "id": "discreet_exit_route",
+    "name": "Discreet Exit Route",
+    "description": "At the start of each combat, gain 1 Energy and add a False Alibi to your discard pile.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "gain_energy_at_combat_start",
+        "amount": 1
+      },
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "false_alibi",
+        "destination": "discard_pile",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "guild_assassin_apprentice",
+      "energy",
+      "cloak",
+      "escape",
+      "risk_reward"
+    ],
+    "allowed_classes": [
+      "guild_assassin_apprentice"
+    ]
+  },
+  {
+    "id": "sealed_black_contract",
+    "name": "Sealed Black Contract",
+    "description": "At the start of each combat, add a Name on the List to your hand.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "name_on_the_list",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "guild_assassin_apprentice",
+      "contract",
+      "mark",
+      "doubt",
+      "zero_cost"
+    ],
+    "allowed_classes": [
+      "guild_assassin_apprentice"
+    ]
+  },
+  {
+    "id": "guild_exam_dagger",
+    "name": "Guild Exam Dagger",
+    "description": "At the start of each combat, gain 1 Strength and apply 1 Doubt to all enemies.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "gain_strength_at_combat_start",
+        "amount": 1
+      },
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "doubt",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "guild_assassin_apprentice",
+      "precision",
+      "strength",
+      "doubt"
+    ],
+    "allowed_classes": [
+      "guild_assassin_apprentice"
+    ]
+  },
+  {
+    "id": "tasteful_vial_collection",
+    "name": "Tasteful Vial Collection",
+    "description": "At the start of each combat, add a Poisoned Pin to your hand and apply 1 Poison to all enemies.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "poisoned_pin",
+        "destination": "hand",
+        "copies": 1
+      },
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "poison",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "guild_assassin_apprentice",
+      "poison",
+      "quiet_kill",
+      "zero_cost"
+    ],
+    "allowed_classes": [
+      "guild_assassin_apprentice"
+    ]
+  }
+]

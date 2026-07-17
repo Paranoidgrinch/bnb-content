@@ -1,0 +1,14 @@
+{
+  "id": "example_class",
+  "name": "Example Class",
+  "max_hp": 70,
+  "starting_energy": 3,
+  "starting_relic": null,
+  "starting_deck": [
+    "example_strike",
+    "example_strike",
+    "example_defend",
+    "example_defend"
+  ],
+  "starting_resources": {}
+}

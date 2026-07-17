@@ -1,0 +1,233 @@
+[
+  {
+    "id": "nisaba_keeper_of_the_first_tablet",
+    "name": "Nisaba, Keeper of the First Tablet",
+    "max_hp": 280,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "inscribe_the_ration",
+        "name": "Inscribe the Ration",
+        "intent_type": "debuff",
+        "block": 18,
+        "effects": [
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "paperwork",
+            "amount": 5
+          }
+        ]
+      },
+      {
+        "id": "measure_the_boundary",
+        "name": "Measure the Boundary",
+        "intent_type": "mixed",
+        "damage": 20,
+        "block": 22,
+        "effects": [
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "doubt",
+            "amount": 2
+          }
+        ]
+      },
+      {
+        "id": "close_the_register",
+        "name": "Close the Register",
+        "intent_type": "attack",
+        "damage": 34,
+        "effects": [
+          {
+            "type": "apply_status",
+            "target": "self",
+            "status": "strength",
+            "amount": 2
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "act_5",
+      "divine_ledger",
+      "boss",
+      "nisaba",
+      "scribe",
+      "tablet"
+    ]
+  },
+  {
+    "id": "inanna_mistress_of_the_eanna_ledger",
+    "name": "Inanna, Mistress of the Eanna Ledger",
+    "max_hp": 310,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "claim_the_storehouse",
+        "name": "Claim the Storehouse",
+        "intent_type": "attack",
+        "damage": 28,
+        "effects": [
+          {
+            "type": "apply_status",
+            "target": "self",
+            "status": "strength",
+            "amount": 2
+          }
+        ]
+      },
+      {
+        "id": "demand_the_accounting",
+        "name": "Demand the Accounting",
+        "intent_type": "debuff",
+        "damage": 16,
+        "effects": [
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "panic",
+            "amount": 1
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "doubt",
+            "amount": 2
+          }
+        ]
+      },
+      {
+        "id": "judgment_of_eanna",
+        "name": "Judgment of Eanna",
+        "intent_type": "attack",
+        "damage": 42
+      }
+    ],
+    "tags": [
+      "act_5",
+      "divine_ledger",
+      "boss",
+      "inanna",
+      "eanna",
+      "temple"
+    ]
+  },
+  {
+    "id": "nanshe_auditor_of_the_just_ration",
+    "name": "Nan?e, Auditor of the Just Ration",
+    "max_hp": 295,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "weigh_the_ration",
+        "name": "Weigh the Ration",
+        "intent_type": "mixed",
+        "damage": 22,
+        "block": 18,
+        "effects": [
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "doubt",
+            "amount": 2
+          }
+        ]
+      },
+      {
+        "id": "audit_the_imbalance",
+        "name": "Audit the Imbalance",
+        "intent_type": "debuff",
+        "block": 26,
+        "effects": [
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "paperwork",
+            "amount": 4
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "panic",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "correct_the_measure",
+        "name": "Correct the Measure",
+        "intent_type": "attack",
+        "damage": 36,
+        "effects": [
+          {
+            "type": "apply_status",
+            "target": "self",
+            "status": "strength",
+            "amount": 1
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "act_5",
+      "divine_ledger",
+      "boss",
+      "nanshe",
+      "audit",
+      "ration"
+    ]
+  },
+  {
+    "id": "nanna_sin_moon_seal_of_ur",
+    "name": "Nanna-S?n, Moon Seal of Ur",
+    "max_hp": 305,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "waxing_seal",
+        "name": "Waxing Seal",
+        "intent_type": "block",
+        "block": 34,
+        "effects": [
+          {
+            "type": "apply_status",
+            "target": "self",
+            "status": "strength",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "calendar_of_dues",
+        "name": "Calendar of Dues",
+        "intent_type": "debuff",
+        "damage": 18,
+        "effects": [
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "paperwork",
+            "amount": 5
+          }
+        ]
+      },
+      {
+        "id": "waning_verdict",
+        "name": "Waning Verdict",
+        "intent_type": "attack",
+        "damage": 38
+      }
+    ],
+    "tags": [
+      "act_5",
+      "divine_ledger",
+      "boss",
+      "nanna_sin",
+      "moon",
+      "ur",
+      "seal"
+    ]
+  }
+]

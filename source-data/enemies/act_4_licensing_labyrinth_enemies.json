@@ -1,0 +1,1463 @@
+[
+  {
+    "id": "funerary_scribe",
+    "name": "Funerary Scribe",
+    "max_hp": 44,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "ink_the_name",
+        "name": "Ink the Name",
+        "intent_type": "attack",
+        "damage": 9
+      },
+      {
+        "id": "audit_the_tomb_line",
+        "name": "Audit the Tomb Line",
+        "intent_type": "block",
+        "block": 8
+      },
+      {
+        "id": "seal_the_margin",
+        "name": "Seal the Margin",
+        "intent_type": "attack",
+        "damage": 11
+      }
+    ],
+    "tags": [
+      "act_4",
+      "normal",
+      "pyramid",
+      "scribe",
+      "licensing_labyrinth"
+    ]
+  },
+  {
+    "id": "scarab_seal_swarm",
+    "name": "Scarab Seal Swarm",
+    "max_hp": 38,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "gnaw_the_cartouche",
+        "name": "Gnaw the Cartouche",
+        "intent_type": "attack",
+        "damage": 8
+      },
+      {
+        "id": "harden_the_wax",
+        "name": "Harden the Wax",
+        "intent_type": "block",
+        "block": 10
+      },
+      {
+        "id": "crawl_over_the_ledger",
+        "name": "Crawl over the Ledger",
+        "intent_type": "attack",
+        "damage": 12
+      }
+    ],
+    "tags": [
+      "act_4",
+      "normal",
+      "pyramid",
+      "beast",
+      "licensing_labyrinth"
+    ]
+  },
+  {
+    "id": "burial_permit_registrar",
+    "name": "Burial Permit Registrar",
+    "max_hp": 50,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "verify_the_entombment",
+        "name": "Verify the Entombment",
+        "intent_type": "block",
+        "block": 12
+      },
+      {
+        "id": "stamp_the_living",
+        "name": "Stamp the Living",
+        "intent_type": "attack",
+        "damage": 11
+      },
+      {
+        "id": "reject_the_appeal",
+        "name": "Reject the Appeal",
+        "intent_type": "attack",
+        "damage": 14
+      }
+    ],
+    "tags": [
+      "act_4",
+      "normal",
+      "pyramid",
+      "registrar",
+      "licensing_labyrinth"
+    ]
+  },
+  {
+    "id": "canopic_toll_collector",
+    "name": "Canopic Toll Collector",
+    "max_hp": 42,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "rattle_the_jars",
+        "name": "Rattle the Jars",
+        "intent_type": "attack",
+        "damage": 10
+      },
+      {
+        "id": "count_the_organs",
+        "name": "Count the Organs",
+        "intent_type": "block",
+        "block": 7
+      },
+      {
+        "id": "collect_the_passage_fee",
+        "name": "Collect the Passage Fee",
+        "intent_type": "attack",
+        "damage": 13
+      }
+    ],
+    "tags": [
+      "act_4",
+      "normal",
+      "pyramid",
+      "canopic",
+      "licensing_labyrinth"
+    ]
+  },
+  {
+    "id": "oath_door_attendant",
+    "name": "Oath-Door Attendant",
+    "max_hp": 54,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "bar_the_wrong_corridor",
+        "name": "Bar the Wrong Corridor",
+        "intent_type": "block",
+        "block": 14
+      },
+      {
+        "id": "slam_the_threshold",
+        "name": "Slam the Threshold",
+        "intent_type": "attack",
+        "damage": 10
+      },
+      {
+        "id": "demand_the_burial_oath",
+        "name": "Demand the Burial Oath",
+        "intent_type": "attack",
+        "damage": 15
+      }
+    ],
+    "tags": [
+      "act_4",
+      "normal",
+      "pyramid",
+      "door",
+      "licensing_labyrinth"
+    ]
+  },
+  {
+    "id": "linen_wrapped_auditor",
+    "name": "Linen-Wrapped Auditor",
+    "max_hp": 48,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "unroll_the_findings",
+        "name": "Unroll the Findings",
+        "intent_type": "attack",
+        "damage": 9
+      },
+      {
+        "id": "bind_the_exception",
+        "name": "Bind the Exception",
+        "intent_type": "block",
+        "block": 11
+      },
+      {
+        "id": "issue_the_dust_citation",
+        "name": "Issue the Dust Citation",
+        "intent_type": "attack",
+        "damage": 14
+      }
+    ],
+    "tags": [
+      "act_4",
+      "normal",
+      "pyramid",
+      "mummy",
+      "licensing_labyrinth"
+    ]
+  },
+  {
+    "id": "mummified_high_inspector",
+    "name": "Mummified High Inspector",
+    "max_hp": 88,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "inspect_the_unapproved_soul",
+        "name": "Inspect the Unapproved Soul",
+        "intent_type": "attack",
+        "damage": 15
+      },
+      {
+        "id": "raise_the_seal_wall",
+        "name": "Raise the Seal Wall",
+        "intent_type": "block",
+        "block": 18
+      },
+      {
+        "id": "close_the_audit",
+        "name": "Close the Audit",
+        "intent_type": "attack",
+        "damage": 21
+      }
+    ],
+    "tags": [
+      "act_4",
+      "elite",
+      "pyramid",
+      "mummy",
+      "inspector",
+      "licensing_labyrinth"
+    ]
+  },
+  {
+    "id": "corridor_sphinx_of_form_zero",
+    "name": "Corridor Sphinx of Form Zero",
+    "max_hp": 84,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "pose_the_missing_form",
+        "name": "Pose the Missing Form",
+        "intent_type": "block",
+        "block": 16
+      },
+      {
+        "id": "answer_in_stone",
+        "name": "Answer in Stone",
+        "intent_type": "attack",
+        "damage": 16
+      },
+      {
+        "id": "deny_the_corridor",
+        "name": "Deny the Corridor",
+        "intent_type": "attack",
+        "damage": 22
+      }
+    ],
+    "tags": [
+      "act_4",
+      "elite",
+      "pyramid",
+      "sphinx",
+      "licensing_labyrinth"
+    ]
+  },
+  {
+    "id": "canopic_mimic",
+    "name": "Canopic Mimic",
+    "max_hp": 76,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "pretend_to_be_a_reward",
+        "name": "Pretend to Be a Reward",
+        "intent_type": "block",
+        "block": 12
+      },
+      {
+        "id": "snap_the_lid_shut",
+        "name": "Snap the Lid Shut",
+        "intent_type": "attack",
+        "damage": 14
+      },
+      {
+        "id": "devour_the_inventory",
+        "name": "Devour the Inventory",
+        "intent_type": "attack",
+        "damage": 20
+      }
+    ],
+    "tags": [
+      "act_4",
+      "elite",
+      "mimic",
+      "pyramid",
+      "canopic",
+      "licensing_labyrinth"
+    ]
+  },
+  {
+    "id": "pharaoh_of_pending_approval",
+    "name": "Pharaoh of Pending Approval",
+    "max_hp": 152,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "summon_the_unfinished_decree",
+        "name": "Summon the Unfinished Decree",
+        "intent_type": "block",
+        "block": 20
+      },
+      {
+        "id": "strike_with_the_sun_stamp",
+        "name": "Strike with the Sun Stamp",
+        "intent_type": "attack",
+        "damage": 18
+      },
+      {
+        "id": "rule_from_the_unprocessed_tomb",
+        "name": "Rule from the Unprocessed Tomb",
+        "intent_type": "mixed",
+        "damage": 14,
+        "block": 14
+      },
+      {
+        "id": "deny_the_afterlife_license",
+        "name": "Deny the Afterlife License",
+        "intent_type": "attack",
+        "damage": 24
+      }
+    ],
+    "tags": [
+      "act_4",
+      "boss",
+      "pyramid",
+      "pharaoh",
+      "licensing_labyrinth"
+    ]
+  },
+  {
+    "id": "cartouche_notary",
+    "name": "Cartouche Notary",
+    "max_hp": 46,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "witness_the_name",
+        "name": "Witness the Name",
+        "intent_type": "block",
+        "block": 9
+      },
+      {
+        "id": "chip_the_signature",
+        "name": "Chip the Signature",
+        "intent_type": "attack",
+        "damage": 10
+      },
+      {
+        "id": "engrave_the_exception",
+        "name": "Engrave the Exception",
+        "intent_type": "attack",
+        "damage": 14
+      }
+    ],
+    "tags": [
+      "act_4",
+      "normal",
+      "pyramid",
+      "notary",
+      "licensing_labyrinth"
+    ]
+  },
+  {
+    "id": "jackal_ledger_keeper",
+    "name": "Jackal Ledger-Keeper",
+    "max_hp": 52,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "sniff_out_the_missing_receipt",
+        "name": "Sniff Out the Missing Receipt",
+        "intent_type": "attack",
+        "damage": 11
+      },
+      {
+        "id": "guard_the_death_roll",
+        "name": "Guard the Death Roll",
+        "intent_type": "block",
+        "block": 13
+      },
+      {
+        "id": "bite_the_unlicensed_living",
+        "name": "Bite the Unlicensed Living",
+        "intent_type": "attack",
+        "damage": 15
+      }
+    ],
+    "tags": [
+      "act_4",
+      "normal",
+      "pyramid",
+      "jackal",
+      "ledger",
+      "licensing_labyrinth"
+    ]
+  },
+  {
+    "id": "false_exit_counter",
+    "name": "False Exit Counter",
+    "max_hp": 58,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "open_the_wrong_way",
+        "name": "Open the Wrong Way",
+        "intent_type": "attack",
+        "damage": 10
+      },
+      {
+        "id": "seal_the_actual_exit",
+        "name": "Seal the Actual Exit",
+        "intent_type": "block",
+        "block": 15
+      },
+      {
+        "id": "redirect_the_queue",
+        "name": "Redirect the Queue",
+        "intent_type": "attack",
+        "damage": 16
+      }
+    ],
+    "tags": [
+      "act_4",
+      "normal",
+      "pyramid",
+      "infrastructure",
+      "licensing_labyrinth"
+    ]
+  },
+  {
+    "id": "papyrus_dust_priest",
+    "name": "Papyrus Dust Priest",
+    "max_hp": 49,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "recite_the_old_clause",
+        "name": "Recite the Old Clause",
+        "intent_type": "block",
+        "block": 11
+      },
+      {
+        "id": "fling_dry_scripture",
+        "name": "Fling Dry Scripture",
+        "intent_type": "attack",
+        "damage": 12
+      },
+      {
+        "id": "invoke_the_lower_stamp",
+        "name": "Invoke the Lower Stamp",
+        "intent_type": "mixed",
+        "damage": 9,
+        "block": 9
+      }
+    ],
+    "tags": [
+      "act_4",
+      "normal",
+      "pyramid",
+      "priest",
+      "papyrus",
+      "licensing_labyrinth"
+    ]
+  },
+  {
+    "id": "weighing_scale_of_minor_sins",
+    "name": "Weighing Scale of Minor Sins",
+    "max_hp": 60,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "tilt_the_pan",
+        "name": "Tilt the Pan",
+        "intent_type": "attack",
+        "damage": 12
+      },
+      {
+        "id": "balance_the_record",
+        "name": "Balance the Record",
+        "intent_type": "block",
+        "block": 16
+      },
+      {
+        "id": "measure_the_unfiled_heart",
+        "name": "Measure the Unfiled Heart",
+        "intent_type": "attack",
+        "damage": 17
+      }
+    ],
+    "tags": [
+      "act_4",
+      "normal",
+      "pyramid",
+      "scale",
+      "judgement",
+      "licensing_labyrinth"
+    ]
+  },
+  {
+    "id": "sun_seal_examiner",
+    "name": "Sun-Seal Examiner",
+    "max_hp": 55,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "hold_the_seal_to_the_light",
+        "name": "Hold the Seal to the Light",
+        "intent_type": "block",
+        "block": 14
+      },
+      {
+        "id": "burn_the_unapproved_copy",
+        "name": "Burn the Unapproved Copy",
+        "intent_type": "attack",
+        "damage": 13
+      },
+      {
+        "id": "impress_the_solar_mark",
+        "name": "Impress the Solar Mark",
+        "intent_type": "attack",
+        "damage": 18
+      }
+    ],
+    "tags": [
+      "act_4",
+      "normal",
+      "pyramid",
+      "sun",
+      "examiner",
+      "licensing_labyrinth"
+    ]
+  },
+  {
+    "id": "red_tape_scarab_host",
+    "name": "Red-Tape Scarab Host",
+    "max_hp": 92,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "multiply_the_seals",
+        "name": "Multiply the Seals",
+        "intent_type": "block",
+        "block": 20
+      },
+      {
+        "id": "swarm_the_application",
+        "name": "Swarm the Application",
+        "intent_type": "attack",
+        "damage": 17
+      },
+      {
+        "id": "bury_the_shortcut",
+        "name": "Bury the Shortcut",
+        "intent_type": "attack",
+        "damage": 24
+      }
+    ],
+    "tags": [
+      "act_4",
+      "elite",
+      "pyramid",
+      "scarab",
+      "red_tape",
+      "licensing_labyrinth"
+    ]
+  },
+  {
+    "id": "appeal_judge_of_the_lower_chamber",
+    "name": "Appeal Judge of the Lower Chamber",
+    "max_hp": 96,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "hear_the_case_in_silence",
+        "name": "Hear the Case in Silence",
+        "intent_type": "block",
+        "block": 18
+      },
+      {
+        "id": "strike_the_testimony",
+        "name": "Strike the Testimony",
+        "intent_type": "attack",
+        "damage": 18
+      },
+      {
+        "id": "sustain_the_ancient_denial",
+        "name": "Sustain the Ancient Denial",
+        "intent_type": "mixed",
+        "damage": 16,
+        "block": 12
+      }
+    ],
+    "tags": [
+      "act_4",
+      "elite",
+      "pyramid",
+      "judge",
+      "appeal",
+      "licensing_labyrinth"
+    ]
+  },
+  {
+    "id": "weigher_of_unfiled_hearts",
+    "name": "Weigher of Unfiled Hearts",
+    "max_hp": 166,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "prepare_the_featherless_scale",
+        "name": "Prepare the Featherless Scale",
+        "intent_type": "block",
+        "block": 22
+      },
+      {
+        "id": "press_the_heart_to_the_ledger",
+        "name": "Press the Heart to the Ledger",
+        "intent_type": "attack",
+        "damage": 20
+      },
+      {
+        "id": "balance_against_absent_forms",
+        "name": "Balance Against Absent Forms",
+        "intent_type": "mixed",
+        "damage": 16,
+        "block": 16
+      },
+      {
+        "id": "reject_the_soul_without_receipt",
+        "name": "Reject the Soul Without Receipt",
+        "intent_type": "attack",
+        "damage": 28
+      }
+    ],
+    "tags": [
+      "act_4",
+      "boss",
+      "pyramid",
+      "judgement",
+      "scale",
+      "licensing_labyrinth"
+    ]
+  },
+  {
+    "id": "sandstone_queue_marker",
+    "name": "Sandstone Queue Marker",
+    "max_hp": 45,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "hold_the_place",
+        "name": "Hold the Place",
+        "intent_type": "block",
+        "block": 10
+      },
+      {
+        "id": "trip_the_unlisted",
+        "name": "Trip the Unlisted",
+        "intent_type": "attack",
+        "damage": 10
+      },
+      {
+        "id": "move_the_line_backward",
+        "name": "Move the Line Backward",
+        "intent_type": "attack",
+        "damage": 14
+      }
+    ],
+    "tags": [
+      "act_4",
+      "normal",
+      "pyramid",
+      "queue",
+      "infrastructure",
+      "licensing_labyrinth"
+    ]
+  },
+  {
+    "id": "ibis_stamp_acolyte",
+    "name": "Ibis Stamp Acolyte",
+    "max_hp": 47,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "bless_the_stamp_pad",
+        "name": "Bless the Stamp Pad",
+        "intent_type": "block",
+        "block": 11
+      },
+      {
+        "id": "peck_the_application",
+        "name": "Peck the Application",
+        "intent_type": "attack",
+        "damage": 11
+      },
+      {
+        "id": "mark_the_denial",
+        "name": "Mark the Denial",
+        "intent_type": "mixed",
+        "damage": 8,
+        "block": 8
+      }
+    ],
+    "tags": [
+      "act_4",
+      "normal",
+      "pyramid",
+      "ibis",
+      "acolyte",
+      "licensing_labyrinth"
+    ]
+  },
+  {
+    "id": "sealed_stair_sentinel",
+    "name": "Sealed Stair Sentinel",
+    "max_hp": 62,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "brace_the_hidden_step",
+        "name": "Brace the Hidden Step",
+        "intent_type": "block",
+        "block": 17
+      },
+      {
+        "id": "strike_from_the_landing",
+        "name": "Strike from the Landing",
+        "intent_type": "attack",
+        "damage": 12
+      },
+      {
+        "id": "drop_the_stone_permit",
+        "name": "Drop the Stone Permit",
+        "intent_type": "attack",
+        "damage": 18
+      }
+    ],
+    "tags": [
+      "act_4",
+      "normal",
+      "pyramid",
+      "sentinel",
+      "stair",
+      "licensing_labyrinth"
+    ]
+  },
+  {
+    "id": "embalming_license_monk",
+    "name": "Embalming License Monk",
+    "max_hp": 53,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "wrap_the_clause",
+        "name": "Wrap the Clause",
+        "intent_type": "block",
+        "block": 13
+      },
+      {
+        "id": "apply_sacred_resin",
+        "name": "Apply Sacred Resin",
+        "intent_type": "attack",
+        "damage": 12
+      },
+      {
+        "id": "preserve_the_rejection",
+        "name": "Preserve the Rejection",
+        "intent_type": "attack",
+        "damage": 16
+      }
+    ],
+    "tags": [
+      "act_4",
+      "normal",
+      "pyramid",
+      "monk",
+      "embalming",
+      "licensing_labyrinth"
+    ]
+  },
+  {
+    "id": "obelisk_clause_carver",
+    "name": "Obelisk Clause Carver",
+    "max_hp": 56,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "raise_the_small_obelisk",
+        "name": "Raise the Small Obelisk",
+        "intent_type": "block",
+        "block": 14
+      },
+      {
+        "id": "chisel_the_exception",
+        "name": "Chisel the Exception",
+        "intent_type": "attack",
+        "damage": 13
+      },
+      {
+        "id": "drop_a_granite_footnote",
+        "name": "Drop a Granite Footnote",
+        "intent_type": "attack",
+        "damage": 18
+      }
+    ],
+    "tags": [
+      "act_4",
+      "normal",
+      "pyramid",
+      "obelisk",
+      "carver",
+      "licensing_labyrinth"
+    ]
+  },
+  {
+    "id": "tomb_window_clerk",
+    "name": "Tomb Window Clerk",
+    "max_hp": 51,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "close_for_the_epoch",
+        "name": "Close for the Epoch",
+        "intent_type": "block",
+        "block": 12
+      },
+      {
+        "id": "slide_the_granite_shutter",
+        "name": "Slide the Granite Shutter",
+        "intent_type": "attack",
+        "damage": 12
+      },
+      {
+        "id": "serve_the_wrong_dynasty",
+        "name": "Serve the Wrong Dynasty",
+        "intent_type": "mixed",
+        "damage": 10,
+        "block": 10
+      }
+    ],
+    "tags": [
+      "act_4",
+      "normal",
+      "pyramid",
+      "clerk",
+      "counter",
+      "licensing_labyrinth"
+    ]
+  },
+  {
+    "id": "dust_chamber_herald",
+    "name": "Dust Chamber Herald",
+    "max_hp": 49,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "announce_the_wrong_turn",
+        "name": "Announce the Wrong Turn",
+        "intent_type": "attack",
+        "damage": 11
+      },
+      {
+        "id": "unfurl_the_dust_banner",
+        "name": "Unfurl the Dust Banner",
+        "intent_type": "block",
+        "block": 12
+      },
+      {
+        "id": "proclaim_the_old_penalty",
+        "name": "Proclaim the Old Penalty",
+        "intent_type": "attack",
+        "damage": 16
+      }
+    ],
+    "tags": [
+      "act_4",
+      "normal",
+      "pyramid",
+      "herald",
+      "dust",
+      "licensing_labyrinth"
+    ]
+  },
+  {
+    "id": "minor_curse_accountant",
+    "name": "Minor Curse Accountant",
+    "max_hp": 57,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "tally_the_lesser_dooms",
+        "name": "Tally the Lesser Dooms",
+        "intent_type": "block",
+        "block": 15
+      },
+      {
+        "id": "charge_the_afterlife_fee",
+        "name": "Charge the Afterlife Fee",
+        "intent_type": "attack",
+        "damage": 13
+      },
+      {
+        "id": "balance_the_curse_column",
+        "name": "Balance the Curse Column",
+        "intent_type": "mixed",
+        "damage": 11,
+        "block": 11
+      }
+    ],
+    "tags": [
+      "act_4",
+      "normal",
+      "pyramid",
+      "curse",
+      "accountant",
+      "licensing_labyrinth"
+    ]
+  },
+  {
+    "id": "granite_oath_door",
+    "name": "Granite Oath Door",
+    "max_hp": 104,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "remain_lawfully_shut",
+        "name": "Remain Lawfully Shut",
+        "intent_type": "block",
+        "block": 24
+      },
+      {
+        "id": "crush_the_uninvited",
+        "name": "Crush the Uninvited",
+        "intent_type": "attack",
+        "damage": 19
+      },
+      {
+        "id": "demand_the_original_oath",
+        "name": "Demand the Original Oath",
+        "intent_type": "attack",
+        "damage": 26
+      }
+    ],
+    "tags": [
+      "act_4",
+      "elite",
+      "pyramid",
+      "door",
+      "oath",
+      "licensing_labyrinth"
+    ]
+  },
+  {
+    "id": "sun_bureau_adjudicator",
+    "name": "Sun Bureau Adjudicator",
+    "max_hp": 100,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "read_the_case_by_sunlight",
+        "name": "Read the Case by Sunlight",
+        "intent_type": "block",
+        "block": 21
+      },
+      {
+        "id": "scorch_the_duplicate_form",
+        "name": "Scorch the Duplicate Form",
+        "intent_type": "attack",
+        "damage": 20
+      },
+      {
+        "id": "issue_the_burning_verdict",
+        "name": "Issue the Burning Verdict",
+        "intent_type": "mixed",
+        "damage": 17,
+        "block": 13
+      }
+    ],
+    "tags": [
+      "act_4",
+      "elite",
+      "pyramid",
+      "sun",
+      "adjudicator",
+      "licensing_labyrinth"
+    ]
+  },
+  {
+    "id": "licensed_crocodile_bailiff",
+    "name": "Licensed Crocodile Bailiff",
+    "max_hp": 98,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "guard_the_water_clause",
+        "name": "Guard the Water Clause",
+        "intent_type": "block",
+        "block": 19
+      },
+      {
+        "id": "snap_at_the_petitioner",
+        "name": "Snap at the Petitioner",
+        "intent_type": "attack",
+        "damage": 21
+      },
+      {
+        "id": "drag_the_case_under",
+        "name": "Drag the Case Under",
+        "intent_type": "attack",
+        "damage": 27
+      }
+    ],
+    "tags": [
+      "act_4",
+      "elite",
+      "pyramid",
+      "crocodile",
+      "bailiff",
+      "licensing_labyrinth"
+    ]
+  },
+  {
+    "id": "great_sphinx_of_form_zero",
+    "name": "Great Sphinx of Form Zero",
+    "max_hp": 172,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "ask_for_the_form_that_requests_itself",
+        "name": "Ask for the Form That Requests Itself",
+        "intent_type": "block",
+        "block": 24
+      },
+      {
+        "id": "answer_with_limestone",
+        "name": "Answer with Limestone",
+        "intent_type": "attack",
+        "damage": 21
+      },
+      {
+        "id": "fold_the_corridor_into_a_question",
+        "name": "Fold the Corridor into a Question",
+        "intent_type": "mixed",
+        "damage": 17,
+        "block": 17
+      },
+      {
+        "id": "deny_entry_to_the_answer",
+        "name": "Deny Entry to the Answer",
+        "intent_type": "attack",
+        "damage": 30
+      }
+    ],
+    "tags": [
+      "act_4",
+      "boss",
+      "pyramid",
+      "sphinx",
+      "licensing_labyrinth"
+    ]
+  },
+  {
+    "id": "architect_of_the_impossible_pyramid",
+    "name": "Architect of the Impossible Pyramid",
+    "max_hp": 178,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "redraw_the_approved_corridor",
+        "name": "Redraw the Approved Corridor",
+        "intent_type": "block",
+        "block": 25
+      },
+      {
+        "id": "drop_the_ceiling_amendment",
+        "name": "Drop the Ceiling Amendment",
+        "intent_type": "attack",
+        "damage": 22
+      },
+      {
+        "id": "authorize_a_dead_end",
+        "name": "Authorize a Dead End",
+        "intent_type": "mixed",
+        "damage": 18,
+        "block": 18
+      },
+      {
+        "id": "seal_the_blueprint_forever",
+        "name": "Seal the Blueprint Forever",
+        "intent_type": "attack",
+        "damage": 31
+      }
+    ],
+    "tags": [
+      "act_4",
+      "boss",
+      "pyramid",
+      "architect",
+      "licensing_labyrinth"
+    ]
+  },
+  {
+    "id": "dynasty_queue_usher",
+    "name": "Dynasty Queue Usher",
+    "max_hp": 50,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "point_to_the_wrong_dynasty",
+        "name": "Point to the Wrong Dynasty",
+        "intent_type": "attack",
+        "damage": 11
+      },
+      {
+        "id": "guard_the_rope_of_reeds",
+        "name": "Guard the Rope of Reeds",
+        "intent_type": "block",
+        "block": 13
+      },
+      {
+        "id": "send_the_line_back_three_reigns",
+        "name": "Send the Line Back Three Reigns",
+        "intent_type": "attack",
+        "damage": 16
+      }
+    ],
+    "tags": [
+      "act_4",
+      "normal",
+      "pyramid",
+      "queue",
+      "dynasty",
+      "licensing_labyrinth"
+    ]
+  },
+  {
+    "id": "reed_pen_skeleton",
+    "name": "Reed-Pen Skeleton",
+    "max_hp": 43,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "scratch_the_receipt",
+        "name": "Scratch the Receipt",
+        "intent_type": "attack",
+        "damage": 10
+      },
+      {
+        "id": "cross_out_the_clause",
+        "name": "Cross Out the Clause",
+        "intent_type": "block",
+        "block": 9
+      },
+      {
+        "id": "jab_with_the_dry_nib",
+        "name": "Jab with the Dry Nib",
+        "intent_type": "attack",
+        "damage": 14
+      }
+    ],
+    "tags": [
+      "act_4",
+      "normal",
+      "pyramid",
+      "skeleton",
+      "scribe",
+      "licensing_labyrinth"
+    ]
+  },
+  {
+    "id": "afterlife_token_sorter",
+    "name": "Afterlife Token Sorter",
+    "max_hp": 54,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "sort_the_false_tokens",
+        "name": "Sort the False Tokens",
+        "intent_type": "block",
+        "block": 14
+      },
+      {
+        "id": "flick_a_bronze_number",
+        "name": "Flick a Bronze Number",
+        "intent_type": "attack",
+        "damage": 12
+      },
+      {
+        "id": "call_the_unclaimed_soul",
+        "name": "Call the Unclaimed Soul",
+        "intent_type": "mixed",
+        "damage": 10,
+        "block": 10
+      }
+    ],
+    "tags": [
+      "act_4",
+      "normal",
+      "pyramid",
+      "token",
+      "afterlife",
+      "licensing_labyrinth"
+    ]
+  },
+  {
+    "id": "sealed_cobra_witness",
+    "name": "Sealed Cobra Witness",
+    "max_hp": 52,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "hiss_the_testimony",
+        "name": "Hiss the Testimony",
+        "intent_type": "attack",
+        "damage": 13
+      },
+      {
+        "id": "coil_around_the_seal",
+        "name": "Coil around the Seal",
+        "intent_type": "block",
+        "block": 12
+      },
+      {
+        "id": "strike_the_false_petitioner",
+        "name": "Strike the False Petitioner",
+        "intent_type": "attack",
+        "damage": 17
+      }
+    ],
+    "tags": [
+      "act_4",
+      "normal",
+      "pyramid",
+      "cobra",
+      "witness",
+      "licensing_labyrinth"
+    ]
+  },
+  {
+    "id": "buried_fee_assessor",
+    "name": "Buried Fee Assessor",
+    "max_hp": 59,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "unearth_the_old_fee",
+        "name": "Unearth the Old Fee",
+        "intent_type": "attack",
+        "damage": 12
+      },
+      {
+        "id": "itemize_the_dust",
+        "name": "Itemize the Dust",
+        "intent_type": "block",
+        "block": 16
+      },
+      {
+        "id": "charge_for_the_second_burial",
+        "name": "Charge for the Second Burial",
+        "intent_type": "attack",
+        "damage": 18
+      }
+    ],
+    "tags": [
+      "act_4",
+      "normal",
+      "pyramid",
+      "fee",
+      "assessor",
+      "licensing_labyrinth"
+    ]
+  },
+  {
+    "id": "hieroglyphic_complaint_wall",
+    "name": "Hieroglyphic Complaint Wall",
+    "max_hp": 64,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "display_the_old_grievance",
+        "name": "Display the Old Grievance",
+        "intent_type": "block",
+        "block": 17
+      },
+      {
+        "id": "fall_in_authorized_chunks",
+        "name": "Fall in Authorized Chunks",
+        "intent_type": "attack",
+        "damage": 13
+      },
+      {
+        "id": "carve_the_complaint_deeper",
+        "name": "Carve the Complaint Deeper",
+        "intent_type": "mixed",
+        "damage": 11,
+        "block": 12
+      }
+    ],
+    "tags": [
+      "act_4",
+      "normal",
+      "pyramid",
+      "wall",
+      "complaint",
+      "licensing_labyrinth"
+    ]
+  },
+  {
+    "id": "serpent_notary_prime",
+    "name": "Serpent Notary Prime",
+    "max_hp": 102,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "coil_the_contract",
+        "name": "Coil the Contract",
+        "intent_type": "block",
+        "block": 22
+      },
+      {
+        "id": "bite_the_unsigned_hand",
+        "name": "Bite the Unsigned Hand",
+        "intent_type": "attack",
+        "damage": 20
+      },
+      {
+        "id": "certify_the_venom_clause",
+        "name": "Certify the Venom Clause",
+        "intent_type": "mixed",
+        "damage": 17,
+        "block": 14
+      }
+    ],
+    "tags": [
+      "act_4",
+      "elite",
+      "pyramid",
+      "serpent",
+      "notary",
+      "licensing_labyrinth"
+    ]
+  },
+  {
+    "id": "burial_queue_colossus",
+    "name": "Burial Queue Colossus",
+    "max_hp": 112,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "stand_in_every_line",
+        "name": "Stand in Every Line",
+        "intent_type": "block",
+        "block": 25
+      },
+      {
+        "id": "step_on_the_late_applicant",
+        "name": "Step on the Late Applicant",
+        "intent_type": "attack",
+        "damage": 22
+      },
+      {
+        "id": "advance_one_granite_pace",
+        "name": "Advance One Granite Pace",
+        "intent_type": "attack",
+        "damage": 29
+      }
+    ],
+    "tags": [
+      "act_4",
+      "elite",
+      "pyramid",
+      "colossus",
+      "queue",
+      "licensing_labyrinth"
+    ]
+  },
+  {
+    "id": "vizier_of_denied_passage",
+    "name": "Vizier of Denied Passage",
+    "max_hp": 106,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "review_the_denial_tablet",
+        "name": "Review the Denial Tablet",
+        "intent_type": "block",
+        "block": 23
+      },
+      {
+        "id": "strike_with_the_ivory_ruler",
+        "name": "Strike with the Ivory Ruler",
+        "intent_type": "attack",
+        "damage": 21
+      },
+      {
+        "id": "close_the_inner_checkpoint",
+        "name": "Close the Inner Checkpoint",
+        "intent_type": "mixed",
+        "damage": 18,
+        "block": 15
+      }
+    ],
+    "tags": [
+      "act_4",
+      "elite",
+      "pyramid",
+      "vizier",
+      "denial",
+      "licensing_labyrinth"
+    ]
+  },
+  {
+    "id": "oracle_of_final_authorization",
+    "name": "Oracle of Final Authorization",
+    "max_hp": 184,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "consult_the_blank_tablet",
+        "name": "Consult the Blank Tablet",
+        "intent_type": "block",
+        "block": 26
+      },
+      {
+        "id": "speak_the_denial_before_it_exists",
+        "name": "Speak the Denial Before It Exists",
+        "intent_type": "attack",
+        "damage": 23
+      },
+      {
+        "id": "approve_the_wrong_future",
+        "name": "Approve the Wrong Future",
+        "intent_type": "mixed",
+        "damage": 19,
+        "block": 19
+      },
+      {
+        "id": "authorize_the_end_of_the_queue",
+        "name": "Authorize the End of the Queue",
+        "intent_type": "attack",
+        "damage": 32
+      }
+    ],
+    "tags": [
+      "act_4",
+      "boss",
+      "pyramid",
+      "oracle",
+      "authorization",
+      "licensing_labyrinth"
+    ]
+  }
+]

@@ -1,0 +1,16 @@
+{
+  "id": "example_enemy",
+  "name": "Example Enemy",
+  "max_hp": 32,
+  "intent_pattern": "cycle",
+  "intents": [
+    {
+      "id": "attack",
+      "name": "Attack",
+      "intent_type": "attack",
+      "damage": 7,
+      "effects": []
+    }
+  ],
+  "tags": []
+}

@@ -1,0 +1,1633 @@
+[
+  {
+    "id": "city_easy_01",
+    "name": "A Very Official Line",
+    "act": 1,
+    "difficulty": "easy",
+    "enemies": [
+      "queue_imp"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_queue",
+      "queue",
+      "panic_intro"
+    ]
+  },
+  {
+    "id": "city_easy_02",
+    "name": "Stamping Errand",
+    "act": 1,
+    "difficulty": "easy",
+    "enemies": [
+      "stamp_goblin"
+    ],
+    "weight": 3,
+    "tags": []
+  },
+  {
+    "id": "city_easy_03",
+    "name": "First Day at the Counter",
+    "act": 1,
+    "difficulty": "easy",
+    "enemies": [
+      "clerkling_apprentice"
+    ],
+    "weight": 3,
+    "tags": []
+  },
+  {
+    "id": "city_normal_01",
+    "name": "The Wrong Counter",
+    "act": 1,
+    "difficulty": "normal",
+    "enemies": [
+      "queue_imp",
+      "stamp_goblin"
+    ],
+    "weight": 3
+  },
+  {
+    "id": "city_normal_02",
+    "name": "Ink and Wax",
+    "act": 1,
+    "difficulty": "normal",
+    "enemies": [
+      "ink_spattered_scribe",
+      "seal_bearer_toad"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "city_normal_03",
+    "name": "Courier at the Filing Cabinet",
+    "act": 1,
+    "difficulty": "normal",
+    "enemies": [
+      "pigeon_courier",
+      "filing_beetle"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "city_normal_04",
+    "name": "Stone Ordinance",
+    "act": 1,
+    "difficulty": "normal",
+    "enemies": [
+      "municipal_gargoyle"
+    ],
+    "weight": 2,
+    "tags": []
+  },
+  {
+    "id": "city_normal_enforcement_01",
+    "name": "Warrant Served in Person",
+    "act": 1,
+    "difficulty": "normal",
+    "enemies": [
+      "warrant_bailiff"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_enforcement",
+      "enforcement",
+      "civic_force",
+      "strength_pressure"
+    ]
+  },
+  {
+    "id": "city_normal_enforcement_02",
+    "name": "The Levy Comes Due",
+    "act": 1,
+    "difficulty": "normal",
+    "enemies": [
+      "levy_constable"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_enforcement",
+      "enforcement",
+      "civic_force",
+      "strength_pressure"
+    ]
+  },
+  {
+    "id": "city_normal_enforcement_03",
+    "name": "The Gatehouse Enforces Procedure",
+    "act": 1,
+    "difficulty": "normal",
+    "enemies": [
+      "gatehouse_enforcer"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_enforcement",
+      "enforcement",
+      "civic_force",
+      "strength_pressure"
+    ]
+  },
+  {
+    "id": "city_normal_enforcement_04",
+    "name": "Chains of Compliance",
+    "act": 1,
+    "difficulty": "normal",
+    "enemies": [
+      "compliance_chain_guard"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_enforcement",
+      "enforcement",
+      "civic_force",
+      "strength_pressure"
+    ]
+  },
+  {
+    "id": "city_normal_enforcement_05",
+    "name": "Seized at the Threshold",
+    "act": 1,
+    "difficulty": "normal",
+    "enemies": [
+      "threshold_seizure_ward"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_enforcement",
+      "enforcement",
+      "civic_force",
+      "strength_pressure"
+    ]
+  },
+  {
+    "id": "city_normal_enforcement_06",
+    "name": "The Civic Ram Advances",
+    "act": 1,
+    "difficulty": "normal",
+    "enemies": [
+      "civic_battering_ram"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_enforcement",
+      "enforcement",
+      "civic_force",
+      "strength_pressure"
+    ]
+  },
+  {
+    "id": "city_normal_enforcement_07",
+    "name": "Bailiff and Chain",
+    "act": 1,
+    "difficulty": "normal",
+    "enemies": [
+      "warrant_bailiff",
+      "compliance_chain_guard"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_enforcement",
+      "enforcement",
+      "civic_force",
+      "strength_pressure",
+      "multi_enemy"
+    ]
+  },
+  {
+    "id": "city_normal_enforcement_08",
+    "name": "The Gate Is Closed",
+    "act": 1,
+    "difficulty": "normal",
+    "enemies": [
+      "gatehouse_enforcer",
+      "threshold_seizure_ward"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_enforcement",
+      "enforcement",
+      "civic_force",
+      "strength_pressure",
+      "multi_enemy"
+    ]
+  },
+  {
+    "id": "city_elite_01",
+    "name": "The Senior Clerk",
+    "act": 1,
+    "difficulty": "elite",
+    "enemies": [
+      "senior_clerk"
+    ],
+    "weight": 1,
+    "tags": []
+  },
+  {
+    "id": "city_elite_02",
+    "name": "The Red Tape Golem",
+    "act": 1,
+    "difficulty": "elite",
+    "enemies": [
+      "red_tape_golem"
+    ],
+    "weight": 1,
+    "tags": []
+  },
+  {
+    "id": "city_elite_enforcement_01",
+    "name": "The Warrant Becomes Iron",
+    "act": 1,
+    "difficulty": "elite",
+    "enemies": [
+      "iron_warrant_avatar"
+    ],
+    "weight": 1,
+    "tags": [
+      "stage_enforcement",
+      "enforcement",
+      "civic_force",
+      "block_pressure",
+      "strength_pressure",
+      "elite_enforcement"
+    ]
+  },
+  {
+    "id": "city_elite_enforcement_02",
+    "name": "The Seizure Procession",
+    "act": 1,
+    "difficulty": "elite",
+    "enemies": [
+      "seizure_marshal",
+      "inventory_lantern",
+      "lock_cart"
+    ],
+    "weight": 1,
+    "tags": [
+      "stage_enforcement",
+      "enforcement",
+      "civic_force",
+      "block_pressure",
+      "strength_pressure",
+      "elite_enforcement",
+      "multi_enemy"
+    ]
+  },
+  {
+    "id": "city_elite_enforcement_03",
+    "name": "The Gatehouse Drops the Portcullis",
+    "act": 1,
+    "difficulty": "elite",
+    "enemies": [
+      "portcullis_judicator"
+    ],
+    "weight": 1,
+    "tags": [
+      "stage_enforcement",
+      "enforcement",
+      "civic_force",
+      "block_pressure",
+      "strength_pressure",
+      "elite_enforcement"
+    ]
+  },
+  {
+    "id": "city_elite_enforcement_04",
+    "name": "The Final Notice Arrives Armed",
+    "act": 1,
+    "difficulty": "elite",
+    "enemies": [
+      "final_notice_knight",
+      "sealed_spear"
+    ],
+    "weight": 1,
+    "tags": [
+      "stage_enforcement",
+      "enforcement",
+      "civic_force",
+      "block_pressure",
+      "strength_pressure",
+      "elite_enforcement",
+      "multi_enemy"
+    ]
+  },
+  {
+    "id": "city_boss_01",
+    "name": "The Deputy Undersecretary",
+    "act": 1,
+    "difficulty": "boss",
+    "enemies": [
+      "deputy_undersecretary"
+    ],
+    "weight": 1,
+    "tags": [
+      "city",
+      "boss",
+      "final_office",
+      "act_1_boss"
+    ]
+  },
+  {
+    "id": "city_easy_04",
+    "name": "Misdelivery in the Queue",
+    "act": 1,
+    "difficulty": "easy",
+    "enemies": [
+      "pigeon_courier"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_queue",
+      "queue",
+      "panic_intro"
+    ]
+  },
+  {
+    "id": "city_easy_05",
+    "name": "Misplaced Files",
+    "act": 1,
+    "difficulty": "easy",
+    "enemies": [
+      "filing_beetle"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_form",
+      "form",
+      "paperwork_intro"
+    ]
+  },
+  {
+    "id": "city_normal_05",
+    "name": "Red Tape Crossing",
+    "act": 1,
+    "difficulty": "normal",
+    "enemies": [
+      "red_tape_serpent"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "city_normal_06",
+    "name": "The Bell and the Seal",
+    "act": 1,
+    "difficulty": "normal",
+    "enemies": [
+      "civic_bell_ringer",
+      "seal_bearer_toad"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "city_normal_07",
+    "name": "Apprentice Review",
+    "act": 1,
+    "difficulty": "normal",
+    "enemies": [
+      "clerkling_apprentice",
+      "ink_spattered_scribe"
+    ],
+    "weight": 3
+  },
+  {
+    "id": "city_normal_08",
+    "name": "Municipal Menagerie",
+    "act": 1,
+    "difficulty": "normal",
+    "enemies": [
+      "queue_imp",
+      "pigeon_courier",
+      "seal_bearer_toad"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "city_easy_06",
+    "name": "Forms in the Gutter",
+    "act": 1,
+    "difficulty": "easy",
+    "enemies": [
+      "form_rat_a",
+      "form_rat_b",
+      "form_rat_c"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_form",
+      "form",
+      "paperwork_intro",
+      "multi_enemy"
+    ]
+  },
+  {
+    "id": "city_easy_07",
+    "name": "A Question of Permits",
+    "act": 1,
+    "difficulty": "easy",
+    "enemies": [
+      "permit_beggar"
+    ],
+    "weight": 3,
+    "tags": []
+  },
+  {
+    "id": "city_easy_08",
+    "name": "Flickering Ordinance",
+    "act": 1,
+    "difficulty": "easy",
+    "enemies": [
+      "street_ordinance_wisp"
+    ],
+    "weight": 2,
+    "tags": []
+  },
+  {
+    "id": "city_easy_09",
+    "name": "Overdue Delivery",
+    "act": 1,
+    "difficulty": "easy",
+    "enemies": [
+      "overdue_page",
+      "pigeon_courier"
+    ],
+    "weight": 1,
+    "tags": []
+  },
+  {
+    "id": "city_normal_09",
+    "name": "The Tollhouse Dispute",
+    "act": 1,
+    "difficulty": "normal",
+    "enemies": [
+      "tollhouse_sprite",
+      "stamp_goblin"
+    ],
+    "weight": 1,
+    "tags": []
+  },
+  {
+    "id": "city_normal_10",
+    "name": "Dust in the Registry",
+    "act": 1,
+    "difficulty": "normal",
+    "enemies": [
+      "registry_moth",
+      "ink_spattered_scribe"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "city_normal_11",
+    "name": "A Drained Appointment",
+    "act": 1,
+    "difficulty": "normal",
+    "enemies": [
+      "appointment_leech"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "city_normal_12",
+    "name": "Minor Tax Assessment",
+    "act": 1,
+    "difficulty": "normal",
+    "enemies": [
+      "minor_tax_familiar",
+      "permit_beggar"
+    ],
+    "weight": 1,
+    "tags": []
+  },
+  {
+    "id": "city_normal_13",
+    "name": "Cobblestone Enforcement",
+    "act": 1,
+    "difficulty": "normal",
+    "enemies": [
+      "cobblestone_bailiff"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "city_normal_14",
+    "name": "Lamp and Ledger",
+    "act": 1,
+    "difficulty": "normal",
+    "enemies": [
+      "lantern_inspector",
+      "registry_moth"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "city_normal_15",
+    "name": "The Street Rules Itself",
+    "act": 1,
+    "difficulty": "normal",
+    "enemies": [
+      "street_ordinance_wisp",
+      "cobblestone_bailiff"
+    ],
+    "weight": 1,
+    "tags": []
+  },
+  {
+    "id": "city_normal_16",
+    "name": "Paper Vermin",
+    "act": 1,
+    "difficulty": "normal",
+    "enemies": [
+      "form_rat_swarm",
+      "overdue_page",
+      "queue_imp"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "city_elite_03",
+    "name": "The Three Counters",
+    "act": 1,
+    "difficulty": "elite",
+    "enemies": [
+      "counter_of_denial",
+      "counter_of_delay",
+      "counter_of_certification"
+    ],
+    "weight": 1,
+    "tags": []
+  },
+  {
+    "id": "city_elite_04",
+    "name": "The Archivist's Hound",
+    "act": 1,
+    "difficulty": "elite",
+    "enemies": [
+      "archivists_hound"
+    ],
+    "weight": 1,
+    "tags": []
+  },
+  {
+    "id": "city_elite_delay_01",
+    "name": "The Three Appointments",
+    "act": 1,
+    "difficulty": "elite",
+    "enemies": [
+      "first_appointment",
+      "second_appointment",
+      "final_appointment"
+    ],
+    "weight": 1,
+    "tags": [
+      "stage_delay",
+      "delay",
+      "waiting",
+      "fatigue_pressure",
+      "elite_delay"
+    ]
+  },
+  {
+    "id": "city_elite_delay_02",
+    "name": "The Office That Reopens Itself",
+    "act": 1,
+    "difficulty": "elite",
+    "enemies": [
+      "reopening_hours_monolith"
+    ],
+    "weight": 1,
+    "tags": [
+      "stage_delay",
+      "delay",
+      "waiting",
+      "fatigue_pressure",
+      "elite_delay"
+    ]
+  },
+  {
+    "id": "city_elite_delay_03",
+    "name": "The Waiting Room Eats the Day",
+    "act": 1,
+    "difficulty": "elite",
+    "enemies": [
+      "devouring_waiting_room",
+      "minute_moth_cloud"
+    ],
+    "weight": 1,
+    "tags": [
+      "stage_delay",
+      "delay",
+      "waiting",
+      "fatigue_pressure",
+      "elite_delay",
+      "multi_enemy"
+    ]
+  },
+  {
+    "id": "city_elite_05",
+    "name": "The Stampede of Stamps",
+    "act": 1,
+    "difficulty": "elite",
+    "enemies": [
+      "stampede_of_stamps"
+    ],
+    "weight": 1,
+    "tags": []
+  },
+  {
+    "id": "city_elite_appeal_01",
+    "name": "The Appeal Climbs the Stairs",
+    "act": 1,
+    "difficulty": "elite",
+    "enemies": [
+      "lower_appellate_step",
+      "middle_appellate_step",
+      "upper_appellate_step"
+    ],
+    "weight": 1,
+    "tags": [
+      "stage_appeal",
+      "appeal",
+      "escalation",
+      "strength_pressure",
+      "elite_appeal"
+    ]
+  },
+  {
+    "id": "city_elite_appeal_02",
+    "name": "The Petition Reads Itself Aloud",
+    "act": 1,
+    "difficulty": "elite",
+    "enemies": [
+      "living_petition_chorus"
+    ],
+    "weight": 1,
+    "tags": [
+      "stage_appeal",
+      "appeal",
+      "escalation",
+      "strength_pressure",
+      "elite_appeal"
+    ]
+  },
+  {
+    "id": "city_elite_appeal_03",
+    "name": "The Case Returns Higher",
+    "act": 1,
+    "difficulty": "elite",
+    "enemies": [
+      "remanded_case_phantom",
+      "escalation_writ"
+    ],
+    "weight": 1,
+    "tags": [
+      "stage_appeal",
+      "appeal",
+      "escalation",
+      "strength_pressure",
+      "elite_appeal",
+      "multi_enemy"
+    ]
+  },
+  {
+    "id": "city_elite_06",
+    "name": "The Bailiff Twins",
+    "act": 1,
+    "difficulty": "elite",
+    "enemies": [
+      "bailiff_of_writs",
+      "bailiff_of_warrants"
+    ],
+    "weight": 1,
+    "tags": []
+  },
+  {
+    "id": "city_elite_07",
+    "name": "The Ink Witch Auditor",
+    "act": 1,
+    "difficulty": "elite",
+    "enemies": [
+      "ink_witch_auditor"
+    ],
+    "weight": 1,
+    "tags": []
+  },
+  {
+    "id": "city_elite_08",
+    "name": "The Licensed Chimera",
+    "act": 1,
+    "difficulty": "elite",
+    "enemies": [
+      "licensed_chimera"
+    ],
+    "weight": 1,
+    "tags": []
+  },
+  {
+    "id": "city_boss_02",
+    "name": "The Queue Commissioner",
+    "act": 1,
+    "difficulty": "boss",
+    "enemies": [
+      "queue_commissioner"
+    ],
+    "weight": 1,
+    "tags": [
+      "city",
+      "boss",
+      "final_office",
+      "act_1_boss"
+    ]
+  },
+  {
+    "id": "city_boss_03",
+    "name": "The Lord Sealkeeper",
+    "act": 1,
+    "difficulty": "boss",
+    "enemies": [
+      "lord_sealkeeper"
+    ],
+    "weight": 1,
+    "tags": [
+      "city",
+      "boss",
+      "final_office",
+      "act_1_boss"
+    ]
+  },
+  {
+    "id": "city_boss_04",
+    "name": "The Municipal Dragon",
+    "act": 1,
+    "difficulty": "boss",
+    "enemies": [
+      "municipal_dragon"
+    ],
+    "weight": 1,
+    "tags": [
+      "city",
+      "boss",
+      "final_office",
+      "act_1_boss"
+    ]
+  },
+  {
+    "id": "city_boss_05",
+    "name": "The Living Charter",
+    "act": 1,
+    "difficulty": "boss",
+    "enemies": [
+      "living_charter"
+    ],
+    "weight": 1,
+    "tags": [
+      "city",
+      "boss",
+      "final_office",
+      "act_1_boss"
+    ]
+  },
+  {
+    "id": "city_mimic_01",
+    "name": "Suspicious Receipt Chest",
+    "act": 1,
+    "difficulty": "mimic",
+    "enemies": [
+      "receipt_mimic"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "city_easy_queue_01",
+    "name": "Now Serving the Wrong Number",
+    "act": 1,
+    "difficulty": "easy",
+    "enemies": [
+      "number_ticket_wisp"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_queue",
+      "queue",
+      "panic_intro"
+    ]
+  },
+  {
+    "id": "city_easy_queue_02",
+    "name": "The Line Moves Without You",
+    "act": 1,
+    "difficulty": "easy",
+    "enemies": [
+      "line_cutter_weasel"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_queue",
+      "queue",
+      "panic_intro"
+    ]
+  },
+  {
+    "id": "city_easy_counter_01",
+    "name": "The Wrong Window",
+    "act": 1,
+    "difficulty": "easy",
+    "enemies": [
+      "wrong_window_scribe"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_counter",
+      "counter",
+      "doubt_intro"
+    ]
+  },
+  {
+    "id": "city_easy_counter_02",
+    "name": "Not This Jurisdiction",
+    "act": 1,
+    "difficulty": "easy",
+    "enemies": [
+      "jurisdiction_snail"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_counter",
+      "counter",
+      "doubt_intro"
+    ]
+  },
+  {
+    "id": "city_easy_counter_03",
+    "name": "A Matter for Another Desk",
+    "act": 1,
+    "difficulty": "easy",
+    "enemies": [
+      "jurisdictional_clerkling"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_counter",
+      "counter",
+      "doubt_intro"
+    ]
+  },
+  {
+    "id": "city_easy_form_01",
+    "name": "Unsigned in Triplicate",
+    "act": 1,
+    "difficulty": "easy",
+    "enemies": [
+      "unsigned_form_ghost"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_form",
+      "form",
+      "paperwork_intro"
+    ]
+  },
+  {
+    "id": "city_easy_form_02",
+    "name": "Correction in the Margin",
+    "act": 1,
+    "difficulty": "easy",
+    "enemies": [
+      "margin_note_gnawer"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_form",
+      "form",
+      "paperwork_intro"
+    ]
+  },
+  {
+    "id": "city_easy_form_03",
+    "name": "The Page That Followed You",
+    "act": 1,
+    "difficulty": "easy",
+    "enemies": [
+      "misfiled_page"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_form",
+      "form",
+      "paperwork_intro"
+    ]
+  },
+  {
+    "id": "city_normal_seal_01",
+    "name": "The Wax Is Still Warm",
+    "act": 1,
+    "difficulty": "normal",
+    "enemies": [
+      "wax_notary"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_seal",
+      "seal",
+      "certification",
+      "paperwork_pressure"
+    ]
+  },
+  {
+    "id": "city_normal_seal_02",
+    "name": "The Sealed Door",
+    "act": 1,
+    "difficulty": "normal",
+    "enemies": [
+      "sealed_door_ward"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_seal",
+      "seal",
+      "certification",
+      "paperwork_pressure"
+    ]
+  },
+  {
+    "id": "city_normal_seal_03",
+    "name": "Witnessed and Filed",
+    "act": 1,
+    "difficulty": "normal",
+    "enemies": [
+      "seal_witness"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_seal",
+      "seal",
+      "certification",
+      "paperwork_pressure"
+    ]
+  },
+  {
+    "id": "city_normal_seal_04",
+    "name": "Chain of Office",
+    "act": 1,
+    "difficulty": "normal",
+    "enemies": [
+      "chain_of_office_specter"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_seal",
+      "seal",
+      "certification",
+      "paperwork_pressure"
+    ]
+  },
+  {
+    "id": "city_normal_seal_05",
+    "name": "The Waxen Bailiff",
+    "act": 1,
+    "difficulty": "normal",
+    "enemies": [
+      "waxen_bailiff"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_seal",
+      "seal",
+      "certification",
+      "paperwork_pressure"
+    ]
+  },
+  {
+    "id": "city_normal_seal_06",
+    "name": "The Certificate Is Alive",
+    "act": 1,
+    "difficulty": "normal",
+    "enemies": [
+      "living_certificate",
+      "embossed_seal"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_seal",
+      "seal",
+      "certification",
+      "paperwork_pressure",
+      "multi_enemy"
+    ]
+  },
+  {
+    "id": "city_normal_seal_07",
+    "name": "Seal and Witness",
+    "act": 1,
+    "difficulty": "normal",
+    "enemies": [
+      "wax_notary",
+      "seal_witness"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_seal",
+      "seal",
+      "certification",
+      "paperwork_pressure",
+      "multi_enemy"
+    ]
+  },
+  {
+    "id": "city_normal_seal_08",
+    "name": "Door Under Oath",
+    "act": 1,
+    "difficulty": "normal",
+    "enemies": [
+      "sealed_door_ward",
+      "oath_candle"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_seal",
+      "seal",
+      "certification",
+      "paperwork_pressure",
+      "multi_enemy"
+    ]
+  },
+  {
+    "id": "city_normal_ordinance_01",
+    "name": "Subsection Carved in Stone",
+    "act": 1,
+    "difficulty": "normal",
+    "enemies": [
+      "ordinance_tablet"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_ordinance",
+      "ordinance",
+      "civic_law",
+      "doubt_pressure"
+    ]
+  },
+  {
+    "id": "city_normal_ordinance_02",
+    "name": "The Bylaw Looks Down",
+    "act": 1,
+    "difficulty": "normal",
+    "enemies": [
+      "bylaw_gargoyle"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_ordinance",
+      "ordinance",
+      "civic_law",
+      "doubt_pressure"
+    ]
+  },
+  {
+    "id": "city_normal_ordinance_03",
+    "name": "The Street Cites Precedent",
+    "act": 1,
+    "difficulty": "normal",
+    "enemies": [
+      "street_law_writ"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_ordinance",
+      "ordinance",
+      "civic_law",
+      "doubt_pressure"
+    ]
+  },
+  {
+    "id": "city_normal_ordinance_04",
+    "name": "Mandatory in Every Direction",
+    "act": 1,
+    "difficulty": "normal",
+    "enemies": [
+      "contradictory_signpost"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_ordinance",
+      "ordinance",
+      "civic_law",
+      "doubt_pressure"
+    ]
+  },
+  {
+    "id": "city_normal_ordinance_05",
+    "name": "Exception to the Exception",
+    "act": 1,
+    "difficulty": "normal",
+    "enemies": [
+      "exception_imp",
+      "footnote_familiar"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_ordinance",
+      "ordinance",
+      "civic_law",
+      "doubt_pressure",
+      "multi_enemy"
+    ]
+  },
+  {
+    "id": "city_normal_ordinance_06",
+    "name": "Clause in the Wall",
+    "act": 1,
+    "difficulty": "normal",
+    "enemies": [
+      "clause_in_the_wall"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_ordinance",
+      "ordinance",
+      "civic_law",
+      "doubt_pressure"
+    ]
+  },
+  {
+    "id": "city_normal_ordinance_07",
+    "name": "The Bylaw Grows Heads",
+    "act": 1,
+    "difficulty": "normal",
+    "enemies": [
+      "bylaw_hydra"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_ordinance",
+      "ordinance",
+      "civic_law",
+      "doubt_pressure"
+    ]
+  },
+  {
+    "id": "city_normal_ordinance_08",
+    "name": "The Margin Overrules You",
+    "act": 1,
+    "difficulty": "normal",
+    "enemies": [
+      "margin_gloss",
+      "old_statute_ghost"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_ordinance",
+      "ordinance",
+      "civic_law",
+      "doubt_pressure",
+      "multi_enemy"
+    ]
+  },
+  {
+    "id": "city_normal_delay_01",
+    "name": "The Bell Will Not Stop",
+    "act": 1,
+    "difficulty": "normal",
+    "enemies": [
+      "closing_bell_specter"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_delay",
+      "delay",
+      "waiting",
+      "fatigue_intro"
+    ]
+  },
+  {
+    "id": "city_normal_delay_02",
+    "name": "A Bench Older Than Patience",
+    "act": 1,
+    "difficulty": "normal",
+    "enemies": [
+      "waiting_bench_gremlin"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_delay",
+      "delay",
+      "waiting",
+      "fatigue_intro"
+    ]
+  },
+  {
+    "id": "city_normal_delay_03",
+    "name": "Public Hours End at Once",
+    "act": 1,
+    "difficulty": "normal",
+    "enemies": [
+      "public_hours_clerk"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_delay",
+      "delay",
+      "waiting",
+      "fatigue_intro"
+    ]
+  },
+  {
+    "id": "city_normal_delay_04",
+    "name": "The Sand Runs Upward",
+    "act": 1,
+    "difficulty": "normal",
+    "enemies": [
+      "inverted_hourglass"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_delay",
+      "delay",
+      "waiting",
+      "fatigue_intro"
+    ]
+  },
+  {
+    "id": "city_normal_delay_05",
+    "name": "Your Number Fades",
+    "act": 1,
+    "difficulty": "normal",
+    "enemies": [
+      "fading_number_token"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_delay",
+      "delay",
+      "waiting",
+      "fatigue_intro"
+    ]
+  },
+  {
+    "id": "city_normal_delay_06",
+    "name": "The Queue Has Not Advanced",
+    "act": 1,
+    "difficulty": "normal",
+    "enemies": [
+      "stationary_queue_marker"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_delay",
+      "delay",
+      "waiting",
+      "fatigue_intro"
+    ]
+  },
+  {
+    "id": "city_normal_delay_07",
+    "name": "Minutes Become Moths",
+    "act": 1,
+    "difficulty": "normal",
+    "enemies": [
+      "minute_moth",
+      "stalled_clock_face"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_delay",
+      "delay",
+      "waiting",
+      "fatigue_intro",
+      "multi_enemy"
+    ]
+  },
+  {
+    "id": "city_normal_delay_08",
+    "name": "The Office Waits Back",
+    "act": 1,
+    "difficulty": "normal",
+    "enemies": [
+      "waiting_bench_gremlin",
+      "inverted_hourglass"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_delay",
+      "delay",
+      "waiting",
+      "fatigue_intro",
+      "multi_enemy"
+    ]
+  },
+  {
+    "id": "city_normal_appeal_01",
+    "name": "Your Complaint Is Accepted",
+    "act": 1,
+    "difficulty": "normal",
+    "enemies": [
+      "appeals_clerk"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_appeal",
+      "appeal",
+      "escalation",
+      "strength_pressure"
+    ]
+  },
+  {
+    "id": "city_normal_appeal_02",
+    "name": "An Objection Is Raised",
+    "act": 1,
+    "difficulty": "normal",
+    "enemies": [
+      "objection_sprite"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_appeal",
+      "appeal",
+      "escalation",
+      "strength_pressure"
+    ]
+  },
+  {
+    "id": "city_normal_appeal_03",
+    "name": "The Procedure Argues Back",
+    "act": 1,
+    "difficulty": "normal",
+    "enemies": [
+      "procedural_advocate"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_appeal",
+      "appeal",
+      "escalation",
+      "strength_pressure"
+    ]
+  },
+  {
+    "id": "city_normal_appeal_04",
+    "name": "Counterclaim in Red Ink",
+    "act": 1,
+    "difficulty": "normal",
+    "enemies": [
+      "counterclaim_imp"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_appeal",
+      "appeal",
+      "escalation",
+      "strength_pressure"
+    ]
+  },
+  {
+    "id": "city_normal_appeal_05",
+    "name": "The Record Corrects You",
+    "act": 1,
+    "difficulty": "normal",
+    "enemies": [
+      "self_correcting_record"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_appeal",
+      "appeal",
+      "escalation",
+      "strength_pressure"
+    ]
+  },
+  {
+    "id": "city_normal_appeal_06",
+    "name": "Motion to Reconsider",
+    "act": 1,
+    "difficulty": "normal",
+    "enemies": [
+      "motion_to_reconsider"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_appeal",
+      "appeal",
+      "escalation",
+      "strength_pressure"
+    ]
+  },
+  {
+    "id": "city_normal_appeal_07",
+    "name": "Objection Sustained",
+    "act": 1,
+    "difficulty": "normal",
+    "enemies": [
+      "objection_sprite",
+      "sustaining_gavel"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_appeal",
+      "appeal",
+      "escalation",
+      "strength_pressure",
+      "multi_enemy"
+    ]
+  },
+  {
+    "id": "city_normal_appeal_08",
+    "name": "The Appeal Escalates",
+    "act": 1,
+    "difficulty": "normal",
+    "enemies": [
+      "appeals_clerk",
+      "counterclaim_imp"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_appeal",
+      "appeal",
+      "escalation",
+      "strength_pressure",
+      "multi_enemy"
+    ]
+  },
+  {
+    "id": "city_easy_queue_03",
+    "name": "Held Behind the Velvet Rope",
+    "act": 1,
+    "difficulty": "easy",
+    "enemies": [
+      "velvet_rope_mimic"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_queue",
+      "queue",
+      "panic_intro"
+    ]
+  },
+  {
+    "id": "city_easy_queue_04",
+    "name": "The Bell Is About to Ring",
+    "act": 1,
+    "difficulty": "easy",
+    "enemies": [
+      "closing_bell_sprite"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_queue",
+      "queue",
+      "panic_intro"
+    ]
+  },
+  {
+    "id": "city_easy_queue_05",
+    "name": "Something Under the Bench",
+    "act": 1,
+    "difficulty": "easy",
+    "enemies": [
+      "waiting_room_gnawer"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_queue",
+      "queue",
+      "panic_intro"
+    ]
+  },
+  {
+    "id": "city_easy_queue_06",
+    "name": "Called to No Window",
+    "act": 1,
+    "difficulty": "easy",
+    "enemies": [
+      "queue_crier_homunculus"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_queue",
+      "queue",
+      "panic_intro"
+    ]
+  },
+  {
+    "id": "city_easy_counter_04",
+    "name": "The Counter Says No",
+    "act": 1,
+    "difficulty": "easy",
+    "enemies": [
+      "counter_of_denial_lesser"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_counter",
+      "counter",
+      "doubt_intro"
+    ]
+  },
+  {
+    "id": "city_easy_counter_05",
+    "name": "Blue Slip, Wrong Door",
+    "act": 1,
+    "difficulty": "easy",
+    "enemies": [
+      "blue_slip_sprite"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_counter",
+      "counter",
+      "doubt_intro"
+    ]
+  },
+  {
+    "id": "city_easy_counter_06",
+    "name": "The Bell Calls Someone Else",
+    "act": 1,
+    "difficulty": "easy",
+    "enemies": [
+      "counter_bell_toad"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_counter",
+      "counter",
+      "doubt_intro"
+    ]
+  },
+  {
+    "id": "city_easy_counter_07",
+    "name": "Proof of Arrival",
+    "act": 1,
+    "difficulty": "easy",
+    "enemies": [
+      "receipt_eyed_clerk"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_counter",
+      "counter",
+      "doubt_intro"
+    ]
+  },
+  {
+    "id": "city_easy_counter_08",
+    "name": "Examined in Triplicate",
+    "act": 1,
+    "difficulty": "easy",
+    "enemies": [
+      "triplicate_examiner"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_counter",
+      "counter",
+      "doubt_intro"
+    ]
+  },
+  {
+    "id": "city_easy_form_04",
+    "name": "Copies Upon Copies",
+    "act": 1,
+    "difficulty": "easy",
+    "enemies": [
+      "duplicate_copy_mite",
+      "duplicate_copy_mite"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_form",
+      "form",
+      "paperwork_intro",
+      "multi_enemy"
+    ]
+  },
+  {
+    "id": "city_easy_form_05",
+    "name": "Required Field Left Blank",
+    "act": 1,
+    "difficulty": "easy",
+    "enemies": [
+      "blank_line_leech"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_form",
+      "form",
+      "paperwork_intro",
+      "panic_splash"
+    ]
+  },
+  {
+    "id": "city_easy_form_06",
+    "name": "Folded Statement Overhead",
+    "act": 1,
+    "difficulty": "easy",
+    "enemies": [
+      "folded_affidavit_bat"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_form",
+      "form",
+      "paperwork_intro",
+      "panic_splash"
+    ]
+  }
+]

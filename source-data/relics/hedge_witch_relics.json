@@ -1,0 +1,298 @@
+[
+  {
+    "id": "herb_pouch",
+    "name": "Herb Pouch",
+    "description": "At the start of each combat, add a Warm Poultice to your hand.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "warm_poultice",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "hedge_witch",
+      "herb",
+      "poultice",
+      "block",
+      "zero_cost"
+    ],
+    "allowed_classes": [
+      "hedge_witch"
+    ]
+  },
+  {
+    "id": "chipped_teacup",
+    "name": "Chipped Teacup",
+    "description": "At the start of each combat, apply 1 Doubt to all enemies.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "doubt",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "hedge_witch",
+      "tea",
+      "curse",
+      "doubt"
+    ],
+    "allowed_classes": [
+      "hedge_witch"
+    ]
+  },
+  {
+    "id": "nettle_bundle",
+    "name": "Nettle Bundle",
+    "description": "At the start of each combat, gain 5 Block and add a Bitter Draught to your discard pile.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 5
+      },
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "bitter_draught",
+        "destination": "discard_pile",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "hedge_witch",
+      "herb",
+      "poultice",
+      "brew",
+      "block",
+      "poison"
+    ],
+    "allowed_classes": [
+      "hedge_witch"
+    ]
+  },
+  {
+    "id": "crow_button",
+    "name": "Crow Button",
+    "description": "At the start of each combat, add a Crow Feather to your hand.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "crow_feather",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "hedge_witch",
+      "familiar",
+      "crow",
+      "doubt",
+      "zero_cost"
+    ],
+    "allowed_classes": [
+      "hedge_witch"
+    ]
+  },
+  {
+    "id": "knot_box",
+    "name": "Knot Box",
+    "description": "At the start of each combat, add a Spare Knot to your hand.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "spare_knot",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "hedge_witch",
+      "knot",
+      "paperwork",
+      "curse",
+      "zero_cost"
+    ],
+    "allowed_classes": [
+      "hedge_witch"
+    ]
+  },
+  {
+    "id": "borrowed_broom_bristle",
+    "name": "Borrowed Broom Bristle",
+    "description": "At the start of each combat, gain 6 Block and apply 1 Paperwork to all enemies.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 6
+      },
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "paperwork",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "hedge_witch",
+      "charm",
+      "ward",
+      "paperwork",
+      "block"
+    ],
+    "allowed_classes": [
+      "hedge_witch"
+    ]
+  },
+  {
+    "id": "simmering_kettle",
+    "name": "Simmering Kettle",
+    "description": "At the start of each combat, add a Bitter Draught and a Warm Poultice to your draw pile.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "bitter_draught",
+        "destination": "draw_pile",
+        "copies": 1
+      },
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "warm_poultice",
+        "destination": "draw_pile",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "hedge_witch",
+      "brew",
+      "poultice",
+      "poison",
+      "block"
+    ],
+    "allowed_classes": [
+      "hedge_witch"
+    ]
+  },
+  {
+    "id": "village_remedy_bag",
+    "name": "Village Remedy Bag",
+    "description": "At the start of each combat, heal 2 HP and gain 3 Block.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "heal_at_combat_start",
+        "amount": 2
+      },
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "hedge_witch",
+      "herb",
+      "healing",
+      "poultice",
+      "block"
+    ],
+    "allowed_classes": [
+      "hedge_witch"
+    ]
+  },
+  {
+    "id": "thirteenth_spoon",
+    "name": "Thirteenth Spoon",
+    "description": "At the start of each combat, gain 1 Energy and add Soggy Tea Leaves to your discard pile.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "gain_energy_at_combat_start",
+        "amount": 1
+      },
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "soggy_tea_leaves",
+        "destination": "discard_pile",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "hedge_witch",
+      "brew",
+      "tea",
+      "energy",
+      "junk",
+      "risk_reward"
+    ],
+    "allowed_classes": [
+      "hedge_witch"
+    ]
+  },
+  {
+    "id": "familiar_perch",
+    "name": "Familiar Perch",
+    "description": "At the start of each combat, add a Crow Feather and a Warm Poultice to your hand.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "crow_feather",
+        "destination": "hand",
+        "copies": 1
+      },
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "warm_poultice",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "hedge_witch",
+      "familiar",
+      "poultice",
+      "doubt",
+      "block",
+      "zero_cost"
+    ],
+    "allowed_classes": [
+      "hedge_witch"
+    ]
+  },
+  {
+    "id": "blackened_kettle",
+    "name": "Blackened Kettle",
+    "description": "At the start of each combat, apply 2 Poison to all enemies and add Soggy Tea Leaves to your discard pile.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "poison",
+        "amount": 2
+      },
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "soggy_tea_leaves",
+        "destination": "discard_pile",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "hedge_witch",
+      "brew",
+      "poison",
+      "tea",
+      "junk",
+      "risk_reward"
+    ],
+    "allowed_classes": [
+      "hedge_witch"
+    ]
+  }
+]

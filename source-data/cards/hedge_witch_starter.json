@@ -1,0 +1,258 @@
+[
+  {
+    "id": "prickly_hex",
+    "name": "Prickly Hex",
+    "class": "hedge_witch",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Deal 5 damage. Apply 1 Doubt.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 5
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "amount": 1,
+        "status": "doubt"
+      }
+    ],
+    "tags": [
+      "attack",
+      "doubt",
+      "curse",
+      "spite"
+    ],
+    "upgrades_to": "prickly_hex_plus"
+  },
+  {
+    "id": "prickly_hex_plus",
+    "name": "Prickly Hex+",
+    "class": "hedge_witch",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Deal 7 damage. Apply 1 Doubt.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 7
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "amount": 1,
+        "status": "doubt"
+      }
+    ],
+    "tags": [
+      "attack",
+      "doubt",
+      "curse",
+      "spite",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "borrowed_shawl",
+    "name": "Borrowed Shawl",
+    "class": "hedge_witch",
+    "type": "form",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Gain 5 Block.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 5
+      }
+    ],
+    "tags": [
+      "block",
+      "poultice",
+      "ward"
+    ],
+    "upgrades_to": "borrowed_shawl_plus"
+  },
+  {
+    "id": "borrowed_shawl_plus",
+    "name": "Borrowed Shawl+",
+    "class": "hedge_witch",
+    "type": "form",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Gain 8 Block.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 8
+      }
+    ],
+    "tags": [
+      "block",
+      "poultice",
+      "ward",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "bad_luck_knot",
+    "name": "Bad Luck Knot",
+    "class": "hedge_witch",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Apply 3 Paperwork.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "amount": 3,
+        "status": "paperwork"
+      }
+    ],
+    "tags": [
+      "paperwork",
+      "curse",
+      "knot",
+      "setup"
+    ],
+    "upgrades_to": "bad_luck_knot_plus"
+  },
+  {
+    "id": "bad_luck_knot_plus",
+    "name": "Bad Luck Knot+",
+    "class": "hedge_witch",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Apply 4 Paperwork.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "amount": 4,
+        "status": "paperwork"
+      }
+    ],
+    "tags": [
+      "paperwork",
+      "curse",
+      "knot",
+      "setup",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "tea_and_threats",
+    "name": "Tea and Threats",
+    "class": "hedge_witch",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Gain 4 Block. Apply 2 Doubt.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 4
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "amount": 2,
+        "status": "doubt"
+      }
+    ],
+    "tags": [
+      "block",
+      "doubt",
+      "tea",
+      "spite"
+    ],
+    "upgrades_to": "tea_and_threats_plus"
+  },
+  {
+    "id": "tea_and_threats_plus",
+    "name": "Tea and Threats+",
+    "class": "hedge_witch",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Gain 6 Block. Apply 2 Doubt.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 6
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "amount": 2,
+        "status": "doubt"
+      }
+    ],
+    "tags": [
+      "block",
+      "doubt",
+      "tea",
+      "spite",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "crooked_pin",
+    "name": "Crooked Pin",
+    "class": "hedge_witch",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Deal 3 damage per Doubt on the target.",
+    "effects": [
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount_per_stack": 3
+      }
+    ],
+    "tags": [
+      "attack",
+      "doubt",
+      "payoff",
+      "pin"
+    ],
+    "upgrades_to": "crooked_pin_plus"
+  },
+  {
+    "id": "crooked_pin_plus",
+    "name": "Crooked Pin+",
+    "class": "hedge_witch",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Deal 4 damage per Doubt on the target.",
+    "effects": [
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount_per_stack": 4
+      }
+    ],
+    "tags": [
+      "attack",
+      "doubt",
+      "payoff",
+      "pin",
+      "upgraded"
+    ]
+  }
+]

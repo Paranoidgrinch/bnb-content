@@ -1,0 +1,835 @@
+[
+  {
+    "id": "brass_page_weight",
+    "name": "Brass Page Weight",
+    "description": "At the start of each combat, gain 11 Block.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 11
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "block"
+    ],
+    "allowed_classes": []
+  },
+  {
+    "id": "borrowers_stamp",
+    "name": "Borrower's Stamp",
+    "description": "Gain 8 additional Gold after each victorious combat.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "increase_gold_rewards",
+        "amount": 8
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "gold"
+    ],
+    "allowed_classes": []
+  },
+  {
+    "id": "shelf_key_no_13",
+    "name": "Shelf Key No. 13",
+    "description": "At the start of each combat, gain 1 Energy.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "gain_energy_at_combat_start",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "energy"
+    ],
+    "allowed_classes": []
+  },
+  {
+    "id": "torn_index_tab",
+    "name": "Torn Index Tab",
+    "description": "At the start of each combat, apply 2 Doubt to all enemies.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "doubt",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "doubt"
+    ],
+    "allowed_classes": []
+  },
+  {
+    "id": "bookmark_of_mild_omens",
+    "name": "Bookmark of Mild Omens",
+    "description": "Card rewards contain 1 additional card.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "increase_card_reward_count",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "reward"
+    ],
+    "allowed_classes": []
+  },
+  {
+    "id": "archive_candle_stand",
+    "name": "Archive Candle Stand",
+    "description": "At the start of each combat, gain 14 Block.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 14
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "block"
+    ],
+    "allowed_classes": []
+  },
+  {
+    "id": "night_reading_lens",
+    "name": "Night Reading Lens",
+    "description": "At the start of each combat, gain 6 Block and apply 2 Doubt to all enemies.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 6
+      },
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "doubt",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "block",
+      "doubt"
+    ],
+    "allowed_classes": []
+  },
+  {
+    "id": "iron_bookmark",
+    "name": "Iron Bookmark",
+    "description": "At the start of each combat, gain 1 Strength and 8 Block.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "gain_strength_at_combat_start",
+        "amount": 1
+      },
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 8
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "block",
+      "strength"
+    ],
+    "allowed_classes": []
+  },
+  {
+    "id": "restricted_shelf_key",
+    "name": "Restricted Shelf Key",
+    "description": "At the start of each combat, gain 1 Energy and 1 Doubt.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "gain_energy_at_combat_start",
+        "amount": 1
+      },
+      {
+        "type": "apply_status_to_player_at_combat_start",
+        "status": "doubt",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "energy",
+      "risk_reward"
+    ],
+    "allowed_classes": []
+  },
+  {
+    "id": "deep_indexing_tabs",
+    "name": "Deep Indexing Tabs",
+    "description": "Card rewards contain 1 additional card.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "increase_card_reward_count",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "reward"
+    ],
+    "allowed_classes": []
+  },
+  {
+    "id": "overdue_coin_purse",
+    "name": "Overdue Coin Purse",
+    "description": "Gain 12 additional Gold after each victorious combat.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "increase_gold_rewards",
+        "amount": 12
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "gold"
+    ],
+    "allowed_classes": []
+  },
+  {
+    "id": "patron_of_the_stacks",
+    "name": "Patron of the Stacks",
+    "description": "Shop prices are reduced by 20%. When picked up, gain 25 Gold.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "shop_price_discount",
+        "amount": 20
+      },
+      {
+        "type": "gain_gold_on_pickup",
+        "amount": 25
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "gold",
+      "shop"
+    ],
+    "allowed_classes": []
+  },
+  {
+    "id": "binding_twine",
+    "name": "Binding Twine",
+    "description": "At the start of each combat, apply 2 Paperwork and 1 Doubt to all enemies.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "paperwork",
+        "amount": 2
+      },
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "doubt",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "doubt",
+      "paperwork"
+    ],
+    "allowed_classes": []
+  },
+  {
+    "id": "warm_catalogue_drawer",
+    "name": "Warm Catalogue Drawer",
+    "description": "When picked up, heal 26 HP.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "heal_on_pickup",
+        "amount": 26
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "healing"
+    ],
+    "allowed_classes": []
+  },
+  {
+    "id": "library_step_ladder",
+    "name": "Library Step Ladder",
+    "description": "At the start of each combat, gain 9 Block. When picked up, gain 18 Gold.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 9
+      },
+      {
+        "type": "gain_gold_on_pickup",
+        "amount": 18
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "block",
+      "gold"
+    ],
+    "allowed_classes": []
+  },
+  {
+    "id": "archival_dust_cloak",
+    "name": "Archival Dust Cloak",
+    "description": "At the start of each combat, gain 7 Block.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 7
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "block"
+    ],
+    "allowed_classes": []
+  },
+  {
+    "id": "stamped_copper_token",
+    "name": "Stamped Copper Token",
+    "description": "When picked up, gain 18 Gold.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "gain_gold_on_pickup",
+        "amount": 18
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "gold"
+    ],
+    "allowed_classes": []
+  },
+  {
+    "id": "reading_room_ticket",
+    "name": "Reading Room Ticket",
+    "description": "When picked up, heal 16 HP.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "heal_on_pickup",
+        "amount": 16
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "healing"
+    ],
+    "allowed_classes": []
+  },
+  {
+    "id": "string_tied_folder",
+    "name": "String-Tied Folder",
+    "description": "At the start of each combat, apply 1 Paperwork to all enemies.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "paperwork",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "paperwork"
+    ],
+    "allowed_classes": []
+  },
+  {
+    "id": "marginalia_pin",
+    "name": "Marginalia Pin",
+    "description": "At the start of each combat, apply 1 Doubt to all enemies.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "doubt",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "doubt"
+    ],
+    "allowed_classes": []
+  },
+  {
+    "id": "candle_stub_map",
+    "name": "Candle-Stub Map",
+    "description": "At the start of each combat, heal 2 HP.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "heal_at_combat_start",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "healing"
+    ],
+    "allowed_classes": []
+  },
+  {
+    "id": "receipt_clip",
+    "name": "Receipt Clip",
+    "description": "Gain 5 additional Gold after each victorious combat.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "increase_gold_rewards",
+        "amount": 5
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "gold"
+    ],
+    "allowed_classes": []
+  },
+  {
+    "id": "humble_catalogue_card",
+    "name": "Humble Catalogue Card",
+    "description": "At the start of each combat, gain 5 Block. When picked up, gain 8 Gold.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 5
+      },
+      {
+        "type": "gain_gold_on_pickup",
+        "amount": 8
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "block",
+      "gold"
+    ],
+    "allowed_classes": []
+  },
+  {
+    "id": "chipped_archive_mug",
+    "name": "Chipped Archive Mug",
+    "description": "When picked up, heal 12 HP and gain 10 Gold.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "heal_on_pickup",
+        "amount": 12
+      },
+      {
+        "type": "gain_gold_on_pickup",
+        "amount": 10
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "gold",
+      "healing"
+    ],
+    "allowed_classes": []
+  },
+  {
+    "id": "librarian_side_eye",
+    "name": "Librarian Side-Eye",
+    "description": "At the start of each combat, apply 2 Doubt to all enemies.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "doubt",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "doubt"
+    ],
+    "allowed_classes": []
+  },
+  {
+    "id": "locked_drawer_key",
+    "name": "Locked Drawer Key",
+    "description": "Shop prices are reduced by 10%.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "shop_price_discount",
+        "amount": 10
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "shop"
+    ],
+    "allowed_classes": []
+  },
+  {
+    "id": "red_sealing_wax",
+    "name": "Red Sealing Wax",
+    "description": "At the start of each combat, gain 1 Strength.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "gain_strength_at_combat_start",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "strength"
+    ],
+    "allowed_classes": []
+  },
+  {
+    "id": "silent_reading_charm",
+    "name": "Silent Reading Charm",
+    "description": "At the start of each combat, gain 10 Block and apply 1 Doubt to all enemies.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 10
+      },
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "doubt",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "block",
+      "doubt"
+    ],
+    "allowed_classes": []
+  },
+  {
+    "id": "overdue_stamp_pad",
+    "name": "Overdue Stamp Pad",
+    "description": "At the start of each combat, apply 2 Paperwork to all enemies.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "paperwork",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "paperwork"
+    ],
+    "allowed_classes": []
+  },
+  {
+    "id": "annotated_map_of_stacks",
+    "name": "Annotated Map of Stacks",
+    "description": "Card rewards contain 1 additional card.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "increase_card_reward_count",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "reward"
+    ],
+    "allowed_classes": []
+  },
+  {
+    "id": "inkproof_gloves",
+    "name": "Inkproof Gloves",
+    "description": "At the start of each combat, gain 12 Block.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 12
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "block"
+    ],
+    "allowed_classes": []
+  },
+  {
+    "id": "narrow_aisle_permit",
+    "name": "Narrow-Aisle Permit",
+    "description": "At the start of each combat, gain 1 Energy and apply 1 Panic to yourself.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "gain_energy_at_combat_start",
+        "amount": 1
+      },
+      {
+        "type": "apply_status_to_player_at_combat_start",
+        "status": "panic",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "energy",
+      "risk_reward"
+    ],
+    "allowed_classes": []
+  },
+  {
+    "id": "borrowed_lantern_hook",
+    "name": "Borrowed Lantern Hook",
+    "description": "When picked up, heal 22 HP and gain 12 Gold.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "heal_on_pickup",
+        "amount": 22
+      },
+      {
+        "type": "gain_gold_on_pickup",
+        "amount": 12
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "gold",
+      "healing"
+    ],
+    "allowed_classes": []
+  },
+  {
+    "id": "master_key_to_nowhere",
+    "name": "Master Key to Nowhere",
+    "description": "At the start of each combat, gain 1 Energy.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "gain_energy_at_combat_start",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "energy"
+    ],
+    "allowed_classes": []
+  },
+  {
+    "id": "high_shelf_pulley",
+    "name": "High-Shelf Pulley",
+    "description": "At the start of each combat, gain 1 Strength and 8 Block.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "gain_strength_at_combat_start",
+        "amount": 1
+      },
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 8
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "block",
+      "strength"
+    ],
+    "allowed_classes": []
+  },
+  {
+    "id": "founders_reading_card",
+    "name": "Founder's Reading Card",
+    "description": "Shop prices are reduced by 25%.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "shop_price_discount",
+        "amount": 25
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "shop"
+    ],
+    "allowed_classes": []
+  },
+  {
+    "id": "bell_of_ordered_silence",
+    "name": "Bell of Ordered Silence",
+    "description": "At the start of each combat, apply 3 Doubt and 1 Paperwork to all enemies.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "doubt",
+        "amount": 3
+      },
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "paperwork",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "doubt",
+      "paperwork"
+    ],
+    "allowed_classes": []
+  },
+  {
+    "id": "archive_survival_index",
+    "name": "Archive Survival Index",
+    "description": "At the start of each combat, heal 5 HP.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "heal_at_combat_start",
+        "amount": 5
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "healing"
+    ],
+    "allowed_classes": []
+  },
+  {
+    "id": "senior_catalogue_chain",
+    "name": "Senior Catalogue Chain",
+    "description": "Card rewards contain 1 additional card. Gain 8 additional Gold after each victorious combat.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "increase_card_reward_count",
+        "amount": 1
+      },
+      {
+        "type": "increase_gold_rewards",
+        "amount": 8
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "gold",
+      "reward"
+    ],
+    "allowed_classes": []
+  },
+  {
+    "id": "ironbound_return_slot",
+    "name": "Ironbound Return Slot",
+    "description": "At the start of each combat, gain 18 Block and apply 1 Doubt to yourself.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 18
+      },
+      {
+        "type": "apply_status_to_player_at_combat_start",
+        "status": "doubt",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "block",
+      "risk_reward"
+    ],
+    "allowed_classes": []
+  },
+  {
+    "id": "pale_librarian_badge",
+    "name": "Pale Librarian Badge",
+    "description": "At the start of each combat, gain 1 Strength and apply 2 Doubt to all enemies.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "gain_strength_at_combat_start",
+        "amount": 1
+      },
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "doubt",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "act_2",
+      "archive",
+      "doubt",
+      "strength"
+    ],
+    "allowed_classes": []
+  }
+]

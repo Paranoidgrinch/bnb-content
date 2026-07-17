@@ -1,0 +1,20 @@
+{
+  "id": "hedge_witch",
+  "name": "Hedge Witch",
+  "max_hp": 66,
+  "starting_energy": 3,
+  "starting_relic": null,
+  "starting_deck": [
+    "prickly_hex",
+    "prickly_hex",
+    "prickly_hex",
+    "borrowed_shawl",
+    "borrowed_shawl",
+    "borrowed_shawl",
+    "borrowed_shawl",
+    "bad_luck_knot",
+    "tea_and_threats",
+    "crooked_pin"
+  ],
+  "starting_resources": {}
+}

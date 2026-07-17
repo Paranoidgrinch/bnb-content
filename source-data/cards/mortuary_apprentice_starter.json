@@ -1,0 +1,184 @@
+[
+  {
+    "id": "bone_tap",
+    "name": "Bone Tap",
+    "class": "mortuary_apprentice",
+    "type": "action",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Deal 6 damage.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 6
+      }
+    ],
+    "tags": [
+      "attack",
+      "bone",
+      "mortuary"
+    ],
+    "upgrades_to": "bone_tap_plus"
+  },
+  {
+    "id": "bone_tap_plus",
+    "name": "Bone Tap+",
+    "class": "mortuary_apprentice",
+    "type": "action",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Deal 8 damage.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 8
+      }
+    ],
+    "tags": [
+      "attack",
+      "bone",
+      "mortuary",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "mourning_veil",
+    "name": "Mourning Veil",
+    "class": "mortuary_apprentice",
+    "type": "form",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Gain 5 Block.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 5
+      }
+    ],
+    "tags": [
+      "block",
+      "veil",
+      "grave_calm"
+    ],
+    "upgrades_to": "mourning_veil_plus"
+  },
+  {
+    "id": "mourning_veil_plus",
+    "name": "Mourning Veil+",
+    "class": "mortuary_apprentice",
+    "type": "form",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Gain 8 Block.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 8
+      }
+    ],
+    "tags": [
+      "block",
+      "veil",
+      "grave_calm",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "final_notice",
+    "name": "Final Notice",
+    "class": "mortuary_apprentice",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Apply 3 Paperwork.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "amount": 3,
+        "status": "paperwork"
+      }
+    ],
+    "tags": [
+      "paperwork",
+      "certificate",
+      "setup"
+    ],
+    "upgrades_to": "final_notice_plus"
+  },
+  {
+    "id": "final_notice_plus",
+    "name": "Final Notice+",
+    "class": "mortuary_apprentice",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Apply 4 Paperwork.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "amount": 4,
+        "status": "paperwork"
+      }
+    ],
+    "tags": [
+      "paperwork",
+      "certificate",
+      "setup",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "toll_the_small_bell",
+    "name": "Toll the Small Bell",
+    "class": "mortuary_apprentice",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Deal 3 damage per Paperwork on the target.",
+    "effects": [
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount_per_stack": 3
+      }
+    ],
+    "tags": [
+      "attack",
+      "paperwork",
+      "payoff",
+      "bell"
+    ],
+    "upgrades_to": "toll_the_small_bell_plus"
+  },
+  {
+    "id": "toll_the_small_bell_plus",
+    "name": "Toll the Small Bell+",
+    "class": "mortuary_apprentice",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Deal 4 damage per Paperwork on the target.",
+    "effects": [
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount_per_stack": 4
+      }
+    ],
+    "tags": [
+      "attack",
+      "paperwork",
+      "payoff",
+      "bell",
+      "upgraded"
+    ]
+  }
+]

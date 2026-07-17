@@ -1,0 +1,320 @@
+[
+  {
+    "id": "minor_hex_stamp",
+    "name": "Minor Hex Stamp",
+    "description": "At the start of each combat, add a Hexed Stamp to your hand.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "hexed_stamp",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "witch_clerk",
+      "stamp",
+      "hex",
+      "paperwork",
+      "zero_cost"
+    ],
+    "allowed_classes": [
+      "witch_clerk"
+    ]
+  },
+  {
+    "id": "tea_stained_charm_tag",
+    "name": "Tea-Stained Charm Tag",
+    "description": "At the start of each combat, add a Tea Charm to your hand.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "tea_charm",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "witch_clerk",
+      "tea",
+      "charm",
+      "block",
+      "zero_cost"
+    ],
+    "allowed_classes": [
+      "witch_clerk"
+    ]
+  },
+  {
+    "id": "ink_stained_thimble",
+    "name": "Ink-Stained Thimble",
+    "description": "At the start of each combat, add an Ink Splatter to your hand.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "ink_splatter",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "witch_clerk",
+      "ink",
+      "doubt",
+      "zero_cost"
+    ],
+    "allowed_classes": [
+      "witch_clerk"
+    ]
+  },
+  {
+    "id": "archive_mouse_permit",
+    "name": "Archive Mouse Permit",
+    "description": "At the start of each combat, add an Office Familiar to your draw pile.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "office_familiar",
+        "destination": "draw_pile",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "witch_clerk",
+      "archive",
+      "familiar",
+      "aoe",
+      "zero_cost"
+    ],
+    "allowed_classes": [
+      "witch_clerk"
+    ]
+  },
+  {
+    "id": "municipal_charm_string",
+    "name": "Municipal Charm String",
+    "description": "At the start of each combat, gain 5 Block and apply 1 Doubt to all enemies.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 5
+      },
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "doubt",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "witch_clerk",
+      "charm",
+      "ward",
+      "block",
+      "doubt"
+    ],
+    "allowed_classes": [
+      "witch_clerk"
+    ]
+  },
+  {
+    "id": "after_hours_ledger",
+    "name": "After-Hours Ledger",
+    "description": "At the start of each combat, apply 1 Paperwork to all enemies and add a Hexed Stamp to your draw pile.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "paperwork",
+        "amount": 1
+      },
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "hexed_stamp",
+        "destination": "draw_pile",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "witch_clerk",
+      "archive",
+      "ledger",
+      "paperwork",
+      "stamp"
+    ],
+    "allowed_classes": [
+      "witch_clerk"
+    ]
+  },
+  {
+    "id": "broom_cupboard_key",
+    "name": "Broom-Cupboard Key",
+    "description": "At the start of each combat, gain 8 Block.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 8
+      }
+    ],
+    "tags": [
+      "witch_clerk",
+      "broom",
+      "ward",
+      "block"
+    ],
+    "allowed_classes": [
+      "witch_clerk"
+    ]
+  },
+  {
+    "id": "carbon_copy_covenant",
+    "name": "Carbon-Copy Covenant",
+    "description": "At the start of each combat, gain 1 Energy and add a Misfiled Hex to your discard pile.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "gain_energy_at_combat_start",
+        "amount": 1
+      },
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "misfiled_hex",
+        "destination": "discard_pile",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "witch_clerk",
+      "form",
+      "energy",
+      "hex",
+      "junk",
+      "risk_reward"
+    ],
+    "allowed_classes": [
+      "witch_clerk"
+    ]
+  },
+  {
+    "id": "chief_witch_clerks_stamp",
+    "name": "Chief Witch-Clerk's Stamp",
+    "description": "At the start of each combat, apply 1 Paperwork and 1 Doubt to all enemies.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "paperwork",
+        "amount": 1
+      },
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "doubt",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "witch_clerk",
+      "stamp",
+      "hex",
+      "paperwork",
+      "doubt"
+    ],
+    "allowed_classes": [
+      "witch_clerk"
+    ]
+  },
+  {
+    "id": "enchanted_inbox_tray",
+    "name": "Enchanted Inbox Tray",
+    "description": "At the start of each combat, add a Hexed Stamp and a Tea Charm to your hand.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "hexed_stamp",
+        "destination": "hand",
+        "copies": 1
+      },
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "tea_charm",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "witch_clerk",
+      "paperwork",
+      "tea",
+      "charm",
+      "zero_cost"
+    ],
+    "allowed_classes": [
+      "witch_clerk"
+    ]
+  },
+  {
+    "id": "desk_drawer_perch",
+    "name": "Desk-Drawer Perch",
+    "description": "At the start of each combat, add an Office Familiar and an Ink Splatter to your hand.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "office_familiar",
+        "destination": "hand",
+        "copies": 1
+      },
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "ink_splatter",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "witch_clerk",
+      "familiar",
+      "ink",
+      "doubt",
+      "aoe",
+      "zero_cost"
+    ],
+    "allowed_classes": [
+      "witch_clerk"
+    ]
+  },
+  {
+    "id": "midnight_requisition_kettle",
+    "name": "Midnight Requisition Kettle",
+    "description": "At the start of each combat, gain 1 Energy and add a Tea Charm to your discard pile.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "gain_energy_at_combat_start",
+        "amount": 1
+      },
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "tea_charm",
+        "destination": "discard_pile",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "witch_clerk",
+      "tea",
+      "energy",
+      "charm",
+      "block"
+    ],
+    "allowed_classes": [
+      "witch_clerk"
+    ]
+  }
+]

@@ -1,0 +1,20 @@
+{
+  "id": "mortuary_apprentice",
+  "name": "Mortuary Apprentice",
+  "max_hp": 72,
+  "starting_energy": 3,
+  "starting_relic": null,
+  "starting_deck": [
+    "bone_tap",
+    "bone_tap",
+    "bone_tap",
+    "bone_tap",
+    "mourning_veil",
+    "mourning_veil",
+    "mourning_veil",
+    "mourning_veil",
+    "final_notice",
+    "toll_the_small_bell"
+  ],
+  "starting_resources": {}
+}

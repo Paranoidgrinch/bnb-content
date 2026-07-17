@@ -1,0 +1,1186 @@
+[
+  {
+    "id": "watch_whistle",
+    "name": "Watch Whistle",
+    "class": "night_watch_recruit",
+    "type": "argument",
+    "cost": 0,
+    "rarity": "starter",
+    "text": "Apply 1 Doubt. Exhaust.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "generated",
+      "backup",
+      "doubt",
+      "zero_cost",
+      "exhaust"
+    ]
+  },
+  {
+    "id": "backup_constable",
+    "name": "Backup Constable",
+    "class": "night_watch_recruit",
+    "type": "form",
+    "cost": 0,
+    "rarity": "starter",
+    "text": "Gain 4 Block. Exhaust.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 4
+      }
+    ],
+    "tags": [
+      "generated",
+      "backup",
+      "block",
+      "zero_cost",
+      "exhaust"
+    ]
+  },
+  {
+    "id": "incident_report",
+    "name": "Incident Report",
+    "class": "night_watch_recruit",
+    "type": "form",
+    "cost": 0,
+    "rarity": "starter",
+    "text": "Draw 1. Exhaust.",
+    "effects": [
+      {
+        "type": "draw_cards",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "generated",
+      "backup",
+      "draw",
+      "zero_cost",
+      "exhaust"
+    ]
+  },
+  {
+    "id": "loose_cobblestone",
+    "name": "Loose Cobblestone",
+    "class": "night_watch_recruit",
+    "type": "action",
+    "cost": 0,
+    "rarity": "starter",
+    "text": "Deal 3 damage. Exhaust.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "generated",
+      "cudgel",
+      "attack",
+      "zero_cost",
+      "exhaust"
+    ]
+  },
+  {
+    "id": "unfiled_complaint",
+    "name": "Unfiled Complaint",
+    "class": "night_watch_recruit",
+    "type": "curse",
+    "cost": 0,
+    "rarity": "starter",
+    "text": "Unplayable.",
+    "effects": [],
+    "tags": [
+      "generated",
+      "paperwork",
+      "junk",
+      "unplayable"
+    ]
+  },
+  {
+    "id": "lantern_sweep",
+    "name": "Lantern Sweep",
+    "class": "night_watch_recruit",
+    "type": "action",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Deal 8 damage. Apply 1 Doubt.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 8
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "attack",
+      "doubt",
+      "patrol",
+      "lantern"
+    ],
+    "upgrades_to": "lantern_sweep_plus"
+  },
+  {
+    "id": "lantern_sweep_plus",
+    "name": "Lantern Sweep+",
+    "class": "night_watch_recruit",
+    "type": "action",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Deal 11 damage. Apply 2 Doubt.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 11
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "attack",
+      "doubt",
+      "patrol",
+      "lantern",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "night_rounds",
+    "name": "Night Rounds",
+    "class": "night_watch_recruit",
+    "type": "form",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Gain 7 Block. Draw 1.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 7
+      },
+      {
+        "type": "draw_cards",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "block",
+      "draw",
+      "patrol"
+    ],
+    "upgrades_to": "night_rounds_plus"
+  },
+  {
+    "id": "night_rounds_plus",
+    "name": "Night Rounds+",
+    "class": "night_watch_recruit",
+    "type": "form",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Gain 10 Block. Draw 1.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 10
+      },
+      {
+        "type": "draw_cards",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "block",
+      "draw",
+      "patrol",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "patrol_route",
+    "name": "Patrol Route",
+    "class": "night_watch_recruit",
+    "type": "form",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Gain 8 Block. Apply 2 Doubt.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 8
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "block",
+      "doubt",
+      "patrol",
+      "setup"
+    ],
+    "upgrades_to": "patrol_route_plus"
+  },
+  {
+    "id": "patrol_route_plus",
+    "name": "Patrol Route+",
+    "class": "night_watch_recruit",
+    "type": "form",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Gain 11 Block. Apply 3 Doubt.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 11
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "block",
+      "doubt",
+      "patrol",
+      "setup",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "seen_on_patrol",
+    "name": "Seen on Patrol",
+    "class": "night_watch_recruit",
+    "type": "argument",
+    "cost": 0,
+    "rarity": "uncommon",
+    "text": "Apply 2 Doubt. Exhaust.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "doubt",
+      "patrol",
+      "zero_cost",
+      "exhaust"
+    ],
+    "upgrades_to": "seen_on_patrol_plus"
+  },
+  {
+    "id": "seen_on_patrol_plus",
+    "name": "Seen on Patrol+",
+    "class": "night_watch_recruit",
+    "type": "argument",
+    "cost": 0,
+    "rarity": "uncommon",
+    "text": "Apply 3 Doubt. Exhaust.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "doubt",
+      "patrol",
+      "zero_cost",
+      "exhaust",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "lawful_warning",
+    "name": "Lawful Warning",
+    "class": "night_watch_recruit",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 4 Doubt.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 4
+      }
+    ],
+    "tags": [
+      "doubt",
+      "riot_act",
+      "authority",
+      "setup"
+    ],
+    "upgrades_to": "lawful_warning_plus"
+  },
+  {
+    "id": "lawful_warning_plus",
+    "name": "Lawful Warning+",
+    "class": "night_watch_recruit",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 6 Doubt.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 6
+      }
+    ],
+    "tags": [
+      "doubt",
+      "riot_act",
+      "authority",
+      "setup",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "move_along",
+    "name": "Move Along",
+    "class": "night_watch_recruit",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 2 Doubt. Gain 6 Block.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 2
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 6
+      }
+    ],
+    "tags": [
+      "doubt",
+      "block",
+      "riot_act",
+      "authority"
+    ],
+    "upgrades_to": "move_along_plus"
+  },
+  {
+    "id": "move_along_plus",
+    "name": "Move Along+",
+    "class": "night_watch_recruit",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 3 Doubt. Gain 9 Block.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 3
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 9
+      }
+    ],
+    "tags": [
+      "doubt",
+      "block",
+      "riot_act",
+      "authority",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "public_order",
+    "name": "Public Order",
+    "class": "night_watch_recruit",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Apply 2 Doubt to all enemies.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "all_enemies",
+        "status": "doubt",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "doubt",
+      "riot_act",
+      "authority",
+      "aoe"
+    ],
+    "upgrades_to": "public_order_plus"
+  },
+  {
+    "id": "public_order_plus",
+    "name": "Public Order+",
+    "class": "night_watch_recruit",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Apply 3 Doubt to all enemies.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "all_enemies",
+        "status": "doubt",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "doubt",
+      "riot_act",
+      "authority",
+      "aoe",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "by_the_book",
+    "name": "By the Book",
+    "class": "night_watch_recruit",
+    "type": "action",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Deal 3 damage per Doubt on the target.",
+    "effects": [
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount_per_stack": 3
+      }
+    ],
+    "tags": [
+      "attack",
+      "doubt",
+      "payoff",
+      "riot_act",
+      "authority"
+    ],
+    "upgrades_to": "by_the_book_plus"
+  },
+  {
+    "id": "by_the_book_plus",
+    "name": "By the Book+",
+    "class": "night_watch_recruit",
+    "type": "action",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Deal 4 damage per Doubt on the target.",
+    "effects": [
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount_per_stack": 4
+      }
+    ],
+    "tags": [
+      "attack",
+      "doubt",
+      "payoff",
+      "riot_act",
+      "authority",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "full_riot_act",
+    "name": "Full Riot Act",
+    "class": "night_watch_recruit",
+    "type": "argument",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Apply 5 Doubt to all enemies.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "all_enemies",
+        "status": "doubt",
+        "amount": 5
+      }
+    ],
+    "tags": [
+      "doubt",
+      "riot_act",
+      "authority",
+      "aoe",
+      "setup"
+    ],
+    "upgrades_to": "full_riot_act_plus"
+  },
+  {
+    "id": "full_riot_act_plus",
+    "name": "Full Riot Act+",
+    "class": "night_watch_recruit",
+    "type": "argument",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Apply 7 Doubt to all enemies.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "all_enemies",
+        "status": "doubt",
+        "amount": 7
+      }
+    ],
+    "tags": [
+      "doubt",
+      "riot_act",
+      "authority",
+      "aoe",
+      "setup",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "shield_wall",
+    "name": "Shield Wall",
+    "class": "night_watch_recruit",
+    "type": "form",
+    "cost": 2,
+    "rarity": "common",
+    "text": "Gain 16 Block.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 16
+      }
+    ],
+    "tags": [
+      "block",
+      "shield",
+      "defense"
+    ],
+    "upgrades_to": "shield_wall_plus"
+  },
+  {
+    "id": "shield_wall_plus",
+    "name": "Shield Wall+",
+    "class": "night_watch_recruit",
+    "type": "form",
+    "cost": 2,
+    "rarity": "common",
+    "text": "Gain 22 Block.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 22
+      }
+    ],
+    "tags": [
+      "block",
+      "shield",
+      "defense",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "steady_stance",
+    "name": "Steady Stance",
+    "class": "night_watch_recruit",
+    "type": "form",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Gain 9 Block.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 9
+      }
+    ],
+    "tags": [
+      "block",
+      "shield",
+      "defense"
+    ],
+    "upgrades_to": "steady_stance_plus"
+  },
+  {
+    "id": "steady_stance_plus",
+    "name": "Steady Stance+",
+    "class": "night_watch_recruit",
+    "type": "form",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Gain 13 Block.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 13
+      }
+    ],
+    "tags": [
+      "block",
+      "shield",
+      "defense",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "hold_the_line",
+    "name": "Hold the Line",
+    "class": "night_watch_recruit",
+    "type": "form",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Gain 10 Block. Add a Backup Constable to your hand.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 10
+      },
+      {
+        "type": "create_card",
+        "card_id": "backup_constable",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "block",
+      "shield",
+      "backup",
+      "defense"
+    ],
+    "upgrades_to": "hold_the_line_plus"
+  },
+  {
+    "id": "hold_the_line_plus",
+    "name": "Hold the Line+",
+    "class": "night_watch_recruit",
+    "type": "form",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Gain 14 Block. Add a Backup Constable to your hand.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 14
+      },
+      {
+        "type": "create_card",
+        "card_id": "backup_constable",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "block",
+      "shield",
+      "backup",
+      "defense",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "tin_badge_courage",
+    "name": "Tin Badge Courage",
+    "class": "night_watch_recruit",
+    "type": "form",
+    "cost": 0,
+    "rarity": "rare",
+    "text": "Gain 8 Block. Exhaust.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 8
+      }
+    ],
+    "tags": [
+      "block",
+      "shield",
+      "zero_cost",
+      "exhaust"
+    ],
+    "upgrades_to": "tin_badge_courage_plus"
+  },
+  {
+    "id": "tin_badge_courage_plus",
+    "name": "Tin Badge Courage+",
+    "class": "night_watch_recruit",
+    "type": "form",
+    "cost": 0,
+    "rarity": "rare",
+    "text": "Gain 12 Block. Exhaust.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 12
+      }
+    ],
+    "tags": [
+      "block",
+      "shield",
+      "zero_cost",
+      "exhaust",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "arresting_blow",
+    "name": "Arresting Blow",
+    "class": "night_watch_recruit",
+    "type": "action",
+    "cost": 2,
+    "rarity": "uncommon",
+    "text": "Deal 18 damage.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 18
+      }
+    ],
+    "tags": [
+      "attack",
+      "cudgel",
+      "arrest"
+    ],
+    "upgrades_to": "arresting_blow_plus"
+  },
+  {
+    "id": "arresting_blow_plus",
+    "name": "Arresting Blow+",
+    "class": "night_watch_recruit",
+    "type": "action",
+    "cost": 2,
+    "rarity": "uncommon",
+    "text": "Deal 26 damage.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 26
+      }
+    ],
+    "tags": [
+      "attack",
+      "cudgel",
+      "arrest",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "firm_tap",
+    "name": "Firm Tap",
+    "class": "night_watch_recruit",
+    "type": "action",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Deal 10 damage.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 10
+      }
+    ],
+    "tags": [
+      "attack",
+      "cudgel",
+      "arrest"
+    ],
+    "upgrades_to": "firm_tap_plus"
+  },
+  {
+    "id": "firm_tap_plus",
+    "name": "Firm Tap+",
+    "class": "night_watch_recruit",
+    "type": "action",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Deal 14 damage.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 14
+      }
+    ],
+    "tags": [
+      "attack",
+      "cudgel",
+      "arrest",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "cobblestone_follow_up",
+    "name": "Cobblestone Follow-Up",
+    "class": "night_watch_recruit",
+    "type": "action",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Deal 6 damage. Add a Loose Cobblestone to your hand.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 6
+      },
+      {
+        "type": "create_card",
+        "card_id": "loose_cobblestone",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "attack",
+      "cudgel",
+      "arrest",
+      "zero_cost"
+    ],
+    "upgrades_to": "cobblestone_follow_up_plus"
+  },
+  {
+    "id": "cobblestone_follow_up_plus",
+    "name": "Cobblestone Follow-Up+",
+    "class": "night_watch_recruit",
+    "type": "action",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Deal 9 damage. Add a Loose Cobblestone to your hand.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 9
+      },
+      {
+        "type": "create_card",
+        "card_id": "loose_cobblestone",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "attack",
+      "cudgel",
+      "arrest",
+      "zero_cost",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "citizens_arrest",
+    "name": "Citizen's Arrest",
+    "class": "night_watch_recruit",
+    "type": "action",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Deal 12 damage. Deal 2 damage per Doubt on the target.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 12
+      },
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount_per_stack": 2
+      }
+    ],
+    "tags": [
+      "attack",
+      "cudgel",
+      "arrest",
+      "doubt",
+      "payoff"
+    ],
+    "upgrades_to": "citizens_arrest_plus"
+  },
+  {
+    "id": "citizens_arrest_plus",
+    "name": "Citizen's Arrest+",
+    "class": "night_watch_recruit",
+    "type": "action",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Deal 18 damage. Deal 3 damage per Doubt on the target.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 18
+      },
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount_per_stack": 3
+      }
+    ],
+    "tags": [
+      "attack",
+      "cudgel",
+      "arrest",
+      "doubt",
+      "payoff",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "blow_the_whistle",
+    "name": "Blow the Whistle",
+    "class": "night_watch_recruit",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Add 2 Watch Whistles to your hand.",
+    "effects": [
+      {
+        "type": "create_card",
+        "card_id": "watch_whistle",
+        "destination": "hand",
+        "copies": 2
+      }
+    ],
+    "tags": [
+      "backup",
+      "doubt",
+      "zero_cost"
+    ],
+    "upgrades_to": "blow_the_whistle_plus"
+  },
+  {
+    "id": "blow_the_whistle_plus",
+    "name": "Blow the Whistle+",
+    "class": "night_watch_recruit",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Add 3 Watch Whistles to your hand.",
+    "effects": [
+      {
+        "type": "create_card",
+        "card_id": "watch_whistle",
+        "destination": "hand",
+        "copies": 3
+      }
+    ],
+    "tags": [
+      "backup",
+      "doubt",
+      "zero_cost",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "call_for_backup",
+    "name": "Call for Backup",
+    "class": "night_watch_recruit",
+    "type": "form",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Add 2 Backup Constables to your hand.",
+    "effects": [
+      {
+        "type": "create_card",
+        "card_id": "backup_constable",
+        "destination": "hand",
+        "copies": 2
+      }
+    ],
+    "tags": [
+      "backup",
+      "block",
+      "zero_cost"
+    ],
+    "upgrades_to": "call_for_backup_plus"
+  },
+  {
+    "id": "call_for_backup_plus",
+    "name": "Call for Backup+",
+    "class": "night_watch_recruit",
+    "type": "form",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Add 3 Backup Constables to your hand.",
+    "effects": [
+      {
+        "type": "create_card",
+        "card_id": "backup_constable",
+        "destination": "hand",
+        "copies": 3
+      }
+    ],
+    "tags": [
+      "backup",
+      "block",
+      "zero_cost",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "write_it_down",
+    "name": "Write It Down",
+    "class": "night_watch_recruit",
+    "type": "form",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Draw 2. Add an Incident Report to your hand.",
+    "effects": [
+      {
+        "type": "draw_cards",
+        "amount": 2
+      },
+      {
+        "type": "create_card",
+        "card_id": "incident_report",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "backup",
+      "draw",
+      "patrol",
+      "zero_cost"
+    ],
+    "upgrades_to": "write_it_down_plus"
+  },
+  {
+    "id": "write_it_down_plus",
+    "name": "Write It Down+",
+    "class": "night_watch_recruit",
+    "type": "form",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Draw 3. Add an Incident Report to your hand.",
+    "effects": [
+      {
+        "type": "draw_cards",
+        "amount": 3
+      },
+      {
+        "type": "create_card",
+        "card_id": "incident_report",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "backup",
+      "draw",
+      "patrol",
+      "zero_cost",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "paperwork_later",
+    "name": "Paperwork Later",
+    "class": "night_watch_recruit",
+    "type": "action",
+    "cost": 1,
+    "rarity": "rare",
+    "text": "Deal 18 damage. Add an Unfiled Complaint to your discard pile.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 18
+      },
+      {
+        "type": "create_card",
+        "card_id": "unfiled_complaint",
+        "destination": "discard_pile",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "attack",
+      "backup",
+      "paperwork",
+      "junk",
+      "risk_reward"
+    ],
+    "upgrades_to": "paperwork_later_plus"
+  },
+  {
+    "id": "paperwork_later_plus",
+    "name": "Paperwork Later+",
+    "class": "night_watch_recruit",
+    "type": "action",
+    "cost": 1,
+    "rarity": "rare",
+    "text": "Deal 25 damage. Add an Unfiled Complaint to your discard pile.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 25
+      },
+      {
+        "type": "create_card",
+        "card_id": "unfiled_complaint",
+        "destination": "discard_pile",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "attack",
+      "backup",
+      "paperwork",
+      "junk",
+      "risk_reward",
+      "upgraded"
+    ]
+  }
+]

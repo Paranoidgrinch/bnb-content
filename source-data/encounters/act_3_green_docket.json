@@ -1,0 +1,754 @@
+[
+  {
+    "id": "green_docket_easy_01",
+    "name": "The First Wrong Turning",
+    "act": 3,
+    "difficulty": "easy",
+    "enemies": [
+      "permit_hare"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "green_docket_easy_02",
+    "name": "A Clerk in the Moss",
+    "act": 3,
+    "difficulty": "easy",
+    "enemies": [
+      "moss_covered_clerk"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "green_docket_easy_03",
+    "name": "The Signpost Objects",
+    "act": 3,
+    "difficulty": "easy",
+    "enemies": [
+      "overzealous_signpost"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "green_docket_easy_04",
+    "name": "Toll Without a Bridge",
+    "act": 3,
+    "difficulty": "easy",
+    "enemies": [
+      "toll_bridge_spriggan"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "green_docket_easy_05",
+    "name": "Ants in Good Order",
+    "act": 3,
+    "difficulty": "easy",
+    "enemies": [
+      "swarm_of_authorized_ants"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "green_docket_easy_06",
+    "name": "The Stump Was Resting",
+    "act": 3,
+    "difficulty": "easy",
+    "enemies": [
+      "sleeping_stump_auditor"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "green_docket_easy_07",
+    "name": "A Raven Knows the Way",
+    "act": 3,
+    "difficulty": "easy",
+    "enemies": [
+      "raven_of_unfiled_paths"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "green_docket_easy_08",
+    "name": "Moonlit Bites",
+    "act": 3,
+    "difficulty": "easy",
+    "enemies": [
+      "moonlit_midge_swarm"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "green_docket_normal_01",
+    "name": "Forms in the Bracken",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "wild_form_collector"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "green_docket_normal_02",
+    "name": "Clauses in the Web",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "spider_of_minor_clauses"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "green_docket_normal_03",
+    "name": "The Bailiff at the Briars",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "briar_bailiff"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "green_docket_normal_04",
+    "name": "A Circle Reaches Quorum",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "mandated_mushroom_circle"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "green_docket_normal_05",
+    "name": "Witchling by the Road",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "roadside_witchling"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "green_docket_normal_06",
+    "name": "Receipts in the Rain",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "rainwater_receipt_elemental"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "green_docket_normal_07",
+    "name": "Slow Charter Crossing",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "charter_shell_snail"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "green_docket_normal_08",
+    "name": "Appeals from the Ditch",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "ditch_lamprey_of_appeals"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "green_docket_normal_09",
+    "name": "Inspection of the Hedge",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "itinerant_hedge_inspector"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "green_docket_normal_10",
+    "name": "A Damp Academic Matter",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "lichen_scholar"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "green_docket_normal_11",
+    "name": "The Oak Lets Nobody Through",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "turnstile_oak"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "green_docket_normal_12",
+    "name": "Notice from Above",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "subpoena_willow"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "green_docket_normal_13",
+    "name": "The Stars File an Opinion",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "star_map_oracle"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "green_docket_normal_14",
+    "name": "A Hollow Full of Problems",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "hollow_of_minor_dooms"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "green_docket_normal_15",
+    "name": "Trail Marker in Translation",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "untranslated_trail_marker"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "green_docket_normal_16",
+    "name": "Ants and a Clerk",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "swarm_of_authorized_ants",
+      "moss_covered_clerk"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "green_docket_normal_17",
+    "name": "Briars and Fine Print",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "briar_bailiff",
+      "spider_of_minor_clauses"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "green_docket_normal_18",
+    "name": "The Roadside Committee",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "roadside_witchling",
+      "mandated_mushroom_circle"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "green_docket_elite_01",
+    "name": "Ancient Entitlement",
+    "act": 3,
+    "difficulty": "elite",
+    "enemies": [
+      "ancient_entitlement"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "green_docket_elite_02",
+    "name": "Grandmother Web",
+    "act": 3,
+    "difficulty": "elite",
+    "enemies": [
+      "grandmother_web"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "green_docket_elite_03",
+    "name": "The Proper Line",
+    "act": 3,
+    "difficulty": "elite",
+    "enemies": [
+      "ant_queen_of_the_proper_line"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "green_docket_elite_04",
+    "name": "Provisional Mercy",
+    "act": 3,
+    "difficulty": "elite",
+    "enemies": [
+      "green_witch_of_provisional_mercy"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "green_docket_elite_05",
+    "name": "A Forgotten Survey",
+    "act": 3,
+    "difficulty": "elite",
+    "enemies": [
+      "surveyor_of_forgotten_paths"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "green_docket_elite_06",
+    "name": "The Thorn Court",
+    "act": 3,
+    "difficulty": "elite",
+    "enemies": [
+      "magistrate_of_thorns"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "green_docket_mimic_01",
+    "name": "The Hollow Was Too Convenient",
+    "act": 3,
+    "difficulty": "elite",
+    "enemies": [
+      "bureaucratic_hollow_mimic"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "green_docket_boss_01",
+    "name": "The Forest Ombudsman",
+    "act": 3,
+    "difficulty": "boss",
+    "enemies": [
+      "forest_ombudsman"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "green_docket_boss_02",
+    "name": "The Old Growth Notary",
+    "act": 3,
+    "difficulty": "boss",
+    "enemies": [
+      "old_growth_notary"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "green_docket_boss_03",
+    "name": "The Queen Under the Hill",
+    "act": 3,
+    "difficulty": "boss",
+    "enemies": [
+      "queen_under_the_hill"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "green_docket_normal_19",
+    "name": "A Badger Has Filed Concerns",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "petitioning_badger",
+      "dandelion_summons"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "green_docket_normal_20",
+    "name": "Witnesses in Bloom",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "foxglove_witness",
+      "bee_of_procedural_consent"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "green_docket_normal_21",
+    "name": "The Puddle Holds Court",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "puddle_jurist",
+      "streamside_oath_fish"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "green_docket_normal_22",
+    "name": "Retained Nuts and Certified Stings",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "squirrel_of_retained_nuts",
+      "bramble_notary_wasp"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "green_docket_normal_23",
+    "name": "Queue Discipline in the Ferns",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "fern_queue_marshal",
+      "bluebell_constable"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "green_docket_normal_24",
+    "name": "A Convenient Hollow Postbox",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "hollow_postbox"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "green_docket_normal_25",
+    "name": "Temporary Cartography",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "moth_of_temporary_maps",
+      "harebell_announcer"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "green_docket_normal_26",
+    "name": "The Turnpike Has Roots",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "rooted_turnpike_clerk"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "green_docket_normal_27",
+    "name": "Summons on the Wind",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "dandelion_summons",
+      "moth_of_temporary_maps"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "green_docket_normal_28",
+    "name": "The Wrong Meeting Is Announced",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "harebell_announcer",
+      "puddle_jurist"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "green_docket_normal_29",
+    "name": "Notarial Buzzing",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "bramble_notary_wasp",
+      "bee_of_procedural_consent"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "green_docket_normal_30",
+    "name": "A Very Small Arrest",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "bluebell_constable",
+      "squirrel_of_retained_nuts"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "green_docket_normal_31",
+    "name": "Oaths in the Stream",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "streamside_oath_fish"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "green_docket_normal_32",
+    "name": "Procedural Consent",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "bee_of_procedural_consent",
+      "foxglove_witness"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "green_docket_normal_33",
+    "name": "The Stone Has a Case Number",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "stone_with_a_case_number"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "green_docket_normal_34",
+    "name": "You Have Been Nettled",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "nettled_process_server"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "green_docket_normal_35",
+    "name": "Acorns and Evidence",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "squirrel_of_retained_nuts",
+      "bramble_notary_wasp"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "green_docket_normal_36",
+    "name": "A Wet Legal Seminar",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "puddle_jurist",
+      "streamside_oath_fish",
+      "dandelion_summons"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "green_docket_normal_37",
+    "name": "Queue in the Undergrowth",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "fern_queue_marshal",
+      "dandelion_summons",
+      "bee_of_procedural_consent"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "green_docket_normal_38",
+    "name": "The Route Becomes Unclear",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "moth_of_temporary_maps",
+      "harebell_announcer",
+      "foxglove_witness"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "green_docket_normal_39",
+    "name": "The Roadside Office",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "rooted_turnpike_clerk",
+      "hollow_postbox"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "green_docket_elite_07",
+    "name": "The Court of Seven Ants",
+    "act": 3,
+    "difficulty": "elite",
+    "enemies": [
+      "court_of_seven_ants"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "green_docket_elite_08",
+    "name": "The Wrong Bridge Arrives in Person",
+    "act": 3,
+    "difficulty": "elite",
+    "enemies": [
+      "wrong_bridge_in_person"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "green_docket_elite_09",
+    "name": "Evergreen Injunction",
+    "act": 3,
+    "difficulty": "elite",
+    "enemies": [
+      "juniper_injunction"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "green_docket_elite_10",
+    "name": "Pre-Approved Violence",
+    "act": 3,
+    "difficulty": "elite",
+    "enemies": [
+      "stag_of_preapproved_violence"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "green_docket_elite_11",
+    "name": "The Wicker Inspection",
+    "act": 3,
+    "difficulty": "elite",
+    "enemies": [
+      "wicker_compliance_officer"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "green_docket_elite_12",
+    "name": "Final Payment at the Pond",
+    "act": 3,
+    "difficulty": "elite",
+    "enemies": [
+      "great_toll_frog"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "green_docket_elite_13",
+    "name": "Moonlit Revisions",
+    "act": 3,
+    "difficulty": "elite",
+    "enemies": [
+      "elder_moth_of_revisions"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "green_docket_elite_14",
+    "name": "The Moss Judge Rolls In",
+    "act": 3,
+    "difficulty": "elite",
+    "enemies": [
+      "moss_judge_on_wheels"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "green_docket_elite_15",
+    "name": "Appeal Denied with Thorns",
+    "act": 3,
+    "difficulty": "elite",
+    "enemies": [
+      "thornbound_appeals_panel"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "green_docket_boss_04",
+    "name": "The Green Docket Itself",
+    "act": 3,
+    "difficulty": "boss",
+    "enemies": [
+      "the_green_docket_itself"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "green_docket_boss_05",
+    "name": "The Bridge That Has Never Been Built",
+    "act": 3,
+    "difficulty": "boss",
+    "enemies": [
+      "bridge_that_has_never_been_built"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "green_docket_boss_06",
+    "name": "The Kindly Procession",
+    "act": 3,
+    "difficulty": "boss",
+    "enemies": [
+      "the_kindly_procession"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "green_docket_boss_07",
+    "name": "Root Chancellor of All Paths",
+    "act": 3,
+    "difficulty": "boss",
+    "enemies": [
+      "root_chancellor_of_all_paths"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "green_docket_boss_08",
+    "name": "The Ant Queen's Second Opinion",
+    "act": 3,
+    "difficulty": "boss",
+    "enemies": [
+      "ant_queens_second_opinion"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "green_docket_boss_09",
+    "name": "Grandmother Clause",
+    "act": 3,
+    "difficulty": "boss",
+    "enemies": [
+      "grandmother_clause"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "green_docket_boss_10",
+    "name": "The Hill That Files Back",
+    "act": 3,
+    "difficulty": "boss",
+    "enemies": [
+      "hill_that_files_back"
+    ],
+    "weight": 1
+  }
+]

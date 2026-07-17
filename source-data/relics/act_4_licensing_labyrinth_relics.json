@@ -1,0 +1,194 @@
+[
+  {
+    "id": "act4_general_ariadnes_red_thread",
+    "name": "Ariadne's Red Thread",
+    "description": "Card rewards contain 1 additional card.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "increase_card_reward_count",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "licensing_labyrinth",
+      "pyramid",
+      "labyrinth",
+      "red_thread",
+      "reward"
+    ],
+    "allowed_classes": []
+  },
+  {
+    "id": "act4_general_memory_training_tablet",
+    "name": "Memory Training Tablet",
+    "description": "At the start of each combat, gain 1 Energy.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "gain_energy_at_combat_start",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "licensing_labyrinth",
+      "pyramid",
+      "labyrinth",
+      "memory",
+      "energy"
+    ],
+    "allowed_classes": []
+  },
+  {
+    "id": "act4_general_cracked_sun_lamp",
+    "name": "Cracked Sun Lamp",
+    "description": "At the start of each combat, apply 1 Doubt to all enemies and gain 6 Block.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "doubt",
+        "amount": 1
+      },
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 6
+      }
+    ],
+    "tags": [
+      "act_4",
+      "licensing_labyrinth",
+      "pyramid",
+      "light",
+      "sun",
+      "doubt",
+      "block"
+    ],
+    "allowed_classes": []
+  },
+  {
+    "id": "act4_general_sealed_water_skin",
+    "name": "Sealed Water Skin",
+    "description": "At the start of each combat, heal 2 HP and gain 6 Block.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "heal_at_combat_start",
+        "amount": 2
+      },
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 6
+      }
+    ],
+    "tags": [
+      "act_4",
+      "licensing_labyrinth",
+      "pyramid",
+      "water",
+      "survival",
+      "block"
+    ],
+    "allowed_classes": []
+  },
+  {
+    "id": "act4_general_scarab_compass",
+    "name": "Scarab Compass",
+    "description": "Gold rewards are increased by 25%.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "increase_gold_rewards",
+        "amount": 25
+      }
+    ],
+    "tags": [
+      "act_4",
+      "licensing_labyrinth",
+      "pyramid",
+      "scarab",
+      "compass",
+      "gold",
+      "shop"
+    ],
+    "allowed_classes": []
+  },
+  {
+    "id": "act4_general_surveyors_chalk_line",
+    "name": "Surveyor's Chalk Line",
+    "description": "At the start of each combat, apply 1 Paperwork to all enemies and gain 8 Block.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "paperwork",
+        "amount": 1
+      },
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 8
+      }
+    ],
+    "tags": [
+      "act_4",
+      "licensing_labyrinth",
+      "pyramid",
+      "labyrinth",
+      "paperwork",
+      "block",
+      "tool"
+    ],
+    "allowed_classes": []
+  },
+  {
+    "id": "act4_general_canopic_emergency_rations",
+    "name": "Canopic Emergency Rations",
+    "description": "On pickup, heal 25 HP.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "heal_on_pickup",
+        "amount": 25
+      }
+    ],
+    "tags": [
+      "act_4",
+      "licensing_labyrinth",
+      "pyramid",
+      "canopic",
+      "healing",
+      "survival"
+    ],
+    "allowed_classes": []
+  },
+  {
+    "id": "act4_general_cartographers_lost_candle",
+    "name": "Cartographer's Lost Candle",
+    "description": "At the start of each combat, apply 1 Doubt and 1 Paperwork to all enemies.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "doubt",
+        "amount": 1
+      },
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "paperwork",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "licensing_labyrinth",
+      "pyramid",
+      "light",
+      "map",
+      "doubt",
+      "paperwork"
+    ],
+    "allowed_classes": []
+  }
+]

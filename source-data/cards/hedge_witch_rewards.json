@@ -1,0 +1,1309 @@
+[
+  {
+    "id": "warm_poultice",
+    "name": "Warm Poultice",
+    "class": "hedge_witch",
+    "type": "form",
+    "cost": 0,
+    "rarity": "starter",
+    "text": "Gain 4 Block. Exhaust.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 4
+      }
+    ],
+    "tags": [
+      "generated",
+      "herb",
+      "poultice",
+      "block",
+      "zero_cost",
+      "exhaust"
+    ]
+  },
+  {
+    "id": "bitter_draught",
+    "name": "Bitter Draught",
+    "class": "hedge_witch",
+    "type": "spell",
+    "cost": 0,
+    "rarity": "starter",
+    "text": "Apply 1 Poison. Exhaust.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "generated",
+      "brew",
+      "poison",
+      "zero_cost",
+      "exhaust"
+    ]
+  },
+  {
+    "id": "crow_feather",
+    "name": "Crow Feather",
+    "class": "hedge_witch",
+    "type": "spell",
+    "cost": 0,
+    "rarity": "starter",
+    "text": "Apply 1 Doubt. Exhaust.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "generated",
+      "familiar",
+      "doubt",
+      "zero_cost",
+      "exhaust"
+    ]
+  },
+  {
+    "id": "spare_knot",
+    "name": "Spare Knot",
+    "class": "hedge_witch",
+    "type": "spell",
+    "cost": 0,
+    "rarity": "starter",
+    "text": "Apply 1 Paperwork. Exhaust.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "generated",
+      "knot",
+      "paperwork",
+      "zero_cost",
+      "exhaust"
+    ]
+  },
+  {
+    "id": "soggy_tea_leaves",
+    "name": "Soggy Tea Leaves",
+    "class": "hedge_witch",
+    "type": "curse",
+    "cost": 0,
+    "rarity": "starter",
+    "text": "Unplayable.",
+    "effects": [],
+    "tags": [
+      "generated",
+      "tea",
+      "junk",
+      "unplayable"
+    ]
+  },
+  {
+    "id": "nettle_ward",
+    "name": "Nettle Ward",
+    "class": "hedge_witch",
+    "type": "form",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Gain 8 Block.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 8
+      }
+    ],
+    "tags": [
+      "herb",
+      "poultice",
+      "block",
+      "ward"
+    ],
+    "upgrades_to": "nettle_ward_plus"
+  },
+  {
+    "id": "nettle_ward_plus",
+    "name": "Nettle Ward+",
+    "class": "hedge_witch",
+    "type": "form",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Gain 11 Block.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 11
+      }
+    ],
+    "tags": [
+      "herb",
+      "poultice",
+      "block",
+      "ward",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "comfrey_wrap",
+    "name": "Comfrey Wrap",
+    "class": "hedge_witch",
+    "type": "form",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Gain 6 Block. Draw 1.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 6
+      },
+      {
+        "type": "draw_cards",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "herb",
+      "poultice",
+      "block",
+      "draw"
+    ],
+    "upgrades_to": "comfrey_wrap_plus"
+  },
+  {
+    "id": "comfrey_wrap_plus",
+    "name": "Comfrey Wrap+",
+    "class": "hedge_witch",
+    "type": "form",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Gain 9 Block. Draw 1.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 9
+      },
+      {
+        "type": "draw_cards",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "herb",
+      "poultice",
+      "block",
+      "draw",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "dock_leaf_salvo",
+    "name": "Dock Leaf Salvo",
+    "class": "hedge_witch",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Deal 4 damage. Gain 6 Block.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 4
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 6
+      }
+    ],
+    "tags": [
+      "attack",
+      "herb",
+      "poultice",
+      "block"
+    ],
+    "upgrades_to": "dock_leaf_salvo_plus"
+  },
+  {
+    "id": "dock_leaf_salvo_plus",
+    "name": "Dock Leaf Salvo+",
+    "class": "hedge_witch",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Deal 6 damage. Gain 9 Block.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 6
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 9
+      }
+    ],
+    "tags": [
+      "attack",
+      "herb",
+      "poultice",
+      "block",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "witchs_poultice",
+    "name": "Witch's Poultice",
+    "class": "hedge_witch",
+    "type": "form",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Gain 8 Block. Add a Warm Poultice to your hand.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 8
+      },
+      {
+        "type": "create_card",
+        "card_id": "warm_poultice",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "herb",
+      "poultice",
+      "block",
+      "zero_cost"
+    ],
+    "upgrades_to": "witchs_poultice_plus"
+  },
+  {
+    "id": "witchs_poultice_plus",
+    "name": "Witch's Poultice+",
+    "class": "hedge_witch",
+    "type": "form",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Gain 11 Block. Add a Warm Poultice to your hand.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 11
+      },
+      {
+        "type": "create_card",
+        "card_id": "warm_poultice",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "herb",
+      "poultice",
+      "block",
+      "zero_cost",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "evil_eye_teacup",
+    "name": "Evil-Eye Teacup",
+    "class": "hedge_witch",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 2 Doubt. Gain 4 Block.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 2
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 4
+      }
+    ],
+    "tags": [
+      "curse",
+      "spite",
+      "doubt",
+      "tea",
+      "block"
+    ],
+    "upgrades_to": "evil_eye_teacup_plus"
+  },
+  {
+    "id": "evil_eye_teacup_plus",
+    "name": "Evil-Eye Teacup+",
+    "class": "hedge_witch",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 3 Doubt. Gain 6 Block.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 3
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 6
+      }
+    ],
+    "tags": [
+      "curse",
+      "spite",
+      "doubt",
+      "tea",
+      "block",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "borrowed_omen",
+    "name": "Borrowed Omen",
+    "class": "hedge_witch",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 4 Paperwork.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 4
+      }
+    ],
+    "tags": [
+      "curse",
+      "omen",
+      "paperwork",
+      "setup"
+    ],
+    "upgrades_to": "borrowed_omen_plus"
+  },
+  {
+    "id": "borrowed_omen_plus",
+    "name": "Borrowed Omen+",
+    "class": "hedge_witch",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 6 Paperwork.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 6
+      }
+    ],
+    "tags": [
+      "curse",
+      "omen",
+      "paperwork",
+      "setup",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "spiteful_mutter",
+    "name": "Spiteful Mutter",
+    "class": "hedge_witch",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Deal 5 damage. Apply 2 Doubt.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 5
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "attack",
+      "curse",
+      "spite",
+      "doubt"
+    ],
+    "upgrades_to": "spiteful_mutter_plus"
+  },
+  {
+    "id": "spiteful_mutter_plus",
+    "name": "Spiteful Mutter+",
+    "class": "hedge_witch",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Deal 7 damage. Apply 3 Doubt.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 7
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "attack",
+      "curse",
+      "spite",
+      "doubt",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "knotted_fate",
+    "name": "Knotted Fate",
+    "class": "hedge_witch",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "uncommon",
+    "text": "Apply 3 Doubt and 3 Paperwork.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 3
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "curse",
+      "knot",
+      "doubt",
+      "paperwork",
+      "setup"
+    ],
+    "upgrades_to": "knotted_fate_plus"
+  },
+  {
+    "id": "knotted_fate_plus",
+    "name": "Knotted Fate+",
+    "class": "hedge_witch",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "uncommon",
+    "text": "Apply 4 Doubt and 5 Paperwork.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 4
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 5
+      }
+    ],
+    "tags": [
+      "curse",
+      "knot",
+      "doubt",
+      "paperwork",
+      "setup",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "pinch_of_malice",
+    "name": "Pinch of Malice",
+    "class": "hedge_witch",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Apply 2 Poison. Apply 2 Doubt.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 2
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "curse",
+      "spite",
+      "poison",
+      "doubt"
+    ],
+    "upgrades_to": "pinch_of_malice_plus"
+  },
+  {
+    "id": "pinch_of_malice_plus",
+    "name": "Pinch of Malice+",
+    "class": "hedge_witch",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Apply 3 Poison. Apply 3 Doubt.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 3
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "curse",
+      "spite",
+      "poison",
+      "doubt",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "crow_on_the_roof",
+    "name": "Crow on the Roof",
+    "class": "hedge_witch",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Deal 4 damage per Doubt on the target.",
+    "effects": [
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount_per_stack": 4
+      }
+    ],
+    "tags": [
+      "attack",
+      "curse",
+      "doubt",
+      "payoff",
+      "familiar"
+    ],
+    "upgrades_to": "crow_on_the_roof_plus"
+  },
+  {
+    "id": "crow_on_the_roof_plus",
+    "name": "Crow on the Roof+",
+    "class": "hedge_witch",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Deal 5 damage per Doubt on the target.",
+    "effects": [
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount_per_stack": 5
+      }
+    ],
+    "tags": [
+      "attack",
+      "curse",
+      "doubt",
+      "payoff",
+      "familiar",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "hearth_charm",
+    "name": "Hearth Charm",
+    "class": "hedge_witch",
+    "type": "form",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Gain 5 Block. Add a Warm Poultice to your hand.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 5
+      },
+      {
+        "type": "create_card",
+        "card_id": "warm_poultice",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "charm",
+      "ward",
+      "poultice",
+      "block",
+      "zero_cost"
+    ],
+    "upgrades_to": "hearth_charm_plus"
+  },
+  {
+    "id": "hearth_charm_plus",
+    "name": "Hearth Charm+",
+    "class": "hedge_witch",
+    "type": "form",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Gain 8 Block. Add a Warm Poultice to your hand.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 8
+      },
+      {
+        "type": "create_card",
+        "card_id": "warm_poultice",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "charm",
+      "ward",
+      "poultice",
+      "block",
+      "zero_cost",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "doorstep_ward",
+    "name": "Doorstep Ward",
+    "class": "hedge_witch",
+    "type": "form",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Gain 8 Block. Apply 1 Doubt to all enemies.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 8
+      },
+      {
+        "type": "apply_status",
+        "target": "all_enemies",
+        "status": "doubt",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "charm",
+      "ward",
+      "block",
+      "doubt",
+      "aoe"
+    ],
+    "upgrades_to": "doorstep_ward_plus"
+  },
+  {
+    "id": "doorstep_ward_plus",
+    "name": "Doorstep Ward+",
+    "class": "hedge_witch",
+    "type": "form",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Gain 11 Block. Apply 2 Doubt to all enemies.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 11
+      },
+      {
+        "type": "apply_status",
+        "target": "all_enemies",
+        "status": "doubt",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "charm",
+      "ward",
+      "block",
+      "doubt",
+      "aoe",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "threefold_knot",
+    "name": "Threefold Knot",
+    "class": "hedge_witch",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Apply 4 Doubt. Apply 4 Paperwork. Add a Spare Knot to your hand.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 4
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 4
+      },
+      {
+        "type": "create_card",
+        "card_id": "spare_knot",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "charm",
+      "knot",
+      "doubt",
+      "paperwork",
+      "setup"
+    ],
+    "upgrades_to": "threefold_knot_plus"
+  },
+  {
+    "id": "threefold_knot_plus",
+    "name": "Threefold Knot+",
+    "class": "hedge_witch",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Apply 5 Doubt. Apply 6 Paperwork. Add a Spare Knot to your hand.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 5
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 6
+      },
+      {
+        "type": "create_card",
+        "card_id": "spare_knot",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "charm",
+      "knot",
+      "doubt",
+      "paperwork",
+      "setup",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "bitter_brew",
+    "name": "Bitter Brew",
+    "class": "hedge_witch",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 2 Poison. Add a Bitter Draught to your hand.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 2
+      },
+      {
+        "type": "create_card",
+        "card_id": "bitter_draught",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "brew",
+      "poison",
+      "zero_cost"
+    ],
+    "upgrades_to": "bitter_brew_plus"
+  },
+  {
+    "id": "bitter_brew_plus",
+    "name": "Bitter Brew+",
+    "class": "hedge_witch",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 3 Poison. Add a Bitter Draught to your hand.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 3
+      },
+      {
+        "type": "create_card",
+        "card_id": "bitter_draught",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "brew",
+      "poison",
+      "zero_cost",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "too_strong_tea",
+    "name": "Too-Strong Tea",
+    "class": "hedge_witch",
+    "type": "spell",
+    "cost": 0,
+    "rarity": "uncommon",
+    "text": "Gain 1 Energy. Add Soggy Tea Leaves to your discard pile. Exhaust.",
+    "effects": [
+      {
+        "type": "gain_resource",
+        "resource": "energy",
+        "amount": 1
+      },
+      {
+        "type": "create_card",
+        "card_id": "soggy_tea_leaves",
+        "destination": "discard_pile",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "brew",
+      "tea",
+      "energy",
+      "junk",
+      "zero_cost",
+      "exhaust"
+    ],
+    "upgrades_to": "too_strong_tea_plus"
+  },
+  {
+    "id": "too_strong_tea_plus",
+    "name": "Too-Strong Tea+",
+    "class": "hedge_witch",
+    "type": "spell",
+    "cost": 0,
+    "rarity": "uncommon",
+    "text": "Gain 1 Energy. Draw 1. Add Soggy Tea Leaves to your discard pile. Exhaust.",
+    "effects": [
+      {
+        "type": "gain_resource",
+        "resource": "energy",
+        "amount": 1
+      },
+      {
+        "type": "draw_cards",
+        "amount": 1
+      },
+      {
+        "type": "create_card",
+        "card_id": "soggy_tea_leaves",
+        "destination": "discard_pile",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "brew",
+      "tea",
+      "energy",
+      "draw",
+      "junk",
+      "zero_cost",
+      "exhaust",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "simmering_pot",
+    "name": "Simmering Pot",
+    "class": "hedge_witch",
+    "type": "form",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Draw 2. Add a Warm Poultice to your hand.",
+    "effects": [
+      {
+        "type": "draw_cards",
+        "amount": 2
+      },
+      {
+        "type": "create_card",
+        "card_id": "warm_poultice",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "brew",
+      "draw",
+      "poultice",
+      "zero_cost"
+    ],
+    "upgrades_to": "simmering_pot_plus"
+  },
+  {
+    "id": "simmering_pot_plus",
+    "name": "Simmering Pot+",
+    "class": "hedge_witch",
+    "type": "form",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Draw 3. Add a Warm Poultice to your hand.",
+    "effects": [
+      {
+        "type": "draw_cards",
+        "amount": 3
+      },
+      {
+        "type": "create_card",
+        "card_id": "warm_poultice",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "brew",
+      "draw",
+      "poultice",
+      "zero_cost",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "nasty_little_bottle",
+    "name": "Nasty Little Bottle",
+    "class": "hedge_witch",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Apply 7 Poison. Apply 2 Doubt.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 7
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "brew",
+      "poison",
+      "doubt",
+      "spite"
+    ],
+    "upgrades_to": "nasty_little_bottle_plus"
+  },
+  {
+    "id": "nasty_little_bottle_plus",
+    "name": "Nasty Little Bottle+",
+    "class": "hedge_witch",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Apply 10 Poison. Apply 3 Doubt.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 10
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "brew",
+      "poison",
+      "doubt",
+      "spite",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "borrowed_crow",
+    "name": "Borrowed Crow",
+    "class": "hedge_witch",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Deal 4 damage. Add a Crow Feather to your hand.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 4
+      },
+      {
+        "type": "create_card",
+        "card_id": "crow_feather",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "attack",
+      "familiar",
+      "doubt",
+      "zero_cost"
+    ],
+    "upgrades_to": "borrowed_crow_plus"
+  },
+  {
+    "id": "borrowed_crow_plus",
+    "name": "Borrowed Crow+",
+    "class": "hedge_witch",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Deal 6 damage. Add 2 Crow Feathers to your hand.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 6
+      },
+      {
+        "type": "create_card",
+        "card_id": "crow_feather",
+        "destination": "hand",
+        "copies": 2
+      }
+    ],
+    "tags": [
+      "attack",
+      "familiar",
+      "doubt",
+      "zero_cost",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "cat_in_the_path",
+    "name": "Cat in the Path",
+    "class": "hedge_witch",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 1 Doubt to all enemies.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "all_enemies",
+        "status": "doubt",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "familiar",
+      "doubt",
+      "aoe"
+    ],
+    "upgrades_to": "cat_in_the_path_plus"
+  },
+  {
+    "id": "cat_in_the_path_plus",
+    "name": "Cat in the Path+",
+    "class": "hedge_witch",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 2 Doubt to all enemies.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "all_enemies",
+        "status": "doubt",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "familiar",
+      "doubt",
+      "aoe",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "hedge_shortcut",
+    "name": "Hedge Shortcut",
+    "class": "hedge_witch",
+    "type": "form",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Draw 2. Gain 3 Block.",
+    "effects": [
+      {
+        "type": "draw_cards",
+        "amount": 2
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "familiar",
+      "draw",
+      "block",
+      "trick"
+    ],
+    "upgrades_to": "hedge_shortcut_plus"
+  },
+  {
+    "id": "hedge_shortcut_plus",
+    "name": "Hedge Shortcut+",
+    "class": "hedge_witch",
+    "type": "form",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Draw 3. Gain 4 Block.",
+    "effects": [
+      {
+        "type": "draw_cards",
+        "amount": 3
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 4
+      }
+    ],
+    "tags": [
+      "familiar",
+      "draw",
+      "block",
+      "trick",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "pocket_hex",
+    "name": "Pocket Hex",
+    "class": "hedge_witch",
+    "type": "spell",
+    "cost": 0,
+    "rarity": "rare",
+    "text": "Apply 2 Doubt. Exhaust.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "curse",
+      "doubt",
+      "zero_cost",
+      "exhaust",
+      "trick"
+    ],
+    "upgrades_to": "pocket_hex_plus"
+  },
+  {
+    "id": "pocket_hex_plus",
+    "name": "Pocket Hex+",
+    "class": "hedge_witch",
+    "type": "spell",
+    "cost": 0,
+    "rarity": "rare",
+    "text": "Apply 3 Doubt. Exhaust.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "curse",
+      "doubt",
+      "zero_cost",
+      "exhaust",
+      "trick",
+      "upgraded"
+    ]
+  }
+]

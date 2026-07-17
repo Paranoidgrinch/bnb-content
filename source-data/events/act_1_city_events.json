@@ -1,0 +1,649 @@
+[
+  {
+    "id": "misfiling_cabinet",
+    "name": "The Misfiling Cabinet",
+    "act": 1,
+    "event_type": "deck",
+    "weight": 2,
+    "text": "A cabinet of blackened oak sorts papers by guilt, not alphabet. One drawer opens with a sound like a verdict being reconsidered.",
+    "choices": [
+      {
+        "id": "let_it_misfile_something_important",
+        "text": "Let it misfile something important.",
+        "result_text": "A card disappears into the wrong folder and returns wearing a different title. A duplicate notice follows it out.",
+        "effects": [
+          {
+            "type": "transform_card"
+          },
+          {
+            "type": "add_card_to_deck",
+            "card_id": "duplicate_copy"
+          }
+        ]
+      },
+      {
+        "id": "force_the_drawer_open",
+        "text": "Force the drawer open.",
+        "result_text": "The drawer gives up one obsolete procedure, but bites down on your patience.",
+        "effects": [
+          {
+            "type": "remove_card",
+            "amount": 1
+          },
+          {
+            "type": "lose_hp",
+            "amount": 10
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "city",
+      "deck",
+      "filing",
+      "act_1_event_pool"
+    ]
+  },
+  {
+    "id": "certified_copy_drawer",
+    "name": "The Certified Copy Drawer",
+    "act": 1,
+    "event_type": "risk_reward",
+    "weight": 2,
+    "text": "A brass drawer offers certified copies of anything placed inside. The copies are perfect. The drawer is hungry.",
+    "choices": [
+      {
+        "id": "request_a_certified_copy",
+        "text": "Request a certified copy.",
+        "result_text": "The drawer duplicates the procedure with impeccable authority. It also issues a duplicate notice.",
+        "effects": [
+          {
+            "type": "duplicate_card",
+            "amount": 1
+          },
+          {
+            "type": "add_card_to_deck",
+            "card_id": "duplicate_copy"
+          }
+        ]
+      },
+      {
+        "id": "pull_the_golden_original",
+        "text": "Pull the golden original.",
+        "result_text": "Something official and useful comes loose from the drawer. The drawer keeps a painful filing fee.",
+        "effects": [
+          {
+            "type": "gain_relic"
+          },
+          {
+            "type": "lose_hp",
+            "amount": 15
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "city",
+      "risk_reward",
+      "copy",
+      "relic",
+      "act_1_event_pool"
+    ]
+  },
+  {
+    "id": "fee_table_updates_itself",
+    "name": "The Fee Table Updates Itself",
+    "act": 1,
+    "event_type": "risk_reward",
+    "weight": 2,
+    "text": "A slate fee table updates while you read it. Each new line looks older and more legally binding than the last.",
+    "choices": [
+      {
+        "id": "pay_the_correct_fee",
+        "text": "Pay the correct fee.",
+        "result_text": "The table accepts the ruinous sum and stamps two procedures as properly improved.",
+        "effects": [
+          {
+            "type": "lose_gold",
+            "amount": 300
+          },
+          {
+            "type": "upgrade_card",
+            "amount": 2
+          }
+        ]
+      },
+      {
+        "id": "accept_the_recalculation",
+        "text": "Accept the recalculation.",
+        "result_text": "The table discovers that the city owes you an old administrative refund.",
+        "effects": [
+          {
+            "type": "gain_gold",
+            "amount": 75
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "city",
+      "risk_reward",
+      "gold",
+      "fee",
+      "act_1_event_pool"
+    ]
+  },
+  {
+    "id": "lost_and_found_desk",
+    "name": "The Lost-and-Found Desk",
+    "act": 1,
+    "event_type": "deck",
+    "weight": 2,
+    "text": "Behind a dusty desk lie lost seals, receipt spikes, wax knives, and forms nobody wants to admit they misplaced.",
+    "choices": [
+      {
+        "id": "file_a_loss_declaration",
+        "text": "File a loss declaration.",
+        "result_text": "You give up one old procedure before the desk releases something useful.",
+        "effects": [
+          {
+            "type": "remove_card",
+            "amount": 1
+          },
+          {
+            "type": "gain_card_reward",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "clear_the_false_item",
+        "text": "Clear the false item.",
+        "result_text": "One wrong thing leaves your pile. The desk charges you in bruised patience.",
+        "effects": [
+          {
+            "type": "remove_card",
+            "amount": 1
+          },
+          {
+            "type": "lose_hp",
+            "amount": 10
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "city",
+      "deck",
+      "lost_and_found",
+      "act_1_event_pool"
+    ]
+  },
+  {
+    "id": "act_1_shop",
+    "name": "The Licensed Vendor",
+    "act": 1,
+    "event_type": "risk_reward",
+    "weight": 2,
+    "text": "A vendor unfolds a counter covered in seals, receipts, and legally glowing merchandise. Every item has been licensed by someone who is currently denying responsibility.",
+    "choices": [
+      {
+        "id": "browse_licensed_wares",
+        "text": "Browse licensed wares.",
+        "result_text": "The prices are official, which somehow makes them worse.",
+        "effects": [
+          {
+            "type": "open_shop"
+          }
+        ]
+      },
+      {
+        "id": "request_an_emergency_exception",
+        "text": "Request an emergency exception.",
+        "result_text": "The vendor produces a relic from under the counter and writes your pain into the receipt.",
+        "effects": [
+          {
+            "type": "lose_hp",
+            "amount": 10
+          },
+          {
+            "type": "gain_relic"
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "city",
+      "shop",
+      "risk_reward",
+      "act_1_event_pool"
+    ]
+  },
+  {
+    "id": "complaint_ledger",
+    "name": "The Complaint Ledger",
+    "act": 1,
+    "event_type": "deck",
+    "weight": 2,
+    "text": "A heavy ledger invites formal complaints. Its previous entries are complaining about the complaints below them.",
+    "choices": [
+      {
+        "id": "file_a_formal_complaint",
+        "text": "File a formal complaint.",
+        "result_text": "One useless procedure leaves your file, but the ledger issues a duplicate notice.",
+        "effects": [
+          {
+            "type": "remove_card",
+            "amount": 1
+          },
+          {
+            "type": "add_card_to_deck",
+            "card_id": "duplicate_copy"
+          }
+        ]
+      },
+      {
+        "id": "let_the_complaint_write_itself",
+        "text": "Let the complaint write itself.",
+        "result_text": "The ledger writes something useful, then promises to make the next fight more stressful.",
+        "effects": [
+          {
+            "type": "gain_card_reward",
+            "amount": 1
+          },
+          {
+            "type": "next_combat_player_panic",
+            "amount": 1
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "city",
+      "deck",
+      "complaint",
+      "act_1_event_pool"
+    ]
+  },
+  {
+    "id": "waiting_token_exchange",
+    "name": "The Waiting Token Exchange",
+    "act": 1,
+    "event_type": "risk_reward",
+    "weight": 2,
+    "text": "At the end of a bench sits a counter that trades lost waiting time for small official advantages.",
+    "choices": [
+      {
+        "id": "exchange_three_hours",
+        "text": "Exchange three hours of waiting.",
+        "result_text": "The clerk hands you a relic and stamps fatigue onto the next appointment.",
+        "effects": [
+          {
+            "type": "gain_relic"
+          },
+          {
+            "type": "next_combat_player_fatigue",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "exchange_your_place_in_line",
+        "text": "Exchange your place in line.",
+        "result_text": "A procedure improves. A duplicate notice takes your former place.",
+        "effects": [
+          {
+            "type": "upgrade_card",
+            "amount": 1
+          },
+          {
+            "type": "add_card_to_deck",
+            "card_id": "duplicate_copy"
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "city",
+      "risk_reward",
+      "waiting",
+      "act_1_event_pool"
+    ]
+  },
+  {
+    "id": "clerk_who_almost_helps",
+    "name": "The Clerk Who Almost Helps",
+    "act": 1,
+    "event_type": "risk_reward",
+    "weight": 2,
+    "text": "A clerk looks up, understands almost everything, and reaches for a stamp. This is either a miracle or a trap.",
+    "choices": [
+      {
+        "id": "accept_the_helpful_stamp",
+        "text": "Accept the helpful stamp.",
+        "result_text": "The stamp fills you with temporary authority. It also files a duplicate notice.",
+        "effects": [
+          {
+            "type": "next_combat_player_strength",
+            "amount": 2
+          },
+          {
+            "type": "add_card_to_deck",
+            "card_id": "duplicate_copy"
+          }
+        ]
+      },
+      {
+        "id": "accept_the_corrected_route",
+        "text": "Accept the corrected route.",
+        "result_text": "The next opponents are sent to the wrong room first. Finding that out still hurts.",
+        "effects": [
+          {
+            "type": "next_combat_enemy_hp_loss_percent",
+            "amount": 25
+          },
+          {
+            "type": "lose_hp",
+            "amount": 8
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "city",
+      "risk_reward",
+      "next_combat",
+      "act_1_event_pool"
+    ]
+  },
+  {
+    "id": "witness_queue",
+    "name": "The Witness Queue",
+    "act": 1,
+    "event_type": "risk_reward",
+    "weight": 2,
+    "text": "Three witnesses swear you were here before. Unfortunately, none of them agree on what you were doing.",
+    "choices": [
+      {
+        "id": "trust_the_first_witness",
+        "text": "Trust the first witness.",
+        "result_text": "The witness produces a relic and two duplicate notices. The other witnesses object.",
+        "effects": [
+          {
+            "type": "gain_relic"
+          },
+          {
+            "type": "add_card_to_deck",
+            "card_id": "duplicate_copy",
+            "amount": 2
+          }
+        ]
+      },
+      {
+        "id": "cross_examine_the_queue",
+        "text": "Cross-examine the queue.",
+        "result_text": "One false statement leaves your file. The queue takes ten hit points of your patience.",
+        "effects": [
+          {
+            "type": "remove_card",
+            "amount": 1
+          },
+          {
+            "type": "lose_hp",
+            "amount": 10
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "city",
+      "risk_reward",
+      "witness",
+      "act_1_event_pool"
+    ]
+  },
+  {
+    "id": "sealed_back_door",
+    "name": "The Sealed Back Door",
+    "act": 1,
+    "event_type": "risk_reward",
+    "weight": 2,
+    "text": "A sealed side door claims to lead directly to the right corridor. The seal disagrees in very small print.",
+    "choices": [
+      {
+        "id": "break_the_seal",
+        "text": "Break the seal.",
+        "result_text": "The next fight will be more informative, but the seal takes payment in blood.",
+        "effects": [
+          {
+            "type": "next_combat_card_reward_bonus",
+            "amount": 1
+          },
+          {
+            "type": "lose_hp",
+            "amount": 13
+          }
+        ]
+      },
+      {
+        "id": "respect_the_seal",
+        "text": "Respect the seal.",
+        "result_text": "The seal grants you a relic and warns the next opposition to take you seriously.",
+        "effects": [
+          {
+            "type": "gain_relic"
+          },
+          {
+            "type": "next_combat_enemy_strength",
+            "amount": 5
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "city",
+      "risk_reward",
+      "seal",
+      "next_combat",
+      "act_1_event_pool"
+    ]
+  },
+  {
+    "id": "clerks_tea_break",
+    "name": "The Clerk's Tea Break",
+    "act": 1,
+    "event_type": "deck",
+    "weight": 2,
+    "text": "For one impossible minute, no one is responsible for anything. A cup of tea steams beside an abandoned ledger.",
+    "choices": [
+      {
+        "id": "drink_the_lukewarm_tea",
+        "text": "Drink the lukewarm tea.",
+        "result_text": "It tastes like dust, mercy, and exactly ten percent of your maximum health.",
+        "effects": [
+          {
+            "type": "heal_percent_max_hp",
+            "amount": 10
+          }
+        ]
+      },
+      {
+        "id": "read_the_abandoned_notes",
+        "text": "Read the abandoned notes.",
+        "result_text": "The notes contain one genuinely useful procedural correction.",
+        "effects": [
+          {
+            "type": "upgrade_card",
+            "amount": 1
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "city",
+      "deck",
+      "recovery",
+      "act_1_event_pool"
+    ]
+  },
+  {
+    "id": "friendly_filing_cabinet",
+    "name": "The Friendly Filing Cabinet",
+    "act": 1,
+    "event_type": "deck",
+    "weight": 2,
+    "text": "A filing cabinet opens helpfully. The other furniture watches it with professional suspicion.",
+    "choices": [
+      {
+        "id": "let_it_alphabetize_your_deck",
+        "text": "Let it alphabetize your deck.",
+        "result_text": "One unnecessary item is filed somewhere you will never have to visit.",
+        "effects": [
+          {
+            "type": "remove_card",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "let_it_find_a_better_form",
+        "text": "Let it find a better form.",
+        "result_text": "One procedure is transformed into something more suitable, according to the cabinet.",
+        "effects": [
+          {
+            "type": "transform_card"
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "city",
+      "deck",
+      "filing",
+      "act_1_event_pool"
+    ]
+  },
+  {
+    "id": "receipt_of_prior_effort",
+    "name": "Receipt of Prior Effort",
+    "act": 1,
+    "event_type": "deck",
+    "weight": 2,
+    "text": "An old receipt proves that you once nearly did everything correctly. The ink is faded, but the implication is useful.",
+    "choices": [
+      {
+        "id": "redeem_the_receipt",
+        "text": "Redeem the receipt.",
+        "result_text": "A clerk grudgingly pays out an administrative refund.",
+        "effects": [
+          {
+            "type": "gain_gold",
+            "amount": 75
+          }
+        ]
+      },
+      {
+        "id": "attach_it_to_your_application",
+        "text": "Attach it to your application.",
+        "result_text": "The receipt proves prior effort and unlocks a useful option.",
+        "effects": [
+          {
+            "type": "gain_card_reward",
+            "amount": 1
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "city",
+      "deck",
+      "gold",
+      "act_1_event_pool"
+    ]
+  },
+  {
+    "id": "contradictory_map",
+    "name": "The Contradictory Map",
+    "act": 1,
+    "event_type": "risk_reward",
+    "weight": 2,
+    "text": "A wall map shows three routes to the same office. Two exist only on Tuesdays, and one is arguing with itself.",
+    "choices": [
+      {
+        "id": "follow_the_red_corridor",
+        "text": "Follow the red corridor.",
+        "result_text": "The route fills you with misplaced confidence and a duplicate notice.",
+        "effects": [
+          {
+            "type": "next_combat_player_strength",
+            "amount": 2
+          },
+          {
+            "type": "add_card_to_deck",
+            "card_id": "duplicate_copy"
+          }
+        ]
+      },
+      {
+        "id": "follow_the_annotated_corridor",
+        "text": "Follow the annotated corridor.",
+        "result_text": "The annotations are useful and terrifying in equal measure.",
+        "effects": [
+          {
+            "type": "gain_card_reward",
+            "amount": 1
+          },
+          {
+            "type": "next_combat_player_panic",
+            "amount": 3
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "city",
+      "risk_reward",
+      "map",
+      "next_combat",
+      "act_1_event_pool"
+    ]
+  },
+  {
+    "id": "archive_window",
+    "name": "The Archive Window",
+    "act": 1,
+    "event_type": "deck",
+    "weight": 2,
+    "text": "A narrow window opens into an archive older than the city ordinance. A hand made of dust offers two kinds of help.",
+    "choices": [
+      {
+        "id": "take_an_old_tool",
+        "text": "Take an old tool.",
+        "result_text": "The archive gives you a relic that still remembers how to be useful.",
+        "effects": [
+          {
+            "type": "gain_relic"
+          }
+        ]
+      },
+      {
+        "id": "take_an_old_method",
+        "text": "Take an old method.",
+        "result_text": "One of your procedures is copied with archival precision.",
+        "effects": [
+          {
+            "type": "duplicate_card",
+            "amount": 1
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "city",
+      "deck",
+      "archive",
+      "relic",
+      "act_1_event_pool"
+    ]
+  }
+]

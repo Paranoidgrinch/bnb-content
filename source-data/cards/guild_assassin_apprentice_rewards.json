@@ -1,0 +1,1058 @@
+[
+  {
+    "id": "calling_card",
+    "name": "Calling Card",
+    "class": "guild_assassin_apprentice",
+    "type": "argument",
+    "cost": 0,
+    "rarity": "starter",
+    "text": "Apply 1 Doubt. Exhaust.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "generated",
+      "contract",
+      "doubt",
+      "zero_cost",
+      "exhaust"
+    ]
+  },
+  {
+    "id": "poisoned_pin",
+    "name": "Poisoned Pin",
+    "class": "guild_assassin_apprentice",
+    "type": "action",
+    "cost": 0,
+    "rarity": "starter",
+    "text": "Apply 2 Poison. Exhaust.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "generated",
+      "poison",
+      "quiet_kill",
+      "zero_cost",
+      "exhaust"
+    ]
+  },
+  {
+    "id": "false_alibi",
+    "name": "False Alibi",
+    "class": "guild_assassin_apprentice",
+    "type": "form",
+    "cost": 0,
+    "rarity": "starter",
+    "text": "Gain 4 Block. Exhaust.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 4
+      }
+    ],
+    "tags": [
+      "generated",
+      "cloak",
+      "escape",
+      "block",
+      "zero_cost",
+      "exhaust"
+    ]
+  },
+  {
+    "id": "awkward_witness",
+    "name": "Awkward Witness",
+    "class": "guild_assassin_apprentice",
+    "type": "curse",
+    "cost": 0,
+    "rarity": "starter",
+    "text": "Unplayable.",
+    "effects": [],
+    "tags": [
+      "generated",
+      "witness",
+      "junk",
+      "unplayable"
+    ]
+  },
+  {
+    "id": "formal_introduction",
+    "name": "Formal Introduction",
+    "class": "guild_assassin_apprentice",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 3 Doubt. Add a Calling Card to your hand.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 3
+      },
+      {
+        "type": "create_card",
+        "card_id": "calling_card",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "contract",
+      "mark",
+      "doubt",
+      "setup"
+    ],
+    "upgrades_to": "formal_introduction_plus"
+  },
+  {
+    "id": "formal_introduction_plus",
+    "name": "Formal Introduction+",
+    "class": "guild_assassin_apprentice",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 4 Doubt. Add a Calling Card to your hand.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 4
+      },
+      {
+        "type": "create_card",
+        "card_id": "calling_card",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "contract",
+      "mark",
+      "doubt",
+      "setup",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "signed_contract",
+    "name": "Signed Contract",
+    "class": "guild_assassin_apprentice",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 5 Doubt.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 5
+      }
+    ],
+    "tags": [
+      "contract",
+      "mark",
+      "doubt",
+      "setup"
+    ],
+    "upgrades_to": "signed_contract_plus"
+  },
+  {
+    "id": "signed_contract_plus",
+    "name": "Signed Contract+",
+    "class": "guild_assassin_apprentice",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 7 Doubt.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 7
+      }
+    ],
+    "tags": [
+      "contract",
+      "mark",
+      "doubt",
+      "setup",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "black_contract",
+    "name": "Black Contract",
+    "class": "guild_assassin_apprentice",
+    "type": "argument",
+    "cost": 2,
+    "rarity": "uncommon",
+    "text": "Apply 5 Doubt. Deal 8 damage.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 5
+      },
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 8
+      }
+    ],
+    "tags": [
+      "contract",
+      "mark",
+      "doubt",
+      "attack",
+      "setup"
+    ],
+    "upgrades_to": "black_contract_plus"
+  },
+  {
+    "id": "black_contract_plus",
+    "name": "Black Contract+",
+    "class": "guild_assassin_apprentice",
+    "type": "argument",
+    "cost": 2,
+    "rarity": "uncommon",
+    "text": "Apply 7 Doubt. Deal 12 damage.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 7
+      },
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 12
+      }
+    ],
+    "tags": [
+      "contract",
+      "mark",
+      "doubt",
+      "attack",
+      "setup",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "name_on_the_list",
+    "name": "Name on the List",
+    "class": "guild_assassin_apprentice",
+    "type": "argument",
+    "cost": 0,
+    "rarity": "rare",
+    "text": "Apply 3 Doubt. Exhaust.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "contract",
+      "mark",
+      "doubt",
+      "zero_cost",
+      "exhaust"
+    ],
+    "upgrades_to": "name_on_the_list_plus"
+  },
+  {
+    "id": "name_on_the_list_plus",
+    "name": "Name on the List+",
+    "class": "guild_assassin_apprentice",
+    "type": "argument",
+    "cost": 0,
+    "rarity": "rare",
+    "text": "Apply 5 Doubt. Exhaust.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 5
+      }
+    ],
+    "tags": [
+      "contract",
+      "mark",
+      "doubt",
+      "zero_cost",
+      "exhaust",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "polite_threat",
+    "name": "Polite Threat",
+    "class": "guild_assassin_apprentice",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 2 Doubt. Gain 5 Block.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 2
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 5
+      }
+    ],
+    "tags": [
+      "doubt",
+      "block",
+      "intimidation",
+      "polite"
+    ],
+    "upgrades_to": "polite_threat_plus"
+  },
+  {
+    "id": "polite_threat_plus",
+    "name": "Polite Threat+",
+    "class": "guild_assassin_apprentice",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 3 Doubt. Gain 8 Block.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 3
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 8
+      }
+    ],
+    "tags": [
+      "doubt",
+      "block",
+      "intimidation",
+      "polite",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "letter_opener",
+    "name": "Letter Opener",
+    "class": "guild_assassin_apprentice",
+    "type": "action",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Deal 4 damage per Doubt on the target.",
+    "effects": [
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount_per_stack": 4
+      }
+    ],
+    "tags": [
+      "attack",
+      "doubt",
+      "payoff",
+      "precision"
+    ],
+    "upgrades_to": "letter_opener_plus"
+  },
+  {
+    "id": "letter_opener_plus",
+    "name": "Letter Opener+",
+    "class": "guild_assassin_apprentice",
+    "type": "action",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Deal 5 damage per Doubt on the target.",
+    "effects": [
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount_per_stack": 5
+      }
+    ],
+    "tags": [
+      "attack",
+      "doubt",
+      "payoff",
+      "precision",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "ominous_bow",
+    "name": "Ominous Bow",
+    "class": "guild_assassin_apprentice",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Apply 2 Doubt to all enemies.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "all_enemies",
+        "status": "doubt",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "doubt",
+      "intimidation",
+      "aoe",
+      "polite"
+    ],
+    "upgrades_to": "ominous_bow_plus"
+  },
+  {
+    "id": "ominous_bow_plus",
+    "name": "Ominous Bow+",
+    "class": "guild_assassin_apprentice",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Apply 3 Doubt to all enemies.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "all_enemies",
+        "status": "doubt",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "doubt",
+      "intimidation",
+      "aoe",
+      "polite",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "courtesy_poison",
+    "name": "Courtesy Poison",
+    "class": "guild_assassin_apprentice",
+    "type": "action",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 4 Poison.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 4
+      }
+    ],
+    "tags": [
+      "poison",
+      "quiet_kill",
+      "setup"
+    ],
+    "upgrades_to": "courtesy_poison_plus"
+  },
+  {
+    "id": "courtesy_poison_plus",
+    "name": "Courtesy Poison+",
+    "class": "guild_assassin_apprentice",
+    "type": "action",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 6 Poison.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 6
+      }
+    ],
+    "tags": [
+      "poison",
+      "quiet_kill",
+      "setup",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "pinprick",
+    "name": "Pinprick",
+    "class": "guild_assassin_apprentice",
+    "type": "action",
+    "cost": 0,
+    "rarity": "common",
+    "text": "Deal 2 damage. Apply 1 Poison. Exhaust.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 2
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "attack",
+      "poison",
+      "quiet_kill",
+      "zero_cost",
+      "exhaust"
+    ],
+    "upgrades_to": "pinprick_plus"
+  },
+  {
+    "id": "pinprick_plus",
+    "name": "Pinprick+",
+    "class": "guild_assassin_apprentice",
+    "type": "action",
+    "cost": 0,
+    "rarity": "common",
+    "text": "Deal 3 damage. Apply 2 Poison. Exhaust.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 3
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "attack",
+      "poison",
+      "quiet_kill",
+      "zero_cost",
+      "exhaust",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "tainted_tea",
+    "name": "Tainted Tea",
+    "class": "guild_assassin_apprentice",
+    "type": "action",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Apply 3 Poison. Add a Poisoned Pin to your hand.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 3
+      },
+      {
+        "type": "create_card",
+        "card_id": "poisoned_pin",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "poison",
+      "quiet_kill",
+      "setup",
+      "zero_cost"
+    ],
+    "upgrades_to": "tainted_tea_plus"
+  },
+  {
+    "id": "tainted_tea_plus",
+    "name": "Tainted Tea+",
+    "class": "guild_assassin_apprentice",
+    "type": "action",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Apply 4 Poison. Add 2 Poisoned Pins to your hand.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 4
+      },
+      {
+        "type": "create_card",
+        "card_id": "poisoned_pin",
+        "destination": "hand",
+        "copies": 2
+      }
+    ],
+    "tags": [
+      "poison",
+      "quiet_kill",
+      "setup",
+      "zero_cost",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "tasteful_dose",
+    "name": "Tasteful Dose",
+    "class": "guild_assassin_apprentice",
+    "type": "action",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Apply 8 Poison. Apply 2 Doubt.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 8
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "poison",
+      "quiet_kill",
+      "doubt",
+      "setup"
+    ],
+    "upgrades_to": "tasteful_dose_plus"
+  },
+  {
+    "id": "tasteful_dose_plus",
+    "name": "Tasteful Dose+",
+    "class": "guild_assassin_apprentice",
+    "type": "action",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Apply 11 Poison. Apply 3 Doubt.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 11
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "poison",
+      "quiet_kill",
+      "doubt",
+      "setup",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "silent_cut",
+    "name": "Silent Cut",
+    "class": "guild_assassin_apprentice",
+    "type": "action",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Deal 10 damage.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 10
+      }
+    ],
+    "tags": [
+      "attack",
+      "precision",
+      "quiet_kill"
+    ],
+    "upgrades_to": "silent_cut_plus"
+  },
+  {
+    "id": "silent_cut_plus",
+    "name": "Silent Cut+",
+    "class": "guild_assassin_apprentice",
+    "type": "action",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Deal 14 damage.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 14
+      }
+    ],
+    "tags": [
+      "attack",
+      "precision",
+      "quiet_kill",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "clean_exit",
+    "name": "Clean Exit",
+    "class": "guild_assassin_apprentice",
+    "type": "action",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Deal 7 damage. Gain 7 Block.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 7
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 7
+      }
+    ],
+    "tags": [
+      "attack",
+      "block",
+      "precision",
+      "escape"
+    ],
+    "upgrades_to": "clean_exit_plus"
+  },
+  {
+    "id": "clean_exit_plus",
+    "name": "Clean Exit+",
+    "class": "guild_assassin_apprentice",
+    "type": "action",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Deal 10 damage. Gain 10 Block.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 10
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 10
+      }
+    ],
+    "tags": [
+      "attack",
+      "block",
+      "precision",
+      "escape",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "final_clause",
+    "name": "Final Clause",
+    "class": "guild_assassin_apprentice",
+    "type": "action",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Deal 14 damage. Deal 2 damage per Doubt on the target.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 14
+      },
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount_per_stack": 2
+      }
+    ],
+    "tags": [
+      "attack",
+      "contract",
+      "doubt",
+      "payoff",
+      "precision"
+    ],
+    "upgrades_to": "final_clause_plus"
+  },
+  {
+    "id": "final_clause_plus",
+    "name": "Final Clause+",
+    "class": "guild_assassin_apprentice",
+    "type": "action",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Deal 20 damage. Deal 3 damage per Doubt on the target.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 20
+      },
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount_per_stack": 3
+      }
+    ],
+    "tags": [
+      "attack",
+      "contract",
+      "doubt",
+      "payoff",
+      "precision",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "smoke_step",
+    "name": "Smoke Step",
+    "class": "guild_assassin_apprentice",
+    "type": "form",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Gain 10 Block.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 10
+      }
+    ],
+    "tags": [
+      "block",
+      "cloak",
+      "escape"
+    ],
+    "upgrades_to": "smoke_step_plus"
+  },
+  {
+    "id": "smoke_step_plus",
+    "name": "Smoke Step+",
+    "class": "guild_assassin_apprentice",
+    "type": "form",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Gain 14 Block.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 14
+      }
+    ],
+    "tags": [
+      "block",
+      "cloak",
+      "escape",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "vanish_politely",
+    "name": "Vanish Politely",
+    "class": "guild_assassin_apprentice",
+    "type": "form",
+    "cost": 0,
+    "rarity": "uncommon",
+    "text": "Gain 7 Block. Exhaust.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 7
+      }
+    ],
+    "tags": [
+      "block",
+      "cloak",
+      "escape",
+      "zero_cost",
+      "exhaust"
+    ],
+    "upgrades_to": "vanish_politely_plus"
+  },
+  {
+    "id": "vanish_politely_plus",
+    "name": "Vanish Politely+",
+    "class": "guild_assassin_apprentice",
+    "type": "form",
+    "cost": 0,
+    "rarity": "uncommon",
+    "text": "Gain 10 Block. Exhaust.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 10
+      }
+    ],
+    "tags": [
+      "block",
+      "cloak",
+      "escape",
+      "zero_cost",
+      "exhaust",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "perfect_alibi",
+    "name": "Perfect Alibi",
+    "class": "guild_assassin_apprentice",
+    "type": "form",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Draw 2. Add a False Alibi to your hand.",
+    "effects": [
+      {
+        "type": "draw_cards",
+        "amount": 2
+      },
+      {
+        "type": "create_card",
+        "card_id": "false_alibi",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "draw",
+      "cloak",
+      "escape",
+      "block",
+      "zero_cost"
+    ],
+    "upgrades_to": "perfect_alibi_plus"
+  },
+  {
+    "id": "perfect_alibi_plus",
+    "name": "Perfect Alibi+",
+    "class": "guild_assassin_apprentice",
+    "type": "form",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Draw 3. Add a False Alibi to your hand.",
+    "effects": [
+      {
+        "type": "draw_cards",
+        "amount": 3
+      },
+      {
+        "type": "create_card",
+        "card_id": "false_alibi",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "draw",
+      "cloak",
+      "escape",
+      "block",
+      "zero_cost",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "witness_problem",
+    "name": "Witness Problem",
+    "class": "guild_assassin_apprentice",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "rare",
+    "text": "Deal 16 damage. Add an Awkward Witness to your discard pile.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 16
+      },
+      {
+        "type": "create_card",
+        "card_id": "awkward_witness",
+        "destination": "discard_pile",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "attack",
+      "precision",
+      "witness",
+      "junk",
+      "risk_reward"
+    ],
+    "upgrades_to": "witness_problem_plus"
+  },
+  {
+    "id": "witness_problem_plus",
+    "name": "Witness Problem+",
+    "class": "guild_assassin_apprentice",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "rare",
+    "text": "Deal 22 damage. Add an Awkward Witness to your discard pile.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 22
+      },
+      {
+        "type": "create_card",
+        "card_id": "awkward_witness",
+        "destination": "discard_pile",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "attack",
+      "precision",
+      "witness",
+      "junk",
+      "risk_reward",
+      "upgraded"
+    ]
+  }
+]

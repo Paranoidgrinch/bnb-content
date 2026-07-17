@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/Converter/">
+    <Project Path="Converter/BnbContent.Converter.csproj" />
+  </Folder>
+  <Folder Name="/Tests/">
+    <Project Path="Tests/BnbContent.Tests.csproj" />
+  </Folder>
+</Solution>

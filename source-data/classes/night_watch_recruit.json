@@ -1,0 +1,20 @@
+{
+  "id": "night_watch_recruit",
+  "name": "Night Watch Recruit",
+  "max_hp": 78,
+  "starting_energy": 3,
+  "starting_relic": null,
+  "starting_deck": [
+    "cudgel_warning",
+    "cudgel_warning",
+    "cudgel_warning",
+    "cudgel_warning",
+    "raised_shield",
+    "raised_shield",
+    "raised_shield",
+    "raised_shield",
+    "read_the_riot_act",
+    "boots_on_cobblestones"
+  ],
+  "starting_resources": {}
+}

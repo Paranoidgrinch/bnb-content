@@ -1,0 +1,20 @@
+{
+  "id": "shroomancer",
+  "name": "Mike Cellium",
+  "max_hp": 72,
+  "starting_energy": 3,
+  "starting_relic": null,
+  "starting_deck": [
+    "spore_puff",
+    "spore_puff",
+    "spore_puff",
+    "mycelium_wall",
+    "mycelium_wall",
+    "mycelium_wall",
+    "mycelium_wall",
+    "fungal_bloom",
+    "capstone_guard",
+    "slow_decay"
+  ],
+  "starting_resources": {}
+}

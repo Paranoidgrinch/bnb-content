@@ -1,0 +1,1162 @@
+[
+  {
+    "id": "rat_cousin",
+    "name": "Rat Cousin",
+    "class": "sewer_diplomat",
+    "type": "action",
+    "cost": 0,
+    "rarity": "starter",
+    "text": "Deal 2 damage to all enemies. Exhaust.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "all_enemies",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "generated",
+      "rat",
+      "swarm",
+      "attack",
+      "aoe",
+      "zero_cost",
+      "exhaust"
+    ]
+  },
+  {
+    "id": "cheese_favor",
+    "name": "Cheese Favor",
+    "class": "sewer_diplomat",
+    "type": "form",
+    "cost": 0,
+    "rarity": "starter",
+    "text": "Gain 3 Block. Exhaust.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "generated",
+      "cheese",
+      "bribe",
+      "block",
+      "zero_cost",
+      "exhaust"
+    ]
+  },
+  {
+    "id": "gutter_muck",
+    "name": "Gutter Muck",
+    "class": "sewer_diplomat",
+    "type": "action",
+    "cost": 0,
+    "rarity": "starter",
+    "text": "Apply 1 Poison. Exhaust.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "generated",
+      "filth",
+      "poison",
+      "zero_cost",
+      "exhaust"
+    ]
+  },
+  {
+    "id": "sewer_map",
+    "name": "Sewer Map",
+    "class": "sewer_diplomat",
+    "type": "form",
+    "cost": 0,
+    "rarity": "starter",
+    "text": "Draw 1. Exhaust.",
+    "effects": [
+      {
+        "type": "draw_cards",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "generated",
+      "sewer_route",
+      "draw",
+      "zero_cost",
+      "exhaust"
+    ]
+  },
+  {
+    "id": "spoiled_cheese",
+    "name": "Spoiled Cheese",
+    "class": "sewer_diplomat",
+    "type": "curse",
+    "cost": 0,
+    "rarity": "starter",
+    "text": "Unplayable.",
+    "effects": [],
+    "tags": [
+      "generated",
+      "cheese",
+      "junk",
+      "unplayable"
+    ]
+  },
+  {
+    "id": "ratify_agreement",
+    "name": "Ratify Agreement",
+    "class": "sewer_diplomat",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 2 Paperwork. Gain 4 Block.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 2
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 4
+      }
+    ],
+    "tags": [
+      "treaty",
+      "paperwork",
+      "block",
+      "rat"
+    ],
+    "upgrades_to": "ratify_agreement_plus"
+  },
+  {
+    "id": "ratify_agreement_plus",
+    "name": "Ratify Agreement+",
+    "class": "sewer_diplomat",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 3 Paperwork. Gain 6 Block.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 3
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 6
+      }
+    ],
+    "tags": [
+      "treaty",
+      "paperwork",
+      "block",
+      "rat",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "tiny_print_clause",
+    "name": "Tiny-Print Clause",
+    "class": "sewer_diplomat",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 3 Paperwork.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "treaty",
+      "paperwork",
+      "setup"
+    ],
+    "upgrades_to": "tiny_print_clause_plus"
+  },
+  {
+    "id": "tiny_print_clause_plus",
+    "name": "Tiny-Print Clause+",
+    "class": "sewer_diplomat",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 5 Paperwork.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 5
+      }
+    ],
+    "tags": [
+      "treaty",
+      "paperwork",
+      "setup",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "gutter_clause",
+    "name": "Gutter Clause",
+    "class": "sewer_diplomat",
+    "type": "argument",
+    "cost": 2,
+    "rarity": "uncommon",
+    "text": "Apply 4 Paperwork and 2 Doubt.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 4
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "treaty",
+      "paperwork",
+      "doubt",
+      "setup"
+    ],
+    "upgrades_to": "gutter_clause_plus"
+  },
+  {
+    "id": "gutter_clause_plus",
+    "name": "Gutter Clause+",
+    "class": "sewer_diplomat",
+    "type": "argument",
+    "cost": 2,
+    "rarity": "uncommon",
+    "text": "Apply 5 Paperwork and 3 Doubt.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 5
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "treaty",
+      "paperwork",
+      "doubt",
+      "setup",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "signed_in_cheese",
+    "name": "Signed in Cheese",
+    "class": "sewer_diplomat",
+    "type": "argument",
+    "cost": 0,
+    "rarity": "rare",
+    "text": "Apply 2 Paperwork. Exhaust.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "treaty",
+      "paperwork",
+      "cheese",
+      "zero_cost",
+      "exhaust"
+    ],
+    "upgrades_to": "signed_in_cheese_plus"
+  },
+  {
+    "id": "signed_in_cheese_plus",
+    "name": "Signed in Cheese+",
+    "class": "sewer_diplomat",
+    "type": "argument",
+    "cost": 0,
+    "rarity": "rare",
+    "text": "Apply 3 Paperwork. Exhaust.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "treaty",
+      "paperwork",
+      "cheese",
+      "zero_cost",
+      "exhaust",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "respectable_stench",
+    "name": "Respectable Stench",
+    "class": "sewer_diplomat",
+    "type": "action",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 2 Poison. Apply 1 Doubt.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 2
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "filth",
+      "poison",
+      "doubt",
+      "stench"
+    ],
+    "upgrades_to": "respectable_stench_plus"
+  },
+  {
+    "id": "respectable_stench_plus",
+    "name": "Respectable Stench+",
+    "class": "sewer_diplomat",
+    "type": "action",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 3 Poison. Apply 2 Doubt.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 3
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "filth",
+      "poison",
+      "doubt",
+      "stench",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "gutter_mediation",
+    "name": "Gutter Mediation",
+    "class": "sewer_diplomat",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 2 Doubt. Gain 5 Block.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 2
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 5
+      }
+    ],
+    "tags": [
+      "doubt",
+      "diplomacy",
+      "block",
+      "sewer_route"
+    ],
+    "upgrades_to": "gutter_mediation_plus"
+  },
+  {
+    "id": "gutter_mediation_plus",
+    "name": "Gutter Mediation+",
+    "class": "sewer_diplomat",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 3 Doubt. Gain 8 Block.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 3
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 8
+      }
+    ],
+    "tags": [
+      "doubt",
+      "diplomacy",
+      "block",
+      "sewer_route",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "muck_splash",
+    "name": "Muck Splash",
+    "class": "sewer_diplomat",
+    "type": "action",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Apply 1 Poison to all enemies. Apply 1 Doubt to all enemies.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "all_enemies",
+        "status": "poison",
+        "amount": 1
+      },
+      {
+        "type": "apply_status",
+        "target": "all_enemies",
+        "status": "doubt",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "filth",
+      "poison",
+      "doubt",
+      "aoe"
+    ],
+    "upgrades_to": "muck_splash_plus"
+  },
+  {
+    "id": "muck_splash_plus",
+    "name": "Muck Splash+",
+    "class": "sewer_diplomat",
+    "type": "action",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Apply 2 Poison to all enemies. Apply 1 Doubt to all enemies.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "all_enemies",
+        "status": "poison",
+        "amount": 2
+      },
+      {
+        "type": "apply_status",
+        "target": "all_enemies",
+        "status": "doubt",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "filth",
+      "poison",
+      "doubt",
+      "aoe",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "unmentionable_current",
+    "name": "Unmentionable Current",
+    "class": "sewer_diplomat",
+    "type": "action",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Apply 5 Poison. Apply 3 Paperwork.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 5
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "filth",
+      "poison",
+      "paperwork",
+      "stench"
+    ],
+    "upgrades_to": "unmentionable_current_plus"
+  },
+  {
+    "id": "unmentionable_current_plus",
+    "name": "Unmentionable Current+",
+    "class": "sewer_diplomat",
+    "type": "action",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Apply 7 Poison. Apply 4 Paperwork.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 7
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 4
+      }
+    ],
+    "tags": [
+      "filth",
+      "poison",
+      "paperwork",
+      "stench",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "cheese_tribute",
+    "name": "Cheese Tribute",
+    "class": "sewer_diplomat",
+    "type": "form",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Gain 8 Block.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 8
+      }
+    ],
+    "tags": [
+      "cheese",
+      "bribe",
+      "block"
+    ],
+    "upgrades_to": "cheese_tribute_plus"
+  },
+  {
+    "id": "cheese_tribute_plus",
+    "name": "Cheese Tribute+",
+    "class": "sewer_diplomat",
+    "type": "form",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Gain 11 Block.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 11
+      }
+    ],
+    "tags": [
+      "cheese",
+      "bribe",
+      "block",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "small_bribe",
+    "name": "Small Bribe",
+    "class": "sewer_diplomat",
+    "type": "form",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Gain 5 Block. Add a Cheese Favor to your hand.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 5
+      },
+      {
+        "type": "create_card",
+        "card_id": "cheese_favor",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "cheese",
+      "bribe",
+      "block",
+      "zero_cost"
+    ],
+    "upgrades_to": "small_bribe_plus"
+  },
+  {
+    "id": "small_bribe_plus",
+    "name": "Small Bribe+",
+    "class": "sewer_diplomat",
+    "type": "form",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Gain 8 Block. Add a Cheese Favor to your hand.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 8
+      },
+      {
+        "type": "create_card",
+        "card_id": "cheese_favor",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "cheese",
+      "bribe",
+      "block",
+      "zero_cost",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "favours_owed",
+    "name": "Favours Owed",
+    "class": "sewer_diplomat",
+    "type": "argument",
+    "cost": 0,
+    "rarity": "uncommon",
+    "text": "Gain 1 Energy. Add Spoiled Cheese to your discard pile. Exhaust.",
+    "effects": [
+      {
+        "type": "gain_resource",
+        "resource": "energy",
+        "amount": 1
+      },
+      {
+        "type": "create_card",
+        "card_id": "spoiled_cheese",
+        "destination": "discard_pile",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "bribe",
+      "cheese",
+      "energy",
+      "junk",
+      "zero_cost",
+      "exhaust"
+    ],
+    "upgrades_to": "favours_owed_plus"
+  },
+  {
+    "id": "favours_owed_plus",
+    "name": "Favours Owed+",
+    "class": "sewer_diplomat",
+    "type": "argument",
+    "cost": 0,
+    "rarity": "uncommon",
+    "text": "Gain 1 Energy. Draw 1. Add Spoiled Cheese to your discard pile. Exhaust.",
+    "effects": [
+      {
+        "type": "gain_resource",
+        "resource": "energy",
+        "amount": 1
+      },
+      {
+        "type": "draw_cards",
+        "amount": 1
+      },
+      {
+        "type": "create_card",
+        "card_id": "spoiled_cheese",
+        "destination": "discard_pile",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "bribe",
+      "cheese",
+      "energy",
+      "draw",
+      "junk",
+      "zero_cost",
+      "exhaust",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "rat_king_favour",
+    "name": "Rat-King Favour",
+    "class": "sewer_diplomat",
+    "type": "argument",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Gain 12 Block. Add 2 Rat Cousins to your hand.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 12
+      },
+      {
+        "type": "create_card",
+        "card_id": "rat_cousin",
+        "destination": "hand",
+        "copies": 2
+      }
+    ],
+    "tags": [
+      "bribe",
+      "rat",
+      "swarm",
+      "block",
+      "zero_cost"
+    ],
+    "upgrades_to": "rat_king_favour_plus"
+  },
+  {
+    "id": "rat_king_favour_plus",
+    "name": "Rat-King Favour+",
+    "class": "sewer_diplomat",
+    "type": "argument",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Gain 16 Block. Add 2 Rat Cousins to your hand.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 16
+      },
+      {
+        "type": "create_card",
+        "card_id": "rat_cousin",
+        "destination": "hand",
+        "copies": 2
+      }
+    ],
+    "tags": [
+      "bribe",
+      "rat",
+      "swarm",
+      "block",
+      "zero_cost",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "side_tunnel",
+    "name": "Side Tunnel",
+    "class": "sewer_diplomat",
+    "type": "form",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Gain 6 Block. Draw 1.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 6
+      },
+      {
+        "type": "draw_cards",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "sewer_route",
+      "evasion",
+      "block",
+      "draw"
+    ],
+    "upgrades_to": "side_tunnel_plus"
+  },
+  {
+    "id": "side_tunnel_plus",
+    "name": "Side Tunnel+",
+    "class": "sewer_diplomat",
+    "type": "form",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Gain 9 Block. Draw 1.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 9
+      },
+      {
+        "type": "draw_cards",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "sewer_route",
+      "evasion",
+      "block",
+      "draw",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "grate_shortcut",
+    "name": "Grate Shortcut",
+    "class": "sewer_diplomat",
+    "type": "form",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Draw 2. Add a Sewer Map to your hand.",
+    "effects": [
+      {
+        "type": "draw_cards",
+        "amount": 2
+      },
+      {
+        "type": "create_card",
+        "card_id": "sewer_map",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "sewer_route",
+      "evasion",
+      "draw",
+      "zero_cost"
+    ],
+    "upgrades_to": "grate_shortcut_plus"
+  },
+  {
+    "id": "grate_shortcut_plus",
+    "name": "Grate Shortcut+",
+    "class": "sewer_diplomat",
+    "type": "form",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Draw 3. Add a Sewer Map to your hand.",
+    "effects": [
+      {
+        "type": "draw_cards",
+        "amount": 3
+      },
+      {
+        "type": "create_card",
+        "card_id": "sewer_map",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "sewer_route",
+      "evasion",
+      "draw",
+      "zero_cost",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "duck_under_pipes",
+    "name": "Duck Under Pipes",
+    "class": "sewer_diplomat",
+    "type": "form",
+    "cost": 0,
+    "rarity": "uncommon",
+    "text": "Gain 6 Block. Exhaust.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 6
+      }
+    ],
+    "tags": [
+      "sewer_route",
+      "evasion",
+      "block",
+      "zero_cost",
+      "exhaust"
+    ],
+    "upgrades_to": "duck_under_pipes_plus"
+  },
+  {
+    "id": "duck_under_pipes_plus",
+    "name": "Duck Under Pipes+",
+    "class": "sewer_diplomat",
+    "type": "form",
+    "cost": 0,
+    "rarity": "uncommon",
+    "text": "Gain 9 Block. Exhaust.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 9
+      }
+    ],
+    "tags": [
+      "sewer_route",
+      "evasion",
+      "block",
+      "zero_cost",
+      "exhaust",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "alley_swarm",
+    "name": "Alley Swarm",
+    "class": "sewer_diplomat",
+    "type": "action",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Deal 4 damage to all enemies.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "all_enemies",
+        "amount": 4
+      }
+    ],
+    "tags": [
+      "rat",
+      "swarm",
+      "attack",
+      "aoe"
+    ],
+    "upgrades_to": "alley_swarm_plus"
+  },
+  {
+    "id": "alley_swarm_plus",
+    "name": "Alley Swarm+",
+    "class": "sewer_diplomat",
+    "type": "action",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Deal 6 damage to all enemies.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "all_enemies",
+        "amount": 6
+      }
+    ],
+    "tags": [
+      "rat",
+      "swarm",
+      "attack",
+      "aoe",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "diplomatic_nibble",
+    "name": "Diplomatic Nibble",
+    "class": "sewer_diplomat",
+    "type": "action",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Deal 5 damage. Apply 2 Paperwork.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 5
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "attack",
+      "paperwork",
+      "rat",
+      "diplomacy"
+    ],
+    "upgrades_to": "diplomatic_nibble_plus"
+  },
+  {
+    "id": "diplomatic_nibble_plus",
+    "name": "Diplomatic Nibble+",
+    "class": "sewer_diplomat",
+    "type": "action",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Deal 8 damage. Apply 2 Paperwork.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 8
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "attack",
+      "paperwork",
+      "rat",
+      "diplomacy",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "cousins_everywhere",
+    "name": "Cousins Everywhere",
+    "class": "sewer_diplomat",
+    "type": "action",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Add 2 Rat Cousins to your hand.",
+    "effects": [
+      {
+        "type": "create_card",
+        "card_id": "rat_cousin",
+        "destination": "hand",
+        "copies": 2
+      }
+    ],
+    "tags": [
+      "rat",
+      "swarm",
+      "zero_cost"
+    ],
+    "upgrades_to": "cousins_everywhere_plus"
+  },
+  {
+    "id": "cousins_everywhere_plus",
+    "name": "Cousins Everywhere+",
+    "class": "sewer_diplomat",
+    "type": "action",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Add 3 Rat Cousins to your hand.",
+    "effects": [
+      {
+        "type": "create_card",
+        "card_id": "rat_cousin",
+        "destination": "hand",
+        "copies": 3
+      }
+    ],
+    "tags": [
+      "rat",
+      "swarm",
+      "zero_cost",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "thousand_tiny_feet",
+    "name": "Thousand Tiny Feet",
+    "class": "sewer_diplomat",
+    "type": "action",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Deal 7 damage to all enemies. Add 2 Rat Cousins to your hand.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "all_enemies",
+        "amount": 7
+      },
+      {
+        "type": "create_card",
+        "card_id": "rat_cousin",
+        "destination": "hand",
+        "copies": 2
+      }
+    ],
+    "tags": [
+      "rat",
+      "swarm",
+      "attack",
+      "aoe",
+      "zero_cost"
+    ],
+    "upgrades_to": "thousand_tiny_feet_plus"
+  },
+  {
+    "id": "thousand_tiny_feet_plus",
+    "name": "Thousand Tiny Feet+",
+    "class": "sewer_diplomat",
+    "type": "action",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Deal 10 damage to all enemies. Add 2 Rat Cousins to your hand.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "all_enemies",
+        "amount": 10
+      },
+      {
+        "type": "create_card",
+        "card_id": "rat_cousin",
+        "destination": "hand",
+        "copies": 2
+      }
+    ],
+    "tags": [
+      "rat",
+      "swarm",
+      "attack",
+      "aoe",
+      "zero_cost",
+      "upgraded"
+    ]
+  }
+]

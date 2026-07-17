@@ -1,0 +1,1259 @@
+[
+  {
+    "id": "loose_spark",
+    "name": "Loose Spark",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 0,
+    "rarity": "starter",
+    "text": "Deal 5 damage. Exhaust.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 5
+      }
+    ],
+    "tags": [
+      "generated",
+      "spell_fragment",
+      "attack",
+      "zero_cost",
+      "exhaust"
+    ]
+  },
+  {
+    "id": "escaped_syllable",
+    "name": "Escaped Syllable",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 0,
+    "rarity": "starter",
+    "text": "Deal 4 damage to all enemies. Exhaust.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "all_enemies",
+        "amount": 4
+      }
+    ],
+    "tags": [
+      "generated",
+      "spell_fragment",
+      "attack",
+      "aoe",
+      "zero_cost",
+      "exhaust"
+    ]
+  },
+  {
+    "id": "half_remembered_spell",
+    "name": "Half-Remembered Spell",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Gain 3 Block.\nDraw 1.\nApply 1 Panic to yourself. Exhaust.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 3
+      },
+      {
+        "type": "draw_cards",
+        "amount": 1
+      },
+      {
+        "type": "apply_status",
+        "target": "self",
+        "status": "panic",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "generated",
+      "spell_fragment",
+      "draw",
+      "panic",
+      "exhaust"
+    ]
+  },
+  {
+    "id": "smoking_rune",
+    "name": "Smoking Rune",
+    "class": "failed_wizard",
+    "type": "curse",
+    "cost": 0,
+    "rarity": "starter",
+    "text": "Gain 3 Block.\nApply 1 Panic to yourself. Exhaust.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 3
+      },
+      {
+        "type": "apply_status",
+        "target": "self",
+        "status": "panic",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "generated",
+      "junk",
+      "misfire",
+      "panic",
+      "zero_cost",
+      "exhaust"
+    ]
+  },
+  {
+    "id": "bad_incantation",
+    "name": "Bad Incantation",
+    "class": "failed_wizard",
+    "type": "curse",
+    "cost": 0,
+    "rarity": "starter",
+    "text": "Unplayable.",
+    "effects": [],
+    "tags": [
+      "generated",
+      "junk",
+      "misfire",
+      "unplayable"
+    ]
+  },
+  {
+    "id": "shouted_syllable",
+    "name": "Shouted Syllable",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Deal 11 damage. Apply 1 Panic to yourself.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 11
+      },
+      {
+        "type": "apply_status",
+        "target": "self",
+        "status": "panic",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "attack",
+      "spell",
+      "misfire",
+      "panic"
+    ],
+    "upgrades_to": "shouted_syllable_plus"
+  },
+  {
+    "id": "shouted_syllable_plus",
+    "name": "Shouted Syllable+",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Deal 15 damage. Apply 1 Panic to yourself.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 15
+      },
+      {
+        "type": "apply_status",
+        "target": "self",
+        "status": "panic",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "attack",
+      "spell",
+      "misfire",
+      "panic",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "accidental_fireball",
+    "name": "Accidental Fireball",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "common",
+    "text": "Deal 12 damage to all enemies. Add a Smoking Rune to your discard pile.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "all_enemies",
+        "amount": 12
+      },
+      {
+        "type": "create_card",
+        "card_id": "smoking_rune",
+        "destination": "discard_pile",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "attack",
+      "spell",
+      "aoe",
+      "misfire",
+      "panic"
+    ],
+    "upgrades_to": "accidental_fireball_plus"
+  },
+  {
+    "id": "accidental_fireball_plus",
+    "name": "Accidental Fireball+",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "common",
+    "text": "Deal 17 damage to all enemies. Add a Smoking Rune to your discard pile.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "all_enemies",
+        "amount": 17
+      },
+      {
+        "type": "create_card",
+        "card_id": "smoking_rune",
+        "destination": "discard_pile",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "attack",
+      "spell",
+      "aoe",
+      "misfire",
+      "panic",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "wand_backfire",
+    "name": "Wand Backfire",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Deal 17 damage. Add a Smoking Rune to your discard pile.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 17
+      },
+      {
+        "type": "create_card",
+        "card_id": "smoking_rune",
+        "destination": "discard_pile",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "attack",
+      "spell",
+      "misfire",
+      "junk"
+    ],
+    "upgrades_to": "wand_backfire_plus"
+  },
+  {
+    "id": "wand_backfire_plus",
+    "name": "Wand Backfire+",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Deal 23 damage. Add a Smoking Rune to your discard pile.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 23
+      },
+      {
+        "type": "create_card",
+        "card_id": "smoking_rune",
+        "destination": "discard_pile",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "attack",
+      "spell",
+      "misfire",
+      "junk",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "mispronounced_thunderclap",
+    "name": "Mispronounced Thunderclap",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "uncommon",
+    "text": "Deal 9 damage to all enemies. Apply 1 Doubt to all enemies. Add a Bad Incantation to your discard pile.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "all_enemies",
+        "amount": 9
+      },
+      {
+        "type": "apply_status",
+        "target": "all_enemies",
+        "status": "doubt",
+        "amount": 1
+      },
+      {
+        "type": "create_card",
+        "card_id": "bad_incantation",
+        "destination": "discard_pile",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "attack",
+      "spell",
+      "aoe",
+      "misfire",
+      "doubt",
+      "junk"
+    ],
+    "upgrades_to": "mispronounced_thunderclap_plus"
+  },
+  {
+    "id": "mispronounced_thunderclap_plus",
+    "name": "Mispronounced Thunderclap+",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "uncommon",
+    "text": "Deal 13 damage to all enemies. Apply 2 Doubt to all enemies. Add a Bad Incantation to your discard pile.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "all_enemies",
+        "amount": 13
+      },
+      {
+        "type": "apply_status",
+        "target": "all_enemies",
+        "status": "doubt",
+        "amount": 2
+      },
+      {
+        "type": "create_card",
+        "card_id": "bad_incantation",
+        "destination": "discard_pile",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "attack",
+      "spell",
+      "aoe",
+      "misfire",
+      "doubt",
+      "junk",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "arcane_ducking",
+    "name": "Arcane Ducking",
+    "class": "failed_wizard",
+    "type": "form",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Gain 11 Block.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 11
+      }
+    ],
+    "tags": [
+      "block",
+      "form",
+      "panic"
+    ],
+    "upgrades_to": "arcane_ducking_plus"
+  },
+  {
+    "id": "arcane_ducking_plus",
+    "name": "Arcane Ducking+",
+    "class": "failed_wizard",
+    "type": "form",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Gain 15 Block.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 15
+      }
+    ],
+    "tags": [
+      "block",
+      "form",
+      "panic",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "panic_shield",
+    "name": "Panic Shield",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Gain 15 Block. Apply 1 Panic to yourself.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 15
+      },
+      {
+        "type": "apply_status",
+        "target": "self",
+        "status": "panic",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "block",
+      "spell",
+      "panic",
+      "risk_reward"
+    ],
+    "upgrades_to": "panic_shield_plus"
+  },
+  {
+    "id": "panic_shield_plus",
+    "name": "Panic Shield+",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Gain 20 Block. Apply 1 Panic to yourself.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 20
+      },
+      {
+        "type": "apply_status",
+        "target": "self",
+        "status": "panic",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "block",
+      "spell",
+      "panic",
+      "risk_reward",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "flailing_gesture",
+    "name": "Flailing Gesture",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Deal 7 damage.\nGain 7 Block.\nApply 1 Panic to yourself.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 7
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 7
+      },
+      {
+        "type": "apply_status",
+        "target": "self",
+        "status": "panic",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "attack",
+      "block",
+      "spell",
+      "panic",
+      "risk_reward"
+    ],
+    "upgrades_to": "flailing_gesture_plus"
+  },
+  {
+    "id": "flailing_gesture_plus",
+    "name": "Flailing Gesture+",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Deal 10 damage.\nGain 10 Block.\nApply 1 Panic to yourself.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 10
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 10
+      },
+      {
+        "type": "apply_status",
+        "target": "self",
+        "status": "panic",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "attack",
+      "block",
+      "spell",
+      "panic",
+      "risk_reward",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "screaming_concentration",
+    "name": "Screaming Concentration",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Draw 2. Apply 1 Panic to yourself.",
+    "effects": [
+      {
+        "type": "draw_cards",
+        "amount": 2
+      },
+      {
+        "type": "apply_status",
+        "target": "self",
+        "status": "panic",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "draw",
+      "spell",
+      "panic",
+      "risk_reward"
+    ],
+    "upgrades_to": "screaming_concentration_plus"
+  },
+  {
+    "id": "screaming_concentration_plus",
+    "name": "Screaming Concentration+",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Draw 3. Apply 1 Panic to yourself.",
+    "effects": [
+      {
+        "type": "draw_cards",
+        "amount": 3
+      },
+      {
+        "type": "apply_status",
+        "target": "self",
+        "status": "panic",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "draw",
+      "spell",
+      "panic",
+      "risk_reward",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "borrowed_hat",
+    "name": "Borrowed Hat",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Gain 1 Strength. Gain 6 Block.",
+    "effects": [
+      {
+        "type": "gain_strength",
+        "target": "self",
+        "amount": 1
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 6
+      }
+    ],
+    "tags": [
+      "spell",
+      "strength",
+      "block",
+      "borrowed_thaum"
+    ],
+    "upgrades_to": "borrowed_hat_plus"
+  },
+  {
+    "id": "borrowed_hat_plus",
+    "name": "Borrowed Hat+",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Gain 1 Strength. Gain 10 Block.",
+    "effects": [
+      {
+        "type": "gain_strength",
+        "target": "self",
+        "amount": 1
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 10
+      }
+    ],
+    "tags": [
+      "spell",
+      "strength",
+      "block",
+      "borrowed_thaum",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "thaumic_overdraft",
+    "name": "Thaumic Overdraft",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 0,
+    "rarity": "uncommon",
+    "text": "Gain 2 Energy. Add a Bad Incantation to your discard pile. Exhaust.",
+    "effects": [
+      {
+        "type": "gain_resource",
+        "resource": "energy",
+        "amount": 2
+      },
+      {
+        "type": "create_card",
+        "card_id": "bad_incantation",
+        "destination": "discard_pile",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "spell",
+      "energy",
+      "borrowed_thaum",
+      "junk",
+      "zero_cost",
+      "exhaust"
+    ],
+    "upgrades_to": "thaumic_overdraft_plus"
+  },
+  {
+    "id": "thaumic_overdraft_plus",
+    "name": "Thaumic Overdraft+",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 0,
+    "rarity": "uncommon",
+    "text": "Gain 2 Energy. Draw 1. Add a Bad Incantation to your discard pile. Exhaust.",
+    "effects": [
+      {
+        "type": "gain_resource",
+        "resource": "energy",
+        "amount": 2
+      },
+      {
+        "type": "draw_cards",
+        "amount": 1
+      },
+      {
+        "type": "create_card",
+        "card_id": "bad_incantation",
+        "destination": "discard_pile",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "spell",
+      "energy",
+      "draw",
+      "borrowed_thaum",
+      "junk",
+      "zero_cost",
+      "exhaust",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "unauthorised_footnote",
+    "name": "Unauthorised Footnote",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 0,
+    "rarity": "rare",
+    "text": "Gain 2 Strength. Apply 1 Panic to yourself. Exhaust.",
+    "effects": [
+      {
+        "type": "gain_strength",
+        "target": "self",
+        "amount": 2
+      },
+      {
+        "type": "apply_status",
+        "target": "self",
+        "status": "panic",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "spell",
+      "strength",
+      "panic",
+      "borrowed_thaum",
+      "zero_cost",
+      "exhaust"
+    ],
+    "upgrades_to": "unauthorised_footnote_plus"
+  },
+  {
+    "id": "unauthorised_footnote_plus",
+    "name": "Unauthorised Footnote+",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 0,
+    "rarity": "rare",
+    "text": "Gain 3 Strength. Apply 1 Panic to yourself. Exhaust.",
+    "effects": [
+      {
+        "type": "gain_strength",
+        "target": "self",
+        "amount": 3
+      },
+      {
+        "type": "apply_status",
+        "target": "self",
+        "status": "panic",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "spell",
+      "strength",
+      "panic",
+      "borrowed_thaum",
+      "zero_cost",
+      "exhaust",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "loose_sparks",
+    "name": "Loose Sparks",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Add 2 Loose Sparks to your hand. Gain 3 Block.",
+    "effects": [
+      {
+        "type": "create_card",
+        "card_id": "loose_spark",
+        "destination": "hand",
+        "copies": 2
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "spell",
+      "spell_fragment",
+      "zero_cost"
+    ],
+    "upgrades_to": "loose_sparks_plus"
+  },
+  {
+    "id": "loose_sparks_plus",
+    "name": "Loose Sparks+",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Add 3 Loose Sparks to your hand. Gain 4 Block.",
+    "effects": [
+      {
+        "type": "create_card",
+        "card_id": "loose_spark",
+        "destination": "hand",
+        "copies": 3
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 4
+      }
+    ],
+    "tags": [
+      "spell",
+      "spell_fragment",
+      "zero_cost",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "pocket_rune",
+    "name": "Pocket Rune",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Gain 8 Block. Add a Half-Remembered Spell to your hand.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 8
+      },
+      {
+        "type": "create_card",
+        "card_id": "half_remembered_spell",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "spell",
+      "block",
+      "spell_fragment",
+      "draw",
+      "panic"
+    ],
+    "upgrades_to": "pocket_rune_plus"
+  },
+  {
+    "id": "pocket_rune_plus",
+    "name": "Pocket Rune+",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Gain 12 Block. Add a Half-Remembered Spell to your hand.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 12
+      },
+      {
+        "type": "create_card",
+        "card_id": "half_remembered_spell",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "spell",
+      "block",
+      "spell_fragment",
+      "draw",
+      "panic",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "reassemble_spell",
+    "name": "Reassemble Spell",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Draw 2. Add a Loose Spark to your hand. Gain 3 Block.",
+    "effects": [
+      {
+        "type": "draw_cards",
+        "amount": 2
+      },
+      {
+        "type": "create_card",
+        "card_id": "loose_spark",
+        "destination": "hand",
+        "copies": 1
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "spell",
+      "draw",
+      "spell_fragment",
+      "zero_cost"
+    ],
+    "upgrades_to": "reassemble_spell_plus"
+  },
+  {
+    "id": "reassemble_spell_plus",
+    "name": "Reassemble Spell+",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Draw 2. Add 2 Loose Sparks to your hand. Gain 4 Block.",
+    "effects": [
+      {
+        "type": "draw_cards",
+        "amount": 2
+      },
+      {
+        "type": "create_card",
+        "card_id": "loose_spark",
+        "destination": "hand",
+        "copies": 2
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 4
+      }
+    ],
+    "tags": [
+      "spell",
+      "draw",
+      "spell_fragment",
+      "zero_cost",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "fragment_cascade",
+    "name": "Fragment Cascade",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Add 2 Loose Sparks and 2 Escaped Syllables to your hand.",
+    "effects": [
+      {
+        "type": "create_card",
+        "card_id": "loose_spark",
+        "destination": "hand",
+        "copies": 2
+      },
+      {
+        "type": "create_card",
+        "card_id": "escaped_syllable",
+        "destination": "hand",
+        "copies": 2
+      }
+    ],
+    "tags": [
+      "spell",
+      "spell_fragment",
+      "aoe",
+      "zero_cost"
+    ],
+    "upgrades_to": "fragment_cascade_plus"
+  },
+  {
+    "id": "fragment_cascade_plus",
+    "name": "Fragment Cascade+",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "rare",
+    "text": "Add 2 Loose Sparks and 2 Escaped Syllables to your hand.",
+    "effects": [
+      {
+        "type": "create_card",
+        "card_id": "loose_spark",
+        "destination": "hand",
+        "copies": 2
+      },
+      {
+        "type": "create_card",
+        "card_id": "escaped_syllable",
+        "destination": "hand",
+        "copies": 2
+      }
+    ],
+    "tags": [
+      "spell",
+      "spell_fragment",
+      "aoe",
+      "zero_cost",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "probably_safe_rune",
+    "name": "Probably Safe Rune",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "uncommon",
+    "text": "Deal 22 damage.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 22
+      }
+    ],
+    "tags": [
+      "attack",
+      "spell",
+      "unstable"
+    ],
+    "upgrades_to": "probably_safe_rune_plus"
+  },
+  {
+    "id": "probably_safe_rune_plus",
+    "name": "Probably Safe Rune+",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "uncommon",
+    "text": "Deal 30 damage.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 30
+      }
+    ],
+    "tags": [
+      "attack",
+      "spell",
+      "unstable",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "almost_fireball",
+    "name": "Almost Fireball",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "uncommon",
+    "text": "Deal 26 damage. Add a Smoking Rune to your discard pile.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 26
+      },
+      {
+        "type": "create_card",
+        "card_id": "smoking_rune",
+        "destination": "discard_pile",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "attack",
+      "spell",
+      "unstable",
+      "misfire",
+      "junk"
+    ],
+    "upgrades_to": "almost_fireball_plus"
+  },
+  {
+    "id": "almost_fireball_plus",
+    "name": "Almost Fireball+",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "uncommon",
+    "text": "Deal 36 damage. Add a Smoking Rune to your discard pile.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 36
+      },
+      {
+        "type": "create_card",
+        "card_id": "smoking_rune",
+        "destination": "discard_pile",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "attack",
+      "spell",
+      "unstable",
+      "misfire",
+      "junk",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "luggage_incident",
+    "name": "Luggage Incident",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Deal 17 damage to all enemies. Add a Bad Incantation to your discard pile.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "all_enemies",
+        "amount": 17
+      },
+      {
+        "type": "create_card",
+        "card_id": "bad_incantation",
+        "destination": "discard_pile",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "attack",
+      "spell",
+      "aoe",
+      "unstable",
+      "misfire",
+      "junk"
+    ],
+    "upgrades_to": "luggage_incident_plus"
+  },
+  {
+    "id": "luggage_incident_plus",
+    "name": "Luggage Incident+",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Deal 24 damage to all enemies. Add a Bad Incantation to your discard pile.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "all_enemies",
+        "amount": 24
+      },
+      {
+        "type": "create_card",
+        "card_id": "bad_incantation",
+        "destination": "discard_pile",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "attack",
+      "spell",
+      "aoe",
+      "unstable",
+      "misfire",
+      "junk",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "exploding_footnote",
+    "name": "Exploding Footnote",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Deal 34 damage. Apply 2 Panic to yourself.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 34
+      },
+      {
+        "type": "apply_status",
+        "target": "self",
+        "status": "panic",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "attack",
+      "spell",
+      "panic",
+      "unstable",
+      "risk_reward"
+    ],
+    "upgrades_to": "exploding_footnote_plus"
+  },
+  {
+    "id": "exploding_footnote_plus",
+    "name": "Exploding Footnote+",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Deal 46 damage. Apply 2 Panic to yourself.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 46
+      },
+      {
+        "type": "apply_status",
+        "target": "self",
+        "status": "panic",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "attack",
+      "spell",
+      "panic",
+      "unstable",
+      "risk_reward",
+      "upgraded"
+    ]
+  }
+]

@@ -1,0 +1,206 @@
+[
+  {
+    "id": "sparks_probably",
+    "name": "Sparks, Probably",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Deal 8 damage.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 8
+      }
+    ],
+    "tags": [
+      "attack",
+      "spell",
+      "unstable"
+    ],
+    "upgrades_to": "sparks_probably_plus"
+  },
+  {
+    "id": "sparks_probably_plus",
+    "name": "Sparks, Probably+",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Deal 11 damage.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 11
+      }
+    ],
+    "tags": [
+      "attack",
+      "spell",
+      "unstable",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "robe_flap",
+    "name": "Robe Flap",
+    "class": "failed_wizard",
+    "type": "form",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Gain 7 Block.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 7
+      }
+    ],
+    "tags": [
+      "block",
+      "form",
+      "panic"
+    ],
+    "upgrades_to": "robe_flap_plus"
+  },
+  {
+    "id": "robe_flap_plus",
+    "name": "Robe Flap+",
+    "class": "failed_wizard",
+    "type": "form",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Gain 10 Block.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 10
+      }
+    ],
+    "tags": [
+      "block",
+      "form",
+      "panic",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "borrowed_thaum",
+    "name": "Borrowed Thaum",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 0,
+    "rarity": "starter",
+    "text": "Gain 1 Strength.\nGain 4 Block.\nApply 1 Panic to yourself.",
+    "effects": [
+      {
+        "type": "gain_strength",
+        "target": "self",
+        "amount": 1
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 4
+      },
+      {
+        "type": "apply_status",
+        "target": "self",
+        "status": "panic",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "spell",
+      "strength",
+      "panic",
+      "borrowed_thaum",
+      "zero_cost"
+    ],
+    "upgrades_to": "borrowed_thaum_plus"
+  },
+  {
+    "id": "borrowed_thaum_plus",
+    "name": "Borrowed Thaum+",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 0,
+    "rarity": "starter",
+    "text": "Gain 2 Strength.\nGain 6 Block.\nApply 1 Panic to yourself.",
+    "effects": [
+      {
+        "type": "gain_strength",
+        "target": "self",
+        "amount": 2
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 6
+      },
+      {
+        "type": "apply_status",
+        "target": "self",
+        "status": "panic",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "spell",
+      "strength",
+      "panic",
+      "borrowed_thaum",
+      "zero_cost",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "luggage_burst",
+    "name": "Luggage Burst",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Deal 7 damage to all enemies.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "all_enemies",
+        "amount": 7
+      }
+    ],
+    "tags": [
+      "attack",
+      "spell",
+      "aoe",
+      "misfire"
+    ],
+    "upgrades_to": "luggage_burst_plus"
+  },
+  {
+    "id": "luggage_burst_plus",
+    "name": "Luggage Burst+",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Deal 10 damage to all enemies.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "all_enemies",
+        "amount": 10
+      }
+    ],
+    "tags": [
+      "attack",
+      "spell",
+      "aoe",
+      "misfire",
+      "upgraded"
+    ]
+  }
+]

@@ -1,0 +1,277 @@
+[
+  {
+    "id": "cracked_wizard_hat",
+    "name": "Cracked Wizard Hat",
+    "description": "At the start of each combat, add a Loose Spark to your hand and gain 2 Block.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "loose_spark",
+        "destination": "hand",
+        "copies": 1
+      },
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "failed_wizard",
+      "spell_fragment",
+      "zero_cost",
+      "unstable"
+    ],
+    "allowed_classes": [
+      "failed_wizard"
+    ]
+  },
+  {
+    "id": "singed_wand_core",
+    "name": "Singed Wand Core",
+    "description": "At the start of each combat, gain 1 Strength and add a Smoking Rune to your discard pile.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "gain_strength_at_combat_start",
+        "amount": 1
+      },
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "smoking_rune",
+        "destination": "discard_pile",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "failed_wizard",
+      "strength",
+      "panic",
+      "risk_reward"
+    ],
+    "allowed_classes": [
+      "failed_wizard"
+    ]
+  },
+  {
+    "id": "loose_thaum_jar",
+    "name": "Loose Thaum Jar",
+    "description": "At the start of each combat, add a Half-Remembered Spell to your hand and gain 2 Block.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "half_remembered_spell",
+        "destination": "hand",
+        "copies": 1
+      },
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "failed_wizard",
+      "spell_fragment",
+      "draw",
+      "panic"
+    ],
+    "allowed_classes": [
+      "failed_wizard"
+    ]
+  },
+  {
+    "id": "burnt_sleeve_notes",
+    "name": "Burnt Sleeve Notes",
+    "description": "At the start of each combat, add 2 Loose Sparks to your draw pile and gain 3 Block.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "loose_spark",
+        "destination": "draw_pile",
+        "copies": 2
+      },
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "failed_wizard",
+      "spell_fragment",
+      "zero_cost",
+      "draw"
+    ],
+    "allowed_classes": [
+      "failed_wizard"
+    ]
+  },
+  {
+    "id": "misfire_insurance_chit",
+    "name": "Misfire Insurance Chit",
+    "description": "At the start of each combat, gain 10 Block and add a Smoking Rune to your discard pile.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 10
+      },
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "smoking_rune",
+        "destination": "discard_pile",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "failed_wizard",
+      "block",
+      "misfire",
+      "junk",
+      "risk_reward"
+    ],
+    "allowed_classes": [
+      "failed_wizard"
+    ]
+  },
+  {
+    "id": "borrowed_spellbook",
+    "name": "Borrowed Spellbook",
+    "description": "At the start of each combat, gain 1 Energy and add a Bad Incantation to your discard pile.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "gain_energy_at_combat_start",
+        "amount": 1
+      },
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "bad_incantation",
+        "destination": "discard_pile",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "failed_wizard",
+      "energy",
+      "borrowed_thaum",
+      "junk",
+      "risk_reward"
+    ],
+    "allowed_classes": [
+      "failed_wizard"
+    ]
+  },
+  {
+    "id": "luggage_splinter",
+    "name": "Luggage Splinter",
+    "description": "At the start of each combat, add an Escaped Syllable and a Loose Spark to your hand.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "escaped_syllable",
+        "destination": "hand",
+        "copies": 1
+      },
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "loose_spark",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "failed_wizard",
+      "spell_fragment",
+      "aoe",
+      "zero_cost"
+    ],
+    "allowed_classes": [
+      "failed_wizard"
+    ]
+  },
+  {
+    "id": "unauthorised_thaumometer",
+    "name": "Unauthorised Thaumometer",
+    "description": "At the start of each combat, gain 1 Strength and add a Smoking Rune to your discard pile.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "gain_strength_at_combat_start",
+        "amount": 1
+      },
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "smoking_rune",
+        "destination": "discard_pile",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "failed_wizard",
+      "strength",
+      "misfire",
+      "panic",
+      "risk_reward"
+    ],
+    "allowed_classes": [
+      "failed_wizard"
+    ]
+  },
+  {
+    "id": "academy_rejection_letter",
+    "name": "Academy Rejection Letter",
+    "description": "At the start of each combat, apply 2 Doubt to all enemies and gain 4 Block.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "doubt",
+        "amount": 2
+      },
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 4
+      }
+    ],
+    "tags": [
+      "failed_wizard",
+      "doubt",
+      "panic",
+      "risk_reward"
+    ],
+    "allowed_classes": [
+      "failed_wizard"
+    ]
+  },
+  {
+    "id": "overfull_thaumic_pocket",
+    "name": "Overfull Thaumic Pocket",
+    "description": "At the start of each combat, gain 1 Energy and add a Half-Remembered Spell to your hand.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "gain_energy_at_combat_start",
+        "amount": 1
+      },
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "half_remembered_spell",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "failed_wizard",
+      "energy",
+      "spell_fragment",
+      "draw",
+      "borrowed_thaum"
+    ],
+    "allowed_classes": [
+      "failed_wizard"
+    ]
+  }
+]

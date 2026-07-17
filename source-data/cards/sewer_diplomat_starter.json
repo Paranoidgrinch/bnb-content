@@ -1,0 +1,208 @@
+[
+  {
+    "id": "nibbled_clause",
+    "name": "Nibbled Clause",
+    "class": "sewer_diplomat",
+    "type": "action",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Deal 4 damage. Apply 1 Paperwork.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 4
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "amount": 1,
+        "status": "paperwork"
+      }
+    ],
+    "tags": [
+      "attack",
+      "paperwork",
+      "treaty",
+      "rat"
+    ],
+    "upgrades_to": "nibbled_clause_plus"
+  },
+  {
+    "id": "nibbled_clause_plus",
+    "name": "Nibbled Clause+",
+    "class": "sewer_diplomat",
+    "type": "action",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Deal 5 damage. Apply 2 Paperwork.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 5
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "amount": 2,
+        "status": "paperwork"
+      }
+    ],
+    "tags": [
+      "attack",
+      "paperwork",
+      "treaty",
+      "rat",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "underfloor_scurry",
+    "name": "Underfloor Scurry",
+    "class": "sewer_diplomat",
+    "type": "form",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Gain 4 Block.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 4
+      }
+    ],
+    "tags": [
+      "block",
+      "sewer_route",
+      "evasion"
+    ],
+    "upgrades_to": "underfloor_scurry_plus"
+  },
+  {
+    "id": "underfloor_scurry_plus",
+    "name": "Underfloor Scurry+",
+    "class": "sewer_diplomat",
+    "type": "form",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Gain 7 Block.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 7
+      }
+    ],
+    "tags": [
+      "block",
+      "sewer_route",
+      "evasion",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "call_the_cousins",
+    "name": "Call the Cousins",
+    "class": "sewer_diplomat",
+    "type": "action",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Deal 3 damage to all enemies.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "all_enemies",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "attack",
+      "swarm",
+      "rat",
+      "aoe"
+    ],
+    "upgrades_to": "call_the_cousins_plus"
+  },
+  {
+    "id": "call_the_cousins_plus",
+    "name": "Call the Cousins+",
+    "class": "sewer_diplomat",
+    "type": "action",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Deal 5 damage to all enemies.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "all_enemies",
+        "amount": 5
+      }
+    ],
+    "tags": [
+      "attack",
+      "swarm",
+      "rat",
+      "aoe",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "cheese_based_treaty",
+    "name": "Cheese-Based Treaty",
+    "class": "sewer_diplomat",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Gain 3 Block. Apply 2 Doubt.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 3
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "amount": 2,
+        "status": "doubt"
+      }
+    ],
+    "tags": [
+      "block",
+      "doubt",
+      "treaty",
+      "cheese"
+    ],
+    "upgrades_to": "cheese_based_treaty_plus"
+  },
+  {
+    "id": "cheese_based_treaty_plus",
+    "name": "Cheese-Based Treaty+",
+    "class": "sewer_diplomat",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Gain 5 Block. Apply 2 Doubt.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 5
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "amount": 2,
+        "status": "doubt"
+      }
+    ],
+    "tags": [
+      "block",
+      "doubt",
+      "treaty",
+      "cheese",
+      "upgraded"
+    ]
+  }
+]

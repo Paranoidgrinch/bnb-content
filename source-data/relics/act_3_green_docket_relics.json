@@ -1,0 +1,397 @@
+[
+  {
+    "id": "sun_warmed_stone",
+    "name": "Sun-Warmed Stone",
+    "description": "When picked up, heal 24 HP.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "heal_on_pickup",
+        "amount": 24
+      }
+    ],
+    "tags": [
+      "act_3",
+      "green_docket",
+      "nature",
+      "healing"
+    ],
+    "allowed_classes": []
+  },
+  {
+    "id": "mossy_waymarker",
+    "name": "Mossy Waymarker",
+    "description": "At the start of each combat, gain 8 Block.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 8
+      }
+    ],
+    "tags": [
+      "act_3",
+      "green_docket",
+      "road",
+      "block"
+    ],
+    "allowed_classes": []
+  },
+  {
+    "id": "travellers_tea_tin",
+    "name": "Traveller's Tea Tin",
+    "description": "When picked up, heal 16 HP and gain 12 Gold.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "heal_on_pickup",
+        "amount": 16
+      },
+      {
+        "type": "gain_gold_on_pickup",
+        "amount": 12
+      }
+    ],
+    "tags": [
+      "act_3",
+      "green_docket",
+      "road",
+      "healing",
+      "gold"
+    ],
+    "allowed_classes": []
+  },
+  {
+    "id": "bark_receipt_clip",
+    "name": "Bark Receipt Clip",
+    "description": "Gain 6 additional Gold after each victorious combat.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "increase_gold_rewards",
+        "amount": 6
+      }
+    ],
+    "tags": [
+      "act_3",
+      "green_docket",
+      "bureaucracy",
+      "gold"
+    ],
+    "allowed_classes": []
+  },
+  {
+    "id": "ant_line_token",
+    "name": "Ant-Line Token",
+    "description": "At the start of each combat, gain 5 Block and apply 1 Doubt to all enemies.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 5
+      },
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "doubt",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_3",
+      "green_docket",
+      "ants",
+      "block",
+      "doubt"
+    ],
+    "allowed_classes": []
+  },
+  {
+    "id": "clear_stream_flask",
+    "name": "Clear Stream Flask",
+    "description": "At the start of each combat, heal 3 HP.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "heal_at_combat_start",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "act_3",
+      "green_docket",
+      "nature",
+      "stream",
+      "healing"
+    ],
+    "allowed_classes": []
+  },
+  {
+    "id": "hedgerow_notice_pin",
+    "name": "Hedgerow Notice Pin",
+    "description": "At the start of each combat, apply 1 Paperwork to all enemies.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "paperwork",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_3",
+      "green_docket",
+      "bureaucracy",
+      "paperwork"
+    ],
+    "allowed_classes": []
+  },
+  {
+    "id": "campfire_ember",
+    "name": "Campfire Ember",
+    "description": "At the start of each combat, gain 1 Strength.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "gain_strength_at_combat_start",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_3",
+      "green_docket",
+      "camp",
+      "strength"
+    ],
+    "allowed_classes": []
+  },
+  {
+    "id": "stargazers_lens",
+    "name": "Stargazer's Lens",
+    "description": "Card rewards contain 1 additional card.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "increase_card_reward_count",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_3",
+      "green_docket",
+      "stars",
+      "reward"
+    ],
+    "allowed_classes": []
+  },
+  {
+    "id": "conceptual_toll_receipt",
+    "name": "Conceptual Toll Receipt",
+    "description": "Shop prices are reduced by 15%.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "shop_price_discount",
+        "amount": 15
+      }
+    ],
+    "tags": [
+      "act_3",
+      "green_docket",
+      "bureaucracy",
+      "shop"
+    ],
+    "allowed_classes": []
+  },
+  {
+    "id": "rootbound_walking_stick",
+    "name": "Rootbound Walking Stick",
+    "description": "At the start of each combat, gain 12 Block and apply 1 Paperwork to all enemies.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 12
+      },
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "paperwork",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_3",
+      "green_docket",
+      "road",
+      "block",
+      "paperwork"
+    ],
+    "allowed_classes": []
+  },
+  {
+    "id": "moonlit_mushroom_cap",
+    "name": "Moonlit Mushroom Cap",
+    "description": "At the start of each combat, apply 2 Poison to all enemies.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "poison",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "act_3",
+      "green_docket",
+      "mushroom",
+      "poison"
+    ],
+    "allowed_classes": []
+  },
+  {
+    "id": "foresters_counterseal",
+    "name": "Forester's Counterseal",
+    "description": "At the start of each combat, gain 1 Energy and 6 Block.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "gain_energy_at_combat_start",
+        "amount": 1
+      },
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 6
+      }
+    ],
+    "tags": [
+      "act_3",
+      "green_docket",
+      "road",
+      "energy",
+      "block"
+    ],
+    "allowed_classes": []
+  },
+  {
+    "id": "old_growth_signature",
+    "name": "Old Growth Signature",
+    "description": "At the start of each combat, gain 1 Strength and apply 2 Doubt to all enemies.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "gain_strength_at_combat_start",
+        "amount": 1
+      },
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "doubt",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "act_3",
+      "green_docket",
+      "tree",
+      "strength",
+      "doubt"
+    ],
+    "allowed_classes": []
+  },
+  {
+    "id": "ombudsmans_leaf",
+    "name": "Ombudsman's Leaf",
+    "description": "At the start of each combat, apply 2 Paperwork and 2 Doubt to all enemies.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "paperwork",
+        "amount": 2
+      },
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "doubt",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "act_3",
+      "green_docket",
+      "forest_ombudsman",
+      "paperwork",
+      "doubt"
+    ],
+    "allowed_classes": []
+  },
+  {
+    "id": "queen_under_the_hill_coin",
+    "name": "Queen-Under-the-Hill Coin",
+    "description": "Gain 14 additional Gold after each victorious combat. When picked up, gain 20 Gold.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "increase_gold_rewards",
+        "amount": 14
+      },
+      {
+        "type": "gain_gold_on_pickup",
+        "amount": 20
+      }
+    ],
+    "tags": [
+      "act_3",
+      "green_docket",
+      "ants",
+      "gold"
+    ],
+    "allowed_classes": []
+  },
+  {
+    "id": "travellers_right_of_way",
+    "name": "Traveller's Right-of-Way",
+    "description": "At the start of each combat, gain 1 Energy and apply 1 Panic to yourself.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "gain_energy_at_combat_start",
+        "amount": 1
+      },
+      {
+        "type": "apply_status_to_player_at_combat_start",
+        "status": "panic",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_3",
+      "green_docket",
+      "road",
+      "energy",
+      "risk_reward"
+    ],
+    "allowed_classes": []
+  },
+  {
+    "id": "star_map_of_somewhere_official",
+    "name": "Star Map of Somewhere Official",
+    "description": "Card rewards contain 1 additional card. Shop prices are reduced by 10%.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "increase_card_reward_count",
+        "amount": 1
+      },
+      {
+        "type": "shop_price_discount",
+        "amount": 10
+      }
+    ],
+    "tags": [
+      "act_3",
+      "green_docket",
+      "stars",
+      "reward",
+      "shop"
+    ],
+    "allowed_classes": []
+  }
+]

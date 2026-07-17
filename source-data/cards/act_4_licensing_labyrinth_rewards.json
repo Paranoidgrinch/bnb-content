@@ -1,0 +1,2577 @@
+[
+  {
+    "id": "burial_license_appeal",
+    "name": "Burial License Appeal",
+    "class": "bureaucrat",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Apply 7 Paperwork.\nDraw 1.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 7
+      },
+      {
+        "type": "draw_cards",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "bureaucracy",
+      "paperwork",
+      "draw",
+      "pyramid",
+      "licensing_labyrinth"
+    ],
+    "upgrades_to": "burial_license_appeal_plus"
+  },
+  {
+    "id": "burial_license_appeal_plus",
+    "name": "Burial License Appeal+",
+    "class": "bureaucrat",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Apply 9 Paperwork.\nDraw 1.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 9
+      },
+      {
+        "type": "draw_cards",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "bureaucracy",
+      "paperwork",
+      "draw",
+      "pyramid",
+      "licensing_labyrinth",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "cartouche_of_authority",
+    "name": "Cartouche of Authority",
+    "class": "bureaucrat",
+    "type": "form",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Gain 12 Block.\nApply 6 Paperwork.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 12
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 6
+      }
+    ],
+    "tags": [
+      "act_4",
+      "bureaucracy",
+      "paperwork",
+      "block",
+      "pyramid",
+      "cartouche",
+      "licensing_labyrinth"
+    ],
+    "upgrades_to": "cartouche_of_authority_plus"
+  },
+  {
+    "id": "cartouche_of_authority_plus",
+    "name": "Cartouche of Authority+",
+    "class": "bureaucrat",
+    "type": "form",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Gain 16 Block.\nApply 8 Paperwork.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 16
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 8
+      }
+    ],
+    "tags": [
+      "act_4",
+      "bureaucracy",
+      "paperwork",
+      "block",
+      "pyramid",
+      "cartouche",
+      "licensing_labyrinth",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "weigh_the_application",
+    "name": "Weigh the Application",
+    "class": "bureaucrat",
+    "type": "form",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Deal 6 damage for each Paperwork on the target.\nExhaust.",
+    "effects": [
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount_per_stack": 6
+      }
+    ],
+    "tags": [
+      "act_4",
+      "attack",
+      "bureaucracy",
+      "paperwork",
+      "payoff",
+      "pyramid",
+      "judgement",
+      "exhaust",
+      "licensing_labyrinth"
+    ],
+    "upgrades_to": "weigh_the_application_plus"
+  },
+  {
+    "id": "weigh_the_application_plus",
+    "name": "Weigh the Application+",
+    "class": "bureaucrat",
+    "type": "form",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Deal 7 damage for each Paperwork on the target.\nExhaust.",
+    "effects": [
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount_per_stack": 7
+      }
+    ],
+    "tags": [
+      "act_4",
+      "attack",
+      "bureaucracy",
+      "paperwork",
+      "payoff",
+      "pyramid",
+      "judgement",
+      "exhaust",
+      "licensing_labyrinth",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "final_authorization",
+    "name": "Final Authorization",
+    "class": "bureaucrat",
+    "type": "argument",
+    "cost": 3,
+    "rarity": "rare",
+    "text": "Apply 10 Paperwork.\nApply 3 Doubt.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 10
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "act_4",
+      "bureaucracy",
+      "paperwork",
+      "doubt",
+      "setup",
+      "pyramid",
+      "authorization",
+      "licensing_labyrinth"
+    ],
+    "upgrades_to": "final_authorization_plus"
+  },
+  {
+    "id": "final_authorization_plus",
+    "name": "Final Authorization+",
+    "class": "bureaucrat",
+    "type": "argument",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Apply 10 Paperwork.\nApply 3 Doubt.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 10
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "act_4",
+      "bureaucracy",
+      "paperwork",
+      "doubt",
+      "setup",
+      "pyramid",
+      "authorization",
+      "licensing_labyrinth",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "canopic_tea_ward",
+    "name": "Canopic Tea Ward",
+    "class": "witch_clerk",
+    "type": "form",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Gain 12 Block.\nAdd a Tea Charm to your hand.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 12
+      },
+      {
+        "type": "create_card",
+        "card_id": "tea_charm",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "witch_clerk",
+      "tea",
+      "charm",
+      "block",
+      "pyramid",
+      "canopic",
+      "licensing_labyrinth"
+    ],
+    "upgrades_to": "canopic_tea_ward_plus"
+  },
+  {
+    "id": "canopic_tea_ward_plus",
+    "name": "Canopic Tea Ward+",
+    "class": "witch_clerk",
+    "type": "form",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Gain 16 Block.\nAdd a Tea Charm to your hand.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 16
+      },
+      {
+        "type": "create_card",
+        "card_id": "tea_charm",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "witch_clerk",
+      "tea",
+      "charm",
+      "block",
+      "pyramid",
+      "canopic",
+      "licensing_labyrinth",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "moonlit_cartouche_hex",
+    "name": "Moonlit Cartouche Hex",
+    "class": "witch_clerk",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "rare",
+    "text": "Apply 6 Paperwork.\nApply 3 Doubt.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 6
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "act_4",
+      "witch_clerk",
+      "hex",
+      "paperwork",
+      "doubt",
+      "pyramid",
+      "cartouche",
+      "licensing_labyrinth"
+    ],
+    "upgrades_to": "moonlit_cartouche_hex_plus"
+  },
+  {
+    "id": "moonlit_cartouche_hex_plus",
+    "name": "Moonlit Cartouche Hex+",
+    "class": "witch_clerk",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "rare",
+    "text": "Apply 8 Paperwork.\nApply 4 Doubt.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 8
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 4
+      }
+    ],
+    "tags": [
+      "act_4",
+      "witch_clerk",
+      "hex",
+      "paperwork",
+      "doubt",
+      "pyramid",
+      "cartouche",
+      "licensing_labyrinth",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "burial_shaft_familiar",
+    "name": "Burial Shaft Familiar",
+    "class": "witch_clerk",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "rare",
+    "text": "Deal 6 damage to all enemies.\nAdd an Office Familiar to your hand.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "all_enemies",
+        "amount": 6
+      },
+      {
+        "type": "create_card",
+        "card_id": "office_familiar",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "witch_clerk",
+      "familiar",
+      "attack",
+      "aoe",
+      "pyramid",
+      "burial",
+      "licensing_labyrinth"
+    ],
+    "upgrades_to": "burial_shaft_familiar_plus"
+  },
+  {
+    "id": "burial_shaft_familiar_plus",
+    "name": "Burial Shaft Familiar+",
+    "class": "witch_clerk",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "rare",
+    "text": "Deal 8 damage to all enemies.\nAdd 2 Office Familiars to your hand.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "all_enemies",
+        "amount": 8
+      },
+      {
+        "type": "create_card",
+        "card_id": "office_familiar",
+        "destination": "hand",
+        "copies": 2
+      }
+    ],
+    "tags": [
+      "act_4",
+      "witch_clerk",
+      "familiar",
+      "attack",
+      "aoe",
+      "pyramid",
+      "burial",
+      "licensing_labyrinth",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "forbidden_canopic_copy",
+    "name": "Forbidden Canopic Copy",
+    "class": "witch_clerk",
+    "type": "argument",
+    "cost": 0,
+    "rarity": "rare",
+    "text": "Gain 1 Energy.\nDraw 1.\nAdd a Misfiled Hex to your discard pile.\nExhaust.",
+    "effects": [
+      {
+        "type": "gain_resource",
+        "resource": "energy",
+        "amount": 1
+      },
+      {
+        "type": "draw_cards",
+        "amount": 1
+      },
+      {
+        "type": "create_card",
+        "card_id": "misfiled_hex",
+        "destination": "discard_pile",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "witch_clerk",
+      "energy",
+      "draw",
+      "junk",
+      "zero_cost",
+      "exhaust",
+      "pyramid",
+      "canopic",
+      "licensing_labyrinth"
+    ],
+    "upgrades_to": "forbidden_canopic_copy_plus"
+  },
+  {
+    "id": "forbidden_canopic_copy_plus",
+    "name": "Forbidden Canopic Copy+",
+    "class": "witch_clerk",
+    "type": "argument",
+    "cost": 0,
+    "rarity": "rare",
+    "text": "Gain 1 Energy.\nDraw 2.\nAdd a Misfiled Hex to your discard pile.\nExhaust.",
+    "effects": [
+      {
+        "type": "gain_resource",
+        "resource": "energy",
+        "amount": 1
+      },
+      {
+        "type": "draw_cards",
+        "amount": 2
+      },
+      {
+        "type": "create_card",
+        "card_id": "misfiled_hex",
+        "destination": "discard_pile",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "witch_clerk",
+      "energy",
+      "draw",
+      "junk",
+      "zero_cost",
+      "exhaust",
+      "pyramid",
+      "canopic",
+      "licensing_labyrinth",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "sealed_stair_patrol",
+    "name": "Sealed Stair Patrol",
+    "class": "night_watch_recruit",
+    "type": "form",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Gain 12 Block.\nApply 3 Doubt.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 12
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "act_4",
+      "night_watch_recruit",
+      "block",
+      "doubt",
+      "patrol",
+      "pyramid",
+      "stair",
+      "licensing_labyrinth"
+    ],
+    "upgrades_to": "sealed_stair_patrol_plus"
+  },
+  {
+    "id": "sealed_stair_patrol_plus",
+    "name": "Sealed Stair Patrol+",
+    "class": "night_watch_recruit",
+    "type": "form",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Gain 16 Block.\nApply 4 Doubt.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 16
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 4
+      }
+    ],
+    "tags": [
+      "act_4",
+      "night_watch_recruit",
+      "block",
+      "doubt",
+      "patrol",
+      "pyramid",
+      "stair",
+      "licensing_labyrinth",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "torchlit_trespass_notice",
+    "name": "Torchlit Trespass Notice",
+    "class": "night_watch_recruit",
+    "type": "action",
+    "cost": 1,
+    "rarity": "rare",
+    "text": "Deal 15 damage.\nApply 4 Doubt.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 15
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 4
+      }
+    ],
+    "tags": [
+      "act_4",
+      "night_watch_recruit",
+      "attack",
+      "doubt",
+      "patrol",
+      "torch",
+      "pyramid",
+      "licensing_labyrinth"
+    ],
+    "upgrades_to": "torchlit_trespass_notice_plus"
+  },
+  {
+    "id": "torchlit_trespass_notice_plus",
+    "name": "Torchlit Trespass Notice+",
+    "class": "night_watch_recruit",
+    "type": "action",
+    "cost": 1,
+    "rarity": "rare",
+    "text": "Deal 20 damage.\nApply 5 Doubt.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 20
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 5
+      }
+    ],
+    "tags": [
+      "act_4",
+      "night_watch_recruit",
+      "attack",
+      "doubt",
+      "patrol",
+      "torch",
+      "pyramid",
+      "licensing_labyrinth",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "summon_tomb_constables",
+    "name": "Summon Tomb Constables",
+    "class": "night_watch_recruit",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "rare",
+    "text": "Add 2 Backup Constables to your hand.\nAdd a Watch Whistle to your hand.",
+    "effects": [
+      {
+        "type": "create_card",
+        "card_id": "backup_constable",
+        "destination": "hand",
+        "copies": 2
+      },
+      {
+        "type": "create_card",
+        "card_id": "watch_whistle",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "night_watch_recruit",
+      "backup",
+      "doubt",
+      "block",
+      "patrol",
+      "pyramid",
+      "licensing_labyrinth"
+    ],
+    "upgrades_to": "summon_tomb_constables_plus"
+  },
+  {
+    "id": "summon_tomb_constables_plus",
+    "name": "Summon Tomb Constables+",
+    "class": "night_watch_recruit",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "rare",
+    "text": "Add 3 Backup Constables to your hand.\nAdd 2 Watch Whistles to your hand.",
+    "effects": [
+      {
+        "type": "create_card",
+        "card_id": "backup_constable",
+        "destination": "hand",
+        "copies": 3
+      },
+      {
+        "type": "create_card",
+        "card_id": "watch_whistle",
+        "destination": "hand",
+        "copies": 2
+      }
+    ],
+    "tags": [
+      "act_4",
+      "night_watch_recruit",
+      "backup",
+      "doubt",
+      "block",
+      "patrol",
+      "pyramid",
+      "licensing_labyrinth",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "riot_act_of_the_dead",
+    "name": "Riot Act of the Dead",
+    "class": "night_watch_recruit",
+    "type": "argument",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Apply 7 Doubt to all enemies.\nGain 10 Block.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "all_enemies",
+        "status": "doubt",
+        "amount": 7
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 10
+      }
+    ],
+    "tags": [
+      "act_4",
+      "night_watch_recruit",
+      "doubt",
+      "block",
+      "aoe",
+      "riot_act",
+      "pyramid",
+      "licensing_labyrinth"
+    ],
+    "upgrades_to": "riot_act_of_the_dead_plus"
+  },
+  {
+    "id": "riot_act_of_the_dead_plus",
+    "name": "Riot Act of the Dead+",
+    "class": "night_watch_recruit",
+    "type": "argument",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Apply 10 Doubt to all enemies.\nGain 14 Block.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "all_enemies",
+        "status": "doubt",
+        "amount": 10
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 14
+      }
+    ],
+    "tags": [
+      "act_4",
+      "night_watch_recruit",
+      "doubt",
+      "block",
+      "aoe",
+      "riot_act",
+      "pyramid",
+      "licensing_labyrinth",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "desert_poultice_cache",
+    "name": "Desert Poultice Cache",
+    "class": "hedge_witch",
+    "type": "form",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Gain 12 Block.\nAdd a Warm Poultice and a Bitter Draught to your hand.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 12
+      },
+      {
+        "type": "create_card",
+        "card_id": "warm_poultice",
+        "destination": "hand",
+        "copies": 1
+      },
+      {
+        "type": "create_card",
+        "card_id": "bitter_draught",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "hedge_witch",
+      "poultice",
+      "brew",
+      "block",
+      "poison",
+      "pyramid",
+      "desert",
+      "licensing_labyrinth"
+    ],
+    "upgrades_to": "desert_poultice_cache_plus"
+  },
+  {
+    "id": "desert_poultice_cache_plus",
+    "name": "Desert Poultice Cache+",
+    "class": "hedge_witch",
+    "type": "form",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Gain 16 Block.\nAdd a Warm Poultice and 2 Bitter Draughts to your hand.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 16
+      },
+      {
+        "type": "create_card",
+        "card_id": "warm_poultice",
+        "destination": "hand",
+        "copies": 1
+      },
+      {
+        "type": "create_card",
+        "card_id": "bitter_draught",
+        "destination": "hand",
+        "copies": 2
+      }
+    ],
+    "tags": [
+      "act_4",
+      "hedge_witch",
+      "poultice",
+      "brew",
+      "block",
+      "poison",
+      "pyramid",
+      "desert",
+      "licensing_labyrinth",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "canopic_knot_charm",
+    "name": "Canopic Knot Charm",
+    "class": "hedge_witch",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "rare",
+    "text": "Apply 5 Doubt and 5 Paperwork.\nAdd a Spare Knot to your hand.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 5
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 5
+      },
+      {
+        "type": "create_card",
+        "card_id": "spare_knot",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "hedge_witch",
+      "knot",
+      "charm",
+      "doubt",
+      "paperwork",
+      "setup",
+      "pyramid",
+      "canopic",
+      "licensing_labyrinth"
+    ],
+    "upgrades_to": "canopic_knot_charm_plus"
+  },
+  {
+    "id": "canopic_knot_charm_plus",
+    "name": "Canopic Knot Charm+",
+    "class": "hedge_witch",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "rare",
+    "text": "Apply 7 Doubt and 7 Paperwork.\nAdd a Spare Knot to your hand.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 7
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 7
+      },
+      {
+        "type": "create_card",
+        "card_id": "spare_knot",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "hedge_witch",
+      "knot",
+      "charm",
+      "doubt",
+      "paperwork",
+      "setup",
+      "pyramid",
+      "canopic",
+      "licensing_labyrinth",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "scorpion_jar_brew",
+    "name": "Scorpion Jar Brew",
+    "class": "hedge_witch",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Apply 7 Poison to all enemies.\nApply 2 Doubt to all enemies.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "all_enemies",
+        "status": "poison",
+        "amount": 7
+      },
+      {
+        "type": "apply_status",
+        "target": "all_enemies",
+        "status": "doubt",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "act_4",
+      "hedge_witch",
+      "brew",
+      "poison",
+      "doubt",
+      "aoe",
+      "pyramid",
+      "canopic",
+      "licensing_labyrinth"
+    ],
+    "upgrades_to": "scorpion_jar_brew_plus"
+  },
+  {
+    "id": "scorpion_jar_brew_plus",
+    "name": "Scorpion Jar Brew+",
+    "class": "hedge_witch",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Apply 10 Poison to all enemies.\nApply 3 Doubt to all enemies.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "all_enemies",
+        "status": "poison",
+        "amount": 10
+      },
+      {
+        "type": "apply_status",
+        "target": "all_enemies",
+        "status": "doubt",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "act_4",
+      "hedge_witch",
+      "brew",
+      "poison",
+      "doubt",
+      "aoe",
+      "pyramid",
+      "canopic",
+      "licensing_labyrinth",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "featherless_omen",
+    "name": "Featherless Omen",
+    "class": "hedge_witch",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "rare",
+    "text": "Deal 6 damage per Doubt on the target.\nAdd a Crow Feather to your hand.\nExhaust.",
+    "effects": [
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount_per_stack": 6
+      },
+      {
+        "type": "create_card",
+        "card_id": "crow_feather",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "hedge_witch",
+      "attack",
+      "doubt",
+      "payoff",
+      "familiar",
+      "omen",
+      "exhaust",
+      "pyramid",
+      "licensing_labyrinth"
+    ],
+    "upgrades_to": "featherless_omen_plus"
+  },
+  {
+    "id": "featherless_omen_plus",
+    "name": "Featherless Omen+",
+    "class": "hedge_witch",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "rare",
+    "text": "Deal 7 damage per Doubt on the target.\nAdd 2 Crow Feathers to your hand.\nExhaust.",
+    "effects": [
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount_per_stack": 7
+      },
+      {
+        "type": "create_card",
+        "card_id": "crow_feather",
+        "destination": "hand",
+        "copies": 2
+      }
+    ],
+    "tags": [
+      "act_4",
+      "hedge_witch",
+      "attack",
+      "doubt",
+      "payoff",
+      "familiar",
+      "omen",
+      "exhaust",
+      "pyramid",
+      "licensing_labyrinth",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "cartouche_contract",
+    "name": "Cartouche Contract",
+    "class": "guild_assassin_apprentice",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Apply 4 Doubt.\nApply 4 Poison.\nAdd a Calling Card to your hand.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 4
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 4
+      },
+      {
+        "type": "create_card",
+        "card_id": "calling_card",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "guild_assassin_apprentice",
+      "contract",
+      "doubt",
+      "poison",
+      "setup",
+      "pyramid",
+      "cartouche",
+      "licensing_labyrinth"
+    ],
+    "upgrades_to": "cartouche_contract_plus"
+  },
+  {
+    "id": "cartouche_contract_plus",
+    "name": "Cartouche Contract+",
+    "class": "guild_assassin_apprentice",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Apply 5 Doubt.\nApply 6 Poison.\nAdd a Calling Card to your hand.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 5
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 6
+      },
+      {
+        "type": "create_card",
+        "card_id": "calling_card",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "guild_assassin_apprentice",
+      "contract",
+      "doubt",
+      "poison",
+      "setup",
+      "pyramid",
+      "cartouche",
+      "licensing_labyrinth",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "silent_tomb_entry",
+    "name": "Silent Tomb Entry",
+    "class": "guild_assassin_apprentice",
+    "type": "action",
+    "cost": 0,
+    "rarity": "rare",
+    "text": "Gain 1 Energy.\nDraw 1.\nApply 2 Doubt.\nExhaust.",
+    "effects": [
+      {
+        "type": "gain_resource",
+        "resource": "energy",
+        "amount": 1
+      },
+      {
+        "type": "draw_cards",
+        "amount": 1
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "act_4",
+      "guild_assassin_apprentice",
+      "energy",
+      "draw",
+      "doubt",
+      "zero_cost",
+      "exhaust",
+      "pyramid",
+      "tomb",
+      "licensing_labyrinth"
+    ],
+    "upgrades_to": "silent_tomb_entry_plus"
+  },
+  {
+    "id": "silent_tomb_entry_plus",
+    "name": "Silent Tomb Entry+",
+    "class": "guild_assassin_apprentice",
+    "type": "action",
+    "cost": 0,
+    "rarity": "rare",
+    "text": "Gain 1 Energy.\nDraw 2.\nApply 3 Doubt.\nExhaust.",
+    "effects": [
+      {
+        "type": "gain_resource",
+        "resource": "energy",
+        "amount": 1
+      },
+      {
+        "type": "draw_cards",
+        "amount": 2
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "act_4",
+      "guild_assassin_apprentice",
+      "energy",
+      "draw",
+      "doubt",
+      "zero_cost",
+      "exhaust",
+      "pyramid",
+      "tomb",
+      "licensing_labyrinth",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "poisoned_burial_pin",
+    "name": "Poisoned Burial Pin",
+    "class": "guild_assassin_apprentice",
+    "type": "action",
+    "cost": 1,
+    "rarity": "rare",
+    "text": "Deal 14 damage.\nApply 5 Poison.\nAdd a Poisoned Pin to your hand.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 14
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 5
+      },
+      {
+        "type": "create_card",
+        "card_id": "poisoned_pin",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "guild_assassin_apprentice",
+      "attack",
+      "poison",
+      "pin",
+      "pyramid",
+      "burial",
+      "licensing_labyrinth"
+    ],
+    "upgrades_to": "poisoned_burial_pin_plus"
+  },
+  {
+    "id": "poisoned_burial_pin_plus",
+    "name": "Poisoned Burial Pin+",
+    "class": "guild_assassin_apprentice",
+    "type": "action",
+    "cost": 1,
+    "rarity": "rare",
+    "text": "Deal 18 damage.\nApply 7 Poison.\nAdd a Poisoned Pin to your hand.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 18
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 7
+      },
+      {
+        "type": "create_card",
+        "card_id": "poisoned_pin",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "guild_assassin_apprentice",
+      "attack",
+      "poison",
+      "pin",
+      "pyramid",
+      "burial",
+      "licensing_labyrinth",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "death_mask_alibi",
+    "name": "Death Mask Alibi",
+    "class": "guild_assassin_apprentice",
+    "type": "form",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Gain 18 Block.\nApply 6 Doubt to all enemies.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 18
+      },
+      {
+        "type": "apply_status",
+        "target": "all_enemies",
+        "status": "doubt",
+        "amount": 6
+      }
+    ],
+    "tags": [
+      "act_4",
+      "guild_assassin_apprentice",
+      "block",
+      "doubt",
+      "aoe",
+      "alibi",
+      "pyramid",
+      "death_mask",
+      "licensing_labyrinth"
+    ],
+    "upgrades_to": "death_mask_alibi_plus"
+  },
+  {
+    "id": "death_mask_alibi_plus",
+    "name": "Death Mask Alibi+",
+    "class": "guild_assassin_apprentice",
+    "type": "form",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Gain 24 Block.\nApply 8 Doubt to all enemies.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 24
+      },
+      {
+        "type": "apply_status",
+        "target": "all_enemies",
+        "status": "doubt",
+        "amount": 8
+      }
+    ],
+    "tags": [
+      "act_4",
+      "guild_assassin_apprentice",
+      "block",
+      "doubt",
+      "aoe",
+      "alibi",
+      "pyramid",
+      "death_mask",
+      "licensing_labyrinth",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "borrowed_sun_rune",
+    "name": "Borrowed Sun Rune",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Deal 16 damage.\nAdd a Smoking Rune to your discard pile.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 16
+      },
+      {
+        "type": "create_card",
+        "card_id": "smoking_rune",
+        "destination": "discard_pile",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "failed_wizard",
+      "spell",
+      "attack",
+      "misfire",
+      "junk",
+      "pyramid",
+      "sun",
+      "licensing_labyrinth"
+    ],
+    "upgrades_to": "borrowed_sun_rune_plus"
+  },
+  {
+    "id": "borrowed_sun_rune_plus",
+    "name": "Borrowed Sun Rune+",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Deal 22 damage.\nAdd a Smoking Rune to your discard pile.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 22
+      },
+      {
+        "type": "create_card",
+        "card_id": "smoking_rune",
+        "destination": "discard_pile",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "failed_wizard",
+      "spell",
+      "attack",
+      "misfire",
+      "junk",
+      "pyramid",
+      "sun",
+      "licensing_labyrinth",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "pyramid_fragment_cascade",
+    "name": "Pyramid Fragment Cascade",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Add 2 Loose Sparks and 2 Escaped Syllables to your hand.\nDraw 1.",
+    "effects": [
+      {
+        "type": "create_card",
+        "card_id": "loose_spark",
+        "destination": "hand",
+        "copies": 2
+      },
+      {
+        "type": "create_card",
+        "card_id": "escaped_syllable",
+        "destination": "hand",
+        "copies": 2
+      },
+      {
+        "type": "draw_cards",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "failed_wizard",
+      "spell_fragment",
+      "draw",
+      "attack",
+      "aoe",
+      "pyramid",
+      "unstable",
+      "licensing_labyrinth"
+    ],
+    "upgrades_to": "pyramid_fragment_cascade_plus"
+  },
+  {
+    "id": "pyramid_fragment_cascade_plus",
+    "name": "Pyramid Fragment Cascade+",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "rare",
+    "text": "Add 2 Loose Sparks and 2 Escaped Syllables to your hand.\nDraw 1.",
+    "effects": [
+      {
+        "type": "create_card",
+        "card_id": "loose_spark",
+        "destination": "hand",
+        "copies": 2
+      },
+      {
+        "type": "create_card",
+        "card_id": "escaped_syllable",
+        "destination": "hand",
+        "copies": 2
+      },
+      {
+        "type": "draw_cards",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "failed_wizard",
+      "spell_fragment",
+      "draw",
+      "attack",
+      "aoe",
+      "pyramid",
+      "unstable",
+      "licensing_labyrinth",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "incorrect_hieroglyph",
+    "name": "Incorrect Hieroglyph",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 0,
+    "rarity": "rare",
+    "text": "Gain 2 Energy.\nApply 1 Panic to yourself.\nAdd a Bad Incantation to your discard pile.\nExhaust.",
+    "effects": [
+      {
+        "type": "gain_resource",
+        "resource": "energy",
+        "amount": 2
+      },
+      {
+        "type": "apply_status",
+        "target": "self",
+        "status": "panic",
+        "amount": 1
+      },
+      {
+        "type": "create_card",
+        "card_id": "bad_incantation",
+        "destination": "discard_pile",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "failed_wizard",
+      "energy",
+      "panic",
+      "junk",
+      "zero_cost",
+      "exhaust",
+      "pyramid",
+      "hieroglyph",
+      "licensing_labyrinth"
+    ],
+    "upgrades_to": "incorrect_hieroglyph_plus"
+  },
+  {
+    "id": "incorrect_hieroglyph_plus",
+    "name": "Incorrect Hieroglyph+",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 0,
+    "rarity": "rare",
+    "text": "Gain 2 Energy.\nDraw 1.\nApply 1 Panic to yourself.\nAdd a Bad Incantation to your discard pile.\nExhaust.",
+    "effects": [
+      {
+        "type": "gain_resource",
+        "resource": "energy",
+        "amount": 2
+      },
+      {
+        "type": "draw_cards",
+        "amount": 1
+      },
+      {
+        "type": "apply_status",
+        "target": "self",
+        "status": "panic",
+        "amount": 1
+      },
+      {
+        "type": "create_card",
+        "card_id": "bad_incantation",
+        "destination": "discard_pile",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "failed_wizard",
+      "energy",
+      "draw",
+      "panic",
+      "junk",
+      "zero_cost",
+      "exhaust",
+      "pyramid",
+      "hieroglyph",
+      "licensing_labyrinth",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "sarcophagus_backfire",
+    "name": "Sarcophagus Backfire",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Deal 20 damage to all enemies.\nApply 2 Panic to yourself.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "all_enemies",
+        "amount": 20
+      },
+      {
+        "type": "apply_status",
+        "target": "self",
+        "status": "panic",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "act_4",
+      "failed_wizard",
+      "attack",
+      "aoe",
+      "panic",
+      "risk_reward",
+      "pyramid",
+      "sarcophagus",
+      "licensing_labyrinth"
+    ],
+    "upgrades_to": "sarcophagus_backfire_plus"
+  },
+  {
+    "id": "sarcophagus_backfire_plus",
+    "name": "Sarcophagus Backfire+",
+    "class": "failed_wizard",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Deal 28 damage to all enemies.\nApply 2 Panic to yourself.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "all_enemies",
+        "amount": 28
+      },
+      {
+        "type": "apply_status",
+        "target": "self",
+        "status": "panic",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "act_4",
+      "failed_wizard",
+      "attack",
+      "aoe",
+      "panic",
+      "risk_reward",
+      "pyramid",
+      "sarcophagus",
+      "licensing_labyrinth",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "rat_envoy_to_the_afterlife",
+    "name": "Rat Envoy to the Afterlife",
+    "class": "sewer_diplomat",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Apply 5 Paperwork.\nAdd 2 Rat Cousins to your hand.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 5
+      },
+      {
+        "type": "create_card",
+        "card_id": "rat_cousin",
+        "destination": "hand",
+        "copies": 2
+      }
+    ],
+    "tags": [
+      "act_4",
+      "sewer_diplomat",
+      "rat",
+      "swarm",
+      "paperwork",
+      "diplomacy",
+      "pyramid",
+      "afterlife",
+      "licensing_labyrinth"
+    ],
+    "upgrades_to": "rat_envoy_to_the_afterlife_plus"
+  },
+  {
+    "id": "rat_envoy_to_the_afterlife_plus",
+    "name": "Rat Envoy to the Afterlife+",
+    "class": "sewer_diplomat",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Apply 7 Paperwork.\nAdd 3 Rat Cousins to your hand.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 7
+      },
+      {
+        "type": "create_card",
+        "card_id": "rat_cousin",
+        "destination": "hand",
+        "copies": 3
+      }
+    ],
+    "tags": [
+      "act_4",
+      "sewer_diplomat",
+      "rat",
+      "swarm",
+      "paperwork",
+      "diplomacy",
+      "pyramid",
+      "afterlife",
+      "licensing_labyrinth",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "canopic_cheese_favour",
+    "name": "Canopic Cheese Favour",
+    "class": "sewer_diplomat",
+    "type": "form",
+    "cost": 1,
+    "rarity": "rare",
+    "text": "Gain 16 Block.\nAdd 2 Cheese Favors to your hand.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 16
+      },
+      {
+        "type": "create_card",
+        "card_id": "cheese_favor",
+        "destination": "hand",
+        "copies": 2
+      }
+    ],
+    "tags": [
+      "act_4",
+      "sewer_diplomat",
+      "cheese",
+      "bribe",
+      "block",
+      "pyramid",
+      "canopic",
+      "licensing_labyrinth"
+    ],
+    "upgrades_to": "canopic_cheese_favour_plus"
+  },
+  {
+    "id": "canopic_cheese_favour_plus",
+    "name": "Canopic Cheese Favour+",
+    "class": "sewer_diplomat",
+    "type": "form",
+    "cost": 1,
+    "rarity": "rare",
+    "text": "Gain 22 Block.\nAdd 2 Cheese Favors to your hand.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 22
+      },
+      {
+        "type": "create_card",
+        "card_id": "cheese_favor",
+        "destination": "hand",
+        "copies": 2
+      }
+    ],
+    "tags": [
+      "act_4",
+      "sewer_diplomat",
+      "cheese",
+      "bribe",
+      "block",
+      "pyramid",
+      "canopic",
+      "licensing_labyrinth",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "hidden_drain_under_the_tomb",
+    "name": "Hidden Drain under the Tomb",
+    "class": "sewer_diplomat",
+    "type": "form",
+    "cost": 0,
+    "rarity": "rare",
+    "text": "Draw 2.\nAdd a Sewer Map to your hand.\nExhaust.",
+    "effects": [
+      {
+        "type": "draw_cards",
+        "amount": 2
+      },
+      {
+        "type": "create_card",
+        "card_id": "sewer_map",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "sewer_diplomat",
+      "sewer_route",
+      "draw",
+      "zero_cost",
+      "exhaust",
+      "pyramid",
+      "tomb",
+      "licensing_labyrinth"
+    ],
+    "upgrades_to": "hidden_drain_under_the_tomb_plus"
+  },
+  {
+    "id": "hidden_drain_under_the_tomb_plus",
+    "name": "Hidden Drain under the Tomb+",
+    "class": "sewer_diplomat",
+    "type": "form",
+    "cost": 0,
+    "rarity": "rare",
+    "text": "Draw 3.\nAdd a Sewer Map to your hand.\nExhaust.",
+    "effects": [
+      {
+        "type": "draw_cards",
+        "amount": 3
+      },
+      {
+        "type": "create_card",
+        "card_id": "sewer_map",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "sewer_diplomat",
+      "sewer_route",
+      "draw",
+      "zero_cost",
+      "exhaust",
+      "pyramid",
+      "tomb",
+      "licensing_labyrinth",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "mummified_rat_king_favour",
+    "name": "Mummified Rat-King Favour",
+    "class": "sewer_diplomat",
+    "type": "argument",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Deal 10 damage to all enemies.\nApply 5 Poison to all enemies.\nAdd 2 Rat Cousins to your hand.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "all_enemies",
+        "amount": 10
+      },
+      {
+        "type": "apply_status",
+        "target": "all_enemies",
+        "status": "poison",
+        "amount": 5
+      },
+      {
+        "type": "create_card",
+        "card_id": "rat_cousin",
+        "destination": "hand",
+        "copies": 2
+      }
+    ],
+    "tags": [
+      "act_4",
+      "sewer_diplomat",
+      "rat",
+      "swarm",
+      "poison",
+      "attack",
+      "aoe",
+      "pyramid",
+      "mummy",
+      "licensing_labyrinth"
+    ],
+    "upgrades_to": "mummified_rat_king_favour_plus"
+  },
+  {
+    "id": "mummified_rat_king_favour_plus",
+    "name": "Mummified Rat-King Favour+",
+    "class": "sewer_diplomat",
+    "type": "argument",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Deal 14 damage to all enemies.\nApply 7 Poison to all enemies.\nAdd 2 Rat Cousins to your hand.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "all_enemies",
+        "amount": 14
+      },
+      {
+        "type": "apply_status",
+        "target": "all_enemies",
+        "status": "poison",
+        "amount": 7
+      },
+      {
+        "type": "create_card",
+        "card_id": "rat_cousin",
+        "destination": "hand",
+        "copies": 2
+      }
+    ],
+    "tags": [
+      "act_4",
+      "sewer_diplomat",
+      "rat",
+      "swarm",
+      "poison",
+      "attack",
+      "aoe",
+      "pyramid",
+      "mummy",
+      "licensing_labyrinth",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "canopic_death_certificate",
+    "name": "Canopic Death Certificate",
+    "class": "mortuary_apprentice",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Apply 7 Paperwork.\nAdd a Death Certificate to your hand.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 7
+      },
+      {
+        "type": "create_card",
+        "card_id": "death_certificate",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "mortuary_apprentice",
+      "certificate",
+      "paperwork",
+      "setup",
+      "pyramid",
+      "canopic",
+      "licensing_labyrinth"
+    ],
+    "upgrades_to": "canopic_death_certificate_plus"
+  },
+  {
+    "id": "canopic_death_certificate_plus",
+    "name": "Canopic Death Certificate+",
+    "class": "mortuary_apprentice",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Apply 10 Paperwork.\nAdd 2 Death Certificates to your hand.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 10
+      },
+      {
+        "type": "create_card",
+        "card_id": "death_certificate",
+        "destination": "hand",
+        "copies": 2
+      }
+    ],
+    "tags": [
+      "act_4",
+      "mortuary_apprentice",
+      "certificate",
+      "paperwork",
+      "setup",
+      "pyramid",
+      "canopic",
+      "licensing_labyrinth",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "black_ribbon_of_the_scale",
+    "name": "Black Ribbon of the Scale",
+    "class": "mortuary_apprentice",
+    "type": "form",
+    "cost": 1,
+    "rarity": "rare",
+    "text": "Gain 16 Block.\nApply 5 Doubt.\nAdd a Black Ribbon to your hand.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 16
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 5
+      },
+      {
+        "type": "create_card",
+        "card_id": "black_ribbon",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "mortuary_apprentice",
+      "block",
+      "doubt",
+      "mourning",
+      "scale",
+      "pyramid",
+      "licensing_labyrinth"
+    ],
+    "upgrades_to": "black_ribbon_of_the_scale_plus"
+  },
+  {
+    "id": "black_ribbon_of_the_scale_plus",
+    "name": "Black Ribbon of the Scale+",
+    "class": "mortuary_apprentice",
+    "type": "form",
+    "cost": 1,
+    "rarity": "rare",
+    "text": "Gain 22 Block.\nApply 7 Doubt.\nAdd a Black Ribbon to your hand.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 22
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 7
+      },
+      {
+        "type": "create_card",
+        "card_id": "black_ribbon",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "mortuary_apprentice",
+      "block",
+      "doubt",
+      "mourning",
+      "scale",
+      "pyramid",
+      "licensing_labyrinth",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "weigh_the_named_remains",
+    "name": "Weigh the Named Remains",
+    "class": "mortuary_apprentice",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Deal 5 damage per Paperwork on the target.\nAdd a Small Bell Echo to your hand.\nExhaust.",
+    "effects": [
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount_per_stack": 5
+      },
+      {
+        "type": "create_card",
+        "card_id": "small_bell_echo",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "mortuary_apprentice",
+      "attack",
+      "paperwork",
+      "payoff",
+      "bell",
+      "exhaust",
+      "pyramid",
+      "licensing_labyrinth"
+    ],
+    "upgrades_to": "weigh_the_named_remains_plus"
+  },
+  {
+    "id": "weigh_the_named_remains_plus",
+    "name": "Weigh the Named Remains+",
+    "class": "mortuary_apprentice",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Deal 6 damage per Paperwork on the target.\nAdd 2 Small Bell Echoes to your hand.\nExhaust.",
+    "effects": [
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount_per_stack": 6
+      },
+      {
+        "type": "create_card",
+        "card_id": "small_bell_echo",
+        "destination": "hand",
+        "copies": 2
+      }
+    ],
+    "tags": [
+      "act_4",
+      "mortuary_apprentice",
+      "attack",
+      "paperwork",
+      "payoff",
+      "bell",
+      "exhaust",
+      "pyramid",
+      "licensing_labyrinth",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "unfinished_burial_record",
+    "name": "Unfinished Burial Record",
+    "class": "mortuary_apprentice",
+    "type": "argument",
+    "cost": 0,
+    "rarity": "rare",
+    "text": "Gain 1 Energy.\nDraw 2.\nAdd an Unfinished Obituary to your discard pile.\nExhaust.",
+    "effects": [
+      {
+        "type": "gain_resource",
+        "resource": "energy",
+        "amount": 1
+      },
+      {
+        "type": "draw_cards",
+        "amount": 2
+      },
+      {
+        "type": "create_card",
+        "card_id": "unfinished_obituary",
+        "destination": "discard_pile",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "mortuary_apprentice",
+      "energy",
+      "draw",
+      "obituary",
+      "junk",
+      "zero_cost",
+      "exhaust",
+      "pyramid",
+      "licensing_labyrinth"
+    ],
+    "upgrades_to": "unfinished_burial_record_plus"
+  },
+  {
+    "id": "unfinished_burial_record_plus",
+    "name": "Unfinished Burial Record+",
+    "class": "mortuary_apprentice",
+    "type": "argument",
+    "cost": 0,
+    "rarity": "rare",
+    "text": "Gain 1 Energy.\nDraw 3.\nAdd an Unfinished Obituary to your discard pile.\nExhaust.",
+    "effects": [
+      {
+        "type": "gain_resource",
+        "resource": "energy",
+        "amount": 1
+      },
+      {
+        "type": "draw_cards",
+        "amount": 3
+      },
+      {
+        "type": "create_card",
+        "card_id": "unfinished_obituary",
+        "destination": "discard_pile",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "mortuary_apprentice",
+      "energy",
+      "draw",
+      "obituary",
+      "junk",
+      "zero_cost",
+      "exhaust",
+      "pyramid",
+      "licensing_labyrinth",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "tomb_bloom_spores",
+    "name": "Tomb Bloom Spores",
+    "class": "shroomancer",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Apply 6 Poison.\nAdd 2 Loose Spores to your hand.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 6
+      },
+      {
+        "type": "create_card",
+        "card_id": "loose_spore",
+        "destination": "hand",
+        "copies": 2
+      }
+    ],
+    "tags": [
+      "act_4",
+      "shroomancer",
+      "poison",
+      "spore",
+      "swarm",
+      "pyramid",
+      "tomb",
+      "licensing_labyrinth"
+    ],
+    "upgrades_to": "tomb_bloom_spores_plus"
+  },
+  {
+    "id": "tomb_bloom_spores_plus",
+    "name": "Tomb Bloom Spores+",
+    "class": "shroomancer",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Apply 8 Poison.\nAdd 3 Loose Spores to your hand.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 8
+      },
+      {
+        "type": "create_card",
+        "card_id": "loose_spore",
+        "destination": "hand",
+        "copies": 3
+      }
+    ],
+    "tags": [
+      "act_4",
+      "shroomancer",
+      "poison",
+      "spore",
+      "swarm",
+      "pyramid",
+      "tomb",
+      "licensing_labyrinth",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "mycelium_under_the_pyramid",
+    "name": "Mycelium under the Pyramid",
+    "class": "shroomancer",
+    "type": "form",
+    "cost": 1,
+    "rarity": "rare",
+    "text": "Gain 14 Block.\nDraw 1.\nAdd a Mycelium Thread to your hand.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 14
+      },
+      {
+        "type": "draw_cards",
+        "amount": 1
+      },
+      {
+        "type": "create_card",
+        "card_id": "mycelium_thread",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "shroomancer",
+      "mycelium",
+      "block",
+      "draw",
+      "pyramid",
+      "underground",
+      "licensing_labyrinth"
+    ],
+    "upgrades_to": "mycelium_under_the_pyramid_plus"
+  },
+  {
+    "id": "mycelium_under_the_pyramid_plus",
+    "name": "Mycelium under the Pyramid+",
+    "class": "shroomancer",
+    "type": "form",
+    "cost": 1,
+    "rarity": "rare",
+    "text": "Gain 18 Block.\nDraw 2.\nAdd a Mycelium Thread to your hand.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 18
+      },
+      {
+        "type": "draw_cards",
+        "amount": 2
+      },
+      {
+        "type": "create_card",
+        "card_id": "mycelium_thread",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "shroomancer",
+      "mycelium",
+      "block",
+      "draw",
+      "pyramid",
+      "underground",
+      "licensing_labyrinth",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "canopic_compost_conditions",
+    "name": "Canopic Compost Conditions",
+    "class": "shroomancer",
+    "type": "form",
+    "cost": 0,
+    "rarity": "rare",
+    "text": "Gain 1 Energy.\nDraw 2.\nAdd Soggy Compost to your discard pile.\nExhaust.",
+    "effects": [
+      {
+        "type": "gain_resource",
+        "resource": "energy",
+        "amount": 1
+      },
+      {
+        "type": "draw_cards",
+        "amount": 2
+      },
+      {
+        "type": "create_card",
+        "card_id": "soggy_compost",
+        "destination": "discard_pile",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "shroomancer",
+      "energy",
+      "draw",
+      "junk",
+      "zero_cost",
+      "exhaust",
+      "pyramid",
+      "canopic",
+      "licensing_labyrinth"
+    ],
+    "upgrades_to": "canopic_compost_conditions_plus"
+  },
+  {
+    "id": "canopic_compost_conditions_plus",
+    "name": "Canopic Compost Conditions+",
+    "class": "shroomancer",
+    "type": "form",
+    "cost": 0,
+    "rarity": "rare",
+    "text": "Gain 1 Energy.\nDraw 3.\nAdd Soggy Compost to your discard pile.\nExhaust.",
+    "effects": [
+      {
+        "type": "gain_resource",
+        "resource": "energy",
+        "amount": 1
+      },
+      {
+        "type": "draw_cards",
+        "amount": 3
+      },
+      {
+        "type": "create_card",
+        "card_id": "soggy_compost",
+        "destination": "discard_pile",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "act_4",
+      "shroomancer",
+      "energy",
+      "draw",
+      "junk",
+      "zero_cost",
+      "exhaust",
+      "pyramid",
+      "canopic",
+      "licensing_labyrinth",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "pharaohs_rot_garden",
+    "name": "Pharaoh's Rot Garden",
+    "class": "shroomancer",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Apply 9 Poison to all enemies.\nApply 4 Doubt to all enemies.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "all_enemies",
+        "status": "poison",
+        "amount": 9
+      },
+      {
+        "type": "apply_status",
+        "target": "all_enemies",
+        "status": "doubt",
+        "amount": 4
+      }
+    ],
+    "tags": [
+      "act_4",
+      "shroomancer",
+      "poison",
+      "doubt",
+      "aoe",
+      "rot",
+      "pyramid",
+      "garden",
+      "licensing_labyrinth"
+    ],
+    "upgrades_to": "pharaohs_rot_garden_plus"
+  },
+  {
+    "id": "pharaohs_rot_garden_plus",
+    "name": "Pharaoh's Rot Garden+",
+    "class": "shroomancer",
+    "type": "spell",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Apply 12 Poison to all enemies.\nApply 5 Doubt to all enemies.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "all_enemies",
+        "status": "poison",
+        "amount": 12
+      },
+      {
+        "type": "apply_status",
+        "target": "all_enemies",
+        "status": "doubt",
+        "amount": 5
+      }
+    ],
+    "tags": [
+      "act_4",
+      "shroomancer",
+      "poison",
+      "doubt",
+      "aoe",
+      "rot",
+      "pyramid",
+      "garden",
+      "licensing_labyrinth",
+      "upgraded"
+    ]
+  }
+]

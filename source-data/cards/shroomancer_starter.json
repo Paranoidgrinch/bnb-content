@@ -1,0 +1,252 @@
+[
+  {
+    "id": "spore_puff",
+    "name": "Spore Puff",
+    "class": "shroomancer",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Deal 3 damage. Apply 1 Poison.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 3
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "attack",
+      "poison",
+      "spore"
+    ],
+    "upgrades_to": "spore_puff_plus"
+  },
+  {
+    "id": "spore_puff_plus",
+    "name": "Spore Puff+",
+    "class": "shroomancer",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Deal 5 damage. Apply 2 Poison.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 5
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "attack",
+      "poison",
+      "spore",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "mycelium_wall",
+    "name": "Mycelium Wall",
+    "class": "shroomancer",
+    "type": "form",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Gain 5 Block.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 5
+      }
+    ],
+    "tags": [
+      "block",
+      "mycelium"
+    ],
+    "upgrades_to": "mycelium_wall_plus"
+  },
+  {
+    "id": "mycelium_wall_plus",
+    "name": "Mycelium Wall+",
+    "class": "shroomancer",
+    "type": "form",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Gain 8 Block.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 8
+      }
+    ],
+    "tags": [
+      "block",
+      "mycelium",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "fungal_bloom",
+    "name": "Fungal Bloom",
+    "class": "shroomancer",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Apply 3 Poison.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "poison",
+      "bloom",
+      "setup"
+    ],
+    "upgrades_to": "fungal_bloom_plus"
+  },
+  {
+    "id": "fungal_bloom_plus",
+    "name": "Fungal Bloom+",
+    "class": "shroomancer",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Apply 5 Poison.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 5
+      }
+    ],
+    "tags": [
+      "poison",
+      "bloom",
+      "setup",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "capstone_guard",
+    "name": "Capstone Guard",
+    "class": "shroomancer",
+    "type": "form",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Gain 6 Block. Apply 1 Poison.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 6
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "block",
+      "poison",
+      "cap",
+      "mycelium"
+    ],
+    "upgrades_to": "capstone_guard_plus"
+  },
+  {
+    "id": "capstone_guard_plus",
+    "name": "Capstone Guard+",
+    "class": "shroomancer",
+    "type": "form",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Gain 9 Block. Apply 1 Poison.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 9
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "block",
+      "poison",
+      "cap",
+      "mycelium",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "slow_decay",
+    "name": "Slow Decay",
+    "class": "shroomancer",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Deal 1 damage per Poison on the target.",
+    "effects": [
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount_per_stack": 1
+      }
+    ],
+    "tags": [
+      "attack",
+      "poison",
+      "payoff",
+      "decay"
+    ],
+    "upgrades_to": "slow_decay_plus"
+  },
+  {
+    "id": "slow_decay_plus",
+    "name": "Slow Decay+",
+    "class": "shroomancer",
+    "type": "spell",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Deal 2 damage per Poison on the target.",
+    "effects": [
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "poison",
+        "amount_per_stack": 2
+      }
+    ],
+    "tags": [
+      "attack",
+      "poison",
+      "payoff",
+      "decay",
+      "upgraded"
+    ]
+  }
+]

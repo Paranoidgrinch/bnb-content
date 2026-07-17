@@ -1,0 +1,39 @@
+{
+  "id": "act_1_example",
+  "act": 1,
+  "name": "Act I: Example Act",
+  "character_class_files": [
+    "data/classes/bureaucrat.json"
+  ],
+  "default_character_class_id": "bureaucrat",
+  "card_files": [
+    "data/cards/bureaucrat_starter.json",
+    "data/cards/bureaucrat_rewards.json"
+  ],
+  "enemy_files": [
+    "data/enemies/example_enemies.json"
+  ],
+  "encounter_files": [
+    "data/encounters/example_encounters.json"
+  ],
+  "status_files": [
+    "data/statuses/statuses.json"
+  ],
+  "event_files": [
+    "data/events/example_events.json"
+  ],
+  "relic_files": [
+    "data/relics/example_relics.json"
+  ],
+  "map": {
+    "steps_before_boss": 9,
+    "width": 4
+  },
+  "treasure": {
+    "mimic_chance": 0.2,
+    "mimic_encounter_id": "example_elite_01"
+  },
+  "waiting_room": {
+    "heal_percent": 25
+  }
+}

@@ -1,0 +1,475 @@
+[
+  {
+    "id": "act3_bureaucrat_portable_queue_rope",
+    "name": "Portable Queue Rope",
+    "description": "At the start of each combat, apply 2 Paperwork to all enemies and gain 6 Block.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "paperwork",
+        "amount": 2
+      },
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 6
+      }
+    ],
+    "tags": [
+      "act_3",
+      "green_docket",
+      "class_specific",
+      "bureaucracy",
+      "paperwork",
+      "block"
+    ],
+    "allowed_classes": [
+      "bureaucrat"
+    ]
+  },
+  {
+    "id": "act3_bureaucrat_wayleave_stamp",
+    "name": "Wayleave Stamp",
+    "description": "Card rewards contain 1 additional card.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "increase_card_reward_count",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_3",
+      "green_docket",
+      "class_specific",
+      "bureaucracy",
+      "reward"
+    ],
+    "allowed_classes": [
+      "bureaucrat"
+    ]
+  },
+  {
+    "id": "act3_witch_clerk_hawthorn_ledger",
+    "name": "Hawthorn Ledger",
+    "description": "At the start of each combat, apply 2 Doubt to all enemies and gain 8 Block.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "doubt",
+        "amount": 2
+      },
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 8
+      }
+    ],
+    "tags": [
+      "act_3",
+      "green_docket",
+      "class_specific",
+      "witch",
+      "doubt",
+      "block"
+    ],
+    "allowed_classes": [
+      "witch_clerk"
+    ]
+  },
+  {
+    "id": "act3_witch_clerk_knot_of_permission",
+    "name": "Knot of Permission",
+    "description": "At the start of each combat, gain 1 Strength and apply 1 Doubt to all enemies.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "gain_strength_at_combat_start",
+        "amount": 1
+      },
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "doubt",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_3",
+      "green_docket",
+      "class_specific",
+      "witch",
+      "strength",
+      "doubt"
+    ],
+    "allowed_classes": [
+      "witch_clerk"
+    ]
+  },
+  {
+    "id": "act3_failed_wizard_singed_trail_map",
+    "name": "Singed Trail Map",
+    "description": "At the start of each combat, gain 1 Energy and apply 1 Panic to yourself.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "gain_energy_at_combat_start",
+        "amount": 1
+      },
+      {
+        "type": "apply_status_to_player_at_combat_start",
+        "status": "panic",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_3",
+      "green_docket",
+      "class_specific",
+      "wizard",
+      "energy",
+      "risk_reward"
+    ],
+    "allowed_classes": [
+      "failed_wizard"
+    ]
+  },
+  {
+    "id": "act3_failed_wizard_argumentative_weather_vane",
+    "name": "Argumentative Weather Vane",
+    "description": "At the start of each combat, gain 1 Strength and 5 Block.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "gain_strength_at_combat_start",
+        "amount": 1
+      },
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 5
+      }
+    ],
+    "tags": [
+      "act_3",
+      "green_docket",
+      "class_specific",
+      "wizard",
+      "strength",
+      "block"
+    ],
+    "allowed_classes": [
+      "failed_wizard"
+    ]
+  },
+  {
+    "id": "act3_night_watch_recruit_patrol_lantern",
+    "name": "Patrol Lantern",
+    "description": "At the start of each combat, apply 2 Doubt to all enemies.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "doubt",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "act_3",
+      "green_docket",
+      "class_specific",
+      "watch",
+      "doubt"
+    ],
+    "allowed_classes": [
+      "night_watch_recruit"
+    ]
+  },
+  {
+    "id": "act3_night_watch_recruit_sensible_boots",
+    "name": "Sensible Boots",
+    "description": "At the start of each combat, gain 1 Strength and 10 Block.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "gain_strength_at_combat_start",
+        "amount": 1
+      },
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 10
+      }
+    ],
+    "tags": [
+      "act_3",
+      "green_docket",
+      "class_specific",
+      "watch",
+      "strength",
+      "block"
+    ],
+    "allowed_classes": [
+      "night_watch_recruit"
+    ]
+  },
+  {
+    "id": "act3_hedge_witch_nettle_basket",
+    "name": "Nettle Basket",
+    "description": "At the start of each combat, apply 2 Poison to all enemies and heal 2 HP.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "poison",
+        "amount": 2
+      },
+      {
+        "type": "heal_at_combat_start",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "act_3",
+      "green_docket",
+      "class_specific",
+      "witch",
+      "poison",
+      "healing"
+    ],
+    "allowed_classes": [
+      "hedge_witch"
+    ]
+  },
+  {
+    "id": "act3_hedge_witch_old_root_charm",
+    "name": "Old Root Charm",
+    "description": "At the start of each combat, gain 1 Strength and apply 2 Poison to all enemies.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "gain_strength_at_combat_start",
+        "amount": 1
+      },
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "poison",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "act_3",
+      "green_docket",
+      "class_specific",
+      "witch",
+      "poison",
+      "strength"
+    ],
+    "allowed_classes": [
+      "hedge_witch"
+    ]
+  },
+  {
+    "id": "act3_guild_assassin_apprentice_milestone_shadow",
+    "name": "Milestone Shadow",
+    "description": "At the start of each combat, gain 1 Strength.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "gain_strength_at_combat_start",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_3",
+      "green_docket",
+      "class_specific",
+      "assassin",
+      "strength"
+    ],
+    "allowed_classes": [
+      "guild_assassin_apprentice"
+    ]
+  },
+  {
+    "id": "act3_guild_assassin_apprentice_silent_footpath",
+    "name": "Silent Footpath",
+    "description": "At the start of each combat, gain 1 Energy and 4 Block.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "gain_energy_at_combat_start",
+        "amount": 1
+      },
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 4
+      }
+    ],
+    "tags": [
+      "act_3",
+      "green_docket",
+      "class_specific",
+      "assassin",
+      "energy",
+      "block"
+    ],
+    "allowed_classes": [
+      "guild_assassin_apprentice"
+    ]
+  },
+  {
+    "id": "act3_sewer_diplomat_stream_charter",
+    "name": "Stream Charter",
+    "description": "At the start of each combat, apply 1 Poison and 1 Doubt to all enemies.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "poison",
+        "amount": 1
+      },
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "doubt",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_3",
+      "green_docket",
+      "class_specific",
+      "sewer",
+      "poison",
+      "doubt"
+    ],
+    "allowed_classes": [
+      "sewer_diplomat"
+    ]
+  },
+  {
+    "id": "act3_sewer_diplomat_bridge_immunity_badge",
+    "name": "Bridge Immunity Badge",
+    "description": "Shop prices are reduced by 20%. When picked up, gain 15 Gold.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "shop_price_discount",
+        "amount": 20
+      },
+      {
+        "type": "gain_gold_on_pickup",
+        "amount": 15
+      }
+    ],
+    "tags": [
+      "act_3",
+      "green_docket",
+      "class_specific",
+      "sewer",
+      "shop",
+      "gold"
+    ],
+    "allowed_classes": [
+      "sewer_diplomat"
+    ]
+  },
+  {
+    "id": "act3_mortuary_apprentice_wayside_marker",
+    "name": "Wayside Marker",
+    "description": "At the start of each combat, apply 2 Paperwork to all enemies.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "paperwork",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "act_3",
+      "green_docket",
+      "class_specific",
+      "mortuary",
+      "paperwork"
+    ],
+    "allowed_classes": [
+      "mortuary_apprentice"
+    ]
+  },
+  {
+    "id": "act3_mortuary_apprentice_quiet_shovel",
+    "name": "Quiet Shovel",
+    "description": "At the start of each combat, gain 1 Strength and heal 2 HP.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "gain_strength_at_combat_start",
+        "amount": 1
+      },
+      {
+        "type": "heal_at_combat_start",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "act_3",
+      "green_docket",
+      "class_specific",
+      "mortuary",
+      "strength",
+      "healing"
+    ],
+    "allowed_classes": [
+      "mortuary_apprentice"
+    ]
+  },
+  {
+    "id": "act3_shroomancer_moonlit_spore_jar",
+    "name": "Moonlit Spore Jar",
+    "description": "At the start of each combat, apply 3 Poison to all enemies.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "poison",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "act_3",
+      "green_docket",
+      "class_specific",
+      "shroom",
+      "poison"
+    ],
+    "allowed_classes": [
+      "shroomancer"
+    ]
+  },
+  {
+    "id": "act3_shroomancer_fairy_ring_key",
+    "name": "Fairy Ring Key",
+    "description": "Card rewards contain 1 additional card. At the start of each combat, apply 1 Poison to all enemies.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "increase_card_reward_count",
+        "amount": 1
+      },
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "poison",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "act_3",
+      "green_docket",
+      "class_specific",
+      "shroom",
+      "reward",
+      "poison"
+    ],
+    "allowed_classes": [
+      "shroomancer"
+    ]
+  }
+]

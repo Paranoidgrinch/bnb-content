@@ -1,0 +1,20 @@
+{
+  "id": "failed_wizard",
+  "name": "Failed Wizard",
+  "max_hp": 76,
+  "starting_energy": 3,
+  "starting_relic": null,
+  "starting_deck": [
+    "sparks_probably",
+    "sparks_probably",
+    "sparks_probably",
+    "sparks_probably",
+    "robe_flap",
+    "robe_flap",
+    "robe_flap",
+    "robe_flap",
+    "borrowed_thaum",
+    "luggage_burst"
+  ],
+  "starting_resources": {}
+}

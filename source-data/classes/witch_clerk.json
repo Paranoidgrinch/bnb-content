@@ -1,0 +1,20 @@
+{
+  "id": "witch_clerk",
+  "name": "Witch Clerk",
+  "max_hp": 64,
+  "starting_energy": 3,
+  "starting_relic": null,
+  "starting_deck": [
+    "ritual_memo",
+    "ritual_memo",
+    "ritual_memo",
+    "ritual_memo",
+    "broom_shield",
+    "broom_shield",
+    "broom_shield",
+    "broom_shield",
+    "suspicious_charm",
+    "stamped_incantation"
+  ],
+  "starting_resources": {}
+}

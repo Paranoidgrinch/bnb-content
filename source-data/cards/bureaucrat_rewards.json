@@ -1,0 +1,1474 @@
+[
+  {
+    "id": "red_tape",
+    "name": "Red Tape",
+    "class": "bureaucrat",
+    "type": "curse",
+    "cost": 0,
+    "rarity": "starter",
+    "text": "Unplayable.",
+    "effects": [],
+    "tags": [
+      "junk",
+      "unplayable",
+      "generated",
+      "bureaucracy"
+    ]
+  },
+  {
+    "id": "duplicate_copy",
+    "name": "Duplicate Copy",
+    "class": "bureaucrat",
+    "type": "curse",
+    "cost": 0,
+    "rarity": "starter",
+    "text": "Exhaust. Does nothing.",
+    "effects": [],
+    "tags": [
+      "junk",
+      "generated",
+      "bureaucracy",
+      "exhaust"
+    ]
+  },
+  {
+    "id": "misfiled_paper",
+    "name": "Misfiled Paper",
+    "class": "bureaucrat",
+    "type": "curse",
+    "cost": 1,
+    "rarity": "starter",
+    "text": "Draw 1. Exhaust.",
+    "effects": [
+      {
+        "type": "draw_cards",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "junk",
+      "generated",
+      "bureaucracy",
+      "exhaust"
+    ]
+  },
+  {
+    "id": "unsigned_form",
+    "name": "Unsigned Form",
+    "class": "bureaucrat",
+    "type": "curse",
+    "cost": 0,
+    "rarity": "starter",
+    "text": "Unplayable.",
+    "effects": [],
+    "tags": [
+      "junk",
+      "unplayable",
+      "generated",
+      "bureaucracy"
+    ]
+  },
+  {
+    "id": "administrative_notice",
+    "name": "Administrative Notice",
+    "class": "bureaucrat",
+    "type": "form",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 3 Paperwork.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "bureaucracy",
+      "paperwork",
+      "setup"
+    ],
+    "upgrades_to": "administrative_notice_plus"
+  },
+  {
+    "id": "administrative_notice_plus",
+    "name": "Administrative Notice+",
+    "class": "bureaucrat",
+    "type": "form",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 4 Paperwork.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 4
+      }
+    ],
+    "tags": [
+      "bureaucracy",
+      "paperwork",
+      "setup",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "compliance_review",
+    "name": "Compliance Review",
+    "class": "bureaucrat",
+    "type": "form",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Deal 5 damage.\nApply 2 Paperwork.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 5
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "attack",
+      "bureaucracy",
+      "paperwork",
+      "setup"
+    ],
+    "upgrades_to": "compliance_review_plus"
+  },
+  {
+    "id": "compliance_review_plus",
+    "name": "Compliance Review+",
+    "class": "bureaucrat",
+    "type": "form",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Deal 7 damage.\nApply 3 Paperwork.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 7
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "attack",
+      "bureaucracy",
+      "paperwork",
+      "setup",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "missing_attachment",
+    "name": "Missing Attachment",
+    "class": "bureaucrat",
+    "type": "form",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 2 Paperwork.\nDraw 1.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 2
+      },
+      {
+        "type": "draw_cards",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "bureaucracy",
+      "paperwork",
+      "draw",
+      "setup"
+    ],
+    "upgrades_to": "missing_attachment_plus"
+  },
+  {
+    "id": "missing_attachment_plus",
+    "name": "Missing Attachment+",
+    "class": "bureaucrat",
+    "type": "form",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 3 Paperwork.\nDraw 1.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 3
+      },
+      {
+        "type": "draw_cards",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "bureaucracy",
+      "paperwork",
+      "draw",
+      "setup",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "permit_denied",
+    "name": "Permit Denied",
+    "class": "bureaucrat",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Apply 5 Paperwork.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 5
+      }
+    ],
+    "tags": [
+      "bureaucracy",
+      "paperwork",
+      "setup"
+    ],
+    "upgrades_to": "permit_denied_plus"
+  },
+  {
+    "id": "permit_denied_plus",
+    "name": "Permit Denied+",
+    "class": "bureaucrat",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Apply 7 Paperwork.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 7
+      }
+    ],
+    "tags": [
+      "bureaucracy",
+      "paperwork",
+      "setup",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "compounded_penalty",
+    "name": "Compounded Penalty",
+    "class": "bureaucrat",
+    "type": "form",
+    "cost": 2,
+    "rarity": "uncommon",
+    "text": "Deal 4 damage for each Paperwork on the target.",
+    "effects": [
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount_per_stack": 4
+      }
+    ],
+    "tags": [
+      "attack",
+      "bureaucracy",
+      "paperwork",
+      "payoff"
+    ],
+    "upgrades_to": "compounded_penalty_plus"
+  },
+  {
+    "id": "compounded_penalty_plus",
+    "name": "Compounded Penalty+",
+    "class": "bureaucrat",
+    "type": "form",
+    "cost": 2,
+    "rarity": "uncommon",
+    "text": "Deal 5 damage for each Paperwork on the target.",
+    "effects": [
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount_per_stack": 5
+      }
+    ],
+    "tags": [
+      "attack",
+      "bureaucracy",
+      "paperwork",
+      "payoff",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "final_reminder",
+    "name": "Final Reminder",
+    "class": "bureaucrat",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "rare",
+    "text": "Apply 4 Paperwork.\nApply 2 Doubt.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 4
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "bureaucracy",
+      "paperwork",
+      "doubt",
+      "setup"
+    ],
+    "upgrades_to": "final_reminder_plus"
+  },
+  {
+    "id": "final_reminder_plus",
+    "name": "Final Reminder+",
+    "class": "bureaucrat",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "rare",
+    "text": "Apply 5 Paperwork.\nApply 3 Doubt.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 5
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "bureaucracy",
+      "paperwork",
+      "doubt",
+      "setup",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "form_12_b",
+    "name": "Form 12-B",
+    "class": "bureaucrat",
+    "type": "form",
+    "cost": 0,
+    "rarity": "common",
+    "text": "Apply 1 Paperwork. Exhaust.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "bureaucracy",
+      "paperwork",
+      "form",
+      "exhaust",
+      "zero_cost"
+    ],
+    "upgrades_to": "form_12_b_plus"
+  },
+  {
+    "id": "form_12_b_plus",
+    "name": "Form 12-B+",
+    "class": "bureaucrat",
+    "type": "form",
+    "cost": 0,
+    "rarity": "common",
+    "text": "Apply 2 Paperwork. Exhaust.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "bureaucracy",
+      "paperwork",
+      "form",
+      "exhaust",
+      "zero_cost",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "temporary_authorization",
+    "name": "Temporary Authorization",
+    "class": "bureaucrat",
+    "type": "form",
+    "cost": 0,
+    "rarity": "common",
+    "text": "Gain 4 Block. Exhaust.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 4
+      }
+    ],
+    "tags": [
+      "bureaucracy",
+      "block",
+      "form",
+      "exhaust",
+      "zero_cost"
+    ],
+    "upgrades_to": "temporary_authorization_plus"
+  },
+  {
+    "id": "temporary_authorization_plus",
+    "name": "Temporary Authorization+",
+    "class": "bureaucrat",
+    "type": "form",
+    "cost": 0,
+    "rarity": "common",
+    "text": "Gain 6 Block. Exhaust.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 6
+      }
+    ],
+    "tags": [
+      "bureaucracy",
+      "block",
+      "form",
+      "exhaust",
+      "zero_cost",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "counter_signature",
+    "name": "Counter Signature",
+    "class": "bureaucrat",
+    "type": "form",
+    "cost": 0,
+    "rarity": "common",
+    "text": "Deal 3 damage.\nDraw 1. Exhaust.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 3
+      },
+      {
+        "type": "draw_cards",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "attack",
+      "bureaucracy",
+      "draw",
+      "form",
+      "exhaust",
+      "zero_cost"
+    ],
+    "upgrades_to": "counter_signature_plus"
+  },
+  {
+    "id": "counter_signature_plus",
+    "name": "Counter Signature+",
+    "class": "bureaucrat",
+    "type": "form",
+    "cost": 0,
+    "rarity": "common",
+    "text": "Deal 5 damage.\nDraw 1. Exhaust.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 5
+      },
+      {
+        "type": "draw_cards",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "attack",
+      "bureaucracy",
+      "draw",
+      "form",
+      "exhaust",
+      "zero_cost",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "expedited_stamp",
+    "name": "Expedited Stamp",
+    "class": "bureaucrat",
+    "type": "form",
+    "cost": 0,
+    "rarity": "uncommon",
+    "text": "Apply 2 Paperwork.\nAdd a Duplicate Copy to your discard pile. Exhaust.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 2
+      },
+      {
+        "type": "create_card",
+        "card_id": "duplicate_copy",
+        "destination": "discard_pile",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "bureaucracy",
+      "paperwork",
+      "junk",
+      "form",
+      "exhaust",
+      "zero_cost"
+    ],
+    "upgrades_to": "expedited_stamp_plus"
+  },
+  {
+    "id": "expedited_stamp_plus",
+    "name": "Expedited Stamp+",
+    "class": "bureaucrat",
+    "type": "form",
+    "cost": 0,
+    "rarity": "uncommon",
+    "text": "Apply 3 Paperwork.\nAdd a Duplicate Copy to your discard pile. Exhaust.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 3
+      },
+      {
+        "type": "create_card",
+        "card_id": "duplicate_copy",
+        "destination": "discard_pile",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "bureaucracy",
+      "paperwork",
+      "junk",
+      "form",
+      "exhaust",
+      "zero_cost",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "internal_memo",
+    "name": "Internal Memo",
+    "class": "bureaucrat",
+    "type": "form",
+    "cost": 0,
+    "rarity": "uncommon",
+    "text": "Draw 1.\nAdd a Misfiled Paper to your discard pile. Exhaust.",
+    "effects": [
+      {
+        "type": "draw_cards",
+        "amount": 1
+      },
+      {
+        "type": "create_card",
+        "card_id": "misfiled_paper",
+        "destination": "discard_pile",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "bureaucracy",
+      "draw",
+      "junk",
+      "form",
+      "exhaust",
+      "zero_cost"
+    ],
+    "upgrades_to": "internal_memo_plus"
+  },
+  {
+    "id": "internal_memo_plus",
+    "name": "Internal Memo+",
+    "class": "bureaucrat",
+    "type": "form",
+    "cost": 0,
+    "rarity": "uncommon",
+    "text": "Draw 2.\nAdd a Misfiled Paper to your discard pile. Exhaust.",
+    "effects": [
+      {
+        "type": "draw_cards",
+        "amount": 2
+      },
+      {
+        "type": "create_card",
+        "card_id": "misfiled_paper",
+        "destination": "discard_pile",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "bureaucracy",
+      "draw",
+      "junk",
+      "form",
+      "exhaust",
+      "zero_cost",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "provisional_approval",
+    "name": "Provisional Approval",
+    "class": "bureaucrat",
+    "type": "form",
+    "cost": 0,
+    "rarity": "rare",
+    "text": "Gain 1 Energy.\nAdd Red Tape to your hand. Exhaust.",
+    "effects": [
+      {
+        "type": "gain_resource",
+        "resource": "energy",
+        "amount": 1
+      },
+      {
+        "type": "create_card",
+        "card_id": "red_tape",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "bureaucracy",
+      "energy",
+      "junk",
+      "form",
+      "exhaust",
+      "zero_cost"
+    ],
+    "upgrades_to": "provisional_approval_plus"
+  },
+  {
+    "id": "provisional_approval_plus",
+    "name": "Provisional Approval+",
+    "class": "bureaucrat",
+    "type": "form",
+    "cost": 0,
+    "rarity": "rare",
+    "text": "Gain 1 Energy.\nDraw 1.\nAdd Red Tape to your hand. Exhaust.",
+    "effects": [
+      {
+        "type": "gain_resource",
+        "resource": "energy",
+        "amount": 1
+      },
+      {
+        "type": "draw_cards",
+        "amount": 1
+      },
+      {
+        "type": "create_card",
+        "card_id": "red_tape",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "bureaucracy",
+      "energy",
+      "draw",
+      "junk",
+      "form",
+      "exhaust",
+      "zero_cost",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "archive_the_evidence",
+    "name": "Archive the Evidence",
+    "class": "bureaucrat",
+    "type": "form",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Exhaust 1 Junk card from your hand.\nGain 8 Block.",
+    "effects": [
+      {
+        "type": "exhaust_cards_by_tag",
+        "tag": "junk",
+        "amount": 1
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 8
+      }
+    ],
+    "tags": [
+      "bureaucracy",
+      "junk",
+      "block",
+      "exhaust_payoff"
+    ],
+    "upgrades_to": "archive_the_evidence_plus"
+  },
+  {
+    "id": "archive_the_evidence_plus",
+    "name": "Archive the Evidence+",
+    "class": "bureaucrat",
+    "type": "form",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Exhaust 1 Junk card from your hand.\nGain 12 Block.",
+    "effects": [
+      {
+        "type": "exhaust_cards_by_tag",
+        "tag": "junk",
+        "amount": 1
+      },
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 12
+      }
+    ],
+    "tags": [
+      "bureaucracy",
+      "junk",
+      "block",
+      "exhaust_payoff",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "shredder_drawer",
+    "name": "Shredder Drawer",
+    "class": "bureaucrat",
+    "type": "action",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Exhaust all Junk cards from your hand.\nDeal 9 damage.",
+    "effects": [
+      {
+        "type": "exhaust_cards_by_tag",
+        "tag": "junk"
+      },
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 9
+      }
+    ],
+    "tags": [
+      "attack",
+      "bureaucracy",
+      "junk",
+      "exhaust_payoff"
+    ],
+    "upgrades_to": "shredder_drawer_plus"
+  },
+  {
+    "id": "shredder_drawer_plus",
+    "name": "Shredder Drawer+",
+    "class": "bureaucrat",
+    "type": "action",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Exhaust all Junk cards from your hand.\nDeal 14 damage.",
+    "effects": [
+      {
+        "type": "exhaust_cards_by_tag",
+        "tag": "junk"
+      },
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 14
+      }
+    ],
+    "tags": [
+      "attack",
+      "bureaucracy",
+      "junk",
+      "exhaust_payoff",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "cross_reference",
+    "name": "Cross-Reference",
+    "class": "bureaucrat",
+    "type": "form",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Draw 2.\nAdd a Duplicate Copy to your discard pile.",
+    "effects": [
+      {
+        "type": "draw_cards",
+        "amount": 2
+      },
+      {
+        "type": "create_card",
+        "card_id": "duplicate_copy",
+        "destination": "discard_pile",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "bureaucracy",
+      "draw",
+      "junk"
+    ],
+    "upgrades_to": "cross_reference_plus"
+  },
+  {
+    "id": "cross_reference_plus",
+    "name": "Cross-Reference+",
+    "class": "bureaucrat",
+    "type": "form",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Draw 3.\nAdd a Duplicate Copy to your discard pile.",
+    "effects": [
+      {
+        "type": "draw_cards",
+        "amount": 3
+      },
+      {
+        "type": "create_card",
+        "card_id": "duplicate_copy",
+        "destination": "discard_pile",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "bureaucracy",
+      "draw",
+      "junk",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "overfilled_inbox",
+    "name": "Overfilled Inbox",
+    "class": "bureaucrat",
+    "type": "form",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Apply 3 Paperwork to all enemies.\nAdd an Unsigned Form to your hand.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "all_enemies",
+        "status": "paperwork",
+        "amount": 3
+      },
+      {
+        "type": "create_card",
+        "card_id": "unsigned_form",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "bureaucracy",
+      "paperwork",
+      "junk",
+      "aoe"
+    ],
+    "upgrades_to": "overfilled_inbox_plus"
+  },
+  {
+    "id": "overfilled_inbox_plus",
+    "name": "Overfilled Inbox+",
+    "class": "bureaucrat",
+    "type": "form",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Apply 4 Paperwork to all enemies.\nAdd an Unsigned Form to your hand.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "all_enemies",
+        "status": "paperwork",
+        "amount": 4
+      },
+      {
+        "type": "create_card",
+        "card_id": "unsigned_form",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "bureaucracy",
+      "paperwork",
+      "junk",
+      "aoe",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "please_take_a_number",
+    "name": "Please Take a Number",
+    "class": "bureaucrat",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 2 Doubt.\nApply 1 Paperwork.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 2
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "bureaucracy",
+      "doubt",
+      "paperwork",
+      "queue"
+    ],
+    "upgrades_to": "please_take_a_number_plus"
+  },
+  {
+    "id": "please_take_a_number_plus",
+    "name": "Please Take a Number+",
+    "class": "bureaucrat",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Apply 3 Doubt.\nApply 2 Paperwork.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 3
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "bureaucracy",
+      "doubt",
+      "paperwork",
+      "queue",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "queue_management",
+    "name": "Queue Management",
+    "class": "bureaucrat",
+    "type": "form",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Gain 6 Block.\nApply 1 Doubt.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 6
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "bureaucracy",
+      "block",
+      "doubt",
+      "queue"
+    ],
+    "upgrades_to": "queue_management_plus"
+  },
+  {
+    "id": "queue_management_plus",
+    "name": "Queue Management+",
+    "class": "bureaucrat",
+    "type": "form",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Gain 9 Block.\nApply 2 Doubt.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 9
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "bureaucracy",
+      "block",
+      "doubt",
+      "queue",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "processing_delay",
+    "name": "Processing Delay",
+    "class": "bureaucrat",
+    "type": "form",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Gain 8 Block.\nApply 2 Paperwork.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 8
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "bureaucracy",
+      "block",
+      "paperwork",
+      "queue"
+    ],
+    "upgrades_to": "processing_delay_plus"
+  },
+  {
+    "id": "processing_delay_plus",
+    "name": "Processing Delay+",
+    "class": "bureaucrat",
+    "type": "form",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Gain 10 Block.\nApply 3 Paperwork.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 10
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "bureaucracy",
+      "block",
+      "paperwork",
+      "queue",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "come_back_tomorrow",
+    "name": "Come Back Tomorrow",
+    "class": "bureaucrat",
+    "type": "argument",
+    "cost": 2,
+    "rarity": "uncommon",
+    "text": "Gain 18 Block.\nAdd Red Tape to your hand.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 18
+      },
+      {
+        "type": "create_card",
+        "card_id": "red_tape",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "bureaucracy",
+      "block",
+      "junk",
+      "queue"
+    ],
+    "upgrades_to": "come_back_tomorrow_plus"
+  },
+  {
+    "id": "come_back_tomorrow_plus",
+    "name": "Come Back Tomorrow+",
+    "class": "bureaucrat",
+    "type": "argument",
+    "cost": 2,
+    "rarity": "uncommon",
+    "text": "Gain 24 Block.\nAdd Red Tape to your hand.",
+    "effects": [
+      {
+        "type": "gain_block",
+        "target": "self",
+        "amount": 24
+      },
+      {
+        "type": "create_card",
+        "card_id": "red_tape",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "bureaucracy",
+      "block",
+      "junk",
+      "queue",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "under_consideration",
+    "name": "Under Consideration",
+    "class": "bureaucrat",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "rare",
+    "text": "Apply 3 Doubt.\nDraw 2.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 3
+      },
+      {
+        "type": "draw_cards",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "bureaucracy",
+      "doubt",
+      "draw",
+      "queue"
+    ],
+    "upgrades_to": "under_consideration_plus"
+  },
+  {
+    "id": "under_consideration_plus",
+    "name": "Under Consideration+",
+    "class": "bureaucrat",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "rare",
+    "text": "Apply 4 Doubt.\nDraw 3.",
+    "effects": [
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "doubt",
+        "amount": 4
+      },
+      {
+        "type": "draw_cards",
+        "amount": 3
+      }
+    ],
+    "tags": [
+      "bureaucracy",
+      "doubt",
+      "draw",
+      "queue",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "rubber_stamp",
+    "name": "Rubber Stamp",
+    "class": "bureaucrat",
+    "type": "action",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Deal 7 damage.\nApply 1 Paperwork.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 7
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "attack",
+      "bureaucracy",
+      "paperwork",
+      "stamp"
+    ],
+    "upgrades_to": "rubber_stamp_plus"
+  },
+  {
+    "id": "rubber_stamp_plus",
+    "name": "Rubber Stamp+",
+    "class": "bureaucrat",
+    "type": "action",
+    "cost": 1,
+    "rarity": "common",
+    "text": "Deal 10 damage.\nApply 2 Paperwork.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 10
+      },
+      {
+        "type": "apply_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "attack",
+      "bureaucracy",
+      "paperwork",
+      "stamp",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "stamp_barrage",
+    "name": "Stamp Barrage",
+    "class": "bureaucrat",
+    "type": "action",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Deal 3 damage to all enemies.\nApply 1 Paperwork to all enemies.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "all_enemies",
+        "amount": 3
+      },
+      {
+        "type": "apply_status",
+        "target": "all_enemies",
+        "status": "paperwork",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "attack",
+      "bureaucracy",
+      "paperwork",
+      "stamp",
+      "aoe"
+    ],
+    "upgrades_to": "stamp_barrage_plus"
+  },
+  {
+    "id": "stamp_barrage_plus",
+    "name": "Stamp Barrage+",
+    "class": "bureaucrat",
+    "type": "action",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Deal 5 damage to all enemies.\nApply 2 Paperwork to all enemies.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "all_enemies",
+        "amount": 5
+      },
+      {
+        "type": "apply_status",
+        "target": "all_enemies",
+        "status": "paperwork",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "attack",
+      "bureaucracy",
+      "paperwork",
+      "stamp",
+      "aoe",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "invalidated",
+    "name": "Invalidated",
+    "class": "bureaucrat",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Deal 3 damage for each Paperwork on the target.",
+    "effects": [
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount_per_stack": 3
+      }
+    ],
+    "tags": [
+      "attack",
+      "bureaucracy",
+      "paperwork",
+      "stamp",
+      "payoff"
+    ],
+    "upgrades_to": "invalidated_plus"
+  },
+  {
+    "id": "invalidated_plus",
+    "name": "Invalidated+",
+    "class": "bureaucrat",
+    "type": "argument",
+    "cost": 1,
+    "rarity": "uncommon",
+    "text": "Deal 4 damage for each Paperwork on the target.",
+    "effects": [
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount_per_stack": 4
+      }
+    ],
+    "tags": [
+      "attack",
+      "bureaucracy",
+      "paperwork",
+      "stamp",
+      "payoff",
+      "upgraded"
+    ]
+  },
+  {
+    "id": "approved_for_disposal",
+    "name": "Approved for Disposal",
+    "class": "bureaucrat",
+    "type": "form",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Deal 12 damage.\nDeal 2 damage for each Paperwork on the target.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 12
+      },
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount_per_stack": 2
+      }
+    ],
+    "tags": [
+      "attack",
+      "bureaucracy",
+      "paperwork",
+      "stamp",
+      "payoff"
+    ],
+    "upgrades_to": "approved_for_disposal_plus"
+  },
+  {
+    "id": "approved_for_disposal_plus",
+    "name": "Approved for Disposal+",
+    "class": "bureaucrat",
+    "type": "form",
+    "cost": 2,
+    "rarity": "rare",
+    "text": "Deal 16 damage.\nDeal 3 damage for each Paperwork on the target.",
+    "effects": [
+      {
+        "type": "deal_damage",
+        "target": "enemy",
+        "amount": 16
+      },
+      {
+        "type": "damage_per_status",
+        "target": "enemy",
+        "status": "paperwork",
+        "amount_per_stack": 3
+      }
+    ],
+    "tags": [
+      "attack",
+      "bureaucracy",
+      "paperwork",
+      "stamp",
+      "payoff",
+      "upgraded"
+    ]
+  }
+]

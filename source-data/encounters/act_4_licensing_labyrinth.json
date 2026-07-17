@@ -1,0 +1,433 @@
+[
+  {
+    "id": "act_4_easy_01",
+    "name": "Antechamber Filing Rite",
+    "act": 4,
+    "difficulty": "easy",
+    "enemies": [
+      "funerary_scribe"
+    ],
+    "weight": 3
+  },
+  {
+    "id": "act_4_easy_02",
+    "name": "Scarab Seal Drift",
+    "act": 4,
+    "difficulty": "easy",
+    "enemies": [
+      "scarab_seal_swarm"
+    ],
+    "weight": 3
+  },
+  {
+    "id": "act_4_easy_03",
+    "name": "Canopic Toll Window",
+    "act": 4,
+    "difficulty": "easy",
+    "enemies": [
+      "canopic_toll_collector",
+      "funerary_scribe"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "act_4_normal_01",
+    "name": "Burial Permit Counter",
+    "act": 4,
+    "difficulty": "normal",
+    "enemies": [
+      "burial_permit_registrar",
+      "scarab_seal_swarm"
+    ],
+    "weight": 3
+  },
+  {
+    "id": "act_4_normal_02",
+    "name": "Oath Door Queue",
+    "act": 4,
+    "difficulty": "normal",
+    "enemies": [
+      "oath_door_attendant",
+      "funerary_scribe"
+    ],
+    "weight": 3
+  },
+  {
+    "id": "act_4_normal_03",
+    "name": "Linen Audit Alcove",
+    "act": 4,
+    "difficulty": "normal",
+    "enemies": [
+      "linen_wrapped_auditor",
+      "canopic_toll_collector"
+    ],
+    "weight": 3
+  },
+  {
+    "id": "act_4_normal_04",
+    "name": "Sealed Staircase Registry",
+    "act": 4,
+    "difficulty": "normal",
+    "enemies": [
+      "burial_permit_registrar",
+      "oath_door_attendant"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "act_4_elite_01",
+    "name": "High Inspector's Sarcophagus",
+    "act": 4,
+    "difficulty": "elite",
+    "enemies": [
+      "mummified_high_inspector"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "act_4_elite_02",
+    "name": "Canopic Treasure Examination",
+    "act": 4,
+    "difficulty": "elite",
+    "enemies": [
+      "canopic_mimic"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "act_4_elite_03",
+    "name": "Corridor of Form Zero",
+    "act": 4,
+    "difficulty": "elite",
+    "enemies": [
+      "corridor_sphinx_of_form_zero"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "act_4_boss_01",
+    "name": "The Unprocessed Tomb",
+    "act": 4,
+    "difficulty": "boss",
+    "enemies": [
+      "pharaoh_of_pending_approval"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "act_4_easy_04",
+    "name": "Cartouche Witness Desk",
+    "act": 4,
+    "difficulty": "easy",
+    "enemies": [
+      "cartouche_notary"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "act_4_normal_05",
+    "name": "Jackal Ledger Queue",
+    "act": 4,
+    "difficulty": "normal",
+    "enemies": [
+      "jackal_ledger_keeper",
+      "cartouche_notary"
+    ],
+    "weight": 3
+  },
+  {
+    "id": "act_4_normal_06",
+    "name": "False Exit Filing Counter",
+    "act": 4,
+    "difficulty": "normal",
+    "enemies": [
+      "false_exit_counter",
+      "papyrus_dust_priest"
+    ],
+    "weight": 3
+  },
+  {
+    "id": "act_4_normal_07",
+    "name": "Minor Sins Weighing Room",
+    "act": 4,
+    "difficulty": "normal",
+    "enemies": [
+      "weighing_scale_of_minor_sins",
+      "funerary_scribe"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "act_4_normal_08",
+    "name": "Solar Seal Examination",
+    "act": 4,
+    "difficulty": "normal",
+    "enemies": [
+      "sun_seal_examiner",
+      "scarab_seal_swarm"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "act_4_elite_04",
+    "name": "Red-Tape Scarab Burial",
+    "act": 4,
+    "difficulty": "elite",
+    "enemies": [
+      "red_tape_scarab_host"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "act_4_elite_05",
+    "name": "Lower Chamber Appeal",
+    "act": 4,
+    "difficulty": "elite",
+    "enemies": [
+      "appeal_judge_of_the_lower_chamber"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "act_4_boss_02",
+    "name": "The Featherless Weighing",
+    "act": 4,
+    "difficulty": "boss",
+    "enemies": [
+      "weigher_of_unfiled_hearts"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "act_4_easy_05",
+    "name": "Sandstone Queue Marker",
+    "act": 4,
+    "difficulty": "easy",
+    "enemies": [
+      "sandstone_queue_marker",
+      "ibis_stamp_acolyte"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "act_4_easy_06",
+    "name": "Tomb Window Opening",
+    "act": 4,
+    "difficulty": "easy",
+    "enemies": [
+      "tomb_window_clerk"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "act_4_normal_09",
+    "name": "Sealed Stair Landing",
+    "act": 4,
+    "difficulty": "normal",
+    "enemies": [
+      "sealed_stair_sentinel",
+      "dust_chamber_herald"
+    ],
+    "weight": 3
+  },
+  {
+    "id": "act_4_normal_10",
+    "name": "Embalming License Check",
+    "act": 4,
+    "difficulty": "normal",
+    "enemies": [
+      "embalming_license_monk",
+      "minor_curse_accountant"
+    ],
+    "weight": 3
+  },
+  {
+    "id": "act_4_normal_11",
+    "name": "Obelisk Clause Workshop",
+    "act": 4,
+    "difficulty": "normal",
+    "enemies": [
+      "obelisk_clause_carver",
+      "cartouche_notary"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "act_4_normal_12",
+    "name": "Dust Chamber Announcement",
+    "act": 4,
+    "difficulty": "normal",
+    "enemies": [
+      "dust_chamber_herald",
+      "papyrus_dust_priest"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "act_4_normal_13",
+    "name": "Minor Curse Accounts",
+    "act": 4,
+    "difficulty": "normal",
+    "enemies": [
+      "minor_curse_accountant",
+      "jackal_ledger_keeper"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "act_4_elite_06",
+    "name": "Granite Oath Door",
+    "act": 4,
+    "difficulty": "elite",
+    "enemies": [
+      "granite_oath_door"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "act_4_elite_07",
+    "name": "Sun Bureau Hearing",
+    "act": 4,
+    "difficulty": "elite",
+    "enemies": [
+      "sun_bureau_adjudicator",
+      "ibis_stamp_acolyte"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "act_4_elite_08",
+    "name": "Licensed Crocodile Bailiff",
+    "act": 4,
+    "difficulty": "elite",
+    "enemies": [
+      "licensed_crocodile_bailiff"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "act_4_boss_03",
+    "name": "The Form That Requests Itself",
+    "act": 4,
+    "difficulty": "boss",
+    "enemies": [
+      "great_sphinx_of_form_zero"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "act_4_boss_04",
+    "name": "The Impossible Blueprint",
+    "act": 4,
+    "difficulty": "boss",
+    "enemies": [
+      "architect_of_the_impossible_pyramid"
+    ],
+    "weight": 1
+  },
+  {
+    "id": "act_4_easy_07",
+    "name": "Dynasty Queue Rope",
+    "act": 4,
+    "difficulty": "easy",
+    "enemies": [
+      "dynasty_queue_usher"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "act_4_easy_08",
+    "name": "Dry Scribe Alcove",
+    "act": 4,
+    "difficulty": "easy",
+    "enemies": [
+      "reed_pen_skeleton",
+      "afterlife_token_sorter"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "act_4_normal_14",
+    "name": "Cobra Witness Hearing",
+    "act": 4,
+    "difficulty": "normal",
+    "enemies": [
+      "sealed_cobra_witness",
+      "cartouche_notary"
+    ],
+    "weight": 3
+  },
+  {
+    "id": "act_4_normal_15",
+    "name": "Buried Fee Assessment",
+    "act": 4,
+    "difficulty": "normal",
+    "enemies": [
+      "buried_fee_assessor",
+      "tomb_window_clerk"
+    ],
+    "weight": 3
+  },
+  {
+    "id": "act_4_normal_16",
+    "name": "Complaint Wall Corridor",
+    "act": 4,
+    "difficulty": "normal",
+    "enemies": [
+      "hieroglyphic_complaint_wall",
+      "dust_chamber_herald"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "act_4_normal_17",
+    "name": "Afterlife Token Sorting",
+    "act": 4,
+    "difficulty": "normal",
+    "enemies": [
+      "afterlife_token_sorter",
+      "burial_permit_registrar"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "act_4_elite_09",
+    "name": "Prime Serpent Notarization",
+    "act": 4,
+    "difficulty": "elite",
+    "enemies": [
+      "serpent_notary_prime"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "act_4_elite_10",
+    "name": "Burial Queue Colossus",
+    "act": 4,
+    "difficulty": "elite",
+    "enemies": [
+      "burial_queue_colossus"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "act_4_elite_11",
+    "name": "Denied Passage Review",
+    "act": 4,
+    "difficulty": "elite",
+    "enemies": [
+      "vizier_of_denied_passage"
+    ],
+    "weight": 2
+  },
+  {
+    "id": "act_4_boss_05",
+    "name": "The Final Authorization",
+    "act": 4,
+    "difficulty": "boss",
+    "enemies": [
+      "oracle_of_final_authorization"
+    ],
+    "weight": 1
+  }
+]

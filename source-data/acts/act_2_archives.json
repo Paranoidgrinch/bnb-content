@@ -1,0 +1,76 @@
+{
+  "id": "act_2_archives",
+  "act": 2,
+  "name": "Act II: The Endless Archives",
+  "character_class_files": [
+    "data/classes/bureaucrat.json",
+    "data/classes/witch_clerk.json",
+    "data/classes/night_watch_recruit.json",
+    "data/classes/hedge_witch.json",
+    "data/classes/guild_assassin_apprentice.json",
+    "data/classes/failed_wizard.json",
+    "data/classes/sewer_diplomat.json",
+    "data/classes/mortuary_apprentice.json",
+    "data/classes/shroomancer.json"
+  ],
+  "default_character_class_id": "bureaucrat",
+  "card_files": [
+    "data/cards/bureaucrat_starter.json",
+    "data/cards/bureaucrat_rewards.json",
+    "data/cards/witch_clerk_starter.json",
+    "data/cards/witch_clerk_rewards.json",
+    "data/cards/night_watch_recruit_starter.json",
+    "data/cards/night_watch_recruit_rewards.json",
+    "data/cards/hedge_witch_starter.json",
+    "data/cards/hedge_witch_rewards.json",
+    "data/cards/guild_assassin_apprentice_starter.json",
+    "data/cards/guild_assassin_apprentice_rewards.json",
+    "data/cards/failed_wizard_starter.json",
+    "data/cards/failed_wizard_rewards.json",
+    "data/cards/sewer_diplomat_starter.json",
+    "data/cards/sewer_diplomat_rewards.json",
+    "data/cards/mortuary_apprentice_starter.json",
+    "data/cards/mortuary_apprentice_rewards.json",
+    "data/cards/shroomancer_starter.json",
+    "data/cards/shroomancer_rewards.json",
+    "data/cards/epic_transition_rewards.json",
+    "data/cards/act_2_archive_rewards.json"
+  ],
+  "enemy_files": [
+    "data/enemies/act_2_archives_enemies.json"
+  ],
+  "encounter_files": [
+    "data/encounters/act_2_archives.json"
+  ],
+  "status_files": [
+    "data/statuses/statuses.json"
+  ],
+  "event_files": [
+    "data/events/act_2_archives_events.json"
+  ],
+  "relic_files": [
+    "data/relics/act_1_relics.json",
+    "data/relics/act_2_relics.json",
+    "data/relics/bureaucrat_relics.json",
+    "data/relics/witch_clerk_relics.json",
+    "data/relics/night_watch_recruit_relics.json",
+    "data/relics/hedge_witch_relics.json",
+    "data/relics/guild_assassin_apprentice_relics.json",
+    "data/relics/failed_wizard_relics.json",
+    "data/relics/sewer_diplomat_relics.json",
+    "data/relics/mortuary_apprentice_relics.json",
+    "data/relics/shroomancer_relics.json",
+    "data/relics/act_2_class_relics.json"
+  ],
+  "map": {
+    "steps_before_boss": 12,
+    "width": 4
+  },
+  "treasure": {
+    "mimic_chance": 0.05,
+    "mimic_encounter_id": "archive_mimic_01"
+  },
+  "waiting_room": {
+    "heal_percent": 25
+  }
+}

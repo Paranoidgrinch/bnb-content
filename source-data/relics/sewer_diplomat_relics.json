@@ -1,0 +1,296 @@
+[
+  {
+    "id": "cheese_envoy_badge",
+    "name": "Cheese Envoy Badge",
+    "description": "At the start of each combat, add a Cheese Favor to your hand.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "cheese_favor",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "sewer_diplomat",
+      "cheese",
+      "bribe",
+      "block",
+      "zero_cost"
+    ],
+    "allowed_classes": [
+      "sewer_diplomat"
+    ]
+  },
+  {
+    "id": "rat_cousin_roster",
+    "name": "Rat Cousin Roster",
+    "description": "At the start of each combat, add a Rat Cousin to your hand.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "rat_cousin",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "sewer_diplomat",
+      "rat",
+      "swarm",
+      "zero_cost",
+      "aoe"
+    ],
+    "allowed_classes": [
+      "sewer_diplomat"
+    ]
+  },
+  {
+    "id": "creased_sewer_map",
+    "name": "Creased Sewer Map",
+    "description": "At the start of each combat, add a Sewer Map to your draw pile.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "sewer_map",
+        "destination": "draw_pile",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "sewer_diplomat",
+      "sewer_route",
+      "draw",
+      "evasion"
+    ],
+    "allowed_classes": [
+      "sewer_diplomat"
+    ]
+  },
+  {
+    "id": "gutter_seal",
+    "name": "Gutter Seal",
+    "description": "At the start of each combat, apply 1 Paperwork to all enemies.",
+    "rarity": "common",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "paperwork",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "sewer_diplomat",
+      "treaty",
+      "paperwork",
+      "diplomacy"
+    ],
+    "allowed_classes": [
+      "sewer_diplomat"
+    ]
+  },
+  {
+    "id": "pocket_muck_sample",
+    "name": "Pocket Muck Sample",
+    "description": "At the start of each combat, apply 1 Poison to all enemies.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "poison",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "sewer_diplomat",
+      "filth",
+      "poison",
+      "stench"
+    ],
+    "allowed_classes": [
+      "sewer_diplomat"
+    ]
+  },
+  {
+    "id": "underpipe_passage_key",
+    "name": "Underpipe Passage Key",
+    "description": "At the start of each combat, gain 6 Block and add a Sewer Map to your hand.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 6
+      },
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "sewer_map",
+        "destination": "hand",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "sewer_diplomat",
+      "sewer_route",
+      "evasion",
+      "block",
+      "draw"
+    ],
+    "allowed_classes": [
+      "sewer_diplomat"
+    ]
+  },
+  {
+    "id": "treaty_cheese_wheel",
+    "name": "Treaty Cheese Wheel",
+    "description": "At the start of each combat, gain 8 Block and apply 1 Doubt to all enemies.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 8
+      },
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "doubt",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "sewer_diplomat",
+      "cheese",
+      "treaty",
+      "doubt",
+      "block"
+    ],
+    "allowed_classes": [
+      "sewer_diplomat"
+    ]
+  },
+  {
+    "id": "favours_ledger",
+    "name": "Favours Ledger",
+    "description": "At the start of each combat, gain 1 Energy and add Spoiled Cheese to your discard pile.",
+    "rarity": "uncommon",
+    "effects": [
+      {
+        "type": "gain_energy_at_combat_start",
+        "amount": 1
+      },
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "spoiled_cheese",
+        "destination": "discard_pile",
+        "copies": 1
+      }
+    ],
+    "tags": [
+      "sewer_diplomat",
+      "bribe",
+      "cheese",
+      "energy",
+      "junk",
+      "risk_reward"
+    ],
+    "allowed_classes": [
+      "sewer_diplomat"
+    ]
+  },
+  {
+    "id": "rat_king_signature",
+    "name": "Rat-King Signature",
+    "description": "At the start of each combat, apply 2 Paperwork to all enemies.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "paperwork",
+        "amount": 2
+      }
+    ],
+    "tags": [
+      "sewer_diplomat",
+      "rat",
+      "treaty",
+      "paperwork"
+    ],
+    "allowed_classes": [
+      "sewer_diplomat"
+    ]
+  },
+  {
+    "id": "crown_of_tiny_feet",
+    "name": "Crown of Tiny Feet",
+    "description": "At the start of each combat, add 2 Rat Cousins to your draw pile.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "create_card_at_combat_start",
+        "card_id": "rat_cousin",
+        "destination": "draw_pile",
+        "copies": 2
+      }
+    ],
+    "tags": [
+      "sewer_diplomat",
+      "rat",
+      "swarm",
+      "aoe",
+      "zero_cost"
+    ],
+    "allowed_classes": [
+      "sewer_diplomat"
+    ]
+  },
+  {
+    "id": "official_manhole_cover",
+    "name": "Official Manhole Cover",
+    "description": "At the start of each combat, gain 12 Block.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "gain_block_at_combat_start",
+        "amount": 12
+      }
+    ],
+    "tags": [
+      "sewer_diplomat",
+      "sewer_route",
+      "evasion",
+      "block"
+    ],
+    "allowed_classes": [
+      "sewer_diplomat"
+    ]
+  },
+  {
+    "id": "unpleasant_diplomatic_pouch",
+    "name": "Unpleasant Diplomatic Pouch",
+    "description": "At the start of each combat, apply 1 Poison and 1 Doubt to all enemies.",
+    "rarity": "rare",
+    "effects": [
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "poison",
+        "amount": 1
+      },
+      {
+        "type": "apply_status_to_all_enemies_at_combat_start",
+        "status": "doubt",
+        "amount": 1
+      }
+    ],
+    "tags": [
+      "sewer_diplomat",
+      "filth",
+      "poison",
+      "doubt",
+      "diplomacy"
+    ],
+    "allowed_classes": [
+      "sewer_diplomat"
+    ]
+  }
+]
