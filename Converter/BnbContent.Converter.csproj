@@ -4,6 +4,7 @@
     <ProjectReference Include="..\..\RogueDeck-Core\src\RogueDeck.Core\RogueDeck.Core.csproj" />
     <ProjectReference Include="..\..\RogueDeck-Core\src\RogueDeck.Scenario\RogueDeck.Scenario.csproj" />
     <ProjectReference Include="..\..\RogueDeck-Core\src\RogueDeck.Run\RogueDeck.Run.csproj" />
+    <ProjectReference Include="..\..\RogueDeck-Core\src\RogueDeck.Sandbox.Run\RogueDeck.Sandbox.Run.csproj" />
   </ItemGroup>
 
   <PropertyGroup>
