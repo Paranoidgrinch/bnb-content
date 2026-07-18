@@ -50,10 +50,13 @@ public static class RelicMapper
                     openingNodes.Add(new CombatNodeModel("heal", "source", CombatAmountSpec.FromConst(Amount())));
                     break;
                 case "gain_energy_at_combat_start":
-                    // modifyResource's leaf Max overrides the pool max, so the bonus energy may exceed 3.
-                    openingNodes.Add(new CombatNodeModel("modifyResource", "source",
-                        CombatAmountSpec.FromConst(Amount()),
-                        StandardCombatIds.EnergyResource.value, Max: 99));
+                    // ADAPTATION: the engine has no combat-scoped "overcharge above max" — a combat-start
+                    // gainResource just clamps to the energy cap (turn 1 already refills to it). So this
+                    // maps to a PERMANENT +N max energy (the resourceMax counter, like increase_max_energy):
+                    // meaningful and crash-free, instead of a one-time turn-1 overcharge.
+                    pickup.Add(new IncrementCounterRunEffect(
+                        new RunCounterId(StandardRunIds.ResourceMaxCounterPrefix + StandardCombatIds.EnergyResource.value),
+                        Amount()));
                     break;
                 case "create_card_at_combat_start":
                     openingNodes.Add(new CombatNodeModel("createCardInstance", "source",
