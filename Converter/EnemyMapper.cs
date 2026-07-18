@@ -44,13 +44,43 @@ public static class EnemyMapper
         };
     }
 
-    // The telegraph: the intent name, plus the summed flat damage when the intent attacks.
+    // The telegraph: the intent name plus a plain-language summary of what it DOES, so the player can
+    // read the meaning (not just a flavor name). "Bite with Reservation · 7 dmg", "File Complaint ·
+    // Panic +1", "Brace · 4 block". Effects come from a bare damage value or the effect/action DSL list.
     private static string Label(BabIntent intent)
     {
-        var damage = (intent.Damage ?? 0)
-            + (intent.Effects ?? intent.Actions ?? []).Where(e => e.Type == "deal_damage").Sum(e => e.Amount ?? 0);
-        return damage > 0 ? $"{intent.Name} ({damage})" : intent.Name;
+        var effects = new List<BabEffect>();
+        if (intent.Damage is { } bare)
+            effects.Add(new BabEffect("deal_damage", null, bare, null, null, null, null, null, null, null));
+        effects.AddRange(intent.Effects ?? intent.Actions ?? []);
+
+        var parts = new List<string>();
+        var damage = effects.Where(e => e.Type == "deal_damage").Sum(e => e.Amount ?? 0);
+        if (damage > 0)
+            parts.Add($"{damage} dmg");
+        foreach (var effect in effects)
+        {
+            switch (effect.Type)
+            {
+                case "gain_block" when effect.Amount is { } block:
+                    parts.Add($"{block} block");
+                    break;
+                case "apply_status" when effect.Status is { } status:
+                    parts.Add($"{Capitalize(status)} +{effect.Amount ?? 1}");
+                    break;
+                case "gain_strength":
+                    parts.Add($"Strength +{effect.Amount ?? 1}");
+                    break;
+                case "damage_per_status" when effect.Status is { } status:
+                    parts.Add($"{effect.AmountPerStack ?? 0}× per {Capitalize(status)}");
+                    break;
+            }
+        }
+        return parts.Count > 0 ? $"{intent.Name} · {string.Join(", ", parts)}" : intent.Name;
     }
+
+    private static string Capitalize(string text) =>
+        text.Length == 0 ? text : char.ToUpperInvariant(text[0]) + text[1..];
 
     private static IntentKind Kind(string where, string intentType) => intentType switch
     {
