@@ -13,10 +13,9 @@ Recipes for translating enemy signatures → engine constructs live in
 
 ### 0. Engine prerequisites (RogueDeck-Core) — needed before the procedural map is faithful
 - **DONE:** mimic-in-treasure (`TreasureMimicChancePercent`), no-repeat encounter draw, `MultiCombat` role.
-- **TODO — non-combat node pool variety:** the default realizer resolves each non-combat role from a single
-  `NodeRefs[kind]` id, so every Event/Rest/Treasure/Shop node would be identical — violating "≥3 distinct
-  events per path". Add a per-kind **ref pool** drawn without replacement (mirror the combat encounter pool):
-  `MapGenerationSpec.NodeRefPools[kind]` + generator picks one ref per node (no-repeat) + realizer uses it.
+- **DONE — non-combat node pool variety:** `MapGenerationSpec.NodeRefPools[kind]` — each Event/Rest/Treasure/
+  Shop node draws a distinct ref without replacement (mirrors the combat pool). Falls back to single
+  `NodeRefs[kind]`. (RogueDeck-Core @4b78320.)
 
 ### 1. Statuses (StatusMapper)
 - Panic / Doubt / Paperwork / Fatigue / Strength already ported. **Add Bookworm** (positive enemy status:
