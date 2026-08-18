@@ -41,10 +41,24 @@ intents need **no engine change** — passive = a status-with-triggers carried f
   `damage_per_status`/…). New effect types are added per-need when an enemy intent requires one (step 3), and
   for Act-II card marks (mark ops via RAW `EffectProgram` — not in `CombatNodeModel`). No speculative DSL.
 
-### 3. Act-I enemies (source-data + EnemyMapper) — 25 identities
+### 3. Act-I enemies (source-data + EnemyMapper) — 25 identities  *(IN PROGRESS: pattern proven, 1/25)*
 Rewrite `source-data/enemies/city_enemies.json` to the FINAL roster with HP/intents/passives from the
 `...Standard_Encounter_Pools...(1).md` list, cross-checked against the FINAL master pool. Author each
 signature via the recipe catalogue.
+- **DONE — full pattern proven end-to-end** on the first final identity **A Very Official Line** (@c476c81):
+  cycled intents + a SPECIAL intent kept out of the cycle (`BabIntent.special`), a passive
+  (`queue_advances`, raw-program status), and a `self_counter` intent rule firing the special + resetting the
+  track. DSL added as needed: `damage_per_status` base+cap, `set_counter`. All tested.
+- **Migration note:** the demo data already holds many enemies (109 encounters); some ids already exist
+  (e.g. `queue_crier_homunculus`). When adding a final identity, CHECK for an existing id — either replace
+  that enemy in place or use the final id if free. Do NOT append a duplicate.
+- **TODO — remaining 24 identities** (Stages 1–8): mechanical replication of the above pattern, per enemy:
+  read its design, author intents (existing DSL + extend per-need), author its passive if any (PassiveStatuses,
+  raw program; cross-combatant reactions like "Your Number Came Up" pick a serializable single-opponent
+  selector), wire intent rules, point an encounter at it, test. Curate encounters toward the final 32.
+- **Format gap noted:** duo/multi encounters use REDUCED per-enemy HP (design "Duo HP Scaling"), but the
+  encounter format has no per-encounter HP override (uses the enemy's max_hp). Add a per-roster HP override to
+  `BabEncounter`/`EncounterMapper` when authoring the multi encounters (step 4).
 
 ### 4. Act-I encounters + role pools (source-data + EncounterMapper)
 Rewrite `source-data/encounters/act_1_city.json` to the 32 templates (23 solo + 9 multi). Classify into the
