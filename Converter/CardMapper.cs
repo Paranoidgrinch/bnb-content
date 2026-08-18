@@ -28,7 +28,10 @@ public static class CardMapper
             Costs = card.Cost == 0
                 ? []
                 : [new ResourceCost(StandardCombatIds.EnergyResource, card.Cost)],
-            Tags = tags.Select(tag => new TagId(tag)).ToArray(),
+            // The card's TYPE (action/spell/form/argument/curse/…) is emitted as a combat tag alongside its own
+            // tags, so type-sequencing enemy passives (Wrong-Window Scribe, Triplicate Examiner) can read it via
+            // cardsPlayedThisTurnWithTag / firstCardPlayedHasTag. Distinct so an explicit type tag isn't doubled.
+            Tags = tags.Append(card.Type).Distinct().Select(tag => new TagId(tag)).ToArray(),
             PlayedCardDestinationZone = tags.Any(ExhaustWhenPlayedTags.Contains)
                 ? CardZone.ExhaustPile
                 : CardZone.DiscardPile,

@@ -120,10 +120,17 @@ public static class EncounterMapper
                 DisplayName: enemy.Name,
                 IntentRules: MapIntentRules(where, enemyId, enemy)));
         }
+        // Cross-combatant enemy passives (reactions to player actions) become per-encounter triggered effects,
+        // one set per distinct enemy present.
+        var triggeredEffects = encounter.Enemies.Distinct()
+            .SelectMany(EncounterPassives.ForEnemy)
+            .ToList();
+
         return new EncounterDefinition(
             new EncounterId(encounter.Id),
             roster,
-            [new ResourceSpec(StandardCombatIds.EnergyResource, startingEnergy, startingEnergy)]);
+            [new ResourceSpec(StandardCombatIds.EnergyResource, startingEnergy, startingEnergy)],
+            triggeredEffects: triggeredEffects);
     }
 
     // Passive signatures + standing buffs the enemy carries into the fight (a status with triggers).
