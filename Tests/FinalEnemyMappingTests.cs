@@ -53,4 +53,22 @@ public class FinalEnemyMappingTests
         var actions = EnemyMapper.MapActions(Data.Enemies.Where(e => e.Id == "a_very_official_line").ToList());
         Assert.Contains(actions, a => a.Id == "a_very_official_line.everyone_moves");
     }
+
+    // DSL: "N damage + X per <status>, capped at Y" → dealDamage(add(N, min(mul(statusStacks, X), Y))).
+    // (Queue-Crier's "Lost Your Place": 7 + min(panic*3, 9).)
+    [Fact]
+    public void Damage_per_status_supports_a_base_and_a_cap()
+    {
+        var effect = new BabEffect("damage_per_status", "player", Amount: 7, Status: "panic",
+            AmountPerStack: 3, null, null, null, null, null, Cap: 9);
+        var node = EffectMapper.Map("test", effect, EffectMapper.EnemyTargets);
+
+        Assert.Equal("dealDamage", node.Kind);
+        var amount = node.Amount!;
+        Assert.Equal("add", amount.Kind);                 // base + scaled
+        Assert.Equal(7, amount.LeftOrDefault.Const);      // base 7
+        Assert.Equal("min", amount.RightOrDefault.Kind);  // capped
+        Assert.Equal(9, amount.RightOrDefault.RightOrDefault.Const); // cap 9
+        Assert.Equal("mul", amount.RightOrDefault.LeftOrDefault.Kind); // stacks * per-stack
+    }
 }
