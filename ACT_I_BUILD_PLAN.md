@@ -1,5 +1,46 @@
 # Act I — Real-Game Build Plan (converter → game.roguedeck.json → Godot)
 
+## ▶ RESUME POINT (2026-08-18, bnb-content @7a92066, RogueDeck-Core @b645378)
+All engine primitives for reworked Act-I enemies are DONE + pushed. Converter authoring pattern proven
+end-to-end for owner-scoped passives, cross-combatant passives, intent rules, capped scaling. All suites
+green (RogueDeck-Core Core 1401/Scenario 684/Run 448/Sandbox 292; bnb-content 28).
+
+**Authored so far (real final identities):**
+- Stage 1 — `a_very_official_line` (new id): full pattern (queue_advances passive + self_counter intent rule
+  + special "everyone_moves" reset). city_easy_01 repointed to it.
+- Stage 2 — `wrong_window_scribe` (existing id): "Not This Counter" cross-combatant passive (EncounterPassives).
+
+**Immediate next steps (resume here), Stage 2 completion — enemies already exist in demo data, ENHANCE in place:**
+1. `receipt_eyed_clerk` (demo hp 24; design 35): add a "Date Discrepancy" intent = `damage_per_status`
+   target player, status `doubt`, amount 6 (base), amount_per_stack 2, cap 8. No passive. (Its current intents
+   are ask_for_proof_of_arrival / receipt_lash / question_the_date — add the discrepancy attack.)
+2. `triplicate_examiner` (demo hp 33; design 41): add "Three Copies Required" cross-combatant passive to
+   EncounterPassives — on the player's 3RD card of the turn's opening type (cardsPlayedThisTurnWithTag==3 AND
+   firstCardPlayedHasTag), the Examiner gains 8 Block AND the player gains 1 Doubt. (Mirror NotThisCounter but
+   ==3 and add an ApplyStatus(doubt) to the hero/eventTarget-from-source side.)
+
+**Migration learnings (apply going forward):**
+- Enemy ids OFTEN already exist in demo data → ENHANCE in place (add starting_statuses / intent_rules / a
+  Date-Discrepancy-style intent), do NOT append duplicates (queue_crier_homunculus collided). Check with
+  `grep -c '"id": "<id>"' source-data/enemies/city_enemies.json` first.
+- Demo HP values differ from the design's final HP — decide per enemy whether to update max_hp to the design
+  value (recommended for faithfulness).
+- Passive taxonomy: owner-scoped reaction (bearer's own event, reads opponent) → status starting_status
+  (PassiveStatuses); reacts to a PLAYER action → EncounterPassives (per-encounter trigger, target
+  AllEnemiesOfSource); pure scaling → bake into the intent (capped damage_per_status).
+- Cross-combatant selectors must be SERIALIZABLE (LowestHealthEnemyOfSource / AllEnemiesOfSource — NOT
+  FirstTarget, an escape node).
+
+**Deferred (need more engine or are fiddly):**
+- Bookworm (2 subtleties: fire before Paperwork DoT handler; min(P,B) removal can't be a naive sequence).
+- Number-Ticket Wisp "Your Number Came Up" (reacts to PLAYER Panic DECAY — no per-stack-decay trigger event
+  exists; would need a StatusStacksReduced trigger event).
+- Duo/multi encounters need a per-roster HP override (encounter format gap) — add to BabEncounter/EncounterMapper
+  before authoring the multi encounters (step 4).
+
+---
+
+
 Production phase: this is no longer the demo port. Act I is rebuilt to the FINAL reworked designs
 (25 identities / 32 encounters) and the maps become **procedural hybrid** (fixed structure, random layout
 per run) using the engine's `RuleBasedMapGenerator`. Studio is out of scope. The converter references the
