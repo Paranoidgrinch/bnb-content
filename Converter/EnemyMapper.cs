@@ -113,11 +113,65 @@ public static class EncounterMapper
                 count == 1 ? enemyId : $"{enemyId}#{count}",
                 enemy.MaxHp,
                 enemy.Intents.Select(i => new EnemyActionDefinitionId(EnemyMapper.ActionId(enemyId, i.Id))).ToList(),
-                DisplayName: enemy.Name));
+                StartingStatuses: MapStartingStatuses(enemy),
+                DisplayName: enemy.Name,
+                IntentRules: MapIntentRules(where, enemyId, enemy)));
         }
         return new EncounterDefinition(
             new EncounterId(encounter.Id),
             roster,
             [new ResourceSpec(StandardCombatIds.EnergyResource, startingEnergy, startingEnergy)]);
+    }
+
+    // Passive signatures + standing buffs the enemy carries into the fight (a status with triggers).
+    private static IReadOnlyList<StartingStatusSpec>? MapStartingStatuses(BabEnemy enemy) =>
+        enemy.StartingStatuses is null || enemy.StartingStatuses.Count == 0
+            ? null
+            : enemy.StartingStatuses
+                .Select(s => new StartingStatusSpec(new StatusDefinitionId(s.Status), s.Stacks ?? 1))
+                .ToList();
+
+    // State-conditional intents → engine EnemyIntentRule. Action names an intent on this enemy.
+    private static IReadOnlyList<EnemyIntentRule>? MapIntentRules(string where, string enemyId, BabEnemy enemy) =>
+        enemy.IntentRules is null || enemy.IntentRules.Count == 0
+            ? null
+            : enemy.IntentRules
+                .Select(r => new EnemyIntentRule(
+                    MapCondition($"{where} intent rule", r.Condition),
+                    new EnemyActionDefinitionId(EnemyMapper.ActionId(enemyId, r.Action)),
+                    r.Priority ?? 0))
+                .ToList();
+
+    private static EnemyIntentCondition MapCondition(string where, BabIntentCondition c)
+    {
+        ComparisonOperator Op() => c.Op switch
+        {
+            "eq" => ComparisonOperator.Equal,
+            "ne" => ComparisonOperator.NotEqual,
+            "lt" => ComparisonOperator.Less,
+            "le" => ComparisonOperator.LessOrEqual,
+            "gt" => ComparisonOperator.Greater,
+            "ge" => ComparisonOperator.GreaterOrEqual,
+            var other => throw new ConversionException(where, $"unmapped comparison op '{other}'"),
+        };
+        int Val() => c.Value ?? throw new ConversionException(where, $"'{c.Kind}' condition missing value");
+        string Str(string? s, string field) => s ?? throw new ConversionException(where, $"'{c.Kind}' missing {field}");
+        IReadOnlyList<EnemyIntentCondition> Kids() => (c.Conditions ?? throw new ConversionException(where, $"'{c.Kind}' missing conditions"))
+            .Select(k => MapCondition(where, k)).ToList();
+
+        return c.Kind switch
+        {
+            "health_percent" => new EnemyHealthPercentCondition(Op(), c.Percent ?? Val()),
+            "round" => new RoundCondition(Op(), Val()),
+            "self_status" => new SelfHasStatusCondition(new StatusDefinitionId(Str(c.Status, "status")), c.MinStacks ?? 1),
+            "opponent_status" => new OpponentHasStatusCondition(new StatusDefinitionId(Str(c.Status, "status")), c.MinStacks ?? 1),
+            "self_counter" => new SelfHasCounterCondition(new CounterId(Str(c.Counter, "counter")), Op(), Val()),
+            "self_resource" => new SelfResourceCondition(new ResourceId(Str(c.Resource, "resource")), Op(), Val()),
+            "opponent_cards_played" => new OpponentCardsPlayedCondition(Op(), Val(), c.LastTurn ?? true),
+            "all_of" => new AllOfCondition(Kids()),
+            "any_of" => new AnyOfCondition(Kids()),
+            "not" => new NotCondition(Kids()[0]),
+            var other => throw new ConversionException(where, $"unmapped intent condition kind '{other}'"),
+        };
     }
 }
