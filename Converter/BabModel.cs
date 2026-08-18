@@ -55,7 +55,33 @@ public sealed record BabEnemy(
     int MaxHp,
     string? IntentPattern,
     IReadOnlyList<BabIntent> Intents,
-    IReadOnlyList<string>? Tags);
+    IReadOnlyList<string>? Tags,
+    // Reworked-content extensions (absent in the original demo data): passive statuses the enemy starts a
+    // fight with (its signature "rule", authored as a status with triggers), and state-conditional intent
+    // rules (one-shot overrides / phase / orbit selection). Both optional → existing enemies are unchanged.
+    IReadOnlyList<BabEnemyStatus>? StartingStatuses = null,
+    IReadOnlyList<BabIntentRule>? IntentRules = null);
+
+// A status the enemy carries from the start of the fight (a passive rule, or a standing buff).
+public sealed record BabEnemyStatus(string Status, int? Stacks);
+
+// A state-conditional intent: when Condition matches (highest Priority first), the enemy uses the intent
+// named by Action instead of its plain cycle. Action is an intent id on the same enemy.
+public sealed record BabIntentRule(BabIntentCondition Condition, string Action, int? Priority);
+
+// A serializable predicate over live combat state, mapped to the engine's EnemyIntentCondition family.
+// Kind picks the shape; only the fields that kind needs are read.
+public sealed record BabIntentCondition(
+    string Kind,
+    string? Counter,
+    string? Status,
+    string? Resource,
+    string? Op,
+    int? Value,
+    int? Percent,
+    int? MinStacks,
+    bool? LastTurn,
+    IReadOnlyList<BabIntentCondition>? Conditions);
 
 // An intent carries exactly ONE payload shape in the source data: a bare attack (damage), a legacy
 // effect list (effects), or the dominant action list (actions) — the latter two share the effect DSL.
