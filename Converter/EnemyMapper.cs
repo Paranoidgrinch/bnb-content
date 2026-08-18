@@ -112,7 +112,10 @@ public static class EncounterMapper
             roster.Add(new EncounterEnemy(
                 count == 1 ? enemyId : $"{enemyId}#{count}",
                 enemy.MaxHp,
-                enemy.Intents.Select(i => new EnemyActionDefinitionId(EnemyMapper.ActionId(enemyId, i.Id))).ToList(),
+                // The round-robin cycle excludes SPECIAL intents; they fire only via intent rules. All intents
+                // (special or not) still get action definitions (EnemyMapper.MapActions), so rules can name them.
+                enemy.Intents.Where(i => i.Special != true)
+                    .Select(i => new EnemyActionDefinitionId(EnemyMapper.ActionId(enemyId, i.Id))).ToList(),
                 StartingStatuses: MapStartingStatuses(enemy),
                 DisplayName: enemy.Name,
                 IntentRules: MapIntentRules(where, enemyId, enemy)));

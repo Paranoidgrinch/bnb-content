@@ -94,12 +94,14 @@ public static class EffectMapper
 
             "draw_cards" => new CombatNodeModel("drawCards", "source", CombatAmountSpec.FromConst(Amount())),
 
-            // damage = stacks of <status> on the target × amount_per_stack
-            "damage_per_status" => new CombatNodeModel("dealDamage", Sel(), CombatAmountSpec.Binary("mul",
-                new CombatAmountSpec("statusStacks", SelectorKey: Sel(),
-                    ReadId: effect.Status ?? throw new ConversionException(where, "damage_per_status without status")),
-                CombatAmountSpec.FromConst(effect.AmountPerStack
-                    ?? throw new ConversionException(where, "damage_per_status without amount_per_stack")))),
+            // damage = amount (base, optional) + min(stacks of <status> on the target × amount_per_stack, cap?)
+            // Base + capped scaling covers "N damage, +X per <status> up to +Y" (e.g. Queue-Crier's Lost Your Place).
+            "damage_per_status" => new CombatNodeModel("dealDamage", Sel(), DamagePerStatusAmount(where, effect, Sel())),
+
+            // set_counter: write a per-fight track (Queue Position, …). relative (default true) adds; else sets.
+            "set_counter" => new CombatNodeModel("setCombatantCounter", Sel(), CombatAmountSpec.FromConst(Amount()),
+                CounterId: effect.Counter ?? throw new ConversionException(where, "set_counter without counter"),
+                Relative: effect.Relative ?? true),
 
             "create_card" => new CombatNodeModel("createCardInstance", "source",
                 CombatAmountSpec.FromConst(effect.Copies ?? 1),
@@ -129,5 +131,23 @@ public static class EffectMapper
 
             var other => throw new ConversionException(where, $"unmapped effect type '{other}'"),
         };
+    }
+
+    // amount(base) + min(statusStacks(target, status) × amount_per_stack, cap). Base and cap are optional.
+    private static CombatAmountSpec DamagePerStatusAmount(string where, BabEffect effect, string selector)
+    {
+        var perStack = CombatAmountSpec.Binary("mul",
+            new CombatAmountSpec("statusStacks", SelectorKey: selector,
+                ReadId: effect.Status ?? throw new ConversionException(where, "damage_per_status without status")),
+            CombatAmountSpec.FromConst(effect.AmountPerStack
+                ?? throw new ConversionException(where, "damage_per_status without amount_per_stack")));
+
+        var scaled = effect.Cap is { } cap
+            ? CombatAmountSpec.Binary("min", perStack, CombatAmountSpec.FromConst(cap))
+            : perStack;
+
+        return effect.Amount is { } baseAmount && baseAmount != 0
+            ? CombatAmountSpec.Binary("add", CombatAmountSpec.FromConst(baseAmount), scaled)
+            : scaled;
     }
 }

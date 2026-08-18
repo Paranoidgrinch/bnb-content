@@ -1,5 +1,61 @@
 [
   {
+    "id": "a_very_official_line",
+    "name": "A Very Official Line",
+    "max_hp": 29,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "shuffle_forward",
+        "name": "Shuffle Forward",
+        "intent_type": "attack",
+        "effects": [
+          { "type": "deal_damage", "target": "player", "amount": 5 },
+          { "type": "apply_status", "target": "player", "status": "panic", "amount": 1 }
+        ]
+      },
+      {
+        "id": "compress_the_queue",
+        "name": "Compress the Queue",
+        "intent_type": "block",
+        "effects": [
+          { "type": "gain_block", "target": "owner", "amount": 8 }
+        ]
+      },
+      {
+        "id": "shuffle_backward",
+        "name": "Shuffle Backward for Administrative Reasons",
+        "intent_type": "mixed",
+        "effects": [
+          { "type": "deal_damage", "target": "player", "amount": 7 },
+          { "type": "gain_block", "target": "owner", "amount": 5 }
+        ]
+      },
+      {
+        "id": "everyone_moves",
+        "name": "Everyone Moves at Once",
+        "intent_type": "attack",
+        "special": true,
+        "effects": [
+          { "type": "deal_damage", "target": "player", "amount": 12 },
+          { "type": "apply_status", "target": "player", "status": "panic", "amount": 1 },
+          { "type": "set_counter", "target": "owner", "counter": "queue_position", "amount": 0, "relative": false }
+        ]
+      }
+    ],
+    "tags": ["city", "queue"],
+    "starting_statuses": [
+      { "status": "queue_advances" }
+    ],
+    "intent_rules": [
+      {
+        "condition": { "kind": "self_counter", "counter": "queue_position", "op": "ge", "value": 3 },
+        "action": "everyone_moves",
+        "priority": 10
+      }
+    ]
+  },
+  {
     "id": "rat_with_legal_representation",
     "name": "Rat with Legal Representation",
     "max_hp": 36,

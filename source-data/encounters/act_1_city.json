@@ -5,7 +5,7 @@
     "act": 1,
     "difficulty": "easy",
     "enemies": [
-      "queue_imp"
+      "a_very_official_line"
     ],
     "weight": 2,
     "tags": [

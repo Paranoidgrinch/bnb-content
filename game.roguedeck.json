@@ -11300,23 +11300,49 @@
       },
       "Enemies": [
         {
-          "Id": "queue_imp",
-          "MaxHealth": 22,
+          "Id": "a_very_official_line",
+          "MaxHealth": 29,
           "Actions": [
             {
-              "value": "queue_imp.call_the_next_number"
+              "value": "a_very_official_line.shuffle_forward"
             },
             {
-              "value": "queue_imp.desk_jab"
+              "value": "a_very_official_line.compress_the_queue"
             },
             {
-              "value": "queue_imp.you_are_not_being_served"
+              "value": "a_very_official_line.shuffle_backward"
             }
           ],
-          "StartingStatuses": null,
-          "DisplayName": "Queue Imp",
+          "StartingStatuses": [
+            {
+              "Status": {
+                "value": "queue_advances"
+              },
+              "Stacks": 1,
+              "DurationTurns": 0,
+              "Charges": 0
+            }
+          ],
+          "DisplayName": "A Very Official Line",
           "Position": null,
-          "IntentRules": null
+          "IntentRules": [
+            {
+              "Condition": {
+                "kind": "intent.selfHasCounter",
+                "value": {
+                  "Counter": {
+                    "value": "queue_position"
+                  },
+                  "Op": "GreaterOrEqual",
+                  "Value": 3
+                }
+              },
+              "Action": {
+                "value": "a_very_official_line.everyone_moves"
+              },
+              "Priority": 10
+            }
+          ]
         }
       ],
       "HeroResources": [
@@ -21579,6 +21605,274 @@
     }
   ],
   "EnemyActions": [
+    {
+      "Id": "a_very_official_line.shuffle_forward",
+      "PackageId": "scenario",
+      "NameKey": "Shuffle Forward",
+      "DescriptionKey": null,
+      "Intent": {
+        "Kind": "Attack",
+        "Label": "Shuffle Forward \u00B7 5 dmg, Panic \u002B1"
+      },
+      "Program": {
+        "Id": {
+          "Value": "(unnamed)"
+        },
+        "Root": {
+          "kind": "node.sequence",
+          "value": {
+            "Children": [
+              {
+                "kind": "node.dealDamage",
+                "value": {
+                  "TargetSelector": {
+                    "kind": "sel.eventTarget",
+                    "value": {
+                      "Cardinality": "ZeroOrOne",
+                      "RequiredContextCapabilities": "EventTarget"
+                    }
+                  },
+                  "Amount": {
+                    "kind": "const",
+                    "value": {
+                      "Value": 5
+                    }
+                  },
+                  "ResultKey": null,
+                  "IgnoresBlock": false,
+                  "Element": null,
+                  "Children": []
+                }
+              },
+              {
+                "kind": "node.applyStatus",
+                "value": {
+                  "TargetSelector": {
+                    "kind": "sel.eventTarget",
+                    "value": {
+                      "Cardinality": "ZeroOrOne",
+                      "RequiredContextCapabilities": "EventTarget"
+                    }
+                  },
+                  "StatusDefinitionId": {
+                    "value": "panic"
+                  },
+                  "Stacks": {
+                    "kind": "const",
+                    "value": {
+                      "Value": 1
+                    }
+                  },
+                  "DurationTurns": 0,
+                  "Charges": 0,
+                  "ResultKey": null,
+                  "Children": []
+                }
+              }
+            ]
+          }
+        },
+        "MaxNodeDepth": 64,
+        "MaxProgramSteps": 1024
+      }
+    },
+    {
+      "Id": "a_very_official_line.compress_the_queue",
+      "PackageId": "scenario",
+      "NameKey": "Compress the Queue",
+      "DescriptionKey": null,
+      "Intent": {
+        "Kind": "Defend",
+        "Label": "Compress the Queue \u00B7 8 block"
+      },
+      "Program": {
+        "Id": {
+          "Value": "(unnamed)"
+        },
+        "Root": {
+          "kind": "node.gainBlock",
+          "value": {
+            "TargetSelector": {
+              "kind": "sel.source",
+              "value": {
+                "Cardinality": "ZeroOrOne",
+                "RequiredContextCapabilities": "Source"
+              }
+            },
+            "Amount": {
+              "kind": "const",
+              "value": {
+                "Value": 8
+              }
+            },
+            "ResultKey": null,
+            "Children": []
+          }
+        },
+        "MaxNodeDepth": 64,
+        "MaxProgramSteps": 1024
+      }
+    },
+    {
+      "Id": "a_very_official_line.shuffle_backward",
+      "PackageId": "scenario",
+      "NameKey": "Shuffle Backward for Administrative Reasons",
+      "DescriptionKey": null,
+      "Intent": {
+        "Kind": "Special",
+        "Label": "Shuffle Backward for Administrative Reasons \u00B7 7 dmg, 5 block"
+      },
+      "Program": {
+        "Id": {
+          "Value": "(unnamed)"
+        },
+        "Root": {
+          "kind": "node.sequence",
+          "value": {
+            "Children": [
+              {
+                "kind": "node.dealDamage",
+                "value": {
+                  "TargetSelector": {
+                    "kind": "sel.eventTarget",
+                    "value": {
+                      "Cardinality": "ZeroOrOne",
+                      "RequiredContextCapabilities": "EventTarget"
+                    }
+                  },
+                  "Amount": {
+                    "kind": "const",
+                    "value": {
+                      "Value": 7
+                    }
+                  },
+                  "ResultKey": null,
+                  "IgnoresBlock": false,
+                  "Element": null,
+                  "Children": []
+                }
+              },
+              {
+                "kind": "node.gainBlock",
+                "value": {
+                  "TargetSelector": {
+                    "kind": "sel.source",
+                    "value": {
+                      "Cardinality": "ZeroOrOne",
+                      "RequiredContextCapabilities": "Source"
+                    }
+                  },
+                  "Amount": {
+                    "kind": "const",
+                    "value": {
+                      "Value": 5
+                    }
+                  },
+                  "ResultKey": null,
+                  "Children": []
+                }
+              }
+            ]
+          }
+        },
+        "MaxNodeDepth": 64,
+        "MaxProgramSteps": 1024
+      }
+    },
+    {
+      "Id": "a_very_official_line.everyone_moves",
+      "PackageId": "scenario",
+      "NameKey": "Everyone Moves at Once",
+      "DescriptionKey": null,
+      "Intent": {
+        "Kind": "Attack",
+        "Label": "Everyone Moves at Once \u00B7 12 dmg, Panic \u002B1"
+      },
+      "Program": {
+        "Id": {
+          "Value": "(unnamed)"
+        },
+        "Root": {
+          "kind": "node.sequence",
+          "value": {
+            "Children": [
+              {
+                "kind": "node.dealDamage",
+                "value": {
+                  "TargetSelector": {
+                    "kind": "sel.eventTarget",
+                    "value": {
+                      "Cardinality": "ZeroOrOne",
+                      "RequiredContextCapabilities": "EventTarget"
+                    }
+                  },
+                  "Amount": {
+                    "kind": "const",
+                    "value": {
+                      "Value": 12
+                    }
+                  },
+                  "ResultKey": null,
+                  "IgnoresBlock": false,
+                  "Element": null,
+                  "Children": []
+                }
+              },
+              {
+                "kind": "node.applyStatus",
+                "value": {
+                  "TargetSelector": {
+                    "kind": "sel.eventTarget",
+                    "value": {
+                      "Cardinality": "ZeroOrOne",
+                      "RequiredContextCapabilities": "EventTarget"
+                    }
+                  },
+                  "StatusDefinitionId": {
+                    "value": "panic"
+                  },
+                  "Stacks": {
+                    "kind": "const",
+                    "value": {
+                      "Value": 1
+                    }
+                  },
+                  "DurationTurns": 0,
+                  "Charges": 0,
+                  "ResultKey": null,
+                  "Children": []
+                }
+              },
+              {
+                "kind": "node.setCombatantCounter",
+                "value": {
+                  "TargetSelector": {
+                    "kind": "sel.source",
+                    "value": {
+                      "Cardinality": "ZeroOrOne",
+                      "RequiredContextCapabilities": "Source"
+                    }
+                  },
+                  "CounterId": {
+                    "value": "queue_position"
+                  },
+                  "Amount": {
+                    "kind": "const",
+                    "value": {
+                      "Value": 0
+                    }
+                  },
+                  "Relative": false,
+                  "Children": []
+                }
+              }
+            ]
+          }
+        },
+        "MaxNodeDepth": 64,
+        "MaxProgramSteps": 1024
+      }
+    },
     {
       "Id": "queue_imp.call_the_next_number",
       "PackageId": "scenario",
@@ -57823,6 +58117,172 @@
       ],
       "DeathPrevention": null,
       "DebuffBlock": null
+    },
+    {
+      "Id": "queue_advances",
+      "PackageId": "scenario",
+      "NameKey": "The Queue Advances",
+      "DescriptionKey": null,
+      "Polarity": "Neutral",
+      "UsesStacks": false,
+      "UsesDuration": false,
+      "UsesCharges": false,
+      "StackingBehavior": "MergeWithExistingInstance",
+      "Tags": [],
+      "PassiveModifiers": [],
+      "Triggers": [
+        {
+          "Event": "TurnStarted",
+          "Program": {
+            "Id": {
+              "Value": "(unnamed)"
+            },
+            "Root": {
+              "kind": "node.conditional",
+              "value": {
+                "Condition": {
+                  "kind": "compare",
+                  "value": {
+                    "Left": {
+                      "kind": "cardsPlayedLastTurn",
+                      "value": {
+                        "Selector": {
+                          "kind": "sel.lowestHealthEnemy",
+                          "value": {
+                            "Cardinality": "ZeroOrOne"
+                          }
+                        }
+                      }
+                    },
+                    "Op": "GreaterOrEqual",
+                    "Right": {
+                      "kind": "const",
+                      "value": {
+                        "Value": 3
+                      }
+                    }
+                  }
+                },
+                "Then": {
+                  "kind": "node.setCombatantCounter",
+                  "value": {
+                    "TargetSelector": {
+                      "kind": "sel.source",
+                      "value": {
+                        "Cardinality": "ZeroOrOne",
+                        "RequiredContextCapabilities": "Source"
+                      }
+                    },
+                    "CounterId": {
+                      "value": "queue_position"
+                    },
+                    "Amount": {
+                      "kind": "min",
+                      "value": {
+                        "Left": {
+                          "kind": "add",
+                          "value": {
+                            "Left": {
+                              "kind": "combatantCounter",
+                              "value": {
+                                "Selector": {
+                                  "kind": "sel.source",
+                                  "value": {
+                                    "Cardinality": "ZeroOrOne",
+                                    "RequiredContextCapabilities": "Source"
+                                  }
+                                },
+                                "CounterId": {
+                                  "value": "queue_position"
+                                }
+                              }
+                            },
+                            "Right": {
+                              "kind": "const",
+                              "value": {
+                                "Value": 1
+                              }
+                            }
+                          }
+                        },
+                        "Right": {
+                          "kind": "const",
+                          "value": {
+                            "Value": 3
+                          }
+                        }
+                      }
+                    },
+                    "Relative": false,
+                    "Children": []
+                  }
+                },
+                "Else": null,
+                "Children": [
+                  {
+                    "kind": "node.setCombatantCounter",
+                    "value": {
+                      "TargetSelector": {
+                        "kind": "sel.source",
+                        "value": {
+                          "Cardinality": "ZeroOrOne",
+                          "RequiredContextCapabilities": "Source"
+                        }
+                      },
+                      "CounterId": {
+                        "value": "queue_position"
+                      },
+                      "Amount": {
+                        "kind": "min",
+                        "value": {
+                          "Left": {
+                            "kind": "add",
+                            "value": {
+                              "Left": {
+                                "kind": "combatantCounter",
+                                "value": {
+                                  "Selector": {
+                                    "kind": "sel.source",
+                                    "value": {
+                                      "Cardinality": "ZeroOrOne",
+                                      "RequiredContextCapabilities": "Source"
+                                    }
+                                  },
+                                  "CounterId": {
+                                    "value": "queue_position"
+                                  }
+                                }
+                              },
+                              "Right": {
+                                "kind": "const",
+                                "value": {
+                                  "Value": 1
+                                }
+                              }
+                            }
+                          },
+                          "Right": {
+                            "kind": "const",
+                            "value": {
+                              "Value": 3
+                            }
+                          }
+                        }
+                      },
+                      "Relative": false,
+                      "Children": []
+                    }
+                  }
+                ]
+              }
+            },
+            "MaxNodeDepth": 64,
+            "MaxProgramSteps": 1024
+          }
+        }
+      ],
+      "DeathPrevention": null,
+      "DebuffBlock": null
     }
   ],
   "Relics": [
@@ -62854,6 +63314,21 @@
       }
     },
     "Enemies": {
+      "a_very_official_line": {
+        "Art": "enemies/a_very_official_line.png",
+        "FlavorText": null,
+        "Icon": null,
+        "Rarity": null,
+        "Frame": null,
+        "Color": null,
+        "Sound": null,
+        "Vfx": null,
+        "Tags": [
+          "city",
+          "queue"
+        ],
+        "Extra": {}
+      },
       "queue_imp": {
         "Art": "enemies/queue_imp.png",
         "FlavorText": null,
@@ -67251,5 +67726,20 @@
       "Tags": [],
       "Extra": {}
     }
-  }
+  },
+  "Balance": {
+    "Enemies": {},
+    "Encounters": {},
+    "Cards": {},
+    "Relics": {},
+    "Consumables": {},
+    "Characters": {},
+    "Defaults": {
+      "Enemy": 0,
+      "Card": 0,
+      "Relic": 0,
+      "Consumable": 0
+    }
+  },
+  "MapGeneration": null
 }
