@@ -52,6 +52,13 @@ signature via the recipe catalogue.
 - **Migration note:** the demo data already holds many enemies (109 encounters); some ids already exist
   (e.g. `queue_crier_homunculus`). When adding a final identity, CHECK for an existing id — either replace
   that enemy in place or use the final id if free. Do NOT append a duplicate.
+- **DONE — engine: per-encounter cross-combatant triggered effects** (RogueDeck-Core @b645378):
+  `EncounterDefinition.TriggeredEffects` (event + CombatJson program, no bearer filter) registered into only
+  that encounter's combat. This unblocks enemy passives that react to PLAYER actions ("Not This Counter",
+  "Three Copies Required", etc.) — impossible as owner-scoped status triggers.
+- **TODO — converter wiring for cross-combatant passives:** an `EncounterPassives` module (like PassiveStatuses,
+  raw programs) keyed by enemy id; `EncounterMapper` aggregates the triggers of the encounter's enemies into
+  `EncounterDefinition.TriggeredEffects`. Target the enemy via `AllEnemiesOfSource` (source = the acting hero).
 - **TODO — remaining 24 identities** (Stages 1–8): mechanical replication of the above pattern, per enemy:
   read its design, author intents (existing DSL + extend per-need), author its passive if any (PassiveStatuses,
   raw program; cross-combatant reactions like "Your Number Came Up" pick a serializable single-opponent
