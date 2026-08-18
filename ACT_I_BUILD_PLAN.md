@@ -18,20 +18,25 @@ Recipes for translating enemy signatures → engine constructs live in
   `NodeRefs[kind]`. (RogueDeck-Core @4b78320.)
 
 ### 1. Statuses (StatusMapper)
-- Panic / Doubt / Paperwork / Fatigue / Strength already ported. **Add Bookworm** (positive enemy status:
-  before the bearer's Paperwork resolves, remove min(Paperwork, Bookworm) of each). Author as a TurnStarted
-  trigger ordered BEFORE the Paperwork DoT tick; prove the ordering in the smoke test.
+- Panic / Doubt / Paperwork / Fatigue / Strength already ported.
+- **Bookworm — DEFERRED to step 3 (author with its enemy).** Two real subtleties found: (a) it must fire at
+  the bearer's turn start BEFORE the Paperwork DoT event-handler (ordering, not just a TurnStarted trigger);
+  (b) "remove min(Paperwork, Bookworm) of each" can't be a naive Sequence — the second `modifyStatusStacks`
+  reads the already-reduced value, so it needs the min captured once (scratch/result-store or a raw
+  EffectProgram). Do it in-combat-tested when an enemy fields it.
 
 ### 2. Enemy model + DSL extensions (BabModel / EffectMapper / EnemyMapper)
-The reworked enemies need three things the demo converter lacks:
-- **Passives / reactions:** add a `passives` (triggered-program) shape to `BabEnemy` → engine triggered
-  effects. Most Act-I signatures are passives ("The Queue Advances", "Lost Your Place", "Your Number Came
-  Up", "Not This Counter", "Three Copies Required").
-- **Richer effect DSL** (`EffectMapper`): map the recipe-catalogue patterns — scaling attack
-  (`damage_per_status`, already present), status thresholds, card marks (Misfiled/Referenced/Redacted),
-  counters/tracks (Queue Position), source-scoped stacks.
-- **Conditional intents / one-shot overrides:** add intent rules to `BabEnemy` → `EnemyIntentRule`
-  (SelfHasCounter for "replace next intent with Everyone Moves at Once", etc.).
+Key de-risking: `EncounterEnemy` already supports `StartingStatuses` + `IntentRules`, so passives + conditional
+intents need **no engine change** — passive = a status-with-triggers carried from combat start.
+- **DONE — passive + intent-rule plumbing** (@753bad1): `BabEnemy.starting_statuses` + `intent_rules` →
+  `EncounterEnemy`, with the condition vocabulary. `EnemyPassiveAndIntentRuleMappingTests`.
+- **TODO — passive STATUS authoring:** the passive statuses referenced by `starting_statuses` must be defined
+  (StatusMapper-style, a status with triggers implementing the reaction: "The Queue Advances", "Lost Your
+  Place", "Your Number Came Up", "Not This Counter", "Three Copies Required").
+- **TODO — richer effect DSL** (`EffectMapper`): status thresholds, card marks (Misfiled/Referenced/Redacted),
+  counters/tracks (Queue Position), source-scoped stacks. NOTE the new engine nodes (mark ops, owner-scoped
+  selectors) are NOT in `CombatNodeModel` (Studio-model) — emit them as RAW `EffectProgram` nodes in the
+  mapper, or wire them into `CombatNodeModel` first.
 
 ### 3. Act-I enemies (source-data + EnemyMapper) — 25 identities
 Rewrite `source-data/enemies/city_enemies.json` to the FINAL roster with HP/intents/passives from the
