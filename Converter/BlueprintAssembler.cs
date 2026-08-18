@@ -43,7 +43,7 @@ public static class BlueprintAssembler
             EnemyMapper.MapActions(enemies).ToList(),
             baked.Map)
         {
-            Statuses = StatusMapper.Map("statuses", data.Statuses),
+            Statuses = [.. StatusMapper.Map("statuses", data.Statuses), .. PassiveStatuses.All()],
             Relics = relics.Select(r => r.Relic).ToList(),
             Shops = baked.Shops,
             Start = start,
