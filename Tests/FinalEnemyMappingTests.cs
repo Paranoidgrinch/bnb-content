@@ -54,6 +54,19 @@ public class FinalEnemyMappingTests
         Assert.Contains(actions, a => a.Id == "a_very_official_line.everyone_moves");
     }
 
+    // Cross-combatant passive: an encounter fielding the Wrong-Window Scribe carries its "Not This Counter"
+    // reaction as a per-encounter CardPlayed triggered effect (reacts to the PLAYER playing a card).
+    [Fact]
+    public void The_scribe_contributes_a_card_played_encounter_trigger()
+    {
+        var enemies = Data.Enemies.ToDictionary(e => e.Id);
+        var encounter = Data.Encounters.First(e => e.Enemies.Contains("wrong_window_scribe"));
+        var mapped = EncounterMapper.Map(encounter, enemies, Data.Bureaucrat.StartingEnergy);
+
+        var trigger = Assert.Single(mapped.TriggeredEffects);
+        Assert.Equal("CardPlayed", trigger.Event);
+    }
+
     // DSL: "N damage + X per <status>, capped at Y" → dealDamage(add(N, min(mul(statusStacks, X), Y))).
     // (Queue-Crier's "Lost Your Place": 7 + min(panic*3, 9).)
     [Fact]
