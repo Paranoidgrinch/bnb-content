@@ -38,7 +38,12 @@ public sealed record BabEffect(
     string? Destination,
     int? Copies,
     string? Resource,
-    string? Tag);
+    string? Tag,
+    // Reworked extensions: an optional cap on a per-stack scaling bonus (damage_per_status), and a counter id
+    // + relative flag for set_counter (tracks like Queue Position). Optional → old effects are unchanged.
+    int? Cap = null,
+    string? Counter = null,
+    bool? Relative = null);
 
 public sealed record BabStatus(
     string Id,
@@ -93,7 +98,10 @@ public sealed record BabIntent(
     int? Block,
     IReadOnlyList<BabEffect>? Effects,
     IReadOnlyList<BabEffect>? Actions,
-    double? Weight);
+    double? Weight,
+    // A SPECIAL intent is defined (so intent_rules can name it) but kept OUT of the round-robin cycle — it only
+    // fires when an intent rule selects it (e.g. "Everyone Moves at Once" at Queue Position 3). Default false.
+    bool? Special = null);
 
 public sealed record BabEncounter(
     string Id,
