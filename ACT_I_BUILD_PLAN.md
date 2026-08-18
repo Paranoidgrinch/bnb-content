@@ -30,13 +30,16 @@ Key de-risking: `EncounterEnemy` already supports `StartingStatuses` + `IntentRu
 intents need **no engine change** — passive = a status-with-triggers carried from combat start.
 - **DONE — passive + intent-rule plumbing** (@753bad1): `BabEnemy.starting_statuses` + `intent_rules` →
   `EncounterEnemy`, with the condition vocabulary. `EnemyPassiveAndIntentRuleMappingTests`.
-- **TODO — passive STATUS authoring:** the passive statuses referenced by `starting_statuses` must be defined
-  (StatusMapper-style, a status with triggers implementing the reaction: "The Queue Advances", "Lost Your
-  Place", "Your Number Came Up", "Not This Counter", "Three Copies Required").
-- **TODO — richer effect DSL** (`EffectMapper`): status thresholds, card marks (Misfiled/Referenced/Redacted),
-  counters/tracks (Queue Position), source-scoped stacks. NOTE the new engine nodes (mark ops, owner-scoped
-  selectors) are NOT in `CombatNodeModel` (Studio-model) — emit them as RAW `EffectProgram` nodes in the
-  mapper, or wire them into `CombatNodeModel` first.
+- **DONE — passive STATUS mechanism** (@9164448): `PassiveStatuses` authors reactions as statuses-with-triggers
+  built from RAW EffectPrograms (serialized via CombatJson), appended to the blueprint, applied via
+  `starting_statuses`. First passive `queue_advances` proven end-to-end. Also fixed a recurring engine gap:
+  SetCombatantCounter + 4 Selected* node executors were missing from StandardCombatPackage
+  (RogueDeck-Core @e48d6dd). The remaining Act-I passives ("Lost Your Place", "Your Number Came Up", "Not This
+  Counter", "Three Copies Required", …) are authored **alongside their enemies in step 3** — each needs its own
+  selector/timing choices and is in-combat tested there.
+- **DSL note:** Act-I INTENTS are covered by the existing EffectMapper effect types (damage/block/status/
+  `damage_per_status`/…). New effect types are added per-need when an enemy intent requires one (step 3), and
+  for Act-II card marks (mark ops via RAW `EffectProgram` — not in `CombatNodeModel`). No speculative DSL.
 
 ### 3. Act-I enemies (source-data + EnemyMapper) — 25 identities
 Rewrite `source-data/enemies/city_enemies.json` to the FINAL roster with HP/intents/passives from the
