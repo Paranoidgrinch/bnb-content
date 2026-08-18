@@ -66,8 +66,8 @@ public class EndToEndSmokeTests
                     break;
             }
             var combat = play.CombatDriver!.Current;
+            Assert.True(session.Error is null, session.Error);
             Assert.NotNull(combat);
-            Assert.Null(session.Error);
             Assert.Equal(5, combat!.Hand.Count); // the standard draw from the 10-card starter deck
 
             // Play every affordable, playable card at the first living enemy, end the turn, repeat.
