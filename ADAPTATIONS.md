@@ -154,3 +154,14 @@ older Act-I enemy pool wherever HP or intents disagree. Readings taken where the
 - Post-fight rewards: gold (original difficulty ranges) + pick 1 of 3 pool cards; elites and the boss
   add a random relic. The card pick has **no skip button** at the engine level — the host UI decides
   whether to surface one.
+
+- **The Seizure Procession marks a card when the player DRAWS, not at the turn's start.** Turn-start triggers
+  run before the turn's draw, so at that moment the hand is still empty; the Lantern therefore rides on the
+  engine's CardsDrawn event (added to the authoring vocabulary for this) and a latch status on the player
+  keeps it to one card per turn.
+- **Seized cards go to the exhaust pile and the tally is kept on the player.** A destroyed Cart does not hand
+  its loot back — the design's "returned when the Cart falls" would need a zone the engine does not have. The
+  seizure count lives on the player because every part of the program can address the player with a single
+  selector, while an enemy inside a card loop cannot be read at all.
+- **The Marshal's cap of +4 Strength is implicit.** The Cart's capacity of two seizures already keeps the
+  Marshal at +2, so no separate tally is needed.

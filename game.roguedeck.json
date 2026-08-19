@@ -48160,7 +48160,7 @@
       "Enemies": [
         {
           "Id": "seizure_marshal",
-          "MaxHealth": 42,
+          "MaxHealth": 40,
           "Actions": [
             {
               "value": "seizure_marshal.enter_the_premises"
@@ -48175,14 +48175,23 @@
               "value": "seizure_marshal.guard_the_list"
             }
           ],
-          "StartingStatuses": null,
+          "StartingStatuses": [
+            {
+              "Status": {
+                "value": "seizure_marshal"
+              },
+              "Stacks": 1,
+              "DurationTurns": 0,
+              "Charges": 0
+            }
+          ],
           "DisplayName": "Seizure Marshal",
           "Position": null,
           "IntentRules": null
         },
         {
           "Id": "inventory_lantern",
-          "MaxHealth": 26,
+          "MaxHealth": 24,
           "Actions": [
             {
               "value": "inventory_lantern.mark_the_goods"
@@ -48197,14 +48206,23 @@
               "value": "inventory_lantern.seal_the_room"
             }
           ],
-          "StartingStatuses": null,
+          "StartingStatuses": [
+            {
+              "Status": {
+                "value": "inventory_lantern"
+              },
+              "Stacks": 1,
+              "DurationTurns": 0,
+              "Charges": 0
+            }
+          ],
           "DisplayName": "Inventory Lantern",
           "Position": null,
           "IntentRules": null
         },
         {
           "Id": "lock_cart",
-          "MaxHealth": 34,
+          "MaxHealth": 32,
           "Actions": [
             {
               "value": "lock_cart.cartwheel_crush"
@@ -48219,7 +48237,16 @@
               "value": "lock_cart.roll_over_claims"
             }
           ],
-          "StartingStatuses": null,
+          "StartingStatuses": [
+            {
+              "Status": {
+                "value": "lock_cart"
+              },
+              "Stacks": 1,
+              "DurationTurns": 0,
+              "Charges": 0
+            }
+          ],
           "DisplayName": "Lock Cart",
           "Position": null,
           "IntentRules": null
@@ -48246,7 +48273,2153 @@
       ],
       "HeroDisplayName": null,
       "CardsDrawnPerTurn": null,
-      "TriggeredEffects": []
+      "TriggeredEffects": [
+        {
+          "Event": "TurnStarted",
+          "Program": {
+            "Id": {
+              "Value": "(unnamed)"
+            },
+            "Root": {
+              "kind": "node.conditional",
+              "value": {
+                "Condition": {
+                  "kind": "compare",
+                  "value": {
+                    "Left": {
+                      "kind": "combatantStatusStacks",
+                      "value": {
+                        "Selector": {
+                          "kind": "sel.source",
+                          "value": {
+                            "Cardinality": "ZeroOrOne",
+                            "RequiredContextCapabilities": "Source"
+                          }
+                        },
+                        "StatusId": {
+                          "value": "the_applicant"
+                        }
+                      }
+                    },
+                    "Op": "Greater",
+                    "Right": {
+                      "kind": "const",
+                      "value": {
+                        "Value": 0
+                      }
+                    }
+                  }
+                },
+                "Then": {
+                  "kind": "node.removeStatus",
+                  "value": {
+                    "TargetSelector": {
+                      "kind": "sel.source",
+                      "value": {
+                        "Cardinality": "ZeroOrOne",
+                        "RequiredContextCapabilities": "Source"
+                      }
+                    },
+                    "StatusDefinitionId": {
+                      "value": "inventory_pending"
+                    },
+                    "ResultKey": null,
+                    "Children": []
+                  }
+                },
+                "Else": null,
+                "Children": [
+                  {
+                    "kind": "node.removeStatus",
+                    "value": {
+                      "TargetSelector": {
+                        "kind": "sel.source",
+                        "value": {
+                          "Cardinality": "ZeroOrOne",
+                          "RequiredContextCapabilities": "Source"
+                        }
+                      },
+                      "StatusDefinitionId": {
+                        "value": "inventory_pending"
+                      },
+                      "ResultKey": null,
+                      "Children": []
+                    }
+                  }
+                ]
+              }
+            },
+            "MaxNodeDepth": 64,
+            "MaxProgramSteps": 1024
+          }
+        },
+        {
+          "Event": "CardsDrawn",
+          "Program": {
+            "Id": {
+              "Value": "(unnamed)"
+            },
+            "Root": {
+              "kind": "node.conditional",
+              "value": {
+                "Condition": {
+                  "kind": "and",
+                  "value": {
+                    "Left": {
+                      "kind": "compare",
+                      "value": {
+                        "Left": {
+                          "kind": "combatantStatusStacks",
+                          "value": {
+                            "Selector": {
+                              "kind": "sel.source",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "Source"
+                              }
+                            },
+                            "StatusId": {
+                              "value": "the_applicant"
+                            }
+                          }
+                        },
+                        "Op": "Greater",
+                        "Right": {
+                          "kind": "const",
+                          "value": {
+                            "Value": 0
+                          }
+                        }
+                      }
+                    },
+                    "Right": {
+                      "kind": "and",
+                      "value": {
+                        "Left": {
+                          "kind": "compare",
+                          "value": {
+                            "Left": {
+                              "kind": "combatantStatusStacks",
+                              "value": {
+                                "Selector": {
+                                  "kind": "sel.source",
+                                  "value": {
+                                    "Cardinality": "ZeroOrOne",
+                                    "RequiredContextCapabilities": "Source"
+                                  }
+                                },
+                                "StatusId": {
+                                  "value": "inventory_pending"
+                                }
+                              }
+                            },
+                            "Op": "Equal",
+                            "Right": {
+                              "kind": "const",
+                              "value": {
+                                "Value": 0
+                              }
+                            }
+                          }
+                        },
+                        "Right": {
+                          "kind": "compare",
+                          "value": {
+                            "Left": {
+                              "kind": "combatantCounter",
+                              "value": {
+                                "Selector": {
+                                  "kind": "sel.source",
+                                  "value": {
+                                    "Cardinality": "ZeroOrOne",
+                                    "RequiredContextCapabilities": "Source"
+                                  }
+                                },
+                                "CounterId": {
+                                  "value": "seized_cards"
+                                }
+                              }
+                            },
+                            "Op": "Less",
+                            "Right": {
+                              "kind": "const",
+                              "value": {
+                                "Value": 2
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "Then": {
+                  "kind": "node.forEachTarget",
+                  "value": {
+                    "CollectionSelector": {
+                      "kind": "sel.enemiesWithStatus",
+                      "value": {
+                        "StatusDefinitionId": {
+                          "value": "lock_cart"
+                        }
+                      }
+                    },
+                    "Body": {
+                      "kind": "node.sequence",
+                      "value": {
+                        "Children": [
+                          {
+                            "kind": "node.markCardInstance",
+                            "value": {
+                              "OwnerSelector": {
+                                "kind": "sel.source",
+                                "value": {
+                                  "Cardinality": "ZeroOrOne",
+                                  "RequiredContextCapabilities": "Source"
+                                }
+                              },
+                              "SourceSelector": null,
+                              "CardExpression": {
+                                "kind": "cardInstance.randomInOwnerZone",
+                                "value": {
+                                  "OwnerSelector": {
+                                    "kind": "sel.source",
+                                    "value": {
+                                      "Cardinality": "ZeroOrOne",
+                                      "RequiredContextCapabilities": "Source"
+                                    }
+                                  },
+                                  "Zone": "Hand"
+                                }
+                              },
+                              "Mark": {
+                                "value": "inventoried"
+                              },
+                              "Remove": false,
+                              "Children": []
+                            }
+                          },
+                          {
+                            "kind": "node.applyStatus",
+                            "value": {
+                              "TargetSelector": {
+                                "kind": "sel.source",
+                                "value": {
+                                  "Cardinality": "ZeroOrOne",
+                                  "RequiredContextCapabilities": "Source"
+                                }
+                              },
+                              "StatusDefinitionId": {
+                                "value": "inventory_pending"
+                              },
+                              "Stacks": {
+                                "kind": "const",
+                                "value": {
+                                  "Value": 1
+                                }
+                              },
+                              "DurationTurns": 0,
+                              "Charges": 0,
+                              "ResultKey": null,
+                              "Children": []
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    "MaxIterations": 32,
+                    "Children": [
+                      {
+                        "kind": "node.sequence",
+                        "value": {
+                          "Children": [
+                            {
+                              "kind": "node.markCardInstance",
+                              "value": {
+                                "OwnerSelector": {
+                                  "kind": "sel.source",
+                                  "value": {
+                                    "Cardinality": "ZeroOrOne",
+                                    "RequiredContextCapabilities": "Source"
+                                  }
+                                },
+                                "SourceSelector": null,
+                                "CardExpression": {
+                                  "kind": "cardInstance.randomInOwnerZone",
+                                  "value": {
+                                    "OwnerSelector": {
+                                      "kind": "sel.source",
+                                      "value": {
+                                        "Cardinality": "ZeroOrOne",
+                                        "RequiredContextCapabilities": "Source"
+                                      }
+                                    },
+                                    "Zone": "Hand"
+                                  }
+                                },
+                                "Mark": {
+                                  "value": "inventoried"
+                                },
+                                "Remove": false,
+                                "Children": []
+                              }
+                            },
+                            {
+                              "kind": "node.applyStatus",
+                              "value": {
+                                "TargetSelector": {
+                                  "kind": "sel.source",
+                                  "value": {
+                                    "Cardinality": "ZeroOrOne",
+                                    "RequiredContextCapabilities": "Source"
+                                  }
+                                },
+                                "StatusDefinitionId": {
+                                  "value": "inventory_pending"
+                                },
+                                "Stacks": {
+                                  "kind": "const",
+                                  "value": {
+                                    "Value": 1
+                                  }
+                                },
+                                "DurationTurns": 0,
+                                "Charges": 0,
+                                "ResultKey": null,
+                                "Children": []
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                "Else": null,
+                "Children": [
+                  {
+                    "kind": "node.forEachTarget",
+                    "value": {
+                      "CollectionSelector": {
+                        "kind": "sel.enemiesWithStatus",
+                        "value": {
+                          "StatusDefinitionId": {
+                            "value": "lock_cart"
+                          }
+                        }
+                      },
+                      "Body": {
+                        "kind": "node.sequence",
+                        "value": {
+                          "Children": [
+                            {
+                              "kind": "node.markCardInstance",
+                              "value": {
+                                "OwnerSelector": {
+                                  "kind": "sel.source",
+                                  "value": {
+                                    "Cardinality": "ZeroOrOne",
+                                    "RequiredContextCapabilities": "Source"
+                                  }
+                                },
+                                "SourceSelector": null,
+                                "CardExpression": {
+                                  "kind": "cardInstance.randomInOwnerZone",
+                                  "value": {
+                                    "OwnerSelector": {
+                                      "kind": "sel.source",
+                                      "value": {
+                                        "Cardinality": "ZeroOrOne",
+                                        "RequiredContextCapabilities": "Source"
+                                      }
+                                    },
+                                    "Zone": "Hand"
+                                  }
+                                },
+                                "Mark": {
+                                  "value": "inventoried"
+                                },
+                                "Remove": false,
+                                "Children": []
+                              }
+                            },
+                            {
+                              "kind": "node.applyStatus",
+                              "value": {
+                                "TargetSelector": {
+                                  "kind": "sel.source",
+                                  "value": {
+                                    "Cardinality": "ZeroOrOne",
+                                    "RequiredContextCapabilities": "Source"
+                                  }
+                                },
+                                "StatusDefinitionId": {
+                                  "value": "inventory_pending"
+                                },
+                                "Stacks": {
+                                  "kind": "const",
+                                  "value": {
+                                    "Value": 1
+                                  }
+                                },
+                                "DurationTurns": 0,
+                                "Charges": 0,
+                                "ResultKey": null,
+                                "Children": []
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      "MaxIterations": 32,
+                      "Children": [
+                        {
+                          "kind": "node.sequence",
+                          "value": {
+                            "Children": [
+                              {
+                                "kind": "node.markCardInstance",
+                                "value": {
+                                  "OwnerSelector": {
+                                    "kind": "sel.source",
+                                    "value": {
+                                      "Cardinality": "ZeroOrOne",
+                                      "RequiredContextCapabilities": "Source"
+                                    }
+                                  },
+                                  "SourceSelector": null,
+                                  "CardExpression": {
+                                    "kind": "cardInstance.randomInOwnerZone",
+                                    "value": {
+                                      "OwnerSelector": {
+                                        "kind": "sel.source",
+                                        "value": {
+                                          "Cardinality": "ZeroOrOne",
+                                          "RequiredContextCapabilities": "Source"
+                                        }
+                                      },
+                                      "Zone": "Hand"
+                                    }
+                                  },
+                                  "Mark": {
+                                    "value": "inventoried"
+                                  },
+                                  "Remove": false,
+                                  "Children": []
+                                }
+                              },
+                              {
+                                "kind": "node.applyStatus",
+                                "value": {
+                                  "TargetSelector": {
+                                    "kind": "sel.source",
+                                    "value": {
+                                      "Cardinality": "ZeroOrOne",
+                                      "RequiredContextCapabilities": "Source"
+                                    }
+                                  },
+                                  "StatusDefinitionId": {
+                                    "value": "inventory_pending"
+                                  },
+                                  "Stacks": {
+                                    "kind": "const",
+                                    "value": {
+                                      "Value": 1
+                                    }
+                                  },
+                                  "DurationTurns": 0,
+                                  "Charges": 0,
+                                  "ResultKey": null,
+                                  "Children": []
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            "MaxNodeDepth": 64,
+            "MaxProgramSteps": 1024
+          }
+        },
+        {
+          "Event": "TurnEnded",
+          "Program": {
+            "Id": {
+              "Value": "(unnamed)"
+            },
+            "Root": {
+              "kind": "node.conditional",
+              "value": {
+                "Condition": {
+                  "kind": "and",
+                  "value": {
+                    "Left": {
+                      "kind": "compare",
+                      "value": {
+                        "Left": {
+                          "kind": "combatantStatusStacks",
+                          "value": {
+                            "Selector": {
+                              "kind": "sel.source",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "Source"
+                              }
+                            },
+                            "StatusId": {
+                              "value": "the_applicant"
+                            }
+                          }
+                        },
+                        "Op": "Greater",
+                        "Right": {
+                          "kind": "const",
+                          "value": {
+                            "Value": 0
+                          }
+                        }
+                      }
+                    },
+                    "Right": {
+                      "kind": "compare",
+                      "value": {
+                        "Left": {
+                          "kind": "combatantCounter",
+                          "value": {
+                            "Selector": {
+                              "kind": "sel.source",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "Source"
+                              }
+                            },
+                            "CounterId": {
+                              "value": "seized_cards"
+                            }
+                          }
+                        },
+                        "Op": "Less",
+                        "Right": {
+                          "kind": "const",
+                          "value": {
+                            "Value": 2
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "Then": {
+                  "kind": "node.forEachTarget",
+                  "value": {
+                    "CollectionSelector": {
+                      "kind": "sel.enemiesWithStatus",
+                      "value": {
+                        "StatusDefinitionId": {
+                          "value": "lock_cart"
+                        }
+                      }
+                    },
+                    "Body": {
+                      "kind": "node.forEachCardInZone",
+                      "value": {
+                        "OwnerSelector": {
+                          "kind": "sel.source",
+                          "value": {
+                            "Cardinality": "ZeroOrOne",
+                            "RequiredContextCapabilities": "Source"
+                          }
+                        },
+                        "Zone": "Hand",
+                        "DefinitionFilter": null,
+                        "TagFilter": null,
+                        "TakeFirst": null,
+                        "Body": {
+                          "kind": "node.conditional",
+                          "value": {
+                            "Condition": {
+                              "kind": "cardInstanceHasMark",
+                              "value": {
+                                "Card": {
+                                  "kind": "cardInstance.iterated",
+                                  "value": {}
+                                },
+                                "Mark": {
+                                  "value": "inventoried"
+                                }
+                              }
+                            },
+                            "Then": {
+                              "kind": "node.sequence",
+                              "value": {
+                                "Children": [
+                                  {
+                                    "kind": "node.moveCardToZone",
+                                    "value": {
+                                      "OwnerSelector": {
+                                        "kind": "sel.source",
+                                        "value": {
+                                          "Cardinality": "ZeroOrOne",
+                                          "RequiredContextCapabilities": "Source"
+                                        }
+                                      },
+                                      "CardExpression": {
+                                        "kind": "cardInstance.iterated",
+                                        "value": {}
+                                      },
+                                      "ToZone": "ExhaustPile",
+                                      "Placement": "Bottom",
+                                      "ResultKey": null,
+                                      "Children": []
+                                    }
+                                  },
+                                  {
+                                    "kind": "node.setCombatantCounter",
+                                    "value": {
+                                      "TargetSelector": {
+                                        "kind": "sel.source",
+                                        "value": {
+                                          "Cardinality": "ZeroOrOne",
+                                          "RequiredContextCapabilities": "Source"
+                                        }
+                                      },
+                                      "CounterId": {
+                                        "value": "seized_cards"
+                                      },
+                                      "Amount": {
+                                        "kind": "const",
+                                        "value": {
+                                          "Value": 1
+                                        }
+                                      },
+                                      "Relative": true,
+                                      "Children": []
+                                    }
+                                  },
+                                  {
+                                    "kind": "node.applyStatus",
+                                    "value": {
+                                      "TargetSelector": {
+                                        "kind": "sel.withStatus",
+                                        "value": {
+                                          "Inner": {
+                                            "kind": "sel.allCombatants",
+                                            "value": {
+                                              "AliveOnly": false,
+                                              "MayIncludeDownedTargets": true
+                                            }
+                                          },
+                                          "StatusDefinitionId": {
+                                            "value": "seizure_marshal"
+                                          }
+                                        }
+                                      },
+                                      "StatusDefinitionId": {
+                                        "value": "strength"
+                                      },
+                                      "Stacks": {
+                                        "kind": "const",
+                                        "value": {
+                                          "Value": 1
+                                        }
+                                      },
+                                      "DurationTurns": 0,
+                                      "Charges": 0,
+                                      "ResultKey": null,
+                                      "Children": []
+                                    }
+                                  }
+                                ]
+                              }
+                            },
+                            "Else": null,
+                            "Children": [
+                              {
+                                "kind": "node.sequence",
+                                "value": {
+                                  "Children": [
+                                    {
+                                      "kind": "node.moveCardToZone",
+                                      "value": {
+                                        "OwnerSelector": {
+                                          "kind": "sel.source",
+                                          "value": {
+                                            "Cardinality": "ZeroOrOne",
+                                            "RequiredContextCapabilities": "Source"
+                                          }
+                                        },
+                                        "CardExpression": {
+                                          "kind": "cardInstance.iterated",
+                                          "value": {}
+                                        },
+                                        "ToZone": "ExhaustPile",
+                                        "Placement": "Bottom",
+                                        "ResultKey": null,
+                                        "Children": []
+                                      }
+                                    },
+                                    {
+                                      "kind": "node.setCombatantCounter",
+                                      "value": {
+                                        "TargetSelector": {
+                                          "kind": "sel.source",
+                                          "value": {
+                                            "Cardinality": "ZeroOrOne",
+                                            "RequiredContextCapabilities": "Source"
+                                          }
+                                        },
+                                        "CounterId": {
+                                          "value": "seized_cards"
+                                        },
+                                        "Amount": {
+                                          "kind": "const",
+                                          "value": {
+                                            "Value": 1
+                                          }
+                                        },
+                                        "Relative": true,
+                                        "Children": []
+                                      }
+                                    },
+                                    {
+                                      "kind": "node.applyStatus",
+                                      "value": {
+                                        "TargetSelector": {
+                                          "kind": "sel.withStatus",
+                                          "value": {
+                                            "Inner": {
+                                              "kind": "sel.allCombatants",
+                                              "value": {
+                                                "AliveOnly": false,
+                                                "MayIncludeDownedTargets": true
+                                              }
+                                            },
+                                            "StatusDefinitionId": {
+                                              "value": "seizure_marshal"
+                                            }
+                                          }
+                                        },
+                                        "StatusDefinitionId": {
+                                          "value": "strength"
+                                        },
+                                        "Stacks": {
+                                          "kind": "const",
+                                          "value": {
+                                            "Value": 1
+                                          }
+                                        },
+                                        "DurationTurns": 0,
+                                        "Charges": 0,
+                                        "ResultKey": null,
+                                        "Children": []
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        "MaxIterations": 64,
+                        "Children": [
+                          {
+                            "kind": "node.conditional",
+                            "value": {
+                              "Condition": {
+                                "kind": "cardInstanceHasMark",
+                                "value": {
+                                  "Card": {
+                                    "kind": "cardInstance.iterated",
+                                    "value": {}
+                                  },
+                                  "Mark": {
+                                    "value": "inventoried"
+                                  }
+                                }
+                              },
+                              "Then": {
+                                "kind": "node.sequence",
+                                "value": {
+                                  "Children": [
+                                    {
+                                      "kind": "node.moveCardToZone",
+                                      "value": {
+                                        "OwnerSelector": {
+                                          "kind": "sel.source",
+                                          "value": {
+                                            "Cardinality": "ZeroOrOne",
+                                            "RequiredContextCapabilities": "Source"
+                                          }
+                                        },
+                                        "CardExpression": {
+                                          "kind": "cardInstance.iterated",
+                                          "value": {}
+                                        },
+                                        "ToZone": "ExhaustPile",
+                                        "Placement": "Bottom",
+                                        "ResultKey": null,
+                                        "Children": []
+                                      }
+                                    },
+                                    {
+                                      "kind": "node.setCombatantCounter",
+                                      "value": {
+                                        "TargetSelector": {
+                                          "kind": "sel.source",
+                                          "value": {
+                                            "Cardinality": "ZeroOrOne",
+                                            "RequiredContextCapabilities": "Source"
+                                          }
+                                        },
+                                        "CounterId": {
+                                          "value": "seized_cards"
+                                        },
+                                        "Amount": {
+                                          "kind": "const",
+                                          "value": {
+                                            "Value": 1
+                                          }
+                                        },
+                                        "Relative": true,
+                                        "Children": []
+                                      }
+                                    },
+                                    {
+                                      "kind": "node.applyStatus",
+                                      "value": {
+                                        "TargetSelector": {
+                                          "kind": "sel.withStatus",
+                                          "value": {
+                                            "Inner": {
+                                              "kind": "sel.allCombatants",
+                                              "value": {
+                                                "AliveOnly": false,
+                                                "MayIncludeDownedTargets": true
+                                              }
+                                            },
+                                            "StatusDefinitionId": {
+                                              "value": "seizure_marshal"
+                                            }
+                                          }
+                                        },
+                                        "StatusDefinitionId": {
+                                          "value": "strength"
+                                        },
+                                        "Stacks": {
+                                          "kind": "const",
+                                          "value": {
+                                            "Value": 1
+                                          }
+                                        },
+                                        "DurationTurns": 0,
+                                        "Charges": 0,
+                                        "ResultKey": null,
+                                        "Children": []
+                                      }
+                                    }
+                                  ]
+                                }
+                              },
+                              "Else": null,
+                              "Children": [
+                                {
+                                  "kind": "node.sequence",
+                                  "value": {
+                                    "Children": [
+                                      {
+                                        "kind": "node.moveCardToZone",
+                                        "value": {
+                                          "OwnerSelector": {
+                                            "kind": "sel.source",
+                                            "value": {
+                                              "Cardinality": "ZeroOrOne",
+                                              "RequiredContextCapabilities": "Source"
+                                            }
+                                          },
+                                          "CardExpression": {
+                                            "kind": "cardInstance.iterated",
+                                            "value": {}
+                                          },
+                                          "ToZone": "ExhaustPile",
+                                          "Placement": "Bottom",
+                                          "ResultKey": null,
+                                          "Children": []
+                                        }
+                                      },
+                                      {
+                                        "kind": "node.setCombatantCounter",
+                                        "value": {
+                                          "TargetSelector": {
+                                            "kind": "sel.source",
+                                            "value": {
+                                              "Cardinality": "ZeroOrOne",
+                                              "RequiredContextCapabilities": "Source"
+                                            }
+                                          },
+                                          "CounterId": {
+                                            "value": "seized_cards"
+                                          },
+                                          "Amount": {
+                                            "kind": "const",
+                                            "value": {
+                                              "Value": 1
+                                            }
+                                          },
+                                          "Relative": true,
+                                          "Children": []
+                                        }
+                                      },
+                                      {
+                                        "kind": "node.applyStatus",
+                                        "value": {
+                                          "TargetSelector": {
+                                            "kind": "sel.withStatus",
+                                            "value": {
+                                              "Inner": {
+                                                "kind": "sel.allCombatants",
+                                                "value": {
+                                                  "AliveOnly": false,
+                                                  "MayIncludeDownedTargets": true
+                                                }
+                                              },
+                                              "StatusDefinitionId": {
+                                                "value": "seizure_marshal"
+                                              }
+                                            }
+                                          },
+                                          "StatusDefinitionId": {
+                                            "value": "strength"
+                                          },
+                                          "Stacks": {
+                                            "kind": "const",
+                                            "value": {
+                                              "Value": 1
+                                            }
+                                          },
+                                          "DurationTurns": 0,
+                                          "Charges": 0,
+                                          "ResultKey": null,
+                                          "Children": []
+                                        }
+                                      }
+                                    ]
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    "MaxIterations": 32,
+                    "Children": [
+                      {
+                        "kind": "node.forEachCardInZone",
+                        "value": {
+                          "OwnerSelector": {
+                            "kind": "sel.source",
+                            "value": {
+                              "Cardinality": "ZeroOrOne",
+                              "RequiredContextCapabilities": "Source"
+                            }
+                          },
+                          "Zone": "Hand",
+                          "DefinitionFilter": null,
+                          "TagFilter": null,
+                          "TakeFirst": null,
+                          "Body": {
+                            "kind": "node.conditional",
+                            "value": {
+                              "Condition": {
+                                "kind": "cardInstanceHasMark",
+                                "value": {
+                                  "Card": {
+                                    "kind": "cardInstance.iterated",
+                                    "value": {}
+                                  },
+                                  "Mark": {
+                                    "value": "inventoried"
+                                  }
+                                }
+                              },
+                              "Then": {
+                                "kind": "node.sequence",
+                                "value": {
+                                  "Children": [
+                                    {
+                                      "kind": "node.moveCardToZone",
+                                      "value": {
+                                        "OwnerSelector": {
+                                          "kind": "sel.source",
+                                          "value": {
+                                            "Cardinality": "ZeroOrOne",
+                                            "RequiredContextCapabilities": "Source"
+                                          }
+                                        },
+                                        "CardExpression": {
+                                          "kind": "cardInstance.iterated",
+                                          "value": {}
+                                        },
+                                        "ToZone": "ExhaustPile",
+                                        "Placement": "Bottom",
+                                        "ResultKey": null,
+                                        "Children": []
+                                      }
+                                    },
+                                    {
+                                      "kind": "node.setCombatantCounter",
+                                      "value": {
+                                        "TargetSelector": {
+                                          "kind": "sel.source",
+                                          "value": {
+                                            "Cardinality": "ZeroOrOne",
+                                            "RequiredContextCapabilities": "Source"
+                                          }
+                                        },
+                                        "CounterId": {
+                                          "value": "seized_cards"
+                                        },
+                                        "Amount": {
+                                          "kind": "const",
+                                          "value": {
+                                            "Value": 1
+                                          }
+                                        },
+                                        "Relative": true,
+                                        "Children": []
+                                      }
+                                    },
+                                    {
+                                      "kind": "node.applyStatus",
+                                      "value": {
+                                        "TargetSelector": {
+                                          "kind": "sel.withStatus",
+                                          "value": {
+                                            "Inner": {
+                                              "kind": "sel.allCombatants",
+                                              "value": {
+                                                "AliveOnly": false,
+                                                "MayIncludeDownedTargets": true
+                                              }
+                                            },
+                                            "StatusDefinitionId": {
+                                              "value": "seizure_marshal"
+                                            }
+                                          }
+                                        },
+                                        "StatusDefinitionId": {
+                                          "value": "strength"
+                                        },
+                                        "Stacks": {
+                                          "kind": "const",
+                                          "value": {
+                                            "Value": 1
+                                          }
+                                        },
+                                        "DurationTurns": 0,
+                                        "Charges": 0,
+                                        "ResultKey": null,
+                                        "Children": []
+                                      }
+                                    }
+                                  ]
+                                }
+                              },
+                              "Else": null,
+                              "Children": [
+                                {
+                                  "kind": "node.sequence",
+                                  "value": {
+                                    "Children": [
+                                      {
+                                        "kind": "node.moveCardToZone",
+                                        "value": {
+                                          "OwnerSelector": {
+                                            "kind": "sel.source",
+                                            "value": {
+                                              "Cardinality": "ZeroOrOne",
+                                              "RequiredContextCapabilities": "Source"
+                                            }
+                                          },
+                                          "CardExpression": {
+                                            "kind": "cardInstance.iterated",
+                                            "value": {}
+                                          },
+                                          "ToZone": "ExhaustPile",
+                                          "Placement": "Bottom",
+                                          "ResultKey": null,
+                                          "Children": []
+                                        }
+                                      },
+                                      {
+                                        "kind": "node.setCombatantCounter",
+                                        "value": {
+                                          "TargetSelector": {
+                                            "kind": "sel.source",
+                                            "value": {
+                                              "Cardinality": "ZeroOrOne",
+                                              "RequiredContextCapabilities": "Source"
+                                            }
+                                          },
+                                          "CounterId": {
+                                            "value": "seized_cards"
+                                          },
+                                          "Amount": {
+                                            "kind": "const",
+                                            "value": {
+                                              "Value": 1
+                                            }
+                                          },
+                                          "Relative": true,
+                                          "Children": []
+                                        }
+                                      },
+                                      {
+                                        "kind": "node.applyStatus",
+                                        "value": {
+                                          "TargetSelector": {
+                                            "kind": "sel.withStatus",
+                                            "value": {
+                                              "Inner": {
+                                                "kind": "sel.allCombatants",
+                                                "value": {
+                                                  "AliveOnly": false,
+                                                  "MayIncludeDownedTargets": true
+                                                }
+                                              },
+                                              "StatusDefinitionId": {
+                                                "value": "seizure_marshal"
+                                              }
+                                            }
+                                          },
+                                          "StatusDefinitionId": {
+                                            "value": "strength"
+                                          },
+                                          "Stacks": {
+                                            "kind": "const",
+                                            "value": {
+                                              "Value": 1
+                                            }
+                                          },
+                                          "DurationTurns": 0,
+                                          "Charges": 0,
+                                          "ResultKey": null,
+                                          "Children": []
+                                        }
+                                      }
+                                    ]
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                          "MaxIterations": 64,
+                          "Children": [
+                            {
+                              "kind": "node.conditional",
+                              "value": {
+                                "Condition": {
+                                  "kind": "cardInstanceHasMark",
+                                  "value": {
+                                    "Card": {
+                                      "kind": "cardInstance.iterated",
+                                      "value": {}
+                                    },
+                                    "Mark": {
+                                      "value": "inventoried"
+                                    }
+                                  }
+                                },
+                                "Then": {
+                                  "kind": "node.sequence",
+                                  "value": {
+                                    "Children": [
+                                      {
+                                        "kind": "node.moveCardToZone",
+                                        "value": {
+                                          "OwnerSelector": {
+                                            "kind": "sel.source",
+                                            "value": {
+                                              "Cardinality": "ZeroOrOne",
+                                              "RequiredContextCapabilities": "Source"
+                                            }
+                                          },
+                                          "CardExpression": {
+                                            "kind": "cardInstance.iterated",
+                                            "value": {}
+                                          },
+                                          "ToZone": "ExhaustPile",
+                                          "Placement": "Bottom",
+                                          "ResultKey": null,
+                                          "Children": []
+                                        }
+                                      },
+                                      {
+                                        "kind": "node.setCombatantCounter",
+                                        "value": {
+                                          "TargetSelector": {
+                                            "kind": "sel.source",
+                                            "value": {
+                                              "Cardinality": "ZeroOrOne",
+                                              "RequiredContextCapabilities": "Source"
+                                            }
+                                          },
+                                          "CounterId": {
+                                            "value": "seized_cards"
+                                          },
+                                          "Amount": {
+                                            "kind": "const",
+                                            "value": {
+                                              "Value": 1
+                                            }
+                                          },
+                                          "Relative": true,
+                                          "Children": []
+                                        }
+                                      },
+                                      {
+                                        "kind": "node.applyStatus",
+                                        "value": {
+                                          "TargetSelector": {
+                                            "kind": "sel.withStatus",
+                                            "value": {
+                                              "Inner": {
+                                                "kind": "sel.allCombatants",
+                                                "value": {
+                                                  "AliveOnly": false,
+                                                  "MayIncludeDownedTargets": true
+                                                }
+                                              },
+                                              "StatusDefinitionId": {
+                                                "value": "seizure_marshal"
+                                              }
+                                            }
+                                          },
+                                          "StatusDefinitionId": {
+                                            "value": "strength"
+                                          },
+                                          "Stacks": {
+                                            "kind": "const",
+                                            "value": {
+                                              "Value": 1
+                                            }
+                                          },
+                                          "DurationTurns": 0,
+                                          "Charges": 0,
+                                          "ResultKey": null,
+                                          "Children": []
+                                        }
+                                      }
+                                    ]
+                                  }
+                                },
+                                "Else": null,
+                                "Children": [
+                                  {
+                                    "kind": "node.sequence",
+                                    "value": {
+                                      "Children": [
+                                        {
+                                          "kind": "node.moveCardToZone",
+                                          "value": {
+                                            "OwnerSelector": {
+                                              "kind": "sel.source",
+                                              "value": {
+                                                "Cardinality": "ZeroOrOne",
+                                                "RequiredContextCapabilities": "Source"
+                                              }
+                                            },
+                                            "CardExpression": {
+                                              "kind": "cardInstance.iterated",
+                                              "value": {}
+                                            },
+                                            "ToZone": "ExhaustPile",
+                                            "Placement": "Bottom",
+                                            "ResultKey": null,
+                                            "Children": []
+                                          }
+                                        },
+                                        {
+                                          "kind": "node.setCombatantCounter",
+                                          "value": {
+                                            "TargetSelector": {
+                                              "kind": "sel.source",
+                                              "value": {
+                                                "Cardinality": "ZeroOrOne",
+                                                "RequiredContextCapabilities": "Source"
+                                              }
+                                            },
+                                            "CounterId": {
+                                              "value": "seized_cards"
+                                            },
+                                            "Amount": {
+                                              "kind": "const",
+                                              "value": {
+                                                "Value": 1
+                                              }
+                                            },
+                                            "Relative": true,
+                                            "Children": []
+                                          }
+                                        },
+                                        {
+                                          "kind": "node.applyStatus",
+                                          "value": {
+                                            "TargetSelector": {
+                                              "kind": "sel.withStatus",
+                                              "value": {
+                                                "Inner": {
+                                                  "kind": "sel.allCombatants",
+                                                  "value": {
+                                                    "AliveOnly": false,
+                                                    "MayIncludeDownedTargets": true
+                                                  }
+                                                },
+                                                "StatusDefinitionId": {
+                                                  "value": "seizure_marshal"
+                                                }
+                                              }
+                                            },
+                                            "StatusDefinitionId": {
+                                              "value": "strength"
+                                            },
+                                            "Stacks": {
+                                              "kind": "const",
+                                              "value": {
+                                                "Value": 1
+                                              }
+                                            },
+                                            "DurationTurns": 0,
+                                            "Charges": 0,
+                                            "ResultKey": null,
+                                            "Children": []
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                "Else": null,
+                "Children": [
+                  {
+                    "kind": "node.forEachTarget",
+                    "value": {
+                      "CollectionSelector": {
+                        "kind": "sel.enemiesWithStatus",
+                        "value": {
+                          "StatusDefinitionId": {
+                            "value": "lock_cart"
+                          }
+                        }
+                      },
+                      "Body": {
+                        "kind": "node.forEachCardInZone",
+                        "value": {
+                          "OwnerSelector": {
+                            "kind": "sel.source",
+                            "value": {
+                              "Cardinality": "ZeroOrOne",
+                              "RequiredContextCapabilities": "Source"
+                            }
+                          },
+                          "Zone": "Hand",
+                          "DefinitionFilter": null,
+                          "TagFilter": null,
+                          "TakeFirst": null,
+                          "Body": {
+                            "kind": "node.conditional",
+                            "value": {
+                              "Condition": {
+                                "kind": "cardInstanceHasMark",
+                                "value": {
+                                  "Card": {
+                                    "kind": "cardInstance.iterated",
+                                    "value": {}
+                                  },
+                                  "Mark": {
+                                    "value": "inventoried"
+                                  }
+                                }
+                              },
+                              "Then": {
+                                "kind": "node.sequence",
+                                "value": {
+                                  "Children": [
+                                    {
+                                      "kind": "node.moveCardToZone",
+                                      "value": {
+                                        "OwnerSelector": {
+                                          "kind": "sel.source",
+                                          "value": {
+                                            "Cardinality": "ZeroOrOne",
+                                            "RequiredContextCapabilities": "Source"
+                                          }
+                                        },
+                                        "CardExpression": {
+                                          "kind": "cardInstance.iterated",
+                                          "value": {}
+                                        },
+                                        "ToZone": "ExhaustPile",
+                                        "Placement": "Bottom",
+                                        "ResultKey": null,
+                                        "Children": []
+                                      }
+                                    },
+                                    {
+                                      "kind": "node.setCombatantCounter",
+                                      "value": {
+                                        "TargetSelector": {
+                                          "kind": "sel.source",
+                                          "value": {
+                                            "Cardinality": "ZeroOrOne",
+                                            "RequiredContextCapabilities": "Source"
+                                          }
+                                        },
+                                        "CounterId": {
+                                          "value": "seized_cards"
+                                        },
+                                        "Amount": {
+                                          "kind": "const",
+                                          "value": {
+                                            "Value": 1
+                                          }
+                                        },
+                                        "Relative": true,
+                                        "Children": []
+                                      }
+                                    },
+                                    {
+                                      "kind": "node.applyStatus",
+                                      "value": {
+                                        "TargetSelector": {
+                                          "kind": "sel.withStatus",
+                                          "value": {
+                                            "Inner": {
+                                              "kind": "sel.allCombatants",
+                                              "value": {
+                                                "AliveOnly": false,
+                                                "MayIncludeDownedTargets": true
+                                              }
+                                            },
+                                            "StatusDefinitionId": {
+                                              "value": "seizure_marshal"
+                                            }
+                                          }
+                                        },
+                                        "StatusDefinitionId": {
+                                          "value": "strength"
+                                        },
+                                        "Stacks": {
+                                          "kind": "const",
+                                          "value": {
+                                            "Value": 1
+                                          }
+                                        },
+                                        "DurationTurns": 0,
+                                        "Charges": 0,
+                                        "ResultKey": null,
+                                        "Children": []
+                                      }
+                                    }
+                                  ]
+                                }
+                              },
+                              "Else": null,
+                              "Children": [
+                                {
+                                  "kind": "node.sequence",
+                                  "value": {
+                                    "Children": [
+                                      {
+                                        "kind": "node.moveCardToZone",
+                                        "value": {
+                                          "OwnerSelector": {
+                                            "kind": "sel.source",
+                                            "value": {
+                                              "Cardinality": "ZeroOrOne",
+                                              "RequiredContextCapabilities": "Source"
+                                            }
+                                          },
+                                          "CardExpression": {
+                                            "kind": "cardInstance.iterated",
+                                            "value": {}
+                                          },
+                                          "ToZone": "ExhaustPile",
+                                          "Placement": "Bottom",
+                                          "ResultKey": null,
+                                          "Children": []
+                                        }
+                                      },
+                                      {
+                                        "kind": "node.setCombatantCounter",
+                                        "value": {
+                                          "TargetSelector": {
+                                            "kind": "sel.source",
+                                            "value": {
+                                              "Cardinality": "ZeroOrOne",
+                                              "RequiredContextCapabilities": "Source"
+                                            }
+                                          },
+                                          "CounterId": {
+                                            "value": "seized_cards"
+                                          },
+                                          "Amount": {
+                                            "kind": "const",
+                                            "value": {
+                                              "Value": 1
+                                            }
+                                          },
+                                          "Relative": true,
+                                          "Children": []
+                                        }
+                                      },
+                                      {
+                                        "kind": "node.applyStatus",
+                                        "value": {
+                                          "TargetSelector": {
+                                            "kind": "sel.withStatus",
+                                            "value": {
+                                              "Inner": {
+                                                "kind": "sel.allCombatants",
+                                                "value": {
+                                                  "AliveOnly": false,
+                                                  "MayIncludeDownedTargets": true
+                                                }
+                                              },
+                                              "StatusDefinitionId": {
+                                                "value": "seizure_marshal"
+                                              }
+                                            }
+                                          },
+                                          "StatusDefinitionId": {
+                                            "value": "strength"
+                                          },
+                                          "Stacks": {
+                                            "kind": "const",
+                                            "value": {
+                                              "Value": 1
+                                            }
+                                          },
+                                          "DurationTurns": 0,
+                                          "Charges": 0,
+                                          "ResultKey": null,
+                                          "Children": []
+                                        }
+                                      }
+                                    ]
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                          "MaxIterations": 64,
+                          "Children": [
+                            {
+                              "kind": "node.conditional",
+                              "value": {
+                                "Condition": {
+                                  "kind": "cardInstanceHasMark",
+                                  "value": {
+                                    "Card": {
+                                      "kind": "cardInstance.iterated",
+                                      "value": {}
+                                    },
+                                    "Mark": {
+                                      "value": "inventoried"
+                                    }
+                                  }
+                                },
+                                "Then": {
+                                  "kind": "node.sequence",
+                                  "value": {
+                                    "Children": [
+                                      {
+                                        "kind": "node.moveCardToZone",
+                                        "value": {
+                                          "OwnerSelector": {
+                                            "kind": "sel.source",
+                                            "value": {
+                                              "Cardinality": "ZeroOrOne",
+                                              "RequiredContextCapabilities": "Source"
+                                            }
+                                          },
+                                          "CardExpression": {
+                                            "kind": "cardInstance.iterated",
+                                            "value": {}
+                                          },
+                                          "ToZone": "ExhaustPile",
+                                          "Placement": "Bottom",
+                                          "ResultKey": null,
+                                          "Children": []
+                                        }
+                                      },
+                                      {
+                                        "kind": "node.setCombatantCounter",
+                                        "value": {
+                                          "TargetSelector": {
+                                            "kind": "sel.source",
+                                            "value": {
+                                              "Cardinality": "ZeroOrOne",
+                                              "RequiredContextCapabilities": "Source"
+                                            }
+                                          },
+                                          "CounterId": {
+                                            "value": "seized_cards"
+                                          },
+                                          "Amount": {
+                                            "kind": "const",
+                                            "value": {
+                                              "Value": 1
+                                            }
+                                          },
+                                          "Relative": true,
+                                          "Children": []
+                                        }
+                                      },
+                                      {
+                                        "kind": "node.applyStatus",
+                                        "value": {
+                                          "TargetSelector": {
+                                            "kind": "sel.withStatus",
+                                            "value": {
+                                              "Inner": {
+                                                "kind": "sel.allCombatants",
+                                                "value": {
+                                                  "AliveOnly": false,
+                                                  "MayIncludeDownedTargets": true
+                                                }
+                                              },
+                                              "StatusDefinitionId": {
+                                                "value": "seizure_marshal"
+                                              }
+                                            }
+                                          },
+                                          "StatusDefinitionId": {
+                                            "value": "strength"
+                                          },
+                                          "Stacks": {
+                                            "kind": "const",
+                                            "value": {
+                                              "Value": 1
+                                            }
+                                          },
+                                          "DurationTurns": 0,
+                                          "Charges": 0,
+                                          "ResultKey": null,
+                                          "Children": []
+                                        }
+                                      }
+                                    ]
+                                  }
+                                },
+                                "Else": null,
+                                "Children": [
+                                  {
+                                    "kind": "node.sequence",
+                                    "value": {
+                                      "Children": [
+                                        {
+                                          "kind": "node.moveCardToZone",
+                                          "value": {
+                                            "OwnerSelector": {
+                                              "kind": "sel.source",
+                                              "value": {
+                                                "Cardinality": "ZeroOrOne",
+                                                "RequiredContextCapabilities": "Source"
+                                              }
+                                            },
+                                            "CardExpression": {
+                                              "kind": "cardInstance.iterated",
+                                              "value": {}
+                                            },
+                                            "ToZone": "ExhaustPile",
+                                            "Placement": "Bottom",
+                                            "ResultKey": null,
+                                            "Children": []
+                                          }
+                                        },
+                                        {
+                                          "kind": "node.setCombatantCounter",
+                                          "value": {
+                                            "TargetSelector": {
+                                              "kind": "sel.source",
+                                              "value": {
+                                                "Cardinality": "ZeroOrOne",
+                                                "RequiredContextCapabilities": "Source"
+                                              }
+                                            },
+                                            "CounterId": {
+                                              "value": "seized_cards"
+                                            },
+                                            "Amount": {
+                                              "kind": "const",
+                                              "value": {
+                                                "Value": 1
+                                              }
+                                            },
+                                            "Relative": true,
+                                            "Children": []
+                                          }
+                                        },
+                                        {
+                                          "kind": "node.applyStatus",
+                                          "value": {
+                                            "TargetSelector": {
+                                              "kind": "sel.withStatus",
+                                              "value": {
+                                                "Inner": {
+                                                  "kind": "sel.allCombatants",
+                                                  "value": {
+                                                    "AliveOnly": false,
+                                                    "MayIncludeDownedTargets": true
+                                                  }
+                                                },
+                                                "StatusDefinitionId": {
+                                                  "value": "seizure_marshal"
+                                                }
+                                              }
+                                            },
+                                            "StatusDefinitionId": {
+                                              "value": "strength"
+                                            },
+                                            "Stacks": {
+                                              "kind": "const",
+                                              "value": {
+                                                "Value": 1
+                                              }
+                                            },
+                                            "DurationTurns": 0,
+                                            "Charges": 0,
+                                            "ResultKey": null,
+                                            "Children": []
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      "MaxIterations": 32,
+                      "Children": [
+                        {
+                          "kind": "node.forEachCardInZone",
+                          "value": {
+                            "OwnerSelector": {
+                              "kind": "sel.source",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "Source"
+                              }
+                            },
+                            "Zone": "Hand",
+                            "DefinitionFilter": null,
+                            "TagFilter": null,
+                            "TakeFirst": null,
+                            "Body": {
+                              "kind": "node.conditional",
+                              "value": {
+                                "Condition": {
+                                  "kind": "cardInstanceHasMark",
+                                  "value": {
+                                    "Card": {
+                                      "kind": "cardInstance.iterated",
+                                      "value": {}
+                                    },
+                                    "Mark": {
+                                      "value": "inventoried"
+                                    }
+                                  }
+                                },
+                                "Then": {
+                                  "kind": "node.sequence",
+                                  "value": {
+                                    "Children": [
+                                      {
+                                        "kind": "node.moveCardToZone",
+                                        "value": {
+                                          "OwnerSelector": {
+                                            "kind": "sel.source",
+                                            "value": {
+                                              "Cardinality": "ZeroOrOne",
+                                              "RequiredContextCapabilities": "Source"
+                                            }
+                                          },
+                                          "CardExpression": {
+                                            "kind": "cardInstance.iterated",
+                                            "value": {}
+                                          },
+                                          "ToZone": "ExhaustPile",
+                                          "Placement": "Bottom",
+                                          "ResultKey": null,
+                                          "Children": []
+                                        }
+                                      },
+                                      {
+                                        "kind": "node.setCombatantCounter",
+                                        "value": {
+                                          "TargetSelector": {
+                                            "kind": "sel.source",
+                                            "value": {
+                                              "Cardinality": "ZeroOrOne",
+                                              "RequiredContextCapabilities": "Source"
+                                            }
+                                          },
+                                          "CounterId": {
+                                            "value": "seized_cards"
+                                          },
+                                          "Amount": {
+                                            "kind": "const",
+                                            "value": {
+                                              "Value": 1
+                                            }
+                                          },
+                                          "Relative": true,
+                                          "Children": []
+                                        }
+                                      },
+                                      {
+                                        "kind": "node.applyStatus",
+                                        "value": {
+                                          "TargetSelector": {
+                                            "kind": "sel.withStatus",
+                                            "value": {
+                                              "Inner": {
+                                                "kind": "sel.allCombatants",
+                                                "value": {
+                                                  "AliveOnly": false,
+                                                  "MayIncludeDownedTargets": true
+                                                }
+                                              },
+                                              "StatusDefinitionId": {
+                                                "value": "seizure_marshal"
+                                              }
+                                            }
+                                          },
+                                          "StatusDefinitionId": {
+                                            "value": "strength"
+                                          },
+                                          "Stacks": {
+                                            "kind": "const",
+                                            "value": {
+                                              "Value": 1
+                                            }
+                                          },
+                                          "DurationTurns": 0,
+                                          "Charges": 0,
+                                          "ResultKey": null,
+                                          "Children": []
+                                        }
+                                      }
+                                    ]
+                                  }
+                                },
+                                "Else": null,
+                                "Children": [
+                                  {
+                                    "kind": "node.sequence",
+                                    "value": {
+                                      "Children": [
+                                        {
+                                          "kind": "node.moveCardToZone",
+                                          "value": {
+                                            "OwnerSelector": {
+                                              "kind": "sel.source",
+                                              "value": {
+                                                "Cardinality": "ZeroOrOne",
+                                                "RequiredContextCapabilities": "Source"
+                                              }
+                                            },
+                                            "CardExpression": {
+                                              "kind": "cardInstance.iterated",
+                                              "value": {}
+                                            },
+                                            "ToZone": "ExhaustPile",
+                                            "Placement": "Bottom",
+                                            "ResultKey": null,
+                                            "Children": []
+                                          }
+                                        },
+                                        {
+                                          "kind": "node.setCombatantCounter",
+                                          "value": {
+                                            "TargetSelector": {
+                                              "kind": "sel.source",
+                                              "value": {
+                                                "Cardinality": "ZeroOrOne",
+                                                "RequiredContextCapabilities": "Source"
+                                              }
+                                            },
+                                            "CounterId": {
+                                              "value": "seized_cards"
+                                            },
+                                            "Amount": {
+                                              "kind": "const",
+                                              "value": {
+                                                "Value": 1
+                                              }
+                                            },
+                                            "Relative": true,
+                                            "Children": []
+                                          }
+                                        },
+                                        {
+                                          "kind": "node.applyStatus",
+                                          "value": {
+                                            "TargetSelector": {
+                                              "kind": "sel.withStatus",
+                                              "value": {
+                                                "Inner": {
+                                                  "kind": "sel.allCombatants",
+                                                  "value": {
+                                                    "AliveOnly": false,
+                                                    "MayIncludeDownedTargets": true
+                                                  }
+                                                },
+                                                "StatusDefinitionId": {
+                                                  "value": "seizure_marshal"
+                                                }
+                                              }
+                                            },
+                                            "StatusDefinitionId": {
+                                              "value": "strength"
+                                            },
+                                            "Stacks": {
+                                              "kind": "const",
+                                              "value": {
+                                                "Value": 1
+                                              }
+                                            },
+                                            "DurationTurns": 0,
+                                            "Charges": 0,
+                                            "ResultKey": null,
+                                            "Children": []
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            },
+                            "MaxIterations": 64,
+                            "Children": [
+                              {
+                                "kind": "node.conditional",
+                                "value": {
+                                  "Condition": {
+                                    "kind": "cardInstanceHasMark",
+                                    "value": {
+                                      "Card": {
+                                        "kind": "cardInstance.iterated",
+                                        "value": {}
+                                      },
+                                      "Mark": {
+                                        "value": "inventoried"
+                                      }
+                                    }
+                                  },
+                                  "Then": {
+                                    "kind": "node.sequence",
+                                    "value": {
+                                      "Children": [
+                                        {
+                                          "kind": "node.moveCardToZone",
+                                          "value": {
+                                            "OwnerSelector": {
+                                              "kind": "sel.source",
+                                              "value": {
+                                                "Cardinality": "ZeroOrOne",
+                                                "RequiredContextCapabilities": "Source"
+                                              }
+                                            },
+                                            "CardExpression": {
+                                              "kind": "cardInstance.iterated",
+                                              "value": {}
+                                            },
+                                            "ToZone": "ExhaustPile",
+                                            "Placement": "Bottom",
+                                            "ResultKey": null,
+                                            "Children": []
+                                          }
+                                        },
+                                        {
+                                          "kind": "node.setCombatantCounter",
+                                          "value": {
+                                            "TargetSelector": {
+                                              "kind": "sel.source",
+                                              "value": {
+                                                "Cardinality": "ZeroOrOne",
+                                                "RequiredContextCapabilities": "Source"
+                                              }
+                                            },
+                                            "CounterId": {
+                                              "value": "seized_cards"
+                                            },
+                                            "Amount": {
+                                              "kind": "const",
+                                              "value": {
+                                                "Value": 1
+                                              }
+                                            },
+                                            "Relative": true,
+                                            "Children": []
+                                          }
+                                        },
+                                        {
+                                          "kind": "node.applyStatus",
+                                          "value": {
+                                            "TargetSelector": {
+                                              "kind": "sel.withStatus",
+                                              "value": {
+                                                "Inner": {
+                                                  "kind": "sel.allCombatants",
+                                                  "value": {
+                                                    "AliveOnly": false,
+                                                    "MayIncludeDownedTargets": true
+                                                  }
+                                                },
+                                                "StatusDefinitionId": {
+                                                  "value": "seizure_marshal"
+                                                }
+                                              }
+                                            },
+                                            "StatusDefinitionId": {
+                                              "value": "strength"
+                                            },
+                                            "Stacks": {
+                                              "kind": "const",
+                                              "value": {
+                                                "Value": 1
+                                              }
+                                            },
+                                            "DurationTurns": 0,
+                                            "Charges": 0,
+                                            "ResultKey": null,
+                                            "Children": []
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  "Else": null,
+                                  "Children": [
+                                    {
+                                      "kind": "node.sequence",
+                                      "value": {
+                                        "Children": [
+                                          {
+                                            "kind": "node.moveCardToZone",
+                                            "value": {
+                                              "OwnerSelector": {
+                                                "kind": "sel.source",
+                                                "value": {
+                                                  "Cardinality": "ZeroOrOne",
+                                                  "RequiredContextCapabilities": "Source"
+                                                }
+                                              },
+                                              "CardExpression": {
+                                                "kind": "cardInstance.iterated",
+                                                "value": {}
+                                              },
+                                              "ToZone": "ExhaustPile",
+                                              "Placement": "Bottom",
+                                              "ResultKey": null,
+                                              "Children": []
+                                            }
+                                          },
+                                          {
+                                            "kind": "node.setCombatantCounter",
+                                            "value": {
+                                              "TargetSelector": {
+                                                "kind": "sel.source",
+                                                "value": {
+                                                  "Cardinality": "ZeroOrOne",
+                                                  "RequiredContextCapabilities": "Source"
+                                                }
+                                              },
+                                              "CounterId": {
+                                                "value": "seized_cards"
+                                              },
+                                              "Amount": {
+                                                "kind": "const",
+                                                "value": {
+                                                  "Value": 1
+                                                }
+                                              },
+                                              "Relative": true,
+                                              "Children": []
+                                            }
+                                          },
+                                          {
+                                            "kind": "node.applyStatus",
+                                            "value": {
+                                              "TargetSelector": {
+                                                "kind": "sel.withStatus",
+                                                "value": {
+                                                  "Inner": {
+                                                    "kind": "sel.allCombatants",
+                                                    "value": {
+                                                      "AliveOnly": false,
+                                                      "MayIncludeDownedTargets": true
+                                                    }
+                                                  },
+                                                  "StatusDefinitionId": {
+                                                    "value": "seizure_marshal"
+                                                  }
+                                                }
+                                              },
+                                              "StatusDefinitionId": {
+                                                "value": "strength"
+                                              },
+                                              "Stacks": {
+                                                "kind": "const",
+                                                "value": {
+                                                  "Value": 1
+                                                }
+                                              },
+                                              "DurationTurns": 0,
+                                              "Charges": 0,
+                                              "ResultKey": null,
+                                              "Children": []
+                                            }
+                                          }
+                                        ]
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            "MaxNodeDepth": 64,
+            "MaxProgramSteps": 1024
+          }
+        }
+      ]
     },
     {
       "Id": {
@@ -238926,7 +241099,7 @@
       "DescriptionKey": null,
       "Intent": {
         "Kind": "Attack",
-        "Label": "Enter the Premises \u00B7 8 dmg"
+        "Label": "Enter the Premises \u00B7 9 dmg"
       },
       "Program": {
         "Id": {
@@ -238945,7 +241118,7 @@
             "Amount": {
               "kind": "const",
               "value": {
-                "Value": 8
+                "Value": 9
               }
             },
             "ResultKey": null,
@@ -238964,8 +241137,8 @@
       "NameKey": "Marshal the Inventory",
       "DescriptionKey": null,
       "Intent": {
-        "Kind": "Special",
-        "Label": "Marshal the Inventory \u00B7 Strength \u002B1, 6 block"
+        "Kind": "Buff",
+        "Label": "Marshal the Inventory \u00B7 Strength \u002B1, 7 block"
       },
       "Program": {
         "Id": {
@@ -239013,7 +241186,7 @@
                   "Amount": {
                     "kind": "const",
                     "value": {
-                      "Value": 6
+                      "Value": 7
                     }
                   },
                   "ResultKey": null,
@@ -239034,7 +241207,7 @@
       "DescriptionKey": null,
       "Intent": {
         "Kind": "Attack",
-        "Label": "Lawful Strike \u00B7 11 dmg"
+        "Label": "Lawful Strike \u00B7 12 dmg"
       },
       "Program": {
         "Id": {
@@ -239053,7 +241226,7 @@
             "Amount": {
               "kind": "const",
               "value": {
-                "Value": 11
+                "Value": 12
               }
             },
             "ResultKey": null,
@@ -239073,7 +241246,7 @@
       "DescriptionKey": null,
       "Intent": {
         "Kind": "Special",
-        "Label": "Guard the List \u00B7 5 dmg, 5 block"
+        "Label": "Guard the List \u00B7 6 dmg, 6 block"
       },
       "Program": {
         "Id": {
@@ -239096,7 +241269,7 @@
                   "Amount": {
                     "kind": "const",
                     "value": {
-                      "Value": 5
+                      "Value": 6
                     }
                   },
                   "ResultKey": null,
@@ -239118,7 +241291,7 @@
                   "Amount": {
                     "kind": "const",
                     "value": {
-                      "Value": 5
+                      "Value": 6
                     }
                   },
                   "ResultKey": null,
@@ -239199,79 +241372,8 @@
       "NameKey": "Bright Authority",
       "DescriptionKey": null,
       "Intent": {
-        "Kind": "Special",
-        "Label": "Bright Authority \u00B7 4 dmg, Strength \u002B1"
-      },
-      "Program": {
-        "Id": {
-          "Value": "(unnamed)"
-        },
-        "Root": {
-          "kind": "node.sequence",
-          "value": {
-            "Children": [
-              {
-                "kind": "node.dealDamage",
-                "value": {
-                  "TargetSelector": {
-                    "kind": "sel.eventTarget",
-                    "value": {
-                      "Cardinality": "ZeroOrOne",
-                      "RequiredContextCapabilities": "EventTarget"
-                    }
-                  },
-                  "Amount": {
-                    "kind": "const",
-                    "value": {
-                      "Value": 4
-                    }
-                  },
-                  "ResultKey": null,
-                  "IgnoresBlock": false,
-                  "Element": null,
-                  "Children": []
-                }
-              },
-              {
-                "kind": "node.applyStatus",
-                "value": {
-                  "TargetSelector": {
-                    "kind": "sel.source",
-                    "value": {
-                      "Cardinality": "ZeroOrOne",
-                      "RequiredContextCapabilities": "Source"
-                    }
-                  },
-                  "StatusDefinitionId": {
-                    "value": "strength"
-                  },
-                  "Stacks": {
-                    "kind": "const",
-                    "value": {
-                      "Value": 1
-                    }
-                  },
-                  "DurationTurns": 0,
-                  "Charges": 0,
-                  "ResultKey": null,
-                  "Children": []
-                }
-              }
-            ]
-          }
-        },
-        "MaxNodeDepth": 64,
-        "MaxProgramSteps": 1024
-      }
-    },
-    {
-      "Id": "inventory_lantern.lantern_glass_cut",
-      "PackageId": "scenario",
-      "NameKey": "Lantern-Glass Cut",
-      "DescriptionKey": null,
-      "Intent": {
         "Kind": "Attack",
-        "Label": "Lantern-Glass Cut \u00B7 6 dmg"
+        "Label": "Bright Authority \u00B7 5 dmg"
       },
       "Program": {
         "Id": {
@@ -239290,7 +241392,46 @@
             "Amount": {
               "kind": "const",
               "value": {
-                "Value": 6
+                "Value": 5
+              }
+            },
+            "ResultKey": null,
+            "IgnoresBlock": false,
+            "Element": null,
+            "Children": []
+          }
+        },
+        "MaxNodeDepth": 64,
+        "MaxProgramSteps": 1024
+      }
+    },
+    {
+      "Id": "inventory_lantern.lantern_glass_cut",
+      "PackageId": "scenario",
+      "NameKey": "Lantern-Glass Cut",
+      "DescriptionKey": null,
+      "Intent": {
+        "Kind": "Attack",
+        "Label": "Lantern-Glass Cut \u00B7 7 dmg"
+      },
+      "Program": {
+        "Id": {
+          "Value": "(unnamed)"
+        },
+        "Root": {
+          "kind": "node.dealDamage",
+          "value": {
+            "TargetSelector": {
+              "kind": "sel.eventTarget",
+              "value": {
+                "Cardinality": "ZeroOrOne",
+                "RequiredContextCapabilities": "EventTarget"
+              }
+            },
+            "Amount": {
+              "kind": "const",
+              "value": {
+                "Value": 7
               }
             },
             "ResultKey": null,
@@ -239371,7 +241512,7 @@
       "DescriptionKey": null,
       "Intent": {
         "Kind": "Attack",
-        "Label": "Cartwheel Crush \u00B7 7 dmg"
+        "Label": "Cartwheel Crush \u00B7 8 dmg"
       },
       "Program": {
         "Id": {
@@ -239390,7 +241531,7 @@
             "Amount": {
               "kind": "const",
               "value": {
-                "Value": 7
+                "Value": 8
               }
             },
             "ResultKey": null,
@@ -239410,7 +241551,7 @@
       "DescriptionKey": null,
       "Intent": {
         "Kind": "Defend",
-        "Label": "Iron Storage \u00B7 9 block"
+        "Label": "Iron Storage \u00B7 10 block"
       },
       "Program": {
         "Id": {
@@ -239429,7 +241570,7 @@
             "Amount": {
               "kind": "const",
               "value": {
-                "Value": 9
+                "Value": 10
               }
             },
             "ResultKey": null,
@@ -239489,7 +241630,7 @@
       "DescriptionKey": null,
       "Intent": {
         "Kind": "Attack",
-        "Label": "Roll over Claims \u00B7 10 dmg"
+        "Label": "Roll over Claims \u00B7 11 dmg"
       },
       "Program": {
         "Id": {
@@ -239508,7 +241649,7 @@
             "Amount": {
               "kind": "const",
               "value": {
-                "Value": 10
+                "Value": 11
               }
             },
             "ResultKey": null,
@@ -262327,6 +264468,70 @@
       "DebuffBlock": null
     },
     {
+      "Id": "inventory_lantern",
+      "PackageId": "scenario",
+      "NameKey": "Inventory Lantern",
+      "DescriptionKey": null,
+      "Polarity": "Neutral",
+      "UsesStacks": false,
+      "UsesDuration": false,
+      "UsesCharges": false,
+      "StackingBehavior": "MergeWithExistingInstance",
+      "Tags": [],
+      "PassiveModifiers": [],
+      "Triggers": [],
+      "DeathPrevention": null,
+      "DebuffBlock": null
+    },
+    {
+      "Id": "lock_cart",
+      "PackageId": "scenario",
+      "NameKey": "Lock Cart",
+      "DescriptionKey": null,
+      "Polarity": "Neutral",
+      "UsesStacks": false,
+      "UsesDuration": false,
+      "UsesCharges": false,
+      "StackingBehavior": "MergeWithExistingInstance",
+      "Tags": [],
+      "PassiveModifiers": [],
+      "Triggers": [],
+      "DeathPrevention": null,
+      "DebuffBlock": null
+    },
+    {
+      "Id": "seizure_marshal",
+      "PackageId": "scenario",
+      "NameKey": "Seizure Marshal",
+      "DescriptionKey": null,
+      "Polarity": "Neutral",
+      "UsesStacks": false,
+      "UsesDuration": false,
+      "UsesCharges": false,
+      "StackingBehavior": "MergeWithExistingInstance",
+      "Tags": [],
+      "PassiveModifiers": [],
+      "Triggers": [],
+      "DeathPrevention": null,
+      "DebuffBlock": null
+    },
+    {
+      "Id": "inventory_pending",
+      "PackageId": "scenario",
+      "NameKey": "Inventoried",
+      "DescriptionKey": null,
+      "Polarity": "Neutral",
+      "UsesStacks": false,
+      "UsesDuration": false,
+      "UsesCharges": false,
+      "StackingBehavior": "MergeWithExistingInstance",
+      "Tags": [],
+      "PassiveModifiers": [],
+      "Triggers": [],
+      "DeathPrevention": null,
+      "DebuffBlock": null
+    },
+    {
       "Id": "order_pay_the_fee",
       "PackageId": "scenario",
       "NameKey": "Order: Pay the Fee",
@@ -269403,13 +271608,9 @@
         "Tags": [
           "city",
           "enforcement",
-          "civic_force",
-          "block_pressure",
-          "strength_pressure",
-          "stage_enforcement",
-          "elite_enforcement",
+          "elite",
           "marshal",
-          "seizure"
+          "stage_enforcement"
         ],
         "Extra": {}
       },
@@ -269425,13 +271626,9 @@
         "Tags": [
           "city",
           "enforcement",
-          "civic_force",
-          "block_pressure",
-          "strength_pressure",
-          "stage_enforcement",
-          "elite_enforcement",
+          "elite",
           "lantern",
-          "support"
+          "stage_enforcement"
         ],
         "Extra": {}
       },
@@ -269447,14 +271644,9 @@
         "Tags": [
           "city",
           "enforcement",
-          "civic_force",
-          "block_pressure",
-          "strength_pressure",
-          "stage_enforcement",
-          "elite_enforcement",
+          "elite",
           "cart",
-          "lock",
-          "construct"
+          "stage_enforcement"
         ],
         "Extra": {}
       },
@@ -271915,6 +274107,12 @@
           {
             "Encounter": {
               "Value": "city_elite_enforcement_01"
+            },
+            "Weight": 1
+          },
+          {
+            "Encounter": {
+              "Value": "city_elite_enforcement_02"
             },
             "Weight": 1
           },

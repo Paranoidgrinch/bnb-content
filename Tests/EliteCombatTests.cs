@@ -396,6 +396,67 @@ public class EliteCombatTests
         Assert.Equal(0, FightProbe.StacksOf(Enemy(play, avatarId), PassiveStatuses.ContemptId));
     }
 
+    // The Seizure Procession: the Lantern marks a card the player has just drawn, the Cart takes it away at the
+    // turn's end if it is still in hand, and every seizure hardens the Marshal — until the Cart is full.
+    [Fact]
+    public void The_procession_marks_a_drawn_card_seizes_it_and_hardens_the_marshal()
+    {
+        var probe = FightProbe.Roster("seizure",
+            ("seizure_marshal", "guard_the_list", 40),
+            ("inventory_lantern", "seal_the_room", 24),
+            ("lock_cart", "iron_storage", 32));
+        var (play, session, _) = FightProbe.Start(probe);
+
+        var combat = play.CombatDriver!.Current!;
+        var heroId = combat.HeroId;
+        var marshalId = combat.State.Combatants.First(c => c.Id.value.StartsWith("seizure_marshal")).Id;
+
+        // Exactly one card of the opening hand carries the Lantern's mark.
+        Assert.Equal(1, Marked(play, heroId, CardZone.Hand));
+
+        play.CombatDriver.EndTurn(); // the marked card is carted off
+        Assert.Null(session.Error);
+        Assert.Equal(1, Hero(play).GetCounter(PassiveStatuses.SeizedCardsCounter));
+        Assert.Equal(1, Marked(play, heroId, CardZone.ExhaustPile));
+        Assert.Equal(1, FightProbe.StacksOf(Enemy(play, marshalId), "strength"));
+
+        play.CombatDriver.EndTurn(); // a second seizure fills the Cart
+        Assert.Null(session.Error);
+        Assert.Equal(2, Hero(play).GetCounter(PassiveStatuses.SeizedCardsCounter));
+        Assert.Equal(2, FightProbe.StacksOf(Enemy(play, marshalId), "strength"));
+
+        // Full: the Lantern stops marking and nothing more is taken.
+        Assert.Equal(0, Marked(play, play.CombatDriver.Current!.HeroId, CardZone.Hand));
+        play.CombatDriver.EndTurn();
+        Assert.Null(session.Error);
+        Assert.Equal(2, Hero(play).GetCounter(PassiveStatuses.SeizedCardsCounter));
+        Assert.Equal(2, FightProbe.StacksOf(Enemy(play, marshalId), "strength"));
+    }
+
+    // A card the player PLAYS leaves the hand with its mark and is never seized.
+    [Fact]
+    public void A_played_card_escapes_the_cart()
+    {
+        var probe = FightProbe.Roster("seizure_play",
+            ("lock_cart", "iron_storage", 32),
+            ("inventory_lantern", "seal_the_room", 24));
+        var (play, session, _) = FightProbe.Start(probe);
+
+        var combat = play.CombatDriver!.Current!;
+        var marked = combat.State.GetCardZones(combat.HeroId).GetCardsInZone(CardZone.Hand)
+            .First(c => c.HasMark(PassiveStatuses.InventoriedMark));
+        play.CombatDriver.PlayCard(marked.Id, combat.State.Combatants.First(c => c.Id != combat.HeroId).Id);
+        Assert.Null(session.Error);
+
+        play.CombatDriver.EndTurn();
+        Assert.Null(session.Error);
+        Assert.Equal(0, Hero(play).GetCounter(PassiveStatuses.SeizedCardsCounter));
+    }
+
+    private static int Marked(RunPlayback play, CombatantId ownerId, CardZone zone) =>
+        play.CombatDriver!.Current!.State.GetCardZones(ownerId).GetCardsInZone(zone)
+            .Count(c => c.HasMark(PassiveStatuses.InventoriedMark));
+
     private static void Disposal(RunPlayback play, InteractiveRunSession session, CombatantId enemyId)
     {
         var card = play.CombatDriver!.Current!.Hand.First(c => c.DefinitionId.value == "approved_for_disposal");

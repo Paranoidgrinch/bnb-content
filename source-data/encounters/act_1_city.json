@@ -286,7 +286,13 @@
       "strength_pressure",
       "elite_enforcement",
       "multi_enemy"
-    ]
+    ],
+    "enemy_health": [
+      40,
+      24,
+      32
+    ],
+    "role": "elite"
   },
   {
     "id": "city_elite_enforcement_03",
