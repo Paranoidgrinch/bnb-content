@@ -4,8 +4,8 @@ using RogueDeck.Scenario.Authoring;
 
 namespace BnbContent.Converter;
 
-// Assembles the full RunBlueprint: every mapped section, the baked map, the character roster, the
-// presentation manifest. One call, deterministic per seed.
+// Assembles the full RunBlueprint: every mapped section, the act's MAP RULES (the engine generates a fresh
+// layout per run), the character roster, the presentation manifest. One call, deterministic per seed.
 public static class BlueprintAssembler
 {
     public const string GameTitle = "Bureaucrats & Broomsticks — Act I: The Old City Offices";
@@ -14,7 +14,7 @@ public static class BlueprintAssembler
     {
         var relics = data.Relics.Select(RelicMapper.Map).ToList();
         var pools = ConversionPools.Build(data, relics);
-        var baked = MapBaker.Bake(data, pools, seed);
+        var map = MapSpecBuilder.Build(data, pools, seed);
 
         // Only enemies an encounter actually fields contribute action definitions.
         var referencedEnemies = data.Encounters.SelectMany(e => e.Enemies).ToHashSet();
@@ -22,7 +22,7 @@ public static class BlueprintAssembler
         var enemiesById = data.Enemies.ToDictionary(e => e.Id);
 
         var events = data.Events.ToDictionary(e => e.Id, e => EventMapper.Map(e, pools));
-        foreach (var (id, script) in baked.Events)
+        foreach (var (id, script) in map.Events)
             events[id] = script;
 
         var start = new RunStart
@@ -41,11 +41,13 @@ public static class BlueprintAssembler
             data.Encounters.Select(e => EncounterMapper.Map(e, enemiesById, data.Bureaucrat.StartingEnergy)).ToList(),
             data.Cards.Select(CardMapper.Map).ToList(),
             EnemyMapper.MapActions(enemies).ToList(),
-            baked.Map)
+            // The act's map is GENERATED per run from MapGeneration below; the authored map stays empty.
+            new RunMap([]))
         {
+            MapGeneration = map.Spec,
             Statuses = [.. StatusMapper.Map("statuses", data.Statuses), .. PassiveStatuses.All()],
             Relics = relics.Select(r => r.Relic).ToList(),
-            Shops = baked.Shops,
+            Shops = map.Shops,
             Start = start,
             Characters = [new RunCharacter(data.Bureaucrat.Id, start)],
             MetaRules = [new MetaRule([RunResult.Victory], [new SetMetaFlag("bnb.act1.cleared")])],

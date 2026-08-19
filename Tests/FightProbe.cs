@@ -24,6 +24,8 @@ internal static class FightProbe
         {
             Encounters = [probe],
             Map = new RunMap([new Node(new NodeId("probe"), StandardRunIds.CombatNode, new EncounterRef(probe.Id))]),
+            // The real game GENERATES its map per run, which would replace the probe node with a whole act.
+            MapGeneration = null,
         };
 
         return deck is null or { Count: 0 }

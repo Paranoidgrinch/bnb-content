@@ -1,9 +1,9 @@
 # Act I — Real-Game Build Plan (converter → game.roguedeck.json → Godot)
 
-## ▶ RESUME POINT (2026-08-19, bnb-content: step 3 COMPLETE, RogueDeck-Core @779cf9f)
+## ▶ RESUME POINT (2026-08-19, bnb-content: steps 3-6 COMPLETE, RogueDeck-Core @903c269)
 All engine primitives for reworked Act-I enemies are DONE + pushed. Converter authoring pattern proven
 end-to-end for owner-scoped passives, cross-combatant passives, intent rules, capped scaling. All suites
-green (RogueDeck-Core Core 1402/Scenario 684/Run 448/Sandbox 298; bnb-content 69). ALL 25 identities final.
+green (RogueDeck-Core Core 1402/Scenario 684/Run 450/Sandbox 299; bnb-content 75). ALL 25 identities final; steps 3-6 done.
 
 **Authored so far (real final identities):**
 - Stage 1 — `a_very_official_line` (new id): full pattern (queue_advances passive + self_counter intent rule
@@ -100,13 +100,14 @@ green (RogueDeck-Core Core 1402/Scenario 684/Run 448/Sandbox 298; bnb-content 69
   enemy id, keep an intent id only where the successor intent is the same mechanic.
 
 **Immediate next steps (resume here):**
-1. **Steps 3 and 4 are DONE.** Next is step 5: replace the baked map with a `MapGenerationSpec` built from
-   the roles (`Encounters.ByRole` from the curated pools, `NodeRefPools` from the events/rest/treasure/shop,
-   PerPathMinimums Combat 8 / MultiCombat 1 / Elite 1 / Event 3 / Rest 2 / Treasure 2 / Shop 2, mimic 5%,
-   BalanceTargets), then step 6: an end-to-end smoke that generates an Act-I map and plays it headless.
-2. **Open content debt:** the Elite and Boss pools are still the ported DEMO bodies (6 elites, 1 boss, and
-   the mimic points at one of them). The audit's own Act-I elite/boss designs are a separate authoring job —
-   see the Master Elite / Boss FINAL_AUDIT pools in ~/Downloads.
+1. **Steps 3-6 are DONE — Act I is content-complete on the engine side.** What is left is content debt and
+   polish, not plumbing:
+   - **Elite + Boss pools are still the ported DEMO bodies** (6 elites, 1 boss; the mimic points at one of
+     them). The audit's own Act-I elite/boss designs are a separate authoring job — see the Master Elite /
+     Boss FINAL_AUDIT pools in ~/Downloads.
+   - **BalanceTargets are still all-zero** (a flat band): the generator draws near StartNet instead of
+     tightening with depth. Seed them from the design's per-stage HP/intent budgets once the elites are real.
+   - Play it in Godot (`tools/sync-content.sh` + a run) to see the generated act from the inside.
 2. The remaining duos ("Wrong Window, Same Queue", "The Line Has Started Moving", "Certified Pest Control"
    = Notary 34 + Mites 26, …): the per-roster HP override is DONE, so these are now plain authoring.
 3. Carbon Copies (Mites) can be authored with "Certified Pest Control" — the Oath Candle's Witness the Seal
@@ -215,7 +216,15 @@ demo's other encounters simply carry no role and are inert. The curated pool is 
 (23 solos + 9 duos, every one of the 25 identities fielded, duos at their reduced HP) plus 6 demo elites,
 the boss and one mimic. `Tests/ActOnePoolTests.cs` pins all of it.
 
-### 5. Map: MapBaker → MapGenerationSpec (procedural hybrid)
+### 5. Map: MapBaker → MapGenerationSpec (procedural hybrid) — DONE
+`Converter/MapSpecBuilder.cs` replaces `MapBaker` (deleted): the blueprint carries an empty authored map plus
+`MapGeneration`, and the engine generates a fresh act per run. Rows 9, per-path minimums as below, mimic 5%,
+role pools from `BabEncounter.role`, per-role victory rewards, event/treasure pools via `NodeRefPools`; the
+rest/treasure/shop templates moved to `Converter/EventTemplates.cs`. Needed two engine additions:
+`MapGenerationSpec.VictoryRewards` (RogueDeck-Core @745edfd — generated fights granted NOTHING before) and a
+validator fix (@903c269 — MultiCombat/Mimic are encounter-backed roles).
+
+### 5b. Original plan text
 Replace the baked fixed map with a `MapGenerationSpec` on the blueprint:
 - `PerPathMinimums`: Combat 8, MultiCombat 1, Elite 1, Event 3, Rest 2, Treasure 2, Shop 2.
 - `TreasureMimicChancePercent = 5`.
@@ -224,9 +233,12 @@ Replace the baked fixed map with a `MapGenerationSpec` on the blueprint:
 Keep the authored events/shops/rest/treasure as the ref pools. Drop `baked.Map` (or pass a trivial
 placeholder; `RunSetup` uses `MapGeneration` when present).
 
-### 6. End-to-end smoke (Tests)
-Extend the existing `RunPlayback.BuildContent` end-to-end test: generate an Act-I map, assert the per-path
-minimums hold (via `MapConstraintValidator`), and play a full run headless. Regression gate.
+### 6. End-to-end smoke (Tests) — DONE
+`EndToEndSmokeTests` now generates the act for three seeds, asserts `MapConstraintValidator` finds no
+violation of the per-path minimums, that exactly one Boss node exists and that every generated fight carries
+its spoils; the real-run test walks the GENERATED act (steering toward combat, resolving events/rewards on
+the way) and wins its first fight. `FightProbe` sets `MapGeneration = null` so a probe still gets its
+one-fight map.
 
 ## Then: Acts II–IV
 Same pattern per act (statuses/vocabulary → enemies → encounters → map spec), with the act-specific systems

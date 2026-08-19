@@ -10,15 +10,17 @@ listed here is a faithful mechanical translation (verified by the tests against 
   in the original either** — they ride along as presentation tags; authority is dropped.
 
 ## Map
-- The original generates a fresh `staged_pilgrimage` layout per run; the engine's map is authored
-  data. The converter runs the same generator rules (same weights, caps, lane-split logic) **once,
-  seeded** — `--seed N` bakes a different map. Per-run map variety is a possible later engine arc.
-- `event_combat_chance` (20% of event rolls become fights) is baked at conversion time, so the
-  "surprise fight" is visible on the map instead of being a surprise.
-- The treasure mimic (5%) is likewise rolled at bake time.
-- The staged map has **no shop node type** in the original (shops appear via events/acts). One
-  depth-5 combat node is deliberately replaced with the **city shop** so the ported game exercises
-  the full shop machinery (buy cards/relics at the original base prices, card removal 75g, reroll 25g).
+- The act is **generated per run** from a `MapGenerationSpec` (the document carries rules, not nodes),
+  honouring the per-path minimums of `docs/bnb-act-map-specs.md`: 8 Combat, 1 MultiCombat, 1 Elite,
+  3 Event, 2 Rest, 2 Treasure, 2 Shop on EVERY entry→boss path. The earlier port baked one seeded
+  layout at conversion time; that is gone, along with its baked mimic roll and its baked
+  `event_combat_chance` surprise-fight nodes.
+- The treasure mimic is a live 5% per Treasure node (Act I; 10/15/20 in the later acts).
+- The staged map has **no shop node type** in the original (shops appear via events/acts). The
+  generated act gives Shop its own role — two per path — pointing at the same **city shop** the port
+  authored (cards/relics at the original base prices, card removal 75g, reroll 25g).
+- Generated fights pay out per ROLE (gold + a card offer; elite/boss/mimic add a relic) rather than
+  per encounter, since the layout no longer knows which fight sits where.
 
 ## Combat
 - `weighted_random` intent patterns (2 of 128 enemies) fall back to the ordinary intent cycle.

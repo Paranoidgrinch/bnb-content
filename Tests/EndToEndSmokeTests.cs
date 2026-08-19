@@ -30,16 +30,29 @@ public class EndToEndSmokeTests
         Assert.Equal(json, RunJson.ToJson(RunJson.BlueprintFromJson(json, options), options));
     }
 
-    [Fact]
-    public void The_baked_map_carries_the_expected_station_types()
+    // The act is GENERATED per run now, so the document carries rules instead of nodes: every generated layout
+    // must honour the audit's per-path minimums (docs/bnb-act-map-specs.md) and end on the boss.
+    [Theory]
+    [InlineData(1)]
+    [InlineData(7)]
+    [InlineData(20260819)]
+    public void Every_generated_act_honours_the_per_path_minimums(int seed)
     {
-        var types = Blueprint.Map.Nodes.Select(n => n.Type.Value).ToList();
-        Assert.Contains("combat", types);
-        Assert.Contains("event", types);
-        Assert.Contains("shop", types); // the adapted city shop
-        Assert.Contains(Blueprint.Events.Keys, id => id.StartsWith("rest:"));     // the waiting room
-        Assert.True(Blueprint.Map.Nodes.Count > 20);
-        Assert.Contains(Blueprint.Map.Nodes, n => n.Id.Value == "act_1_boss");
+        Assert.Empty(Blueprint.Map.Nodes); // nothing baked
+        var spec = Blueprint.MapGeneration!;
+
+        var generated = RuleBasedMapGenerator.Generate(spec, seed, startingLoadout: 0,
+            new BalanceCalculator(Blueprint.Balance, Blueprint.Encounters),
+            (kind, coord, encounter, nodeRef) => MapNodeRealizer.Realize(spec, kind, encounter, nodeRef));
+
+        Assert.Empty(MapConstraintValidator.Validate(generated, spec));
+
+        var roles = generated.Roles;
+        Assert.Equal(1, roles.Values.Count(r => r == MapNodeKind.Boss));
+        Assert.Contains(roles.Values, r => r == MapNodeKind.Shop);
+        // Every fight pays out — a generated act keeps its reward economy.
+        Assert.All(generated.Map.Nodes.Select(n => n.Payload).OfType<EncounterRef>(),
+            fight => Assert.NotNull(fight.VictoryReward));
     }
 
     [Fact]
@@ -55,15 +68,25 @@ public class EndToEndSmokeTests
         Assert.Null(play.Error);
         using (play)
         {
-            // Reach the first fight (entry rows have 2+ lanes → a path choice parks first).
-            for (var guard = 0; play.CombatDriver!.Current is null && guard < 10; guard++)
+            // Walk the GENERATED act until the first fight: a path choice parks first, and the stops before it
+            // can be events, treasure or a rest — steer toward a combat node and resolve whatever else appears.
+            for (var guard = 0; play.CombatDriver!.Current is null && guard < 60; guard++)
             {
                 if (session.IsAwaitingNodeChoice)
-                    session.PickNode(session.PendingNodeChoices[0].Id.Value);
+                {
+                    var choices = session.PendingNodeChoices;
+                    var combatNode = choices.FirstOrDefault(n => n.Type == StandardRunIds.CombatNode) ?? choices[0];
+                    session.PickNode(combatNode.Id.Value);
+                }
+                else if (session.IsAwaitingChoice)
+                    session.Pick(session.PendingSituation!.Choices[0].Id);
+                else if (session.IsAwaitingEntities)
+                    session.PickEntities([0]);
                 else if (session.IsAwaitingInterlude)
                     session.Continue();
                 else
                     break;
+                Assert.Null(session.Error);
             }
             var combat = play.CombatDriver!.Current;
             Assert.True(session.Error is null, session.Error);
