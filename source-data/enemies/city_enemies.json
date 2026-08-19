@@ -5107,50 +5107,44 @@
   {
     "id": "blank_line_leech",
     "name": "Blank-Line Leech",
-    "max_hp": 29,
+    "max_hp": 45,
     "intent_pattern": "cycle",
     "intents": [
       {
-        "id": "leave_it_blank",
-        "name": "Leave It Blank",
-        "intent_type": "debuff",
+        "id": "blank_space_bite",
+        "name": "Blank-Space Bite",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "damage_per_status",
+            "target": "player",
+            "status": "paperwork",
+            "status_on": "owner",
+            "amount": 8,
+            "per_stacks": 2,
+            "amount_per_stack": 2,
+            "cap": 8
+          }
+        ]
+      },
+      {
+        "id": "suck_the_ink_dry",
+        "name": "Suck the Ink Dry",
+        "intent_type": "buff",
         "actions": [
           {
             "type": "apply_status",
-            "target": "player",
-            "status": "paperwork",
+            "target": "owner",
+            "status": "bookworm",
             "amount": 2
           }
         ]
       },
       {
-        "id": "ink_sucker_bite",
-        "name": "Ink-Sucker Bite",
-        "intent_type": "mixed",
+        "id": "incomplete_field",
+        "name": "Incomplete Field",
+        "intent_type": "debuff",
         "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 6
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "panic",
-            "amount": 1
-          }
-        ]
-      },
-      {
-        "id": "required_field",
-        "name": "Required Field",
-        "intent_type": "mixed",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 6
-          },
           {
             "type": "apply_status",
             "target": "player",

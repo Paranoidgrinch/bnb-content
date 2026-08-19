@@ -75,7 +75,11 @@ public static class EnemyMapper
                 // "7 dmg +3 per Panic (max +9)". Without the base the number the player must plan against
                 // is missing from the intent.
                 case "damage_per_status" when effect.Status is { } status:
-                    var scaling = $"+{effect.AmountPerStack ?? 0} per {Capitalize(status)}";
+                    // "+2 per 2 own Paperwork": the group size and whose status it is both change how the
+                    // player plans, so both belong in the telegraph.
+                    var group = effect.PerStacks is { } per && per > 1 ? $"{per} " : "";
+                    var whose = effect.StatusOn is "owner" or "self" ? "own " : "";
+                    var scaling = $"+{effect.AmountPerStack ?? 0} per {group}{whose}{Capitalize(status)}";
                     if (effect.Cap is { } cap)
                         scaling += $" (max +{cap})";
                     parts.Add(effect.Amount is { } baseDamage && baseDamage != 0
