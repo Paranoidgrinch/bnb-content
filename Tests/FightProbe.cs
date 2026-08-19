@@ -22,17 +22,31 @@ internal static class FightProbe
         Map = new RunMap([new Node(new NodeId("probe"), StandardRunIds.CombatNode, new EncounterRef(probe.Id))]),
     };
 
-    // A solo encounter with one authored enemy, optionally carrying statuses from the first bell.
+    // A solo encounter with one AUTHORED enemy: its real roster entry (HP, passives carried from the first
+    // bell, intent rules) is taken from the converted game and only narrowed to the intent under test, plus any
+    // extra statuses the test wants it to open with. Hand-building the entry instead would quietly drop the
+    // enemy's own starting statuses — the very passives most tests are about.
     public static EncounterDefinition Solo(
-        string enemyId, int maxHealth, string intentId,
-        params (string Status, int Stacks)[] startingStatuses) =>
-        new(new EncounterId($"probe.{enemyId}"),
-            [new EncounterEnemy(enemyId, maxHealth,
-                [new EnemyActionDefinitionId($"{enemyId}.{intentId}")],
-                StartingStatuses: startingStatuses
-                    .Select(s => new StartingStatusSpec(new StatusDefinitionId(s.Status), s.Stacks)).ToList(),
-                DisplayName: enemyId)],
+        string enemyId, string intentId, params (string Status, int Stacks)[] startingStatuses)
+    {
+        var authored = Game.Encounters
+            .SelectMany(e => e.Enemies)
+            .FirstOrDefault(e => e.Id == enemyId)
+            ?? throw new InvalidOperationException($"no authored encounter fields '{enemyId}'");
+
+        var probe = authored with
+        {
+            Actions = [new EnemyActionDefinitionId($"{enemyId}.{intentId}")],
+            StartingStatuses =
+            [
+                .. authored.StartingStatuses ?? [],
+                .. startingStatuses.Select(s => new StartingStatusSpec(new StatusDefinitionId(s.Status), s.Stacks)),
+            ],
+        };
+
+        return new EncounterDefinition(new EncounterId($"probe.{enemyId}"), [probe],
             [new ResourceSpec(StandardCombatIds.EnergyResource, 3, 3)]);
+    }
 
     // Starts the probe fight and hands back the live playback plus the enemy's id.
     public static (RunPlayback Play, InteractiveRunSession Session, CombatantId EnemyId) Start(EncounterDefinition probe)

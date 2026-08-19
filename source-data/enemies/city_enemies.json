@@ -3076,12 +3076,12 @@
   {
     "id": "unsigned_form_ghost",
     "name": "Unsigned Form Ghost",
-    "max_hp": 30,
+    "max_hp": 43,
     "intent_pattern": "cycle",
     "intents": [
       {
-        "id": "float_back_unfinished",
-        "name": "Float Back Unfinished",
+        "id": "missing_signature",
+        "name": "Missing Signature",
         "intent_type": "debuff",
         "actions": [
           {
@@ -3093,34 +3093,42 @@
         ]
       },
       {
-        "id": "edge_of_the_page",
-        "name": "Edge of the Page",
+        "id": "spectral_initial",
+        "name": "Spectral Initial",
         "intent_type": "attack",
         "actions": [
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 6
+            "amount": 9
           }
         ]
       },
       {
-        "id": "missing_signature",
-        "name": "Missing Signature",
+        "id": "reject_the_filing",
+        "name": "Reject the Filing",
         "intent_type": "mixed",
         "actions": [
           {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 4
+            "type": "apply_status",
+            "target": "owner",
+            "status": "bookworm",
+            "amount": 1
           },
           {
-            "type": "apply_status",
-            "target": "player",
-            "status": "paperwork",
-            "amount": 1
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 8
           }
         ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "still_missing_a_signature"
+      },
+      {
+        "status": "signature_pending"
       }
     ],
     "tags": [

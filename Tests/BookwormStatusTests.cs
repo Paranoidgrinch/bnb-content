@@ -44,7 +44,7 @@ public class BookwormStatusTests
     // starts: Bookworm first, then the Paperwork tick.
     private static CombatantState AfterItsFirstTurn(int paperwork, int bookworm)
     {
-        var probe = FightProbe.Solo("filing_beetle", 40, "mandible_stamp",
+        var probe = FightProbe.Solo("filing_beetle", "mandible_stamp",
             ("paperwork", paperwork), ("bookworm", bookworm));
         var (play, session, enemyId) = FightProbe.Start(probe);
 
