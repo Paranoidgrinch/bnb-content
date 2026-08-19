@@ -90,6 +90,13 @@ older Act-I enemy pool wherever HP or intents disagree. Readings taken where the
   puts on the player for that round; the other bodies' intent rules read it and stand down to a safe move.
   Since an intent rule replaces whatever the cycle offered, a blocked body may skip a non-accelerating intent
   too — the alternative would need a "which intent is next" condition the engine does not have.
+- **The Appellate Staircase's Case moves at its holder's turn end**, with a "already moved this round" mark
+  on the receiver so it cannot climb two Steps in one round. A round-end loop would be the natural place, but
+  a program cannot read a counter off its ITERATION target there, only write to it.
+- **The ruling is announced by whichever Step still holds the Case after trying to climb.** The design has the
+  Case ascend past the highest LIVING Step; a program cannot ask whether a neighbour is alive, so a Step that
+  tried to hand the Case on and still has it announces instead — killing the Upper Step delays the ruling by
+  one round rather than preventing it.
 - **The Remand is death PREVENTION, not a revive.** "The Phantom returns once at 24 HP" is authored as the
   engine's one-shot pre-down interceptor: reviving a downed body is impossible by construction — healing and
   status application refuse a downed target, and the program guard rejects such a program outright. The

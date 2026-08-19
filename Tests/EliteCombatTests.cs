@@ -303,6 +303,59 @@ public class EliteCombatTests
         Assert.Equal(0, Enemy(play, phantomId).GetCounter(PassiveStatuses.FinalityCounter)); // spent
     }
 
+    // Appellate Staircase: the Case starts on the Lower Step, which hits 2 harder for holding it, and climbs
+    // one Step per round unless the player remands it with 12 damage in a turn.
+    [Fact]
+    public void The_case_climbs_the_staircase_unless_the_player_remands_it()
+    {
+        var probe = FightProbe.Roster("staircase", energy: 9,
+            ("lower_appellate_step", "stone_step_cut", 24),
+            ("middle_appellate_step", "staircase_strike", 30),
+            ("upper_appellate_step", "final_step_falls", 36));
+        var (play, session, _) = FightProbe.Start(probe, Enumerable.Repeat("approved_for_disposal", 10).ToList());
+
+        var combat = play.CombatDriver!.Current!;
+        var lowerId = combat.State.Combatants.First(c => c.Id.value.StartsWith("lower_appellate_step")).Id;
+        var middleId = combat.State.Combatants.First(c => c.Id.value.StartsWith("middle_appellate_step")).Id;
+
+
+        // The Lower Step's 8-damage cut arrives as 10 while it holds the Case.
+        var before = Hero(play).Health.Current;
+        play.CombatDriver.EndTurn();
+        Assert.Null(session.Error);
+
+        // No remand happened, so the Case climbed to the Middle Step.
+        Assert.Equal(0, FightProbe.StacksOf(Enemy(play, lowerId), PassiveStatuses.HoldsTheCaseId));
+        Assert.Equal(1, FightProbe.StacksOf(Enemy(play, middleId), PassiveStatuses.HoldsTheCaseId));
+        Assert.True(Hero(play).Health.Current <= before - 10, "the Case-holder hits 2 harder");
+    }
+
+    [Fact]
+    public void Twelve_damage_in_a_turn_remands_the_case_one_step_down()
+    {
+        var probe = FightProbe.Roster("remand_ladder", energy: 9,
+            ("lower_appellate_step", "procedural_step", 24),
+            ("middle_appellate_step", "procedural_landing", 30),
+            ("upper_appellate_step", "authority_above", 36));
+        var (play, session, _) = FightProbe.Start(probe, Enumerable.Repeat("approved_for_disposal", 10).ToList());
+
+        var combat = play.CombatDriver!.Current!;
+        var lowerId = combat.State.Combatants.First(c => c.Id.value.StartsWith("lower_appellate_step")).Id;
+        var middleId = combat.State.Combatants.First(c => c.Id.value.StartsWith("middle_appellate_step")).Id;
+
+        play.CombatDriver.EndTurn(); // the Case climbs to the Middle Step
+        Assert.Null(session.Error);
+        Assert.Equal(1, FightProbe.StacksOf(Enemy(play, middleId), PassiveStatuses.HoldsTheCaseId));
+
+        // 12 HP of ACTUAL damage in one turn sends the Case back down — the Step's own Block counts against
+        // that, so the first 12-damage form only lands 9 through Procedural Landing's guard.
+        Disposal(play, session, middleId);
+        Assert.Equal(1, FightProbe.StacksOf(Enemy(play, middleId), PassiveStatuses.HoldsTheCaseId)); // not yet
+        Disposal(play, session, middleId);
+        Assert.Equal(1, FightProbe.StacksOf(Enemy(play, lowerId), PassiveStatuses.HoldsTheCaseId));
+        Assert.Equal(0, FightProbe.StacksOf(Enemy(play, middleId), PassiveStatuses.HoldsTheCaseId));
+    }
+
     private static void Disposal(RunPlayback play, InteractiveRunSession session, CombatantId enemyId)
     {
         var card = play.CombatDriver!.Current!.Hand.First(c => c.DefinitionId.value == "approved_for_disposal");

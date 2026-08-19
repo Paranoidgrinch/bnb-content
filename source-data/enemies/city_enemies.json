@@ -7401,7 +7401,7 @@
   {
     "id": "lower_appellate_step",
     "name": "Lower Appellate Step",
-    "max_hp": 26,
+    "max_hp": 24,
     "intent_pattern": "cycle",
     "intents": [
       {
@@ -7412,7 +7412,7 @@
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 5
+            "amount": 6
           },
           {
             "type": "apply_status",
@@ -7423,14 +7423,14 @@
         ]
       },
       {
-        "id": "case_climbs",
-        "name": "Case Climbs",
-        "intent_type": "buff",
+        "id": "procedural_step",
+        "name": "Procedural Step",
+        "intent_type": "block",
         "actions": [
           {
-            "type": "gain_strength",
+            "type": "gain_block",
             "target": "owner",
-            "amount": 1
+            "amount": 7
           }
         ]
       },
@@ -7442,49 +7442,66 @@
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 6
+            "amount": 8
           }
         ]
       },
       {
-        "id": "filed_upward",
-        "name": "Filed Upward",
-        "intent_type": "debuff",
+        "id": "await_the_ruling",
+        "name": "Await the Ruling",
+        "intent_type": "block",
+        "special": true,
         "actions": [
           {
-            "type": "apply_status",
-            "target": "player",
-            "status": "paperwork",
-            "amount": 1
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 0
           }
         ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "step_lower"
+      },
+      {
+        "status": "holds_the_case"
+      }
+    ],
+    "intent_rules": [
+      {
+        "condition": {
+          "kind": "opponent_status",
+          "status": "ruling_pending",
+          "min_stacks": 1
+        },
+        "action": "await_the_ruling",
+        "priority": 20
       }
     ],
     "tags": [
       "city",
       "appeal",
-      "escalation",
-      "strength_pressure",
-      "stage_appeal",
-      "elite_appeal",
-      "appellate_step"
+      "elite",
+      "staircase",
+      "stage_appeal"
     ]
   },
   {
     "id": "middle_appellate_step",
     "name": "Middle Appellate Step",
-    "max_hp": 32,
+    "max_hp": 30,
     "intent_pattern": "cycle",
     "intents": [
       {
-        "id": "higher_paperwork",
-        "name": "Higher Paperwork",
+        "id": "higher_filing",
+        "name": "Higher Filing",
         "intent_type": "mixed",
         "actions": [
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 6
+            "amount": 7
           },
           {
             "type": "apply_status",
@@ -7507,18 +7524,6 @@
         ]
       },
       {
-        "id": "raised_instance",
-        "name": "Raised Instance",
-        "intent_type": "buff",
-        "actions": [
-          {
-            "type": "gain_strength",
-            "target": "owner",
-            "amount": 1
-          }
-        ]
-      },
-      {
         "id": "staircase_strike",
         "name": "Staircase Strike",
         "intent_type": "attack",
@@ -7526,25 +7531,52 @@
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 8
+            "amount": 10
           }
         ]
+      },
+      {
+        "id": "await_the_ruling",
+        "name": "Await the Ruling",
+        "intent_type": "block",
+        "special": true,
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 0
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "step_middle"
+      }
+    ],
+    "intent_rules": [
+      {
+        "condition": {
+          "kind": "opponent_status",
+          "status": "ruling_pending",
+          "min_stacks": 1
+        },
+        "action": "await_the_ruling",
+        "priority": 20
       }
     ],
     "tags": [
       "city",
       "appeal",
-      "escalation",
-      "strength_pressure",
-      "stage_appeal",
-      "elite_appeal",
-      "appellate_step"
+      "elite",
+      "staircase",
+      "stage_appeal"
     ]
   },
   {
     "id": "upper_appellate_step",
     "name": "Upper Appellate Step",
-    "max_hp": 38,
+    "max_hp": 36,
     "intent_pattern": "cycle",
     "intents": [
       {
@@ -7555,7 +7587,7 @@
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 7
+            "amount": 8
           },
           {
             "type": "apply_status",
@@ -7566,19 +7598,14 @@
         ]
       },
       {
-        "id": "precedent_above",
-        "name": "Precedent Above",
-        "intent_type": "mixed",
+        "id": "authority_above",
+        "name": "Authority Above",
+        "intent_type": "block",
         "actions": [
-          {
-            "type": "gain_strength",
-            "target": "owner",
-            "amount": 1
-          },
           {
             "type": "gain_block",
             "target": "owner",
-            "amount": 5
+            "amount": 10
           }
         ]
       },
@@ -7590,37 +7617,82 @@
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 10
+            "amount": 12
           }
         ]
       },
       {
-        "id": "escalated_filing",
-        "name": "Escalated Filing",
+        "id": "final_ruling",
+        "name": "Final Ruling",
         "intent_type": "mixed",
+        "special": true,
         "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 18
+          },
           {
             "type": "apply_status",
             "target": "player",
             "status": "paperwork",
-            "amount": 1
+            "amount": 2
           },
           {
-            "type": "gain_strength",
+            "type": "set_counter",
             "target": "owner",
-            "amount": 1
+            "counter": "final_ruling",
+            "amount": 0,
+            "relative": false
           }
         ]
+      },
+      {
+        "id": "await_the_ruling",
+        "name": "Await the Ruling",
+        "intent_type": "block",
+        "special": true,
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 0
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "step_upper"
+      }
+    ],
+    "intent_rules": [
+      {
+        "condition": {
+          "kind": "self_counter",
+          "counter": "final_ruling",
+          "op": "ge",
+          "value": 1
+        },
+        "action": "final_ruling",
+        "priority": 30
+      },
+      {
+        "condition": {
+          "kind": "opponent_status",
+          "status": "ruling_pending",
+          "min_stacks": 1
+        },
+        "action": "await_the_ruling",
+        "priority": 20
       }
     ],
     "tags": [
       "city",
       "appeal",
-      "escalation",
-      "strength_pressure",
-      "stage_appeal",
-      "elite_appeal",
-      "appellate_step"
+      "elite",
+      "staircase",
+      "stage_appeal"
     ]
   },
   {

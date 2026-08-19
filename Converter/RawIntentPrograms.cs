@@ -14,8 +14,23 @@ public static class RawIntentPrograms
             "minute_moth_cloud.steal_a_minute" => StealAMinute(),
             "living_petition_chorus.read_into_the_record" => ReadIntoTheRecord(),
             "escalation_writ.elevate_the_case" => ElevateTheCase(),
+            "lower_appellate_step.await_the_ruling" => AwaitTheRuling(),
+            "middle_appellate_step.await_the_ruling" => AwaitTheRuling(),
+            "upper_appellate_step.await_the_ruling" => AwaitTheRuling(),
             _ => null,
         };
+
+    // "Await the Ruling": the other Steps stop attacking and guard whoever holds the Case.
+    private static EffectProgram<EnemyActionContext> AwaitTheRuling()
+    {
+        var holder = CombatantTargetSelectors.AllAlliesOfSourceWithStatus(
+            new StatusDefinitionId(PassiveStatuses.HoldsTheCaseId));
+
+        return new EffectProgram<EnemyActionContext>(
+            new ForEachTargetEffectNode<EnemyActionContext>(holder,
+                new GainBlockNode<EnemyActionContext>(
+                    CombatantTargetSelectors.IterationTarget, new ConstantExpression<EnemyActionContext>(4))));
+    }
 
     // "Elevate the Case": the Writ makes its Phantom stronger, found through the Phantom's marker.
     private static EffectProgram<EnemyActionContext> ElevateTheCase()
