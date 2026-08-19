@@ -66,8 +66,14 @@ internal static class FightProbe
 
         return new EncounterDefinition(new EncounterId($"probe.{enemyId}"), [probe],
             [new ResourceSpec(StandardCombatIds.EnergyResource, energy, energy)],
+            heroStartingStatuses: HeroStatuses(),
             triggeredEffects: EncounterPassives.ForEnemy(enemyId));
     }
+
+    // Every probe marks the hero exactly as EncounterMapper does — the applicant marker a passive needs to
+    // tell "this happened to the player".
+    private static IReadOnlyList<StartingStatusSpec> HeroStatuses() =>
+        [new StartingStatusSpec(new StatusDefinitionId(PassiveStatuses.ApplicantId), 1)];
 
     // A multi-enemy probe: each member is an authored enemy narrowed to one intent, optionally at the reduced
     // HP its encounter fields it at. Roster order is turn order.
@@ -89,6 +95,7 @@ internal static class FightProbe
         // would — otherwise a passive silently does nothing in the very test meant to prove it.
         return new EncounterDefinition(new EncounterId($"probe.{probeId}"), roster,
             [new ResourceSpec(StandardCombatIds.EnergyResource, 3, 3)],
+            heroStartingStatuses: HeroStatuses(),
             triggeredEffects: members.Select(m => m.EnemyId).Distinct()
                 .SelectMany(EncounterPassives.ForEnemy).ToList());
     }

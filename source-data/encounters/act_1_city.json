@@ -1170,12 +1170,16 @@
   },
   {
     "id": "city_normal_ordinance_08",
-    "name": "The Margin Overrules You",
+    "name": "Exception to an Ancient Rule",
     "act": 1,
     "difficulty": "normal",
     "enemies": [
-      "margin_gloss",
+      "exception_imp",
       "old_statute_ghost"
+    ],
+    "enemy_health": [
+      29,
+      38
     ],
     "weight": 2,
     "tags": [

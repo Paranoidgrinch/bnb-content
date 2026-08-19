@@ -254,6 +254,86 @@ public class EnemySignatureCombatTests
         Assert.Equal(0, BlockOf(play, signpostId));
     }
 
+    // Exception Imp, "Loophole": the first negative status the enemy side files on the player each round loses
+    // one stack — a single-stack filing is voided outright — and the Imp gains 1 Strength for the trouble.
+    [Fact]
+    public void The_imp_strikes_one_stack_off_the_first_debuff_each_round()
+    {
+        // Loophole Prick would be 1 Doubt; the probe uses the intent that files 2 Paperwork so the difference
+        // between "reduced" and "prevented" is visible.
+        var probe = FightProbe.Roster("loophole",
+            ("exception_imp", "technicality", null),
+            ("filing_beetle", "mandatory_attachment", null));
+        var (play, session, _) = FightProbe.Start(probe);
+
+        var combat = play.CombatDriver!.Current!;
+        var impId = combat.State.Combatants.First(c => c.Id.value.StartsWith("exception_imp")).Id;
+
+        play.CombatDriver.EndTurn(); // the Beetle files 2 Paperwork → Loophole strikes one
+        Assert.Null(session.Error);
+
+        var after = play.CombatDriver.Current!;
+        var hero = after.State.GetCombatant(after.HeroId);
+        Assert.Equal(1, FightProbe.StacksOf(hero, "paperwork"));
+        Assert.Equal(1, FightProbe.StacksOf(after.State.GetCombatant(impId), "strength"));
+
+        // Second round: the exception is available again.
+        play.CombatDriver.EndTurn();
+        Assert.Null(session.Error);
+        var second = play.CombatDriver.Current!;
+        Assert.Equal(2, FightProbe.StacksOf(second.State.GetCombatant(second.HeroId), "paperwork")); // 1 + (2−1)
+        Assert.Equal(2, FightProbe.StacksOf(second.State.GetCombatant(impId), "strength"));
+    }
+
+    // A single-stack filing is prevented completely — and that is the round's exception spent.
+    [Fact]
+    public void The_imp_voids_a_single_stack_filing_completely()
+    {
+        var probe = FightProbe.Roster("loophole_single",
+            ("exception_imp", "technicality", null),
+            ("wax_notary", "drip_hot_wax", null)); // 7 damage + exactly 1 Paperwork
+        var (play, session, _) = FightProbe.Start(probe);
+
+        play.CombatDriver!.EndTurn();
+        Assert.Null(session.Error);
+
+        var after = play.CombatDriver.Current!;
+        Assert.Equal(0, FightProbe.StacksOf(after.State.GetCombatant(after.HeroId), "paperwork"));
+    }
+
+    // Old Statute Ghost, "Still in Force": the first time each round Panic / Doubt / Fatigue vanishes from the
+    // player entirely, the Ghost banks a Precedent; the second one re-files a stack of whatever just went.
+    [Fact]
+    public void The_ghost_re_files_the_statute_on_its_second_precedent()
+    {
+        // The Queue-Crier supplies the Panic; it decays at the hero's own turn end, so every round one vanishes.
+        var probe = FightProbe.Roster("statute",
+            ("old_statute_ghost", "ancient_penalty", null),
+            ("queue_crier_homunculus", "recite_the_waiting_order", null));
+        var (play, session, _) = FightProbe.Start(probe);
+
+        var combat = play.CombatDriver!.Current!;
+        var ghostId = combat.State.Combatants.First(c => c.Id.value.StartsWith("old_statute_ghost")).Id;
+
+        play.CombatDriver.EndTurn(); // nothing to lose yet; the Crier files the first Panic
+        Assert.Null(session.Error);
+        Assert.Equal(1, FightProbe.StacksOf(Hero(play), "panic"));
+        Assert.Equal(0, Enemy(play, ghostId).GetCounter(PassiveStatuses.PrecedentCounter));
+
+        play.CombatDriver.EndTurn(); // it decays to nothing → first precedent; the Crier files another
+        Assert.Null(session.Error);
+        Assert.Equal(1, Enemy(play, ghostId).GetCounter(PassiveStatuses.PrecedentCounter));
+        Assert.Equal(1, FightProbe.StacksOf(Hero(play), "panic"));
+
+        play.CombatDriver.EndTurn(); // it vanishes again → second precedent → the statute is re-imposed
+        Assert.Null(session.Error);
+        Assert.Equal(0, Enemy(play, ghostId).GetCounter(PassiveStatuses.PrecedentCounter));
+        Assert.Equal(2, FightProbe.StacksOf(Hero(play), "panic")); // 1 re-filed by the Ghost + 1 from the Crier
+    }
+
+    private static CombatantState Hero(RunPlayback play) =>
+        play.CombatDriver!.Current!.State.GetCombatant(play.CombatDriver.Current!.HeroId);
+
     private static void Cut(RunPlayback play, InteractiveRunSession session, CombatantId enemyId)
     {
         var card = play.CombatDriver!.Current!.Hand.First(c => c.DefinitionId.value == "paper_cut");

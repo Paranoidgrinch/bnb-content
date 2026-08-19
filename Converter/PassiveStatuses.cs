@@ -55,7 +55,50 @@ public static class PassiveStatuses
         SealIntact(),
         WitnessTheSeal(),
         Marker(BothDirectionsMandatoryId, "Both Directions Mandatory"),
+        Loophole(),
+        Marker(ApplicantId, "The Applicant"),
+        StillInForce(),
     ];
+
+    // The hero carries this in every fight (EncounterMapper) so a program can ask "did this happen to the
+    // player?" — selectors are structural and cannot name a side.
+    public const string ApplicantId = "the_applicant";
+
+    // Old Statute Ghost: marker + the two tracks of "Still in Force".
+    public const string StillInForceId = "still_in_force_passive";
+    public static readonly CounterId PrecedentCounter = new("precedent");
+    public static readonly CounterId PrecedentLatchCounter = new("precedent_this_round");
+
+    private static StatusData StillInForce()
+    {
+        var carriers = CombatantTargetSelectors.WithStatus(
+            CombatantTargetSelectors.AllCombatants, new StatusDefinitionId(StillInForceId));
+
+        var program = new EffectProgram<RoundEndedTriggeredEffectContext>(
+            new SetCombatantCounterNode<RoundEndedTriggeredEffectContext>(
+                carriers, PrecedentLatchCounter,
+                new ConstantExpression<RoundEndedTriggeredEffectContext>(0), relative: false));
+
+        return Passive(StillInForceId, "Still in Force", "RoundEnded", program);
+    }
+
+    // Exception Imp: the marker its encounter trigger finds it by, plus the once-per-round latch it clears at
+    // round end (like the Oath Candle's, and for the same reason — RoundEnded triggers have no bearer filter).
+    public const string LoopholeId = "loophole";
+    public static readonly CounterId LoopholeUsedCounter = new("loophole_used");
+
+    private static StatusData Loophole()
+    {
+        var carriers = CombatantTargetSelectors.WithStatus(
+            CombatantTargetSelectors.AllCombatants, new StatusDefinitionId(LoopholeId));
+
+        var program = new EffectProgram<RoundEndedTriggeredEffectContext>(
+            new SetCombatantCounterNode<RoundEndedTriggeredEffectContext>(
+                carriers, LoopholeUsedCounter,
+                new ConstantExpression<RoundEndedTriggeredEffectContext>(0), relative: false));
+
+        return Passive(LoopholeId, "Loophole", "RoundEnded", program);
+    }
 
     // Contradictory Signpost: a pure marker so its encounter trigger can write the route counter to the
     // Signpost and nobody else (see EncounterPassives.BothDirectionsMandatory).

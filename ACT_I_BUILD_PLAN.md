@@ -1,9 +1,9 @@
 # Act I — Real-Game Build Plan (converter → game.roguedeck.json → Godot)
 
-## ▶ RESUME POINT (2026-08-19, bnb-content: Stages 1-4 done, RogueDeck-Core @09d8298)
+## ▶ RESUME POINT (2026-08-19, bnb-content: Stages 1-5 done, RogueDeck-Core @09d8298)
 All engine primitives for reworked Act-I enemies are DONE + pushed. Converter authoring pattern proven
 end-to-end for owner-scoped passives, cross-combatant passives, intent rules, capped scaling. All suites
-green (RogueDeck-Core Core 1402/Scenario 684/Run 448/Sandbox 297; bnb-content 51). 12 of 25 identities final.
+green (RogueDeck-Core Core 1402/Scenario 684/Run 448/Sandbox 297; bnb-content 57). 15 of 25 identities final.
 
 **Authored so far (real final identities):**
 - Stage 1 — `a_very_official_line` (new id): full pattern (queue_advances passive + self_counter intent rule
@@ -46,13 +46,27 @@ green (RogueDeck-Core Core 1402/Scenario 684/Run 448/Sandbox 297; bnb-content 51
   - **Per-roster HP override DONE**: `BabEncounter.enemy_health` (positional, null = the enemy's own max_hp)
     → `EncounterMapper`. Duos are unblocked; `city_normal_seal_08` is now "Witness at the Sealed Threshold"
     (Ward 39 / Candle 27).
+- **Stage 5 (Ordinance) — COMPLETE, all three identities + the duo:**
+  - `contradictory_signpost` (49 HP): the first card of the player's turn picks the road (Attack → Dangerous
+    Shortcut 15, anything else → Long Administrative Route 9+9); no card at all → No Route Listed.
+  - `exception_imp` (40 HP, 29 in its duo): "Loophole" — the first negative status the enemy side files on
+    the player each round loses a stack (a single-stack filing is voided) and the Imp gains 1 Strength.
+  - `old_statute_ghost` (54 HP, 38 in its duo): "Still in Force" — each round the first full disappearance of
+    Panic/Doubt/Fatigue banks a Precedent; at 2 it re-files a stack of the one that just went. The cash-out
+    lives in that status's own branch, so "the most recently disappeared" needs no extra memory.
+  - `city_normal_ordinance_08` is now the duo "Exception to an Ancient Rule" (Imp 29 / Ghost 38).
+  - **Two new authoring tools:** the hero carries an `the_applicant` marker in EVERY encounter (selectors are
+    structural — this is the only way a passive can ask "did this happen to the player?"), and the
+    **debuff mirror** (the enemy keeps `seen_<status>` counters and compares) answers "which status just
+    moved", which no trigger program can read from the event. LIMITATION: statuses present at the first bell
+    are invisible to the mirror (starting statuses raise no events) — see ADAPTATIONS.md.
 - **Rule established: FINAL_AUDIT numbers WIN** over both the demo data and the older
   `Act_I_Final_Enemy_Pool.md` (they disagree on HP and intents) — rewrite HP + intents to the audit, keep the
   enemy id, keep an intent id only where the successor intent is the same mechanic.
 
 **Immediate next steps (resume here):**
-1. Stage 5 (Ordinance family): `contradictory_signpost`, `exception_imp`, `old_statute_ghost` — then Stages
-   6-8 (Delay / Appeal / Enforcement).
+1. Stage 6 (Delay family): `inverted_hourglass`, `fading_number_token`, `minute_moth` — then Stages 7-8
+   (Appeal / Enforcement).
 2. The remaining duos ("Wrong Window, Same Queue", "The Line Has Started Moving", "Certified Pest Control"
    = Notary 34 + Mites 26, …): the per-roster HP override is DONE, so these are now plain authoring.
 3. Carbon Copies (Mites) can be authored with "Certified Pest Control" — the Oath Candle's Witness the Seal
@@ -129,7 +143,7 @@ intents need **no engine change** — passive = a status-with-triggers carried f
   `damage_per_status`/…). New effect types are added per-need when an enemy intent requires one (step 3), and
   for Act-II card marks (mark ops via RAW `EffectProgram` — not in `CombatNodeModel`). No speculative DSL.
 
-### 3. Act-I enemies (source-data + EnemyMapper) — 25 identities  *(IN PROGRESS: 12/25 final; Stages 1-4 complete)*
+### 3. Act-I enemies (source-data + EnemyMapper) — 25 identities  *(IN PROGRESS: 15/25 final; Stages 1-5 complete)*
 Rewrite `source-data/enemies/city_enemies.json` to the FINAL roster with HP/intents/passives from the
 `...Standard_Encounter_Pools...(1).md` list, cross-checked against the FINAL master pool. Author each
 signature via the recipe catalogue.
