@@ -55,6 +55,9 @@ older Act-I enemy pool wherever HP or intents disagree. Readings taken where the
   undone a beat AFTER it lands rather than intercepted: the engine's data-authored interceptors read the
   TARGET's statuses, and here the exception belongs to an enemy. A single-stack filing is therefore applied
   and immediately removed, which is invisible in the numbers but visible in a combat log.
+- **A status whose LAST stack is spent raises `StatusExpired`**, not `StatusRemoved` or
+  `StatusStacksChanged` — every mirror passive (Imp, Ghost, Hourglass) listens for it, or it never sees the
+  moment a debuff is finally gone.
 - **The Imp and the Ghost read "which status just moved" from a mirror** of the player's debuff counts kept
   in their own counters (a trigger program cannot read the event's status id). A status the player already
   carries when the fight BEGINS is invisible to that mirror until something touches it again — starting

@@ -23,8 +23,91 @@ public static class EncounterPassives
         "contradictory_signpost" => [BothDirectionsMandatory()],
         "exception_imp" => Loophole(),
         "old_statute_ghost" => StillInForce(),
+        "inverted_hourglass" => StolenSand(),
+        "minute_moth" => [StolenMinute()],
         _ => Array.Empty<EncounterTriggerData>(),
     };
+
+    // "Stolen Sand" (Inverted Hourglass): whenever Fatigue actually costs the player Energy, the Hourglass
+    // banks a grain, up to 3. Fatigue spends exactly one stack when it fires (StatusMapper), so a DROP in the
+    // player's Fatigue IS the moment the Energy went — the mirror that tells the Imp which status moved tells
+    // the Hourglass when its own fired. NOTE: a status whose LAST stack is spent raises StatusExpired, not
+    // StatusRemoved or StatusStacksChanged — the "it is finally gone" moment every mirror passive must listen for.
+    private static IReadOnlyList<EncounterTriggerData> StolenSand() =>
+    [
+        StolenSandTrigger<StatusExpiredTriggeredEffectContext>("StatusExpired"),
+        StolenSandTrigger<StatusStacksChangedTriggeredEffectContext>("StatusStacksChanged"),
+        StolenSandTrigger<StatusRemovedTriggeredEffectContext>("StatusRemoved"),
+        StolenSandTrigger<StatusAppliedTriggeredEffectContext>("StatusApplied"),
+        StolenSandTrigger<StatusMergedTriggeredEffectContext>("StatusMerged"),
+    ];
+
+    private static EncounterTriggerData StolenSandTrigger<TContext>(string trigger) where TContext : class
+    {
+        var hourglass = CombatantTargetSelectors.IterationTarget;
+        var player = CombatantTargetSelectors.EventTarget;
+        var fatigue = new CombatantStatusStacksExpression<TContext>(player, new StatusDefinitionId("fatigue"));
+        var seen = new CombatantCounterExpression<TContext>(hourglass, SeenCounter("fatigue"));
+
+        var body = new SequenceEffectNode<TContext>(new IEffectNode<TContext>[]
+        {
+            new ConditionalEffectNode<TContext>(
+                new AndExpression<TContext>(
+                    new ComparisonExpression<TContext>(fatigue, ComparisonOperator.Less, seen),
+                    new ComparisonExpression<TContext>(
+                        new CombatantCounterExpression<TContext>(hourglass, PassiveStatuses.StolenSandCounter),
+                        ComparisonOperator.Less,
+                        new ConstantExpression<TContext>(3))),
+                new SetCombatantCounterNode<TContext>(hourglass, PassiveStatuses.StolenSandCounter,
+                    new ConstantExpression<TContext>(1), relative: true)),
+            new SetCombatantCounterNode<TContext>(hourglass, SeenCounter("fatigue"), fatigue, relative: false),
+        });
+
+        var program = new EffectProgram<TContext>(
+            new ForEachTargetEffectNode<TContext>(
+                CombatantTargetSelectors.WithStatus(CombatantTargetSelectors.AllCombatants,
+                    new StatusDefinitionId(PassiveStatuses.StolenSandId)),
+                new ConditionalEffectNode<TContext>(
+                    new ComparisonExpression<TContext>(
+                        new CombatantStatusStacksExpression<TContext>(player,
+                            new StatusDefinitionId(PassiveStatuses.ApplicantId)),
+                        ComparisonOperator.Greater,
+                        new ConstantExpression<TContext>(0)),
+                    body)));
+
+        return new EncounterTriggerData(trigger,
+            JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<TContext>()));
+    }
+
+    // "Stolen Minute" (Minute Moth): a player turn that ends on exactly 0 Energy hands the Moth a minute, up to
+    // 2 — at which point its intent rule swaps in Wingbeat Delay (which spends them). The turn's own combatant
+    // is the source here, so the applicant marker says whether it was the player's turn that ended.
+    private static EncounterTriggerData StolenMinute()
+    {
+        var player = CombatantTargetSelectors.Source;
+        var moth = CombatantTargetSelectors.AllEnemiesOfSourceWithStatus(
+            new StatusDefinitionId(PassiveStatuses.StolenMinuteId));
+
+        var program = new EffectProgram<TurnEndedTriggeredEffectContext>(
+            new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
+                new AndExpression<TurnEndedTriggeredEffectContext>(
+                    new ComparisonExpression<TurnEndedTriggeredEffectContext>(
+                        new CombatantStatusStacksExpression<TurnEndedTriggeredEffectContext>(
+                            player, new StatusDefinitionId(PassiveStatuses.ApplicantId)),
+                        ComparisonOperator.Greater,
+                        new ConstantExpression<TurnEndedTriggeredEffectContext>(0)),
+                    new ComparisonExpression<TurnEndedTriggeredEffectContext>(
+                        new CombatantCurrentResourceExpression<TurnEndedTriggeredEffectContext>(
+                            player, StandardCombatIds.EnergyResource),
+                        ComparisonOperator.Equal,
+                        new ConstantExpression<TurnEndedTriggeredEffectContext>(0))),
+                new SetCombatantCounterNode<TurnEndedTriggeredEffectContext>(
+                    moth, PassiveStatuses.StolenMinuteCounter,
+                    new ConstantExpression<TurnEndedTriggeredEffectContext>(1), relative: true)));
+
+        return new EncounterTriggerData("TurnEnded",
+            JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<TurnEndedTriggeredEffectContext>()));
+    }
 
     // The statuses the Old Statute Ghost keeps in force. Paperwork is deliberately not among them — it is the
     // bureaucracy's own instrument, not an expired penalty.
@@ -37,6 +120,7 @@ public static class EncounterPassives
     // recently disappeared one" needs no extra memory at all.
     private static IReadOnlyList<EncounterTriggerData> StillInForce() =>
     [
+        StillInForceTrigger<StatusExpiredTriggeredEffectContext>("StatusExpired"),
         StillInForceTrigger<StatusRemovedTriggeredEffectContext>("StatusRemoved"),
         StillInForceTrigger<StatusStacksChangedTriggeredEffectContext>("StatusStacksChanged"),
         StillInForceTrigger<StatusAppliedTriggeredEffectContext>("StatusApplied"),
@@ -125,6 +209,7 @@ public static class EncounterPassives
         LoopholeTrigger<StatusMergedTriggeredEffectContext>("StatusMerged", strike: true),
         LoopholeTrigger<StatusStacksChangedTriggeredEffectContext>("StatusStacksChanged", strike: false),
         LoopholeTrigger<StatusRemovedTriggeredEffectContext>("StatusRemoved", strike: false),
+        LoopholeTrigger<StatusExpiredTriggeredEffectContext>("StatusExpired", strike: false),
     ];
 
     private static EncounterTriggerData LoopholeTrigger<TContext>(string trigger, bool strike) where TContext : class

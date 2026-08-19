@@ -1,9 +1,9 @@
 # Act I — Real-Game Build Plan (converter → game.roguedeck.json → Godot)
 
-## ▶ RESUME POINT (2026-08-19, bnb-content: Stages 1-5 done, RogueDeck-Core @09d8298)
+## ▶ RESUME POINT (2026-08-19, bnb-content: Stages 1-6 done, RogueDeck-Core @09d8298)
 All engine primitives for reworked Act-I enemies are DONE + pushed. Converter authoring pattern proven
 end-to-end for owner-scoped passives, cross-combatant passives, intent rules, capped scaling. All suites
-green (RogueDeck-Core Core 1402/Scenario 684/Run 448/Sandbox 297; bnb-content 57). 15 of 25 identities final.
+green (RogueDeck-Core Core 1402/Scenario 684/Run 448/Sandbox 297; bnb-content 61). 18 of 25 identities final.
 
 **Authored so far (real final identities):**
 - Stage 1 — `a_very_official_line` (new id): full pattern (queue_advances passive + self_counter intent rule
@@ -60,13 +60,25 @@ green (RogueDeck-Core Core 1402/Scenario 684/Run 448/Sandbox 297; bnb-content 57
     **debuff mirror** (the enemy keeps `seen_<status>` counters and compares) answers "which status just
     moved", which no trigger program can read from the event. LIMITATION: statuses present at the first bell
     are invisible to the mirror (starting statuses raise no events) — see ADAPTATIONS.md.
+- **Stage 6 (Delay) — COMPLETE, all three identities + the duo:**
+  - `inverted_hourglass` (51 HP, 36 in its duo): "Stolen Sand" — every time Fatigue actually costs the player
+    Energy (i.e. the player's Fatigue count DROPS) it banks a grain, max 3; Turn the Glass cashes them at
+    8 + 4 each and empties the glass. New DSL: `damage_per_counter`.
+  - `fading_number_token` (43 HP, 31 in its duo): "Your Number Is Fading" — 3 HP at the end of each of its own
+    turns unless the player carries Fatigue. Owner-scoped, plain status trigger.
+  - `minute_moth` (36 HP): "Stolen Minute" — a player turn ending on exactly 0 Energy hands it a minute; at 2
+    an intent rule swaps in Wingbeat Delay, which spends them.
+  - `city_normal_delay_08` is now the duo "The Hour Has Not Been Called" (Hourglass 36 / Token 31).
+  - **GOTCHA found here:** a status whose last stack is spent raises **`StatusExpired`**, not StatusRemoved or
+    StatusStacksChanged. Every mirror passive must listen for it — the Ghost's Stage-5 passive only worked
+    because an unrelated status application happened to re-run it; it now listens properly.
 - **Rule established: FINAL_AUDIT numbers WIN** over both the demo data and the older
   `Act_I_Final_Enemy_Pool.md` (they disagree on HP and intents) — rewrite HP + intents to the audit, keep the
   enemy id, keep an intent id only where the successor intent is the same mechanic.
 
 **Immediate next steps (resume here):**
-1. Stage 6 (Delay family): `inverted_hourglass`, `fading_number_token`, `minute_moth` — then Stages 7-8
-   (Appeal / Enforcement).
+1. Stage 7 (Appeal family): `counterclaim_imp`, `self_correcting_record`, `sustaining_gavel` — then Stage 8
+   (Enforcement).
 2. The remaining duos ("Wrong Window, Same Queue", "The Line Has Started Moving", "Certified Pest Control"
    = Notary 34 + Mites 26, …): the per-roster HP override is DONE, so these are now plain authoring.
 3. Carbon Copies (Mites) can be authored with "Certified Pest Control" — the Oath Candle's Witness the Seal
@@ -143,7 +155,7 @@ intents need **no engine change** — passive = a status-with-triggers carried f
   `damage_per_status`/…). New effect types are added per-need when an enemy intent requires one (step 3), and
   for Act-II card marks (mark ops via RAW `EffectProgram` — not in `CombatNodeModel`). No speculative DSL.
 
-### 3. Act-I enemies (source-data + EnemyMapper) — 25 identities  *(IN PROGRESS: 15/25 final; Stages 1-5 complete)*
+### 3. Act-I enemies (source-data + EnemyMapper) — 25 identities  *(IN PROGRESS: 18/25 final; Stages 1-6 complete)*
 Rewrite `source-data/enemies/city_enemies.json` to the FINAL roster with HP/intents/passives from the
 `...Standard_Encounter_Pools...(1).md` list, cross-checked against the FINAL master pool. Author each
 signature via the recipe catalogue.

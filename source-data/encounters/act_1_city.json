@@ -1306,12 +1306,16 @@
   },
   {
     "id": "city_normal_delay_08",
-    "name": "The Office Waits Back",
+    "name": "The Hour Has Not Been Called",
     "act": 1,
     "difficulty": "normal",
     "enemies": [
-      "waiting_bench_gremlin",
-      "inverted_hourglass"
+      "inverted_hourglass",
+      "fading_number_token"
+    ],
+    "enemy_health": [
+      36,
+      31
     ],
     "weight": 2,
     "tags": [
