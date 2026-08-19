@@ -40238,28 +40238,81 @@
       "Enemies": [
         {
           "Id": "reopening_hours_monolith",
-          "MaxHealth": 88,
+          "MaxHealth": 92,
           "Actions": [
             {
-              "value": "reopening_hours_monolith.shortly_reopens"
+              "value": "reopening_hours_monolith.public_hours_suspended"
             },
             {
-              "value": "reopening_hours_monolith.stone_hours"
+              "value": "reopening_hours_monolith.close_without_warning"
             },
             {
-              "value": "reopening_hours_monolith.return_tomorrow"
-            },
-            {
-              "value": "reopening_hours_monolith.new_notice_posted"
-            },
-            {
-              "value": "reopening_hours_monolith.closing_slab"
+              "value": "reopening_hours_monolith.backlog_accumulates"
             }
           ],
-          "StartingStatuses": null,
+          "StartingStatuses": [
+            {
+              "Status": {
+                "value": "office_hours"
+              },
+              "Stacks": 1,
+              "DurationTurns": 0,
+              "Charges": 0
+            }
+          ],
           "DisplayName": "Reopening-Hours Monolith",
           "Position": null,
-          "IntentRules": null
+          "IntentRules": [
+            {
+              "Condition": {
+                "kind": "intent.allOf",
+                "value": {
+                  "Conditions": [
+                    {
+                      "kind": "intent.selfHasCounter",
+                      "value": {
+                        "Counter": {
+                          "value": "office_open"
+                        },
+                        "Op": "Equal",
+                        "Value": 1
+                      }
+                    },
+                    {
+                      "kind": "intent.selfHasCounter",
+                      "value": {
+                        "Counter": {
+                          "value": "open_windows"
+                        },
+                        "Op": "LessOrEqual",
+                        "Value": 1
+                      }
+                    }
+                  ]
+                }
+              },
+              "Action": {
+                "value": "reopening_hours_monolith.counter_briefly_available"
+              },
+              "Priority": 20
+            },
+            {
+              "Condition": {
+                "kind": "intent.selfHasCounter",
+                "value": {
+                  "Counter": {
+                    "value": "office_open"
+                  },
+                  "Op": "Equal",
+                  "Value": 1
+                }
+              },
+              "Action": {
+                "value": "reopening_hours_monolith.clerk_finally_sees_you"
+              },
+              "Priority": 10
+            }
+          ]
         }
       ],
       "HeroResources": [
@@ -221992,13 +222045,226 @@
       }
     },
     {
-      "Id": "reopening_hours_monolith.shortly_reopens",
+      "Id": "reopening_hours_monolith.public_hours_suspended",
       "PackageId": "scenario",
-      "NameKey": "Shortly Reopens",
+      "NameKey": "Public Hours Suspended",
+      "DescriptionKey": null,
+      "Intent": {
+        "Kind": "Defend",
+        "Label": "Public Hours Suspended \u00B7 13 block"
+      },
+      "Program": {
+        "Id": {
+          "Value": "(unnamed)"
+        },
+        "Root": {
+          "kind": "node.gainBlock",
+          "value": {
+            "TargetSelector": {
+              "kind": "sel.source",
+              "value": {
+                "Cardinality": "ZeroOrOne",
+                "RequiredContextCapabilities": "Source"
+              }
+            },
+            "Amount": {
+              "kind": "const",
+              "value": {
+                "Value": 13
+              }
+            },
+            "ResultKey": null,
+            "Children": []
+          }
+        },
+        "MaxNodeDepth": 64,
+        "MaxProgramSteps": 1024
+      }
+    },
+    {
+      "Id": "reopening_hours_monolith.close_without_warning",
+      "PackageId": "scenario",
+      "NameKey": "Close Without Warning",
       "DescriptionKey": null,
       "Intent": {
         "Kind": "Special",
-        "Label": "Shortly Reopens \u00B7 8 dmg, Fatigue \u002B1"
+        "Label": "Close Without Warning \u00B7 9 dmg, Fatigue \u002B1"
+      },
+      "Program": {
+        "Id": {
+          "Value": "(unnamed)"
+        },
+        "Root": {
+          "kind": "node.sequence",
+          "value": {
+            "Children": [
+              {
+                "kind": "node.dealDamage",
+                "value": {
+                  "TargetSelector": {
+                    "kind": "sel.eventTarget",
+                    "value": {
+                      "Cardinality": "ZeroOrOne",
+                      "RequiredContextCapabilities": "EventTarget"
+                    }
+                  },
+                  "Amount": {
+                    "kind": "const",
+                    "value": {
+                      "Value": 9
+                    }
+                  },
+                  "ResultKey": null,
+                  "IgnoresBlock": false,
+                  "Element": null,
+                  "Children": []
+                }
+              },
+              {
+                "kind": "node.applyStatus",
+                "value": {
+                  "TargetSelector": {
+                    "kind": "sel.eventTarget",
+                    "value": {
+                      "Cardinality": "ZeroOrOne",
+                      "RequiredContextCapabilities": "EventTarget"
+                    }
+                  },
+                  "StatusDefinitionId": {
+                    "value": "fatigue"
+                  },
+                  "Stacks": {
+                    "kind": "const",
+                    "value": {
+                      "Value": 1
+                    }
+                  },
+                  "DurationTurns": 0,
+                  "Charges": 0,
+                  "ResultKey": null,
+                  "Children": []
+                }
+              }
+            ]
+          }
+        },
+        "MaxNodeDepth": 64,
+        "MaxProgramSteps": 1024
+      }
+    },
+    {
+      "Id": "reopening_hours_monolith.backlog_accumulates",
+      "PackageId": "scenario",
+      "NameKey": "Backlog Accumulates",
+      "DescriptionKey": null,
+      "Intent": {
+        "Kind": "Special",
+        "Label": "Backlog Accumulates \u00B7 7 dmg, 7 block"
+      },
+      "Program": {
+        "Id": {
+          "Value": "(unnamed)"
+        },
+        "Root": {
+          "kind": "node.sequence",
+          "value": {
+            "Children": [
+              {
+                "kind": "node.dealDamage",
+                "value": {
+                  "TargetSelector": {
+                    "kind": "sel.eventTarget",
+                    "value": {
+                      "Cardinality": "ZeroOrOne",
+                      "RequiredContextCapabilities": "EventTarget"
+                    }
+                  },
+                  "Amount": {
+                    "kind": "const",
+                    "value": {
+                      "Value": 7
+                    }
+                  },
+                  "ResultKey": null,
+                  "IgnoresBlock": false,
+                  "Element": null,
+                  "Children": []
+                }
+              },
+              {
+                "kind": "node.gainBlock",
+                "value": {
+                  "TargetSelector": {
+                    "kind": "sel.source",
+                    "value": {
+                      "Cardinality": "ZeroOrOne",
+                      "RequiredContextCapabilities": "Source"
+                    }
+                  },
+                  "Amount": {
+                    "kind": "const",
+                    "value": {
+                      "Value": 7
+                    }
+                  },
+                  "ResultKey": null,
+                  "Children": []
+                }
+              }
+            ]
+          }
+        },
+        "MaxNodeDepth": 64,
+        "MaxProgramSteps": 1024
+      }
+    },
+    {
+      "Id": "reopening_hours_monolith.counter_briefly_available",
+      "PackageId": "scenario",
+      "NameKey": "Counter Briefly Available",
+      "DescriptionKey": null,
+      "Intent": {
+        "Kind": "Attack",
+        "Label": "Counter Briefly Available \u00B7 13 dmg"
+      },
+      "Program": {
+        "Id": {
+          "Value": "(unnamed)"
+        },
+        "Root": {
+          "kind": "node.dealDamage",
+          "value": {
+            "TargetSelector": {
+              "kind": "sel.eventTarget",
+              "value": {
+                "Cardinality": "ZeroOrOne",
+                "RequiredContextCapabilities": "EventTarget"
+              }
+            },
+            "Amount": {
+              "kind": "const",
+              "value": {
+                "Value": 13
+              }
+            },
+            "ResultKey": null,
+            "IgnoresBlock": false,
+            "Element": null,
+            "Children": []
+          }
+        },
+        "MaxNodeDepth": 64,
+        "MaxProgramSteps": 1024
+      }
+    },
+    {
+      "Id": "reopening_hours_monolith.clerk_finally_sees_you",
+      "PackageId": "scenario",
+      "NameKey": "The Clerk Finally Sees You",
+      "DescriptionKey": null,
+      "Intent": {
+        "Kind": "Special",
+        "Label": "The Clerk Finally Sees You \u00B7 8 dmg, Doubt \u002B1"
       },
       "Program": {
         "Id": {
@@ -222041,7 +222307,7 @@
                     }
                   },
                   "StatusDefinitionId": {
-                    "value": "fatigue"
+                    "value": "doubt"
                   },
                   "Stacks": {
                     "kind": "const",
@@ -222056,190 +222322,6 @@
                 }
               }
             ]
-          }
-        },
-        "MaxNodeDepth": 64,
-        "MaxProgramSteps": 1024
-      }
-    },
-    {
-      "Id": "reopening_hours_monolith.stone_hours",
-      "PackageId": "scenario",
-      "NameKey": "Stone Hours",
-      "DescriptionKey": null,
-      "Intent": {
-        "Kind": "Defend",
-        "Label": "Stone Hours \u00B7 14 block"
-      },
-      "Program": {
-        "Id": {
-          "Value": "(unnamed)"
-        },
-        "Root": {
-          "kind": "node.gainBlock",
-          "value": {
-            "TargetSelector": {
-              "kind": "sel.source",
-              "value": {
-                "Cardinality": "ZeroOrOne",
-                "RequiredContextCapabilities": "Source"
-              }
-            },
-            "Amount": {
-              "kind": "const",
-              "value": {
-                "Value": 14
-              }
-            },
-            "ResultKey": null,
-            "Children": []
-          }
-        },
-        "MaxNodeDepth": 64,
-        "MaxProgramSteps": 1024
-      }
-    },
-    {
-      "Id": "reopening_hours_monolith.return_tomorrow",
-      "PackageId": "scenario",
-      "NameKey": "Return Tomorrow",
-      "DescriptionKey": null,
-      "Intent": {
-        "Kind": "Debuff",
-        "Label": "Return Tomorrow \u00B7 Fatigue \u002B2"
-      },
-      "Program": {
-        "Id": {
-          "Value": "(unnamed)"
-        },
-        "Root": {
-          "kind": "node.applyStatus",
-          "value": {
-            "TargetSelector": {
-              "kind": "sel.eventTarget",
-              "value": {
-                "Cardinality": "ZeroOrOne",
-                "RequiredContextCapabilities": "EventTarget"
-              }
-            },
-            "StatusDefinitionId": {
-              "value": "fatigue"
-            },
-            "Stacks": {
-              "kind": "const",
-              "value": {
-                "Value": 2
-              }
-            },
-            "DurationTurns": 0,
-            "Charges": 0,
-            "ResultKey": null,
-            "Children": []
-          }
-        },
-        "MaxNodeDepth": 64,
-        "MaxProgramSteps": 1024
-      }
-    },
-    {
-      "Id": "reopening_hours_monolith.new_notice_posted",
-      "PackageId": "scenario",
-      "NameKey": "New Notice Posted",
-      "DescriptionKey": null,
-      "Intent": {
-        "Kind": "Special",
-        "Label": "New Notice Posted \u00B7 5 dmg, 10 block"
-      },
-      "Program": {
-        "Id": {
-          "Value": "(unnamed)"
-        },
-        "Root": {
-          "kind": "node.sequence",
-          "value": {
-            "Children": [
-              {
-                "kind": "node.dealDamage",
-                "value": {
-                  "TargetSelector": {
-                    "kind": "sel.eventTarget",
-                    "value": {
-                      "Cardinality": "ZeroOrOne",
-                      "RequiredContextCapabilities": "EventTarget"
-                    }
-                  },
-                  "Amount": {
-                    "kind": "const",
-                    "value": {
-                      "Value": 5
-                    }
-                  },
-                  "ResultKey": null,
-                  "IgnoresBlock": false,
-                  "Element": null,
-                  "Children": []
-                }
-              },
-              {
-                "kind": "node.gainBlock",
-                "value": {
-                  "TargetSelector": {
-                    "kind": "sel.source",
-                    "value": {
-                      "Cardinality": "ZeroOrOne",
-                      "RequiredContextCapabilities": "Source"
-                    }
-                  },
-                  "Amount": {
-                    "kind": "const",
-                    "value": {
-                      "Value": 10
-                    }
-                  },
-                  "ResultKey": null,
-                  "Children": []
-                }
-              }
-            ]
-          }
-        },
-        "MaxNodeDepth": 64,
-        "MaxProgramSteps": 1024
-      }
-    },
-    {
-      "Id": "reopening_hours_monolith.closing_slab",
-      "PackageId": "scenario",
-      "NameKey": "Closing Slab",
-      "DescriptionKey": null,
-      "Intent": {
-        "Kind": "Attack",
-        "Label": "Closing Slab \u00B7 12 dmg"
-      },
-      "Program": {
-        "Id": {
-          "Value": "(unnamed)"
-        },
-        "Root": {
-          "kind": "node.dealDamage",
-          "value": {
-            "TargetSelector": {
-              "kind": "sel.eventTarget",
-              "value": {
-                "Cardinality": "ZeroOrOne",
-                "RequiredContextCapabilities": "EventTarget"
-              }
-            },
-            "Amount": {
-              "kind": "const",
-              "value": {
-                "Value": 12
-              }
-            },
-            "ResultKey": null,
-            "IgnoresBlock": false,
-            "Element": null,
-            "Children": []
           }
         },
         "MaxNodeDepth": 64,
@@ -234662,6 +234744,930 @@
       ],
       "DeathPrevention": null,
       "DebuffBlock": null
+    },
+    {
+      "Id": "office_hours",
+      "PackageId": "scenario",
+      "NameKey": "Office Hours",
+      "DescriptionKey": null,
+      "Polarity": "Neutral",
+      "UsesStacks": false,
+      "UsesDuration": false,
+      "UsesCharges": false,
+      "StackingBehavior": "MergeWithExistingInstance",
+      "Tags": [],
+      "PassiveModifiers": [],
+      "Triggers": [
+        {
+          "Event": "DamageTaken",
+          "Program": {
+            "Id": {
+              "Value": "(unnamed)"
+            },
+            "Root": {
+              "kind": "node.conditional",
+              "value": {
+                "Condition": {
+                  "kind": "compare",
+                  "value": {
+                    "Left": {
+                      "kind": "combatantCounter",
+                      "value": {
+                        "Selector": {
+                          "kind": "sel.eventTarget",
+                          "value": {
+                            "Cardinality": "ZeroOrOne",
+                            "RequiredContextCapabilities": "EventTarget"
+                          }
+                        },
+                        "CounterId": {
+                          "value": "office_open"
+                        }
+                      }
+                    },
+                    "Op": "Equal",
+                    "Right": {
+                      "kind": "const",
+                      "value": {
+                        "Value": 0
+                      }
+                    }
+                  }
+                },
+                "Then": {
+                  "kind": "node.sequence",
+                  "value": {
+                    "Children": [
+                      {
+                        "kind": "node.heal",
+                        "value": {
+                          "TargetSelector": {
+                            "kind": "sel.eventTarget",
+                            "value": {
+                              "Cardinality": "ZeroOrOne",
+                              "RequiredContextCapabilities": "EventTarget"
+                            }
+                          },
+                          "Amount": {
+                            "kind": "eventAmount",
+                            "value": {}
+                          },
+                          "ResultKey": null,
+                          "Children": []
+                        }
+                      },
+                      {
+                        "kind": "node.setCombatantCounter",
+                        "value": {
+                          "TargetSelector": {
+                            "kind": "sel.eventTarget",
+                            "value": {
+                              "Cardinality": "ZeroOrOne",
+                              "RequiredContextCapabilities": "EventTarget"
+                            }
+                          },
+                          "CounterId": {
+                            "value": "pending_business"
+                          },
+                          "Amount": {
+                            "kind": "eventAmount",
+                            "value": {}
+                          },
+                          "Relative": true,
+                          "Children": []
+                        }
+                      }
+                    ]
+                  }
+                },
+                "Else": null,
+                "Children": [
+                  {
+                    "kind": "node.sequence",
+                    "value": {
+                      "Children": [
+                        {
+                          "kind": "node.heal",
+                          "value": {
+                            "TargetSelector": {
+                              "kind": "sel.eventTarget",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "EventTarget"
+                              }
+                            },
+                            "Amount": {
+                              "kind": "eventAmount",
+                              "value": {}
+                            },
+                            "ResultKey": null,
+                            "Children": []
+                          }
+                        },
+                        {
+                          "kind": "node.setCombatantCounter",
+                          "value": {
+                            "TargetSelector": {
+                              "kind": "sel.eventTarget",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "EventTarget"
+                              }
+                            },
+                            "CounterId": {
+                              "value": "pending_business"
+                            },
+                            "Amount": {
+                              "kind": "eventAmount",
+                              "value": {}
+                            },
+                            "Relative": true,
+                            "Children": []
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            "MaxNodeDepth": 64,
+            "MaxProgramSteps": 1024
+          }
+        },
+        {
+          "Event": "TurnEnded",
+          "Program": {
+            "Id": {
+              "Value": "(unnamed)"
+            },
+            "Root": {
+              "kind": "node.conditional",
+              "value": {
+                "Condition": {
+                  "kind": "compare",
+                  "value": {
+                    "Left": {
+                      "kind": "combatantCounter",
+                      "value": {
+                        "Selector": {
+                          "kind": "sel.source",
+                          "value": {
+                            "Cardinality": "ZeroOrOne",
+                            "RequiredContextCapabilities": "Source"
+                          }
+                        },
+                        "CounterId": {
+                          "value": "office_open"
+                        }
+                      }
+                    },
+                    "Op": "Equal",
+                    "Right": {
+                      "kind": "const",
+                      "value": {
+                        "Value": 1
+                      }
+                    }
+                  }
+                },
+                "Then": {
+                  "kind": "node.setCombatantCounter",
+                  "value": {
+                    "TargetSelector": {
+                      "kind": "sel.source",
+                      "value": {
+                        "Cardinality": "ZeroOrOne",
+                        "RequiredContextCapabilities": "Source"
+                      }
+                    },
+                    "CounterId": {
+                      "value": "office_open"
+                    },
+                    "Amount": {
+                      "kind": "const",
+                      "value": {
+                        "Value": 0
+                      }
+                    },
+                    "Relative": false,
+                    "Children": []
+                  }
+                },
+                "Else": {
+                  "kind": "node.conditional",
+                  "value": {
+                    "Condition": {
+                      "kind": "compare",
+                      "value": {
+                        "Left": {
+                          "kind": "combatantCounter",
+                          "value": {
+                            "Selector": {
+                              "kind": "sel.source",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "Source"
+                              }
+                            },
+                            "CounterId": {
+                              "value": "closed_windows"
+                            }
+                          }
+                        },
+                        "Op": "Equal",
+                        "Right": {
+                          "kind": "const",
+                          "value": {
+                            "Value": 1
+                          }
+                        }
+                      }
+                    },
+                    "Then": {
+                      "kind": "node.sequence",
+                      "value": {
+                        "Children": [
+                          {
+                            "kind": "node.setCombatantCounter",
+                            "value": {
+                              "TargetSelector": {
+                                "kind": "sel.source",
+                                "value": {
+                                  "Cardinality": "ZeroOrOne",
+                                  "RequiredContextCapabilities": "Source"
+                                }
+                              },
+                              "CounterId": {
+                                "value": "office_open"
+                              },
+                              "Amount": {
+                                "kind": "const",
+                                "value": {
+                                  "Value": 1
+                                }
+                              },
+                              "Relative": false,
+                              "Children": []
+                            }
+                          },
+                          {
+                            "kind": "node.setCombatantCounter",
+                            "value": {
+                              "TargetSelector": {
+                                "kind": "sel.source",
+                                "value": {
+                                  "Cardinality": "ZeroOrOne",
+                                  "RequiredContextCapabilities": "Source"
+                                }
+                              },
+                              "CounterId": {
+                                "value": "closed_windows"
+                              },
+                              "Amount": {
+                                "kind": "const",
+                                "value": {
+                                  "Value": 0
+                                }
+                              },
+                              "Relative": false,
+                              "Children": []
+                            }
+                          },
+                          {
+                            "kind": "node.setCombatantCounter",
+                            "value": {
+                              "TargetSelector": {
+                                "kind": "sel.source",
+                                "value": {
+                                  "Cardinality": "ZeroOrOne",
+                                  "RequiredContextCapabilities": "Source"
+                                }
+                              },
+                              "CounterId": {
+                                "value": "open_windows"
+                              },
+                              "Amount": {
+                                "kind": "const",
+                                "value": {
+                                  "Value": 1
+                                }
+                              },
+                              "Relative": true,
+                              "Children": []
+                            }
+                          },
+                          {
+                            "kind": "node.dealDamage",
+                            "value": {
+                              "TargetSelector": {
+                                "kind": "sel.source",
+                                "value": {
+                                  "Cardinality": "ZeroOrOne",
+                                  "RequiredContextCapabilities": "Source"
+                                }
+                              },
+                              "Amount": {
+                                "kind": "combatantCounter",
+                                "value": {
+                                  "Selector": {
+                                    "kind": "sel.source",
+                                    "value": {
+                                      "Cardinality": "ZeroOrOne",
+                                      "RequiredContextCapabilities": "Source"
+                                    }
+                                  },
+                                  "CounterId": {
+                                    "value": "pending_business"
+                                  }
+                                }
+                              },
+                              "ResultKey": null,
+                              "IgnoresBlock": false,
+                              "Element": null,
+                              "Children": []
+                            }
+                          },
+                          {
+                            "kind": "node.setCombatantCounter",
+                            "value": {
+                              "TargetSelector": {
+                                "kind": "sel.source",
+                                "value": {
+                                  "Cardinality": "ZeroOrOne",
+                                  "RequiredContextCapabilities": "Source"
+                                }
+                              },
+                              "CounterId": {
+                                "value": "pending_business"
+                              },
+                              "Amount": {
+                                "kind": "const",
+                                "value": {
+                                  "Value": 0
+                                }
+                              },
+                              "Relative": false,
+                              "Children": []
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    "Else": {
+                      "kind": "node.setCombatantCounter",
+                      "value": {
+                        "TargetSelector": {
+                          "kind": "sel.source",
+                          "value": {
+                            "Cardinality": "ZeroOrOne",
+                            "RequiredContextCapabilities": "Source"
+                          }
+                        },
+                        "CounterId": {
+                          "value": "closed_windows"
+                        },
+                        "Amount": {
+                          "kind": "const",
+                          "value": {
+                            "Value": 1
+                          }
+                        },
+                        "Relative": true,
+                        "Children": []
+                      }
+                    },
+                    "Children": [
+                      {
+                        "kind": "node.sequence",
+                        "value": {
+                          "Children": [
+                            {
+                              "kind": "node.setCombatantCounter",
+                              "value": {
+                                "TargetSelector": {
+                                  "kind": "sel.source",
+                                  "value": {
+                                    "Cardinality": "ZeroOrOne",
+                                    "RequiredContextCapabilities": "Source"
+                                  }
+                                },
+                                "CounterId": {
+                                  "value": "office_open"
+                                },
+                                "Amount": {
+                                  "kind": "const",
+                                  "value": {
+                                    "Value": 1
+                                  }
+                                },
+                                "Relative": false,
+                                "Children": []
+                              }
+                            },
+                            {
+                              "kind": "node.setCombatantCounter",
+                              "value": {
+                                "TargetSelector": {
+                                  "kind": "sel.source",
+                                  "value": {
+                                    "Cardinality": "ZeroOrOne",
+                                    "RequiredContextCapabilities": "Source"
+                                  }
+                                },
+                                "CounterId": {
+                                  "value": "closed_windows"
+                                },
+                                "Amount": {
+                                  "kind": "const",
+                                  "value": {
+                                    "Value": 0
+                                  }
+                                },
+                                "Relative": false,
+                                "Children": []
+                              }
+                            },
+                            {
+                              "kind": "node.setCombatantCounter",
+                              "value": {
+                                "TargetSelector": {
+                                  "kind": "sel.source",
+                                  "value": {
+                                    "Cardinality": "ZeroOrOne",
+                                    "RequiredContextCapabilities": "Source"
+                                  }
+                                },
+                                "CounterId": {
+                                  "value": "open_windows"
+                                },
+                                "Amount": {
+                                  "kind": "const",
+                                  "value": {
+                                    "Value": 1
+                                  }
+                                },
+                                "Relative": true,
+                                "Children": []
+                              }
+                            },
+                            {
+                              "kind": "node.dealDamage",
+                              "value": {
+                                "TargetSelector": {
+                                  "kind": "sel.source",
+                                  "value": {
+                                    "Cardinality": "ZeroOrOne",
+                                    "RequiredContextCapabilities": "Source"
+                                  }
+                                },
+                                "Amount": {
+                                  "kind": "combatantCounter",
+                                  "value": {
+                                    "Selector": {
+                                      "kind": "sel.source",
+                                      "value": {
+                                        "Cardinality": "ZeroOrOne",
+                                        "RequiredContextCapabilities": "Source"
+                                      }
+                                    },
+                                    "CounterId": {
+                                      "value": "pending_business"
+                                    }
+                                  }
+                                },
+                                "ResultKey": null,
+                                "IgnoresBlock": false,
+                                "Element": null,
+                                "Children": []
+                              }
+                            },
+                            {
+                              "kind": "node.setCombatantCounter",
+                              "value": {
+                                "TargetSelector": {
+                                  "kind": "sel.source",
+                                  "value": {
+                                    "Cardinality": "ZeroOrOne",
+                                    "RequiredContextCapabilities": "Source"
+                                  }
+                                },
+                                "CounterId": {
+                                  "value": "pending_business"
+                                },
+                                "Amount": {
+                                  "kind": "const",
+                                  "value": {
+                                    "Value": 0
+                                  }
+                                },
+                                "Relative": false,
+                                "Children": []
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "kind": "node.setCombatantCounter",
+                        "value": {
+                          "TargetSelector": {
+                            "kind": "sel.source",
+                            "value": {
+                              "Cardinality": "ZeroOrOne",
+                              "RequiredContextCapabilities": "Source"
+                            }
+                          },
+                          "CounterId": {
+                            "value": "closed_windows"
+                          },
+                          "Amount": {
+                            "kind": "const",
+                            "value": {
+                              "Value": 1
+                            }
+                          },
+                          "Relative": true,
+                          "Children": []
+                        }
+                      }
+                    ]
+                  }
+                },
+                "Children": [
+                  {
+                    "kind": "node.setCombatantCounter",
+                    "value": {
+                      "TargetSelector": {
+                        "kind": "sel.source",
+                        "value": {
+                          "Cardinality": "ZeroOrOne",
+                          "RequiredContextCapabilities": "Source"
+                        }
+                      },
+                      "CounterId": {
+                        "value": "office_open"
+                      },
+                      "Amount": {
+                        "kind": "const",
+                        "value": {
+                          "Value": 0
+                        }
+                      },
+                      "Relative": false,
+                      "Children": []
+                    }
+                  },
+                  {
+                    "kind": "node.conditional",
+                    "value": {
+                      "Condition": {
+                        "kind": "compare",
+                        "value": {
+                          "Left": {
+                            "kind": "combatantCounter",
+                            "value": {
+                              "Selector": {
+                                "kind": "sel.source",
+                                "value": {
+                                  "Cardinality": "ZeroOrOne",
+                                  "RequiredContextCapabilities": "Source"
+                                }
+                              },
+                              "CounterId": {
+                                "value": "closed_windows"
+                              }
+                            }
+                          },
+                          "Op": "Equal",
+                          "Right": {
+                            "kind": "const",
+                            "value": {
+                              "Value": 1
+                            }
+                          }
+                        }
+                      },
+                      "Then": {
+                        "kind": "node.sequence",
+                        "value": {
+                          "Children": [
+                            {
+                              "kind": "node.setCombatantCounter",
+                              "value": {
+                                "TargetSelector": {
+                                  "kind": "sel.source",
+                                  "value": {
+                                    "Cardinality": "ZeroOrOne",
+                                    "RequiredContextCapabilities": "Source"
+                                  }
+                                },
+                                "CounterId": {
+                                  "value": "office_open"
+                                },
+                                "Amount": {
+                                  "kind": "const",
+                                  "value": {
+                                    "Value": 1
+                                  }
+                                },
+                                "Relative": false,
+                                "Children": []
+                              }
+                            },
+                            {
+                              "kind": "node.setCombatantCounter",
+                              "value": {
+                                "TargetSelector": {
+                                  "kind": "sel.source",
+                                  "value": {
+                                    "Cardinality": "ZeroOrOne",
+                                    "RequiredContextCapabilities": "Source"
+                                  }
+                                },
+                                "CounterId": {
+                                  "value": "closed_windows"
+                                },
+                                "Amount": {
+                                  "kind": "const",
+                                  "value": {
+                                    "Value": 0
+                                  }
+                                },
+                                "Relative": false,
+                                "Children": []
+                              }
+                            },
+                            {
+                              "kind": "node.setCombatantCounter",
+                              "value": {
+                                "TargetSelector": {
+                                  "kind": "sel.source",
+                                  "value": {
+                                    "Cardinality": "ZeroOrOne",
+                                    "RequiredContextCapabilities": "Source"
+                                  }
+                                },
+                                "CounterId": {
+                                  "value": "open_windows"
+                                },
+                                "Amount": {
+                                  "kind": "const",
+                                  "value": {
+                                    "Value": 1
+                                  }
+                                },
+                                "Relative": true,
+                                "Children": []
+                              }
+                            },
+                            {
+                              "kind": "node.dealDamage",
+                              "value": {
+                                "TargetSelector": {
+                                  "kind": "sel.source",
+                                  "value": {
+                                    "Cardinality": "ZeroOrOne",
+                                    "RequiredContextCapabilities": "Source"
+                                  }
+                                },
+                                "Amount": {
+                                  "kind": "combatantCounter",
+                                  "value": {
+                                    "Selector": {
+                                      "kind": "sel.source",
+                                      "value": {
+                                        "Cardinality": "ZeroOrOne",
+                                        "RequiredContextCapabilities": "Source"
+                                      }
+                                    },
+                                    "CounterId": {
+                                      "value": "pending_business"
+                                    }
+                                  }
+                                },
+                                "ResultKey": null,
+                                "IgnoresBlock": false,
+                                "Element": null,
+                                "Children": []
+                              }
+                            },
+                            {
+                              "kind": "node.setCombatantCounter",
+                              "value": {
+                                "TargetSelector": {
+                                  "kind": "sel.source",
+                                  "value": {
+                                    "Cardinality": "ZeroOrOne",
+                                    "RequiredContextCapabilities": "Source"
+                                  }
+                                },
+                                "CounterId": {
+                                  "value": "pending_business"
+                                },
+                                "Amount": {
+                                  "kind": "const",
+                                  "value": {
+                                    "Value": 0
+                                  }
+                                },
+                                "Relative": false,
+                                "Children": []
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      "Else": {
+                        "kind": "node.setCombatantCounter",
+                        "value": {
+                          "TargetSelector": {
+                            "kind": "sel.source",
+                            "value": {
+                              "Cardinality": "ZeroOrOne",
+                              "RequiredContextCapabilities": "Source"
+                            }
+                          },
+                          "CounterId": {
+                            "value": "closed_windows"
+                          },
+                          "Amount": {
+                            "kind": "const",
+                            "value": {
+                              "Value": 1
+                            }
+                          },
+                          "Relative": true,
+                          "Children": []
+                        }
+                      },
+                      "Children": [
+                        {
+                          "kind": "node.sequence",
+                          "value": {
+                            "Children": [
+                              {
+                                "kind": "node.setCombatantCounter",
+                                "value": {
+                                  "TargetSelector": {
+                                    "kind": "sel.source",
+                                    "value": {
+                                      "Cardinality": "ZeroOrOne",
+                                      "RequiredContextCapabilities": "Source"
+                                    }
+                                  },
+                                  "CounterId": {
+                                    "value": "office_open"
+                                  },
+                                  "Amount": {
+                                    "kind": "const",
+                                    "value": {
+                                      "Value": 1
+                                    }
+                                  },
+                                  "Relative": false,
+                                  "Children": []
+                                }
+                              },
+                              {
+                                "kind": "node.setCombatantCounter",
+                                "value": {
+                                  "TargetSelector": {
+                                    "kind": "sel.source",
+                                    "value": {
+                                      "Cardinality": "ZeroOrOne",
+                                      "RequiredContextCapabilities": "Source"
+                                    }
+                                  },
+                                  "CounterId": {
+                                    "value": "closed_windows"
+                                  },
+                                  "Amount": {
+                                    "kind": "const",
+                                    "value": {
+                                      "Value": 0
+                                    }
+                                  },
+                                  "Relative": false,
+                                  "Children": []
+                                }
+                              },
+                              {
+                                "kind": "node.setCombatantCounter",
+                                "value": {
+                                  "TargetSelector": {
+                                    "kind": "sel.source",
+                                    "value": {
+                                      "Cardinality": "ZeroOrOne",
+                                      "RequiredContextCapabilities": "Source"
+                                    }
+                                  },
+                                  "CounterId": {
+                                    "value": "open_windows"
+                                  },
+                                  "Amount": {
+                                    "kind": "const",
+                                    "value": {
+                                      "Value": 1
+                                    }
+                                  },
+                                  "Relative": true,
+                                  "Children": []
+                                }
+                              },
+                              {
+                                "kind": "node.dealDamage",
+                                "value": {
+                                  "TargetSelector": {
+                                    "kind": "sel.source",
+                                    "value": {
+                                      "Cardinality": "ZeroOrOne",
+                                      "RequiredContextCapabilities": "Source"
+                                    }
+                                  },
+                                  "Amount": {
+                                    "kind": "combatantCounter",
+                                    "value": {
+                                      "Selector": {
+                                        "kind": "sel.source",
+                                        "value": {
+                                          "Cardinality": "ZeroOrOne",
+                                          "RequiredContextCapabilities": "Source"
+                                        }
+                                      },
+                                      "CounterId": {
+                                        "value": "pending_business"
+                                      }
+                                    }
+                                  },
+                                  "ResultKey": null,
+                                  "IgnoresBlock": false,
+                                  "Element": null,
+                                  "Children": []
+                                }
+                              },
+                              {
+                                "kind": "node.setCombatantCounter",
+                                "value": {
+                                  "TargetSelector": {
+                                    "kind": "sel.source",
+                                    "value": {
+                                      "Cardinality": "ZeroOrOne",
+                                      "RequiredContextCapabilities": "Source"
+                                    }
+                                  },
+                                  "CounterId": {
+                                    "value": "pending_business"
+                                  },
+                                  "Amount": {
+                                    "kind": "const",
+                                    "value": {
+                                      "Value": 0
+                                    }
+                                  },
+                                  "Relative": false,
+                                  "Children": []
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "kind": "node.setCombatantCounter",
+                          "value": {
+                            "TargetSelector": {
+                              "kind": "sel.source",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "Source"
+                              }
+                            },
+                            "CounterId": {
+                              "value": "closed_windows"
+                            },
+                            "Amount": {
+                              "kind": "const",
+                              "value": {
+                                "Value": 1
+                              }
+                            },
+                            "Relative": true,
+                            "Children": []
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            "MaxNodeDepth": 64,
+            "MaxProgramSteps": 1024
+          }
+        }
+      ],
+      "DeathPrevention": null,
+      "DebuffBlock": null
     }
   ],
   "Relics": [
@@ -241376,12 +242382,9 @@
         "Tags": [
           "city",
           "delay",
-          "waiting",
-          "fatigue_pressure",
-          "stage_delay",
-          "elite_delay",
+          "elite",
           "monolith",
-          "construct"
+          "stage_delay"
         ],
         "Extra": {}
       },
