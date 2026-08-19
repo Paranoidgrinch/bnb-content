@@ -7626,35 +7626,23 @@
   {
     "id": "living_petition_chorus",
     "name": "Living Petition Chorus",
-    "max_hp": 86,
+    "max_hp": 90,
     "intent_pattern": "cycle",
     "intents": [
       {
-        "id": "many_signatures_speak",
-        "name": "Many Signatures Speak",
+        "id": "many_voices_speak",
+        "name": "Many Voices Speak",
         "intent_type": "mixed",
         "actions": [
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 8
+            "amount": 9
           },
           {
             "type": "apply_status",
             "target": "player",
             "status": "doubt",
-            "amount": 1
-          }
-        ]
-      },
-      {
-        "id": "voices_grow_louder",
-        "name": "Voices Grow Louder",
-        "intent_type": "buff",
-        "actions": [
-          {
-            "type": "gain_strength",
-            "target": "owner",
             "amount": 1
           }
         ]
@@ -7673,7 +7661,7 @@
           {
             "type": "gain_block",
             "target": "owner",
-            "amount": 8
+            "amount": 10
           }
         ]
       },
@@ -7685,14 +7673,14 @@
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 10
+            "amount": 12
           }
         ]
       },
       {
-        "id": "repeat_the_prayer",
-        "name": "Repeat the Prayer",
-        "intent_type": "mixed",
+        "id": "voices_gather",
+        "name": "Voices Gather",
+        "intent_type": "buff",
         "actions": [
           {
             "type": "gain_strength",
@@ -7700,23 +7688,49 @@
             "amount": 1
           },
           {
-            "type": "apply_status",
-            "target": "player",
-            "status": "doubt",
-            "amount": 1
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 7
           }
         ]
+      },
+      {
+        "id": "read_into_the_record",
+        "name": "Read Into the Record",
+        "intent_type": "mixed",
+        "special": true,
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 8
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "the_petition"
+      }
+    ],
+    "intent_rules": [
+      {
+        "condition": {
+          "kind": "self_counter",
+          "counter": "signatures",
+          "op": "ge",
+          "value": 3
+        },
+        "action": "read_into_the_record",
+        "priority": 20
       }
     ],
     "tags": [
       "city",
       "appeal",
-      "escalation",
-      "strength_pressure",
-      "stage_appeal",
-      "elite_appeal",
+      "elite",
       "petition",
-      "chorus"
+      "stage_appeal"
     ]
   },
   {

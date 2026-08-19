@@ -75,7 +75,13 @@ public static class PassiveStatuses
         AppointmentsAccelerated(),
         OfficeHours(),
         Marker(LostTimeLedgerId, "Lost Time"),
+        Marker(PetitionId, "The Petition"),
     ];
+
+    // Living Petition Chorus: the marker the clause cards write their signatures and liabilities onto.
+    public const string PetitionId = "the_petition";
+    public static readonly CounterId SignaturesCounter = new("signatures");
+    public static readonly CounterId ClauseIndexCounter = new("clause_index");
 
     // Devouring Waiting Room: the Room keeps the Lost Time ledger (so killing it erases the resource, while
     // killing the Moth Cloud leaves what was already lost). The marker is how the Moth and the encounter

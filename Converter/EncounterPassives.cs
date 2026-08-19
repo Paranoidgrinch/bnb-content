@@ -31,8 +31,53 @@ public static class EncounterPassives
         "number_ticket_wisp" => YourNumberCameUp(),
         "duplicate_copy_mite" => CarbonCopies(),
         "devouring_waiting_room" => [LostTime()],
+        "living_petition_chorus" => [ClauseOffer()],
         _ => Array.Empty<EncounterTriggerData>(),
     };
+
+    // "Clause offer" (Living Petition Chorus): at the start of each player turn the Petition lays one clause on
+    // the table — as a card in the player's hand, since a combat has no yes/no prompt. The three clauses take
+    // turns, so each appears once per reading cycle.
+    private static EncounterTriggerData ClauseOffer()
+    {
+        var player = CombatantTargetSelectors.Source; // the combatant whose turn started
+        var petition = CombatantTargetSelectors.IterationTarget;
+        var clauses = ClauseCards.All;
+
+        IEffectNode<TurnStartedTriggeredEffectContext> Offer(int index) =>
+            new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
+                new ComparisonExpression<TurnStartedTriggeredEffectContext>(
+                    new CombatantCounterExpression<TurnStartedTriggeredEffectContext>(
+                        petition, PassiveStatuses.ClauseIndexCounter),
+                    ComparisonOperator.Equal,
+                    new ConstantExpression<TurnStartedTriggeredEffectContext>(index)),
+                new SequenceEffectNode<TurnStartedTriggeredEffectContext>(new IEffectNode<TurnStartedTriggeredEffectContext>[]
+                {
+                    new CreateCardInstanceNode<TurnStartedTriggeredEffectContext>(
+                        player, new CardDefinitionId(clauses[index].CardId), CardZone.Hand,
+                        new ConstantExpression<TurnStartedTriggeredEffectContext>(1)),
+                    new SetCombatantCounterNode<TurnStartedTriggeredEffectContext>(
+                        petition, PassiveStatuses.ClauseIndexCounter,
+                        new ConstantExpression<TurnStartedTriggeredEffectContext>((index + 1) % clauses.Length),
+                        relative: false),
+                }));
+
+        var program = new EffectProgram<TurnStartedTriggeredEffectContext>(
+            new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
+                new ComparisonExpression<TurnStartedTriggeredEffectContext>(
+                    new CombatantStatusStacksExpression<TurnStartedTriggeredEffectContext>(
+                        player, new StatusDefinitionId(PassiveStatuses.ApplicantId)),
+                    ComparisonOperator.Greater,
+                    new ConstantExpression<TurnStartedTriggeredEffectContext>(0)),
+                new ForEachTargetEffectNode<TurnStartedTriggeredEffectContext>(
+                    CombatantTargetSelectors.AllEnemiesOfSourceWithStatus(
+                        new StatusDefinitionId(PassiveStatuses.PetitionId)),
+                    new SequenceEffectNode<TurnStartedTriggeredEffectContext>(
+                        [.. Enumerable.Range(0, clauses.Length).Select(Offer)]))));
+
+        return new EncounterTriggerData("TurnStarted",
+            JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<TurnStartedTriggeredEffectContext>()));
+    }
 
     // "Lost Time" (Devouring Waiting Room): every point of Energy the player leaves unspent at the end of their
     // turn becomes Lost Time on the Room, up to 3. Energy that Fatigue took is simply not there to count — it

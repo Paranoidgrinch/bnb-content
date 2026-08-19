@@ -40895,13 +40895,10 @@
       "Enemies": [
         {
           "Id": "living_petition_chorus",
-          "MaxHealth": 86,
+          "MaxHealth": 90,
           "Actions": [
             {
-              "value": "living_petition_chorus.many_signatures_speak"
-            },
-            {
-              "value": "living_petition_chorus.voices_grow_louder"
+              "value": "living_petition_chorus.many_voices_speak"
             },
             {
               "value": "living_petition_chorus.amended_aloud"
@@ -40910,13 +40907,39 @@
               "value": "living_petition_chorus.chorus_cut"
             },
             {
-              "value": "living_petition_chorus.repeat_the_prayer"
+              "value": "living_petition_chorus.voices_gather"
             }
           ],
-          "StartingStatuses": null,
+          "StartingStatuses": [
+            {
+              "Status": {
+                "value": "the_petition"
+              },
+              "Stacks": 1,
+              "DurationTurns": 0,
+              "Charges": 0
+            }
+          ],
           "DisplayName": "Living Petition Chorus",
           "Position": null,
-          "IntentRules": null
+          "IntentRules": [
+            {
+              "Condition": {
+                "kind": "intent.selfHasCounter",
+                "value": {
+                  "Counter": {
+                    "value": "signatures"
+                  },
+                  "Op": "GreaterOrEqual",
+                  "Value": 3
+                }
+              },
+              "Action": {
+                "value": "living_petition_chorus.read_into_the_record"
+              },
+              "Priority": 20
+            }
+          ]
         }
       ],
       "HeroResources": [
@@ -40940,7 +40963,1793 @@
       ],
       "HeroDisplayName": null,
       "CardsDrawnPerTurn": null,
-      "TriggeredEffects": []
+      "TriggeredEffects": [
+        {
+          "Event": "TurnStarted",
+          "Program": {
+            "Id": {
+              "Value": "(unnamed)"
+            },
+            "Root": {
+              "kind": "node.conditional",
+              "value": {
+                "Condition": {
+                  "kind": "compare",
+                  "value": {
+                    "Left": {
+                      "kind": "combatantStatusStacks",
+                      "value": {
+                        "Selector": {
+                          "kind": "sel.source",
+                          "value": {
+                            "Cardinality": "ZeroOrOne",
+                            "RequiredContextCapabilities": "Source"
+                          }
+                        },
+                        "StatusId": {
+                          "value": "the_applicant"
+                        }
+                      }
+                    },
+                    "Op": "Greater",
+                    "Right": {
+                      "kind": "const",
+                      "value": {
+                        "Value": 0
+                      }
+                    }
+                  }
+                },
+                "Then": {
+                  "kind": "node.forEachTarget",
+                  "value": {
+                    "CollectionSelector": {
+                      "kind": "sel.enemiesWithStatus",
+                      "value": {
+                        "StatusDefinitionId": {
+                          "value": "the_petition"
+                        }
+                      }
+                    },
+                    "Body": {
+                      "kind": "node.sequence",
+                      "value": {
+                        "Children": [
+                          {
+                            "kind": "node.conditional",
+                            "value": {
+                              "Condition": {
+                                "kind": "compare",
+                                "value": {
+                                  "Left": {
+                                    "kind": "combatantCounter",
+                                    "value": {
+                                      "Selector": {
+                                        "kind": "sel.iterationTarget",
+                                        "value": {
+                                          "Cardinality": "ZeroOrOne"
+                                        }
+                                      },
+                                      "CounterId": {
+                                        "value": "clause_index"
+                                      }
+                                    }
+                                  },
+                                  "Op": "Equal",
+                                  "Right": {
+                                    "kind": "const",
+                                    "value": {
+                                      "Value": 0
+                                    }
+                                  }
+                                }
+                              },
+                              "Then": {
+                                "kind": "node.sequence",
+                                "value": {
+                                  "Children": [
+                                    {
+                                      "kind": "node.createCardInstance",
+                                      "value": {
+                                        "TargetSelector": {
+                                          "kind": "sel.source",
+                                          "value": {
+                                            "Cardinality": "ZeroOrOne",
+                                            "RequiredContextCapabilities": "Source"
+                                          }
+                                        },
+                                        "CardDefinitionId": {
+                                          "value": "clause_extension"
+                                        },
+                                        "ToZone": "Hand",
+                                        "Count": {
+                                          "kind": "const",
+                                          "value": {
+                                            "Value": 1
+                                          }
+                                        },
+                                        "ResultKey": null,
+                                        "Children": []
+                                      }
+                                    },
+                                    {
+                                      "kind": "node.setCombatantCounter",
+                                      "value": {
+                                        "TargetSelector": {
+                                          "kind": "sel.iterationTarget",
+                                          "value": {
+                                            "Cardinality": "ZeroOrOne"
+                                          }
+                                        },
+                                        "CounterId": {
+                                          "value": "clause_index"
+                                        },
+                                        "Amount": {
+                                          "kind": "const",
+                                          "value": {
+                                            "Value": 1
+                                          }
+                                        },
+                                        "Relative": false,
+                                        "Children": []
+                                      }
+                                    }
+                                  ]
+                                }
+                              },
+                              "Else": null,
+                              "Children": [
+                                {
+                                  "kind": "node.sequence",
+                                  "value": {
+                                    "Children": [
+                                      {
+                                        "kind": "node.createCardInstance",
+                                        "value": {
+                                          "TargetSelector": {
+                                            "kind": "sel.source",
+                                            "value": {
+                                              "Cardinality": "ZeroOrOne",
+                                              "RequiredContextCapabilities": "Source"
+                                            }
+                                          },
+                                          "CardDefinitionId": {
+                                            "value": "clause_extension"
+                                          },
+                                          "ToZone": "Hand",
+                                          "Count": {
+                                            "kind": "const",
+                                            "value": {
+                                              "Value": 1
+                                            }
+                                          },
+                                          "ResultKey": null,
+                                          "Children": []
+                                        }
+                                      },
+                                      {
+                                        "kind": "node.setCombatantCounter",
+                                        "value": {
+                                          "TargetSelector": {
+                                            "kind": "sel.iterationTarget",
+                                            "value": {
+                                              "Cardinality": "ZeroOrOne"
+                                            }
+                                          },
+                                          "CounterId": {
+                                            "value": "clause_index"
+                                          },
+                                          "Amount": {
+                                            "kind": "const",
+                                            "value": {
+                                              "Value": 1
+                                            }
+                                          },
+                                          "Relative": false,
+                                          "Children": []
+                                        }
+                                      }
+                                    ]
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "kind": "node.conditional",
+                            "value": {
+                              "Condition": {
+                                "kind": "compare",
+                                "value": {
+                                  "Left": {
+                                    "kind": "combatantCounter",
+                                    "value": {
+                                      "Selector": {
+                                        "kind": "sel.iterationTarget",
+                                        "value": {
+                                          "Cardinality": "ZeroOrOne"
+                                        }
+                                      },
+                                      "CounterId": {
+                                        "value": "clause_index"
+                                      }
+                                    }
+                                  },
+                                  "Op": "Equal",
+                                  "Right": {
+                                    "kind": "const",
+                                    "value": {
+                                      "Value": 1
+                                    }
+                                  }
+                                }
+                              },
+                              "Then": {
+                                "kind": "node.sequence",
+                                "value": {
+                                  "Children": [
+                                    {
+                                      "kind": "node.createCardInstance",
+                                      "value": {
+                                        "TargetSelector": {
+                                          "kind": "sel.source",
+                                          "value": {
+                                            "Cardinality": "ZeroOrOne",
+                                            "RequiredContextCapabilities": "Source"
+                                          }
+                                        },
+                                        "CardDefinitionId": {
+                                          "value": "clause_protective"
+                                        },
+                                        "ToZone": "Hand",
+                                        "Count": {
+                                          "kind": "const",
+                                          "value": {
+                                            "Value": 1
+                                          }
+                                        },
+                                        "ResultKey": null,
+                                        "Children": []
+                                      }
+                                    },
+                                    {
+                                      "kind": "node.setCombatantCounter",
+                                      "value": {
+                                        "TargetSelector": {
+                                          "kind": "sel.iterationTarget",
+                                          "value": {
+                                            "Cardinality": "ZeroOrOne"
+                                          }
+                                        },
+                                        "CounterId": {
+                                          "value": "clause_index"
+                                        },
+                                        "Amount": {
+                                          "kind": "const",
+                                          "value": {
+                                            "Value": 2
+                                          }
+                                        },
+                                        "Relative": false,
+                                        "Children": []
+                                      }
+                                    }
+                                  ]
+                                }
+                              },
+                              "Else": null,
+                              "Children": [
+                                {
+                                  "kind": "node.sequence",
+                                  "value": {
+                                    "Children": [
+                                      {
+                                        "kind": "node.createCardInstance",
+                                        "value": {
+                                          "TargetSelector": {
+                                            "kind": "sel.source",
+                                            "value": {
+                                              "Cardinality": "ZeroOrOne",
+                                              "RequiredContextCapabilities": "Source"
+                                            }
+                                          },
+                                          "CardDefinitionId": {
+                                            "value": "clause_protective"
+                                          },
+                                          "ToZone": "Hand",
+                                          "Count": {
+                                            "kind": "const",
+                                            "value": {
+                                              "Value": 1
+                                            }
+                                          },
+                                          "ResultKey": null,
+                                          "Children": []
+                                        }
+                                      },
+                                      {
+                                        "kind": "node.setCombatantCounter",
+                                        "value": {
+                                          "TargetSelector": {
+                                            "kind": "sel.iterationTarget",
+                                            "value": {
+                                              "Cardinality": "ZeroOrOne"
+                                            }
+                                          },
+                                          "CounterId": {
+                                            "value": "clause_index"
+                                          },
+                                          "Amount": {
+                                            "kind": "const",
+                                            "value": {
+                                              "Value": 2
+                                            }
+                                          },
+                                          "Relative": false,
+                                          "Children": []
+                                        }
+                                      }
+                                    ]
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "kind": "node.conditional",
+                            "value": {
+                              "Condition": {
+                                "kind": "compare",
+                                "value": {
+                                  "Left": {
+                                    "kind": "combatantCounter",
+                                    "value": {
+                                      "Selector": {
+                                        "kind": "sel.iterationTarget",
+                                        "value": {
+                                          "Cardinality": "ZeroOrOne"
+                                        }
+                                      },
+                                      "CounterId": {
+                                        "value": "clause_index"
+                                      }
+                                    }
+                                  },
+                                  "Op": "Equal",
+                                  "Right": {
+                                    "kind": "const",
+                                    "value": {
+                                      "Value": 2
+                                    }
+                                  }
+                                }
+                              },
+                              "Then": {
+                                "kind": "node.sequence",
+                                "value": {
+                                  "Children": [
+                                    {
+                                      "kind": "node.createCardInstance",
+                                      "value": {
+                                        "TargetSelector": {
+                                          "kind": "sel.source",
+                                          "value": {
+                                            "Cardinality": "ZeroOrOne",
+                                            "RequiredContextCapabilities": "Source"
+                                          }
+                                        },
+                                        "CardDefinitionId": {
+                                          "value": "clause_evidentiary"
+                                        },
+                                        "ToZone": "Hand",
+                                        "Count": {
+                                          "kind": "const",
+                                          "value": {
+                                            "Value": 1
+                                          }
+                                        },
+                                        "ResultKey": null,
+                                        "Children": []
+                                      }
+                                    },
+                                    {
+                                      "kind": "node.setCombatantCounter",
+                                      "value": {
+                                        "TargetSelector": {
+                                          "kind": "sel.iterationTarget",
+                                          "value": {
+                                            "Cardinality": "ZeroOrOne"
+                                          }
+                                        },
+                                        "CounterId": {
+                                          "value": "clause_index"
+                                        },
+                                        "Amount": {
+                                          "kind": "const",
+                                          "value": {
+                                            "Value": 0
+                                          }
+                                        },
+                                        "Relative": false,
+                                        "Children": []
+                                      }
+                                    }
+                                  ]
+                                }
+                              },
+                              "Else": null,
+                              "Children": [
+                                {
+                                  "kind": "node.sequence",
+                                  "value": {
+                                    "Children": [
+                                      {
+                                        "kind": "node.createCardInstance",
+                                        "value": {
+                                          "TargetSelector": {
+                                            "kind": "sel.source",
+                                            "value": {
+                                              "Cardinality": "ZeroOrOne",
+                                              "RequiredContextCapabilities": "Source"
+                                            }
+                                          },
+                                          "CardDefinitionId": {
+                                            "value": "clause_evidentiary"
+                                          },
+                                          "ToZone": "Hand",
+                                          "Count": {
+                                            "kind": "const",
+                                            "value": {
+                                              "Value": 1
+                                            }
+                                          },
+                                          "ResultKey": null,
+                                          "Children": []
+                                        }
+                                      },
+                                      {
+                                        "kind": "node.setCombatantCounter",
+                                        "value": {
+                                          "TargetSelector": {
+                                            "kind": "sel.iterationTarget",
+                                            "value": {
+                                              "Cardinality": "ZeroOrOne"
+                                            }
+                                          },
+                                          "CounterId": {
+                                            "value": "clause_index"
+                                          },
+                                          "Amount": {
+                                            "kind": "const",
+                                            "value": {
+                                              "Value": 0
+                                            }
+                                          },
+                                          "Relative": false,
+                                          "Children": []
+                                        }
+                                      }
+                                    ]
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    "MaxIterations": 32,
+                    "Children": [
+                      {
+                        "kind": "node.sequence",
+                        "value": {
+                          "Children": [
+                            {
+                              "kind": "node.conditional",
+                              "value": {
+                                "Condition": {
+                                  "kind": "compare",
+                                  "value": {
+                                    "Left": {
+                                      "kind": "combatantCounter",
+                                      "value": {
+                                        "Selector": {
+                                          "kind": "sel.iterationTarget",
+                                          "value": {
+                                            "Cardinality": "ZeroOrOne"
+                                          }
+                                        },
+                                        "CounterId": {
+                                          "value": "clause_index"
+                                        }
+                                      }
+                                    },
+                                    "Op": "Equal",
+                                    "Right": {
+                                      "kind": "const",
+                                      "value": {
+                                        "Value": 0
+                                      }
+                                    }
+                                  }
+                                },
+                                "Then": {
+                                  "kind": "node.sequence",
+                                  "value": {
+                                    "Children": [
+                                      {
+                                        "kind": "node.createCardInstance",
+                                        "value": {
+                                          "TargetSelector": {
+                                            "kind": "sel.source",
+                                            "value": {
+                                              "Cardinality": "ZeroOrOne",
+                                              "RequiredContextCapabilities": "Source"
+                                            }
+                                          },
+                                          "CardDefinitionId": {
+                                            "value": "clause_extension"
+                                          },
+                                          "ToZone": "Hand",
+                                          "Count": {
+                                            "kind": "const",
+                                            "value": {
+                                              "Value": 1
+                                            }
+                                          },
+                                          "ResultKey": null,
+                                          "Children": []
+                                        }
+                                      },
+                                      {
+                                        "kind": "node.setCombatantCounter",
+                                        "value": {
+                                          "TargetSelector": {
+                                            "kind": "sel.iterationTarget",
+                                            "value": {
+                                              "Cardinality": "ZeroOrOne"
+                                            }
+                                          },
+                                          "CounterId": {
+                                            "value": "clause_index"
+                                          },
+                                          "Amount": {
+                                            "kind": "const",
+                                            "value": {
+                                              "Value": 1
+                                            }
+                                          },
+                                          "Relative": false,
+                                          "Children": []
+                                        }
+                                      }
+                                    ]
+                                  }
+                                },
+                                "Else": null,
+                                "Children": [
+                                  {
+                                    "kind": "node.sequence",
+                                    "value": {
+                                      "Children": [
+                                        {
+                                          "kind": "node.createCardInstance",
+                                          "value": {
+                                            "TargetSelector": {
+                                              "kind": "sel.source",
+                                              "value": {
+                                                "Cardinality": "ZeroOrOne",
+                                                "RequiredContextCapabilities": "Source"
+                                              }
+                                            },
+                                            "CardDefinitionId": {
+                                              "value": "clause_extension"
+                                            },
+                                            "ToZone": "Hand",
+                                            "Count": {
+                                              "kind": "const",
+                                              "value": {
+                                                "Value": 1
+                                              }
+                                            },
+                                            "ResultKey": null,
+                                            "Children": []
+                                          }
+                                        },
+                                        {
+                                          "kind": "node.setCombatantCounter",
+                                          "value": {
+                                            "TargetSelector": {
+                                              "kind": "sel.iterationTarget",
+                                              "value": {
+                                                "Cardinality": "ZeroOrOne"
+                                              }
+                                            },
+                                            "CounterId": {
+                                              "value": "clause_index"
+                                            },
+                                            "Amount": {
+                                              "kind": "const",
+                                              "value": {
+                                                "Value": 1
+                                              }
+                                            },
+                                            "Relative": false,
+                                            "Children": []
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            },
+                            {
+                              "kind": "node.conditional",
+                              "value": {
+                                "Condition": {
+                                  "kind": "compare",
+                                  "value": {
+                                    "Left": {
+                                      "kind": "combatantCounter",
+                                      "value": {
+                                        "Selector": {
+                                          "kind": "sel.iterationTarget",
+                                          "value": {
+                                            "Cardinality": "ZeroOrOne"
+                                          }
+                                        },
+                                        "CounterId": {
+                                          "value": "clause_index"
+                                        }
+                                      }
+                                    },
+                                    "Op": "Equal",
+                                    "Right": {
+                                      "kind": "const",
+                                      "value": {
+                                        "Value": 1
+                                      }
+                                    }
+                                  }
+                                },
+                                "Then": {
+                                  "kind": "node.sequence",
+                                  "value": {
+                                    "Children": [
+                                      {
+                                        "kind": "node.createCardInstance",
+                                        "value": {
+                                          "TargetSelector": {
+                                            "kind": "sel.source",
+                                            "value": {
+                                              "Cardinality": "ZeroOrOne",
+                                              "RequiredContextCapabilities": "Source"
+                                            }
+                                          },
+                                          "CardDefinitionId": {
+                                            "value": "clause_protective"
+                                          },
+                                          "ToZone": "Hand",
+                                          "Count": {
+                                            "kind": "const",
+                                            "value": {
+                                              "Value": 1
+                                            }
+                                          },
+                                          "ResultKey": null,
+                                          "Children": []
+                                        }
+                                      },
+                                      {
+                                        "kind": "node.setCombatantCounter",
+                                        "value": {
+                                          "TargetSelector": {
+                                            "kind": "sel.iterationTarget",
+                                            "value": {
+                                              "Cardinality": "ZeroOrOne"
+                                            }
+                                          },
+                                          "CounterId": {
+                                            "value": "clause_index"
+                                          },
+                                          "Amount": {
+                                            "kind": "const",
+                                            "value": {
+                                              "Value": 2
+                                            }
+                                          },
+                                          "Relative": false,
+                                          "Children": []
+                                        }
+                                      }
+                                    ]
+                                  }
+                                },
+                                "Else": null,
+                                "Children": [
+                                  {
+                                    "kind": "node.sequence",
+                                    "value": {
+                                      "Children": [
+                                        {
+                                          "kind": "node.createCardInstance",
+                                          "value": {
+                                            "TargetSelector": {
+                                              "kind": "sel.source",
+                                              "value": {
+                                                "Cardinality": "ZeroOrOne",
+                                                "RequiredContextCapabilities": "Source"
+                                              }
+                                            },
+                                            "CardDefinitionId": {
+                                              "value": "clause_protective"
+                                            },
+                                            "ToZone": "Hand",
+                                            "Count": {
+                                              "kind": "const",
+                                              "value": {
+                                                "Value": 1
+                                              }
+                                            },
+                                            "ResultKey": null,
+                                            "Children": []
+                                          }
+                                        },
+                                        {
+                                          "kind": "node.setCombatantCounter",
+                                          "value": {
+                                            "TargetSelector": {
+                                              "kind": "sel.iterationTarget",
+                                              "value": {
+                                                "Cardinality": "ZeroOrOne"
+                                              }
+                                            },
+                                            "CounterId": {
+                                              "value": "clause_index"
+                                            },
+                                            "Amount": {
+                                              "kind": "const",
+                                              "value": {
+                                                "Value": 2
+                                              }
+                                            },
+                                            "Relative": false,
+                                            "Children": []
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            },
+                            {
+                              "kind": "node.conditional",
+                              "value": {
+                                "Condition": {
+                                  "kind": "compare",
+                                  "value": {
+                                    "Left": {
+                                      "kind": "combatantCounter",
+                                      "value": {
+                                        "Selector": {
+                                          "kind": "sel.iterationTarget",
+                                          "value": {
+                                            "Cardinality": "ZeroOrOne"
+                                          }
+                                        },
+                                        "CounterId": {
+                                          "value": "clause_index"
+                                        }
+                                      }
+                                    },
+                                    "Op": "Equal",
+                                    "Right": {
+                                      "kind": "const",
+                                      "value": {
+                                        "Value": 2
+                                      }
+                                    }
+                                  }
+                                },
+                                "Then": {
+                                  "kind": "node.sequence",
+                                  "value": {
+                                    "Children": [
+                                      {
+                                        "kind": "node.createCardInstance",
+                                        "value": {
+                                          "TargetSelector": {
+                                            "kind": "sel.source",
+                                            "value": {
+                                              "Cardinality": "ZeroOrOne",
+                                              "RequiredContextCapabilities": "Source"
+                                            }
+                                          },
+                                          "CardDefinitionId": {
+                                            "value": "clause_evidentiary"
+                                          },
+                                          "ToZone": "Hand",
+                                          "Count": {
+                                            "kind": "const",
+                                            "value": {
+                                              "Value": 1
+                                            }
+                                          },
+                                          "ResultKey": null,
+                                          "Children": []
+                                        }
+                                      },
+                                      {
+                                        "kind": "node.setCombatantCounter",
+                                        "value": {
+                                          "TargetSelector": {
+                                            "kind": "sel.iterationTarget",
+                                            "value": {
+                                              "Cardinality": "ZeroOrOne"
+                                            }
+                                          },
+                                          "CounterId": {
+                                            "value": "clause_index"
+                                          },
+                                          "Amount": {
+                                            "kind": "const",
+                                            "value": {
+                                              "Value": 0
+                                            }
+                                          },
+                                          "Relative": false,
+                                          "Children": []
+                                        }
+                                      }
+                                    ]
+                                  }
+                                },
+                                "Else": null,
+                                "Children": [
+                                  {
+                                    "kind": "node.sequence",
+                                    "value": {
+                                      "Children": [
+                                        {
+                                          "kind": "node.createCardInstance",
+                                          "value": {
+                                            "TargetSelector": {
+                                              "kind": "sel.source",
+                                              "value": {
+                                                "Cardinality": "ZeroOrOne",
+                                                "RequiredContextCapabilities": "Source"
+                                              }
+                                            },
+                                            "CardDefinitionId": {
+                                              "value": "clause_evidentiary"
+                                            },
+                                            "ToZone": "Hand",
+                                            "Count": {
+                                              "kind": "const",
+                                              "value": {
+                                                "Value": 1
+                                              }
+                                            },
+                                            "ResultKey": null,
+                                            "Children": []
+                                          }
+                                        },
+                                        {
+                                          "kind": "node.setCombatantCounter",
+                                          "value": {
+                                            "TargetSelector": {
+                                              "kind": "sel.iterationTarget",
+                                              "value": {
+                                                "Cardinality": "ZeroOrOne"
+                                              }
+                                            },
+                                            "CounterId": {
+                                              "value": "clause_index"
+                                            },
+                                            "Amount": {
+                                              "kind": "const",
+                                              "value": {
+                                                "Value": 0
+                                              }
+                                            },
+                                            "Relative": false,
+                                            "Children": []
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                "Else": null,
+                "Children": [
+                  {
+                    "kind": "node.forEachTarget",
+                    "value": {
+                      "CollectionSelector": {
+                        "kind": "sel.enemiesWithStatus",
+                        "value": {
+                          "StatusDefinitionId": {
+                            "value": "the_petition"
+                          }
+                        }
+                      },
+                      "Body": {
+                        "kind": "node.sequence",
+                        "value": {
+                          "Children": [
+                            {
+                              "kind": "node.conditional",
+                              "value": {
+                                "Condition": {
+                                  "kind": "compare",
+                                  "value": {
+                                    "Left": {
+                                      "kind": "combatantCounter",
+                                      "value": {
+                                        "Selector": {
+                                          "kind": "sel.iterationTarget",
+                                          "value": {
+                                            "Cardinality": "ZeroOrOne"
+                                          }
+                                        },
+                                        "CounterId": {
+                                          "value": "clause_index"
+                                        }
+                                      }
+                                    },
+                                    "Op": "Equal",
+                                    "Right": {
+                                      "kind": "const",
+                                      "value": {
+                                        "Value": 0
+                                      }
+                                    }
+                                  }
+                                },
+                                "Then": {
+                                  "kind": "node.sequence",
+                                  "value": {
+                                    "Children": [
+                                      {
+                                        "kind": "node.createCardInstance",
+                                        "value": {
+                                          "TargetSelector": {
+                                            "kind": "sel.source",
+                                            "value": {
+                                              "Cardinality": "ZeroOrOne",
+                                              "RequiredContextCapabilities": "Source"
+                                            }
+                                          },
+                                          "CardDefinitionId": {
+                                            "value": "clause_extension"
+                                          },
+                                          "ToZone": "Hand",
+                                          "Count": {
+                                            "kind": "const",
+                                            "value": {
+                                              "Value": 1
+                                            }
+                                          },
+                                          "ResultKey": null,
+                                          "Children": []
+                                        }
+                                      },
+                                      {
+                                        "kind": "node.setCombatantCounter",
+                                        "value": {
+                                          "TargetSelector": {
+                                            "kind": "sel.iterationTarget",
+                                            "value": {
+                                              "Cardinality": "ZeroOrOne"
+                                            }
+                                          },
+                                          "CounterId": {
+                                            "value": "clause_index"
+                                          },
+                                          "Amount": {
+                                            "kind": "const",
+                                            "value": {
+                                              "Value": 1
+                                            }
+                                          },
+                                          "Relative": false,
+                                          "Children": []
+                                        }
+                                      }
+                                    ]
+                                  }
+                                },
+                                "Else": null,
+                                "Children": [
+                                  {
+                                    "kind": "node.sequence",
+                                    "value": {
+                                      "Children": [
+                                        {
+                                          "kind": "node.createCardInstance",
+                                          "value": {
+                                            "TargetSelector": {
+                                              "kind": "sel.source",
+                                              "value": {
+                                                "Cardinality": "ZeroOrOne",
+                                                "RequiredContextCapabilities": "Source"
+                                              }
+                                            },
+                                            "CardDefinitionId": {
+                                              "value": "clause_extension"
+                                            },
+                                            "ToZone": "Hand",
+                                            "Count": {
+                                              "kind": "const",
+                                              "value": {
+                                                "Value": 1
+                                              }
+                                            },
+                                            "ResultKey": null,
+                                            "Children": []
+                                          }
+                                        },
+                                        {
+                                          "kind": "node.setCombatantCounter",
+                                          "value": {
+                                            "TargetSelector": {
+                                              "kind": "sel.iterationTarget",
+                                              "value": {
+                                                "Cardinality": "ZeroOrOne"
+                                              }
+                                            },
+                                            "CounterId": {
+                                              "value": "clause_index"
+                                            },
+                                            "Amount": {
+                                              "kind": "const",
+                                              "value": {
+                                                "Value": 1
+                                              }
+                                            },
+                                            "Relative": false,
+                                            "Children": []
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            },
+                            {
+                              "kind": "node.conditional",
+                              "value": {
+                                "Condition": {
+                                  "kind": "compare",
+                                  "value": {
+                                    "Left": {
+                                      "kind": "combatantCounter",
+                                      "value": {
+                                        "Selector": {
+                                          "kind": "sel.iterationTarget",
+                                          "value": {
+                                            "Cardinality": "ZeroOrOne"
+                                          }
+                                        },
+                                        "CounterId": {
+                                          "value": "clause_index"
+                                        }
+                                      }
+                                    },
+                                    "Op": "Equal",
+                                    "Right": {
+                                      "kind": "const",
+                                      "value": {
+                                        "Value": 1
+                                      }
+                                    }
+                                  }
+                                },
+                                "Then": {
+                                  "kind": "node.sequence",
+                                  "value": {
+                                    "Children": [
+                                      {
+                                        "kind": "node.createCardInstance",
+                                        "value": {
+                                          "TargetSelector": {
+                                            "kind": "sel.source",
+                                            "value": {
+                                              "Cardinality": "ZeroOrOne",
+                                              "RequiredContextCapabilities": "Source"
+                                            }
+                                          },
+                                          "CardDefinitionId": {
+                                            "value": "clause_protective"
+                                          },
+                                          "ToZone": "Hand",
+                                          "Count": {
+                                            "kind": "const",
+                                            "value": {
+                                              "Value": 1
+                                            }
+                                          },
+                                          "ResultKey": null,
+                                          "Children": []
+                                        }
+                                      },
+                                      {
+                                        "kind": "node.setCombatantCounter",
+                                        "value": {
+                                          "TargetSelector": {
+                                            "kind": "sel.iterationTarget",
+                                            "value": {
+                                              "Cardinality": "ZeroOrOne"
+                                            }
+                                          },
+                                          "CounterId": {
+                                            "value": "clause_index"
+                                          },
+                                          "Amount": {
+                                            "kind": "const",
+                                            "value": {
+                                              "Value": 2
+                                            }
+                                          },
+                                          "Relative": false,
+                                          "Children": []
+                                        }
+                                      }
+                                    ]
+                                  }
+                                },
+                                "Else": null,
+                                "Children": [
+                                  {
+                                    "kind": "node.sequence",
+                                    "value": {
+                                      "Children": [
+                                        {
+                                          "kind": "node.createCardInstance",
+                                          "value": {
+                                            "TargetSelector": {
+                                              "kind": "sel.source",
+                                              "value": {
+                                                "Cardinality": "ZeroOrOne",
+                                                "RequiredContextCapabilities": "Source"
+                                              }
+                                            },
+                                            "CardDefinitionId": {
+                                              "value": "clause_protective"
+                                            },
+                                            "ToZone": "Hand",
+                                            "Count": {
+                                              "kind": "const",
+                                              "value": {
+                                                "Value": 1
+                                              }
+                                            },
+                                            "ResultKey": null,
+                                            "Children": []
+                                          }
+                                        },
+                                        {
+                                          "kind": "node.setCombatantCounter",
+                                          "value": {
+                                            "TargetSelector": {
+                                              "kind": "sel.iterationTarget",
+                                              "value": {
+                                                "Cardinality": "ZeroOrOne"
+                                              }
+                                            },
+                                            "CounterId": {
+                                              "value": "clause_index"
+                                            },
+                                            "Amount": {
+                                              "kind": "const",
+                                              "value": {
+                                                "Value": 2
+                                              }
+                                            },
+                                            "Relative": false,
+                                            "Children": []
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            },
+                            {
+                              "kind": "node.conditional",
+                              "value": {
+                                "Condition": {
+                                  "kind": "compare",
+                                  "value": {
+                                    "Left": {
+                                      "kind": "combatantCounter",
+                                      "value": {
+                                        "Selector": {
+                                          "kind": "sel.iterationTarget",
+                                          "value": {
+                                            "Cardinality": "ZeroOrOne"
+                                          }
+                                        },
+                                        "CounterId": {
+                                          "value": "clause_index"
+                                        }
+                                      }
+                                    },
+                                    "Op": "Equal",
+                                    "Right": {
+                                      "kind": "const",
+                                      "value": {
+                                        "Value": 2
+                                      }
+                                    }
+                                  }
+                                },
+                                "Then": {
+                                  "kind": "node.sequence",
+                                  "value": {
+                                    "Children": [
+                                      {
+                                        "kind": "node.createCardInstance",
+                                        "value": {
+                                          "TargetSelector": {
+                                            "kind": "sel.source",
+                                            "value": {
+                                              "Cardinality": "ZeroOrOne",
+                                              "RequiredContextCapabilities": "Source"
+                                            }
+                                          },
+                                          "CardDefinitionId": {
+                                            "value": "clause_evidentiary"
+                                          },
+                                          "ToZone": "Hand",
+                                          "Count": {
+                                            "kind": "const",
+                                            "value": {
+                                              "Value": 1
+                                            }
+                                          },
+                                          "ResultKey": null,
+                                          "Children": []
+                                        }
+                                      },
+                                      {
+                                        "kind": "node.setCombatantCounter",
+                                        "value": {
+                                          "TargetSelector": {
+                                            "kind": "sel.iterationTarget",
+                                            "value": {
+                                              "Cardinality": "ZeroOrOne"
+                                            }
+                                          },
+                                          "CounterId": {
+                                            "value": "clause_index"
+                                          },
+                                          "Amount": {
+                                            "kind": "const",
+                                            "value": {
+                                              "Value": 0
+                                            }
+                                          },
+                                          "Relative": false,
+                                          "Children": []
+                                        }
+                                      }
+                                    ]
+                                  }
+                                },
+                                "Else": null,
+                                "Children": [
+                                  {
+                                    "kind": "node.sequence",
+                                    "value": {
+                                      "Children": [
+                                        {
+                                          "kind": "node.createCardInstance",
+                                          "value": {
+                                            "TargetSelector": {
+                                              "kind": "sel.source",
+                                              "value": {
+                                                "Cardinality": "ZeroOrOne",
+                                                "RequiredContextCapabilities": "Source"
+                                              }
+                                            },
+                                            "CardDefinitionId": {
+                                              "value": "clause_evidentiary"
+                                            },
+                                            "ToZone": "Hand",
+                                            "Count": {
+                                              "kind": "const",
+                                              "value": {
+                                                "Value": 1
+                                              }
+                                            },
+                                            "ResultKey": null,
+                                            "Children": []
+                                          }
+                                        },
+                                        {
+                                          "kind": "node.setCombatantCounter",
+                                          "value": {
+                                            "TargetSelector": {
+                                              "kind": "sel.iterationTarget",
+                                              "value": {
+                                                "Cardinality": "ZeroOrOne"
+                                              }
+                                            },
+                                            "CounterId": {
+                                              "value": "clause_index"
+                                            },
+                                            "Amount": {
+                                              "kind": "const",
+                                              "value": {
+                                                "Value": 0
+                                              }
+                                            },
+                                            "Relative": false,
+                                            "Children": []
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      "MaxIterations": 32,
+                      "Children": [
+                        {
+                          "kind": "node.sequence",
+                          "value": {
+                            "Children": [
+                              {
+                                "kind": "node.conditional",
+                                "value": {
+                                  "Condition": {
+                                    "kind": "compare",
+                                    "value": {
+                                      "Left": {
+                                        "kind": "combatantCounter",
+                                        "value": {
+                                          "Selector": {
+                                            "kind": "sel.iterationTarget",
+                                            "value": {
+                                              "Cardinality": "ZeroOrOne"
+                                            }
+                                          },
+                                          "CounterId": {
+                                            "value": "clause_index"
+                                          }
+                                        }
+                                      },
+                                      "Op": "Equal",
+                                      "Right": {
+                                        "kind": "const",
+                                        "value": {
+                                          "Value": 0
+                                        }
+                                      }
+                                    }
+                                  },
+                                  "Then": {
+                                    "kind": "node.sequence",
+                                    "value": {
+                                      "Children": [
+                                        {
+                                          "kind": "node.createCardInstance",
+                                          "value": {
+                                            "TargetSelector": {
+                                              "kind": "sel.source",
+                                              "value": {
+                                                "Cardinality": "ZeroOrOne",
+                                                "RequiredContextCapabilities": "Source"
+                                              }
+                                            },
+                                            "CardDefinitionId": {
+                                              "value": "clause_extension"
+                                            },
+                                            "ToZone": "Hand",
+                                            "Count": {
+                                              "kind": "const",
+                                              "value": {
+                                                "Value": 1
+                                              }
+                                            },
+                                            "ResultKey": null,
+                                            "Children": []
+                                          }
+                                        },
+                                        {
+                                          "kind": "node.setCombatantCounter",
+                                          "value": {
+                                            "TargetSelector": {
+                                              "kind": "sel.iterationTarget",
+                                              "value": {
+                                                "Cardinality": "ZeroOrOne"
+                                              }
+                                            },
+                                            "CounterId": {
+                                              "value": "clause_index"
+                                            },
+                                            "Amount": {
+                                              "kind": "const",
+                                              "value": {
+                                                "Value": 1
+                                              }
+                                            },
+                                            "Relative": false,
+                                            "Children": []
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  "Else": null,
+                                  "Children": [
+                                    {
+                                      "kind": "node.sequence",
+                                      "value": {
+                                        "Children": [
+                                          {
+                                            "kind": "node.createCardInstance",
+                                            "value": {
+                                              "TargetSelector": {
+                                                "kind": "sel.source",
+                                                "value": {
+                                                  "Cardinality": "ZeroOrOne",
+                                                  "RequiredContextCapabilities": "Source"
+                                                }
+                                              },
+                                              "CardDefinitionId": {
+                                                "value": "clause_extension"
+                                              },
+                                              "ToZone": "Hand",
+                                              "Count": {
+                                                "kind": "const",
+                                                "value": {
+                                                  "Value": 1
+                                                }
+                                              },
+                                              "ResultKey": null,
+                                              "Children": []
+                                            }
+                                          },
+                                          {
+                                            "kind": "node.setCombatantCounter",
+                                            "value": {
+                                              "TargetSelector": {
+                                                "kind": "sel.iterationTarget",
+                                                "value": {
+                                                  "Cardinality": "ZeroOrOne"
+                                                }
+                                              },
+                                              "CounterId": {
+                                                "value": "clause_index"
+                                              },
+                                              "Amount": {
+                                                "kind": "const",
+                                                "value": {
+                                                  "Value": 1
+                                                }
+                                              },
+                                              "Relative": false,
+                                              "Children": []
+                                            }
+                                          }
+                                        ]
+                                      }
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "kind": "node.conditional",
+                                "value": {
+                                  "Condition": {
+                                    "kind": "compare",
+                                    "value": {
+                                      "Left": {
+                                        "kind": "combatantCounter",
+                                        "value": {
+                                          "Selector": {
+                                            "kind": "sel.iterationTarget",
+                                            "value": {
+                                              "Cardinality": "ZeroOrOne"
+                                            }
+                                          },
+                                          "CounterId": {
+                                            "value": "clause_index"
+                                          }
+                                        }
+                                      },
+                                      "Op": "Equal",
+                                      "Right": {
+                                        "kind": "const",
+                                        "value": {
+                                          "Value": 1
+                                        }
+                                      }
+                                    }
+                                  },
+                                  "Then": {
+                                    "kind": "node.sequence",
+                                    "value": {
+                                      "Children": [
+                                        {
+                                          "kind": "node.createCardInstance",
+                                          "value": {
+                                            "TargetSelector": {
+                                              "kind": "sel.source",
+                                              "value": {
+                                                "Cardinality": "ZeroOrOne",
+                                                "RequiredContextCapabilities": "Source"
+                                              }
+                                            },
+                                            "CardDefinitionId": {
+                                              "value": "clause_protective"
+                                            },
+                                            "ToZone": "Hand",
+                                            "Count": {
+                                              "kind": "const",
+                                              "value": {
+                                                "Value": 1
+                                              }
+                                            },
+                                            "ResultKey": null,
+                                            "Children": []
+                                          }
+                                        },
+                                        {
+                                          "kind": "node.setCombatantCounter",
+                                          "value": {
+                                            "TargetSelector": {
+                                              "kind": "sel.iterationTarget",
+                                              "value": {
+                                                "Cardinality": "ZeroOrOne"
+                                              }
+                                            },
+                                            "CounterId": {
+                                              "value": "clause_index"
+                                            },
+                                            "Amount": {
+                                              "kind": "const",
+                                              "value": {
+                                                "Value": 2
+                                              }
+                                            },
+                                            "Relative": false,
+                                            "Children": []
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  "Else": null,
+                                  "Children": [
+                                    {
+                                      "kind": "node.sequence",
+                                      "value": {
+                                        "Children": [
+                                          {
+                                            "kind": "node.createCardInstance",
+                                            "value": {
+                                              "TargetSelector": {
+                                                "kind": "sel.source",
+                                                "value": {
+                                                  "Cardinality": "ZeroOrOne",
+                                                  "RequiredContextCapabilities": "Source"
+                                                }
+                                              },
+                                              "CardDefinitionId": {
+                                                "value": "clause_protective"
+                                              },
+                                              "ToZone": "Hand",
+                                              "Count": {
+                                                "kind": "const",
+                                                "value": {
+                                                  "Value": 1
+                                                }
+                                              },
+                                              "ResultKey": null,
+                                              "Children": []
+                                            }
+                                          },
+                                          {
+                                            "kind": "node.setCombatantCounter",
+                                            "value": {
+                                              "TargetSelector": {
+                                                "kind": "sel.iterationTarget",
+                                                "value": {
+                                                  "Cardinality": "ZeroOrOne"
+                                                }
+                                              },
+                                              "CounterId": {
+                                                "value": "clause_index"
+                                              },
+                                              "Amount": {
+                                                "kind": "const",
+                                                "value": {
+                                                  "Value": 2
+                                                }
+                                              },
+                                              "Relative": false,
+                                              "Children": []
+                                            }
+                                          }
+                                        ]
+                                      }
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "kind": "node.conditional",
+                                "value": {
+                                  "Condition": {
+                                    "kind": "compare",
+                                    "value": {
+                                      "Left": {
+                                        "kind": "combatantCounter",
+                                        "value": {
+                                          "Selector": {
+                                            "kind": "sel.iterationTarget",
+                                            "value": {
+                                              "Cardinality": "ZeroOrOne"
+                                            }
+                                          },
+                                          "CounterId": {
+                                            "value": "clause_index"
+                                          }
+                                        }
+                                      },
+                                      "Op": "Equal",
+                                      "Right": {
+                                        "kind": "const",
+                                        "value": {
+                                          "Value": 2
+                                        }
+                                      }
+                                    }
+                                  },
+                                  "Then": {
+                                    "kind": "node.sequence",
+                                    "value": {
+                                      "Children": [
+                                        {
+                                          "kind": "node.createCardInstance",
+                                          "value": {
+                                            "TargetSelector": {
+                                              "kind": "sel.source",
+                                              "value": {
+                                                "Cardinality": "ZeroOrOne",
+                                                "RequiredContextCapabilities": "Source"
+                                              }
+                                            },
+                                            "CardDefinitionId": {
+                                              "value": "clause_evidentiary"
+                                            },
+                                            "ToZone": "Hand",
+                                            "Count": {
+                                              "kind": "const",
+                                              "value": {
+                                                "Value": 1
+                                              }
+                                            },
+                                            "ResultKey": null,
+                                            "Children": []
+                                          }
+                                        },
+                                        {
+                                          "kind": "node.setCombatantCounter",
+                                          "value": {
+                                            "TargetSelector": {
+                                              "kind": "sel.iterationTarget",
+                                              "value": {
+                                                "Cardinality": "ZeroOrOne"
+                                              }
+                                            },
+                                            "CounterId": {
+                                              "value": "clause_index"
+                                            },
+                                            "Amount": {
+                                              "kind": "const",
+                                              "value": {
+                                                "Value": 0
+                                              }
+                                            },
+                                            "Relative": false,
+                                            "Children": []
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  "Else": null,
+                                  "Children": [
+                                    {
+                                      "kind": "node.sequence",
+                                      "value": {
+                                        "Children": [
+                                          {
+                                            "kind": "node.createCardInstance",
+                                            "value": {
+                                              "TargetSelector": {
+                                                "kind": "sel.source",
+                                                "value": {
+                                                  "Cardinality": "ZeroOrOne",
+                                                  "RequiredContextCapabilities": "Source"
+                                                }
+                                              },
+                                              "CardDefinitionId": {
+                                                "value": "clause_evidentiary"
+                                              },
+                                              "ToZone": "Hand",
+                                              "Count": {
+                                                "kind": "const",
+                                                "value": {
+                                                  "Value": 1
+                                                }
+                                              },
+                                              "ResultKey": null,
+                                              "Children": []
+                                            }
+                                          },
+                                          {
+                                            "kind": "node.setCombatantCounter",
+                                            "value": {
+                                              "TargetSelector": {
+                                                "kind": "sel.iterationTarget",
+                                                "value": {
+                                                  "Cardinality": "ZeroOrOne"
+                                                }
+                                              },
+                                              "CounterId": {
+                                                "value": "clause_index"
+                                              },
+                                              "Amount": {
+                                                "kind": "const",
+                                                "value": {
+                                                  "Value": 0
+                                                }
+                                              },
+                                              "Relative": false,
+                                              "Children": []
+                                            }
+                                          }
+                                        ]
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            "MaxNodeDepth": 64,
+            "MaxProgramSteps": 1024
+          }
+        }
+      ]
     },
     {
       "Id": {
@@ -205393,6 +207202,620 @@
       "RetainInHandOnTurnEnd": false,
       "TurnEndHandDestinationZone": "DiscardPile",
       "PlayedCardDestinationZone": "DiscardPile"
+    },
+    {
+      "Id": "clause_extension",
+      "PackageId": "scenario",
+      "NameKey": "Extension Clause",
+      "DescriptionKey": "Sign: gain 1 Energy. Liability: 1 Fatigue when the record is read.\nRefuse: the Petition gains 8 Block.",
+      "Costs": [],
+      "Tags": [
+        {
+          "value": "clause"
+        },
+        {
+          "value": "form"
+        }
+      ],
+      "Program": {
+        "Id": {
+          "Value": "(unnamed)"
+        },
+        "Root": {
+          "kind": "node.sequence",
+          "value": {
+            "Children": [
+              {
+                "kind": "node.gainResource",
+                "value": {
+                  "TargetSelector": {
+                    "kind": "sel.source",
+                    "value": {
+                      "Cardinality": "ZeroOrOne",
+                      "RequiredContextCapabilities": "Source"
+                    }
+                  },
+                  "ResourceId": {
+                    "value": "standard.energy"
+                  },
+                  "Amount": {
+                    "kind": "const",
+                    "value": {
+                      "Value": 1
+                    }
+                  },
+                  "DefaultMax": null,
+                  "ResultKey": null,
+                  "Children": []
+                }
+              },
+              {
+                "kind": "node.forEachTarget",
+                "value": {
+                  "CollectionSelector": {
+                    "kind": "sel.enemiesWithStatus",
+                    "value": {
+                      "StatusDefinitionId": {
+                        "value": "the_petition"
+                      }
+                    }
+                  },
+                  "Body": {
+                    "kind": "node.sequence",
+                    "value": {
+                      "Children": [
+                        {
+                          "kind": "node.setCombatantCounter",
+                          "value": {
+                            "TargetSelector": {
+                              "kind": "sel.iterationTarget",
+                              "value": {
+                                "Cardinality": "ZeroOrOne"
+                              }
+                            },
+                            "CounterId": {
+                              "value": "signatures"
+                            },
+                            "Amount": {
+                              "kind": "const",
+                              "value": {
+                                "Value": 1
+                              }
+                            },
+                            "Relative": true,
+                            "Children": []
+                          }
+                        },
+                        {
+                          "kind": "node.setCombatantCounter",
+                          "value": {
+                            "TargetSelector": {
+                              "kind": "sel.iterationTarget",
+                              "value": {
+                                "Cardinality": "ZeroOrOne"
+                              }
+                            },
+                            "CounterId": {
+                              "value": "liability_extension"
+                            },
+                            "Amount": {
+                              "kind": "const",
+                              "value": {
+                                "Value": 1
+                              }
+                            },
+                            "Relative": false,
+                            "Children": []
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "MaxIterations": 32,
+                  "Children": [
+                    {
+                      "kind": "node.sequence",
+                      "value": {
+                        "Children": [
+                          {
+                            "kind": "node.setCombatantCounter",
+                            "value": {
+                              "TargetSelector": {
+                                "kind": "sel.iterationTarget",
+                                "value": {
+                                  "Cardinality": "ZeroOrOne"
+                                }
+                              },
+                              "CounterId": {
+                                "value": "signatures"
+                              },
+                              "Amount": {
+                                "kind": "const",
+                                "value": {
+                                  "Value": 1
+                                }
+                              },
+                              "Relative": true,
+                              "Children": []
+                            }
+                          },
+                          {
+                            "kind": "node.setCombatantCounter",
+                            "value": {
+                              "TargetSelector": {
+                                "kind": "sel.iterationTarget",
+                                "value": {
+                                  "Cardinality": "ZeroOrOne"
+                                }
+                              },
+                              "CounterId": {
+                                "value": "liability_extension"
+                              },
+                              "Amount": {
+                                "kind": "const",
+                                "value": {
+                                  "Value": 1
+                                }
+                              },
+                              "Relative": false,
+                              "Children": []
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "MaxNodeDepth": 64,
+        "MaxProgramSteps": 1024
+      },
+      "LifecyclePrograms": {
+        "TurnEndInHand": {
+          "Id": {
+            "Value": "(unnamed)"
+          },
+          "Root": {
+            "kind": "node.gainBlock",
+            "value": {
+              "TargetSelector": {
+                "kind": "sel.enemiesWithStatus",
+                "value": {
+                  "StatusDefinitionId": {
+                    "value": "the_petition"
+                  }
+                }
+              },
+              "Amount": {
+                "kind": "const",
+                "value": {
+                  "Value": 8
+                }
+              },
+              "ResultKey": null,
+              "Children": []
+            }
+          },
+          "MaxNodeDepth": 64,
+          "MaxProgramSteps": 1024
+        }
+      },
+      "RetainInHandOnTurnEnd": false,
+      "TurnEndHandDestinationZone": "ExhaustPile",
+      "PlayedCardDestinationZone": "ExhaustPile"
+    },
+    {
+      "Id": "clause_protective",
+      "PackageId": "scenario",
+      "NameKey": "Protective Clause",
+      "DescriptionKey": "Sign: gain 10 Block. Liability: 2 Paperwork when the record is read.\nRefuse: the Petition gains 1 Strength.",
+      "Costs": [],
+      "Tags": [
+        {
+          "value": "clause"
+        },
+        {
+          "value": "form"
+        }
+      ],
+      "Program": {
+        "Id": {
+          "Value": "(unnamed)"
+        },
+        "Root": {
+          "kind": "node.sequence",
+          "value": {
+            "Children": [
+              {
+                "kind": "node.gainBlock",
+                "value": {
+                  "TargetSelector": {
+                    "kind": "sel.source",
+                    "value": {
+                      "Cardinality": "ZeroOrOne",
+                      "RequiredContextCapabilities": "Source"
+                    }
+                  },
+                  "Amount": {
+                    "kind": "const",
+                    "value": {
+                      "Value": 10
+                    }
+                  },
+                  "ResultKey": null,
+                  "Children": []
+                }
+              },
+              {
+                "kind": "node.forEachTarget",
+                "value": {
+                  "CollectionSelector": {
+                    "kind": "sel.enemiesWithStatus",
+                    "value": {
+                      "StatusDefinitionId": {
+                        "value": "the_petition"
+                      }
+                    }
+                  },
+                  "Body": {
+                    "kind": "node.sequence",
+                    "value": {
+                      "Children": [
+                        {
+                          "kind": "node.setCombatantCounter",
+                          "value": {
+                            "TargetSelector": {
+                              "kind": "sel.iterationTarget",
+                              "value": {
+                                "Cardinality": "ZeroOrOne"
+                              }
+                            },
+                            "CounterId": {
+                              "value": "signatures"
+                            },
+                            "Amount": {
+                              "kind": "const",
+                              "value": {
+                                "Value": 1
+                              }
+                            },
+                            "Relative": true,
+                            "Children": []
+                          }
+                        },
+                        {
+                          "kind": "node.setCombatantCounter",
+                          "value": {
+                            "TargetSelector": {
+                              "kind": "sel.iterationTarget",
+                              "value": {
+                                "Cardinality": "ZeroOrOne"
+                              }
+                            },
+                            "CounterId": {
+                              "value": "liability_protective"
+                            },
+                            "Amount": {
+                              "kind": "const",
+                              "value": {
+                                "Value": 1
+                              }
+                            },
+                            "Relative": false,
+                            "Children": []
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "MaxIterations": 32,
+                  "Children": [
+                    {
+                      "kind": "node.sequence",
+                      "value": {
+                        "Children": [
+                          {
+                            "kind": "node.setCombatantCounter",
+                            "value": {
+                              "TargetSelector": {
+                                "kind": "sel.iterationTarget",
+                                "value": {
+                                  "Cardinality": "ZeroOrOne"
+                                }
+                              },
+                              "CounterId": {
+                                "value": "signatures"
+                              },
+                              "Amount": {
+                                "kind": "const",
+                                "value": {
+                                  "Value": 1
+                                }
+                              },
+                              "Relative": true,
+                              "Children": []
+                            }
+                          },
+                          {
+                            "kind": "node.setCombatantCounter",
+                            "value": {
+                              "TargetSelector": {
+                                "kind": "sel.iterationTarget",
+                                "value": {
+                                  "Cardinality": "ZeroOrOne"
+                                }
+                              },
+                              "CounterId": {
+                                "value": "liability_protective"
+                              },
+                              "Amount": {
+                                "kind": "const",
+                                "value": {
+                                  "Value": 1
+                                }
+                              },
+                              "Relative": false,
+                              "Children": []
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "MaxNodeDepth": 64,
+        "MaxProgramSteps": 1024
+      },
+      "LifecyclePrograms": {
+        "TurnEndInHand": {
+          "Id": {
+            "Value": "(unnamed)"
+          },
+          "Root": {
+            "kind": "node.applyStatus",
+            "value": {
+              "TargetSelector": {
+                "kind": "sel.enemiesWithStatus",
+                "value": {
+                  "StatusDefinitionId": {
+                    "value": "the_petition"
+                  }
+                }
+              },
+              "StatusDefinitionId": {
+                "value": "strength"
+              },
+              "Stacks": {
+                "kind": "const",
+                "value": {
+                  "Value": 1
+                }
+              },
+              "DurationTurns": 0,
+              "Charges": 0,
+              "ResultKey": null,
+              "Children": []
+            }
+          },
+          "MaxNodeDepth": 64,
+          "MaxProgramSteps": 1024
+        }
+      },
+      "RetainInHandOnTurnEnd": false,
+      "TurnEndHandDestinationZone": "ExhaustPile",
+      "PlayedCardDestinationZone": "ExhaustPile"
+    },
+    {
+      "Id": "clause_evidentiary",
+      "PackageId": "scenario",
+      "NameKey": "Evidentiary Clause",
+      "DescriptionKey": "Sign: draw 2 cards. Liability: 1 Doubt and 1 Paperwork when the record is read.\nRefuse: the Petition gains 1 Strength.",
+      "Costs": [],
+      "Tags": [
+        {
+          "value": "clause"
+        },
+        {
+          "value": "form"
+        }
+      ],
+      "Program": {
+        "Id": {
+          "Value": "(unnamed)"
+        },
+        "Root": {
+          "kind": "node.sequence",
+          "value": {
+            "Children": [
+              {
+                "kind": "node.drawCards",
+                "value": {
+                  "TargetSelector": {
+                    "kind": "sel.source",
+                    "value": {
+                      "Cardinality": "ZeroOrOne",
+                      "RequiredContextCapabilities": "Source"
+                    }
+                  },
+                  "Count": {
+                    "kind": "const",
+                    "value": {
+                      "Value": 2
+                    }
+                  },
+                  "ResultKey": null,
+                  "Children": []
+                }
+              },
+              {
+                "kind": "node.forEachTarget",
+                "value": {
+                  "CollectionSelector": {
+                    "kind": "sel.enemiesWithStatus",
+                    "value": {
+                      "StatusDefinitionId": {
+                        "value": "the_petition"
+                      }
+                    }
+                  },
+                  "Body": {
+                    "kind": "node.sequence",
+                    "value": {
+                      "Children": [
+                        {
+                          "kind": "node.setCombatantCounter",
+                          "value": {
+                            "TargetSelector": {
+                              "kind": "sel.iterationTarget",
+                              "value": {
+                                "Cardinality": "ZeroOrOne"
+                              }
+                            },
+                            "CounterId": {
+                              "value": "signatures"
+                            },
+                            "Amount": {
+                              "kind": "const",
+                              "value": {
+                                "Value": 1
+                              }
+                            },
+                            "Relative": true,
+                            "Children": []
+                          }
+                        },
+                        {
+                          "kind": "node.setCombatantCounter",
+                          "value": {
+                            "TargetSelector": {
+                              "kind": "sel.iterationTarget",
+                              "value": {
+                                "Cardinality": "ZeroOrOne"
+                              }
+                            },
+                            "CounterId": {
+                              "value": "liability_evidentiary"
+                            },
+                            "Amount": {
+                              "kind": "const",
+                              "value": {
+                                "Value": 1
+                              }
+                            },
+                            "Relative": false,
+                            "Children": []
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "MaxIterations": 32,
+                  "Children": [
+                    {
+                      "kind": "node.sequence",
+                      "value": {
+                        "Children": [
+                          {
+                            "kind": "node.setCombatantCounter",
+                            "value": {
+                              "TargetSelector": {
+                                "kind": "sel.iterationTarget",
+                                "value": {
+                                  "Cardinality": "ZeroOrOne"
+                                }
+                              },
+                              "CounterId": {
+                                "value": "signatures"
+                              },
+                              "Amount": {
+                                "kind": "const",
+                                "value": {
+                                  "Value": 1
+                                }
+                              },
+                              "Relative": true,
+                              "Children": []
+                            }
+                          },
+                          {
+                            "kind": "node.setCombatantCounter",
+                            "value": {
+                              "TargetSelector": {
+                                "kind": "sel.iterationTarget",
+                                "value": {
+                                  "Cardinality": "ZeroOrOne"
+                                }
+                              },
+                              "CounterId": {
+                                "value": "liability_evidentiary"
+                              },
+                              "Amount": {
+                                "kind": "const",
+                                "value": {
+                                  "Value": 1
+                                }
+                              },
+                              "Relative": false,
+                              "Children": []
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "MaxNodeDepth": 64,
+        "MaxProgramSteps": 1024
+      },
+      "LifecyclePrograms": {
+        "TurnEndInHand": {
+          "Id": {
+            "Value": "(unnamed)"
+          },
+          "Root": {
+            "kind": "node.applyStatus",
+            "value": {
+              "TargetSelector": {
+                "kind": "sel.enemiesWithStatus",
+                "value": {
+                  "StatusDefinitionId": {
+                    "value": "the_petition"
+                  }
+                }
+              },
+              "StatusDefinitionId": {
+                "value": "strength"
+              },
+              "Stacks": {
+                "kind": "const",
+                "value": {
+                  "Value": 1
+                }
+              },
+              "DurationTurns": 0,
+              "Charges": 0,
+              "ResultKey": null,
+              "Children": []
+            }
+          },
+          "MaxNodeDepth": 64,
+          "MaxProgramSteps": 1024
+        }
+      },
+      "RetainInHandOnTurnEnd": false,
+      "TurnEndHandDestinationZone": "ExhaustPile",
+      "PlayedCardDestinationZone": "ExhaustPile"
     }
   ],
   "EnemyActions": [
@@ -224475,13 +226898,13 @@
       }
     },
     {
-      "Id": "living_petition_chorus.many_signatures_speak",
+      "Id": "living_petition_chorus.many_voices_speak",
       "PackageId": "scenario",
-      "NameKey": "Many Signatures Speak",
+      "NameKey": "Many Voices Speak",
       "DescriptionKey": null,
       "Intent": {
         "Kind": "Special",
-        "Label": "Many Signatures Speak \u00B7 8 dmg, Doubt \u002B1"
+        "Label": "Many Voices Speak \u00B7 9 dmg, Doubt \u002B1"
       },
       "Program": {
         "Id": {
@@ -224504,7 +226927,7 @@
                   "Amount": {
                     "kind": "const",
                     "value": {
-                      "Value": 8
+                      "Value": 9
                     }
                   },
                   "ResultKey": null,
@@ -224546,55 +226969,13 @@
       }
     },
     {
-      "Id": "living_petition_chorus.voices_grow_louder",
-      "PackageId": "scenario",
-      "NameKey": "Voices Grow Louder",
-      "DescriptionKey": null,
-      "Intent": {
-        "Kind": "Buff",
-        "Label": "Voices Grow Louder \u00B7 Strength \u002B1"
-      },
-      "Program": {
-        "Id": {
-          "Value": "(unnamed)"
-        },
-        "Root": {
-          "kind": "node.applyStatus",
-          "value": {
-            "TargetSelector": {
-              "kind": "sel.source",
-              "value": {
-                "Cardinality": "ZeroOrOne",
-                "RequiredContextCapabilities": "Source"
-              }
-            },
-            "StatusDefinitionId": {
-              "value": "strength"
-            },
-            "Stacks": {
-              "kind": "const",
-              "value": {
-                "Value": 1
-              }
-            },
-            "DurationTurns": 0,
-            "Charges": 0,
-            "ResultKey": null,
-            "Children": []
-          }
-        },
-        "MaxNodeDepth": 64,
-        "MaxProgramSteps": 1024
-      }
-    },
-    {
       "Id": "living_petition_chorus.amended_aloud",
       "PackageId": "scenario",
       "NameKey": "Amended Aloud",
       "DescriptionKey": null,
       "Intent": {
         "Kind": "Special",
-        "Label": "Amended Aloud \u00B7 Paperwork \u002B1, 8 block"
+        "Label": "Amended Aloud \u00B7 Paperwork \u002B1, 10 block"
       },
       "Program": {
         "Id": {
@@ -224642,7 +227023,7 @@
                   "Amount": {
                     "kind": "const",
                     "value": {
-                      "Value": 8
+                      "Value": 10
                     }
                   },
                   "ResultKey": null,
@@ -224663,7 +227044,7 @@
       "DescriptionKey": null,
       "Intent": {
         "Kind": "Attack",
-        "Label": "Chorus Cut \u00B7 10 dmg"
+        "Label": "Chorus Cut \u00B7 12 dmg"
       },
       "Program": {
         "Id": {
@@ -224682,7 +227063,7 @@
             "Amount": {
               "kind": "const",
               "value": {
-                "Value": 10
+                "Value": 12
               }
             },
             "ResultKey": null,
@@ -224696,13 +227077,13 @@
       }
     },
     {
-      "Id": "living_petition_chorus.repeat_the_prayer",
+      "Id": "living_petition_chorus.voices_gather",
       "PackageId": "scenario",
-      "NameKey": "Repeat the Prayer",
+      "NameKey": "Voices Gather",
       "DescriptionKey": null,
       "Intent": {
-        "Kind": "Special",
-        "Label": "Repeat the Prayer \u00B7 Strength \u002B1, Doubt \u002B1"
+        "Kind": "Buff",
+        "Label": "Voices Gather \u00B7 Strength \u002B1, 7 block"
       },
       "Program": {
         "Id": {
@@ -224738,7 +227119,51 @@
                 }
               },
               {
-                "kind": "node.applyStatus",
+                "kind": "node.gainBlock",
+                "value": {
+                  "TargetSelector": {
+                    "kind": "sel.source",
+                    "value": {
+                      "Cardinality": "ZeroOrOne",
+                      "RequiredContextCapabilities": "Source"
+                    }
+                  },
+                  "Amount": {
+                    "kind": "const",
+                    "value": {
+                      "Value": 7
+                    }
+                  },
+                  "ResultKey": null,
+                  "Children": []
+                }
+              }
+            ]
+          }
+        },
+        "MaxNodeDepth": 64,
+        "MaxProgramSteps": 1024
+      }
+    },
+    {
+      "Id": "living_petition_chorus.read_into_the_record",
+      "PackageId": "scenario",
+      "NameKey": "Read Into the Record",
+      "DescriptionKey": null,
+      "Intent": {
+        "Kind": "Special",
+        "Label": "Read Into the Record \u00B7 8 dmg"
+      },
+      "Program": {
+        "Id": {
+          "Value": "(unnamed)"
+        },
+        "Root": {
+          "kind": "node.sequence",
+          "value": {
+            "Children": [
+              {
+                "kind": "node.dealDamage",
                 "value": {
                   "TargetSelector": {
                     "kind": "sel.eventTarget",
@@ -224747,18 +227172,477 @@
                       "RequiredContextCapabilities": "EventTarget"
                     }
                   },
-                  "StatusDefinitionId": {
-                    "value": "doubt"
-                  },
-                  "Stacks": {
+                  "Amount": {
                     "kind": "const",
                     "value": {
-                      "Value": 1
+                      "Value": 8
                     }
                   },
-                  "DurationTurns": 0,
-                  "Charges": 0,
                   "ResultKey": null,
+                  "IgnoresBlock": false,
+                  "Element": null,
+                  "Children": []
+                }
+              },
+              {
+                "kind": "node.conditional",
+                "value": {
+                  "Condition": {
+                    "kind": "compare",
+                    "value": {
+                      "Left": {
+                        "kind": "combatantCounter",
+                        "value": {
+                          "Selector": {
+                            "kind": "sel.source",
+                            "value": {
+                              "Cardinality": "ZeroOrOne",
+                              "RequiredContextCapabilities": "Source"
+                            }
+                          },
+                          "CounterId": {
+                            "value": "liability_extension"
+                          }
+                        }
+                      },
+                      "Op": "Greater",
+                      "Right": {
+                        "kind": "const",
+                        "value": {
+                          "Value": 0
+                        }
+                      }
+                    }
+                  },
+                  "Then": {
+                    "kind": "node.sequence",
+                    "value": {
+                      "Children": [
+                        {
+                          "kind": "node.applyStatus",
+                          "value": {
+                            "TargetSelector": {
+                              "kind": "sel.eventTarget",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "EventTarget"
+                              }
+                            },
+                            "StatusDefinitionId": {
+                              "value": "fatigue"
+                            },
+                            "Stacks": {
+                              "kind": "const",
+                              "value": {
+                                "Value": 1
+                              }
+                            },
+                            "DurationTurns": 0,
+                            "Charges": 0,
+                            "ResultKey": null,
+                            "Children": []
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "Else": null,
+                  "Children": [
+                    {
+                      "kind": "node.sequence",
+                      "value": {
+                        "Children": [
+                          {
+                            "kind": "node.applyStatus",
+                            "value": {
+                              "TargetSelector": {
+                                "kind": "sel.eventTarget",
+                                "value": {
+                                  "Cardinality": "ZeroOrOne",
+                                  "RequiredContextCapabilities": "EventTarget"
+                                }
+                              },
+                              "StatusDefinitionId": {
+                                "value": "fatigue"
+                              },
+                              "Stacks": {
+                                "kind": "const",
+                                "value": {
+                                  "Value": 1
+                                }
+                              },
+                              "DurationTurns": 0,
+                              "Charges": 0,
+                              "ResultKey": null,
+                              "Children": []
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "node.conditional",
+                "value": {
+                  "Condition": {
+                    "kind": "compare",
+                    "value": {
+                      "Left": {
+                        "kind": "combatantCounter",
+                        "value": {
+                          "Selector": {
+                            "kind": "sel.source",
+                            "value": {
+                              "Cardinality": "ZeroOrOne",
+                              "RequiredContextCapabilities": "Source"
+                            }
+                          },
+                          "CounterId": {
+                            "value": "liability_protective"
+                          }
+                        }
+                      },
+                      "Op": "Greater",
+                      "Right": {
+                        "kind": "const",
+                        "value": {
+                          "Value": 0
+                        }
+                      }
+                    }
+                  },
+                  "Then": {
+                    "kind": "node.sequence",
+                    "value": {
+                      "Children": [
+                        {
+                          "kind": "node.applyStatus",
+                          "value": {
+                            "TargetSelector": {
+                              "kind": "sel.eventTarget",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "EventTarget"
+                              }
+                            },
+                            "StatusDefinitionId": {
+                              "value": "paperwork"
+                            },
+                            "Stacks": {
+                              "kind": "const",
+                              "value": {
+                                "Value": 2
+                              }
+                            },
+                            "DurationTurns": 0,
+                            "Charges": 0,
+                            "ResultKey": null,
+                            "Children": []
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "Else": null,
+                  "Children": [
+                    {
+                      "kind": "node.sequence",
+                      "value": {
+                        "Children": [
+                          {
+                            "kind": "node.applyStatus",
+                            "value": {
+                              "TargetSelector": {
+                                "kind": "sel.eventTarget",
+                                "value": {
+                                  "Cardinality": "ZeroOrOne",
+                                  "RequiredContextCapabilities": "EventTarget"
+                                }
+                              },
+                              "StatusDefinitionId": {
+                                "value": "paperwork"
+                              },
+                              "Stacks": {
+                                "kind": "const",
+                                "value": {
+                                  "Value": 2
+                                }
+                              },
+                              "DurationTurns": 0,
+                              "Charges": 0,
+                              "ResultKey": null,
+                              "Children": []
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "node.conditional",
+                "value": {
+                  "Condition": {
+                    "kind": "compare",
+                    "value": {
+                      "Left": {
+                        "kind": "combatantCounter",
+                        "value": {
+                          "Selector": {
+                            "kind": "sel.source",
+                            "value": {
+                              "Cardinality": "ZeroOrOne",
+                              "RequiredContextCapabilities": "Source"
+                            }
+                          },
+                          "CounterId": {
+                            "value": "liability_evidentiary"
+                          }
+                        }
+                      },
+                      "Op": "Greater",
+                      "Right": {
+                        "kind": "const",
+                        "value": {
+                          "Value": 0
+                        }
+                      }
+                    }
+                  },
+                  "Then": {
+                    "kind": "node.sequence",
+                    "value": {
+                      "Children": [
+                        {
+                          "kind": "node.applyStatus",
+                          "value": {
+                            "TargetSelector": {
+                              "kind": "sel.eventTarget",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "EventTarget"
+                              }
+                            },
+                            "StatusDefinitionId": {
+                              "value": "doubt"
+                            },
+                            "Stacks": {
+                              "kind": "const",
+                              "value": {
+                                "Value": 1
+                              }
+                            },
+                            "DurationTurns": 0,
+                            "Charges": 0,
+                            "ResultKey": null,
+                            "Children": []
+                          }
+                        },
+                        {
+                          "kind": "node.applyStatus",
+                          "value": {
+                            "TargetSelector": {
+                              "kind": "sel.eventTarget",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "EventTarget"
+                              }
+                            },
+                            "StatusDefinitionId": {
+                              "value": "paperwork"
+                            },
+                            "Stacks": {
+                              "kind": "const",
+                              "value": {
+                                "Value": 1
+                              }
+                            },
+                            "DurationTurns": 0,
+                            "Charges": 0,
+                            "ResultKey": null,
+                            "Children": []
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "Else": null,
+                  "Children": [
+                    {
+                      "kind": "node.sequence",
+                      "value": {
+                        "Children": [
+                          {
+                            "kind": "node.applyStatus",
+                            "value": {
+                              "TargetSelector": {
+                                "kind": "sel.eventTarget",
+                                "value": {
+                                  "Cardinality": "ZeroOrOne",
+                                  "RequiredContextCapabilities": "EventTarget"
+                                }
+                              },
+                              "StatusDefinitionId": {
+                                "value": "doubt"
+                              },
+                              "Stacks": {
+                                "kind": "const",
+                                "value": {
+                                  "Value": 1
+                                }
+                              },
+                              "DurationTurns": 0,
+                              "Charges": 0,
+                              "ResultKey": null,
+                              "Children": []
+                            }
+                          },
+                          {
+                            "kind": "node.applyStatus",
+                            "value": {
+                              "TargetSelector": {
+                                "kind": "sel.eventTarget",
+                                "value": {
+                                  "Cardinality": "ZeroOrOne",
+                                  "RequiredContextCapabilities": "EventTarget"
+                                }
+                              },
+                              "StatusDefinitionId": {
+                                "value": "paperwork"
+                              },
+                              "Stacks": {
+                                "kind": "const",
+                                "value": {
+                                  "Value": 1
+                                }
+                              },
+                              "DurationTurns": 0,
+                              "Charges": 0,
+                              "ResultKey": null,
+                              "Children": []
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "node.setCombatantCounter",
+                "value": {
+                  "TargetSelector": {
+                    "kind": "sel.source",
+                    "value": {
+                      "Cardinality": "ZeroOrOne",
+                      "RequiredContextCapabilities": "Source"
+                    }
+                  },
+                  "CounterId": {
+                    "value": "liability_extension"
+                  },
+                  "Amount": {
+                    "kind": "const",
+                    "value": {
+                      "Value": 0
+                    }
+                  },
+                  "Relative": false,
+                  "Children": []
+                }
+              },
+              {
+                "kind": "node.setCombatantCounter",
+                "value": {
+                  "TargetSelector": {
+                    "kind": "sel.source",
+                    "value": {
+                      "Cardinality": "ZeroOrOne",
+                      "RequiredContextCapabilities": "Source"
+                    }
+                  },
+                  "CounterId": {
+                    "value": "liability_protective"
+                  },
+                  "Amount": {
+                    "kind": "const",
+                    "value": {
+                      "Value": 0
+                    }
+                  },
+                  "Relative": false,
+                  "Children": []
+                }
+              },
+              {
+                "kind": "node.setCombatantCounter",
+                "value": {
+                  "TargetSelector": {
+                    "kind": "sel.source",
+                    "value": {
+                      "Cardinality": "ZeroOrOne",
+                      "RequiredContextCapabilities": "Source"
+                    }
+                  },
+                  "CounterId": {
+                    "value": "liability_evidentiary"
+                  },
+                  "Amount": {
+                    "kind": "const",
+                    "value": {
+                      "Value": 0
+                    }
+                  },
+                  "Relative": false,
+                  "Children": []
+                }
+              },
+              {
+                "kind": "node.setCombatantCounter",
+                "value": {
+                  "TargetSelector": {
+                    "kind": "sel.source",
+                    "value": {
+                      "Cardinality": "ZeroOrOne",
+                      "RequiredContextCapabilities": "Source"
+                    }
+                  },
+                  "CounterId": {
+                    "value": "signatures"
+                  },
+                  "Amount": {
+                    "kind": "const",
+                    "value": {
+                      "Value": 0
+                    }
+                  },
+                  "Relative": false,
+                  "Children": []
+                }
+              },
+              {
+                "kind": "node.setCombatantCounter",
+                "value": {
+                  "TargetSelector": {
+                    "kind": "sel.source",
+                    "value": {
+                      "Cardinality": "ZeroOrOne",
+                      "RequiredContextCapabilities": "Source"
+                    }
+                  },
+                  "CounterId": {
+                    "value": "clause_index"
+                  },
+                  "Amount": {
+                    "kind": "const",
+                    "value": {
+                      "Value": 0
+                    }
+                  },
+                  "Relative": false,
                   "Children": []
                 }
               }
@@ -236151,6 +239035,22 @@
       "Triggers": [],
       "DeathPrevention": null,
       "DebuffBlock": null
+    },
+    {
+      "Id": "the_petition",
+      "PackageId": "scenario",
+      "NameKey": "The Petition",
+      "DescriptionKey": null,
+      "Polarity": "Neutral",
+      "UsesStacks": false,
+      "UsesDuration": false,
+      "UsesCharges": false,
+      "StackingBehavior": "MergeWithExistingInstance",
+      "Tags": [],
+      "PassiveModifiers": [],
+      "Triggers": [],
+      "DeathPrevention": null,
+      "DebuffBlock": null
     }
   ],
   "Relics": [
@@ -243057,12 +245957,9 @@
         "Tags": [
           "city",
           "appeal",
-          "escalation",
-          "strength_pressure",
-          "stage_appeal",
-          "elite_appeal",
+          "elite",
           "petition",
-          "chorus"
+          "stage_appeal"
         ],
         "Extra": {}
       },

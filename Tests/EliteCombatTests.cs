@@ -174,6 +174,82 @@ public class EliteCombatTests
         Assert.Equal(0, Enemy(play, mothId).GetCounter(PassiveStatuses.LostTimeCounter));
     }
 
+    // Living Petition Chorus: each player turn opens with a clause on the table — a card in hand. Playing it
+    // SIGNS (benefit now, liability later); leaving it there REFUSES, and the Petition takes its consolation.
+    [Fact]
+    public void The_petition_lays_a_clause_in_hand_each_turn_and_signing_records_it()
+    {
+        var probe = FightProbe.Roster("petition", ("living_petition_chorus", "amended_aloud", 90));
+        var (play, session, petitionId) = FightProbe.Start(probe);
+
+        var clause = play.CombatDriver!.Current!.Hand
+            .FirstOrDefault(c => c.DefinitionId.value == ClauseCards.All[0].CardId);
+        Assert.NotNull(clause); // the Extension Clause opens the cycle
+
+        play.CombatDriver.PlayCard(clause!.Id, petitionId); // SIGN
+        Assert.Null(session.Error);
+        Assert.Equal(1, Enemy(play, petitionId).GetCounter(PassiveStatuses.SignaturesCounter));
+        Assert.Equal(1, Enemy(play, petitionId).GetCounter(ClauseCards.All[0].Liability));
+        Assert.DoesNotContain(play.CombatDriver.Current!.Hand, c => c.DefinitionId.value == ClauseCards.All[0].CardId);
+
+        play.CombatDriver.EndTurn();
+        Assert.Null(session.Error);
+        // The next turn opens with the NEXT clause, so one reading cycle never repeats a clause.
+        Assert.Contains(play.CombatDriver.Current!.Hand, c => c.DefinitionId.value == ClauseCards.All[1].CardId);
+    }
+
+    [Fact]
+    public void A_refused_clause_pays_the_petition_instead()
+    {
+        var probe = FightProbe.Roster("petition_refused", ("living_petition_chorus", "chorus_cut", 90));
+        var (play, session, petitionId) = FightProbe.Start(probe);
+
+        // Refuse the first clause (its consolation is Block, which the Petition's own turn start would wipe
+        // before we could look) and the second one, whose consolation is a Strength that sticks.
+        play.CombatDriver!.EndTurn();
+        Assert.Null(session.Error);
+        Assert.Contains(play.CombatDriver.Current!.Hand, c => c.DefinitionId.value == ClauseCards.All[1].CardId);
+
+        play.CombatDriver.EndTurn();
+        Assert.Null(session.Error);
+        Assert.Equal(0, Enemy(play, petitionId).GetCounter(PassiveStatuses.SignaturesCounter));
+        Assert.Equal(1, FightProbe.StacksOf(Enemy(play, petitionId), "strength"));
+    }
+
+    // Three signatures and the Petition reads the record: 8 damage plus every liability signed for.
+    [Fact]
+    public void Three_signatures_bring_the_record_reading()
+    {
+        var probe = FightProbe.Roster("petition_read", ("living_petition_chorus", "amended_aloud", 90));
+        var (play, session, petitionId) = FightProbe.Start(probe);
+
+        for (var turn = 0; turn < 3; turn++)
+        {
+            var clause = play.CombatDriver!.Current!.Hand
+                .First(c => ClauseCards.All.Any(x => x.CardId == c.DefinitionId.value));
+            play.CombatDriver.PlayCard(clause.Id, petitionId);
+            Assert.Null(session.Error);
+            if (turn < 2)
+            {
+                play.CombatDriver.EndTurn();
+                Assert.Null(session.Error);
+            }
+        }
+        Assert.Equal(3, Enemy(play, petitionId).GetCounter(PassiveStatuses.SignaturesCounter));
+
+        var before = Hero(play).Health.Current;
+        var filedBefore = FightProbe.StacksOf(Hero(play), "paperwork"); // the Petition has been filing meanwhile
+        play.CombatDriver!.EndTurn(); // READ INTO THE RECORD
+        Assert.Null(session.Error);
+
+        // 8 from the reading, then the three liabilities: 1 Fatigue, 2 Paperwork, 1 Doubt + 1 Paperwork — and
+        // the whole Paperwork pile ticks at the hero's next turn start.
+        Assert.Equal(filedBefore + 3, FightProbe.StacksOf(Hero(play), "paperwork"));
+        Assert.Equal(before - 8 - (filedBefore + 3), Hero(play).Health.Current);
+        Assert.Equal(1, FightProbe.StacksOf(Hero(play), "doubt"));
+        Assert.Equal(0, Enemy(play, petitionId).GetCounter(PassiveStatuses.SignaturesCounter)); // a new cycle
+    }
+
     private static void Cut(RunPlayback play, InteractiveRunSession session, CombatantId enemyId)
     {
         var card = play.CombatDriver!.Current!.Hand.First(c => c.DefinitionId.value == "paper_cut");
@@ -183,6 +259,11 @@ public class EliteCombatTests
 
     private static CombatantState Enemy(RunPlayback play, CombatantId enemyId) =>
         play.CombatDriver!.Current!.State.GetCombatant(enemyId);
+
+    private static int BlockOf(RunPlayback play, CombatantId enemyId) =>
+        Enemy(play, enemyId).DefensivePools.TryGetValue(StandardCombatIds.BlockDefensivePool, out var pool)
+            ? pool.Current
+            : 0;
 
     private static CombatantState Hero(RunPlayback play) =>
         play.CombatDriver!.Current!.State.GetCombatant(play.CombatDriver.Current!.HeroId);

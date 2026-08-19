@@ -699,7 +699,10 @@
       "strength_pressure",
       "elite_appeal"
     ],
-    "role": "elite"
+    "role": "elite",
+    "enemy_health": [
+      90
+    ]
   },
   {
     "id": "city_elite_appeal_03",
