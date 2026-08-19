@@ -1,5 +1,6 @@
 using System.Text.Json;
 using RogueDeck.Core.Combat;
+using RogueDeck.Sandbox.Composition;
 using RogueDeck.Scenario.Authoring;
 
 namespace BnbContent.Converter;
@@ -76,7 +77,77 @@ public static class PassiveStatuses
         OfficeHours(),
         Marker(LostTimeLedgerId, "Lost Time"),
         Marker(PetitionId, "The Petition"),
+        Marker(PhantomId, "Remanded Case"),
+        RemandingWrit(),
+        Remandable(),
+        Marker(SpentWritId, "Spent Writ"),
     ];
+
+    // The Remanded Case: two bodies and two legitimate kill orders. The Phantom carries the return rule, the
+    // Writ the escalation; which one dies first decides how the fight ends.
+    public const string PhantomId = "remanded_case";
+    public const string RemandableId = "remandable";
+    public const string RemandingWritId = "remanding_writ";
+    public const string SpentWritId = "spent_writ";
+    public static readonly CounterId FinalityCounter = new("finality");
+
+    // Route A — the Phantom would be downed while a living, unspent Writ still stands: the case is REMANDED
+    // instead. Authored as death prevention (the engine's one-shot pre-down interceptor) rather than a revive:
+    // reviving is impossible by construction — healing and status application refuse a downed target, and the
+    // guard rejects the program outright. The prevention consumes this status, so it happens once; the Writ's
+    // own death removes it too, which is what makes route B mutually exclusive.
+    private static StatusData Remandable() => new()
+    {
+        Id = RemandableId,
+        NameKey = "Remandable",
+        Polarity = StatusPolarity.Buff,
+        StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
+        UsesStacks = false,
+        Tags = [],
+        PassiveModifiers = [],
+        Triggers = [],
+        DeathPrevention = new StatusDeathPreventionData(24,
+        [
+            // The Writ pays FIRST: its 12 is a flat HP loss, and the interceptor's damage is credited to the
+            // Phantom — so granting the Strength before it would let the case buff its own recoil.
+            new InterceptorEffectData(nameof(EffectKind.DealDamage), nameof(EffectTarget.AllAllies), 12, "", 0,
+                StatusPolarity.Debuff),
+            // Then the case comes back angrier, and the Writ can never remand again.
+            new InterceptorEffectData(nameof(EffectKind.ApplyStatus), nameof(EffectTarget.Self), 2, "strength", 0,
+                StatusPolarity.Buff),
+            new InterceptorEffectData(nameof(EffectKind.ApplyStatus), nameof(EffectTarget.AllAllies), 1,
+                SpentWritId, 0, StatusPolarity.Neutral),
+            new InterceptorEffectData(nameof(EffectKind.RemoveStatus), nameof(EffectTarget.AllAllies), 0,
+                RemandingWritId, 0, StatusPolarity.Neutral),
+        ]),
+    };
+
+    // Route B — the Writ dies before it ever caused a remand: the Phantom gains Finality (+2 Strength) and its
+    // next intent becomes Final Judgment. Carried by the Writ, since that is the body being downed; losing the
+    // marker (route A) is what makes a spent Writ silent here.
+    private static StatusData RemandingWrit()
+    {
+        var phantom = CombatantTargetSelectors.AllAlliesOfSourceWithStatus(new StatusDefinitionId(PhantomId));
+        var thatPhantom = CombatantTargetSelectors.IterationTarget;
+
+        var program = new EffectProgram<CombatantDownedTriggeredEffectContext>(
+            new ForEachTargetEffectNode<CombatantDownedTriggeredEffectContext>(phantom,
+                new SequenceEffectNode<CombatantDownedTriggeredEffectContext>(new IEffectNode<CombatantDownedTriggeredEffectContext>[]
+                {
+                    new ApplyStatusNode<CombatantDownedTriggeredEffectContext>(
+                        thatPhantom, new StatusDefinitionId("strength"),
+                        new ConstantExpression<CombatantDownedTriggeredEffectContext>(2)),
+                    new SetCombatantCounterNode<CombatantDownedTriggeredEffectContext>(
+                        thatPhantom, FinalityCounter,
+                        new ConstantExpression<CombatantDownedTriggeredEffectContext>(1), relative: false),
+                    // No Writ, no remand: the case has nowhere left to be sent back to.
+                    new ModifyStatusStacksNode<CombatantDownedTriggeredEffectContext>(
+                        thatPhantom, new StatusDefinitionId(RemandableId),
+                        new ConstantExpression<CombatantDownedTriggeredEffectContext>(-1)),
+                })));
+
+        return Passive(RemandingWritId, "Remanding Writ", "Downed", program);
+    }
 
     // Living Petition Chorus: the marker the clause cards write their signatures and liabilities onto.
     public const string PetitionId = "the_petition";

@@ -42758,13 +42758,10 @@
       "Enemies": [
         {
           "Id": "remanded_case_phantom",
-          "MaxHealth": 58,
+          "MaxHealth": 60,
           "Actions": [
             {
               "value": "remanded_case_phantom.returned_decision"
-            },
-            {
-              "value": "remanded_case_phantom.comes_back_stronger"
             },
             {
               "value": "remanded_case_phantom.old_ruling_strike"
@@ -42776,14 +42773,48 @@
               "value": "remanded_case_phantom.doubt_collects_interest"
             }
           ],
-          "StartingStatuses": null,
+          "StartingStatuses": [
+            {
+              "Status": {
+                "value": "remanded_case"
+              },
+              "Stacks": 1,
+              "DurationTurns": 0,
+              "Charges": 0
+            },
+            {
+              "Status": {
+                "value": "remandable"
+              },
+              "Stacks": 1,
+              "DurationTurns": 0,
+              "Charges": 0
+            }
+          ],
           "DisplayName": "Remanded Case Phantom",
           "Position": null,
-          "IntentRules": null
+          "IntentRules": [
+            {
+              "Condition": {
+                "kind": "intent.selfHasCounter",
+                "value": {
+                  "Counter": {
+                    "value": "finality"
+                  },
+                  "Op": "GreaterOrEqual",
+                  "Value": 1
+                }
+              },
+              "Action": {
+                "value": "remanded_case_phantom.final_judgment"
+              },
+              "Priority": 20
+            }
+          ]
         },
         {
           "Id": "escalation_writ",
-          "MaxHealth": 28,
+          "MaxHealth": 30,
           "Actions": [
             {
               "value": "escalation_writ.writ_rises"
@@ -42792,13 +42823,22 @@
               "value": "escalation_writ.higher_seal"
             },
             {
-              "value": "escalation_writ.pull_the_case_upward"
+              "value": "escalation_writ.paper_edge"
             },
             {
-              "value": "escalation_writ.paper_edge"
+              "value": "escalation_writ.elevate_the_case"
             }
           ],
-          "StartingStatuses": null,
+          "StartingStatuses": [
+            {
+              "Status": {
+                "value": "remanding_writ"
+              },
+              "Stacks": 1,
+              "DurationTurns": 0,
+              "Charges": 0
+            }
+          ],
           "DisplayName": "Escalation Writ",
           "Position": null,
           "IntentRules": null
@@ -227660,7 +227700,7 @@
       "DescriptionKey": null,
       "Intent": {
         "Kind": "Special",
-        "Label": "Returned Decision \u00B7 8 dmg, Paperwork \u002B1"
+        "Label": "Returned Decision \u00B7 9 dmg, Paperwork \u002B1"
       },
       "Program": {
         "Id": {
@@ -227683,7 +227723,7 @@
                   "Amount": {
                     "kind": "const",
                     "value": {
-                      "Value": 8
+                      "Value": 9
                     }
                   },
                   "ResultKey": null,
@@ -227725,55 +227765,13 @@
       }
     },
     {
-      "Id": "remanded_case_phantom.comes_back_stronger",
-      "PackageId": "scenario",
-      "NameKey": "Comes Back Stronger",
-      "DescriptionKey": null,
-      "Intent": {
-        "Kind": "Buff",
-        "Label": "Comes Back Stronger \u00B7 Strength \u002B1"
-      },
-      "Program": {
-        "Id": {
-          "Value": "(unnamed)"
-        },
-        "Root": {
-          "kind": "node.applyStatus",
-          "value": {
-            "TargetSelector": {
-              "kind": "sel.source",
-              "value": {
-                "Cardinality": "ZeroOrOne",
-                "RequiredContextCapabilities": "Source"
-              }
-            },
-            "StatusDefinitionId": {
-              "value": "strength"
-            },
-            "Stacks": {
-              "kind": "const",
-              "value": {
-                "Value": 1
-              }
-            },
-            "DurationTurns": 0,
-            "Charges": 0,
-            "ResultKey": null,
-            "Children": []
-          }
-        },
-        "MaxNodeDepth": 64,
-        "MaxProgramSteps": 1024
-      }
-    },
-    {
       "Id": "remanded_case_phantom.old_ruling_strike",
       "PackageId": "scenario",
       "NameKey": "Old Ruling Strike",
       "DescriptionKey": null,
       "Intent": {
         "Kind": "Attack",
-        "Label": "Old Ruling Strike \u00B7 12 dmg"
+        "Label": "Old Ruling Strike \u00B7 13 dmg"
       },
       "Program": {
         "Id": {
@@ -227792,7 +227790,7 @@
             "Amount": {
               "kind": "const",
               "value": {
-                "Value": 12
+                "Value": 13
               }
             },
             "ResultKey": null,
@@ -227812,7 +227810,7 @@
       "DescriptionKey": null,
       "Intent": {
         "Kind": "Special",
-        "Label": "Uncertain Remand \u00B7 Doubt \u002B1, 6 block"
+        "Label": "Uncertain Remand \u00B7 Doubt \u002B1, 8 block"
       },
       "Program": {
         "Id": {
@@ -227860,7 +227858,7 @@
                   "Amount": {
                     "kind": "const",
                     "value": {
-                      "Value": 6
+                      "Value": 8
                     }
                   },
                   "ResultKey": null,
@@ -227881,7 +227879,7 @@
       "DescriptionKey": null,
       "Intent": {
         "Kind": "Attack",
-        "Label": "Doubt Collects Interest \u00B7 dmg \u002B3 per Doubt"
+        "Label": "Doubt Collects Interest \u00B7 6 dmg \u002B3 per Doubt (max \u002B9)"
       },
       "Program": {
         "Id": {
@@ -227898,27 +227896,49 @@
               }
             },
             "Amount": {
-              "kind": "multiply",
+              "kind": "add",
               "value": {
                 "Left": {
-                  "kind": "combatantStatusStacks",
+                  "kind": "const",
                   "value": {
-                    "Selector": {
-                      "kind": "sel.eventTarget",
-                      "value": {
-                        "Cardinality": "ZeroOrOne",
-                        "RequiredContextCapabilities": "EventTarget"
-                      }
-                    },
-                    "StatusId": {
-                      "value": "doubt"
-                    }
+                    "Value": 6
                   }
                 },
                 "Right": {
-                  "kind": "const",
+                  "kind": "min",
                   "value": {
-                    "Value": 3
+                    "Left": {
+                      "kind": "multiply",
+                      "value": {
+                        "Left": {
+                          "kind": "combatantStatusStacks",
+                          "value": {
+                            "Selector": {
+                              "kind": "sel.eventTarget",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "EventTarget"
+                              }
+                            },
+                            "StatusId": {
+                              "value": "doubt"
+                            }
+                          }
+                        },
+                        "Right": {
+                          "kind": "const",
+                          "value": {
+                            "Value": 3
+                          }
+                        }
+                      }
+                    },
+                    "Right": {
+                      "kind": "const",
+                      "value": {
+                        "Value": 9
+                      }
+                    }
                   }
                 }
               }
@@ -227934,13 +227954,13 @@
       }
     },
     {
-      "Id": "escalation_writ.writ_rises",
+      "Id": "remanded_case_phantom.final_judgment",
       "PackageId": "scenario",
-      "NameKey": "Writ Rises",
+      "NameKey": "Final Judgment",
       "DescriptionKey": null,
       "Intent": {
         "Kind": "Special",
-        "Label": "Writ Rises \u00B7 5 dmg, Doubt \u002B1"
+        "Label": "Final Judgment \u00B7 17 dmg, Paperwork \u002B1"
       },
       "Program": {
         "Id": {
@@ -227963,7 +227983,101 @@
                   "Amount": {
                     "kind": "const",
                     "value": {
-                      "Value": 5
+                      "Value": 17
+                    }
+                  },
+                  "ResultKey": null,
+                  "IgnoresBlock": false,
+                  "Element": null,
+                  "Children": []
+                }
+              },
+              {
+                "kind": "node.applyStatus",
+                "value": {
+                  "TargetSelector": {
+                    "kind": "sel.eventTarget",
+                    "value": {
+                      "Cardinality": "ZeroOrOne",
+                      "RequiredContextCapabilities": "EventTarget"
+                    }
+                  },
+                  "StatusDefinitionId": {
+                    "value": "paperwork"
+                  },
+                  "Stacks": {
+                    "kind": "const",
+                    "value": {
+                      "Value": 1
+                    }
+                  },
+                  "DurationTurns": 0,
+                  "Charges": 0,
+                  "ResultKey": null,
+                  "Children": []
+                }
+              },
+              {
+                "kind": "node.setCombatantCounter",
+                "value": {
+                  "TargetSelector": {
+                    "kind": "sel.source",
+                    "value": {
+                      "Cardinality": "ZeroOrOne",
+                      "RequiredContextCapabilities": "Source"
+                    }
+                  },
+                  "CounterId": {
+                    "value": "finality"
+                  },
+                  "Amount": {
+                    "kind": "const",
+                    "value": {
+                      "Value": 0
+                    }
+                  },
+                  "Relative": false,
+                  "Children": []
+                }
+              }
+            ]
+          }
+        },
+        "MaxNodeDepth": 64,
+        "MaxProgramSteps": 1024
+      }
+    },
+    {
+      "Id": "escalation_writ.writ_rises",
+      "PackageId": "scenario",
+      "NameKey": "Writ Rises",
+      "DescriptionKey": null,
+      "Intent": {
+        "Kind": "Special",
+        "Label": "Writ Rises \u00B7 6 dmg, Doubt \u002B1"
+      },
+      "Program": {
+        "Id": {
+          "Value": "(unnamed)"
+        },
+        "Root": {
+          "kind": "node.sequence",
+          "value": {
+            "Children": [
+              {
+                "kind": "node.dealDamage",
+                "value": {
+                  "TargetSelector": {
+                    "kind": "sel.eventTarget",
+                    "value": {
+                      "Cardinality": "ZeroOrOne",
+                      "RequiredContextCapabilities": "EventTarget"
+                    }
+                  },
+                  "Amount": {
+                    "kind": "const",
+                    "value": {
+                      "Value": 6
                     }
                   },
                   "ResultKey": null,
@@ -228011,7 +228125,7 @@
       "DescriptionKey": null,
       "Intent": {
         "Kind": "Defend",
-        "Label": "Higher Seal \u00B7 4 block"
+        "Label": "Higher Seal \u00B7 5 block"
       },
       "Program": {
         "Id": {
@@ -228027,51 +228141,9 @@
             "Amount": {
               "kind": "const",
               "value": {
-                "Value": 4
+                "Value": 5
               }
             },
-            "ResultKey": null,
-            "Children": []
-          }
-        },
-        "MaxNodeDepth": 64,
-        "MaxProgramSteps": 1024
-      }
-    },
-    {
-      "Id": "escalation_writ.pull_the_case_upward",
-      "PackageId": "scenario",
-      "NameKey": "Pull the Case Upward",
-      "DescriptionKey": null,
-      "Intent": {
-        "Kind": "Buff",
-        "Label": "Pull the Case Upward \u00B7 Strength \u002B1"
-      },
-      "Program": {
-        "Id": {
-          "Value": "(unnamed)"
-        },
-        "Root": {
-          "kind": "node.applyStatus",
-          "value": {
-            "TargetSelector": {
-              "kind": "sel.source",
-              "value": {
-                "Cardinality": "ZeroOrOne",
-                "RequiredContextCapabilities": "Source"
-              }
-            },
-            "StatusDefinitionId": {
-              "value": "strength"
-            },
-            "Stacks": {
-              "kind": "const",
-              "value": {
-                "Value": 1
-              }
-            },
-            "DurationTurns": 0,
-            "Charges": 0,
             "ResultKey": null,
             "Children": []
           }
@@ -228087,7 +228159,7 @@
       "DescriptionKey": null,
       "Intent": {
         "Kind": "Attack",
-        "Label": "Paper Edge \u00B7 7 dmg"
+        "Label": "Paper Edge \u00B7 8 dmg"
       },
       "Program": {
         "Id": {
@@ -228106,13 +228178,94 @@
             "Amount": {
               "kind": "const",
               "value": {
-                "Value": 7
+                "Value": 8
               }
             },
             "ResultKey": null,
             "IgnoresBlock": false,
             "Element": null,
             "Children": []
+          }
+        },
+        "MaxNodeDepth": 64,
+        "MaxProgramSteps": 1024
+      }
+    },
+    {
+      "Id": "escalation_writ.elevate_the_case",
+      "PackageId": "scenario",
+      "NameKey": "Elevate the Case",
+      "DescriptionKey": null,
+      "Intent": {
+        "Kind": "Buff",
+        "Label": "Elevate the Case \u00B7 0 block"
+      },
+      "Program": {
+        "Id": {
+          "Value": "(unnamed)"
+        },
+        "Root": {
+          "kind": "node.forEachTarget",
+          "value": {
+            "CollectionSelector": {
+              "kind": "sel.alliesWithStatus",
+              "value": {
+                "StatusDefinitionId": {
+                  "value": "remanded_case"
+                }
+              }
+            },
+            "Body": {
+              "kind": "node.applyStatus",
+              "value": {
+                "TargetSelector": {
+                  "kind": "sel.iterationTarget",
+                  "value": {
+                    "Cardinality": "ZeroOrOne"
+                  }
+                },
+                "StatusDefinitionId": {
+                  "value": "strength"
+                },
+                "Stacks": {
+                  "kind": "const",
+                  "value": {
+                    "Value": 1
+                  }
+                },
+                "DurationTurns": 0,
+                "Charges": 0,
+                "ResultKey": null,
+                "Children": []
+              }
+            },
+            "MaxIterations": 32,
+            "Children": [
+              {
+                "kind": "node.applyStatus",
+                "value": {
+                  "TargetSelector": {
+                    "kind": "sel.iterationTarget",
+                    "value": {
+                      "Cardinality": "ZeroOrOne"
+                    }
+                  },
+                  "StatusDefinitionId": {
+                    "value": "strength"
+                  },
+                  "Stacks": {
+                    "kind": "const",
+                    "value": {
+                      "Value": 1
+                    }
+                  },
+                  "DurationTurns": 0,
+                  "Charges": 0,
+                  "ResultKey": null,
+                  "Children": []
+                }
+              }
+            ]
           }
         },
         "MaxNodeDepth": 64,
@@ -239051,6 +239204,283 @@
       "Triggers": [],
       "DeathPrevention": null,
       "DebuffBlock": null
+    },
+    {
+      "Id": "remanded_case",
+      "PackageId": "scenario",
+      "NameKey": "Remanded Case",
+      "DescriptionKey": null,
+      "Polarity": "Neutral",
+      "UsesStacks": false,
+      "UsesDuration": false,
+      "UsesCharges": false,
+      "StackingBehavior": "MergeWithExistingInstance",
+      "Tags": [],
+      "PassiveModifiers": [],
+      "Triggers": [],
+      "DeathPrevention": null,
+      "DebuffBlock": null
+    },
+    {
+      "Id": "remanding_writ",
+      "PackageId": "scenario",
+      "NameKey": "Remanding Writ",
+      "DescriptionKey": null,
+      "Polarity": "Neutral",
+      "UsesStacks": false,
+      "UsesDuration": false,
+      "UsesCharges": false,
+      "StackingBehavior": "MergeWithExistingInstance",
+      "Tags": [],
+      "PassiveModifiers": [],
+      "Triggers": [
+        {
+          "Event": "Downed",
+          "Program": {
+            "Id": {
+              "Value": "(unnamed)"
+            },
+            "Root": {
+              "kind": "node.forEachTarget",
+              "value": {
+                "CollectionSelector": {
+                  "kind": "sel.alliesWithStatus",
+                  "value": {
+                    "StatusDefinitionId": {
+                      "value": "remanded_case"
+                    }
+                  }
+                },
+                "Body": {
+                  "kind": "node.sequence",
+                  "value": {
+                    "Children": [
+                      {
+                        "kind": "node.applyStatus",
+                        "value": {
+                          "TargetSelector": {
+                            "kind": "sel.iterationTarget",
+                            "value": {
+                              "Cardinality": "ZeroOrOne"
+                            }
+                          },
+                          "StatusDefinitionId": {
+                            "value": "strength"
+                          },
+                          "Stacks": {
+                            "kind": "const",
+                            "value": {
+                              "Value": 2
+                            }
+                          },
+                          "DurationTurns": 0,
+                          "Charges": 0,
+                          "ResultKey": null,
+                          "Children": []
+                        }
+                      },
+                      {
+                        "kind": "node.setCombatantCounter",
+                        "value": {
+                          "TargetSelector": {
+                            "kind": "sel.iterationTarget",
+                            "value": {
+                              "Cardinality": "ZeroOrOne"
+                            }
+                          },
+                          "CounterId": {
+                            "value": "finality"
+                          },
+                          "Amount": {
+                            "kind": "const",
+                            "value": {
+                              "Value": 1
+                            }
+                          },
+                          "Relative": false,
+                          "Children": []
+                        }
+                      },
+                      {
+                        "kind": "node.modifyStatusStacks",
+                        "value": {
+                          "TargetSelector": {
+                            "kind": "sel.iterationTarget",
+                            "value": {
+                              "Cardinality": "ZeroOrOne"
+                            }
+                          },
+                          "StatusDefinitionId": {
+                            "value": "remandable"
+                          },
+                          "Delta": {
+                            "kind": "const",
+                            "value": {
+                              "Value": -1
+                            }
+                          },
+                          "ResultKey": null,
+                          "Children": []
+                        }
+                      }
+                    ]
+                  }
+                },
+                "MaxIterations": 32,
+                "Children": [
+                  {
+                    "kind": "node.sequence",
+                    "value": {
+                      "Children": [
+                        {
+                          "kind": "node.applyStatus",
+                          "value": {
+                            "TargetSelector": {
+                              "kind": "sel.iterationTarget",
+                              "value": {
+                                "Cardinality": "ZeroOrOne"
+                              }
+                            },
+                            "StatusDefinitionId": {
+                              "value": "strength"
+                            },
+                            "Stacks": {
+                              "kind": "const",
+                              "value": {
+                                "Value": 2
+                              }
+                            },
+                            "DurationTurns": 0,
+                            "Charges": 0,
+                            "ResultKey": null,
+                            "Children": []
+                          }
+                        },
+                        {
+                          "kind": "node.setCombatantCounter",
+                          "value": {
+                            "TargetSelector": {
+                              "kind": "sel.iterationTarget",
+                              "value": {
+                                "Cardinality": "ZeroOrOne"
+                              }
+                            },
+                            "CounterId": {
+                              "value": "finality"
+                            },
+                            "Amount": {
+                              "kind": "const",
+                              "value": {
+                                "Value": 1
+                              }
+                            },
+                            "Relative": false,
+                            "Children": []
+                          }
+                        },
+                        {
+                          "kind": "node.modifyStatusStacks",
+                          "value": {
+                            "TargetSelector": {
+                              "kind": "sel.iterationTarget",
+                              "value": {
+                                "Cardinality": "ZeroOrOne"
+                              }
+                            },
+                            "StatusDefinitionId": {
+                              "value": "remandable"
+                            },
+                            "Delta": {
+                              "kind": "const",
+                              "value": {
+                                "Value": -1
+                              }
+                            },
+                            "ResultKey": null,
+                            "Children": []
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            "MaxNodeDepth": 64,
+            "MaxProgramSteps": 1024
+          }
+        }
+      ],
+      "DeathPrevention": null,
+      "DebuffBlock": null
+    },
+    {
+      "Id": "remandable",
+      "PackageId": "scenario",
+      "NameKey": "Remandable",
+      "DescriptionKey": null,
+      "Polarity": "Buff",
+      "UsesStacks": false,
+      "UsesDuration": false,
+      "UsesCharges": false,
+      "StackingBehavior": "MergeWithExistingInstance",
+      "Tags": [],
+      "PassiveModifiers": [],
+      "Triggers": [],
+      "DeathPrevention": {
+        "SurvivingHealth": 24,
+        "Effects": [
+          {
+            "Kind": "DealDamage",
+            "Target": "AllAllies",
+            "Amount": 12,
+            "StatusId": "",
+            "DurationTurns": 0,
+            "Polarity": "Debuff"
+          },
+          {
+            "Kind": "ApplyStatus",
+            "Target": "Self",
+            "Amount": 2,
+            "StatusId": "strength",
+            "DurationTurns": 0,
+            "Polarity": "Buff"
+          },
+          {
+            "Kind": "ApplyStatus",
+            "Target": "AllAllies",
+            "Amount": 1,
+            "StatusId": "spent_writ",
+            "DurationTurns": 0,
+            "Polarity": "Neutral"
+          },
+          {
+            "Kind": "RemoveStatus",
+            "Target": "AllAllies",
+            "Amount": 0,
+            "StatusId": "remanding_writ",
+            "DurationTurns": 0,
+            "Polarity": "Neutral"
+          }
+        ]
+      },
+      "DebuffBlock": null
+    },
+    {
+      "Id": "spent_writ",
+      "PackageId": "scenario",
+      "NameKey": "Spent Writ",
+      "DescriptionKey": null,
+      "Polarity": "Neutral",
+      "UsesStacks": false,
+      "UsesDuration": false,
+      "UsesCharges": false,
+      "StackingBehavior": "MergeWithExistingInstance",
+      "Tags": [],
+      "PassiveModifiers": [],
+      "Triggers": [],
+      "DeathPrevention": null,
+      "DebuffBlock": null
     }
   ],
   "Relics": [
@@ -245975,12 +246405,9 @@
         "Tags": [
           "city",
           "appeal",
-          "escalation",
-          "strength_pressure",
-          "stage_appeal",
-          "elite_appeal",
-          "case",
-          "phantom"
+          "elite",
+          "phantom",
+          "stage_appeal"
         ],
         "Extra": {}
       },
@@ -245996,12 +246423,9 @@
         "Tags": [
           "city",
           "appeal",
-          "escalation",
-          "strength_pressure",
-          "stage_appeal",
-          "elite_appeal",
+          "elite",
           "writ",
-          "support"
+          "stage_appeal"
         ],
         "Extra": {}
       },
@@ -248646,6 +249070,12 @@
           {
             "Encounter": {
               "Value": "city_elite_appeal_02"
+            },
+            "Weight": 1
+          },
+          {
+            "Encounter": {
+              "Value": "city_elite_appeal_03"
             },
             "Weight": 1
           }

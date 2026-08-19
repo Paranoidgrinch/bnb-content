@@ -7736,7 +7736,7 @@
   {
     "id": "remanded_case_phantom",
     "name": "Remanded Case Phantom",
-    "max_hp": 58,
+    "max_hp": 60,
     "intent_pattern": "cycle",
     "intents": [
       {
@@ -7747,24 +7747,12 @@
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 8
+            "amount": 9
           },
           {
             "type": "apply_status",
             "target": "player",
             "status": "paperwork",
-            "amount": 1
-          }
-        ]
-      },
-      {
-        "id": "comes_back_stronger",
-        "name": "Comes Back Stronger",
-        "intent_type": "buff",
-        "actions": [
-          {
-            "type": "gain_strength",
-            "target": "owner",
             "amount": 1
           }
         ]
@@ -7777,7 +7765,7 @@
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 12
+            "amount": 13
           }
         ]
       },
@@ -7795,7 +7783,7 @@
           {
             "type": "gain_block",
             "target": "owner",
-            "amount": 6
+            "amount": 8
           }
         ]
       },
@@ -7808,26 +7796,71 @@
             "type": "damage_per_status",
             "target": "player",
             "status": "doubt",
-            "amount_per_stack": 3
+            "amount": 6,
+            "amount_per_stack": 3,
+            "cap": 9
           }
         ]
+      },
+      {
+        "id": "final_judgment",
+        "name": "Final Judgment",
+        "intent_type": "mixed",
+        "special": true,
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 17
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "paperwork",
+            "amount": 1
+          },
+          {
+            "type": "set_counter",
+            "target": "owner",
+            "counter": "finality",
+            "amount": 0,
+            "relative": false
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "remanded_case"
+      },
+      {
+        "status": "remandable"
+      }
+    ],
+    "intent_rules": [
+      {
+        "condition": {
+          "kind": "self_counter",
+          "counter": "finality",
+          "op": "ge",
+          "value": 1
+        },
+        "action": "final_judgment",
+        "priority": 20
       }
     ],
     "tags": [
       "city",
       "appeal",
-      "escalation",
-      "strength_pressure",
-      "stage_appeal",
-      "elite_appeal",
-      "case",
-      "phantom"
+      "elite",
+      "phantom",
+      "stage_appeal"
     ]
   },
   {
     "id": "escalation_writ",
     "name": "Escalation Writ",
-    "max_hp": 28,
+    "max_hp": 30,
     "intent_pattern": "cycle",
     "intents": [
       {
@@ -7838,7 +7871,7 @@
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 5
+            "amount": 6
           },
           {
             "type": "apply_status",
@@ -7856,19 +7889,7 @@
           {
             "type": "gain_block",
             "target": "all_enemies",
-            "amount": 4
-          }
-        ]
-      },
-      {
-        "id": "pull_the_case_upward",
-        "name": "Pull the Case Upward",
-        "intent_type": "buff",
-        "actions": [
-          {
-            "type": "gain_strength",
-            "target": "owner",
-            "amount": 1
+            "amount": 5
           }
         ]
       },
@@ -7880,20 +7901,34 @@
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 7
+            "amount": 8
           }
         ]
+      },
+      {
+        "id": "elevate_the_case",
+        "name": "Elevate the Case",
+        "intent_type": "buff",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 0
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "remanding_writ"
       }
     ],
     "tags": [
       "city",
       "appeal",
-      "escalation",
-      "strength_pressure",
-      "stage_appeal",
-      "elite_appeal",
+      "elite",
       "writ",
-      "support"
+      "stage_appeal"
     ]
   },
   {

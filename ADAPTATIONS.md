@@ -90,6 +90,12 @@ older Act-I enemy pool wherever HP or intents disagree. Readings taken where the
   puts on the player for that round; the other bodies' intent rules read it and stand down to a safe move.
   Since an intent rule replaces whatever the cycle offered, a blocked body may skip a non-accelerating intent
   too — the alternative would need a "which intent is next" condition the engine does not have.
+- **The Remand is death PREVENTION, not a revive.** "The Phantom returns once at 24 HP" is authored as the
+  engine's one-shot pre-down interceptor: reviving a downed body is impossible by construction — healing and
+  status application refuse a downed target, and the program guard rejects such a program outright. The
+  Writ's 12 HP is paid BEFORE the Phantom's +2 Strength, so the case cannot buff its own recoil.
+- **The Phantom keeps Uncertain Remand in its cycle after a Final Judgment.** The design removes that intent
+  from the pool; an intent cycle is fixed data, and the engine has no "drop an action" operation.
 - **The Petition's clauses are CARDS.** A combat has no yes/no prompt, so each clause is a 0-cost card the
   Chorus puts in the player's hand at the start of their turn: playing it SIGNS (benefit now, liability
   recorded on the Petition), leaving it there REFUSES (its turn-end-in-hand program pays the Petition
