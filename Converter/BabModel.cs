@@ -118,7 +118,10 @@ public sealed record BabEncounter(
     // Per-ROSTER health, positionally parallel to Enemies: multi-enemy encounters field their bodies at
     // reduced HP ("Duo HP Scaling"), and the same identity appears at different HP in different encounters.
     // A null entry (or the whole list absent) keeps the enemy's own max_hp.
-    IReadOnlyList<int?>? EnemyHealth = null);
+    IReadOnlyList<int?>? EnemyHealth = null,
+    // Which map ROLE draws this template: combat / multi_combat / elite / boss / mimic. Only encounters that
+    // carry a role are part of the act's curated pools — anything else is inert content the map never picks.
+    string? Role = null);
 
 public sealed record BabEvent(
     string Id,

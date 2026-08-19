@@ -12,7 +12,8 @@
       "stage_queue",
       "queue",
       "panic_intro"
-    ]
+    ],
+    "role": "combat"
   },
   {
     "id": "city_easy_02",
@@ -94,7 +95,8 @@
       "enforcement",
       "civic_force",
       "strength_pressure"
-    ]
+    ],
+    "role": "combat"
   },
   {
     "id": "city_normal_enforcement_02",
@@ -158,7 +160,8 @@
       "enforcement",
       "civic_force",
       "strength_pressure"
-    ]
+    ],
+    "role": "combat"
   },
   {
     "id": "city_normal_enforcement_06",
@@ -174,7 +177,8 @@
       "enforcement",
       "civic_force",
       "strength_pressure"
-    ]
+    ],
+    "role": "combat"
   },
   {
     "id": "city_normal_enforcement_07",
@@ -214,7 +218,8 @@
       "civic_force",
       "strength_pressure",
       "multi_enemy"
-    ]
+    ],
+    "role": "multi_combat"
   },
   {
     "id": "city_elite_01",
@@ -225,7 +230,8 @@
       "senior_clerk"
     ],
     "weight": 1,
-    "tags": []
+    "tags": [],
+    "role": "elite"
   },
   {
     "id": "city_elite_02",
@@ -236,7 +242,8 @@
       "red_tape_golem"
     ],
     "weight": 1,
-    "tags": []
+    "tags": [],
+    "role": "elite"
   },
   {
     "id": "city_elite_enforcement_01",
@@ -254,7 +261,8 @@
       "block_pressure",
       "strength_pressure",
       "elite_enforcement"
-    ]
+    ],
+    "role": "elite"
   },
   {
     "id": "city_elite_enforcement_02",
@@ -293,7 +301,8 @@
       "block_pressure",
       "strength_pressure",
       "elite_enforcement"
-    ]
+    ],
+    "role": "elite"
   },
   {
     "id": "city_elite_enforcement_04",
@@ -329,7 +338,8 @@
       "boss",
       "final_office",
       "act_1_boss"
-    ]
+    ],
+    "role": "boss"
   },
   {
     "id": "city_easy_04",
@@ -359,7 +369,8 @@
       "stage_form",
       "form",
       "paperwork_intro"
-    ]
+    ],
+    "role": "combat"
   },
   {
     "id": "city_normal_05",
@@ -605,7 +616,8 @@
       "waiting",
       "fatigue_pressure",
       "elite_delay"
-    ]
+    ],
+    "role": "elite"
   },
   {
     "id": "city_elite_delay_03",
@@ -654,7 +666,8 @@
       "escalation",
       "strength_pressure",
       "elite_appeal"
-    ]
+    ],
+    "role": "mimic"
   },
   {
     "id": "city_elite_appeal_02",
@@ -671,7 +684,8 @@
       "escalation",
       "strength_pressure",
       "elite_appeal"
-    ]
+    ],
+    "role": "elite"
   },
   {
     "id": "city_elite_appeal_03",
@@ -813,7 +827,8 @@
       "stage_queue",
       "queue",
       "panic_intro"
-    ]
+    ],
+    "role": "combat"
   },
   {
     "id": "city_easy_queue_02",
@@ -843,7 +858,8 @@
       "stage_counter",
       "counter",
       "doubt_intro"
-    ]
+    ],
+    "role": "combat"
   },
   {
     "id": "city_easy_counter_02",
@@ -888,7 +904,8 @@
       "stage_form",
       "form",
       "paperwork_intro"
-    ]
+    ],
+    "role": "combat"
   },
   {
     "id": "city_easy_form_02",
@@ -934,7 +951,8 @@
       "seal",
       "certification",
       "paperwork_pressure"
-    ]
+    ],
+    "role": "combat"
   },
   {
     "id": "city_normal_seal_02",
@@ -950,7 +968,8 @@
       "seal",
       "certification",
       "paperwork_pressure"
-    ]
+    ],
+    "role": "combat"
   },
   {
     "id": "city_normal_seal_03",
@@ -1038,7 +1057,8 @@
       "certification",
       "paperwork_pressure",
       "multi_enemy"
-    ]
+    ],
+    "role": "multi_combat"
   },
   {
     "id": "city_normal_seal_08",
@@ -1060,7 +1080,8 @@
       "certification",
       "paperwork_pressure",
       "multi_enemy"
-    ]
+    ],
+    "role": "multi_combat"
   },
   {
     "id": "city_normal_ordinance_01",
@@ -1124,7 +1145,8 @@
       "ordinance",
       "civic_law",
       "doubt_pressure"
-    ]
+    ],
+    "role": "combat"
   },
   {
     "id": "city_normal_ordinance_05",
@@ -1132,8 +1154,7 @@
     "act": 1,
     "difficulty": "normal",
     "enemies": [
-      "exception_imp",
-      "footnote_familiar"
+      "exception_imp"
     ],
     "weight": 2,
     "tags": [
@@ -1142,15 +1163,16 @@
       "civic_law",
       "doubt_pressure",
       "multi_enemy"
-    ]
+    ],
+    "role": "combat"
   },
   {
     "id": "city_normal_ordinance_06",
-    "name": "Clause in the Wall",
+    "name": "The Statute Was Never Repealed",
     "act": 1,
     "difficulty": "normal",
     "enemies": [
-      "clause_in_the_wall"
+      "old_statute_ghost"
     ],
     "weight": 2,
     "tags": [
@@ -1158,7 +1180,8 @@
       "ordinance",
       "civic_law",
       "doubt_pressure"
-    ]
+    ],
+    "role": "combat"
   },
   {
     "id": "city_normal_ordinance_07",
@@ -1196,7 +1219,8 @@
       "civic_law",
       "doubt_pressure",
       "multi_enemy"
-    ]
+    ],
+    "role": "multi_combat"
   },
   {
     "id": "city_normal_delay_01",
@@ -1260,7 +1284,8 @@
       "delay",
       "waiting",
       "fatigue_intro"
-    ]
+    ],
+    "role": "combat"
   },
   {
     "id": "city_normal_delay_05",
@@ -1276,7 +1301,8 @@
       "delay",
       "waiting",
       "fatigue_intro"
-    ]
+    ],
+    "role": "combat"
   },
   {
     "id": "city_normal_delay_06",
@@ -1300,8 +1326,7 @@
     "act": 1,
     "difficulty": "normal",
     "enemies": [
-      "minute_moth",
-      "stalled_clock_face"
+      "minute_moth"
     ],
     "weight": 2,
     "tags": [
@@ -1310,7 +1335,8 @@
       "waiting",
       "fatigue_intro",
       "multi_enemy"
-    ]
+    ],
+    "role": "combat"
   },
   {
     "id": "city_normal_delay_08",
@@ -1332,7 +1358,8 @@
       "waiting",
       "fatigue_intro",
       "multi_enemy"
-    ]
+    ],
+    "role": "multi_combat"
   },
   {
     "id": "city_normal_appeal_01",
@@ -1396,7 +1423,8 @@
       "appeal",
       "escalation",
       "strength_pressure"
-    ]
+    ],
+    "role": "combat"
   },
   {
     "id": "city_normal_appeal_05",
@@ -1412,7 +1440,8 @@
       "appeal",
       "escalation",
       "strength_pressure"
-    ]
+    ],
+    "role": "combat"
   },
   {
     "id": "city_normal_appeal_06",
@@ -1450,7 +1479,8 @@
       "escalation",
       "strength_pressure",
       "multi_enemy"
-    ]
+    ],
+    "role": "multi_combat"
   },
   {
     "id": "city_normal_appeal_08",
@@ -1472,7 +1502,8 @@
       "escalation",
       "strength_pressure",
       "multi_enemy"
-    ]
+    ],
+    "role": "multi_combat"
   },
   {
     "id": "city_easy_queue_03",
@@ -1491,18 +1522,24 @@
   },
   {
     "id": "city_easy_queue_04",
-    "name": "The Bell Is About to Ring",
+    "name": "The Line Has Started Moving",
     "act": 1,
     "difficulty": "easy",
     "enemies": [
-      "closing_bell_sprite"
+      "a_very_official_line",
+      "queue_crier_homunculus"
+    ],
+    "enemy_health": [
+      19,
+      21
     ],
     "weight": 2,
     "tags": [
       "stage_queue",
       "queue",
       "panic_intro"
-    ]
+    ],
+    "role": "multi_combat"
   },
   {
     "id": "city_easy_queue_05",
@@ -1532,22 +1569,29 @@
       "stage_queue",
       "queue",
       "panic_intro"
-    ]
+    ],
+    "role": "combat"
   },
   {
     "id": "city_easy_counter_04",
-    "name": "The Counter Says No",
+    "name": "Wrong Window, Same Queue",
     "act": 1,
     "difficulty": "easy",
     "enemies": [
-      "counter_of_denial_lesser"
+      "wrong_window_scribe",
+      "a_very_official_line"
+    ],
+    "enemy_health": [
+      24,
+      20
     ],
     "weight": 2,
     "tags": [
       "stage_counter",
       "counter",
       "doubt_intro"
-    ]
+    ],
+    "role": "multi_combat"
   },
   {
     "id": "city_easy_counter_05",
@@ -1592,7 +1636,8 @@
       "stage_counter",
       "counter",
       "doubt_intro"
-    ]
+    ],
+    "role": "combat"
   },
   {
     "id": "city_easy_counter_08",
@@ -1607,7 +1652,8 @@
       "stage_counter",
       "counter",
       "doubt_intro"
-    ]
+    ],
+    "role": "combat"
   },
   {
     "id": "city_easy_form_04",
@@ -1623,7 +1669,8 @@
       "form",
       "paperwork_intro",
       "multi_enemy"
-    ]
+    ],
+    "role": "combat"
   },
   {
     "id": "city_easy_form_05",
@@ -1639,7 +1686,8 @@
       "form",
       "paperwork_intro",
       "panic_splash"
-    ]
+    ],
+    "role": "combat"
   },
   {
     "id": "city_easy_form_06",
