@@ -12,8 +12,48 @@ public static class RawIntentPrograms
         $"{enemyId}.{intentId}" switch
         {
             "minute_moth_cloud.steal_a_minute" => StealAMinute(),
+            "living_petition_chorus.read_into_the_record" => ReadIntoTheRecord(),
             _ => null,
         };
+
+    // "Read Into the Record": 8 damage, then every liability the player signed for, in the order the clauses
+    // are listed, and the petition starts a fresh reading cycle.
+    private static EffectProgram<EnemyActionContext> ReadIntoTheRecord()
+    {
+        var self = CombatantTargetSelectors.Source;
+        var player = CombatantTargetSelectors.EventTarget;
+
+        IEffectNode<EnemyActionContext> Liability(CounterId flag, params IEffectNode<EnemyActionContext>[] effects) =>
+            new ConditionalEffectNode<EnemyActionContext>(
+                new ComparisonExpression<EnemyActionContext>(
+                    new CombatantCounterExpression<EnemyActionContext>(self, flag),
+                    ComparisonOperator.Greater,
+                    new ConstantExpression<EnemyActionContext>(0)),
+                new SequenceEffectNode<EnemyActionContext>(effects));
+
+        IEffectNode<EnemyActionContext> Apply(string status, int stacks) =>
+            new ApplyStatusNode<EnemyActionContext>(player, new StatusDefinitionId(status),
+                new ConstantExpression<EnemyActionContext>(stacks));
+
+        IEffectNode<EnemyActionContext> Clear(CounterId counter) =>
+            new SetCombatantCounterNode<EnemyActionContext>(self, counter,
+                new ConstantExpression<EnemyActionContext>(0), relative: false);
+
+        var clauses = ClauseCards.All;
+        return new EffectProgram<EnemyActionContext>(
+            new SequenceEffectNode<EnemyActionContext>(new IEffectNode<EnemyActionContext>[]
+            {
+                new DealDamageNode<EnemyActionContext>(player, new ConstantExpression<EnemyActionContext>(8)),
+                Liability(clauses[0].Liability, Apply("fatigue", 1)),
+                Liability(clauses[1].Liability, Apply("paperwork", 2)),
+                Liability(clauses[2].Liability, Apply("doubt", 1), Apply("paperwork", 1)),
+                Clear(clauses[0].Liability),
+                Clear(clauses[1].Liability),
+                Clear(clauses[2].Liability),
+                Clear(PassiveStatuses.SignaturesCounter),
+                Clear(PassiveStatuses.ClauseIndexCounter),
+            }));
+    }
 
     // "Gain 1 Lost Time for the Waiting Room": the Moth writes the track its partner keeps, capped at 3, found
     // through the marker the Room carries — so killing the Room really does erase the resource with it.

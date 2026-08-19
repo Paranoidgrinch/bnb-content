@@ -90,6 +90,13 @@ older Act-I enemy pool wherever HP or intents disagree. Readings taken where the
   puts on the player for that round; the other bodies' intent rules read it and stand down to a safe move.
   Since an intent rule replaces whatever the cycle offered, a blocked body may skip a non-accelerating intent
   too — the alternative would need a "which intent is next" condition the engine does not have.
+- **The Petition's clauses are CARDS.** A combat has no yes/no prompt, so each clause is a 0-cost card the
+  Chorus puts in the player's hand at the start of their turn: playing it SIGNS (benefit now, liability
+  recorded on the Petition), leaving it there REFUSES (its turn-end-in-hand program pays the Petition
+  instead). Either way it exhausts, so a clause is offered once per reading cycle.
+- **The Protective Clause's refusal grants the Petition 1 Strength** instead of "+3 on its next direct
+  attack": a one-shot damage buff has no shape in this vocabulary, and Strength is what the Evidentiary
+  refusal already gives.
 - **The Monolith STORES damage by healing it back.** "While Closed, HP loss is stored as Pending Business
   instead of being removed" is realised as: the hit lands, the Monolith immediately heals exactly what it
   lost, and the amount is banked on a counter. The engine has no "redirect this damage into a track"; the
