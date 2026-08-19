@@ -81,6 +81,15 @@ older Act-I enemy pool wherever HP or intents disagree. Readings taken where the
 - **"Panic removed through its normal decay"** (Number-Ticket Wisp) is a drop of exactly ONE stack: Panic
   sheds one per turn end, while a cleanse takes the whole pile at once. That is what lets the Wisp tell its
   own burnout from someone tidying up.
+### Elites
+- **The Three Appointments' countdowns tick at each body's OWN turn end**, not at the player's — the same
+  once-per-round cadence, a beat later in the round. A countdown is armed at the body's first turn start
+  (starting statuses cannot carry a counter value) and stays at 0 after expiring until a scheduling move sets
+  a new one.
+- **The anti-spike rule** ("at most one Appointment may accelerate per round") is a mark the accelerating body
+  puts on the player for that round; the other bodies' intent rules read it and stand down to a safe move.
+  Since an intent rule replaces whatever the cycle offered, a blocked body may skip a non-accelerating intent
+  too — the alternative would need a "which intent is next" condition the engine does not have.
 - **"Direct attacks gain +3 damage per Panic, maximum +9"** (Queue-Crier Homunculus, "Lost Your Place") is
   baked into the enemy's one pure ATTACK intent — "Call a Number That Is Not Yours", the intent the design
   itself annotates with the passive. Its mixed damage+Panic and block+Panic intents stay flat, so the

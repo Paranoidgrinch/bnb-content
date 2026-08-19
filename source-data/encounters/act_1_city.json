@@ -599,7 +599,13 @@
       "waiting",
       "fatigue_pressure",
       "elite_delay"
-    ]
+    ],
+    "enemy_health": [
+      24,
+      28,
+      34
+    ],
+    "role": "elite"
   },
   {
     "id": "city_elite_delay_02",

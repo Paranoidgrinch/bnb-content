@@ -71,7 +71,115 @@ public static class PassiveStatuses
         BreakTheApproach(),
         Marker(YourNumberCameUpId, "Your Number Came Up"),
         CarbonCopies(),
+        .. Appointments.Select(a => AppointmentDue(a.StatusId, a.Name, a.Due, a.Expiry)),
+        AppointmentsAccelerated(),
     ];
+
+    // The Three Appointments (elite): each body carries its own visible countdown and its own consequence when
+    // it runs out. The countdown ticks at the body's OWN turn end — once per round, exactly like the design's
+    // "end of each player turn", only a beat later in the round (see ADAPTATIONS.md).
+    public static readonly CounterId AppointmentDueCounter = new("appointment_due");
+    public const string AppointmentsAcceleratedId = "appointments_accelerated";
+
+    private static readonly CounterId AppointmentStartedCounter = new("appointment_started");
+
+    public static readonly (string StatusId, string Name, int Due, Func<IEffectNode<TurnEndedTriggeredEffectContext>> Expiry)[]
+        Appointments =
+        [
+            ("appointment_due_first", "Appointment Due (First)", 2, () => Expiry(damage: 7, fatigue: 1)),
+            ("appointment_due_second", "Appointment Due (Second)", 3, () => Expiry(paperwork: 2, fatigue: 1)),
+            ("appointment_due_final", "Appointment Due (Final)", 4, () => Expiry(damage: 15, fatigue: 1)),
+        ];
+
+    private static IEffectNode<TurnEndedTriggeredEffectContext> Expiry(
+        int damage = 0, int paperwork = 0, int fatigue = 0)
+    {
+        var nodes = new List<IEffectNode<TurnEndedTriggeredEffectContext>>();
+        if (damage > 0)
+            nodes.Add(new DealDamageNode<TurnEndedTriggeredEffectContext>(
+                Opponent, new ConstantExpression<TurnEndedTriggeredEffectContext>(damage)));
+        if (paperwork > 0)
+            nodes.Add(new ApplyStatusNode<TurnEndedTriggeredEffectContext>(
+                Opponent, new StatusDefinitionId("paperwork"),
+                new ConstantExpression<TurnEndedTriggeredEffectContext>(paperwork)));
+        if (fatigue > 0)
+            nodes.Add(new ApplyStatusNode<TurnEndedTriggeredEffectContext>(
+                Opponent, new StatusDefinitionId("fatigue"),
+                new ConstantExpression<TurnEndedTriggeredEffectContext>(fatigue)));
+        return new SequenceEffectNode<TurnEndedTriggeredEffectContext>(nodes);
+    }
+
+    private static StatusData AppointmentDue(
+        string id, string name, int due, Func<IEffectNode<TurnEndedTriggeredEffectContext>> expiry)
+    {
+        var self = CombatantTargetSelectors.Source;
+        var remaining = new CombatantCounterExpression<TurnEndedTriggeredEffectContext>(self, AppointmentDueCounter);
+
+        // One step per own turn end. The "is it due NOW" test compares against 1 rather than reading the
+        // counter it is about to write — within one program a node cannot see an earlier node's write.
+        var program = new EffectProgram<TurnEndedTriggeredEffectContext>(
+            new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
+                new ComparisonExpression<TurnEndedTriggeredEffectContext>(
+                    remaining, ComparisonOperator.Equal, new ConstantExpression<TurnEndedTriggeredEffectContext>(1)),
+                new SequenceEffectNode<TurnEndedTriggeredEffectContext>(new IEffectNode<TurnEndedTriggeredEffectContext>[]
+                {
+                    expiry(),
+                    // Spent: no countdown runs again until a scheduling move sets a new one.
+                    new SetCombatantCounterNode<TurnEndedTriggeredEffectContext>(
+                        self, AppointmentDueCounter,
+                        new ConstantExpression<TurnEndedTriggeredEffectContext>(0), relative: false),
+                }),
+                new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
+                    new ComparisonExpression<TurnEndedTriggeredEffectContext>(
+                        remaining, ComparisonOperator.Greater, new ConstantExpression<TurnEndedTriggeredEffectContext>(1)),
+                    new SetCombatantCounterNode<TurnEndedTriggeredEffectContext>(
+                        self, AppointmentDueCounter,
+                        new ConstantExpression<TurnEndedTriggeredEffectContext>(-1), relative: true))));
+
+        // The countdown is ARMED at the body's first turn start: starting statuses cannot carry a counter
+        // value, and "it is 0" cannot mean both "not started yet" and "already expired" — a separate started
+        // flag says which. (A RoundStarted trigger would be the natural place, but the very first one fires
+        // before any combatant is active, so its context does not resolve.)
+        var arm = new EffectProgram<TurnStartedTriggeredEffectContext>(
+            new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
+                new ComparisonExpression<TurnStartedTriggeredEffectContext>(
+                    new CombatantCounterExpression<TurnStartedTriggeredEffectContext>(
+                        CombatantTargetSelectors.Source, AppointmentStartedCounter),
+                    ComparisonOperator.Equal,
+                    new ConstantExpression<TurnStartedTriggeredEffectContext>(0)),
+                new SequenceEffectNode<TurnStartedTriggeredEffectContext>(new IEffectNode<TurnStartedTriggeredEffectContext>[]
+                {
+                    new SetCombatantCounterNode<TurnStartedTriggeredEffectContext>(
+                        CombatantTargetSelectors.Source, AppointmentDueCounter,
+                        new ConstantExpression<TurnStartedTriggeredEffectContext>(due), relative: false),
+                    new SetCombatantCounterNode<TurnStartedTriggeredEffectContext>(
+                        CombatantTargetSelectors.Source, AppointmentStartedCounter,
+                        new ConstantExpression<TurnStartedTriggeredEffectContext>(1), relative: false),
+                })));
+
+        var status = Passive(id, name, "TurnEnded", program);
+        return status with
+        {
+            Triggers = [.. status.Triggers, new StatusTriggerData("TurnStarted",
+                JsonSerializer.SerializeToElement(arm, CombatJson.CreateOptions<TurnStartedTriggeredEffectContext>()))],
+        };
+    }
+
+    // The anti-spike latch: whoever uses a scheduling move marks the player, and the other Appointments' intent
+    // rules stand down while the mark is there. It clears at the end of the round — a status is the only handle
+    // an intent CONDITION has on shared state (conditions read statuses, not counters, on the opponent).
+    private static StatusData AppointmentsAccelerated()
+    {
+        var marked = CombatantTargetSelectors.WithStatus(
+            CombatantTargetSelectors.AllCombatants, new StatusDefinitionId(AppointmentsAcceleratedId));
+
+        var program = new EffectProgram<RoundEndedTriggeredEffectContext>(
+            new ModifyStatusStacksNode<RoundEndedTriggeredEffectContext>(
+                marked, new StatusDefinitionId(AppointmentsAcceleratedId),
+                new ConstantExpression<RoundEndedTriggeredEffectContext>(-1)));
+
+        return Passive(AppointmentsAcceleratedId, "Appointments Accelerated", "RoundEnded", program);
+    }
 
     // Duplicate Copy Mites: marker + the once-per-round latch, cleared at round end like its siblings.
     public const string CarbonCopiesId = "carbon_copies";
