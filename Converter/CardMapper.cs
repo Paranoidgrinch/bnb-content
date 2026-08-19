@@ -95,6 +95,11 @@ public static class EffectMapper
             "apply_status" => new CombatNodeModel("applyStatus", Sel(), CombatAmountSpec.FromConst(Amount()),
                 StatusId: effect.Status ?? throw new ConversionException(where, "apply_status without status")),
 
+            // modify_status: add or REMOVE stacks of an existing status ("reduce Final Notice by 1"). Unlike
+            // apply_status this never creates the status from nothing and takes a negative amount.
+            "modify_status" => new CombatNodeModel("modifyStatusStacks", Sel(), CombatAmountSpec.FromConst(Amount()),
+                StatusId: effect.Status ?? throw new ConversionException(where, "modify_status without status")),
+
             "draw_cards" => new CombatNodeModel("drawCards", "source", CombatAmountSpec.FromConst(Amount())),
 
             // damage = amount (base, optional) + min(stacks of <status> × amount_per_stack, cap?)

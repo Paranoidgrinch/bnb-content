@@ -154,7 +154,12 @@ public static class EncounterMapper
             // Every fight marks the hero as "the applicant". Selectors are structural — they can say "allies of
             // the source" but never "the player" — so a cross-combatant passive that must know whether something
             // happened TO THE PLAYER (Old Statute Ghost) has no other handle. One inert marker, every encounter.
-            heroStartingStatuses: [new StartingStatusSpec(new StatusDefinitionId(PassiveStatuses.ApplicantId), 1)],
+            heroStartingStatuses:
+            [
+                new StartingStatusSpec(new StatusDefinitionId(PassiveStatuses.ApplicantId), 1),
+                // Some enemies serve something ON the player at the first bell (the Knight's Final Notice).
+                .. encounter.Enemies.Distinct().SelectMany(EncounterPassives.HeroOpeningStatuses),
+            ],
             triggeredEffects: triggeredEffects);
     }
 
