@@ -16812,39 +16812,23 @@
       "Enemies": [
         {
           "Id": "duplicate_copy_mite",
-          "MaxHealth": 16,
+          "MaxHealth": 37,
           "Actions": [
             {
-              "value": "duplicate_copy_mite.make_another_copy"
+              "value": "duplicate_copy_mite.spread_through_the_binding"
             },
             {
-              "value": "duplicate_copy_mite.carbon_bite"
+              "value": "duplicate_copy_mite.carbon_paper_bites"
             },
             {
-              "value": "duplicate_copy_mite.copy_filed_twice"
+              "value": "duplicate_copy_mite.loose_copy"
+            },
+            {
+              "value": "duplicate_copy_mite.scuttle_between_pages"
             }
           ],
           "StartingStatuses": null,
-          "DisplayName": "Duplicate Copy Mite",
-          "Position": null,
-          "IntentRules": null
-        },
-        {
-          "Id": "duplicate_copy_mite#2",
-          "MaxHealth": 16,
-          "Actions": [
-            {
-              "value": "duplicate_copy_mite.make_another_copy"
-            },
-            {
-              "value": "duplicate_copy_mite.carbon_bite"
-            },
-            {
-              "value": "duplicate_copy_mite.copy_filed_twice"
-            }
-          ],
-          "StartingStatuses": null,
-          "DisplayName": "Duplicate Copy Mite",
+          "DisplayName": "Duplicate Copy Mites",
           "Position": null,
           "IntentRules": null
         }
@@ -35513,13 +35497,174 @@
       }
     },
     {
-      "Id": "duplicate_copy_mite.make_another_copy",
+      "Id": "duplicate_copy_mite.spread_through_the_binding",
       "PackageId": "scenario",
-      "NameKey": "Make Another Copy",
+      "NameKey": "Spread Through the Binding",
+      "DescriptionKey": null,
+      "Intent": {
+        "Kind": "Buff",
+        "Label": "Spread Through the Binding \u00B7 Bookworm \u002B1, Bookworm \u002B1"
+      },
+      "Program": {
+        "Id": {
+          "Value": "(unnamed)"
+        },
+        "Root": {
+          "kind": "node.sequence",
+          "value": {
+            "Children": [
+              {
+                "kind": "node.applyStatus",
+                "value": {
+                  "TargetSelector": {
+                    "kind": "sel.allAllies",
+                    "value": {}
+                  },
+                  "StatusDefinitionId": {
+                    "value": "bookworm"
+                  },
+                  "Stacks": {
+                    "kind": "const",
+                    "value": {
+                      "Value": 1
+                    }
+                  },
+                  "DurationTurns": 0,
+                  "Charges": 0,
+                  "ResultKey": null,
+                  "Children": []
+                }
+              },
+              {
+                "kind": "node.applyStatus",
+                "value": {
+                  "TargetSelector": {
+                    "kind": "sel.source",
+                    "value": {
+                      "Cardinality": "ZeroOrOne",
+                      "RequiredContextCapabilities": "Source"
+                    }
+                  },
+                  "StatusDefinitionId": {
+                    "value": "bookworm"
+                  },
+                  "Stacks": {
+                    "kind": "const",
+                    "value": {
+                      "Value": 1
+                    }
+                  },
+                  "DurationTurns": 0,
+                  "Charges": 0,
+                  "ResultKey": null,
+                  "Children": []
+                }
+              }
+            ]
+          }
+        },
+        "MaxNodeDepth": 64,
+        "MaxProgramSteps": 1024
+      }
+    },
+    {
+      "Id": "duplicate_copy_mite.carbon_paper_bites",
+      "PackageId": "scenario",
+      "NameKey": "Carbon-Paper Bites",
+      "DescriptionKey": null,
+      "Intent": {
+        "Kind": "Attack",
+        "Label": "Carbon-Paper Bites \u00B7 9 dmg"
+      },
+      "Program": {
+        "Id": {
+          "Value": "(unnamed)"
+        },
+        "Root": {
+          "kind": "node.sequence",
+          "value": {
+            "Children": [
+              {
+                "kind": "node.dealDamage",
+                "value": {
+                  "TargetSelector": {
+                    "kind": "sel.eventTarget",
+                    "value": {
+                      "Cardinality": "ZeroOrOne",
+                      "RequiredContextCapabilities": "EventTarget"
+                    }
+                  },
+                  "Amount": {
+                    "kind": "const",
+                    "value": {
+                      "Value": 3
+                    }
+                  },
+                  "ResultKey": null,
+                  "IgnoresBlock": false,
+                  "Element": null,
+                  "Children": []
+                }
+              },
+              {
+                "kind": "node.dealDamage",
+                "value": {
+                  "TargetSelector": {
+                    "kind": "sel.eventTarget",
+                    "value": {
+                      "Cardinality": "ZeroOrOne",
+                      "RequiredContextCapabilities": "EventTarget"
+                    }
+                  },
+                  "Amount": {
+                    "kind": "const",
+                    "value": {
+                      "Value": 3
+                    }
+                  },
+                  "ResultKey": null,
+                  "IgnoresBlock": false,
+                  "Element": null,
+                  "Children": []
+                }
+              },
+              {
+                "kind": "node.dealDamage",
+                "value": {
+                  "TargetSelector": {
+                    "kind": "sel.eventTarget",
+                    "value": {
+                      "Cardinality": "ZeroOrOne",
+                      "RequiredContextCapabilities": "EventTarget"
+                    }
+                  },
+                  "Amount": {
+                    "kind": "const",
+                    "value": {
+                      "Value": 3
+                    }
+                  },
+                  "ResultKey": null,
+                  "IgnoresBlock": false,
+                  "Element": null,
+                  "Children": []
+                }
+              }
+            ]
+          }
+        },
+        "MaxNodeDepth": 64,
+        "MaxProgramSteps": 1024
+      }
+    },
+    {
+      "Id": "duplicate_copy_mite.loose_copy",
+      "PackageId": "scenario",
+      "NameKey": "Loose Copy",
       "DescriptionKey": null,
       "Intent": {
         "Kind": "Debuff",
-        "Label": "Make Another Copy \u00B7 Paperwork \u002B2"
+        "Label": "Loose Copy \u00B7 Paperwork \u002B2"
       },
       "Program": {
         "Id": {
@@ -35555,78 +35700,34 @@
       }
     },
     {
-      "Id": "duplicate_copy_mite.carbon_bite",
+      "Id": "duplicate_copy_mite.scuttle_between_pages",
       "PackageId": "scenario",
-      "NameKey": "Carbon Bite",
+      "NameKey": "Scuttle Between Pages",
       "DescriptionKey": null,
       "Intent": {
-        "Kind": "Attack",
-        "Label": "Carbon Bite \u00B7 5 dmg"
+        "Kind": "Defend",
+        "Label": "Scuttle Between Pages \u00B7 8 block"
       },
       "Program": {
         "Id": {
           "Value": "(unnamed)"
         },
         "Root": {
-          "kind": "node.dealDamage",
+          "kind": "node.gainBlock",
           "value": {
             "TargetSelector": {
-              "kind": "sel.eventTarget",
+              "kind": "sel.source",
               "value": {
                 "Cardinality": "ZeroOrOne",
-                "RequiredContextCapabilities": "EventTarget"
+                "RequiredContextCapabilities": "Source"
               }
             },
             "Amount": {
               "kind": "const",
               "value": {
-                "Value": 5
+                "Value": 8
               }
             },
-            "ResultKey": null,
-            "IgnoresBlock": false,
-            "Element": null,
-            "Children": []
-          }
-        },
-        "MaxNodeDepth": 64,
-        "MaxProgramSteps": 1024
-      }
-    },
-    {
-      "Id": "duplicate_copy_mite.copy_filed_twice",
-      "PackageId": "scenario",
-      "NameKey": "Copy Filed Twice",
-      "DescriptionKey": null,
-      "Intent": {
-        "Kind": "Debuff",
-        "Label": "Copy Filed Twice \u00B7 Paperwork \u002B2"
-      },
-      "Program": {
-        "Id": {
-          "Value": "(unnamed)"
-        },
-        "Root": {
-          "kind": "node.applyStatus",
-          "value": {
-            "TargetSelector": {
-              "kind": "sel.eventTarget",
-              "value": {
-                "Cardinality": "ZeroOrOne",
-                "RequiredContextCapabilities": "EventTarget"
-              }
-            },
-            "StatusDefinitionId": {
-              "value": "paperwork"
-            },
-            "Stacks": {
-              "kind": "const",
-              "value": {
-                "Value": 2
-              }
-            },
-            "DurationTurns": 0,
-            "Charges": 0,
             "ResultKey": null,
             "Children": []
           }

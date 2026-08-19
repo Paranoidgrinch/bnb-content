@@ -1587,7 +1587,6 @@
     "act": 1,
     "difficulty": "easy",
     "enemies": [
-      "duplicate_copy_mite",
       "duplicate_copy_mite"
     ],
     "weight": 2,
