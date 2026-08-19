@@ -19,8 +19,52 @@ public static class EncounterPassives
     {
         "wrong_window_scribe" => [NotThisCounter()],
         "triplicate_examiner" => [ThreeCopiesRequired()],
+        "oath_candle" => [WitnessTheSeal()],
         _ => Array.Empty<EncounterTriggerData>(),
     };
+
+    // "Witness the Seal" (Oath Candle): the first time each round ANOTHER enemy gains Block, that enemy gains 3
+    // more. Everything the program needs is expressed with selectors, since an encounter trigger has no filters
+    // and cannot name a combatant:
+    //   · `alliesWithStatus(witness_the_seal)` = the Candle, but only on the GAINER'S side — when the hero
+    //     guards itself the loop finds nobody, so the hero is never witnessed;
+    //   · the loop body runs once per Candle present, which is also the "is the Candle here" gate;
+    //   · inside it, `iterationTarget` IS the Candle, so its once-per-round latch can be read and written;
+    //   · the gainer carrying the marker means the Candle witnessed itself — the design's "no recursion".
+    // The latch is cleared at RoundEnded by the marker status (PassiveStatuses.WitnessTheSeal).
+    private static EncounterTriggerData WitnessTheSeal()
+    {
+        var marker = new StatusDefinitionId(PassiveStatuses.WitnessTheSealId);
+        var gainer = CombatantTargetSelectors.EventTarget;
+        var candle = CombatantTargetSelectors.IterationTarget;
+
+        var body = new ConditionalEffectNode<BlockGainedTriggeredEffectContext>(
+            new AndExpression<BlockGainedTriggeredEffectContext>(
+                new ComparisonExpression<BlockGainedTriggeredEffectContext>(
+                    new CombatantStatusStacksExpression<BlockGainedTriggeredEffectContext>(gainer, marker),
+                    ComparisonOperator.Equal,
+                    new ConstantExpression<BlockGainedTriggeredEffectContext>(0)),
+                new ComparisonExpression<BlockGainedTriggeredEffectContext>(
+                    new CombatantCounterExpression<BlockGainedTriggeredEffectContext>(
+                        candle, PassiveStatuses.WitnessedThisRoundCounter),
+                    ComparisonOperator.Equal,
+                    new ConstantExpression<BlockGainedTriggeredEffectContext>(0))),
+            new SequenceEffectNode<BlockGainedTriggeredEffectContext>(new IEffectNode<BlockGainedTriggeredEffectContext>[]
+            {
+                new GainBlockNode<BlockGainedTriggeredEffectContext>(
+                    gainer, new ConstantExpression<BlockGainedTriggeredEffectContext>(3)),
+                new SetCombatantCounterNode<BlockGainedTriggeredEffectContext>(
+                    candle, PassiveStatuses.WitnessedThisRoundCounter,
+                    new ConstantExpression<BlockGainedTriggeredEffectContext>(1), relative: false),
+            }));
+
+        var program = new EffectProgram<BlockGainedTriggeredEffectContext>(
+            new ForEachTargetEffectNode<BlockGainedTriggeredEffectContext>(
+                CombatantTargetSelectors.AllAlliesOfSourceWithStatus(marker), body));
+
+        return new EncounterTriggerData("BlockGained",
+            JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<BlockGainedTriggeredEffectContext>()));
+    }
 
     // "Not This Counter": the first non-Junk card TYPE each turn is the "Wrong Window"; the first LATER card of
     // that same type makes the Scribe gain 5 Block. Encoded as: on the player's 2nd card of the turn's OPENING

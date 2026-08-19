@@ -40,6 +40,11 @@ public static class PassiveStatuses
     private static readonly CounterId SealDamageThisTurnCounter = new("seal_damage_this_turn");
     private const int SealBreakThreshold = 18;
 
+    // Oath Candle: a marker the Candle carries so a cross-combatant trigger can find it (EncounterPassives),
+    // and the once-per-round latch it keeps.
+    public const string WitnessTheSealId = "witness_the_seal";
+    public static readonly CounterId WitnessedThisRoundCounter = new("witnessed_this_round");
+
     public static IReadOnlyList<StatusData> All() =>
     [
         QueueAdvances(),
@@ -48,6 +53,7 @@ public static class PassiveStatuses
         PaperSealsWax(),
         OneRemainingSeal(),
         SealIntact(),
+        WitnessTheSeal(),
     ];
 
     // "The Queue Advances" (A Very Official Line): if the player ended their turn having played 3+ cards, the
@@ -304,6 +310,23 @@ public static class PassiveStatuses
         ],
         Triggers = [],
     };
+
+    // "Witness the Seal" (Oath Candle): the marker that identifies the Candle to its encounter trigger (see
+    // EncounterPassives.WitnessTheSeal) and resets its once-per-round latch. The reset targets every carrier of
+    // the marker rather than `source`, because RoundEnded status triggers carry no bearer filter — in a fight
+    // without a Candle the selector simply finds nobody.
+    private static StatusData WitnessTheSeal()
+    {
+        var carriers = CombatantTargetSelectors.WithStatus(
+            CombatantTargetSelectors.AllCombatants, new StatusDefinitionId(WitnessTheSealId));
+
+        var program = new EffectProgram<RoundEndedTriggeredEffectContext>(
+            new SetCombatantCounterNode<RoundEndedTriggeredEffectContext>(
+                carriers, WitnessedThisRoundCounter,
+                new ConstantExpression<RoundEndedTriggeredEffectContext>(0), relative: false));
+
+        return Passive(WitnessTheSealId, "Witness the Seal", "RoundEnded", program);
+    }
 
     // Builds a hidden, non-stacking enemy status whose sole job is to carry one trigger program.
     private static StatusData Passive<TContext>(

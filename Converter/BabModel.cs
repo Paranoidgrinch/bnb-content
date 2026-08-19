@@ -114,7 +114,11 @@ public sealed record BabEncounter(
     string Difficulty,
     IReadOnlyList<string> Enemies,
     double? Weight,
-    IReadOnlyList<string>? Tags);
+    IReadOnlyList<string>? Tags,
+    // Per-ROSTER health, positionally parallel to Enemies: multi-enemy encounters field their bodies at
+    // reduced HP ("Duo HP Scaling"), and the same identity appears at different HP in different encounters.
+    // A null entry (or the whole list absent) keeps the enemy's own max_hp.
+    IReadOnlyList<int?>? EnemyHealth = null);
 
 public sealed record BabEvent(
     string Id,

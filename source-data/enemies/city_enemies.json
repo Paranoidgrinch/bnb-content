@@ -5597,7 +5597,7 @@
   {
     "id": "oath_candle",
     "name": "Oath Candle",
-    "max_hp": 20,
+    "max_hp": 39,
     "intent_pattern": "cycle",
     "intents": [
       {
@@ -5608,7 +5608,7 @@
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 4
+            "amount": 8
           }
         ]
       },
@@ -5627,25 +5627,26 @@
       {
         "id": "smoke_written_oath",
         "name": "Smoke-Written Oath",
-        "intent_type": "mixed",
+        "intent_type": "debuff",
         "actions": [
           {
-            "type": "deal_damage",
+            "type": "apply_status",
             "target": "player",
-            "amount": 3
+            "status": "doubt",
+            "amount": 1
           },
           {
             "type": "apply_status",
             "target": "player",
             "status": "paperwork",
             "amount": 1
-          },
-          {
-            "type": "gain_block",
-            "target": "owner",
-            "amount": 2
           }
         ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "witness_the_seal"
       }
     ],
     "tags": [

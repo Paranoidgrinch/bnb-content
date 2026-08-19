@@ -65,8 +65,38 @@ internal static class FightProbe
         };
 
         return new EncounterDefinition(new EncounterId($"probe.{enemyId}"), [probe],
-            [new ResourceSpec(StandardCombatIds.EnergyResource, energy, energy)]);
+            [new ResourceSpec(StandardCombatIds.EnergyResource, energy, energy)],
+            triggeredEffects: EncounterPassives.ForEnemy(enemyId));
     }
+
+    // A multi-enemy probe: each member is an authored enemy narrowed to one intent, optionally at the reduced
+    // HP its encounter fields it at. Roster order is turn order.
+    public static EncounterDefinition Roster(
+        string probeId, params (string EnemyId, string IntentId, int? MaxHealth)[] members)
+    {
+        var roster = members.Select(m =>
+        {
+            var authored = Game.Encounters.SelectMany(e => e.Enemies).FirstOrDefault(e => e.Id == m.EnemyId)
+                ?? throw new InvalidOperationException($"no authored encounter fields '{m.EnemyId}'");
+            return authored with
+            {
+                Actions = [new EnemyActionDefinitionId($"{m.EnemyId}.{m.IntentId}")],
+                MaxHealth = m.MaxHealth ?? authored.MaxHealth,
+            };
+        }).ToList();
+
+        // Cross-combatant passives live on the ENCOUNTER, so a probe must carry them exactly as EncounterMapper
+        // would — otherwise a passive silently does nothing in the very test meant to prove it.
+        return new EncounterDefinition(new EncounterId($"probe.{probeId}"), roster,
+            [new ResourceSpec(StandardCombatIds.EnergyResource, 3, 3)],
+            triggeredEffects: members.Select(m => m.EnemyId).Distinct()
+                .SelectMany(EncounterPassives.ForEnemy).ToList());
+    }
+
+    // The REAL authored encounter, exactly as the game fields it (roster, per-encounter HP, intents).
+    public static EncounterDefinition Authored(string encounterId) =>
+        Game.Encounters.FirstOrDefault(e => e.Id.Value == encounterId)
+        ?? throw new InvalidOperationException($"no encounter '{encounterId}'");
 
     // Starts the probe fight and hands back the live playback plus the enemy's id.
     public static (RunPlayback Play, InteractiveRunSession Session, CombatantId EnemyId) Start(
