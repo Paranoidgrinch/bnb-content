@@ -3259,7 +3259,7 @@
   {
     "id": "wax_notary",
     "name": "Wax Notary",
-    "max_hp": 38,
+    "max_hp": 48,
     "intent_pattern": "cycle",
     "intents": [
       {
@@ -3270,7 +3270,7 @@
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 6
+            "amount": 7
           },
           {
             "type": "apply_status",
@@ -3288,26 +3288,26 @@
           {
             "type": "gain_block",
             "target": "owner",
-            "amount": 10
+            "amount": 12
           }
         ]
       },
       {
-        "id": "seal_the_copy",
-        "name": "Seal the Copy",
-        "intent_type": "mixed",
+        "id": "notarial_mallet",
+        "name": "Notarial Mallet",
+        "intent_type": "attack",
         "actions": [
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 4
-          },
-          {
-            "type": "gain_block",
-            "target": "owner",
-            "amount": 6
+            "amount": 13
           }
         ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "paper_seals_wax"
       }
     ],
     "tags": [
@@ -5273,7 +5273,7 @@
   {
     "id": "sealed_door_ward",
     "name": "Sealed Door Ward",
-    "max_hp": 46,
+    "max_hp": 56,
     "intent_pattern": "cycle",
     "intents": [
       {
@@ -5284,7 +5284,7 @@
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 7
+            "amount": 13
           }
         ]
       },
@@ -5296,7 +5296,7 @@
           {
             "type": "gain_block",
             "target": "owner",
-            "amount": 13
+            "amount": 14
           }
         ]
       },
@@ -5314,9 +5314,17 @@
           {
             "type": "gain_block",
             "target": "owner",
-            "amount": 7
+            "amount": 8
           }
         ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "one_remaining_seal"
+      },
+      {
+        "status": "seal_intact"
       }
     ],
     "tags": [

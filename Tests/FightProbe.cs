@@ -16,18 +16,38 @@ internal static class FightProbe
     public static readonly RunBlueprint Game =
         BlueprintAssembler.Build(BabData.Load(TestData.Directory), seed: 20260717);
 
-    public static RunBlueprint OneFight(EncounterDefinition probe) => Game with
+    // `deck` stacks the hero's deck with authored cards (repeated as given) when a test needs a specific card
+    // in hand — e.g. one that files Paperwork onto an enemy. Empty ⇒ the character's real starting deck.
+    public static RunBlueprint OneFight(EncounterDefinition probe, IReadOnlyList<string>? deck = null)
     {
-        Encounters = [probe],
-        Map = new RunMap([new Node(new NodeId("probe"), StandardRunIds.CombatNode, new EncounterRef(probe.Id))]),
-    };
+        var blueprint = Game with
+        {
+            Encounters = [probe],
+            Map = new RunMap([new Node(new NodeId("probe"), StandardRunIds.CombatNode, new EncounterRef(probe.Id))]),
+        };
+
+        return deck is null or { Count: 0 }
+            ? blueprint
+            : blueprint with
+            {
+                Deck = deck.Select(id => new CardDefinitionId(id)).ToList(),
+                Start = blueprint.Start with { Deck = deck.Select(id => new CardDefinitionId(id)).ToList() },
+                Characters = [],
+            };
+    }
 
     // A solo encounter with one AUTHORED enemy: its real roster entry (HP, passives carried from the first
     // bell, intent rules) is taken from the converted game and only narrowed to the intent under test, plus any
     // extra statuses the test wants it to open with. Hand-building the entry instead would quietly drop the
     // enemy's own starting statuses — the very passives most tests are about.
     public static EncounterDefinition Solo(
-        string enemyId, string intentId, params (string Status, int Stacks)[] startingStatuses)
+        string enemyId, string intentId, params (string Status, int Stacks)[] startingStatuses) =>
+        Solo(enemyId, intentId, energy: 3, startingStatuses);
+
+    // `energy` raises the hero's per-turn energy when a test needs several cards inside ONE player turn (the
+    // Ward's per-turn damage threshold, say) — the fight is a probe, not a balance sample.
+    public static EncounterDefinition Solo(
+        string enemyId, string intentId, int energy, params (string Status, int Stacks)[] startingStatuses)
     {
         var authored = Game.Encounters
             .SelectMany(e => e.Enemies)
@@ -45,14 +65,15 @@ internal static class FightProbe
         };
 
         return new EncounterDefinition(new EncounterId($"probe.{enemyId}"), [probe],
-            [new ResourceSpec(StandardCombatIds.EnergyResource, 3, 3)]);
+            [new ResourceSpec(StandardCombatIds.EnergyResource, energy, energy)]);
     }
 
     // Starts the probe fight and hands back the live playback plus the enemy's id.
-    public static (RunPlayback Play, InteractiveRunSession Session, CombatantId EnemyId) Start(EncounterDefinition probe)
+    public static (RunPlayback Play, InteractiveRunSession Session, CombatantId EnemyId) Start(
+        EncounterDefinition probe, IReadOnlyList<string>? deck = null)
     {
         var play = new RunPlayback(() => { });
-        play.Start(OneFight(probe), seed: 1, interactive: true);
+        play.Start(OneFight(probe, deck), seed: 1, interactive: true);
         var session = play.Session!;
         Assert.Null(play.Error);
         while (session.IsAwaitingInterlude)

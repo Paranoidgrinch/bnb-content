@@ -108,6 +108,102 @@ public class EnemySignatureCombatTests
         Assert.Equal(2, FightProbe.StacksOf(mites, "bookworm"));
     }
 
+    // Wax Notary, "Paper Seals Wax": the FIRST Paperwork it receives each player turn seals into 5 Block; the
+    // Paperwork stays and further filings that turn give nothing. Form 12-B (0 cost, 1 Paperwork) files them.
+    [Fact]
+    public void The_notary_seals_the_first_paperwork_of_each_player_turn_into_block()
+    {
+        var probe = FightProbe.Solo("wax_notary", "notarial_mallet");
+        var (play, session, notaryId) = FightProbe.Start(probe, Enumerable.Repeat("form_12_b", 10).ToList());
+
+        Assert.Equal(0, BlockOf(play, notaryId));
+
+        File(play, session, notaryId);
+        Assert.Equal(1, FightProbe.StacksOf(Enemy(play, notaryId), "paperwork")); // the filing stays
+        Assert.Equal(5, BlockOf(play, notaryId));
+
+        File(play, session, notaryId); // same turn: the seal is already spent
+        Assert.Equal(2, FightProbe.StacksOf(Enemy(play, notaryId), "paperwork"));
+        Assert.Equal(5, BlockOf(play, notaryId));
+
+        play.CombatDriver!.EndTurn(); // the Notary acts; its Block clears at its own turn start
+        Assert.Null(session.Error);
+        Assert.Equal(0, BlockOf(play, notaryId));
+
+        File(play, session, notaryId); // a new player turn re-arms the seal
+        Assert.Equal(5, BlockOf(play, notaryId));
+    }
+
+    // Sealed Door Ward, "One Remaining Seal": while the seal holds, the first card hit each player turn deals 4
+    // less — and 18+ HP damage inside one player turn breaks it for good, with 6 direct damage as recoil.
+    [Fact]
+    public void The_wards_seal_dampens_the_first_hit_each_turn_until_a_big_turn_breaks_it()
+    {
+        var probe = FightProbe.Solo("sealed_door_ward", "barred_slam", energy: 9);
+        var (play, session, wardId) = FightProbe.Start(probe, Enumerable.Repeat("paper_cut", 10).ToList());
+
+        // 6-damage Paper Cuts: 2 (dampened), then 6, 6 — 14 banked, seal still intact.
+        Cut(play, session, wardId);
+        Assert.Equal(56 - 2, Enemy(play, wardId).Health.Current);
+        Cut(play, session, wardId);
+        Cut(play, session, wardId);
+        Assert.Equal(56 - 14, Enemy(play, wardId).Health.Current);
+        Assert.Equal(1, FightProbe.StacksOf(Enemy(play, wardId), "one_remaining_seal"));
+
+        // The fourth hit crosses 18 for the turn: the seal breaks and takes 6 with it.
+        Cut(play, session, wardId);
+        Assert.Equal(0, FightProbe.StacksOf(Enemy(play, wardId), "one_remaining_seal"));
+        Assert.Equal(0, FightProbe.StacksOf(Enemy(play, wardId), "seal_intact"));
+        Assert.Equal(56 - 20 - 6, Enemy(play, wardId).Health.Current);
+
+        // Permanently: the next player turn opens with no dampener, so a full 6 lands.
+        play.CombatDriver!.EndTurn();
+        Assert.Null(session.Error);
+        var before = Enemy(play, wardId).Health.Current;
+        Cut(play, session, wardId);
+        Assert.Equal(before - 6, Enemy(play, wardId).Health.Current);
+    }
+
+    // Below the threshold the seal survives the turn and re-arms for the next one.
+    [Fact]
+    public void The_wards_seal_re_arms_when_the_turn_stayed_small()
+    {
+        var probe = FightProbe.Solo("sealed_door_ward", "barred_slam", energy: 9);
+        var (play, session, wardId) = FightProbe.Start(probe, Enumerable.Repeat("paper_cut", 10).ToList());
+
+        Cut(play, session, wardId);
+        Cut(play, session, wardId); // 2 + 6 = 8 banked, well under 18
+        play.CombatDriver!.EndTurn();
+        Assert.Null(session.Error);
+
+        Assert.Equal(1, FightProbe.StacksOf(Enemy(play, wardId), "one_remaining_seal"));
+        var before = Enemy(play, wardId).Health.Current;
+        Cut(play, session, wardId);
+        Assert.Equal(before - 2, Enemy(play, wardId).Health.Current); // dampened again
+    }
+
+    private static void Cut(RunPlayback play, InteractiveRunSession session, CombatantId enemyId)
+    {
+        var card = play.CombatDriver!.Current!.Hand.First(c => c.DefinitionId.value == "paper_cut");
+        play.CombatDriver.PlayCard(card.Id, enemyId);
+        Assert.Null(session.Error);
+    }
+
+    private static void File(RunPlayback play, InteractiveRunSession session, CombatantId enemyId)
+    {
+        var form = play.CombatDriver!.Current!.Hand.First(c => c.DefinitionId.value == "form_12_b");
+        play.CombatDriver.PlayCard(form.Id, enemyId);
+        Assert.Null(session.Error);
+    }
+
+    private static CombatantState Enemy(RunPlayback play, CombatantId enemyId) =>
+        play.CombatDriver!.Current!.State.GetCombatant(enemyId);
+
+    private static int BlockOf(RunPlayback play, CombatantId enemyId) =>
+        Enemy(play, enemyId).DefensivePools.TryGetValue(StandardCombatIds.BlockDefensivePool, out var pool)
+            ? pool.Current
+            : 0;
+
     [Fact]
     public void The_leechs_telegraph_spells_out_the_margin_formula()
     {
