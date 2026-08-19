@@ -119,6 +119,32 @@ public class FinalEnemyMappingTests
         Assert.Equal(CombatantTargetSelectors.Source.GetType(), doubt.TargetSelector.GetType());
     }
 
+    // Queue-Crier Homunculus ("Lost Your Place", Panic cash-out): the passive is baked into its one pure
+    // ATTACK intent — 7 damage +3 per Panic, capped +9, Panic not consumed (see ADAPTATIONS.md).
+    [Fact]
+    public void The_crier_bakes_lost_your_place_into_its_attack_intent()
+    {
+        var crier = Data.Enemies.Single(e => e.Id == "queue_crier_homunculus");
+        Assert.Equal(31, crier.MaxHp);
+        Assert.Null(crier.StartingStatuses); // pure scaling: no passive status, no intent rule
+        Assert.Null(crier.IntentRules);
+
+        var actions = EnemyMapper.MapActions([crier]);
+        var call = Assert.Single(actions, a => a.Id == "queue_crier_homunculus.call_a_number_that_is_not_yours");
+        // The telegraph carries the whole formula — the player plans against base, bonus AND cap.
+        Assert.Equal("Call a Number That Is Not Yours · 7 dmg +3 per Panic (max +9)", call.Intent.Label);
+
+        var amount = CombatProgramModel.Classify(call.Program)!.Amount!;
+        Assert.Equal(7, amount.LeftOrDefault.Const);                    // base 7
+        Assert.Equal(9, amount.RightOrDefault.RightOrDefault.Const);    // cap +9
+        Assert.Equal("panic", amount.RightOrDefault.LeftOrDefault.LeftOrDefault.ReadId);
+
+        // The other two intents stay flat — the cash-out is one telegraphed hit per cycle.
+        var recite = Assert.Single(actions, a => a.Id == "queue_crier_homunculus.recite_the_waiting_order");
+        Assert.Equal("sequence", CombatProgramModel.Classify(recite.Program)!.Kind);
+        Assert.DoesNotContain(actions, a => a.Id.Contains("monotone_rebuke")); // demo filler is gone
+    }
+
     // DSL: "N damage + X per <status>, capped at Y" → dealDamage(add(N, min(mul(statusStacks, X), Y))).
     // (Queue-Crier's "Lost Your Place": 7 + min(panic*3, 9).)
     [Fact]

@@ -16287,16 +16287,16 @@
       "Enemies": [
         {
           "Id": "queue_crier_homunculus",
-          "MaxHealth": 25,
+          "MaxHealth": 31,
           "Actions": [
             {
               "value": "queue_crier_homunculus.recite_the_waiting_order"
             },
             {
-              "value": "queue_crier_homunculus.monotone_rebuke_first"
+              "value": "queue_crier_homunculus.call_a_number_that_is_not_yours"
             },
             {
-              "value": "queue_crier_homunculus.monotone_rebuke_second"
+              "value": "queue_crier_homunculus.move_everyone_back_one_place"
             }
           ],
           "StartingStatuses": null,
@@ -24881,7 +24881,7 @@
       "DescriptionKey": null,
       "Intent": {
         "Kind": "Attack",
-        "Label": "Delay Has Costs \u00B7 3\u00D7 per Fatigue"
+        "Label": "Delay Has Costs \u00B7 dmg \u002B3 per Fatigue"
       },
       "Program": {
         "Id": {
@@ -28404,7 +28404,7 @@
       "DescriptionKey": null,
       "Intent": {
         "Kind": "Attack",
-        "Label": "Crowd Pressure \u00B7 3\u00D7 per Panic"
+        "Label": "Crowd Pressure \u00B7 dmg \u002B3 per Panic"
       },
       "Program": {
         "Id": {
@@ -29224,7 +29224,7 @@
       "DescriptionKey": null,
       "Intent": {
         "Kind": "Attack",
-        "Label": "Read Against You \u00B7 3\u00D7 per Paperwork"
+        "Label": "Read Against You \u00B7 dmg \u002B3 per Paperwork"
       },
       "Program": {
         "Id": {
@@ -33760,70 +33760,80 @@
       }
     },
     {
-      "Id": "queue_crier_homunculus.monotone_rebuke_first",
+      "Id": "queue_crier_homunculus.call_a_number_that_is_not_yours",
       "PackageId": "scenario",
-      "NameKey": "Monotone Rebuke",
+      "NameKey": "Call a Number That Is Not Yours",
       "DescriptionKey": null,
       "Intent": {
-        "Kind": "Special",
-        "Label": "Monotone Rebuke \u00B7 6 dmg, Panic \u002B1"
+        "Kind": "Attack",
+        "Label": "Call a Number That Is Not Yours \u00B7 7 dmg \u002B3 per Panic (max \u002B9)"
       },
       "Program": {
         "Id": {
           "Value": "(unnamed)"
         },
         "Root": {
-          "kind": "node.sequence",
+          "kind": "node.dealDamage",
           "value": {
-            "Children": [
-              {
-                "kind": "node.dealDamage",
-                "value": {
-                  "TargetSelector": {
-                    "kind": "sel.eventTarget",
-                    "value": {
-                      "Cardinality": "ZeroOrOne",
-                      "RequiredContextCapabilities": "EventTarget"
+            "TargetSelector": {
+              "kind": "sel.eventTarget",
+              "value": {
+                "Cardinality": "ZeroOrOne",
+                "RequiredContextCapabilities": "EventTarget"
+              }
+            },
+            "Amount": {
+              "kind": "add",
+              "value": {
+                "Left": {
+                  "kind": "const",
+                  "value": {
+                    "Value": 7
+                  }
+                },
+                "Right": {
+                  "kind": "min",
+                  "value": {
+                    "Left": {
+                      "kind": "multiply",
+                      "value": {
+                        "Left": {
+                          "kind": "combatantStatusStacks",
+                          "value": {
+                            "Selector": {
+                              "kind": "sel.eventTarget",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "EventTarget"
+                              }
+                            },
+                            "StatusId": {
+                              "value": "panic"
+                            }
+                          }
+                        },
+                        "Right": {
+                          "kind": "const",
+                          "value": {
+                            "Value": 3
+                          }
+                        }
+                      }
+                    },
+                    "Right": {
+                      "kind": "const",
+                      "value": {
+                        "Value": 9
+                      }
                     }
-                  },
-                  "Amount": {
-                    "kind": "const",
-                    "value": {
-                      "Value": 6
-                    }
-                  },
-                  "ResultKey": null,
-                  "IgnoresBlock": false,
-                  "Element": null,
-                  "Children": []
-                }
-              },
-              {
-                "kind": "node.applyStatus",
-                "value": {
-                  "TargetSelector": {
-                    "kind": "sel.eventTarget",
-                    "value": {
-                      "Cardinality": "ZeroOrOne",
-                      "RequiredContextCapabilities": "EventTarget"
-                    }
-                  },
-                  "StatusDefinitionId": {
-                    "value": "panic"
-                  },
-                  "Stacks": {
-                    "kind": "const",
-                    "value": {
-                      "Value": 1
-                    }
-                  },
-                  "DurationTurns": 0,
-                  "Charges": 0,
-                  "ResultKey": null,
-                  "Children": []
+                  }
                 }
               }
-            ]
+            },
+            "ResultKey": null,
+            "IgnoresBlock": false,
+            "Element": null,
+            "Children": []
           }
         },
         "MaxNodeDepth": 64,
@@ -33831,13 +33841,13 @@
       }
     },
     {
-      "Id": "queue_crier_homunculus.monotone_rebuke_second",
+      "Id": "queue_crier_homunculus.move_everyone_back_one_place",
       "PackageId": "scenario",
-      "NameKey": "Monotone Rebuke",
+      "NameKey": "Move Everyone Back One Place",
       "DescriptionKey": null,
       "Intent": {
         "Kind": "Special",
-        "Label": "Monotone Rebuke \u00B7 6 dmg, Panic \u002B1"
+        "Label": "Move Everyone Back One Place \u00B7 8 block, Panic \u002B1"
       },
       "Program": {
         "Id": {
@@ -33848,24 +33858,22 @@
           "value": {
             "Children": [
               {
-                "kind": "node.dealDamage",
+                "kind": "node.gainBlock",
                 "value": {
                   "TargetSelector": {
-                    "kind": "sel.eventTarget",
+                    "kind": "sel.source",
                     "value": {
                       "Cardinality": "ZeroOrOne",
-                      "RequiredContextCapabilities": "EventTarget"
+                      "RequiredContextCapabilities": "Source"
                     }
                   },
                   "Amount": {
                     "kind": "const",
                     "value": {
-                      "Value": 6
+                      "Value": 8
                     }
                   },
                   "ResultKey": null,
-                  "IgnoresBlock": false,
-                  "Element": null,
                   "Children": []
                 }
               },
@@ -34532,7 +34540,7 @@
       "DescriptionKey": null,
       "Intent": {
         "Kind": "Attack",
-        "Label": "Date Discrepancy \u00B7 2\u00D7 per Doubt"
+        "Label": "Date Discrepancy \u00B7 6 dmg \u002B2 per Doubt (max \u002B8)"
       },
       "Program": {
         "Id": {
@@ -40223,7 +40231,7 @@
       "DescriptionKey": null,
       "Intent": {
         "Kind": "Attack",
-        "Label": "Time Eats Back \u00B7 3\u00D7 per Fatigue"
+        "Label": "Time Eats Back \u00B7 dmg \u002B3 per Fatigue"
       },
       "Program": {
         "Id": {
@@ -42374,7 +42382,7 @@
       "DescriptionKey": null,
       "Intent": {
         "Kind": "Attack",
-        "Label": "Doubt Collects Interest \u00B7 3\u00D7 per Doubt"
+        "Label": "Doubt Collects Interest \u00B7 dmg \u002B3 per Doubt"
       },
       "Program": {
         "Id": {

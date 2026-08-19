@@ -3,11 +3,16 @@
 ## ▶ RESUME POINT (2026-08-19, bnb-content: Stage 2 complete, RogueDeck-Core @b645378)
 All engine primitives for reworked Act-I enemies are DONE + pushed. Converter authoring pattern proven
 end-to-end for owner-scoped passives, cross-combatant passives, intent rules, capped scaling. All suites
-green (RogueDeck-Core Core 1401/Scenario 684/Run 448/Sandbox 292; bnb-content 30). 4 of 25 identities final.
+green (RogueDeck-Core Core 1401/Scenario 684/Run 448/Sandbox 292; bnb-content 31). 5 of 25 identities final.
 
 **Authored so far (real final identities):**
 - Stage 1 — `a_very_official_line` (new id): full pattern (queue_advances passive + self_counter intent rule
   + special "everyone_moves" reset). city_easy_01 repointed to it.
+- Stage 1 — `queue_crier_homunculus` (31 HP): "Lost Your Place" is baked into its one pure ATTACK intent
+  (`call_a_number_that_is_not_yours` = 7 dmg +3 per Panic, cap +9, Panic not consumed); the mixed and block
+  intents stay flat. Reading documented in ADAPTATIONS.md ("Reworked Act-I identities"), which now also
+  records the opening-type + exactly-N readings of the two counter passives. `EnemyMapper.Label` now
+  telegraphs the whole scaling formula ("7 dmg +3 per Panic (max +9)") — the base was missing before.
 - **Stage 2 (Counter) — COMPLETE, all three solos:**
   - `wrong_window_scribe`: "Not This Counter" cross-combatant passive (EncounterPassives).
   - `receipt_eyed_clerk` (35 HP): the Doubt cash-out is a pure INTENT — `date_discrepancy` =
@@ -22,10 +27,11 @@ green (RogueDeck-Core Core 1401/Scenario 684/Run 448/Sandbox 292; bnb-content 30
   enemy id, keep an intent id only where the successor intent is the same mechanic.
 
 **Immediate next steps (resume here):**
-1. Stage 1 leftovers: `queue_crier_homunculus` ("Lost Your Place", the capped `damage_per_status` DSL is
-   already proven) — `number_ticket_wisp` stays DEFERRED (needs a StatusStacksReduced trigger event).
-2. Stage 3 (Form family): `filing_beetle`, `unsigned_form_ghost`, `duplicate_copy_mites`, `blank_line_leech`.
-3. The Stage-2 duo "Wrong Window, Same Queue" needs the per-roster HP override first (step 4 format gap).
+1. Stage 3 (Form family): `filing_beetle`, `unsigned_form_ghost`, `duplicate_copy_mites`, `blank_line_leech`.
+2. Then Stages 4–8 (Seal / Ordinance / Delay / Appeal / Enforcement), 4 identities each.
+3. `number_ticket_wisp` (Stage 1) stays DEFERRED — needs a StatusStacksReduced trigger event.
+4. The duos ("Wrong Window, Same Queue", "The Line Has Started Moving", …) need the per-roster HP override
+   first (step 4 format gap) — the audit gives them REDUCED per-encounter HP.
 
 **Migration learnings (apply going forward):**
 - Enemy ids OFTEN already exist in demo data → ENHANCE in place (add starting_statuses / intent_rules / a
@@ -90,7 +96,7 @@ intents need **no engine change** — passive = a status-with-triggers carried f
   `damage_per_status`/…). New effect types are added per-need when an enemy intent requires one (step 3), and
   for Act-II card marks (mark ops via RAW `EffectProgram` — not in `CombatNodeModel`). No speculative DSL.
 
-### 3. Act-I enemies (source-data + EnemyMapper) — 25 identities  *(IN PROGRESS: pattern proven, 1/25)*
+### 3. Act-I enemies (source-data + EnemyMapper) — 25 identities  *(IN PROGRESS: 5/25 final; Stage 2 complete)*
 Rewrite `source-data/enemies/city_enemies.json` to the FINAL roster with HP/intents/passives from the
 `...Standard_Encounter_Pools...(1).md` list, cross-checked against the FINAL master pool. Author each
 signature via the recipe catalogue.
