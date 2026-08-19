@@ -54,7 +54,27 @@ public static class PassiveStatuses
         OneRemainingSeal(),
         SealIntact(),
         WitnessTheSeal(),
+        Marker(BothDirectionsMandatoryId, "Both Directions Mandatory"),
     ];
+
+    // Contradictory Signpost: a pure marker so its encounter trigger can write the route counter to the
+    // Signpost and nobody else (see EncounterPassives.BothDirectionsMandatory).
+    public const string BothDirectionsMandatoryId = "both_directions_mandatory";
+    public static readonly CounterId SignpostedRouteCounter = new("signposted_route");
+
+    // A status that carries nothing but its own presence: the handle a cross-combatant trigger uses to find
+    // one specific enemy, since selectors are structural and cannot name a combatant.
+    private static StatusData Marker(string id, string name) => new()
+    {
+        Id = id,
+        NameKey = name,
+        Polarity = StatusPolarity.Neutral,
+        StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
+        UsesStacks = false,
+        Tags = [],
+        PassiveModifiers = [],
+        Triggers = [],
+    };
 
     // "The Queue Advances" (A Very Official Line): if the player ended their turn having played 3+ cards, the
     // enemy gains 1 Queue Position (capped at 3). Read at the enemy's turn start (right after the player's turn)

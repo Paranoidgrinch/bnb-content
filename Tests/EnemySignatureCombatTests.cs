@@ -208,6 +208,52 @@ public class EnemySignatureCombatTests
         Assert.Equal(5, BlockOf(play, candleId));
     }
 
+    // Contradictory Signpost, "Both Directions Mandatory": the first card of the player's turn picks the road —
+    // an Attack means Dangerous Shortcut (15), anything else the Long Administrative Route (9 + 9 Block), and
+    // playing nothing at all means No Route Listed (1 Doubt + 2 Paperwork).
+    [Theory]
+    [InlineData("paper_cut", 15, 0)]          // an attack card → the shortcut
+    [InlineData("form_12_b", 9, 9)]           // a form → the long route
+    public void The_signpost_takes_the_road_the_first_played_card_points_at(
+        string cardId, int expectedDamage, int expectedBlock)
+    {
+        var probe = FightProbe.Solo("contradictory_signpost", "turn_in_place");
+        var (play, session, signpostId) = FightProbe.Start(probe, Enumerable.Repeat(cardId, 10).ToList());
+
+        var combat = play.CombatDriver!.Current!;
+        var heroBefore = combat.State.GetCombatant(combat.HeroId).Health.Current;
+        var card = combat.Hand.First(c => c.DefinitionId.value == cardId);
+        play.CombatDriver.PlayCard(card.Id, signpostId);
+        Assert.Null(session.Error);
+
+        var heroAfterCard = play.CombatDriver.Current!.State.GetCombatant(play.CombatDriver.Current!.HeroId).Health.Current;
+        play.CombatDriver.EndTurn(); // the Signpost follows the road it was pointed down
+        Assert.Null(session.Error);
+
+        var after = play.CombatDriver.Current!;
+        Assert.Equal(heroAfterCard - expectedDamage, after.State.GetCombatant(after.HeroId).Health.Current);
+        Assert.Equal(expectedBlock, BlockOf(play, signpostId));
+    }
+
+    [Fact]
+    public void The_signpost_posts_no_route_when_the_player_plays_nothing()
+    {
+        var probe = FightProbe.Solo("contradictory_signpost", "turn_in_place");
+        var (play, session, signpostId) = FightProbe.Start(probe);
+
+        var heroBefore = play.CombatDriver!.Current!.State.GetCombatant(play.CombatDriver.Current!.HeroId).Health.Current;
+        play.CombatDriver.EndTurn();
+        Assert.Null(session.Error);
+
+        var after = play.CombatDriver.Current!;
+        var hero = after.State.GetCombatant(after.HeroId);
+        // No Route Listed deals no damage — the 2 HP lost are the hero's own new Paperwork ticking.
+        Assert.Equal(heroBefore - 2, hero.Health.Current);
+        Assert.Equal(1, FightProbe.StacksOf(hero, "doubt")); // …it files instead
+        Assert.Equal(2, FightProbe.StacksOf(hero, "paperwork"));
+        Assert.Equal(0, BlockOf(play, signpostId));
+    }
+
     private static void Cut(RunPlayback play, InteractiveRunSession session, CombatantId enemyId)
     {
         var card = play.CombatDriver!.Current!.Hand.First(c => c.DefinitionId.value == "paper_cut");

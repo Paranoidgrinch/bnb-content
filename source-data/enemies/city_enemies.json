@@ -5662,56 +5662,122 @@
   {
     "id": "contradictory_signpost",
     "name": "Contradictory Signpost",
-    "max_hp": 39,
+    "max_hp": 49,
     "intent_pattern": "cycle",
     "intents": [
       {
-        "id": "mandatory_left",
-        "name": "Mandatory Left",
-        "intent_type": "mixed",
+        "id": "turn_in_place",
+        "name": "Turn in Place",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 8
+          }
+        ]
+      },
+      {
+        "id": "dangerous_shortcut",
+        "name": "Dangerous Shortcut",
+        "intent_type": "attack",
+        "special": true,
         "actions": [
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 6
+            "amount": 15
           },
           {
-            "type": "apply_status",
-            "target": "player",
-            "status": "doubt",
-            "amount": 1
-          }
-        ]
-      },
-      {
-        "id": "mandatory_right",
-        "name": "Mandatory Right",
-        "intent_type": "mixed",
-        "actions": [
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "paperwork",
-            "amount": 1
-          },
-          {
-            "type": "gain_block",
+            "type": "set_counter",
             "target": "owner",
-            "amount": 6
+            "counter": "signposted_route",
+            "amount": 0,
+            "relative": false
           }
         ]
       },
       {
-        "id": "compulsory_detour",
-        "name": "Compulsory Detour",
-        "intent_type": "attack",
+        "id": "long_administrative_route",
+        "name": "Long Administrative Route",
+        "intent_type": "mixed",
+        "special": true,
         "actions": [
           {
             "type": "deal_damage",
             "target": "player",
             "amount": 9
+          },
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 9
+          },
+          {
+            "type": "set_counter",
+            "target": "owner",
+            "counter": "signposted_route",
+            "amount": 0,
+            "relative": false
           }
         ]
+      },
+      {
+        "id": "no_route_listed",
+        "name": "No Route Listed",
+        "intent_type": "debuff",
+        "special": true,
+        "actions": [
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "doubt",
+            "amount": 1
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "paperwork",
+            "amount": 2
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "both_directions_mandatory"
+      }
+    ],
+    "intent_rules": [
+      {
+        "condition": {
+          "kind": "self_counter",
+          "counter": "signposted_route",
+          "op": "eq",
+          "value": 1
+        },
+        "action": "dangerous_shortcut",
+        "priority": 20
+      },
+      {
+        "condition": {
+          "kind": "self_counter",
+          "counter": "signposted_route",
+          "op": "eq",
+          "value": 2
+        },
+        "action": "long_administrative_route",
+        "priority": 20
+      },
+      {
+        "condition": {
+          "kind": "opponent_cards_played",
+          "op": "eq",
+          "value": 0,
+          "last_turn": true
+        },
+        "action": "no_route_listed",
+        "priority": 10
       }
     ],
     "tags": [
