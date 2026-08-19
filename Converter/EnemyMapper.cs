@@ -114,16 +114,22 @@ public static class EncounterMapper
         BabEncounter encounter, IReadOnlyDictionary<string, BabEnemy> enemies, int startingEnergy)
     {
         var where = $"encounter '{encounter.Id}'";
+        if (encounter.EnemyHealth is { } health && health.Count != encounter.Enemies.Count)
+            throw new ConversionException(where,
+                $"enemy_health has {health.Count} entries for {encounter.Enemies.Count} enemies");
+
         var seen = new Dictionary<string, int>();
         var roster = new List<EncounterEnemy>();
-        foreach (var enemyId in encounter.Enemies)
+        for (var slot = 0; slot < encounter.Enemies.Count; slot++)
         {
+            var enemyId = encounter.Enemies[slot];
             if (!enemies.TryGetValue(enemyId, out var enemy))
                 throw new ConversionException(where, $"references unknown enemy '{enemyId}'");
             var count = seen[enemyId] = seen.TryGetValue(enemyId, out var n) ? n + 1 : 1;
             roster.Add(new EncounterEnemy(
                 count == 1 ? enemyId : $"{enemyId}#{count}",
-                enemy.MaxHp,
+                // Per-roster HP wins where the encounter states one (duos field reduced bodies).
+                encounter.EnemyHealth?[slot] ?? enemy.MaxHp,
                 // The round-robin cycle excludes SPECIAL intents; they fire only via intent rules. All intents
                 // (special or not) still get action definitions (EnemyMapper.MapActions), so rules can name them.
                 enemy.Intents.Where(i => i.Special != true)

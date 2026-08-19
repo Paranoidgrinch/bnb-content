@@ -161,6 +161,20 @@ public class FinalEnemyMappingTests
         Assert.Equal("gainBlock", nodes[1].Kind);
     }
 
+    // Duos field REDUCED bodies ("Duo HP Scaling"): the encounter's per-roster health wins over the enemy's own
+    // max_hp, positionally, so the same identity can appear at different HP in different encounters.
+    [Fact]
+    public void An_encounters_per_roster_health_overrides_the_enemys_own()
+    {
+        var enemies = Data.Enemies.ToDictionary(e => e.Id);
+        var duo = Data.Encounters.Single(e => e.Id == "city_normal_seal_08");
+        var mapped = EncounterMapper.Map(duo, enemies, Data.Bureaucrat.StartingEnergy);
+
+        Assert.Equal(56, enemies["sealed_door_ward"].MaxHp); // solo HP, untouched
+        Assert.Equal(39, mapped.Enemies.Single(e => e.Id == "sealed_door_ward").MaxHealth);
+        Assert.Equal(27, mapped.Enemies.Single(e => e.Id == "oath_candle").MaxHealth);
+    }
+
     // DSL: "N damage + X per <status>, capped at Y" → dealDamage(add(N, min(mul(statusStacks, X), Y))).
     // (Queue-Crier's "Lost Your Place": 7 + min(panic*3, 9).)
     [Fact]

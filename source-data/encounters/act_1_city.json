@@ -1034,12 +1034,16 @@
   },
   {
     "id": "city_normal_seal_08",
-    "name": "Door Under Oath",
+    "name": "Witness at the Sealed Threshold",
     "act": 1,
     "difficulty": "normal",
     "enemies": [
       "sealed_door_ward",
       "oath_candle"
+    ],
+    "enemy_health": [
+      39,
+      27
     ],
     "weight": 2,
     "tags": [

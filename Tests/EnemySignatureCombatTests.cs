@@ -182,6 +182,32 @@ public class EnemySignatureCombatTests
         Assert.Equal(before - 2, Enemy(play, wardId).Health.Current); // dampened again
     }
 
+    // Oath Candle, "Witness the Seal": the first time each round ANOTHER enemy gains Block, that enemy gains 3
+    // more. Driven in the Candle's canonical duo — it is never a solo, because there would be nothing to witness.
+    [Fact]
+    public void The_candle_tops_up_the_first_block_another_enemy_gains_each_round()
+    {
+        // The Ward guards itself (14), then the Candle guards the whole side (5) — two gains in ONE round.
+        var probe = FightProbe.Roster("witness",
+            ("sealed_door_ward", "seven_wax_seals", 39),
+            ("oath_candle", "hold_the_oath", 27));
+        var (play, session, _) = FightProbe.Start(probe);
+
+        var combat = play.CombatDriver!.Current!;
+        var wardId = combat.State.Combatants.First(c => c.Id.value.StartsWith("sealed_door_ward")).Id;
+        var candleId = combat.State.Combatants.First(c => c.Id.value.StartsWith("oath_candle")).Id;
+        Assert.Equal(39, combat.State.GetCombatant(wardId).Health.Current);
+        Assert.Equal(27, combat.State.GetCombatant(candleId).Health.Current);
+
+        play.CombatDriver.EndTurn();
+        Assert.Null(session.Error);
+
+        // Ward: 14 witnessed up to 17, then +5 from Hold the Oath — the second gain of the round is not
+        // witnessed. Candle: its own 5, never witnessed (no recursion).
+        Assert.Equal(22, BlockOf(play, wardId));
+        Assert.Equal(5, BlockOf(play, candleId));
+    }
+
     private static void Cut(RunPlayback play, InteractiveRunSession session, CombatantId enemyId)
     {
         var card = play.CombatDriver!.Current!.Hand.First(c => c.DefinitionId.value == "paper_cut");

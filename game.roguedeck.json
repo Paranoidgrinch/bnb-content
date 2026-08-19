@@ -15114,7 +15114,7 @@
       "Enemies": [
         {
           "Id": "sealed_door_ward",
-          "MaxHealth": 56,
+          "MaxHealth": 39,
           "Actions": [
             {
               "value": "sealed_door_ward.barred_slam"
@@ -15150,7 +15150,7 @@
         },
         {
           "Id": "oath_candle",
-          "MaxHealth": 20,
+          "MaxHealth": 27,
           "Actions": [
             {
               "value": "oath_candle.blue_flame_prick"
@@ -15162,7 +15162,16 @@
               "value": "oath_candle.smoke_written_oath"
             }
           ],
-          "StartingStatuses": null,
+          "StartingStatuses": [
+            {
+              "Status": {
+                "value": "witness_the_seal"
+              },
+              "Stacks": 1,
+              "DurationTurns": 0,
+              "Charges": 0
+            }
+          ],
           "DisplayName": "Oath Candle",
           "Position": null,
           "IntentRules": null
@@ -15180,7 +15189,362 @@
       "HeroStartingStatuses": [],
       "HeroDisplayName": null,
       "CardsDrawnPerTurn": null,
-      "TriggeredEffects": []
+      "TriggeredEffects": [
+        {
+          "Event": "BlockGained",
+          "Program": {
+            "Id": {
+              "Value": "(unnamed)"
+            },
+            "Root": {
+              "kind": "node.forEachTarget",
+              "value": {
+                "CollectionSelector": {
+                  "kind": "sel.alliesWithStatus",
+                  "value": {
+                    "StatusDefinitionId": {
+                      "value": "witness_the_seal"
+                    }
+                  }
+                },
+                "Body": {
+                  "kind": "node.conditional",
+                  "value": {
+                    "Condition": {
+                      "kind": "and",
+                      "value": {
+                        "Left": {
+                          "kind": "compare",
+                          "value": {
+                            "Left": {
+                              "kind": "combatantStatusStacks",
+                              "value": {
+                                "Selector": {
+                                  "kind": "sel.eventTarget",
+                                  "value": {
+                                    "Cardinality": "ZeroOrOne",
+                                    "RequiredContextCapabilities": "EventTarget"
+                                  }
+                                },
+                                "StatusId": {
+                                  "value": "witness_the_seal"
+                                }
+                              }
+                            },
+                            "Op": "Equal",
+                            "Right": {
+                              "kind": "const",
+                              "value": {
+                                "Value": 0
+                              }
+                            }
+                          }
+                        },
+                        "Right": {
+                          "kind": "compare",
+                          "value": {
+                            "Left": {
+                              "kind": "combatantCounter",
+                              "value": {
+                                "Selector": {
+                                  "kind": "sel.iterationTarget",
+                                  "value": {
+                                    "Cardinality": "ZeroOrOne"
+                                  }
+                                },
+                                "CounterId": {
+                                  "value": "witnessed_this_round"
+                                }
+                              }
+                            },
+                            "Op": "Equal",
+                            "Right": {
+                              "kind": "const",
+                              "value": {
+                                "Value": 0
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "Then": {
+                      "kind": "node.sequence",
+                      "value": {
+                        "Children": [
+                          {
+                            "kind": "node.gainBlock",
+                            "value": {
+                              "TargetSelector": {
+                                "kind": "sel.eventTarget",
+                                "value": {
+                                  "Cardinality": "ZeroOrOne",
+                                  "RequiredContextCapabilities": "EventTarget"
+                                }
+                              },
+                              "Amount": {
+                                "kind": "const",
+                                "value": {
+                                  "Value": 3
+                                }
+                              },
+                              "ResultKey": null,
+                              "Children": []
+                            }
+                          },
+                          {
+                            "kind": "node.setCombatantCounter",
+                            "value": {
+                              "TargetSelector": {
+                                "kind": "sel.iterationTarget",
+                                "value": {
+                                  "Cardinality": "ZeroOrOne"
+                                }
+                              },
+                              "CounterId": {
+                                "value": "witnessed_this_round"
+                              },
+                              "Amount": {
+                                "kind": "const",
+                                "value": {
+                                  "Value": 1
+                                }
+                              },
+                              "Relative": false,
+                              "Children": []
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    "Else": null,
+                    "Children": [
+                      {
+                        "kind": "node.sequence",
+                        "value": {
+                          "Children": [
+                            {
+                              "kind": "node.gainBlock",
+                              "value": {
+                                "TargetSelector": {
+                                  "kind": "sel.eventTarget",
+                                  "value": {
+                                    "Cardinality": "ZeroOrOne",
+                                    "RequiredContextCapabilities": "EventTarget"
+                                  }
+                                },
+                                "Amount": {
+                                  "kind": "const",
+                                  "value": {
+                                    "Value": 3
+                                  }
+                                },
+                                "ResultKey": null,
+                                "Children": []
+                              }
+                            },
+                            {
+                              "kind": "node.setCombatantCounter",
+                              "value": {
+                                "TargetSelector": {
+                                  "kind": "sel.iterationTarget",
+                                  "value": {
+                                    "Cardinality": "ZeroOrOne"
+                                  }
+                                },
+                                "CounterId": {
+                                  "value": "witnessed_this_round"
+                                },
+                                "Amount": {
+                                  "kind": "const",
+                                  "value": {
+                                    "Value": 1
+                                  }
+                                },
+                                "Relative": false,
+                                "Children": []
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                "MaxIterations": 32,
+                "Children": [
+                  {
+                    "kind": "node.conditional",
+                    "value": {
+                      "Condition": {
+                        "kind": "and",
+                        "value": {
+                          "Left": {
+                            "kind": "compare",
+                            "value": {
+                              "Left": {
+                                "kind": "combatantStatusStacks",
+                                "value": {
+                                  "Selector": {
+                                    "kind": "sel.eventTarget",
+                                    "value": {
+                                      "Cardinality": "ZeroOrOne",
+                                      "RequiredContextCapabilities": "EventTarget"
+                                    }
+                                  },
+                                  "StatusId": {
+                                    "value": "witness_the_seal"
+                                  }
+                                }
+                              },
+                              "Op": "Equal",
+                              "Right": {
+                                "kind": "const",
+                                "value": {
+                                  "Value": 0
+                                }
+                              }
+                            }
+                          },
+                          "Right": {
+                            "kind": "compare",
+                            "value": {
+                              "Left": {
+                                "kind": "combatantCounter",
+                                "value": {
+                                  "Selector": {
+                                    "kind": "sel.iterationTarget",
+                                    "value": {
+                                      "Cardinality": "ZeroOrOne"
+                                    }
+                                  },
+                                  "CounterId": {
+                                    "value": "witnessed_this_round"
+                                  }
+                                }
+                              },
+                              "Op": "Equal",
+                              "Right": {
+                                "kind": "const",
+                                "value": {
+                                  "Value": 0
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "Then": {
+                        "kind": "node.sequence",
+                        "value": {
+                          "Children": [
+                            {
+                              "kind": "node.gainBlock",
+                              "value": {
+                                "TargetSelector": {
+                                  "kind": "sel.eventTarget",
+                                  "value": {
+                                    "Cardinality": "ZeroOrOne",
+                                    "RequiredContextCapabilities": "EventTarget"
+                                  }
+                                },
+                                "Amount": {
+                                  "kind": "const",
+                                  "value": {
+                                    "Value": 3
+                                  }
+                                },
+                                "ResultKey": null,
+                                "Children": []
+                              }
+                            },
+                            {
+                              "kind": "node.setCombatantCounter",
+                              "value": {
+                                "TargetSelector": {
+                                  "kind": "sel.iterationTarget",
+                                  "value": {
+                                    "Cardinality": "ZeroOrOne"
+                                  }
+                                },
+                                "CounterId": {
+                                  "value": "witnessed_this_round"
+                                },
+                                "Amount": {
+                                  "kind": "const",
+                                  "value": {
+                                    "Value": 1
+                                  }
+                                },
+                                "Relative": false,
+                                "Children": []
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      "Else": null,
+                      "Children": [
+                        {
+                          "kind": "node.sequence",
+                          "value": {
+                            "Children": [
+                              {
+                                "kind": "node.gainBlock",
+                                "value": {
+                                  "TargetSelector": {
+                                    "kind": "sel.eventTarget",
+                                    "value": {
+                                      "Cardinality": "ZeroOrOne",
+                                      "RequiredContextCapabilities": "EventTarget"
+                                    }
+                                  },
+                                  "Amount": {
+                                    "kind": "const",
+                                    "value": {
+                                      "Value": 3
+                                    }
+                                  },
+                                  "ResultKey": null,
+                                  "Children": []
+                                }
+                              },
+                              {
+                                "kind": "node.setCombatantCounter",
+                                "value": {
+                                  "TargetSelector": {
+                                    "kind": "sel.iterationTarget",
+                                    "value": {
+                                      "Cardinality": "ZeroOrOne"
+                                    }
+                                  },
+                                  "CounterId": {
+                                    "value": "witnessed_this_round"
+                                  },
+                                  "Amount": {
+                                    "kind": "const",
+                                    "value": {
+                                      "Value": 1
+                                    }
+                                  },
+                                  "Relative": false,
+                                  "Children": []
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            "MaxNodeDepth": 64,
+            "MaxProgramSteps": 1024
+          }
+        }
+      ]
     },
     {
       "Id": {
@@ -36995,7 +37359,7 @@
       "DescriptionKey": null,
       "Intent": {
         "Kind": "Attack",
-        "Label": "Blue-Flame Prick \u00B7 4 dmg"
+        "Label": "Blue-Flame Prick \u00B7 8 dmg"
       },
       "Program": {
         "Id": {
@@ -37014,7 +37378,7 @@
             "Amount": {
               "kind": "const",
               "value": {
-                "Value": 4
+                "Value": 8
               }
             },
             "ResultKey": null,
@@ -37067,8 +37431,8 @@
       "NameKey": "Smoke-Written Oath",
       "DescriptionKey": null,
       "Intent": {
-        "Kind": "Special",
-        "Label": "Smoke-Written Oath \u00B7 3 dmg, Paperwork \u002B1, 2 block"
+        "Kind": "Debuff",
+        "Label": "Smoke-Written Oath \u00B7 Doubt \u002B1, Paperwork \u002B1"
       },
       "Program": {
         "Id": {
@@ -37079,7 +37443,7 @@
           "value": {
             "Children": [
               {
-                "kind": "node.dealDamage",
+                "kind": "node.applyStatus",
                 "value": {
                   "TargetSelector": {
                     "kind": "sel.eventTarget",
@@ -37088,15 +37452,18 @@
                       "RequiredContextCapabilities": "EventTarget"
                     }
                   },
-                  "Amount": {
+                  "StatusDefinitionId": {
+                    "value": "doubt"
+                  },
+                  "Stacks": {
                     "kind": "const",
                     "value": {
-                      "Value": 3
+                      "Value": 1
                     }
                   },
+                  "DurationTurns": 0,
+                  "Charges": 0,
                   "ResultKey": null,
-                  "IgnoresBlock": false,
-                  "Element": null,
                   "Children": []
                 }
               },
@@ -37121,26 +37488,6 @@
                   },
                   "DurationTurns": 0,
                   "Charges": 0,
-                  "ResultKey": null,
-                  "Children": []
-                }
-              },
-              {
-                "kind": "node.gainBlock",
-                "value": {
-                  "TargetSelector": {
-                    "kind": "sel.source",
-                    "value": {
-                      "Cardinality": "ZeroOrOne",
-                      "RequiredContextCapabilities": "Source"
-                    }
-                  },
-                  "Amount": {
-                    "kind": "const",
-                    "value": {
-                      "Value": 2
-                    }
-                  },
                   "ResultKey": null,
                   "Children": []
                 }
@@ -62477,6 +62824,64 @@
       "Triggers": [],
       "DeathPrevention": null,
       "DebuffBlock": null
+    },
+    {
+      "Id": "witness_the_seal",
+      "PackageId": "scenario",
+      "NameKey": "Witness the Seal",
+      "DescriptionKey": null,
+      "Polarity": "Neutral",
+      "UsesStacks": false,
+      "UsesDuration": false,
+      "UsesCharges": false,
+      "StackingBehavior": "MergeWithExistingInstance",
+      "Tags": [],
+      "PassiveModifiers": [],
+      "Triggers": [
+        {
+          "Event": "RoundEnded",
+          "Program": {
+            "Id": {
+              "Value": "(unnamed)"
+            },
+            "Root": {
+              "kind": "node.setCombatantCounter",
+              "value": {
+                "TargetSelector": {
+                  "kind": "sel.withStatus",
+                  "value": {
+                    "Inner": {
+                      "kind": "sel.allCombatants",
+                      "value": {
+                        "AliveOnly": false,
+                        "MayIncludeDownedTargets": true
+                      }
+                    },
+                    "StatusDefinitionId": {
+                      "value": "witness_the_seal"
+                    }
+                  }
+                },
+                "CounterId": {
+                  "value": "witnessed_this_round"
+                },
+                "Amount": {
+                  "kind": "const",
+                  "value": {
+                    "Value": 0
+                  }
+                },
+                "Relative": false,
+                "Children": []
+              }
+            },
+            "MaxNodeDepth": 64,
+            "MaxProgramSteps": 1024
+          }
+        }
+      ],
+      "DeathPrevention": null,
+      "DebuffBlock": null
     }
   ],
   "Relics": [
@@ -70982,7 +71387,7 @@
       },
       "city_normal_seal_08": {
         "Art": null,
-        "FlavorText": "Door Under Oath",
+        "FlavorText": "Witness at the Sealed Threshold",
         "Icon": null,
         "Rarity": null,
         "Frame": null,
