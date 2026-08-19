@@ -453,6 +453,60 @@ public class EliteCombatTests
         Assert.Equal(0, Hero(play).GetCounter(PassiveStatuses.SeizedCardsCounter));
     }
 
+    // Portcullis Judicator: the player forces the gate up by hitting hard in one turn (12 HP damage), it grinds
+    // back down whenever they do not, and an open gate means both harder rulings and 20 % more damage taken.
+    [Fact]
+    public void The_gate_rises_under_pressure_and_settles_back_down()
+    {
+        var (play, session, judicatorId) = FightProbe.Start(
+            FightProbe.Authored("city_elite_enforcement_03"), Enumerable.Repeat("paper_cut", 10).ToList());
+
+        // It opens the fight half-raised.
+        Assert.Equal(1, FightProbe.StacksOf(Enemy(play, judicatorId), PassiveStatuses.GateHalfId));
+
+        // 12 damage in one turn forces it: two Paper Cuts are 12 exactly.
+        Cut(play, session, judicatorId);
+        Assert.Equal(1, FightProbe.StacksOf(Enemy(play, judicatorId), PassiveStatuses.GateHalfId));
+        Cut(play, session, judicatorId);
+
+        // The gate is OPEN before the turn ends — the player sees the harsher band in time.
+        Assert.Equal(1, FightProbe.StacksOf(Enemy(play, judicatorId), PassiveStatuses.GateOpenId));
+        Assert.Equal(0, FightProbe.StacksOf(Enemy(play, judicatorId), PassiveStatuses.GateHalfId));
+        Assert.Equal(1, FightProbe.StacksOf(Enemy(play, judicatorId), PassiveStatuses.HeldOpenId));
+
+        // A third hit cannot climb further this turn.
+        Cut(play, session, judicatorId);
+        Assert.Equal(1, FightProbe.StacksOf(Enemy(play, judicatorId), PassiveStatuses.GateOpenId));
+
+        var heroBefore = Hero(play).Health.Current;
+        play.CombatDriver!.EndTurn();
+        Assert.Null(session.Error);
+
+        // Falling Teeth: 18, the OPEN band's opening ruling. The gate stays up — the player forced it.
+        Assert.Equal(heroBefore - 18, Hero(play).Health.Current);
+        Assert.Equal(1, FightProbe.StacksOf(Enemy(play, judicatorId), PassiveStatuses.GateOpenId));
+        Assert.Equal(0, FightProbe.StacksOf(Enemy(play, judicatorId), PassiveStatuses.HeldOpenId));
+
+        // An open gate takes 20 % more: a 6-damage Paper Cut lands as 7.
+        var gateBefore = Enemy(play, judicatorId).Health.Current;
+        Cut(play, session, judicatorId);
+        Assert.Equal(gateBefore - 7, Enemy(play, judicatorId).Health.Current);
+
+        // Ending the turn below the threshold lets it grind down again — into the HALF-RAISED band.
+        heroBefore = Hero(play).Health.Current;
+        play.CombatDriver.EndTurn();
+        Assert.Null(session.Error);
+        Assert.Equal(1, FightProbe.StacksOf(Enemy(play, judicatorId), PassiveStatuses.GateHalfId));
+        Assert.Equal(0, FightProbe.StacksOf(Enemy(play, judicatorId), PassiveStatuses.GateOpenId));
+        // The ruling was still handed down from the open gate, and the band alternates: No-Exit Order, 12.
+        Assert.Equal(heroBefore - 12, Hero(play).Health.Current);
+
+        // Another quiet turn drops it all the way to SHUT.
+        play.CombatDriver.EndTurn();
+        Assert.Null(session.Error);
+        Assert.Equal(1, FightProbe.StacksOf(Enemy(play, judicatorId), PassiveStatuses.GateShutId));
+    }
+
     private static int Marked(RunPlayback play, CombatantId ownerId, CardZone zone) =>
         play.CombatDriver!.Current!.State.GetCardZones(ownerId).GetCardsInZone(zone)
             .Count(c => c.HasMark(PassiveStatuses.InventoriedMark));

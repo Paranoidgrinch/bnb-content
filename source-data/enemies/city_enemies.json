@@ -8536,38 +8536,9 @@
   {
     "id": "portcullis_judicator",
     "name": "Portcullis Judicator",
-    "max_hp": 96,
+    "max_hp": 98,
     "intent_pattern": "cycle",
     "intents": [
-      {
-        "id": "raise_then_drop",
-        "name": "Raise, Then Drop",
-        "intent_type": "mixed",
-        "actions": [
-          {
-            "type": "gain_block",
-            "target": "owner",
-            "amount": 12
-          },
-          {
-            "type": "gain_strength",
-            "target": "owner",
-            "amount": 1
-          }
-        ]
-      },
-      {
-        "id": "barred_judgment",
-        "name": "Barred Judgment",
-        "intent_type": "attack",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 11
-          }
-        ]
-      },
       {
         "id": "iron_grid",
         "name": "Iron Grid",
@@ -8581,7 +8552,54 @@
           {
             "type": "gain_block",
             "target": "owner",
-            "amount": 8
+            "amount": 12
+          }
+        ]
+      },
+      {
+        "id": "barred_judgment",
+        "name": "Barred Judgment",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 10
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "paperwork",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "measured_descent",
+        "name": "Measured Descent",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 11
+          },
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 7
+          }
+        ]
+      },
+      {
+        "id": "passage_tax",
+        "name": "Passage Tax",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 13
           }
         ]
       },
@@ -8593,7 +8611,7 @@
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 14
+            "amount": 18
           }
         ]
       },
@@ -8603,29 +8621,155 @@
         "intent_type": "mixed",
         "actions": [
           {
-            "type": "gain_strength",
-            "target": "owner",
-            "amount": 2
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 12
           },
           {
-            "type": "gain_block",
-            "target": "owner",
-            "amount": 6
+            "type": "apply_status",
+            "target": "player",
+            "status": "fatigue",
+            "amount": 1
           }
         ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "the_gatehouse"
+      },
+      {
+        "status": "gate_half_raised"
+      }
+    ],
+    "intent_rules": [
+      {
+        "condition": {
+          "kind": "all_of",
+          "conditions": [
+            {
+              "kind": "self_status",
+              "status": "gate_open",
+              "min_stacks": 1
+            },
+            {
+              "kind": "self_counter",
+              "counter": "gate_beat",
+              "op": "eq",
+              "value": 0
+            }
+          ]
+        },
+        "action": "falling_teeth",
+        "priority": 60
+      },
+      {
+        "condition": {
+          "kind": "all_of",
+          "conditions": [
+            {
+              "kind": "self_status",
+              "status": "gate_open",
+              "min_stacks": 1
+            },
+            {
+              "kind": "self_counter",
+              "counter": "gate_beat",
+              "op": "ge",
+              "value": 1
+            }
+          ]
+        },
+        "action": "no_exit_order",
+        "priority": 59
+      },
+      {
+        "condition": {
+          "kind": "all_of",
+          "conditions": [
+            {
+              "kind": "self_status",
+              "status": "gate_half_raised",
+              "min_stacks": 1
+            },
+            {
+              "kind": "self_counter",
+              "counter": "gate_beat",
+              "op": "eq",
+              "value": 0
+            }
+          ]
+        },
+        "action": "measured_descent",
+        "priority": 50
+      },
+      {
+        "condition": {
+          "kind": "all_of",
+          "conditions": [
+            {
+              "kind": "self_status",
+              "status": "gate_half_raised",
+              "min_stacks": 1
+            },
+            {
+              "kind": "self_counter",
+              "counter": "gate_beat",
+              "op": "ge",
+              "value": 1
+            }
+          ]
+        },
+        "action": "passage_tax",
+        "priority": 49
+      },
+      {
+        "condition": {
+          "kind": "all_of",
+          "conditions": [
+            {
+              "kind": "self_status",
+              "status": "gate_shut",
+              "min_stacks": 1
+            },
+            {
+              "kind": "self_counter",
+              "counter": "gate_beat",
+              "op": "eq",
+              "value": 0
+            }
+          ]
+        },
+        "action": "iron_grid",
+        "priority": 40
+      },
+      {
+        "condition": {
+          "kind": "all_of",
+          "conditions": [
+            {
+              "kind": "self_status",
+              "status": "gate_shut",
+              "min_stacks": 1
+            },
+            {
+              "kind": "self_counter",
+              "counter": "gate_beat",
+              "op": "ge",
+              "value": 1
+            }
+          ]
+        },
+        "action": "barred_judgment",
+        "priority": 39
       }
     ],
     "tags": [
       "city",
       "enforcement",
-      "civic_force",
-      "block_pressure",
-      "strength_pressure",
-      "stage_enforcement",
-      "elite_enforcement",
-      "portcullis",
-      "judicator",
-      "gatehouse"
+      "elite",
+      "gate",
+      "stage_enforcement"
     ]
   },
   {

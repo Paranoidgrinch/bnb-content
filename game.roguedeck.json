@@ -50428,16 +50428,19 @@
       "Enemies": [
         {
           "Id": "portcullis_judicator",
-          "MaxHealth": 96,
+          "MaxHealth": 98,
           "Actions": [
             {
-              "value": "portcullis_judicator.raise_then_drop"
+              "value": "portcullis_judicator.iron_grid"
             },
             {
               "value": "portcullis_judicator.barred_judgment"
             },
             {
-              "value": "portcullis_judicator.iron_grid"
+              "value": "portcullis_judicator.measured_descent"
+            },
+            {
+              "value": "portcullis_judicator.passage_tax"
             },
             {
               "value": "portcullis_judicator.falling_teeth"
@@ -50446,10 +50449,220 @@
               "value": "portcullis_judicator.no_exit_order"
             }
           ],
-          "StartingStatuses": null,
+          "StartingStatuses": [
+            {
+              "Status": {
+                "value": "the_gatehouse"
+              },
+              "Stacks": 1,
+              "DurationTurns": 0,
+              "Charges": 0
+            },
+            {
+              "Status": {
+                "value": "gate_half_raised"
+              },
+              "Stacks": 1,
+              "DurationTurns": 0,
+              "Charges": 0
+            }
+          ],
           "DisplayName": "Portcullis Judicator",
           "Position": null,
-          "IntentRules": null
+          "IntentRules": [
+            {
+              "Condition": {
+                "kind": "intent.allOf",
+                "value": {
+                  "Conditions": [
+                    {
+                      "kind": "intent.selfHasStatus",
+                      "value": {
+                        "Status": {
+                          "value": "gate_open"
+                        },
+                        "MinStacks": 1
+                      }
+                    },
+                    {
+                      "kind": "intent.selfHasCounter",
+                      "value": {
+                        "Counter": {
+                          "value": "gate_beat"
+                        },
+                        "Op": "Equal",
+                        "Value": 0
+                      }
+                    }
+                  ]
+                }
+              },
+              "Action": {
+                "value": "portcullis_judicator.falling_teeth"
+              },
+              "Priority": 60
+            },
+            {
+              "Condition": {
+                "kind": "intent.allOf",
+                "value": {
+                  "Conditions": [
+                    {
+                      "kind": "intent.selfHasStatus",
+                      "value": {
+                        "Status": {
+                          "value": "gate_open"
+                        },
+                        "MinStacks": 1
+                      }
+                    },
+                    {
+                      "kind": "intent.selfHasCounter",
+                      "value": {
+                        "Counter": {
+                          "value": "gate_beat"
+                        },
+                        "Op": "GreaterOrEqual",
+                        "Value": 1
+                      }
+                    }
+                  ]
+                }
+              },
+              "Action": {
+                "value": "portcullis_judicator.no_exit_order"
+              },
+              "Priority": 59
+            },
+            {
+              "Condition": {
+                "kind": "intent.allOf",
+                "value": {
+                  "Conditions": [
+                    {
+                      "kind": "intent.selfHasStatus",
+                      "value": {
+                        "Status": {
+                          "value": "gate_half_raised"
+                        },
+                        "MinStacks": 1
+                      }
+                    },
+                    {
+                      "kind": "intent.selfHasCounter",
+                      "value": {
+                        "Counter": {
+                          "value": "gate_beat"
+                        },
+                        "Op": "Equal",
+                        "Value": 0
+                      }
+                    }
+                  ]
+                }
+              },
+              "Action": {
+                "value": "portcullis_judicator.measured_descent"
+              },
+              "Priority": 50
+            },
+            {
+              "Condition": {
+                "kind": "intent.allOf",
+                "value": {
+                  "Conditions": [
+                    {
+                      "kind": "intent.selfHasStatus",
+                      "value": {
+                        "Status": {
+                          "value": "gate_half_raised"
+                        },
+                        "MinStacks": 1
+                      }
+                    },
+                    {
+                      "kind": "intent.selfHasCounter",
+                      "value": {
+                        "Counter": {
+                          "value": "gate_beat"
+                        },
+                        "Op": "GreaterOrEqual",
+                        "Value": 1
+                      }
+                    }
+                  ]
+                }
+              },
+              "Action": {
+                "value": "portcullis_judicator.passage_tax"
+              },
+              "Priority": 49
+            },
+            {
+              "Condition": {
+                "kind": "intent.allOf",
+                "value": {
+                  "Conditions": [
+                    {
+                      "kind": "intent.selfHasStatus",
+                      "value": {
+                        "Status": {
+                          "value": "gate_shut"
+                        },
+                        "MinStacks": 1
+                      }
+                    },
+                    {
+                      "kind": "intent.selfHasCounter",
+                      "value": {
+                        "Counter": {
+                          "value": "gate_beat"
+                        },
+                        "Op": "Equal",
+                        "Value": 0
+                      }
+                    }
+                  ]
+                }
+              },
+              "Action": {
+                "value": "portcullis_judicator.iron_grid"
+              },
+              "Priority": 40
+            },
+            {
+              "Condition": {
+                "kind": "intent.allOf",
+                "value": {
+                  "Conditions": [
+                    {
+                      "kind": "intent.selfHasStatus",
+                      "value": {
+                        "Status": {
+                          "value": "gate_shut"
+                        },
+                        "MinStacks": 1
+                      }
+                    },
+                    {
+                      "kind": "intent.selfHasCounter",
+                      "value": {
+                        "Counter": {
+                          "value": "gate_beat"
+                        },
+                        "Op": "GreaterOrEqual",
+                        "Value": 1
+                      }
+                    }
+                  ]
+                }
+              },
+              "Action": {
+                "value": "portcullis_judicator.barred_judgment"
+              },
+              "Priority": 39
+            }
+          ]
         }
       ],
       "HeroResources": [
@@ -241663,121 +241876,13 @@
       }
     },
     {
-      "Id": "portcullis_judicator.raise_then_drop",
-      "PackageId": "scenario",
-      "NameKey": "Raise, Then Drop",
-      "DescriptionKey": null,
-      "Intent": {
-        "Kind": "Special",
-        "Label": "Raise, Then Drop \u00B7 12 block, Strength \u002B1"
-      },
-      "Program": {
-        "Id": {
-          "Value": "(unnamed)"
-        },
-        "Root": {
-          "kind": "node.sequence",
-          "value": {
-            "Children": [
-              {
-                "kind": "node.gainBlock",
-                "value": {
-                  "TargetSelector": {
-                    "kind": "sel.source",
-                    "value": {
-                      "Cardinality": "ZeroOrOne",
-                      "RequiredContextCapabilities": "Source"
-                    }
-                  },
-                  "Amount": {
-                    "kind": "const",
-                    "value": {
-                      "Value": 12
-                    }
-                  },
-                  "ResultKey": null,
-                  "Children": []
-                }
-              },
-              {
-                "kind": "node.applyStatus",
-                "value": {
-                  "TargetSelector": {
-                    "kind": "sel.source",
-                    "value": {
-                      "Cardinality": "ZeroOrOne",
-                      "RequiredContextCapabilities": "Source"
-                    }
-                  },
-                  "StatusDefinitionId": {
-                    "value": "strength"
-                  },
-                  "Stacks": {
-                    "kind": "const",
-                    "value": {
-                      "Value": 1
-                    }
-                  },
-                  "DurationTurns": 0,
-                  "Charges": 0,
-                  "ResultKey": null,
-                  "Children": []
-                }
-              }
-            ]
-          }
-        },
-        "MaxNodeDepth": 64,
-        "MaxProgramSteps": 1024
-      }
-    },
-    {
-      "Id": "portcullis_judicator.barred_judgment",
-      "PackageId": "scenario",
-      "NameKey": "Barred Judgment",
-      "DescriptionKey": null,
-      "Intent": {
-        "Kind": "Attack",
-        "Label": "Barred Judgment \u00B7 11 dmg"
-      },
-      "Program": {
-        "Id": {
-          "Value": "(unnamed)"
-        },
-        "Root": {
-          "kind": "node.dealDamage",
-          "value": {
-            "TargetSelector": {
-              "kind": "sel.eventTarget",
-              "value": {
-                "Cardinality": "ZeroOrOne",
-                "RequiredContextCapabilities": "EventTarget"
-              }
-            },
-            "Amount": {
-              "kind": "const",
-              "value": {
-                "Value": 11
-              }
-            },
-            "ResultKey": null,
-            "IgnoresBlock": false,
-            "Element": null,
-            "Children": []
-          }
-        },
-        "MaxNodeDepth": 64,
-        "MaxProgramSteps": 1024
-      }
-    },
-    {
       "Id": "portcullis_judicator.iron_grid",
       "PackageId": "scenario",
       "NameKey": "Iron Grid",
       "DescriptionKey": null,
       "Intent": {
         "Kind": "Special",
-        "Label": "Iron Grid \u00B7 8 dmg, 8 block"
+        "Label": "Iron Grid \u00B7 8 dmg, 12 block"
       },
       "Program": {
         "Id": {
@@ -241822,7 +241927,7 @@
                   "Amount": {
                     "kind": "const",
                     "value": {
-                      "Value": 8
+                      "Value": 12
                     }
                   },
                   "ResultKey": null,
@@ -241837,13 +241942,150 @@
       }
     },
     {
-      "Id": "portcullis_judicator.falling_teeth",
+      "Id": "portcullis_judicator.barred_judgment",
       "PackageId": "scenario",
-      "NameKey": "Falling Teeth",
+      "NameKey": "Barred Judgment",
+      "DescriptionKey": null,
+      "Intent": {
+        "Kind": "Special",
+        "Label": "Barred Judgment \u00B7 10 dmg, Paperwork \u002B1"
+      },
+      "Program": {
+        "Id": {
+          "Value": "(unnamed)"
+        },
+        "Root": {
+          "kind": "node.sequence",
+          "value": {
+            "Children": [
+              {
+                "kind": "node.dealDamage",
+                "value": {
+                  "TargetSelector": {
+                    "kind": "sel.eventTarget",
+                    "value": {
+                      "Cardinality": "ZeroOrOne",
+                      "RequiredContextCapabilities": "EventTarget"
+                    }
+                  },
+                  "Amount": {
+                    "kind": "const",
+                    "value": {
+                      "Value": 10
+                    }
+                  },
+                  "ResultKey": null,
+                  "IgnoresBlock": false,
+                  "Element": null,
+                  "Children": []
+                }
+              },
+              {
+                "kind": "node.applyStatus",
+                "value": {
+                  "TargetSelector": {
+                    "kind": "sel.eventTarget",
+                    "value": {
+                      "Cardinality": "ZeroOrOne",
+                      "RequiredContextCapabilities": "EventTarget"
+                    }
+                  },
+                  "StatusDefinitionId": {
+                    "value": "paperwork"
+                  },
+                  "Stacks": {
+                    "kind": "const",
+                    "value": {
+                      "Value": 1
+                    }
+                  },
+                  "DurationTurns": 0,
+                  "Charges": 0,
+                  "ResultKey": null,
+                  "Children": []
+                }
+              }
+            ]
+          }
+        },
+        "MaxNodeDepth": 64,
+        "MaxProgramSteps": 1024
+      }
+    },
+    {
+      "Id": "portcullis_judicator.measured_descent",
+      "PackageId": "scenario",
+      "NameKey": "Measured Descent",
+      "DescriptionKey": null,
+      "Intent": {
+        "Kind": "Special",
+        "Label": "Measured Descent \u00B7 11 dmg, 7 block"
+      },
+      "Program": {
+        "Id": {
+          "Value": "(unnamed)"
+        },
+        "Root": {
+          "kind": "node.sequence",
+          "value": {
+            "Children": [
+              {
+                "kind": "node.dealDamage",
+                "value": {
+                  "TargetSelector": {
+                    "kind": "sel.eventTarget",
+                    "value": {
+                      "Cardinality": "ZeroOrOne",
+                      "RequiredContextCapabilities": "EventTarget"
+                    }
+                  },
+                  "Amount": {
+                    "kind": "const",
+                    "value": {
+                      "Value": 11
+                    }
+                  },
+                  "ResultKey": null,
+                  "IgnoresBlock": false,
+                  "Element": null,
+                  "Children": []
+                }
+              },
+              {
+                "kind": "node.gainBlock",
+                "value": {
+                  "TargetSelector": {
+                    "kind": "sel.source",
+                    "value": {
+                      "Cardinality": "ZeroOrOne",
+                      "RequiredContextCapabilities": "Source"
+                    }
+                  },
+                  "Amount": {
+                    "kind": "const",
+                    "value": {
+                      "Value": 7
+                    }
+                  },
+                  "ResultKey": null,
+                  "Children": []
+                }
+              }
+            ]
+          }
+        },
+        "MaxNodeDepth": 64,
+        "MaxProgramSteps": 1024
+      }
+    },
+    {
+      "Id": "portcullis_judicator.passage_tax",
+      "PackageId": "scenario",
+      "NameKey": "Passage Tax",
       "DescriptionKey": null,
       "Intent": {
         "Kind": "Attack",
-        "Label": "Falling Teeth \u00B7 14 dmg"
+        "Label": "Passage Tax \u00B7 13 dmg"
       },
       "Program": {
         "Id": {
@@ -241862,7 +242104,46 @@
             "Amount": {
               "kind": "const",
               "value": {
-                "Value": 14
+                "Value": 13
+              }
+            },
+            "ResultKey": null,
+            "IgnoresBlock": false,
+            "Element": null,
+            "Children": []
+          }
+        },
+        "MaxNodeDepth": 64,
+        "MaxProgramSteps": 1024
+      }
+    },
+    {
+      "Id": "portcullis_judicator.falling_teeth",
+      "PackageId": "scenario",
+      "NameKey": "Falling Teeth",
+      "DescriptionKey": null,
+      "Intent": {
+        "Kind": "Attack",
+        "Label": "Falling Teeth \u00B7 18 dmg"
+      },
+      "Program": {
+        "Id": {
+          "Value": "(unnamed)"
+        },
+        "Root": {
+          "kind": "node.dealDamage",
+          "value": {
+            "TargetSelector": {
+              "kind": "sel.eventTarget",
+              "value": {
+                "Cardinality": "ZeroOrOne",
+                "RequiredContextCapabilities": "EventTarget"
+              }
+            },
+            "Amount": {
+              "kind": "const",
+              "value": {
+                "Value": 18
               }
             },
             "ResultKey": null,
@@ -241882,7 +242163,7 @@
       "DescriptionKey": null,
       "Intent": {
         "Kind": "Special",
-        "Label": "No-Exit Order \u00B7 Strength \u002B2, 6 block"
+        "Label": "No-Exit Order \u00B7 12 dmg, Fatigue \u002B1"
       },
       "Program": {
         "Id": {
@@ -241893,46 +242174,48 @@
           "value": {
             "Children": [
               {
-                "kind": "node.applyStatus",
+                "kind": "node.dealDamage",
                 "value": {
                   "TargetSelector": {
-                    "kind": "sel.source",
+                    "kind": "sel.eventTarget",
                     "value": {
                       "Cardinality": "ZeroOrOne",
-                      "RequiredContextCapabilities": "Source"
-                    }
-                  },
-                  "StatusDefinitionId": {
-                    "value": "strength"
-                  },
-                  "Stacks": {
-                    "kind": "const",
-                    "value": {
-                      "Value": 2
-                    }
-                  },
-                  "DurationTurns": 0,
-                  "Charges": 0,
-                  "ResultKey": null,
-                  "Children": []
-                }
-              },
-              {
-                "kind": "node.gainBlock",
-                "value": {
-                  "TargetSelector": {
-                    "kind": "sel.source",
-                    "value": {
-                      "Cardinality": "ZeroOrOne",
-                      "RequiredContextCapabilities": "Source"
+                      "RequiredContextCapabilities": "EventTarget"
                     }
                   },
                   "Amount": {
                     "kind": "const",
                     "value": {
-                      "Value": 6
+                      "Value": 12
                     }
                   },
+                  "ResultKey": null,
+                  "IgnoresBlock": false,
+                  "Element": null,
+                  "Children": []
+                }
+              },
+              {
+                "kind": "node.applyStatus",
+                "value": {
+                  "TargetSelector": {
+                    "kind": "sel.eventTarget",
+                    "value": {
+                      "Cardinality": "ZeroOrOne",
+                      "RequiredContextCapabilities": "EventTarget"
+                    }
+                  },
+                  "StatusDefinitionId": {
+                    "value": "fatigue"
+                  },
+                  "Stacks": {
+                    "kind": "const",
+                    "value": {
+                      "Value": 1
+                    }
+                  },
+                  "DurationTurns": 0,
+                  "Charges": 0,
                   "ResultKey": null,
                   "Children": []
                 }
@@ -264532,6 +264815,1607 @@
       "DebuffBlock": null
     },
     {
+      "Id": "gate_shut",
+      "PackageId": "scenario",
+      "NameKey": "Gate: Shut",
+      "DescriptionKey": null,
+      "Polarity": "Neutral",
+      "UsesStacks": false,
+      "UsesDuration": false,
+      "UsesCharges": false,
+      "StackingBehavior": "MergeWithExistingInstance",
+      "Tags": [],
+      "PassiveModifiers": [],
+      "Triggers": [],
+      "DeathPrevention": null,
+      "DebuffBlock": null
+    },
+    {
+      "Id": "gate_half_raised",
+      "PackageId": "scenario",
+      "NameKey": "Gate: Half-Raised",
+      "DescriptionKey": null,
+      "Polarity": "Neutral",
+      "UsesStacks": false,
+      "UsesDuration": false,
+      "UsesCharges": false,
+      "StackingBehavior": "MergeWithExistingInstance",
+      "Tags": [],
+      "PassiveModifiers": [],
+      "Triggers": [],
+      "DeathPrevention": null,
+      "DebuffBlock": null
+    },
+    {
+      "Id": "gate_open",
+      "PackageId": "scenario",
+      "NameKey": "Gate: Open",
+      "DescriptionKey": null,
+      "Polarity": "Neutral",
+      "UsesStacks": false,
+      "UsesDuration": false,
+      "UsesCharges": false,
+      "StackingBehavior": "MergeWithExistingInstance",
+      "Tags": [],
+      "PassiveModifiers": [
+        {
+          "Pipeline": "DamageReceived",
+          "Operation": "ScalePercent",
+          "Magnitude": 120,
+          "Priority": 100,
+          "RestrictDamageKind": null,
+          "AppliesToStatusId": null,
+          "RestrictSourceCardTag": null
+        }
+      ],
+      "Triggers": [],
+      "DeathPrevention": null,
+      "DebuffBlock": null
+    },
+    {
+      "Id": "held_open",
+      "PackageId": "scenario",
+      "NameKey": "Held Open",
+      "DescriptionKey": null,
+      "Polarity": "Neutral",
+      "UsesStacks": false,
+      "UsesDuration": false,
+      "UsesCharges": false,
+      "StackingBehavior": "MergeWithExistingInstance",
+      "Tags": [],
+      "PassiveModifiers": [],
+      "Triggers": [],
+      "DeathPrevention": null,
+      "DebuffBlock": null
+    },
+    {
+      "Id": "the_gatehouse",
+      "PackageId": "scenario",
+      "NameKey": "The Gatehouse",
+      "DescriptionKey": null,
+      "Polarity": "Neutral",
+      "UsesStacks": false,
+      "UsesDuration": false,
+      "UsesCharges": false,
+      "StackingBehavior": "MergeWithExistingInstance",
+      "Tags": [],
+      "PassiveModifiers": [],
+      "Triggers": [
+        {
+          "Event": "DamageTaken",
+          "Program": {
+            "Id": {
+              "Value": "(unnamed)"
+            },
+            "Root": {
+              "kind": "node.sequence",
+              "value": {
+                "Children": [
+                  {
+                    "kind": "node.setCombatantCounter",
+                    "value": {
+                      "TargetSelector": {
+                        "kind": "sel.eventTarget",
+                        "value": {
+                          "Cardinality": "ZeroOrOne",
+                          "RequiredContextCapabilities": "EventTarget"
+                        }
+                      },
+                      "CounterId": {
+                        "value": "gate_pressure"
+                      },
+                      "Amount": {
+                        "kind": "eventAmount",
+                        "value": {}
+                      },
+                      "Relative": true,
+                      "Children": []
+                    }
+                  },
+                  {
+                    "kind": "node.conditional",
+                    "value": {
+                      "Condition": {
+                        "kind": "and",
+                        "value": {
+                          "Left": {
+                            "kind": "compare",
+                            "value": {
+                              "Left": {
+                                "kind": "add",
+                                "value": {
+                                  "Left": {
+                                    "kind": "combatantCounter",
+                                    "value": {
+                                      "Selector": {
+                                        "kind": "sel.eventTarget",
+                                        "value": {
+                                          "Cardinality": "ZeroOrOne",
+                                          "RequiredContextCapabilities": "EventTarget"
+                                        }
+                                      },
+                                      "CounterId": {
+                                        "value": "gate_pressure"
+                                      }
+                                    }
+                                  },
+                                  "Right": {
+                                    "kind": "eventAmount",
+                                    "value": {}
+                                  }
+                                }
+                              },
+                              "Op": "GreaterOrEqual",
+                              "Right": {
+                                "kind": "const",
+                                "value": {
+                                  "Value": 12
+                                }
+                              }
+                            }
+                          },
+                          "Right": {
+                            "kind": "compare",
+                            "value": {
+                              "Left": {
+                                "kind": "combatantStatusStacks",
+                                "value": {
+                                  "Selector": {
+                                    "kind": "sel.eventTarget",
+                                    "value": {
+                                      "Cardinality": "ZeroOrOne",
+                                      "RequiredContextCapabilities": "EventTarget"
+                                    }
+                                  },
+                                  "StatusId": {
+                                    "value": "held_open"
+                                  }
+                                }
+                              },
+                              "Op": "Equal",
+                              "Right": {
+                                "kind": "const",
+                                "value": {
+                                  "Value": 0
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "Then": {
+                        "kind": "node.sequence",
+                        "value": {
+                          "Children": [
+                            {
+                              "kind": "node.applyStatus",
+                              "value": {
+                                "TargetSelector": {
+                                  "kind": "sel.eventTarget",
+                                  "value": {
+                                    "Cardinality": "ZeroOrOne",
+                                    "RequiredContextCapabilities": "EventTarget"
+                                  }
+                                },
+                                "StatusDefinitionId": {
+                                  "value": "held_open"
+                                },
+                                "Stacks": {
+                                  "kind": "const",
+                                  "value": {
+                                    "Value": 1
+                                  }
+                                },
+                                "DurationTurns": 0,
+                                "Charges": 0,
+                                "ResultKey": null,
+                                "Children": []
+                              }
+                            },
+                            {
+                              "kind": "node.conditional",
+                              "value": {
+                                "Condition": {
+                                  "kind": "compare",
+                                  "value": {
+                                    "Left": {
+                                      "kind": "combatantStatusStacks",
+                                      "value": {
+                                        "Selector": {
+                                          "kind": "sel.eventTarget",
+                                          "value": {
+                                            "Cardinality": "ZeroOrOne",
+                                            "RequiredContextCapabilities": "EventTarget"
+                                          }
+                                        },
+                                        "StatusId": {
+                                          "value": "gate_half_raised"
+                                        }
+                                      }
+                                    },
+                                    "Op": "Greater",
+                                    "Right": {
+                                      "kind": "const",
+                                      "value": {
+                                        "Value": 0
+                                      }
+                                    }
+                                  }
+                                },
+                                "Then": {
+                                  "kind": "node.sequence",
+                                  "value": {
+                                    "Children": [
+                                      {
+                                        "kind": "node.removeStatus",
+                                        "value": {
+                                          "TargetSelector": {
+                                            "kind": "sel.eventTarget",
+                                            "value": {
+                                              "Cardinality": "ZeroOrOne",
+                                              "RequiredContextCapabilities": "EventTarget"
+                                            }
+                                          },
+                                          "StatusDefinitionId": {
+                                            "value": "gate_half_raised"
+                                          },
+                                          "ResultKey": null,
+                                          "Children": []
+                                        }
+                                      },
+                                      {
+                                        "kind": "node.applyStatus",
+                                        "value": {
+                                          "TargetSelector": {
+                                            "kind": "sel.eventTarget",
+                                            "value": {
+                                              "Cardinality": "ZeroOrOne",
+                                              "RequiredContextCapabilities": "EventTarget"
+                                            }
+                                          },
+                                          "StatusDefinitionId": {
+                                            "value": "gate_open"
+                                          },
+                                          "Stacks": {
+                                            "kind": "const",
+                                            "value": {
+                                              "Value": 1
+                                            }
+                                          },
+                                          "DurationTurns": 0,
+                                          "Charges": 0,
+                                          "ResultKey": null,
+                                          "Children": []
+                                        }
+                                      }
+                                    ]
+                                  }
+                                },
+                                "Else": null,
+                                "Children": [
+                                  {
+                                    "kind": "node.sequence",
+                                    "value": {
+                                      "Children": [
+                                        {
+                                          "kind": "node.removeStatus",
+                                          "value": {
+                                            "TargetSelector": {
+                                              "kind": "sel.eventTarget",
+                                              "value": {
+                                                "Cardinality": "ZeroOrOne",
+                                                "RequiredContextCapabilities": "EventTarget"
+                                              }
+                                            },
+                                            "StatusDefinitionId": {
+                                              "value": "gate_half_raised"
+                                            },
+                                            "ResultKey": null,
+                                            "Children": []
+                                          }
+                                        },
+                                        {
+                                          "kind": "node.applyStatus",
+                                          "value": {
+                                            "TargetSelector": {
+                                              "kind": "sel.eventTarget",
+                                              "value": {
+                                                "Cardinality": "ZeroOrOne",
+                                                "RequiredContextCapabilities": "EventTarget"
+                                              }
+                                            },
+                                            "StatusDefinitionId": {
+                                              "value": "gate_open"
+                                            },
+                                            "Stacks": {
+                                              "kind": "const",
+                                              "value": {
+                                                "Value": 1
+                                              }
+                                            },
+                                            "DurationTurns": 0,
+                                            "Charges": 0,
+                                            "ResultKey": null,
+                                            "Children": []
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            },
+                            {
+                              "kind": "node.conditional",
+                              "value": {
+                                "Condition": {
+                                  "kind": "compare",
+                                  "value": {
+                                    "Left": {
+                                      "kind": "combatantStatusStacks",
+                                      "value": {
+                                        "Selector": {
+                                          "kind": "sel.eventTarget",
+                                          "value": {
+                                            "Cardinality": "ZeroOrOne",
+                                            "RequiredContextCapabilities": "EventTarget"
+                                          }
+                                        },
+                                        "StatusId": {
+                                          "value": "gate_shut"
+                                        }
+                                      }
+                                    },
+                                    "Op": "Greater",
+                                    "Right": {
+                                      "kind": "const",
+                                      "value": {
+                                        "Value": 0
+                                      }
+                                    }
+                                  }
+                                },
+                                "Then": {
+                                  "kind": "node.sequence",
+                                  "value": {
+                                    "Children": [
+                                      {
+                                        "kind": "node.removeStatus",
+                                        "value": {
+                                          "TargetSelector": {
+                                            "kind": "sel.eventTarget",
+                                            "value": {
+                                              "Cardinality": "ZeroOrOne",
+                                              "RequiredContextCapabilities": "EventTarget"
+                                            }
+                                          },
+                                          "StatusDefinitionId": {
+                                            "value": "gate_shut"
+                                          },
+                                          "ResultKey": null,
+                                          "Children": []
+                                        }
+                                      },
+                                      {
+                                        "kind": "node.applyStatus",
+                                        "value": {
+                                          "TargetSelector": {
+                                            "kind": "sel.eventTarget",
+                                            "value": {
+                                              "Cardinality": "ZeroOrOne",
+                                              "RequiredContextCapabilities": "EventTarget"
+                                            }
+                                          },
+                                          "StatusDefinitionId": {
+                                            "value": "gate_half_raised"
+                                          },
+                                          "Stacks": {
+                                            "kind": "const",
+                                            "value": {
+                                              "Value": 1
+                                            }
+                                          },
+                                          "DurationTurns": 0,
+                                          "Charges": 0,
+                                          "ResultKey": null,
+                                          "Children": []
+                                        }
+                                      }
+                                    ]
+                                  }
+                                },
+                                "Else": null,
+                                "Children": [
+                                  {
+                                    "kind": "node.sequence",
+                                    "value": {
+                                      "Children": [
+                                        {
+                                          "kind": "node.removeStatus",
+                                          "value": {
+                                            "TargetSelector": {
+                                              "kind": "sel.eventTarget",
+                                              "value": {
+                                                "Cardinality": "ZeroOrOne",
+                                                "RequiredContextCapabilities": "EventTarget"
+                                              }
+                                            },
+                                            "StatusDefinitionId": {
+                                              "value": "gate_shut"
+                                            },
+                                            "ResultKey": null,
+                                            "Children": []
+                                          }
+                                        },
+                                        {
+                                          "kind": "node.applyStatus",
+                                          "value": {
+                                            "TargetSelector": {
+                                              "kind": "sel.eventTarget",
+                                              "value": {
+                                                "Cardinality": "ZeroOrOne",
+                                                "RequiredContextCapabilities": "EventTarget"
+                                              }
+                                            },
+                                            "StatusDefinitionId": {
+                                              "value": "gate_half_raised"
+                                            },
+                                            "Stacks": {
+                                              "kind": "const",
+                                              "value": {
+                                                "Value": 1
+                                              }
+                                            },
+                                            "DurationTurns": 0,
+                                            "Charges": 0,
+                                            "ResultKey": null,
+                                            "Children": []
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      "Else": null,
+                      "Children": [
+                        {
+                          "kind": "node.sequence",
+                          "value": {
+                            "Children": [
+                              {
+                                "kind": "node.applyStatus",
+                                "value": {
+                                  "TargetSelector": {
+                                    "kind": "sel.eventTarget",
+                                    "value": {
+                                      "Cardinality": "ZeroOrOne",
+                                      "RequiredContextCapabilities": "EventTarget"
+                                    }
+                                  },
+                                  "StatusDefinitionId": {
+                                    "value": "held_open"
+                                  },
+                                  "Stacks": {
+                                    "kind": "const",
+                                    "value": {
+                                      "Value": 1
+                                    }
+                                  },
+                                  "DurationTurns": 0,
+                                  "Charges": 0,
+                                  "ResultKey": null,
+                                  "Children": []
+                                }
+                              },
+                              {
+                                "kind": "node.conditional",
+                                "value": {
+                                  "Condition": {
+                                    "kind": "compare",
+                                    "value": {
+                                      "Left": {
+                                        "kind": "combatantStatusStacks",
+                                        "value": {
+                                          "Selector": {
+                                            "kind": "sel.eventTarget",
+                                            "value": {
+                                              "Cardinality": "ZeroOrOne",
+                                              "RequiredContextCapabilities": "EventTarget"
+                                            }
+                                          },
+                                          "StatusId": {
+                                            "value": "gate_half_raised"
+                                          }
+                                        }
+                                      },
+                                      "Op": "Greater",
+                                      "Right": {
+                                        "kind": "const",
+                                        "value": {
+                                          "Value": 0
+                                        }
+                                      }
+                                    }
+                                  },
+                                  "Then": {
+                                    "kind": "node.sequence",
+                                    "value": {
+                                      "Children": [
+                                        {
+                                          "kind": "node.removeStatus",
+                                          "value": {
+                                            "TargetSelector": {
+                                              "kind": "sel.eventTarget",
+                                              "value": {
+                                                "Cardinality": "ZeroOrOne",
+                                                "RequiredContextCapabilities": "EventTarget"
+                                              }
+                                            },
+                                            "StatusDefinitionId": {
+                                              "value": "gate_half_raised"
+                                            },
+                                            "ResultKey": null,
+                                            "Children": []
+                                          }
+                                        },
+                                        {
+                                          "kind": "node.applyStatus",
+                                          "value": {
+                                            "TargetSelector": {
+                                              "kind": "sel.eventTarget",
+                                              "value": {
+                                                "Cardinality": "ZeroOrOne",
+                                                "RequiredContextCapabilities": "EventTarget"
+                                              }
+                                            },
+                                            "StatusDefinitionId": {
+                                              "value": "gate_open"
+                                            },
+                                            "Stacks": {
+                                              "kind": "const",
+                                              "value": {
+                                                "Value": 1
+                                              }
+                                            },
+                                            "DurationTurns": 0,
+                                            "Charges": 0,
+                                            "ResultKey": null,
+                                            "Children": []
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  "Else": null,
+                                  "Children": [
+                                    {
+                                      "kind": "node.sequence",
+                                      "value": {
+                                        "Children": [
+                                          {
+                                            "kind": "node.removeStatus",
+                                            "value": {
+                                              "TargetSelector": {
+                                                "kind": "sel.eventTarget",
+                                                "value": {
+                                                  "Cardinality": "ZeroOrOne",
+                                                  "RequiredContextCapabilities": "EventTarget"
+                                                }
+                                              },
+                                              "StatusDefinitionId": {
+                                                "value": "gate_half_raised"
+                                              },
+                                              "ResultKey": null,
+                                              "Children": []
+                                            }
+                                          },
+                                          {
+                                            "kind": "node.applyStatus",
+                                            "value": {
+                                              "TargetSelector": {
+                                                "kind": "sel.eventTarget",
+                                                "value": {
+                                                  "Cardinality": "ZeroOrOne",
+                                                  "RequiredContextCapabilities": "EventTarget"
+                                                }
+                                              },
+                                              "StatusDefinitionId": {
+                                                "value": "gate_open"
+                                              },
+                                              "Stacks": {
+                                                "kind": "const",
+                                                "value": {
+                                                  "Value": 1
+                                                }
+                                              },
+                                              "DurationTurns": 0,
+                                              "Charges": 0,
+                                              "ResultKey": null,
+                                              "Children": []
+                                            }
+                                          }
+                                        ]
+                                      }
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "kind": "node.conditional",
+                                "value": {
+                                  "Condition": {
+                                    "kind": "compare",
+                                    "value": {
+                                      "Left": {
+                                        "kind": "combatantStatusStacks",
+                                        "value": {
+                                          "Selector": {
+                                            "kind": "sel.eventTarget",
+                                            "value": {
+                                              "Cardinality": "ZeroOrOne",
+                                              "RequiredContextCapabilities": "EventTarget"
+                                            }
+                                          },
+                                          "StatusId": {
+                                            "value": "gate_shut"
+                                          }
+                                        }
+                                      },
+                                      "Op": "Greater",
+                                      "Right": {
+                                        "kind": "const",
+                                        "value": {
+                                          "Value": 0
+                                        }
+                                      }
+                                    }
+                                  },
+                                  "Then": {
+                                    "kind": "node.sequence",
+                                    "value": {
+                                      "Children": [
+                                        {
+                                          "kind": "node.removeStatus",
+                                          "value": {
+                                            "TargetSelector": {
+                                              "kind": "sel.eventTarget",
+                                              "value": {
+                                                "Cardinality": "ZeroOrOne",
+                                                "RequiredContextCapabilities": "EventTarget"
+                                              }
+                                            },
+                                            "StatusDefinitionId": {
+                                              "value": "gate_shut"
+                                            },
+                                            "ResultKey": null,
+                                            "Children": []
+                                          }
+                                        },
+                                        {
+                                          "kind": "node.applyStatus",
+                                          "value": {
+                                            "TargetSelector": {
+                                              "kind": "sel.eventTarget",
+                                              "value": {
+                                                "Cardinality": "ZeroOrOne",
+                                                "RequiredContextCapabilities": "EventTarget"
+                                              }
+                                            },
+                                            "StatusDefinitionId": {
+                                              "value": "gate_half_raised"
+                                            },
+                                            "Stacks": {
+                                              "kind": "const",
+                                              "value": {
+                                                "Value": 1
+                                              }
+                                            },
+                                            "DurationTurns": 0,
+                                            "Charges": 0,
+                                            "ResultKey": null,
+                                            "Children": []
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  "Else": null,
+                                  "Children": [
+                                    {
+                                      "kind": "node.sequence",
+                                      "value": {
+                                        "Children": [
+                                          {
+                                            "kind": "node.removeStatus",
+                                            "value": {
+                                              "TargetSelector": {
+                                                "kind": "sel.eventTarget",
+                                                "value": {
+                                                  "Cardinality": "ZeroOrOne",
+                                                  "RequiredContextCapabilities": "EventTarget"
+                                                }
+                                              },
+                                              "StatusDefinitionId": {
+                                                "value": "gate_shut"
+                                              },
+                                              "ResultKey": null,
+                                              "Children": []
+                                            }
+                                          },
+                                          {
+                                            "kind": "node.applyStatus",
+                                            "value": {
+                                              "TargetSelector": {
+                                                "kind": "sel.eventTarget",
+                                                "value": {
+                                                  "Cardinality": "ZeroOrOne",
+                                                  "RequiredContextCapabilities": "EventTarget"
+                                                }
+                                              },
+                                              "StatusDefinitionId": {
+                                                "value": "gate_half_raised"
+                                              },
+                                              "Stacks": {
+                                                "kind": "const",
+                                                "value": {
+                                                  "Value": 1
+                                                }
+                                              },
+                                              "DurationTurns": 0,
+                                              "Charges": 0,
+                                              "ResultKey": null,
+                                              "Children": []
+                                            }
+                                          }
+                                        ]
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            "MaxNodeDepth": 64,
+            "MaxProgramSteps": 1024
+          }
+        },
+        {
+          "Event": "TurnEnded",
+          "Program": {
+            "Id": {
+              "Value": "(unnamed)"
+            },
+            "Root": {
+              "kind": "node.sequence",
+              "value": {
+                "Children": [
+                  {
+                    "kind": "node.conditional",
+                    "value": {
+                      "Condition": {
+                        "kind": "compare",
+                        "value": {
+                          "Left": {
+                            "kind": "combatantStatusStacks",
+                            "value": {
+                              "Selector": {
+                                "kind": "sel.source",
+                                "value": {
+                                  "Cardinality": "ZeroOrOne",
+                                  "RequiredContextCapabilities": "Source"
+                                }
+                              },
+                              "StatusId": {
+                                "value": "held_open"
+                              }
+                            }
+                          },
+                          "Op": "Equal",
+                          "Right": {
+                            "kind": "const",
+                            "value": {
+                              "Value": 0
+                            }
+                          }
+                        }
+                      },
+                      "Then": {
+                        "kind": "node.sequence",
+                        "value": {
+                          "Children": [
+                            {
+                              "kind": "node.conditional",
+                              "value": {
+                                "Condition": {
+                                  "kind": "compare",
+                                  "value": {
+                                    "Left": {
+                                      "kind": "combatantStatusStacks",
+                                      "value": {
+                                        "Selector": {
+                                          "kind": "sel.source",
+                                          "value": {
+                                            "Cardinality": "ZeroOrOne",
+                                            "RequiredContextCapabilities": "Source"
+                                          }
+                                        },
+                                        "StatusId": {
+                                          "value": "gate_open"
+                                        }
+                                      }
+                                    },
+                                    "Op": "Greater",
+                                    "Right": {
+                                      "kind": "const",
+                                      "value": {
+                                        "Value": 0
+                                      }
+                                    }
+                                  }
+                                },
+                                "Then": {
+                                  "kind": "node.sequence",
+                                  "value": {
+                                    "Children": [
+                                      {
+                                        "kind": "node.removeStatus",
+                                        "value": {
+                                          "TargetSelector": {
+                                            "kind": "sel.source",
+                                            "value": {
+                                              "Cardinality": "ZeroOrOne",
+                                              "RequiredContextCapabilities": "Source"
+                                            }
+                                          },
+                                          "StatusDefinitionId": {
+                                            "value": "gate_open"
+                                          },
+                                          "ResultKey": null,
+                                          "Children": []
+                                        }
+                                      },
+                                      {
+                                        "kind": "node.applyStatus",
+                                        "value": {
+                                          "TargetSelector": {
+                                            "kind": "sel.source",
+                                            "value": {
+                                              "Cardinality": "ZeroOrOne",
+                                              "RequiredContextCapabilities": "Source"
+                                            }
+                                          },
+                                          "StatusDefinitionId": {
+                                            "value": "gate_half_raised"
+                                          },
+                                          "Stacks": {
+                                            "kind": "const",
+                                            "value": {
+                                              "Value": 1
+                                            }
+                                          },
+                                          "DurationTurns": 0,
+                                          "Charges": 0,
+                                          "ResultKey": null,
+                                          "Children": []
+                                        }
+                                      }
+                                    ]
+                                  }
+                                },
+                                "Else": null,
+                                "Children": [
+                                  {
+                                    "kind": "node.sequence",
+                                    "value": {
+                                      "Children": [
+                                        {
+                                          "kind": "node.removeStatus",
+                                          "value": {
+                                            "TargetSelector": {
+                                              "kind": "sel.source",
+                                              "value": {
+                                                "Cardinality": "ZeroOrOne",
+                                                "RequiredContextCapabilities": "Source"
+                                              }
+                                            },
+                                            "StatusDefinitionId": {
+                                              "value": "gate_open"
+                                            },
+                                            "ResultKey": null,
+                                            "Children": []
+                                          }
+                                        },
+                                        {
+                                          "kind": "node.applyStatus",
+                                          "value": {
+                                            "TargetSelector": {
+                                              "kind": "sel.source",
+                                              "value": {
+                                                "Cardinality": "ZeroOrOne",
+                                                "RequiredContextCapabilities": "Source"
+                                              }
+                                            },
+                                            "StatusDefinitionId": {
+                                              "value": "gate_half_raised"
+                                            },
+                                            "Stacks": {
+                                              "kind": "const",
+                                              "value": {
+                                                "Value": 1
+                                              }
+                                            },
+                                            "DurationTurns": 0,
+                                            "Charges": 0,
+                                            "ResultKey": null,
+                                            "Children": []
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            },
+                            {
+                              "kind": "node.conditional",
+                              "value": {
+                                "Condition": {
+                                  "kind": "compare",
+                                  "value": {
+                                    "Left": {
+                                      "kind": "combatantStatusStacks",
+                                      "value": {
+                                        "Selector": {
+                                          "kind": "sel.source",
+                                          "value": {
+                                            "Cardinality": "ZeroOrOne",
+                                            "RequiredContextCapabilities": "Source"
+                                          }
+                                        },
+                                        "StatusId": {
+                                          "value": "gate_half_raised"
+                                        }
+                                      }
+                                    },
+                                    "Op": "Greater",
+                                    "Right": {
+                                      "kind": "const",
+                                      "value": {
+                                        "Value": 0
+                                      }
+                                    }
+                                  }
+                                },
+                                "Then": {
+                                  "kind": "node.sequence",
+                                  "value": {
+                                    "Children": [
+                                      {
+                                        "kind": "node.removeStatus",
+                                        "value": {
+                                          "TargetSelector": {
+                                            "kind": "sel.source",
+                                            "value": {
+                                              "Cardinality": "ZeroOrOne",
+                                              "RequiredContextCapabilities": "Source"
+                                            }
+                                          },
+                                          "StatusDefinitionId": {
+                                            "value": "gate_half_raised"
+                                          },
+                                          "ResultKey": null,
+                                          "Children": []
+                                        }
+                                      },
+                                      {
+                                        "kind": "node.applyStatus",
+                                        "value": {
+                                          "TargetSelector": {
+                                            "kind": "sel.source",
+                                            "value": {
+                                              "Cardinality": "ZeroOrOne",
+                                              "RequiredContextCapabilities": "Source"
+                                            }
+                                          },
+                                          "StatusDefinitionId": {
+                                            "value": "gate_shut"
+                                          },
+                                          "Stacks": {
+                                            "kind": "const",
+                                            "value": {
+                                              "Value": 1
+                                            }
+                                          },
+                                          "DurationTurns": 0,
+                                          "Charges": 0,
+                                          "ResultKey": null,
+                                          "Children": []
+                                        }
+                                      }
+                                    ]
+                                  }
+                                },
+                                "Else": null,
+                                "Children": [
+                                  {
+                                    "kind": "node.sequence",
+                                    "value": {
+                                      "Children": [
+                                        {
+                                          "kind": "node.removeStatus",
+                                          "value": {
+                                            "TargetSelector": {
+                                              "kind": "sel.source",
+                                              "value": {
+                                                "Cardinality": "ZeroOrOne",
+                                                "RequiredContextCapabilities": "Source"
+                                              }
+                                            },
+                                            "StatusDefinitionId": {
+                                              "value": "gate_half_raised"
+                                            },
+                                            "ResultKey": null,
+                                            "Children": []
+                                          }
+                                        },
+                                        {
+                                          "kind": "node.applyStatus",
+                                          "value": {
+                                            "TargetSelector": {
+                                              "kind": "sel.source",
+                                              "value": {
+                                                "Cardinality": "ZeroOrOne",
+                                                "RequiredContextCapabilities": "Source"
+                                              }
+                                            },
+                                            "StatusDefinitionId": {
+                                              "value": "gate_shut"
+                                            },
+                                            "Stacks": {
+                                              "kind": "const",
+                                              "value": {
+                                                "Value": 1
+                                              }
+                                            },
+                                            "DurationTurns": 0,
+                                            "Charges": 0,
+                                            "ResultKey": null,
+                                            "Children": []
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      "Else": null,
+                      "Children": [
+                        {
+                          "kind": "node.sequence",
+                          "value": {
+                            "Children": [
+                              {
+                                "kind": "node.conditional",
+                                "value": {
+                                  "Condition": {
+                                    "kind": "compare",
+                                    "value": {
+                                      "Left": {
+                                        "kind": "combatantStatusStacks",
+                                        "value": {
+                                          "Selector": {
+                                            "kind": "sel.source",
+                                            "value": {
+                                              "Cardinality": "ZeroOrOne",
+                                              "RequiredContextCapabilities": "Source"
+                                            }
+                                          },
+                                          "StatusId": {
+                                            "value": "gate_open"
+                                          }
+                                        }
+                                      },
+                                      "Op": "Greater",
+                                      "Right": {
+                                        "kind": "const",
+                                        "value": {
+                                          "Value": 0
+                                        }
+                                      }
+                                    }
+                                  },
+                                  "Then": {
+                                    "kind": "node.sequence",
+                                    "value": {
+                                      "Children": [
+                                        {
+                                          "kind": "node.removeStatus",
+                                          "value": {
+                                            "TargetSelector": {
+                                              "kind": "sel.source",
+                                              "value": {
+                                                "Cardinality": "ZeroOrOne",
+                                                "RequiredContextCapabilities": "Source"
+                                              }
+                                            },
+                                            "StatusDefinitionId": {
+                                              "value": "gate_open"
+                                            },
+                                            "ResultKey": null,
+                                            "Children": []
+                                          }
+                                        },
+                                        {
+                                          "kind": "node.applyStatus",
+                                          "value": {
+                                            "TargetSelector": {
+                                              "kind": "sel.source",
+                                              "value": {
+                                                "Cardinality": "ZeroOrOne",
+                                                "RequiredContextCapabilities": "Source"
+                                              }
+                                            },
+                                            "StatusDefinitionId": {
+                                              "value": "gate_half_raised"
+                                            },
+                                            "Stacks": {
+                                              "kind": "const",
+                                              "value": {
+                                                "Value": 1
+                                              }
+                                            },
+                                            "DurationTurns": 0,
+                                            "Charges": 0,
+                                            "ResultKey": null,
+                                            "Children": []
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  "Else": null,
+                                  "Children": [
+                                    {
+                                      "kind": "node.sequence",
+                                      "value": {
+                                        "Children": [
+                                          {
+                                            "kind": "node.removeStatus",
+                                            "value": {
+                                              "TargetSelector": {
+                                                "kind": "sel.source",
+                                                "value": {
+                                                  "Cardinality": "ZeroOrOne",
+                                                  "RequiredContextCapabilities": "Source"
+                                                }
+                                              },
+                                              "StatusDefinitionId": {
+                                                "value": "gate_open"
+                                              },
+                                              "ResultKey": null,
+                                              "Children": []
+                                            }
+                                          },
+                                          {
+                                            "kind": "node.applyStatus",
+                                            "value": {
+                                              "TargetSelector": {
+                                                "kind": "sel.source",
+                                                "value": {
+                                                  "Cardinality": "ZeroOrOne",
+                                                  "RequiredContextCapabilities": "Source"
+                                                }
+                                              },
+                                              "StatusDefinitionId": {
+                                                "value": "gate_half_raised"
+                                              },
+                                              "Stacks": {
+                                                "kind": "const",
+                                                "value": {
+                                                  "Value": 1
+                                                }
+                                              },
+                                              "DurationTurns": 0,
+                                              "Charges": 0,
+                                              "ResultKey": null,
+                                              "Children": []
+                                            }
+                                          }
+                                        ]
+                                      }
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "kind": "node.conditional",
+                                "value": {
+                                  "Condition": {
+                                    "kind": "compare",
+                                    "value": {
+                                      "Left": {
+                                        "kind": "combatantStatusStacks",
+                                        "value": {
+                                          "Selector": {
+                                            "kind": "sel.source",
+                                            "value": {
+                                              "Cardinality": "ZeroOrOne",
+                                              "RequiredContextCapabilities": "Source"
+                                            }
+                                          },
+                                          "StatusId": {
+                                            "value": "gate_half_raised"
+                                          }
+                                        }
+                                      },
+                                      "Op": "Greater",
+                                      "Right": {
+                                        "kind": "const",
+                                        "value": {
+                                          "Value": 0
+                                        }
+                                      }
+                                    }
+                                  },
+                                  "Then": {
+                                    "kind": "node.sequence",
+                                    "value": {
+                                      "Children": [
+                                        {
+                                          "kind": "node.removeStatus",
+                                          "value": {
+                                            "TargetSelector": {
+                                              "kind": "sel.source",
+                                              "value": {
+                                                "Cardinality": "ZeroOrOne",
+                                                "RequiredContextCapabilities": "Source"
+                                              }
+                                            },
+                                            "StatusDefinitionId": {
+                                              "value": "gate_half_raised"
+                                            },
+                                            "ResultKey": null,
+                                            "Children": []
+                                          }
+                                        },
+                                        {
+                                          "kind": "node.applyStatus",
+                                          "value": {
+                                            "TargetSelector": {
+                                              "kind": "sel.source",
+                                              "value": {
+                                                "Cardinality": "ZeroOrOne",
+                                                "RequiredContextCapabilities": "Source"
+                                              }
+                                            },
+                                            "StatusDefinitionId": {
+                                              "value": "gate_shut"
+                                            },
+                                            "Stacks": {
+                                              "kind": "const",
+                                              "value": {
+                                                "Value": 1
+                                              }
+                                            },
+                                            "DurationTurns": 0,
+                                            "Charges": 0,
+                                            "ResultKey": null,
+                                            "Children": []
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  "Else": null,
+                                  "Children": [
+                                    {
+                                      "kind": "node.sequence",
+                                      "value": {
+                                        "Children": [
+                                          {
+                                            "kind": "node.removeStatus",
+                                            "value": {
+                                              "TargetSelector": {
+                                                "kind": "sel.source",
+                                                "value": {
+                                                  "Cardinality": "ZeroOrOne",
+                                                  "RequiredContextCapabilities": "Source"
+                                                }
+                                              },
+                                              "StatusDefinitionId": {
+                                                "value": "gate_half_raised"
+                                              },
+                                              "ResultKey": null,
+                                              "Children": []
+                                            }
+                                          },
+                                          {
+                                            "kind": "node.applyStatus",
+                                            "value": {
+                                              "TargetSelector": {
+                                                "kind": "sel.source",
+                                                "value": {
+                                                  "Cardinality": "ZeroOrOne",
+                                                  "RequiredContextCapabilities": "Source"
+                                                }
+                                              },
+                                              "StatusDefinitionId": {
+                                                "value": "gate_shut"
+                                              },
+                                              "Stacks": {
+                                                "kind": "const",
+                                                "value": {
+                                                  "Value": 1
+                                                }
+                                              },
+                                              "DurationTurns": 0,
+                                              "Charges": 0,
+                                              "ResultKey": null,
+                                              "Children": []
+                                            }
+                                          }
+                                        ]
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "kind": "node.removeStatus",
+                    "value": {
+                      "TargetSelector": {
+                        "kind": "sel.source",
+                        "value": {
+                          "Cardinality": "ZeroOrOne",
+                          "RequiredContextCapabilities": "Source"
+                        }
+                      },
+                      "StatusDefinitionId": {
+                        "value": "held_open"
+                      },
+                      "ResultKey": null,
+                      "Children": []
+                    }
+                  },
+                  {
+                    "kind": "node.setCombatantCounter",
+                    "value": {
+                      "TargetSelector": {
+                        "kind": "sel.source",
+                        "value": {
+                          "Cardinality": "ZeroOrOne",
+                          "RequiredContextCapabilities": "Source"
+                        }
+                      },
+                      "CounterId": {
+                        "value": "gate_pressure"
+                      },
+                      "Amount": {
+                        "kind": "const",
+                        "value": {
+                          "Value": 0
+                        }
+                      },
+                      "Relative": false,
+                      "Children": []
+                    }
+                  },
+                  {
+                    "kind": "node.conditional",
+                    "value": {
+                      "Condition": {
+                        "kind": "compare",
+                        "value": {
+                          "Left": {
+                            "kind": "combatantCounter",
+                            "value": {
+                              "Selector": {
+                                "kind": "sel.source",
+                                "value": {
+                                  "Cardinality": "ZeroOrOne",
+                                  "RequiredContextCapabilities": "Source"
+                                }
+                              },
+                              "CounterId": {
+                                "value": "gate_beat"
+                              }
+                            }
+                          },
+                          "Op": "Equal",
+                          "Right": {
+                            "kind": "const",
+                            "value": {
+                              "Value": 0
+                            }
+                          }
+                        }
+                      },
+                      "Then": {
+                        "kind": "node.setCombatantCounter",
+                        "value": {
+                          "TargetSelector": {
+                            "kind": "sel.source",
+                            "value": {
+                              "Cardinality": "ZeroOrOne",
+                              "RequiredContextCapabilities": "Source"
+                            }
+                          },
+                          "CounterId": {
+                            "value": "gate_beat"
+                          },
+                          "Amount": {
+                            "kind": "const",
+                            "value": {
+                              "Value": 1
+                            }
+                          },
+                          "Relative": false,
+                          "Children": []
+                        }
+                      },
+                      "Else": null,
+                      "Children": [
+                        {
+                          "kind": "node.setCombatantCounter",
+                          "value": {
+                            "TargetSelector": {
+                              "kind": "sel.source",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "Source"
+                              }
+                            },
+                            "CounterId": {
+                              "value": "gate_beat"
+                            },
+                            "Amount": {
+                              "kind": "const",
+                              "value": {
+                                "Value": 1
+                              }
+                            },
+                            "Relative": false,
+                            "Children": []
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "kind": "node.conditional",
+                    "value": {
+                      "Condition": {
+                        "kind": "compare",
+                        "value": {
+                          "Left": {
+                            "kind": "combatantCounter",
+                            "value": {
+                              "Selector": {
+                                "kind": "sel.source",
+                                "value": {
+                                  "Cardinality": "ZeroOrOne",
+                                  "RequiredContextCapabilities": "Source"
+                                }
+                              },
+                              "CounterId": {
+                                "value": "gate_beat"
+                              }
+                            }
+                          },
+                          "Op": "GreaterOrEqual",
+                          "Right": {
+                            "kind": "const",
+                            "value": {
+                              "Value": 1
+                            }
+                          }
+                        }
+                      },
+                      "Then": {
+                        "kind": "node.setCombatantCounter",
+                        "value": {
+                          "TargetSelector": {
+                            "kind": "sel.source",
+                            "value": {
+                              "Cardinality": "ZeroOrOne",
+                              "RequiredContextCapabilities": "Source"
+                            }
+                          },
+                          "CounterId": {
+                            "value": "gate_beat"
+                          },
+                          "Amount": {
+                            "kind": "const",
+                            "value": {
+                              "Value": 0
+                            }
+                          },
+                          "Relative": false,
+                          "Children": []
+                        }
+                      },
+                      "Else": null,
+                      "Children": [
+                        {
+                          "kind": "node.setCombatantCounter",
+                          "value": {
+                            "TargetSelector": {
+                              "kind": "sel.source",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "Source"
+                              }
+                            },
+                            "CounterId": {
+                              "value": "gate_beat"
+                            },
+                            "Amount": {
+                              "kind": "const",
+                              "value": {
+                                "Value": 0
+                              }
+                            },
+                            "Relative": false,
+                            "Children": []
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            "MaxNodeDepth": 64,
+            "MaxProgramSteps": 1024
+          }
+        }
+      ],
+      "DeathPrevention": null,
+      "DebuffBlock": null
+    },
+    {
       "Id": "order_pay_the_fee",
       "PackageId": "scenario",
       "NameKey": "Order: Pay the Fee",
@@ -271662,14 +273546,9 @@
         "Tags": [
           "city",
           "enforcement",
-          "civic_force",
-          "block_pressure",
-          "strength_pressure",
-          "stage_enforcement",
-          "elite_enforcement",
-          "portcullis",
-          "judicator",
-          "gatehouse"
+          "elite",
+          "gate",
+          "stage_enforcement"
         ],
         "Extra": {}
       },
