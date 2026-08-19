@@ -33,8 +33,127 @@ public static class EncounterPassives
         "devouring_waiting_room" => [LostTime()],
         "living_petition_chorus" => [ClauseOffer()],
         "iron_warrant_avatar" => [IssueComplianceOrder(), JudgeCompliance()],
+        "inventory_lantern" => [ClearTheInventoryLatch(), MarkTheGoods()],
+        "lock_cart" => [SeizeTheGoods()],
         _ => Array.Empty<EncounterTriggerData>(),
     };
+
+    // "Inventoried" (Inventory Lantern): a card the player has just drawn is marked as property. It rides on
+    // CardsDrawn rather than the turn's start because the turn-start draw happens AFTER turn-start triggers —
+    // at that moment the hand is still empty. A latch status on the player keeps it to one card per turn.
+    private static EncounterTriggerData MarkTheGoods()
+    {
+        var player = CombatantTargetSelectors.Source;
+
+        var mark = new ForEachTargetEffectNode<CardsDrawnTriggeredEffectContext>(
+            // Only while a Cart is on the field to store the goods in.
+            CombatantTargetSelectors.AllEnemiesOfSourceWithStatus(new StatusDefinitionId(PassiveStatuses.LockCartId)),
+            new SequenceEffectNode<CardsDrawnTriggeredEffectContext>(new IEffectNode<CardsDrawnTriggeredEffectContext>[]
+            {
+                new MarkCardInstanceNode<CardsDrawnTriggeredEffectContext>(
+                    player,
+                    new RandomCardInOwnerZoneExpression<CardsDrawnTriggeredEffectContext>(player, CardZone.Hand),
+                    PassiveStatuses.InventoriedMark),
+                new ApplyStatusNode<CardsDrawnTriggeredEffectContext>(
+                    player, new StatusDefinitionId(PassiveStatuses.InventoryPendingId),
+                    new ConstantExpression<CardsDrawnTriggeredEffectContext>(1)),
+            }));
+
+        var program = new EffectProgram<CardsDrawnTriggeredEffectContext>(
+            new ConditionalEffectNode<CardsDrawnTriggeredEffectContext>(
+                new AndExpression<CardsDrawnTriggeredEffectContext>(
+                    new ComparisonExpression<CardsDrawnTriggeredEffectContext>(
+                        new CombatantStatusStacksExpression<CardsDrawnTriggeredEffectContext>(
+                            player, new StatusDefinitionId(PassiveStatuses.ApplicantId)),
+                        ComparisonOperator.Greater,
+                        new ConstantExpression<CardsDrawnTriggeredEffectContext>(0)),
+                    new AndExpression<CardsDrawnTriggeredEffectContext>(
+                        // Not yet marked this turn …
+                        new ComparisonExpression<CardsDrawnTriggeredEffectContext>(
+                            new CombatantStatusStacksExpression<CardsDrawnTriggeredEffectContext>(
+                                player, new StatusDefinitionId(PassiveStatuses.InventoryPendingId)),
+                            ComparisonOperator.Equal,
+                            new ConstantExpression<CardsDrawnTriggeredEffectContext>(0)),
+                        // … and the Cart still has room. The tally is kept on the player, the one combatant
+                        // every part of this program can address by a single selector.
+                        new ComparisonExpression<CardsDrawnTriggeredEffectContext>(
+                            new CombatantCounterExpression<CardsDrawnTriggeredEffectContext>(
+                                player, PassiveStatuses.SeizedCardsCounter),
+                            ComparisonOperator.Less,
+                            new ConstantExpression<CardsDrawnTriggeredEffectContext>(PassiveStatuses.SeizureCapacity)))),
+                mark));
+
+        return new EncounterTriggerData("CardsDrawn",
+            JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<CardsDrawnTriggeredEffectContext>()));
+    }
+
+    // The latch is released when the player's turn starts — turn-start triggers run before the draw, so the
+    // turn's first draw finds it clear.
+    private static EncounterTriggerData ClearTheInventoryLatch()
+    {
+        var player = CombatantTargetSelectors.Source;
+
+        var program = new EffectProgram<TurnStartedTriggeredEffectContext>(
+            new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
+                new ComparisonExpression<TurnStartedTriggeredEffectContext>(
+                    new CombatantStatusStacksExpression<TurnStartedTriggeredEffectContext>(
+                        player, new StatusDefinitionId(PassiveStatuses.ApplicantId)),
+                    ComparisonOperator.Greater,
+                    new ConstantExpression<TurnStartedTriggeredEffectContext>(0)),
+                new RemoveStatusNode<TurnStartedTriggeredEffectContext>(
+                    player, new StatusDefinitionId(PassiveStatuses.InventoryPendingId))));
+
+        return new EncounterTriggerData("TurnStarted",
+            JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<TurnStartedTriggeredEffectContext>()));
+    }
+
+    // "Seized" (Lock Cart): a marked card still in hand when the turn ends is taken away, and every seizure
+    // hardens the Marshal. Cart and Marshal are addressed through their markers rather than an enclosing loop:
+    // inside a card loop the iteration slot holds a CARD, so an outer combatant iteration target is gone.
+    private static EncounterTriggerData SeizeTheGoods()
+    {
+        var player = CombatantTargetSelectors.Source;
+        var marshals = CombatantTargetSelectors.WithStatus(
+            CombatantTargetSelectors.AllCombatants, new StatusDefinitionId(PassiveStatuses.SeizureMarshalId));
+        var card = new IteratedCardExpression<TurnEndedTriggeredEffectContext>();
+
+        var seize = new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
+            new CardInstanceHasMarkExpression<TurnEndedTriggeredEffectContext>(card, PassiveStatuses.InventoriedMark),
+            new SequenceEffectNode<TurnEndedTriggeredEffectContext>(new IEffectNode<TurnEndedTriggeredEffectContext>[]
+            {
+                new MoveCardToZoneNode<TurnEndedTriggeredEffectContext>(player, card, CardZone.ExhaustPile),
+                new SetCombatantCounterNode<TurnEndedTriggeredEffectContext>(
+                    player, PassiveStatuses.SeizedCardsCounter,
+                    new ConstantExpression<TurnEndedTriggeredEffectContext>(1), relative: true),
+                // The Marshal turns a successful seizure into force. The Cart's capacity of 2 keeps this well
+                // under the design's cap of +4 without a second tally.
+                new ApplyStatusNode<TurnEndedTriggeredEffectContext>(
+                    marshals, new StatusDefinitionId("strength"),
+                    new ConstantExpression<TurnEndedTriggeredEffectContext>(1)),
+            }));
+
+        var program = new EffectProgram<TurnEndedTriggeredEffectContext>(
+            new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
+                new AndExpression<TurnEndedTriggeredEffectContext>(
+                    new ComparisonExpression<TurnEndedTriggeredEffectContext>(
+                        new CombatantStatusStacksExpression<TurnEndedTriggeredEffectContext>(
+                            player, new StatusDefinitionId(PassiveStatuses.ApplicantId)),
+                        ComparisonOperator.Greater,
+                        new ConstantExpression<TurnEndedTriggeredEffectContext>(0)),
+                    new ComparisonExpression<TurnEndedTriggeredEffectContext>(
+                        new CombatantCounterExpression<TurnEndedTriggeredEffectContext>(
+                            player, PassiveStatuses.SeizedCardsCounter),
+                        ComparisonOperator.Less,
+                        new ConstantExpression<TurnEndedTriggeredEffectContext>(PassiveStatuses.SeizureCapacity))),
+                // A living Cart has to be there to take it.
+                new ForEachTargetEffectNode<TurnEndedTriggeredEffectContext>(
+                    CombatantTargetSelectors.AllEnemiesOfSourceWithStatus(
+                        new StatusDefinitionId(PassiveStatuses.LockCartId)),
+                    new ForEachCardInZoneNode<TurnEndedTriggeredEffectContext>(player, CardZone.Hand, seize))));
+
+        return new EncounterTriggerData("TurnEnded",
+            JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<TurnEndedTriggeredEffectContext>()));
+    }
 
     // "Compliance Order" (Iron Warrant Avatar): the Avatar issues one visible, achievable demand at the start
     // of the player's turn. The orders take turns, so the same one never comes twice in a row.

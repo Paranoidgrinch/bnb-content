@@ -88,6 +88,10 @@ public static class PassiveStatuses
         RulingPending(),
         Marker(IronWarrantId, "Iron Warrant"),
         Contempt(),
+        Marker(InventoryLanternId, "Inventory Lantern"),
+        Marker(LockCartId, "Lock Cart"),
+        Marker(SeizureMarshalId, "Seizure Marshal"),
+        Marker(InventoryPendingId, "Inventoried"),
         .. ComplianceOrders.Select(o => Marker(o.StatusId, o.Name)),
     ];
 
@@ -97,6 +101,21 @@ public static class PassiveStatuses
     public const string ContemptId = "contempt";
     public static readonly CounterId OrderIndexCounter = new("compliance_order");
     public const int ContemptMaximum = 3;
+
+    // The Seizure Procession: the Lantern marks, the Cart takes, the Marshal profits. Each body is found by
+    // its own marker, and the confiscation itself rides on the engine's per-instance card marks.
+    public const string InventoryLanternId = "inventory_lantern";
+    public const string LockCartId = "lock_cart";
+    public const string SeizureMarshalId = "seizure_marshal";
+    public static readonly TagId InventoriedMark = new("inventoried");
+    // The Lantern marks at most one card per player turn: a latch status on the PLAYER records "already marked
+    // this turn" (it is cleared when the player's turn starts). A latch on the Lantern itself would have to be
+    // read through an iteration target, which expressions cannot do reliably inside a loop.
+    public const string InventoryPendingId = "inventory_pending";
+    public static readonly CounterId SeizedCardsCounter = new("seized_cards");
+    public static readonly CounterId MarshalStrengthCounter = new("marshal_strength");
+    public const int SeizureCapacity = 2;
+    public const int MarshalStrengthLimit = 4;
 
     public sealed record ComplianceOrder(string StatusId, string Name, Func<ICombatExpression<TurnEndedTriggeredEffectContext, bool>> Fulfilled);
 

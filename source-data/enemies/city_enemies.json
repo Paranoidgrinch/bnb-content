@@ -8312,7 +8312,7 @@
   {
     "id": "seizure_marshal",
     "name": "Seizure Marshal",
-    "max_hp": 42,
+    "max_hp": 40,
     "intent_pattern": "cycle",
     "intents": [
       {
@@ -8323,14 +8323,14 @@
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 8
+            "amount": 9
           }
         ]
       },
       {
         "id": "marshal_the_inventory",
         "name": "Marshal the Inventory",
-        "intent_type": "mixed",
+        "intent_type": "buff",
         "actions": [
           {
             "type": "gain_strength",
@@ -8340,7 +8340,7 @@
           {
             "type": "gain_block",
             "target": "owner",
-            "amount": 6
+            "amount": 7
           }
         ]
       },
@@ -8352,7 +8352,7 @@
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 11
+            "amount": 12
           }
         ]
       },
@@ -8364,32 +8364,33 @@
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 5
+            "amount": 6
           },
           {
             "type": "gain_block",
             "target": "owner",
-            "amount": 5
+            "amount": 6
           }
         ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "seizure_marshal"
       }
     ],
     "tags": [
       "city",
       "enforcement",
-      "civic_force",
-      "block_pressure",
-      "strength_pressure",
-      "stage_enforcement",
-      "elite_enforcement",
+      "elite",
       "marshal",
-      "seizure"
+      "stage_enforcement"
     ]
   },
   {
     "id": "inventory_lantern",
     "name": "Inventory Lantern",
-    "max_hp": 26,
+    "max_hp": 24,
     "intent_pattern": "cycle",
     "intents": [
       {
@@ -8412,17 +8413,12 @@
       {
         "id": "bright_authority",
         "name": "Bright Authority",
-        "intent_type": "mixed",
+        "intent_type": "attack",
         "actions": [
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 4
-          },
-          {
-            "type": "gain_strength",
-            "target": "owner",
-            "amount": 1
+            "amount": 5
           }
         ]
       },
@@ -8434,7 +8430,7 @@
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 6
+            "amount": 7
           }
         ]
       },
@@ -8456,22 +8452,23 @@
         ]
       }
     ],
+    "starting_statuses": [
+      {
+        "status": "inventory_lantern"
+      }
+    ],
     "tags": [
       "city",
       "enforcement",
-      "civic_force",
-      "block_pressure",
-      "strength_pressure",
-      "stage_enforcement",
-      "elite_enforcement",
+      "elite",
       "lantern",
-      "support"
+      "stage_enforcement"
     ]
   },
   {
     "id": "lock_cart",
     "name": "Lock Cart",
-    "max_hp": 34,
+    "max_hp": 32,
     "intent_pattern": "cycle",
     "intents": [
       {
@@ -8482,7 +8479,7 @@
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 7
+            "amount": 8
           }
         ]
       },
@@ -8494,7 +8491,7 @@
           {
             "type": "gain_block",
             "target": "owner",
-            "amount": 9
+            "amount": 10
           }
         ]
       },
@@ -8518,22 +8515,22 @@
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 10
+            "amount": 11
           }
         ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "lock_cart"
       }
     ],
     "tags": [
       "city",
       "enforcement",
-      "civic_force",
-      "block_pressure",
-      "strength_pressure",
-      "stage_enforcement",
-      "elite_enforcement",
+      "elite",
       "cart",
-      "lock",
-      "construct"
+      "stage_enforcement"
     ]
   },
   {
