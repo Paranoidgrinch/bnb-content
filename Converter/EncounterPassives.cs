@@ -18,6 +18,7 @@ public static class EncounterPassives
     public static IReadOnlyList<EncounterTriggerData> ForEnemy(string enemyId) => enemyId switch
     {
         "wrong_window_scribe" => [NotThisCounter()],
+        "triplicate_examiner" => [ThreeCopiesRequired()],
         _ => Array.Empty<EncounterTriggerData>(),
     };
 
@@ -25,31 +26,53 @@ public static class EncounterPassives
     // that same type makes the Scribe gain 5 Block. Encoded as: on the player's 2nd card of the turn's OPENING
     // type, the Scribe (all enemies of the card's source) gains 5 Block. Faithful simplification: the opening
     // type is literally the first card's type (Junk not skipped) — see ADAPTATIONS.md.
-    private static EncounterTriggerData NotThisCounter()
+    private static EncounterTriggerData NotThisCounter() =>
+        OnNthCardOfTheOpeningType(2,
+            new GainBlockNode<CardPlayedTriggeredEffectContext>(
+                CombatantTargetSelectors.AllEnemiesOfSource,
+                new ConstantExpression<CardPlayedTriggeredEffectContext>(5)));
+
+    // "Three Copies Required": the turn's opening card TYPE is what the Examiner demands in triplicate — the
+    // player's THIRD card of that type gives the Examiner 8 Block and the player 1 Doubt. Same simplification
+    // as Not This Counter (opening type = literally the first card's type).
+    private static EncounterTriggerData ThreeCopiesRequired() =>
+        OnNthCardOfTheOpeningType(3,
+            new SequenceEffectNode<CardPlayedTriggeredEffectContext>(new IEffectNode<CardPlayedTriggeredEffectContext>[]
+            {
+                new GainBlockNode<CardPlayedTriggeredEffectContext>(
+                    CombatantTargetSelectors.AllEnemiesOfSource,
+                    new ConstantExpression<CardPlayedTriggeredEffectContext>(8)),
+                // The card's player — the hero in a solo fight — takes the Doubt.
+                new ApplyStatusNode<CardPlayedTriggeredEffectContext>(
+                    CombatantTargetSelectors.Source,
+                    new StatusDefinitionId("doubt"),
+                    new ConstantExpression<CardPlayedTriggeredEffectContext>(1)),
+            }));
+
+    // The shared shape of the counter passives: fire `effect` when the player plays their Nth card of the type
+    // that OPENED the turn. Exactly-N (not ≥N) makes it once per player turn on its own — no cooldown state.
+    // The opening type isn't readable as a value, so the program ORs the per-type cases.
+    private static EncounterTriggerData OnNthCardOfTheOpeningType(int n, IEffectNode<CardPlayedTriggeredEffectContext> effect)
     {
         ICombatExpression<CardPlayedTriggeredEffectContext, bool>? condition = null;
         foreach (var type in CardTypes)
         {
             var tag = new TagId(type);
-            var secondOfOpeningType = new AndExpression<CardPlayedTriggeredEffectContext>(
+            var nthOfOpeningType = new AndExpression<CardPlayedTriggeredEffectContext>(
                 new FirstCardPlayedThisTurnHasTagExpression<CardPlayedTriggeredEffectContext>(
                     CombatantTargetSelectors.Source, tag),
                 new ComparisonExpression<CardPlayedTriggeredEffectContext>(
                     new CardsPlayedThisTurnWithTagExpression<CardPlayedTriggeredEffectContext>(
                         CombatantTargetSelectors.Source, tag),
                     ComparisonOperator.Equal,
-                    new ConstantExpression<CardPlayedTriggeredEffectContext>(2)));
+                    new ConstantExpression<CardPlayedTriggeredEffectContext>(n)));
             condition = condition is null
-                ? secondOfOpeningType
-                : new OrExpression<CardPlayedTriggeredEffectContext>(condition, secondOfOpeningType);
+                ? nthOfOpeningType
+                : new OrExpression<CardPlayedTriggeredEffectContext>(condition, nthOfOpeningType);
         }
 
         var program = new EffectProgram<CardPlayedTriggeredEffectContext>(
-            new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
-                condition!,
-                new GainBlockNode<CardPlayedTriggeredEffectContext>(
-                    CombatantTargetSelectors.AllEnemiesOfSource,
-                    new ConstantExpression<CardPlayedTriggeredEffectContext>(5))));
+            new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(condition!, effect));
 
         return new EncounterTriggerData("CardPlayed",
             JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<CardPlayedTriggeredEffectContext>()));
