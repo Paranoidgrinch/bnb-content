@@ -721,7 +721,12 @@
       "strength_pressure",
       "elite_appeal",
       "multi_enemy"
-    ]
+    ],
+    "enemy_health": [
+      60,
+      30
+    ],
+    "role": "elite"
   },
   {
     "id": "city_elite_06",

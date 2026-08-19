@@ -80,7 +80,11 @@ internal static class FightProbe
     // A multi-enemy probe: each member is an authored enemy narrowed to one intent, optionally at the reduced
     // HP its encounter fields it at. Roster order is turn order.
     public static EncounterDefinition Roster(
-        string probeId, params (string EnemyId, string IntentId, int? MaxHealth)[] members)
+        string probeId, params (string EnemyId, string IntentId, int? MaxHealth)[] members) =>
+        Roster(probeId, energy: 3, members);
+
+    public static EncounterDefinition Roster(
+        string probeId, int energy, params (string EnemyId, string IntentId, int? MaxHealth)[] members)
     {
         var roster = members.Select(m =>
         {
@@ -96,7 +100,7 @@ internal static class FightProbe
         // Cross-combatant passives live on the ENCOUNTER, so a probe must carry them exactly as EncounterMapper
         // would — otherwise a passive silently does nothing in the very test meant to prove it.
         return new EncounterDefinition(new EncounterId($"probe.{probeId}"), roster,
-            [new ResourceSpec(StandardCombatIds.EnergyResource, 3, 3)],
+            [new ResourceSpec(StandardCombatIds.EnergyResource, energy, energy)],
             heroStartingStatuses: HeroStatuses(),
             triggeredEffects: members.Select(m => m.EnemyId).Distinct()
                 .SelectMany(EncounterPassives.ForEnemy).ToList());

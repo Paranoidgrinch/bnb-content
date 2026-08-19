@@ -250,6 +250,66 @@ public class EliteCombatTests
         Assert.Equal(0, Enemy(play, petitionId).GetCounter(PassiveStatuses.SignaturesCounter)); // a new cycle
     }
 
+    // The Remanded Case, route A: down the Phantom while its Writ still stands and the case comes back —
+    // 24 HP, 2 Strength — while the Writ pays 12 HP for it and can never do so again.
+    [Fact]
+    public void Downing_the_phantom_first_remands_the_case()
+    {
+        var probe = FightProbe.Roster("remand", energy: 9,
+            ("remanded_case_phantom", "uncertain_remand", 30),
+            ("escalation_writ", "higher_seal", 30));
+        var (play, session, _) = FightProbe.Start(probe, Enumerable.Repeat("approved_for_disposal", 10).ToList());
+
+        var combat = play.CombatDriver!.Current!;
+        var phantomId = combat.State.Combatants.First(c => c.Id.value.StartsWith("remanded_case_phantom")).Id;
+        var writId = combat.State.Combatants.First(c => c.Id.value.StartsWith("escalation_writ")).Id;
+
+        // 30 HP of Phantom, three 12-damage forms.
+        for (var i = 0; i < 3; i++)
+            Disposal(play, session, phantomId);
+
+        var phantom = Enemy(play, phantomId);
+        Assert.Equal(24, phantom.Health.Current);                               // returned once
+        Assert.Equal(2, FightProbe.StacksOf(phantom, "strength"));
+        Assert.Equal(30 - 12, Enemy(play, writId).Health.Current);              // the Writ paid for it
+        Assert.Equal(1, FightProbe.StacksOf(Enemy(play, writId), PassiveStatuses.SpentWritId));
+    }
+
+    // Route B: kill the Writ first and no remand is coming — the Phantom takes Finality instead and its next
+    // intent is the Final Judgment.
+    [Fact]
+    public void Downing_the_writ_first_hands_the_phantom_its_finality()
+    {
+        var probe = FightProbe.Roster("finality", energy: 9,
+            ("remanded_case_phantom", "uncertain_remand", 60),
+            ("escalation_writ", "higher_seal", 24));
+        var (play, session, _) = FightProbe.Start(probe, Enumerable.Repeat("approved_for_disposal", 10).ToList());
+
+        var combat = play.CombatDriver!.Current!;
+        var phantomId = combat.State.Combatants.First(c => c.Id.value.StartsWith("remanded_case_phantom")).Id;
+        var writId = combat.State.Combatants.First(c => c.Id.value.StartsWith("escalation_writ")).Id;
+
+        for (var i = 0; i < 2; i++)
+            Disposal(play, session, writId);
+
+        var phantom = Enemy(play, phantomId);
+        Assert.Equal(2, FightProbe.StacksOf(phantom, "strength"));
+        Assert.Equal(1, phantom.GetCounter(PassiveStatuses.FinalityCounter));
+
+        var before = Hero(play).Health.Current;
+        play.CombatDriver!.EndTurn(); // Final Judgment: 17 damage + 1 Paperwork (and +2 Strength on top)
+        Assert.Null(session.Error);
+        Assert.True(Hero(play).Health.Current <= before - 17, "the Final Judgment should land at least 17");
+        Assert.Equal(0, Enemy(play, phantomId).GetCounter(PassiveStatuses.FinalityCounter)); // spent
+    }
+
+    private static void Disposal(RunPlayback play, InteractiveRunSession session, CombatantId enemyId)
+    {
+        var card = play.CombatDriver!.Current!.Hand.First(c => c.DefinitionId.value == "approved_for_disposal");
+        play.CombatDriver.PlayCard(card.Id, enemyId);
+        Assert.Null(session.Error);
+    }
+
     private static void Cut(RunPlayback play, InteractiveRunSession session, CombatantId enemyId)
     {
         var card = play.CombatDriver!.Current!.Hand.First(c => c.DefinitionId.value == "paper_cut");

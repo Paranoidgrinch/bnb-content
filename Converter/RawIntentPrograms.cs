@@ -13,8 +13,22 @@ public static class RawIntentPrograms
         {
             "minute_moth_cloud.steal_a_minute" => StealAMinute(),
             "living_petition_chorus.read_into_the_record" => ReadIntoTheRecord(),
+            "escalation_writ.elevate_the_case" => ElevateTheCase(),
             _ => null,
         };
+
+    // "Elevate the Case": the Writ makes its Phantom stronger, found through the Phantom's marker.
+    private static EffectProgram<EnemyActionContext> ElevateTheCase()
+    {
+        var phantom = CombatantTargetSelectors.AllAlliesOfSourceWithStatus(
+            new StatusDefinitionId(PassiveStatuses.PhantomId));
+
+        return new EffectProgram<EnemyActionContext>(
+            new ForEachTargetEffectNode<EnemyActionContext>(phantom,
+                new ApplyStatusNode<EnemyActionContext>(
+                    CombatantTargetSelectors.IterationTarget, new StatusDefinitionId("strength"),
+                    new ConstantExpression<EnemyActionContext>(1))));
+    }
 
     // "Read Into the Record": 8 damage, then every liability the player signed for, in the order the clauses
     // are listed, and the petition starts a fresh reading cycle.
