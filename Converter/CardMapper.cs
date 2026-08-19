@@ -97,9 +97,17 @@ public static class EffectMapper
 
             "draw_cards" => new CombatNodeModel("drawCards", "source", CombatAmountSpec.FromConst(Amount())),
 
-            // damage = amount (base, optional) + min(stacks of <status> on the target × amount_per_stack, cap?)
-            // Base + capped scaling covers "N damage, +X per <status> up to +Y" (e.g. Queue-Crier's Lost Your Place).
-            "damage_per_status" => new CombatNodeModel("dealDamage", Sel(), DamagePerStatusAmount(where, effect, Sel())),
+            // damage = amount (base, optional) + min(stacks of <status> × amount_per_stack, cap?)
+            // Base + capped scaling covers "N damage, +X per <status> up to +Y" (e.g. Queue-Crier's Lost Your
+            // Place). The stacks are read on the effect's target unless status_on names another seat (Blank-Line
+            // Leech scales on its OWN Paperwork while hitting the player), and per_stacks groups them ("+2 for
+            // every 2 Paperwork").
+            "damage_per_status" => new CombatNodeModel("dealDamage", Sel(),
+                DamagePerStatusAmount(where, effect, effect.StatusOn is { } seat
+                    ? targets.TryGetValue(seat, out var readSelector)
+                        ? readSelector
+                        : throw new ConversionException(where, $"unmapped status_on '{seat}'")
+                    : Sel())),
 
             // set_counter: write a per-fight track (Queue Position, …). relative (default true) adds; else sets.
             "set_counter" => new CombatNodeModel("setCombatantCounter", Sel(), CombatAmountSpec.FromConst(Amount()),
@@ -136,12 +144,21 @@ public static class EffectMapper
         };
     }
 
-    // amount(base) + min(statusStacks(target, status) × amount_per_stack, cap). Base and cap are optional.
-    private static CombatAmountSpec DamagePerStatusAmount(string where, BabEffect effect, string selector)
+    // amount(base) + min(statusStacks(readSelector, status) ÷ per_stacks × amount_per_stack, cap).
+    // Base, cap and per_stacks are optional; per_stacks divides first (whole-number), so 3 Paperwork counted
+    // "for every 2" is one group, not one and a half.
+    private static CombatAmountSpec DamagePerStatusAmount(string where, BabEffect effect, string readSelector)
     {
-        var perStack = CombatAmountSpec.Binary("mul",
-            new CombatAmountSpec("statusStacks", SelectorKey: selector,
-                ReadId: effect.Status ?? throw new ConversionException(where, "damage_per_status without status")),
+        var stacks = new CombatAmountSpec("statusStacks", SelectorKey: readSelector,
+            ReadId: effect.Status ?? throw new ConversionException(where, "damage_per_status without status"));
+
+        var groups = effect.PerStacks is { } per
+            ? per > 0
+                ? CombatAmountSpec.Binary("div", stacks, CombatAmountSpec.FromConst(per))
+                : throw new ConversionException(where, "per_stacks must be greater than zero")
+            : stacks;
+
+        var perStack = CombatAmountSpec.Binary("mul", groups,
             CombatAmountSpec.FromConst(effect.AmountPerStack
                 ?? throw new ConversionException(where, "damage_per_status without amount_per_stack")));
 

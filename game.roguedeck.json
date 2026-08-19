@@ -16853,16 +16853,16 @@
       "Enemies": [
         {
           "Id": "blank_line_leech",
-          "MaxHealth": 29,
+          "MaxHealth": 45,
           "Actions": [
             {
-              "value": "blank_line_leech.leave_it_blank"
+              "value": "blank_line_leech.blank_space_bite"
             },
             {
-              "value": "blank_line_leech.ink_sucker_bite"
+              "value": "blank_line_leech.suck_the_ink_dry"
             },
             {
-              "value": "blank_line_leech.required_field"
+              "value": "blank_line_leech.incomplete_field"
             }
           ],
           "StartingStatuses": null,
@@ -35621,13 +35621,148 @@
       }
     },
     {
-      "Id": "blank_line_leech.leave_it_blank",
+      "Id": "blank_line_leech.blank_space_bite",
       "PackageId": "scenario",
-      "NameKey": "Leave It Blank",
+      "NameKey": "Blank-Space Bite",
+      "DescriptionKey": null,
+      "Intent": {
+        "Kind": "Attack",
+        "Label": "Blank-Space Bite \u00B7 8 dmg \u002B2 per 2 own Paperwork (max \u002B8)"
+      },
+      "Program": {
+        "Id": {
+          "Value": "(unnamed)"
+        },
+        "Root": {
+          "kind": "node.dealDamage",
+          "value": {
+            "TargetSelector": {
+              "kind": "sel.eventTarget",
+              "value": {
+                "Cardinality": "ZeroOrOne",
+                "RequiredContextCapabilities": "EventTarget"
+              }
+            },
+            "Amount": {
+              "kind": "add",
+              "value": {
+                "Left": {
+                  "kind": "const",
+                  "value": {
+                    "Value": 8
+                  }
+                },
+                "Right": {
+                  "kind": "min",
+                  "value": {
+                    "Left": {
+                      "kind": "multiply",
+                      "value": {
+                        "Left": {
+                          "kind": "divide",
+                          "value": {
+                            "Dividend": {
+                              "kind": "combatantStatusStacks",
+                              "value": {
+                                "Selector": {
+                                  "kind": "sel.source",
+                                  "value": {
+                                    "Cardinality": "ZeroOrOne",
+                                    "RequiredContextCapabilities": "Source"
+                                  }
+                                },
+                                "StatusId": {
+                                  "value": "paperwork"
+                                }
+                              }
+                            },
+                            "Divisor": {
+                              "kind": "const",
+                              "value": {
+                                "Value": 2
+                              }
+                            },
+                            "ZeroPolicy": "ReturnZero"
+                          }
+                        },
+                        "Right": {
+                          "kind": "const",
+                          "value": {
+                            "Value": 2
+                          }
+                        }
+                      }
+                    },
+                    "Right": {
+                      "kind": "const",
+                      "value": {
+                        "Value": 8
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "ResultKey": null,
+            "IgnoresBlock": false,
+            "Element": null,
+            "Children": []
+          }
+        },
+        "MaxNodeDepth": 64,
+        "MaxProgramSteps": 1024
+      }
+    },
+    {
+      "Id": "blank_line_leech.suck_the_ink_dry",
+      "PackageId": "scenario",
+      "NameKey": "Suck the Ink Dry",
+      "DescriptionKey": null,
+      "Intent": {
+        "Kind": "Buff",
+        "Label": "Suck the Ink Dry \u00B7 Bookworm \u002B2"
+      },
+      "Program": {
+        "Id": {
+          "Value": "(unnamed)"
+        },
+        "Root": {
+          "kind": "node.applyStatus",
+          "value": {
+            "TargetSelector": {
+              "kind": "sel.source",
+              "value": {
+                "Cardinality": "ZeroOrOne",
+                "RequiredContextCapabilities": "Source"
+              }
+            },
+            "StatusDefinitionId": {
+              "value": "bookworm"
+            },
+            "Stacks": {
+              "kind": "const",
+              "value": {
+                "Value": 2
+              }
+            },
+            "DurationTurns": 0,
+            "Charges": 0,
+            "ResultKey": null,
+            "Children": []
+          }
+        },
+        "MaxNodeDepth": 64,
+        "MaxProgramSteps": 1024
+      }
+    },
+    {
+      "Id": "blank_line_leech.incomplete_field",
+      "PackageId": "scenario",
+      "NameKey": "Incomplete Field",
       "DescriptionKey": null,
       "Intent": {
         "Kind": "Debuff",
-        "Label": "Leave It Blank \u00B7 Paperwork \u002B2"
+        "Label": "Incomplete Field \u00B7 Paperwork \u002B2"
       },
       "Program": {
         "Id": {
@@ -35656,148 +35791,6 @@
             "Charges": 0,
             "ResultKey": null,
             "Children": []
-          }
-        },
-        "MaxNodeDepth": 64,
-        "MaxProgramSteps": 1024
-      }
-    },
-    {
-      "Id": "blank_line_leech.ink_sucker_bite",
-      "PackageId": "scenario",
-      "NameKey": "Ink-Sucker Bite",
-      "DescriptionKey": null,
-      "Intent": {
-        "Kind": "Special",
-        "Label": "Ink-Sucker Bite \u00B7 6 dmg, Panic \u002B1"
-      },
-      "Program": {
-        "Id": {
-          "Value": "(unnamed)"
-        },
-        "Root": {
-          "kind": "node.sequence",
-          "value": {
-            "Children": [
-              {
-                "kind": "node.dealDamage",
-                "value": {
-                  "TargetSelector": {
-                    "kind": "sel.eventTarget",
-                    "value": {
-                      "Cardinality": "ZeroOrOne",
-                      "RequiredContextCapabilities": "EventTarget"
-                    }
-                  },
-                  "Amount": {
-                    "kind": "const",
-                    "value": {
-                      "Value": 6
-                    }
-                  },
-                  "ResultKey": null,
-                  "IgnoresBlock": false,
-                  "Element": null,
-                  "Children": []
-                }
-              },
-              {
-                "kind": "node.applyStatus",
-                "value": {
-                  "TargetSelector": {
-                    "kind": "sel.eventTarget",
-                    "value": {
-                      "Cardinality": "ZeroOrOne",
-                      "RequiredContextCapabilities": "EventTarget"
-                    }
-                  },
-                  "StatusDefinitionId": {
-                    "value": "panic"
-                  },
-                  "Stacks": {
-                    "kind": "const",
-                    "value": {
-                      "Value": 1
-                    }
-                  },
-                  "DurationTurns": 0,
-                  "Charges": 0,
-                  "ResultKey": null,
-                  "Children": []
-                }
-              }
-            ]
-          }
-        },
-        "MaxNodeDepth": 64,
-        "MaxProgramSteps": 1024
-      }
-    },
-    {
-      "Id": "blank_line_leech.required_field",
-      "PackageId": "scenario",
-      "NameKey": "Required Field",
-      "DescriptionKey": null,
-      "Intent": {
-        "Kind": "Special",
-        "Label": "Required Field \u00B7 6 dmg, Paperwork \u002B2"
-      },
-      "Program": {
-        "Id": {
-          "Value": "(unnamed)"
-        },
-        "Root": {
-          "kind": "node.sequence",
-          "value": {
-            "Children": [
-              {
-                "kind": "node.dealDamage",
-                "value": {
-                  "TargetSelector": {
-                    "kind": "sel.eventTarget",
-                    "value": {
-                      "Cardinality": "ZeroOrOne",
-                      "RequiredContextCapabilities": "EventTarget"
-                    }
-                  },
-                  "Amount": {
-                    "kind": "const",
-                    "value": {
-                      "Value": 6
-                    }
-                  },
-                  "ResultKey": null,
-                  "IgnoresBlock": false,
-                  "Element": null,
-                  "Children": []
-                }
-              },
-              {
-                "kind": "node.applyStatus",
-                "value": {
-                  "TargetSelector": {
-                    "kind": "sel.eventTarget",
-                    "value": {
-                      "Cardinality": "ZeroOrOne",
-                      "RequiredContextCapabilities": "EventTarget"
-                    }
-                  },
-                  "StatusDefinitionId": {
-                    "value": "paperwork"
-                  },
-                  "Stacks": {
-                    "kind": "const",
-                    "value": {
-                      "Value": 2
-                    }
-                  },
-                  "DurationTurns": 0,
-                  "Charges": 0,
-                  "ResultKey": null,
-                  "Children": []
-                }
-              }
-            ]
           }
         },
         "MaxNodeDepth": 64,

@@ -43,7 +43,11 @@ public sealed record BabEffect(
     // + relative flag for set_counter (tracks like Queue Position). Optional → old effects are unchanged.
     int? Cap = null,
     string? Counter = null,
-    bool? Relative = null);
+    bool? Relative = null,
+    // damage_per_status only: whose status the scaling reads (a target key like "owner"/"player"; default: the
+    // effect's own target), and how many stacks make one bonus step ("+2 for every 2 Paperwork" → 2).
+    string? StatusOn = null,
+    int? PerStacks = null);
 
 public sealed record BabStatus(
     string Id,
