@@ -14634,19 +14634,36 @@
       "Enemies": [
         {
           "Id": "unsigned_form_ghost",
-          "MaxHealth": 30,
+          "MaxHealth": 43,
           "Actions": [
             {
-              "value": "unsigned_form_ghost.float_back_unfinished"
-            },
-            {
-              "value": "unsigned_form_ghost.edge_of_the_page"
-            },
-            {
               "value": "unsigned_form_ghost.missing_signature"
+            },
+            {
+              "value": "unsigned_form_ghost.spectral_initial"
+            },
+            {
+              "value": "unsigned_form_ghost.reject_the_filing"
             }
           ],
-          "StartingStatuses": null,
+          "StartingStatuses": [
+            {
+              "Status": {
+                "value": "still_missing_a_signature"
+              },
+              "Stacks": 1,
+              "DurationTurns": 0,
+              "Charges": 0
+            },
+            {
+              "Status": {
+                "value": "signature_pending"
+              },
+              "Stacks": 1,
+              "DurationTurns": 0,
+              "Charges": 0
+            }
+          ],
           "DisplayName": "Unsigned Form Ghost",
           "Position": null,
           "IntentRules": null
@@ -30129,13 +30146,13 @@
       }
     },
     {
-      "Id": "unsigned_form_ghost.float_back_unfinished",
+      "Id": "unsigned_form_ghost.missing_signature",
       "PackageId": "scenario",
-      "NameKey": "Float Back Unfinished",
+      "NameKey": "Missing Signature",
       "DescriptionKey": null,
       "Intent": {
         "Kind": "Debuff",
-        "Label": "Float Back Unfinished \u00B7 Paperwork \u002B3"
+        "Label": "Missing Signature \u00B7 Paperwork \u002B3"
       },
       "Program": {
         "Id": {
@@ -30171,13 +30188,13 @@
       }
     },
     {
-      "Id": "unsigned_form_ghost.edge_of_the_page",
+      "Id": "unsigned_form_ghost.spectral_initial",
       "PackageId": "scenario",
-      "NameKey": "Edge of the Page",
+      "NameKey": "Spectral Initial",
       "DescriptionKey": null,
       "Intent": {
         "Kind": "Attack",
-        "Label": "Edge of the Page \u00B7 6 dmg"
+        "Label": "Spectral Initial \u00B7 9 dmg"
       },
       "Program": {
         "Id": {
@@ -30196,7 +30213,7 @@
             "Amount": {
               "kind": "const",
               "value": {
-                "Value": 6
+                "Value": 9
               }
             },
             "ResultKey": null,
@@ -30210,13 +30227,13 @@
       }
     },
     {
-      "Id": "unsigned_form_ghost.missing_signature",
+      "Id": "unsigned_form_ghost.reject_the_filing",
       "PackageId": "scenario",
-      "NameKey": "Missing Signature",
+      "NameKey": "Reject the Filing",
       "DescriptionKey": null,
       "Intent": {
         "Kind": "Special",
-        "Label": "Missing Signature \u00B7 4 dmg, Paperwork \u002B1"
+        "Label": "Reject the Filing \u00B7 Bookworm \u002B1, 8 block"
       },
       "Program": {
         "Id": {
@@ -30227,39 +30244,17 @@
           "value": {
             "Children": [
               {
-                "kind": "node.dealDamage",
-                "value": {
-                  "TargetSelector": {
-                    "kind": "sel.eventTarget",
-                    "value": {
-                      "Cardinality": "ZeroOrOne",
-                      "RequiredContextCapabilities": "EventTarget"
-                    }
-                  },
-                  "Amount": {
-                    "kind": "const",
-                    "value": {
-                      "Value": 4
-                    }
-                  },
-                  "ResultKey": null,
-                  "IgnoresBlock": false,
-                  "Element": null,
-                  "Children": []
-                }
-              },
-              {
                 "kind": "node.applyStatus",
                 "value": {
                   "TargetSelector": {
-                    "kind": "sel.eventTarget",
+                    "kind": "sel.source",
                     "value": {
                       "Cardinality": "ZeroOrOne",
-                      "RequiredContextCapabilities": "EventTarget"
+                      "RequiredContextCapabilities": "Source"
                     }
                   },
                   "StatusDefinitionId": {
-                    "value": "paperwork"
+                    "value": "bookworm"
                   },
                   "Stacks": {
                     "kind": "const",
@@ -30269,6 +30264,26 @@
                   },
                   "DurationTurns": 0,
                   "Charges": 0,
+                  "ResultKey": null,
+                  "Children": []
+                }
+              },
+              {
+                "kind": "node.gainBlock",
+                "value": {
+                  "TargetSelector": {
+                    "kind": "sel.source",
+                    "value": {
+                      "Cardinality": "ZeroOrOne",
+                      "RequiredContextCapabilities": "Source"
+                    }
+                  },
+                  "Amount": {
+                    "kind": "const",
+                    "value": {
+                      "Value": 8
+                    }
+                  },
                   "ResultKey": null,
                   "Children": []
                 }
@@ -59462,6 +59477,1552 @@
           }
         }
       ],
+      "DeathPrevention": null,
+      "DebuffBlock": null
+    },
+    {
+      "Id": "still_missing_a_signature",
+      "PackageId": "scenario",
+      "NameKey": "Still Missing a Signature",
+      "DescriptionKey": null,
+      "Polarity": "Neutral",
+      "UsesStacks": false,
+      "UsesDuration": false,
+      "UsesCharges": false,
+      "StackingBehavior": "MergeWithExistingInstance",
+      "Tags": [],
+      "PassiveModifiers": [],
+      "Triggers": [
+        {
+          "Event": "StatusApplied",
+          "Program": {
+            "Id": {
+              "Value": "(unnamed)"
+            },
+            "Root": {
+              "kind": "node.conditional",
+              "value": {
+                "Condition": {
+                  "kind": "compare",
+                  "value": {
+                    "Left": {
+                      "kind": "combatantStatusStacks",
+                      "value": {
+                        "Selector": {
+                          "kind": "sel.eventTarget",
+                          "value": {
+                            "Cardinality": "ZeroOrOne",
+                            "RequiredContextCapabilities": "EventTarget"
+                          }
+                        },
+                        "StatusId": {
+                          "value": "paperwork"
+                        }
+                      }
+                    },
+                    "Op": "GreaterOrEqual",
+                    "Right": {
+                      "kind": "const",
+                      "value": {
+                        "Value": 3
+                      }
+                    }
+                  }
+                },
+                "Then": {
+                  "kind": "node.conditional",
+                  "value": {
+                    "Condition": {
+                      "kind": "compare",
+                      "value": {
+                        "Left": {
+                          "kind": "combatantStatusStacks",
+                          "value": {
+                            "Selector": {
+                              "kind": "sel.eventTarget",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "EventTarget"
+                              }
+                            },
+                            "StatusId": {
+                              "value": "signature_pending"
+                            }
+                          }
+                        },
+                        "Op": "Greater",
+                        "Right": {
+                          "kind": "const",
+                          "value": {
+                            "Value": 0
+                          }
+                        }
+                      }
+                    },
+                    "Then": {
+                      "kind": "node.modifyStatusStacks",
+                      "value": {
+                        "TargetSelector": {
+                          "kind": "sel.eventTarget",
+                          "value": {
+                            "Cardinality": "ZeroOrOne",
+                            "RequiredContextCapabilities": "EventTarget"
+                          }
+                        },
+                        "StatusDefinitionId": {
+                          "value": "signature_pending"
+                        },
+                        "Delta": {
+                          "kind": "const",
+                          "value": {
+                            "Value": -1
+                          }
+                        },
+                        "ResultKey": null,
+                        "Children": []
+                      }
+                    },
+                    "Else": null,
+                    "Children": [
+                      {
+                        "kind": "node.modifyStatusStacks",
+                        "value": {
+                          "TargetSelector": {
+                            "kind": "sel.eventTarget",
+                            "value": {
+                              "Cardinality": "ZeroOrOne",
+                              "RequiredContextCapabilities": "EventTarget"
+                            }
+                          },
+                          "StatusDefinitionId": {
+                            "value": "signature_pending"
+                          },
+                          "Delta": {
+                            "kind": "const",
+                            "value": {
+                              "Value": -1
+                            }
+                          },
+                          "ResultKey": null,
+                          "Children": []
+                        }
+                      }
+                    ]
+                  }
+                },
+                "Else": {
+                  "kind": "node.conditional",
+                  "value": {
+                    "Condition": {
+                      "kind": "compare",
+                      "value": {
+                        "Left": {
+                          "kind": "combatantStatusStacks",
+                          "value": {
+                            "Selector": {
+                              "kind": "sel.eventTarget",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "EventTarget"
+                              }
+                            },
+                            "StatusId": {
+                              "value": "signature_pending"
+                            }
+                          }
+                        },
+                        "Op": "Equal",
+                        "Right": {
+                          "kind": "const",
+                          "value": {
+                            "Value": 0
+                          }
+                        }
+                      }
+                    },
+                    "Then": {
+                      "kind": "node.applyStatus",
+                      "value": {
+                        "TargetSelector": {
+                          "kind": "sel.eventTarget",
+                          "value": {
+                            "Cardinality": "ZeroOrOne",
+                            "RequiredContextCapabilities": "EventTarget"
+                          }
+                        },
+                        "StatusDefinitionId": {
+                          "value": "signature_pending"
+                        },
+                        "Stacks": {
+                          "kind": "const",
+                          "value": {
+                            "Value": 1
+                          }
+                        },
+                        "DurationTurns": 0,
+                        "Charges": 0,
+                        "ResultKey": null,
+                        "Children": []
+                      }
+                    },
+                    "Else": null,
+                    "Children": [
+                      {
+                        "kind": "node.applyStatus",
+                        "value": {
+                          "TargetSelector": {
+                            "kind": "sel.eventTarget",
+                            "value": {
+                              "Cardinality": "ZeroOrOne",
+                              "RequiredContextCapabilities": "EventTarget"
+                            }
+                          },
+                          "StatusDefinitionId": {
+                            "value": "signature_pending"
+                          },
+                          "Stacks": {
+                            "kind": "const",
+                            "value": {
+                              "Value": 1
+                            }
+                          },
+                          "DurationTurns": 0,
+                          "Charges": 0,
+                          "ResultKey": null,
+                          "Children": []
+                        }
+                      }
+                    ]
+                  }
+                },
+                "Children": [
+                  {
+                    "kind": "node.conditional",
+                    "value": {
+                      "Condition": {
+                        "kind": "compare",
+                        "value": {
+                          "Left": {
+                            "kind": "combatantStatusStacks",
+                            "value": {
+                              "Selector": {
+                                "kind": "sel.eventTarget",
+                                "value": {
+                                  "Cardinality": "ZeroOrOne",
+                                  "RequiredContextCapabilities": "EventTarget"
+                                }
+                              },
+                              "StatusId": {
+                                "value": "signature_pending"
+                              }
+                            }
+                          },
+                          "Op": "Greater",
+                          "Right": {
+                            "kind": "const",
+                            "value": {
+                              "Value": 0
+                            }
+                          }
+                        }
+                      },
+                      "Then": {
+                        "kind": "node.modifyStatusStacks",
+                        "value": {
+                          "TargetSelector": {
+                            "kind": "sel.eventTarget",
+                            "value": {
+                              "Cardinality": "ZeroOrOne",
+                              "RequiredContextCapabilities": "EventTarget"
+                            }
+                          },
+                          "StatusDefinitionId": {
+                            "value": "signature_pending"
+                          },
+                          "Delta": {
+                            "kind": "const",
+                            "value": {
+                              "Value": -1
+                            }
+                          },
+                          "ResultKey": null,
+                          "Children": []
+                        }
+                      },
+                      "Else": null,
+                      "Children": [
+                        {
+                          "kind": "node.modifyStatusStacks",
+                          "value": {
+                            "TargetSelector": {
+                              "kind": "sel.eventTarget",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "EventTarget"
+                              }
+                            },
+                            "StatusDefinitionId": {
+                              "value": "signature_pending"
+                            },
+                            "Delta": {
+                              "kind": "const",
+                              "value": {
+                                "Value": -1
+                              }
+                            },
+                            "ResultKey": null,
+                            "Children": []
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "kind": "node.conditional",
+                    "value": {
+                      "Condition": {
+                        "kind": "compare",
+                        "value": {
+                          "Left": {
+                            "kind": "combatantStatusStacks",
+                            "value": {
+                              "Selector": {
+                                "kind": "sel.eventTarget",
+                                "value": {
+                                  "Cardinality": "ZeroOrOne",
+                                  "RequiredContextCapabilities": "EventTarget"
+                                }
+                              },
+                              "StatusId": {
+                                "value": "signature_pending"
+                              }
+                            }
+                          },
+                          "Op": "Equal",
+                          "Right": {
+                            "kind": "const",
+                            "value": {
+                              "Value": 0
+                            }
+                          }
+                        }
+                      },
+                      "Then": {
+                        "kind": "node.applyStatus",
+                        "value": {
+                          "TargetSelector": {
+                            "kind": "sel.eventTarget",
+                            "value": {
+                              "Cardinality": "ZeroOrOne",
+                              "RequiredContextCapabilities": "EventTarget"
+                            }
+                          },
+                          "StatusDefinitionId": {
+                            "value": "signature_pending"
+                          },
+                          "Stacks": {
+                            "kind": "const",
+                            "value": {
+                              "Value": 1
+                            }
+                          },
+                          "DurationTurns": 0,
+                          "Charges": 0,
+                          "ResultKey": null,
+                          "Children": []
+                        }
+                      },
+                      "Else": null,
+                      "Children": [
+                        {
+                          "kind": "node.applyStatus",
+                          "value": {
+                            "TargetSelector": {
+                              "kind": "sel.eventTarget",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "EventTarget"
+                              }
+                            },
+                            "StatusDefinitionId": {
+                              "value": "signature_pending"
+                            },
+                            "Stacks": {
+                              "kind": "const",
+                              "value": {
+                                "Value": 1
+                              }
+                            },
+                            "DurationTurns": 0,
+                            "Charges": 0,
+                            "ResultKey": null,
+                            "Children": []
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            "MaxNodeDepth": 64,
+            "MaxProgramSteps": 1024
+          }
+        },
+        {
+          "Event": "StatusMerged",
+          "Program": {
+            "Id": {
+              "Value": "(unnamed)"
+            },
+            "Root": {
+              "kind": "node.conditional",
+              "value": {
+                "Condition": {
+                  "kind": "compare",
+                  "value": {
+                    "Left": {
+                      "kind": "combatantStatusStacks",
+                      "value": {
+                        "Selector": {
+                          "kind": "sel.eventTarget",
+                          "value": {
+                            "Cardinality": "ZeroOrOne",
+                            "RequiredContextCapabilities": "EventTarget"
+                          }
+                        },
+                        "StatusId": {
+                          "value": "paperwork"
+                        }
+                      }
+                    },
+                    "Op": "GreaterOrEqual",
+                    "Right": {
+                      "kind": "const",
+                      "value": {
+                        "Value": 3
+                      }
+                    }
+                  }
+                },
+                "Then": {
+                  "kind": "node.conditional",
+                  "value": {
+                    "Condition": {
+                      "kind": "compare",
+                      "value": {
+                        "Left": {
+                          "kind": "combatantStatusStacks",
+                          "value": {
+                            "Selector": {
+                              "kind": "sel.eventTarget",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "EventTarget"
+                              }
+                            },
+                            "StatusId": {
+                              "value": "signature_pending"
+                            }
+                          }
+                        },
+                        "Op": "Greater",
+                        "Right": {
+                          "kind": "const",
+                          "value": {
+                            "Value": 0
+                          }
+                        }
+                      }
+                    },
+                    "Then": {
+                      "kind": "node.modifyStatusStacks",
+                      "value": {
+                        "TargetSelector": {
+                          "kind": "sel.eventTarget",
+                          "value": {
+                            "Cardinality": "ZeroOrOne",
+                            "RequiredContextCapabilities": "EventTarget"
+                          }
+                        },
+                        "StatusDefinitionId": {
+                          "value": "signature_pending"
+                        },
+                        "Delta": {
+                          "kind": "const",
+                          "value": {
+                            "Value": -1
+                          }
+                        },
+                        "ResultKey": null,
+                        "Children": []
+                      }
+                    },
+                    "Else": null,
+                    "Children": [
+                      {
+                        "kind": "node.modifyStatusStacks",
+                        "value": {
+                          "TargetSelector": {
+                            "kind": "sel.eventTarget",
+                            "value": {
+                              "Cardinality": "ZeroOrOne",
+                              "RequiredContextCapabilities": "EventTarget"
+                            }
+                          },
+                          "StatusDefinitionId": {
+                            "value": "signature_pending"
+                          },
+                          "Delta": {
+                            "kind": "const",
+                            "value": {
+                              "Value": -1
+                            }
+                          },
+                          "ResultKey": null,
+                          "Children": []
+                        }
+                      }
+                    ]
+                  }
+                },
+                "Else": {
+                  "kind": "node.conditional",
+                  "value": {
+                    "Condition": {
+                      "kind": "compare",
+                      "value": {
+                        "Left": {
+                          "kind": "combatantStatusStacks",
+                          "value": {
+                            "Selector": {
+                              "kind": "sel.eventTarget",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "EventTarget"
+                              }
+                            },
+                            "StatusId": {
+                              "value": "signature_pending"
+                            }
+                          }
+                        },
+                        "Op": "Equal",
+                        "Right": {
+                          "kind": "const",
+                          "value": {
+                            "Value": 0
+                          }
+                        }
+                      }
+                    },
+                    "Then": {
+                      "kind": "node.applyStatus",
+                      "value": {
+                        "TargetSelector": {
+                          "kind": "sel.eventTarget",
+                          "value": {
+                            "Cardinality": "ZeroOrOne",
+                            "RequiredContextCapabilities": "EventTarget"
+                          }
+                        },
+                        "StatusDefinitionId": {
+                          "value": "signature_pending"
+                        },
+                        "Stacks": {
+                          "kind": "const",
+                          "value": {
+                            "Value": 1
+                          }
+                        },
+                        "DurationTurns": 0,
+                        "Charges": 0,
+                        "ResultKey": null,
+                        "Children": []
+                      }
+                    },
+                    "Else": null,
+                    "Children": [
+                      {
+                        "kind": "node.applyStatus",
+                        "value": {
+                          "TargetSelector": {
+                            "kind": "sel.eventTarget",
+                            "value": {
+                              "Cardinality": "ZeroOrOne",
+                              "RequiredContextCapabilities": "EventTarget"
+                            }
+                          },
+                          "StatusDefinitionId": {
+                            "value": "signature_pending"
+                          },
+                          "Stacks": {
+                            "kind": "const",
+                            "value": {
+                              "Value": 1
+                            }
+                          },
+                          "DurationTurns": 0,
+                          "Charges": 0,
+                          "ResultKey": null,
+                          "Children": []
+                        }
+                      }
+                    ]
+                  }
+                },
+                "Children": [
+                  {
+                    "kind": "node.conditional",
+                    "value": {
+                      "Condition": {
+                        "kind": "compare",
+                        "value": {
+                          "Left": {
+                            "kind": "combatantStatusStacks",
+                            "value": {
+                              "Selector": {
+                                "kind": "sel.eventTarget",
+                                "value": {
+                                  "Cardinality": "ZeroOrOne",
+                                  "RequiredContextCapabilities": "EventTarget"
+                                }
+                              },
+                              "StatusId": {
+                                "value": "signature_pending"
+                              }
+                            }
+                          },
+                          "Op": "Greater",
+                          "Right": {
+                            "kind": "const",
+                            "value": {
+                              "Value": 0
+                            }
+                          }
+                        }
+                      },
+                      "Then": {
+                        "kind": "node.modifyStatusStacks",
+                        "value": {
+                          "TargetSelector": {
+                            "kind": "sel.eventTarget",
+                            "value": {
+                              "Cardinality": "ZeroOrOne",
+                              "RequiredContextCapabilities": "EventTarget"
+                            }
+                          },
+                          "StatusDefinitionId": {
+                            "value": "signature_pending"
+                          },
+                          "Delta": {
+                            "kind": "const",
+                            "value": {
+                              "Value": -1
+                            }
+                          },
+                          "ResultKey": null,
+                          "Children": []
+                        }
+                      },
+                      "Else": null,
+                      "Children": [
+                        {
+                          "kind": "node.modifyStatusStacks",
+                          "value": {
+                            "TargetSelector": {
+                              "kind": "sel.eventTarget",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "EventTarget"
+                              }
+                            },
+                            "StatusDefinitionId": {
+                              "value": "signature_pending"
+                            },
+                            "Delta": {
+                              "kind": "const",
+                              "value": {
+                                "Value": -1
+                              }
+                            },
+                            "ResultKey": null,
+                            "Children": []
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "kind": "node.conditional",
+                    "value": {
+                      "Condition": {
+                        "kind": "compare",
+                        "value": {
+                          "Left": {
+                            "kind": "combatantStatusStacks",
+                            "value": {
+                              "Selector": {
+                                "kind": "sel.eventTarget",
+                                "value": {
+                                  "Cardinality": "ZeroOrOne",
+                                  "RequiredContextCapabilities": "EventTarget"
+                                }
+                              },
+                              "StatusId": {
+                                "value": "signature_pending"
+                              }
+                            }
+                          },
+                          "Op": "Equal",
+                          "Right": {
+                            "kind": "const",
+                            "value": {
+                              "Value": 0
+                            }
+                          }
+                        }
+                      },
+                      "Then": {
+                        "kind": "node.applyStatus",
+                        "value": {
+                          "TargetSelector": {
+                            "kind": "sel.eventTarget",
+                            "value": {
+                              "Cardinality": "ZeroOrOne",
+                              "RequiredContextCapabilities": "EventTarget"
+                            }
+                          },
+                          "StatusDefinitionId": {
+                            "value": "signature_pending"
+                          },
+                          "Stacks": {
+                            "kind": "const",
+                            "value": {
+                              "Value": 1
+                            }
+                          },
+                          "DurationTurns": 0,
+                          "Charges": 0,
+                          "ResultKey": null,
+                          "Children": []
+                        }
+                      },
+                      "Else": null,
+                      "Children": [
+                        {
+                          "kind": "node.applyStatus",
+                          "value": {
+                            "TargetSelector": {
+                              "kind": "sel.eventTarget",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "EventTarget"
+                              }
+                            },
+                            "StatusDefinitionId": {
+                              "value": "signature_pending"
+                            },
+                            "Stacks": {
+                              "kind": "const",
+                              "value": {
+                                "Value": 1
+                              }
+                            },
+                            "DurationTurns": 0,
+                            "Charges": 0,
+                            "ResultKey": null,
+                            "Children": []
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            "MaxNodeDepth": 64,
+            "MaxProgramSteps": 1024
+          }
+        },
+        {
+          "Event": "StatusStacksChanged",
+          "Program": {
+            "Id": {
+              "Value": "(unnamed)"
+            },
+            "Root": {
+              "kind": "node.conditional",
+              "value": {
+                "Condition": {
+                  "kind": "compare",
+                  "value": {
+                    "Left": {
+                      "kind": "combatantStatusStacks",
+                      "value": {
+                        "Selector": {
+                          "kind": "sel.eventTarget",
+                          "value": {
+                            "Cardinality": "ZeroOrOne",
+                            "RequiredContextCapabilities": "EventTarget"
+                          }
+                        },
+                        "StatusId": {
+                          "value": "paperwork"
+                        }
+                      }
+                    },
+                    "Op": "GreaterOrEqual",
+                    "Right": {
+                      "kind": "const",
+                      "value": {
+                        "Value": 3
+                      }
+                    }
+                  }
+                },
+                "Then": {
+                  "kind": "node.conditional",
+                  "value": {
+                    "Condition": {
+                      "kind": "compare",
+                      "value": {
+                        "Left": {
+                          "kind": "combatantStatusStacks",
+                          "value": {
+                            "Selector": {
+                              "kind": "sel.eventTarget",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "EventTarget"
+                              }
+                            },
+                            "StatusId": {
+                              "value": "signature_pending"
+                            }
+                          }
+                        },
+                        "Op": "Greater",
+                        "Right": {
+                          "kind": "const",
+                          "value": {
+                            "Value": 0
+                          }
+                        }
+                      }
+                    },
+                    "Then": {
+                      "kind": "node.modifyStatusStacks",
+                      "value": {
+                        "TargetSelector": {
+                          "kind": "sel.eventTarget",
+                          "value": {
+                            "Cardinality": "ZeroOrOne",
+                            "RequiredContextCapabilities": "EventTarget"
+                          }
+                        },
+                        "StatusDefinitionId": {
+                          "value": "signature_pending"
+                        },
+                        "Delta": {
+                          "kind": "const",
+                          "value": {
+                            "Value": -1
+                          }
+                        },
+                        "ResultKey": null,
+                        "Children": []
+                      }
+                    },
+                    "Else": null,
+                    "Children": [
+                      {
+                        "kind": "node.modifyStatusStacks",
+                        "value": {
+                          "TargetSelector": {
+                            "kind": "sel.eventTarget",
+                            "value": {
+                              "Cardinality": "ZeroOrOne",
+                              "RequiredContextCapabilities": "EventTarget"
+                            }
+                          },
+                          "StatusDefinitionId": {
+                            "value": "signature_pending"
+                          },
+                          "Delta": {
+                            "kind": "const",
+                            "value": {
+                              "Value": -1
+                            }
+                          },
+                          "ResultKey": null,
+                          "Children": []
+                        }
+                      }
+                    ]
+                  }
+                },
+                "Else": {
+                  "kind": "node.conditional",
+                  "value": {
+                    "Condition": {
+                      "kind": "compare",
+                      "value": {
+                        "Left": {
+                          "kind": "combatantStatusStacks",
+                          "value": {
+                            "Selector": {
+                              "kind": "sel.eventTarget",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "EventTarget"
+                              }
+                            },
+                            "StatusId": {
+                              "value": "signature_pending"
+                            }
+                          }
+                        },
+                        "Op": "Equal",
+                        "Right": {
+                          "kind": "const",
+                          "value": {
+                            "Value": 0
+                          }
+                        }
+                      }
+                    },
+                    "Then": {
+                      "kind": "node.applyStatus",
+                      "value": {
+                        "TargetSelector": {
+                          "kind": "sel.eventTarget",
+                          "value": {
+                            "Cardinality": "ZeroOrOne",
+                            "RequiredContextCapabilities": "EventTarget"
+                          }
+                        },
+                        "StatusDefinitionId": {
+                          "value": "signature_pending"
+                        },
+                        "Stacks": {
+                          "kind": "const",
+                          "value": {
+                            "Value": 1
+                          }
+                        },
+                        "DurationTurns": 0,
+                        "Charges": 0,
+                        "ResultKey": null,
+                        "Children": []
+                      }
+                    },
+                    "Else": null,
+                    "Children": [
+                      {
+                        "kind": "node.applyStatus",
+                        "value": {
+                          "TargetSelector": {
+                            "kind": "sel.eventTarget",
+                            "value": {
+                              "Cardinality": "ZeroOrOne",
+                              "RequiredContextCapabilities": "EventTarget"
+                            }
+                          },
+                          "StatusDefinitionId": {
+                            "value": "signature_pending"
+                          },
+                          "Stacks": {
+                            "kind": "const",
+                            "value": {
+                              "Value": 1
+                            }
+                          },
+                          "DurationTurns": 0,
+                          "Charges": 0,
+                          "ResultKey": null,
+                          "Children": []
+                        }
+                      }
+                    ]
+                  }
+                },
+                "Children": [
+                  {
+                    "kind": "node.conditional",
+                    "value": {
+                      "Condition": {
+                        "kind": "compare",
+                        "value": {
+                          "Left": {
+                            "kind": "combatantStatusStacks",
+                            "value": {
+                              "Selector": {
+                                "kind": "sel.eventTarget",
+                                "value": {
+                                  "Cardinality": "ZeroOrOne",
+                                  "RequiredContextCapabilities": "EventTarget"
+                                }
+                              },
+                              "StatusId": {
+                                "value": "signature_pending"
+                              }
+                            }
+                          },
+                          "Op": "Greater",
+                          "Right": {
+                            "kind": "const",
+                            "value": {
+                              "Value": 0
+                            }
+                          }
+                        }
+                      },
+                      "Then": {
+                        "kind": "node.modifyStatusStacks",
+                        "value": {
+                          "TargetSelector": {
+                            "kind": "sel.eventTarget",
+                            "value": {
+                              "Cardinality": "ZeroOrOne",
+                              "RequiredContextCapabilities": "EventTarget"
+                            }
+                          },
+                          "StatusDefinitionId": {
+                            "value": "signature_pending"
+                          },
+                          "Delta": {
+                            "kind": "const",
+                            "value": {
+                              "Value": -1
+                            }
+                          },
+                          "ResultKey": null,
+                          "Children": []
+                        }
+                      },
+                      "Else": null,
+                      "Children": [
+                        {
+                          "kind": "node.modifyStatusStacks",
+                          "value": {
+                            "TargetSelector": {
+                              "kind": "sel.eventTarget",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "EventTarget"
+                              }
+                            },
+                            "StatusDefinitionId": {
+                              "value": "signature_pending"
+                            },
+                            "Delta": {
+                              "kind": "const",
+                              "value": {
+                                "Value": -1
+                              }
+                            },
+                            "ResultKey": null,
+                            "Children": []
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "kind": "node.conditional",
+                    "value": {
+                      "Condition": {
+                        "kind": "compare",
+                        "value": {
+                          "Left": {
+                            "kind": "combatantStatusStacks",
+                            "value": {
+                              "Selector": {
+                                "kind": "sel.eventTarget",
+                                "value": {
+                                  "Cardinality": "ZeroOrOne",
+                                  "RequiredContextCapabilities": "EventTarget"
+                                }
+                              },
+                              "StatusId": {
+                                "value": "signature_pending"
+                              }
+                            }
+                          },
+                          "Op": "Equal",
+                          "Right": {
+                            "kind": "const",
+                            "value": {
+                              "Value": 0
+                            }
+                          }
+                        }
+                      },
+                      "Then": {
+                        "kind": "node.applyStatus",
+                        "value": {
+                          "TargetSelector": {
+                            "kind": "sel.eventTarget",
+                            "value": {
+                              "Cardinality": "ZeroOrOne",
+                              "RequiredContextCapabilities": "EventTarget"
+                            }
+                          },
+                          "StatusDefinitionId": {
+                            "value": "signature_pending"
+                          },
+                          "Stacks": {
+                            "kind": "const",
+                            "value": {
+                              "Value": 1
+                            }
+                          },
+                          "DurationTurns": 0,
+                          "Charges": 0,
+                          "ResultKey": null,
+                          "Children": []
+                        }
+                      },
+                      "Else": null,
+                      "Children": [
+                        {
+                          "kind": "node.applyStatus",
+                          "value": {
+                            "TargetSelector": {
+                              "kind": "sel.eventTarget",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "EventTarget"
+                              }
+                            },
+                            "StatusDefinitionId": {
+                              "value": "signature_pending"
+                            },
+                            "Stacks": {
+                              "kind": "const",
+                              "value": {
+                                "Value": 1
+                              }
+                            },
+                            "DurationTurns": 0,
+                            "Charges": 0,
+                            "ResultKey": null,
+                            "Children": []
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            "MaxNodeDepth": 64,
+            "MaxProgramSteps": 1024
+          }
+        },
+        {
+          "Event": "StatusRemoved",
+          "Program": {
+            "Id": {
+              "Value": "(unnamed)"
+            },
+            "Root": {
+              "kind": "node.conditional",
+              "value": {
+                "Condition": {
+                  "kind": "compare",
+                  "value": {
+                    "Left": {
+                      "kind": "combatantStatusStacks",
+                      "value": {
+                        "Selector": {
+                          "kind": "sel.eventTarget",
+                          "value": {
+                            "Cardinality": "ZeroOrOne",
+                            "RequiredContextCapabilities": "EventTarget"
+                          }
+                        },
+                        "StatusId": {
+                          "value": "paperwork"
+                        }
+                      }
+                    },
+                    "Op": "GreaterOrEqual",
+                    "Right": {
+                      "kind": "const",
+                      "value": {
+                        "Value": 3
+                      }
+                    }
+                  }
+                },
+                "Then": {
+                  "kind": "node.conditional",
+                  "value": {
+                    "Condition": {
+                      "kind": "compare",
+                      "value": {
+                        "Left": {
+                          "kind": "combatantStatusStacks",
+                          "value": {
+                            "Selector": {
+                              "kind": "sel.eventTarget",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "EventTarget"
+                              }
+                            },
+                            "StatusId": {
+                              "value": "signature_pending"
+                            }
+                          }
+                        },
+                        "Op": "Greater",
+                        "Right": {
+                          "kind": "const",
+                          "value": {
+                            "Value": 0
+                          }
+                        }
+                      }
+                    },
+                    "Then": {
+                      "kind": "node.modifyStatusStacks",
+                      "value": {
+                        "TargetSelector": {
+                          "kind": "sel.eventTarget",
+                          "value": {
+                            "Cardinality": "ZeroOrOne",
+                            "RequiredContextCapabilities": "EventTarget"
+                          }
+                        },
+                        "StatusDefinitionId": {
+                          "value": "signature_pending"
+                        },
+                        "Delta": {
+                          "kind": "const",
+                          "value": {
+                            "Value": -1
+                          }
+                        },
+                        "ResultKey": null,
+                        "Children": []
+                      }
+                    },
+                    "Else": null,
+                    "Children": [
+                      {
+                        "kind": "node.modifyStatusStacks",
+                        "value": {
+                          "TargetSelector": {
+                            "kind": "sel.eventTarget",
+                            "value": {
+                              "Cardinality": "ZeroOrOne",
+                              "RequiredContextCapabilities": "EventTarget"
+                            }
+                          },
+                          "StatusDefinitionId": {
+                            "value": "signature_pending"
+                          },
+                          "Delta": {
+                            "kind": "const",
+                            "value": {
+                              "Value": -1
+                            }
+                          },
+                          "ResultKey": null,
+                          "Children": []
+                        }
+                      }
+                    ]
+                  }
+                },
+                "Else": {
+                  "kind": "node.conditional",
+                  "value": {
+                    "Condition": {
+                      "kind": "compare",
+                      "value": {
+                        "Left": {
+                          "kind": "combatantStatusStacks",
+                          "value": {
+                            "Selector": {
+                              "kind": "sel.eventTarget",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "EventTarget"
+                              }
+                            },
+                            "StatusId": {
+                              "value": "signature_pending"
+                            }
+                          }
+                        },
+                        "Op": "Equal",
+                        "Right": {
+                          "kind": "const",
+                          "value": {
+                            "Value": 0
+                          }
+                        }
+                      }
+                    },
+                    "Then": {
+                      "kind": "node.applyStatus",
+                      "value": {
+                        "TargetSelector": {
+                          "kind": "sel.eventTarget",
+                          "value": {
+                            "Cardinality": "ZeroOrOne",
+                            "RequiredContextCapabilities": "EventTarget"
+                          }
+                        },
+                        "StatusDefinitionId": {
+                          "value": "signature_pending"
+                        },
+                        "Stacks": {
+                          "kind": "const",
+                          "value": {
+                            "Value": 1
+                          }
+                        },
+                        "DurationTurns": 0,
+                        "Charges": 0,
+                        "ResultKey": null,
+                        "Children": []
+                      }
+                    },
+                    "Else": null,
+                    "Children": [
+                      {
+                        "kind": "node.applyStatus",
+                        "value": {
+                          "TargetSelector": {
+                            "kind": "sel.eventTarget",
+                            "value": {
+                              "Cardinality": "ZeroOrOne",
+                              "RequiredContextCapabilities": "EventTarget"
+                            }
+                          },
+                          "StatusDefinitionId": {
+                            "value": "signature_pending"
+                          },
+                          "Stacks": {
+                            "kind": "const",
+                            "value": {
+                              "Value": 1
+                            }
+                          },
+                          "DurationTurns": 0,
+                          "Charges": 0,
+                          "ResultKey": null,
+                          "Children": []
+                        }
+                      }
+                    ]
+                  }
+                },
+                "Children": [
+                  {
+                    "kind": "node.conditional",
+                    "value": {
+                      "Condition": {
+                        "kind": "compare",
+                        "value": {
+                          "Left": {
+                            "kind": "combatantStatusStacks",
+                            "value": {
+                              "Selector": {
+                                "kind": "sel.eventTarget",
+                                "value": {
+                                  "Cardinality": "ZeroOrOne",
+                                  "RequiredContextCapabilities": "EventTarget"
+                                }
+                              },
+                              "StatusId": {
+                                "value": "signature_pending"
+                              }
+                            }
+                          },
+                          "Op": "Greater",
+                          "Right": {
+                            "kind": "const",
+                            "value": {
+                              "Value": 0
+                            }
+                          }
+                        }
+                      },
+                      "Then": {
+                        "kind": "node.modifyStatusStacks",
+                        "value": {
+                          "TargetSelector": {
+                            "kind": "sel.eventTarget",
+                            "value": {
+                              "Cardinality": "ZeroOrOne",
+                              "RequiredContextCapabilities": "EventTarget"
+                            }
+                          },
+                          "StatusDefinitionId": {
+                            "value": "signature_pending"
+                          },
+                          "Delta": {
+                            "kind": "const",
+                            "value": {
+                              "Value": -1
+                            }
+                          },
+                          "ResultKey": null,
+                          "Children": []
+                        }
+                      },
+                      "Else": null,
+                      "Children": [
+                        {
+                          "kind": "node.modifyStatusStacks",
+                          "value": {
+                            "TargetSelector": {
+                              "kind": "sel.eventTarget",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "EventTarget"
+                              }
+                            },
+                            "StatusDefinitionId": {
+                              "value": "signature_pending"
+                            },
+                            "Delta": {
+                              "kind": "const",
+                              "value": {
+                                "Value": -1
+                              }
+                            },
+                            "ResultKey": null,
+                            "Children": []
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "kind": "node.conditional",
+                    "value": {
+                      "Condition": {
+                        "kind": "compare",
+                        "value": {
+                          "Left": {
+                            "kind": "combatantStatusStacks",
+                            "value": {
+                              "Selector": {
+                                "kind": "sel.eventTarget",
+                                "value": {
+                                  "Cardinality": "ZeroOrOne",
+                                  "RequiredContextCapabilities": "EventTarget"
+                                }
+                              },
+                              "StatusId": {
+                                "value": "signature_pending"
+                              }
+                            }
+                          },
+                          "Op": "Equal",
+                          "Right": {
+                            "kind": "const",
+                            "value": {
+                              "Value": 0
+                            }
+                          }
+                        }
+                      },
+                      "Then": {
+                        "kind": "node.applyStatus",
+                        "value": {
+                          "TargetSelector": {
+                            "kind": "sel.eventTarget",
+                            "value": {
+                              "Cardinality": "ZeroOrOne",
+                              "RequiredContextCapabilities": "EventTarget"
+                            }
+                          },
+                          "StatusDefinitionId": {
+                            "value": "signature_pending"
+                          },
+                          "Stacks": {
+                            "kind": "const",
+                            "value": {
+                              "Value": 1
+                            }
+                          },
+                          "DurationTurns": 0,
+                          "Charges": 0,
+                          "ResultKey": null,
+                          "Children": []
+                        }
+                      },
+                      "Else": null,
+                      "Children": [
+                        {
+                          "kind": "node.applyStatus",
+                          "value": {
+                            "TargetSelector": {
+                              "kind": "sel.eventTarget",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "EventTarget"
+                              }
+                            },
+                            "StatusDefinitionId": {
+                              "value": "signature_pending"
+                            },
+                            "Stacks": {
+                              "kind": "const",
+                              "value": {
+                                "Value": 1
+                              }
+                            },
+                            "DurationTurns": 0,
+                            "Charges": 0,
+                            "ResultKey": null,
+                            "Children": []
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            "MaxNodeDepth": 64,
+            "MaxProgramSteps": 1024
+          }
+        }
+      ],
+      "DeathPrevention": null,
+      "DebuffBlock": null
+    },
+    {
+      "Id": "signature_pending",
+      "PackageId": "scenario",
+      "NameKey": "Signature Pending",
+      "DescriptionKey": null,
+      "Polarity": "Buff",
+      "UsesStacks": true,
+      "UsesDuration": false,
+      "UsesCharges": false,
+      "StackingBehavior": "MergeWithExistingInstance",
+      "Tags": [],
+      "PassiveModifiers": [
+        {
+          "Pipeline": "DamageReceived",
+          "Operation": "ScalePercent",
+          "Magnitude": 75,
+          "Priority": 100,
+          "RestrictDamageKind": "Direct",
+          "AppliesToStatusId": null
+        }
+      ],
+      "Triggers": [],
       "DeathPrevention": null,
       "DebuffBlock": null
     }
