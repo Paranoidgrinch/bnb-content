@@ -623,7 +623,10 @@
       "fatigue_pressure",
       "elite_delay"
     ],
-    "role": "elite"
+    "role": "elite",
+    "enemy_health": [
+      92
+    ]
   },
   {
     "id": "city_elite_delay_03",

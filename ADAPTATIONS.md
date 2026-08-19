@@ -90,6 +90,10 @@ older Act-I enemy pool wherever HP or intents disagree. Readings taken where the
   puts on the player for that round; the other bodies' intent rules read it and stand down to a safe move.
   Since an intent rule replaces whatever the cycle offered, a blocked body may skip a non-accelerating intent
   too — the alternative would need a "which intent is next" condition the engine does not have.
+- **The Monolith STORES damage by healing it back.** "While Closed, HP loss is stored as Pending Business
+  instead of being removed" is realised as: the hit lands, the Monolith immediately heals exactly what it
+  lost, and the amount is banked on a counter. The engine has no "redirect this damage into a track"; the
+  numbers are identical, and Block still soaks first, but a combat log shows the hit and the heal.
 - **"Direct attacks gain +3 damage per Panic, maximum +9"** (Queue-Crier Homunculus, "Lost Your Place") is
   baked into the enemy's one pure ATTACK intent — "Call a Number That Is Not Yours", the intent the design
   itself annotates with the passive. Its mixed damage+Panic and block+Panic intents stay flat, so the

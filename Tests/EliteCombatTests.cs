@@ -59,6 +59,68 @@ public class EliteCombatTests
         Assert.Equal(0, Enemy(play, firstId).GetCounter(PassiveStatuses.AppointmentDueCounter));
     }
 
+    // Reopening-Hours Monolith: while the office is CLOSED nothing the player does comes off its HP — it is
+    // banked as Pending Business. Two closed windows later the office opens and processes the lot at once.
+    // (The probe cycles Close Without Warning so the Monolith guards nothing: Block would soak the hits before
+    // they ever reach the ledger, which is correct but hides the mechanic.)
+    [Fact]
+    public void The_monolith_banks_two_closed_windows_and_then_processes_them_at_once()
+    {
+        var probe = FightProbe.Solo("reopening_hours_monolith", "close_without_warning", energy: 9);
+        var (play, session, monolithId) = FightProbe.Start(probe, Enumerable.Repeat("paper_cut", 10).ToList());
+
+        for (var i = 0; i < 3; i++)
+            Cut(play, session, monolithId);
+        Assert.Equal(92, Enemy(play, monolithId).Health.Current);
+        Assert.Equal(18, Enemy(play, monolithId).GetCounter(PassiveStatuses.PendingBusinessCounter));
+
+        play.CombatDriver!.EndTurn();
+        Assert.Null(session.Error);
+        Assert.Equal(92, Enemy(play, monolithId).Health.Current); // still closed after one window
+        Assert.Equal(0, Enemy(play, monolithId).GetCounter(PassiveStatuses.OfficeOpenCounter));
+
+        for (var i = 0; i < 3; i++)
+            Cut(play, session, monolithId);
+        Assert.Equal(92, Enemy(play, monolithId).Health.Current);
+        Assert.Equal(36, Enemy(play, monolithId).GetCounter(PassiveStatuses.PendingBusinessCounter));
+
+        play.CombatDriver.EndTurn(); // the office opens and settles its backlog in one go
+        Assert.Null(session.Error);
+        Assert.Equal(1, Enemy(play, monolithId).GetCounter(PassiveStatuses.OfficeOpenCounter));
+        Assert.Equal(0, Enemy(play, monolithId).GetCounter(PassiveStatuses.PendingBusinessCounter));
+        Assert.Equal(92 - 36, Enemy(play, monolithId).Health.Current);
+    }
+
+    // …and during the open window damage lands the ordinary way, before the shutters come down again.
+    [Fact]
+    public void An_open_window_takes_damage_normally_and_then_closes_again()
+    {
+        var probe = FightProbe.Solo("reopening_hours_monolith", "close_without_warning", energy: 9);
+        var (play, session, monolithId) = FightProbe.Start(probe, Enumerable.Repeat("paper_cut", 10).ToList());
+
+        play.CombatDriver!.EndTurn();
+        Assert.Null(session.Error);
+        play.CombatDriver.EndTurn(); // two closed windows passed → open
+        Assert.Null(session.Error);
+        Assert.Equal(1, Enemy(play, monolithId).GetCounter(PassiveStatuses.OfficeOpenCounter));
+
+        var before = Enemy(play, monolithId).Health.Current;
+        Cut(play, session, monolithId);
+        Assert.Equal(before - 6, Enemy(play, monolithId).Health.Current); // straight to HP
+        Assert.Equal(0, Enemy(play, monolithId).GetCounter(PassiveStatuses.PendingBusinessCounter));
+
+        play.CombatDriver.EndTurn(); // one open action, then closed again
+        Assert.Null(session.Error);
+        Assert.Equal(0, Enemy(play, monolithId).GetCounter(PassiveStatuses.OfficeOpenCounter));
+    }
+
+    private static void Cut(RunPlayback play, InteractiveRunSession session, CombatantId enemyId)
+    {
+        var card = play.CombatDriver!.Current!.Hand.First(c => c.DefinitionId.value == "paper_cut");
+        play.CombatDriver.PlayCard(card.Id, enemyId);
+        Assert.Null(session.Error);
+    }
+
     private static CombatantState Enemy(RunPlayback play, CombatantId enemyId) =>
         play.CombatDriver!.Current!.State.GetCombatant(enemyId);
 

@@ -6851,18 +6851,30 @@
   {
     "id": "reopening_hours_monolith",
     "name": "Reopening-Hours Monolith",
-    "max_hp": 88,
+    "max_hp": 92,
     "intent_pattern": "cycle",
     "intents": [
       {
-        "id": "shortly_reopens",
-        "name": "Shortly Reopens",
+        "id": "public_hours_suspended",
+        "name": "Public Hours Suspended",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 13
+          }
+        ]
+      },
+      {
+        "id": "close_without_warning",
+        "name": "Close Without Warning",
         "intent_type": "mixed",
         "actions": [
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 8
+            "amount": 9
           },
           {
             "type": "apply_status",
@@ -6873,69 +6885,99 @@
         ]
       },
       {
-        "id": "stone_hours",
-        "name": "Stone Hours",
-        "intent_type": "block",
-        "actions": [
-          {
-            "type": "gain_block",
-            "target": "owner",
-            "amount": 14
-          }
-        ]
-      },
-      {
-        "id": "return_tomorrow",
-        "name": "Return Tomorrow",
-        "intent_type": "debuff",
-        "actions": [
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "fatigue",
-            "amount": 2
-          }
-        ]
-      },
-      {
-        "id": "new_notice_posted",
-        "name": "New Notice Posted",
+        "id": "backlog_accumulates",
+        "name": "Backlog Accumulates",
         "intent_type": "mixed",
         "actions": [
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 5
+            "amount": 7
           },
           {
             "type": "gain_block",
             "target": "owner",
-            "amount": 10
+            "amount": 7
           }
         ]
       },
       {
-        "id": "closing_slab",
-        "name": "Closing Slab",
+        "id": "counter_briefly_available",
+        "name": "Counter Briefly Available",
         "intent_type": "attack",
+        "special": true,
         "actions": [
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 12
+            "amount": 13
           }
         ]
+      },
+      {
+        "id": "clerk_finally_sees_you",
+        "name": "The Clerk Finally Sees You",
+        "intent_type": "mixed",
+        "special": true,
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 8
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "doubt",
+            "amount": 1
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "office_hours"
+      }
+    ],
+    "intent_rules": [
+      {
+        "condition": {
+          "kind": "all_of",
+          "conditions": [
+            {
+              "kind": "self_counter",
+              "counter": "office_open",
+              "op": "eq",
+              "value": 1
+            },
+            {
+              "kind": "self_counter",
+              "counter": "open_windows",
+              "op": "le",
+              "value": 1
+            }
+          ]
+        },
+        "action": "counter_briefly_available",
+        "priority": 20
+      },
+      {
+        "condition": {
+          "kind": "self_counter",
+          "counter": "office_open",
+          "op": "eq",
+          "value": 1
+        },
+        "action": "clerk_finally_sees_you",
+        "priority": 10
       }
     ],
     "tags": [
       "city",
       "delay",
-      "waiting",
-      "fatigue_pressure",
-      "stage_delay",
-      "elite_delay",
+      "elite",
       "monolith",
-      "construct"
+      "stage_delay"
     ]
   },
   {

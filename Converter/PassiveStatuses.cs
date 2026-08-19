@@ -73,7 +73,98 @@ public static class PassiveStatuses
         CarbonCopies(),
         .. Appointments.Select(a => AppointmentDue(a.StatusId, a.Name, a.Due, a.Expiry)),
         AppointmentsAccelerated(),
+        OfficeHours(),
     ];
+
+    // Reopening-Hours Monolith: the office's own schedule. Closed windows bank whatever the player does; the
+    // open window processes the backlog in one go.
+    public const string OfficeHoursId = "office_hours";
+    public static readonly CounterId PendingBusinessCounter = new("pending_business");
+    public static readonly CounterId OfficeOpenCounter = new("office_open");
+    private static readonly CounterId ClosedWindowsCounter = new("closed_windows");
+    private static readonly CounterId OpenWindowsCounter = new("open_windows");
+
+    // "OFFICE CLOSED — Reopening in 2": while closed, HP loss the player causes is not removed but STORED as
+    // Pending Business; two closed windows later the office opens and processes the lot at once, then shuts
+    // again after its next action. Storing is done by healing the hit straight back and banking its size — the
+    // engine has no "redirect this damage into a track", and the numbers work out identically (ADAPTATIONS.md).
+    private static StatusData OfficeHours()
+    {
+        var self = CombatantTargetSelectors.Source;
+        var hit = CombatantTargetSelectors.EventTarget; // the damaged combatant: the Monolith
+
+        var store = new EffectProgram<DamageReceivedTriggeredEffectContext>(
+            new ConditionalEffectNode<DamageReceivedTriggeredEffectContext>(
+                new ComparisonExpression<DamageReceivedTriggeredEffectContext>(
+                    new CombatantCounterExpression<DamageReceivedTriggeredEffectContext>(hit, OfficeOpenCounter),
+                    ComparisonOperator.Equal,
+                    new ConstantExpression<DamageReceivedTriggeredEffectContext>(0)),
+                new SequenceEffectNode<DamageReceivedTriggeredEffectContext>(new IEffectNode<DamageReceivedTriggeredEffectContext>[]
+                {
+                    new HealNode<DamageReceivedTriggeredEffectContext>(
+                        hit, new EventAmountExpression<DamageReceivedTriggeredEffectContext>()),
+                    new SetCombatantCounterNode<DamageReceivedTriggeredEffectContext>(
+                        hit, PendingBusinessCounter,
+                        new EventAmountExpression<DamageReceivedTriggeredEffectContext>(), relative: true),
+                })));
+
+        var pending = new CombatantCounterExpression<TurnEndedTriggeredEffectContext>(self, PendingBusinessCounter);
+        var schedule = new EffectProgram<TurnEndedTriggeredEffectContext>(
+            new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
+                new ComparisonExpression<TurnEndedTriggeredEffectContext>(
+                    new CombatantCounterExpression<TurnEndedTriggeredEffectContext>(self, OfficeOpenCounter),
+                    ComparisonOperator.Equal,
+                    new ConstantExpression<TurnEndedTriggeredEffectContext>(1)),
+                // The office was open for one action; the shutters come down again.
+                new SetCombatantCounterNode<TurnEndedTriggeredEffectContext>(
+                    self, OfficeOpenCounter,
+                    new ConstantExpression<TurnEndedTriggeredEffectContext>(0), relative: false),
+                new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
+                    // One closed window has already passed, so this one completes the pair.
+                    new ComparisonExpression<TurnEndedTriggeredEffectContext>(
+                        new CombatantCounterExpression<TurnEndedTriggeredEffectContext>(self, ClosedWindowsCounter),
+                        ComparisonOperator.Equal,
+                        new ConstantExpression<TurnEndedTriggeredEffectContext>(1)),
+                    new SequenceEffectNode<TurnEndedTriggeredEffectContext>(new IEffectNode<TurnEndedTriggeredEffectContext>[]
+                    {
+                        // Open FIRST: the backlog lands as ordinary damage, and by then the office no longer
+                        // stores what it takes — otherwise it would bank its own processing.
+                        new SetCombatantCounterNode<TurnEndedTriggeredEffectContext>(
+                            self, OfficeOpenCounter,
+                            new ConstantExpression<TurnEndedTriggeredEffectContext>(1), relative: false),
+                        new SetCombatantCounterNode<TurnEndedTriggeredEffectContext>(
+                            self, ClosedWindowsCounter,
+                            new ConstantExpression<TurnEndedTriggeredEffectContext>(0), relative: false),
+                        new SetCombatantCounterNode<TurnEndedTriggeredEffectContext>(
+                            self, OpenWindowsCounter,
+                            new ConstantExpression<TurnEndedTriggeredEffectContext>(1), relative: true),
+                        new DealDamageNode<TurnEndedTriggeredEffectContext>(self, pending),
+                        new SetCombatantCounterNode<TurnEndedTriggeredEffectContext>(
+                            self, PendingBusinessCounter,
+                            new ConstantExpression<TurnEndedTriggeredEffectContext>(0), relative: false),
+                    }),
+                    new SetCombatantCounterNode<TurnEndedTriggeredEffectContext>(
+                        self, ClosedWindowsCounter,
+                        new ConstantExpression<TurnEndedTriggeredEffectContext>(1), relative: true))));
+
+        return new StatusData
+        {
+            Id = OfficeHoursId,
+            NameKey = "Office Hours",
+            Polarity = StatusPolarity.Neutral,
+            StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
+            UsesStacks = false,
+            Tags = [],
+            PassiveModifiers = [],
+            Triggers =
+            [
+                new StatusTriggerData("DamageTaken", JsonSerializer.SerializeToElement(
+                    store, CombatJson.CreateOptions<DamageReceivedTriggeredEffectContext>())),
+                new StatusTriggerData("TurnEnded", JsonSerializer.SerializeToElement(
+                    schedule, CombatJson.CreateOptions<TurnEndedTriggeredEffectContext>())),
+            ],
+        };
+    }
 
     // The Three Appointments (elite): each body carries its own visible countdown and its own consequence when
     // it runs out. The countdown ticks at the body's OWN turn end — once per round, exactly like the design's
