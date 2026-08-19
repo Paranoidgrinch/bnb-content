@@ -1,9 +1,9 @@
 # Act I — Real-Game Build Plan (converter → game.roguedeck.json → Godot)
 
-## ▶ RESUME POINT (2026-08-19, bnb-content: Stages 1-7 done, RogueDeck-Core @779cf9f)
+## ▶ RESUME POINT (2026-08-19, bnb-content: step 3 COMPLETE, RogueDeck-Core @779cf9f)
 All engine primitives for reworked Act-I enemies are DONE + pushed. Converter authoring pattern proven
 end-to-end for owner-scoped passives, cross-combatant passives, intent rules, capped scaling. All suites
-green (RogueDeck-Core Core 1402/Scenario 684/Run 448/Sandbox 298; bnb-content 64). 22 of 25 identities final.
+green (RogueDeck-Core Core 1402/Scenario 684/Run 448/Sandbox 298; bnb-content 69). ALL 25 identities final.
 
 **Authored so far (real final identities):**
 - Stage 1 — `a_very_official_line` (new id): full pattern (queue_advances passive + self_counter intent rule
@@ -83,13 +83,26 @@ green (RogueDeck-Core Core 1402/Scenario 684/Run 448/Sandbox 298; bnb-content 64
     restriction and as a trigger expression (`eventSourceCardHasTag`).
   - `city_normal_appeal_07` = "Sustained Counterclaim" (Gavel 30 / Imp 33, Gavel FIRST — see ADAPTATIONS),
     `city_normal_appeal_08` = "The Evidence Exists in Triplicate" (Record 40 / Examiner 30).
+- **Stage 8 (Enforcement) — COMPLETE, and with it ALL 25 identities:**
+  - `warrant_bailiff` (58 HP, 43 in its duo): "Outstanding Warrant" — +5 on its attacks while the player is
+    4 Paperwork deep, as a buff a watcher switches on and off (a passive modifier cannot be conditional).
+  - `threshold_seizure_ward` (61 HP, 45 in its duo): "Seize the Filing" — the first Paperwork the player
+    files on an enemy each round gives that enemy 1 Bookworm, which erases the filing at its turn start.
+  - `civic_battering_ram` (69 HP): Momentum to 4 (new DSL: `set_counter` with a `cap`), Ram the Case cashes
+    it at 11 + 4 each, and "Break the Approach" costs it a Momentum the first time each player turn a card
+    strips its Block away entirely (it remembers gaining the guard via its own BlockGained trigger).
+  - `city_normal_enforcement_08` = the duo "The Warrant Seizes the Docket" (Bailiff 43 / Ward 45).
+- **The two deferrals are CLOSED:** `number_ticket_wisp` (25 HP) — "Your Number Came Up" reads Panic's DECAY
+  as a drop of exactly one stack, which the mirror can tell from a cleanse — and Duplicate Copy Mites'
+  "Carbon Copies" (its duo `city_normal_seal_07` = "Certified Pest Control", Mites 26 / Notary 34).
 - **Rule established: FINAL_AUDIT numbers WIN** over both the demo data and the older
   `Act_I_Final_Enemy_Pool.md` (they disagree on HP and intents) — rewrite HP + intents to the audit, keep the
   enemy id, keep an intent id only where the successor intent is the same mechanic.
 
 **Immediate next steps (resume here):**
-1. Stage 8 (Enforcement family, the last one): `warrant_bailiff`, `threshold_seizure_ward`,
-   `civic_battering_ram` — then step 4 (curate the 32 encounter templates + role pools).
+1. **Step 3 is DONE — all 25 identities, no deferrals left.** Next is step 4: curate `act_1_city.json` down
+   to the audit's 32 templates (23 solo + 9 duo, the duos already exist) and classify them into the map
+   spec's role pools (Combat / MultiCombat / Elite / Boss / Mimic).
 2. The remaining duos ("Wrong Window, Same Queue", "The Line Has Started Moving", "Certified Pest Control"
    = Notary 34 + Mites 26, …): the per-roster HP override is DONE, so these are now plain authoring.
 3. Carbon Copies (Mites) can be authored with "Certified Pest Control" — the Oath Candle's Witness the Seal
@@ -113,8 +126,8 @@ in a live fight: `FightProbe.Solo("<enemy>", "<intent>", ("paperwork", 5))` → 
 - Cross-combatant selectors must be SERIALIZABLE (LowestHealthEnemyOfSource / AllEnemiesOfSource — NOT
   FirstTarget, an escape node).
 
-**Deferred (need more engine or are fiddly):**
-- **Duplicate Copy Mites "Carbon Copies"** (first time each round ANOTHER enemy gains Bookworm → Mites gain 4
+**Deferred — both CLOSED in Stage 8 (kept for the reasoning):**
+- ~~**Duplicate Copy Mites "Carbon Copies"**~~ (first time each round ANOTHER enemy gains Bookworm → Mites gain 4
   Block) — author it with "Certified Pest Control" (Notary 34 + Mites 26); in a solo it can never fire. The
   Oath Candle's Witness the Seal is the finished template for it (see Stage 4), with `StatusApplied` +
   `StatusMerged` and a bookworm gate instead of `BlockGained`.
@@ -166,7 +179,7 @@ intents need **no engine change** — passive = a status-with-triggers carried f
   `damage_per_status`/…). New effect types are added per-need when an enemy intent requires one (step 3), and
   for Act-II card marks (mark ops via RAW `EffectProgram` — not in `CombatNodeModel`). No speculative DSL.
 
-### 3. Act-I enemies (source-data + EnemyMapper) — 25 identities  *(IN PROGRESS: 22/25 final; Stages 1-7 complete)*
+### 3. Act-I enemies (source-data + EnemyMapper) — 25 identities  *(DONE: 25/25, all eight stages)*
 Rewrite `source-data/enemies/city_enemies.json` to the FINAL roster with HP/intents/passives from the
 `...Standard_Encounter_Pools...(1).md` list, cross-checked against the FINAL master pool. Author each
 signature via the recipe catalogue.

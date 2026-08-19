@@ -2844,14 +2844,19 @@
   {
     "id": "number_ticket_wisp",
     "name": "Number-Ticket Wisp",
-    "max_hp": 22,
+    "max_hp": 25,
     "intent_pattern": "cycle",
     "intents": [
       {
-        "id": "now_serving_808",
-        "name": "Now Serving 808",
-        "intent_type": "debuff",
+        "id": "miscalled_number",
+        "name": "Miscalled Number",
+        "intent_type": "mixed",
         "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 5
+          },
           {
             "type": "apply_status",
             "target": "player",
@@ -2861,8 +2866,8 @@
         ]
       },
       {
-        "id": "flicker_past",
-        "name": "Flicker Past",
+        "id": "ticket_flicker",
+        "name": "Ticket Flicker",
         "intent_type": "attack",
         "actions": [
           {
@@ -2873,17 +2878,27 @@
         ]
       },
       {
-        "id": "lost_your_place",
-        "name": "Lost Your Place",
-        "intent_type": "debuff",
+        "id": "skip_ahead",
+        "name": "Skip Ahead",
+        "intent_type": "mixed",
         "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 6
+          },
           {
             "type": "apply_status",
             "target": "player",
             "status": "panic",
-            "amount": 2
+            "amount": 1
           }
         ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "your_number_came_up"
       }
     ],
     "tags": [
@@ -4026,30 +4041,30 @@
   {
     "id": "warrant_bailiff",
     "name": "Warrant Bailiff",
-    "max_hp": 46,
+    "max_hp": 58,
     "intent_pattern": "cycle",
     "intents": [
       {
         "id": "serve_warrant",
-        "name": "Serve Warrant",
+        "name": "Serve the Warrant",
         "intent_type": "attack",
         "actions": [
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 8
+            "amount": 13
           }
         ]
       },
       {
         "id": "official_stance",
         "name": "Official Stance",
-        "intent_type": "mixed",
+        "intent_type": "block",
         "actions": [
           {
             "type": "gain_block",
             "target": "owner",
-            "amount": 8
+            "amount": 11
           },
           {
             "type": "gain_strength",
@@ -4066,14 +4081,20 @@
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 6
+            "amount": 8
           },
           {
-            "type": "gain_block",
-            "target": "owner",
-            "amount": 5
+            "type": "apply_status",
+            "target": "player",
+            "status": "paperwork",
+            "amount": 1
           }
         ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "outstanding_warrant"
       }
     ],
     "tags": [
@@ -4082,8 +4103,7 @@
       "civic_force",
       "strength_pressure",
       "stage_enforcement",
-      "bailiff",
-      "warrant"
+      "bailiff"
     ]
   },
   {
@@ -5063,6 +5083,11 @@
     "id": "duplicate_copy_mite",
     "name": "Duplicate Copy Mites",
     "max_hp": 37,
+    "starting_statuses": [
+      {
+        "status": "carbon_copies"
+      }
+    ],
     "intent_pattern": "cycle",
     "intents": [
       {
@@ -7836,86 +7861,88 @@
   {
     "id": "threshold_seizure_ward",
     "name": "Threshold Seizure Ward",
-    "max_hp": 48,
+    "max_hp": 61,
     "intent_pattern": "cycle",
     "intents": [
       {
         "id": "seize_at_threshold",
-        "name": "Seize at Threshold",
+        "name": "Seize the Threshold",
         "intent_type": "mixed",
         "actions": [
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 8
+            "amount": 10
           },
           {
             "type": "gain_block",
             "target": "owner",
-            "amount": 5
+            "amount": 8
           }
         ]
       },
       {
         "id": "lawful_hold",
         "name": "Lawful Hold",
-        "intent_type": "mixed",
+        "intent_type": "block",
         "actions": [
           {
             "type": "gain_block",
             "target": "owner",
-            "amount": 10
-          },
-          {
-            "type": "gain_strength",
-            "target": "owner",
-            "amount": 1
+            "amount": 14
           }
         ]
       },
       {
-        "id": "threshold_slam",
-        "name": "Threshold Slam",
-        "intent_type": "attack",
+        "id": "quarantine_the_docket",
+        "name": "Quarantine the Docket",
+        "intent_type": "buff",
         "actions": [
           {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 12
+            "type": "apply_status",
+            "target": "all_enemies",
+            "status": "bookworm",
+            "amount": 2
           }
         ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "seize_the_filing"
       }
     ],
     "tags": [
       "city",
       "enforcement",
       "civic_force",
-      "strength_pressure",
+      "block_pressure",
       "stage_enforcement",
-      "threshold",
       "ward"
     ]
   },
   {
     "id": "civic_battering_ram",
     "name": "Civic Battering Ram",
-    "max_hp": 54,
+    "max_hp": 69,
     "intent_pattern": "cycle",
     "intents": [
       {
-        "id": "advance_under_warrant",
-        "name": "Advance under Warrant",
-        "intent_type": "mixed",
+        "id": "build_momentum",
+        "name": "Build Momentum",
+        "intent_type": "block",
         "actions": [
           {
-            "type": "gain_strength",
+            "type": "set_counter",
             "target": "owner",
-            "amount": 1
+            "counter": "momentum",
+            "amount": 2,
+            "cap": 4
           },
           {
             "type": "gain_block",
             "target": "owner",
-            "amount": 8
+            "amount": 10
           }
         ]
       },
@@ -7925,33 +7952,51 @@
         "intent_type": "attack",
         "actions": [
           {
-            "type": "deal_damage",
+            "type": "damage_per_counter",
             "target": "player",
-            "amount": 10
+            "counter": "momentum",
+            "amount": 11,
+            "amount_per_stack": 4
+          },
+          {
+            "type": "set_counter",
+            "target": "owner",
+            "counter": "momentum",
+            "amount": 0,
+            "relative": false
           }
         ]
       },
       {
-        "id": "second_impact",
-        "name": "Second Impact",
-        "intent_type": "attack",
+        "id": "back_up",
+        "name": "Back Up",
+        "intent_type": "mixed",
         "actions": [
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 13
+            "amount": 10
+          },
+          {
+            "type": "gain_strength",
+            "target": "owner",
+            "amount": 1
           }
         ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "break_the_approach"
       }
     ],
     "tags": [
       "city",
       "enforcement",
       "civic_force",
-      "strength_pressure",
+      "block_pressure",
       "stage_enforcement",
-      "ram",
-      "construct"
+      "ram"
     ]
   },
   {

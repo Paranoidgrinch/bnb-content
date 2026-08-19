@@ -26,8 +26,206 @@ public static class EncounterPassives
         "inverted_hourglass" => StolenSand(),
         "minute_moth" => [StolenMinute()],
         "sustaining_gavel" => [Sustained()],
+        "warrant_bailiff" => OutstandingWarrant(),
+        "threshold_seizure_ward" => SeizeTheFiling(),
+        "number_ticket_wisp" => YourNumberCameUp(),
+        "duplicate_copy_mite" => CarbonCopies(),
         _ => Array.Empty<EncounterTriggerData>(),
     };
+
+    // "Carbon Copies" (Duplicate Copy Mites): the first time each round another enemy gains Bookworm, the Mites
+    // guard themselves for 4. Same shape as the Oath Candle's Witness the Seal — the loop over
+    // `alliesWithStatus(carbon_copies)` finds the Mites on the GAINER's side, the gainer carrying the marker is
+    // the "another enemy" clause, and `iterationTarget` holds the once-per-round latch. Reading: "gained
+    // Bookworm" is "the affected enemy now carries Bookworm", since a program cannot read the event's status.
+    private static IReadOnlyList<EncounterTriggerData> CarbonCopies() =>
+    [
+        CarbonCopiesTrigger<StatusAppliedTriggeredEffectContext>("StatusApplied"),
+        CarbonCopiesTrigger<StatusMergedTriggeredEffectContext>("StatusMerged"),
+    ];
+
+    private static EncounterTriggerData CarbonCopiesTrigger<TContext>(string trigger) where TContext : class
+    {
+        var mites = CombatantTargetSelectors.IterationTarget;
+        var gainer = CombatantTargetSelectors.EventTarget;
+        var marker = new StatusDefinitionId(PassiveStatuses.CarbonCopiesId);
+
+        var body = new ConditionalEffectNode<TContext>(
+            new AndExpression<TContext>(
+                new AndExpression<TContext>(
+                    new ComparisonExpression<TContext>(
+                        new CombatantStatusStacksExpression<TContext>(gainer, marker),
+                        ComparisonOperator.Equal,
+                        new ConstantExpression<TContext>(0)),
+                    new ComparisonExpression<TContext>(
+                        new CombatantStatusStacksExpression<TContext>(gainer, new StatusDefinitionId("bookworm")),
+                        ComparisonOperator.Greater,
+                        new ConstantExpression<TContext>(0))),
+                new ComparisonExpression<TContext>(
+                    new CombatantCounterExpression<TContext>(mites, PassiveStatuses.CopiedThisRoundCounter),
+                    ComparisonOperator.Equal,
+                    new ConstantExpression<TContext>(0))),
+            new SequenceEffectNode<TContext>(new IEffectNode<TContext>[]
+            {
+                new GainBlockNode<TContext>(mites, new ConstantExpression<TContext>(4)),
+                new SetCombatantCounterNode<TContext>(mites, PassiveStatuses.CopiedThisRoundCounter,
+                    new ConstantExpression<TContext>(1), relative: false),
+            }));
+
+        var program = new EffectProgram<TContext>(
+            new ForEachTargetEffectNode<TContext>(
+                CombatantTargetSelectors.AllAlliesOfSourceWithStatus(marker), body));
+
+        return new EncounterTriggerData(trigger,
+            JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<TContext>()));
+    }
+
+    // "Your Number Came Up" (Number-Ticket Wisp): the Wisp burns out with the Panic it hands out — whenever
+    // Panic leaves the player through its own DECAY it takes 4 direct damage; a cleanse does not feed it.
+    // Decay is what the mirror can tell apart: Panic sheds exactly one stack per turn end, so a drop of
+    // exactly 1 is the decay while a cleanse takes the whole pile at once.
+    private static IReadOnlyList<EncounterTriggerData> YourNumberCameUp() =>
+    [
+        WispTrigger<StatusStacksChangedTriggeredEffectContext>("StatusStacksChanged"),
+        WispTrigger<StatusExpiredTriggeredEffectContext>("StatusExpired"),
+        WispTrigger<StatusRemovedTriggeredEffectContext>("StatusRemoved"),
+        WispTrigger<StatusAppliedTriggeredEffectContext>("StatusApplied"),
+        WispTrigger<StatusMergedTriggeredEffectContext>("StatusMerged"),
+    ];
+
+    private static EncounterTriggerData WispTrigger<TContext>(string trigger) where TContext : class
+    {
+        var wisp = CombatantTargetSelectors.IterationTarget;
+        var player = CombatantTargetSelectors.EventTarget;
+        var panic = new CombatantStatusStacksExpression<TContext>(player, new StatusDefinitionId("panic"));
+        var seen = new CombatantCounterExpression<TContext>(wisp, SeenCounter("panic"));
+
+        var body = new SequenceEffectNode<TContext>(new IEffectNode<TContext>[]
+        {
+            new ConditionalEffectNode<TContext>(
+                new ComparisonExpression<TContext>(
+                    new SubtractExpression<TContext>(seen, panic),
+                    ComparisonOperator.Equal,
+                    new ConstantExpression<TContext>(1)),
+                new DealDamageNode<TContext>(wisp, new ConstantExpression<TContext>(4))),
+            new SetCombatantCounterNode<TContext>(wisp, SeenCounter("panic"), panic, relative: false),
+        });
+
+        var program = new EffectProgram<TContext>(
+            new ForEachTargetEffectNode<TContext>(
+                CombatantTargetSelectors.WithStatus(CombatantTargetSelectors.AllCombatants,
+                    new StatusDefinitionId(PassiveStatuses.YourNumberCameUpId)),
+                new ConditionalEffectNode<TContext>(
+                    new ComparisonExpression<TContext>(
+                        new CombatantStatusStacksExpression<TContext>(player,
+                            new StatusDefinitionId(PassiveStatuses.ApplicantId)),
+                        ComparisonOperator.Greater,
+                        new ConstantExpression<TContext>(0)),
+                    body)));
+
+        return new EncounterTriggerData(trigger,
+            JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<TContext>()));
+    }
+
+    // "Outstanding Warrant" (Warrant Bailiff): while the player is 4 Paperwork deep the Bailiff's attacks hit
+    // for 5 more. A passive modifier cannot be conditional, so — as with the Unsigned Form Ghost — presence IS
+    // the condition: this watcher switches the buff on and off whenever the player's statuses move. The
+    // condition is about the PLAYER while the buff belongs to the enemy, hence an encounter trigger.
+    private static IReadOnlyList<EncounterTriggerData> OutstandingWarrant() =>
+    [
+        WarrantTrigger<StatusAppliedTriggeredEffectContext>("StatusApplied"),
+        WarrantTrigger<StatusMergedTriggeredEffectContext>("StatusMerged"),
+        WarrantTrigger<StatusStacksChangedTriggeredEffectContext>("StatusStacksChanged"),
+        WarrantTrigger<StatusRemovedTriggeredEffectContext>("StatusRemoved"),
+        WarrantTrigger<StatusExpiredTriggeredEffectContext>("StatusExpired"),
+    ];
+
+    private static EncounterTriggerData WarrantTrigger<TContext>(string trigger) where TContext : class
+    {
+        var bailiff = CombatantTargetSelectors.IterationTarget;
+        var player = CombatantTargetSelectors.EventTarget;
+        var served = new StatusDefinitionId(PassiveStatuses.WarrantServedId);
+        var paperwork = new CombatantStatusStacksExpression<TContext>(player, new StatusDefinitionId("paperwork"));
+        var buff = new CombatantStatusStacksExpression<TContext>(bailiff, served);
+
+        var body = new ConditionalEffectNode<TContext>(
+            new ComparisonExpression<TContext>(paperwork, ComparisonOperator.GreaterOrEqual,
+                new ConstantExpression<TContext>(4)),
+            new ConditionalEffectNode<TContext>(
+                new ComparisonExpression<TContext>(buff, ComparisonOperator.Equal, new ConstantExpression<TContext>(0)),
+                new ApplyStatusNode<TContext>(bailiff, served, new ConstantExpression<TContext>(1))),
+            new ConditionalEffectNode<TContext>(
+                new ComparisonExpression<TContext>(buff, ComparisonOperator.Greater, new ConstantExpression<TContext>(0)),
+                new ModifyStatusStacksNode<TContext>(bailiff, served, new ConstantExpression<TContext>(-1))));
+
+        var program = new EffectProgram<TContext>(
+            new ForEachTargetEffectNode<TContext>(
+                CombatantTargetSelectors.WithStatus(CombatantTargetSelectors.AllCombatants,
+                    new StatusDefinitionId(PassiveStatuses.OutstandingWarrantId)),
+                new ConditionalEffectNode<TContext>(
+                    new ComparisonExpression<TContext>(
+                        new CombatantStatusStacksExpression<TContext>(player,
+                            new StatusDefinitionId(PassiveStatuses.ApplicantId)),
+                        ComparisonOperator.Greater,
+                        new ConstantExpression<TContext>(0)),
+                    body)));
+
+        return new EncounterTriggerData(trigger,
+            JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<TContext>()));
+    }
+
+    // "Seize the Filing" (Threshold Seizure Ward): the first Paperwork the PLAYER files on any enemy each round
+    // is turned against them — that enemy gains 1 Bookworm, which will erase the filing at its turn start.
+    // Reading: the enemy-facing status the Bureaucrat files is Paperwork, so "the target now carries Paperwork
+    // and the filer is the player" stands in for "Paperwork was applied" (a program cannot read the event's
+    // status id).
+    private static IReadOnlyList<EncounterTriggerData> SeizeTheFiling() =>
+    [
+        SeizeTrigger<StatusAppliedTriggeredEffectContext>("StatusApplied"),
+        SeizeTrigger<StatusMergedTriggeredEffectContext>("StatusMerged"),
+    ];
+
+    private static EncounterTriggerData SeizeTrigger<TContext>(string trigger) where TContext : class
+    {
+        var ward = CombatantTargetSelectors.IterationTarget;
+        var filedOn = CombatantTargetSelectors.EventTarget;
+        var filer = CombatantTargetSelectors.Source;
+
+        var body = new ConditionalEffectNode<TContext>(
+            new AndExpression<TContext>(
+                new AndExpression<TContext>(
+                    // The filer is the player…
+                    new ComparisonExpression<TContext>(
+                        new CombatantStatusStacksExpression<TContext>(filer,
+                            new StatusDefinitionId(PassiveStatuses.ApplicantId)),
+                        ComparisonOperator.Greater,
+                        new ConstantExpression<TContext>(0)),
+                    // …the filing landed on an enemy (never on the player themselves)…
+                    new ComparisonExpression<TContext>(
+                        new CombatantStatusStacksExpression<TContext>(filedOn, new StatusDefinitionId("paperwork")),
+                        ComparisonOperator.Greater,
+                        new ConstantExpression<TContext>(0))),
+                new ComparisonExpression<TContext>(
+                    new CombatantCounterExpression<TContext>(ward, PassiveStatuses.SeizedThisRoundCounter),
+                    ComparisonOperator.Equal,
+                    new ConstantExpression<TContext>(0))),
+            new SequenceEffectNode<TContext>(new IEffectNode<TContext>[]
+            {
+                new ApplyStatusNode<TContext>(filedOn, new StatusDefinitionId("bookworm"),
+                    new ConstantExpression<TContext>(1)),
+                new SetCombatantCounterNode<TContext>(ward, PassiveStatuses.SeizedThisRoundCounter,
+                    new ConstantExpression<TContext>(1), relative: false),
+            }));
+
+        var program = new EffectProgram<TContext>(
+            new ForEachTargetEffectNode<TContext>(
+                CombatantTargetSelectors.AllEnemiesOfSourceWithStatus(
+                    new StatusDefinitionId(PassiveStatuses.SeizeTheFilingId)),
+                body));
+
+        return new EncounterTriggerData(trigger,
+            JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<TContext>()));
+    }
 
     // "Sustained" (Sustaining Gavel): the first time each round ANOTHER living enemy gains Block, the Gavel
     // copies half of it, rounded down. Same shape as the Oath Candle's Witness the Seal — the loop over
