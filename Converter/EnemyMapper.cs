@@ -71,8 +71,16 @@ public static class EnemyMapper
                 case "gain_strength":
                     parts.Add($"Strength +{effect.Amount ?? 1}");
                     break;
+                // The scaling attacks telegraph their whole formula: base, per-stack bonus and its cap —
+                // "7 dmg +3 per Panic (max +9)". Without the base the number the player must plan against
+                // is missing from the intent.
                 case "damage_per_status" when effect.Status is { } status:
-                    parts.Add($"{effect.AmountPerStack ?? 0}× per {Capitalize(status)}");
+                    var scaling = $"+{effect.AmountPerStack ?? 0} per {Capitalize(status)}";
+                    if (effect.Cap is { } cap)
+                        scaling += $" (max +{cap})";
+                    parts.Add(effect.Amount is { } baseDamage && baseDamage != 0
+                        ? $"{baseDamage} dmg {scaling}"
+                        : $"dmg {scaling}");
                     break;
             }
         }

@@ -4446,7 +4446,7 @@
   {
     "id": "queue_crier_homunculus",
     "name": "Queue-Crier Homunculus",
-    "max_hp": 25,
+    "max_hp": 31,
     "intent_pattern": "cycle",
     "intents": [
       {
@@ -4468,32 +4468,29 @@
         ]
       },
       {
-        "id": "monotone_rebuke_first",
-        "name": "Monotone Rebuke",
-        "intent_type": "mixed",
+        "id": "call_a_number_that_is_not_yours",
+        "name": "Call a Number That Is Not Yours",
+        "intent_type": "attack",
         "actions": [
           {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 6
-          },
-          {
-            "type": "apply_status",
+            "type": "damage_per_status",
             "target": "player",
             "status": "panic",
-            "amount": 1
+            "amount": 7,
+            "amount_per_stack": 3,
+            "cap": 9
           }
         ]
       },
       {
-        "id": "monotone_rebuke_second",
-        "name": "Monotone Rebuke",
+        "id": "move_everyone_back_one_place",
+        "name": "Move Everyone Back One Place",
         "intent_type": "mixed",
         "actions": [
           {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 6
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 8
           },
           {
             "type": "apply_status",

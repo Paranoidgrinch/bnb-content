@@ -31,6 +31,19 @@ listed here is a faithful mechanical translation (verified by the tests against 
   DoT on someone else, the tick would consume a stack too (no damage-kind filter on triggers) — no
   Act-1 content hits this combination.
 
+## Reworked Act-I identities (production phase)
+The final Act-I roster is authored from the FINAL_AUDIT master pools, which outrank the demo data and the
+older Act-I enemy pool wherever HP or intents disagree. Readings taken where the design text is ambiguous:
+- **"the first non-Junk card type of the turn"** (Wrong-Window Scribe, Triplicate Examiner) is read as
+  literally the FIRST card's type — Junk is not skipped. The engine records the opening type per turn
+  (`firstCardPlayedHasTag`); "first non-Junk" would need a second, junk-aware opening record.
+- The counter passives fire on the **exactly-Nth** card of that type (2nd for the Scribe, 3rd for the
+  Examiner), which is the design's "maximum once per player turn" without extra cooldown state.
+- **"Direct attacks gain +3 damage per Panic, maximum +9"** (Queue-Crier Homunculus, "Lost Your Place") is
+  baked into the enemy's one pure ATTACK intent — "Call a Number That Is Not Yours", the intent the design
+  itself annotates with the passive. Its mixed damage+Panic and block+Panic intents stay flat, so the
+  Panic cash-out is one telegraphed hit per cycle rather than a permanent global multiplier.
+
 ## Events
 - `lose_hp` keeps the original's "events cannot kill" clamp (computed damage, min HP 1).
 - `heal_percent_max_hp` keeps the original's round-up.
