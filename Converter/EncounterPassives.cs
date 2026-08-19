@@ -32,8 +32,106 @@ public static class EncounterPassives
         "duplicate_copy_mite" => CarbonCopies(),
         "devouring_waiting_room" => [LostTime()],
         "living_petition_chorus" => [ClauseOffer()],
+        "iron_warrant_avatar" => [IssueComplianceOrder(), JudgeCompliance()],
         _ => Array.Empty<EncounterTriggerData>(),
     };
+
+    // "Compliance Order" (Iron Warrant Avatar): the Avatar issues one visible, achievable demand at the start
+    // of the player's turn. The orders take turns, so the same one never comes twice in a row.
+    private static EncounterTriggerData IssueComplianceOrder()
+    {
+        var player = CombatantTargetSelectors.Source;
+        var avatar = CombatantTargetSelectors.IterationTarget;
+        var orders = PassiveStatuses.ComplianceOrders;
+
+        IEffectNode<TurnStartedTriggeredEffectContext> Issue(int index) =>
+            new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
+                new ComparisonExpression<TurnStartedTriggeredEffectContext>(
+                    new CombatantCounterExpression<TurnStartedTriggeredEffectContext>(
+                        avatar, PassiveStatuses.OrderIndexCounter),
+                    ComparisonOperator.Equal,
+                    new ConstantExpression<TurnStartedTriggeredEffectContext>(index)),
+                new SequenceEffectNode<TurnStartedTriggeredEffectContext>(new IEffectNode<TurnStartedTriggeredEffectContext>[]
+                {
+                    new ApplyStatusNode<TurnStartedTriggeredEffectContext>(
+                        player, new StatusDefinitionId(orders[index].StatusId),
+                        new ConstantExpression<TurnStartedTriggeredEffectContext>(1)),
+                    new SetCombatantCounterNode<TurnStartedTriggeredEffectContext>(
+                        avatar, PassiveStatuses.OrderIndexCounter,
+                        new ConstantExpression<TurnStartedTriggeredEffectContext>((index + 1) % orders.Length),
+                        relative: false),
+                }));
+
+        var program = new EffectProgram<TurnStartedTriggeredEffectContext>(
+            new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
+                new ComparisonExpression<TurnStartedTriggeredEffectContext>(
+                    new CombatantStatusStacksExpression<TurnStartedTriggeredEffectContext>(
+                        player, new StatusDefinitionId(PassiveStatuses.ApplicantId)),
+                    ComparisonOperator.Greater,
+                    new ConstantExpression<TurnStartedTriggeredEffectContext>(0)),
+                new ForEachTargetEffectNode<TurnStartedTriggeredEffectContext>(
+                    CombatantTargetSelectors.AllEnemiesOfSourceWithStatus(
+                        new StatusDefinitionId(PassiveStatuses.IronWarrantId)),
+                    new SequenceEffectNode<TurnStartedTriggeredEffectContext>(
+                        [.. Enumerable.Range(0, orders.Length).Select(Issue)]))));
+
+        return new EncounterTriggerData("TurnStarted",
+            JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<TurnStartedTriggeredEffectContext>()));
+    }
+
+    // …and judges it when the turn ends: compliance strips 5 (Block first, the rest off its HP), refusal is
+    // recorded as Contempt, up to 3.
+    private static EncounterTriggerData JudgeCompliance()
+    {
+        var player = CombatantTargetSelectors.Source;
+        var avatar = CombatantTargetSelectors.IterationTarget;
+        var orders = PassiveStatuses.ComplianceOrders;
+
+        IEffectNode<TurnEndedTriggeredEffectContext> Judge(PassiveStatuses.ComplianceOrder order) =>
+            new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
+                new ComparisonExpression<TurnEndedTriggeredEffectContext>(
+                    new CombatantStatusStacksExpression<TurnEndedTriggeredEffectContext>(
+                        player, new StatusDefinitionId(order.StatusId)),
+                    ComparisonOperator.Greater,
+                    new ConstantExpression<TurnEndedTriggeredEffectContext>(0)),
+                new SequenceEffectNode<TurnEndedTriggeredEffectContext>(new IEffectNode<TurnEndedTriggeredEffectContext>[]
+                {
+                    new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
+                        order.Fulfilled(),
+                        // Compliance Credit 5: it comes off the Avatar's guard first and its health after.
+                        new DealDamageNode<TurnEndedTriggeredEffectContext>(
+                            avatar, new ConstantExpression<TurnEndedTriggeredEffectContext>(5)),
+                        // Refusal is recorded, up to three counts.
+                        new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
+                            new ComparisonExpression<TurnEndedTriggeredEffectContext>(
+                                new CombatantStatusStacksExpression<TurnEndedTriggeredEffectContext>(
+                                    avatar, new StatusDefinitionId(PassiveStatuses.ContemptId)),
+                                ComparisonOperator.Less,
+                                new ConstantExpression<TurnEndedTriggeredEffectContext>(PassiveStatuses.ContemptMaximum)),
+                            new ApplyStatusNode<TurnEndedTriggeredEffectContext>(
+                                avatar, new StatusDefinitionId(PassiveStatuses.ContemptId),
+                                new ConstantExpression<TurnEndedTriggeredEffectContext>(1)))),
+                    // The order is spent either way.
+                    new ModifyStatusStacksNode<TurnEndedTriggeredEffectContext>(
+                        player, new StatusDefinitionId(order.StatusId),
+                        new ConstantExpression<TurnEndedTriggeredEffectContext>(-1)),
+                }));
+
+        var program = new EffectProgram<TurnEndedTriggeredEffectContext>(
+            new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
+                new ComparisonExpression<TurnEndedTriggeredEffectContext>(
+                    new CombatantStatusStacksExpression<TurnEndedTriggeredEffectContext>(
+                        player, new StatusDefinitionId(PassiveStatuses.ApplicantId)),
+                    ComparisonOperator.Greater,
+                    new ConstantExpression<TurnEndedTriggeredEffectContext>(0)),
+                new ForEachTargetEffectNode<TurnEndedTriggeredEffectContext>(
+                    CombatantTargetSelectors.AllEnemiesOfSourceWithStatus(
+                        new StatusDefinitionId(PassiveStatuses.IronWarrantId)),
+                    new SequenceEffectNode<TurnEndedTriggeredEffectContext>([.. orders.Select(o => Judge(o))]))));
+
+        return new EncounterTriggerData("TurnEnded",
+            JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<TurnEndedTriggeredEffectContext>()));
+    }
 
     // "Clause offer" (Living Petition Chorus): at the start of each player turn the Petition lays one clause on
     // the table — as a card in the player's hand, since a combat has no yes/no prompt. The three clauses take

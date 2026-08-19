@@ -356,6 +356,46 @@ public class EliteCombatTests
         Assert.Equal(0, FightProbe.StacksOf(Enemy(play, middleId), PassiveStatuses.HoldsTheCaseId));
     }
 
+    // Iron Warrant Avatar: a visible order each turn. Obeying it strips 5 (Block first, health after);
+    // refusing records Contempt, which makes its next attack hit 4 harder per count and then spends itself.
+    [Fact]
+    public void Obeying_the_warrants_order_costs_it_five()
+    {
+        // The opening order is "Pay the Fee": end the turn on empty. Three 1-cost Paper Cuts do exactly that.
+        var probe = FightProbe.Roster("compliance", ("iron_warrant_avatar", "iron_authority", 94));
+        var (play, session, avatarId) = FightProbe.Start(probe, Enumerable.Repeat("paper_cut", 10).ToList());
+
+        Assert.Equal(1, FightProbe.StacksOf(Hero(play), PassiveStatuses.ComplianceOrders[0].StatusId));
+
+        for (var i = 0; i < 3; i++)
+            Cut(play, session, avatarId);
+        var before = Enemy(play, avatarId).Health.Current;
+
+        play.CombatDriver!.EndTurn();
+        Assert.Null(session.Error);
+
+        // Compliance Credit lands as 5 off the Avatar (its Iron Authority Block only guards from its turn on).
+        Assert.Equal(before - 5, Enemy(play, avatarId).Health.Current);
+        Assert.Equal(0, FightProbe.StacksOf(Enemy(play, avatarId), PassiveStatuses.ContemptId));
+        Assert.Equal(0, FightProbe.StacksOf(Hero(play), PassiveStatuses.ComplianceOrders[0].StatusId)); // spent
+    }
+
+    [Fact]
+    public void Refusing_the_order_is_answered_in_steel()
+    {
+        var probe = FightProbe.Roster("contempt", ("iron_warrant_avatar", "iron_authority", 94));
+        var (play, session, avatarId) = FightProbe.Start(probe, Enumerable.Repeat("paper_cut", 10).ToList());
+
+        var before = Hero(play).Health.Current;
+        play.CombatDriver!.EndTurn(); // the fee goes unpaid: three Energy left on the table
+
+        Assert.Null(session.Error);
+        // The refusal is recorded as Contempt and enforced in the same breath: Contempt forces the Avatar off
+        // its defensive intent into Final Service, 17 + 4 per count — and the attack spends the whole record.
+        Assert.Equal(before - 21, Hero(play).Health.Current);
+        Assert.Equal(0, FightProbe.StacksOf(Enemy(play, avatarId), PassiveStatuses.ContemptId));
+    }
+
     private static void Disposal(RunPlayback play, InteractiveRunSession session, CombatantId enemyId)
     {
         var card = play.CombatDriver!.Current!.Hand.First(c => c.DefinitionId.value == "approved_for_disposal");

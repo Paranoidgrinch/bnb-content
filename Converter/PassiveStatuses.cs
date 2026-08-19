@@ -86,7 +86,91 @@ public static class PassiveStatuses
         Marker(StepUpperId, "Upper Step"),
         HoldsTheCase(),
         RulingPending(),
+        Marker(IronWarrantId, "Iron Warrant"),
+        Contempt(),
+        .. ComplianceOrders.Select(o => Marker(o.StatusId, o.Name)),
     ];
+
+    // Iron Warrant Avatar: it issues a visible order each player turn. The orders are statuses ON THE PLAYER —
+    // the only thing a combat UI shows by name — and the Avatar checks them when the turn ends.
+    public const string IronWarrantId = "iron_warrant";
+    public const string ContemptId = "contempt";
+    public static readonly CounterId OrderIndexCounter = new("compliance_order");
+    public const int ContemptMaximum = 3;
+
+    public sealed record ComplianceOrder(string StatusId, string Name, Func<ICombatExpression<TurnEndedTriggeredEffectContext, bool>> Fulfilled);
+
+    public static readonly ComplianceOrder[] ComplianceOrders =
+    [
+        // "Spend at least 3 Energy this turn" — with a three-Energy hero that is an emptied pool.
+        new("order_pay_the_fee", "Order: Pay the Fee", () =>
+            new ComparisonExpression<TurnEndedTriggeredEffectContext>(
+                new CombatantCurrentResourceExpression<TurnEndedTriggeredEffectContext>(
+                    CombatantTargetSelectors.Source, StandardCombatIds.EnergyResource),
+                ComparisonOperator.Equal,
+                new ConstantExpression<TurnEndedTriggeredEffectContext>(0))),
+
+        // "Play at least two different card types this turn."
+        new("order_file_two_kinds", "Order: File Two Kinds", () =>
+        {
+            ICombatExpression<TurnEndedTriggeredEffectContext, int>? kinds = null;
+            foreach (var type in CardTypes)
+            {
+                // 1 when at least one card of that type was played, 0 otherwise.
+                var played = new MinExpression<TurnEndedTriggeredEffectContext>(
+                    new CardsPlayedThisTurnWithTagExpression<TurnEndedTriggeredEffectContext>(
+                        CombatantTargetSelectors.Source, new TagId(type)),
+                    new ConstantExpression<TurnEndedTriggeredEffectContext>(1));
+                kinds = kinds is null ? played : new AddExpression<TurnEndedTriggeredEffectContext>(kinds, played);
+            }
+            return new ComparisonExpression<TurnEndedTriggeredEffectContext>(
+                kinds!, ComparisonOperator.GreaterOrEqual,
+                new ConstantExpression<TurnEndedTriggeredEffectContext>(2));
+        }),
+
+        // "Play a Skill before the first Attack" — the turn's opening card must not be an attack.
+        new("order_observe_the_sequence", "Order: Observe the Sequence", () =>
+            new AndExpression<TurnEndedTriggeredEffectContext>(
+                new ComparisonExpression<TurnEndedTriggeredEffectContext>(
+                    new CardsPlayedThisTurnExpression<TurnEndedTriggeredEffectContext>(CombatantTargetSelectors.Source),
+                    ComparisonOperator.Greater,
+                    new ConstantExpression<TurnEndedTriggeredEffectContext>(0)),
+                new NotExpression<TurnEndedTriggeredEffectContext>(
+                    new FirstCardPlayedThisTurnHasTagExpression<TurnEndedTriggeredEffectContext>(
+                        CombatantTargetSelectors.Source, new TagId("attack"))))),
+    ];
+
+    // Contempt: every point makes the Avatar's next direct attack hit 4 harder, and the attack spends it all.
+    private static StatusData Contempt()
+    {
+        var program = new EffectProgram<DamageDealtTriggeredEffectContext>(
+            new ModifyStatusStacksNode<DamageDealtTriggeredEffectContext>(
+                CombatantTargetSelectors.Source, new StatusDefinitionId(ContemptId),
+                new SubtractExpression<DamageDealtTriggeredEffectContext>(
+                    new ConstantExpression<DamageDealtTriggeredEffectContext>(0),
+                    new CombatantStatusStacksExpression<DamageDealtTriggeredEffectContext>(
+                        CombatantTargetSelectors.Source, new StatusDefinitionId(ContemptId)))));
+
+        return new StatusData
+        {
+            Id = ContemptId,
+            NameKey = "Contempt",
+            Polarity = StatusPolarity.Buff,
+            StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
+            UsesStacks = true,
+            Tags = [],
+            PassiveModifiers =
+            [
+                new PassiveModifierData(PassiveModifierPipeline.DamageDealt,
+                    PassiveModifierOperation.AddPerStack, 4, RestrictDamageKind: DamageKind.Direct),
+            ],
+            Triggers =
+            [
+                new StatusTriggerData("DamageDealt", JsonSerializer.SerializeToElement(
+                    program, CombatJson.CreateOptions<DamageDealtTriggeredEffectContext>())),
+            ],
+        };
+    }
 
     // Appellate Staircase: the Case is a status exactly one Step holds. Which Step is which is a marker, so a
     // program can hand the Case one level down (a Remand) or up (the automatic ascent).

@@ -90,6 +90,14 @@ older Act-I enemy pool wherever HP or intents disagree. Readings taken where the
   puts on the player for that round; the other bodies' intent rules read it and stand down to a safe move.
   Since an intent rule replaces whatever the cycle offered, a blocked body may skip a non-accelerating intent
   too — the alternative would need a "which intent is next" condition the engine does not have.
+- **The Iron Warrant's orders are a fixed rotation of three**, each a check the engine can actually make at
+  the player's turn end: pay the fee (end on empty Energy), file two kinds (two different card types played),
+  observe the sequence (the turn's opening card is not an Attack). The design generates an order from the
+  live state; a program cannot inspect a hand to pick an achievable demand, so the rotation stands in — it
+  keeps the "never twice in a row" rule and never asks for the impossible.
+- **Compliance Credit is dealt as damage.** "Remove up to 5 Block, the rest as HP loss" is exactly what 5
+  damage does; the design wants the overflow not to count as a damage EVENT, which the engine cannot express
+  without a bespoke effect.
 - **The Appellate Staircase's Case moves at its holder's turn end**, with a "already moved this round" mark
   on the receiver so it cannot climb two Steps in one round. A round-end loop would be the natural place, but
   a program cannot read a counter off its ITERATION target there, only write to it.
