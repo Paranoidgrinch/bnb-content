@@ -21,8 +21,162 @@ public static class EncounterPassives
         "triplicate_examiner" => [ThreeCopiesRequired()],
         "oath_candle" => [WitnessTheSeal()],
         "contradictory_signpost" => [BothDirectionsMandatory()],
+        "exception_imp" => Loophole(),
+        "old_statute_ghost" => StillInForce(),
         _ => Array.Empty<EncounterTriggerData>(),
     };
+
+    // The statuses the Old Statute Ghost keeps in force. Paperwork is deliberately not among them — it is the
+    // bureaucracy's own instrument, not an expired penalty.
+    private static readonly string[] ExpiringPenalties = { "panic", "doubt", "fatigue" };
+
+    // "Still in Force" (Old Statute Ghost): the first time each round one of Panic / Doubt / Fatigue vanishes
+    // from the player entirely, the Ghost gains 1 Precedent; at 2 it re-files one stack of the status that just
+    // went and clears its Precedent. Like the Imp's Loophole this reads "which status" from a mirror of the
+    // player's counts — and because the cash-out happens in the branch of the status that vanished, "the most
+    // recently disappeared one" needs no extra memory at all.
+    private static IReadOnlyList<EncounterTriggerData> StillInForce() =>
+    [
+        StillInForceTrigger<StatusRemovedTriggeredEffectContext>("StatusRemoved"),
+        StillInForceTrigger<StatusStacksChangedTriggeredEffectContext>("StatusStacksChanged"),
+        StillInForceTrigger<StatusAppliedTriggeredEffectContext>("StatusApplied"),
+        StillInForceTrigger<StatusMergedTriggeredEffectContext>("StatusMerged"),
+    ];
+
+    private static EncounterTriggerData StillInForceTrigger<TContext>(string trigger) where TContext : class
+    {
+        var ghost = CombatantTargetSelectors.IterationTarget;
+        var player = CombatantTargetSelectors.EventTarget;
+
+        ICombatExpression<TContext, int> Stacks(string statusId) =>
+            new CombatantStatusStacksExpression<TContext>(player, new StatusDefinitionId(statusId));
+        ICombatExpression<TContext, int> Counter(CounterId counter) =>
+            new CombatantCounterExpression<TContext>(ghost, counter);
+
+        var detections = ExpiringPenalties.Select(penalty => (IEffectNode<TContext>)
+            new ConditionalEffectNode<TContext>(
+                new AndExpression<TContext>(
+                    new ComparisonExpression<TContext>(Counter(SeenCounter(penalty)),
+                        ComparisonOperator.Greater, new ConstantExpression<TContext>(0)),
+                    new ComparisonExpression<TContext>(Stacks(penalty),
+                        ComparisonOperator.Equal, new ConstantExpression<TContext>(0))),
+                new SequenceEffectNode<TContext>(new IEffectNode<TContext>[]
+                {
+                    new SetCombatantCounterNode<TContext>(ghost, PassiveStatuses.PrecedentLatchCounter,
+                        new ConstantExpression<TContext>(1), relative: false),
+                    new ConditionalEffectNode<TContext>(
+                        new ComparisonExpression<TContext>(Counter(PassiveStatuses.PrecedentCounter),
+                            ComparisonOperator.GreaterOrEqual, new ConstantExpression<TContext>(1)),
+                        // Second precedent: the statute is re-imposed and the tally starts over.
+                        new SequenceEffectNode<TContext>(new IEffectNode<TContext>[]
+                        {
+                            new ApplyStatusNode<TContext>(player, new StatusDefinitionId(penalty),
+                                new ConstantExpression<TContext>(1)),
+                            new SetCombatantCounterNode<TContext>(ghost, PassiveStatuses.PrecedentCounter,
+                                new ConstantExpression<TContext>(0), relative: false),
+                        }),
+                        new SetCombatantCounterNode<TContext>(ghost, PassiveStatuses.PrecedentCounter,
+                            new ConstantExpression<TContext>(1), relative: false)),
+                })));
+
+        var body = new List<IEffectNode<TContext>>
+        {
+            new ConditionalEffectNode<TContext>(
+                new ComparisonExpression<TContext>(Counter(PassiveStatuses.PrecedentLatchCounter),
+                    ComparisonOperator.Equal, new ConstantExpression<TContext>(0)),
+                new SequenceEffectNode<TContext>(detections.ToList())),
+        };
+        body.AddRange(ExpiringPenalties.Select(penalty => (IEffectNode<TContext>)
+            new SetCombatantCounterNode<TContext>(ghost, SeenCounter(penalty), Stacks(penalty), relative: false)));
+
+        // Only what happens to the APPLICANT counts — the Ghost is deaf to statuses moving on its own side.
+        var program = new EffectProgram<TContext>(
+            new ForEachTargetEffectNode<TContext>(
+                CombatantTargetSelectors.WithStatus(CombatantTargetSelectors.AllCombatants,
+                    new StatusDefinitionId(PassiveStatuses.StillInForceId)),
+                new ConditionalEffectNode<TContext>(
+                    new ComparisonExpression<TContext>(
+                        new CombatantStatusStacksExpression<TContext>(player,
+                            new StatusDefinitionId(PassiveStatuses.ApplicantId)),
+                        ComparisonOperator.Greater,
+                        new ConstantExpression<TContext>(0)),
+                    new SequenceEffectNode<TContext>(body))));
+
+        return new EncounterTriggerData(trigger,
+            JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<TContext>()));
+    }
+
+    // The negative statuses the enemy side files on the player in Act I. Loophole watches all of them.
+    private static readonly string[] PlayerDebuffs = { "panic", "doubt", "paperwork", "fatigue" };
+
+    // "Loophole" (Exception Imp): the first time each round the enemy side would apply a negative status to the
+    // player, one stack of it is struck — a single-stack application is voided entirely — and the Imp gains 1
+    // Strength for finding the exception.
+    //
+    // No interceptor: the engine's data-authored ones read the TARGET's statuses, and here the exception belongs
+    // to an ENEMY. So the application is undone a beat later instead, which needs a way to tell WHICH status
+    // arrived — a trigger program cannot read the event's status id. The Imp therefore mirrors the player's
+    // debuff counts in its own counters: the status whose count is now HIGHER than the mirror is the one that
+    // just landed. Every relevant event resyncs the mirror, including the reduction's own stack change, so it
+    // converges even when a status is struck down to nothing.
+    private static IReadOnlyList<EncounterTriggerData> Loophole() =>
+    [
+        LoopholeTrigger<StatusAppliedTriggeredEffectContext>("StatusApplied", strike: true),
+        LoopholeTrigger<StatusMergedTriggeredEffectContext>("StatusMerged", strike: true),
+        LoopholeTrigger<StatusStacksChangedTriggeredEffectContext>("StatusStacksChanged", strike: false),
+        LoopholeTrigger<StatusRemovedTriggeredEffectContext>("StatusRemoved", strike: false),
+    ];
+
+    private static EncounterTriggerData LoopholeTrigger<TContext>(string trigger, bool strike) where TContext : class
+    {
+        var imp = CombatantTargetSelectors.IterationTarget;
+        var player = CombatantTargetSelectors.EventTarget;
+        var body = new List<IEffectNode<TContext>>();
+
+        if (strike)
+        {
+            var strikes = PlayerDebuffs.Select(debuff => (IEffectNode<TContext>)
+                new ConditionalEffectNode<TContext>(
+                    new ComparisonExpression<TContext>(
+                        new CombatantStatusStacksExpression<TContext>(player, new StatusDefinitionId(debuff)),
+                        ComparisonOperator.Greater,
+                        new CombatantCounterExpression<TContext>(imp, SeenCounter(debuff))),
+                    new SequenceEffectNode<TContext>(new IEffectNode<TContext>[]
+                    {
+                        new ModifyStatusStacksNode<TContext>(player, new StatusDefinitionId(debuff),
+                            new ConstantExpression<TContext>(-1)),
+                        new SetCombatantCounterNode<TContext>(imp, PassiveStatuses.LoopholeUsedCounter,
+                            new ConstantExpression<TContext>(1), relative: false),
+                        new ApplyStatusNode<TContext>(imp, new StatusDefinitionId("strength"),
+                            new ConstantExpression<TContext>(1)),
+                    })));
+
+            body.Add(new ConditionalEffectNode<TContext>(
+                new ComparisonExpression<TContext>(
+                    new CombatantCounterExpression<TContext>(imp, PassiveStatuses.LoopholeUsedCounter),
+                    ComparisonOperator.Equal,
+                    new ConstantExpression<TContext>(0)),
+                new SequenceEffectNode<TContext>(strikes.ToList())));
+        }
+
+        // Resync the mirror last: whatever the player carries now is what the Imp remembers.
+        body.AddRange(PlayerDebuffs.Select(debuff => (IEffectNode<TContext>)
+            new SetCombatantCounterNode<TContext>(imp, SeenCounter(debuff),
+                new CombatantStatusStacksExpression<TContext>(player, new StatusDefinitionId(debuff)),
+                relative: false)));
+
+        var program = new EffectProgram<TContext>(
+            new ForEachTargetEffectNode<TContext>(
+                CombatantTargetSelectors.AllAlliesOfSourceWithStatus(
+                    new StatusDefinitionId(PassiveStatuses.LoopholeId)),
+                new SequenceEffectNode<TContext>(body)));
+
+        return new EncounterTriggerData(trigger,
+            JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<TContext>()));
+    }
+
+    // The Imp's mirror of one player debuff.
+    public static CounterId SeenCounter(string statusId) => new($"seen_{statusId}");
 
     // "Both Directions Mandatory" (Contradictory Signpost): the FIRST card the player plays each turn picks the
     // direction — an Attack takes the LEFT road (Dangerous Shortcut), anything else the RIGHT one (Long

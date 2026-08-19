@@ -5932,45 +5932,9 @@
   {
     "id": "exception_imp",
     "name": "Exception Imp",
-    "max_hp": 24,
+    "max_hp": 40,
     "intent_pattern": "cycle",
     "intents": [
-      {
-        "id": "loophole_prick",
-        "name": "Loophole Prick",
-        "intent_type": "mixed",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 6
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "doubt",
-            "amount": 1
-          }
-        ]
-      },
-      {
-        "id": "duck_behind_subsection",
-        "name": "Duck Behind Subsection",
-        "intent_type": "mixed",
-        "actions": [
-          {
-            "type": "gain_block",
-            "target": "owner",
-            "amount": 5
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "paperwork",
-            "amount": 1
-          }
-        ]
-      },
       {
         "id": "technicality",
         "name": "Technicality",
@@ -5979,9 +5943,38 @@
           {
             "type": "deal_damage",
             "target": "player",
+            "amount": 9
+          }
+        ]
+      },
+      {
+        "id": "hide_in_the_footnote",
+        "name": "Hide in the Footnote",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
             "amount": 8
           }
         ]
+      },
+      {
+        "id": "exception_to_the_exception",
+        "name": "Exception to the Exception",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "all_enemies",
+            "amount": 7
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "loophole"
       }
     ],
     "tags": [
@@ -6068,7 +6061,7 @@
   {
     "id": "old_statute_ghost",
     "name": "Old Statute Ghost",
-    "max_hp": 40,
+    "max_hp": 54,
     "intent_pattern": "cycle",
     "intents": [
       {
@@ -6079,7 +6072,7 @@
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 7
+            "amount": 10
           },
           {
             "type": "apply_status",
@@ -6103,7 +6096,7 @@
           {
             "type": "gain_block",
             "target": "owner",
-            "amount": 8
+            "amount": 10
           }
         ]
       },
@@ -6115,9 +6108,14 @@
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 11
+            "amount": 15
           }
         ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "still_in_force_passive"
       }
     ],
     "tags": [

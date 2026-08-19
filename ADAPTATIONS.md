@@ -48,6 +48,20 @@ older Act-I enemy pool wherever HP or intents disagree. Readings taken where the
   combatant, so the program loops over `alliesWithStatus(witness_the_seal)` — which is at once the "is the
   Candle in this fight" gate, the "is the gainer on the Candle's side" gate (the hero guarding itself finds
   nobody) and the handle on the latch holder (`iterationTarget`).
+- **The Signpost's two roads are Attack vs. anything else.** B&B has no "Skill" card type — its non-attack
+  pool is forms and arguments — so LEFT is a card tagged `attack` and RIGHT is any other card. "Both
+  directions mandatory" is realised as: the FIRST card of the player's turn picks the road.
+- **"The first time each round the enemy side would apply a negative status"** (Exception Imp, "Loophole") is
+  undone a beat AFTER it lands rather than intercepted: the engine's data-authored interceptors read the
+  TARGET's statuses, and here the exception belongs to an enemy. A single-stack filing is therefore applied
+  and immediately removed, which is invisible in the numbers but visible in a combat log.
+- **The Imp and the Ghost read "which status just moved" from a mirror** of the player's debuff counts kept
+  in their own counters (a trigger program cannot read the event's status id). A status the player already
+  carries when the fight BEGINS is invisible to that mirror until something touches it again — starting
+  statuses are applied without raising events. No Act-I encounter opens the player with Panic/Doubt/Fatigue.
+- **"Exception to the Exception — another enemy gains 7 Block; if solo, the Imp gains 10"** guards the whole
+  enemy side for 7 (the Imp included). There is no "my allies except me" selector in the authoring surface,
+  and the solo's 10 would need a roster-size condition.
 - **"Direct attacks gain +3 damage per Panic, maximum +9"** (Queue-Crier Homunculus, "Lost Your Place") is
   baked into the enemy's one pure ATTACK intent — "Call a Number That Is Not Yours", the intent the design
   itself annotates with the passive. Its mixed damage+Panic and block+Panic intents stay flat, so the

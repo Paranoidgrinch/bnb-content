@@ -148,6 +148,10 @@ public static class EncounterMapper
             new EncounterId(encounter.Id),
             roster,
             [new ResourceSpec(StandardCombatIds.EnergyResource, startingEnergy, startingEnergy)],
+            // Every fight marks the hero as "the applicant". Selectors are structural — they can say "allies of
+            // the source" but never "the player" — so a cross-combatant passive that must know whether something
+            // happened TO THE PLAYER (Old Statute Ghost) has no other handle. One inert marker, every encounter.
+            heroStartingStatuses: [new StartingStatusSpec(new StatusDefinitionId(PassiveStatuses.ApplicantId), 1)],
             triggeredEffects: triggeredEffects);
     }
 
