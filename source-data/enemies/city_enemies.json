@@ -6983,7 +6983,7 @@
   {
     "id": "devouring_waiting_room",
     "name": "Devouring Waiting Room",
-    "max_hp": 66,
+    "max_hp": 68,
     "intent_pattern": "cycle",
     "intents": [
       {
@@ -7012,7 +7012,28 @@
           {
             "type": "gain_block",
             "target": "owner",
-            "amount": 12
+            "amount": 13
+          }
+        ]
+      },
+      {
+        "id": "time_eats_back",
+        "name": "Time Eats Back",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "damage_per_counter",
+            "target": "player",
+            "counter": "lost_time",
+            "amount": 7,
+            "amount_per_stack": 4
+          },
+          {
+            "type": "set_counter",
+            "target": "owner",
+            "counter": "lost_time",
+            "amount": 0,
+            "relative": false
           }
         ]
       },
@@ -7030,19 +7051,6 @@
         ]
       },
       {
-        "id": "time_eats_back",
-        "name": "Time Eats Back",
-        "intent_type": "attack",
-        "actions": [
-          {
-            "type": "damage_per_status",
-            "target": "player",
-            "status": "fatigue",
-            "amount_per_stack": 3
-          }
-        ]
-      },
-      {
         "id": "carpet_grips_your_feet",
         "name": "Carpet Grips Your Feet",
         "intent_type": "mixed",
@@ -7055,20 +7063,22 @@
           {
             "type": "gain_block",
             "target": "owner",
-            "amount": 6
+            "amount": 7
           }
         ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "lost_time_ledger"
       }
     ],
     "tags": [
       "city",
       "delay",
-      "waiting",
-      "fatigue_pressure",
-      "stage_delay",
-      "elite_delay",
-      "room",
-      "place"
+      "elite",
+      "waiting_room",
+      "stage_delay"
     ]
   },
   {
@@ -7085,7 +7095,7 @@
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 4
+            "amount": 5
           },
           {
             "type": "apply_status",
@@ -7108,6 +7118,18 @@
         ]
       },
       {
+        "id": "steal_a_minute",
+        "name": "Steal a Minute",
+        "intent_type": "buff",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 0
+          }
+        ]
+      },
+      {
         "id": "wingbeat_delay",
         "name": "Wingbeat Delay",
         "intent_type": "attack",
@@ -7115,20 +7137,7 @@
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 6
-          }
-        ]
-      },
-      {
-        "id": "settle_on_the_clock",
-        "name": "Settle on the Clock",
-        "intent_type": "debuff",
-        "actions": [
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "fatigue",
-            "amount": 1
+            "amount": 7
           }
         ]
       }
@@ -7136,12 +7145,9 @@
     "tags": [
       "city",
       "delay",
-      "waiting",
-      "fatigue_pressure",
-      "stage_delay",
-      "elite_delay",
+      "elite",
       "moth",
-      "support"
+      "stage_delay"
     ]
   },
   {

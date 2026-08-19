@@ -40,7 +40,10 @@ public static class EnemyMapper
             Id = ActionId(enemy.Id, intent.Id),
             NameKey = intent.Name,
             Intent = new ActionIntent(Label(intent), Kind(where, intent.IntentType)),
-            Program = CombatProgramModel.Build<EnemyActionContext>(program),
+            // A handful of elite intents are authored as raw programs (a parameterised selector the curated
+            // model has no key for); everything else is built from the effect DSL.
+            Program = RawIntentPrograms.For(enemy.Id, intent.Id)
+                ?? CombatProgramModel.Build<EnemyActionContext>(program),
         };
     }
 

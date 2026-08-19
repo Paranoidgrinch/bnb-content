@@ -30,8 +30,43 @@ public static class EncounterPassives
         "threshold_seizure_ward" => SeizeTheFiling(),
         "number_ticket_wisp" => YourNumberCameUp(),
         "duplicate_copy_mite" => CarbonCopies(),
+        "devouring_waiting_room" => [LostTime()],
         _ => Array.Empty<EncounterTriggerData>(),
     };
+
+    // "Lost Time" (Devouring Waiting Room): every point of Energy the player leaves unspent at the end of their
+    // turn becomes Lost Time on the Room, up to 3. Energy that Fatigue took is simply not there to count — it
+    // was removed at the turn's start — so the design's "freely unspent" needs no extra bookkeeping.
+    private static EncounterTriggerData LostTime()
+    {
+        var player = CombatantTargetSelectors.Source; // the combatant whose turn ended
+        var room = CombatantTargetSelectors.IterationTarget;
+        var ledger = new CombatantCounterExpression<TurnEndedTriggeredEffectContext>(
+            room, PassiveStatuses.LostTimeCounter);
+
+        var program = new EffectProgram<TurnEndedTriggeredEffectContext>(
+            new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
+                new ComparisonExpression<TurnEndedTriggeredEffectContext>(
+                    new CombatantStatusStacksExpression<TurnEndedTriggeredEffectContext>(
+                        player, new StatusDefinitionId(PassiveStatuses.ApplicantId)),
+                    ComparisonOperator.Greater,
+                    new ConstantExpression<TurnEndedTriggeredEffectContext>(0)),
+                new ForEachTargetEffectNode<TurnEndedTriggeredEffectContext>(
+                    CombatantTargetSelectors.AllEnemiesOfSourceWithStatus(
+                        new StatusDefinitionId(PassiveStatuses.LostTimeLedgerId)),
+                    new SetCombatantCounterNode<TurnEndedTriggeredEffectContext>(
+                        room, PassiveStatuses.LostTimeCounter,
+                        new MinExpression<TurnEndedTriggeredEffectContext>(
+                            new AddExpression<TurnEndedTriggeredEffectContext>(
+                                ledger,
+                                new CombatantCurrentResourceExpression<TurnEndedTriggeredEffectContext>(
+                                    player, StandardCombatIds.EnergyResource)),
+                            new ConstantExpression<TurnEndedTriggeredEffectContext>(PassiveStatuses.LostTimeMaximum)),
+                        relative: false))));
+
+        return new EncounterTriggerData("TurnEnded",
+            JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<TurnEndedTriggeredEffectContext>()));
+    }
 
     // "Carbon Copies" (Duplicate Copy Mites): the first time each round another enemy gains Bookworm, the Mites
     // guard themselves for 4. Same shape as the Oath Candle's Witness the Seal — the loop over
