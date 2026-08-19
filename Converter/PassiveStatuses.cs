@@ -74,7 +74,15 @@ public static class PassiveStatuses
         .. Appointments.Select(a => AppointmentDue(a.StatusId, a.Name, a.Due, a.Expiry)),
         AppointmentsAccelerated(),
         OfficeHours(),
+        Marker(LostTimeLedgerId, "Lost Time"),
     ];
+
+    // Devouring Waiting Room: the Room keeps the Lost Time ledger (so killing it erases the resource, while
+    // killing the Moth Cloud leaves what was already lost). The marker is how the Moth and the encounter
+    // trigger find the Room.
+    public const string LostTimeLedgerId = "lost_time_ledger";
+    public static readonly CounterId LostTimeCounter = new("lost_time");
+    public const int LostTimeMaximum = 3;
 
     // Reopening-Hours Monolith: the office's own schedule. Closed windows bank whatever the player does; the
     // open window processes the backlog in one go.

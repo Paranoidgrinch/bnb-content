@@ -114,6 +114,66 @@ public class EliteCombatTests
         Assert.Equal(0, Enemy(play, monolithId).GetCounter(PassiveStatuses.OfficeOpenCounter));
     }
 
+    // Devouring Waiting Room: Energy the player leaves unspent at the end of their turn becomes Lost Time on
+    // the Room (max 3), and Time Eats Back cashes the whole ledger in at 7 + 4 each.
+    [Fact]
+    public void The_waiting_room_turns_unspent_energy_into_lost_time_and_eats_it_back()
+    {
+        var probe = FightProbe.Roster("lost_time", ("devouring_waiting_room", "walls_hold_still", 68));
+        var (play, session, roomId) = FightProbe.Start(probe);
+
+        play.CombatDriver!.EndTurn(); // three Energy left untouched → three Lost Time (the cap)
+        Assert.Null(session.Error);
+        Assert.Equal(3, Enemy(play, roomId).GetCounter(PassiveStatuses.LostTimeCounter));
+
+        play.CombatDriver.EndTurn(); // already at the maximum
+        Assert.Null(session.Error);
+        Assert.Equal(3, Enemy(play, roomId).GetCounter(PassiveStatuses.LostTimeCounter));
+    }
+
+    [Fact]
+    public void Time_eats_back_cashes_the_whole_ledger_in_one_hit()
+    {
+        var probe = FightProbe.Roster("time_eats", ("devouring_waiting_room", "time_eats_back", 68));
+        var (play, session, roomId) = FightProbe.Start(probe);
+
+        // The unspent Energy is banked at the player's turn end — before the Room acts in the same step — so
+        // the very first Time Eats Back already carries a full ledger: 7 + 4 × 3, and it clears it.
+        var before = Hero(play).Health.Current;
+        play.CombatDriver!.EndTurn();
+        Assert.Null(session.Error);
+        Assert.Equal(before - 19, Hero(play).Health.Current);
+        Assert.Equal(0, Enemy(play, roomId).GetCounter(PassiveStatuses.LostTimeCounter));
+
+        var loaded = Hero(play).Health.Current;
+        play.CombatDriver.EndTurn(); // the next turn refills the ledger and it eats again
+        Assert.Null(session.Error);
+        Assert.Equal(loaded - 19, Hero(play).Health.Current);
+    }
+
+    // The Moth Cloud feeds the Room's ledger rather than its own — killing the Room is what erases the resource.
+    [Fact]
+    public void The_moth_cloud_steals_a_minute_for_the_room()
+    {
+        var probe = FightProbe.Roster("stolen_minutes",
+            ("minute_moth_cloud", "steal_a_minute", 24),
+            ("devouring_waiting_room", "walls_hold_still", 68));
+        var (play, session, _) = FightProbe.Start(probe, Enumerable.Repeat("paper_cut", 10).ToList());
+
+        var combat = play.CombatDriver!.Current!;
+        var roomId = combat.State.Combatants.First(c => c.Id.value.StartsWith("devouring_waiting_room")).Id;
+        var mothId = combat.State.Combatants.First(c => c.Id.value.StartsWith("minute_moth_cloud")).Id;
+
+        // Spend every point of Energy, so the only Lost Time that appears is the Moth's theft.
+        for (var i = 0; i < 3; i++)
+            Cut(play, session, mothId);
+        play.CombatDriver.EndTurn();
+        Assert.Null(session.Error);
+
+        Assert.Equal(1, Enemy(play, roomId).GetCounter(PassiveStatuses.LostTimeCounter));
+        Assert.Equal(0, Enemy(play, mothId).GetCounter(PassiveStatuses.LostTimeCounter));
+    }
+
     private static void Cut(RunPlayback play, InteractiveRunSession session, CombatantId enemyId)
     {
         var card = play.CombatDriver!.Current!.Hand.First(c => c.DefinitionId.value == "paper_cut");
