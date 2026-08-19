@@ -28,11 +28,26 @@ public static class PassiveStatuses
     public const string SignaturePendingId = "signature_pending";
     private const int SignatureThreshold = 3;
 
+    // Wax Notary: one status carrying both halves of "Paper Seals Wax".
+    public const string PaperSealsWaxId = "paper_seals_wax";
+    private static readonly CounterId SeenPaperworkCounter = new("seen_paperwork");
+    private static readonly CounterId SealedThisTurnCounter = new("wax_sealed_this_turn");
+
+    // Sealed Door Ward: the seal itself (carries the rules, and its absence IS the broken seal) plus the
+    // per-hit dampener it re-arms each player turn.
+    public const string OneRemainingSealId = "one_remaining_seal";
+    public const string SealIntactId = "seal_intact";
+    private static readonly CounterId SealDamageThisTurnCounter = new("seal_damage_this_turn");
+    private const int SealBreakThreshold = 18;
+
     public static IReadOnlyList<StatusData> All() =>
     [
         QueueAdvances(),
         StillMissingASignature(),
         SignaturePending(),
+        PaperSealsWax(),
+        OneRemainingSeal(),
+        SealIntact(),
     ];
 
     // "The Queue Advances" (A Very Official Line): if the player ended their turn having played 3+ cards, the
@@ -133,6 +148,159 @@ public static class PassiveStatuses
         [
             new PassiveModifierData(PassiveModifierPipeline.DamageReceived,
                 PassiveModifierOperation.ScalePercent, 75, RestrictDamageKind: DamageKind.Direct),
+        ],
+        Triggers = [],
+    };
+
+    // "Paper Seals Wax" (Wax Notary): the first time each player turn the Notary RECEIVES Paperwork it gains 5
+    // Block; the Paperwork stays. "Receives" is read as "the count went up", by remembering the last seen count
+    // in a counter — a plain status-event gate would also fire for any other status landing on it (its duo
+    // partner hands out Bookworm). The once-per-turn latch resets at the Notary's own turn end, i.e. exactly
+    // when the player's next turn is about to begin.
+    private static StatusData PaperSealsWax() => new()
+    {
+        Id = PaperSealsWaxId,
+        NameKey = "Paper Seals Wax",
+        Polarity = StatusPolarity.Neutral,
+        StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
+        UsesStacks = false,
+        Tags = [],
+        PassiveModifiers = [],
+        Triggers =
+        [
+            SealTrigger<StatusAppliedTriggeredEffectContext>("StatusApplied"),
+            SealTrigger<StatusMergedTriggeredEffectContext>("StatusMerged"),
+            SealTrigger<StatusStacksChangedTriggeredEffectContext>("StatusStacksChanged"),
+            SealTrigger<StatusRemovedTriggeredEffectContext>("StatusRemoved"),
+            new StatusTriggerData("TurnEnded", JsonSerializer.SerializeToElement(
+                new EffectProgram<TurnEndedTriggeredEffectContext>(
+                    new SetCombatantCounterNode<TurnEndedTriggeredEffectContext>(
+                        CombatantTargetSelectors.Source, SealedThisTurnCounter,
+                        new ConstantExpression<TurnEndedTriggeredEffectContext>(0), relative: false)),
+                CombatJson.CreateOptions<TurnEndedTriggeredEffectContext>())),
+        ],
+    };
+
+    private static StatusTriggerData SealTrigger<TContext>(string trigger) where TContext : class
+    {
+        var bearer = CombatantTargetSelectors.EventTarget;
+        var paperwork = new CombatantStatusStacksExpression<TContext>(bearer, new StatusDefinitionId("paperwork"));
+        var seen = new CombatantCounterExpression<TContext>(bearer, SeenPaperworkCounter);
+
+        var program = new EffectProgram<TContext>(
+            new SequenceEffectNode<TContext>(new IEffectNode<TContext>[]
+            {
+                new ConditionalEffectNode<TContext>(
+                    new AndExpression<TContext>(
+                        new ComparisonExpression<TContext>(paperwork, ComparisonOperator.Greater, seen),
+                        new ComparisonExpression<TContext>(
+                            new CombatantCounterExpression<TContext>(bearer, SealedThisTurnCounter),
+                            ComparisonOperator.Equal,
+                            new ConstantExpression<TContext>(0))),
+                    new SequenceEffectNode<TContext>(new IEffectNode<TContext>[]
+                    {
+                        new GainBlockNode<TContext>(bearer, new ConstantExpression<TContext>(5)),
+                        new SetCombatantCounterNode<TContext>(bearer, SealedThisTurnCounter,
+                            new ConstantExpression<TContext>(1), relative: false),
+                    })),
+                // Always resync, so a later filing counts as new and a cleanse doesn't leave a stale high-water mark.
+                new SetCombatantCounterNode<TContext>(bearer, SeenPaperworkCounter, paperwork, relative: false),
+            }));
+
+        return new StatusTriggerData(trigger,
+            JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<TContext>()));
+    }
+
+    // "One Remaining Seal" (Sealed Door Ward): while the seal holds, the FIRST card hit against the Ward each
+    // player turn deals 4 less; take 18+ HP damage within one player turn and the seal breaks for good, taking
+    // 6 direct damage with it. The seal's own presence is the "active" flag — once it is gone nothing re-arms
+    // the dampener, which is exactly what "permanently" means here.
+    private static StatusData OneRemainingSeal()
+    {
+        var bearer = CombatantTargetSelectors.EventTarget;
+
+        // On every hit: bank it, spend the dampener, and check the break threshold.
+        var onHit = new EffectProgram<DamageReceivedTriggeredEffectContext>(
+            new SequenceEffectNode<DamageReceivedTriggeredEffectContext>(new IEffectNode<DamageReceivedTriggeredEffectContext>[]
+            {
+                new SetCombatantCounterNode<DamageReceivedTriggeredEffectContext>(
+                    bearer, SealDamageThisTurnCounter,
+                    new EventAmountExpression<DamageReceivedTriggeredEffectContext>(), relative: true),
+                // Only the first hit of the turn is dampened.
+                new ModifyStatusStacksNode<DamageReceivedTriggeredEffectContext>(
+                    bearer, new StatusDefinitionId(SealIntactId),
+                    new ConstantExpression<DamageReceivedTriggeredEffectContext>(-1)),
+                // The tally above is an ENQUEUED write, so it is not visible to this test yet — the threshold
+                // has to add this hit itself: banked-so-far + this hit.
+                new ConditionalEffectNode<DamageReceivedTriggeredEffectContext>(
+                    new ComparisonExpression<DamageReceivedTriggeredEffectContext>(
+                        new AddExpression<DamageReceivedTriggeredEffectContext>(
+                            new CombatantCounterExpression<DamageReceivedTriggeredEffectContext>(bearer, SealDamageThisTurnCounter),
+                            new EventAmountExpression<DamageReceivedTriggeredEffectContext>()),
+                        ComparisonOperator.GreaterOrEqual,
+                        new ConstantExpression<DamageReceivedTriggeredEffectContext>(SealBreakThreshold)),
+                    new SequenceEffectNode<DamageReceivedTriggeredEffectContext>(new IEffectNode<DamageReceivedTriggeredEffectContext>[]
+                    {
+                        // Break FIRST, then take the recoil: with the seal already gone the recoil cannot
+                        // re-enter this trigger at all.
+                        new ModifyStatusStacksNode<DamageReceivedTriggeredEffectContext>(
+                            bearer, new StatusDefinitionId(OneRemainingSealId),
+                            new ConstantExpression<DamageReceivedTriggeredEffectContext>(-1)),
+                        new DealDamageNode<DamageReceivedTriggeredEffectContext>(
+                            bearer, new ConstantExpression<DamageReceivedTriggeredEffectContext>(6)),
+                    })),
+            }));
+
+        // At the Ward's own turn end — the player's turn is next — the dampener is re-armed and the tally resets.
+        var onTurnEnd = new EffectProgram<TurnEndedTriggeredEffectContext>(
+            new SequenceEffectNode<TurnEndedTriggeredEffectContext>(new IEffectNode<TurnEndedTriggeredEffectContext>[]
+            {
+                new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
+                    new ComparisonExpression<TurnEndedTriggeredEffectContext>(
+                        new CombatantStatusStacksExpression<TurnEndedTriggeredEffectContext>(
+                            CombatantTargetSelectors.Source, new StatusDefinitionId(SealIntactId)),
+                        ComparisonOperator.Equal,
+                        new ConstantExpression<TurnEndedTriggeredEffectContext>(0)),
+                    new ApplyStatusNode<TurnEndedTriggeredEffectContext>(
+                        CombatantTargetSelectors.Source, new StatusDefinitionId(SealIntactId),
+                        new ConstantExpression<TurnEndedTriggeredEffectContext>(1))),
+                new SetCombatantCounterNode<TurnEndedTriggeredEffectContext>(
+                    CombatantTargetSelectors.Source, SealDamageThisTurnCounter,
+                    new ConstantExpression<TurnEndedTriggeredEffectContext>(0), relative: false),
+            }));
+
+        return new StatusData
+        {
+            Id = OneRemainingSealId,
+            NameKey = "One Remaining Seal",
+            Polarity = StatusPolarity.Buff,
+            StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
+            UsesStacks = true,
+            Tags = [],
+            PassiveModifiers = [],
+            Triggers =
+            [
+                new StatusTriggerData("DamageTaken",
+                    JsonSerializer.SerializeToElement(onHit, CombatJson.CreateOptions<DamageReceivedTriggeredEffectContext>())),
+                new StatusTriggerData("TurnEnded",
+                    JsonSerializer.SerializeToElement(onTurnEnd, CombatJson.CreateOptions<TurnEndedTriggeredEffectContext>())),
+            ],
+        };
+    }
+
+    // The dampener the seal re-arms: −4 on a DIRECT hit, spent by the first one each player turn.
+    private static StatusData SealIntact() => new()
+    {
+        Id = SealIntactId,
+        NameKey = "Seal Intact",
+        Polarity = StatusPolarity.Buff,
+        StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
+        UsesStacks = true,
+        Tags = [],
+        PassiveModifiers =
+        [
+            new PassiveModifierData(PassiveModifierPipeline.DamageReceived,
+                PassiveModifierOperation.AddFlat, -4, RestrictDamageKind: DamageKind.Direct),
         ],
         Triggers = [],
     };

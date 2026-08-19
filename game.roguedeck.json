@@ -14768,7 +14768,7 @@
       "Enemies": [
         {
           "Id": "wax_notary",
-          "MaxHealth": 38,
+          "MaxHealth": 48,
           "Actions": [
             {
               "value": "wax_notary.drip_hot_wax"
@@ -14777,10 +14777,19 @@
               "value": "wax_notary.harden_the_seal"
             },
             {
-              "value": "wax_notary.seal_the_copy"
+              "value": "wax_notary.notarial_mallet"
             }
           ],
-          "StartingStatuses": null,
+          "StartingStatuses": [
+            {
+              "Status": {
+                "value": "paper_seals_wax"
+              },
+              "Stacks": 1,
+              "DurationTurns": 0,
+              "Charges": 0
+            }
+          ],
           "DisplayName": "Wax Notary",
           "Position": null,
           "IntentRules": null
@@ -14807,7 +14816,7 @@
       "Enemies": [
         {
           "Id": "sealed_door_ward",
-          "MaxHealth": 46,
+          "MaxHealth": 56,
           "Actions": [
             {
               "value": "sealed_door_ward.barred_slam"
@@ -14819,7 +14828,24 @@
               "value": "sealed_door_ward.sealed_threshold"
             }
           ],
-          "StartingStatuses": null,
+          "StartingStatuses": [
+            {
+              "Status": {
+                "value": "one_remaining_seal"
+              },
+              "Stacks": 1,
+              "DurationTurns": 0,
+              "Charges": 0
+            },
+            {
+              "Status": {
+                "value": "seal_intact"
+              },
+              "Stacks": 1,
+              "DurationTurns": 0,
+              "Charges": 0
+            }
+          ],
           "DisplayName": "Sealed Door Ward",
           "Position": null,
           "IntentRules": null
@@ -15021,7 +15047,7 @@
       "Enemies": [
         {
           "Id": "wax_notary",
-          "MaxHealth": 38,
+          "MaxHealth": 48,
           "Actions": [
             {
               "value": "wax_notary.drip_hot_wax"
@@ -15030,10 +15056,19 @@
               "value": "wax_notary.harden_the_seal"
             },
             {
-              "value": "wax_notary.seal_the_copy"
+              "value": "wax_notary.notarial_mallet"
             }
           ],
-          "StartingStatuses": null,
+          "StartingStatuses": [
+            {
+              "Status": {
+                "value": "paper_seals_wax"
+              },
+              "Stacks": 1,
+              "DurationTurns": 0,
+              "Charges": 0
+            }
+          ],
           "DisplayName": "Wax Notary",
           "Position": null,
           "IntentRules": null
@@ -15079,7 +15114,7 @@
       "Enemies": [
         {
           "Id": "sealed_door_ward",
-          "MaxHealth": 46,
+          "MaxHealth": 56,
           "Actions": [
             {
               "value": "sealed_door_ward.barred_slam"
@@ -15091,7 +15126,24 @@
               "value": "sealed_door_ward.sealed_threshold"
             }
           ],
-          "StartingStatuses": null,
+          "StartingStatuses": [
+            {
+              "Status": {
+                "value": "one_remaining_seal"
+              },
+              "Stacks": 1,
+              "DurationTurns": 0,
+              "Charges": 0
+            },
+            {
+              "Status": {
+                "value": "seal_intact"
+              },
+              "Stacks": 1,
+              "DurationTurns": 0,
+              "Charges": 0
+            }
+          ],
           "DisplayName": "Sealed Door Ward",
           "Position": null,
           "IntentRules": null
@@ -30593,7 +30645,7 @@
       "DescriptionKey": null,
       "Intent": {
         "Kind": "Special",
-        "Label": "Drip Hot Wax \u00B7 6 dmg, Paperwork \u002B1"
+        "Label": "Drip Hot Wax \u00B7 7 dmg, Paperwork \u002B1"
       },
       "Program": {
         "Id": {
@@ -30616,7 +30668,7 @@
                   "Amount": {
                     "kind": "const",
                     "value": {
-                      "Value": 6
+                      "Value": 7
                     }
                   },
                   "ResultKey": null,
@@ -30664,7 +30716,7 @@
       "DescriptionKey": null,
       "Intent": {
         "Kind": "Defend",
-        "Label": "Harden the Seal \u00B7 10 block"
+        "Label": "Harden the Seal \u00B7 12 block"
       },
       "Program": {
         "Id": {
@@ -30683,7 +30735,7 @@
             "Amount": {
               "kind": "const",
               "value": {
-                "Value": 10
+                "Value": 12
               }
             },
             "ResultKey": null,
@@ -30695,65 +30747,38 @@
       }
     },
     {
-      "Id": "wax_notary.seal_the_copy",
+      "Id": "wax_notary.notarial_mallet",
       "PackageId": "scenario",
-      "NameKey": "Seal the Copy",
+      "NameKey": "Notarial Mallet",
       "DescriptionKey": null,
       "Intent": {
-        "Kind": "Special",
-        "Label": "Seal the Copy \u00B7 4 dmg, 6 block"
+        "Kind": "Attack",
+        "Label": "Notarial Mallet \u00B7 13 dmg"
       },
       "Program": {
         "Id": {
           "Value": "(unnamed)"
         },
         "Root": {
-          "kind": "node.sequence",
+          "kind": "node.dealDamage",
           "value": {
-            "Children": [
-              {
-                "kind": "node.dealDamage",
-                "value": {
-                  "TargetSelector": {
-                    "kind": "sel.eventTarget",
-                    "value": {
-                      "Cardinality": "ZeroOrOne",
-                      "RequiredContextCapabilities": "EventTarget"
-                    }
-                  },
-                  "Amount": {
-                    "kind": "const",
-                    "value": {
-                      "Value": 4
-                    }
-                  },
-                  "ResultKey": null,
-                  "IgnoresBlock": false,
-                  "Element": null,
-                  "Children": []
-                }
-              },
-              {
-                "kind": "node.gainBlock",
-                "value": {
-                  "TargetSelector": {
-                    "kind": "sel.source",
-                    "value": {
-                      "Cardinality": "ZeroOrOne",
-                      "RequiredContextCapabilities": "Source"
-                    }
-                  },
-                  "Amount": {
-                    "kind": "const",
-                    "value": {
-                      "Value": 6
-                    }
-                  },
-                  "ResultKey": null,
-                  "Children": []
-                }
+            "TargetSelector": {
+              "kind": "sel.eventTarget",
+              "value": {
+                "Cardinality": "ZeroOrOne",
+                "RequiredContextCapabilities": "EventTarget"
               }
-            ]
+            },
+            "Amount": {
+              "kind": "const",
+              "value": {
+                "Value": 13
+              }
+            },
+            "ResultKey": null,
+            "IgnoresBlock": false,
+            "Element": null,
+            "Children": []
           }
         },
         "MaxNodeDepth": 64,
@@ -36136,7 +36161,7 @@
       "DescriptionKey": null,
       "Intent": {
         "Kind": "Attack",
-        "Label": "Barred Slam \u00B7 7 dmg"
+        "Label": "Barred Slam \u00B7 13 dmg"
       },
       "Program": {
         "Id": {
@@ -36155,7 +36180,7 @@
             "Amount": {
               "kind": "const",
               "value": {
-                "Value": 7
+                "Value": 13
               }
             },
             "ResultKey": null,
@@ -36175,7 +36200,7 @@
       "DescriptionKey": null,
       "Intent": {
         "Kind": "Defend",
-        "Label": "Seven Wax Seals \u00B7 13 block"
+        "Label": "Seven Wax Seals \u00B7 14 block"
       },
       "Program": {
         "Id": {
@@ -36194,7 +36219,7 @@
             "Amount": {
               "kind": "const",
               "value": {
-                "Value": 13
+                "Value": 14
               }
             },
             "ResultKey": null,
@@ -36212,7 +36237,7 @@
       "DescriptionKey": null,
       "Intent": {
         "Kind": "Special",
-        "Label": "Sealed Threshold \u00B7 Paperwork \u002B1, 7 block"
+        "Label": "Sealed Threshold \u00B7 Paperwork \u002B1, 8 block"
       },
       "Program": {
         "Id": {
@@ -36260,7 +36285,7 @@
                   "Amount": {
                     "kind": "const",
                     "value": {
-                      "Value": 7
+                      "Value": 8
                     }
                   },
                   "ResultKey": null,
@@ -61118,6 +61143,1332 @@
           "Pipeline": "DamageReceived",
           "Operation": "ScalePercent",
           "Magnitude": 75,
+          "Priority": 100,
+          "RestrictDamageKind": "Direct",
+          "AppliesToStatusId": null
+        }
+      ],
+      "Triggers": [],
+      "DeathPrevention": null,
+      "DebuffBlock": null
+    },
+    {
+      "Id": "paper_seals_wax",
+      "PackageId": "scenario",
+      "NameKey": "Paper Seals Wax",
+      "DescriptionKey": null,
+      "Polarity": "Neutral",
+      "UsesStacks": false,
+      "UsesDuration": false,
+      "UsesCharges": false,
+      "StackingBehavior": "MergeWithExistingInstance",
+      "Tags": [],
+      "PassiveModifiers": [],
+      "Triggers": [
+        {
+          "Event": "StatusApplied",
+          "Program": {
+            "Id": {
+              "Value": "(unnamed)"
+            },
+            "Root": {
+              "kind": "node.sequence",
+              "value": {
+                "Children": [
+                  {
+                    "kind": "node.conditional",
+                    "value": {
+                      "Condition": {
+                        "kind": "and",
+                        "value": {
+                          "Left": {
+                            "kind": "compare",
+                            "value": {
+                              "Left": {
+                                "kind": "combatantStatusStacks",
+                                "value": {
+                                  "Selector": {
+                                    "kind": "sel.eventTarget",
+                                    "value": {
+                                      "Cardinality": "ZeroOrOne",
+                                      "RequiredContextCapabilities": "EventTarget"
+                                    }
+                                  },
+                                  "StatusId": {
+                                    "value": "paperwork"
+                                  }
+                                }
+                              },
+                              "Op": "Greater",
+                              "Right": {
+                                "kind": "combatantCounter",
+                                "value": {
+                                  "Selector": {
+                                    "kind": "sel.eventTarget",
+                                    "value": {
+                                      "Cardinality": "ZeroOrOne",
+                                      "RequiredContextCapabilities": "EventTarget"
+                                    }
+                                  },
+                                  "CounterId": {
+                                    "value": "seen_paperwork"
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "Right": {
+                            "kind": "compare",
+                            "value": {
+                              "Left": {
+                                "kind": "combatantCounter",
+                                "value": {
+                                  "Selector": {
+                                    "kind": "sel.eventTarget",
+                                    "value": {
+                                      "Cardinality": "ZeroOrOne",
+                                      "RequiredContextCapabilities": "EventTarget"
+                                    }
+                                  },
+                                  "CounterId": {
+                                    "value": "wax_sealed_this_turn"
+                                  }
+                                }
+                              },
+                              "Op": "Equal",
+                              "Right": {
+                                "kind": "const",
+                                "value": {
+                                  "Value": 0
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "Then": {
+                        "kind": "node.sequence",
+                        "value": {
+                          "Children": [
+                            {
+                              "kind": "node.gainBlock",
+                              "value": {
+                                "TargetSelector": {
+                                  "kind": "sel.eventTarget",
+                                  "value": {
+                                    "Cardinality": "ZeroOrOne",
+                                    "RequiredContextCapabilities": "EventTarget"
+                                  }
+                                },
+                                "Amount": {
+                                  "kind": "const",
+                                  "value": {
+                                    "Value": 5
+                                  }
+                                },
+                                "ResultKey": null,
+                                "Children": []
+                              }
+                            },
+                            {
+                              "kind": "node.setCombatantCounter",
+                              "value": {
+                                "TargetSelector": {
+                                  "kind": "sel.eventTarget",
+                                  "value": {
+                                    "Cardinality": "ZeroOrOne",
+                                    "RequiredContextCapabilities": "EventTarget"
+                                  }
+                                },
+                                "CounterId": {
+                                  "value": "wax_sealed_this_turn"
+                                },
+                                "Amount": {
+                                  "kind": "const",
+                                  "value": {
+                                    "Value": 1
+                                  }
+                                },
+                                "Relative": false,
+                                "Children": []
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      "Else": null,
+                      "Children": [
+                        {
+                          "kind": "node.sequence",
+                          "value": {
+                            "Children": [
+                              {
+                                "kind": "node.gainBlock",
+                                "value": {
+                                  "TargetSelector": {
+                                    "kind": "sel.eventTarget",
+                                    "value": {
+                                      "Cardinality": "ZeroOrOne",
+                                      "RequiredContextCapabilities": "EventTarget"
+                                    }
+                                  },
+                                  "Amount": {
+                                    "kind": "const",
+                                    "value": {
+                                      "Value": 5
+                                    }
+                                  },
+                                  "ResultKey": null,
+                                  "Children": []
+                                }
+                              },
+                              {
+                                "kind": "node.setCombatantCounter",
+                                "value": {
+                                  "TargetSelector": {
+                                    "kind": "sel.eventTarget",
+                                    "value": {
+                                      "Cardinality": "ZeroOrOne",
+                                      "RequiredContextCapabilities": "EventTarget"
+                                    }
+                                  },
+                                  "CounterId": {
+                                    "value": "wax_sealed_this_turn"
+                                  },
+                                  "Amount": {
+                                    "kind": "const",
+                                    "value": {
+                                      "Value": 1
+                                    }
+                                  },
+                                  "Relative": false,
+                                  "Children": []
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "kind": "node.setCombatantCounter",
+                    "value": {
+                      "TargetSelector": {
+                        "kind": "sel.eventTarget",
+                        "value": {
+                          "Cardinality": "ZeroOrOne",
+                          "RequiredContextCapabilities": "EventTarget"
+                        }
+                      },
+                      "CounterId": {
+                        "value": "seen_paperwork"
+                      },
+                      "Amount": {
+                        "kind": "combatantStatusStacks",
+                        "value": {
+                          "Selector": {
+                            "kind": "sel.eventTarget",
+                            "value": {
+                              "Cardinality": "ZeroOrOne",
+                              "RequiredContextCapabilities": "EventTarget"
+                            }
+                          },
+                          "StatusId": {
+                            "value": "paperwork"
+                          }
+                        }
+                      },
+                      "Relative": false,
+                      "Children": []
+                    }
+                  }
+                ]
+              }
+            },
+            "MaxNodeDepth": 64,
+            "MaxProgramSteps": 1024
+          }
+        },
+        {
+          "Event": "StatusMerged",
+          "Program": {
+            "Id": {
+              "Value": "(unnamed)"
+            },
+            "Root": {
+              "kind": "node.sequence",
+              "value": {
+                "Children": [
+                  {
+                    "kind": "node.conditional",
+                    "value": {
+                      "Condition": {
+                        "kind": "and",
+                        "value": {
+                          "Left": {
+                            "kind": "compare",
+                            "value": {
+                              "Left": {
+                                "kind": "combatantStatusStacks",
+                                "value": {
+                                  "Selector": {
+                                    "kind": "sel.eventTarget",
+                                    "value": {
+                                      "Cardinality": "ZeroOrOne",
+                                      "RequiredContextCapabilities": "EventTarget"
+                                    }
+                                  },
+                                  "StatusId": {
+                                    "value": "paperwork"
+                                  }
+                                }
+                              },
+                              "Op": "Greater",
+                              "Right": {
+                                "kind": "combatantCounter",
+                                "value": {
+                                  "Selector": {
+                                    "kind": "sel.eventTarget",
+                                    "value": {
+                                      "Cardinality": "ZeroOrOne",
+                                      "RequiredContextCapabilities": "EventTarget"
+                                    }
+                                  },
+                                  "CounterId": {
+                                    "value": "seen_paperwork"
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "Right": {
+                            "kind": "compare",
+                            "value": {
+                              "Left": {
+                                "kind": "combatantCounter",
+                                "value": {
+                                  "Selector": {
+                                    "kind": "sel.eventTarget",
+                                    "value": {
+                                      "Cardinality": "ZeroOrOne",
+                                      "RequiredContextCapabilities": "EventTarget"
+                                    }
+                                  },
+                                  "CounterId": {
+                                    "value": "wax_sealed_this_turn"
+                                  }
+                                }
+                              },
+                              "Op": "Equal",
+                              "Right": {
+                                "kind": "const",
+                                "value": {
+                                  "Value": 0
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "Then": {
+                        "kind": "node.sequence",
+                        "value": {
+                          "Children": [
+                            {
+                              "kind": "node.gainBlock",
+                              "value": {
+                                "TargetSelector": {
+                                  "kind": "sel.eventTarget",
+                                  "value": {
+                                    "Cardinality": "ZeroOrOne",
+                                    "RequiredContextCapabilities": "EventTarget"
+                                  }
+                                },
+                                "Amount": {
+                                  "kind": "const",
+                                  "value": {
+                                    "Value": 5
+                                  }
+                                },
+                                "ResultKey": null,
+                                "Children": []
+                              }
+                            },
+                            {
+                              "kind": "node.setCombatantCounter",
+                              "value": {
+                                "TargetSelector": {
+                                  "kind": "sel.eventTarget",
+                                  "value": {
+                                    "Cardinality": "ZeroOrOne",
+                                    "RequiredContextCapabilities": "EventTarget"
+                                  }
+                                },
+                                "CounterId": {
+                                  "value": "wax_sealed_this_turn"
+                                },
+                                "Amount": {
+                                  "kind": "const",
+                                  "value": {
+                                    "Value": 1
+                                  }
+                                },
+                                "Relative": false,
+                                "Children": []
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      "Else": null,
+                      "Children": [
+                        {
+                          "kind": "node.sequence",
+                          "value": {
+                            "Children": [
+                              {
+                                "kind": "node.gainBlock",
+                                "value": {
+                                  "TargetSelector": {
+                                    "kind": "sel.eventTarget",
+                                    "value": {
+                                      "Cardinality": "ZeroOrOne",
+                                      "RequiredContextCapabilities": "EventTarget"
+                                    }
+                                  },
+                                  "Amount": {
+                                    "kind": "const",
+                                    "value": {
+                                      "Value": 5
+                                    }
+                                  },
+                                  "ResultKey": null,
+                                  "Children": []
+                                }
+                              },
+                              {
+                                "kind": "node.setCombatantCounter",
+                                "value": {
+                                  "TargetSelector": {
+                                    "kind": "sel.eventTarget",
+                                    "value": {
+                                      "Cardinality": "ZeroOrOne",
+                                      "RequiredContextCapabilities": "EventTarget"
+                                    }
+                                  },
+                                  "CounterId": {
+                                    "value": "wax_sealed_this_turn"
+                                  },
+                                  "Amount": {
+                                    "kind": "const",
+                                    "value": {
+                                      "Value": 1
+                                    }
+                                  },
+                                  "Relative": false,
+                                  "Children": []
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "kind": "node.setCombatantCounter",
+                    "value": {
+                      "TargetSelector": {
+                        "kind": "sel.eventTarget",
+                        "value": {
+                          "Cardinality": "ZeroOrOne",
+                          "RequiredContextCapabilities": "EventTarget"
+                        }
+                      },
+                      "CounterId": {
+                        "value": "seen_paperwork"
+                      },
+                      "Amount": {
+                        "kind": "combatantStatusStacks",
+                        "value": {
+                          "Selector": {
+                            "kind": "sel.eventTarget",
+                            "value": {
+                              "Cardinality": "ZeroOrOne",
+                              "RequiredContextCapabilities": "EventTarget"
+                            }
+                          },
+                          "StatusId": {
+                            "value": "paperwork"
+                          }
+                        }
+                      },
+                      "Relative": false,
+                      "Children": []
+                    }
+                  }
+                ]
+              }
+            },
+            "MaxNodeDepth": 64,
+            "MaxProgramSteps": 1024
+          }
+        },
+        {
+          "Event": "StatusStacksChanged",
+          "Program": {
+            "Id": {
+              "Value": "(unnamed)"
+            },
+            "Root": {
+              "kind": "node.sequence",
+              "value": {
+                "Children": [
+                  {
+                    "kind": "node.conditional",
+                    "value": {
+                      "Condition": {
+                        "kind": "and",
+                        "value": {
+                          "Left": {
+                            "kind": "compare",
+                            "value": {
+                              "Left": {
+                                "kind": "combatantStatusStacks",
+                                "value": {
+                                  "Selector": {
+                                    "kind": "sel.eventTarget",
+                                    "value": {
+                                      "Cardinality": "ZeroOrOne",
+                                      "RequiredContextCapabilities": "EventTarget"
+                                    }
+                                  },
+                                  "StatusId": {
+                                    "value": "paperwork"
+                                  }
+                                }
+                              },
+                              "Op": "Greater",
+                              "Right": {
+                                "kind": "combatantCounter",
+                                "value": {
+                                  "Selector": {
+                                    "kind": "sel.eventTarget",
+                                    "value": {
+                                      "Cardinality": "ZeroOrOne",
+                                      "RequiredContextCapabilities": "EventTarget"
+                                    }
+                                  },
+                                  "CounterId": {
+                                    "value": "seen_paperwork"
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "Right": {
+                            "kind": "compare",
+                            "value": {
+                              "Left": {
+                                "kind": "combatantCounter",
+                                "value": {
+                                  "Selector": {
+                                    "kind": "sel.eventTarget",
+                                    "value": {
+                                      "Cardinality": "ZeroOrOne",
+                                      "RequiredContextCapabilities": "EventTarget"
+                                    }
+                                  },
+                                  "CounterId": {
+                                    "value": "wax_sealed_this_turn"
+                                  }
+                                }
+                              },
+                              "Op": "Equal",
+                              "Right": {
+                                "kind": "const",
+                                "value": {
+                                  "Value": 0
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "Then": {
+                        "kind": "node.sequence",
+                        "value": {
+                          "Children": [
+                            {
+                              "kind": "node.gainBlock",
+                              "value": {
+                                "TargetSelector": {
+                                  "kind": "sel.eventTarget",
+                                  "value": {
+                                    "Cardinality": "ZeroOrOne",
+                                    "RequiredContextCapabilities": "EventTarget"
+                                  }
+                                },
+                                "Amount": {
+                                  "kind": "const",
+                                  "value": {
+                                    "Value": 5
+                                  }
+                                },
+                                "ResultKey": null,
+                                "Children": []
+                              }
+                            },
+                            {
+                              "kind": "node.setCombatantCounter",
+                              "value": {
+                                "TargetSelector": {
+                                  "kind": "sel.eventTarget",
+                                  "value": {
+                                    "Cardinality": "ZeroOrOne",
+                                    "RequiredContextCapabilities": "EventTarget"
+                                  }
+                                },
+                                "CounterId": {
+                                  "value": "wax_sealed_this_turn"
+                                },
+                                "Amount": {
+                                  "kind": "const",
+                                  "value": {
+                                    "Value": 1
+                                  }
+                                },
+                                "Relative": false,
+                                "Children": []
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      "Else": null,
+                      "Children": [
+                        {
+                          "kind": "node.sequence",
+                          "value": {
+                            "Children": [
+                              {
+                                "kind": "node.gainBlock",
+                                "value": {
+                                  "TargetSelector": {
+                                    "kind": "sel.eventTarget",
+                                    "value": {
+                                      "Cardinality": "ZeroOrOne",
+                                      "RequiredContextCapabilities": "EventTarget"
+                                    }
+                                  },
+                                  "Amount": {
+                                    "kind": "const",
+                                    "value": {
+                                      "Value": 5
+                                    }
+                                  },
+                                  "ResultKey": null,
+                                  "Children": []
+                                }
+                              },
+                              {
+                                "kind": "node.setCombatantCounter",
+                                "value": {
+                                  "TargetSelector": {
+                                    "kind": "sel.eventTarget",
+                                    "value": {
+                                      "Cardinality": "ZeroOrOne",
+                                      "RequiredContextCapabilities": "EventTarget"
+                                    }
+                                  },
+                                  "CounterId": {
+                                    "value": "wax_sealed_this_turn"
+                                  },
+                                  "Amount": {
+                                    "kind": "const",
+                                    "value": {
+                                      "Value": 1
+                                    }
+                                  },
+                                  "Relative": false,
+                                  "Children": []
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "kind": "node.setCombatantCounter",
+                    "value": {
+                      "TargetSelector": {
+                        "kind": "sel.eventTarget",
+                        "value": {
+                          "Cardinality": "ZeroOrOne",
+                          "RequiredContextCapabilities": "EventTarget"
+                        }
+                      },
+                      "CounterId": {
+                        "value": "seen_paperwork"
+                      },
+                      "Amount": {
+                        "kind": "combatantStatusStacks",
+                        "value": {
+                          "Selector": {
+                            "kind": "sel.eventTarget",
+                            "value": {
+                              "Cardinality": "ZeroOrOne",
+                              "RequiredContextCapabilities": "EventTarget"
+                            }
+                          },
+                          "StatusId": {
+                            "value": "paperwork"
+                          }
+                        }
+                      },
+                      "Relative": false,
+                      "Children": []
+                    }
+                  }
+                ]
+              }
+            },
+            "MaxNodeDepth": 64,
+            "MaxProgramSteps": 1024
+          }
+        },
+        {
+          "Event": "StatusRemoved",
+          "Program": {
+            "Id": {
+              "Value": "(unnamed)"
+            },
+            "Root": {
+              "kind": "node.sequence",
+              "value": {
+                "Children": [
+                  {
+                    "kind": "node.conditional",
+                    "value": {
+                      "Condition": {
+                        "kind": "and",
+                        "value": {
+                          "Left": {
+                            "kind": "compare",
+                            "value": {
+                              "Left": {
+                                "kind": "combatantStatusStacks",
+                                "value": {
+                                  "Selector": {
+                                    "kind": "sel.eventTarget",
+                                    "value": {
+                                      "Cardinality": "ZeroOrOne",
+                                      "RequiredContextCapabilities": "EventTarget"
+                                    }
+                                  },
+                                  "StatusId": {
+                                    "value": "paperwork"
+                                  }
+                                }
+                              },
+                              "Op": "Greater",
+                              "Right": {
+                                "kind": "combatantCounter",
+                                "value": {
+                                  "Selector": {
+                                    "kind": "sel.eventTarget",
+                                    "value": {
+                                      "Cardinality": "ZeroOrOne",
+                                      "RequiredContextCapabilities": "EventTarget"
+                                    }
+                                  },
+                                  "CounterId": {
+                                    "value": "seen_paperwork"
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "Right": {
+                            "kind": "compare",
+                            "value": {
+                              "Left": {
+                                "kind": "combatantCounter",
+                                "value": {
+                                  "Selector": {
+                                    "kind": "sel.eventTarget",
+                                    "value": {
+                                      "Cardinality": "ZeroOrOne",
+                                      "RequiredContextCapabilities": "EventTarget"
+                                    }
+                                  },
+                                  "CounterId": {
+                                    "value": "wax_sealed_this_turn"
+                                  }
+                                }
+                              },
+                              "Op": "Equal",
+                              "Right": {
+                                "kind": "const",
+                                "value": {
+                                  "Value": 0
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "Then": {
+                        "kind": "node.sequence",
+                        "value": {
+                          "Children": [
+                            {
+                              "kind": "node.gainBlock",
+                              "value": {
+                                "TargetSelector": {
+                                  "kind": "sel.eventTarget",
+                                  "value": {
+                                    "Cardinality": "ZeroOrOne",
+                                    "RequiredContextCapabilities": "EventTarget"
+                                  }
+                                },
+                                "Amount": {
+                                  "kind": "const",
+                                  "value": {
+                                    "Value": 5
+                                  }
+                                },
+                                "ResultKey": null,
+                                "Children": []
+                              }
+                            },
+                            {
+                              "kind": "node.setCombatantCounter",
+                              "value": {
+                                "TargetSelector": {
+                                  "kind": "sel.eventTarget",
+                                  "value": {
+                                    "Cardinality": "ZeroOrOne",
+                                    "RequiredContextCapabilities": "EventTarget"
+                                  }
+                                },
+                                "CounterId": {
+                                  "value": "wax_sealed_this_turn"
+                                },
+                                "Amount": {
+                                  "kind": "const",
+                                  "value": {
+                                    "Value": 1
+                                  }
+                                },
+                                "Relative": false,
+                                "Children": []
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      "Else": null,
+                      "Children": [
+                        {
+                          "kind": "node.sequence",
+                          "value": {
+                            "Children": [
+                              {
+                                "kind": "node.gainBlock",
+                                "value": {
+                                  "TargetSelector": {
+                                    "kind": "sel.eventTarget",
+                                    "value": {
+                                      "Cardinality": "ZeroOrOne",
+                                      "RequiredContextCapabilities": "EventTarget"
+                                    }
+                                  },
+                                  "Amount": {
+                                    "kind": "const",
+                                    "value": {
+                                      "Value": 5
+                                    }
+                                  },
+                                  "ResultKey": null,
+                                  "Children": []
+                                }
+                              },
+                              {
+                                "kind": "node.setCombatantCounter",
+                                "value": {
+                                  "TargetSelector": {
+                                    "kind": "sel.eventTarget",
+                                    "value": {
+                                      "Cardinality": "ZeroOrOne",
+                                      "RequiredContextCapabilities": "EventTarget"
+                                    }
+                                  },
+                                  "CounterId": {
+                                    "value": "wax_sealed_this_turn"
+                                  },
+                                  "Amount": {
+                                    "kind": "const",
+                                    "value": {
+                                      "Value": 1
+                                    }
+                                  },
+                                  "Relative": false,
+                                  "Children": []
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "kind": "node.setCombatantCounter",
+                    "value": {
+                      "TargetSelector": {
+                        "kind": "sel.eventTarget",
+                        "value": {
+                          "Cardinality": "ZeroOrOne",
+                          "RequiredContextCapabilities": "EventTarget"
+                        }
+                      },
+                      "CounterId": {
+                        "value": "seen_paperwork"
+                      },
+                      "Amount": {
+                        "kind": "combatantStatusStacks",
+                        "value": {
+                          "Selector": {
+                            "kind": "sel.eventTarget",
+                            "value": {
+                              "Cardinality": "ZeroOrOne",
+                              "RequiredContextCapabilities": "EventTarget"
+                            }
+                          },
+                          "StatusId": {
+                            "value": "paperwork"
+                          }
+                        }
+                      },
+                      "Relative": false,
+                      "Children": []
+                    }
+                  }
+                ]
+              }
+            },
+            "MaxNodeDepth": 64,
+            "MaxProgramSteps": 1024
+          }
+        },
+        {
+          "Event": "TurnEnded",
+          "Program": {
+            "Id": {
+              "Value": "(unnamed)"
+            },
+            "Root": {
+              "kind": "node.setCombatantCounter",
+              "value": {
+                "TargetSelector": {
+                  "kind": "sel.source",
+                  "value": {
+                    "Cardinality": "ZeroOrOne",
+                    "RequiredContextCapabilities": "Source"
+                  }
+                },
+                "CounterId": {
+                  "value": "wax_sealed_this_turn"
+                },
+                "Amount": {
+                  "kind": "const",
+                  "value": {
+                    "Value": 0
+                  }
+                },
+                "Relative": false,
+                "Children": []
+              }
+            },
+            "MaxNodeDepth": 64,
+            "MaxProgramSteps": 1024
+          }
+        }
+      ],
+      "DeathPrevention": null,
+      "DebuffBlock": null
+    },
+    {
+      "Id": "one_remaining_seal",
+      "PackageId": "scenario",
+      "NameKey": "One Remaining Seal",
+      "DescriptionKey": null,
+      "Polarity": "Buff",
+      "UsesStacks": true,
+      "UsesDuration": false,
+      "UsesCharges": false,
+      "StackingBehavior": "MergeWithExistingInstance",
+      "Tags": [],
+      "PassiveModifiers": [],
+      "Triggers": [
+        {
+          "Event": "DamageTaken",
+          "Program": {
+            "Id": {
+              "Value": "(unnamed)"
+            },
+            "Root": {
+              "kind": "node.sequence",
+              "value": {
+                "Children": [
+                  {
+                    "kind": "node.setCombatantCounter",
+                    "value": {
+                      "TargetSelector": {
+                        "kind": "sel.eventTarget",
+                        "value": {
+                          "Cardinality": "ZeroOrOne",
+                          "RequiredContextCapabilities": "EventTarget"
+                        }
+                      },
+                      "CounterId": {
+                        "value": "seal_damage_this_turn"
+                      },
+                      "Amount": {
+                        "kind": "eventAmount",
+                        "value": {}
+                      },
+                      "Relative": true,
+                      "Children": []
+                    }
+                  },
+                  {
+                    "kind": "node.modifyStatusStacks",
+                    "value": {
+                      "TargetSelector": {
+                        "kind": "sel.eventTarget",
+                        "value": {
+                          "Cardinality": "ZeroOrOne",
+                          "RequiredContextCapabilities": "EventTarget"
+                        }
+                      },
+                      "StatusDefinitionId": {
+                        "value": "seal_intact"
+                      },
+                      "Delta": {
+                        "kind": "const",
+                        "value": {
+                          "Value": -1
+                        }
+                      },
+                      "ResultKey": null,
+                      "Children": []
+                    }
+                  },
+                  {
+                    "kind": "node.conditional",
+                    "value": {
+                      "Condition": {
+                        "kind": "compare",
+                        "value": {
+                          "Left": {
+                            "kind": "add",
+                            "value": {
+                              "Left": {
+                                "kind": "combatantCounter",
+                                "value": {
+                                  "Selector": {
+                                    "kind": "sel.eventTarget",
+                                    "value": {
+                                      "Cardinality": "ZeroOrOne",
+                                      "RequiredContextCapabilities": "EventTarget"
+                                    }
+                                  },
+                                  "CounterId": {
+                                    "value": "seal_damage_this_turn"
+                                  }
+                                }
+                              },
+                              "Right": {
+                                "kind": "eventAmount",
+                                "value": {}
+                              }
+                            }
+                          },
+                          "Op": "GreaterOrEqual",
+                          "Right": {
+                            "kind": "const",
+                            "value": {
+                              "Value": 18
+                            }
+                          }
+                        }
+                      },
+                      "Then": {
+                        "kind": "node.sequence",
+                        "value": {
+                          "Children": [
+                            {
+                              "kind": "node.modifyStatusStacks",
+                              "value": {
+                                "TargetSelector": {
+                                  "kind": "sel.eventTarget",
+                                  "value": {
+                                    "Cardinality": "ZeroOrOne",
+                                    "RequiredContextCapabilities": "EventTarget"
+                                  }
+                                },
+                                "StatusDefinitionId": {
+                                  "value": "one_remaining_seal"
+                                },
+                                "Delta": {
+                                  "kind": "const",
+                                  "value": {
+                                    "Value": -1
+                                  }
+                                },
+                                "ResultKey": null,
+                                "Children": []
+                              }
+                            },
+                            {
+                              "kind": "node.dealDamage",
+                              "value": {
+                                "TargetSelector": {
+                                  "kind": "sel.eventTarget",
+                                  "value": {
+                                    "Cardinality": "ZeroOrOne",
+                                    "RequiredContextCapabilities": "EventTarget"
+                                  }
+                                },
+                                "Amount": {
+                                  "kind": "const",
+                                  "value": {
+                                    "Value": 6
+                                  }
+                                },
+                                "ResultKey": null,
+                                "IgnoresBlock": false,
+                                "Element": null,
+                                "Children": []
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      "Else": null,
+                      "Children": [
+                        {
+                          "kind": "node.sequence",
+                          "value": {
+                            "Children": [
+                              {
+                                "kind": "node.modifyStatusStacks",
+                                "value": {
+                                  "TargetSelector": {
+                                    "kind": "sel.eventTarget",
+                                    "value": {
+                                      "Cardinality": "ZeroOrOne",
+                                      "RequiredContextCapabilities": "EventTarget"
+                                    }
+                                  },
+                                  "StatusDefinitionId": {
+                                    "value": "one_remaining_seal"
+                                  },
+                                  "Delta": {
+                                    "kind": "const",
+                                    "value": {
+                                      "Value": -1
+                                    }
+                                  },
+                                  "ResultKey": null,
+                                  "Children": []
+                                }
+                              },
+                              {
+                                "kind": "node.dealDamage",
+                                "value": {
+                                  "TargetSelector": {
+                                    "kind": "sel.eventTarget",
+                                    "value": {
+                                      "Cardinality": "ZeroOrOne",
+                                      "RequiredContextCapabilities": "EventTarget"
+                                    }
+                                  },
+                                  "Amount": {
+                                    "kind": "const",
+                                    "value": {
+                                      "Value": 6
+                                    }
+                                  },
+                                  "ResultKey": null,
+                                  "IgnoresBlock": false,
+                                  "Element": null,
+                                  "Children": []
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            "MaxNodeDepth": 64,
+            "MaxProgramSteps": 1024
+          }
+        },
+        {
+          "Event": "TurnEnded",
+          "Program": {
+            "Id": {
+              "Value": "(unnamed)"
+            },
+            "Root": {
+              "kind": "node.sequence",
+              "value": {
+                "Children": [
+                  {
+                    "kind": "node.conditional",
+                    "value": {
+                      "Condition": {
+                        "kind": "compare",
+                        "value": {
+                          "Left": {
+                            "kind": "combatantStatusStacks",
+                            "value": {
+                              "Selector": {
+                                "kind": "sel.source",
+                                "value": {
+                                  "Cardinality": "ZeroOrOne",
+                                  "RequiredContextCapabilities": "Source"
+                                }
+                              },
+                              "StatusId": {
+                                "value": "seal_intact"
+                              }
+                            }
+                          },
+                          "Op": "Equal",
+                          "Right": {
+                            "kind": "const",
+                            "value": {
+                              "Value": 0
+                            }
+                          }
+                        }
+                      },
+                      "Then": {
+                        "kind": "node.applyStatus",
+                        "value": {
+                          "TargetSelector": {
+                            "kind": "sel.source",
+                            "value": {
+                              "Cardinality": "ZeroOrOne",
+                              "RequiredContextCapabilities": "Source"
+                            }
+                          },
+                          "StatusDefinitionId": {
+                            "value": "seal_intact"
+                          },
+                          "Stacks": {
+                            "kind": "const",
+                            "value": {
+                              "Value": 1
+                            }
+                          },
+                          "DurationTurns": 0,
+                          "Charges": 0,
+                          "ResultKey": null,
+                          "Children": []
+                        }
+                      },
+                      "Else": null,
+                      "Children": [
+                        {
+                          "kind": "node.applyStatus",
+                          "value": {
+                            "TargetSelector": {
+                              "kind": "sel.source",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "Source"
+                              }
+                            },
+                            "StatusDefinitionId": {
+                              "value": "seal_intact"
+                            },
+                            "Stacks": {
+                              "kind": "const",
+                              "value": {
+                                "Value": 1
+                              }
+                            },
+                            "DurationTurns": 0,
+                            "Charges": 0,
+                            "ResultKey": null,
+                            "Children": []
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "kind": "node.setCombatantCounter",
+                    "value": {
+                      "TargetSelector": {
+                        "kind": "sel.source",
+                        "value": {
+                          "Cardinality": "ZeroOrOne",
+                          "RequiredContextCapabilities": "Source"
+                        }
+                      },
+                      "CounterId": {
+                        "value": "seal_damage_this_turn"
+                      },
+                      "Amount": {
+                        "kind": "const",
+                        "value": {
+                          "Value": 0
+                        }
+                      },
+                      "Relative": false,
+                      "Children": []
+                    }
+                  }
+                ]
+              }
+            },
+            "MaxNodeDepth": 64,
+            "MaxProgramSteps": 1024
+          }
+        }
+      ],
+      "DeathPrevention": null,
+      "DebuffBlock": null
+    },
+    {
+      "Id": "seal_intact",
+      "PackageId": "scenario",
+      "NameKey": "Seal Intact",
+      "DescriptionKey": null,
+      "Polarity": "Buff",
+      "UsesStacks": true,
+      "UsesDuration": false,
+      "UsesCharges": false,
+      "StackingBehavior": "MergeWithExistingInstance",
+      "Tags": [],
+      "PassiveModifiers": [
+        {
+          "Pipeline": "DamageReceived",
+          "Operation": "AddFlat",
+          "Magnitude": -4,
           "Priority": 100,
           "RestrictDamageKind": "Direct",
           "AppliesToStatusId": null
