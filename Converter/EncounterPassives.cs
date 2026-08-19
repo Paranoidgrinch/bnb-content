@@ -25,8 +25,50 @@ public static class EncounterPassives
         "old_statute_ghost" => StillInForce(),
         "inverted_hourglass" => StolenSand(),
         "minute_moth" => [StolenMinute()],
+        "sustaining_gavel" => [Sustained()],
         _ => Array.Empty<EncounterTriggerData>(),
     };
+
+    // "Sustained" (Sustaining Gavel): the first time each round ANOTHER living enemy gains Block, the Gavel
+    // copies half of it, rounded down. Same shape as the Oath Candle's Witness the Seal — the loop over
+    // `alliesWithStatus(sustained)` is the "is the Gavel here / is the gainer on its side" gate and the handle
+    // on the latch holder — but the Gavel guards ITSELF instead of topping the other body up, and the gainer
+    // carrying the marker is the "no recursion" clause.
+    private static EncounterTriggerData Sustained()
+    {
+        var marker = new StatusDefinitionId(PassiveStatuses.SustainedId);
+        var gainer = CombatantTargetSelectors.EventTarget;
+        var gavel = CombatantTargetSelectors.IterationTarget;
+
+        var body = new ConditionalEffectNode<BlockGainedTriggeredEffectContext>(
+            new AndExpression<BlockGainedTriggeredEffectContext>(
+                new ComparisonExpression<BlockGainedTriggeredEffectContext>(
+                    new CombatantStatusStacksExpression<BlockGainedTriggeredEffectContext>(gainer, marker),
+                    ComparisonOperator.Equal,
+                    new ConstantExpression<BlockGainedTriggeredEffectContext>(0)),
+                new ComparisonExpression<BlockGainedTriggeredEffectContext>(
+                    new CombatantCounterExpression<BlockGainedTriggeredEffectContext>(
+                        gavel, PassiveStatuses.SustainedThisRoundCounter),
+                    ComparisonOperator.Equal,
+                    new ConstantExpression<BlockGainedTriggeredEffectContext>(0))),
+            new SequenceEffectNode<BlockGainedTriggeredEffectContext>(new IEffectNode<BlockGainedTriggeredEffectContext>[]
+            {
+                new GainBlockNode<BlockGainedTriggeredEffectContext>(gavel,
+                    new DivideExpression<BlockGainedTriggeredEffectContext>(
+                        new EventAmountExpression<BlockGainedTriggeredEffectContext>(),
+                        new ConstantExpression<BlockGainedTriggeredEffectContext>(2))),
+                new SetCombatantCounterNode<BlockGainedTriggeredEffectContext>(
+                    gavel, PassiveStatuses.SustainedThisRoundCounter,
+                    new ConstantExpression<BlockGainedTriggeredEffectContext>(1), relative: false),
+            }));
+
+        var program = new EffectProgram<BlockGainedTriggeredEffectContext>(
+            new ForEachTargetEffectNode<BlockGainedTriggeredEffectContext>(
+                CombatantTargetSelectors.AllAlliesOfSourceWithStatus(marker), body));
+
+        return new EncounterTriggerData("BlockGained",
+            JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<BlockGainedTriggeredEffectContext>()));
+    }
 
     // "Stolen Sand" (Inverted Hourglass): whenever Fatigue actually costs the player Energy, the Hourglass
     // banks a grain, up to 3. Fatigue spends exactly one stack when it fires (StatusMapper), so a DROP in the

@@ -417,6 +417,53 @@ public class EnemySignatureCombatTests
         Assert.Null(session.Error);
     }
 
+    // Counterclaim Imp, "Counterclaim": the first status the player files on it each turn is answered with 1
+    // Paperwork; further filings that turn are not.
+    [Fact]
+    public void The_counterclaim_imp_answers_the_first_filing_of_each_turn()
+    {
+        var probe = FightProbe.Solo("counterclaim_imp", "countersuit");
+        var (play, session, impId) = FightProbe.Start(probe, Enumerable.Repeat("form_12_b", 10).ToList());
+
+        File(play, session, impId);
+        Assert.Equal(1, FightProbe.StacksOf(Hero(play), "paperwork")); // answered
+        File(play, session, impId);
+        Assert.Equal(1, FightProbe.StacksOf(Hero(play), "paperwork")); // same turn: no second answer
+
+        play.CombatDriver!.EndTurn();
+        Assert.Null(session.Error);
+        var afterTick = FightProbe.StacksOf(Hero(play), "paperwork");
+
+        File(play, session, impId); // a new player turn re-arms the counterclaim
+        Assert.Equal(afterTick + 1, FightProbe.StacksOf(Hero(play), "paperwork"));
+    }
+
+    // Sustaining Gavel, "Sustained": the first Block another enemy gains each round is copied at half, rounded
+    // down. The Gavel is never a solo — there would be nothing to sustain.
+    [Fact]
+    public void The_gavel_copies_half_of_an_allys_first_block_each_round()
+    {
+        // Roster order is turn order, and Block clears at its owner's turn start — so the Gavel is fielded
+        // FIRST (as its encounter does), otherwise the copy it makes during the Imp's turn is wiped moments
+        // later by its own.
+        var probe = FightProbe.Roster("sustained",
+            ("sustaining_gavel", "sustained_strike", 30),
+            ("counterclaim_imp", "spiteful_filing", 33)); // 8 Block for itself
+        var (play, session, _) = FightProbe.Start(probe);
+
+        var combat = play.CombatDriver!.Current!;
+        var impId = combat.State.Combatants.First(c => c.Id.value.StartsWith("counterclaim_imp")).Id;
+        var gavelId = combat.State.Combatants.First(c => c.Id.value.StartsWith("sustaining_gavel")).Id;
+        Assert.Equal(33, combat.State.GetCombatant(impId).Health.Current);
+        Assert.Equal(30, combat.State.GetCombatant(gavelId).Health.Current);
+
+        play.CombatDriver.EndTurn();
+        Assert.Null(session.Error);
+
+        Assert.Equal(8, BlockOf(play, impId));
+        Assert.Equal(4, BlockOf(play, gavelId)); // half of the Imp's 8, and none of its own to copy
+    }
+
     private static CombatantState Hero(RunPlayback play) =>
         play.CombatDriver!.Current!.State.GetCombatant(play.CombatDriver.Current!.HeroId);
 

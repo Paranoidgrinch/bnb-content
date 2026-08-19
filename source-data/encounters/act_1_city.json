@@ -1424,12 +1424,16 @@
   },
   {
     "id": "city_normal_appeal_07",
-    "name": "Objection Sustained",
+    "name": "Sustained Counterclaim",
     "act": 1,
     "difficulty": "normal",
     "enemies": [
-      "objection_sprite",
-      "sustaining_gavel"
+      "sustaining_gavel",
+      "counterclaim_imp"
+    ],
+    "enemy_health": [
+      30,
+      33
     ],
     "weight": 2,
     "tags": [
