@@ -196,12 +196,16 @@
   },
   {
     "id": "city_normal_enforcement_08",
-    "name": "The Gate Is Closed",
+    "name": "The Warrant Seizes the Docket",
     "act": 1,
     "difficulty": "normal",
     "enemies": [
-      "gatehouse_enforcer",
+      "warrant_bailiff",
       "threshold_seizure_ward"
+    ],
+    "enemy_health": [
+      43,
+      45
     ],
     "weight": 2,
     "tags": [
@@ -1016,12 +1020,16 @@
   },
   {
     "id": "city_normal_seal_07",
-    "name": "Seal and Witness",
+    "name": "Certified Pest Control",
     "act": 1,
     "difficulty": "normal",
     "enemies": [
-      "wax_notary",
-      "seal_witness"
+      "duplicate_copy_mite",
+      "wax_notary"
+    ],
+    "enemy_health": [
+      26,
+      34
     ],
     "weight": 2,
     "tags": [

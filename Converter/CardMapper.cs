@@ -110,9 +110,21 @@ public static class EffectMapper
                     : Sel())),
 
             // set_counter: write a per-fight track (Queue Position, …). relative (default true) adds; else sets.
-            "set_counter" => new CombatNodeModel("setCombatantCounter", Sel(), CombatAmountSpec.FromConst(Amount()),
-                CounterId: effect.Counter ?? throw new ConversionException(where, "set_counter without counter"),
-                Relative: effect.Relative ?? true),
+            // With a cap, the add is rewritten as an absolute min(current + amount, cap) — tracks like Momentum
+            // that fill to a ceiling.
+            "set_counter" => effect.Cap is { } counterCap
+                ? new CombatNodeModel("setCombatantCounter", Sel(),
+                    CombatAmountSpec.Binary("min",
+                        CombatAmountSpec.Binary("add",
+                            CombatAmountSpec.Counter(Sel(),
+                                effect.Counter ?? throw new ConversionException(where, "set_counter without counter")),
+                            CombatAmountSpec.FromConst(Amount())),
+                        CombatAmountSpec.FromConst(counterCap)),
+                    CounterId: effect.Counter!,
+                    Relative: false)
+                : new CombatNodeModel("setCombatantCounter", Sel(), CombatAmountSpec.FromConst(Amount()),
+                    CounterId: effect.Counter ?? throw new ConversionException(where, "set_counter without counter"),
+                    Relative: effect.Relative ?? true),
 
             // damage = amount (base) + min(counter × amount_per_stack, cap?) — the counter counterpart of
             // damage_per_status, for tracks an enemy keeps on itself (Stolen Sand).

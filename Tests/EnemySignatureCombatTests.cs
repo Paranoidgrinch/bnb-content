@@ -493,6 +493,125 @@ public class EnemySignatureCombatTests
         Assert.Null(session.Error);
     }
 
+    // Warrant Bailiff, "Outstanding Warrant": while the player is 4 Paperwork deep its attacks hit for 5 more.
+    // The Unsigned Form Ghost files 3 at a time, so the threshold is crossed in the second round.
+    [Fact]
+    public void The_bailiff_serves_the_warrant_once_the_player_is_four_deep_in_paperwork()
+    {
+        var probe = FightProbe.Roster("warrant",
+            ("warrant_bailiff", "serve_warrant", null),
+            ("unsigned_form_ghost", "missing_signature", null));
+        var (play, session, _) = FightProbe.Start(probe);
+
+        var combat = play.CombatDriver!.Current!;
+        var bailiffId = combat.State.Combatants.First(c => c.Id.value.StartsWith("warrant_bailiff")).Id;
+
+        play.CombatDriver.EndTurn(); // 13 damage, then 3 Paperwork filed — still under the threshold
+        Assert.Null(session.Error);
+        Assert.Equal(3, FightProbe.StacksOf(Hero(play), "paperwork"));
+        Assert.Equal(0, FightProbe.StacksOf(Enemy(play, bailiffId), "warrant_served"));
+
+        play.CombatDriver.EndTurn(); // another 3 → six deep: the warrant is served
+        Assert.Null(session.Error);
+        Assert.Equal(6, FightProbe.StacksOf(Hero(play), "paperwork"));
+        Assert.Equal(1, FightProbe.StacksOf(Enemy(play, bailiffId), "warrant_served"));
+
+        // Now it hits for 13 + 5 — plus the hero's own Paperwork ticking at the next turn start, by then nine
+        // deep because the Ghost files three more on its way out.
+        var before = Hero(play).Health.Current;
+        play.CombatDriver.EndTurn();
+        Assert.Null(session.Error);
+        Assert.Equal(before - 18 - 9, Hero(play).Health.Current);
+    }
+
+    // Threshold Seizure Ward, "Seize the Filing": the first Paperwork the player files on an enemy each round
+    // is turned against them — that enemy gains 1 Bookworm and erases the filing at its turn start.
+    [Fact]
+    public void The_ward_turns_the_first_filing_of_each_round_into_bookworm()
+    {
+        var probe = FightProbe.Solo("threshold_seizure_ward", "lawful_hold");
+        var (play, session, wardId) = FightProbe.Start(probe, Enumerable.Repeat("form_12_b", 10).ToList());
+
+        File(play, session, wardId);
+        Assert.Equal(1, FightProbe.StacksOf(Enemy(play, wardId), "paperwork"));
+        Assert.Equal(1, FightProbe.StacksOf(Enemy(play, wardId), "bookworm")); // seized
+
+        File(play, session, wardId); // same round: the seizure is spent
+        Assert.Equal(2, FightProbe.StacksOf(Enemy(play, wardId), "paperwork"));
+        Assert.Equal(1, FightProbe.StacksOf(Enemy(play, wardId), "bookworm"));
+
+        play.CombatDriver!.EndTurn(); // its turn: Bookworm erases one filing, the rest ticks
+        Assert.Null(session.Error);
+        Assert.Equal(0, FightProbe.StacksOf(Enemy(play, wardId), "bookworm"));
+        Assert.Equal(1, FightProbe.StacksOf(Enemy(play, wardId), "paperwork"));
+    }
+
+    // Civic Battering Ram: Momentum builds to 4, Ram the Case cashes it at 11 + 4 each, and breaking its guard
+    // costs it a Momentum — once per player turn.
+    [Fact]
+    public void The_rams_momentum_builds_cashes_and_can_be_broken()
+    {
+        var probe = FightProbe.Solo("civic_battering_ram", "build_momentum", energy: 9);
+        var (play, session, ramId) = FightProbe.Start(probe, Enumerable.Repeat("paper_cut", 10).ToList());
+
+        play.CombatDriver!.EndTurn(); // Build Momentum: +2 Momentum, 10 Block
+        Assert.Null(session.Error);
+        Assert.Equal(2, Enemy(play, ramId).GetCounter(PassiveStatuses.MomentumCounter));
+        Assert.Equal(10, BlockOf(play, ramId));
+
+        // Two Paper Cuts strip the 10 Block exactly; the second one breaks the approach.
+        Cut(play, session, ramId);
+        Assert.Equal(2, Enemy(play, ramId).GetCounter(PassiveStatuses.MomentumCounter));
+        Cut(play, session, ramId);
+        Assert.Equal(0, BlockOf(play, ramId));
+        Assert.Equal(1, Enemy(play, ramId).GetCounter(PassiveStatuses.MomentumCounter)); // broken
+
+        Cut(play, session, ramId); // once per player turn only
+        Assert.Equal(1, Enemy(play, ramId).GetCounter(PassiveStatuses.MomentumCounter));
+    }
+
+    // Number-Ticket Wisp, "Your Number Came Up": it burns out with the Panic it hands out — every stack that
+    // leaves the player through Panic's own decay costs the Wisp 4 HP.
+    [Fact]
+    public void The_wisp_burns_down_as_its_panic_decays()
+    {
+        var probe = FightProbe.Solo("number_ticket_wisp", "miscalled_number"); // 5 damage + 1 Panic
+
+        var (play, session, wispId) = FightProbe.Start(probe);
+
+        play.CombatDriver!.EndTurn(); // it files a Panic; nothing has decayed yet
+        Assert.Null(session.Error);
+        Assert.Equal(25, Enemy(play, wispId).Health.Current);
+        Assert.Equal(1, FightProbe.StacksOf(Hero(play), "panic"));
+
+        play.CombatDriver.EndTurn(); // that Panic decays at the hero's turn end → the Wisp loses 4
+        Assert.Null(session.Error);
+        Assert.Equal(21, Enemy(play, wispId).Health.Current);
+    }
+
+    // Duplicate Copy Mites, "Carbon Copies": the first time each round another enemy gains Bookworm, the Mites
+    // guard themselves for 4. Their own Spread Through the Binding hands the Notary one, which is exactly the
+    // point of their duo.
+    [Fact]
+    public void The_mites_guard_themselves_when_an_ally_gains_bookworm()
+    {
+        var probe = FightProbe.Roster("carbon",
+            ("duplicate_copy_mite", "spread_through_the_binding", 26),
+            ("wax_notary", "notarial_mallet", 34));
+        var (play, session, _) = FightProbe.Start(probe);
+
+        var combat = play.CombatDriver!.Current!;
+        var mitesId = combat.State.Combatants.First(c => c.Id.value.StartsWith("duplicate_copy_mite")).Id;
+        var notaryId = combat.State.Combatants.First(c => c.Id.value.StartsWith("wax_notary")).Id;
+
+        play.CombatDriver.EndTurn();
+        Assert.Null(session.Error);
+
+        Assert.Equal(1, FightProbe.StacksOf(Enemy(play, notaryId), "bookworm")); // the Notary is filed for
+        Assert.Equal(2, FightProbe.StacksOf(Enemy(play, mitesId), "bookworm"));  // the Mites keep the extra copy
+        Assert.Equal(4, BlockOf(play, mitesId));                                 // and guard themselves once
+    }
+
     private static CombatantState Hero(RunPlayback play) =>
         play.CombatDriver!.Current!.State.GetCombatant(play.CombatDriver.Current!.HeroId);
 

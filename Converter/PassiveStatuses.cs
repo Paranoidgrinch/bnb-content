@@ -65,7 +65,156 @@ public static class PassiveStatuses
         Sustained(),
         CorrectAgainstTheEvidence(),
         .. CardTypes.Select(Correction),
+        Marker(OutstandingWarrantId, "Outstanding Warrant"),
+        WarrantServed(),
+        SeizeTheFiling(),
+        BreakTheApproach(),
+        Marker(YourNumberCameUpId, "Your Number Came Up"),
+        CarbonCopies(),
     ];
+
+    // Duplicate Copy Mites: marker + the once-per-round latch, cleared at round end like its siblings.
+    public const string CarbonCopiesId = "carbon_copies";
+    public static readonly CounterId CopiedThisRoundCounter = new("copied_this_round");
+
+    private static StatusData CarbonCopies()
+    {
+        var carriers = CombatantTargetSelectors.WithStatus(
+            CombatantTargetSelectors.AllCombatants, new StatusDefinitionId(CarbonCopiesId));
+
+        var program = new EffectProgram<RoundEndedTriggeredEffectContext>(
+            new SetCombatantCounterNode<RoundEndedTriggeredEffectContext>(
+                carriers, CopiedThisRoundCounter,
+                new ConstantExpression<RoundEndedTriggeredEffectContext>(0), relative: false));
+
+        return Passive(CarbonCopiesId, "Carbon Copies", "RoundEnded", program);
+    }
+
+    // Number-Ticket Wisp: the marker its encounter trigger finds it by (the rule itself watches the PLAYER's
+    // Panic, so it lives on the encounter).
+    public const string YourNumberCameUpId = "your_number_came_up";
+
+    // The Ward's marker also clears its once-per-round latch at round end (RoundEnded triggers have no bearer
+    // filter, so the reset targets every carrier).
+    private static StatusData SeizeTheFiling()
+    {
+        var carriers = CombatantTargetSelectors.WithStatus(
+            CombatantTargetSelectors.AllCombatants, new StatusDefinitionId(SeizeTheFilingId));
+
+        var program = new EffectProgram<RoundEndedTriggeredEffectContext>(
+            new SetCombatantCounterNode<RoundEndedTriggeredEffectContext>(
+                carriers, SeizedThisRoundCounter,
+                new ConstantExpression<RoundEndedTriggeredEffectContext>(0), relative: false));
+
+        return Passive(SeizeTheFilingId, "Seize the Filing", "RoundEnded", program);
+    }
+
+    // Warrant Bailiff: the marker its watcher finds it by, and the buff the watcher switches on and off.
+    public const string OutstandingWarrantId = "outstanding_warrant";
+    public const string WarrantServedId = "warrant_served";
+
+    // Threshold Seizure Ward: marker + the once-per-round latch its encounter trigger reads.
+    public const string SeizeTheFilingId = "seize_the_filing";
+    public static readonly CounterId SeizedThisRoundCounter = new("seized_this_round");
+
+    // Civic Battering Ram: Momentum, plus the two bits of bookkeeping "Break the Approach" needs.
+    public const string BreakTheApproachId = "break_the_approach";
+    public static readonly CounterId MomentumCounter = new("momentum");
+    private static readonly CounterId HadBlockCounter = new("ram_had_block");
+    private static readonly CounterId ApproachBrokenCounter = new("approach_broken_this_turn");
+
+    // "Outstanding Warrant" is a plain buff the Bailiff wears while the player is 4 Paperwork deep — the
+    // watcher that switches it lives on the encounter (EncounterPassives), because the condition is about the
+    // PLAYER while the buff belongs to the enemy.
+    private static StatusData WarrantServed() => new()
+    {
+        Id = WarrantServedId,
+        NameKey = "Warrant Served",
+        Polarity = StatusPolarity.Buff,
+        StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
+        UsesStacks = true,
+        Tags = [],
+        PassiveModifiers =
+        [
+            new PassiveModifierData(PassiveModifierPipeline.DamageDealt,
+                PassiveModifierOperation.AddFlat, 5, RestrictDamageKind: DamageKind.Direct),
+        ],
+        Triggers = [],
+    };
+
+    // "Break the Approach" (Civic Battering Ram): the first time each player turn a card strips the Ram's Block
+    // away entirely, it loses a Momentum. "Entirely" needs to know the Block was there — the Ram remembers
+    // gaining it (BlockGained on itself) and forgets once the guard is broken.
+    private static StatusData BreakTheApproach()
+    {
+        var ram = CombatantTargetSelectors.EventTarget;
+
+        var onBlockGained = new EffectProgram<BlockGainedTriggeredEffectContext>(
+            new SetCombatantCounterNode<BlockGainedTriggeredEffectContext>(
+                ram, HadBlockCounter, new ConstantExpression<BlockGainedTriggeredEffectContext>(1), relative: false));
+
+        var onHit = new EffectProgram<DamageReceivedTriggeredEffectContext>(
+            new ConditionalEffectNode<DamageReceivedTriggeredEffectContext>(
+                new AndExpression<DamageReceivedTriggeredEffectContext>(
+                    new AndExpression<DamageReceivedTriggeredEffectContext>(
+                        // A guard that was there and is now gone…
+                        new ComparisonExpression<DamageReceivedTriggeredEffectContext>(
+                            new CombatantCounterExpression<DamageReceivedTriggeredEffectContext>(ram, HadBlockCounter),
+                            ComparisonOperator.Equal,
+                            new ConstantExpression<DamageReceivedTriggeredEffectContext>(1)),
+                        new ComparisonExpression<DamageReceivedTriggeredEffectContext>(
+                            new CombatantDefensivePoolExpression<DamageReceivedTriggeredEffectContext>(
+                                ram, StandardCombatIds.BlockDefensivePool),
+                            ComparisonOperator.Equal,
+                            new ConstantExpression<DamageReceivedTriggeredEffectContext>(0))),
+                    // …once per player turn.
+                    new ComparisonExpression<DamageReceivedTriggeredEffectContext>(
+                        new CombatantCounterExpression<DamageReceivedTriggeredEffectContext>(ram, ApproachBrokenCounter),
+                        ComparisonOperator.Equal,
+                        new ConstantExpression<DamageReceivedTriggeredEffectContext>(0))),
+                new SequenceEffectNode<DamageReceivedTriggeredEffectContext>(new IEffectNode<DamageReceivedTriggeredEffectContext>[]
+                {
+                    new SetCombatantCounterNode<DamageReceivedTriggeredEffectContext>(
+                        ram, MomentumCounter,
+                        new MaxExpression<DamageReceivedTriggeredEffectContext>(
+                            new SubtractExpression<DamageReceivedTriggeredEffectContext>(
+                                new CombatantCounterExpression<DamageReceivedTriggeredEffectContext>(ram, MomentumCounter),
+                                new ConstantExpression<DamageReceivedTriggeredEffectContext>(1)),
+                            new ConstantExpression<DamageReceivedTriggeredEffectContext>(0)),
+                        relative: false),
+                    new SetCombatantCounterNode<DamageReceivedTriggeredEffectContext>(
+                        ram, HadBlockCounter, new ConstantExpression<DamageReceivedTriggeredEffectContext>(0),
+                        relative: false),
+                    new SetCombatantCounterNode<DamageReceivedTriggeredEffectContext>(
+                        ram, ApproachBrokenCounter, new ConstantExpression<DamageReceivedTriggeredEffectContext>(1),
+                        relative: false),
+                })));
+
+        var onTurnEnd = new EffectProgram<TurnEndedTriggeredEffectContext>(
+            new SetCombatantCounterNode<TurnEndedTriggeredEffectContext>(
+                CombatantTargetSelectors.Source, ApproachBrokenCounter,
+                new ConstantExpression<TurnEndedTriggeredEffectContext>(0), relative: false));
+
+        return new StatusData
+        {
+            Id = BreakTheApproachId,
+            NameKey = "Break the Approach",
+            Polarity = StatusPolarity.Neutral,
+            StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
+            UsesStacks = false,
+            Tags = [],
+            PassiveModifiers = [],
+            Triggers =
+            [
+                new StatusTriggerData("BlockGained", JsonSerializer.SerializeToElement(
+                    onBlockGained, CombatJson.CreateOptions<BlockGainedTriggeredEffectContext>())),
+                new StatusTriggerData("DamageTaken", JsonSerializer.SerializeToElement(
+                    onHit, CombatJson.CreateOptions<DamageReceivedTriggeredEffectContext>())),
+                new StatusTriggerData("TurnEnded", JsonSerializer.SerializeToElement(
+                    onTurnEnd, CombatJson.CreateOptions<TurnEndedTriggeredEffectContext>())),
+            ],
+        };
+    }
 
     // Self-Correcting Record: the card TYPES it can correct against (CardMapper emits a card's type as a
     // combat tag), the passive that arms a correction, and its once-per-player-turn latch.
