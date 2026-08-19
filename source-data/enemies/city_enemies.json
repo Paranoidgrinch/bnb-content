@@ -7110,18 +7110,18 @@
   {
     "id": "self_correcting_record",
     "name": "Self-Correcting Record",
-    "max_hp": 44,
+    "max_hp": 53,
     "intent_pattern": "cycle",
     "intents": [
       {
         "id": "rewrite_statement",
-        "name": "Rewrite Statement",
+        "name": "Rewrite the Statement",
         "intent_type": "mixed",
         "actions": [
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 7
+            "amount": 10
           },
           {
             "type": "apply_status",
@@ -7134,18 +7134,12 @@
       {
         "id": "correct_against_you",
         "name": "Correct Against You",
-        "intent_type": "mixed",
+        "intent_type": "block",
         "actions": [
           {
-            "type": "gain_strength",
+            "type": "gain_block",
             "target": "owner",
-            "amount": 1
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "paperwork",
-            "amount": 1
+            "amount": 10
           }
         ]
       },
@@ -7157,9 +7151,14 @@
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 10
+            "amount": 15
           }
         ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "correct_against_the_evidence"
       }
     ],
     "tags": [

@@ -464,6 +464,35 @@ public class EnemySignatureCombatTests
         Assert.Equal(4, BlockOf(play, gavelId)); // half of the Imp's 8, and none of its own to copy
     }
 
+    // Self-Correcting Record, "Correct Against the Evidence": the first card to land 10+ on it each turn is
+    // studied, and the NEXT card of that same type deals 4 less — once, then the correction is spent.
+    [Fact]
+    public void The_record_corrects_against_the_card_type_that_hurt_it()
+    {
+        // Approved for Disposal: a 12-damage FORM, so the study threshold is crossed and the type is unambiguous.
+        var probe = FightProbe.Solo("self_correcting_record", "correct_against_you", energy: 9);
+        var (play, session, recordId) = FightProbe.Start(probe,
+            Enumerable.Repeat("approved_for_disposal", 10).ToList());
+
+        Disposal(play, session, recordId);
+        Assert.Equal(53 - 12, Enemy(play, recordId).Health.Current); // studied, but this one lands in full
+        Assert.Equal(1, FightProbe.StacksOf(Enemy(play, recordId), "correction_form"));
+
+        Disposal(play, session, recordId);
+        Assert.Equal(53 - 12 - 8, Enemy(play, recordId).Health.Current); // corrected: 4 less
+        Assert.Equal(0, FightProbe.StacksOf(Enemy(play, recordId), "correction_form")); // and spent
+
+        Disposal(play, session, recordId);
+        Assert.Equal(53 - 12 - 8 - 12, Enemy(play, recordId).Health.Current); // no correction left this turn
+    }
+
+    private static void Disposal(RunPlayback play, InteractiveRunSession session, CombatantId enemyId)
+    {
+        var card = play.CombatDriver!.Current!.Hand.First(c => c.DefinitionId.value == "approved_for_disposal");
+        play.CombatDriver.PlayCard(card.Id, enemyId);
+        Assert.Null(session.Error);
+    }
+
     private static CombatantState Hero(RunPlayback play) =>
         play.CombatDriver!.Current!.State.GetCombatant(play.CombatDriver.Current!.HeroId);
 

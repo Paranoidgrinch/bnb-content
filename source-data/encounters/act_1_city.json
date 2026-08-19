@@ -1446,12 +1446,16 @@
   },
   {
     "id": "city_normal_appeal_08",
-    "name": "The Appeal Escalates",
+    "name": "The Evidence Exists in Triplicate",
     "act": 1,
     "difficulty": "normal",
     "enemies": [
-      "appeals_clerk",
-      "counterclaim_imp"
+      "self_correcting_record",
+      "triplicate_examiner"
+    ],
+    "enemy_health": [
+      40,
+      30
     ],
     "weight": 2,
     "tags": [

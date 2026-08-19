@@ -1,9 +1,9 @@
 # Act I — Real-Game Build Plan (converter → game.roguedeck.json → Godot)
 
-## ▶ RESUME POINT (2026-08-19, bnb-content: Stages 1-6 done, RogueDeck-Core @09d8298)
+## ▶ RESUME POINT (2026-08-19, bnb-content: Stages 1-7 done, RogueDeck-Core @779cf9f)
 All engine primitives for reworked Act-I enemies are DONE + pushed. Converter authoring pattern proven
 end-to-end for owner-scoped passives, cross-combatant passives, intent rules, capped scaling. All suites
-green (RogueDeck-Core Core 1402/Scenario 684/Run 448/Sandbox 297; bnb-content 61). 18 of 25 identities final.
+green (RogueDeck-Core Core 1402/Scenario 684/Run 448/Sandbox 298; bnb-content 64). 22 of 25 identities final.
 
 **Authored so far (real final identities):**
 - Stage 1 — `a_very_official_line` (new id): full pattern (queue_advances passive + self_counter intent rule
@@ -72,13 +72,24 @@ green (RogueDeck-Core Core 1402/Scenario 684/Run 448/Sandbox 297; bnb-content 61
   - **GOTCHA found here:** a status whose last stack is spent raises **`StatusExpired`**, not StatusRemoved or
     StatusStacksChanged. Every mirror passive must listen for it — the Ghost's Stage-5 passive only worked
     because an unrelated status application happened to re-run it; it now listens properly.
+- **Stage 7 (Appeal) — COMPLETE, all three identities + both encounters:**
+  - `counterclaim_imp` (45 HP, 33 in its support encounter): "Counterclaim" — the first status the PLAYER
+    files on it each turn is answered with 1 Paperwork. Owner-scoped; latch clears at its own turn end.
+  - `sustaining_gavel` (44 HP, 30 in its support encounter): "Sustained" — the first Block another enemy
+    gains each round is copied at half, rounded down. Never a solo.
+  - `self_correcting_record` (53 HP, 40 in its duo): "Correct Against the Evidence" — the first card to land
+    10+ on it each turn is studied and the next card of that TYPE deals 4 less, once. Needed a new engine
+    capability (RogueDeck-Core @779cf9f): damage gated on the source CARD's tag, both as a passive-modifier
+    restriction and as a trigger expression (`eventSourceCardHasTag`).
+  - `city_normal_appeal_07` = "Sustained Counterclaim" (Gavel 30 / Imp 33, Gavel FIRST — see ADAPTATIONS),
+    `city_normal_appeal_08` = "The Evidence Exists in Triplicate" (Record 40 / Examiner 30).
 - **Rule established: FINAL_AUDIT numbers WIN** over both the demo data and the older
   `Act_I_Final_Enemy_Pool.md` (they disagree on HP and intents) — rewrite HP + intents to the audit, keep the
   enemy id, keep an intent id only where the successor intent is the same mechanic.
 
 **Immediate next steps (resume here):**
-1. Stage 7 (Appeal family): `counterclaim_imp`, `self_correcting_record`, `sustaining_gavel` — then Stage 8
-   (Enforcement).
+1. Stage 8 (Enforcement family, the last one): `warrant_bailiff`, `threshold_seizure_ward`,
+   `civic_battering_ram` — then step 4 (curate the 32 encounter templates + role pools).
 2. The remaining duos ("Wrong Window, Same Queue", "The Line Has Started Moving", "Certified Pest Control"
    = Notary 34 + Mites 26, …): the per-roster HP override is DONE, so these are now plain authoring.
 3. Carbon Copies (Mites) can be authored with "Certified Pest Control" — the Oath Candle's Witness the Seal
@@ -155,7 +166,7 @@ intents need **no engine change** — passive = a status-with-triggers carried f
   `damage_per_status`/…). New effect types are added per-need when an enemy intent requires one (step 3), and
   for Act-II card marks (mark ops via RAW `EffectProgram` — not in `CombatNodeModel`). No speculative DSL.
 
-### 3. Act-I enemies (source-data + EnemyMapper) — 25 identities  *(IN PROGRESS: 18/25 final; Stages 1-6 complete)*
+### 3. Act-I enemies (source-data + EnemyMapper) — 25 identities  *(IN PROGRESS: 22/25 final; Stages 1-7 complete)*
 Rewrite `source-data/enemies/city_enemies.json` to the FINAL roster with HP/intents/passives from the
 `...Standard_Encounter_Pools...(1).md` list, cross-checked against the FINAL master pool. Author each
 signature via the recipe catalogue.

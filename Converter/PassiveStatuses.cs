@@ -63,7 +63,112 @@ public static class PassiveStatuses
         Marker(StolenMinuteId, "Stolen Minute"),
         Counterclaim(),
         Sustained(),
+        CorrectAgainstTheEvidence(),
+        .. CardTypes.Select(Correction),
     ];
+
+    // Self-Correcting Record: the card TYPES it can correct against (CardMapper emits a card's type as a
+    // combat tag), the passive that arms a correction, and its once-per-player-turn latch.
+    public static readonly string[] CardTypes = ["action", "form", "argument"];
+    public const string CorrectAgainstTheEvidenceId = "correct_against_the_evidence";
+    public static readonly CounterId CorrectedThisTurnCounter = new("corrected_this_turn");
+    public static string CorrectionId(string cardType) => $"correction_{cardType}";
+    private const int CorrectionThreshold = 10;
+
+    // "Correct Against the Evidence": the first card to deal 10+ HP damage to the Record each player turn is
+    // studied; the next damaging card of THAT type deals 4 less, and the correction is spent. Everything sits
+    // on the Record itself (it is the one being hit), so plain status triggers do it — the type is read off
+    // the hit's own card, and each type has its own correction status because a passive modifier is data, not
+    // a condition.
+    private static StatusData CorrectAgainstTheEvidence()
+    {
+        var record = CombatantTargetSelectors.EventTarget; // the damaged combatant: the Record
+
+        var arm = new EffectProgram<DamageReceivedTriggeredEffectContext>(
+            new ConditionalEffectNode<DamageReceivedTriggeredEffectContext>(
+                new AndExpression<DamageReceivedTriggeredEffectContext>(
+                    new ComparisonExpression<DamageReceivedTriggeredEffectContext>(
+                        new EventAmountExpression<DamageReceivedTriggeredEffectContext>(),
+                        ComparisonOperator.GreaterOrEqual,
+                        new ConstantExpression<DamageReceivedTriggeredEffectContext>(CorrectionThreshold)),
+                    new ComparisonExpression<DamageReceivedTriggeredEffectContext>(
+                        new CombatantCounterExpression<DamageReceivedTriggeredEffectContext>(
+                            record, CorrectedThisTurnCounter),
+                        ComparisonOperator.Equal,
+                        new ConstantExpression<DamageReceivedTriggeredEffectContext>(0))),
+                new SequenceEffectNode<DamageReceivedTriggeredEffectContext>(
+                [
+                    .. CardTypes.Select(type => (IEffectNode<DamageReceivedTriggeredEffectContext>)
+                        new ConditionalEffectNode<DamageReceivedTriggeredEffectContext>(
+                            new TriggerEventSourceCardHasTagExpression<DamageReceivedTriggeredEffectContext>(new TagId(type)),
+                            new ApplyStatusNode<DamageReceivedTriggeredEffectContext>(
+                                record, new StatusDefinitionId(CorrectionId(type)),
+                                new ConstantExpression<DamageReceivedTriggeredEffectContext>(1)))),
+                    new SetCombatantCounterNode<DamageReceivedTriggeredEffectContext>(
+                        record, CorrectedThisTurnCounter,
+                        new ConstantExpression<DamageReceivedTriggeredEffectContext>(1), relative: false),
+                ])));
+
+        // At the Record's own turn end the correction lapses — it only holds for the player turn it was made in.
+        var lapse = new EffectProgram<TurnEndedTriggeredEffectContext>(
+            new SequenceEffectNode<TurnEndedTriggeredEffectContext>(
+            [
+                .. CardTypes.Select(type => (IEffectNode<TurnEndedTriggeredEffectContext>)
+                    new ModifyStatusStacksNode<TurnEndedTriggeredEffectContext>(
+                        CombatantTargetSelectors.Source, new StatusDefinitionId(CorrectionId(type)),
+                        new ConstantExpression<TurnEndedTriggeredEffectContext>(-1))),
+                new SetCombatantCounterNode<TurnEndedTriggeredEffectContext>(
+                    CombatantTargetSelectors.Source, CorrectedThisTurnCounter,
+                    new ConstantExpression<TurnEndedTriggeredEffectContext>(0), relative: false),
+            ]));
+
+        return new StatusData
+        {
+            Id = CorrectAgainstTheEvidenceId,
+            NameKey = "Correct Against the Evidence",
+            Polarity = StatusPolarity.Neutral,
+            StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
+            UsesStacks = false,
+            Tags = [],
+            PassiveModifiers = [],
+            Triggers =
+            [
+                new StatusTriggerData("DamageTaken", JsonSerializer.SerializeToElement(
+                    arm, CombatJson.CreateOptions<DamageReceivedTriggeredEffectContext>())),
+                new StatusTriggerData("TurnEnded", JsonSerializer.SerializeToElement(
+                    lapse, CombatJson.CreateOptions<TurnEndedTriggeredEffectContext>())),
+            ],
+        };
+    }
+
+    // One armed correction: 4 less from the next card of that type, and studying it spends the correction.
+    private static StatusData Correction(string cardType) => new()
+    {
+        Id = CorrectionId(cardType),
+        NameKey = $"Corrected ({cardType})",
+        Polarity = StatusPolarity.Buff,
+        StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
+        UsesStacks = true,
+        Tags = [],
+        PassiveModifiers =
+        [
+            new PassiveModifierData(PassiveModifierPipeline.DamageReceived,
+                PassiveModifierOperation.AddFlat, -4,
+                RestrictDamageKind: DamageKind.Direct, RestrictSourceCardTag: cardType),
+        ],
+        Triggers =
+        [
+            new StatusTriggerData("DamageTaken", JsonSerializer.SerializeToElement(
+                new EffectProgram<DamageReceivedTriggeredEffectContext>(
+                    new ConditionalEffectNode<DamageReceivedTriggeredEffectContext>(
+                        new TriggerEventSourceCardHasTagExpression<DamageReceivedTriggeredEffectContext>(
+                            new TagId(cardType)),
+                        new ModifyStatusStacksNode<DamageReceivedTriggeredEffectContext>(
+                            CombatantTargetSelectors.EventTarget, new StatusDefinitionId(CorrectionId(cardType)),
+                            new ConstantExpression<DamageReceivedTriggeredEffectContext>(-1)))),
+                CombatJson.CreateOptions<DamageReceivedTriggeredEffectContext>())),
+        ],
+    };
 
     // Counterclaim Imp: the passive itself is owner-scoped (the Imp is what gets filed on), so one status
     // carries both the reaction and the once-per-player-turn latch it clears at its own turn end.
