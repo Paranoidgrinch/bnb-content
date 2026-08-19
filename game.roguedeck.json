@@ -11576,16 +11576,16 @@
         },
         {
           "Id": "filing_beetle",
-          "MaxHealth": 32,
+          "MaxHealth": 40,
           "Actions": [
             {
-              "value": "filing_beetle.crawl_into_the_folder"
+              "value": "filing_beetle.worm_eaten_folio"
             },
             {
-              "value": "filing_beetle.mandible_clip"
+              "value": "filing_beetle.mandible_stamp"
             },
             {
-              "value": "filing_beetle.misfile_the_request"
+              "value": "filing_beetle.mandatory_attachment"
             }
           ],
           "StartingStatuses": null,
@@ -12412,16 +12412,16 @@
       "Enemies": [
         {
           "Id": "filing_beetle",
-          "MaxHealth": 32,
+          "MaxHealth": 40,
           "Actions": [
             {
-              "value": "filing_beetle.crawl_into_the_folder"
+              "value": "filing_beetle.worm_eaten_folio"
             },
             {
-              "value": "filing_beetle.mandible_clip"
+              "value": "filing_beetle.mandible_stamp"
             },
             {
-              "value": "filing_beetle.misfile_the_request"
+              "value": "filing_beetle.mandatory_attachment"
             }
           ],
           "StartingStatuses": null,
@@ -24116,13 +24116,121 @@
       }
     },
     {
-      "Id": "filing_beetle.crawl_into_the_folder",
+      "Id": "filing_beetle.worm_eaten_folio",
       "PackageId": "scenario",
-      "NameKey": "Crawl into the Folder",
+      "NameKey": "Worm-Eaten Folio",
+      "DescriptionKey": null,
+      "Intent": {
+        "Kind": "Special",
+        "Label": "Worm-Eaten Folio \u00B7 Bookworm \u002B2, 6 block"
+      },
+      "Program": {
+        "Id": {
+          "Value": "(unnamed)"
+        },
+        "Root": {
+          "kind": "node.sequence",
+          "value": {
+            "Children": [
+              {
+                "kind": "node.applyStatus",
+                "value": {
+                  "TargetSelector": {
+                    "kind": "sel.source",
+                    "value": {
+                      "Cardinality": "ZeroOrOne",
+                      "RequiredContextCapabilities": "Source"
+                    }
+                  },
+                  "StatusDefinitionId": {
+                    "value": "bookworm"
+                  },
+                  "Stacks": {
+                    "kind": "const",
+                    "value": {
+                      "Value": 2
+                    }
+                  },
+                  "DurationTurns": 0,
+                  "Charges": 0,
+                  "ResultKey": null,
+                  "Children": []
+                }
+              },
+              {
+                "kind": "node.gainBlock",
+                "value": {
+                  "TargetSelector": {
+                    "kind": "sel.source",
+                    "value": {
+                      "Cardinality": "ZeroOrOne",
+                      "RequiredContextCapabilities": "Source"
+                    }
+                  },
+                  "Amount": {
+                    "kind": "const",
+                    "value": {
+                      "Value": 6
+                    }
+                  },
+                  "ResultKey": null,
+                  "Children": []
+                }
+              }
+            ]
+          }
+        },
+        "MaxNodeDepth": 64,
+        "MaxProgramSteps": 1024
+      }
+    },
+    {
+      "Id": "filing_beetle.mandible_stamp",
+      "PackageId": "scenario",
+      "NameKey": "Mandible Stamp",
+      "DescriptionKey": null,
+      "Intent": {
+        "Kind": "Attack",
+        "Label": "Mandible Stamp \u00B7 10 dmg"
+      },
+      "Program": {
+        "Id": {
+          "Value": "(unnamed)"
+        },
+        "Root": {
+          "kind": "node.dealDamage",
+          "value": {
+            "TargetSelector": {
+              "kind": "sel.eventTarget",
+              "value": {
+                "Cardinality": "ZeroOrOne",
+                "RequiredContextCapabilities": "EventTarget"
+              }
+            },
+            "Amount": {
+              "kind": "const",
+              "value": {
+                "Value": 10
+              }
+            },
+            "ResultKey": null,
+            "IgnoresBlock": false,
+            "Element": null,
+            "Children": []
+          }
+        },
+        "MaxNodeDepth": 64,
+        "MaxProgramSteps": 1024
+      }
+    },
+    {
+      "Id": "filing_beetle.mandatory_attachment",
+      "PackageId": "scenario",
+      "NameKey": "Mandatory Attachment",
       "DescriptionKey": null,
       "Intent": {
         "Kind": "Debuff",
-        "Label": "Crawl into the Folder \u00B7 Paperwork \u002B1"
+        "Label": "Mandatory Attachment \u00B7 Paperwork \u002B2"
       },
       "Program": {
         "Id": {
@@ -24144,123 +24252,13 @@
             "Stacks": {
               "kind": "const",
               "value": {
-                "Value": 1
+                "Value": 2
               }
             },
             "DurationTurns": 0,
             "Charges": 0,
             "ResultKey": null,
             "Children": []
-          }
-        },
-        "MaxNodeDepth": 64,
-        "MaxProgramSteps": 1024
-      }
-    },
-    {
-      "Id": "filing_beetle.mandible_clip",
-      "PackageId": "scenario",
-      "NameKey": "Mandible Clip",
-      "DescriptionKey": null,
-      "Intent": {
-        "Kind": "Attack",
-        "Label": "Mandible Clip \u00B7 12 dmg"
-      },
-      "Program": {
-        "Id": {
-          "Value": "(unnamed)"
-        },
-        "Root": {
-          "kind": "node.dealDamage",
-          "value": {
-            "TargetSelector": {
-              "kind": "sel.eventTarget",
-              "value": {
-                "Cardinality": "ZeroOrOne",
-                "RequiredContextCapabilities": "EventTarget"
-              }
-            },
-            "Amount": {
-              "kind": "const",
-              "value": {
-                "Value": 12
-              }
-            },
-            "ResultKey": null,
-            "IgnoresBlock": false,
-            "Element": null,
-            "Children": []
-          }
-        },
-        "MaxNodeDepth": 64,
-        "MaxProgramSteps": 1024
-      }
-    },
-    {
-      "Id": "filing_beetle.misfile_the_request",
-      "PackageId": "scenario",
-      "NameKey": "Misfile the Request",
-      "DescriptionKey": null,
-      "Intent": {
-        "Kind": "Special",
-        "Label": "Misfile the Request \u00B7 6 dmg, Paperwork \u002B1"
-      },
-      "Program": {
-        "Id": {
-          "Value": "(unnamed)"
-        },
-        "Root": {
-          "kind": "node.sequence",
-          "value": {
-            "Children": [
-              {
-                "kind": "node.dealDamage",
-                "value": {
-                  "TargetSelector": {
-                    "kind": "sel.eventTarget",
-                    "value": {
-                      "Cardinality": "ZeroOrOne",
-                      "RequiredContextCapabilities": "EventTarget"
-                    }
-                  },
-                  "Amount": {
-                    "kind": "const",
-                    "value": {
-                      "Value": 6
-                    }
-                  },
-                  "ResultKey": null,
-                  "IgnoresBlock": false,
-                  "Element": null,
-                  "Children": []
-                }
-              },
-              {
-                "kind": "node.applyStatus",
-                "value": {
-                  "TargetSelector": {
-                    "kind": "sel.eventTarget",
-                    "value": {
-                      "Cardinality": "ZeroOrOne",
-                      "RequiredContextCapabilities": "EventTarget"
-                    }
-                  },
-                  "StatusDefinitionId": {
-                    "value": "paperwork"
-                  },
-                  "Stacks": {
-                    "kind": "const",
-                    "value": {
-                      "Value": 1
-                    }
-                  },
-                  "DurationTurns": 0,
-                  "Charges": 0,
-                  "ResultKey": null,
-                  "Children": []
-                }
-              }
-            ]
           }
         },
         "MaxNodeDepth": 64,
@@ -58867,6 +58865,448 @@
       "DebuffBlock": null
     },
     {
+      "Id": "bookworm",
+      "PackageId": "scenario",
+      "NameKey": "Bookworm",
+      "DescriptionKey": null,
+      "Polarity": "Buff",
+      "UsesStacks": true,
+      "UsesDuration": false,
+      "UsesCharges": false,
+      "StackingBehavior": "MergeWithExistingInstance",
+      "Tags": [],
+      "PassiveModifiers": [],
+      "Triggers": [
+        {
+          "Event": "TurnStarted",
+          "Program": {
+            "Id": {
+              "Value": "(unnamed)"
+            },
+            "Root": {
+              "kind": "node.conditional",
+              "value": {
+                "Condition": {
+                  "kind": "compare",
+                  "value": {
+                    "Left": {
+                      "kind": "combatantStatusStacks",
+                      "value": {
+                        "Selector": {
+                          "kind": "sel.source",
+                          "value": {
+                            "Cardinality": "ZeroOrOne",
+                            "RequiredContextCapabilities": "Source"
+                          }
+                        },
+                        "StatusId": {
+                          "value": "paperwork"
+                        }
+                      }
+                    },
+                    "Op": "GreaterOrEqual",
+                    "Right": {
+                      "kind": "combatantStatusStacks",
+                      "value": {
+                        "Selector": {
+                          "kind": "sel.source",
+                          "value": {
+                            "Cardinality": "ZeroOrOne",
+                            "RequiredContextCapabilities": "Source"
+                          }
+                        },
+                        "StatusId": {
+                          "value": "bookworm"
+                        }
+                      }
+                    }
+                  }
+                },
+                "Then": {
+                  "kind": "node.sequence",
+                  "value": {
+                    "Children": [
+                      {
+                        "kind": "node.modifyStatusStacks",
+                        "value": {
+                          "TargetSelector": {
+                            "kind": "sel.source",
+                            "value": {
+                              "Cardinality": "ZeroOrOne",
+                              "RequiredContextCapabilities": "Source"
+                            }
+                          },
+                          "StatusDefinitionId": {
+                            "value": "paperwork"
+                          },
+                          "Delta": {
+                            "kind": "subtract",
+                            "value": {
+                              "Left": {
+                                "kind": "const",
+                                "value": {
+                                  "Value": 0
+                                }
+                              },
+                              "Right": {
+                                "kind": "combatantStatusStacks",
+                                "value": {
+                                  "Selector": {
+                                    "kind": "sel.source",
+                                    "value": {
+                                      "Cardinality": "ZeroOrOne",
+                                      "RequiredContextCapabilities": "Source"
+                                    }
+                                  },
+                                  "StatusId": {
+                                    "value": "bookworm"
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "ResultKey": null,
+                          "Children": []
+                        }
+                      },
+                      {
+                        "kind": "node.modifyStatusStacks",
+                        "value": {
+                          "TargetSelector": {
+                            "kind": "sel.source",
+                            "value": {
+                              "Cardinality": "ZeroOrOne",
+                              "RequiredContextCapabilities": "Source"
+                            }
+                          },
+                          "StatusDefinitionId": {
+                            "value": "bookworm"
+                          },
+                          "Delta": {
+                            "kind": "subtract",
+                            "value": {
+                              "Left": {
+                                "kind": "const",
+                                "value": {
+                                  "Value": 0
+                                }
+                              },
+                              "Right": {
+                                "kind": "combatantStatusStacks",
+                                "value": {
+                                  "Selector": {
+                                    "kind": "sel.source",
+                                    "value": {
+                                      "Cardinality": "ZeroOrOne",
+                                      "RequiredContextCapabilities": "Source"
+                                    }
+                                  },
+                                  "StatusId": {
+                                    "value": "bookworm"
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "ResultKey": null,
+                          "Children": []
+                        }
+                      }
+                    ]
+                  }
+                },
+                "Else": {
+                  "kind": "node.sequence",
+                  "value": {
+                    "Children": [
+                      {
+                        "kind": "node.modifyStatusStacks",
+                        "value": {
+                          "TargetSelector": {
+                            "kind": "sel.source",
+                            "value": {
+                              "Cardinality": "ZeroOrOne",
+                              "RequiredContextCapabilities": "Source"
+                            }
+                          },
+                          "StatusDefinitionId": {
+                            "value": "bookworm"
+                          },
+                          "Delta": {
+                            "kind": "subtract",
+                            "value": {
+                              "Left": {
+                                "kind": "const",
+                                "value": {
+                                  "Value": 0
+                                }
+                              },
+                              "Right": {
+                                "kind": "combatantStatusStacks",
+                                "value": {
+                                  "Selector": {
+                                    "kind": "sel.source",
+                                    "value": {
+                                      "Cardinality": "ZeroOrOne",
+                                      "RequiredContextCapabilities": "Source"
+                                    }
+                                  },
+                                  "StatusId": {
+                                    "value": "paperwork"
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "ResultKey": null,
+                          "Children": []
+                        }
+                      },
+                      {
+                        "kind": "node.modifyStatusStacks",
+                        "value": {
+                          "TargetSelector": {
+                            "kind": "sel.source",
+                            "value": {
+                              "Cardinality": "ZeroOrOne",
+                              "RequiredContextCapabilities": "Source"
+                            }
+                          },
+                          "StatusDefinitionId": {
+                            "value": "paperwork"
+                          },
+                          "Delta": {
+                            "kind": "subtract",
+                            "value": {
+                              "Left": {
+                                "kind": "const",
+                                "value": {
+                                  "Value": 0
+                                }
+                              },
+                              "Right": {
+                                "kind": "combatantStatusStacks",
+                                "value": {
+                                  "Selector": {
+                                    "kind": "sel.source",
+                                    "value": {
+                                      "Cardinality": "ZeroOrOne",
+                                      "RequiredContextCapabilities": "Source"
+                                    }
+                                  },
+                                  "StatusId": {
+                                    "value": "paperwork"
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "ResultKey": null,
+                          "Children": []
+                        }
+                      }
+                    ]
+                  }
+                },
+                "Children": [
+                  {
+                    "kind": "node.sequence",
+                    "value": {
+                      "Children": [
+                        {
+                          "kind": "node.modifyStatusStacks",
+                          "value": {
+                            "TargetSelector": {
+                              "kind": "sel.source",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "Source"
+                              }
+                            },
+                            "StatusDefinitionId": {
+                              "value": "paperwork"
+                            },
+                            "Delta": {
+                              "kind": "subtract",
+                              "value": {
+                                "Left": {
+                                  "kind": "const",
+                                  "value": {
+                                    "Value": 0
+                                  }
+                                },
+                                "Right": {
+                                  "kind": "combatantStatusStacks",
+                                  "value": {
+                                    "Selector": {
+                                      "kind": "sel.source",
+                                      "value": {
+                                        "Cardinality": "ZeroOrOne",
+                                        "RequiredContextCapabilities": "Source"
+                                      }
+                                    },
+                                    "StatusId": {
+                                      "value": "bookworm"
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            "ResultKey": null,
+                            "Children": []
+                          }
+                        },
+                        {
+                          "kind": "node.modifyStatusStacks",
+                          "value": {
+                            "TargetSelector": {
+                              "kind": "sel.source",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "Source"
+                              }
+                            },
+                            "StatusDefinitionId": {
+                              "value": "bookworm"
+                            },
+                            "Delta": {
+                              "kind": "subtract",
+                              "value": {
+                                "Left": {
+                                  "kind": "const",
+                                  "value": {
+                                    "Value": 0
+                                  }
+                                },
+                                "Right": {
+                                  "kind": "combatantStatusStacks",
+                                  "value": {
+                                    "Selector": {
+                                      "kind": "sel.source",
+                                      "value": {
+                                        "Cardinality": "ZeroOrOne",
+                                        "RequiredContextCapabilities": "Source"
+                                      }
+                                    },
+                                    "StatusId": {
+                                      "value": "bookworm"
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            "ResultKey": null,
+                            "Children": []
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "kind": "node.sequence",
+                    "value": {
+                      "Children": [
+                        {
+                          "kind": "node.modifyStatusStacks",
+                          "value": {
+                            "TargetSelector": {
+                              "kind": "sel.source",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "Source"
+                              }
+                            },
+                            "StatusDefinitionId": {
+                              "value": "bookworm"
+                            },
+                            "Delta": {
+                              "kind": "subtract",
+                              "value": {
+                                "Left": {
+                                  "kind": "const",
+                                  "value": {
+                                    "Value": 0
+                                  }
+                                },
+                                "Right": {
+                                  "kind": "combatantStatusStacks",
+                                  "value": {
+                                    "Selector": {
+                                      "kind": "sel.source",
+                                      "value": {
+                                        "Cardinality": "ZeroOrOne",
+                                        "RequiredContextCapabilities": "Source"
+                                      }
+                                    },
+                                    "StatusId": {
+                                      "value": "paperwork"
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            "ResultKey": null,
+                            "Children": []
+                          }
+                        },
+                        {
+                          "kind": "node.modifyStatusStacks",
+                          "value": {
+                            "TargetSelector": {
+                              "kind": "sel.source",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "Source"
+                              }
+                            },
+                            "StatusDefinitionId": {
+                              "value": "paperwork"
+                            },
+                            "Delta": {
+                              "kind": "subtract",
+                              "value": {
+                                "Left": {
+                                  "kind": "const",
+                                  "value": {
+                                    "Value": 0
+                                  }
+                                },
+                                "Right": {
+                                  "kind": "combatantStatusStacks",
+                                  "value": {
+                                    "Selector": {
+                                      "kind": "sel.source",
+                                      "value": {
+                                        "Cardinality": "ZeroOrOne",
+                                        "RequiredContextCapabilities": "Source"
+                                      }
+                                    },
+                                    "StatusId": {
+                                      "value": "paperwork"
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            "ResultKey": null,
+                            "Children": []
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            "MaxNodeDepth": 64,
+            "MaxProgramSteps": 1024
+          }
+        }
+      ],
+      "DeathPrevention": null,
+      "DebuffBlock": null
+    },
+    {
       "Id": "queue_advances",
       "PackageId": "scenario",
       "NameKey": "The Queue Advances",
@@ -64042,6 +64482,21 @@
         "Tags": [
           "buff",
           "attack"
+        ],
+        "Extra": {}
+      },
+      "bookworm": {
+        "Art": null,
+        "FlavorText": "Immediately before this enemy\u0027s Paperwork resolves, remove up to X Paperwork from it and the same number of Bookworm stacks. Bookworm remains if there is no Paperwork.",
+        "Icon": "statuses/bookworm.png",
+        "Rarity": null,
+        "Frame": null,
+        "Color": null,
+        "Sound": null,
+        "Vfx": null,
+        "Tags": [
+          "bureaucracy",
+          "buff"
         ],
         "Extra": {}
       },

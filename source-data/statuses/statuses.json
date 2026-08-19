@@ -61,6 +61,18 @@
     ]
   },
   {
+    "id": "bookworm",
+    "name": "Bookworm",
+    "description": "Immediately before this enemy's Paperwork resolves, remove up to X Paperwork from it and the same number of Bookworm stacks. Bookworm remains if there is no Paperwork.",
+    "stacking": "intensity",
+    "trigger": "enemy_turn_start",
+    "is_negative": false,
+    "tags": [
+      "bureaucracy",
+      "buff"
+    ]
+  },
+  {
     "id": "poison",
     "name": "Poison",
     "description": "At the end of the enemy turn, loses HP equal to Poison, then Poison is reduced by 1.",

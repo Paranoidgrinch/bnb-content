@@ -145,6 +145,22 @@ public class FinalEnemyMappingTests
         Assert.DoesNotContain(actions, a => a.Id.Contains("monotone_rebuke")); // demo filler is gone
     }
 
+    // Filing Beetle (Stage 3, the Bookworm tutorial): its signature is that it buffs ITSELF with Bookworm —
+    // an enemy-side apply_status, the shape that silently breaks if "owner" ever maps to the hero.
+    [Fact]
+    public void The_beetle_applies_bookworm_to_itself()
+    {
+        var beetle = Data.Enemies.Single(e => e.Id == "filing_beetle");
+        Assert.Equal(40, beetle.MaxHp);
+
+        var folio = Assert.Single(EnemyMapper.MapActions([beetle]), a => a.Id == "filing_beetle.worm_eaten_folio");
+        var nodes = CombatProgramModel.Classify(folio.Program)!.Children!;
+        Assert.Equal("applyStatus", nodes[0].Kind);
+        Assert.Equal("bookworm", nodes[0].StatusId);
+        Assert.Equal("source", nodes[0].SelectorKey); // the beetle, not the hero
+        Assert.Equal("gainBlock", nodes[1].Kind);
+    }
+
     // DSL: "N damage + X per <status>, capped at Y" → dealDamage(add(N, min(mul(statusStacks, X), Y))).
     // (Queue-Crier's "Lost Your Place": 7 + min(panic*3, 9).)
     [Fact]
