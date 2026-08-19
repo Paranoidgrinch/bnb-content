@@ -81,7 +81,187 @@ public static class PassiveStatuses
         RemandingWrit(),
         Remandable(),
         Marker(SpentWritId, "Spent Writ"),
+        Marker(StepLowerId, "Lower Step"),
+        Marker(StepMiddleId, "Middle Step"),
+        Marker(StepUpperId, "Upper Step"),
+        HoldsTheCase(),
+        RulingPending(),
     ];
+
+    // Appellate Staircase: the Case is a status exactly one Step holds. Which Step is which is a marker, so a
+    // program can hand the Case one level down (a Remand) or up (the automatic ascent).
+    public const string StepLowerId = "step_lower";
+    public const string StepMiddleId = "step_middle";
+    public const string StepUpperId = "step_upper";
+    public const string HoldsTheCaseId = "holds_the_case";
+    public const string RulingPendingId = "ruling_pending";
+    public static readonly CounterId CaseDamageThisTurnCounter = new("case_damage_this_turn");
+    public static readonly CounterId RemandedThisTurnCounter = new("remanded_this_turn");
+    public static readonly CounterId FinalRulingCounter = new("final_ruling");
+    private static readonly CounterId TriedAscentCounter = new("tried_ascent");
+    private static readonly CounterId CaseMovedThisRoundCounter = new("case_moved_this_round");
+    private const int RemandThreshold = 12;
+
+    // The Case itself: its holder hits 2 harder, takes the Remand threshold, and carries the ladder's movement.
+    private static StatusData HoldsTheCase()
+    {
+        var self = CombatantTargetSelectors.Source;
+        var hit = CombatantTargetSelectors.EventTarget;
+        var stepBelow = CombatantTargetSelectors.IterationTarget;
+
+        ICombatExpression<TContext, bool> Wears<TContext>(ICombatantTargetSelector who, string marker)
+            where TContext : class =>
+            new ComparisonExpression<TContext>(
+                new CombatantStatusStacksExpression<TContext>(who, new StatusDefinitionId(marker)),
+                ComparisonOperator.Greater, new ConstantExpression<TContext>(0));
+
+        // Handing the Case on: apply it to the neighbour and drop it here — inside a loop over that neighbour,
+        // so a dead one means the Case simply stays where it is.
+        // The neighbour is found among ALL combatants, not among "allies of the source": a round-end program
+        // runs with whoever acted last as its source, which may well be the player.
+        IEffectNode<TContext> Hand<TContext>(ICombatantTargetSelector holder, string toMarker) where TContext : class =>
+            new ForEachTargetEffectNode<TContext>(
+                CombatantTargetSelectors.WithStatus(CombatantTargetSelectors.AllCombatants,
+                    new StatusDefinitionId(toMarker)),
+                new SequenceEffectNode<TContext>(new IEffectNode<TContext>[]
+                {
+                    new ApplyStatusNode<TContext>(CombatantTargetSelectors.IterationTarget,
+                        new StatusDefinitionId(HoldsTheCaseId), new ConstantExpression<TContext>(1)),
+                    new SetCombatantCounterNode<TContext>(CombatantTargetSelectors.IterationTarget,
+                        CaseMovedThisRoundCounter, new ConstantExpression<TContext>(1), relative: false),
+                    new ModifyStatusStacksNode<TContext>(holder, new StatusDefinitionId(HoldsTheCaseId),
+                        new ConstantExpression<TContext>(-1)),
+                }));
+
+        // 12 HP of damage in one player turn remands the case one level down — once per turn, and it also
+        // cancels a ruling this Step had announced.
+        var onHit = new EffectProgram<DamageReceivedTriggeredEffectContext>(
+            new SequenceEffectNode<DamageReceivedTriggeredEffectContext>(new IEffectNode<DamageReceivedTriggeredEffectContext>[]
+            {
+                new SetCombatantCounterNode<DamageReceivedTriggeredEffectContext>(
+                    hit, CaseDamageThisTurnCounter,
+                    new EventAmountExpression<DamageReceivedTriggeredEffectContext>(), relative: true),
+                new ConditionalEffectNode<DamageReceivedTriggeredEffectContext>(
+                    new AndExpression<DamageReceivedTriggeredEffectContext>(
+                        new ComparisonExpression<DamageReceivedTriggeredEffectContext>(
+                            new AddExpression<DamageReceivedTriggeredEffectContext>(
+                                new CombatantCounterExpression<DamageReceivedTriggeredEffectContext>(hit, CaseDamageThisTurnCounter),
+                                new EventAmountExpression<DamageReceivedTriggeredEffectContext>()),
+                            ComparisonOperator.GreaterOrEqual,
+                            new ConstantExpression<DamageReceivedTriggeredEffectContext>(RemandThreshold)),
+                        new ComparisonExpression<DamageReceivedTriggeredEffectContext>(
+                            new CombatantCounterExpression<DamageReceivedTriggeredEffectContext>(hit, RemandedThisTurnCounter),
+                            ComparisonOperator.Equal,
+                            new ConstantExpression<DamageReceivedTriggeredEffectContext>(0))),
+                    new SequenceEffectNode<DamageReceivedTriggeredEffectContext>(new IEffectNode<DamageReceivedTriggeredEffectContext>[]
+                    {
+                        new SetCombatantCounterNode<DamageReceivedTriggeredEffectContext>(
+                            hit, RemandedThisTurnCounter,
+                            new ConstantExpression<DamageReceivedTriggeredEffectContext>(1), relative: false),
+                        new SetCombatantCounterNode<DamageReceivedTriggeredEffectContext>(
+                            hit, FinalRulingCounter,
+                            new ConstantExpression<DamageReceivedTriggeredEffectContext>(0), relative: false),
+                        // Down one level, from wherever this Step stands.
+                        new ConditionalEffectNode<DamageReceivedTriggeredEffectContext>(
+                            Wears<DamageReceivedTriggeredEffectContext>(hit, StepUpperId),
+                            Hand<DamageReceivedTriggeredEffectContext>(hit, StepMiddleId),
+                            new ConditionalEffectNode<DamageReceivedTriggeredEffectContext>(
+                                Wears<DamageReceivedTriggeredEffectContext>(hit, StepMiddleId),
+                                Hand<DamageReceivedTriggeredEffectContext>(hit, StepLowerId))),
+                    })),
+            }));
+
+        // The ladder moves at the holder's own turn end, but only ONCE per round: handing the Case on also
+        // marks the receiver as "already moved this round", so a Case cannot climb two Steps in the round in
+        // which each new holder takes its own turn. (Reading a counter off the iteration target works in a
+        // node's target but not inside an expression here, which is why the movement is not a round-end loop.)
+        var moved = new CombatantCounterExpression<TurnEndedTriggeredEffectContext>(self, CaseMovedThisRoundCounter);
+        var onTurnEnd = new EffectProgram<TurnEndedTriggeredEffectContext>(
+            new SequenceEffectNode<TurnEndedTriggeredEffectContext>(new IEffectNode<TurnEndedTriggeredEffectContext>[]
+            {
+                new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
+                    new ComparisonExpression<TurnEndedTriggeredEffectContext>(
+                        moved, ComparisonOperator.Equal, new ConstantExpression<TurnEndedTriggeredEffectContext>(1)),
+                    // It arrived here this round; the ladder has already moved.
+                    new SetCombatantCounterNode<TurnEndedTriggeredEffectContext>(
+                        self, CaseMovedThisRoundCounter,
+                        new ConstantExpression<TurnEndedTriggeredEffectContext>(0), relative: false),
+                    new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
+                        new ComparisonExpression<TurnEndedTriggeredEffectContext>(
+                            new CombatantCounterExpression<TurnEndedTriggeredEffectContext>(self, RemandedThisTurnCounter),
+                            ComparisonOperator.Equal,
+                            new ConstantExpression<TurnEndedTriggeredEffectContext>(0)),
+                        new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
+                            new ComparisonExpression<TurnEndedTriggeredEffectContext>(
+                                new CombatantCounterExpression<TurnEndedTriggeredEffectContext>(self, TriedAscentCounter),
+                                ComparisonOperator.Equal,
+                                new ConstantExpression<TurnEndedTriggeredEffectContext>(1)),
+                            // Nowhere left to climb: the ruling is announced and the player gets one turn.
+                            new SequenceEffectNode<TurnEndedTriggeredEffectContext>(new IEffectNode<TurnEndedTriggeredEffectContext>[]
+                            {
+                                new SetCombatantCounterNode<TurnEndedTriggeredEffectContext>(
+                                    self, FinalRulingCounter,
+                                    new ConstantExpression<TurnEndedTriggeredEffectContext>(1), relative: false),
+                                new ApplyStatusNode<TurnEndedTriggeredEffectContext>(
+                                    Opponent, new StatusDefinitionId(RulingPendingId),
+                                    new ConstantExpression<TurnEndedTriggeredEffectContext>(1)),
+                            }),
+                            new SequenceEffectNode<TurnEndedTriggeredEffectContext>(new IEffectNode<TurnEndedTriggeredEffectContext>[]
+                            {
+                                new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
+                                    Wears<TurnEndedTriggeredEffectContext>(self, StepLowerId),
+                                    Hand<TurnEndedTriggeredEffectContext>(self, StepMiddleId),
+                                    new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
+                                        Wears<TurnEndedTriggeredEffectContext>(self, StepMiddleId),
+                                        Hand<TurnEndedTriggeredEffectContext>(self, StepUpperId))),
+                                new SetCombatantCounterNode<TurnEndedTriggeredEffectContext>(
+                                    self, TriedAscentCounter,
+                                    new ConstantExpression<TurnEndedTriggeredEffectContext>(1), relative: false),
+                            })))),
+                new SetCombatantCounterNode<TurnEndedTriggeredEffectContext>(
+                    self, CaseDamageThisTurnCounter,
+                    new ConstantExpression<TurnEndedTriggeredEffectContext>(0), relative: false),
+                new SetCombatantCounterNode<TurnEndedTriggeredEffectContext>(
+                    self, RemandedThisTurnCounter,
+                    new ConstantExpression<TurnEndedTriggeredEffectContext>(0), relative: false),
+            }));
+
+        return new StatusData
+        {
+            Id = HoldsTheCaseId,
+            NameKey = "Holds the Case",
+            Polarity = StatusPolarity.Buff,
+            StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
+            UsesStacks = true,
+            Tags = [],
+            PassiveModifiers =
+            [
+                new PassiveModifierData(PassiveModifierPipeline.DamageDealt,
+                    PassiveModifierOperation.AddFlat, 2, RestrictDamageKind: DamageKind.Direct),
+            ],
+            Triggers =
+            [
+                new StatusTriggerData("DamageTaken", JsonSerializer.SerializeToElement(
+                    onHit, CombatJson.CreateOptions<DamageReceivedTriggeredEffectContext>())),
+                new StatusTriggerData("TurnEnded", JsonSerializer.SerializeToElement(
+                    onTurnEnd, CombatJson.CreateOptions<TurnEndedTriggeredEffectContext>())),
+            ],
+        };
+    }
+
+    // The announced ruling is a mark on the player for that round: the other Steps read it and stand aside.
+    private static StatusData RulingPending()
+    {
+        var marked = CombatantTargetSelectors.WithStatus(
+            CombatantTargetSelectors.AllCombatants, new StatusDefinitionId(RulingPendingId));
+
+        var program = new EffectProgram<RoundEndedTriggeredEffectContext>(
+            new ModifyStatusStacksNode<RoundEndedTriggeredEffectContext>(
+                marked, new StatusDefinitionId(RulingPendingId),
+                new ConstantExpression<RoundEndedTriggeredEffectContext>(-1)));
+
+        return Passive(RulingPendingId, "Ruling Pending", "RoundEnded", program);
+    }
 
     // The Remanded Case: two bodies and two legitimate kill orders. The Phantom carries the return rule, the
     // Writ the escalation; which one dies first decides how the fight ends.

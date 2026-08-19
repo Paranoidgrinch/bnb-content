@@ -243,7 +243,7 @@
     ],
     "weight": 1,
     "tags": [],
-    "role": "elite"
+    "role": "mimic"
   },
   {
     "id": "city_elite_enforcement_01",
@@ -681,7 +681,12 @@
       "strength_pressure",
       "elite_appeal"
     ],
-    "role": "mimic"
+    "role": "elite",
+    "enemy_health": [
+      24,
+      30,
+      36
+    ]
   },
   {
     "id": "city_elite_appeal_02",
