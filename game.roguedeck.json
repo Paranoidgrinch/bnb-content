@@ -40077,7 +40077,7 @@
       "Enemies": [
         {
           "Id": "first_appointment",
-          "MaxHealth": 26,
+          "MaxHealth": 24,
           "Actions": [
             {
               "value": "first_appointment.called_too_early"
@@ -40086,60 +40086,126 @@
               "value": "first_appointment.please_wait_here"
             },
             {
-              "value": "first_appointment.wrong_slot"
-            },
-            {
-              "value": "first_appointment.paperless_summons"
+              "value": "first_appointment.move_up_the_date"
             }
           ],
-          "StartingStatuses": null,
+          "StartingStatuses": [
+            {
+              "Status": {
+                "value": "appointment_due_first"
+              },
+              "Stacks": 1,
+              "DurationTurns": 0,
+              "Charges": 0
+            }
+          ],
           "DisplayName": "First Appointment",
           "Position": null,
-          "IntentRules": null
+          "IntentRules": [
+            {
+              "Condition": {
+                "kind": "intent.opponentHasStatus",
+                "value": {
+                  "Status": {
+                    "value": "appointments_accelerated"
+                  },
+                  "MinStacks": 1
+                }
+              },
+              "Action": {
+                "value": "first_appointment.please_wait_here"
+              },
+              "Priority": 10
+            }
+          ]
         },
         {
           "Id": "second_appointment",
-          "MaxHealth": 30,
+          "MaxHealth": 28,
           "Actions": [
             {
-              "value": "second_appointment.late_notice"
+              "value": "second_appointment.rescheduled_cut"
             },
             {
               "value": "second_appointment.all_slots_delayed"
             },
             {
-              "value": "second_appointment.rescheduled_cut"
-            },
-            {
-              "value": "second_appointment.another_wait"
+              "value": "second_appointment.move_up_the_review"
             }
           ],
-          "StartingStatuses": null,
+          "StartingStatuses": [
+            {
+              "Status": {
+                "value": "appointment_due_second"
+              },
+              "Stacks": 1,
+              "DurationTurns": 0,
+              "Charges": 0
+            }
+          ],
           "DisplayName": "Second Appointment",
           "Position": null,
-          "IntentRules": null
+          "IntentRules": [
+            {
+              "Condition": {
+                "kind": "intent.opponentHasStatus",
+                "value": {
+                  "Status": {
+                    "value": "appointments_accelerated"
+                  },
+                  "MinStacks": 1
+                }
+              },
+              "Action": {
+                "value": "second_appointment.all_slots_delayed"
+              },
+              "Priority": 10
+            }
+          ]
         },
         {
           "Id": "final_appointment",
           "MaxHealth": 34,
           "Actions": [
             {
-              "value": "final_appointment.last_call"
+              "value": "final_appointment.appointment_strike"
             },
             {
               "value": "final_appointment.closed_door_pause"
             },
             {
-              "value": "final_appointment.appointment_strike"
-            },
-            {
-              "value": "final_appointment.postponed_again"
+              "value": "final_appointment.final_reminder"
             }
           ],
-          "StartingStatuses": null,
+          "StartingStatuses": [
+            {
+              "Status": {
+                "value": "appointment_due_final"
+              },
+              "Stacks": 1,
+              "DurationTurns": 0,
+              "Charges": 0
+            }
+          ],
           "DisplayName": "Final Appointment",
           "Position": null,
-          "IntentRules": null
+          "IntentRules": [
+            {
+              "Condition": {
+                "kind": "intent.opponentHasStatus",
+                "value": {
+                  "Status": {
+                    "value": "appointments_accelerated"
+                  },
+                  "MinStacks": 1
+                }
+              },
+              "Action": {
+                "value": "final_appointment.closed_door_pause"
+              },
+              "Priority": 10
+            }
+          ]
         }
       ],
       "HeroResources": [
@@ -221027,7 +221093,115 @@
       "DescriptionKey": null,
       "Intent": {
         "Kind": "Special",
-        "Label": "Called Too Early \u00B7 4 dmg, Fatigue \u002B1"
+        "Label": "Called Too Early \u00B7 6 dmg, Doubt \u002B1"
+      },
+      "Program": {
+        "Id": {
+          "Value": "(unnamed)"
+        },
+        "Root": {
+          "kind": "node.sequence",
+          "value": {
+            "Children": [
+              {
+                "kind": "node.dealDamage",
+                "value": {
+                  "TargetSelector": {
+                    "kind": "sel.eventTarget",
+                    "value": {
+                      "Cardinality": "ZeroOrOne",
+                      "RequiredContextCapabilities": "EventTarget"
+                    }
+                  },
+                  "Amount": {
+                    "kind": "const",
+                    "value": {
+                      "Value": 6
+                    }
+                  },
+                  "ResultKey": null,
+                  "IgnoresBlock": false,
+                  "Element": null,
+                  "Children": []
+                }
+              },
+              {
+                "kind": "node.applyStatus",
+                "value": {
+                  "TargetSelector": {
+                    "kind": "sel.eventTarget",
+                    "value": {
+                      "Cardinality": "ZeroOrOne",
+                      "RequiredContextCapabilities": "EventTarget"
+                    }
+                  },
+                  "StatusDefinitionId": {
+                    "value": "doubt"
+                  },
+                  "Stacks": {
+                    "kind": "const",
+                    "value": {
+                      "Value": 1
+                    }
+                  },
+                  "DurationTurns": 0,
+                  "Charges": 0,
+                  "ResultKey": null,
+                  "Children": []
+                }
+              }
+            ]
+          }
+        },
+        "MaxNodeDepth": 64,
+        "MaxProgramSteps": 1024
+      }
+    },
+    {
+      "Id": "first_appointment.please_wait_here",
+      "PackageId": "scenario",
+      "NameKey": "Please Wait Here",
+      "DescriptionKey": null,
+      "Intent": {
+        "Kind": "Defend",
+        "Label": "Please Wait Here \u00B7 7 block"
+      },
+      "Program": {
+        "Id": {
+          "Value": "(unnamed)"
+        },
+        "Root": {
+          "kind": "node.gainBlock",
+          "value": {
+            "TargetSelector": {
+              "kind": "sel.source",
+              "value": {
+                "Cardinality": "ZeroOrOne",
+                "RequiredContextCapabilities": "Source"
+              }
+            },
+            "Amount": {
+              "kind": "const",
+              "value": {
+                "Value": 7
+              }
+            },
+            "ResultKey": null,
+            "Children": []
+          }
+        },
+        "MaxNodeDepth": 64,
+        "MaxProgramSteps": 1024
+      }
+    },
+    {
+      "Id": "first_appointment.move_up_the_date",
+      "PackageId": "scenario",
+      "NameKey": "Move Up the Date",
+      "DescriptionKey": null,
+      "Intent": {
+        "Kind": "Attack",
+        "Label": "Move Up the Date \u00B7 4 dmg, Appointments_accelerated \u002B1"
       },
       "Program": {
         "Id": {
@@ -221060,6 +221234,132 @@
                 }
               },
               {
+                "kind": "node.conditional",
+                "value": {
+                  "Condition": {
+                    "kind": "compare",
+                    "value": {
+                      "Left": {
+                        "kind": "combatantCounter",
+                        "value": {
+                          "Selector": {
+                            "kind": "sel.source",
+                            "value": {
+                              "Cardinality": "ZeroOrOne",
+                              "RequiredContextCapabilities": "Source"
+                            }
+                          },
+                          "CounterId": {
+                            "value": "appointment_due"
+                          }
+                        }
+                      },
+                      "Op": "Greater",
+                      "Right": {
+                        "kind": "const",
+                        "value": {
+                          "Value": 0
+                        }
+                      }
+                    }
+                  },
+                  "Then": {
+                    "kind": "node.setCombatantCounter",
+                    "value": {
+                      "TargetSelector": {
+                        "kind": "sel.source",
+                        "value": {
+                          "Cardinality": "ZeroOrOne",
+                          "RequiredContextCapabilities": "Source"
+                        }
+                      },
+                      "CounterId": {
+                        "value": "appointment_due"
+                      },
+                      "Amount": {
+                        "kind": "const",
+                        "value": {
+                          "Value": -1
+                        }
+                      },
+                      "Relative": true,
+                      "Children": []
+                    }
+                  },
+                  "Else": {
+                    "kind": "node.setCombatantCounter",
+                    "value": {
+                      "TargetSelector": {
+                        "kind": "sel.source",
+                        "value": {
+                          "Cardinality": "ZeroOrOne",
+                          "RequiredContextCapabilities": "Source"
+                        }
+                      },
+                      "CounterId": {
+                        "value": "appointment_due"
+                      },
+                      "Amount": {
+                        "kind": "const",
+                        "value": {
+                          "Value": 2
+                        }
+                      },
+                      "Relative": false,
+                      "Children": []
+                    }
+                  },
+                  "Children": [
+                    {
+                      "kind": "node.setCombatantCounter",
+                      "value": {
+                        "TargetSelector": {
+                          "kind": "sel.source",
+                          "value": {
+                            "Cardinality": "ZeroOrOne",
+                            "RequiredContextCapabilities": "Source"
+                          }
+                        },
+                        "CounterId": {
+                          "value": "appointment_due"
+                        },
+                        "Amount": {
+                          "kind": "const",
+                          "value": {
+                            "Value": -1
+                          }
+                        },
+                        "Relative": true,
+                        "Children": []
+                      }
+                    },
+                    {
+                      "kind": "node.setCombatantCounter",
+                      "value": {
+                        "TargetSelector": {
+                          "kind": "sel.source",
+                          "value": {
+                            "Cardinality": "ZeroOrOne",
+                            "RequiredContextCapabilities": "Source"
+                          }
+                        },
+                        "CounterId": {
+                          "value": "appointment_due"
+                        },
+                        "Amount": {
+                          "kind": "const",
+                          "value": {
+                            "Value": 2
+                          }
+                        },
+                        "Relative": false,
+                        "Children": []
+                      }
+                    }
+                  ]
+                }
+              },
+              {
                 "kind": "node.applyStatus",
                 "value": {
                   "TargetSelector": {
@@ -221070,7 +221370,7 @@
                     }
                   },
                   "StatusDefinitionId": {
-                    "value": "fatigue"
+                    "value": "appointments_accelerated"
                   },
                   "Stacks": {
                     "kind": "const",
@@ -221092,92 +221392,13 @@
       }
     },
     {
-      "Id": "first_appointment.please_wait_here",
+      "Id": "second_appointment.rescheduled_cut",
       "PackageId": "scenario",
-      "NameKey": "Please Wait Here",
-      "DescriptionKey": null,
-      "Intent": {
-        "Kind": "Defend",
-        "Label": "Please Wait Here \u00B7 6 block"
-      },
-      "Program": {
-        "Id": {
-          "Value": "(unnamed)"
-        },
-        "Root": {
-          "kind": "node.gainBlock",
-          "value": {
-            "TargetSelector": {
-              "kind": "sel.source",
-              "value": {
-                "Cardinality": "ZeroOrOne",
-                "RequiredContextCapabilities": "Source"
-              }
-            },
-            "Amount": {
-              "kind": "const",
-              "value": {
-                "Value": 6
-              }
-            },
-            "ResultKey": null,
-            "Children": []
-          }
-        },
-        "MaxNodeDepth": 64,
-        "MaxProgramSteps": 1024
-      }
-    },
-    {
-      "Id": "first_appointment.wrong_slot",
-      "PackageId": "scenario",
-      "NameKey": "Wrong Slot",
-      "DescriptionKey": null,
-      "Intent": {
-        "Kind": "Debuff",
-        "Label": "Wrong Slot \u00B7 Doubt \u002B1"
-      },
-      "Program": {
-        "Id": {
-          "Value": "(unnamed)"
-        },
-        "Root": {
-          "kind": "node.applyStatus",
-          "value": {
-            "TargetSelector": {
-              "kind": "sel.eventTarget",
-              "value": {
-                "Cardinality": "ZeroOrOne",
-                "RequiredContextCapabilities": "EventTarget"
-              }
-            },
-            "StatusDefinitionId": {
-              "value": "doubt"
-            },
-            "Stacks": {
-              "kind": "const",
-              "value": {
-                "Value": 1
-              }
-            },
-            "DurationTurns": 0,
-            "Charges": 0,
-            "ResultKey": null,
-            "Children": []
-          }
-        },
-        "MaxNodeDepth": 64,
-        "MaxProgramSteps": 1024
-      }
-    },
-    {
-      "Id": "first_appointment.paperless_summons",
-      "PackageId": "scenario",
-      "NameKey": "Paperless Summons",
+      "NameKey": "Rescheduled Cut",
       "DescriptionKey": null,
       "Intent": {
         "Kind": "Attack",
-        "Label": "Paperless Summons \u00B7 6 dmg"
+        "Label": "Rescheduled Cut \u00B7 8 dmg"
       },
       "Program": {
         "Id": {
@@ -221196,46 +221417,7 @@
             "Amount": {
               "kind": "const",
               "value": {
-                "Value": 6
-              }
-            },
-            "ResultKey": null,
-            "IgnoresBlock": false,
-            "Element": null,
-            "Children": []
-          }
-        },
-        "MaxNodeDepth": 64,
-        "MaxProgramSteps": 1024
-      }
-    },
-    {
-      "Id": "second_appointment.late_notice",
-      "PackageId": "scenario",
-      "NameKey": "Late Notice",
-      "DescriptionKey": null,
-      "Intent": {
-        "Kind": "Attack",
-        "Label": "Late Notice \u00B7 5 dmg"
-      },
-      "Program": {
-        "Id": {
-          "Value": "(unnamed)"
-        },
-        "Root": {
-          "kind": "node.dealDamage",
-          "value": {
-            "TargetSelector": {
-              "kind": "sel.eventTarget",
-              "value": {
-                "Cardinality": "ZeroOrOne",
-                "RequiredContextCapabilities": "EventTarget"
-              }
-            },
-            "Amount": {
-              "kind": "const",
-              "value": {
-                "Value": 5
+                "Value": 8
               }
             },
             "ResultKey": null,
@@ -221255,7 +221437,7 @@
       "DescriptionKey": null,
       "Intent": {
         "Kind": "Special",
-        "Label": "All Slots Delayed \u00B7 Fatigue \u002B1, 3 block"
+        "Label": "All Slots Delayed \u00B7 Fatigue \u002B1, 4 block"
       },
       "Program": {
         "Id": {
@@ -221300,7 +221482,7 @@
                   "Amount": {
                     "kind": "const",
                     "value": {
-                      "Value": 3
+                      "Value": 4
                     }
                   },
                   "ResultKey": null,
@@ -221315,13 +221497,210 @@
       }
     },
     {
-      "Id": "second_appointment.rescheduled_cut",
+      "Id": "second_appointment.move_up_the_review",
       "PackageId": "scenario",
-      "NameKey": "Rescheduled Cut",
+      "NameKey": "Move Up the Review",
       "DescriptionKey": null,
       "Intent": {
         "Kind": "Attack",
-        "Label": "Rescheduled Cut \u00B7 7 dmg"
+        "Label": "Move Up the Review \u00B7 5 dmg, Appointments_accelerated \u002B1"
+      },
+      "Program": {
+        "Id": {
+          "Value": "(unnamed)"
+        },
+        "Root": {
+          "kind": "node.sequence",
+          "value": {
+            "Children": [
+              {
+                "kind": "node.dealDamage",
+                "value": {
+                  "TargetSelector": {
+                    "kind": "sel.eventTarget",
+                    "value": {
+                      "Cardinality": "ZeroOrOne",
+                      "RequiredContextCapabilities": "EventTarget"
+                    }
+                  },
+                  "Amount": {
+                    "kind": "const",
+                    "value": {
+                      "Value": 5
+                    }
+                  },
+                  "ResultKey": null,
+                  "IgnoresBlock": false,
+                  "Element": null,
+                  "Children": []
+                }
+              },
+              {
+                "kind": "node.conditional",
+                "value": {
+                  "Condition": {
+                    "kind": "compare",
+                    "value": {
+                      "Left": {
+                        "kind": "combatantCounter",
+                        "value": {
+                          "Selector": {
+                            "kind": "sel.source",
+                            "value": {
+                              "Cardinality": "ZeroOrOne",
+                              "RequiredContextCapabilities": "Source"
+                            }
+                          },
+                          "CounterId": {
+                            "value": "appointment_due"
+                          }
+                        }
+                      },
+                      "Op": "Greater",
+                      "Right": {
+                        "kind": "const",
+                        "value": {
+                          "Value": 0
+                        }
+                      }
+                    }
+                  },
+                  "Then": {
+                    "kind": "node.setCombatantCounter",
+                    "value": {
+                      "TargetSelector": {
+                        "kind": "sel.source",
+                        "value": {
+                          "Cardinality": "ZeroOrOne",
+                          "RequiredContextCapabilities": "Source"
+                        }
+                      },
+                      "CounterId": {
+                        "value": "appointment_due"
+                      },
+                      "Amount": {
+                        "kind": "const",
+                        "value": {
+                          "Value": -1
+                        }
+                      },
+                      "Relative": true,
+                      "Children": []
+                    }
+                  },
+                  "Else": {
+                    "kind": "node.setCombatantCounter",
+                    "value": {
+                      "TargetSelector": {
+                        "kind": "sel.source",
+                        "value": {
+                          "Cardinality": "ZeroOrOne",
+                          "RequiredContextCapabilities": "Source"
+                        }
+                      },
+                      "CounterId": {
+                        "value": "appointment_due"
+                      },
+                      "Amount": {
+                        "kind": "const",
+                        "value": {
+                          "Value": 3
+                        }
+                      },
+                      "Relative": false,
+                      "Children": []
+                    }
+                  },
+                  "Children": [
+                    {
+                      "kind": "node.setCombatantCounter",
+                      "value": {
+                        "TargetSelector": {
+                          "kind": "sel.source",
+                          "value": {
+                            "Cardinality": "ZeroOrOne",
+                            "RequiredContextCapabilities": "Source"
+                          }
+                        },
+                        "CounterId": {
+                          "value": "appointment_due"
+                        },
+                        "Amount": {
+                          "kind": "const",
+                          "value": {
+                            "Value": -1
+                          }
+                        },
+                        "Relative": true,
+                        "Children": []
+                      }
+                    },
+                    {
+                      "kind": "node.setCombatantCounter",
+                      "value": {
+                        "TargetSelector": {
+                          "kind": "sel.source",
+                          "value": {
+                            "Cardinality": "ZeroOrOne",
+                            "RequiredContextCapabilities": "Source"
+                          }
+                        },
+                        "CounterId": {
+                          "value": "appointment_due"
+                        },
+                        "Amount": {
+                          "kind": "const",
+                          "value": {
+                            "Value": 3
+                          }
+                        },
+                        "Relative": false,
+                        "Children": []
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "node.applyStatus",
+                "value": {
+                  "TargetSelector": {
+                    "kind": "sel.eventTarget",
+                    "value": {
+                      "Cardinality": "ZeroOrOne",
+                      "RequiredContextCapabilities": "EventTarget"
+                    }
+                  },
+                  "StatusDefinitionId": {
+                    "value": "appointments_accelerated"
+                  },
+                  "Stacks": {
+                    "kind": "const",
+                    "value": {
+                      "Value": 1
+                    }
+                  },
+                  "DurationTurns": 0,
+                  "Charges": 0,
+                  "ResultKey": null,
+                  "Children": []
+                }
+              }
+            ]
+          }
+        },
+        "MaxNodeDepth": 64,
+        "MaxProgramSteps": 1024
+      }
+    },
+    {
+      "Id": "final_appointment.appointment_strike",
+      "PackageId": "scenario",
+      "NameKey": "Appointment Strike",
+      "DescriptionKey": null,
+      "Intent": {
+        "Kind": "Attack",
+        "Label": "Appointment Strike \u00B7 10 dmg"
       },
       "Program": {
         "Id": {
@@ -221340,7 +221719,7 @@
             "Amount": {
               "kind": "const",
               "value": {
-                "Value": 7
+                "Value": 10
               }
             },
             "ResultKey": null,
@@ -221354,39 +221733,34 @@
       }
     },
     {
-      "Id": "second_appointment.another_wait",
+      "Id": "final_appointment.closed_door_pause",
       "PackageId": "scenario",
-      "NameKey": "Another Wait",
+      "NameKey": "Closed-Door Pause",
       "DescriptionKey": null,
       "Intent": {
-        "Kind": "Debuff",
-        "Label": "Another Wait \u00B7 Fatigue \u002B1"
+        "Kind": "Defend",
+        "Label": "Closed-Door Pause \u00B7 10 block"
       },
       "Program": {
         "Id": {
           "Value": "(unnamed)"
         },
         "Root": {
-          "kind": "node.applyStatus",
+          "kind": "node.gainBlock",
           "value": {
             "TargetSelector": {
-              "kind": "sel.eventTarget",
+              "kind": "sel.source",
               "value": {
                 "Cardinality": "ZeroOrOne",
-                "RequiredContextCapabilities": "EventTarget"
+                "RequiredContextCapabilities": "Source"
               }
             },
-            "StatusDefinitionId": {
-              "value": "fatigue"
-            },
-            "Stacks": {
+            "Amount": {
               "kind": "const",
               "value": {
-                "Value": 1
+                "Value": 10
               }
             },
-            "DurationTurns": 0,
-            "Charges": 0,
             "ResultKey": null,
             "Children": []
           }
@@ -221396,13 +221770,13 @@
       }
     },
     {
-      "Id": "final_appointment.last_call",
+      "Id": "final_appointment.final_reminder",
       "PackageId": "scenario",
-      "NameKey": "Last Call",
+      "NameKey": "Final Reminder",
       "DescriptionKey": null,
       "Intent": {
         "Kind": "Special",
-        "Label": "Last Call \u00B7 6 dmg, Fatigue \u002B1"
+        "Label": "Final Reminder \u00B7 6 dmg, Fatigue \u002B1, Appointments_accelerated \u002B1"
       },
       "Program": {
         "Id": {
@@ -221458,107 +221832,133 @@
                   "ResultKey": null,
                   "Children": []
                 }
-              }
-            ]
-          }
-        },
-        "MaxNodeDepth": 64,
-        "MaxProgramSteps": 1024
-      }
-    },
-    {
-      "Id": "final_appointment.closed_door_pause",
-      "PackageId": "scenario",
-      "NameKey": "Closed-Door Pause",
-      "DescriptionKey": null,
-      "Intent": {
-        "Kind": "Defend",
-        "Label": "Closed-Door Pause \u00B7 8 block"
-      },
-      "Program": {
-        "Id": {
-          "Value": "(unnamed)"
-        },
-        "Root": {
-          "kind": "node.gainBlock",
-          "value": {
-            "TargetSelector": {
-              "kind": "sel.source",
-              "value": {
-                "Cardinality": "ZeroOrOne",
-                "RequiredContextCapabilities": "Source"
-              }
-            },
-            "Amount": {
-              "kind": "const",
-              "value": {
-                "Value": 8
-              }
-            },
-            "ResultKey": null,
-            "Children": []
-          }
-        },
-        "MaxNodeDepth": 64,
-        "MaxProgramSteps": 1024
-      }
-    },
-    {
-      "Id": "final_appointment.appointment_strike",
-      "PackageId": "scenario",
-      "NameKey": "Appointment Strike",
-      "DescriptionKey": null,
-      "Intent": {
-        "Kind": "Attack",
-        "Label": "Appointment Strike \u00B7 9 dmg"
-      },
-      "Program": {
-        "Id": {
-          "Value": "(unnamed)"
-        },
-        "Root": {
-          "kind": "node.dealDamage",
-          "value": {
-            "TargetSelector": {
-              "kind": "sel.eventTarget",
-              "value": {
-                "Cardinality": "ZeroOrOne",
-                "RequiredContextCapabilities": "EventTarget"
-              }
-            },
-            "Amount": {
-              "kind": "const",
-              "value": {
-                "Value": 9
-              }
-            },
-            "ResultKey": null,
-            "IgnoresBlock": false,
-            "Element": null,
-            "Children": []
-          }
-        },
-        "MaxNodeDepth": 64,
-        "MaxProgramSteps": 1024
-      }
-    },
-    {
-      "Id": "final_appointment.postponed_again",
-      "PackageId": "scenario",
-      "NameKey": "Postponed Again",
-      "DescriptionKey": null,
-      "Intent": {
-        "Kind": "Special",
-        "Label": "Postponed Again \u00B7 Fatigue \u002B1, 4 block"
-      },
-      "Program": {
-        "Id": {
-          "Value": "(unnamed)"
-        },
-        "Root": {
-          "kind": "node.sequence",
-          "value": {
-            "Children": [
+              },
+              {
+                "kind": "node.conditional",
+                "value": {
+                  "Condition": {
+                    "kind": "compare",
+                    "value": {
+                      "Left": {
+                        "kind": "combatantCounter",
+                        "value": {
+                          "Selector": {
+                            "kind": "sel.source",
+                            "value": {
+                              "Cardinality": "ZeroOrOne",
+                              "RequiredContextCapabilities": "Source"
+                            }
+                          },
+                          "CounterId": {
+                            "value": "appointment_due"
+                          }
+                        }
+                      },
+                      "Op": "Greater",
+                      "Right": {
+                        "kind": "const",
+                        "value": {
+                          "Value": 0
+                        }
+                      }
+                    }
+                  },
+                  "Then": {
+                    "kind": "node.setCombatantCounter",
+                    "value": {
+                      "TargetSelector": {
+                        "kind": "sel.source",
+                        "value": {
+                          "Cardinality": "ZeroOrOne",
+                          "RequiredContextCapabilities": "Source"
+                        }
+                      },
+                      "CounterId": {
+                        "value": "appointment_due"
+                      },
+                      "Amount": {
+                        "kind": "const",
+                        "value": {
+                          "Value": -1
+                        }
+                      },
+                      "Relative": true,
+                      "Children": []
+                    }
+                  },
+                  "Else": {
+                    "kind": "node.setCombatantCounter",
+                    "value": {
+                      "TargetSelector": {
+                        "kind": "sel.source",
+                        "value": {
+                          "Cardinality": "ZeroOrOne",
+                          "RequiredContextCapabilities": "Source"
+                        }
+                      },
+                      "CounterId": {
+                        "value": "appointment_due"
+                      },
+                      "Amount": {
+                        "kind": "const",
+                        "value": {
+                          "Value": 4
+                        }
+                      },
+                      "Relative": false,
+                      "Children": []
+                    }
+                  },
+                  "Children": [
+                    {
+                      "kind": "node.setCombatantCounter",
+                      "value": {
+                        "TargetSelector": {
+                          "kind": "sel.source",
+                          "value": {
+                            "Cardinality": "ZeroOrOne",
+                            "RequiredContextCapabilities": "Source"
+                          }
+                        },
+                        "CounterId": {
+                          "value": "appointment_due"
+                        },
+                        "Amount": {
+                          "kind": "const",
+                          "value": {
+                            "Value": -1
+                          }
+                        },
+                        "Relative": true,
+                        "Children": []
+                      }
+                    },
+                    {
+                      "kind": "node.setCombatantCounter",
+                      "value": {
+                        "TargetSelector": {
+                          "kind": "sel.source",
+                          "value": {
+                            "Cardinality": "ZeroOrOne",
+                            "RequiredContextCapabilities": "Source"
+                          }
+                        },
+                        "CounterId": {
+                          "value": "appointment_due"
+                        },
+                        "Amount": {
+                          "kind": "const",
+                          "value": {
+                            "Value": 4
+                          }
+                        },
+                        "Relative": false,
+                        "Children": []
+                      }
+                    }
+                  ]
+                }
+              },
               {
                 "kind": "node.applyStatus",
                 "value": {
@@ -221570,7 +221970,7 @@
                     }
                   },
                   "StatusDefinitionId": {
-                    "value": "fatigue"
+                    "value": "appointments_accelerated"
                   },
                   "Stacks": {
                     "kind": "const",
@@ -221580,26 +221980,6 @@
                   },
                   "DurationTurns": 0,
                   "Charges": 0,
-                  "ResultKey": null,
-                  "Children": []
-                }
-              },
-              {
-                "kind": "node.gainBlock",
-                "value": {
-                  "TargetSelector": {
-                    "kind": "sel.source",
-                    "value": {
-                      "Cardinality": "ZeroOrOne",
-                      "RequiredContextCapabilities": "Source"
-                    }
-                  },
-                  "Amount": {
-                    "kind": "const",
-                    "value": {
-                      "Value": 4
-                    }
-                  },
                   "ResultKey": null,
                   "Children": []
                 }
@@ -232604,6 +232984,1684 @@
       ],
       "DeathPrevention": null,
       "DebuffBlock": null
+    },
+    {
+      "Id": "appointment_due_first",
+      "PackageId": "scenario",
+      "NameKey": "Appointment Due (First)",
+      "DescriptionKey": null,
+      "Polarity": "Neutral",
+      "UsesStacks": false,
+      "UsesDuration": false,
+      "UsesCharges": false,
+      "StackingBehavior": "MergeWithExistingInstance",
+      "Tags": [],
+      "PassiveModifiers": [],
+      "Triggers": [
+        {
+          "Event": "TurnEnded",
+          "Program": {
+            "Id": {
+              "Value": "(unnamed)"
+            },
+            "Root": {
+              "kind": "node.conditional",
+              "value": {
+                "Condition": {
+                  "kind": "compare",
+                  "value": {
+                    "Left": {
+                      "kind": "combatantCounter",
+                      "value": {
+                        "Selector": {
+                          "kind": "sel.source",
+                          "value": {
+                            "Cardinality": "ZeroOrOne",
+                            "RequiredContextCapabilities": "Source"
+                          }
+                        },
+                        "CounterId": {
+                          "value": "appointment_due"
+                        }
+                      }
+                    },
+                    "Op": "Equal",
+                    "Right": {
+                      "kind": "const",
+                      "value": {
+                        "Value": 1
+                      }
+                    }
+                  }
+                },
+                "Then": {
+                  "kind": "node.sequence",
+                  "value": {
+                    "Children": [
+                      {
+                        "kind": "node.sequence",
+                        "value": {
+                          "Children": [
+                            {
+                              "kind": "node.dealDamage",
+                              "value": {
+                                "TargetSelector": {
+                                  "kind": "sel.lowestHealthEnemy",
+                                  "value": {
+                                    "Cardinality": "ZeroOrOne"
+                                  }
+                                },
+                                "Amount": {
+                                  "kind": "const",
+                                  "value": {
+                                    "Value": 7
+                                  }
+                                },
+                                "ResultKey": null,
+                                "IgnoresBlock": false,
+                                "Element": null,
+                                "Children": []
+                              }
+                            },
+                            {
+                              "kind": "node.applyStatus",
+                              "value": {
+                                "TargetSelector": {
+                                  "kind": "sel.lowestHealthEnemy",
+                                  "value": {
+                                    "Cardinality": "ZeroOrOne"
+                                  }
+                                },
+                                "StatusDefinitionId": {
+                                  "value": "fatigue"
+                                },
+                                "Stacks": {
+                                  "kind": "const",
+                                  "value": {
+                                    "Value": 1
+                                  }
+                                },
+                                "DurationTurns": 0,
+                                "Charges": 0,
+                                "ResultKey": null,
+                                "Children": []
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "kind": "node.setCombatantCounter",
+                        "value": {
+                          "TargetSelector": {
+                            "kind": "sel.source",
+                            "value": {
+                              "Cardinality": "ZeroOrOne",
+                              "RequiredContextCapabilities": "Source"
+                            }
+                          },
+                          "CounterId": {
+                            "value": "appointment_due"
+                          },
+                          "Amount": {
+                            "kind": "const",
+                            "value": {
+                              "Value": 0
+                            }
+                          },
+                          "Relative": false,
+                          "Children": []
+                        }
+                      }
+                    ]
+                  }
+                },
+                "Else": {
+                  "kind": "node.conditional",
+                  "value": {
+                    "Condition": {
+                      "kind": "compare",
+                      "value": {
+                        "Left": {
+                          "kind": "combatantCounter",
+                          "value": {
+                            "Selector": {
+                              "kind": "sel.source",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "Source"
+                              }
+                            },
+                            "CounterId": {
+                              "value": "appointment_due"
+                            }
+                          }
+                        },
+                        "Op": "Greater",
+                        "Right": {
+                          "kind": "const",
+                          "value": {
+                            "Value": 1
+                          }
+                        }
+                      }
+                    },
+                    "Then": {
+                      "kind": "node.setCombatantCounter",
+                      "value": {
+                        "TargetSelector": {
+                          "kind": "sel.source",
+                          "value": {
+                            "Cardinality": "ZeroOrOne",
+                            "RequiredContextCapabilities": "Source"
+                          }
+                        },
+                        "CounterId": {
+                          "value": "appointment_due"
+                        },
+                        "Amount": {
+                          "kind": "const",
+                          "value": {
+                            "Value": -1
+                          }
+                        },
+                        "Relative": true,
+                        "Children": []
+                      }
+                    },
+                    "Else": null,
+                    "Children": [
+                      {
+                        "kind": "node.setCombatantCounter",
+                        "value": {
+                          "TargetSelector": {
+                            "kind": "sel.source",
+                            "value": {
+                              "Cardinality": "ZeroOrOne",
+                              "RequiredContextCapabilities": "Source"
+                            }
+                          },
+                          "CounterId": {
+                            "value": "appointment_due"
+                          },
+                          "Amount": {
+                            "kind": "const",
+                            "value": {
+                              "Value": -1
+                            }
+                          },
+                          "Relative": true,
+                          "Children": []
+                        }
+                      }
+                    ]
+                  }
+                },
+                "Children": [
+                  {
+                    "kind": "node.sequence",
+                    "value": {
+                      "Children": [
+                        {
+                          "kind": "node.sequence",
+                          "value": {
+                            "Children": [
+                              {
+                                "kind": "node.dealDamage",
+                                "value": {
+                                  "TargetSelector": {
+                                    "kind": "sel.lowestHealthEnemy",
+                                    "value": {
+                                      "Cardinality": "ZeroOrOne"
+                                    }
+                                  },
+                                  "Amount": {
+                                    "kind": "const",
+                                    "value": {
+                                      "Value": 7
+                                    }
+                                  },
+                                  "ResultKey": null,
+                                  "IgnoresBlock": false,
+                                  "Element": null,
+                                  "Children": []
+                                }
+                              },
+                              {
+                                "kind": "node.applyStatus",
+                                "value": {
+                                  "TargetSelector": {
+                                    "kind": "sel.lowestHealthEnemy",
+                                    "value": {
+                                      "Cardinality": "ZeroOrOne"
+                                    }
+                                  },
+                                  "StatusDefinitionId": {
+                                    "value": "fatigue"
+                                  },
+                                  "Stacks": {
+                                    "kind": "const",
+                                    "value": {
+                                      "Value": 1
+                                    }
+                                  },
+                                  "DurationTurns": 0,
+                                  "Charges": 0,
+                                  "ResultKey": null,
+                                  "Children": []
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "kind": "node.setCombatantCounter",
+                          "value": {
+                            "TargetSelector": {
+                              "kind": "sel.source",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "Source"
+                              }
+                            },
+                            "CounterId": {
+                              "value": "appointment_due"
+                            },
+                            "Amount": {
+                              "kind": "const",
+                              "value": {
+                                "Value": 0
+                              }
+                            },
+                            "Relative": false,
+                            "Children": []
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "kind": "node.conditional",
+                    "value": {
+                      "Condition": {
+                        "kind": "compare",
+                        "value": {
+                          "Left": {
+                            "kind": "combatantCounter",
+                            "value": {
+                              "Selector": {
+                                "kind": "sel.source",
+                                "value": {
+                                  "Cardinality": "ZeroOrOne",
+                                  "RequiredContextCapabilities": "Source"
+                                }
+                              },
+                              "CounterId": {
+                                "value": "appointment_due"
+                              }
+                            }
+                          },
+                          "Op": "Greater",
+                          "Right": {
+                            "kind": "const",
+                            "value": {
+                              "Value": 1
+                            }
+                          }
+                        }
+                      },
+                      "Then": {
+                        "kind": "node.setCombatantCounter",
+                        "value": {
+                          "TargetSelector": {
+                            "kind": "sel.source",
+                            "value": {
+                              "Cardinality": "ZeroOrOne",
+                              "RequiredContextCapabilities": "Source"
+                            }
+                          },
+                          "CounterId": {
+                            "value": "appointment_due"
+                          },
+                          "Amount": {
+                            "kind": "const",
+                            "value": {
+                              "Value": -1
+                            }
+                          },
+                          "Relative": true,
+                          "Children": []
+                        }
+                      },
+                      "Else": null,
+                      "Children": [
+                        {
+                          "kind": "node.setCombatantCounter",
+                          "value": {
+                            "TargetSelector": {
+                              "kind": "sel.source",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "Source"
+                              }
+                            },
+                            "CounterId": {
+                              "value": "appointment_due"
+                            },
+                            "Amount": {
+                              "kind": "const",
+                              "value": {
+                                "Value": -1
+                              }
+                            },
+                            "Relative": true,
+                            "Children": []
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            "MaxNodeDepth": 64,
+            "MaxProgramSteps": 1024
+          }
+        },
+        {
+          "Event": "TurnStarted",
+          "Program": {
+            "Id": {
+              "Value": "(unnamed)"
+            },
+            "Root": {
+              "kind": "node.conditional",
+              "value": {
+                "Condition": {
+                  "kind": "compare",
+                  "value": {
+                    "Left": {
+                      "kind": "combatantCounter",
+                      "value": {
+                        "Selector": {
+                          "kind": "sel.source",
+                          "value": {
+                            "Cardinality": "ZeroOrOne",
+                            "RequiredContextCapabilities": "Source"
+                          }
+                        },
+                        "CounterId": {
+                          "value": "appointment_started"
+                        }
+                      }
+                    },
+                    "Op": "Equal",
+                    "Right": {
+                      "kind": "const",
+                      "value": {
+                        "Value": 0
+                      }
+                    }
+                  }
+                },
+                "Then": {
+                  "kind": "node.sequence",
+                  "value": {
+                    "Children": [
+                      {
+                        "kind": "node.setCombatantCounter",
+                        "value": {
+                          "TargetSelector": {
+                            "kind": "sel.source",
+                            "value": {
+                              "Cardinality": "ZeroOrOne",
+                              "RequiredContextCapabilities": "Source"
+                            }
+                          },
+                          "CounterId": {
+                            "value": "appointment_due"
+                          },
+                          "Amount": {
+                            "kind": "const",
+                            "value": {
+                              "Value": 2
+                            }
+                          },
+                          "Relative": false,
+                          "Children": []
+                        }
+                      },
+                      {
+                        "kind": "node.setCombatantCounter",
+                        "value": {
+                          "TargetSelector": {
+                            "kind": "sel.source",
+                            "value": {
+                              "Cardinality": "ZeroOrOne",
+                              "RequiredContextCapabilities": "Source"
+                            }
+                          },
+                          "CounterId": {
+                            "value": "appointment_started"
+                          },
+                          "Amount": {
+                            "kind": "const",
+                            "value": {
+                              "Value": 1
+                            }
+                          },
+                          "Relative": false,
+                          "Children": []
+                        }
+                      }
+                    ]
+                  }
+                },
+                "Else": null,
+                "Children": [
+                  {
+                    "kind": "node.sequence",
+                    "value": {
+                      "Children": [
+                        {
+                          "kind": "node.setCombatantCounter",
+                          "value": {
+                            "TargetSelector": {
+                              "kind": "sel.source",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "Source"
+                              }
+                            },
+                            "CounterId": {
+                              "value": "appointment_due"
+                            },
+                            "Amount": {
+                              "kind": "const",
+                              "value": {
+                                "Value": 2
+                              }
+                            },
+                            "Relative": false,
+                            "Children": []
+                          }
+                        },
+                        {
+                          "kind": "node.setCombatantCounter",
+                          "value": {
+                            "TargetSelector": {
+                              "kind": "sel.source",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "Source"
+                              }
+                            },
+                            "CounterId": {
+                              "value": "appointment_started"
+                            },
+                            "Amount": {
+                              "kind": "const",
+                              "value": {
+                                "Value": 1
+                              }
+                            },
+                            "Relative": false,
+                            "Children": []
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            "MaxNodeDepth": 64,
+            "MaxProgramSteps": 1024
+          }
+        }
+      ],
+      "DeathPrevention": null,
+      "DebuffBlock": null
+    },
+    {
+      "Id": "appointment_due_second",
+      "PackageId": "scenario",
+      "NameKey": "Appointment Due (Second)",
+      "DescriptionKey": null,
+      "Polarity": "Neutral",
+      "UsesStacks": false,
+      "UsesDuration": false,
+      "UsesCharges": false,
+      "StackingBehavior": "MergeWithExistingInstance",
+      "Tags": [],
+      "PassiveModifiers": [],
+      "Triggers": [
+        {
+          "Event": "TurnEnded",
+          "Program": {
+            "Id": {
+              "Value": "(unnamed)"
+            },
+            "Root": {
+              "kind": "node.conditional",
+              "value": {
+                "Condition": {
+                  "kind": "compare",
+                  "value": {
+                    "Left": {
+                      "kind": "combatantCounter",
+                      "value": {
+                        "Selector": {
+                          "kind": "sel.source",
+                          "value": {
+                            "Cardinality": "ZeroOrOne",
+                            "RequiredContextCapabilities": "Source"
+                          }
+                        },
+                        "CounterId": {
+                          "value": "appointment_due"
+                        }
+                      }
+                    },
+                    "Op": "Equal",
+                    "Right": {
+                      "kind": "const",
+                      "value": {
+                        "Value": 1
+                      }
+                    }
+                  }
+                },
+                "Then": {
+                  "kind": "node.sequence",
+                  "value": {
+                    "Children": [
+                      {
+                        "kind": "node.sequence",
+                        "value": {
+                          "Children": [
+                            {
+                              "kind": "node.applyStatus",
+                              "value": {
+                                "TargetSelector": {
+                                  "kind": "sel.lowestHealthEnemy",
+                                  "value": {
+                                    "Cardinality": "ZeroOrOne"
+                                  }
+                                },
+                                "StatusDefinitionId": {
+                                  "value": "paperwork"
+                                },
+                                "Stacks": {
+                                  "kind": "const",
+                                  "value": {
+                                    "Value": 2
+                                  }
+                                },
+                                "DurationTurns": 0,
+                                "Charges": 0,
+                                "ResultKey": null,
+                                "Children": []
+                              }
+                            },
+                            {
+                              "kind": "node.applyStatus",
+                              "value": {
+                                "TargetSelector": {
+                                  "kind": "sel.lowestHealthEnemy",
+                                  "value": {
+                                    "Cardinality": "ZeroOrOne"
+                                  }
+                                },
+                                "StatusDefinitionId": {
+                                  "value": "fatigue"
+                                },
+                                "Stacks": {
+                                  "kind": "const",
+                                  "value": {
+                                    "Value": 1
+                                  }
+                                },
+                                "DurationTurns": 0,
+                                "Charges": 0,
+                                "ResultKey": null,
+                                "Children": []
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "kind": "node.setCombatantCounter",
+                        "value": {
+                          "TargetSelector": {
+                            "kind": "sel.source",
+                            "value": {
+                              "Cardinality": "ZeroOrOne",
+                              "RequiredContextCapabilities": "Source"
+                            }
+                          },
+                          "CounterId": {
+                            "value": "appointment_due"
+                          },
+                          "Amount": {
+                            "kind": "const",
+                            "value": {
+                              "Value": 0
+                            }
+                          },
+                          "Relative": false,
+                          "Children": []
+                        }
+                      }
+                    ]
+                  }
+                },
+                "Else": {
+                  "kind": "node.conditional",
+                  "value": {
+                    "Condition": {
+                      "kind": "compare",
+                      "value": {
+                        "Left": {
+                          "kind": "combatantCounter",
+                          "value": {
+                            "Selector": {
+                              "kind": "sel.source",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "Source"
+                              }
+                            },
+                            "CounterId": {
+                              "value": "appointment_due"
+                            }
+                          }
+                        },
+                        "Op": "Greater",
+                        "Right": {
+                          "kind": "const",
+                          "value": {
+                            "Value": 1
+                          }
+                        }
+                      }
+                    },
+                    "Then": {
+                      "kind": "node.setCombatantCounter",
+                      "value": {
+                        "TargetSelector": {
+                          "kind": "sel.source",
+                          "value": {
+                            "Cardinality": "ZeroOrOne",
+                            "RequiredContextCapabilities": "Source"
+                          }
+                        },
+                        "CounterId": {
+                          "value": "appointment_due"
+                        },
+                        "Amount": {
+                          "kind": "const",
+                          "value": {
+                            "Value": -1
+                          }
+                        },
+                        "Relative": true,
+                        "Children": []
+                      }
+                    },
+                    "Else": null,
+                    "Children": [
+                      {
+                        "kind": "node.setCombatantCounter",
+                        "value": {
+                          "TargetSelector": {
+                            "kind": "sel.source",
+                            "value": {
+                              "Cardinality": "ZeroOrOne",
+                              "RequiredContextCapabilities": "Source"
+                            }
+                          },
+                          "CounterId": {
+                            "value": "appointment_due"
+                          },
+                          "Amount": {
+                            "kind": "const",
+                            "value": {
+                              "Value": -1
+                            }
+                          },
+                          "Relative": true,
+                          "Children": []
+                        }
+                      }
+                    ]
+                  }
+                },
+                "Children": [
+                  {
+                    "kind": "node.sequence",
+                    "value": {
+                      "Children": [
+                        {
+                          "kind": "node.sequence",
+                          "value": {
+                            "Children": [
+                              {
+                                "kind": "node.applyStatus",
+                                "value": {
+                                  "TargetSelector": {
+                                    "kind": "sel.lowestHealthEnemy",
+                                    "value": {
+                                      "Cardinality": "ZeroOrOne"
+                                    }
+                                  },
+                                  "StatusDefinitionId": {
+                                    "value": "paperwork"
+                                  },
+                                  "Stacks": {
+                                    "kind": "const",
+                                    "value": {
+                                      "Value": 2
+                                    }
+                                  },
+                                  "DurationTurns": 0,
+                                  "Charges": 0,
+                                  "ResultKey": null,
+                                  "Children": []
+                                }
+                              },
+                              {
+                                "kind": "node.applyStatus",
+                                "value": {
+                                  "TargetSelector": {
+                                    "kind": "sel.lowestHealthEnemy",
+                                    "value": {
+                                      "Cardinality": "ZeroOrOne"
+                                    }
+                                  },
+                                  "StatusDefinitionId": {
+                                    "value": "fatigue"
+                                  },
+                                  "Stacks": {
+                                    "kind": "const",
+                                    "value": {
+                                      "Value": 1
+                                    }
+                                  },
+                                  "DurationTurns": 0,
+                                  "Charges": 0,
+                                  "ResultKey": null,
+                                  "Children": []
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "kind": "node.setCombatantCounter",
+                          "value": {
+                            "TargetSelector": {
+                              "kind": "sel.source",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "Source"
+                              }
+                            },
+                            "CounterId": {
+                              "value": "appointment_due"
+                            },
+                            "Amount": {
+                              "kind": "const",
+                              "value": {
+                                "Value": 0
+                              }
+                            },
+                            "Relative": false,
+                            "Children": []
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "kind": "node.conditional",
+                    "value": {
+                      "Condition": {
+                        "kind": "compare",
+                        "value": {
+                          "Left": {
+                            "kind": "combatantCounter",
+                            "value": {
+                              "Selector": {
+                                "kind": "sel.source",
+                                "value": {
+                                  "Cardinality": "ZeroOrOne",
+                                  "RequiredContextCapabilities": "Source"
+                                }
+                              },
+                              "CounterId": {
+                                "value": "appointment_due"
+                              }
+                            }
+                          },
+                          "Op": "Greater",
+                          "Right": {
+                            "kind": "const",
+                            "value": {
+                              "Value": 1
+                            }
+                          }
+                        }
+                      },
+                      "Then": {
+                        "kind": "node.setCombatantCounter",
+                        "value": {
+                          "TargetSelector": {
+                            "kind": "sel.source",
+                            "value": {
+                              "Cardinality": "ZeroOrOne",
+                              "RequiredContextCapabilities": "Source"
+                            }
+                          },
+                          "CounterId": {
+                            "value": "appointment_due"
+                          },
+                          "Amount": {
+                            "kind": "const",
+                            "value": {
+                              "Value": -1
+                            }
+                          },
+                          "Relative": true,
+                          "Children": []
+                        }
+                      },
+                      "Else": null,
+                      "Children": [
+                        {
+                          "kind": "node.setCombatantCounter",
+                          "value": {
+                            "TargetSelector": {
+                              "kind": "sel.source",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "Source"
+                              }
+                            },
+                            "CounterId": {
+                              "value": "appointment_due"
+                            },
+                            "Amount": {
+                              "kind": "const",
+                              "value": {
+                                "Value": -1
+                              }
+                            },
+                            "Relative": true,
+                            "Children": []
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            "MaxNodeDepth": 64,
+            "MaxProgramSteps": 1024
+          }
+        },
+        {
+          "Event": "TurnStarted",
+          "Program": {
+            "Id": {
+              "Value": "(unnamed)"
+            },
+            "Root": {
+              "kind": "node.conditional",
+              "value": {
+                "Condition": {
+                  "kind": "compare",
+                  "value": {
+                    "Left": {
+                      "kind": "combatantCounter",
+                      "value": {
+                        "Selector": {
+                          "kind": "sel.source",
+                          "value": {
+                            "Cardinality": "ZeroOrOne",
+                            "RequiredContextCapabilities": "Source"
+                          }
+                        },
+                        "CounterId": {
+                          "value": "appointment_started"
+                        }
+                      }
+                    },
+                    "Op": "Equal",
+                    "Right": {
+                      "kind": "const",
+                      "value": {
+                        "Value": 0
+                      }
+                    }
+                  }
+                },
+                "Then": {
+                  "kind": "node.sequence",
+                  "value": {
+                    "Children": [
+                      {
+                        "kind": "node.setCombatantCounter",
+                        "value": {
+                          "TargetSelector": {
+                            "kind": "sel.source",
+                            "value": {
+                              "Cardinality": "ZeroOrOne",
+                              "RequiredContextCapabilities": "Source"
+                            }
+                          },
+                          "CounterId": {
+                            "value": "appointment_due"
+                          },
+                          "Amount": {
+                            "kind": "const",
+                            "value": {
+                              "Value": 3
+                            }
+                          },
+                          "Relative": false,
+                          "Children": []
+                        }
+                      },
+                      {
+                        "kind": "node.setCombatantCounter",
+                        "value": {
+                          "TargetSelector": {
+                            "kind": "sel.source",
+                            "value": {
+                              "Cardinality": "ZeroOrOne",
+                              "RequiredContextCapabilities": "Source"
+                            }
+                          },
+                          "CounterId": {
+                            "value": "appointment_started"
+                          },
+                          "Amount": {
+                            "kind": "const",
+                            "value": {
+                              "Value": 1
+                            }
+                          },
+                          "Relative": false,
+                          "Children": []
+                        }
+                      }
+                    ]
+                  }
+                },
+                "Else": null,
+                "Children": [
+                  {
+                    "kind": "node.sequence",
+                    "value": {
+                      "Children": [
+                        {
+                          "kind": "node.setCombatantCounter",
+                          "value": {
+                            "TargetSelector": {
+                              "kind": "sel.source",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "Source"
+                              }
+                            },
+                            "CounterId": {
+                              "value": "appointment_due"
+                            },
+                            "Amount": {
+                              "kind": "const",
+                              "value": {
+                                "Value": 3
+                              }
+                            },
+                            "Relative": false,
+                            "Children": []
+                          }
+                        },
+                        {
+                          "kind": "node.setCombatantCounter",
+                          "value": {
+                            "TargetSelector": {
+                              "kind": "sel.source",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "Source"
+                              }
+                            },
+                            "CounterId": {
+                              "value": "appointment_started"
+                            },
+                            "Amount": {
+                              "kind": "const",
+                              "value": {
+                                "Value": 1
+                              }
+                            },
+                            "Relative": false,
+                            "Children": []
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            "MaxNodeDepth": 64,
+            "MaxProgramSteps": 1024
+          }
+        }
+      ],
+      "DeathPrevention": null,
+      "DebuffBlock": null
+    },
+    {
+      "Id": "appointment_due_final",
+      "PackageId": "scenario",
+      "NameKey": "Appointment Due (Final)",
+      "DescriptionKey": null,
+      "Polarity": "Neutral",
+      "UsesStacks": false,
+      "UsesDuration": false,
+      "UsesCharges": false,
+      "StackingBehavior": "MergeWithExistingInstance",
+      "Tags": [],
+      "PassiveModifiers": [],
+      "Triggers": [
+        {
+          "Event": "TurnEnded",
+          "Program": {
+            "Id": {
+              "Value": "(unnamed)"
+            },
+            "Root": {
+              "kind": "node.conditional",
+              "value": {
+                "Condition": {
+                  "kind": "compare",
+                  "value": {
+                    "Left": {
+                      "kind": "combatantCounter",
+                      "value": {
+                        "Selector": {
+                          "kind": "sel.source",
+                          "value": {
+                            "Cardinality": "ZeroOrOne",
+                            "RequiredContextCapabilities": "Source"
+                          }
+                        },
+                        "CounterId": {
+                          "value": "appointment_due"
+                        }
+                      }
+                    },
+                    "Op": "Equal",
+                    "Right": {
+                      "kind": "const",
+                      "value": {
+                        "Value": 1
+                      }
+                    }
+                  }
+                },
+                "Then": {
+                  "kind": "node.sequence",
+                  "value": {
+                    "Children": [
+                      {
+                        "kind": "node.sequence",
+                        "value": {
+                          "Children": [
+                            {
+                              "kind": "node.dealDamage",
+                              "value": {
+                                "TargetSelector": {
+                                  "kind": "sel.lowestHealthEnemy",
+                                  "value": {
+                                    "Cardinality": "ZeroOrOne"
+                                  }
+                                },
+                                "Amount": {
+                                  "kind": "const",
+                                  "value": {
+                                    "Value": 15
+                                  }
+                                },
+                                "ResultKey": null,
+                                "IgnoresBlock": false,
+                                "Element": null,
+                                "Children": []
+                              }
+                            },
+                            {
+                              "kind": "node.applyStatus",
+                              "value": {
+                                "TargetSelector": {
+                                  "kind": "sel.lowestHealthEnemy",
+                                  "value": {
+                                    "Cardinality": "ZeroOrOne"
+                                  }
+                                },
+                                "StatusDefinitionId": {
+                                  "value": "fatigue"
+                                },
+                                "Stacks": {
+                                  "kind": "const",
+                                  "value": {
+                                    "Value": 1
+                                  }
+                                },
+                                "DurationTurns": 0,
+                                "Charges": 0,
+                                "ResultKey": null,
+                                "Children": []
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "kind": "node.setCombatantCounter",
+                        "value": {
+                          "TargetSelector": {
+                            "kind": "sel.source",
+                            "value": {
+                              "Cardinality": "ZeroOrOne",
+                              "RequiredContextCapabilities": "Source"
+                            }
+                          },
+                          "CounterId": {
+                            "value": "appointment_due"
+                          },
+                          "Amount": {
+                            "kind": "const",
+                            "value": {
+                              "Value": 0
+                            }
+                          },
+                          "Relative": false,
+                          "Children": []
+                        }
+                      }
+                    ]
+                  }
+                },
+                "Else": {
+                  "kind": "node.conditional",
+                  "value": {
+                    "Condition": {
+                      "kind": "compare",
+                      "value": {
+                        "Left": {
+                          "kind": "combatantCounter",
+                          "value": {
+                            "Selector": {
+                              "kind": "sel.source",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "Source"
+                              }
+                            },
+                            "CounterId": {
+                              "value": "appointment_due"
+                            }
+                          }
+                        },
+                        "Op": "Greater",
+                        "Right": {
+                          "kind": "const",
+                          "value": {
+                            "Value": 1
+                          }
+                        }
+                      }
+                    },
+                    "Then": {
+                      "kind": "node.setCombatantCounter",
+                      "value": {
+                        "TargetSelector": {
+                          "kind": "sel.source",
+                          "value": {
+                            "Cardinality": "ZeroOrOne",
+                            "RequiredContextCapabilities": "Source"
+                          }
+                        },
+                        "CounterId": {
+                          "value": "appointment_due"
+                        },
+                        "Amount": {
+                          "kind": "const",
+                          "value": {
+                            "Value": -1
+                          }
+                        },
+                        "Relative": true,
+                        "Children": []
+                      }
+                    },
+                    "Else": null,
+                    "Children": [
+                      {
+                        "kind": "node.setCombatantCounter",
+                        "value": {
+                          "TargetSelector": {
+                            "kind": "sel.source",
+                            "value": {
+                              "Cardinality": "ZeroOrOne",
+                              "RequiredContextCapabilities": "Source"
+                            }
+                          },
+                          "CounterId": {
+                            "value": "appointment_due"
+                          },
+                          "Amount": {
+                            "kind": "const",
+                            "value": {
+                              "Value": -1
+                            }
+                          },
+                          "Relative": true,
+                          "Children": []
+                        }
+                      }
+                    ]
+                  }
+                },
+                "Children": [
+                  {
+                    "kind": "node.sequence",
+                    "value": {
+                      "Children": [
+                        {
+                          "kind": "node.sequence",
+                          "value": {
+                            "Children": [
+                              {
+                                "kind": "node.dealDamage",
+                                "value": {
+                                  "TargetSelector": {
+                                    "kind": "sel.lowestHealthEnemy",
+                                    "value": {
+                                      "Cardinality": "ZeroOrOne"
+                                    }
+                                  },
+                                  "Amount": {
+                                    "kind": "const",
+                                    "value": {
+                                      "Value": 15
+                                    }
+                                  },
+                                  "ResultKey": null,
+                                  "IgnoresBlock": false,
+                                  "Element": null,
+                                  "Children": []
+                                }
+                              },
+                              {
+                                "kind": "node.applyStatus",
+                                "value": {
+                                  "TargetSelector": {
+                                    "kind": "sel.lowestHealthEnemy",
+                                    "value": {
+                                      "Cardinality": "ZeroOrOne"
+                                    }
+                                  },
+                                  "StatusDefinitionId": {
+                                    "value": "fatigue"
+                                  },
+                                  "Stacks": {
+                                    "kind": "const",
+                                    "value": {
+                                      "Value": 1
+                                    }
+                                  },
+                                  "DurationTurns": 0,
+                                  "Charges": 0,
+                                  "ResultKey": null,
+                                  "Children": []
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "kind": "node.setCombatantCounter",
+                          "value": {
+                            "TargetSelector": {
+                              "kind": "sel.source",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "Source"
+                              }
+                            },
+                            "CounterId": {
+                              "value": "appointment_due"
+                            },
+                            "Amount": {
+                              "kind": "const",
+                              "value": {
+                                "Value": 0
+                              }
+                            },
+                            "Relative": false,
+                            "Children": []
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "kind": "node.conditional",
+                    "value": {
+                      "Condition": {
+                        "kind": "compare",
+                        "value": {
+                          "Left": {
+                            "kind": "combatantCounter",
+                            "value": {
+                              "Selector": {
+                                "kind": "sel.source",
+                                "value": {
+                                  "Cardinality": "ZeroOrOne",
+                                  "RequiredContextCapabilities": "Source"
+                                }
+                              },
+                              "CounterId": {
+                                "value": "appointment_due"
+                              }
+                            }
+                          },
+                          "Op": "Greater",
+                          "Right": {
+                            "kind": "const",
+                            "value": {
+                              "Value": 1
+                            }
+                          }
+                        }
+                      },
+                      "Then": {
+                        "kind": "node.setCombatantCounter",
+                        "value": {
+                          "TargetSelector": {
+                            "kind": "sel.source",
+                            "value": {
+                              "Cardinality": "ZeroOrOne",
+                              "RequiredContextCapabilities": "Source"
+                            }
+                          },
+                          "CounterId": {
+                            "value": "appointment_due"
+                          },
+                          "Amount": {
+                            "kind": "const",
+                            "value": {
+                              "Value": -1
+                            }
+                          },
+                          "Relative": true,
+                          "Children": []
+                        }
+                      },
+                      "Else": null,
+                      "Children": [
+                        {
+                          "kind": "node.setCombatantCounter",
+                          "value": {
+                            "TargetSelector": {
+                              "kind": "sel.source",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "Source"
+                              }
+                            },
+                            "CounterId": {
+                              "value": "appointment_due"
+                            },
+                            "Amount": {
+                              "kind": "const",
+                              "value": {
+                                "Value": -1
+                              }
+                            },
+                            "Relative": true,
+                            "Children": []
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            "MaxNodeDepth": 64,
+            "MaxProgramSteps": 1024
+          }
+        },
+        {
+          "Event": "TurnStarted",
+          "Program": {
+            "Id": {
+              "Value": "(unnamed)"
+            },
+            "Root": {
+              "kind": "node.conditional",
+              "value": {
+                "Condition": {
+                  "kind": "compare",
+                  "value": {
+                    "Left": {
+                      "kind": "combatantCounter",
+                      "value": {
+                        "Selector": {
+                          "kind": "sel.source",
+                          "value": {
+                            "Cardinality": "ZeroOrOne",
+                            "RequiredContextCapabilities": "Source"
+                          }
+                        },
+                        "CounterId": {
+                          "value": "appointment_started"
+                        }
+                      }
+                    },
+                    "Op": "Equal",
+                    "Right": {
+                      "kind": "const",
+                      "value": {
+                        "Value": 0
+                      }
+                    }
+                  }
+                },
+                "Then": {
+                  "kind": "node.sequence",
+                  "value": {
+                    "Children": [
+                      {
+                        "kind": "node.setCombatantCounter",
+                        "value": {
+                          "TargetSelector": {
+                            "kind": "sel.source",
+                            "value": {
+                              "Cardinality": "ZeroOrOne",
+                              "RequiredContextCapabilities": "Source"
+                            }
+                          },
+                          "CounterId": {
+                            "value": "appointment_due"
+                          },
+                          "Amount": {
+                            "kind": "const",
+                            "value": {
+                              "Value": 4
+                            }
+                          },
+                          "Relative": false,
+                          "Children": []
+                        }
+                      },
+                      {
+                        "kind": "node.setCombatantCounter",
+                        "value": {
+                          "TargetSelector": {
+                            "kind": "sel.source",
+                            "value": {
+                              "Cardinality": "ZeroOrOne",
+                              "RequiredContextCapabilities": "Source"
+                            }
+                          },
+                          "CounterId": {
+                            "value": "appointment_started"
+                          },
+                          "Amount": {
+                            "kind": "const",
+                            "value": {
+                              "Value": 1
+                            }
+                          },
+                          "Relative": false,
+                          "Children": []
+                        }
+                      }
+                    ]
+                  }
+                },
+                "Else": null,
+                "Children": [
+                  {
+                    "kind": "node.sequence",
+                    "value": {
+                      "Children": [
+                        {
+                          "kind": "node.setCombatantCounter",
+                          "value": {
+                            "TargetSelector": {
+                              "kind": "sel.source",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "Source"
+                              }
+                            },
+                            "CounterId": {
+                              "value": "appointment_due"
+                            },
+                            "Amount": {
+                              "kind": "const",
+                              "value": {
+                                "Value": 4
+                              }
+                            },
+                            "Relative": false,
+                            "Children": []
+                          }
+                        },
+                        {
+                          "kind": "node.setCombatantCounter",
+                          "value": {
+                            "TargetSelector": {
+                              "kind": "sel.source",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "Source"
+                              }
+                            },
+                            "CounterId": {
+                              "value": "appointment_started"
+                            },
+                            "Amount": {
+                              "kind": "const",
+                              "value": {
+                                "Value": 1
+                              }
+                            },
+                            "Relative": false,
+                            "Children": []
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            "MaxNodeDepth": 64,
+            "MaxProgramSteps": 1024
+          }
+        }
+      ],
+      "DeathPrevention": null,
+      "DebuffBlock": null
+    },
+    {
+      "Id": "appointments_accelerated",
+      "PackageId": "scenario",
+      "NameKey": "Appointments Accelerated",
+      "DescriptionKey": null,
+      "Polarity": "Neutral",
+      "UsesStacks": false,
+      "UsesDuration": false,
+      "UsesCharges": false,
+      "StackingBehavior": "MergeWithExistingInstance",
+      "Tags": [],
+      "PassiveModifiers": [],
+      "Triggers": [
+        {
+          "Event": "RoundEnded",
+          "Program": {
+            "Id": {
+              "Value": "(unnamed)"
+            },
+            "Root": {
+              "kind": "node.modifyStatusStacks",
+              "value": {
+                "TargetSelector": {
+                  "kind": "sel.withStatus",
+                  "value": {
+                    "Inner": {
+                      "kind": "sel.allCombatants",
+                      "value": {
+                        "AliveOnly": false,
+                        "MayIncludeDownedTargets": true
+                      }
+                    },
+                    "StatusDefinitionId": {
+                      "value": "appointments_accelerated"
+                    }
+                  }
+                },
+                "StatusDefinitionId": {
+                  "value": "appointments_accelerated"
+                },
+                "Delta": {
+                  "kind": "const",
+                  "value": {
+                    "Value": -1
+                  }
+                },
+                "ResultKey": null,
+                "Children": []
+              }
+            },
+            "MaxNodeDepth": 64,
+            "MaxProgramSteps": 1024
+          }
+        }
+      ],
+      "DeathPrevention": null,
+      "DebuffBlock": null
     }
   ],
   "Relics": [
@@ -239264,11 +241322,9 @@
         "Tags": [
           "city",
           "delay",
-          "waiting",
-          "fatigue_pressure",
-          "stage_delay",
-          "elite_delay",
-          "appointment"
+          "elite",
+          "appointment",
+          "stage_delay"
         ],
         "Extra": {}
       },
@@ -239284,11 +241340,9 @@
         "Tags": [
           "city",
           "delay",
-          "waiting",
-          "fatigue_pressure",
-          "stage_delay",
-          "elite_delay",
-          "appointment"
+          "elite",
+          "appointment",
+          "stage_delay"
         ],
         "Extra": {}
       },
@@ -239304,11 +241358,9 @@
         "Tags": [
           "city",
           "delay",
-          "waiting",
-          "fatigue_pressure",
-          "stage_delay",
-          "elite_delay",
-          "appointment"
+          "elite",
+          "appointment",
+          "stage_delay"
         ],
         "Extra": {}
       },
@@ -242193,6 +244245,12 @@
           {
             "Encounter": {
               "Value": "city_elite_enforcement_03"
+            },
+            "Weight": 1
+          },
+          {
+            "Encounter": {
+              "Value": "city_elite_delay_01"
             },
             "Weight": 1
           },

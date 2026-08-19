@@ -131,6 +131,18 @@ public static class EffectMapper
             "damage_per_counter" => new CombatNodeModel("dealDamage", Sel(),
                 DamagePerCounterAmount(where, effect)),
 
+            // countdown_step: bring an active countdown one closer, or START one at `amount` when none runs.
+            // The Three Appointments' scheduling moves ("reduce its Appointment Due by 1; if no countdown
+            // exists, establish N instead") — a conditional the flat effect list cannot express otherwise.
+            "countdown_step" => CombatNodeModel.Conditional(
+                new CombatConditionSpec("compare", Sel(), ValueKind: "counter",
+                    Op: ComparisonOperator.Greater, Right: 0,
+                    Id: effect.Counter ?? throw new ConversionException(where, "countdown_step without counter")),
+                new CombatNodeModel("setCombatantCounter", Sel(), CombatAmountSpec.FromConst(-1),
+                    CounterId: effect.Counter!, Relative: true),
+                new CombatNodeModel("setCombatantCounter", Sel(), CombatAmountSpec.FromConst(Amount()),
+                    CounterId: effect.Counter!, Relative: false)),
+
             "create_card" => new CombatNodeModel("createCardInstance", "source",
                 CombatAmountSpec.FromConst(effect.Copies ?? 1),
                 ToDefinition: CardMapper.MapCardId(effect.CardId

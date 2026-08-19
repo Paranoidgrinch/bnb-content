@@ -6596,7 +6596,7 @@
   {
     "id": "first_appointment",
     "name": "First Appointment",
-    "max_hp": 26,
+    "max_hp": 24,
     "intent_pattern": "cycle",
     "intents": [
       {
@@ -6607,12 +6607,12 @@
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 4
+            "amount": 6
           },
           {
             "type": "apply_status",
             "target": "player",
-            "status": "fatigue",
+            "status": "doubt",
             "amount": 1
           }
         ]
@@ -6625,61 +6625,74 @@
           {
             "type": "gain_block",
             "target": "owner",
-            "amount": 6
+            "amount": 7
           }
         ]
       },
       {
-        "id": "wrong_slot",
-        "name": "Wrong Slot",
-        "intent_type": "debuff",
-        "actions": [
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "doubt",
-            "amount": 1
-          }
-        ]
-      },
-      {
-        "id": "paperless_summons",
-        "name": "Paperless Summons",
+        "id": "move_up_the_date",
+        "name": "Move Up the Date",
         "intent_type": "attack",
         "actions": [
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 6
+            "amount": 4
+          },
+          {
+            "type": "countdown_step",
+            "target": "owner",
+            "counter": "appointment_due",
+            "amount": 2
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "appointments_accelerated",
+            "amount": 1
           }
         ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "appointment_due_first"
+      }
+    ],
+    "intent_rules": [
+      {
+        "condition": {
+          "kind": "opponent_status",
+          "status": "appointments_accelerated",
+          "min_stacks": 1
+        },
+        "action": "please_wait_here",
+        "priority": 10
       }
     ],
     "tags": [
       "city",
       "delay",
-      "waiting",
-      "fatigue_pressure",
-      "stage_delay",
-      "elite_delay",
-      "appointment"
+      "elite",
+      "appointment",
+      "stage_delay"
     ]
   },
   {
     "id": "second_appointment",
     "name": "Second Appointment",
-    "max_hp": 30,
+    "max_hp": 28,
     "intent_pattern": "cycle",
     "intents": [
       {
-        "id": "late_notice",
-        "name": "Late Notice",
+        "id": "rescheduled_cut",
+        "name": "Rescheduled Cut",
         "intent_type": "attack",
         "actions": [
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 5
+            "amount": 8
           }
         ]
       },
@@ -6697,44 +6710,57 @@
           {
             "type": "gain_block",
             "target": "all_enemies",
-            "amount": 3
+            "amount": 4
           }
         ]
       },
       {
-        "id": "rescheduled_cut",
-        "name": "Rescheduled Cut",
+        "id": "move_up_the_review",
+        "name": "Move Up the Review",
         "intent_type": "attack",
         "actions": [
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 7
-          }
-        ]
-      },
-      {
-        "id": "another_wait",
-        "name": "Another Wait",
-        "intent_type": "debuff",
-        "actions": [
+            "amount": 5
+          },
+          {
+            "type": "countdown_step",
+            "target": "owner",
+            "counter": "appointment_due",
+            "amount": 3
+          },
           {
             "type": "apply_status",
             "target": "player",
-            "status": "fatigue",
+            "status": "appointments_accelerated",
             "amount": 1
           }
         ]
       }
     ],
+    "starting_statuses": [
+      {
+        "status": "appointment_due_second"
+      }
+    ],
+    "intent_rules": [
+      {
+        "condition": {
+          "kind": "opponent_status",
+          "status": "appointments_accelerated",
+          "min_stacks": 1
+        },
+        "action": "all_slots_delayed",
+        "priority": 10
+      }
+    ],
     "tags": [
       "city",
       "delay",
-      "waiting",
-      "fatigue_pressure",
-      "stage_delay",
-      "elite_delay",
-      "appointment"
+      "elite",
+      "appointment",
+      "stage_delay"
     ]
   },
   {
@@ -6744,8 +6770,32 @@
     "intent_pattern": "cycle",
     "intents": [
       {
-        "id": "last_call",
-        "name": "Last Call",
+        "id": "appointment_strike",
+        "name": "Appointment Strike",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 10
+          }
+        ]
+      },
+      {
+        "id": "closed_door_pause",
+        "name": "Closed-Door Pause",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 10
+          }
+        ]
+      },
+      {
+        "id": "final_reminder",
+        "name": "Final Reminder",
         "intent_type": "mixed",
         "actions": [
           {
@@ -6758,60 +6808,44 @@
             "target": "player",
             "status": "fatigue",
             "amount": 1
-          }
-        ]
-      },
-      {
-        "id": "closed_door_pause",
-        "name": "Closed-Door Pause",
-        "intent_type": "block",
-        "actions": [
+          },
           {
-            "type": "gain_block",
+            "type": "countdown_step",
             "target": "owner",
-            "amount": 8
-          }
-        ]
-      },
-      {
-        "id": "appointment_strike",
-        "name": "Appointment Strike",
-        "intent_type": "attack",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 9
-          }
-        ]
-      },
-      {
-        "id": "postponed_again",
-        "name": "Postponed Again",
-        "intent_type": "mixed",
-        "actions": [
+            "counter": "appointment_due",
+            "amount": 4
+          },
           {
             "type": "apply_status",
             "target": "player",
-            "status": "fatigue",
+            "status": "appointments_accelerated",
             "amount": 1
-          },
-          {
-            "type": "gain_block",
-            "target": "owner",
-            "amount": 4
           }
         ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "appointment_due_final"
+      }
+    ],
+    "intent_rules": [
+      {
+        "condition": {
+          "kind": "opponent_status",
+          "status": "appointments_accelerated",
+          "min_stacks": 1
+        },
+        "action": "closed_door_pause",
+        "priority": 10
       }
     ],
     "tags": [
       "city",
       "delay",
-      "waiting",
-      "fatigue_pressure",
-      "stage_delay",
-      "elite_delay",
-      "appointment"
+      "elite",
+      "appointment",
+      "stage_delay"
     ]
   },
   {
