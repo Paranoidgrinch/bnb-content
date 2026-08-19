@@ -100,9 +100,13 @@ green (RogueDeck-Core Core 1402/Scenario 684/Run 448/Sandbox 298; bnb-content 69
   enemy id, keep an intent id only where the successor intent is the same mechanic.
 
 **Immediate next steps (resume here):**
-1. **Step 3 is DONE — all 25 identities, no deferrals left.** Next is step 4: curate `act_1_city.json` down
-   to the audit's 32 templates (23 solo + 9 duo, the duos already exist) and classify them into the map
-   spec's role pools (Combat / MultiCombat / Elite / Boss / Mimic).
+1. **Steps 3 and 4 are DONE.** Next is step 5: replace the baked map with a `MapGenerationSpec` built from
+   the roles (`Encounters.ByRole` from the curated pools, `NodeRefPools` from the events/rest/treasure/shop,
+   PerPathMinimums Combat 8 / MultiCombat 1 / Elite 1 / Event 3 / Rest 2 / Treasure 2 / Shop 2, mimic 5%,
+   BalanceTargets), then step 6: an end-to-end smoke that generates an Act-I map and plays it headless.
+2. **Open content debt:** the Elite and Boss pools are still the ported DEMO bodies (6 elites, 1 boss, and
+   the mimic points at one of them). The audit's own Act-I elite/boss designs are a separate authoring job —
+   see the Master Elite / Boss FINAL_AUDIT pools in ~/Downloads.
 2. The remaining duos ("Wrong Window, Same Queue", "The Line Has Started Moving", "Certified Pest Control"
    = Notary 34 + Mites 26, …): the per-roster HP override is DONE, so these are now plain authoring.
 3. Carbon Copies (Mites) can be authored with "Certified Pest Control" — the Oath Candle's Witness the Seal
@@ -205,10 +209,11 @@ signature via the recipe catalogue.
   encounter format has no per-encounter HP override (uses the enemy's max_hp). Add a per-roster HP override to
   `BabEncounter`/`EncounterMapper` when authoring the multi encounters (step 4).
 
-### 4. Act-I encounters + role pools (source-data + EncounterMapper)
-Rewrite `source-data/encounters/act_1_city.json` to the 32 templates (23 solo + 9 multi). Classify into the
-map spec's role pools: `Combat` (solo), `MultiCombat` (2+ enemies), `Elite`, `Boss`, `Mimic` (≈ a weak
-Act-I elite).
+### 4. Act-I encounters + role pools (source-data + EncounterMapper) — DONE
+`BabEncounter.role` (combat / multi_combat / elite / boss / mimic) marks which pool draws a template; the
+demo's other encounters simply carry no role and are inert. The curated pool is exactly the audit's 32
+(23 solos + 9 duos, every one of the 25 identities fielded, duos at their reduced HP) plus 6 demo elites,
+the boss and one mimic. `Tests/ActOnePoolTests.cs` pins all of it.
 
 ### 5. Map: MapBaker → MapGenerationSpec (procedural hybrid)
 Replace the baked fixed map with a `MapGenerationSpec` on the blueprint:
