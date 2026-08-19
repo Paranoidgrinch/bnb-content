@@ -8775,7 +8775,7 @@
   {
     "id": "final_notice_knight",
     "name": "Final Notice Knight",
-    "max_hp": 60,
+    "max_hp": 62,
     "intent_pattern": "cycle",
     "intents": [
       {
@@ -8786,7 +8786,7 @@
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 9
+            "amount": 10
           },
           {
             "type": "gain_strength",
@@ -8803,7 +8803,7 @@
           {
             "type": "gain_block",
             "target": "owner",
-            "amount": 10
+            "amount": 12
           }
         ]
       },
@@ -8815,7 +8815,7 @@
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 12
+            "amount": 13
           }
         ]
       },
@@ -8827,12 +8827,12 @@
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 6
+            "amount": 7
           },
           {
             "type": "gain_block",
             "target": "owner",
-            "amount": 6
+            "amount": 7
           }
         ]
       },
@@ -8844,21 +8844,92 @@
           {
             "type": "gain_strength",
             "target": "owner",
-            "amount": 2
+            "amount": 1
+          },
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 8
           }
         ]
+      },
+      {
+        "id": "enforce_acknowledged",
+        "name": "Enforce the Deadline",
+        "intent_type": "attack",
+        "special": true,
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 10
+          }
+        ]
+      },
+      {
+        "id": "enforce_refused",
+        "name": "Enforce the Deadline",
+        "intent_type": "attack",
+        "special": true,
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 19
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "paperwork",
+            "amount": 1
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "final_notice_knight"
+      },
+      {
+        "status": "deadline_running"
+      }
+    ],
+    "intent_rules": [
+      {
+        "condition": {
+          "kind": "all_of",
+          "conditions": [
+            {
+              "kind": "opponent_status",
+              "status": "enforcement_served",
+              "min_stacks": 2
+            },
+            {
+              "kind": "opponent_status",
+              "status": "service_acknowledged",
+              "min_stacks": 1
+            }
+          ]
+        },
+        "action": "enforce_acknowledged",
+        "priority": 90
+      },
+      {
+        "condition": {
+          "kind": "opponent_status",
+          "status": "enforcement_served",
+          "min_stacks": 2
+        },
+        "action": "enforce_refused",
+        "priority": 89
       }
     ],
     "tags": [
       "city",
       "enforcement",
-      "civic_force",
-      "block_pressure",
-      "strength_pressure",
-      "stage_enforcement",
-      "elite_enforcement",
+      "elite",
       "knight",
-      "notice"
+      "stage_enforcement"
     ]
   },
   {
@@ -8897,23 +8968,6 @@
         ]
       },
       {
-        "id": "authorized_pierce",
-        "name": "Authorized Pierce",
-        "intent_type": "mixed",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 5
-          },
-          {
-            "type": "gain_strength",
-            "target": "owner",
-            "amount": 1
-          }
-        ]
-      },
-      {
         "id": "long_reach",
         "name": "Long Reach",
         "intent_type": "attack",
@@ -8921,21 +8975,40 @@
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 9
+            "amount": 10
           }
         ]
+      },
+      {
+        "id": "authorized_pierce",
+        "name": "Authorized Pierce",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 6
+          },
+          {
+            "type": "modify_status",
+            "target": "player",
+            "status": "final_notice",
+            "amount": -1
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "sealed_spear"
       }
     ],
     "tags": [
       "city",
       "enforcement",
-      "civic_force",
-      "block_pressure",
-      "strength_pressure",
-      "stage_enforcement",
-      "elite_enforcement",
+      "elite",
       "spear",
-      "support"
+      "stage_enforcement"
     ]
   }
 ]

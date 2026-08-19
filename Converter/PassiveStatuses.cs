@@ -92,6 +92,13 @@ public static class PassiveStatuses
         Marker(LockCartId, "Lock Cart"),
         Marker(SeizureMarshalId, "Seizure Marshal"),
         Marker(InventoryPendingId, "Inventoried"),
+        FinalNotice(),
+        EnforcementServed(),
+        Marker(ServiceAcknowledgedId, "Service Acknowledged"),
+        Marker(FinalNoticeKnightId, "Final Notice Knight"),
+        Marker(SealedSpearId, "Sealed Spear"),
+        Marker(DeadlineCountingId, "Deadline Running"),
+        Marker(DeadlineServedId, "Deadline Served"),
         Marker(GateShutId, "Gate: Shut"),
         GateHalfRaised(),
         GateOpen(),
@@ -132,6 +139,48 @@ public static class PassiveStatuses
     public static readonly CounterId GatePressureCounter = new("gate_pressure");
     public static readonly CounterId GateBeatCounter = new("gate_beat");
     public const int GateThreshold = 12;
+
+    // Final Notice Knight: the deadline is the PLAYER's — Final Notice, Enforcement Served and the
+    // acknowledgement all sit on the applicant, where every program can address them with a single selector
+    // (and where the player can read their own countdown). The Knight's two mirrors say which phase the
+    // encounter is in for programs that run from the enemy side, e.g. the Spear's death.
+    public const string FinalNoticeId = "final_notice";
+    public const string EnforceQueuedId = "enforcement_served";
+    public const string ServiceAcknowledgedId = "service_acknowledged";
+    public const string FinalNoticeKnightId = "final_notice_knight";
+    public const string SealedSpearId = "sealed_spear";
+    public const string DeadlineCountingId = "deadline_running";
+    public const string DeadlineServedId = "deadline_served";
+    public const int FinalNoticeStart = 3;
+    public const string AcknowledgeCardId = "acknowledge_service";
+
+    // Enforcement Served counts the response window: 1 = served (the player's answer turn), 2 = the Knight's
+    // next action IS the enforcement.
+    private static StatusData EnforcementServed() => new()
+    {
+        Id = EnforceQueuedId,
+        NameKey = "Enforcement Served",
+        DescriptionKey = "The Knight will enforce the deadline on its next action.",
+        Polarity = StatusPolarity.Debuff,
+        StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
+        UsesStacks = true,
+        Tags = [],
+        PassiveModifiers = [],
+        Triggers = [],
+    };
+
+    private static StatusData FinalNotice() => new()
+    {
+        Id = FinalNoticeId,
+        NameKey = "Final Notice",
+        DescriptionKey = "Counts down at the end of each of your turns. At 0 the Knight serves enforcement.",
+        Polarity = StatusPolarity.Debuff,
+        StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
+        UsesStacks = true,
+        Tags = [],
+        PassiveModifiers = [],
+        Triggers = [],
+    };
 
     public sealed record ComplianceOrder(string StatusId, string Name, Func<ICombatExpression<TurnEndedTriggeredEffectContext, bool>> Fulfilled);
 

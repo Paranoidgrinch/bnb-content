@@ -507,6 +507,136 @@ public class EliteCombatTests
         Assert.Equal(1, FightProbe.StacksOf(Enemy(play, judicatorId), PassiveStatuses.GateShutId));
     }
 
+    // Final Notice Knight: the deadline sits on the PLAYER and ticks down at each of their turn ends. At 0 it
+    // is served — and the player still gets one full response turn, on which the acknowledgement is offered as
+    // a card. Signing it trades 2 Paperwork for a far lighter enforcement.
+    [Fact]
+    public void The_deadline_is_served_and_acknowledging_it_softens_the_blow()
+    {
+        var probe = FightProbe.Authored("city_elite_enforcement_04");
+        var (play, session, _) = FightProbe.Start(probe, Enumerable.Repeat("paper_cut", 10).ToList());
+
+        var combat = play.CombatDriver!.Current!;
+        var knightId = combat.State.Combatants.First(c => c.Id.value.StartsWith("final_notice_knight")).Id;
+
+        Assert.Equal(3, FightProbe.StacksOf(Hero(play), PassiveStatuses.FinalNoticeId));
+
+        play.CombatDriver.EndTurn();
+        Assert.Equal(2, FightProbe.StacksOf(Hero(play), PassiveStatuses.FinalNoticeId));
+        play.CombatDriver.EndTurn();
+        Assert.Equal(1, FightProbe.StacksOf(Hero(play), PassiveStatuses.FinalNoticeId));
+
+        // The last tick serves the notice — and the Knight's very next action is NOT the enforcement.
+        play.CombatDriver.EndTurn();
+        Assert.Null(session.Error);
+        Assert.Equal(0, FightProbe.StacksOf(Hero(play), PassiveStatuses.FinalNoticeId));
+        Assert.Equal(1, FightProbe.StacksOf(Hero(play), PassiveStatuses.EnforceQueuedId));
+
+        // The response turn opens with the offer on the table. Signing it costs 2 Paperwork.
+        var offer = play.CombatDriver.Current!.Hand
+            .First(c => c.DefinitionId.value == PassiveStatuses.AcknowledgeCardId);
+        play.CombatDriver.PlayCard(offer.Id, knightId);
+        Assert.Null(session.Error);
+        Assert.Equal(2, FightProbe.StacksOf(Hero(play), "paperwork"));
+        Assert.Equal(1, FightProbe.StacksOf(Hero(play), PassiveStatuses.ServiceAcknowledgedId));
+
+        // Ending the response turn closes the window and the enforcement lands in the same breath: 10 plus the
+        // Knight's Strength, and the acknowledged form carries no extra Paperwork. The Spear's Authorized
+        // Pierce adds its own 6, and the signed Paperwork tolls 2 when the next turn starts.
+        var strength = FightProbe.StacksOf(Enemy(play, knightId), "strength");
+        var before = Hero(play).Health.Current;
+        play.CombatDriver.EndTurn();
+        Assert.Null(session.Error);
+        Assert.Equal(before - (10 + strength) - 6 - 2, Hero(play).Health.Current);
+        Assert.Equal(2, FightProbe.StacksOf(Hero(play), PassiveStatuses.EnforceQueuedId));
+
+        // Once served, the notice restarts at 3 and the acknowledgement is spent.
+        play.CombatDriver.EndTurn();
+        Assert.Null(session.Error);
+        Assert.Equal(3, FightProbe.StacksOf(Hero(play), PassiveStatuses.FinalNoticeId));
+        Assert.Equal(0, FightProbe.StacksOf(Hero(play), PassiveStatuses.EnforceQueuedId));
+        Assert.Equal(0, FightProbe.StacksOf(Hero(play), PassiveStatuses.ServiceAcknowledgedId));
+    }
+
+    // Refusing costs nothing now and everything later: 19 and a Paperwork.
+    [Fact]
+    public void Refusing_service_takes_the_full_enforcement()
+    {
+        var probe = FightProbe.Authored("city_elite_enforcement_04");
+        var (play, session, _) = FightProbe.Start(
+            probe, Enumerable.Repeat("cower_behind_a_desk", 10).ToList(), health: 200);
+
+        var knightId = play.CombatDriver!.Current!.State.Combatants
+            .First(c => c.Id.value.StartsWith("final_notice_knight")).Id;
+
+        for (var i = 0; i < 3; i++) // three ticks: the notice is served, the response turn begins
+            play.CombatDriver.EndTurn();
+        Assert.Null(session.Error);
+        Assert.Equal(1, FightProbe.StacksOf(Hero(play), PassiveStatuses.EnforceQueuedId));
+
+        // The offer is left in hand — that IS the refusal.
+        Assert.Contains(play.CombatDriver.Current!.Hand,
+            c => c.DefinitionId.value == PassiveStatuses.AcknowledgeCardId);
+
+        var strength = FightProbe.StacksOf(Enemy(play, knightId), "strength");
+        var before = Hero(play).Health.Current;
+        play.CombatDriver.EndTurn();
+        Assert.Null(session.Error);
+
+        // 19 + Strength from the Knight and 6 from the Spear's pierce, plus the enforcement's own Paperwork
+        // tolling 1 when the next turn starts.
+        Assert.Equal(0, FightProbe.StacksOf(Hero(play), PassiveStatuses.ServiceAcknowledgedId));
+        Assert.Equal(before - (19 + strength) - 6 - 1, Hero(play).Health.Current);
+        Assert.Equal(1, FightProbe.StacksOf(Hero(play), "paperwork"));
+    }
+
+    // Killing the Spear during the response turn cancels the enforcement outright: the notice restarts at 1.
+    [Fact]
+    public void Killing_the_spear_on_the_response_turn_cancels_the_enforcement()
+    {
+        var probe = FightProbe.Authored("city_elite_enforcement_04", energy: 9);
+        var (play, session, _) = FightProbe.Start(probe, Enumerable.Repeat("paper_cut", 20).ToList());
+
+        var spearId = play.CombatDriver!.Current!.State.Combatants
+            .First(c => c.Id.value.StartsWith("sealed_spear")).Id;
+
+        for (var i = 0; i < 3; i++) // the notice runs out; the response turn begins
+            play.CombatDriver.EndTurn();
+        Assert.Equal(1, FightProbe.StacksOf(Hero(play), PassiveStatuses.EnforceQueuedId));
+
+        while (Enemy(play, spearId).IsAlive)
+            Cut(play, session, spearId);
+
+        Assert.Equal(0, FightProbe.StacksOf(Hero(play), PassiveStatuses.EnforceQueuedId));
+        Assert.Equal(1, FightProbe.StacksOf(Hero(play), PassiveStatuses.FinalNoticeId));
+
+        // No enforcement follows — the Knight is back to its ordinary rotation.
+        var before = Hero(play).Health.Current;
+        play.CombatDriver.EndTurn();
+        Assert.Null(session.Error);
+        Assert.True(before - Hero(play).Health.Current < 19, "the cancelled enforcement must not land");
+    }
+
+    // Killing the Sealed Spear buys time: while the deadline is merely running it slips a step back.
+    [Fact]
+    public void Killing_the_spear_pushes_the_deadline_back()
+    {
+        var probe = FightProbe.Authored("city_elite_enforcement_04", energy: 9);
+        var (play, session, _) = FightProbe.Start(probe, Enumerable.Repeat("paper_cut", 20).ToList());
+
+        var spearId = play.CombatDriver!.Current!.State.Combatants
+            .First(c => c.Id.value.StartsWith("sealed_spear")).Id;
+
+        play.CombatDriver.EndTurn(); // notice 3 → 2
+        Assert.Equal(2, FightProbe.StacksOf(Hero(play), PassiveStatuses.FinalNoticeId));
+
+        while (Enemy(play, spearId).IsAlive)
+            Cut(play, session, spearId);
+
+        // The Spear falls while the deadline still runs: one step back.
+        Assert.Equal(3, FightProbe.StacksOf(Hero(play), PassiveStatuses.FinalNoticeId));
+    }
+
     private static int Marked(RunPlayback play, CombatantId ownerId, CardZone zone) =>
         play.CombatDriver!.Current!.State.GetCardZones(ownerId).GetCardsInZone(zone)
             .Count(c => c.HasMark(PassiveStatuses.InventoriedMark));

@@ -18,7 +18,8 @@ internal static class FightProbe
 
     // `deck` stacks the hero's deck with authored cards (repeated as given) when a test needs a specific card
     // in hand — e.g. one that files Paperwork onto an enemy. Empty ⇒ the character's real starting deck.
-    public static RunBlueprint OneFight(EncounterDefinition probe, IReadOnlyList<string>? deck = null)
+    public static RunBlueprint OneFight(
+        EncounterDefinition probe, IReadOnlyList<string>? deck = null, int? health = null)
     {
         var blueprint = Game with
         {
@@ -28,12 +29,21 @@ internal static class FightProbe
             MapGeneration = null,
         };
 
-        return deck is null or { Count: 0 }
-            ? blueprint
-            : blueprint with
+        if (deck is not null and not { Count: 0 })
+            blueprint = blueprint with
             {
                 Deck = deck.Select(id => new CardDefinitionId(id)).ToList(),
                 Start = blueprint.Start with { Deck = deck.Select(id => new CardDefinitionId(id)).ToList() },
+                Characters = [],
+            };
+
+        // `health` buys a probe room to reach a late mechanic (the Knight's refused enforcement) without the
+        // fight ending first — the probe is a mechanism test, not a balance sample.
+        return health is not { } hp
+            ? blueprint
+            : blueprint with
+            {
+                Start = blueprint.Start with { MaxHealth = hp, StartingHealth = hp },
                 Characters = [],
             };
     }
@@ -68,14 +78,18 @@ internal static class FightProbe
 
         return new EncounterDefinition(new EncounterId($"probe.{enemyId}"), [probe],
             [new ResourceSpec(StandardCombatIds.EnergyResource, energy, energy)],
-            heroStartingStatuses: HeroStatuses(),
+            heroStartingStatuses: HeroStatuses(enemyId),
             triggeredEffects: EncounterPassives.ForEnemy(enemyId));
     }
 
     // Every probe marks the hero exactly as EncounterMapper does — the applicant marker a passive needs to
     // tell "this happened to the player".
-    private static IReadOnlyList<StartingStatusSpec> HeroStatuses() =>
-        [new StartingStatusSpec(new StatusDefinitionId(PassiveStatuses.ApplicantId), 1)];
+    private static IReadOnlyList<StartingStatusSpec> HeroStatuses(params string[] enemyIds) =>
+    [
+        new StartingStatusSpec(new StatusDefinitionId(PassiveStatuses.ApplicantId), 1),
+        // …plus whatever the roster serves ON the player at the first bell (the Knight's Final Notice).
+        .. enemyIds.Distinct().SelectMany(EncounterPassives.HeroOpeningStatuses),
+    ];
 
     // A multi-enemy probe: each member is an authored enemy narrowed to one intent, optionally at the reduced
     // HP its encounter fields it at. Roster order is turn order.
@@ -101,22 +115,32 @@ internal static class FightProbe
         // would — otherwise a passive silently does nothing in the very test meant to prove it.
         return new EncounterDefinition(new EncounterId($"probe.{probeId}"), roster,
             [new ResourceSpec(StandardCombatIds.EnergyResource, energy, energy)],
-            heroStartingStatuses: HeroStatuses(),
+            heroStartingStatuses: HeroStatuses([.. members.Select(m => m.EnemyId)]),
             triggeredEffects: members.Select(m => m.EnemyId).Distinct()
                 .SelectMany(EncounterPassives.ForEnemy).ToList());
     }
 
     // The REAL authored encounter, exactly as the game fields it (roster, per-encounter HP, intents).
-    public static EncounterDefinition Authored(string encounterId) =>
-        Game.Encounters.FirstOrDefault(e => e.Id.Value == encounterId)
-        ?? throw new InvalidOperationException($"no encounter '{encounterId}'");
+    // `energy` raises only the hero's pool, for probes that must land several cards inside one turn.
+    public static EncounterDefinition Authored(string encounterId, int? energy = null)
+    {
+        var authored = Game.Encounters.FirstOrDefault(e => e.Id.Value == encounterId)
+            ?? throw new InvalidOperationException($"no encounter '{encounterId}'");
+
+        return energy is not { } pool
+            ? authored
+            : new EncounterDefinition(authored.Id, authored.Enemies,
+                [new ResourceSpec(StandardCombatIds.EnergyResource, pool, pool)],
+                authored.HeroStartingStatuses, authored.HeroDisplayName, authored.CardsDrawnPerTurn,
+                authored.TriggeredEffects);
+    }
 
     // Starts the probe fight and hands back the live playback plus the enemy's id.
     public static (RunPlayback Play, InteractiveRunSession Session, CombatantId EnemyId) Start(
-        EncounterDefinition probe, IReadOnlyList<string>? deck = null)
+        EncounterDefinition probe, IReadOnlyList<string>? deck = null, int? health = null)
     {
         var play = new RunPlayback(() => { });
-        play.Start(OneFight(probe, deck), seed: 1, interactive: true);
+        play.Start(OneFight(probe, deck, health), seed: 1, interactive: true);
         var session = play.Session!;
         Assert.Null(play.Error);
         while (session.IsAwaitingInterlude)

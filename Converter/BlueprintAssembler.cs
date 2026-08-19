@@ -39,7 +39,7 @@ public static class BlueprintAssembler
             data.Bureaucrat.StartingDeck.Select(id => new CardDefinitionId(CardMapper.MapCardId(id))).ToList(),
             events,
             data.Encounters.Select(e => EncounterMapper.Map(e, enemiesById, data.Bureaucrat.StartingEnergy)).ToList(),
-            [.. data.Cards.Select(CardMapper.Map), .. ClauseCards.Cards()],
+            [.. data.Cards.Select(CardMapper.Map), .. ClauseCards.Cards(), NoticeCards.Acknowledge()],
             EnemyMapper.MapActions(enemies).ToList(),
             // The act's map is GENERATED per run from MapGeneration below; the authored map stays empty.
             new RunMap([]))

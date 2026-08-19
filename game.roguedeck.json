@@ -50695,7 +50695,7 @@
       "Enemies": [
         {
           "Id": "final_notice_knight",
-          "MaxHealth": 60,
+          "MaxHealth": 62,
           "Actions": [
             {
               "value": "final_notice_knight.notice_charge"
@@ -50713,10 +50713,74 @@
               "value": "final_notice_knight.last_warning"
             }
           ],
-          "StartingStatuses": null,
+          "StartingStatuses": [
+            {
+              "Status": {
+                "value": "final_notice_knight"
+              },
+              "Stacks": 1,
+              "DurationTurns": 0,
+              "Charges": 0
+            },
+            {
+              "Status": {
+                "value": "deadline_running"
+              },
+              "Stacks": 1,
+              "DurationTurns": 0,
+              "Charges": 0
+            }
+          ],
           "DisplayName": "Final Notice Knight",
           "Position": null,
-          "IntentRules": null
+          "IntentRules": [
+            {
+              "Condition": {
+                "kind": "intent.allOf",
+                "value": {
+                  "Conditions": [
+                    {
+                      "kind": "intent.opponentHasStatus",
+                      "value": {
+                        "Status": {
+                          "value": "enforcement_served"
+                        },
+                        "MinStacks": 2
+                      }
+                    },
+                    {
+                      "kind": "intent.opponentHasStatus",
+                      "value": {
+                        "Status": {
+                          "value": "service_acknowledged"
+                        },
+                        "MinStacks": 1
+                      }
+                    }
+                  ]
+                }
+              },
+              "Action": {
+                "value": "final_notice_knight.enforce_acknowledged"
+              },
+              "Priority": 90
+            },
+            {
+              "Condition": {
+                "kind": "intent.opponentHasStatus",
+                "value": {
+                  "Status": {
+                    "value": "enforcement_served"
+                  },
+                  "MinStacks": 2
+                }
+              },
+              "Action": {
+                "value": "final_notice_knight.enforce_refused"
+              },
+              "Priority": 89
+            }
+          ]
         },
         {
           "Id": "sealed_spear",
@@ -50729,13 +50793,22 @@
               "value": "sealed_spear.guard_the_notice"
             },
             {
-              "value": "sealed_spear.authorized_pierce"
+              "value": "sealed_spear.long_reach"
             },
             {
-              "value": "sealed_spear.long_reach"
+              "value": "sealed_spear.authorized_pierce"
             }
           ],
-          "StartingStatuses": null,
+          "StartingStatuses": [
+            {
+              "Status": {
+                "value": "sealed_spear"
+              },
+              "Stacks": 1,
+              "DurationTurns": 0,
+              "Charges": 0
+            }
+          ],
           "DisplayName": "Sealed Spear",
           "Position": null,
           "IntentRules": null
@@ -50758,11 +50831,2793 @@
           "Stacks": 1,
           "DurationTurns": 0,
           "Charges": 0
+        },
+        {
+          "Status": {
+            "value": "final_notice"
+          },
+          "Stacks": 3,
+          "DurationTurns": 0,
+          "Charges": 0
         }
       ],
       "HeroDisplayName": null,
       "CardsDrawnPerTurn": null,
-      "TriggeredEffects": []
+      "TriggeredEffects": [
+        {
+          "Event": "TurnEnded",
+          "Program": {
+            "Id": {
+              "Value": "(unnamed)"
+            },
+            "Root": {
+              "kind": "node.conditional",
+              "value": {
+                "Condition": {
+                  "kind": "compare",
+                  "value": {
+                    "Left": {
+                      "kind": "combatantStatusStacks",
+                      "value": {
+                        "Selector": {
+                          "kind": "sel.source",
+                          "value": {
+                            "Cardinality": "ZeroOrOne",
+                            "RequiredContextCapabilities": "Source"
+                          }
+                        },
+                        "StatusId": {
+                          "value": "the_applicant"
+                        }
+                      }
+                    },
+                    "Op": "Greater",
+                    "Right": {
+                      "kind": "const",
+                      "value": {
+                        "Value": 0
+                      }
+                    }
+                  }
+                },
+                "Then": {
+                  "kind": "node.sequence",
+                  "value": {
+                    "Children": [
+                      {
+                        "kind": "node.conditional",
+                        "value": {
+                          "Condition": {
+                            "kind": "compare",
+                            "value": {
+                              "Left": {
+                                "kind": "combatantStatusStacks",
+                                "value": {
+                                  "Selector": {
+                                    "kind": "sel.source",
+                                    "value": {
+                                      "Cardinality": "ZeroOrOne",
+                                      "RequiredContextCapabilities": "Source"
+                                    }
+                                  },
+                                  "StatusId": {
+                                    "value": "enforcement_served"
+                                  }
+                                }
+                              },
+                              "Op": "GreaterOrEqual",
+                              "Right": {
+                                "kind": "const",
+                                "value": {
+                                  "Value": 2
+                                }
+                              }
+                            }
+                          },
+                          "Then": {
+                            "kind": "node.sequence",
+                            "value": {
+                              "Children": [
+                                {
+                                  "kind": "node.removeStatus",
+                                  "value": {
+                                    "TargetSelector": {
+                                      "kind": "sel.source",
+                                      "value": {
+                                        "Cardinality": "ZeroOrOne",
+                                        "RequiredContextCapabilities": "Source"
+                                      }
+                                    },
+                                    "StatusDefinitionId": {
+                                      "value": "enforcement_served"
+                                    },
+                                    "ResultKey": null,
+                                    "Children": []
+                                  }
+                                },
+                                {
+                                  "kind": "node.removeStatus",
+                                  "value": {
+                                    "TargetSelector": {
+                                      "kind": "sel.source",
+                                      "value": {
+                                        "Cardinality": "ZeroOrOne",
+                                        "RequiredContextCapabilities": "Source"
+                                      }
+                                    },
+                                    "StatusDefinitionId": {
+                                      "value": "service_acknowledged"
+                                    },
+                                    "ResultKey": null,
+                                    "Children": []
+                                  }
+                                },
+                                {
+                                  "kind": "node.removeStatus",
+                                  "value": {
+                                    "TargetSelector": {
+                                      "kind": "sel.source",
+                                      "value": {
+                                        "Cardinality": "ZeroOrOne",
+                                        "RequiredContextCapabilities": "Source"
+                                      }
+                                    },
+                                    "StatusDefinitionId": {
+                                      "value": "final_notice"
+                                    },
+                                    "ResultKey": null,
+                                    "Children": []
+                                  }
+                                },
+                                {
+                                  "kind": "node.applyStatus",
+                                  "value": {
+                                    "TargetSelector": {
+                                      "kind": "sel.source",
+                                      "value": {
+                                        "Cardinality": "ZeroOrOne",
+                                        "RequiredContextCapabilities": "Source"
+                                      }
+                                    },
+                                    "StatusDefinitionId": {
+                                      "value": "final_notice"
+                                    },
+                                    "Stacks": {
+                                      "kind": "const",
+                                      "value": {
+                                        "Value": 3
+                                      }
+                                    },
+                                    "DurationTurns": 0,
+                                    "Charges": 0,
+                                    "ResultKey": null,
+                                    "Children": []
+                                  }
+                                },
+                                {
+                                  "kind": "node.removeStatus",
+                                  "value": {
+                                    "TargetSelector": {
+                                      "kind": "sel.enemiesWithStatus",
+                                      "value": {
+                                        "StatusDefinitionId": {
+                                          "value": "final_notice_knight"
+                                        }
+                                      }
+                                    },
+                                    "StatusDefinitionId": {
+                                      "value": "deadline_served"
+                                    },
+                                    "ResultKey": null,
+                                    "Children": []
+                                  }
+                                },
+                                {
+                                  "kind": "node.applyStatus",
+                                  "value": {
+                                    "TargetSelector": {
+                                      "kind": "sel.enemiesWithStatus",
+                                      "value": {
+                                        "StatusDefinitionId": {
+                                          "value": "final_notice_knight"
+                                        }
+                                      }
+                                    },
+                                    "StatusDefinitionId": {
+                                      "value": "deadline_running"
+                                    },
+                                    "Stacks": {
+                                      "kind": "const",
+                                      "value": {
+                                        "Value": 1
+                                      }
+                                    },
+                                    "DurationTurns": 0,
+                                    "Charges": 0,
+                                    "ResultKey": null,
+                                    "Children": []
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                          "Else": null,
+                          "Children": [
+                            {
+                              "kind": "node.sequence",
+                              "value": {
+                                "Children": [
+                                  {
+                                    "kind": "node.removeStatus",
+                                    "value": {
+                                      "TargetSelector": {
+                                        "kind": "sel.source",
+                                        "value": {
+                                          "Cardinality": "ZeroOrOne",
+                                          "RequiredContextCapabilities": "Source"
+                                        }
+                                      },
+                                      "StatusDefinitionId": {
+                                        "value": "enforcement_served"
+                                      },
+                                      "ResultKey": null,
+                                      "Children": []
+                                    }
+                                  },
+                                  {
+                                    "kind": "node.removeStatus",
+                                    "value": {
+                                      "TargetSelector": {
+                                        "kind": "sel.source",
+                                        "value": {
+                                          "Cardinality": "ZeroOrOne",
+                                          "RequiredContextCapabilities": "Source"
+                                        }
+                                      },
+                                      "StatusDefinitionId": {
+                                        "value": "service_acknowledged"
+                                      },
+                                      "ResultKey": null,
+                                      "Children": []
+                                    }
+                                  },
+                                  {
+                                    "kind": "node.removeStatus",
+                                    "value": {
+                                      "TargetSelector": {
+                                        "kind": "sel.source",
+                                        "value": {
+                                          "Cardinality": "ZeroOrOne",
+                                          "RequiredContextCapabilities": "Source"
+                                        }
+                                      },
+                                      "StatusDefinitionId": {
+                                        "value": "final_notice"
+                                      },
+                                      "ResultKey": null,
+                                      "Children": []
+                                    }
+                                  },
+                                  {
+                                    "kind": "node.applyStatus",
+                                    "value": {
+                                      "TargetSelector": {
+                                        "kind": "sel.source",
+                                        "value": {
+                                          "Cardinality": "ZeroOrOne",
+                                          "RequiredContextCapabilities": "Source"
+                                        }
+                                      },
+                                      "StatusDefinitionId": {
+                                        "value": "final_notice"
+                                      },
+                                      "Stacks": {
+                                        "kind": "const",
+                                        "value": {
+                                          "Value": 3
+                                        }
+                                      },
+                                      "DurationTurns": 0,
+                                      "Charges": 0,
+                                      "ResultKey": null,
+                                      "Children": []
+                                    }
+                                  },
+                                  {
+                                    "kind": "node.removeStatus",
+                                    "value": {
+                                      "TargetSelector": {
+                                        "kind": "sel.enemiesWithStatus",
+                                        "value": {
+                                          "StatusDefinitionId": {
+                                            "value": "final_notice_knight"
+                                          }
+                                        }
+                                      },
+                                      "StatusDefinitionId": {
+                                        "value": "deadline_served"
+                                      },
+                                      "ResultKey": null,
+                                      "Children": []
+                                    }
+                                  },
+                                  {
+                                    "kind": "node.applyStatus",
+                                    "value": {
+                                      "TargetSelector": {
+                                        "kind": "sel.enemiesWithStatus",
+                                        "value": {
+                                          "StatusDefinitionId": {
+                                            "value": "final_notice_knight"
+                                          }
+                                        }
+                                      },
+                                      "StatusDefinitionId": {
+                                        "value": "deadline_running"
+                                      },
+                                      "Stacks": {
+                                        "kind": "const",
+                                        "value": {
+                                          "Value": 1
+                                        }
+                                      },
+                                      "DurationTurns": 0,
+                                      "Charges": 0,
+                                      "ResultKey": null,
+                                      "Children": []
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "kind": "node.conditional",
+                        "value": {
+                          "Condition": {
+                            "kind": "compare",
+                            "value": {
+                              "Left": {
+                                "kind": "combatantStatusStacks",
+                                "value": {
+                                  "Selector": {
+                                    "kind": "sel.source",
+                                    "value": {
+                                      "Cardinality": "ZeroOrOne",
+                                      "RequiredContextCapabilities": "Source"
+                                    }
+                                  },
+                                  "StatusId": {
+                                    "value": "enforcement_served"
+                                  }
+                                }
+                              },
+                              "Op": "Equal",
+                              "Right": {
+                                "kind": "const",
+                                "value": {
+                                  "Value": 1
+                                }
+                              }
+                            }
+                          },
+                          "Then": {
+                            "kind": "node.modifyStatusStacks",
+                            "value": {
+                              "TargetSelector": {
+                                "kind": "sel.source",
+                                "value": {
+                                  "Cardinality": "ZeroOrOne",
+                                  "RequiredContextCapabilities": "Source"
+                                }
+                              },
+                              "StatusDefinitionId": {
+                                "value": "enforcement_served"
+                              },
+                              "Delta": {
+                                "kind": "const",
+                                "value": {
+                                  "Value": 1
+                                }
+                              },
+                              "ResultKey": null,
+                              "Children": []
+                            }
+                          },
+                          "Else": null,
+                          "Children": [
+                            {
+                              "kind": "node.modifyStatusStacks",
+                              "value": {
+                                "TargetSelector": {
+                                  "kind": "sel.source",
+                                  "value": {
+                                    "Cardinality": "ZeroOrOne",
+                                    "RequiredContextCapabilities": "Source"
+                                  }
+                                },
+                                "StatusDefinitionId": {
+                                  "value": "enforcement_served"
+                                },
+                                "Delta": {
+                                  "kind": "const",
+                                  "value": {
+                                    "Value": 1
+                                  }
+                                },
+                                "ResultKey": null,
+                                "Children": []
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "kind": "node.conditional",
+                        "value": {
+                          "Condition": {
+                            "kind": "compare",
+                            "value": {
+                              "Left": {
+                                "kind": "combatantStatusStacks",
+                                "value": {
+                                  "Selector": {
+                                    "kind": "sel.source",
+                                    "value": {
+                                      "Cardinality": "ZeroOrOne",
+                                      "RequiredContextCapabilities": "Source"
+                                    }
+                                  },
+                                  "StatusId": {
+                                    "value": "enforcement_served"
+                                  }
+                                }
+                              },
+                              "Op": "Equal",
+                              "Right": {
+                                "kind": "const",
+                                "value": {
+                                  "Value": 0
+                                }
+                              }
+                            }
+                          },
+                          "Then": {
+                            "kind": "node.sequence",
+                            "value": {
+                              "Children": [
+                                {
+                                  "kind": "node.conditional",
+                                  "value": {
+                                    "Condition": {
+                                      "kind": "compare",
+                                      "value": {
+                                        "Left": {
+                                          "kind": "combatantStatusStacks",
+                                          "value": {
+                                            "Selector": {
+                                              "kind": "sel.source",
+                                              "value": {
+                                                "Cardinality": "ZeroOrOne",
+                                                "RequiredContextCapabilities": "Source"
+                                              }
+                                            },
+                                            "StatusId": {
+                                              "value": "final_notice"
+                                            }
+                                          }
+                                        },
+                                        "Op": "Greater",
+                                        "Right": {
+                                          "kind": "const",
+                                          "value": {
+                                            "Value": 3
+                                          }
+                                        }
+                                      }
+                                    },
+                                    "Then": {
+                                      "kind": "node.modifyStatusStacks",
+                                      "value": {
+                                        "TargetSelector": {
+                                          "kind": "sel.source",
+                                          "value": {
+                                            "Cardinality": "ZeroOrOne",
+                                            "RequiredContextCapabilities": "Source"
+                                          }
+                                        },
+                                        "StatusDefinitionId": {
+                                          "value": "final_notice"
+                                        },
+                                        "Delta": {
+                                          "kind": "const",
+                                          "value": {
+                                            "Value": -1
+                                          }
+                                        },
+                                        "ResultKey": null,
+                                        "Children": []
+                                      }
+                                    },
+                                    "Else": null,
+                                    "Children": [
+                                      {
+                                        "kind": "node.modifyStatusStacks",
+                                        "value": {
+                                          "TargetSelector": {
+                                            "kind": "sel.source",
+                                            "value": {
+                                              "Cardinality": "ZeroOrOne",
+                                              "RequiredContextCapabilities": "Source"
+                                            }
+                                          },
+                                          "StatusDefinitionId": {
+                                            "value": "final_notice"
+                                          },
+                                          "Delta": {
+                                            "kind": "const",
+                                            "value": {
+                                              "Value": -1
+                                            }
+                                          },
+                                          "ResultKey": null,
+                                          "Children": []
+                                        }
+                                      }
+                                    ]
+                                  }
+                                },
+                                {
+                                  "kind": "node.conditional",
+                                  "value": {
+                                    "Condition": {
+                                      "kind": "compare",
+                                      "value": {
+                                        "Left": {
+                                          "kind": "combatantStatusStacks",
+                                          "value": {
+                                            "Selector": {
+                                              "kind": "sel.source",
+                                              "value": {
+                                                "Cardinality": "ZeroOrOne",
+                                                "RequiredContextCapabilities": "Source"
+                                              }
+                                            },
+                                            "StatusId": {
+                                              "value": "final_notice"
+                                            }
+                                          }
+                                        },
+                                        "Op": "Greater",
+                                        "Right": {
+                                          "kind": "const",
+                                          "value": {
+                                            "Value": 0
+                                          }
+                                        }
+                                      }
+                                    },
+                                    "Then": {
+                                      "kind": "node.modifyStatusStacks",
+                                      "value": {
+                                        "TargetSelector": {
+                                          "kind": "sel.source",
+                                          "value": {
+                                            "Cardinality": "ZeroOrOne",
+                                            "RequiredContextCapabilities": "Source"
+                                          }
+                                        },
+                                        "StatusDefinitionId": {
+                                          "value": "final_notice"
+                                        },
+                                        "Delta": {
+                                          "kind": "const",
+                                          "value": {
+                                            "Value": -1
+                                          }
+                                        },
+                                        "ResultKey": null,
+                                        "Children": []
+                                      }
+                                    },
+                                    "Else": null,
+                                    "Children": [
+                                      {
+                                        "kind": "node.modifyStatusStacks",
+                                        "value": {
+                                          "TargetSelector": {
+                                            "kind": "sel.source",
+                                            "value": {
+                                              "Cardinality": "ZeroOrOne",
+                                              "RequiredContextCapabilities": "Source"
+                                            }
+                                          },
+                                          "StatusDefinitionId": {
+                                            "value": "final_notice"
+                                          },
+                                          "Delta": {
+                                            "kind": "const",
+                                            "value": {
+                                              "Value": -1
+                                            }
+                                          },
+                                          "ResultKey": null,
+                                          "Children": []
+                                        }
+                                      }
+                                    ]
+                                  }
+                                },
+                                {
+                                  "kind": "node.conditional",
+                                  "value": {
+                                    "Condition": {
+                                      "kind": "compare",
+                                      "value": {
+                                        "Left": {
+                                          "kind": "combatantStatusStacks",
+                                          "value": {
+                                            "Selector": {
+                                              "kind": "sel.source",
+                                              "value": {
+                                                "Cardinality": "ZeroOrOne",
+                                                "RequiredContextCapabilities": "Source"
+                                              }
+                                            },
+                                            "StatusId": {
+                                              "value": "final_notice"
+                                            }
+                                          }
+                                        },
+                                        "Op": "Equal",
+                                        "Right": {
+                                          "kind": "const",
+                                          "value": {
+                                            "Value": 1
+                                          }
+                                        }
+                                      }
+                                    },
+                                    "Then": {
+                                      "kind": "node.sequence",
+                                      "value": {
+                                        "Children": [
+                                          {
+                                            "kind": "node.applyStatus",
+                                            "value": {
+                                              "TargetSelector": {
+                                                "kind": "sel.source",
+                                                "value": {
+                                                  "Cardinality": "ZeroOrOne",
+                                                  "RequiredContextCapabilities": "Source"
+                                                }
+                                              },
+                                              "StatusDefinitionId": {
+                                                "value": "enforcement_served"
+                                              },
+                                              "Stacks": {
+                                                "kind": "const",
+                                                "value": {
+                                                  "Value": 1
+                                                }
+                                              },
+                                              "DurationTurns": 0,
+                                              "Charges": 0,
+                                              "ResultKey": null,
+                                              "Children": []
+                                            }
+                                          },
+                                          {
+                                            "kind": "node.removeStatus",
+                                            "value": {
+                                              "TargetSelector": {
+                                                "kind": "sel.enemiesWithStatus",
+                                                "value": {
+                                                  "StatusDefinitionId": {
+                                                    "value": "final_notice_knight"
+                                                  }
+                                                }
+                                              },
+                                              "StatusDefinitionId": {
+                                                "value": "deadline_running"
+                                              },
+                                              "ResultKey": null,
+                                              "Children": []
+                                            }
+                                          },
+                                          {
+                                            "kind": "node.applyStatus",
+                                            "value": {
+                                              "TargetSelector": {
+                                                "kind": "sel.enemiesWithStatus",
+                                                "value": {
+                                                  "StatusDefinitionId": {
+                                                    "value": "final_notice_knight"
+                                                  }
+                                                }
+                                              },
+                                              "StatusDefinitionId": {
+                                                "value": "deadline_served"
+                                              },
+                                              "Stacks": {
+                                                "kind": "const",
+                                                "value": {
+                                                  "Value": 1
+                                                }
+                                              },
+                                              "DurationTurns": 0,
+                                              "Charges": 0,
+                                              "ResultKey": null,
+                                              "Children": []
+                                            }
+                                          }
+                                        ]
+                                      }
+                                    },
+                                    "Else": null,
+                                    "Children": [
+                                      {
+                                        "kind": "node.sequence",
+                                        "value": {
+                                          "Children": [
+                                            {
+                                              "kind": "node.applyStatus",
+                                              "value": {
+                                                "TargetSelector": {
+                                                  "kind": "sel.source",
+                                                  "value": {
+                                                    "Cardinality": "ZeroOrOne",
+                                                    "RequiredContextCapabilities": "Source"
+                                                  }
+                                                },
+                                                "StatusDefinitionId": {
+                                                  "value": "enforcement_served"
+                                                },
+                                                "Stacks": {
+                                                  "kind": "const",
+                                                  "value": {
+                                                    "Value": 1
+                                                  }
+                                                },
+                                                "DurationTurns": 0,
+                                                "Charges": 0,
+                                                "ResultKey": null,
+                                                "Children": []
+                                              }
+                                            },
+                                            {
+                                              "kind": "node.removeStatus",
+                                              "value": {
+                                                "TargetSelector": {
+                                                  "kind": "sel.enemiesWithStatus",
+                                                  "value": {
+                                                    "StatusDefinitionId": {
+                                                      "value": "final_notice_knight"
+                                                    }
+                                                  }
+                                                },
+                                                "StatusDefinitionId": {
+                                                  "value": "deadline_running"
+                                                },
+                                                "ResultKey": null,
+                                                "Children": []
+                                              }
+                                            },
+                                            {
+                                              "kind": "node.applyStatus",
+                                              "value": {
+                                                "TargetSelector": {
+                                                  "kind": "sel.enemiesWithStatus",
+                                                  "value": {
+                                                    "StatusDefinitionId": {
+                                                      "value": "final_notice_knight"
+                                                    }
+                                                  }
+                                                },
+                                                "StatusDefinitionId": {
+                                                  "value": "deadline_served"
+                                                },
+                                                "Stacks": {
+                                                  "kind": "const",
+                                                  "value": {
+                                                    "Value": 1
+                                                  }
+                                                },
+                                                "DurationTurns": 0,
+                                                "Charges": 0,
+                                                "ResultKey": null,
+                                                "Children": []
+                                              }
+                                            }
+                                          ]
+                                        }
+                                      }
+                                    ]
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                          "Else": null,
+                          "Children": [
+                            {
+                              "kind": "node.sequence",
+                              "value": {
+                                "Children": [
+                                  {
+                                    "kind": "node.conditional",
+                                    "value": {
+                                      "Condition": {
+                                        "kind": "compare",
+                                        "value": {
+                                          "Left": {
+                                            "kind": "combatantStatusStacks",
+                                            "value": {
+                                              "Selector": {
+                                                "kind": "sel.source",
+                                                "value": {
+                                                  "Cardinality": "ZeroOrOne",
+                                                  "RequiredContextCapabilities": "Source"
+                                                }
+                                              },
+                                              "StatusId": {
+                                                "value": "final_notice"
+                                              }
+                                            }
+                                          },
+                                          "Op": "Greater",
+                                          "Right": {
+                                            "kind": "const",
+                                            "value": {
+                                              "Value": 3
+                                            }
+                                          }
+                                        }
+                                      },
+                                      "Then": {
+                                        "kind": "node.modifyStatusStacks",
+                                        "value": {
+                                          "TargetSelector": {
+                                            "kind": "sel.source",
+                                            "value": {
+                                              "Cardinality": "ZeroOrOne",
+                                              "RequiredContextCapabilities": "Source"
+                                            }
+                                          },
+                                          "StatusDefinitionId": {
+                                            "value": "final_notice"
+                                          },
+                                          "Delta": {
+                                            "kind": "const",
+                                            "value": {
+                                              "Value": -1
+                                            }
+                                          },
+                                          "ResultKey": null,
+                                          "Children": []
+                                        }
+                                      },
+                                      "Else": null,
+                                      "Children": [
+                                        {
+                                          "kind": "node.modifyStatusStacks",
+                                          "value": {
+                                            "TargetSelector": {
+                                              "kind": "sel.source",
+                                              "value": {
+                                                "Cardinality": "ZeroOrOne",
+                                                "RequiredContextCapabilities": "Source"
+                                              }
+                                            },
+                                            "StatusDefinitionId": {
+                                              "value": "final_notice"
+                                            },
+                                            "Delta": {
+                                              "kind": "const",
+                                              "value": {
+                                                "Value": -1
+                                              }
+                                            },
+                                            "ResultKey": null,
+                                            "Children": []
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "kind": "node.conditional",
+                                    "value": {
+                                      "Condition": {
+                                        "kind": "compare",
+                                        "value": {
+                                          "Left": {
+                                            "kind": "combatantStatusStacks",
+                                            "value": {
+                                              "Selector": {
+                                                "kind": "sel.source",
+                                                "value": {
+                                                  "Cardinality": "ZeroOrOne",
+                                                  "RequiredContextCapabilities": "Source"
+                                                }
+                                              },
+                                              "StatusId": {
+                                                "value": "final_notice"
+                                              }
+                                            }
+                                          },
+                                          "Op": "Greater",
+                                          "Right": {
+                                            "kind": "const",
+                                            "value": {
+                                              "Value": 0
+                                            }
+                                          }
+                                        }
+                                      },
+                                      "Then": {
+                                        "kind": "node.modifyStatusStacks",
+                                        "value": {
+                                          "TargetSelector": {
+                                            "kind": "sel.source",
+                                            "value": {
+                                              "Cardinality": "ZeroOrOne",
+                                              "RequiredContextCapabilities": "Source"
+                                            }
+                                          },
+                                          "StatusDefinitionId": {
+                                            "value": "final_notice"
+                                          },
+                                          "Delta": {
+                                            "kind": "const",
+                                            "value": {
+                                              "Value": -1
+                                            }
+                                          },
+                                          "ResultKey": null,
+                                          "Children": []
+                                        }
+                                      },
+                                      "Else": null,
+                                      "Children": [
+                                        {
+                                          "kind": "node.modifyStatusStacks",
+                                          "value": {
+                                            "TargetSelector": {
+                                              "kind": "sel.source",
+                                              "value": {
+                                                "Cardinality": "ZeroOrOne",
+                                                "RequiredContextCapabilities": "Source"
+                                              }
+                                            },
+                                            "StatusDefinitionId": {
+                                              "value": "final_notice"
+                                            },
+                                            "Delta": {
+                                              "kind": "const",
+                                              "value": {
+                                                "Value": -1
+                                              }
+                                            },
+                                            "ResultKey": null,
+                                            "Children": []
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "kind": "node.conditional",
+                                    "value": {
+                                      "Condition": {
+                                        "kind": "compare",
+                                        "value": {
+                                          "Left": {
+                                            "kind": "combatantStatusStacks",
+                                            "value": {
+                                              "Selector": {
+                                                "kind": "sel.source",
+                                                "value": {
+                                                  "Cardinality": "ZeroOrOne",
+                                                  "RequiredContextCapabilities": "Source"
+                                                }
+                                              },
+                                              "StatusId": {
+                                                "value": "final_notice"
+                                              }
+                                            }
+                                          },
+                                          "Op": "Equal",
+                                          "Right": {
+                                            "kind": "const",
+                                            "value": {
+                                              "Value": 1
+                                            }
+                                          }
+                                        }
+                                      },
+                                      "Then": {
+                                        "kind": "node.sequence",
+                                        "value": {
+                                          "Children": [
+                                            {
+                                              "kind": "node.applyStatus",
+                                              "value": {
+                                                "TargetSelector": {
+                                                  "kind": "sel.source",
+                                                  "value": {
+                                                    "Cardinality": "ZeroOrOne",
+                                                    "RequiredContextCapabilities": "Source"
+                                                  }
+                                                },
+                                                "StatusDefinitionId": {
+                                                  "value": "enforcement_served"
+                                                },
+                                                "Stacks": {
+                                                  "kind": "const",
+                                                  "value": {
+                                                    "Value": 1
+                                                  }
+                                                },
+                                                "DurationTurns": 0,
+                                                "Charges": 0,
+                                                "ResultKey": null,
+                                                "Children": []
+                                              }
+                                            },
+                                            {
+                                              "kind": "node.removeStatus",
+                                              "value": {
+                                                "TargetSelector": {
+                                                  "kind": "sel.enemiesWithStatus",
+                                                  "value": {
+                                                    "StatusDefinitionId": {
+                                                      "value": "final_notice_knight"
+                                                    }
+                                                  }
+                                                },
+                                                "StatusDefinitionId": {
+                                                  "value": "deadline_running"
+                                                },
+                                                "ResultKey": null,
+                                                "Children": []
+                                              }
+                                            },
+                                            {
+                                              "kind": "node.applyStatus",
+                                              "value": {
+                                                "TargetSelector": {
+                                                  "kind": "sel.enemiesWithStatus",
+                                                  "value": {
+                                                    "StatusDefinitionId": {
+                                                      "value": "final_notice_knight"
+                                                    }
+                                                  }
+                                                },
+                                                "StatusDefinitionId": {
+                                                  "value": "deadline_served"
+                                                },
+                                                "Stacks": {
+                                                  "kind": "const",
+                                                  "value": {
+                                                    "Value": 1
+                                                  }
+                                                },
+                                                "DurationTurns": 0,
+                                                "Charges": 0,
+                                                "ResultKey": null,
+                                                "Children": []
+                                              }
+                                            }
+                                          ]
+                                        }
+                                      },
+                                      "Else": null,
+                                      "Children": [
+                                        {
+                                          "kind": "node.sequence",
+                                          "value": {
+                                            "Children": [
+                                              {
+                                                "kind": "node.applyStatus",
+                                                "value": {
+                                                  "TargetSelector": {
+                                                    "kind": "sel.source",
+                                                    "value": {
+                                                      "Cardinality": "ZeroOrOne",
+                                                      "RequiredContextCapabilities": "Source"
+                                                    }
+                                                  },
+                                                  "StatusDefinitionId": {
+                                                    "value": "enforcement_served"
+                                                  },
+                                                  "Stacks": {
+                                                    "kind": "const",
+                                                    "value": {
+                                                      "Value": 1
+                                                    }
+                                                  },
+                                                  "DurationTurns": 0,
+                                                  "Charges": 0,
+                                                  "ResultKey": null,
+                                                  "Children": []
+                                                }
+                                              },
+                                              {
+                                                "kind": "node.removeStatus",
+                                                "value": {
+                                                  "TargetSelector": {
+                                                    "kind": "sel.enemiesWithStatus",
+                                                    "value": {
+                                                      "StatusDefinitionId": {
+                                                        "value": "final_notice_knight"
+                                                      }
+                                                    }
+                                                  },
+                                                  "StatusDefinitionId": {
+                                                    "value": "deadline_running"
+                                                  },
+                                                  "ResultKey": null,
+                                                  "Children": []
+                                                }
+                                              },
+                                              {
+                                                "kind": "node.applyStatus",
+                                                "value": {
+                                                  "TargetSelector": {
+                                                    "kind": "sel.enemiesWithStatus",
+                                                    "value": {
+                                                      "StatusDefinitionId": {
+                                                        "value": "final_notice_knight"
+                                                      }
+                                                    }
+                                                  },
+                                                  "StatusDefinitionId": {
+                                                    "value": "deadline_served"
+                                                  },
+                                                  "Stacks": {
+                                                    "kind": "const",
+                                                    "value": {
+                                                      "Value": 1
+                                                    }
+                                                  },
+                                                  "DurationTurns": 0,
+                                                  "Charges": 0,
+                                                  "ResultKey": null,
+                                                  "Children": []
+                                                }
+                                              }
+                                            ]
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                "Else": null,
+                "Children": [
+                  {
+                    "kind": "node.sequence",
+                    "value": {
+                      "Children": [
+                        {
+                          "kind": "node.conditional",
+                          "value": {
+                            "Condition": {
+                              "kind": "compare",
+                              "value": {
+                                "Left": {
+                                  "kind": "combatantStatusStacks",
+                                  "value": {
+                                    "Selector": {
+                                      "kind": "sel.source",
+                                      "value": {
+                                        "Cardinality": "ZeroOrOne",
+                                        "RequiredContextCapabilities": "Source"
+                                      }
+                                    },
+                                    "StatusId": {
+                                      "value": "enforcement_served"
+                                    }
+                                  }
+                                },
+                                "Op": "GreaterOrEqual",
+                                "Right": {
+                                  "kind": "const",
+                                  "value": {
+                                    "Value": 2
+                                  }
+                                }
+                              }
+                            },
+                            "Then": {
+                              "kind": "node.sequence",
+                              "value": {
+                                "Children": [
+                                  {
+                                    "kind": "node.removeStatus",
+                                    "value": {
+                                      "TargetSelector": {
+                                        "kind": "sel.source",
+                                        "value": {
+                                          "Cardinality": "ZeroOrOne",
+                                          "RequiredContextCapabilities": "Source"
+                                        }
+                                      },
+                                      "StatusDefinitionId": {
+                                        "value": "enforcement_served"
+                                      },
+                                      "ResultKey": null,
+                                      "Children": []
+                                    }
+                                  },
+                                  {
+                                    "kind": "node.removeStatus",
+                                    "value": {
+                                      "TargetSelector": {
+                                        "kind": "sel.source",
+                                        "value": {
+                                          "Cardinality": "ZeroOrOne",
+                                          "RequiredContextCapabilities": "Source"
+                                        }
+                                      },
+                                      "StatusDefinitionId": {
+                                        "value": "service_acknowledged"
+                                      },
+                                      "ResultKey": null,
+                                      "Children": []
+                                    }
+                                  },
+                                  {
+                                    "kind": "node.removeStatus",
+                                    "value": {
+                                      "TargetSelector": {
+                                        "kind": "sel.source",
+                                        "value": {
+                                          "Cardinality": "ZeroOrOne",
+                                          "RequiredContextCapabilities": "Source"
+                                        }
+                                      },
+                                      "StatusDefinitionId": {
+                                        "value": "final_notice"
+                                      },
+                                      "ResultKey": null,
+                                      "Children": []
+                                    }
+                                  },
+                                  {
+                                    "kind": "node.applyStatus",
+                                    "value": {
+                                      "TargetSelector": {
+                                        "kind": "sel.source",
+                                        "value": {
+                                          "Cardinality": "ZeroOrOne",
+                                          "RequiredContextCapabilities": "Source"
+                                        }
+                                      },
+                                      "StatusDefinitionId": {
+                                        "value": "final_notice"
+                                      },
+                                      "Stacks": {
+                                        "kind": "const",
+                                        "value": {
+                                          "Value": 3
+                                        }
+                                      },
+                                      "DurationTurns": 0,
+                                      "Charges": 0,
+                                      "ResultKey": null,
+                                      "Children": []
+                                    }
+                                  },
+                                  {
+                                    "kind": "node.removeStatus",
+                                    "value": {
+                                      "TargetSelector": {
+                                        "kind": "sel.enemiesWithStatus",
+                                        "value": {
+                                          "StatusDefinitionId": {
+                                            "value": "final_notice_knight"
+                                          }
+                                        }
+                                      },
+                                      "StatusDefinitionId": {
+                                        "value": "deadline_served"
+                                      },
+                                      "ResultKey": null,
+                                      "Children": []
+                                    }
+                                  },
+                                  {
+                                    "kind": "node.applyStatus",
+                                    "value": {
+                                      "TargetSelector": {
+                                        "kind": "sel.enemiesWithStatus",
+                                        "value": {
+                                          "StatusDefinitionId": {
+                                            "value": "final_notice_knight"
+                                          }
+                                        }
+                                      },
+                                      "StatusDefinitionId": {
+                                        "value": "deadline_running"
+                                      },
+                                      "Stacks": {
+                                        "kind": "const",
+                                        "value": {
+                                          "Value": 1
+                                        }
+                                      },
+                                      "DurationTurns": 0,
+                                      "Charges": 0,
+                                      "ResultKey": null,
+                                      "Children": []
+                                    }
+                                  }
+                                ]
+                              }
+                            },
+                            "Else": null,
+                            "Children": [
+                              {
+                                "kind": "node.sequence",
+                                "value": {
+                                  "Children": [
+                                    {
+                                      "kind": "node.removeStatus",
+                                      "value": {
+                                        "TargetSelector": {
+                                          "kind": "sel.source",
+                                          "value": {
+                                            "Cardinality": "ZeroOrOne",
+                                            "RequiredContextCapabilities": "Source"
+                                          }
+                                        },
+                                        "StatusDefinitionId": {
+                                          "value": "enforcement_served"
+                                        },
+                                        "ResultKey": null,
+                                        "Children": []
+                                      }
+                                    },
+                                    {
+                                      "kind": "node.removeStatus",
+                                      "value": {
+                                        "TargetSelector": {
+                                          "kind": "sel.source",
+                                          "value": {
+                                            "Cardinality": "ZeroOrOne",
+                                            "RequiredContextCapabilities": "Source"
+                                          }
+                                        },
+                                        "StatusDefinitionId": {
+                                          "value": "service_acknowledged"
+                                        },
+                                        "ResultKey": null,
+                                        "Children": []
+                                      }
+                                    },
+                                    {
+                                      "kind": "node.removeStatus",
+                                      "value": {
+                                        "TargetSelector": {
+                                          "kind": "sel.source",
+                                          "value": {
+                                            "Cardinality": "ZeroOrOne",
+                                            "RequiredContextCapabilities": "Source"
+                                          }
+                                        },
+                                        "StatusDefinitionId": {
+                                          "value": "final_notice"
+                                        },
+                                        "ResultKey": null,
+                                        "Children": []
+                                      }
+                                    },
+                                    {
+                                      "kind": "node.applyStatus",
+                                      "value": {
+                                        "TargetSelector": {
+                                          "kind": "sel.source",
+                                          "value": {
+                                            "Cardinality": "ZeroOrOne",
+                                            "RequiredContextCapabilities": "Source"
+                                          }
+                                        },
+                                        "StatusDefinitionId": {
+                                          "value": "final_notice"
+                                        },
+                                        "Stacks": {
+                                          "kind": "const",
+                                          "value": {
+                                            "Value": 3
+                                          }
+                                        },
+                                        "DurationTurns": 0,
+                                        "Charges": 0,
+                                        "ResultKey": null,
+                                        "Children": []
+                                      }
+                                    },
+                                    {
+                                      "kind": "node.removeStatus",
+                                      "value": {
+                                        "TargetSelector": {
+                                          "kind": "sel.enemiesWithStatus",
+                                          "value": {
+                                            "StatusDefinitionId": {
+                                              "value": "final_notice_knight"
+                                            }
+                                          }
+                                        },
+                                        "StatusDefinitionId": {
+                                          "value": "deadline_served"
+                                        },
+                                        "ResultKey": null,
+                                        "Children": []
+                                      }
+                                    },
+                                    {
+                                      "kind": "node.applyStatus",
+                                      "value": {
+                                        "TargetSelector": {
+                                          "kind": "sel.enemiesWithStatus",
+                                          "value": {
+                                            "StatusDefinitionId": {
+                                              "value": "final_notice_knight"
+                                            }
+                                          }
+                                        },
+                                        "StatusDefinitionId": {
+                                          "value": "deadline_running"
+                                        },
+                                        "Stacks": {
+                                          "kind": "const",
+                                          "value": {
+                                            "Value": 1
+                                          }
+                                        },
+                                        "DurationTurns": 0,
+                                        "Charges": 0,
+                                        "ResultKey": null,
+                                        "Children": []
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "kind": "node.conditional",
+                          "value": {
+                            "Condition": {
+                              "kind": "compare",
+                              "value": {
+                                "Left": {
+                                  "kind": "combatantStatusStacks",
+                                  "value": {
+                                    "Selector": {
+                                      "kind": "sel.source",
+                                      "value": {
+                                        "Cardinality": "ZeroOrOne",
+                                        "RequiredContextCapabilities": "Source"
+                                      }
+                                    },
+                                    "StatusId": {
+                                      "value": "enforcement_served"
+                                    }
+                                  }
+                                },
+                                "Op": "Equal",
+                                "Right": {
+                                  "kind": "const",
+                                  "value": {
+                                    "Value": 1
+                                  }
+                                }
+                              }
+                            },
+                            "Then": {
+                              "kind": "node.modifyStatusStacks",
+                              "value": {
+                                "TargetSelector": {
+                                  "kind": "sel.source",
+                                  "value": {
+                                    "Cardinality": "ZeroOrOne",
+                                    "RequiredContextCapabilities": "Source"
+                                  }
+                                },
+                                "StatusDefinitionId": {
+                                  "value": "enforcement_served"
+                                },
+                                "Delta": {
+                                  "kind": "const",
+                                  "value": {
+                                    "Value": 1
+                                  }
+                                },
+                                "ResultKey": null,
+                                "Children": []
+                              }
+                            },
+                            "Else": null,
+                            "Children": [
+                              {
+                                "kind": "node.modifyStatusStacks",
+                                "value": {
+                                  "TargetSelector": {
+                                    "kind": "sel.source",
+                                    "value": {
+                                      "Cardinality": "ZeroOrOne",
+                                      "RequiredContextCapabilities": "Source"
+                                    }
+                                  },
+                                  "StatusDefinitionId": {
+                                    "value": "enforcement_served"
+                                  },
+                                  "Delta": {
+                                    "kind": "const",
+                                    "value": {
+                                      "Value": 1
+                                    }
+                                  },
+                                  "ResultKey": null,
+                                  "Children": []
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "kind": "node.conditional",
+                          "value": {
+                            "Condition": {
+                              "kind": "compare",
+                              "value": {
+                                "Left": {
+                                  "kind": "combatantStatusStacks",
+                                  "value": {
+                                    "Selector": {
+                                      "kind": "sel.source",
+                                      "value": {
+                                        "Cardinality": "ZeroOrOne",
+                                        "RequiredContextCapabilities": "Source"
+                                      }
+                                    },
+                                    "StatusId": {
+                                      "value": "enforcement_served"
+                                    }
+                                  }
+                                },
+                                "Op": "Equal",
+                                "Right": {
+                                  "kind": "const",
+                                  "value": {
+                                    "Value": 0
+                                  }
+                                }
+                              }
+                            },
+                            "Then": {
+                              "kind": "node.sequence",
+                              "value": {
+                                "Children": [
+                                  {
+                                    "kind": "node.conditional",
+                                    "value": {
+                                      "Condition": {
+                                        "kind": "compare",
+                                        "value": {
+                                          "Left": {
+                                            "kind": "combatantStatusStacks",
+                                            "value": {
+                                              "Selector": {
+                                                "kind": "sel.source",
+                                                "value": {
+                                                  "Cardinality": "ZeroOrOne",
+                                                  "RequiredContextCapabilities": "Source"
+                                                }
+                                              },
+                                              "StatusId": {
+                                                "value": "final_notice"
+                                              }
+                                            }
+                                          },
+                                          "Op": "Greater",
+                                          "Right": {
+                                            "kind": "const",
+                                            "value": {
+                                              "Value": 3
+                                            }
+                                          }
+                                        }
+                                      },
+                                      "Then": {
+                                        "kind": "node.modifyStatusStacks",
+                                        "value": {
+                                          "TargetSelector": {
+                                            "kind": "sel.source",
+                                            "value": {
+                                              "Cardinality": "ZeroOrOne",
+                                              "RequiredContextCapabilities": "Source"
+                                            }
+                                          },
+                                          "StatusDefinitionId": {
+                                            "value": "final_notice"
+                                          },
+                                          "Delta": {
+                                            "kind": "const",
+                                            "value": {
+                                              "Value": -1
+                                            }
+                                          },
+                                          "ResultKey": null,
+                                          "Children": []
+                                        }
+                                      },
+                                      "Else": null,
+                                      "Children": [
+                                        {
+                                          "kind": "node.modifyStatusStacks",
+                                          "value": {
+                                            "TargetSelector": {
+                                              "kind": "sel.source",
+                                              "value": {
+                                                "Cardinality": "ZeroOrOne",
+                                                "RequiredContextCapabilities": "Source"
+                                              }
+                                            },
+                                            "StatusDefinitionId": {
+                                              "value": "final_notice"
+                                            },
+                                            "Delta": {
+                                              "kind": "const",
+                                              "value": {
+                                                "Value": -1
+                                              }
+                                            },
+                                            "ResultKey": null,
+                                            "Children": []
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "kind": "node.conditional",
+                                    "value": {
+                                      "Condition": {
+                                        "kind": "compare",
+                                        "value": {
+                                          "Left": {
+                                            "kind": "combatantStatusStacks",
+                                            "value": {
+                                              "Selector": {
+                                                "kind": "sel.source",
+                                                "value": {
+                                                  "Cardinality": "ZeroOrOne",
+                                                  "RequiredContextCapabilities": "Source"
+                                                }
+                                              },
+                                              "StatusId": {
+                                                "value": "final_notice"
+                                              }
+                                            }
+                                          },
+                                          "Op": "Greater",
+                                          "Right": {
+                                            "kind": "const",
+                                            "value": {
+                                              "Value": 0
+                                            }
+                                          }
+                                        }
+                                      },
+                                      "Then": {
+                                        "kind": "node.modifyStatusStacks",
+                                        "value": {
+                                          "TargetSelector": {
+                                            "kind": "sel.source",
+                                            "value": {
+                                              "Cardinality": "ZeroOrOne",
+                                              "RequiredContextCapabilities": "Source"
+                                            }
+                                          },
+                                          "StatusDefinitionId": {
+                                            "value": "final_notice"
+                                          },
+                                          "Delta": {
+                                            "kind": "const",
+                                            "value": {
+                                              "Value": -1
+                                            }
+                                          },
+                                          "ResultKey": null,
+                                          "Children": []
+                                        }
+                                      },
+                                      "Else": null,
+                                      "Children": [
+                                        {
+                                          "kind": "node.modifyStatusStacks",
+                                          "value": {
+                                            "TargetSelector": {
+                                              "kind": "sel.source",
+                                              "value": {
+                                                "Cardinality": "ZeroOrOne",
+                                                "RequiredContextCapabilities": "Source"
+                                              }
+                                            },
+                                            "StatusDefinitionId": {
+                                              "value": "final_notice"
+                                            },
+                                            "Delta": {
+                                              "kind": "const",
+                                              "value": {
+                                                "Value": -1
+                                              }
+                                            },
+                                            "ResultKey": null,
+                                            "Children": []
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "kind": "node.conditional",
+                                    "value": {
+                                      "Condition": {
+                                        "kind": "compare",
+                                        "value": {
+                                          "Left": {
+                                            "kind": "combatantStatusStacks",
+                                            "value": {
+                                              "Selector": {
+                                                "kind": "sel.source",
+                                                "value": {
+                                                  "Cardinality": "ZeroOrOne",
+                                                  "RequiredContextCapabilities": "Source"
+                                                }
+                                              },
+                                              "StatusId": {
+                                                "value": "final_notice"
+                                              }
+                                            }
+                                          },
+                                          "Op": "Equal",
+                                          "Right": {
+                                            "kind": "const",
+                                            "value": {
+                                              "Value": 1
+                                            }
+                                          }
+                                        }
+                                      },
+                                      "Then": {
+                                        "kind": "node.sequence",
+                                        "value": {
+                                          "Children": [
+                                            {
+                                              "kind": "node.applyStatus",
+                                              "value": {
+                                                "TargetSelector": {
+                                                  "kind": "sel.source",
+                                                  "value": {
+                                                    "Cardinality": "ZeroOrOne",
+                                                    "RequiredContextCapabilities": "Source"
+                                                  }
+                                                },
+                                                "StatusDefinitionId": {
+                                                  "value": "enforcement_served"
+                                                },
+                                                "Stacks": {
+                                                  "kind": "const",
+                                                  "value": {
+                                                    "Value": 1
+                                                  }
+                                                },
+                                                "DurationTurns": 0,
+                                                "Charges": 0,
+                                                "ResultKey": null,
+                                                "Children": []
+                                              }
+                                            },
+                                            {
+                                              "kind": "node.removeStatus",
+                                              "value": {
+                                                "TargetSelector": {
+                                                  "kind": "sel.enemiesWithStatus",
+                                                  "value": {
+                                                    "StatusDefinitionId": {
+                                                      "value": "final_notice_knight"
+                                                    }
+                                                  }
+                                                },
+                                                "StatusDefinitionId": {
+                                                  "value": "deadline_running"
+                                                },
+                                                "ResultKey": null,
+                                                "Children": []
+                                              }
+                                            },
+                                            {
+                                              "kind": "node.applyStatus",
+                                              "value": {
+                                                "TargetSelector": {
+                                                  "kind": "sel.enemiesWithStatus",
+                                                  "value": {
+                                                    "StatusDefinitionId": {
+                                                      "value": "final_notice_knight"
+                                                    }
+                                                  }
+                                                },
+                                                "StatusDefinitionId": {
+                                                  "value": "deadline_served"
+                                                },
+                                                "Stacks": {
+                                                  "kind": "const",
+                                                  "value": {
+                                                    "Value": 1
+                                                  }
+                                                },
+                                                "DurationTurns": 0,
+                                                "Charges": 0,
+                                                "ResultKey": null,
+                                                "Children": []
+                                              }
+                                            }
+                                          ]
+                                        }
+                                      },
+                                      "Else": null,
+                                      "Children": [
+                                        {
+                                          "kind": "node.sequence",
+                                          "value": {
+                                            "Children": [
+                                              {
+                                                "kind": "node.applyStatus",
+                                                "value": {
+                                                  "TargetSelector": {
+                                                    "kind": "sel.source",
+                                                    "value": {
+                                                      "Cardinality": "ZeroOrOne",
+                                                      "RequiredContextCapabilities": "Source"
+                                                    }
+                                                  },
+                                                  "StatusDefinitionId": {
+                                                    "value": "enforcement_served"
+                                                  },
+                                                  "Stacks": {
+                                                    "kind": "const",
+                                                    "value": {
+                                                      "Value": 1
+                                                    }
+                                                  },
+                                                  "DurationTurns": 0,
+                                                  "Charges": 0,
+                                                  "ResultKey": null,
+                                                  "Children": []
+                                                }
+                                              },
+                                              {
+                                                "kind": "node.removeStatus",
+                                                "value": {
+                                                  "TargetSelector": {
+                                                    "kind": "sel.enemiesWithStatus",
+                                                    "value": {
+                                                      "StatusDefinitionId": {
+                                                        "value": "final_notice_knight"
+                                                      }
+                                                    }
+                                                  },
+                                                  "StatusDefinitionId": {
+                                                    "value": "deadline_running"
+                                                  },
+                                                  "ResultKey": null,
+                                                  "Children": []
+                                                }
+                                              },
+                                              {
+                                                "kind": "node.applyStatus",
+                                                "value": {
+                                                  "TargetSelector": {
+                                                    "kind": "sel.enemiesWithStatus",
+                                                    "value": {
+                                                      "StatusDefinitionId": {
+                                                        "value": "final_notice_knight"
+                                                      }
+                                                    }
+                                                  },
+                                                  "StatusDefinitionId": {
+                                                    "value": "deadline_served"
+                                                  },
+                                                  "Stacks": {
+                                                    "kind": "const",
+                                                    "value": {
+                                                      "Value": 1
+                                                    }
+                                                  },
+                                                  "DurationTurns": 0,
+                                                  "Charges": 0,
+                                                  "ResultKey": null,
+                                                  "Children": []
+                                                }
+                                              }
+                                            ]
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            },
+                            "Else": null,
+                            "Children": [
+                              {
+                                "kind": "node.sequence",
+                                "value": {
+                                  "Children": [
+                                    {
+                                      "kind": "node.conditional",
+                                      "value": {
+                                        "Condition": {
+                                          "kind": "compare",
+                                          "value": {
+                                            "Left": {
+                                              "kind": "combatantStatusStacks",
+                                              "value": {
+                                                "Selector": {
+                                                  "kind": "sel.source",
+                                                  "value": {
+                                                    "Cardinality": "ZeroOrOne",
+                                                    "RequiredContextCapabilities": "Source"
+                                                  }
+                                                },
+                                                "StatusId": {
+                                                  "value": "final_notice"
+                                                }
+                                              }
+                                            },
+                                            "Op": "Greater",
+                                            "Right": {
+                                              "kind": "const",
+                                              "value": {
+                                                "Value": 3
+                                              }
+                                            }
+                                          }
+                                        },
+                                        "Then": {
+                                          "kind": "node.modifyStatusStacks",
+                                          "value": {
+                                            "TargetSelector": {
+                                              "kind": "sel.source",
+                                              "value": {
+                                                "Cardinality": "ZeroOrOne",
+                                                "RequiredContextCapabilities": "Source"
+                                              }
+                                            },
+                                            "StatusDefinitionId": {
+                                              "value": "final_notice"
+                                            },
+                                            "Delta": {
+                                              "kind": "const",
+                                              "value": {
+                                                "Value": -1
+                                              }
+                                            },
+                                            "ResultKey": null,
+                                            "Children": []
+                                          }
+                                        },
+                                        "Else": null,
+                                        "Children": [
+                                          {
+                                            "kind": "node.modifyStatusStacks",
+                                            "value": {
+                                              "TargetSelector": {
+                                                "kind": "sel.source",
+                                                "value": {
+                                                  "Cardinality": "ZeroOrOne",
+                                                  "RequiredContextCapabilities": "Source"
+                                                }
+                                              },
+                                              "StatusDefinitionId": {
+                                                "value": "final_notice"
+                                              },
+                                              "Delta": {
+                                                "kind": "const",
+                                                "value": {
+                                                  "Value": -1
+                                                }
+                                              },
+                                              "ResultKey": null,
+                                              "Children": []
+                                            }
+                                          }
+                                        ]
+                                      }
+                                    },
+                                    {
+                                      "kind": "node.conditional",
+                                      "value": {
+                                        "Condition": {
+                                          "kind": "compare",
+                                          "value": {
+                                            "Left": {
+                                              "kind": "combatantStatusStacks",
+                                              "value": {
+                                                "Selector": {
+                                                  "kind": "sel.source",
+                                                  "value": {
+                                                    "Cardinality": "ZeroOrOne",
+                                                    "RequiredContextCapabilities": "Source"
+                                                  }
+                                                },
+                                                "StatusId": {
+                                                  "value": "final_notice"
+                                                }
+                                              }
+                                            },
+                                            "Op": "Greater",
+                                            "Right": {
+                                              "kind": "const",
+                                              "value": {
+                                                "Value": 0
+                                              }
+                                            }
+                                          }
+                                        },
+                                        "Then": {
+                                          "kind": "node.modifyStatusStacks",
+                                          "value": {
+                                            "TargetSelector": {
+                                              "kind": "sel.source",
+                                              "value": {
+                                                "Cardinality": "ZeroOrOne",
+                                                "RequiredContextCapabilities": "Source"
+                                              }
+                                            },
+                                            "StatusDefinitionId": {
+                                              "value": "final_notice"
+                                            },
+                                            "Delta": {
+                                              "kind": "const",
+                                              "value": {
+                                                "Value": -1
+                                              }
+                                            },
+                                            "ResultKey": null,
+                                            "Children": []
+                                          }
+                                        },
+                                        "Else": null,
+                                        "Children": [
+                                          {
+                                            "kind": "node.modifyStatusStacks",
+                                            "value": {
+                                              "TargetSelector": {
+                                                "kind": "sel.source",
+                                                "value": {
+                                                  "Cardinality": "ZeroOrOne",
+                                                  "RequiredContextCapabilities": "Source"
+                                                }
+                                              },
+                                              "StatusDefinitionId": {
+                                                "value": "final_notice"
+                                              },
+                                              "Delta": {
+                                                "kind": "const",
+                                                "value": {
+                                                  "Value": -1
+                                                }
+                                              },
+                                              "ResultKey": null,
+                                              "Children": []
+                                            }
+                                          }
+                                        ]
+                                      }
+                                    },
+                                    {
+                                      "kind": "node.conditional",
+                                      "value": {
+                                        "Condition": {
+                                          "kind": "compare",
+                                          "value": {
+                                            "Left": {
+                                              "kind": "combatantStatusStacks",
+                                              "value": {
+                                                "Selector": {
+                                                  "kind": "sel.source",
+                                                  "value": {
+                                                    "Cardinality": "ZeroOrOne",
+                                                    "RequiredContextCapabilities": "Source"
+                                                  }
+                                                },
+                                                "StatusId": {
+                                                  "value": "final_notice"
+                                                }
+                                              }
+                                            },
+                                            "Op": "Equal",
+                                            "Right": {
+                                              "kind": "const",
+                                              "value": {
+                                                "Value": 1
+                                              }
+                                            }
+                                          }
+                                        },
+                                        "Then": {
+                                          "kind": "node.sequence",
+                                          "value": {
+                                            "Children": [
+                                              {
+                                                "kind": "node.applyStatus",
+                                                "value": {
+                                                  "TargetSelector": {
+                                                    "kind": "sel.source",
+                                                    "value": {
+                                                      "Cardinality": "ZeroOrOne",
+                                                      "RequiredContextCapabilities": "Source"
+                                                    }
+                                                  },
+                                                  "StatusDefinitionId": {
+                                                    "value": "enforcement_served"
+                                                  },
+                                                  "Stacks": {
+                                                    "kind": "const",
+                                                    "value": {
+                                                      "Value": 1
+                                                    }
+                                                  },
+                                                  "DurationTurns": 0,
+                                                  "Charges": 0,
+                                                  "ResultKey": null,
+                                                  "Children": []
+                                                }
+                                              },
+                                              {
+                                                "kind": "node.removeStatus",
+                                                "value": {
+                                                  "TargetSelector": {
+                                                    "kind": "sel.enemiesWithStatus",
+                                                    "value": {
+                                                      "StatusDefinitionId": {
+                                                        "value": "final_notice_knight"
+                                                      }
+                                                    }
+                                                  },
+                                                  "StatusDefinitionId": {
+                                                    "value": "deadline_running"
+                                                  },
+                                                  "ResultKey": null,
+                                                  "Children": []
+                                                }
+                                              },
+                                              {
+                                                "kind": "node.applyStatus",
+                                                "value": {
+                                                  "TargetSelector": {
+                                                    "kind": "sel.enemiesWithStatus",
+                                                    "value": {
+                                                      "StatusDefinitionId": {
+                                                        "value": "final_notice_knight"
+                                                      }
+                                                    }
+                                                  },
+                                                  "StatusDefinitionId": {
+                                                    "value": "deadline_served"
+                                                  },
+                                                  "Stacks": {
+                                                    "kind": "const",
+                                                    "value": {
+                                                      "Value": 1
+                                                    }
+                                                  },
+                                                  "DurationTurns": 0,
+                                                  "Charges": 0,
+                                                  "ResultKey": null,
+                                                  "Children": []
+                                                }
+                                              }
+                                            ]
+                                          }
+                                        },
+                                        "Else": null,
+                                        "Children": [
+                                          {
+                                            "kind": "node.sequence",
+                                            "value": {
+                                              "Children": [
+                                                {
+                                                  "kind": "node.applyStatus",
+                                                  "value": {
+                                                    "TargetSelector": {
+                                                      "kind": "sel.source",
+                                                      "value": {
+                                                        "Cardinality": "ZeroOrOne",
+                                                        "RequiredContextCapabilities": "Source"
+                                                      }
+                                                    },
+                                                    "StatusDefinitionId": {
+                                                      "value": "enforcement_served"
+                                                    },
+                                                    "Stacks": {
+                                                      "kind": "const",
+                                                      "value": {
+                                                        "Value": 1
+                                                      }
+                                                    },
+                                                    "DurationTurns": 0,
+                                                    "Charges": 0,
+                                                    "ResultKey": null,
+                                                    "Children": []
+                                                  }
+                                                },
+                                                {
+                                                  "kind": "node.removeStatus",
+                                                  "value": {
+                                                    "TargetSelector": {
+                                                      "kind": "sel.enemiesWithStatus",
+                                                      "value": {
+                                                        "StatusDefinitionId": {
+                                                          "value": "final_notice_knight"
+                                                        }
+                                                      }
+                                                    },
+                                                    "StatusDefinitionId": {
+                                                      "value": "deadline_running"
+                                                    },
+                                                    "ResultKey": null,
+                                                    "Children": []
+                                                  }
+                                                },
+                                                {
+                                                  "kind": "node.applyStatus",
+                                                  "value": {
+                                                    "TargetSelector": {
+                                                      "kind": "sel.enemiesWithStatus",
+                                                      "value": {
+                                                        "StatusDefinitionId": {
+                                                          "value": "final_notice_knight"
+                                                        }
+                                                      }
+                                                    },
+                                                    "StatusDefinitionId": {
+                                                      "value": "deadline_served"
+                                                    },
+                                                    "Stacks": {
+                                                      "kind": "const",
+                                                      "value": {
+                                                        "Value": 1
+                                                      }
+                                                    },
+                                                    "DurationTurns": 0,
+                                                    "Charges": 0,
+                                                    "ResultKey": null,
+                                                    "Children": []
+                                                  }
+                                                }
+                                              ]
+                                            }
+                                          }
+                                        ]
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            "MaxNodeDepth": 64,
+            "MaxProgramSteps": 1024
+          }
+        },
+        {
+          "Event": "TurnStarted",
+          "Program": {
+            "Id": {
+              "Value": "(unnamed)"
+            },
+            "Root": {
+              "kind": "node.conditional",
+              "value": {
+                "Condition": {
+                  "kind": "and",
+                  "value": {
+                    "Left": {
+                      "kind": "compare",
+                      "value": {
+                        "Left": {
+                          "kind": "combatantStatusStacks",
+                          "value": {
+                            "Selector": {
+                              "kind": "sel.source",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "Source"
+                              }
+                            },
+                            "StatusId": {
+                              "value": "the_applicant"
+                            }
+                          }
+                        },
+                        "Op": "Greater",
+                        "Right": {
+                          "kind": "const",
+                          "value": {
+                            "Value": 0
+                          }
+                        }
+                      }
+                    },
+                    "Right": {
+                      "kind": "compare",
+                      "value": {
+                        "Left": {
+                          "kind": "combatantStatusStacks",
+                          "value": {
+                            "Selector": {
+                              "kind": "sel.source",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "Source"
+                              }
+                            },
+                            "StatusId": {
+                              "value": "enforcement_served"
+                            }
+                          }
+                        },
+                        "Op": "Equal",
+                        "Right": {
+                          "kind": "const",
+                          "value": {
+                            "Value": 1
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "Then": {
+                  "kind": "node.createCardInstance",
+                  "value": {
+                    "TargetSelector": {
+                      "kind": "sel.source",
+                      "value": {
+                        "Cardinality": "ZeroOrOne",
+                        "RequiredContextCapabilities": "Source"
+                      }
+                    },
+                    "CardDefinitionId": {
+                      "value": "acknowledge_service"
+                    },
+                    "ToZone": "Hand",
+                    "Count": {
+                      "kind": "const",
+                      "value": {
+                        "Value": 1
+                      }
+                    },
+                    "ResultKey": null,
+                    "Children": []
+                  }
+                },
+                "Else": null,
+                "Children": [
+                  {
+                    "kind": "node.createCardInstance",
+                    "value": {
+                      "TargetSelector": {
+                        "kind": "sel.source",
+                        "value": {
+                          "Cardinality": "ZeroOrOne",
+                          "RequiredContextCapabilities": "Source"
+                        }
+                      },
+                      "CardDefinitionId": {
+                        "value": "acknowledge_service"
+                      },
+                      "ToZone": "Hand",
+                      "Count": {
+                        "kind": "const",
+                        "value": {
+                          "Value": 1
+                        }
+                      },
+                      "ResultKey": null,
+                      "Children": []
+                    }
+                  }
+                ]
+              }
+            },
+            "MaxNodeDepth": 64,
+            "MaxProgramSteps": 1024
+          }
+        },
+        {
+          "Event": "Downed",
+          "Program": {
+            "Id": {
+              "Value": "(unnamed)"
+            },
+            "Root": {
+              "kind": "node.sequence",
+              "value": {
+                "Children": [
+                  {
+                    "kind": "node.forEachTarget",
+                    "value": {
+                      "CollectionSelector": {
+                        "kind": "sel.alliesWithStatus",
+                        "value": {
+                          "StatusDefinitionId": {
+                            "value": "deadline_running"
+                          }
+                        }
+                      },
+                      "Body": {
+                        "kind": "node.applyStatus",
+                        "value": {
+                          "TargetSelector": {
+                            "kind": "sel.enemiesWithStatus",
+                            "value": {
+                              "StatusDefinitionId": {
+                                "value": "the_applicant"
+                              }
+                            }
+                          },
+                          "StatusDefinitionId": {
+                            "value": "final_notice"
+                          },
+                          "Stacks": {
+                            "kind": "const",
+                            "value": {
+                              "Value": 1
+                            }
+                          },
+                          "DurationTurns": 0,
+                          "Charges": 0,
+                          "ResultKey": null,
+                          "Children": []
+                        }
+                      },
+                      "MaxIterations": 32,
+                      "Children": [
+                        {
+                          "kind": "node.applyStatus",
+                          "value": {
+                            "TargetSelector": {
+                              "kind": "sel.enemiesWithStatus",
+                              "value": {
+                                "StatusDefinitionId": {
+                                  "value": "the_applicant"
+                                }
+                              }
+                            },
+                            "StatusDefinitionId": {
+                              "value": "final_notice"
+                            },
+                            "Stacks": {
+                              "kind": "const",
+                              "value": {
+                                "Value": 1
+                              }
+                            },
+                            "DurationTurns": 0,
+                            "Charges": 0,
+                            "ResultKey": null,
+                            "Children": []
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "kind": "node.forEachTarget",
+                    "value": {
+                      "CollectionSelector": {
+                        "kind": "sel.alliesWithStatus",
+                        "value": {
+                          "StatusDefinitionId": {
+                            "value": "deadline_served"
+                          }
+                        }
+                      },
+                      "Body": {
+                        "kind": "node.sequence",
+                        "value": {
+                          "Children": [
+                            {
+                              "kind": "node.removeStatus",
+                              "value": {
+                                "TargetSelector": {
+                                  "kind": "sel.enemiesWithStatus",
+                                  "value": {
+                                    "StatusDefinitionId": {
+                                      "value": "the_applicant"
+                                    }
+                                  }
+                                },
+                                "StatusDefinitionId": {
+                                  "value": "enforcement_served"
+                                },
+                                "ResultKey": null,
+                                "Children": []
+                              }
+                            },
+                            {
+                              "kind": "node.removeStatus",
+                              "value": {
+                                "TargetSelector": {
+                                  "kind": "sel.enemiesWithStatus",
+                                  "value": {
+                                    "StatusDefinitionId": {
+                                      "value": "the_applicant"
+                                    }
+                                  }
+                                },
+                                "StatusDefinitionId": {
+                                  "value": "service_acknowledged"
+                                },
+                                "ResultKey": null,
+                                "Children": []
+                              }
+                            },
+                            {
+                              "kind": "node.removeStatus",
+                              "value": {
+                                "TargetSelector": {
+                                  "kind": "sel.enemiesWithStatus",
+                                  "value": {
+                                    "StatusDefinitionId": {
+                                      "value": "the_applicant"
+                                    }
+                                  }
+                                },
+                                "StatusDefinitionId": {
+                                  "value": "final_notice"
+                                },
+                                "ResultKey": null,
+                                "Children": []
+                              }
+                            },
+                            {
+                              "kind": "node.applyStatus",
+                              "value": {
+                                "TargetSelector": {
+                                  "kind": "sel.enemiesWithStatus",
+                                  "value": {
+                                    "StatusDefinitionId": {
+                                      "value": "the_applicant"
+                                    }
+                                  }
+                                },
+                                "StatusDefinitionId": {
+                                  "value": "final_notice"
+                                },
+                                "Stacks": {
+                                  "kind": "const",
+                                  "value": {
+                                    "Value": 1
+                                  }
+                                },
+                                "DurationTurns": 0,
+                                "Charges": 0,
+                                "ResultKey": null,
+                                "Children": []
+                              }
+                            },
+                            {
+                              "kind": "node.removeStatus",
+                              "value": {
+                                "TargetSelector": {
+                                  "kind": "sel.iterationTarget",
+                                  "value": {
+                                    "Cardinality": "ZeroOrOne"
+                                  }
+                                },
+                                "StatusDefinitionId": {
+                                  "value": "deadline_served"
+                                },
+                                "ResultKey": null,
+                                "Children": []
+                              }
+                            },
+                            {
+                              "kind": "node.applyStatus",
+                              "value": {
+                                "TargetSelector": {
+                                  "kind": "sel.iterationTarget",
+                                  "value": {
+                                    "Cardinality": "ZeroOrOne"
+                                  }
+                                },
+                                "StatusDefinitionId": {
+                                  "value": "deadline_running"
+                                },
+                                "Stacks": {
+                                  "kind": "const",
+                                  "value": {
+                                    "Value": 1
+                                  }
+                                },
+                                "DurationTurns": 0,
+                                "Charges": 0,
+                                "ResultKey": null,
+                                "Children": []
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      "MaxIterations": 32,
+                      "Children": [
+                        {
+                          "kind": "node.sequence",
+                          "value": {
+                            "Children": [
+                              {
+                                "kind": "node.removeStatus",
+                                "value": {
+                                  "TargetSelector": {
+                                    "kind": "sel.enemiesWithStatus",
+                                    "value": {
+                                      "StatusDefinitionId": {
+                                        "value": "the_applicant"
+                                      }
+                                    }
+                                  },
+                                  "StatusDefinitionId": {
+                                    "value": "enforcement_served"
+                                  },
+                                  "ResultKey": null,
+                                  "Children": []
+                                }
+                              },
+                              {
+                                "kind": "node.removeStatus",
+                                "value": {
+                                  "TargetSelector": {
+                                    "kind": "sel.enemiesWithStatus",
+                                    "value": {
+                                      "StatusDefinitionId": {
+                                        "value": "the_applicant"
+                                      }
+                                    }
+                                  },
+                                  "StatusDefinitionId": {
+                                    "value": "service_acknowledged"
+                                  },
+                                  "ResultKey": null,
+                                  "Children": []
+                                }
+                              },
+                              {
+                                "kind": "node.removeStatus",
+                                "value": {
+                                  "TargetSelector": {
+                                    "kind": "sel.enemiesWithStatus",
+                                    "value": {
+                                      "StatusDefinitionId": {
+                                        "value": "the_applicant"
+                                      }
+                                    }
+                                  },
+                                  "StatusDefinitionId": {
+                                    "value": "final_notice"
+                                  },
+                                  "ResultKey": null,
+                                  "Children": []
+                                }
+                              },
+                              {
+                                "kind": "node.applyStatus",
+                                "value": {
+                                  "TargetSelector": {
+                                    "kind": "sel.enemiesWithStatus",
+                                    "value": {
+                                      "StatusDefinitionId": {
+                                        "value": "the_applicant"
+                                      }
+                                    }
+                                  },
+                                  "StatusDefinitionId": {
+                                    "value": "final_notice"
+                                  },
+                                  "Stacks": {
+                                    "kind": "const",
+                                    "value": {
+                                      "Value": 1
+                                    }
+                                  },
+                                  "DurationTurns": 0,
+                                  "Charges": 0,
+                                  "ResultKey": null,
+                                  "Children": []
+                                }
+                              },
+                              {
+                                "kind": "node.removeStatus",
+                                "value": {
+                                  "TargetSelector": {
+                                    "kind": "sel.iterationTarget",
+                                    "value": {
+                                      "Cardinality": "ZeroOrOne"
+                                    }
+                                  },
+                                  "StatusDefinitionId": {
+                                    "value": "deadline_served"
+                                  },
+                                  "ResultKey": null,
+                                  "Children": []
+                                }
+                              },
+                              {
+                                "kind": "node.applyStatus",
+                                "value": {
+                                  "TargetSelector": {
+                                    "kind": "sel.iterationTarget",
+                                    "value": {
+                                      "Cardinality": "ZeroOrOne"
+                                    }
+                                  },
+                                  "StatusDefinitionId": {
+                                    "value": "deadline_running"
+                                  },
+                                  "Stacks": {
+                                    "kind": "const",
+                                    "value": {
+                                      "Value": 1
+                                    }
+                                  },
+                                  "DurationTurns": 0,
+                                  "Charges": 0,
+                                  "ResultKey": null,
+                                  "Children": []
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            "MaxNodeDepth": 64,
+            "MaxProgramSteps": 1024
+          }
+        }
+      ]
     },
     {
       "Id": {
@@ -219937,6 +222792,89 @@
       "RetainInHandOnTurnEnd": false,
       "TurnEndHandDestinationZone": "ExhaustPile",
       "PlayedCardDestinationZone": "ExhaustPile"
+    },
+    {
+      "Id": "acknowledge_service",
+      "PackageId": "scenario",
+      "NameKey": "Acknowledge Service",
+      "DescriptionKey": "Sign for the notice: gain 2 Paperwork. The Knight\u0027s enforcement deals 10 instead of 19 and 1 Paperwork.\nLeave it in hand to refuse.",
+      "Costs": [],
+      "Tags": [
+        {
+          "value": "form"
+        },
+        {
+          "value": "notice"
+        }
+      ],
+      "Program": {
+        "Id": {
+          "Value": "(unnamed)"
+        },
+        "Root": {
+          "kind": "node.sequence",
+          "value": {
+            "Children": [
+              {
+                "kind": "node.applyStatus",
+                "value": {
+                  "TargetSelector": {
+                    "kind": "sel.source",
+                    "value": {
+                      "Cardinality": "ZeroOrOne",
+                      "RequiredContextCapabilities": "Source"
+                    }
+                  },
+                  "StatusDefinitionId": {
+                    "value": "paperwork"
+                  },
+                  "Stacks": {
+                    "kind": "const",
+                    "value": {
+                      "Value": 2
+                    }
+                  },
+                  "DurationTurns": 0,
+                  "Charges": 0,
+                  "ResultKey": null,
+                  "Children": []
+                }
+              },
+              {
+                "kind": "node.applyStatus",
+                "value": {
+                  "TargetSelector": {
+                    "kind": "sel.source",
+                    "value": {
+                      "Cardinality": "ZeroOrOne",
+                      "RequiredContextCapabilities": "Source"
+                    }
+                  },
+                  "StatusDefinitionId": {
+                    "value": "service_acknowledged"
+                  },
+                  "Stacks": {
+                    "kind": "const",
+                    "value": {
+                      "Value": 1
+                    }
+                  },
+                  "DurationTurns": 0,
+                  "Charges": 0,
+                  "ResultKey": null,
+                  "Children": []
+                }
+              }
+            ]
+          }
+        },
+        "MaxNodeDepth": 64,
+        "MaxProgramSteps": 1024
+      },
+      "LifecyclePrograms": {},
+      "RetainInHandOnTurnEnd": false,
+      "TurnEndHandDestinationZone": "ExhaustPile",
+      "PlayedCardDestinationZone": "ExhaustPile"
     }
   ],
   "EnemyActions": [
@@ -242234,7 +245172,7 @@
       "DescriptionKey": null,
       "Intent": {
         "Kind": "Special",
-        "Label": "Notice Charge \u00B7 9 dmg, Strength \u002B1"
+        "Label": "Notice Charge \u00B7 10 dmg, Strength \u002B1"
       },
       "Program": {
         "Id": {
@@ -242257,7 +245195,7 @@
                   "Amount": {
                     "kind": "const",
                     "value": {
-                      "Value": 9
+                      "Value": 10
                     }
                   },
                   "ResultKey": null,
@@ -242305,7 +245243,7 @@
       "DescriptionKey": null,
       "Intent": {
         "Kind": "Defend",
-        "Label": "Shielded Service \u00B7 10 block"
+        "Label": "Shielded Service \u00B7 12 block"
       },
       "Program": {
         "Id": {
@@ -242324,7 +245262,7 @@
             "Amount": {
               "kind": "const",
               "value": {
-                "Value": 10
+                "Value": 12
               }
             },
             "ResultKey": null,
@@ -242342,7 +245280,7 @@
       "DescriptionKey": null,
       "Intent": {
         "Kind": "Attack",
-        "Label": "Deadline Cut \u00B7 12 dmg"
+        "Label": "Deadline Cut \u00B7 13 dmg"
       },
       "Program": {
         "Id": {
@@ -242361,7 +245299,7 @@
             "Amount": {
               "kind": "const",
               "value": {
-                "Value": 12
+                "Value": 13
               }
             },
             "ResultKey": null,
@@ -242381,7 +245319,7 @@
       "DescriptionKey": null,
       "Intent": {
         "Kind": "Special",
-        "Label": "Armored Delivery \u00B7 6 dmg, 6 block"
+        "Label": "Armored Delivery \u00B7 7 dmg, 7 block"
       },
       "Program": {
         "Id": {
@@ -242404,7 +245342,7 @@
                   "Amount": {
                     "kind": "const",
                     "value": {
-                      "Value": 6
+                      "Value": 7
                     }
                   },
                   "ResultKey": null,
@@ -242426,7 +245364,7 @@
                   "Amount": {
                     "kind": "const",
                     "value": {
-                      "Value": 6
+                      "Value": 7
                     }
                   },
                   "ResultKey": null,
@@ -242447,35 +245385,172 @@
       "DescriptionKey": null,
       "Intent": {
         "Kind": "Buff",
-        "Label": "Last Warning \u00B7 Strength \u002B2"
+        "Label": "Last Warning \u00B7 Strength \u002B1, 8 block"
       },
       "Program": {
         "Id": {
           "Value": "(unnamed)"
         },
         "Root": {
-          "kind": "node.applyStatus",
+          "kind": "node.sequence",
+          "value": {
+            "Children": [
+              {
+                "kind": "node.applyStatus",
+                "value": {
+                  "TargetSelector": {
+                    "kind": "sel.source",
+                    "value": {
+                      "Cardinality": "ZeroOrOne",
+                      "RequiredContextCapabilities": "Source"
+                    }
+                  },
+                  "StatusDefinitionId": {
+                    "value": "strength"
+                  },
+                  "Stacks": {
+                    "kind": "const",
+                    "value": {
+                      "Value": 1
+                    }
+                  },
+                  "DurationTurns": 0,
+                  "Charges": 0,
+                  "ResultKey": null,
+                  "Children": []
+                }
+              },
+              {
+                "kind": "node.gainBlock",
+                "value": {
+                  "TargetSelector": {
+                    "kind": "sel.source",
+                    "value": {
+                      "Cardinality": "ZeroOrOne",
+                      "RequiredContextCapabilities": "Source"
+                    }
+                  },
+                  "Amount": {
+                    "kind": "const",
+                    "value": {
+                      "Value": 8
+                    }
+                  },
+                  "ResultKey": null,
+                  "Children": []
+                }
+              }
+            ]
+          }
+        },
+        "MaxNodeDepth": 64,
+        "MaxProgramSteps": 1024
+      }
+    },
+    {
+      "Id": "final_notice_knight.enforce_acknowledged",
+      "PackageId": "scenario",
+      "NameKey": "Enforce the Deadline",
+      "DescriptionKey": null,
+      "Intent": {
+        "Kind": "Attack",
+        "Label": "Enforce the Deadline \u00B7 10 dmg"
+      },
+      "Program": {
+        "Id": {
+          "Value": "(unnamed)"
+        },
+        "Root": {
+          "kind": "node.dealDamage",
           "value": {
             "TargetSelector": {
-              "kind": "sel.source",
+              "kind": "sel.eventTarget",
               "value": {
                 "Cardinality": "ZeroOrOne",
-                "RequiredContextCapabilities": "Source"
+                "RequiredContextCapabilities": "EventTarget"
               }
             },
-            "StatusDefinitionId": {
-              "value": "strength"
-            },
-            "Stacks": {
+            "Amount": {
               "kind": "const",
               "value": {
-                "Value": 2
+                "Value": 10
               }
             },
-            "DurationTurns": 0,
-            "Charges": 0,
             "ResultKey": null,
+            "IgnoresBlock": false,
+            "Element": null,
             "Children": []
+          }
+        },
+        "MaxNodeDepth": 64,
+        "MaxProgramSteps": 1024
+      }
+    },
+    {
+      "Id": "final_notice_knight.enforce_refused",
+      "PackageId": "scenario",
+      "NameKey": "Enforce the Deadline",
+      "DescriptionKey": null,
+      "Intent": {
+        "Kind": "Attack",
+        "Label": "Enforce the Deadline \u00B7 19 dmg, Paperwork \u002B1"
+      },
+      "Program": {
+        "Id": {
+          "Value": "(unnamed)"
+        },
+        "Root": {
+          "kind": "node.sequence",
+          "value": {
+            "Children": [
+              {
+                "kind": "node.dealDamage",
+                "value": {
+                  "TargetSelector": {
+                    "kind": "sel.eventTarget",
+                    "value": {
+                      "Cardinality": "ZeroOrOne",
+                      "RequiredContextCapabilities": "EventTarget"
+                    }
+                  },
+                  "Amount": {
+                    "kind": "const",
+                    "value": {
+                      "Value": 19
+                    }
+                  },
+                  "ResultKey": null,
+                  "IgnoresBlock": false,
+                  "Element": null,
+                  "Children": []
+                }
+              },
+              {
+                "kind": "node.applyStatus",
+                "value": {
+                  "TargetSelector": {
+                    "kind": "sel.eventTarget",
+                    "value": {
+                      "Cardinality": "ZeroOrOne",
+                      "RequiredContextCapabilities": "EventTarget"
+                    }
+                  },
+                  "StatusDefinitionId": {
+                    "value": "paperwork"
+                  },
+                  "Stacks": {
+                    "kind": "const",
+                    "value": {
+                      "Value": 1
+                    }
+                  },
+                  "DurationTurns": 0,
+                  "Charges": 0,
+                  "ResultKey": null,
+                  "Children": []
+                }
+              }
+            ]
           }
         },
         "MaxNodeDepth": 64,
@@ -242583,13 +245658,52 @@
       }
     },
     {
+      "Id": "sealed_spear.long_reach",
+      "PackageId": "scenario",
+      "NameKey": "Long Reach",
+      "DescriptionKey": null,
+      "Intent": {
+        "Kind": "Attack",
+        "Label": "Long Reach \u00B7 10 dmg"
+      },
+      "Program": {
+        "Id": {
+          "Value": "(unnamed)"
+        },
+        "Root": {
+          "kind": "node.dealDamage",
+          "value": {
+            "TargetSelector": {
+              "kind": "sel.eventTarget",
+              "value": {
+                "Cardinality": "ZeroOrOne",
+                "RequiredContextCapabilities": "EventTarget"
+              }
+            },
+            "Amount": {
+              "kind": "const",
+              "value": {
+                "Value": 10
+              }
+            },
+            "ResultKey": null,
+            "IgnoresBlock": false,
+            "Element": null,
+            "Children": []
+          }
+        },
+        "MaxNodeDepth": 64,
+        "MaxProgramSteps": 1024
+      }
+    },
+    {
       "Id": "sealed_spear.authorized_pierce",
       "PackageId": "scenario",
       "NameKey": "Authorized Pierce",
       "DescriptionKey": null,
       "Intent": {
         "Kind": "Special",
-        "Label": "Authorized Pierce \u00B7 5 dmg, Strength \u002B1"
+        "Label": "Authorized Pierce \u00B7 6 dmg"
       },
       "Program": {
         "Id": {
@@ -242612,7 +245726,7 @@
                   "Amount": {
                     "kind": "const",
                     "value": {
-                      "Value": 5
+                      "Value": 6
                     }
                   },
                   "ResultKey": null,
@@ -242622,70 +245736,29 @@
                 }
               },
               {
-                "kind": "node.applyStatus",
+                "kind": "node.modifyStatusStacks",
                 "value": {
                   "TargetSelector": {
-                    "kind": "sel.source",
+                    "kind": "sel.eventTarget",
                     "value": {
                       "Cardinality": "ZeroOrOne",
-                      "RequiredContextCapabilities": "Source"
+                      "RequiredContextCapabilities": "EventTarget"
                     }
                   },
                   "StatusDefinitionId": {
-                    "value": "strength"
+                    "value": "final_notice"
                   },
-                  "Stacks": {
+                  "Delta": {
                     "kind": "const",
                     "value": {
-                      "Value": 1
+                      "Value": -1
                     }
                   },
-                  "DurationTurns": 0,
-                  "Charges": 0,
                   "ResultKey": null,
                   "Children": []
                 }
               }
             ]
-          }
-        },
-        "MaxNodeDepth": 64,
-        "MaxProgramSteps": 1024
-      }
-    },
-    {
-      "Id": "sealed_spear.long_reach",
-      "PackageId": "scenario",
-      "NameKey": "Long Reach",
-      "DescriptionKey": null,
-      "Intent": {
-        "Kind": "Attack",
-        "Label": "Long Reach \u00B7 9 dmg"
-      },
-      "Program": {
-        "Id": {
-          "Value": "(unnamed)"
-        },
-        "Root": {
-          "kind": "node.dealDamage",
-          "value": {
-            "TargetSelector": {
-              "kind": "sel.eventTarget",
-              "value": {
-                "Cardinality": "ZeroOrOne",
-                "RequiredContextCapabilities": "EventTarget"
-              }
-            },
-            "Amount": {
-              "kind": "const",
-              "value": {
-                "Value": 9
-              }
-            },
-            "ResultKey": null,
-            "IgnoresBlock": false,
-            "Element": null,
-            "Children": []
           }
         },
         "MaxNodeDepth": 64,
@@ -264815,6 +267888,118 @@
       "DebuffBlock": null
     },
     {
+      "Id": "final_notice",
+      "PackageId": "scenario",
+      "NameKey": "Final Notice",
+      "DescriptionKey": "Counts down at the end of each of your turns. At 0 the Knight serves enforcement.",
+      "Polarity": "Debuff",
+      "UsesStacks": true,
+      "UsesDuration": false,
+      "UsesCharges": false,
+      "StackingBehavior": "MergeWithExistingInstance",
+      "Tags": [],
+      "PassiveModifiers": [],
+      "Triggers": [],
+      "DeathPrevention": null,
+      "DebuffBlock": null
+    },
+    {
+      "Id": "enforcement_served",
+      "PackageId": "scenario",
+      "NameKey": "Enforcement Served",
+      "DescriptionKey": "The Knight will enforce the deadline on its next action.",
+      "Polarity": "Debuff",
+      "UsesStacks": true,
+      "UsesDuration": false,
+      "UsesCharges": false,
+      "StackingBehavior": "MergeWithExistingInstance",
+      "Tags": [],
+      "PassiveModifiers": [],
+      "Triggers": [],
+      "DeathPrevention": null,
+      "DebuffBlock": null
+    },
+    {
+      "Id": "service_acknowledged",
+      "PackageId": "scenario",
+      "NameKey": "Service Acknowledged",
+      "DescriptionKey": null,
+      "Polarity": "Neutral",
+      "UsesStacks": false,
+      "UsesDuration": false,
+      "UsesCharges": false,
+      "StackingBehavior": "MergeWithExistingInstance",
+      "Tags": [],
+      "PassiveModifiers": [],
+      "Triggers": [],
+      "DeathPrevention": null,
+      "DebuffBlock": null
+    },
+    {
+      "Id": "final_notice_knight",
+      "PackageId": "scenario",
+      "NameKey": "Final Notice Knight",
+      "DescriptionKey": null,
+      "Polarity": "Neutral",
+      "UsesStacks": false,
+      "UsesDuration": false,
+      "UsesCharges": false,
+      "StackingBehavior": "MergeWithExistingInstance",
+      "Tags": [],
+      "PassiveModifiers": [],
+      "Triggers": [],
+      "DeathPrevention": null,
+      "DebuffBlock": null
+    },
+    {
+      "Id": "sealed_spear",
+      "PackageId": "scenario",
+      "NameKey": "Sealed Spear",
+      "DescriptionKey": null,
+      "Polarity": "Neutral",
+      "UsesStacks": false,
+      "UsesDuration": false,
+      "UsesCharges": false,
+      "StackingBehavior": "MergeWithExistingInstance",
+      "Tags": [],
+      "PassiveModifiers": [],
+      "Triggers": [],
+      "DeathPrevention": null,
+      "DebuffBlock": null
+    },
+    {
+      "Id": "deadline_running",
+      "PackageId": "scenario",
+      "NameKey": "Deadline Running",
+      "DescriptionKey": null,
+      "Polarity": "Neutral",
+      "UsesStacks": false,
+      "UsesDuration": false,
+      "UsesCharges": false,
+      "StackingBehavior": "MergeWithExistingInstance",
+      "Tags": [],
+      "PassiveModifiers": [],
+      "Triggers": [],
+      "DeathPrevention": null,
+      "DebuffBlock": null
+    },
+    {
+      "Id": "deadline_served",
+      "PackageId": "scenario",
+      "NameKey": "Deadline Served",
+      "DescriptionKey": null,
+      "Polarity": "Neutral",
+      "UsesStacks": false,
+      "UsesDuration": false,
+      "UsesCharges": false,
+      "StackingBehavior": "MergeWithExistingInstance",
+      "Tags": [],
+      "PassiveModifiers": [],
+      "Triggers": [],
+      "DeathPrevention": null,
+      "DebuffBlock": null
+    },
+    {
       "Id": "gate_shut",
       "PackageId": "scenario",
       "NameKey": "Gate: Shut",
@@ -273564,13 +276749,9 @@
         "Tags": [
           "city",
           "enforcement",
-          "civic_force",
-          "block_pressure",
-          "strength_pressure",
-          "stage_enforcement",
-          "elite_enforcement",
+          "elite",
           "knight",
-          "notice"
+          "stage_enforcement"
         ],
         "Extra": {}
       },
@@ -273586,13 +276767,9 @@
         "Tags": [
           "city",
           "enforcement",
-          "civic_force",
-          "block_pressure",
-          "strength_pressure",
-          "stage_enforcement",
-          "elite_enforcement",
+          "elite",
           "spear",
-          "support"
+          "stage_enforcement"
         ],
         "Extra": {}
       }
@@ -275998,6 +279175,12 @@
           {
             "Encounter": {
               "Value": "city_elite_enforcement_03"
+            },
+            "Weight": 1
+          },
+          {
+            "Encounter": {
+              "Value": "city_elite_enforcement_04"
             },
             "Weight": 1
           },

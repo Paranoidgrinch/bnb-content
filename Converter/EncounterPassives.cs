@@ -1,6 +1,7 @@
 using System.Text.Json;
 using RogueDeck.Core.Combat;
 using RogueDeck.Run;
+using RogueDeck.Scenario.Authoring;
 
 namespace BnbContent.Converter;
 
@@ -35,6 +36,8 @@ public static class EncounterPassives
         "iron_warrant_avatar" => [IssueComplianceOrder(), JudgeCompliance()],
         "inventory_lantern" => [ClearTheInventoryLatch(), MarkTheGoods()],
         "lock_cart" => [SeizeTheGoods()],
+        "final_notice_knight" => [TheDeadlineRuns(), OfferAcknowledgement()],
+        "sealed_spear" => [WhenTheSpearFalls()],
         _ => Array.Empty<EncounterTriggerData>(),
     };
 
@@ -153,6 +156,178 @@ public static class EncounterPassives
 
         return new EncounterTriggerData("TurnEnded",
             JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<TurnEndedTriggeredEffectContext>()));
+    }
+
+    // The applicant's opening statuses this enemy brings to the fight — the Final Notice Knight serves its
+    // deadline ON THE PLAYER at the first bell. Encounter mapping and probes both read this, so a fight is
+    // identical wherever it is built.
+    public static IReadOnlyList<StartingStatusSpec> HeroOpeningStatuses(string enemyId) => enemyId switch
+    {
+        "final_notice_knight" =>
+            [new StartingStatusSpec(new StatusDefinitionId(PassiveStatuses.FinalNoticeId), PassiveStatuses.FinalNoticeStart)],
+        _ => Array.Empty<StartingStatusSpec>(),
+    };
+
+    // "Final Notice" (Final Notice Knight): the deadline ticks down at the end of every player turn, is SERVED
+    // when it runs out, and enforcement lands one turn later — the player always gets a response window. The
+    // whole countdown lives on the player, so every read here is a single selector on the trigger's source.
+    private static EncounterTriggerData TheDeadlineRuns()
+    {
+        var player = CombatantTargetSelectors.Source;
+        var knight = CombatantTargetSelectors.AllEnemiesOfSourceWithStatus(
+            new StatusDefinitionId(PassiveStatuses.FinalNoticeKnightId));
+
+        ICombatExpression<TurnEndedTriggeredEffectContext, bool> Stacks(string statusId, ComparisonOperator op, int value) =>
+            new ComparisonExpression<TurnEndedTriggeredEffectContext>(
+                new CombatantStatusStacksExpression<TurnEndedTriggeredEffectContext>(
+                    player, new StatusDefinitionId(statusId)),
+                op, new ConstantExpression<TurnEndedTriggeredEffectContext>(value));
+
+        IEffectNode<TurnEndedTriggeredEffectContext> Apply(ICombatantTargetSelector target, string statusId, int stacks) =>
+            new ApplyStatusNode<TurnEndedTriggeredEffectContext>(
+                target, new StatusDefinitionId(statusId),
+                new ConstantExpression<TurnEndedTriggeredEffectContext>(stacks));
+
+        IEffectNode<TurnEndedTriggeredEffectContext> Remove(ICombatantTargetSelector target, string statusId) =>
+            new RemoveStatusNode<TurnEndedTriggeredEffectContext>(target, new StatusDefinitionId(statusId));
+
+        // Every branch below reads the SAME pre-write state, so exactly one of them can apply per turn.
+        var program = new EffectProgram<TurnEndedTriggeredEffectContext>(
+            new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
+                new ComparisonExpression<TurnEndedTriggeredEffectContext>(
+                    new CombatantStatusStacksExpression<TurnEndedTriggeredEffectContext>(
+                        player, new StatusDefinitionId(PassiveStatuses.ApplicantId)),
+                    ComparisonOperator.Greater,
+                    new ConstantExpression<TurnEndedTriggeredEffectContext>(0)),
+                new SequenceEffectNode<TurnEndedTriggeredEffectContext>(new IEffectNode<TurnEndedTriggeredEffectContext>[]
+                {
+                    // The enforcement handed down between this turn and the last one is over: a fresh notice.
+                    new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
+                        Stacks(PassiveStatuses.EnforceQueuedId, ComparisonOperator.GreaterOrEqual, 2),
+                        new SequenceEffectNode<TurnEndedTriggeredEffectContext>(new IEffectNode<TurnEndedTriggeredEffectContext>[]
+                        {
+                            Remove(player, PassiveStatuses.EnforceQueuedId),
+                            Remove(player, PassiveStatuses.ServiceAcknowledgedId),
+                            Remove(player, PassiveStatuses.FinalNoticeId),
+                            Apply(player, PassiveStatuses.FinalNoticeId, PassiveStatuses.FinalNoticeStart),
+                            Remove(knight, PassiveStatuses.DeadlineServedId),
+                            Apply(knight, PassiveStatuses.DeadlineCountingId, 1),
+                        })),
+
+                    // The response window is over: the Knight's next action IS the enforcement.
+                    new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
+                        Stacks(PassiveStatuses.EnforceQueuedId, ComparisonOperator.Equal, 1),
+                        new ModifyStatusStacksNode<TurnEndedTriggeredEffectContext>(
+                            player, new StatusDefinitionId(PassiveStatuses.EnforceQueuedId),
+                            new ConstantExpression<TurnEndedTriggeredEffectContext>(1))),
+
+                    // Otherwise the deadline runs. A Notice pushed past 3 (the Spear's death) is clamped here
+                    // first, so the extra stack is spent rather than banked.
+                    new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
+                        Stacks(PassiveStatuses.EnforceQueuedId, ComparisonOperator.Equal, 0),
+                        new SequenceEffectNode<TurnEndedTriggeredEffectContext>(new IEffectNode<TurnEndedTriggeredEffectContext>[]
+                        {
+                            new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
+                                Stacks(PassiveStatuses.FinalNoticeId, ComparisonOperator.Greater, PassiveStatuses.FinalNoticeStart),
+                                new ModifyStatusStacksNode<TurnEndedTriggeredEffectContext>(
+                                    player, new StatusDefinitionId(PassiveStatuses.FinalNoticeId),
+                                    new ConstantExpression<TurnEndedTriggeredEffectContext>(-1))),
+                            new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
+                                Stacks(PassiveStatuses.FinalNoticeId, ComparisonOperator.Greater, 0),
+                                new ModifyStatusStacksNode<TurnEndedTriggeredEffectContext>(
+                                    player, new StatusDefinitionId(PassiveStatuses.FinalNoticeId),
+                                    new ConstantExpression<TurnEndedTriggeredEffectContext>(-1))),
+                            // The last stack just went: the notice is served, and the answer turn begins.
+                            new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
+                                Stacks(PassiveStatuses.FinalNoticeId, ComparisonOperator.Equal, 1),
+                                new SequenceEffectNode<TurnEndedTriggeredEffectContext>(new IEffectNode<TurnEndedTriggeredEffectContext>[]
+                                {
+                                    Apply(player, PassiveStatuses.EnforceQueuedId, 1),
+                                    Remove(knight, PassiveStatuses.DeadlineCountingId),
+                                    Apply(knight, PassiveStatuses.DeadlineServedId, 1),
+                                })),
+                        })),
+                })));
+
+        return new EncounterTriggerData("TurnEnded",
+            JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<TurnEndedTriggeredEffectContext>()));
+    }
+
+    // "Acknowledge Service": on the response turn the Knight lays the acknowledgement on the table as a card.
+    // Playing it signs (2 Paperwork now, a lighter enforcement later); letting it sit refuses.
+    private static EncounterTriggerData OfferAcknowledgement()
+    {
+        var player = CombatantTargetSelectors.Source;
+
+        var program = new EffectProgram<TurnStartedTriggeredEffectContext>(
+            new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
+                new AndExpression<TurnStartedTriggeredEffectContext>(
+                    new ComparisonExpression<TurnStartedTriggeredEffectContext>(
+                        new CombatantStatusStacksExpression<TurnStartedTriggeredEffectContext>(
+                            player, new StatusDefinitionId(PassiveStatuses.ApplicantId)),
+                        ComparisonOperator.Greater,
+                        new ConstantExpression<TurnStartedTriggeredEffectContext>(0)),
+                    new ComparisonExpression<TurnStartedTriggeredEffectContext>(
+                        new CombatantStatusStacksExpression<TurnStartedTriggeredEffectContext>(
+                            player, new StatusDefinitionId(PassiveStatuses.EnforceQueuedId)),
+                        ComparisonOperator.Equal,
+                        new ConstantExpression<TurnStartedTriggeredEffectContext>(1))),
+                new CreateCardInstanceNode<TurnStartedTriggeredEffectContext>(
+                    player, new CardDefinitionId(PassiveStatuses.AcknowledgeCardId), CardZone.Hand,
+                    new ConstantExpression<TurnStartedTriggeredEffectContext>(1))));
+
+        return new EncounterTriggerData("TurnStarted",
+            JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<TurnStartedTriggeredEffectContext>()));
+    }
+
+    // Killing the Sealed Spear buys time: while the deadline is merely running it slips back a step, and if the
+    // Spear falls during the response turn the enforcement is cancelled outright and the notice restarts at 1.
+    // The Knight's two mirror markers say which case applies WITHOUT reading the player's statuses — from the
+    // Spear's side the player is only reachable through a multi-target selector, which cannot be read. They
+    // also stand in for "it was the Spear that fell": a DOWNED combatant's own statuses read as absent, so the
+    // trigger cannot check the fallen body's identity; instead it asks whether the fallen one has an ALLY
+    // wearing a mirror — true only for the Spear, since nothing else in the fight is the Knight's ally.
+    private static EncounterTriggerData WhenTheSpearFalls()
+    {
+        var applicant = CombatantTargetSelectors.AllEnemiesOfSourceWithStatus(
+            new StatusDefinitionId(PassiveStatuses.ApplicantId));
+        var knight = CombatantTargetSelectors.IterationTarget;
+
+        IEffectNode<CombatantDownedTriggeredEffectContext> Apply(ICombatantTargetSelector target, string statusId, int stacks) =>
+            new ApplyStatusNode<CombatantDownedTriggeredEffectContext>(
+                target, new StatusDefinitionId(statusId),
+                new ConstantExpression<CombatantDownedTriggeredEffectContext>(stacks));
+
+        IEffectNode<CombatantDownedTriggeredEffectContext> Remove(ICombatantTargetSelector target, string statusId) =>
+            new RemoveStatusNode<CombatantDownedTriggeredEffectContext>(target, new StatusDefinitionId(statusId));
+
+        IEffectNode<CombatantDownedTriggeredEffectContext> ForKnightWith(string mirror, IEffectNode<CombatantDownedTriggeredEffectContext> body) =>
+            new ForEachTargetEffectNode<CombatantDownedTriggeredEffectContext>(
+                CombatantTargetSelectors.AllAlliesOfSourceWithStatus(new StatusDefinitionId(mirror)), body);
+
+        var program = new EffectProgram<CombatantDownedTriggeredEffectContext>(
+            new SequenceEffectNode<CombatantDownedTriggeredEffectContext>(new IEffectNode<CombatantDownedTriggeredEffectContext>[]
+            {
+                // Still counting: the deadline slips one step back (the turn-end clamp keeps it at 3).
+                ForKnightWith(PassiveStatuses.DeadlineCountingId,
+                    Apply(applicant, PassiveStatuses.FinalNoticeId, 1)),
+
+                // Already served: the enforcement is cancelled and the notice restarts at 1. An
+                // acknowledgement already signed is spent — its 2 Paperwork stays where it landed.
+                ForKnightWith(PassiveStatuses.DeadlineServedId,
+                    new SequenceEffectNode<CombatantDownedTriggeredEffectContext>(new IEffectNode<CombatantDownedTriggeredEffectContext>[]
+                    {
+                        Remove(applicant, PassiveStatuses.EnforceQueuedId),
+                        Remove(applicant, PassiveStatuses.ServiceAcknowledgedId),
+                        Remove(applicant, PassiveStatuses.FinalNoticeId),
+                        Apply(applicant, PassiveStatuses.FinalNoticeId, 1),
+                        Remove(knight, PassiveStatuses.DeadlineServedId),
+                        Apply(knight, PassiveStatuses.DeadlineCountingId, 1),
+                    })),
+            }));
+
+        return new EncounterTriggerData("Downed",
+            JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<CombatantDownedTriggeredEffectContext>()));
     }
 
     // "Compliance Order" (Iron Warrant Avatar): the Avatar issues one visible, achievable demand at the start

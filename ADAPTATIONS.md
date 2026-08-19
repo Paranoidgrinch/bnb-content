@@ -174,3 +174,19 @@ older Act-I enemy pool wherever HP or intents disagree. Readings taken where the
 - **The two rulings of each gate band alternate on a beat counter** the Judicator flips at its own turn end.
   Intent rules can compare a counter but not a round's parity, so the beat stands in for "alternate".
 
+- **The Final Notice sits on the PLAYER, not on the Knight.** The countdown, the served notice and the
+  acknowledgement are statuses on the applicant: every program that has to read them runs from a player-turn
+  trigger, where the player is the single-selector Source, and the Knight's intent rules read them as opponent
+  statuses. It also puts the deadline where the player can see it.
+- **The acknowledgement is a card, like the Petition's clauses.** A combat has no yes/no prompt, so the offer
+  is dealt into the hand on the response turn: playing it signs, leaving it there refuses, and it exhausts
+  either way so the offer stands for exactly one turn.
+- **A downed combatant's own statuses read as absent**, so the Spear's death trigger cannot check that the
+  fallen body was the Spear. It asks instead whether the fallen one has an ALLY wearing one of the Knight's
+  phase mirrors — true only for the Spear, since nothing else in the fight is the Knight's ally.
+- **"Final Notice, maximum 3" is clamped at the player's next turn end**, not at the moment the Spear's death
+  pushes it up: the push comes from the enemy side, where the player's stacks cannot be read. A notice at 4 is
+  visible for one enemy turn and then spends the extra stack instead of banking it.
+- **The Knight's Last Warning and the Spear's Authorized Pierce have no cooldowns**; their fixed cycles space
+  them out (every fifth and every fourth intent), which is what the design's cooldowns amount to here.
+
