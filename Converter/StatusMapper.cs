@@ -23,7 +23,7 @@ public static class StatusMapper
 {
     public static IReadOnlyList<StatusData> Map(string where, IReadOnlyList<BabStatus> source)
     {
-        var known = new[] { "paperwork", "doubt", "panic", "fatigue", "strength", "poison" };
+        var known = new[] { "paperwork", "doubt", "panic", "fatigue", "strength", "poison", "bookworm" };
         var listed = source.Select(s => s.Id).ToHashSet();
         var unknown = listed.Except(known).ToList();
         if (unknown.Count > 0)
@@ -64,8 +64,52 @@ public static class StatusMapper
             Status(byId["poison"], StatusPolarity.Debuff,
                 tags: [StandardCombatIds.DamageOverTimeTag.value],
                 triggers: [TurnEnded(ConsumeOneStack("poison"))]),
+
+            Status(byId["bookworm"], StatusPolarity.Buff,
+                triggers: [Trigger("TurnStarted", Bookworm())]),
         ];
     }
+
+    // Bookworm X (the reworked Act-I anti-Paperwork status): immediately before the bearer's Paperwork
+    // resolves, remove min(Paperwork, Bookworm) of EACH. It rides the bearer's TurnStarted trigger, which
+    // runs before the damage-over-time automation — and since RogueDeck-Core @a428156 the tick reads its
+    // stacks at resolution, so the removal shrinks that same tick (5 Paperwork + 2 Bookworm → ticks 3).
+    //
+    // min() without a scratch value: the naive sequence fails because the second removal re-reads a value
+    // the first one already changed. Branching on which side is smaller keeps every read on the status that
+    // has NOT been touched yet, so both removals see their original stack counts.
+    private static EffectProgram<TurnStartedTriggeredEffectContext> Bookworm()
+    {
+        var paperwork = Stacks("paperwork");
+        var bookworm = Stacks("bookworm");
+
+        var program = new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
+            new ComparisonExpression<TurnStartedTriggeredEffectContext>(
+                paperwork, ComparisonOperator.GreaterOrEqual, bookworm),
+            // Paperwork covers every Bookworm stack: spend them all (Bookworm is read before it changes).
+            new SequenceEffectNode<TurnStartedTriggeredEffectContext>(new IEffectNode<TurnStartedTriggeredEffectContext>[]
+            {
+                Remove("paperwork", bookworm),
+                Remove("bookworm", bookworm),
+            }),
+            // Less Paperwork than Bookworm: spend only as much Bookworm as there is Paperwork, the rest remains.
+            new SequenceEffectNode<TurnStartedTriggeredEffectContext>(new IEffectNode<TurnStartedTriggeredEffectContext>[]
+            {
+                Remove("bookworm", paperwork),
+                Remove("paperwork", paperwork),
+            }));
+
+        return new EffectProgram<TurnStartedTriggeredEffectContext>(program);
+    }
+
+    private static CombatantStatusStacksExpression<TurnStartedTriggeredEffectContext> Stacks(string statusId) =>
+        new(CombatantTargetSelectors.Source, new StatusDefinitionId(statusId));
+
+    private static ModifyStatusStacksNode<TurnStartedTriggeredEffectContext> Remove(
+        string statusId, ICombatExpression<TurnStartedTriggeredEffectContext, int> amount) =>
+        new(CombatantTargetSelectors.Source, new StatusDefinitionId(statusId),
+            new SubtractExpression<TurnStartedTriggeredEffectContext>(
+                new ConstantExpression<TurnStartedTriggeredEffectContext>(0), amount));
 
     private static StatusData Status(
         BabStatus source, StatusPolarity polarity,

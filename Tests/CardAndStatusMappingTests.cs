@@ -85,10 +85,10 @@ public class CardAndStatusMappingTests
     }
 
     [Fact]
-    public void All_six_statuses_convert_with_their_ported_semantics()
+    public void Every_status_converts_with_its_ported_semantics()
     {
         var statuses = StatusMapper.Map("statuses", Data.Statuses);
-        Assert.Equal(6, statuses.Count);
+        Assert.Equal(7, statuses.Count); // the six ported ones + the reworked Act-I Bookworm
 
         var paperwork = statuses.First(s => s.Id == "paperwork");
         Assert.Contains(StandardCombatIds.DamageOverTimeTag.value, paperwork.Tags);
@@ -108,5 +108,11 @@ public class CardAndStatusMappingTests
         var panicPassive = Assert.Single(panic.PassiveModifiers);
         Assert.Equal(PassiveModifierPipeline.TurnStartDraw, panicPassive.Pipeline);
         Assert.Equal(-1, panicPassive.Magnitude);
+
+        // Bookworm cancels the bearer's Paperwork at its turn start, before the tick (BookwormStatusTests
+        // proves the numbers in a live fight).
+        var bookworm = statuses.First(s => s.Id == "bookworm");
+        Assert.Equal(StatusPolarity.Buff, bookworm.Polarity);
+        Assert.Equal("TurnStarted", Assert.Single(bookworm.Triggers).Event);
     }
 }
