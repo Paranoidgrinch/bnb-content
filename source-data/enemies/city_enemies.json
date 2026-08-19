@@ -7046,7 +7046,7 @@
   {
     "id": "counterclaim_imp",
     "name": "Counterclaim Imp",
-    "max_hp": 36,
+    "max_hp": 45,
     "intent_pattern": "cycle",
     "intents": [
       {
@@ -7057,7 +7057,7 @@
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 6
+            "amount": 9
           },
           {
             "type": "apply_status",
@@ -7068,33 +7068,33 @@
         ]
       },
       {
-        "id": "spiteful_escalation",
-        "name": "Spiteful Escalation",
-        "intent_type": "mixed",
+        "id": "spiteful_filing",
+        "name": "Spiteful Filing",
+        "intent_type": "block",
         "actions": [
           {
-            "type": "gain_strength",
+            "type": "gain_block",
             "target": "owner",
-            "amount": 1
+            "amount": 8
           }
         ]
       },
       {
-        "id": "double_counterclaim",
-        "name": "Double Counterclaim",
+        "id": "countersuit",
+        "name": "Countersuit",
         "intent_type": "attack",
         "actions": [
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 4
-          },
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 4
+            "amount": 13
           }
         ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "counterclaim"
       }
     ],
     "tags": [
@@ -7237,7 +7237,7 @@
   {
     "id": "sustaining_gavel",
     "name": "Sustaining Gavel",
-    "max_hp": 30,
+    "max_hp": 44,
     "intent_pattern": "cycle",
     "intents": [
       {
@@ -7248,39 +7248,38 @@
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 7
+            "amount": 11
           }
         ]
       },
       {
-        "id": "order_in_the_motion",
-        "name": "Order in the Motion",
-        "intent_type": "mixed",
+        "id": "order_in_the_chamber",
+        "name": "Order in the Chamber",
+        "intent_type": "block",
         "actions": [
           {
             "type": "gain_block",
             "target": "all_enemies",
-            "amount": 3
+            "amount": 4
           }
         ]
       },
       {
-        "id": "sustain_the_objection",
-        "name": "Sustain the Objection",
-        "intent_type": "mixed",
+        "id": "strike_the_desk",
+        "name": "Strike the Desk",
+        "intent_type": "attack",
         "actions": [
           {
-            "type": "apply_status",
+            "type": "deal_damage",
             "target": "player",
-            "status": "paperwork",
-            "amount": 1
-          },
-          {
-            "type": "gain_strength",
-            "target": "owner",
-            "amount": 1
+            "amount": 14
           }
         ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "sustained"
       }
     ],
     "tags": [

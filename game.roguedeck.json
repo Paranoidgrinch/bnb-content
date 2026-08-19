@@ -103523,19 +103523,28 @@
       "Enemies": [
         {
           "Id": "counterclaim_imp",
-          "MaxHealth": 36,
+          "MaxHealth": 45,
           "Actions": [
             {
               "value": "counterclaim_imp.red_ink_claim"
             },
             {
-              "value": "counterclaim_imp.spiteful_escalation"
+              "value": "counterclaim_imp.spiteful_filing"
             },
             {
-              "value": "counterclaim_imp.double_counterclaim"
+              "value": "counterclaim_imp.countersuit"
             }
           ],
-          "StartingStatuses": null,
+          "StartingStatuses": [
+            {
+              "Status": {
+                "value": "counterclaim"
+              },
+              "Stacks": 1,
+              "DurationTurns": 0,
+              "Charges": 0
+            }
+          ],
           "DisplayName": "Counterclaim Imp",
           "Position": null,
           "IntentRules": null
@@ -103666,25 +103675,6 @@
       },
       "Enemies": [
         {
-          "Id": "objection_sprite",
-          "MaxHealth": 34,
-          "Actions": [
-            {
-              "value": "objection_sprite.sharp_objection"
-            },
-            {
-              "value": "objection_sprite.louder_objection"
-            },
-            {
-              "value": "objection_sprite.interrupting_cut"
-            }
-          ],
-          "StartingStatuses": null,
-          "DisplayName": "Objection Sprite",
-          "Position": null,
-          "IntentRules": null
-        },
-        {
           "Id": "sustaining_gavel",
           "MaxHealth": 30,
           "Actions": [
@@ -103692,14 +103682,51 @@
               "value": "sustaining_gavel.sustained_strike"
             },
             {
-              "value": "sustaining_gavel.order_in_the_motion"
+              "value": "sustaining_gavel.order_in_the_chamber"
             },
             {
-              "value": "sustaining_gavel.sustain_the_objection"
+              "value": "sustaining_gavel.strike_the_desk"
             }
           ],
-          "StartingStatuses": null,
+          "StartingStatuses": [
+            {
+              "Status": {
+                "value": "sustained"
+              },
+              "Stacks": 1,
+              "DurationTurns": 0,
+              "Charges": 0
+            }
+          ],
           "DisplayName": "Sustaining Gavel",
+          "Position": null,
+          "IntentRules": null
+        },
+        {
+          "Id": "counterclaim_imp",
+          "MaxHealth": 33,
+          "Actions": [
+            {
+              "value": "counterclaim_imp.red_ink_claim"
+            },
+            {
+              "value": "counterclaim_imp.spiteful_filing"
+            },
+            {
+              "value": "counterclaim_imp.countersuit"
+            }
+          ],
+          "StartingStatuses": [
+            {
+              "Status": {
+                "value": "counterclaim"
+              },
+              "Stacks": 1,
+              "DurationTurns": 0,
+              "Charges": 0
+            }
+          ],
+          "DisplayName": "Counterclaim Imp",
           "Position": null,
           "IntentRules": null
         }
@@ -103725,7 +103752,398 @@
       ],
       "HeroDisplayName": null,
       "CardsDrawnPerTurn": null,
-      "TriggeredEffects": []
+      "TriggeredEffects": [
+        {
+          "Event": "BlockGained",
+          "Program": {
+            "Id": {
+              "Value": "(unnamed)"
+            },
+            "Root": {
+              "kind": "node.forEachTarget",
+              "value": {
+                "CollectionSelector": {
+                  "kind": "sel.alliesWithStatus",
+                  "value": {
+                    "StatusDefinitionId": {
+                      "value": "sustained"
+                    }
+                  }
+                },
+                "Body": {
+                  "kind": "node.conditional",
+                  "value": {
+                    "Condition": {
+                      "kind": "and",
+                      "value": {
+                        "Left": {
+                          "kind": "compare",
+                          "value": {
+                            "Left": {
+                              "kind": "combatantStatusStacks",
+                              "value": {
+                                "Selector": {
+                                  "kind": "sel.eventTarget",
+                                  "value": {
+                                    "Cardinality": "ZeroOrOne",
+                                    "RequiredContextCapabilities": "EventTarget"
+                                  }
+                                },
+                                "StatusId": {
+                                  "value": "sustained"
+                                }
+                              }
+                            },
+                            "Op": "Equal",
+                            "Right": {
+                              "kind": "const",
+                              "value": {
+                                "Value": 0
+                              }
+                            }
+                          }
+                        },
+                        "Right": {
+                          "kind": "compare",
+                          "value": {
+                            "Left": {
+                              "kind": "combatantCounter",
+                              "value": {
+                                "Selector": {
+                                  "kind": "sel.iterationTarget",
+                                  "value": {
+                                    "Cardinality": "ZeroOrOne"
+                                  }
+                                },
+                                "CounterId": {
+                                  "value": "sustained_this_round"
+                                }
+                              }
+                            },
+                            "Op": "Equal",
+                            "Right": {
+                              "kind": "const",
+                              "value": {
+                                "Value": 0
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "Then": {
+                      "kind": "node.sequence",
+                      "value": {
+                        "Children": [
+                          {
+                            "kind": "node.gainBlock",
+                            "value": {
+                              "TargetSelector": {
+                                "kind": "sel.iterationTarget",
+                                "value": {
+                                  "Cardinality": "ZeroOrOne"
+                                }
+                              },
+                              "Amount": {
+                                "kind": "divide",
+                                "value": {
+                                  "Dividend": {
+                                    "kind": "eventAmount",
+                                    "value": {}
+                                  },
+                                  "Divisor": {
+                                    "kind": "const",
+                                    "value": {
+                                      "Value": 2
+                                    }
+                                  },
+                                  "ZeroPolicy": "ReturnZero"
+                                }
+                              },
+                              "ResultKey": null,
+                              "Children": []
+                            }
+                          },
+                          {
+                            "kind": "node.setCombatantCounter",
+                            "value": {
+                              "TargetSelector": {
+                                "kind": "sel.iterationTarget",
+                                "value": {
+                                  "Cardinality": "ZeroOrOne"
+                                }
+                              },
+                              "CounterId": {
+                                "value": "sustained_this_round"
+                              },
+                              "Amount": {
+                                "kind": "const",
+                                "value": {
+                                  "Value": 1
+                                }
+                              },
+                              "Relative": false,
+                              "Children": []
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    "Else": null,
+                    "Children": [
+                      {
+                        "kind": "node.sequence",
+                        "value": {
+                          "Children": [
+                            {
+                              "kind": "node.gainBlock",
+                              "value": {
+                                "TargetSelector": {
+                                  "kind": "sel.iterationTarget",
+                                  "value": {
+                                    "Cardinality": "ZeroOrOne"
+                                  }
+                                },
+                                "Amount": {
+                                  "kind": "divide",
+                                  "value": {
+                                    "Dividend": {
+                                      "kind": "eventAmount",
+                                      "value": {}
+                                    },
+                                    "Divisor": {
+                                      "kind": "const",
+                                      "value": {
+                                        "Value": 2
+                                      }
+                                    },
+                                    "ZeroPolicy": "ReturnZero"
+                                  }
+                                },
+                                "ResultKey": null,
+                                "Children": []
+                              }
+                            },
+                            {
+                              "kind": "node.setCombatantCounter",
+                              "value": {
+                                "TargetSelector": {
+                                  "kind": "sel.iterationTarget",
+                                  "value": {
+                                    "Cardinality": "ZeroOrOne"
+                                  }
+                                },
+                                "CounterId": {
+                                  "value": "sustained_this_round"
+                                },
+                                "Amount": {
+                                  "kind": "const",
+                                  "value": {
+                                    "Value": 1
+                                  }
+                                },
+                                "Relative": false,
+                                "Children": []
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                "MaxIterations": 32,
+                "Children": [
+                  {
+                    "kind": "node.conditional",
+                    "value": {
+                      "Condition": {
+                        "kind": "and",
+                        "value": {
+                          "Left": {
+                            "kind": "compare",
+                            "value": {
+                              "Left": {
+                                "kind": "combatantStatusStacks",
+                                "value": {
+                                  "Selector": {
+                                    "kind": "sel.eventTarget",
+                                    "value": {
+                                      "Cardinality": "ZeroOrOne",
+                                      "RequiredContextCapabilities": "EventTarget"
+                                    }
+                                  },
+                                  "StatusId": {
+                                    "value": "sustained"
+                                  }
+                                }
+                              },
+                              "Op": "Equal",
+                              "Right": {
+                                "kind": "const",
+                                "value": {
+                                  "Value": 0
+                                }
+                              }
+                            }
+                          },
+                          "Right": {
+                            "kind": "compare",
+                            "value": {
+                              "Left": {
+                                "kind": "combatantCounter",
+                                "value": {
+                                  "Selector": {
+                                    "kind": "sel.iterationTarget",
+                                    "value": {
+                                      "Cardinality": "ZeroOrOne"
+                                    }
+                                  },
+                                  "CounterId": {
+                                    "value": "sustained_this_round"
+                                  }
+                                }
+                              },
+                              "Op": "Equal",
+                              "Right": {
+                                "kind": "const",
+                                "value": {
+                                  "Value": 0
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "Then": {
+                        "kind": "node.sequence",
+                        "value": {
+                          "Children": [
+                            {
+                              "kind": "node.gainBlock",
+                              "value": {
+                                "TargetSelector": {
+                                  "kind": "sel.iterationTarget",
+                                  "value": {
+                                    "Cardinality": "ZeroOrOne"
+                                  }
+                                },
+                                "Amount": {
+                                  "kind": "divide",
+                                  "value": {
+                                    "Dividend": {
+                                      "kind": "eventAmount",
+                                      "value": {}
+                                    },
+                                    "Divisor": {
+                                      "kind": "const",
+                                      "value": {
+                                        "Value": 2
+                                      }
+                                    },
+                                    "ZeroPolicy": "ReturnZero"
+                                  }
+                                },
+                                "ResultKey": null,
+                                "Children": []
+                              }
+                            },
+                            {
+                              "kind": "node.setCombatantCounter",
+                              "value": {
+                                "TargetSelector": {
+                                  "kind": "sel.iterationTarget",
+                                  "value": {
+                                    "Cardinality": "ZeroOrOne"
+                                  }
+                                },
+                                "CounterId": {
+                                  "value": "sustained_this_round"
+                                },
+                                "Amount": {
+                                  "kind": "const",
+                                  "value": {
+                                    "Value": 1
+                                  }
+                                },
+                                "Relative": false,
+                                "Children": []
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      "Else": null,
+                      "Children": [
+                        {
+                          "kind": "node.sequence",
+                          "value": {
+                            "Children": [
+                              {
+                                "kind": "node.gainBlock",
+                                "value": {
+                                  "TargetSelector": {
+                                    "kind": "sel.iterationTarget",
+                                    "value": {
+                                      "Cardinality": "ZeroOrOne"
+                                    }
+                                  },
+                                  "Amount": {
+                                    "kind": "divide",
+                                    "value": {
+                                      "Dividend": {
+                                        "kind": "eventAmount",
+                                        "value": {}
+                                      },
+                                      "Divisor": {
+                                        "kind": "const",
+                                        "value": {
+                                          "Value": 2
+                                        }
+                                      },
+                                      "ZeroPolicy": "ReturnZero"
+                                    }
+                                  },
+                                  "ResultKey": null,
+                                  "Children": []
+                                }
+                              },
+                              {
+                                "kind": "node.setCombatantCounter",
+                                "value": {
+                                  "TargetSelector": {
+                                    "kind": "sel.iterationTarget",
+                                    "value": {
+                                      "Cardinality": "ZeroOrOne"
+                                    }
+                                  },
+                                  "CounterId": {
+                                    "value": "sustained_this_round"
+                                  },
+                                  "Amount": {
+                                    "kind": "const",
+                                    "value": {
+                                      "Value": 1
+                                    }
+                                  },
+                                  "Relative": false,
+                                  "Children": []
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            "MaxNodeDepth": 64,
+            "MaxProgramSteps": 1024
+          }
+        }
+      ]
     },
     {
       "Id": {
@@ -103753,19 +104171,28 @@
         },
         {
           "Id": "counterclaim_imp",
-          "MaxHealth": 36,
+          "MaxHealth": 45,
           "Actions": [
             {
               "value": "counterclaim_imp.red_ink_claim"
             },
             {
-              "value": "counterclaim_imp.spiteful_escalation"
+              "value": "counterclaim_imp.spiteful_filing"
             },
             {
-              "value": "counterclaim_imp.double_counterclaim"
+              "value": "counterclaim_imp.countersuit"
             }
           ],
-          "StartingStatuses": null,
+          "StartingStatuses": [
+            {
+              "Status": {
+                "value": "counterclaim"
+              },
+              "Stacks": 1,
+              "DurationTurns": 0,
+              "Charges": 0
+            }
+          ],
           "DisplayName": "Counterclaim Imp",
           "Position": null,
           "IntentRules": null
@@ -128247,7 +128674,7 @@
       "DescriptionKey": null,
       "Intent": {
         "Kind": "Special",
-        "Label": "Red-Ink Claim \u00B7 6 dmg, Paperwork \u002B1"
+        "Label": "Red-Ink Claim \u00B7 9 dmg, Paperwork \u002B1"
       },
       "Program": {
         "Id": {
@@ -128270,7 +128697,7 @@
                   "Amount": {
                     "kind": "const",
                     "value": {
-                      "Value": 6
+                      "Value": 9
                     }
                   },
                   "ResultKey": null,
@@ -128312,20 +128739,20 @@
       }
     },
     {
-      "Id": "counterclaim_imp.spiteful_escalation",
+      "Id": "counterclaim_imp.spiteful_filing",
       "PackageId": "scenario",
-      "NameKey": "Spiteful Escalation",
+      "NameKey": "Spiteful Filing",
       "DescriptionKey": null,
       "Intent": {
-        "Kind": "Special",
-        "Label": "Spiteful Escalation \u00B7 Strength \u002B1"
+        "Kind": "Defend",
+        "Label": "Spiteful Filing \u00B7 8 block"
       },
       "Program": {
         "Id": {
           "Value": "(unnamed)"
         },
         "Root": {
-          "kind": "node.applyStatus",
+          "kind": "node.gainBlock",
           "value": {
             "TargetSelector": {
               "kind": "sel.source",
@@ -128334,17 +128761,12 @@
                 "RequiredContextCapabilities": "Source"
               }
             },
-            "StatusDefinitionId": {
-              "value": "strength"
-            },
-            "Stacks": {
+            "Amount": {
               "kind": "const",
               "value": {
-                "Value": 1
+                "Value": 8
               }
             },
-            "DurationTurns": 0,
-            "Charges": 0,
             "ResultKey": null,
             "Children": []
           }
@@ -128354,67 +128776,38 @@
       }
     },
     {
-      "Id": "counterclaim_imp.double_counterclaim",
+      "Id": "counterclaim_imp.countersuit",
       "PackageId": "scenario",
-      "NameKey": "Double Counterclaim",
+      "NameKey": "Countersuit",
       "DescriptionKey": null,
       "Intent": {
         "Kind": "Attack",
-        "Label": "Double Counterclaim \u00B7 8 dmg"
+        "Label": "Countersuit \u00B7 13 dmg"
       },
       "Program": {
         "Id": {
           "Value": "(unnamed)"
         },
         "Root": {
-          "kind": "node.sequence",
+          "kind": "node.dealDamage",
           "value": {
-            "Children": [
-              {
-                "kind": "node.dealDamage",
-                "value": {
-                  "TargetSelector": {
-                    "kind": "sel.eventTarget",
-                    "value": {
-                      "Cardinality": "ZeroOrOne",
-                      "RequiredContextCapabilities": "EventTarget"
-                    }
-                  },
-                  "Amount": {
-                    "kind": "const",
-                    "value": {
-                      "Value": 4
-                    }
-                  },
-                  "ResultKey": null,
-                  "IgnoresBlock": false,
-                  "Element": null,
-                  "Children": []
-                }
-              },
-              {
-                "kind": "node.dealDamage",
-                "value": {
-                  "TargetSelector": {
-                    "kind": "sel.eventTarget",
-                    "value": {
-                      "Cardinality": "ZeroOrOne",
-                      "RequiredContextCapabilities": "EventTarget"
-                    }
-                  },
-                  "Amount": {
-                    "kind": "const",
-                    "value": {
-                      "Value": 4
-                    }
-                  },
-                  "ResultKey": null,
-                  "IgnoresBlock": false,
-                  "Element": null,
-                  "Children": []
-                }
+            "TargetSelector": {
+              "kind": "sel.eventTarget",
+              "value": {
+                "Cardinality": "ZeroOrOne",
+                "RequiredContextCapabilities": "EventTarget"
               }
-            ]
+            },
+            "Amount": {
+              "kind": "const",
+              "value": {
+                "Value": 13
+              }
+            },
+            "ResultKey": null,
+            "IgnoresBlock": false,
+            "Element": null,
+            "Children": []
           }
         },
         "MaxNodeDepth": 64,
@@ -128791,7 +129184,7 @@
       "DescriptionKey": null,
       "Intent": {
         "Kind": "Attack",
-        "Label": "Sustained Strike \u00B7 7 dmg"
+        "Label": "Sustained Strike \u00B7 11 dmg"
       },
       "Program": {
         "Id": {
@@ -128810,7 +129203,7 @@
             "Amount": {
               "kind": "const",
               "value": {
-                "Value": 7
+                "Value": 11
               }
             },
             "ResultKey": null,
@@ -128824,13 +129217,13 @@
       }
     },
     {
-      "Id": "sustaining_gavel.order_in_the_motion",
+      "Id": "sustaining_gavel.order_in_the_chamber",
       "PackageId": "scenario",
-      "NameKey": "Order in the Motion",
+      "NameKey": "Order in the Chamber",
       "DescriptionKey": null,
       "Intent": {
-        "Kind": "Special",
-        "Label": "Order in the Motion \u00B7 3 block"
+        "Kind": "Defend",
+        "Label": "Order in the Chamber \u00B7 4 block"
       },
       "Program": {
         "Id": {
@@ -128846,7 +129239,7 @@
             "Amount": {
               "kind": "const",
               "value": {
-                "Value": 3
+                "Value": 4
               }
             },
             "ResultKey": null,
@@ -128858,73 +129251,38 @@
       }
     },
     {
-      "Id": "sustaining_gavel.sustain_the_objection",
+      "Id": "sustaining_gavel.strike_the_desk",
       "PackageId": "scenario",
-      "NameKey": "Sustain the Objection",
+      "NameKey": "Strike the Desk",
       "DescriptionKey": null,
       "Intent": {
-        "Kind": "Special",
-        "Label": "Sustain the Objection \u00B7 Paperwork \u002B1, Strength \u002B1"
+        "Kind": "Attack",
+        "Label": "Strike the Desk \u00B7 14 dmg"
       },
       "Program": {
         "Id": {
           "Value": "(unnamed)"
         },
         "Root": {
-          "kind": "node.sequence",
+          "kind": "node.dealDamage",
           "value": {
-            "Children": [
-              {
-                "kind": "node.applyStatus",
-                "value": {
-                  "TargetSelector": {
-                    "kind": "sel.eventTarget",
-                    "value": {
-                      "Cardinality": "ZeroOrOne",
-                      "RequiredContextCapabilities": "EventTarget"
-                    }
-                  },
-                  "StatusDefinitionId": {
-                    "value": "paperwork"
-                  },
-                  "Stacks": {
-                    "kind": "const",
-                    "value": {
-                      "Value": 1
-                    }
-                  },
-                  "DurationTurns": 0,
-                  "Charges": 0,
-                  "ResultKey": null,
-                  "Children": []
-                }
-              },
-              {
-                "kind": "node.applyStatus",
-                "value": {
-                  "TargetSelector": {
-                    "kind": "sel.source",
-                    "value": {
-                      "Cardinality": "ZeroOrOne",
-                      "RequiredContextCapabilities": "Source"
-                    }
-                  },
-                  "StatusDefinitionId": {
-                    "value": "strength"
-                  },
-                  "Stacks": {
-                    "kind": "const",
-                    "value": {
-                      "Value": 1
-                    }
-                  },
-                  "DurationTurns": 0,
-                  "Charges": 0,
-                  "ResultKey": null,
-                  "Children": []
-                }
+            "TargetSelector": {
+              "kind": "sel.eventTarget",
+              "value": {
+                "Cardinality": "ZeroOrOne",
+                "RequiredContextCapabilities": "EventTarget"
               }
-            ]
+            },
+            "Amount": {
+              "kind": "const",
+              "value": {
+                "Value": 14
+              }
+            },
+            "ResultKey": null,
+            "IgnoresBlock": false,
+            "Element": null,
+            "Children": []
           }
         },
         "MaxNodeDepth": 64,
@@ -150393,6 +150751,488 @@
       "Triggers": [],
       "DeathPrevention": null,
       "DebuffBlock": null
+    },
+    {
+      "Id": "counterclaim",
+      "PackageId": "scenario",
+      "NameKey": "Counterclaim",
+      "DescriptionKey": null,
+      "Polarity": "Neutral",
+      "UsesStacks": false,
+      "UsesDuration": false,
+      "UsesCharges": false,
+      "StackingBehavior": "MergeWithExistingInstance",
+      "Tags": [],
+      "PassiveModifiers": [],
+      "Triggers": [
+        {
+          "Event": "StatusApplied",
+          "Program": {
+            "Id": {
+              "Value": "(unnamed)"
+            },
+            "Root": {
+              "kind": "node.conditional",
+              "value": {
+                "Condition": {
+                  "kind": "and",
+                  "value": {
+                    "Left": {
+                      "kind": "compare",
+                      "value": {
+                        "Left": {
+                          "kind": "combatantStatusStacks",
+                          "value": {
+                            "Selector": {
+                              "kind": "sel.source",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "Source"
+                              }
+                            },
+                            "StatusId": {
+                              "value": "the_applicant"
+                            }
+                          }
+                        },
+                        "Op": "Greater",
+                        "Right": {
+                          "kind": "const",
+                          "value": {
+                            "Value": 0
+                          }
+                        }
+                      }
+                    },
+                    "Right": {
+                      "kind": "compare",
+                      "value": {
+                        "Left": {
+                          "kind": "combatantCounter",
+                          "value": {
+                            "Selector": {
+                              "kind": "sel.eventTarget",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "EventTarget"
+                              }
+                            },
+                            "CounterId": {
+                              "value": "counterclaim_used"
+                            }
+                          }
+                        },
+                        "Op": "Equal",
+                        "Right": {
+                          "kind": "const",
+                          "value": {
+                            "Value": 0
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "Then": {
+                  "kind": "node.sequence",
+                  "value": {
+                    "Children": [
+                      {
+                        "kind": "node.applyStatus",
+                        "value": {
+                          "TargetSelector": {
+                            "kind": "sel.source",
+                            "value": {
+                              "Cardinality": "ZeroOrOne",
+                              "RequiredContextCapabilities": "Source"
+                            }
+                          },
+                          "StatusDefinitionId": {
+                            "value": "paperwork"
+                          },
+                          "Stacks": {
+                            "kind": "const",
+                            "value": {
+                              "Value": 1
+                            }
+                          },
+                          "DurationTurns": 0,
+                          "Charges": 0,
+                          "ResultKey": null,
+                          "Children": []
+                        }
+                      },
+                      {
+                        "kind": "node.setCombatantCounter",
+                        "value": {
+                          "TargetSelector": {
+                            "kind": "sel.eventTarget",
+                            "value": {
+                              "Cardinality": "ZeroOrOne",
+                              "RequiredContextCapabilities": "EventTarget"
+                            }
+                          },
+                          "CounterId": {
+                            "value": "counterclaim_used"
+                          },
+                          "Amount": {
+                            "kind": "const",
+                            "value": {
+                              "Value": 1
+                            }
+                          },
+                          "Relative": false,
+                          "Children": []
+                        }
+                      }
+                    ]
+                  }
+                },
+                "Else": null,
+                "Children": [
+                  {
+                    "kind": "node.sequence",
+                    "value": {
+                      "Children": [
+                        {
+                          "kind": "node.applyStatus",
+                          "value": {
+                            "TargetSelector": {
+                              "kind": "sel.source",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "Source"
+                              }
+                            },
+                            "StatusDefinitionId": {
+                              "value": "paperwork"
+                            },
+                            "Stacks": {
+                              "kind": "const",
+                              "value": {
+                                "Value": 1
+                              }
+                            },
+                            "DurationTurns": 0,
+                            "Charges": 0,
+                            "ResultKey": null,
+                            "Children": []
+                          }
+                        },
+                        {
+                          "kind": "node.setCombatantCounter",
+                          "value": {
+                            "TargetSelector": {
+                              "kind": "sel.eventTarget",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "EventTarget"
+                              }
+                            },
+                            "CounterId": {
+                              "value": "counterclaim_used"
+                            },
+                            "Amount": {
+                              "kind": "const",
+                              "value": {
+                                "Value": 1
+                              }
+                            },
+                            "Relative": false,
+                            "Children": []
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            "MaxNodeDepth": 64,
+            "MaxProgramSteps": 1024
+          }
+        },
+        {
+          "Event": "StatusMerged",
+          "Program": {
+            "Id": {
+              "Value": "(unnamed)"
+            },
+            "Root": {
+              "kind": "node.conditional",
+              "value": {
+                "Condition": {
+                  "kind": "and",
+                  "value": {
+                    "Left": {
+                      "kind": "compare",
+                      "value": {
+                        "Left": {
+                          "kind": "combatantStatusStacks",
+                          "value": {
+                            "Selector": {
+                              "kind": "sel.source",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "Source"
+                              }
+                            },
+                            "StatusId": {
+                              "value": "the_applicant"
+                            }
+                          }
+                        },
+                        "Op": "Greater",
+                        "Right": {
+                          "kind": "const",
+                          "value": {
+                            "Value": 0
+                          }
+                        }
+                      }
+                    },
+                    "Right": {
+                      "kind": "compare",
+                      "value": {
+                        "Left": {
+                          "kind": "combatantCounter",
+                          "value": {
+                            "Selector": {
+                              "kind": "sel.eventTarget",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "EventTarget"
+                              }
+                            },
+                            "CounterId": {
+                              "value": "counterclaim_used"
+                            }
+                          }
+                        },
+                        "Op": "Equal",
+                        "Right": {
+                          "kind": "const",
+                          "value": {
+                            "Value": 0
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "Then": {
+                  "kind": "node.sequence",
+                  "value": {
+                    "Children": [
+                      {
+                        "kind": "node.applyStatus",
+                        "value": {
+                          "TargetSelector": {
+                            "kind": "sel.source",
+                            "value": {
+                              "Cardinality": "ZeroOrOne",
+                              "RequiredContextCapabilities": "Source"
+                            }
+                          },
+                          "StatusDefinitionId": {
+                            "value": "paperwork"
+                          },
+                          "Stacks": {
+                            "kind": "const",
+                            "value": {
+                              "Value": 1
+                            }
+                          },
+                          "DurationTurns": 0,
+                          "Charges": 0,
+                          "ResultKey": null,
+                          "Children": []
+                        }
+                      },
+                      {
+                        "kind": "node.setCombatantCounter",
+                        "value": {
+                          "TargetSelector": {
+                            "kind": "sel.eventTarget",
+                            "value": {
+                              "Cardinality": "ZeroOrOne",
+                              "RequiredContextCapabilities": "EventTarget"
+                            }
+                          },
+                          "CounterId": {
+                            "value": "counterclaim_used"
+                          },
+                          "Amount": {
+                            "kind": "const",
+                            "value": {
+                              "Value": 1
+                            }
+                          },
+                          "Relative": false,
+                          "Children": []
+                        }
+                      }
+                    ]
+                  }
+                },
+                "Else": null,
+                "Children": [
+                  {
+                    "kind": "node.sequence",
+                    "value": {
+                      "Children": [
+                        {
+                          "kind": "node.applyStatus",
+                          "value": {
+                            "TargetSelector": {
+                              "kind": "sel.source",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "Source"
+                              }
+                            },
+                            "StatusDefinitionId": {
+                              "value": "paperwork"
+                            },
+                            "Stacks": {
+                              "kind": "const",
+                              "value": {
+                                "Value": 1
+                              }
+                            },
+                            "DurationTurns": 0,
+                            "Charges": 0,
+                            "ResultKey": null,
+                            "Children": []
+                          }
+                        },
+                        {
+                          "kind": "node.setCombatantCounter",
+                          "value": {
+                            "TargetSelector": {
+                              "kind": "sel.eventTarget",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "EventTarget"
+                              }
+                            },
+                            "CounterId": {
+                              "value": "counterclaim_used"
+                            },
+                            "Amount": {
+                              "kind": "const",
+                              "value": {
+                                "Value": 1
+                              }
+                            },
+                            "Relative": false,
+                            "Children": []
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            "MaxNodeDepth": 64,
+            "MaxProgramSteps": 1024
+          }
+        },
+        {
+          "Event": "TurnEnded",
+          "Program": {
+            "Id": {
+              "Value": "(unnamed)"
+            },
+            "Root": {
+              "kind": "node.setCombatantCounter",
+              "value": {
+                "TargetSelector": {
+                  "kind": "sel.source",
+                  "value": {
+                    "Cardinality": "ZeroOrOne",
+                    "RequiredContextCapabilities": "Source"
+                  }
+                },
+                "CounterId": {
+                  "value": "counterclaim_used"
+                },
+                "Amount": {
+                  "kind": "const",
+                  "value": {
+                    "Value": 0
+                  }
+                },
+                "Relative": false,
+                "Children": []
+              }
+            },
+            "MaxNodeDepth": 64,
+            "MaxProgramSteps": 1024
+          }
+        }
+      ],
+      "DeathPrevention": null,
+      "DebuffBlock": null
+    },
+    {
+      "Id": "sustained",
+      "PackageId": "scenario",
+      "NameKey": "Sustained",
+      "DescriptionKey": null,
+      "Polarity": "Neutral",
+      "UsesStacks": false,
+      "UsesDuration": false,
+      "UsesCharges": false,
+      "StackingBehavior": "MergeWithExistingInstance",
+      "Tags": [],
+      "PassiveModifiers": [],
+      "Triggers": [
+        {
+          "Event": "RoundEnded",
+          "Program": {
+            "Id": {
+              "Value": "(unnamed)"
+            },
+            "Root": {
+              "kind": "node.setCombatantCounter",
+              "value": {
+                "TargetSelector": {
+                  "kind": "sel.withStatus",
+                  "value": {
+                    "Inner": {
+                      "kind": "sel.allCombatants",
+                      "value": {
+                        "AliveOnly": false,
+                        "MayIncludeDownedTargets": true
+                      }
+                    },
+                    "StatusDefinitionId": {
+                      "value": "sustained"
+                    }
+                  }
+                },
+                "CounterId": {
+                  "value": "sustained_this_round"
+                },
+                "Amount": {
+                  "kind": "const",
+                  "value": {
+                    "Value": 0
+                  }
+                },
+                "Relative": false,
+                "Children": []
+              }
+            },
+            "MaxNodeDepth": 64,
+            "MaxProgramSteps": 1024
+          }
+        }
+      ],
+      "DeathPrevention": null,
+      "DebuffBlock": null
     }
   ],
   "Relics": [
@@ -159296,7 +160136,7 @@
       },
       "city_normal_appeal_07": {
         "Art": null,
-        "FlavorText": "Objection Sustained",
+        "FlavorText": "Sustained Counterclaim",
         "Icon": null,
         "Rarity": null,
         "Frame": null,

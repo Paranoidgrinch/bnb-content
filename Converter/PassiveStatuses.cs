@@ -61,7 +61,85 @@ public static class PassiveStatuses
         Marker(StolenSandId, "Stolen Sand"),
         YourNumberIsFading(),
         Marker(StolenMinuteId, "Stolen Minute"),
+        Counterclaim(),
+        Sustained(),
     ];
+
+    // Counterclaim Imp: the passive itself is owner-scoped (the Imp is what gets filed on), so one status
+    // carries both the reaction and the once-per-player-turn latch it clears at its own turn end.
+    public const string CounterclaimId = "counterclaim";
+    public static readonly CounterId CounterclaimUsedCounter = new("counterclaim_used");
+
+    private static StatusData Counterclaim()
+    {
+        var imp = CombatantTargetSelectors.EventTarget; // the status' recipient: the Imp
+        var filer = CombatantTargetSelectors.Source;    // whoever applied it
+
+        StatusTriggerData Reaction<TContext>(string trigger) where TContext : class
+        {
+            var program = new EffectProgram<TContext>(
+                new ConditionalEffectNode<TContext>(
+                    new AndExpression<TContext>(
+                        // Only the player's own filings answer back, and only the first each turn.
+                        new ComparisonExpression<TContext>(
+                            new CombatantStatusStacksExpression<TContext>(filer, new StatusDefinitionId(ApplicantId)),
+                            ComparisonOperator.Greater,
+                            new ConstantExpression<TContext>(0)),
+                        new ComparisonExpression<TContext>(
+                            new CombatantCounterExpression<TContext>(imp, CounterclaimUsedCounter),
+                            ComparisonOperator.Equal,
+                            new ConstantExpression<TContext>(0))),
+                    new SequenceEffectNode<TContext>(new IEffectNode<TContext>[]
+                    {
+                        new ApplyStatusNode<TContext>(filer, new StatusDefinitionId("paperwork"),
+                            new ConstantExpression<TContext>(1)),
+                        new SetCombatantCounterNode<TContext>(imp, CounterclaimUsedCounter,
+                            new ConstantExpression<TContext>(1), relative: false),
+                    })));
+
+            return new StatusTriggerData(trigger,
+                JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<TContext>()));
+        }
+
+        return new StatusData
+        {
+            Id = CounterclaimId,
+            NameKey = "Counterclaim",
+            Polarity = StatusPolarity.Neutral,
+            StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
+            UsesStacks = false,
+            Tags = [],
+            PassiveModifiers = [],
+            Triggers =
+            [
+                Reaction<StatusAppliedTriggeredEffectContext>("StatusApplied"),
+                Reaction<StatusMergedTriggeredEffectContext>("StatusMerged"),
+                new StatusTriggerData("TurnEnded", JsonSerializer.SerializeToElement(
+                    new EffectProgram<TurnEndedTriggeredEffectContext>(
+                        new SetCombatantCounterNode<TurnEndedTriggeredEffectContext>(
+                            CombatantTargetSelectors.Source, CounterclaimUsedCounter,
+                            new ConstantExpression<TurnEndedTriggeredEffectContext>(0), relative: false)),
+                    CombatJson.CreateOptions<TurnEndedTriggeredEffectContext>())),
+            ],
+        };
+    }
+
+    // Sustaining Gavel: marker + the once-per-round latch its encounter trigger reads (EncounterPassives).
+    public const string SustainedId = "sustained";
+    public static readonly CounterId SustainedThisRoundCounter = new("sustained_this_round");
+
+    private static StatusData Sustained()
+    {
+        var carriers = CombatantTargetSelectors.WithStatus(
+            CombatantTargetSelectors.AllCombatants, new StatusDefinitionId(SustainedId));
+
+        var program = new EffectProgram<RoundEndedTriggeredEffectContext>(
+            new SetCombatantCounterNode<RoundEndedTriggeredEffectContext>(
+                carriers, SustainedThisRoundCounter,
+                new ConstantExpression<RoundEndedTriggeredEffectContext>(0), relative: false));
+
+        return Passive(SustainedId, "Sustained", "RoundEnded", program);
+    }
 
     // Inverted Hourglass: the marker its encounter trigger finds it by; the sand itself is a counter.
     public const string StolenSandId = "stolen_sand_passive";
