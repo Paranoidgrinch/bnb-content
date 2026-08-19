@@ -5061,38 +5061,54 @@
   },
   {
     "id": "duplicate_copy_mite",
-    "name": "Duplicate Copy Mite",
-    "max_hp": 16,
+    "name": "Duplicate Copy Mites",
+    "max_hp": 37,
     "intent_pattern": "cycle",
     "intents": [
       {
-        "id": "make_another_copy",
-        "name": "Make Another Copy",
-        "intent_type": "debuff",
+        "id": "spread_through_the_binding",
+        "name": "Spread Through the Binding",
+        "intent_type": "buff",
         "actions": [
           {
             "type": "apply_status",
-            "target": "player",
-            "status": "paperwork",
-            "amount": 2
+            "target": "all_enemies",
+            "status": "bookworm",
+            "amount": 1
+          },
+          {
+            "type": "apply_status",
+            "target": "owner",
+            "status": "bookworm",
+            "amount": 1
           }
         ]
       },
       {
-        "id": "carbon_bite",
-        "name": "Carbon Bite",
+        "id": "carbon_paper_bites",
+        "name": "Carbon-Paper Bites",
         "intent_type": "attack",
         "actions": [
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 5
+            "amount": 3
+          },
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 3
+          },
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 3
           }
         ]
       },
       {
-        "id": "copy_filed_twice",
-        "name": "Copy Filed Twice",
+        "id": "loose_copy",
+        "name": "Loose Copy",
         "intent_type": "debuff",
         "actions": [
           {
@@ -5100,6 +5116,18 @@
             "target": "player",
             "status": "paperwork",
             "amount": 2
+          }
+        ]
+      },
+      {
+        "id": "scuttle_between_pages",
+        "name": "Scuttle Between Pages",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 8
           }
         ]
       }

@@ -92,6 +92,22 @@ public class EnemySignatureCombatTests
         Assert.Fail("no Paper Cut reached the hand");
     }
 
+    // Duplicate Copy Mites, "Spread Through the Binding": every living enemy gains 1 Bookworm, the Mites 2 —
+    // authored as a side-wide application plus one more on themselves, which is what makes the "instead" work
+    // without a second effect kind.
+    [Fact]
+    public void The_mites_hand_out_bookworm_and_keep_the_extra_copy()
+    {
+        var probe = FightProbe.Solo("duplicate_copy_mite", "spread_through_the_binding");
+        var (play, session, mitesId) = FightProbe.Start(probe);
+
+        play.CombatDriver!.EndTurn();
+        Assert.Null(session.Error);
+
+        var mites = play.CombatDriver.Current!.State.GetCombatant(mitesId);
+        Assert.Equal(2, FightProbe.StacksOf(mites, "bookworm"));
+    }
+
     [Fact]
     public void The_leechs_telegraph_spells_out_the_margin_formula()
     {

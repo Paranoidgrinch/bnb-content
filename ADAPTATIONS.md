@@ -39,6 +39,10 @@ older Act-I enemy pool wherever HP or intents disagree. Readings taken where the
   (`firstCardPlayedHasTag`); "first non-Junk" would need a second, junk-aware opening record.
 - The counter passives fire on the **exactly-Nth** card of that type (2nd for the Scribe, 3rd for the
   Examiner), which is the design's "maximum once per player turn" without extra cooldown state.
+- **Duplicate Copy Mites are ONE body** (37 HP) as the final design has them; the demo fielded two 16 HP
+  "Duplicate Copy Mite" bodies in *Copies Upon Copies*, which is now that single solo. Their passive **Carbon
+  Copies** is deferred to the Stage-4 duo (see ACT_I_BUILD_PLAN.md) — in a solo there is no other enemy that
+  could gain Bookworm, so it can never fire.
 - **"Direct attacks gain +3 damage per Panic, maximum +9"** (Queue-Crier Homunculus, "Lost Your Place") is
   baked into the enemy's one pure ATTACK intent — "Call a Number That Is Not Yours", the intent the design
   itself annotates with the passive. Its mixed damage+Panic and block+Panic intents stay flat, so the

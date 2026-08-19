@@ -1,9 +1,9 @@
 # Act I — Real-Game Build Plan (converter → game.roguedeck.json → Godot)
 
-## ▶ RESUME POINT (2026-08-19, bnb-content: Stage 2 complete, RogueDeck-Core @b645378)
+## ▶ RESUME POINT (2026-08-19, bnb-content: Stages 1-3 done, RogueDeck-Core @13e42ce)
 All engine primitives for reworked Act-I enemies are DONE + pushed. Converter authoring pattern proven
 end-to-end for owner-scoped passives, cross-combatant passives, intent rules, capped scaling. All suites
-green (RogueDeck-Core Core 1401/Scenario 684/Run 448/Sandbox 292; bnb-content 31). 5 of 25 identities final.
+green (RogueDeck-Core Core 1402/Scenario 684/Run 448/Sandbox 294; bnb-content 46). 9 of 25 identities final.
 
 **Authored so far (real final identities):**
 - Stage 1 — `a_very_official_line` (new id): full pattern (queue_advances passive + self_counter intent rule
@@ -22,16 +22,31 @@ green (RogueDeck-Core Core 1401/Scenario 684/Run 448/Sandbox 292; bnb-content 31
     type, 8 Block for the Examiner + 1 Doubt for the player. Shared helper
     `EncounterPassives.OnNthCardOfTheOpeningType(n, effect)` now backs both counter passives (exactly-N ⇒
     once per player turn without cooldown state). Intents rewritten to the FINAL_AUDIT numbers.
+- **Stage 3 (Form) — COMPLETE, all four solos** (no duo in this stage by design):
+  - `filing_beetle` (40 HP): Bookworm tutorial — Worm-Eaten Folio gives ITSELF 2 Bookworm + 6 Block.
+  - `unsigned_form_ghost` (43 HP): "Still Missing a Signature" — watcher status toggles a shield status
+    carrying ScalePercent 75 (Direct), because passive modifiers cannot be conditional.
+  - `duplicate_copy_mite` (37 HP, now ONE body, name "Duplicate Copy Mites"): Spread Through the Binding =
+    side-wide Bookworm +1 plus one more on itself (that is the design's "Mites gain 2 instead"). Its passive
+    Carbon Copies is deferred to the Stage-4 duo — see Deferred.
+  - `blank_line_leech` (45 HP): "Feed on the Filed Margin" baked into Blank-Space Bite via the new
+    `status_on` + `per_stacks` DSL fields.
+  - **Vocabulary added: `bookworm`** (StatusMapper, raw program; min(P,B) via a branch, no scratch value) and
+    the engine's `StatusStacksChanged` trigger event.
 - **Rule established: FINAL_AUDIT numbers WIN** over both the demo data and the older
   `Act_I_Final_Enemy_Pool.md` (they disagree on HP and intents) — rewrite HP + intents to the audit, keep the
   enemy id, keep an intent id only where the successor intent is the same mechanic.
 
 **Immediate next steps (resume here):**
-1. Stage 3 (Form family): `filing_beetle`, `unsigned_form_ghost`, `duplicate_copy_mites`, `blank_line_leech`.
-2. Then Stages 4–8 (Seal / Ordinance / Delay / Appeal / Enforcement), 4 identities each.
-3. `number_ticket_wisp` (Stage 1) stays DEFERRED — needs a StatusStacksReduced trigger event.
-4. The duos ("Wrong Window, Same Queue", "The Line Has Started Moving", …) need the per-roster HP override
-   first (step 4 format gap) — the audit gives them REDUCED per-encounter HP.
+1. Stage 4 (Seal family): `wax_notary`, `sealed_door_ward`, `oath_candle` — then Stages 5-8 (Ordinance /
+   Delay / Appeal / Enforcement), 4 identities each.
+2. The duos ("Wrong Window, Same Queue", "The Line Has Started Moving", the Stage-4 Mites duo, …) need the
+   per-roster HP override first (step 4 format gap) — the audit gives them REDUCED per-encounter HP.
+3. Deferred passives to pick up with their encounters: Carbon Copies (Mites, Stage-4 duo), Number-Ticket Wisp.
+
+**Test harness:** `Tests/FightProbe.cs` carves a ONE-FIGHT blueprint out of the real converted game (single
+combat node → probe encounter cloned from the enemy's authored roster entry), so any signature can be asserted
+in a live fight: `FightProbe.Solo("<enemy>", "<intent>", ("paperwork", 5))` → `FightProbe.Start(probe)`.
 
 **Migration learnings (apply going forward):**
 - Enemy ids OFTEN already exist in demo data → ENHANCE in place (add starting_statuses / intent_rules / a
@@ -46,9 +61,15 @@ green (RogueDeck-Core Core 1401/Scenario 684/Run 448/Sandbox 292; bnb-content 31
   FirstTarget, an escape node).
 
 **Deferred (need more engine or are fiddly):**
-- Bookworm (2 subtleties: fire before Paperwork DoT handler; min(P,B) removal can't be a naive sequence).
-- Number-Ticket Wisp "Your Number Came Up" (reacts to PLAYER Panic DECAY — no per-stack-decay trigger event
-  exists; would need a StatusStacksReduced trigger event).
+- **Duplicate Copy Mites "Carbon Copies"** (first time each round ANOTHER enemy gains Bookworm → Mites gain 4
+  Block) — author it with the Stage-4 duo: in a solo no other enemy exists, so it can never fire. Sketch: a
+  marker status on the Mites so a cross-combatant encounter trigger can target them
+  (`AllAlliesOfSourceWithStatus`), an `eventTarget`-has-no-marker gate to mean "another" enemy, a
+  bookworm-stacks gate as the "which status was applied" proxy (encounter triggers carry no filters), and a
+  once-per-round counter — whose RESET needs care, because RoundStarted status triggers carry no bearer filter.
+- Number-Ticket Wisp "Your Number Came Up" (reacts to PLAYER Panic DECAY — the decay is a stack change on the
+  hero, so `StatusStacksChanged` (RogueDeck-Core @13e42ce) now sees it as an ENCOUNTER trigger; still needs a
+  way to tell decay from any other reduction. Re-check when Stage 1 is revisited).
 - Duo/multi encounters need a per-roster HP override (encounter format gap) — add to BabEncounter/EncounterMapper
   before authoring the multi encounters (step 4).
 
@@ -72,13 +93,12 @@ Recipes for translating enemy signatures → engine constructs live in
   Shop node draws a distinct ref without replacement (mirrors the combat pool). Falls back to single
   `NodeRefs[kind]`. (RogueDeck-Core @4b78320.)
 
-### 1. Statuses (StatusMapper)
-- Panic / Doubt / Paperwork / Fatigue / Strength already ported.
-- **Bookworm — DEFERRED to step 3 (author with its enemy).** Two real subtleties found: (a) it must fire at
-  the bearer's turn start BEFORE the Paperwork DoT event-handler (ordering, not just a TurnStarted trigger);
-  (b) "remove min(Paperwork, Bookworm) of each" can't be a naive Sequence — the second `modifyStatusStacks`
-  reads the already-reduced value, so it needs the min captured once (scratch/result-store or a raw
-  EffectProgram). Do it in-combat-tested when an enemy fields it.
+### 1. Statuses (StatusMapper) — DONE
+- Panic / Doubt / Paperwork / Fatigue / Strength ported; **Bookworm DONE with Stage 3**. Both subtleties
+  resolved: (a) the ordering needed an engine fix — damage-over-time now reads its stacks at RESOLUTION
+  (RogueDeck-Core @a428156), so a turn-start trigger can shrink the tick it precedes; (b) min(P,B) needs no
+  scratch value — branch on which side is smaller and each removal reads the status that has not been touched
+  yet. Proven in live fights by `Tests/BookwormStatusTests.cs`.
 
 ### 2. Enemy model + DSL extensions (BabModel / EffectMapper / EnemyMapper)
 Key de-risking: `EncounterEnemy` already supports `StartingStatuses` + `IntentRules`, so passives + conditional
@@ -96,7 +116,7 @@ intents need **no engine change** — passive = a status-with-triggers carried f
   `damage_per_status`/…). New effect types are added per-need when an enemy intent requires one (step 3), and
   for Act-II card marks (mark ops via RAW `EffectProgram` — not in `CombatNodeModel`). No speculative DSL.
 
-### 3. Act-I enemies (source-data + EnemyMapper) — 25 identities  *(IN PROGRESS: 5/25 final; Stage 2 complete)*
+### 3. Act-I enemies (source-data + EnemyMapper) — 25 identities  *(IN PROGRESS: 9/25 final; Stages 1-3 complete)*
 Rewrite `source-data/enemies/city_enemies.json` to the FINAL roster with HP/intents/passives from the
 `...Standard_Encounter_Pools...(1).md` list, cross-checked against the FINAL master pool. Author each
 signature via the recipe catalogue.
