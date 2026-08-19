@@ -20,8 +20,39 @@ public static class EncounterPassives
         "wrong_window_scribe" => [NotThisCounter()],
         "triplicate_examiner" => [ThreeCopiesRequired()],
         "oath_candle" => [WitnessTheSeal()],
+        "contradictory_signpost" => [BothDirectionsMandatory()],
         _ => Array.Empty<EncounterTriggerData>(),
     };
+
+    // "Both Directions Mandatory" (Contradictory Signpost): the FIRST card the player plays each turn picks the
+    // direction — an Attack takes the LEFT road (Dangerous Shortcut), anything else the RIGHT one (Long
+    // Administrative Route). The choice is stored as a counter on the Signpost, which its intent rules read;
+    // playing no card at all leaves the counter at 0 and it posts "No Route Listed" instead.
+    private static EncounterTriggerData BothDirectionsMandatory()
+    {
+        var signpost = CombatantTargetSelectors.AllEnemiesOfSourceWithStatus(
+            new StatusDefinitionId(PassiveStatuses.BothDirectionsMandatoryId));
+
+        EffectProgram<CardPlayedTriggeredEffectContext> Program() =>
+            new(new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
+                new ComparisonExpression<CardPlayedTriggeredEffectContext>(
+                    new CardsPlayedThisTurnExpression<CardPlayedTriggeredEffectContext>(CombatantTargetSelectors.Source),
+                    ComparisonOperator.Equal,
+                    new ConstantExpression<CardPlayedTriggeredEffectContext>(1)),
+                new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
+                    new FirstCardPlayedThisTurnHasTagExpression<CardPlayedTriggeredEffectContext>(
+                        CombatantTargetSelectors.Source, new TagId("attack")),
+                    Route(signpost, 1),
+                    Route(signpost, 2))));
+
+        return new EncounterTriggerData("CardPlayed",
+            JsonSerializer.SerializeToElement(Program(), CombatJson.CreateOptions<CardPlayedTriggeredEffectContext>()));
+    }
+
+    private static SetCombatantCounterNode<CardPlayedTriggeredEffectContext> Route(
+        ICombatantTargetSelector signpost, int route) =>
+        new(signpost, PassiveStatuses.SignpostedRouteCounter,
+            new ConstantExpression<CardPlayedTriggeredEffectContext>(route), relative: false);
 
     // "Witness the Seal" (Oath Candle): the first time each round ANOTHER enemy gains Block, that enemy gains 3
     // more. Everything the program needs is expressed with selectors, since an encounter trigger has no filters

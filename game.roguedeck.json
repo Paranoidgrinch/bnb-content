@@ -15670,22 +15670,72 @@
       "Enemies": [
         {
           "Id": "contradictory_signpost",
-          "MaxHealth": 39,
+          "MaxHealth": 49,
           "Actions": [
             {
-              "value": "contradictory_signpost.mandatory_left"
-            },
-            {
-              "value": "contradictory_signpost.mandatory_right"
-            },
-            {
-              "value": "contradictory_signpost.compulsory_detour"
+              "value": "contradictory_signpost.turn_in_place"
             }
           ],
-          "StartingStatuses": null,
+          "StartingStatuses": [
+            {
+              "Status": {
+                "value": "both_directions_mandatory"
+              },
+              "Stacks": 1,
+              "DurationTurns": 0,
+              "Charges": 0
+            }
+          ],
           "DisplayName": "Contradictory Signpost",
           "Position": null,
-          "IntentRules": null
+          "IntentRules": [
+            {
+              "Condition": {
+                "kind": "intent.selfHasCounter",
+                "value": {
+                  "Counter": {
+                    "value": "signposted_route"
+                  },
+                  "Op": "Equal",
+                  "Value": 1
+                }
+              },
+              "Action": {
+                "value": "contradictory_signpost.dangerous_shortcut"
+              },
+              "Priority": 20
+            },
+            {
+              "Condition": {
+                "kind": "intent.selfHasCounter",
+                "value": {
+                  "Counter": {
+                    "value": "signposted_route"
+                  },
+                  "Op": "Equal",
+                  "Value": 2
+                }
+              },
+              "Action": {
+                "value": "contradictory_signpost.long_administrative_route"
+              },
+              "Priority": 20
+            },
+            {
+              "Condition": {
+                "kind": "intent.opponentCardsPlayed",
+                "value": {
+                  "Op": "Equal",
+                  "Value": 0,
+                  "LastTurn": true
+                }
+              },
+              "Action": {
+                "value": "contradictory_signpost.no_route_listed"
+              },
+              "Priority": 10
+            }
+          ]
         }
       ],
       "HeroResources": [
@@ -15700,7 +15750,288 @@
       "HeroStartingStatuses": [],
       "HeroDisplayName": null,
       "CardsDrawnPerTurn": null,
-      "TriggeredEffects": []
+      "TriggeredEffects": [
+        {
+          "Event": "CardPlayed",
+          "Program": {
+            "Id": {
+              "Value": "(unnamed)"
+            },
+            "Root": {
+              "kind": "node.conditional",
+              "value": {
+                "Condition": {
+                  "kind": "compare",
+                  "value": {
+                    "Left": {
+                      "kind": "cardsPlayedThisTurn",
+                      "value": {
+                        "Selector": {
+                          "kind": "sel.source",
+                          "value": {
+                            "Cardinality": "ZeroOrOne",
+                            "RequiredContextCapabilities": "Source"
+                          }
+                        }
+                      }
+                    },
+                    "Op": "Equal",
+                    "Right": {
+                      "kind": "const",
+                      "value": {
+                        "Value": 1
+                      }
+                    }
+                  }
+                },
+                "Then": {
+                  "kind": "node.conditional",
+                  "value": {
+                    "Condition": {
+                      "kind": "firstCardPlayedHasTag",
+                      "value": {
+                        "Selector": {
+                          "kind": "sel.source",
+                          "value": {
+                            "Cardinality": "ZeroOrOne",
+                            "RequiredContextCapabilities": "Source"
+                          }
+                        },
+                        "Tag": {
+                          "value": "attack"
+                        },
+                        "LastTurn": false
+                      }
+                    },
+                    "Then": {
+                      "kind": "node.setCombatantCounter",
+                      "value": {
+                        "TargetSelector": {
+                          "kind": "sel.enemiesWithStatus",
+                          "value": {
+                            "StatusDefinitionId": {
+                              "value": "both_directions_mandatory"
+                            }
+                          }
+                        },
+                        "CounterId": {
+                          "value": "signposted_route"
+                        },
+                        "Amount": {
+                          "kind": "const",
+                          "value": {
+                            "Value": 1
+                          }
+                        },
+                        "Relative": false,
+                        "Children": []
+                      }
+                    },
+                    "Else": {
+                      "kind": "node.setCombatantCounter",
+                      "value": {
+                        "TargetSelector": {
+                          "kind": "sel.enemiesWithStatus",
+                          "value": {
+                            "StatusDefinitionId": {
+                              "value": "both_directions_mandatory"
+                            }
+                          }
+                        },
+                        "CounterId": {
+                          "value": "signposted_route"
+                        },
+                        "Amount": {
+                          "kind": "const",
+                          "value": {
+                            "Value": 2
+                          }
+                        },
+                        "Relative": false,
+                        "Children": []
+                      }
+                    },
+                    "Children": [
+                      {
+                        "kind": "node.setCombatantCounter",
+                        "value": {
+                          "TargetSelector": {
+                            "kind": "sel.enemiesWithStatus",
+                            "value": {
+                              "StatusDefinitionId": {
+                                "value": "both_directions_mandatory"
+                              }
+                            }
+                          },
+                          "CounterId": {
+                            "value": "signposted_route"
+                          },
+                          "Amount": {
+                            "kind": "const",
+                            "value": {
+                              "Value": 1
+                            }
+                          },
+                          "Relative": false,
+                          "Children": []
+                        }
+                      },
+                      {
+                        "kind": "node.setCombatantCounter",
+                        "value": {
+                          "TargetSelector": {
+                            "kind": "sel.enemiesWithStatus",
+                            "value": {
+                              "StatusDefinitionId": {
+                                "value": "both_directions_mandatory"
+                              }
+                            }
+                          },
+                          "CounterId": {
+                            "value": "signposted_route"
+                          },
+                          "Amount": {
+                            "kind": "const",
+                            "value": {
+                              "Value": 2
+                            }
+                          },
+                          "Relative": false,
+                          "Children": []
+                        }
+                      }
+                    ]
+                  }
+                },
+                "Else": null,
+                "Children": [
+                  {
+                    "kind": "node.conditional",
+                    "value": {
+                      "Condition": {
+                        "kind": "firstCardPlayedHasTag",
+                        "value": {
+                          "Selector": {
+                            "kind": "sel.source",
+                            "value": {
+                              "Cardinality": "ZeroOrOne",
+                              "RequiredContextCapabilities": "Source"
+                            }
+                          },
+                          "Tag": {
+                            "value": "attack"
+                          },
+                          "LastTurn": false
+                        }
+                      },
+                      "Then": {
+                        "kind": "node.setCombatantCounter",
+                        "value": {
+                          "TargetSelector": {
+                            "kind": "sel.enemiesWithStatus",
+                            "value": {
+                              "StatusDefinitionId": {
+                                "value": "both_directions_mandatory"
+                              }
+                            }
+                          },
+                          "CounterId": {
+                            "value": "signposted_route"
+                          },
+                          "Amount": {
+                            "kind": "const",
+                            "value": {
+                              "Value": 1
+                            }
+                          },
+                          "Relative": false,
+                          "Children": []
+                        }
+                      },
+                      "Else": {
+                        "kind": "node.setCombatantCounter",
+                        "value": {
+                          "TargetSelector": {
+                            "kind": "sel.enemiesWithStatus",
+                            "value": {
+                              "StatusDefinitionId": {
+                                "value": "both_directions_mandatory"
+                              }
+                            }
+                          },
+                          "CounterId": {
+                            "value": "signposted_route"
+                          },
+                          "Amount": {
+                            "kind": "const",
+                            "value": {
+                              "Value": 2
+                            }
+                          },
+                          "Relative": false,
+                          "Children": []
+                        }
+                      },
+                      "Children": [
+                        {
+                          "kind": "node.setCombatantCounter",
+                          "value": {
+                            "TargetSelector": {
+                              "kind": "sel.enemiesWithStatus",
+                              "value": {
+                                "StatusDefinitionId": {
+                                  "value": "both_directions_mandatory"
+                                }
+                              }
+                            },
+                            "CounterId": {
+                              "value": "signposted_route"
+                            },
+                            "Amount": {
+                              "kind": "const",
+                              "value": {
+                                "Value": 1
+                              }
+                            },
+                            "Relative": false,
+                            "Children": []
+                          }
+                        },
+                        {
+                          "kind": "node.setCombatantCounter",
+                          "value": {
+                            "TargetSelector": {
+                              "kind": "sel.enemiesWithStatus",
+                              "value": {
+                                "StatusDefinitionId": {
+                                  "value": "both_directions_mandatory"
+                                }
+                              }
+                            },
+                            "CounterId": {
+                              "value": "signposted_route"
+                            },
+                            "Amount": {
+                              "kind": "const",
+                              "value": {
+                                "Value": 2
+                              }
+                            },
+                            "Relative": false,
+                            "Children": []
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            "MaxNodeDepth": 64,
+            "MaxProgramSteps": 1024
+          }
+        }
+      ]
     },
     {
       "Id": {
@@ -37500,13 +37831,50 @@
       }
     },
     {
-      "Id": "contradictory_signpost.mandatory_left",
+      "Id": "contradictory_signpost.turn_in_place",
       "PackageId": "scenario",
-      "NameKey": "Mandatory Left",
+      "NameKey": "Turn in Place",
       "DescriptionKey": null,
       "Intent": {
-        "Kind": "Special",
-        "Label": "Mandatory Left \u00B7 6 dmg, Doubt \u002B1"
+        "Kind": "Defend",
+        "Label": "Turn in Place \u00B7 8 block"
+      },
+      "Program": {
+        "Id": {
+          "Value": "(unnamed)"
+        },
+        "Root": {
+          "kind": "node.gainBlock",
+          "value": {
+            "TargetSelector": {
+              "kind": "sel.source",
+              "value": {
+                "Cardinality": "ZeroOrOne",
+                "RequiredContextCapabilities": "Source"
+              }
+            },
+            "Amount": {
+              "kind": "const",
+              "value": {
+                "Value": 8
+              }
+            },
+            "ResultKey": null,
+            "Children": []
+          }
+        },
+        "MaxNodeDepth": 64,
+        "MaxProgramSteps": 1024
+      }
+    },
+    {
+      "Id": "contradictory_signpost.dangerous_shortcut",
+      "PackageId": "scenario",
+      "NameKey": "Dangerous Shortcut",
+      "DescriptionKey": null,
+      "Intent": {
+        "Kind": "Attack",
+        "Label": "Dangerous Shortcut \u00B7 15 dmg"
       },
       "Program": {
         "Id": {
@@ -37529,7 +37897,7 @@
                   "Amount": {
                     "kind": "const",
                     "value": {
-                      "Value": 6
+                      "Value": 15
                     }
                   },
                   "ResultKey": null,
@@ -37538,6 +37906,142 @@
                   "Children": []
                 }
               },
+              {
+                "kind": "node.setCombatantCounter",
+                "value": {
+                  "TargetSelector": {
+                    "kind": "sel.source",
+                    "value": {
+                      "Cardinality": "ZeroOrOne",
+                      "RequiredContextCapabilities": "Source"
+                    }
+                  },
+                  "CounterId": {
+                    "value": "signposted_route"
+                  },
+                  "Amount": {
+                    "kind": "const",
+                    "value": {
+                      "Value": 0
+                    }
+                  },
+                  "Relative": false,
+                  "Children": []
+                }
+              }
+            ]
+          }
+        },
+        "MaxNodeDepth": 64,
+        "MaxProgramSteps": 1024
+      }
+    },
+    {
+      "Id": "contradictory_signpost.long_administrative_route",
+      "PackageId": "scenario",
+      "NameKey": "Long Administrative Route",
+      "DescriptionKey": null,
+      "Intent": {
+        "Kind": "Special",
+        "Label": "Long Administrative Route \u00B7 9 dmg, 9 block"
+      },
+      "Program": {
+        "Id": {
+          "Value": "(unnamed)"
+        },
+        "Root": {
+          "kind": "node.sequence",
+          "value": {
+            "Children": [
+              {
+                "kind": "node.dealDamage",
+                "value": {
+                  "TargetSelector": {
+                    "kind": "sel.eventTarget",
+                    "value": {
+                      "Cardinality": "ZeroOrOne",
+                      "RequiredContextCapabilities": "EventTarget"
+                    }
+                  },
+                  "Amount": {
+                    "kind": "const",
+                    "value": {
+                      "Value": 9
+                    }
+                  },
+                  "ResultKey": null,
+                  "IgnoresBlock": false,
+                  "Element": null,
+                  "Children": []
+                }
+              },
+              {
+                "kind": "node.gainBlock",
+                "value": {
+                  "TargetSelector": {
+                    "kind": "sel.source",
+                    "value": {
+                      "Cardinality": "ZeroOrOne",
+                      "RequiredContextCapabilities": "Source"
+                    }
+                  },
+                  "Amount": {
+                    "kind": "const",
+                    "value": {
+                      "Value": 9
+                    }
+                  },
+                  "ResultKey": null,
+                  "Children": []
+                }
+              },
+              {
+                "kind": "node.setCombatantCounter",
+                "value": {
+                  "TargetSelector": {
+                    "kind": "sel.source",
+                    "value": {
+                      "Cardinality": "ZeroOrOne",
+                      "RequiredContextCapabilities": "Source"
+                    }
+                  },
+                  "CounterId": {
+                    "value": "signposted_route"
+                  },
+                  "Amount": {
+                    "kind": "const",
+                    "value": {
+                      "Value": 0
+                    }
+                  },
+                  "Relative": false,
+                  "Children": []
+                }
+              }
+            ]
+          }
+        },
+        "MaxNodeDepth": 64,
+        "MaxProgramSteps": 1024
+      }
+    },
+    {
+      "Id": "contradictory_signpost.no_route_listed",
+      "PackageId": "scenario",
+      "NameKey": "No Route Listed",
+      "DescriptionKey": null,
+      "Intent": {
+        "Kind": "Debuff",
+        "Label": "No Route Listed \u00B7 Doubt \u002B1, Paperwork \u002B2"
+      },
+      "Program": {
+        "Id": {
+          "Value": "(unnamed)"
+        },
+        "Root": {
+          "kind": "node.sequence",
+          "value": {
+            "Children": [
               {
                 "kind": "node.applyStatus",
                 "value": {
@@ -37562,31 +38066,7 @@
                   "ResultKey": null,
                   "Children": []
                 }
-              }
-            ]
-          }
-        },
-        "MaxNodeDepth": 64,
-        "MaxProgramSteps": 1024
-      }
-    },
-    {
-      "Id": "contradictory_signpost.mandatory_right",
-      "PackageId": "scenario",
-      "NameKey": "Mandatory Right",
-      "DescriptionKey": null,
-      "Intent": {
-        "Kind": "Special",
-        "Label": "Mandatory Right \u00B7 Paperwork \u002B1, 6 block"
-      },
-      "Program": {
-        "Id": {
-          "Value": "(unnamed)"
-        },
-        "Root": {
-          "kind": "node.sequence",
-          "value": {
-            "Children": [
+              },
               {
                 "kind": "node.applyStatus",
                 "value": {
@@ -37603,7 +38083,7 @@
                   "Stacks": {
                     "kind": "const",
                     "value": {
-                      "Value": 1
+                      "Value": 2
                     }
                   },
                   "DurationTurns": 0,
@@ -37611,67 +38091,8 @@
                   "ResultKey": null,
                   "Children": []
                 }
-              },
-              {
-                "kind": "node.gainBlock",
-                "value": {
-                  "TargetSelector": {
-                    "kind": "sel.source",
-                    "value": {
-                      "Cardinality": "ZeroOrOne",
-                      "RequiredContextCapabilities": "Source"
-                    }
-                  },
-                  "Amount": {
-                    "kind": "const",
-                    "value": {
-                      "Value": 6
-                    }
-                  },
-                  "ResultKey": null,
-                  "Children": []
-                }
               }
             ]
-          }
-        },
-        "MaxNodeDepth": 64,
-        "MaxProgramSteps": 1024
-      }
-    },
-    {
-      "Id": "contradictory_signpost.compulsory_detour",
-      "PackageId": "scenario",
-      "NameKey": "Compulsory Detour",
-      "DescriptionKey": null,
-      "Intent": {
-        "Kind": "Attack",
-        "Label": "Compulsory Detour \u00B7 9 dmg"
-      },
-      "Program": {
-        "Id": {
-          "Value": "(unnamed)"
-        },
-        "Root": {
-          "kind": "node.dealDamage",
-          "value": {
-            "TargetSelector": {
-              "kind": "sel.eventTarget",
-              "value": {
-                "Cardinality": "ZeroOrOne",
-                "RequiredContextCapabilities": "EventTarget"
-              }
-            },
-            "Amount": {
-              "kind": "const",
-              "value": {
-                "Value": 9
-              }
-            },
-            "ResultKey": null,
-            "IgnoresBlock": false,
-            "Element": null,
-            "Children": []
           }
         },
         "MaxNodeDepth": 64,
@@ -62880,6 +63301,22 @@
           }
         }
       ],
+      "DeathPrevention": null,
+      "DebuffBlock": null
+    },
+    {
+      "Id": "both_directions_mandatory",
+      "PackageId": "scenario",
+      "NameKey": "Both Directions Mandatory",
+      "DescriptionKey": null,
+      "Polarity": "Neutral",
+      "UsesStacks": false,
+      "UsesDuration": false,
+      "UsesCharges": false,
+      "StackingBehavior": "MergeWithExistingInstance",
+      "Tags": [],
+      "PassiveModifiers": [],
+      "Triggers": [],
       "DeathPrevention": null,
       "DebuffBlock": null
     }
