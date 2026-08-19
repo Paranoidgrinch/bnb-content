@@ -65,6 +65,13 @@ older Act-I enemy pool wherever HP or intents disagree. Readings taken where the
 - **"Exception to the Exception — another enemy gains 7 Block; if solo, the Imp gains 10"** guards the whole
   enemy side for 7 (the Imp included). There is no "my allies except me" selector in the authoring surface,
   and the solo's 10 would need a roster-size condition.
+- **"The first time each player turn the player directly applies a negative status"** (Counterclaim Imp) is
+  read as any status the player files on it — a trigger program cannot see a status' polarity, and everything
+  the Bureaucrat applies to an enemy is a debuff.
+- **Sustaining Gavel copies Block only.** The design also copies half of a Strength gain, but Act I never
+  applies more than 1 Strength at a time and half of 1 rounds down to nothing.
+- **Roster order is turn order, and Block clears at its owner's turn start** — so a support body that copies
+  an ally's Block (the Gavel) is fielded BEFORE the ally it sustains, or its copy is wiped moments later.
 - **"Direct attacks gain +3 damage per Panic, maximum +9"** (Queue-Crier Homunculus, "Lost Your Place") is
   baked into the enemy's one pure ATTACK intent — "Call a Number That Is Not Yours", the intent the design
   itself annotates with the passive. Its mixed damage+Panic and block+Panic intents stay flat, so the
