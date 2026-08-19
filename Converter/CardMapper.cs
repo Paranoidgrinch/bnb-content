@@ -114,6 +114,11 @@ public static class EffectMapper
                 CounterId: effect.Counter ?? throw new ConversionException(where, "set_counter without counter"),
                 Relative: effect.Relative ?? true),
 
+            // damage = amount (base) + min(counter × amount_per_stack, cap?) — the counter counterpart of
+            // damage_per_status, for tracks an enemy keeps on itself (Stolen Sand).
+            "damage_per_counter" => new CombatNodeModel("dealDamage", Sel(),
+                DamagePerCounterAmount(where, effect)),
+
             "create_card" => new CombatNodeModel("createCardInstance", "source",
                 CombatAmountSpec.FromConst(effect.Copies ?? 1),
                 ToDefinition: CardMapper.MapCardId(effect.CardId
@@ -142,6 +147,24 @@ public static class EffectMapper
 
             var other => throw new ConversionException(where, $"unmapped effect type '{other}'"),
         };
+    }
+
+    // amount(base) + min(counter(owner) × amount_per_stack, cap). The counter is always read on the acting
+    // enemy — a track it keeps about itself, unlike damage_per_status which reads a status off a combatant.
+    private static CombatAmountSpec DamagePerCounterAmount(string where, BabEffect effect)
+    {
+        var scaled = CombatAmountSpec.Binary("mul",
+            CombatAmountSpec.Counter("source",
+                effect.Counter ?? throw new ConversionException(where, "damage_per_counter without counter")),
+            CombatAmountSpec.FromConst(effect.AmountPerStack
+                ?? throw new ConversionException(where, "damage_per_counter without amount_per_stack")));
+
+        if (effect.Cap is { } cap)
+            scaled = CombatAmountSpec.Binary("min", scaled, CombatAmountSpec.FromConst(cap));
+
+        return effect.Amount is { } baseAmount && baseAmount != 0
+            ? CombatAmountSpec.Binary("add", CombatAmountSpec.FromConst(baseAmount), scaled)
+            : scaled;
     }
 
     // amount(base) + min(statusStacks(readSelector, status) ÷ per_stacks × amount_per_stack, cap).

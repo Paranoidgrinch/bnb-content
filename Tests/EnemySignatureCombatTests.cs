@@ -331,6 +331,92 @@ public class EnemySignatureCombatTests
         Assert.Equal(2, FightProbe.StacksOf(Hero(play), "panic")); // 1 re-filed by the Ghost + 1 from the Crier
     }
 
+    // Inverted Hourglass, "Stolen Sand": every time Fatigue actually costs the player Energy the Hourglass
+    // banks a grain (max 3), and Turn the Glass cashes them in for 8 + 4 each.
+    [Fact]
+    public void The_hourglass_banks_the_energy_fatigue_steals_and_cashes_it_in()
+    {
+        // The Token keeps filing Fatigue; each one fires at the hero's turn start, which is the moment the
+        // Energy actually goes — and the moment the Hourglass banks a grain.
+        var probe = FightProbe.Roster("sand",
+            ("inverted_hourglass", "turn_the_glass", null),
+            ("fading_number_token", "unreadable_digit", null));
+        var (play, session, _) = FightProbe.Start(probe);
+
+        var combat = play.CombatDriver!.Current!;
+        var hourglassId = combat.State.Combatants.First(c => c.Id.value.StartsWith("inverted_hourglass")).Id;
+        var heroBefore = combat.State.GetCombatant(combat.HeroId).Health.Current;
+
+        // Round 1: nothing banked yet, so Turn the Glass is a plain 8. The Token then files the first Fatigue,
+        // which fires at the hero's next turn start → one grain.
+        play.CombatDriver.EndTurn();
+        Assert.Null(session.Error);
+        Assert.Equal(heroBefore - 8, Hero(play).Health.Current);
+        Assert.Equal(1, Enemy(play, hourglassId).GetCounter(PassiveStatuses.StolenSandCounter));
+
+        // Round 2: 8 + 4 for the banked grain, and cashing in empties the glass.
+        var beforeSecond = Hero(play).Health.Current;
+        play.CombatDriver.EndTurn();
+        Assert.Null(session.Error);
+        Assert.Equal(beforeSecond - 12, Hero(play).Health.Current);
+        Assert.Equal(1, Enemy(play, hourglassId).GetCounter(PassiveStatuses.StolenSandCounter)); // spent, then refilled
+    }
+
+    // Fading Number Token, "Your Number Is Fading": it withers by 3 at the end of each of its own turns unless
+    // the player is carrying Fatigue.
+    [Theory]
+    [InlineData("sharp_edge_token", 3)]  // an attack that files nothing → the Token fades
+    [InlineData("number_fades", 0)]      // files 1 Fatigue → it holds together
+    public void The_token_fades_unless_the_player_is_kept_tired(string intentId, int expectedLoss)
+    {
+        var probe = FightProbe.Solo("fading_number_token", intentId);
+        var (play, session, tokenId) = FightProbe.Start(probe);
+
+        play.CombatDriver!.EndTurn();
+        Assert.Null(session.Error);
+
+        Assert.Equal(43 - expectedLoss, Enemy(play, tokenId).Health.Current);
+    }
+
+    // Minute Moth, "Stolen Minute": a player turn that ends on exactly 0 Energy hands it a minute; at 2 it
+    // swaps its next intent for Wingbeat Delay, which spends them.
+    [Fact]
+    public void The_moth_collects_empty_turns_and_cashes_them_for_a_wingbeat()
+    {
+        var probe = FightProbe.Solo("minute_moth", "dusty_wings");
+        var (play, session, mothId) = FightProbe.Start(probe, Enumerable.Repeat("paper_cut", 10).ToList());
+
+        Spend(play, session, mothId); // three 1-energy Paper Cuts empty the pool
+        Assert.Equal(1, Enemy(play, mothId).GetCounter(PassiveStatuses.StolenMinuteCounter));
+        Assert.Equal(0, FightProbe.StacksOf(Hero(play), "fatigue"));
+
+        // The second empty turn brings the Moth to 2 — its intent rule swaps in the Wingbeat straight away.
+        var before = Hero(play).Health.Current;
+        Spend(play, session, mothId);
+        Assert.Equal(before - 8, Hero(play).Health.Current);
+        Assert.Equal(0, Enemy(play, mothId).GetCounter(PassiveStatuses.StolenMinuteCounter));
+        // The Wingbeat's Fatigue has already fired by now (it does so at the hero's turn start), which is
+        // exactly what it costs: this turn opens on 2 Energy instead of 3.
+        Assert.Equal(2, Hero(play).Resources[StandardCombatIds.EnergyResource].Current);
+    }
+
+    // Plays until the hero's energy is spent, then ends the turn.
+    private static void Spend(RunPlayback play, InteractiveRunSession session, CombatantId enemyId)
+    {
+        while (true)
+        {
+            var combat = play.CombatDriver!.Current!;
+            var energy = combat.State.GetCombatant(combat.HeroId).Resources[StandardCombatIds.EnergyResource].Current;
+            var card = combat.Hand.FirstOrDefault(c => c.DefinitionId.value == "paper_cut");
+            if (energy <= 0 || card is null)
+                break;
+            play.CombatDriver.PlayCard(card.Id, enemyId);
+            Assert.Null(session.Error);
+        }
+        play.CombatDriver!.EndTurn();
+        Assert.Null(session.Error);
+    }
+
     private static CombatantState Hero(RunPlayback play) =>
         play.CombatDriver!.Current!.State.GetCombatant(play.CombatDriver.Current!.HeroId);
 

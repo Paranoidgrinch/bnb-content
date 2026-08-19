@@ -58,7 +58,38 @@ public static class PassiveStatuses
         Loophole(),
         Marker(ApplicantId, "The Applicant"),
         StillInForce(),
+        Marker(StolenSandId, "Stolen Sand"),
+        YourNumberIsFading(),
+        Marker(StolenMinuteId, "Stolen Minute"),
     ];
+
+    // Inverted Hourglass: the marker its encounter trigger finds it by; the sand itself is a counter.
+    public const string StolenSandId = "stolen_sand_passive";
+    public static readonly CounterId StolenSandCounter = new("stolen_sand");
+
+    // Minute Moth: same shape — marker + the counter its intent rule reads.
+    public const string StolenMinuteId = "stolen_minute_passive";
+    public static readonly CounterId StolenMinuteCounter = new("stolen_minute");
+
+    // "Your Number Is Fading" (Fading Number Token): at the end of each of its own turns the Token loses 3 HP
+    // unless the player is carrying Fatigue — it only lasts as long as it can keep the queue waiting. Purely
+    // owner-scoped, so an ordinary status trigger does it; the opponent (the hero in a solo party) is the
+    // Token's lowest-health enemy.
+    private static StatusData YourNumberIsFading()
+    {
+        var program = new EffectProgram<TurnEndedTriggeredEffectContext>(
+            new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
+                new ComparisonExpression<TurnEndedTriggeredEffectContext>(
+                    new CombatantStatusStacksExpression<TurnEndedTriggeredEffectContext>(
+                        Opponent, new StatusDefinitionId("fatigue")),
+                    ComparisonOperator.Equal,
+                    new ConstantExpression<TurnEndedTriggeredEffectContext>(0)),
+                new DealDamageNode<TurnEndedTriggeredEffectContext>(
+                    CombatantTargetSelectors.Source,
+                    new ConstantExpression<TurnEndedTriggeredEffectContext>(3))));
+
+        return Passive("your_number_is_fading", "Your Number Is Fading", "TurnEnded", program);
+    }
 
     // The hero carries this in every fight (EncounterMapper) so a program can ask "did this happen to the
     // player?" — selectors are structural and cannot name a side.

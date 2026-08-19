@@ -6197,19 +6197,14 @@
   {
     "id": "inverted_hourglass",
     "name": "Inverted Hourglass",
-    "max_hp": 38,
+    "max_hp": 51,
     "intent_pattern": "cycle",
     "intents": [
       {
         "id": "upward_sand",
         "name": "Upward Sand",
-        "intent_type": "mixed",
+        "intent_type": "debuff",
         "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 6
-          },
           {
             "type": "apply_status",
             "target": "player",
@@ -6226,32 +6221,47 @@
           {
             "type": "gain_block",
             "target": "owner",
-            "amount": 10
+            "amount": 12
           }
         ]
       },
       {
-        "id": "stolen_minute",
-        "name": "Stolen Minute",
-        "intent_type": "mixed",
+        "id": "turn_the_glass",
+        "name": "Turn the Glass",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "damage_per_counter",
+            "target": "player",
+            "counter": "stolen_sand",
+            "amount": 8,
+            "amount_per_stack": 4
+          },
+          {
+            "type": "set_counter",
+            "target": "owner",
+            "counter": "stolen_sand",
+            "amount": 0,
+            "relative": false
+          }
+        ]
+      },
+      {
+        "id": "falling_upward",
+        "name": "Falling Upward",
+        "intent_type": "attack",
         "actions": [
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 4
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "fatigue",
-            "amount": 1
-          },
-          {
-            "type": "gain_block",
-            "target": "owner",
-            "amount": 4
+            "amount": 11
           }
         ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "stolen_sand_passive"
       }
     ],
     "tags": [
@@ -6267,7 +6277,7 @@
   {
     "id": "fading_number_token",
     "name": "Fading Number Token",
-    "max_hp": 32,
+    "max_hp": 43,
     "intent_pattern": "cycle",
     "intents": [
       {
@@ -6278,7 +6288,7 @@
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 5
+            "amount": 7
           },
           {
             "type": "apply_status",
@@ -6290,20 +6300,20 @@
       },
       {
         "id": "sharp_edge_token",
-        "name": "Sharp-Edge Token",
+        "name": "Sharp Edge",
         "intent_type": "attack",
         "actions": [
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 7
+            "amount": 10
           }
         ]
       },
       {
         "id": "unreadable_digit",
         "name": "Unreadable Digit",
-        "intent_type": "mixed",
+        "intent_type": "debuff",
         "actions": [
           {
             "type": "apply_status",
@@ -6318,6 +6328,11 @@
             "amount": 1
           }
         ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "your_number_is_fading"
       }
     ],
     "tags": [
@@ -6397,36 +6412,30 @@
   {
     "id": "minute_moth",
     "name": "Minute Moth",
-    "max_hp": 20,
+    "max_hp": 36,
     "intent_pattern": "cycle",
     "intents": [
       {
-        "id": "nibble_the_minute",
-        "name": "Nibble the Minute",
-        "intent_type": "mixed",
+        "id": "nibble_the_hour",
+        "name": "Nibble the Hour",
+        "intent_type": "attack",
         "actions": [
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 4
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "fatigue",
-            "amount": 1
+            "amount": 7
           }
         ]
       },
       {
         "id": "dusty_wings",
         "name": "Dusty Wings",
-        "intent_type": "attack",
+        "intent_type": "block",
         "actions": [
           {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 6
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 7
           }
         ]
       },
@@ -6436,17 +6445,59 @@
         "intent_type": "mixed",
         "actions": [
           {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 5
+          },
+          {
             "type": "gain_block",
             "target": "owner",
-            "amount": 4
+            "amount": 5
+          }
+        ]
+      },
+      {
+        "id": "wingbeat_delay",
+        "name": "Wingbeat Delay",
+        "intent_type": "mixed",
+        "special": true,
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 8
           },
           {
             "type": "apply_status",
             "target": "player",
             "status": "fatigue",
             "amount": 1
+          },
+          {
+            "type": "set_counter",
+            "target": "owner",
+            "counter": "stolen_minute",
+            "amount": 0,
+            "relative": false
           }
         ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "stolen_minute_passive"
+      }
+    ],
+    "intent_rules": [
+      {
+        "condition": {
+          "kind": "self_counter",
+          "counter": "stolen_minute",
+          "op": "ge",
+          "value": 2
+        },
+        "action": "wingbeat_delay",
+        "priority": 10
       }
     ],
     "tags": [
