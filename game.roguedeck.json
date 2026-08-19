@@ -16443,7 +16443,7 @@
       "Enemies": [
         {
           "Id": "receipt_eyed_clerk",
-          "MaxHealth": 24,
+          "MaxHealth": 35,
           "Actions": [
             {
               "value": "receipt_eyed_clerk.ask_for_proof_of_arrival"
@@ -16452,7 +16452,10 @@
               "value": "receipt_eyed_clerk.receipt_lash"
             },
             {
-              "value": "receipt_eyed_clerk.question_the_date"
+              "value": "receipt_eyed_clerk.reconcile_the_date"
+            },
+            {
+              "value": "receipt_eyed_clerk.date_discrepancy"
             }
           ],
           "StartingStatuses": null,
@@ -16482,13 +16485,13 @@
       "Enemies": [
         {
           "Id": "triplicate_examiner",
-          "MaxHealth": 33,
+          "MaxHealth": 41,
           "Actions": [
             {
               "value": "triplicate_examiner.compare_the_copies"
             },
             {
-              "value": "triplicate_examiner.stamp_discrepancy"
+              "value": "triplicate_examiner.archive_the_second_copy"
             },
             {
               "value": "triplicate_examiner.third_copy_contradicts_you"
@@ -16512,7 +16515,278 @@
       "HeroStartingStatuses": [],
       "HeroDisplayName": null,
       "CardsDrawnPerTurn": null,
-      "TriggeredEffects": []
+      "TriggeredEffects": [
+        {
+          "Event": "CardPlayed",
+          "Program": {
+            "Id": {
+              "Value": "(unnamed)"
+            },
+            "Root": {
+              "kind": "node.conditional",
+              "value": {
+                "Condition": {
+                  "kind": "or",
+                  "value": {
+                    "Left": {
+                      "kind": "or",
+                      "value": {
+                        "Left": {
+                          "kind": "and",
+                          "value": {
+                            "Left": {
+                              "kind": "firstCardPlayedHasTag",
+                              "value": {
+                                "Selector": {
+                                  "kind": "sel.source",
+                                  "value": {
+                                    "Cardinality": "ZeroOrOne",
+                                    "RequiredContextCapabilities": "Source"
+                                  }
+                                },
+                                "Tag": {
+                                  "value": "action"
+                                },
+                                "LastTurn": false
+                              }
+                            },
+                            "Right": {
+                              "kind": "compare",
+                              "value": {
+                                "Left": {
+                                  "kind": "cardsPlayedThisTurnWithTag",
+                                  "value": {
+                                    "Selector": {
+                                      "kind": "sel.source",
+                                      "value": {
+                                        "Cardinality": "ZeroOrOne",
+                                        "RequiredContextCapabilities": "Source"
+                                      }
+                                    },
+                                    "Tag": {
+                                      "value": "action"
+                                    }
+                                  }
+                                },
+                                "Op": "Equal",
+                                "Right": {
+                                  "kind": "const",
+                                  "value": {
+                                    "Value": 3
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "Right": {
+                          "kind": "and",
+                          "value": {
+                            "Left": {
+                              "kind": "firstCardPlayedHasTag",
+                              "value": {
+                                "Selector": {
+                                  "kind": "sel.source",
+                                  "value": {
+                                    "Cardinality": "ZeroOrOne",
+                                    "RequiredContextCapabilities": "Source"
+                                  }
+                                },
+                                "Tag": {
+                                  "value": "spell"
+                                },
+                                "LastTurn": false
+                              }
+                            },
+                            "Right": {
+                              "kind": "compare",
+                              "value": {
+                                "Left": {
+                                  "kind": "cardsPlayedThisTurnWithTag",
+                                  "value": {
+                                    "Selector": {
+                                      "kind": "sel.source",
+                                      "value": {
+                                        "Cardinality": "ZeroOrOne",
+                                        "RequiredContextCapabilities": "Source"
+                                      }
+                                    },
+                                    "Tag": {
+                                      "value": "spell"
+                                    }
+                                  }
+                                },
+                                "Op": "Equal",
+                                "Right": {
+                                  "kind": "const",
+                                  "value": {
+                                    "Value": 3
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "Right": {
+                      "kind": "and",
+                      "value": {
+                        "Left": {
+                          "kind": "firstCardPlayedHasTag",
+                          "value": {
+                            "Selector": {
+                              "kind": "sel.source",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "Source"
+                              }
+                            },
+                            "Tag": {
+                              "value": "form"
+                            },
+                            "LastTurn": false
+                          }
+                        },
+                        "Right": {
+                          "kind": "compare",
+                          "value": {
+                            "Left": {
+                              "kind": "cardsPlayedThisTurnWithTag",
+                              "value": {
+                                "Selector": {
+                                  "kind": "sel.source",
+                                  "value": {
+                                    "Cardinality": "ZeroOrOne",
+                                    "RequiredContextCapabilities": "Source"
+                                  }
+                                },
+                                "Tag": {
+                                  "value": "form"
+                                }
+                              }
+                            },
+                            "Op": "Equal",
+                            "Right": {
+                              "kind": "const",
+                              "value": {
+                                "Value": 3
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "Then": {
+                  "kind": "node.sequence",
+                  "value": {
+                    "Children": [
+                      {
+                        "kind": "node.gainBlock",
+                        "value": {
+                          "TargetSelector": {
+                            "kind": "sel.allEnemies",
+                            "value": {}
+                          },
+                          "Amount": {
+                            "kind": "const",
+                            "value": {
+                              "Value": 8
+                            }
+                          },
+                          "ResultKey": null,
+                          "Children": []
+                        }
+                      },
+                      {
+                        "kind": "node.applyStatus",
+                        "value": {
+                          "TargetSelector": {
+                            "kind": "sel.source",
+                            "value": {
+                              "Cardinality": "ZeroOrOne",
+                              "RequiredContextCapabilities": "Source"
+                            }
+                          },
+                          "StatusDefinitionId": {
+                            "value": "doubt"
+                          },
+                          "Stacks": {
+                            "kind": "const",
+                            "value": {
+                              "Value": 1
+                            }
+                          },
+                          "DurationTurns": 0,
+                          "Charges": 0,
+                          "ResultKey": null,
+                          "Children": []
+                        }
+                      }
+                    ]
+                  }
+                },
+                "Else": null,
+                "Children": [
+                  {
+                    "kind": "node.sequence",
+                    "value": {
+                      "Children": [
+                        {
+                          "kind": "node.gainBlock",
+                          "value": {
+                            "TargetSelector": {
+                              "kind": "sel.allEnemies",
+                              "value": {}
+                            },
+                            "Amount": {
+                              "kind": "const",
+                              "value": {
+                                "Value": 8
+                              }
+                            },
+                            "ResultKey": null,
+                            "Children": []
+                          }
+                        },
+                        {
+                          "kind": "node.applyStatus",
+                          "value": {
+                            "TargetSelector": {
+                              "kind": "sel.source",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "Source"
+                              }
+                            },
+                            "StatusDefinitionId": {
+                              "value": "doubt"
+                            },
+                            "Stacks": {
+                              "kind": "const",
+                              "value": {
+                                "Value": 1
+                              }
+                            },
+                            "DurationTurns": 0,
+                            "Charges": 0,
+                            "ResultKey": null,
+                            "Children": []
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            "MaxNodeDepth": 64,
+            "MaxProgramSteps": 1024
+          }
+        }
+      ]
     },
     {
       "Id": {
@@ -34104,11 +34378,11 @@
     {
       "Id": "receipt_eyed_clerk.ask_for_proof_of_arrival",
       "PackageId": "scenario",
-      "NameKey": "Ask for Proof of Arrival",
+      "NameKey": "Ask for Proof",
       "DescriptionKey": null,
       "Intent": {
         "Kind": "Debuff",
-        "Label": "Ask for Proof of Arrival \u00B7 Doubt \u002B1"
+        "Label": "Ask for Proof \u00B7 Doubt \u002B1"
       },
       "Program": {
         "Id": {
@@ -34150,7 +34424,7 @@
       "DescriptionKey": null,
       "Intent": {
         "Kind": "Attack",
-        "Label": "Receipt Lash \u00B7 13 dmg"
+        "Label": "Receipt Lash \u00B7 10 dmg"
       },
       "Program": {
         "Id": {
@@ -34169,7 +34443,7 @@
             "Amount": {
               "kind": "const",
               "value": {
-                "Value": 13
+                "Value": 10
               }
             },
             "ResultKey": null,
@@ -34183,13 +34457,13 @@
       }
     },
     {
-      "Id": "receipt_eyed_clerk.question_the_date",
+      "Id": "receipt_eyed_clerk.reconcile_the_date",
       "PackageId": "scenario",
-      "NameKey": "Question the Date",
+      "NameKey": "Reconcile the Date",
       "DescriptionKey": null,
       "Intent": {
         "Kind": "Special",
-        "Label": "Question the Date \u00B7 7 dmg, Doubt \u002B1"
+        "Label": "Reconcile the Date \u00B7 7 block, Doubt \u002B1"
       },
       "Program": {
         "Id": {
@@ -34199,231 +34473,6 @@
           "kind": "node.sequence",
           "value": {
             "Children": [
-              {
-                "kind": "node.dealDamage",
-                "value": {
-                  "TargetSelector": {
-                    "kind": "sel.eventTarget",
-                    "value": {
-                      "Cardinality": "ZeroOrOne",
-                      "RequiredContextCapabilities": "EventTarget"
-                    }
-                  },
-                  "Amount": {
-                    "kind": "const",
-                    "value": {
-                      "Value": 7
-                    }
-                  },
-                  "ResultKey": null,
-                  "IgnoresBlock": false,
-                  "Element": null,
-                  "Children": []
-                }
-              },
-              {
-                "kind": "node.applyStatus",
-                "value": {
-                  "TargetSelector": {
-                    "kind": "sel.eventTarget",
-                    "value": {
-                      "Cardinality": "ZeroOrOne",
-                      "RequiredContextCapabilities": "EventTarget"
-                    }
-                  },
-                  "StatusDefinitionId": {
-                    "value": "doubt"
-                  },
-                  "Stacks": {
-                    "kind": "const",
-                    "value": {
-                      "Value": 1
-                    }
-                  },
-                  "DurationTurns": 0,
-                  "Charges": 0,
-                  "ResultKey": null,
-                  "Children": []
-                }
-              }
-            ]
-          }
-        },
-        "MaxNodeDepth": 64,
-        "MaxProgramSteps": 1024
-      }
-    },
-    {
-      "Id": "triplicate_examiner.compare_the_copies",
-      "PackageId": "scenario",
-      "NameKey": "Compare the Copies",
-      "DescriptionKey": null,
-      "Intent": {
-        "Kind": "Debuff",
-        "Label": "Compare the Copies \u00B7 Doubt \u002B1"
-      },
-      "Program": {
-        "Id": {
-          "Value": "(unnamed)"
-        },
-        "Root": {
-          "kind": "node.applyStatus",
-          "value": {
-            "TargetSelector": {
-              "kind": "sel.eventTarget",
-              "value": {
-                "Cardinality": "ZeroOrOne",
-                "RequiredContextCapabilities": "EventTarget"
-              }
-            },
-            "StatusDefinitionId": {
-              "value": "doubt"
-            },
-            "Stacks": {
-              "kind": "const",
-              "value": {
-                "Value": 1
-              }
-            },
-            "DurationTurns": 0,
-            "Charges": 0,
-            "ResultKey": null,
-            "Children": []
-          }
-        },
-        "MaxNodeDepth": 64,
-        "MaxProgramSteps": 1024
-      }
-    },
-    {
-      "Id": "triplicate_examiner.stamp_discrepancy",
-      "PackageId": "scenario",
-      "NameKey": "Stamp Discrepancy",
-      "DescriptionKey": null,
-      "Intent": {
-        "Kind": "Attack",
-        "Label": "Stamp Discrepancy \u00B7 9 dmg"
-      },
-      "Program": {
-        "Id": {
-          "Value": "(unnamed)"
-        },
-        "Root": {
-          "kind": "node.sequence",
-          "value": {
-            "Children": [
-              {
-                "kind": "node.dealDamage",
-                "value": {
-                  "TargetSelector": {
-                    "kind": "sel.eventTarget",
-                    "value": {
-                      "Cardinality": "ZeroOrOne",
-                      "RequiredContextCapabilities": "EventTarget"
-                    }
-                  },
-                  "Amount": {
-                    "kind": "const",
-                    "value": {
-                      "Value": 3
-                    }
-                  },
-                  "ResultKey": null,
-                  "IgnoresBlock": false,
-                  "Element": null,
-                  "Children": []
-                }
-              },
-              {
-                "kind": "node.dealDamage",
-                "value": {
-                  "TargetSelector": {
-                    "kind": "sel.eventTarget",
-                    "value": {
-                      "Cardinality": "ZeroOrOne",
-                      "RequiredContextCapabilities": "EventTarget"
-                    }
-                  },
-                  "Amount": {
-                    "kind": "const",
-                    "value": {
-                      "Value": 3
-                    }
-                  },
-                  "ResultKey": null,
-                  "IgnoresBlock": false,
-                  "Element": null,
-                  "Children": []
-                }
-              },
-              {
-                "kind": "node.dealDamage",
-                "value": {
-                  "TargetSelector": {
-                    "kind": "sel.eventTarget",
-                    "value": {
-                      "Cardinality": "ZeroOrOne",
-                      "RequiredContextCapabilities": "EventTarget"
-                    }
-                  },
-                  "Amount": {
-                    "kind": "const",
-                    "value": {
-                      "Value": 3
-                    }
-                  },
-                  "ResultKey": null,
-                  "IgnoresBlock": false,
-                  "Element": null,
-                  "Children": []
-                }
-              }
-            ]
-          }
-        },
-        "MaxNodeDepth": 64,
-        "MaxProgramSteps": 1024
-      }
-    },
-    {
-      "Id": "triplicate_examiner.third_copy_contradicts_you",
-      "PackageId": "scenario",
-      "NameKey": "Third Copy Contradicts You",
-      "DescriptionKey": null,
-      "Intent": {
-        "Kind": "Special",
-        "Label": "Third Copy Contradicts You \u00B7 3 dmg, 3 block, Doubt \u002B1"
-      },
-      "Program": {
-        "Id": {
-          "Value": "(unnamed)"
-        },
-        "Root": {
-          "kind": "node.sequence",
-          "value": {
-            "Children": [
-              {
-                "kind": "node.dealDamage",
-                "value": {
-                  "TargetSelector": {
-                    "kind": "sel.eventTarget",
-                    "value": {
-                      "Cardinality": "ZeroOrOne",
-                      "RequiredContextCapabilities": "EventTarget"
-                    }
-                  },
-                  "Amount": {
-                    "kind": "const",
-                    "value": {
-                      "Value": 3
-                    }
-                  },
-                  "ResultKey": null,
-                  "IgnoresBlock": false,
-                  "Element": null,
-                  "Children": []
-                }
-              },
               {
                 "kind": "node.gainBlock",
                 "value": {
@@ -34437,7 +34486,7 @@
                   "Amount": {
                     "kind": "const",
                     "value": {
-                      "Value": 3
+                      "Value": 7
                     }
                   },
                   "ResultKey": null,
@@ -34466,6 +34515,231 @@
                   "DurationTurns": 0,
                   "Charges": 0,
                   "ResultKey": null,
+                  "Children": []
+                }
+              }
+            ]
+          }
+        },
+        "MaxNodeDepth": 64,
+        "MaxProgramSteps": 1024
+      }
+    },
+    {
+      "Id": "receipt_eyed_clerk.date_discrepancy",
+      "PackageId": "scenario",
+      "NameKey": "Date Discrepancy",
+      "DescriptionKey": null,
+      "Intent": {
+        "Kind": "Attack",
+        "Label": "Date Discrepancy \u00B7 2\u00D7 per Doubt"
+      },
+      "Program": {
+        "Id": {
+          "Value": "(unnamed)"
+        },
+        "Root": {
+          "kind": "node.dealDamage",
+          "value": {
+            "TargetSelector": {
+              "kind": "sel.eventTarget",
+              "value": {
+                "Cardinality": "ZeroOrOne",
+                "RequiredContextCapabilities": "EventTarget"
+              }
+            },
+            "Amount": {
+              "kind": "add",
+              "value": {
+                "Left": {
+                  "kind": "const",
+                  "value": {
+                    "Value": 6
+                  }
+                },
+                "Right": {
+                  "kind": "min",
+                  "value": {
+                    "Left": {
+                      "kind": "multiply",
+                      "value": {
+                        "Left": {
+                          "kind": "combatantStatusStacks",
+                          "value": {
+                            "Selector": {
+                              "kind": "sel.eventTarget",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "EventTarget"
+                              }
+                            },
+                            "StatusId": {
+                              "value": "doubt"
+                            }
+                          }
+                        },
+                        "Right": {
+                          "kind": "const",
+                          "value": {
+                            "Value": 2
+                          }
+                        }
+                      }
+                    },
+                    "Right": {
+                      "kind": "const",
+                      "value": {
+                        "Value": 8
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "ResultKey": null,
+            "IgnoresBlock": false,
+            "Element": null,
+            "Children": []
+          }
+        },
+        "MaxNodeDepth": 64,
+        "MaxProgramSteps": 1024
+      }
+    },
+    {
+      "Id": "triplicate_examiner.compare_the_copies",
+      "PackageId": "scenario",
+      "NameKey": "Compare the Copies",
+      "DescriptionKey": null,
+      "Intent": {
+        "Kind": "Attack",
+        "Label": "Compare the Copies \u00B7 8 dmg"
+      },
+      "Program": {
+        "Id": {
+          "Value": "(unnamed)"
+        },
+        "Root": {
+          "kind": "node.dealDamage",
+          "value": {
+            "TargetSelector": {
+              "kind": "sel.eventTarget",
+              "value": {
+                "Cardinality": "ZeroOrOne",
+                "RequiredContextCapabilities": "EventTarget"
+              }
+            },
+            "Amount": {
+              "kind": "const",
+              "value": {
+                "Value": 8
+              }
+            },
+            "ResultKey": null,
+            "IgnoresBlock": false,
+            "Element": null,
+            "Children": []
+          }
+        },
+        "MaxNodeDepth": 64,
+        "MaxProgramSteps": 1024
+      }
+    },
+    {
+      "Id": "triplicate_examiner.archive_the_second_copy",
+      "PackageId": "scenario",
+      "NameKey": "Archive the Second Copy",
+      "DescriptionKey": null,
+      "Intent": {
+        "Kind": "Defend",
+        "Label": "Archive the Second Copy \u00B7 10 block"
+      },
+      "Program": {
+        "Id": {
+          "Value": "(unnamed)"
+        },
+        "Root": {
+          "kind": "node.gainBlock",
+          "value": {
+            "TargetSelector": {
+              "kind": "sel.source",
+              "value": {
+                "Cardinality": "ZeroOrOne",
+                "RequiredContextCapabilities": "Source"
+              }
+            },
+            "Amount": {
+              "kind": "const",
+              "value": {
+                "Value": 10
+              }
+            },
+            "ResultKey": null,
+            "Children": []
+          }
+        },
+        "MaxNodeDepth": 64,
+        "MaxProgramSteps": 1024
+      }
+    },
+    {
+      "Id": "triplicate_examiner.third_copy_contradicts_you",
+      "PackageId": "scenario",
+      "NameKey": "The Third Copy Contradicts",
+      "DescriptionKey": null,
+      "Intent": {
+        "Kind": "Attack",
+        "Label": "The Third Copy Contradicts \u00B7 12 dmg"
+      },
+      "Program": {
+        "Id": {
+          "Value": "(unnamed)"
+        },
+        "Root": {
+          "kind": "node.sequence",
+          "value": {
+            "Children": [
+              {
+                "kind": "node.dealDamage",
+                "value": {
+                  "TargetSelector": {
+                    "kind": "sel.eventTarget",
+                    "value": {
+                      "Cardinality": "ZeroOrOne",
+                      "RequiredContextCapabilities": "EventTarget"
+                    }
+                  },
+                  "Amount": {
+                    "kind": "const",
+                    "value": {
+                      "Value": 6
+                    }
+                  },
+                  "ResultKey": null,
+                  "IgnoresBlock": false,
+                  "Element": null,
+                  "Children": []
+                }
+              },
+              {
+                "kind": "node.dealDamage",
+                "value": {
+                  "TargetSelector": {
+                    "kind": "sel.eventTarget",
+                    "value": {
+                      "Cardinality": "ZeroOrOne",
+                      "RequiredContextCapabilities": "EventTarget"
+                    }
+                  },
+                  "Amount": {
+                    "kind": "const",
+                    "value": {
+                      "Value": 6
+                    }
+                  },
+                  "ResultKey": null,
+                  "IgnoresBlock": false,
+                  "Element": null,
                   "Children": []
                 }
               }

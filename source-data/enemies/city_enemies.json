@@ -4694,12 +4694,12 @@
   {
     "id": "receipt_eyed_clerk",
     "name": "Receipt-Eyed Clerk",
-    "max_hp": 24,
+    "max_hp": 35,
     "intent_pattern": "cycle",
     "intents": [
       {
         "id": "ask_for_proof_of_arrival",
-        "name": "Ask for Proof of Arrival",
+        "name": "Ask for Proof",
         "intent_type": "debuff",
         "actions": [
           {
@@ -4718,18 +4718,18 @@
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 13
+            "amount": 10
           }
         ]
       },
       {
-        "id": "question_the_date",
-        "name": "Question the Date",
+        "id": "reconcile_the_date",
+        "name": "Reconcile the Date",
         "intent_type": "mixed",
         "actions": [
           {
-            "type": "deal_damage",
-            "target": "player",
+            "type": "gain_block",
+            "target": "owner",
             "amount": 7
           },
           {
@@ -4737,6 +4737,21 @@
             "target": "player",
             "status": "doubt",
             "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "date_discrepancy",
+        "name": "Date Discrepancy",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "damage_per_status",
+            "target": "player",
+            "status": "doubt",
+            "amount": 6,
+            "amount_per_stack": 2,
+            "cap": 8
           }
         ]
       }
@@ -4752,64 +4767,47 @@
   {
     "id": "triplicate_examiner",
     "name": "Triplicate Examiner",
-    "max_hp": 33,
+    "max_hp": 41,
     "intent_pattern": "cycle",
     "intents": [
       {
         "id": "compare_the_copies",
         "name": "Compare the Copies",
-        "intent_type": "debuff",
-        "actions": [
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "doubt",
-            "amount": 1
-          }
-        ]
-      },
-      {
-        "id": "stamp_discrepancy",
-        "name": "Stamp Discrepancy",
         "intent_type": "attack",
         "actions": [
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 3
-          },
+            "amount": 8
+          }
+        ]
+      },
+      {
+        "id": "archive_the_second_copy",
+        "name": "Archive the Second Copy",
+        "intent_type": "block",
+        "actions": [
           {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 3
-          },
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 3
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 10
           }
         ]
       },
       {
         "id": "third_copy_contradicts_you",
-        "name": "Third Copy Contradicts You",
-        "intent_type": "mixed",
+        "name": "The Third Copy Contradicts",
+        "intent_type": "attack",
         "actions": [
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 3
+            "amount": 6
           },
           {
-            "type": "gain_block",
-            "target": "owner",
-            "amount": 3
-          },
-          {
-            "type": "apply_status",
+            "type": "deal_damage",
             "target": "player",
-            "status": "doubt",
-            "amount": 1
+            "amount": 6
           }
         ]
       }

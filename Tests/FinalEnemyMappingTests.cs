@@ -1,3 +1,4 @@
+using System.Text.Json;
 using BnbContent.Converter;
 using RogueDeck.Core.Combat;
 using RogueDeck.Run;
@@ -65,6 +66,57 @@ public class FinalEnemyMappingTests
 
         var trigger = Assert.Single(mapped.TriggeredEffects);
         Assert.Equal("CardPlayed", trigger.Event);
+    }
+
+    // Receipt-Eyed Clerk (Doubt cash-out): the design's fourth intent joins the cycle and IS the cash-out —
+    // 6 damage +2 per current Doubt, capped at +8, Doubt not removed. No passive, no rule: pure intent.
+    [Fact]
+    public void The_clerk_cashes_doubt_out_through_a_capped_scaling_intent()
+    {
+        var clerk = Data.Enemies.Single(e => e.Id == "receipt_eyed_clerk");
+        Assert.Equal(35, clerk.MaxHp);
+        Assert.Equal(4, clerk.Intents.Count); // all four cycle (none is special)
+
+        var discrepancy = Assert.Single(EnemyMapper.MapActions([clerk]),
+            a => a.Id == "receipt_eyed_clerk.date_discrepancy");
+        Assert.Equal(IntentKind.Attack, discrepancy.Intent.Kind);
+
+        var amount = CombatProgramModel.Classify(discrepancy.Program)!.Amount!;
+        Assert.Equal("add", amount.Kind);
+        Assert.Equal(6, amount.LeftOrDefault.Const);                    // base 6
+        Assert.Equal("min", amount.RightOrDefault.Kind);                // capped bonus
+        Assert.Equal(8, amount.RightOrDefault.RightOrDefault.Const);    // cap +8
+        Assert.Equal("doubt", amount.RightOrDefault.LeftOrDefault.LeftOrDefault.ReadId);
+    }
+
+    // Triplicate Examiner ("Three Copies Required"): reacts to the PLAYER's third card of the turn's opening
+    // type → 8 Block for the Examiner, 1 Doubt for the player. Cross-combatant ⇒ a per-encounter CardPlayed
+    // trigger, not an owner-scoped status.
+    [Fact]
+    public void The_examiner_contributes_a_third_copy_encounter_trigger()
+    {
+        var examiner = Data.Enemies.Single(e => e.Id == "triplicate_examiner");
+        Assert.Equal(41, examiner.MaxHp);
+
+        var enemies = Data.Enemies.ToDictionary(e => e.Id);
+        var encounter = Data.Encounters.First(e => e.Enemies.Contains("triplicate_examiner"));
+        var trigger = Assert.Single(EncounterMapper.Map(encounter, enemies, Data.Bureaucrat.StartingEnergy).TriggeredEffects);
+        Assert.Equal("CardPlayed", trigger.Event);
+
+        // The stored program is runnable (every node/expression discriminator registered) and pays out both halves.
+        var options = CombatJson.CreateOptions<CardPlayedTriggeredEffectContext>();
+        var json = trigger.Program.GetRawText();
+        var reloaded = JsonSerializer.Deserialize<EffectProgram<CardPlayedTriggeredEffectContext>>(json, options)!;
+        Assert.Equal(json, JsonSerializer.Serialize(reloaded, options));
+
+        var conditional = Assert.IsType<ConditionalEffectNode<CardPlayedTriggeredEffectContext>>(reloaded.Root);
+        var sequence = Assert.IsType<SequenceEffectNode<CardPlayedTriggeredEffectContext>>(conditional.Children[0]);
+        var block = Assert.IsType<GainBlockNode<CardPlayedTriggeredEffectContext>>(sequence.Children[0]);
+        Assert.Equal(CombatantTargetSelectors.AllEnemiesOfSource.GetType(), block.TargetSelector.GetType());
+        var doubt = Assert.IsType<ApplyStatusNode<CardPlayedTriggeredEffectContext>>(sequence.Children[1]);
+        Assert.Equal(new StatusDefinitionId("doubt"), doubt.StatusDefinitionId);
+        // The card's player takes it (Source, not the enemy side).
+        Assert.Equal(CombatantTargetSelectors.Source.GetType(), doubt.TargetSelector.GetType());
     }
 
     // DSL: "N damage + X per <status>, capped at Y" → dealDamage(add(N, min(mul(statusStacks, X), Y))).
