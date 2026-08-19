@@ -8205,18 +8205,18 @@
   {
     "id": "iron_warrant_avatar",
     "name": "Iron Warrant Avatar",
-    "max_hp": 92,
+    "max_hp": 94,
     "intent_pattern": "cycle",
     "intents": [
       {
         "id": "warrant_ignites",
         "name": "Warrant Ignites",
-        "intent_type": "mixed",
+        "intent_type": "attack",
         "actions": [
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 10
+            "amount": 11
           },
           {
             "type": "gain_strength",
@@ -8233,7 +8233,7 @@
           {
             "type": "gain_block",
             "target": "owner",
-            "amount": 14
+            "amount": 15
           }
         ]
       },
@@ -8245,12 +8245,12 @@
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 8
+            "amount": 9
           },
           {
             "type": "gain_block",
             "target": "owner",
-            "amount": 8
+            "amount": 9
           }
         ]
       },
@@ -8262,7 +8262,12 @@
           {
             "type": "gain_strength",
             "target": "owner",
-            "amount": 2
+            "amount": 1
+          },
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 10
           }
         ]
       },
@@ -8270,26 +8275,38 @@
         "id": "final_service",
         "name": "Final Service",
         "intent_type": "attack",
+        "special": true,
         "actions": [
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 16
+            "amount": 17
           }
         ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "iron_warrant"
+      }
+    ],
+    "intent_rules": [
+      {
+        "condition": {
+          "kind": "self_status",
+          "status": "contempt",
+          "min_stacks": 1
+        },
+        "action": "final_service",
+        "priority": 20
       }
     ],
     "tags": [
       "city",
       "enforcement",
-      "civic_force",
-      "block_pressure",
-      "strength_pressure",
-      "stage_enforcement",
-      "elite_enforcement",
+      "elite",
       "warrant",
-      "avatar",
-      "construct"
+      "stage_enforcement"
     ]
   },
   {
