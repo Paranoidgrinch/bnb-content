@@ -92,6 +92,11 @@ public static class PassiveStatuses
         Marker(LockCartId, "Lock Cart"),
         Marker(SeizureMarshalId, "Seizure Marshal"),
         Marker(InventoryPendingId, "Inventoried"),
+        Marker(GateShutId, "Gate: Shut"),
+        GateHalfRaised(),
+        GateOpen(),
+        Marker(HeldOpenId, "Held Open"),
+        TheGatehouse(),
         .. ComplianceOrders.Select(o => Marker(o.StatusId, o.Name)),
     ];
 
@@ -116,6 +121,17 @@ public static class PassiveStatuses
     public static readonly CounterId MarshalStrengthCounter = new("marshal_strength");
     public const int SeizureCapacity = 2;
     public const int MarshalStrengthLimit = 4;
+
+    // Portcullis Judicator: the gate's height is three visible marker statuses (the only state a combat UI
+    // shows by name), the pressure tally lives in a counter, and the gatehouse status carries the machinery.
+    public const string GateShutId = "gate_shut";
+    public const string GateHalfId = "gate_half_raised";
+    public const string GateOpenId = "gate_open";
+    public const string HeldOpenId = "held_open";
+    public const string GatehouseId = "the_gatehouse";
+    public static readonly CounterId GatePressureCounter = new("gate_pressure");
+    public static readonly CounterId GateBeatCounter = new("gate_beat");
+    public const int GateThreshold = 12;
 
     public sealed record ComplianceOrder(string StatusId, string Name, Func<ICombatExpression<TurnEndedTriggeredEffectContext, bool>> Fulfilled);
 
@@ -1037,6 +1053,156 @@ public static class PassiveStatuses
 
     // A status that carries nothing but its own presence: the handle a cross-combatant trigger uses to find
     // one specific enemy, since selectors are structural and cannot name a combatant.
+    // HALF-RAISED and OPEN are markers like SHUT; OPEN additionally makes the Judicator take 20 % more.
+    private static StatusData GateHalfRaised() => Marker(GateHalfId, "Gate: Half-Raised");
+
+    private static StatusData GateOpen()
+    {
+        var open = Marker(GateOpenId, "Gate: Open");
+        return open with
+        {
+            PassiveModifiers =
+            [
+                new PassiveModifierData(PassiveModifierPipeline.DamageReceived,
+                    PassiveModifierOperation.ScalePercent, 120, RestrictDamageKind: null),
+            ],
+        };
+    }
+
+    // "The Gatehouse" (Portcullis Judicator): the player forces the portcullis up by hitting hard enough in
+    // one turn, and it grinds back down whenever they do not. The gate rises THE MOMENT the threshold is
+    // crossed, so the player sees the harsher band before deciding how to end the turn.
+    private static StatusData TheGatehouse()
+    {
+        var bearer = CombatantTargetSelectors.EventTarget;
+        var self = CombatantTargetSelectors.Source;
+
+        ICombatExpression<DamageReceivedTriggeredEffectContext, int> Pressure() =>
+            new AddExpression<DamageReceivedTriggeredEffectContext>(
+                new CombatantCounterExpression<DamageReceivedTriggeredEffectContext>(bearer, GatePressureCounter),
+                new EventAmountExpression<DamageReceivedTriggeredEffectContext>());
+
+        ICombatExpression<DamageReceivedTriggeredEffectContext, bool> Wearing(string statusId) =>
+            new ComparisonExpression<DamageReceivedTriggeredEffectContext>(
+                new CombatantStatusStacksExpression<DamageReceivedTriggeredEffectContext>(
+                    bearer, new StatusDefinitionId(statusId)),
+                ComparisonOperator.Greater,
+                new ConstantExpression<DamageReceivedTriggeredEffectContext>(0));
+
+        IEffectNode<DamageReceivedTriggeredEffectContext> Raise(string from, string to) =>
+            new ConditionalEffectNode<DamageReceivedTriggeredEffectContext>(
+                Wearing(from),
+                new SequenceEffectNode<DamageReceivedTriggeredEffectContext>(new IEffectNode<DamageReceivedTriggeredEffectContext>[]
+                {
+                    new RemoveStatusNode<DamageReceivedTriggeredEffectContext>(bearer, new StatusDefinitionId(from)),
+                    new ApplyStatusNode<DamageReceivedTriggeredEffectContext>(
+                        bearer, new StatusDefinitionId(to),
+                        new ConstantExpression<DamageReceivedTriggeredEffectContext>(1)),
+                }));
+
+        // Every hit banks its damage; the hit that carries the tally over the threshold forces the gate.
+        var onHit = new EffectProgram<DamageReceivedTriggeredEffectContext>(
+            new SequenceEffectNode<DamageReceivedTriggeredEffectContext>(new IEffectNode<DamageReceivedTriggeredEffectContext>[]
+            {
+                new SetCombatantCounterNode<DamageReceivedTriggeredEffectContext>(
+                    bearer, GatePressureCounter,
+                    new EventAmountExpression<DamageReceivedTriggeredEffectContext>(), relative: true),
+                new ConditionalEffectNode<DamageReceivedTriggeredEffectContext>(
+                    new AndExpression<DamageReceivedTriggeredEffectContext>(
+                        // The tally above is an ENQUEUED write, so this hit has to add itself.
+                        new ComparisonExpression<DamageReceivedTriggeredEffectContext>(
+                            Pressure(), ComparisonOperator.GreaterOrEqual,
+                            new ConstantExpression<DamageReceivedTriggeredEffectContext>(GateThreshold)),
+                        // Once per player turn: Held Open is both the latch and the visible "it stays up".
+                        new ComparisonExpression<DamageReceivedTriggeredEffectContext>(
+                            new CombatantStatusStacksExpression<DamageReceivedTriggeredEffectContext>(
+                                bearer, new StatusDefinitionId(HeldOpenId)),
+                            ComparisonOperator.Equal,
+                            new ConstantExpression<DamageReceivedTriggeredEffectContext>(0))),
+                    new SequenceEffectNode<DamageReceivedTriggeredEffectContext>(new IEffectNode<DamageReceivedTriggeredEffectContext>[]
+                    {
+                        new ApplyStatusNode<DamageReceivedTriggeredEffectContext>(
+                            bearer, new StatusDefinitionId(HeldOpenId),
+                            new ConstantExpression<DamageReceivedTriggeredEffectContext>(1)),
+                        // Half → Open is checked FIRST: both branches read the same pre-write state, so
+                        // raising Shut → Half first would let one hit climb two levels.
+                        Raise(GateHalfId, GateOpenId),
+                        Raise(GateShutId, GateHalfId),
+                    })),
+            }));
+
+        ICombatExpression<TurnEndedTriggeredEffectContext, bool> WornBySelf(string statusId, ComparisonOperator op, int value) =>
+            new ComparisonExpression<TurnEndedTriggeredEffectContext>(
+                new CombatantStatusStacksExpression<TurnEndedTriggeredEffectContext>(
+                    self, new StatusDefinitionId(statusId)),
+                op, new ConstantExpression<TurnEndedTriggeredEffectContext>(value));
+
+        IEffectNode<TurnEndedTriggeredEffectContext> Lower(string from, string to) =>
+            new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
+                WornBySelf(from, ComparisonOperator.Greater, 0),
+                new SequenceEffectNode<TurnEndedTriggeredEffectContext>(new IEffectNode<TurnEndedTriggeredEffectContext>[]
+                {
+                    new RemoveStatusNode<TurnEndedTriggeredEffectContext>(self, new StatusDefinitionId(from)),
+                    new ApplyStatusNode<TurnEndedTriggeredEffectContext>(
+                        self, new StatusDefinitionId(to),
+                        new ConstantExpression<TurnEndedTriggeredEffectContext>(1)),
+                }));
+
+        // At the Judicator's OWN turn end — its ruling has been handed down — the gate settles: it falls a
+        // level unless the player forced it this round, and the round's bookkeeping resets.
+        var onTurnEnd = new EffectProgram<TurnEndedTriggeredEffectContext>(
+            new SequenceEffectNode<TurnEndedTriggeredEffectContext>(new IEffectNode<TurnEndedTriggeredEffectContext>[]
+            {
+                new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
+                    WornBySelf(HeldOpenId, ComparisonOperator.Equal, 0),
+                    new SequenceEffectNode<TurnEndedTriggeredEffectContext>(new IEffectNode<TurnEndedTriggeredEffectContext>[]
+                    {
+                        Lower(GateOpenId, GateHalfId),
+                        Lower(GateHalfId, GateShutId),
+                    })),
+                new RemoveStatusNode<TurnEndedTriggeredEffectContext>(self, new StatusDefinitionId(HeldOpenId)),
+                new SetCombatantCounterNode<TurnEndedTriggeredEffectContext>(
+                    self, GatePressureCounter,
+                    new ConstantExpression<TurnEndedTriggeredEffectContext>(0), relative: false),
+                // The beat alternates between each band's two rulings. Both conditions read the same
+                // pre-write value, so exactly one of them fires.
+                new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
+                    new ComparisonExpression<TurnEndedTriggeredEffectContext>(
+                        new CombatantCounterExpression<TurnEndedTriggeredEffectContext>(self, GateBeatCounter),
+                        ComparisonOperator.Equal,
+                        new ConstantExpression<TurnEndedTriggeredEffectContext>(0)),
+                    new SetCombatantCounterNode<TurnEndedTriggeredEffectContext>(
+                        self, GateBeatCounter,
+                        new ConstantExpression<TurnEndedTriggeredEffectContext>(1), relative: false)),
+                new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
+                    new ComparisonExpression<TurnEndedTriggeredEffectContext>(
+                        new CombatantCounterExpression<TurnEndedTriggeredEffectContext>(self, GateBeatCounter),
+                        ComparisonOperator.GreaterOrEqual,
+                        new ConstantExpression<TurnEndedTriggeredEffectContext>(1)),
+                    new SetCombatantCounterNode<TurnEndedTriggeredEffectContext>(
+                        self, GateBeatCounter,
+                        new ConstantExpression<TurnEndedTriggeredEffectContext>(0), relative: false)),
+            }));
+
+        return new StatusData
+        {
+            Id = GatehouseId,
+            NameKey = "The Gatehouse",
+            Polarity = StatusPolarity.Neutral,
+            StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
+            UsesStacks = false,
+            Tags = [],
+            PassiveModifiers = [],
+            Triggers =
+            [
+                new StatusTriggerData("DamageTaken", JsonSerializer.SerializeToElement(
+                    onHit, CombatJson.CreateOptions<DamageReceivedTriggeredEffectContext>())),
+                new StatusTriggerData("TurnEnded", JsonSerializer.SerializeToElement(
+                    onTurnEnd, CombatJson.CreateOptions<TurnEndedTriggeredEffectContext>())),
+            ],
+        };
+    }
+
     private static StatusData Marker(string id, string name) => new()
     {
         Id = id,

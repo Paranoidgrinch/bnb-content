@@ -165,3 +165,12 @@ older Act-I enemy pool wherever HP or intents disagree. Readings taken where the
   selector, while an enemy inside a card loop cannot be read at all.
 - **The Marshal's cap of +4 Strength is implicit.** The Cart's capacity of two seizures already keeps the
   Marshal at +2, so no separate tally is needed.
+
+- **The portcullis rises the instant the threshold is crossed**, inside the damage trigger, rather than at the
+  player's turn end. The design asks for the next-intent preview to refresh while the player can still react;
+  a program cannot repaint a preview, but changing the gate before the turn ends means the intent the enemy
+  then picks is the new band's — and any host that reads the intent live shows it. "Held Open" doubles as the
+  once-per-turn latch: it marks the round as forced, so the gate does not settle back that round.
+- **The two rulings of each gate band alternate on a beat counter** the Judicator flips at its own turn end.
+  Intent rules can compare a counter but not a round's parity, so the beat stands in for "alternate".
+
