@@ -18,6 +18,8 @@ public static class FinalCards
         .. BureaucratStarter.All(),
         .. BureaucratActI.All(),
         .. GeneralActI.All(),
+        .. BureaucratActII.All(),
+        .. GeneralActII.All(),
     ];
 
     public static IReadOnlyList<CardData> Compile() => All().Select(c => c.Compile()).ToList();
@@ -25,7 +27,10 @@ public static class FinalCards
     // The statuses the final cards install or lean on: the keyword substrate plus the Rites, whose rule
     // lives on a status rather than in the card that plays it.
     public static IReadOnlyList<StatusData> Statuses() =>
-        [.. Keywords.All(), .. BureaucratRites.All(), .. GeneralRites.All(), .. GeneralForgery.All()];
+    [
+        .. Keywords.All(), .. BureaucratRites.All(), .. BureaucratArchive.All(),
+        .. GeneralRites.All(), .. GeneralForgery.All(), .. GeneralPrevention.All(),
+    ];
 
     // Ids the final pool owns — a ported card with one of these is dropped rather than duplicated.
     public static IReadOnlySet<string> Ids() => All().Select(c => c.Id).ToHashSet();

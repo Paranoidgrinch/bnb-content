@@ -10,12 +10,17 @@ public class FinalCardPoolTests
     // general_final_cards.md §1: 16 Uncommons and 3 Rares, and NO Commons — the general pool should bend a
     // run, not replace a character's basics. Together: 15 / 36 / 14.
     [Theory]
-    [InlineData("common", 15)]
-    [InlineData("uncommon", 36)]
-    [InlineData("rare", 14)]
-    public void Act_one_offers_the_cards_the_sheets_count(string rarity, int expected)
+    [InlineData(1, "common", 15)]
+    [InlineData(1, "uncommon", 36)]
+    [InlineData(1, "rare", 14)]
+    // Act II adds the Bureaucrat's 3/7/4 and the general pool's 0/6/4 — the sheets' "new cards unlocked"
+    // rows, cumulative because reaching an Act makes everything gated at or before it offerable.
+    [InlineData(2, "common", 18)]
+    [InlineData(2, "uncommon", 49)]
+    [InlineData(2, "rare", 22)]
+    public void Each_act_offers_the_cards_the_sheets_count(int act, string rarity, int expected)
     {
-        var pool = FinalCards.RewardPool(act: 1).Where(c => c.Rarity == rarity).ToList();
+        var pool = FinalCards.RewardPool(act).Where(c => c.Rarity == rarity).ToList();
         Assert.Equal(expected, pool.Count);
     }
 

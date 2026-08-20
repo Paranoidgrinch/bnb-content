@@ -57,7 +57,9 @@ public static class PassiveStatuses
         WitnessTheSeal(),
         Marker(BothDirectionsMandatoryId, "Both Directions Mandatory"),
         Loophole(),
-        Marker(ApplicantId, "The Applicant"),
+        // The applicant marker itself is built in Cards/Keywords.cs: besides marking the player it keeps the
+        // record of what got through each round, which several cards ask about and which therefore has to be
+        // kept whether or not the player is wearing anything else.
         StillInForce(),
         Marker(StolenSandId, "Stolen Sand"),
         YourNumberIsFading(),
