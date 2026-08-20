@@ -302,4 +302,8 @@ older Act-I enemy pool wherever HP or intents disagree. Readings taken where the
 - **The guarantees still hold underneath**: the per-path minimums (8 fights, the duo, the elite, 3 events, 2
   rests, 2 treasures, 2 shops) are met by the narrow funnel rows as before, and a ceiling may never be set
   below its minimum.
+- **A standard fight pays a purse, not a number.** Gold is a per-role SPREAD rolled per fight (25–40 for an
+  ordinary fight, 30–45 for the duo, 35–55 for a mimic, 45–70 for an elite, 90–120 for the boss) — the engine
+  gained an optional range on its resource-change effect for this. The card offer is the same everywhere: three
+  cards, pick one. Both the exact gold bands and the reward card pool are still open design questions.
 
