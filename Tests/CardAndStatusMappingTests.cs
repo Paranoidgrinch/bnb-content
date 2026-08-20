@@ -88,21 +88,14 @@ public class CardAndStatusMappingTests
     public void Every_status_converts_with_its_ported_semantics()
     {
         var statuses = StatusMapper.Map("statuses", Data.Statuses);
-        Assert.Equal(7, statuses.Count); // the six ported ones + the reworked Act-I Bookworm
-
-        var paperwork = statuses.First(s => s.Id == "paperwork");
-        Assert.Contains(StandardCombatIds.DamageOverTimeTag.value, paperwork.Tags);
-        Assert.Empty(paperwork.Triggers); // no decay
+        // Paperwork and Doubt moved to Cards/Keywords.cs when the final card design gave them rules this
+        // mapper had only approximated; what is left here are the four remaining ported statuses and Bookworm.
+        Assert.Equal(5, statuses.Count);
+        Assert.DoesNotContain(statuses, s => s.Id is "paperwork" or "doubt");
 
         var poison = statuses.First(s => s.Id == "poison");
         Assert.Contains(StandardCombatIds.DamageOverTimeTag.value, poison.Tags);
         Assert.Single(poison.Triggers); // decays one stack at the bearer's turn end
-
-        var doubt = statuses.First(s => s.Id == "doubt");
-        var doubtPassive = Assert.Single(doubt.PassiveModifiers);
-        Assert.Equal(PassiveModifierOperation.ScalePercent, doubtPassive.Operation);
-        Assert.Equal(75, doubtPassive.Magnitude);
-        Assert.Equal(DamageKind.Direct, doubtPassive.RestrictDamageKind);
 
         var panic = statuses.First(s => s.Id == "panic");
         var panicPassive = Assert.Single(panic.PassiveModifiers);

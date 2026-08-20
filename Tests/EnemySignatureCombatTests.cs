@@ -247,8 +247,9 @@ public class EnemySignatureCombatTests
 
         var after = play.CombatDriver.Current!;
         var hero = after.State.GetCombatant(after.HeroId);
-        // No Route Listed deals no damage — the 2 HP lost are the hero's own new Paperwork ticking.
-        Assert.Equal(heroBefore - 2, hero.Health.Current);
+        // No Route Listed deals no damage, and the 2 Paperwork it files do not toll yet: Paperwork resolves
+        // at the END of its bearer's turn, so the hero pays for these at the end of the turn that follows.
+        Assert.Equal(heroBefore, hero.Health.Current);
         Assert.Equal(1, FightProbe.StacksOf(hero, "doubt")); // …it files instead
         Assert.Equal(2, FightProbe.StacksOf(hero, "paperwork"));
         Assert.Equal(0, BlockOf(play, signpostId));
@@ -516,12 +517,13 @@ public class EnemySignatureCombatTests
         Assert.Equal(6, FightProbe.StacksOf(Hero(play), "paperwork"));
         Assert.Equal(1, FightProbe.StacksOf(Enemy(play, bailiffId), "warrant_served"));
 
-        // Now it hits for 13 + 5 — plus the hero's own Paperwork ticking at the next turn start, by then nine
-        // deep because the Ghost files three more on its way out.
+        // Now it hits for 13 + 5 — plus the six Paperwork the hero is already carrying, which toll as this
+        // turn ENDS. The three the Ghost files on its way out are next turn's bill.
         var before = Hero(play).Health.Current;
         play.CombatDriver.EndTurn();
         Assert.Null(session.Error);
-        Assert.Equal(before - 18 - 9, Hero(play).Health.Current);
+        Assert.Equal(before - 18 - 6, Hero(play).Health.Current);
+        Assert.Equal(9, FightProbe.StacksOf(Hero(play), "paperwork"));
     }
 
     // Threshold Seizure Ward, "Seize the Filing": the first Paperwork the player files on an enemy each round
