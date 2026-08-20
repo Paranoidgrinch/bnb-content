@@ -49,6 +49,17 @@ public static class Keywords
     // answer it. A running count that only grows, which is what keeps it clear of Blood Ink.
     public const string JunkFiled = "junk_filed";
 
+    // How much a Lien resolution actually took, written on the holder as it happens. A scratch value, and the
+    // only way to do this at all: the three steps of a resolution each change something the next one would
+    // otherwise re-read, so the amount is computed ONCE, stored, and spent from storage. It is also the
+    // number Usurer's Moon needs ("1 Citation for every 3 Block removed").
+    public static readonly CounterId LienResolvedCounter = new("lien_resolved");
+
+    // Usurer's Moon, a Rite the player carries: the Lien resolution looks for it, because only the resolution
+    // knows how much Block it took.
+    public const string UsurersMoon = "usurers_moon";
+    public const string UsurersMoonPlus = "usurers_moon+";
+
     public const string Censure = "censure";
     public const string Lien = "lien";
     public const string Citation = "citation";
@@ -76,6 +87,10 @@ public static class Keywords
         Tally(RedInkDoctrine, "Red Ink Doctrine", "Paperwork that draws blood writes itself deeper."),
         Tally(QueueResolved, "Resolved from the Queue", "How many queued cards have resolved this combat."),
         Tally(JunkFiled, "Junk Filed", "How much rubbish you have generated this combat."),
+        // Usurer's Moon has no rules of its own: the Lien resolution looks for it, because only the
+        // resolution knows how much Block it took.
+        Tally(UsurersMoon, "Usurer's Moon", "Lien that takes Block also files Citation."),
+        Tally(UsurersMoonPlus, "Usurer's Moon+", "Lien that takes Block also files Citation."),
         CensureStatus(),
         LienStatus(),
         CitationStatus(),
@@ -221,46 +236,68 @@ public static class Keywords
     // min(Block, Lien) without a scratch value is the Bookworm problem again: whichever side is removed first
     // changes what the second read sees. Branching on which is smaller keeps every read on a value that has
     // not been touched yet.
-    private static StatusData LienStatus()
+    private static StatusData LienStatus() => Status(
+        Lien, "Lien", StatusPolarity.Debuff,
+        "At the end of its turn, this character loses up to X remaining Block and the same amount of HP. " +
+        "Lien is reduced by what it took. No Block, no decay.",
+        triggers: [Trigger(TurnEnded(ResolveLien<TurnEndedTriggeredEffectContext>(
+            CombatantTargetSelectors.Source, cap: null)))]);
+
+    // One complete Lien resolution on a holder: take up to `cap` (or all of it) of what the Lien can claim,
+    // in Block and the same in HP, and reduce the Lien by what it took.
+    //
+    // The claim is worked out first and written to a counter, because each of the three steps changes a value
+    // the next would otherwise read — remove the Block and the claim shrinks under you. The counter is the
+    // scratch value the effect language does not otherwise have, and it is what Usurer's Moon reads afterwards.
+    public static IEffectNode<TContext> ResolveLien<TContext>(ICombatantTargetSelector holder, int? cap)
+        where TContext : class
     {
-        var block = new CombatantDefensivePoolExpression<TurnEndedTriggeredEffectContext>(
-            CombatantTargetSelectors.Source, StandardCombatIds.BlockDefensivePool);
-        var lien = Stacks<TurnEndedTriggeredEffectContext>(Lien);
+        ICombatExpression<TContext, int> claim = new MinExpression<TContext>(
+            new CombatantDefensivePoolExpression<TContext>(holder, StandardCombatIds.BlockDefensivePool),
+            new CombatantStatusStacksExpression<TContext>(holder, new StatusDefinitionId(Lien)));
 
-        IEffectNode<TurnEndedTriggeredEffectContext> Resolve(
-            ICombatExpression<TurnEndedTriggeredEffectContext, int> amount) =>
-            new SequenceEffectNode<TurnEndedTriggeredEffectContext>(
-            [
-                // Block first: the HP loss and the Lien spend both read a value the removal has not touched.
-                new ModifyDefensivePoolNode<TurnEndedTriggeredEffectContext>(
-                    CombatantTargetSelectors.Source, StandardCombatIds.BlockDefensivePool, Negate(amount)),
-                HpLoss<TurnEndedTriggeredEffectContext>(CombatantTargetSelectors.Source, amount),
-                new ModifyStatusStacksNode<TurnEndedTriggeredEffectContext>(
-                    CombatantTargetSelectors.Source, new StatusDefinitionId(Lien), Negate(amount)),
-            ]);
+        if (cap is { } ceiling)
+            claim = new MinExpression<TContext>(claim, new ConstantExpression<TContext>(ceiling));
 
-        return Status(
-            Lien, "Lien", StatusPolarity.Debuff,
-            "At the end of its turn, this character loses up to X remaining Block and the same amount of HP. " +
-            "Lien is reduced by what it took. No Block, no decay.",
-            triggers:
-            [
-                Trigger(TurnEnded(new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
-                    new ComparisonExpression<TurnEndedTriggeredEffectContext>(
-                        block, ComparisonOperator.GreaterOrEqual, lien),
-                    // Block covers the whole claim: the claim is what is taken, and Lien clears.
-                    Resolve(lien),
-                    // Less Block than claim: only what there is, and the rest of the Lien stays outstanding.
-                    Resolve(block)))),
-            ]);
+        var taken = new CombatantCounterExpression<TContext>(holder, LienResolvedCounter);
+
+        return new CausalSequenceEffectNode<TContext>(
+        [
+            new SetCombatantCounterNode<TContext>(holder, LienResolvedCounter, claim, relative: false),
+            new ModifyDefensivePoolNode<TContext>(holder, StandardCombatIds.BlockDefensivePool, Negate(taken)),
+            HpLoss<TContext>(holder, taken),
+            new ModifyStatusStacksNode<TContext>(holder, new StatusDefinitionId(Lien), Negate(taken)),
+            UsurersMoonCitation<TContext>(holder, taken, perCitation: 3, moon: UsurersMoon),
+            UsurersMoonCitation<TContext>(holder, taken, perCitation: 2, moon: UsurersMoonPlus),
+        ]);
     }
+
+    // "Whenever Lien removes Block from an enemy, apply 1 Citation for every N Block removed, maximum 3 per
+    // resolution." Asked inside the resolution, because only the resolution knows how much it took.
+    private static IEffectNode<TContext> UsurersMoonCitation<TContext>(
+        ICombatantTargetSelector holder, ICombatExpression<TContext, int> taken, int perCitation, string moon)
+        where TContext : class =>
+        new ConditionalEffectNode<TContext>(
+            new AndExpression<TContext>(
+                new ComparisonExpression<TContext>(
+                    new CountTargetsExpression<TContext>(
+                        CombatantTargetSelectors.WithStatus(
+                            CombatantTargetSelectors.AllCombatants, new StatusDefinitionId(moon))),
+                    ComparisonOperator.Greater, new ConstantExpression<TContext>(0)),
+                // Only what the Lien took off an ENEMY counts; the applicant's own Liens pay nothing.
+                new NotExpression<TContext>(
+                    new TargetHasStatusExpression<TContext>(holder, new StatusDefinitionId(ApplicantMarker)))),
+            new ApplyStatusNode<TContext>(holder, new StatusDefinitionId(Citation),
+                new MinExpression<TContext>(
+                    new DivideExpression<TContext>(taken, new ConstantExpression<TContext>(perCitation)),
+                    new ConstantExpression<TContext>(3))));
 
     // "Citation X: after the holder resolves a NON-DAMAGING action, it loses X HP. Then remove 1 Citation."
     //
     // What counts as damaging is the design's wording and the engine's answer both: at least one ordinary hit
     // landed on the other side, whether or not Block soaked it. Utility, guarding, healing and summoning are
     // not; nor is a status ticking, which is not an action at all. One action asks the question once, however
-    // many sub-effects it contained — which is the whole reason the engine now has an action to ask about.
+    // many sub-effects it contained.
     private static StatusData CitationStatus() => Status(
         Citation, "Citation", StatusPolarity.Debuff,
         "After this character takes a non-damaging action, it loses HP equal to its Citation, then loses 1 Citation.",
