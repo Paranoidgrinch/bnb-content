@@ -121395,28 +121395,236 @@
       "Enemies": [
         {
           "Id": "municipal_dragon",
-          "MaxHealth": 132,
+          "MaxHealth": 142,
           "Actions": [
             {
               "value": "municipal_dragon.civic_claw"
             },
             {
-              "value": "municipal_dragon.hoard_of_permits"
-            },
-            {
               "value": "municipal_dragon.ordinance_breath"
             },
             {
-              "value": "municipal_dragon.old_city_hunger"
+              "value": "municipal_dragon.emergency_permit"
+            },
+            {
+              "value": "municipal_dragon.inspect_the_hoard"
             },
             {
               "value": "municipal_dragon.dragons_assessment"
             }
           ],
-          "StartingStatuses": null,
+          "StartingStatuses": [
+            {
+              "Status": {
+                "value": "the_municipal_dragon"
+              },
+              "Stacks": 1,
+              "DurationTurns": 0,
+              "Charges": 0
+            },
+            {
+              "Status": {
+                "value": "hoarded_permit"
+              },
+              "Stacks": 2,
+              "DurationTurns": 0,
+              "Charges": 0
+            }
+          ],
           "DisplayName": "The Municipal Dragon",
           "Position": null,
-          "IntentRules": null
+          "IntentRules": [
+            {
+              "Condition": {
+                "kind": "intent.selfHasStatus",
+                "value": {
+                  "Status": {
+                    "value": "burning_the_registry"
+                  },
+                  "MinStacks": 1
+                }
+              },
+              "Action": {
+                "value": "municipal_dragon.burn_the_registry"
+              },
+              "Priority": 100
+            },
+            {
+              "Condition": {
+                "kind": "intent.allOf",
+                "value": {
+                  "Conditions": [
+                    {
+                      "kind": "intent.selfHasStatus",
+                      "value": {
+                        "Status": {
+                          "value": "unlicensed"
+                        },
+                        "MinStacks": 1
+                      }
+                    },
+                    {
+                      "kind": "intent.selfHasCounter",
+                      "value": {
+                        "Counter": {
+                          "value": "dragon_beat"
+                        },
+                        "Op": "Equal",
+                        "Value": 0
+                      }
+                    }
+                  ]
+                }
+              },
+              "Action": {
+                "value": "municipal_dragon.unlicensed_claw"
+              },
+              "Priority": 60
+            },
+            {
+              "Condition": {
+                "kind": "intent.allOf",
+                "value": {
+                  "Conditions": [
+                    {
+                      "kind": "intent.selfHasStatus",
+                      "value": {
+                        "Status": {
+                          "value": "unlicensed"
+                        },
+                        "MinStacks": 1
+                      }
+                    },
+                    {
+                      "kind": "intent.selfHasCounter",
+                      "value": {
+                        "Counter": {
+                          "value": "dragon_beat"
+                        },
+                        "Op": "Equal",
+                        "Value": 1
+                      }
+                    }
+                  ]
+                }
+              },
+              "Action": {
+                "value": "municipal_dragon.fire_code_violation"
+              },
+              "Priority": 59
+            },
+            {
+              "Condition": {
+                "kind": "intent.allOf",
+                "value": {
+                  "Conditions": [
+                    {
+                      "kind": "intent.selfHasStatus",
+                      "value": {
+                        "Status": {
+                          "value": "unlicensed"
+                        },
+                        "MinStacks": 1
+                      }
+                    },
+                    {
+                      "kind": "intent.selfHasCounter",
+                      "value": {
+                        "Counter": {
+                          "value": "dragon_beat"
+                        },
+                        "Op": "Equal",
+                        "Value": 2
+                      }
+                    }
+                  ]
+                }
+              },
+              "Action": {
+                "value": "municipal_dragon.unsafe_occupancy"
+              },
+              "Priority": 58
+            },
+            {
+              "Condition": {
+                "kind": "intent.allOf",
+                "value": {
+                  "Conditions": [
+                    {
+                      "kind": "intent.selfHasStatus",
+                      "value": {
+                        "Status": {
+                          "value": "unlicensed"
+                        },
+                        "MinStacks": 1
+                      }
+                    },
+                    {
+                      "kind": "intent.selfHasCounter",
+                      "value": {
+                        "Counter": {
+                          "value": "dragon_beat"
+                        },
+                        "Op": "Equal",
+                        "Value": 3
+                      }
+                    }
+                  ]
+                }
+              },
+              "Action": {
+                "value": "municipal_dragon.collapsed_ordinance"
+              },
+              "Priority": 57
+            },
+            {
+              "Condition": {
+                "kind": "intent.allOf",
+                "value": {
+                  "Conditions": [
+                    {
+                      "kind": "intent.selfHasStatus",
+                      "value": {
+                        "Status": {
+                          "value": "unlicensed"
+                        },
+                        "MinStacks": 1
+                      }
+                    },
+                    {
+                      "kind": "intent.selfHasCounter",
+                      "value": {
+                        "Counter": {
+                          "value": "dragon_beat"
+                        },
+                        "Op": "Equal",
+                        "Value": 4
+                      }
+                    }
+                  ]
+                }
+              },
+              "Action": {
+                "value": "municipal_dragon.municipal_inferno"
+              },
+              "Priority": 56
+            },
+            {
+              "Condition": {
+                "kind": "intent.selfHasStatus",
+                "value": {
+                  "Status": {
+                    "value": "unlicensed"
+                  },
+                  "MinStacks": 1
+                }
+              },
+              "Action": {
+                "value": "municipal_dragon.unlicensed_claw"
+              },
+              "Priority": 10
+            }
+          ]
         }
       ],
       "HeroResources": [
@@ -121440,7 +121648,1692 @@
       ],
       "HeroDisplayName": null,
       "CardsDrawnPerTurn": null,
-      "TriggeredEffects": []
+      "TriggeredEffects": [
+        {
+          "Event": "TurnStarted",
+          "Program": {
+            "Id": {
+              "Value": "(unnamed)"
+            },
+            "Root": {
+              "kind": "node.conditional",
+              "value": {
+                "Condition": {
+                  "kind": "compare",
+                  "value": {
+                    "Left": {
+                      "kind": "combatantStatusStacks",
+                      "value": {
+                        "Selector": {
+                          "kind": "sel.source",
+                          "value": {
+                            "Cardinality": "ZeroOrOne",
+                            "RequiredContextCapabilities": "Source"
+                          }
+                        },
+                        "StatusId": {
+                          "value": "the_applicant"
+                        }
+                      }
+                    },
+                    "Op": "Greater",
+                    "Right": {
+                      "kind": "const",
+                      "value": {
+                        "Value": 0
+                      }
+                    }
+                  }
+                },
+                "Then": {
+                  "kind": "node.sequence",
+                  "value": {
+                    "Children": [
+                      {
+                        "kind": "node.forEachTarget",
+                        "value": {
+                          "CollectionSelector": {
+                            "kind": "sel.enemiesWithStatus",
+                            "value": {
+                              "StatusDefinitionId": {
+                                "value": "the_municipal_dragon"
+                              }
+                            }
+                          },
+                          "Body": {
+                            "kind": "node.sequence",
+                            "value": {
+                              "Children": [
+                                {
+                                  "kind": "node.gainBlock",
+                                  "value": {
+                                    "TargetSelector": {
+                                      "kind": "sel.iterationTarget",
+                                      "value": {
+                                        "Cardinality": "ZeroOrOne"
+                                      }
+                                    },
+                                    "Amount": {
+                                      "kind": "multiply",
+                                      "value": {
+                                        "Left": {
+                                          "kind": "iterationTargetStatusStacks",
+                                          "value": {
+                                            "StatusDefinitionId": {
+                                              "value": "hoarded_permit"
+                                            }
+                                          }
+                                        },
+                                        "Right": {
+                                          "kind": "const",
+                                          "value": {
+                                            "Value": 3
+                                          }
+                                        }
+                                      }
+                                    },
+                                    "ResultKey": null,
+                                    "Children": []
+                                  }
+                                },
+                                {
+                                  "kind": "node.removeStatus",
+                                  "value": {
+                                    "TargetSelector": {
+                                      "kind": "sel.iterationTarget",
+                                      "value": {
+                                        "Cardinality": "ZeroOrOne"
+                                      }
+                                    },
+                                    "StatusDefinitionId": {
+                                      "value": "permit_prised_loose"
+                                    },
+                                    "ResultKey": null,
+                                    "Children": []
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                          "MaxIterations": 32,
+                          "Children": [
+                            {
+                              "kind": "node.sequence",
+                              "value": {
+                                "Children": [
+                                  {
+                                    "kind": "node.gainBlock",
+                                    "value": {
+                                      "TargetSelector": {
+                                        "kind": "sel.iterationTarget",
+                                        "value": {
+                                          "Cardinality": "ZeroOrOne"
+                                        }
+                                      },
+                                      "Amount": {
+                                        "kind": "multiply",
+                                        "value": {
+                                          "Left": {
+                                            "kind": "iterationTargetStatusStacks",
+                                            "value": {
+                                              "StatusDefinitionId": {
+                                                "value": "hoarded_permit"
+                                              }
+                                            }
+                                          },
+                                          "Right": {
+                                            "kind": "const",
+                                            "value": {
+                                              "Value": 3
+                                            }
+                                          }
+                                        }
+                                      },
+                                      "ResultKey": null,
+                                      "Children": []
+                                    }
+                                  },
+                                  {
+                                    "kind": "node.removeStatus",
+                                    "value": {
+                                      "TargetSelector": {
+                                        "kind": "sel.iterationTarget",
+                                        "value": {
+                                          "Cardinality": "ZeroOrOne"
+                                        }
+                                      },
+                                      "StatusDefinitionId": {
+                                        "value": "permit_prised_loose"
+                                      },
+                                      "ResultKey": null,
+                                      "Children": []
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "kind": "node.removeStatus",
+                        "value": {
+                          "TargetSelector": {
+                            "kind": "sel.source",
+                            "value": {
+                              "Cardinality": "ZeroOrOne",
+                              "RequiredContextCapabilities": "Source"
+                            }
+                          },
+                          "StatusDefinitionId": {
+                            "value": "authority_exercised"
+                          },
+                          "ResultKey": null,
+                          "Children": []
+                        }
+                      },
+                      {
+                        "kind": "node.conditional",
+                        "value": {
+                          "Condition": {
+                            "kind": "compare",
+                            "value": {
+                              "Left": {
+                                "kind": "combatantStatusStacks",
+                                "value": {
+                                  "Selector": {
+                                    "kind": "sel.source",
+                                    "value": {
+                                      "Cardinality": "ZeroOrOne",
+                                      "RequiredContextCapabilities": "Source"
+                                    }
+                                  },
+                                  "StatusId": {
+                                    "value": "authorization"
+                                  }
+                                }
+                              },
+                              "Op": "Greater",
+                              "Right": {
+                                "kind": "const",
+                                "value": {
+                                  "Value": 0
+                                }
+                              }
+                            }
+                          },
+                          "Then": {
+                            "kind": "node.sequence",
+                            "value": {
+                              "Children": [
+                                {
+                                  "kind": "node.createCardInstance",
+                                  "value": {
+                                    "TargetSelector": {
+                                      "kind": "sel.source",
+                                      "value": {
+                                        "Cardinality": "ZeroOrOne",
+                                        "RequiredContextCapabilities": "Source"
+                                      }
+                                    },
+                                    "CardDefinitionId": {
+                                      "value": "authorized_expedition"
+                                    },
+                                    "ToZone": "Hand",
+                                    "Count": {
+                                      "kind": "const",
+                                      "value": {
+                                        "Value": 1
+                                      }
+                                    },
+                                    "ResultKey": null,
+                                    "Children": []
+                                  }
+                                },
+                                {
+                                  "kind": "node.createCardInstance",
+                                  "value": {
+                                    "TargetSelector": {
+                                      "kind": "sel.source",
+                                      "value": {
+                                        "Cardinality": "ZeroOrOne",
+                                        "RequiredContextCapabilities": "Source"
+                                      }
+                                    },
+                                    "CardDefinitionId": {
+                                      "value": "authorized_entry"
+                                    },
+                                    "ToZone": "Hand",
+                                    "Count": {
+                                      "kind": "const",
+                                      "value": {
+                                        "Value": 1
+                                      }
+                                    },
+                                    "ResultKey": null,
+                                    "Children": []
+                                  }
+                                },
+                                {
+                                  "kind": "node.createCardInstance",
+                                  "value": {
+                                    "TargetSelector": {
+                                      "kind": "sel.source",
+                                      "value": {
+                                        "Cardinality": "ZeroOrOne",
+                                        "RequiredContextCapabilities": "Source"
+                                      }
+                                    },
+                                    "CardDefinitionId": {
+                                      "value": "file_an_objection"
+                                    },
+                                    "ToZone": "Hand",
+                                    "Count": {
+                                      "kind": "const",
+                                      "value": {
+                                        "Value": 1
+                                      }
+                                    },
+                                    "ResultKey": null,
+                                    "Children": []
+                                  }
+                                },
+                                {
+                                  "kind": "node.forEachTarget",
+                                  "value": {
+                                    "CollectionSelector": {
+                                      "kind": "sel.enemiesWithStatus",
+                                      "value": {
+                                        "StatusDefinitionId": {
+                                          "value": "unlicensed"
+                                        }
+                                      }
+                                    },
+                                    "Body": {
+                                      "kind": "node.createCardInstance",
+                                      "value": {
+                                        "TargetSelector": {
+                                          "kind": "sel.source",
+                                          "value": {
+                                            "Cardinality": "ZeroOrOne",
+                                            "RequiredContextCapabilities": "Source"
+                                          }
+                                        },
+                                        "CardDefinitionId": {
+                                          "value": "issue_a_citation"
+                                        },
+                                        "ToZone": "Hand",
+                                        "Count": {
+                                          "kind": "const",
+                                          "value": {
+                                            "Value": 1
+                                          }
+                                        },
+                                        "ResultKey": null,
+                                        "Children": []
+                                      }
+                                    },
+                                    "MaxIterations": 32,
+                                    "Children": [
+                                      {
+                                        "kind": "node.createCardInstance",
+                                        "value": {
+                                          "TargetSelector": {
+                                            "kind": "sel.source",
+                                            "value": {
+                                              "Cardinality": "ZeroOrOne",
+                                              "RequiredContextCapabilities": "Source"
+                                            }
+                                          },
+                                          "CardDefinitionId": {
+                                            "value": "issue_a_citation"
+                                          },
+                                          "ToZone": "Hand",
+                                          "Count": {
+                                            "kind": "const",
+                                            "value": {
+                                              "Value": 1
+                                            }
+                                          },
+                                          "ResultKey": null,
+                                          "Children": []
+                                        }
+                                      }
+                                    ]
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                          "Else": null,
+                          "Children": [
+                            {
+                              "kind": "node.sequence",
+                              "value": {
+                                "Children": [
+                                  {
+                                    "kind": "node.createCardInstance",
+                                    "value": {
+                                      "TargetSelector": {
+                                        "kind": "sel.source",
+                                        "value": {
+                                          "Cardinality": "ZeroOrOne",
+                                          "RequiredContextCapabilities": "Source"
+                                        }
+                                      },
+                                      "CardDefinitionId": {
+                                        "value": "authorized_expedition"
+                                      },
+                                      "ToZone": "Hand",
+                                      "Count": {
+                                        "kind": "const",
+                                        "value": {
+                                          "Value": 1
+                                        }
+                                      },
+                                      "ResultKey": null,
+                                      "Children": []
+                                    }
+                                  },
+                                  {
+                                    "kind": "node.createCardInstance",
+                                    "value": {
+                                      "TargetSelector": {
+                                        "kind": "sel.source",
+                                        "value": {
+                                          "Cardinality": "ZeroOrOne",
+                                          "RequiredContextCapabilities": "Source"
+                                        }
+                                      },
+                                      "CardDefinitionId": {
+                                        "value": "authorized_entry"
+                                      },
+                                      "ToZone": "Hand",
+                                      "Count": {
+                                        "kind": "const",
+                                        "value": {
+                                          "Value": 1
+                                        }
+                                      },
+                                      "ResultKey": null,
+                                      "Children": []
+                                    }
+                                  },
+                                  {
+                                    "kind": "node.createCardInstance",
+                                    "value": {
+                                      "TargetSelector": {
+                                        "kind": "sel.source",
+                                        "value": {
+                                          "Cardinality": "ZeroOrOne",
+                                          "RequiredContextCapabilities": "Source"
+                                        }
+                                      },
+                                      "CardDefinitionId": {
+                                        "value": "file_an_objection"
+                                      },
+                                      "ToZone": "Hand",
+                                      "Count": {
+                                        "kind": "const",
+                                        "value": {
+                                          "Value": 1
+                                        }
+                                      },
+                                      "ResultKey": null,
+                                      "Children": []
+                                    }
+                                  },
+                                  {
+                                    "kind": "node.forEachTarget",
+                                    "value": {
+                                      "CollectionSelector": {
+                                        "kind": "sel.enemiesWithStatus",
+                                        "value": {
+                                          "StatusDefinitionId": {
+                                            "value": "unlicensed"
+                                          }
+                                        }
+                                      },
+                                      "Body": {
+                                        "kind": "node.createCardInstance",
+                                        "value": {
+                                          "TargetSelector": {
+                                            "kind": "sel.source",
+                                            "value": {
+                                              "Cardinality": "ZeroOrOne",
+                                              "RequiredContextCapabilities": "Source"
+                                            }
+                                          },
+                                          "CardDefinitionId": {
+                                            "value": "issue_a_citation"
+                                          },
+                                          "ToZone": "Hand",
+                                          "Count": {
+                                            "kind": "const",
+                                            "value": {
+                                              "Value": 1
+                                            }
+                                          },
+                                          "ResultKey": null,
+                                          "Children": []
+                                        }
+                                      },
+                                      "MaxIterations": 32,
+                                      "Children": [
+                                        {
+                                          "kind": "node.createCardInstance",
+                                          "value": {
+                                            "TargetSelector": {
+                                              "kind": "sel.source",
+                                              "value": {
+                                                "Cardinality": "ZeroOrOne",
+                                                "RequiredContextCapabilities": "Source"
+                                              }
+                                            },
+                                            "CardDefinitionId": {
+                                              "value": "issue_a_citation"
+                                            },
+                                            "ToZone": "Hand",
+                                            "Count": {
+                                              "kind": "const",
+                                              "value": {
+                                                "Value": 1
+                                              }
+                                            },
+                                            "ResultKey": null,
+                                            "Children": []
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                "Else": null,
+                "Children": [
+                  {
+                    "kind": "node.sequence",
+                    "value": {
+                      "Children": [
+                        {
+                          "kind": "node.forEachTarget",
+                          "value": {
+                            "CollectionSelector": {
+                              "kind": "sel.enemiesWithStatus",
+                              "value": {
+                                "StatusDefinitionId": {
+                                  "value": "the_municipal_dragon"
+                                }
+                              }
+                            },
+                            "Body": {
+                              "kind": "node.sequence",
+                              "value": {
+                                "Children": [
+                                  {
+                                    "kind": "node.gainBlock",
+                                    "value": {
+                                      "TargetSelector": {
+                                        "kind": "sel.iterationTarget",
+                                        "value": {
+                                          "Cardinality": "ZeroOrOne"
+                                        }
+                                      },
+                                      "Amount": {
+                                        "kind": "multiply",
+                                        "value": {
+                                          "Left": {
+                                            "kind": "iterationTargetStatusStacks",
+                                            "value": {
+                                              "StatusDefinitionId": {
+                                                "value": "hoarded_permit"
+                                              }
+                                            }
+                                          },
+                                          "Right": {
+                                            "kind": "const",
+                                            "value": {
+                                              "Value": 3
+                                            }
+                                          }
+                                        }
+                                      },
+                                      "ResultKey": null,
+                                      "Children": []
+                                    }
+                                  },
+                                  {
+                                    "kind": "node.removeStatus",
+                                    "value": {
+                                      "TargetSelector": {
+                                        "kind": "sel.iterationTarget",
+                                        "value": {
+                                          "Cardinality": "ZeroOrOne"
+                                        }
+                                      },
+                                      "StatusDefinitionId": {
+                                        "value": "permit_prised_loose"
+                                      },
+                                      "ResultKey": null,
+                                      "Children": []
+                                    }
+                                  }
+                                ]
+                              }
+                            },
+                            "MaxIterations": 32,
+                            "Children": [
+                              {
+                                "kind": "node.sequence",
+                                "value": {
+                                  "Children": [
+                                    {
+                                      "kind": "node.gainBlock",
+                                      "value": {
+                                        "TargetSelector": {
+                                          "kind": "sel.iterationTarget",
+                                          "value": {
+                                            "Cardinality": "ZeroOrOne"
+                                          }
+                                        },
+                                        "Amount": {
+                                          "kind": "multiply",
+                                          "value": {
+                                            "Left": {
+                                              "kind": "iterationTargetStatusStacks",
+                                              "value": {
+                                                "StatusDefinitionId": {
+                                                  "value": "hoarded_permit"
+                                                }
+                                              }
+                                            },
+                                            "Right": {
+                                              "kind": "const",
+                                              "value": {
+                                                "Value": 3
+                                              }
+                                            }
+                                          }
+                                        },
+                                        "ResultKey": null,
+                                        "Children": []
+                                      }
+                                    },
+                                    {
+                                      "kind": "node.removeStatus",
+                                      "value": {
+                                        "TargetSelector": {
+                                          "kind": "sel.iterationTarget",
+                                          "value": {
+                                            "Cardinality": "ZeroOrOne"
+                                          }
+                                        },
+                                        "StatusDefinitionId": {
+                                          "value": "permit_prised_loose"
+                                        },
+                                        "ResultKey": null,
+                                        "Children": []
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "kind": "node.removeStatus",
+                          "value": {
+                            "TargetSelector": {
+                              "kind": "sel.source",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "Source"
+                              }
+                            },
+                            "StatusDefinitionId": {
+                              "value": "authority_exercised"
+                            },
+                            "ResultKey": null,
+                            "Children": []
+                          }
+                        },
+                        {
+                          "kind": "node.conditional",
+                          "value": {
+                            "Condition": {
+                              "kind": "compare",
+                              "value": {
+                                "Left": {
+                                  "kind": "combatantStatusStacks",
+                                  "value": {
+                                    "Selector": {
+                                      "kind": "sel.source",
+                                      "value": {
+                                        "Cardinality": "ZeroOrOne",
+                                        "RequiredContextCapabilities": "Source"
+                                      }
+                                    },
+                                    "StatusId": {
+                                      "value": "authorization"
+                                    }
+                                  }
+                                },
+                                "Op": "Greater",
+                                "Right": {
+                                  "kind": "const",
+                                  "value": {
+                                    "Value": 0
+                                  }
+                                }
+                              }
+                            },
+                            "Then": {
+                              "kind": "node.sequence",
+                              "value": {
+                                "Children": [
+                                  {
+                                    "kind": "node.createCardInstance",
+                                    "value": {
+                                      "TargetSelector": {
+                                        "kind": "sel.source",
+                                        "value": {
+                                          "Cardinality": "ZeroOrOne",
+                                          "RequiredContextCapabilities": "Source"
+                                        }
+                                      },
+                                      "CardDefinitionId": {
+                                        "value": "authorized_expedition"
+                                      },
+                                      "ToZone": "Hand",
+                                      "Count": {
+                                        "kind": "const",
+                                        "value": {
+                                          "Value": 1
+                                        }
+                                      },
+                                      "ResultKey": null,
+                                      "Children": []
+                                    }
+                                  },
+                                  {
+                                    "kind": "node.createCardInstance",
+                                    "value": {
+                                      "TargetSelector": {
+                                        "kind": "sel.source",
+                                        "value": {
+                                          "Cardinality": "ZeroOrOne",
+                                          "RequiredContextCapabilities": "Source"
+                                        }
+                                      },
+                                      "CardDefinitionId": {
+                                        "value": "authorized_entry"
+                                      },
+                                      "ToZone": "Hand",
+                                      "Count": {
+                                        "kind": "const",
+                                        "value": {
+                                          "Value": 1
+                                        }
+                                      },
+                                      "ResultKey": null,
+                                      "Children": []
+                                    }
+                                  },
+                                  {
+                                    "kind": "node.createCardInstance",
+                                    "value": {
+                                      "TargetSelector": {
+                                        "kind": "sel.source",
+                                        "value": {
+                                          "Cardinality": "ZeroOrOne",
+                                          "RequiredContextCapabilities": "Source"
+                                        }
+                                      },
+                                      "CardDefinitionId": {
+                                        "value": "file_an_objection"
+                                      },
+                                      "ToZone": "Hand",
+                                      "Count": {
+                                        "kind": "const",
+                                        "value": {
+                                          "Value": 1
+                                        }
+                                      },
+                                      "ResultKey": null,
+                                      "Children": []
+                                    }
+                                  },
+                                  {
+                                    "kind": "node.forEachTarget",
+                                    "value": {
+                                      "CollectionSelector": {
+                                        "kind": "sel.enemiesWithStatus",
+                                        "value": {
+                                          "StatusDefinitionId": {
+                                            "value": "unlicensed"
+                                          }
+                                        }
+                                      },
+                                      "Body": {
+                                        "kind": "node.createCardInstance",
+                                        "value": {
+                                          "TargetSelector": {
+                                            "kind": "sel.source",
+                                            "value": {
+                                              "Cardinality": "ZeroOrOne",
+                                              "RequiredContextCapabilities": "Source"
+                                            }
+                                          },
+                                          "CardDefinitionId": {
+                                            "value": "issue_a_citation"
+                                          },
+                                          "ToZone": "Hand",
+                                          "Count": {
+                                            "kind": "const",
+                                            "value": {
+                                              "Value": 1
+                                            }
+                                          },
+                                          "ResultKey": null,
+                                          "Children": []
+                                        }
+                                      },
+                                      "MaxIterations": 32,
+                                      "Children": [
+                                        {
+                                          "kind": "node.createCardInstance",
+                                          "value": {
+                                            "TargetSelector": {
+                                              "kind": "sel.source",
+                                              "value": {
+                                                "Cardinality": "ZeroOrOne",
+                                                "RequiredContextCapabilities": "Source"
+                                              }
+                                            },
+                                            "CardDefinitionId": {
+                                              "value": "issue_a_citation"
+                                            },
+                                            "ToZone": "Hand",
+                                            "Count": {
+                                              "kind": "const",
+                                              "value": {
+                                                "Value": 1
+                                              }
+                                            },
+                                            "ResultKey": null,
+                                            "Children": []
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            },
+                            "Else": null,
+                            "Children": [
+                              {
+                                "kind": "node.sequence",
+                                "value": {
+                                  "Children": [
+                                    {
+                                      "kind": "node.createCardInstance",
+                                      "value": {
+                                        "TargetSelector": {
+                                          "kind": "sel.source",
+                                          "value": {
+                                            "Cardinality": "ZeroOrOne",
+                                            "RequiredContextCapabilities": "Source"
+                                          }
+                                        },
+                                        "CardDefinitionId": {
+                                          "value": "authorized_expedition"
+                                        },
+                                        "ToZone": "Hand",
+                                        "Count": {
+                                          "kind": "const",
+                                          "value": {
+                                            "Value": 1
+                                          }
+                                        },
+                                        "ResultKey": null,
+                                        "Children": []
+                                      }
+                                    },
+                                    {
+                                      "kind": "node.createCardInstance",
+                                      "value": {
+                                        "TargetSelector": {
+                                          "kind": "sel.source",
+                                          "value": {
+                                            "Cardinality": "ZeroOrOne",
+                                            "RequiredContextCapabilities": "Source"
+                                          }
+                                        },
+                                        "CardDefinitionId": {
+                                          "value": "authorized_entry"
+                                        },
+                                        "ToZone": "Hand",
+                                        "Count": {
+                                          "kind": "const",
+                                          "value": {
+                                            "Value": 1
+                                          }
+                                        },
+                                        "ResultKey": null,
+                                        "Children": []
+                                      }
+                                    },
+                                    {
+                                      "kind": "node.createCardInstance",
+                                      "value": {
+                                        "TargetSelector": {
+                                          "kind": "sel.source",
+                                          "value": {
+                                            "Cardinality": "ZeroOrOne",
+                                            "RequiredContextCapabilities": "Source"
+                                          }
+                                        },
+                                        "CardDefinitionId": {
+                                          "value": "file_an_objection"
+                                        },
+                                        "ToZone": "Hand",
+                                        "Count": {
+                                          "kind": "const",
+                                          "value": {
+                                            "Value": 1
+                                          }
+                                        },
+                                        "ResultKey": null,
+                                        "Children": []
+                                      }
+                                    },
+                                    {
+                                      "kind": "node.forEachTarget",
+                                      "value": {
+                                        "CollectionSelector": {
+                                          "kind": "sel.enemiesWithStatus",
+                                          "value": {
+                                            "StatusDefinitionId": {
+                                              "value": "unlicensed"
+                                            }
+                                          }
+                                        },
+                                        "Body": {
+                                          "kind": "node.createCardInstance",
+                                          "value": {
+                                            "TargetSelector": {
+                                              "kind": "sel.source",
+                                              "value": {
+                                                "Cardinality": "ZeroOrOne",
+                                                "RequiredContextCapabilities": "Source"
+                                              }
+                                            },
+                                            "CardDefinitionId": {
+                                              "value": "issue_a_citation"
+                                            },
+                                            "ToZone": "Hand",
+                                            "Count": {
+                                              "kind": "const",
+                                              "value": {
+                                                "Value": 1
+                                              }
+                                            },
+                                            "ResultKey": null,
+                                            "Children": []
+                                          }
+                                        },
+                                        "MaxIterations": 32,
+                                        "Children": [
+                                          {
+                                            "kind": "node.createCardInstance",
+                                            "value": {
+                                              "TargetSelector": {
+                                                "kind": "sel.source",
+                                                "value": {
+                                                  "Cardinality": "ZeroOrOne",
+                                                  "RequiredContextCapabilities": "Source"
+                                                }
+                                              },
+                                              "CardDefinitionId": {
+                                                "value": "issue_a_citation"
+                                              },
+                                              "ToZone": "Hand",
+                                              "Count": {
+                                                "kind": "const",
+                                                "value": {
+                                                  "Value": 1
+                                                }
+                                              },
+                                              "ResultKey": null,
+                                              "Children": []
+                                            }
+                                          }
+                                        ]
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            "MaxNodeDepth": 64,
+            "MaxProgramSteps": 1024
+          }
+        },
+        {
+          "Event": "DamageTaken",
+          "Program": {
+            "Id": {
+              "Value": "(unnamed)"
+            },
+            "Root": {
+              "kind": "node.conditional",
+              "value": {
+                "Condition": {
+                  "kind": "and",
+                  "value": {
+                    "Left": {
+                      "kind": "compare",
+                      "value": {
+                        "Left": {
+                          "kind": "combatantStatusStacks",
+                          "value": {
+                            "Selector": {
+                              "kind": "sel.eventTarget",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "EventTarget"
+                              }
+                            },
+                            "StatusId": {
+                              "value": "the_municipal_dragon"
+                            }
+                          }
+                        },
+                        "Op": "Greater",
+                        "Right": {
+                          "kind": "const",
+                          "value": {
+                            "Value": 0
+                          }
+                        }
+                      }
+                    },
+                    "Right": {
+                      "kind": "and",
+                      "value": {
+                        "Left": {
+                          "kind": "compare",
+                          "value": {
+                            "Left": {
+                              "kind": "combatantStatusStacks",
+                              "value": {
+                                "Selector": {
+                                  "kind": "sel.eventTarget",
+                                  "value": {
+                                    "Cardinality": "ZeroOrOne",
+                                    "RequiredContextCapabilities": "EventTarget"
+                                  }
+                                },
+                                "StatusId": {
+                                  "value": "hoarded_permit"
+                                }
+                              }
+                            },
+                            "Op": "Greater",
+                            "Right": {
+                              "kind": "const",
+                              "value": {
+                                "Value": 0
+                              }
+                            }
+                          }
+                        },
+                        "Right": {
+                          "kind": "and",
+                          "value": {
+                            "Left": {
+                              "kind": "compare",
+                              "value": {
+                                "Left": {
+                                  "kind": "combatantStatusStacks",
+                                  "value": {
+                                    "Selector": {
+                                      "kind": "sel.eventTarget",
+                                      "value": {
+                                        "Cardinality": "ZeroOrOne",
+                                        "RequiredContextCapabilities": "EventTarget"
+                                      }
+                                    },
+                                    "StatusId": {
+                                      "value": "permit_prised_loose"
+                                    }
+                                  }
+                                },
+                                "Op": "Equal",
+                                "Right": {
+                                  "kind": "const",
+                                  "value": {
+                                    "Value": 0
+                                  }
+                                }
+                              }
+                            },
+                            "Right": {
+                              "kind": "compare",
+                              "value": {
+                                "Left": {
+                                  "kind": "add",
+                                  "value": {
+                                    "Left": {
+                                      "kind": "combatantCounter",
+                                      "value": {
+                                        "Selector": {
+                                          "kind": "sel.eventTarget",
+                                          "value": {
+                                            "Cardinality": "ZeroOrOne",
+                                            "RequiredContextCapabilities": "EventTarget"
+                                          }
+                                        },
+                                        "CounterId": {
+                                          "value": "hoard_pressure"
+                                        }
+                                      }
+                                    },
+                                    "Right": {
+                                      "kind": "eventAmount",
+                                      "value": {}
+                                    }
+                                  }
+                                },
+                                "Op": "GreaterOrEqual",
+                                "Right": {
+                                  "kind": "const",
+                                  "value": {
+                                    "Value": 14
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "Then": {
+                  "kind": "node.sequence",
+                  "value": {
+                    "Children": [
+                      {
+                        "kind": "node.applyStatus",
+                        "value": {
+                          "TargetSelector": {
+                            "kind": "sel.eventTarget",
+                            "value": {
+                              "Cardinality": "ZeroOrOne",
+                              "RequiredContextCapabilities": "EventTarget"
+                            }
+                          },
+                          "StatusDefinitionId": {
+                            "value": "permit_prised_loose"
+                          },
+                          "Stacks": {
+                            "kind": "const",
+                            "value": {
+                              "Value": 1
+                            }
+                          },
+                          "DurationTurns": 0,
+                          "Charges": 0,
+                          "ResultKey": null,
+                          "Children": []
+                        }
+                      },
+                      {
+                        "kind": "node.modifyStatusStacks",
+                        "value": {
+                          "TargetSelector": {
+                            "kind": "sel.eventTarget",
+                            "value": {
+                              "Cardinality": "ZeroOrOne",
+                              "RequiredContextCapabilities": "EventTarget"
+                            }
+                          },
+                          "StatusDefinitionId": {
+                            "value": "hoarded_permit"
+                          },
+                          "Delta": {
+                            "kind": "const",
+                            "value": {
+                              "Value": -1
+                            }
+                          },
+                          "ResultKey": null,
+                          "Children": []
+                        }
+                      },
+                      {
+                        "kind": "node.setCombatantCounter",
+                        "value": {
+                          "TargetSelector": {
+                            "kind": "sel.eventTarget",
+                            "value": {
+                              "Cardinality": "ZeroOrOne",
+                              "RequiredContextCapabilities": "EventTarget"
+                            }
+                          },
+                          "CounterId": {
+                            "value": "permits_stolen"
+                          },
+                          "Amount": {
+                            "kind": "const",
+                            "value": {
+                              "Value": 1
+                            }
+                          },
+                          "Relative": true,
+                          "Children": []
+                        }
+                      },
+                      {
+                        "kind": "node.forEachTarget",
+                        "value": {
+                          "CollectionSelector": {
+                            "kind": "sel.withStatus",
+                            "value": {
+                              "Inner": {
+                                "kind": "sel.allCombatants",
+                                "value": {
+                                  "AliveOnly": false,
+                                  "MayIncludeDownedTargets": true
+                                }
+                              },
+                              "StatusDefinitionId": {
+                                "value": "the_applicant"
+                              }
+                            }
+                          },
+                          "Body": {
+                            "kind": "node.conditional",
+                            "value": {
+                              "Condition": {
+                                "kind": "compare",
+                                "value": {
+                                  "Left": {
+                                    "kind": "iterationTargetStatusStacks",
+                                    "value": {
+                                      "StatusDefinitionId": {
+                                        "value": "authorization"
+                                      }
+                                    }
+                                  },
+                                  "Op": "Less",
+                                  "Right": {
+                                    "kind": "const",
+                                    "value": {
+                                      "Value": 3
+                                    }
+                                  }
+                                }
+                              },
+                              "Then": {
+                                "kind": "node.applyStatus",
+                                "value": {
+                                  "TargetSelector": {
+                                    "kind": "sel.iterationTarget",
+                                    "value": {
+                                      "Cardinality": "ZeroOrOne"
+                                    }
+                                  },
+                                  "StatusDefinitionId": {
+                                    "value": "authorization"
+                                  },
+                                  "Stacks": {
+                                    "kind": "const",
+                                    "value": {
+                                      "Value": 1
+                                    }
+                                  },
+                                  "DurationTurns": 0,
+                                  "Charges": 0,
+                                  "ResultKey": null,
+                                  "Children": []
+                                }
+                              },
+                              "Else": null,
+                              "Children": [
+                                {
+                                  "kind": "node.applyStatus",
+                                  "value": {
+                                    "TargetSelector": {
+                                      "kind": "sel.iterationTarget",
+                                      "value": {
+                                        "Cardinality": "ZeroOrOne"
+                                      }
+                                    },
+                                    "StatusDefinitionId": {
+                                      "value": "authorization"
+                                    },
+                                    "Stacks": {
+                                      "kind": "const",
+                                      "value": {
+                                        "Value": 1
+                                      }
+                                    },
+                                    "DurationTurns": 0,
+                                    "Charges": 0,
+                                    "ResultKey": null,
+                                    "Children": []
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                          "MaxIterations": 32,
+                          "Children": [
+                            {
+                              "kind": "node.conditional",
+                              "value": {
+                                "Condition": {
+                                  "kind": "compare",
+                                  "value": {
+                                    "Left": {
+                                      "kind": "iterationTargetStatusStacks",
+                                      "value": {
+                                        "StatusDefinitionId": {
+                                          "value": "authorization"
+                                        }
+                                      }
+                                    },
+                                    "Op": "Less",
+                                    "Right": {
+                                      "kind": "const",
+                                      "value": {
+                                        "Value": 3
+                                      }
+                                    }
+                                  }
+                                },
+                                "Then": {
+                                  "kind": "node.applyStatus",
+                                  "value": {
+                                    "TargetSelector": {
+                                      "kind": "sel.iterationTarget",
+                                      "value": {
+                                        "Cardinality": "ZeroOrOne"
+                                      }
+                                    },
+                                    "StatusDefinitionId": {
+                                      "value": "authorization"
+                                    },
+                                    "Stacks": {
+                                      "kind": "const",
+                                      "value": {
+                                        "Value": 1
+                                      }
+                                    },
+                                    "DurationTurns": 0,
+                                    "Charges": 0,
+                                    "ResultKey": null,
+                                    "Children": []
+                                  }
+                                },
+                                "Else": null,
+                                "Children": [
+                                  {
+                                    "kind": "node.applyStatus",
+                                    "value": {
+                                      "TargetSelector": {
+                                        "kind": "sel.iterationTarget",
+                                        "value": {
+                                          "Cardinality": "ZeroOrOne"
+                                        }
+                                      },
+                                      "StatusDefinitionId": {
+                                        "value": "authorization"
+                                      },
+                                      "Stacks": {
+                                        "kind": "const",
+                                        "value": {
+                                          "Value": 1
+                                        }
+                                      },
+                                      "DurationTurns": 0,
+                                      "Charges": 0,
+                                      "ResultKey": null,
+                                      "Children": []
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                "Else": {
+                  "kind": "node.setCombatantCounter",
+                  "value": {
+                    "TargetSelector": {
+                      "kind": "sel.eventTarget",
+                      "value": {
+                        "Cardinality": "ZeroOrOne",
+                        "RequiredContextCapabilities": "EventTarget"
+                      }
+                    },
+                    "CounterId": {
+                      "value": "hoard_pressure"
+                    },
+                    "Amount": {
+                      "kind": "eventAmount",
+                      "value": {}
+                    },
+                    "Relative": true,
+                    "Children": []
+                  }
+                },
+                "Children": [
+                  {
+                    "kind": "node.sequence",
+                    "value": {
+                      "Children": [
+                        {
+                          "kind": "node.applyStatus",
+                          "value": {
+                            "TargetSelector": {
+                              "kind": "sel.eventTarget",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "EventTarget"
+                              }
+                            },
+                            "StatusDefinitionId": {
+                              "value": "permit_prised_loose"
+                            },
+                            "Stacks": {
+                              "kind": "const",
+                              "value": {
+                                "Value": 1
+                              }
+                            },
+                            "DurationTurns": 0,
+                            "Charges": 0,
+                            "ResultKey": null,
+                            "Children": []
+                          }
+                        },
+                        {
+                          "kind": "node.modifyStatusStacks",
+                          "value": {
+                            "TargetSelector": {
+                              "kind": "sel.eventTarget",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "EventTarget"
+                              }
+                            },
+                            "StatusDefinitionId": {
+                              "value": "hoarded_permit"
+                            },
+                            "Delta": {
+                              "kind": "const",
+                              "value": {
+                                "Value": -1
+                              }
+                            },
+                            "ResultKey": null,
+                            "Children": []
+                          }
+                        },
+                        {
+                          "kind": "node.setCombatantCounter",
+                          "value": {
+                            "TargetSelector": {
+                              "kind": "sel.eventTarget",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "EventTarget"
+                              }
+                            },
+                            "CounterId": {
+                              "value": "permits_stolen"
+                            },
+                            "Amount": {
+                              "kind": "const",
+                              "value": {
+                                "Value": 1
+                              }
+                            },
+                            "Relative": true,
+                            "Children": []
+                          }
+                        },
+                        {
+                          "kind": "node.forEachTarget",
+                          "value": {
+                            "CollectionSelector": {
+                              "kind": "sel.withStatus",
+                              "value": {
+                                "Inner": {
+                                  "kind": "sel.allCombatants",
+                                  "value": {
+                                    "AliveOnly": false,
+                                    "MayIncludeDownedTargets": true
+                                  }
+                                },
+                                "StatusDefinitionId": {
+                                  "value": "the_applicant"
+                                }
+                              }
+                            },
+                            "Body": {
+                              "kind": "node.conditional",
+                              "value": {
+                                "Condition": {
+                                  "kind": "compare",
+                                  "value": {
+                                    "Left": {
+                                      "kind": "iterationTargetStatusStacks",
+                                      "value": {
+                                        "StatusDefinitionId": {
+                                          "value": "authorization"
+                                        }
+                                      }
+                                    },
+                                    "Op": "Less",
+                                    "Right": {
+                                      "kind": "const",
+                                      "value": {
+                                        "Value": 3
+                                      }
+                                    }
+                                  }
+                                },
+                                "Then": {
+                                  "kind": "node.applyStatus",
+                                  "value": {
+                                    "TargetSelector": {
+                                      "kind": "sel.iterationTarget",
+                                      "value": {
+                                        "Cardinality": "ZeroOrOne"
+                                      }
+                                    },
+                                    "StatusDefinitionId": {
+                                      "value": "authorization"
+                                    },
+                                    "Stacks": {
+                                      "kind": "const",
+                                      "value": {
+                                        "Value": 1
+                                      }
+                                    },
+                                    "DurationTurns": 0,
+                                    "Charges": 0,
+                                    "ResultKey": null,
+                                    "Children": []
+                                  }
+                                },
+                                "Else": null,
+                                "Children": [
+                                  {
+                                    "kind": "node.applyStatus",
+                                    "value": {
+                                      "TargetSelector": {
+                                        "kind": "sel.iterationTarget",
+                                        "value": {
+                                          "Cardinality": "ZeroOrOne"
+                                        }
+                                      },
+                                      "StatusDefinitionId": {
+                                        "value": "authorization"
+                                      },
+                                      "Stacks": {
+                                        "kind": "const",
+                                        "value": {
+                                          "Value": 1
+                                        }
+                                      },
+                                      "DurationTurns": 0,
+                                      "Charges": 0,
+                                      "ResultKey": null,
+                                      "Children": []
+                                    }
+                                  }
+                                ]
+                              }
+                            },
+                            "MaxIterations": 32,
+                            "Children": [
+                              {
+                                "kind": "node.conditional",
+                                "value": {
+                                  "Condition": {
+                                    "kind": "compare",
+                                    "value": {
+                                      "Left": {
+                                        "kind": "iterationTargetStatusStacks",
+                                        "value": {
+                                          "StatusDefinitionId": {
+                                            "value": "authorization"
+                                          }
+                                        }
+                                      },
+                                      "Op": "Less",
+                                      "Right": {
+                                        "kind": "const",
+                                        "value": {
+                                          "Value": 3
+                                        }
+                                      }
+                                    }
+                                  },
+                                  "Then": {
+                                    "kind": "node.applyStatus",
+                                    "value": {
+                                      "TargetSelector": {
+                                        "kind": "sel.iterationTarget",
+                                        "value": {
+                                          "Cardinality": "ZeroOrOne"
+                                        }
+                                      },
+                                      "StatusDefinitionId": {
+                                        "value": "authorization"
+                                      },
+                                      "Stacks": {
+                                        "kind": "const",
+                                        "value": {
+                                          "Value": 1
+                                        }
+                                      },
+                                      "DurationTurns": 0,
+                                      "Charges": 0,
+                                      "ResultKey": null,
+                                      "Children": []
+                                    }
+                                  },
+                                  "Else": null,
+                                  "Children": [
+                                    {
+                                      "kind": "node.applyStatus",
+                                      "value": {
+                                        "TargetSelector": {
+                                          "kind": "sel.iterationTarget",
+                                          "value": {
+                                            "Cardinality": "ZeroOrOne"
+                                          }
+                                        },
+                                        "StatusDefinitionId": {
+                                          "value": "authorization"
+                                        },
+                                        "Stacks": {
+                                          "kind": "const",
+                                          "value": {
+                                            "Value": 1
+                                          }
+                                        },
+                                        "DurationTurns": 0,
+                                        "Charges": 0,
+                                        "ResultKey": null,
+                                        "Children": []
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "kind": "node.setCombatantCounter",
+                    "value": {
+                      "TargetSelector": {
+                        "kind": "sel.eventTarget",
+                        "value": {
+                          "Cardinality": "ZeroOrOne",
+                          "RequiredContextCapabilities": "EventTarget"
+                        }
+                      },
+                      "CounterId": {
+                        "value": "hoard_pressure"
+                      },
+                      "Amount": {
+                        "kind": "eventAmount",
+                        "value": {}
+                      },
+                      "Relative": true,
+                      "Children": []
+                    }
+                  }
+                ]
+              }
+            },
+            "MaxNodeDepth": 64,
+            "MaxProgramSteps": 1024
+          }
+        }
+      ]
     },
     {
       "Id": {
@@ -288510,6 +290403,1014 @@
       "RetainInHandOnTurnEnd": false,
       "TurnEndHandDestinationZone": "Hand",
       "PlayedCardDestinationZone": "ExhaustPile"
+    },
+    {
+      "Id": "authorized_expedition",
+      "PackageId": "scenario",
+      "NameKey": "Authorized Expedition",
+      "DescriptionKey": "Gain 1 Energy.\nCosts 1 Authorization; one authority per turn.",
+      "Costs": [],
+      "Tags": [
+        {
+          "value": "form"
+        },
+        {
+          "value": "authorization"
+        }
+      ],
+      "Program": {
+        "Id": {
+          "Value": "(unnamed)"
+        },
+        "Root": {
+          "kind": "node.conditional",
+          "value": {
+            "Condition": {
+              "kind": "and",
+              "value": {
+                "Left": {
+                  "kind": "compare",
+                  "value": {
+                    "Left": {
+                      "kind": "combatantStatusStacks",
+                      "value": {
+                        "Selector": {
+                          "kind": "sel.source",
+                          "value": {
+                            "Cardinality": "ZeroOrOne",
+                            "RequiredContextCapabilities": "Source"
+                          }
+                        },
+                        "StatusId": {
+                          "value": "authorization"
+                        }
+                      }
+                    },
+                    "Op": "Greater",
+                    "Right": {
+                      "kind": "const",
+                      "value": {
+                        "Value": 0
+                      }
+                    }
+                  }
+                },
+                "Right": {
+                  "kind": "compare",
+                  "value": {
+                    "Left": {
+                      "kind": "combatantStatusStacks",
+                      "value": {
+                        "Selector": {
+                          "kind": "sel.source",
+                          "value": {
+                            "Cardinality": "ZeroOrOne",
+                            "RequiredContextCapabilities": "Source"
+                          }
+                        },
+                        "StatusId": {
+                          "value": "authority_exercised"
+                        }
+                      }
+                    },
+                    "Op": "Equal",
+                    "Right": {
+                      "kind": "const",
+                      "value": {
+                        "Value": 0
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "Then": {
+              "kind": "node.sequence",
+              "value": {
+                "Children": [
+                  {
+                    "kind": "node.modifyStatusStacks",
+                    "value": {
+                      "TargetSelector": {
+                        "kind": "sel.source",
+                        "value": {
+                          "Cardinality": "ZeroOrOne",
+                          "RequiredContextCapabilities": "Source"
+                        }
+                      },
+                      "StatusDefinitionId": {
+                        "value": "authorization"
+                      },
+                      "Delta": {
+                        "kind": "const",
+                        "value": {
+                          "Value": -1
+                        }
+                      },
+                      "ResultKey": null,
+                      "Children": []
+                    }
+                  },
+                  {
+                    "kind": "node.applyStatus",
+                    "value": {
+                      "TargetSelector": {
+                        "kind": "sel.source",
+                        "value": {
+                          "Cardinality": "ZeroOrOne",
+                          "RequiredContextCapabilities": "Source"
+                        }
+                      },
+                      "StatusDefinitionId": {
+                        "value": "authority_exercised"
+                      },
+                      "Stacks": {
+                        "kind": "const",
+                        "value": {
+                          "Value": 1
+                        }
+                      },
+                      "DurationTurns": 0,
+                      "Charges": 0,
+                      "ResultKey": null,
+                      "Children": []
+                    }
+                  },
+                  {
+                    "kind": "node.gainResource",
+                    "value": {
+                      "TargetSelector": {
+                        "kind": "sel.source",
+                        "value": {
+                          "Cardinality": "ZeroOrOne",
+                          "RequiredContextCapabilities": "Source"
+                        }
+                      },
+                      "ResourceId": {
+                        "value": "standard.energy"
+                      },
+                      "Amount": {
+                        "kind": "const",
+                        "value": {
+                          "Value": 1
+                        }
+                      },
+                      "DefaultMax": null,
+                      "ResultKey": null,
+                      "Children": []
+                    }
+                  }
+                ]
+              }
+            },
+            "Else": null,
+            "Children": [
+              {
+                "kind": "node.sequence",
+                "value": {
+                  "Children": [
+                    {
+                      "kind": "node.modifyStatusStacks",
+                      "value": {
+                        "TargetSelector": {
+                          "kind": "sel.source",
+                          "value": {
+                            "Cardinality": "ZeroOrOne",
+                            "RequiredContextCapabilities": "Source"
+                          }
+                        },
+                        "StatusDefinitionId": {
+                          "value": "authorization"
+                        },
+                        "Delta": {
+                          "kind": "const",
+                          "value": {
+                            "Value": -1
+                          }
+                        },
+                        "ResultKey": null,
+                        "Children": []
+                      }
+                    },
+                    {
+                      "kind": "node.applyStatus",
+                      "value": {
+                        "TargetSelector": {
+                          "kind": "sel.source",
+                          "value": {
+                            "Cardinality": "ZeroOrOne",
+                            "RequiredContextCapabilities": "Source"
+                          }
+                        },
+                        "StatusDefinitionId": {
+                          "value": "authority_exercised"
+                        },
+                        "Stacks": {
+                          "kind": "const",
+                          "value": {
+                            "Value": 1
+                          }
+                        },
+                        "DurationTurns": 0,
+                        "Charges": 0,
+                        "ResultKey": null,
+                        "Children": []
+                      }
+                    },
+                    {
+                      "kind": "node.gainResource",
+                      "value": {
+                        "TargetSelector": {
+                          "kind": "sel.source",
+                          "value": {
+                            "Cardinality": "ZeroOrOne",
+                            "RequiredContextCapabilities": "Source"
+                          }
+                        },
+                        "ResourceId": {
+                          "value": "standard.energy"
+                        },
+                        "Amount": {
+                          "kind": "const",
+                          "value": {
+                            "Value": 1
+                          }
+                        },
+                        "DefaultMax": null,
+                        "ResultKey": null,
+                        "Children": []
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "MaxNodeDepth": 64,
+        "MaxProgramSteps": 1024
+      },
+      "LifecyclePrograms": {},
+      "RetainInHandOnTurnEnd": false,
+      "TurnEndHandDestinationZone": "ExhaustPile",
+      "PlayedCardDestinationZone": "ExhaustPile"
+    },
+    {
+      "Id": "authorized_entry",
+      "PackageId": "scenario",
+      "NameKey": "Authorized Entry",
+      "DescriptionKey": "Remove up to 12 Block from the Municipal Dragon.\nCosts 1 Authorization; one authority per turn.",
+      "Costs": [],
+      "Tags": [
+        {
+          "value": "form"
+        },
+        {
+          "value": "authorization"
+        }
+      ],
+      "Program": {
+        "Id": {
+          "Value": "(unnamed)"
+        },
+        "Root": {
+          "kind": "node.conditional",
+          "value": {
+            "Condition": {
+              "kind": "and",
+              "value": {
+                "Left": {
+                  "kind": "compare",
+                  "value": {
+                    "Left": {
+                      "kind": "combatantStatusStacks",
+                      "value": {
+                        "Selector": {
+                          "kind": "sel.source",
+                          "value": {
+                            "Cardinality": "ZeroOrOne",
+                            "RequiredContextCapabilities": "Source"
+                          }
+                        },
+                        "StatusId": {
+                          "value": "authorization"
+                        }
+                      }
+                    },
+                    "Op": "Greater",
+                    "Right": {
+                      "kind": "const",
+                      "value": {
+                        "Value": 0
+                      }
+                    }
+                  }
+                },
+                "Right": {
+                  "kind": "compare",
+                  "value": {
+                    "Left": {
+                      "kind": "combatantStatusStacks",
+                      "value": {
+                        "Selector": {
+                          "kind": "sel.source",
+                          "value": {
+                            "Cardinality": "ZeroOrOne",
+                            "RequiredContextCapabilities": "Source"
+                          }
+                        },
+                        "StatusId": {
+                          "value": "authority_exercised"
+                        }
+                      }
+                    },
+                    "Op": "Equal",
+                    "Right": {
+                      "kind": "const",
+                      "value": {
+                        "Value": 0
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "Then": {
+              "kind": "node.sequence",
+              "value": {
+                "Children": [
+                  {
+                    "kind": "node.modifyStatusStacks",
+                    "value": {
+                      "TargetSelector": {
+                        "kind": "sel.source",
+                        "value": {
+                          "Cardinality": "ZeroOrOne",
+                          "RequiredContextCapabilities": "Source"
+                        }
+                      },
+                      "StatusDefinitionId": {
+                        "value": "authorization"
+                      },
+                      "Delta": {
+                        "kind": "const",
+                        "value": {
+                          "Value": -1
+                        }
+                      },
+                      "ResultKey": null,
+                      "Children": []
+                    }
+                  },
+                  {
+                    "kind": "node.applyStatus",
+                    "value": {
+                      "TargetSelector": {
+                        "kind": "sel.source",
+                        "value": {
+                          "Cardinality": "ZeroOrOne",
+                          "RequiredContextCapabilities": "Source"
+                        }
+                      },
+                      "StatusDefinitionId": {
+                        "value": "authority_exercised"
+                      },
+                      "Stacks": {
+                        "kind": "const",
+                        "value": {
+                          "Value": 1
+                        }
+                      },
+                      "DurationTurns": 0,
+                      "Charges": 0,
+                      "ResultKey": null,
+                      "Children": []
+                    }
+                  },
+                  {
+                    "kind": "node.modifyDefensivePool",
+                    "value": {
+                      "TargetSelector": {
+                        "kind": "sel.enemiesWithStatus",
+                        "value": {
+                          "StatusDefinitionId": {
+                            "value": "the_municipal_dragon"
+                          }
+                        }
+                      },
+                      "PoolId": {
+                        "value": "standard.block"
+                      },
+                      "Delta": {
+                        "kind": "const",
+                        "value": {
+                          "Value": -12
+                        }
+                      },
+                      "ResultKey": null,
+                      "Children": []
+                    }
+                  }
+                ]
+              }
+            },
+            "Else": null,
+            "Children": [
+              {
+                "kind": "node.sequence",
+                "value": {
+                  "Children": [
+                    {
+                      "kind": "node.modifyStatusStacks",
+                      "value": {
+                        "TargetSelector": {
+                          "kind": "sel.source",
+                          "value": {
+                            "Cardinality": "ZeroOrOne",
+                            "RequiredContextCapabilities": "Source"
+                          }
+                        },
+                        "StatusDefinitionId": {
+                          "value": "authorization"
+                        },
+                        "Delta": {
+                          "kind": "const",
+                          "value": {
+                            "Value": -1
+                          }
+                        },
+                        "ResultKey": null,
+                        "Children": []
+                      }
+                    },
+                    {
+                      "kind": "node.applyStatus",
+                      "value": {
+                        "TargetSelector": {
+                          "kind": "sel.source",
+                          "value": {
+                            "Cardinality": "ZeroOrOne",
+                            "RequiredContextCapabilities": "Source"
+                          }
+                        },
+                        "StatusDefinitionId": {
+                          "value": "authority_exercised"
+                        },
+                        "Stacks": {
+                          "kind": "const",
+                          "value": {
+                            "Value": 1
+                          }
+                        },
+                        "DurationTurns": 0,
+                        "Charges": 0,
+                        "ResultKey": null,
+                        "Children": []
+                      }
+                    },
+                    {
+                      "kind": "node.modifyDefensivePool",
+                      "value": {
+                        "TargetSelector": {
+                          "kind": "sel.enemiesWithStatus",
+                          "value": {
+                            "StatusDefinitionId": {
+                              "value": "the_municipal_dragon"
+                            }
+                          }
+                        },
+                        "PoolId": {
+                          "value": "standard.block"
+                        },
+                        "Delta": {
+                          "kind": "const",
+                          "value": {
+                            "Value": -12
+                          }
+                        },
+                        "ResultKey": null,
+                        "Children": []
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "MaxNodeDepth": 64,
+        "MaxProgramSteps": 1024
+      },
+      "LifecyclePrograms": {},
+      "RetainInHandOnTurnEnd": false,
+      "TurnEndHandDestinationZone": "ExhaustPile",
+      "PlayedCardDestinationZone": "ExhaustPile"
+    },
+    {
+      "Id": "file_an_objection",
+      "PackageId": "scenario",
+      "NameKey": "File an Objection",
+      "DescriptionKey": "The Dragon\u0027s next attack deals 5 less.\nCosts 1 Authorization; one authority per turn.",
+      "Costs": [],
+      "Tags": [
+        {
+          "value": "form"
+        },
+        {
+          "value": "authorization"
+        }
+      ],
+      "Program": {
+        "Id": {
+          "Value": "(unnamed)"
+        },
+        "Root": {
+          "kind": "node.conditional",
+          "value": {
+            "Condition": {
+              "kind": "and",
+              "value": {
+                "Left": {
+                  "kind": "compare",
+                  "value": {
+                    "Left": {
+                      "kind": "combatantStatusStacks",
+                      "value": {
+                        "Selector": {
+                          "kind": "sel.source",
+                          "value": {
+                            "Cardinality": "ZeroOrOne",
+                            "RequiredContextCapabilities": "Source"
+                          }
+                        },
+                        "StatusId": {
+                          "value": "authorization"
+                        }
+                      }
+                    },
+                    "Op": "Greater",
+                    "Right": {
+                      "kind": "const",
+                      "value": {
+                        "Value": 0
+                      }
+                    }
+                  }
+                },
+                "Right": {
+                  "kind": "compare",
+                  "value": {
+                    "Left": {
+                      "kind": "combatantStatusStacks",
+                      "value": {
+                        "Selector": {
+                          "kind": "sel.source",
+                          "value": {
+                            "Cardinality": "ZeroOrOne",
+                            "RequiredContextCapabilities": "Source"
+                          }
+                        },
+                        "StatusId": {
+                          "value": "authority_exercised"
+                        }
+                      }
+                    },
+                    "Op": "Equal",
+                    "Right": {
+                      "kind": "const",
+                      "value": {
+                        "Value": 0
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "Then": {
+              "kind": "node.sequence",
+              "value": {
+                "Children": [
+                  {
+                    "kind": "node.modifyStatusStacks",
+                    "value": {
+                      "TargetSelector": {
+                        "kind": "sel.source",
+                        "value": {
+                          "Cardinality": "ZeroOrOne",
+                          "RequiredContextCapabilities": "Source"
+                        }
+                      },
+                      "StatusDefinitionId": {
+                        "value": "authorization"
+                      },
+                      "Delta": {
+                        "kind": "const",
+                        "value": {
+                          "Value": -1
+                        }
+                      },
+                      "ResultKey": null,
+                      "Children": []
+                    }
+                  },
+                  {
+                    "kind": "node.applyStatus",
+                    "value": {
+                      "TargetSelector": {
+                        "kind": "sel.source",
+                        "value": {
+                          "Cardinality": "ZeroOrOne",
+                          "RequiredContextCapabilities": "Source"
+                        }
+                      },
+                      "StatusDefinitionId": {
+                        "value": "authority_exercised"
+                      },
+                      "Stacks": {
+                        "kind": "const",
+                        "value": {
+                          "Value": 1
+                        }
+                      },
+                      "DurationTurns": 0,
+                      "Charges": 0,
+                      "ResultKey": null,
+                      "Children": []
+                    }
+                  },
+                  {
+                    "kind": "node.applyStatus",
+                    "value": {
+                      "TargetSelector": {
+                        "kind": "sel.enemiesWithStatus",
+                        "value": {
+                          "StatusDefinitionId": {
+                            "value": "the_municipal_dragon"
+                          }
+                        }
+                      },
+                      "StatusDefinitionId": {
+                        "value": "filed_objection"
+                      },
+                      "Stacks": {
+                        "kind": "const",
+                        "value": {
+                          "Value": 1
+                        }
+                      },
+                      "DurationTurns": 0,
+                      "Charges": 0,
+                      "ResultKey": null,
+                      "Children": []
+                    }
+                  }
+                ]
+              }
+            },
+            "Else": null,
+            "Children": [
+              {
+                "kind": "node.sequence",
+                "value": {
+                  "Children": [
+                    {
+                      "kind": "node.modifyStatusStacks",
+                      "value": {
+                        "TargetSelector": {
+                          "kind": "sel.source",
+                          "value": {
+                            "Cardinality": "ZeroOrOne",
+                            "RequiredContextCapabilities": "Source"
+                          }
+                        },
+                        "StatusDefinitionId": {
+                          "value": "authorization"
+                        },
+                        "Delta": {
+                          "kind": "const",
+                          "value": {
+                            "Value": -1
+                          }
+                        },
+                        "ResultKey": null,
+                        "Children": []
+                      }
+                    },
+                    {
+                      "kind": "node.applyStatus",
+                      "value": {
+                        "TargetSelector": {
+                          "kind": "sel.source",
+                          "value": {
+                            "Cardinality": "ZeroOrOne",
+                            "RequiredContextCapabilities": "Source"
+                          }
+                        },
+                        "StatusDefinitionId": {
+                          "value": "authority_exercised"
+                        },
+                        "Stacks": {
+                          "kind": "const",
+                          "value": {
+                            "Value": 1
+                          }
+                        },
+                        "DurationTurns": 0,
+                        "Charges": 0,
+                        "ResultKey": null,
+                        "Children": []
+                      }
+                    },
+                    {
+                      "kind": "node.applyStatus",
+                      "value": {
+                        "TargetSelector": {
+                          "kind": "sel.enemiesWithStatus",
+                          "value": {
+                            "StatusDefinitionId": {
+                              "value": "the_municipal_dragon"
+                            }
+                          }
+                        },
+                        "StatusDefinitionId": {
+                          "value": "filed_objection"
+                        },
+                        "Stacks": {
+                          "kind": "const",
+                          "value": {
+                            "Value": 1
+                          }
+                        },
+                        "DurationTurns": 0,
+                        "Charges": 0,
+                        "ResultKey": null,
+                        "Children": []
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "MaxNodeDepth": 64,
+        "MaxProgramSteps": 1024
+      },
+      "LifecyclePrograms": {},
+      "RetainInHandOnTurnEnd": false,
+      "TurnEndHandDestinationZone": "ExhaustPile",
+      "PlayedCardDestinationZone": "ExhaustPile"
+    },
+    {
+      "Id": "issue_a_citation",
+      "PackageId": "scenario",
+      "NameKey": "Issue a Citation",
+      "DescriptionKey": "Remove 1 Code Violation from the Dragon.\nCosts 1 Authorization; one authority per turn.",
+      "Costs": [],
+      "Tags": [
+        {
+          "value": "form"
+        },
+        {
+          "value": "authorization"
+        }
+      ],
+      "Program": {
+        "Id": {
+          "Value": "(unnamed)"
+        },
+        "Root": {
+          "kind": "node.conditional",
+          "value": {
+            "Condition": {
+              "kind": "and",
+              "value": {
+                "Left": {
+                  "kind": "compare",
+                  "value": {
+                    "Left": {
+                      "kind": "combatantStatusStacks",
+                      "value": {
+                        "Selector": {
+                          "kind": "sel.source",
+                          "value": {
+                            "Cardinality": "ZeroOrOne",
+                            "RequiredContextCapabilities": "Source"
+                          }
+                        },
+                        "StatusId": {
+                          "value": "authorization"
+                        }
+                      }
+                    },
+                    "Op": "Greater",
+                    "Right": {
+                      "kind": "const",
+                      "value": {
+                        "Value": 0
+                      }
+                    }
+                  }
+                },
+                "Right": {
+                  "kind": "compare",
+                  "value": {
+                    "Left": {
+                      "kind": "combatantStatusStacks",
+                      "value": {
+                        "Selector": {
+                          "kind": "sel.source",
+                          "value": {
+                            "Cardinality": "ZeroOrOne",
+                            "RequiredContextCapabilities": "Source"
+                          }
+                        },
+                        "StatusId": {
+                          "value": "authority_exercised"
+                        }
+                      }
+                    },
+                    "Op": "Equal",
+                    "Right": {
+                      "kind": "const",
+                      "value": {
+                        "Value": 0
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "Then": {
+              "kind": "node.sequence",
+              "value": {
+                "Children": [
+                  {
+                    "kind": "node.modifyStatusStacks",
+                    "value": {
+                      "TargetSelector": {
+                        "kind": "sel.source",
+                        "value": {
+                          "Cardinality": "ZeroOrOne",
+                          "RequiredContextCapabilities": "Source"
+                        }
+                      },
+                      "StatusDefinitionId": {
+                        "value": "authorization"
+                      },
+                      "Delta": {
+                        "kind": "const",
+                        "value": {
+                          "Value": -1
+                        }
+                      },
+                      "ResultKey": null,
+                      "Children": []
+                    }
+                  },
+                  {
+                    "kind": "node.applyStatus",
+                    "value": {
+                      "TargetSelector": {
+                        "kind": "sel.source",
+                        "value": {
+                          "Cardinality": "ZeroOrOne",
+                          "RequiredContextCapabilities": "Source"
+                        }
+                      },
+                      "StatusDefinitionId": {
+                        "value": "authority_exercised"
+                      },
+                      "Stacks": {
+                        "kind": "const",
+                        "value": {
+                          "Value": 1
+                        }
+                      },
+                      "DurationTurns": 0,
+                      "Charges": 0,
+                      "ResultKey": null,
+                      "Children": []
+                    }
+                  },
+                  {
+                    "kind": "node.modifyStatusStacks",
+                    "value": {
+                      "TargetSelector": {
+                        "kind": "sel.enemiesWithStatus",
+                        "value": {
+                          "StatusDefinitionId": {
+                            "value": "the_municipal_dragon"
+                          }
+                        }
+                      },
+                      "StatusDefinitionId": {
+                        "value": "code_violation"
+                      },
+                      "Delta": {
+                        "kind": "const",
+                        "value": {
+                          "Value": -1
+                        }
+                      },
+                      "ResultKey": null,
+                      "Children": []
+                    }
+                  }
+                ]
+              }
+            },
+            "Else": null,
+            "Children": [
+              {
+                "kind": "node.sequence",
+                "value": {
+                  "Children": [
+                    {
+                      "kind": "node.modifyStatusStacks",
+                      "value": {
+                        "TargetSelector": {
+                          "kind": "sel.source",
+                          "value": {
+                            "Cardinality": "ZeroOrOne",
+                            "RequiredContextCapabilities": "Source"
+                          }
+                        },
+                        "StatusDefinitionId": {
+                          "value": "authorization"
+                        },
+                        "Delta": {
+                          "kind": "const",
+                          "value": {
+                            "Value": -1
+                          }
+                        },
+                        "ResultKey": null,
+                        "Children": []
+                      }
+                    },
+                    {
+                      "kind": "node.applyStatus",
+                      "value": {
+                        "TargetSelector": {
+                          "kind": "sel.source",
+                          "value": {
+                            "Cardinality": "ZeroOrOne",
+                            "RequiredContextCapabilities": "Source"
+                          }
+                        },
+                        "StatusDefinitionId": {
+                          "value": "authority_exercised"
+                        },
+                        "Stacks": {
+                          "kind": "const",
+                          "value": {
+                            "Value": 1
+                          }
+                        },
+                        "DurationTurns": 0,
+                        "Charges": 0,
+                        "ResultKey": null,
+                        "Children": []
+                      }
+                    },
+                    {
+                      "kind": "node.modifyStatusStacks",
+                      "value": {
+                        "TargetSelector": {
+                          "kind": "sel.enemiesWithStatus",
+                          "value": {
+                            "StatusDefinitionId": {
+                              "value": "the_municipal_dragon"
+                            }
+                          }
+                        },
+                        "StatusDefinitionId": {
+                          "value": "code_violation"
+                        },
+                        "Delta": {
+                          "kind": "const",
+                          "value": {
+                            "Value": -1
+                          }
+                        },
+                        "ResultKey": null,
+                        "Children": []
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "MaxNodeDepth": 64,
+        "MaxProgramSteps": 1024
+      },
+      "LifecyclePrograms": {},
+      "RetainInHandOnTurnEnd": false,
+      "TurnEndHandDestinationZone": "ExhaustPile",
+      "PlayedCardDestinationZone": "ExhaustPile"
     }
   ],
   "EnemyActions": [
@@ -298036,7 +300937,7 @@
       "DescriptionKey": null,
       "Intent": {
         "Kind": "Attack",
-        "Label": "Civic Claw \u00B7 10 dmg"
+        "Label": "Civic Claw \u00B7 11 dmg"
       },
       "Program": {
         "Id": {
@@ -298055,7 +300956,7 @@
             "Amount": {
               "kind": "const",
               "value": {
-                "Value": 10
+                "Value": 11
               }
             },
             "ResultKey": null,
@@ -298069,13 +300970,305 @@
       }
     },
     {
-      "Id": "municipal_dragon.hoard_of_permits",
+      "Id": "municipal_dragon.ordinance_breath",
       "PackageId": "scenario",
-      "NameKey": "Hoard of Permits",
+      "NameKey": "Ordinance Breath",
       "DescriptionKey": null,
       "Intent": {
         "Kind": "Special",
-        "Label": "Hoard of Permits \u00B7 Strength \u002B1, 8 block"
+        "Label": "Ordinance Breath \u00B7 9 dmg, Paperwork \u002B1"
+      },
+      "Program": {
+        "Id": {
+          "Value": "(unnamed)"
+        },
+        "Root": {
+          "kind": "node.sequence",
+          "value": {
+            "Children": [
+              {
+                "kind": "node.dealDamage",
+                "value": {
+                  "TargetSelector": {
+                    "kind": "sel.eventTarget",
+                    "value": {
+                      "Cardinality": "ZeroOrOne",
+                      "RequiredContextCapabilities": "EventTarget"
+                    }
+                  },
+                  "Amount": {
+                    "kind": "const",
+                    "value": {
+                      "Value": 9
+                    }
+                  },
+                  "ResultKey": null,
+                  "IgnoresBlock": false,
+                  "Element": null,
+                  "Children": []
+                }
+              },
+              {
+                "kind": "node.applyStatus",
+                "value": {
+                  "TargetSelector": {
+                    "kind": "sel.eventTarget",
+                    "value": {
+                      "Cardinality": "ZeroOrOne",
+                      "RequiredContextCapabilities": "EventTarget"
+                    }
+                  },
+                  "StatusDefinitionId": {
+                    "value": "paperwork"
+                  },
+                  "Stacks": {
+                    "kind": "const",
+                    "value": {
+                      "Value": 1
+                    }
+                  },
+                  "DurationTurns": 0,
+                  "Charges": 0,
+                  "ResultKey": null,
+                  "Children": []
+                }
+              }
+            ]
+          }
+        },
+        "MaxNodeDepth": 64,
+        "MaxProgramSteps": 1024
+      }
+    },
+    {
+      "Id": "municipal_dragon.emergency_permit",
+      "PackageId": "scenario",
+      "NameKey": "Emergency Permit",
+      "DescriptionKey": null,
+      "Intent": {
+        "Kind": "Defend",
+        "Label": "Emergency Permit \u00B7 0 block"
+      },
+      "Program": {
+        "Id": {
+          "Value": "(unnamed)"
+        },
+        "Root": {
+          "kind": "node.sequence",
+          "value": {
+            "Children": [
+              {
+                "kind": "node.conditional",
+                "value": {
+                  "Condition": {
+                    "kind": "and",
+                    "value": {
+                      "Left": {
+                        "kind": "compare",
+                        "value": {
+                          "Left": {
+                            "kind": "combatantCounter",
+                            "value": {
+                              "Selector": {
+                                "kind": "sel.source",
+                                "value": {
+                                  "Cardinality": "ZeroOrOne",
+                                  "RequiredContextCapabilities": "Source"
+                                }
+                              },
+                              "CounterId": {
+                                "value": "permit_charges"
+                              }
+                            }
+                          },
+                          "Op": "Less",
+                          "Right": {
+                            "kind": "const",
+                            "value": {
+                              "Value": 2
+                            }
+                          }
+                        }
+                      },
+                      "Right": {
+                        "kind": "compare",
+                        "value": {
+                          "Left": {
+                            "kind": "combatantStatusStacks",
+                            "value": {
+                              "Selector": {
+                                "kind": "sel.source",
+                                "value": {
+                                  "Cardinality": "ZeroOrOne",
+                                  "RequiredContextCapabilities": "Source"
+                                }
+                              },
+                              "StatusId": {
+                                "value": "hoarded_permit"
+                              }
+                            }
+                          },
+                          "Op": "Less",
+                          "Right": {
+                            "kind": "const",
+                            "value": {
+                              "Value": 4
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "Then": {
+                    "kind": "node.sequence",
+                    "value": {
+                      "Children": [
+                        {
+                          "kind": "node.applyStatus",
+                          "value": {
+                            "TargetSelector": {
+                              "kind": "sel.source",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "Source"
+                              }
+                            },
+                            "StatusDefinitionId": {
+                              "value": "hoarded_permit"
+                            },
+                            "Stacks": {
+                              "kind": "const",
+                              "value": {
+                                "Value": 1
+                              }
+                            },
+                            "DurationTurns": 0,
+                            "Charges": 0,
+                            "ResultKey": null,
+                            "Children": []
+                          }
+                        },
+                        {
+                          "kind": "node.setCombatantCounter",
+                          "value": {
+                            "TargetSelector": {
+                              "kind": "sel.source",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "Source"
+                              }
+                            },
+                            "CounterId": {
+                              "value": "permit_charges"
+                            },
+                            "Amount": {
+                              "kind": "const",
+                              "value": {
+                                "Value": 1
+                              }
+                            },
+                            "Relative": true,
+                            "Children": []
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "Else": null,
+                  "Children": [
+                    {
+                      "kind": "node.sequence",
+                      "value": {
+                        "Children": [
+                          {
+                            "kind": "node.applyStatus",
+                            "value": {
+                              "TargetSelector": {
+                                "kind": "sel.source",
+                                "value": {
+                                  "Cardinality": "ZeroOrOne",
+                                  "RequiredContextCapabilities": "Source"
+                                }
+                              },
+                              "StatusDefinitionId": {
+                                "value": "hoarded_permit"
+                              },
+                              "Stacks": {
+                                "kind": "const",
+                                "value": {
+                                  "Value": 1
+                                }
+                              },
+                              "DurationTurns": 0,
+                              "Charges": 0,
+                              "ResultKey": null,
+                              "Children": []
+                            }
+                          },
+                          {
+                            "kind": "node.setCombatantCounter",
+                            "value": {
+                              "TargetSelector": {
+                                "kind": "sel.source",
+                                "value": {
+                                  "Cardinality": "ZeroOrOne",
+                                  "RequiredContextCapabilities": "Source"
+                                }
+                              },
+                              "CounterId": {
+                                "value": "permit_charges"
+                              },
+                              "Amount": {
+                                "kind": "const",
+                                "value": {
+                                  "Value": 1
+                                }
+                              },
+                              "Relative": true,
+                              "Children": []
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "node.gainBlock",
+                "value": {
+                  "TargetSelector": {
+                    "kind": "sel.source",
+                    "value": {
+                      "Cardinality": "ZeroOrOne",
+                      "RequiredContextCapabilities": "Source"
+                    }
+                  },
+                  "Amount": {
+                    "kind": "const",
+                    "value": {
+                      "Value": 10
+                    }
+                  },
+                  "ResultKey": null,
+                  "Children": []
+                }
+              }
+            ]
+          }
+        },
+        "MaxNodeDepth": 64,
+        "MaxProgramSteps": 1024
+      }
+    },
+    {
+      "Id": "municipal_dragon.inspect_the_hoard",
+      "PackageId": "scenario",
+      "NameKey": "Inspect the Hoard",
+      "DescriptionKey": null,
+      "Intent": {
+        "Kind": "Buff",
+        "Label": "Inspect the Hoard \u00B7 Strength \u002B1, 10 block"
       },
       "Program": {
         "Id": {
@@ -298123,7 +301316,7 @@
                   "Amount": {
                     "kind": "const",
                     "value": {
-                      "Value": 8
+                      "Value": 10
                     }
                   },
                   "ResultKey": null,
@@ -298138,13 +301331,444 @@
       }
     },
     {
-      "Id": "municipal_dragon.ordinance_breath",
+      "Id": "municipal_dragon.dragons_assessment",
       "PackageId": "scenario",
-      "NameKey": "Ordinance Breath",
+      "NameKey": "Dragon\u0027s Assessment",
+      "DescriptionKey": null,
+      "Intent": {
+        "Kind": "Attack",
+        "Label": "Dragon\u0027s Assessment \u00B7 12 dmg \u002B2 per own Hoarded_permit (max \u002B8)"
+      },
+      "Program": {
+        "Id": {
+          "Value": "(unnamed)"
+        },
+        "Root": {
+          "kind": "node.dealDamage",
+          "value": {
+            "TargetSelector": {
+              "kind": "sel.eventTarget",
+              "value": {
+                "Cardinality": "ZeroOrOne",
+                "RequiredContextCapabilities": "EventTarget"
+              }
+            },
+            "Amount": {
+              "kind": "add",
+              "value": {
+                "Left": {
+                  "kind": "const",
+                  "value": {
+                    "Value": 12
+                  }
+                },
+                "Right": {
+                  "kind": "min",
+                  "value": {
+                    "Left": {
+                      "kind": "multiply",
+                      "value": {
+                        "Left": {
+                          "kind": "combatantStatusStacks",
+                          "value": {
+                            "Selector": {
+                              "kind": "sel.source",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "Source"
+                              }
+                            },
+                            "StatusId": {
+                              "value": "hoarded_permit"
+                            }
+                          }
+                        },
+                        "Right": {
+                          "kind": "const",
+                          "value": {
+                            "Value": 2
+                          }
+                        }
+                      }
+                    },
+                    "Right": {
+                      "kind": "const",
+                      "value": {
+                        "Value": 8
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "ResultKey": null,
+            "IgnoresBlock": false,
+            "Element": null,
+            "Children": []
+          }
+        },
+        "MaxNodeDepth": 64,
+        "MaxProgramSteps": 1024
+      }
+    },
+    {
+      "Id": "municipal_dragon.burn_the_registry",
+      "PackageId": "scenario",
+      "NameKey": "Burn the Registry",
+      "DescriptionKey": null,
+      "Intent": {
+        "Kind": "Attack",
+        "Label": "Burn the Registry"
+      },
+      "Program": {
+        "Id": {
+          "Value": "(unnamed)"
+        },
+        "Root": {
+          "kind": "node.sequence",
+          "value": {
+            "Children": [
+              {
+                "kind": "node.removeStatus",
+                "value": {
+                  "TargetSelector": {
+                    "kind": "sel.source",
+                    "value": {
+                      "Cardinality": "ZeroOrOne",
+                      "RequiredContextCapabilities": "Source"
+                    }
+                  },
+                  "StatusDefinitionId": {
+                    "value": "burning_the_registry"
+                  },
+                  "ResultKey": null,
+                  "Children": []
+                }
+              },
+              {
+                "kind": "node.conditional",
+                "value": {
+                  "Condition": {
+                    "kind": "compare",
+                    "value": {
+                      "Left": {
+                        "kind": "combatantStatusStacks",
+                        "value": {
+                          "Selector": {
+                            "kind": "sel.source",
+                            "value": {
+                              "Cardinality": "ZeroOrOne",
+                              "RequiredContextCapabilities": "Source"
+                            }
+                          },
+                          "StatusId": {
+                            "value": "hoarded_permit"
+                          }
+                        }
+                      },
+                      "Op": "Greater",
+                      "Right": {
+                        "kind": "const",
+                        "value": {
+                          "Value": 0
+                        }
+                      }
+                    }
+                  },
+                  "Then": {
+                    "kind": "node.sequence",
+                    "value": {
+                      "Children": [
+                        {
+                          "kind": "node.applyStatus",
+                          "value": {
+                            "TargetSelector": {
+                              "kind": "sel.source",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "Source"
+                              }
+                            },
+                            "StatusDefinitionId": {
+                              "value": "code_violation"
+                            },
+                            "Stacks": {
+                              "kind": "min",
+                              "value": {
+                                "Left": {
+                                  "kind": "combatantStatusStacks",
+                                  "value": {
+                                    "Selector": {
+                                      "kind": "sel.source",
+                                      "value": {
+                                        "Cardinality": "ZeroOrOne",
+                                        "RequiredContextCapabilities": "Source"
+                                      }
+                                    },
+                                    "StatusId": {
+                                      "value": "hoarded_permit"
+                                    }
+                                  }
+                                },
+                                "Right": {
+                                  "kind": "const",
+                                  "value": {
+                                    "Value": 4
+                                  }
+                                }
+                              }
+                            },
+                            "DurationTurns": 0,
+                            "Charges": 0,
+                            "ResultKey": null,
+                            "Children": []
+                          }
+                        },
+                        {
+                          "kind": "node.removeStatus",
+                          "value": {
+                            "TargetSelector": {
+                              "kind": "sel.source",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "Source"
+                              }
+                            },
+                            "StatusDefinitionId": {
+                              "value": "hoarded_permit"
+                            },
+                            "ResultKey": null,
+                            "Children": []
+                          }
+                        },
+                        {
+                          "kind": "node.applyStatus",
+                          "value": {
+                            "TargetSelector": {
+                              "kind": "sel.eventTarget",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "EventTarget"
+                              }
+                            },
+                            "StatusDefinitionId": {
+                              "value": "paperwork"
+                            },
+                            "Stacks": {
+                              "kind": "const",
+                              "value": {
+                                "Value": 1
+                              }
+                            },
+                            "DurationTurns": 0,
+                            "Charges": 0,
+                            "ResultKey": null,
+                            "Children": []
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "Else": null,
+                  "Children": [
+                    {
+                      "kind": "node.sequence",
+                      "value": {
+                        "Children": [
+                          {
+                            "kind": "node.applyStatus",
+                            "value": {
+                              "TargetSelector": {
+                                "kind": "sel.source",
+                                "value": {
+                                  "Cardinality": "ZeroOrOne",
+                                  "RequiredContextCapabilities": "Source"
+                                }
+                              },
+                              "StatusDefinitionId": {
+                                "value": "code_violation"
+                              },
+                              "Stacks": {
+                                "kind": "min",
+                                "value": {
+                                  "Left": {
+                                    "kind": "combatantStatusStacks",
+                                    "value": {
+                                      "Selector": {
+                                        "kind": "sel.source",
+                                        "value": {
+                                          "Cardinality": "ZeroOrOne",
+                                          "RequiredContextCapabilities": "Source"
+                                        }
+                                      },
+                                      "StatusId": {
+                                        "value": "hoarded_permit"
+                                      }
+                                    }
+                                  },
+                                  "Right": {
+                                    "kind": "const",
+                                    "value": {
+                                      "Value": 4
+                                    }
+                                  }
+                                }
+                              },
+                              "DurationTurns": 0,
+                              "Charges": 0,
+                              "ResultKey": null,
+                              "Children": []
+                            }
+                          },
+                          {
+                            "kind": "node.removeStatus",
+                            "value": {
+                              "TargetSelector": {
+                                "kind": "sel.source",
+                                "value": {
+                                  "Cardinality": "ZeroOrOne",
+                                  "RequiredContextCapabilities": "Source"
+                                }
+                              },
+                              "StatusDefinitionId": {
+                                "value": "hoarded_permit"
+                              },
+                              "ResultKey": null,
+                              "Children": []
+                            }
+                          },
+                          {
+                            "kind": "node.applyStatus",
+                            "value": {
+                              "TargetSelector": {
+                                "kind": "sel.eventTarget",
+                                "value": {
+                                  "Cardinality": "ZeroOrOne",
+                                  "RequiredContextCapabilities": "EventTarget"
+                                }
+                              },
+                              "StatusDefinitionId": {
+                                "value": "paperwork"
+                              },
+                              "Stacks": {
+                                "kind": "const",
+                                "value": {
+                                  "Value": 1
+                                }
+                              },
+                              "DurationTurns": 0,
+                              "Charges": 0,
+                              "ResultKey": null,
+                              "Children": []
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "node.dealDamage",
+                "value": {
+                  "TargetSelector": {
+                    "kind": "sel.eventTarget",
+                    "value": {
+                      "Cardinality": "ZeroOrOne",
+                      "RequiredContextCapabilities": "EventTarget"
+                    }
+                  },
+                  "Amount": {
+                    "kind": "const",
+                    "value": {
+                      "Value": 8
+                    }
+                  },
+                  "ResultKey": null,
+                  "IgnoresBlock": false,
+                  "Element": null,
+                  "Children": []
+                }
+              },
+              {
+                "kind": "node.applyStatus",
+                "value": {
+                  "TargetSelector": {
+                    "kind": "sel.source",
+                    "value": {
+                      "Cardinality": "ZeroOrOne",
+                      "RequiredContextCapabilities": "Source"
+                    }
+                  },
+                  "StatusDefinitionId": {
+                    "value": "unlicensed"
+                  },
+                  "Stacks": {
+                    "kind": "const",
+                    "value": {
+                      "Value": 1
+                    }
+                  },
+                  "DurationTurns": 0,
+                  "Charges": 0,
+                  "ResultKey": null,
+                  "Children": []
+                }
+              }
+            ]
+          }
+        },
+        "MaxNodeDepth": 64,
+        "MaxProgramSteps": 1024
+      }
+    },
+    {
+      "Id": "municipal_dragon.unlicensed_claw",
+      "PackageId": "scenario",
+      "NameKey": "Unlicensed Claw",
+      "DescriptionKey": null,
+      "Intent": {
+        "Kind": "Attack",
+        "Label": "Unlicensed Claw \u00B7 12 dmg"
+      },
+      "Program": {
+        "Id": {
+          "Value": "(unnamed)"
+        },
+        "Root": {
+          "kind": "node.dealDamage",
+          "value": {
+            "TargetSelector": {
+              "kind": "sel.eventTarget",
+              "value": {
+                "Cardinality": "ZeroOrOne",
+                "RequiredContextCapabilities": "EventTarget"
+              }
+            },
+            "Amount": {
+              "kind": "const",
+              "value": {
+                "Value": 12
+              }
+            },
+            "ResultKey": null,
+            "IgnoresBlock": false,
+            "Element": null,
+            "Children": []
+          }
+        },
+        "MaxNodeDepth": 64,
+        "MaxProgramSteps": 1024
+      }
+    },
+    {
+      "Id": "municipal_dragon.fire_code_violation",
+      "PackageId": "scenario",
+      "NameKey": "Fire-Code Violation",
       "DescriptionKey": null,
       "Intent": {
         "Kind": "Special",
-        "Label": "Ordinance Breath \u00B7 8 dmg, Paperwork \u002B1"
+        "Label": "Fire-Code Violation \u00B7 9 dmg, Paperwork \u002B1"
       },
       "Program": {
         "Id": {
@@ -298167,7 +301791,7 @@
                   "Amount": {
                     "kind": "const",
                     "value": {
-                      "Value": 8
+                      "Value": 9
                     }
                   },
                   "ResultKey": null,
@@ -298209,41 +301833,68 @@
       }
     },
     {
-      "Id": "municipal_dragon.old_city_hunger",
+      "Id": "municipal_dragon.unsafe_occupancy",
       "PackageId": "scenario",
-      "NameKey": "Old City Hunger",
+      "NameKey": "Unsafe Occupancy",
       "DescriptionKey": null,
       "Intent": {
         "Kind": "Buff",
-        "Label": "Old City Hunger \u00B7 Strength \u002B2"
+        "Label": "Unsafe Occupancy \u00B7 14 block, Strength \u002B1"
       },
       "Program": {
         "Id": {
           "Value": "(unnamed)"
         },
         "Root": {
-          "kind": "node.applyStatus",
+          "kind": "node.sequence",
           "value": {
-            "TargetSelector": {
-              "kind": "sel.source",
-              "value": {
-                "Cardinality": "ZeroOrOne",
-                "RequiredContextCapabilities": "Source"
+            "Children": [
+              {
+                "kind": "node.gainBlock",
+                "value": {
+                  "TargetSelector": {
+                    "kind": "sel.source",
+                    "value": {
+                      "Cardinality": "ZeroOrOne",
+                      "RequiredContextCapabilities": "Source"
+                    }
+                  },
+                  "Amount": {
+                    "kind": "const",
+                    "value": {
+                      "Value": 14
+                    }
+                  },
+                  "ResultKey": null,
+                  "Children": []
+                }
+              },
+              {
+                "kind": "node.applyStatus",
+                "value": {
+                  "TargetSelector": {
+                    "kind": "sel.source",
+                    "value": {
+                      "Cardinality": "ZeroOrOne",
+                      "RequiredContextCapabilities": "Source"
+                    }
+                  },
+                  "StatusDefinitionId": {
+                    "value": "strength"
+                  },
+                  "Stacks": {
+                    "kind": "const",
+                    "value": {
+                      "Value": 1
+                    }
+                  },
+                  "DurationTurns": 0,
+                  "Charges": 0,
+                  "ResultKey": null,
+                  "Children": []
+                }
               }
-            },
-            "StatusDefinitionId": {
-              "value": "strength"
-            },
-            "Stacks": {
-              "kind": "const",
-              "value": {
-                "Value": 2
-              }
-            },
-            "DurationTurns": 0,
-            "Charges": 0,
-            "ResultKey": null,
-            "Children": []
+            ]
           }
         },
         "MaxNodeDepth": 64,
@@ -298251,38 +301902,245 @@
       }
     },
     {
-      "Id": "municipal_dragon.dragons_assessment",
+      "Id": "municipal_dragon.collapsed_ordinance",
       "PackageId": "scenario",
-      "NameKey": "Dragon\u0027s Assessment",
+      "NameKey": "Collapsed Ordinance",
       "DescriptionKey": null,
       "Intent": {
-        "Kind": "Attack",
-        "Label": "Dragon\u0027s Assessment \u00B7 17 dmg"
+        "Kind": "Special",
+        "Label": "Collapsed Ordinance \u00B7 11 dmg, 8 block"
       },
       "Program": {
         "Id": {
           "Value": "(unnamed)"
         },
         "Root": {
-          "kind": "node.dealDamage",
+          "kind": "node.sequence",
           "value": {
-            "TargetSelector": {
-              "kind": "sel.eventTarget",
-              "value": {
-                "Cardinality": "ZeroOrOne",
-                "RequiredContextCapabilities": "EventTarget"
+            "Children": [
+              {
+                "kind": "node.dealDamage",
+                "value": {
+                  "TargetSelector": {
+                    "kind": "sel.eventTarget",
+                    "value": {
+                      "Cardinality": "ZeroOrOne",
+                      "RequiredContextCapabilities": "EventTarget"
+                    }
+                  },
+                  "Amount": {
+                    "kind": "const",
+                    "value": {
+                      "Value": 11
+                    }
+                  },
+                  "ResultKey": null,
+                  "IgnoresBlock": false,
+                  "Element": null,
+                  "Children": []
+                }
+              },
+              {
+                "kind": "node.gainBlock",
+                "value": {
+                  "TargetSelector": {
+                    "kind": "sel.source",
+                    "value": {
+                      "Cardinality": "ZeroOrOne",
+                      "RequiredContextCapabilities": "Source"
+                    }
+                  },
+                  "Amount": {
+                    "kind": "const",
+                    "value": {
+                      "Value": 8
+                    }
+                  },
+                  "ResultKey": null,
+                  "Children": []
+                }
               }
-            },
-            "Amount": {
-              "kind": "const",
-              "value": {
-                "Value": 17
+            ]
+          }
+        },
+        "MaxNodeDepth": 64,
+        "MaxProgramSteps": 1024
+      }
+    },
+    {
+      "Id": "municipal_dragon.municipal_inferno",
+      "PackageId": "scenario",
+      "NameKey": "Municipal Inferno",
+      "DescriptionKey": null,
+      "Intent": {
+        "Kind": "Attack",
+        "Label": "Municipal Inferno"
+      },
+      "Program": {
+        "Id": {
+          "Value": "(unnamed)"
+        },
+        "Root": {
+          "kind": "node.sequence",
+          "value": {
+            "Children": [
+              {
+                "kind": "node.dealDamage",
+                "value": {
+                  "TargetSelector": {
+                    "kind": "sel.eventTarget",
+                    "value": {
+                      "Cardinality": "ZeroOrOne",
+                      "RequiredContextCapabilities": "EventTarget"
+                    }
+                  },
+                  "Amount": {
+                    "kind": "const",
+                    "value": {
+                      "Value": 15
+                    }
+                  },
+                  "ResultKey": null,
+                  "IgnoresBlock": false,
+                  "Element": null,
+                  "Children": []
+                }
+              },
+              {
+                "kind": "node.conditional",
+                "value": {
+                  "Condition": {
+                    "kind": "compare",
+                    "value": {
+                      "Left": {
+                        "kind": "combatantStatusStacks",
+                        "value": {
+                          "Selector": {
+                            "kind": "sel.source",
+                            "value": {
+                              "Cardinality": "ZeroOrOne",
+                              "RequiredContextCapabilities": "Source"
+                            }
+                          },
+                          "StatusId": {
+                            "value": "code_violation"
+                          }
+                        }
+                      },
+                      "Op": "GreaterOrEqual",
+                      "Right": {
+                        "kind": "const",
+                        "value": {
+                          "Value": 3
+                        }
+                      }
+                    }
+                  },
+                  "Then": {
+                    "kind": "node.applyStatus",
+                    "value": {
+                      "TargetSelector": {
+                        "kind": "sel.eventTarget",
+                        "value": {
+                          "Cardinality": "ZeroOrOne",
+                          "RequiredContextCapabilities": "EventTarget"
+                        }
+                      },
+                      "StatusDefinitionId": {
+                        "value": "paperwork"
+                      },
+                      "Stacks": {
+                        "kind": "const",
+                        "value": {
+                          "Value": 2
+                        }
+                      },
+                      "DurationTurns": 0,
+                      "Charges": 0,
+                      "ResultKey": null,
+                      "Children": []
+                    }
+                  },
+                  "Else": {
+                    "kind": "node.applyStatus",
+                    "value": {
+                      "TargetSelector": {
+                        "kind": "sel.eventTarget",
+                        "value": {
+                          "Cardinality": "ZeroOrOne",
+                          "RequiredContextCapabilities": "EventTarget"
+                        }
+                      },
+                      "StatusDefinitionId": {
+                        "value": "paperwork"
+                      },
+                      "Stacks": {
+                        "kind": "const",
+                        "value": {
+                          "Value": 1
+                        }
+                      },
+                      "DurationTurns": 0,
+                      "Charges": 0,
+                      "ResultKey": null,
+                      "Children": []
+                    }
+                  },
+                  "Children": [
+                    {
+                      "kind": "node.applyStatus",
+                      "value": {
+                        "TargetSelector": {
+                          "kind": "sel.eventTarget",
+                          "value": {
+                            "Cardinality": "ZeroOrOne",
+                            "RequiredContextCapabilities": "EventTarget"
+                          }
+                        },
+                        "StatusDefinitionId": {
+                          "value": "paperwork"
+                        },
+                        "Stacks": {
+                          "kind": "const",
+                          "value": {
+                            "Value": 2
+                          }
+                        },
+                        "DurationTurns": 0,
+                        "Charges": 0,
+                        "ResultKey": null,
+                        "Children": []
+                      }
+                    },
+                    {
+                      "kind": "node.applyStatus",
+                      "value": {
+                        "TargetSelector": {
+                          "kind": "sel.eventTarget",
+                          "value": {
+                            "Cardinality": "ZeroOrOne",
+                            "RequiredContextCapabilities": "EventTarget"
+                          }
+                        },
+                        "StatusDefinitionId": {
+                          "value": "paperwork"
+                        },
+                        "Stacks": {
+                          "kind": "const",
+                          "value": {
+                            "Value": 1
+                          }
+                        },
+                        "DurationTurns": 0,
+                        "Charges": 0,
+                        "ResultKey": null,
+                        "Children": []
+                      }
+                    }
+                  ]
+                }
               }
-            },
-            "ResultKey": null,
-            "IgnoresBlock": false,
-            "Element": null,
-            "Children": []
+            ]
           }
         },
         "MaxNodeDepth": 64,
@@ -342160,6 +346018,642 @@
       ],
       "DeathPrevention": null,
       "DebuffBlock": null
+    },
+    {
+      "Id": "the_municipal_dragon",
+      "PackageId": "scenario",
+      "NameKey": "The Municipal Dragon",
+      "DescriptionKey": null,
+      "Polarity": "Neutral",
+      "UsesStacks": false,
+      "UsesDuration": false,
+      "UsesCharges": false,
+      "StackingBehavior": "MergeWithExistingInstance",
+      "Tags": [],
+      "PassiveModifiers": [],
+      "Triggers": [
+        {
+          "Event": "TurnEnded",
+          "Program": {
+            "Id": {
+              "Value": "(unnamed)"
+            },
+            "Root": {
+              "kind": "node.sequence",
+              "value": {
+                "Children": [
+                  {
+                    "kind": "node.conditional",
+                    "value": {
+                      "Condition": {
+                        "kind": "and",
+                        "value": {
+                          "Left": {
+                            "kind": "compare",
+                            "value": {
+                              "Left": {
+                                "kind": "combatantStatusStacks",
+                                "value": {
+                                  "Selector": {
+                                    "kind": "sel.source",
+                                    "value": {
+                                      "Cardinality": "ZeroOrOne",
+                                      "RequiredContextCapabilities": "Source"
+                                    }
+                                  },
+                                  "StatusId": {
+                                    "value": "unlicensed"
+                                  }
+                                }
+                              },
+                              "Op": "Equal",
+                              "Right": {
+                                "kind": "const",
+                                "value": {
+                                  "Value": 0
+                                }
+                              }
+                            }
+                          },
+                          "Right": {
+                            "kind": "and",
+                            "value": {
+                              "Left": {
+                                "kind": "compare",
+                                "value": {
+                                  "Left": {
+                                    "kind": "combatantStatusStacks",
+                                    "value": {
+                                      "Selector": {
+                                        "kind": "sel.source",
+                                        "value": {
+                                          "Cardinality": "ZeroOrOne",
+                                          "RequiredContextCapabilities": "Source"
+                                        }
+                                      },
+                                      "StatusId": {
+                                        "value": "burning_the_registry"
+                                      }
+                                    }
+                                  },
+                                  "Op": "Equal",
+                                  "Right": {
+                                    "kind": "const",
+                                    "value": {
+                                      "Value": 0
+                                    }
+                                  }
+                                }
+                              },
+                              "Right": {
+                                "kind": "or",
+                                "value": {
+                                  "Left": {
+                                    "kind": "compare",
+                                    "value": {
+                                      "Left": {
+                                        "kind": "combatantCurrentHealth",
+                                        "value": {
+                                          "Selector": {
+                                            "kind": "sel.source",
+                                            "value": {
+                                              "Cardinality": "ZeroOrOne",
+                                              "RequiredContextCapabilities": "Source"
+                                            }
+                                          }
+                                        }
+                                      },
+                                      "Op": "LessOrEqual",
+                                      "Right": {
+                                        "kind": "const",
+                                        "value": {
+                                          "Value": 78
+                                        }
+                                      }
+                                    }
+                                  },
+                                  "Right": {
+                                    "kind": "compare",
+                                    "value": {
+                                      "Left": {
+                                        "kind": "combatantCounter",
+                                        "value": {
+                                          "Selector": {
+                                            "kind": "sel.source",
+                                            "value": {
+                                              "Cardinality": "ZeroOrOne",
+                                              "RequiredContextCapabilities": "Source"
+                                            }
+                                          },
+                                          "CounterId": {
+                                            "value": "permits_stolen"
+                                          }
+                                        }
+                                      },
+                                      "Op": "GreaterOrEqual",
+                                      "Right": {
+                                        "kind": "const",
+                                        "value": {
+                                          "Value": 4
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "Then": {
+                        "kind": "node.applyStatus",
+                        "value": {
+                          "TargetSelector": {
+                            "kind": "sel.source",
+                            "value": {
+                              "Cardinality": "ZeroOrOne",
+                              "RequiredContextCapabilities": "Source"
+                            }
+                          },
+                          "StatusDefinitionId": {
+                            "value": "burning_the_registry"
+                          },
+                          "Stacks": {
+                            "kind": "const",
+                            "value": {
+                              "Value": 1
+                            }
+                          },
+                          "DurationTurns": 0,
+                          "Charges": 0,
+                          "ResultKey": null,
+                          "Children": []
+                        }
+                      },
+                      "Else": null,
+                      "Children": [
+                        {
+                          "kind": "node.applyStatus",
+                          "value": {
+                            "TargetSelector": {
+                              "kind": "sel.source",
+                              "value": {
+                                "Cardinality": "ZeroOrOne",
+                                "RequiredContextCapabilities": "Source"
+                              }
+                            },
+                            "StatusDefinitionId": {
+                              "value": "burning_the_registry"
+                            },
+                            "Stacks": {
+                              "kind": "const",
+                              "value": {
+                                "Value": 1
+                              }
+                            },
+                            "DurationTurns": 0,
+                            "Charges": 0,
+                            "ResultKey": null,
+                            "Children": []
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "kind": "node.setCombatantCounter",
+                    "value": {
+                      "TargetSelector": {
+                        "kind": "sel.source",
+                        "value": {
+                          "Cardinality": "ZeroOrOne",
+                          "RequiredContextCapabilities": "Source"
+                        }
+                      },
+                      "CounterId": {
+                        "value": "hoard_pressure"
+                      },
+                      "Amount": {
+                        "kind": "const",
+                        "value": {
+                          "Value": 0
+                        }
+                      },
+                      "Relative": false,
+                      "Children": []
+                    }
+                  },
+                  {
+                    "kind": "node.setCombatantCounter",
+                    "value": {
+                      "TargetSelector": {
+                        "kind": "sel.source",
+                        "value": {
+                          "Cardinality": "ZeroOrOne",
+                          "RequiredContextCapabilities": "Source"
+                        }
+                      },
+                      "CounterId": {
+                        "value": "dragon_beat"
+                      },
+                      "Amount": {
+                        "kind": "remainder",
+                        "value": {
+                          "Dividend": {
+                            "kind": "add",
+                            "value": {
+                              "Left": {
+                                "kind": "combatantCounter",
+                                "value": {
+                                  "Selector": {
+                                    "kind": "sel.source",
+                                    "value": {
+                                      "Cardinality": "ZeroOrOne",
+                                      "RequiredContextCapabilities": "Source"
+                                    }
+                                  },
+                                  "CounterId": {
+                                    "value": "dragon_beat"
+                                  }
+                                }
+                              },
+                              "Right": {
+                                "kind": "const",
+                                "value": {
+                                  "Value": 1
+                                }
+                              }
+                            }
+                          },
+                          "Divisor": {
+                            "kind": "const",
+                            "value": {
+                              "Value": 5
+                            }
+                          },
+                          "ZeroPolicy": "ReturnZero"
+                        }
+                      },
+                      "Relative": false,
+                      "Children": []
+                    }
+                  },
+                  {
+                    "kind": "node.conditional",
+                    "value": {
+                      "Condition": {
+                        "kind": "and",
+                        "value": {
+                          "Left": {
+                            "kind": "compare",
+                            "value": {
+                              "Left": {
+                                "kind": "combatantStatusStacks",
+                                "value": {
+                                  "Selector": {
+                                    "kind": "sel.source",
+                                    "value": {
+                                      "Cardinality": "ZeroOrOne",
+                                      "RequiredContextCapabilities": "Source"
+                                    }
+                                  },
+                                  "StatusId": {
+                                    "value": "unlicensed"
+                                  }
+                                }
+                              },
+                              "Op": "Greater",
+                              "Right": {
+                                "kind": "const",
+                                "value": {
+                                  "Value": 0
+                                }
+                              }
+                            }
+                          },
+                          "Right": {
+                            "kind": "compare",
+                            "value": {
+                              "Left": {
+                                "kind": "combatantCounter",
+                                "value": {
+                                  "Selector": {
+                                    "kind": "sel.source",
+                                    "value": {
+                                      "Cardinality": "ZeroOrOne",
+                                      "RequiredContextCapabilities": "Source"
+                                    }
+                                  },
+                                  "CounterId": {
+                                    "value": "dragon_beat"
+                                  }
+                                }
+                              },
+                              "Op": "Equal",
+                              "Right": {
+                                "kind": "const",
+                                "value": {
+                                  "Value": 3
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "Then": {
+                        "kind": "node.applyStatus",
+                        "value": {
+                          "TargetSelector": {
+                            "kind": "sel.enemiesWithStatus",
+                            "value": {
+                              "StatusDefinitionId": {
+                                "value": "the_applicant"
+                              }
+                            }
+                          },
+                          "StatusDefinitionId": {
+                            "value": "municipal_inferno_coming"
+                          },
+                          "Stacks": {
+                            "kind": "const",
+                            "value": {
+                              "Value": 1
+                            }
+                          },
+                          "DurationTurns": 0,
+                          "Charges": 0,
+                          "ResultKey": null,
+                          "Children": []
+                        }
+                      },
+                      "Else": {
+                        "kind": "node.removeStatus",
+                        "value": {
+                          "TargetSelector": {
+                            "kind": "sel.enemiesWithStatus",
+                            "value": {
+                              "StatusDefinitionId": {
+                                "value": "the_applicant"
+                              }
+                            }
+                          },
+                          "StatusDefinitionId": {
+                            "value": "municipal_inferno_coming"
+                          },
+                          "ResultKey": null,
+                          "Children": []
+                        }
+                      },
+                      "Children": [
+                        {
+                          "kind": "node.applyStatus",
+                          "value": {
+                            "TargetSelector": {
+                              "kind": "sel.enemiesWithStatus",
+                              "value": {
+                                "StatusDefinitionId": {
+                                  "value": "the_applicant"
+                                }
+                              }
+                            },
+                            "StatusDefinitionId": {
+                              "value": "municipal_inferno_coming"
+                            },
+                            "Stacks": {
+                              "kind": "const",
+                              "value": {
+                                "Value": 1
+                              }
+                            },
+                            "DurationTurns": 0,
+                            "Charges": 0,
+                            "ResultKey": null,
+                            "Children": []
+                          }
+                        },
+                        {
+                          "kind": "node.removeStatus",
+                          "value": {
+                            "TargetSelector": {
+                              "kind": "sel.enemiesWithStatus",
+                              "value": {
+                                "StatusDefinitionId": {
+                                  "value": "the_applicant"
+                                }
+                              }
+                            },
+                            "StatusDefinitionId": {
+                              "value": "municipal_inferno_coming"
+                            },
+                            "ResultKey": null,
+                            "Children": []
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            "MaxNodeDepth": 64,
+            "MaxProgramSteps": 1024
+          }
+        }
+      ],
+      "DeathPrevention": null,
+      "DebuffBlock": null
+    },
+    {
+      "Id": "hoarded_permit",
+      "PackageId": "scenario",
+      "NameKey": "Hoarded Permit",
+      "DescriptionKey": "3 Block a turn, and 2 damage on the Dragon\u0027s Assessment.",
+      "Polarity": "Neutral",
+      "UsesStacks": true,
+      "UsesDuration": false,
+      "UsesCharges": false,
+      "StackingBehavior": "MergeWithExistingInstance",
+      "Tags": [],
+      "PassiveModifiers": [],
+      "Triggers": [],
+      "DeathPrevention": null,
+      "DebuffBlock": null
+    },
+    {
+      "Id": "code_violation",
+      "PackageId": "scenario",
+      "NameKey": "Code Violation",
+      "DescriptionKey": "The Dragon\u0027s attacks deal 2 more each.",
+      "Polarity": "Buff",
+      "UsesStacks": true,
+      "UsesDuration": false,
+      "UsesCharges": false,
+      "StackingBehavior": "MergeWithExistingInstance",
+      "Tags": [],
+      "PassiveModifiers": [
+        {
+          "Pipeline": "DamageDealt",
+          "Operation": "AddPerStack",
+          "Magnitude": 2,
+          "Priority": 100,
+          "RestrictDamageKind": "Direct",
+          "AppliesToStatusId": null,
+          "RestrictSourceCardTag": null
+        }
+      ],
+      "Triggers": [],
+      "DeathPrevention": null,
+      "DebuffBlock": null
+    },
+    {
+      "Id": "authorization",
+      "PackageId": "scenario",
+      "NameKey": "Authorization",
+      "DescriptionKey": "Spend one on a boss-context action, once per turn.",
+      "Polarity": "Neutral",
+      "UsesStacks": true,
+      "UsesDuration": false,
+      "UsesCharges": false,
+      "StackingBehavior": "MergeWithExistingInstance",
+      "Tags": [],
+      "PassiveModifiers": [],
+      "Triggers": [],
+      "DeathPrevention": null,
+      "DebuffBlock": null
+    },
+    {
+      "Id": "authority_exercised",
+      "PackageId": "scenario",
+      "NameKey": "Authority Exercised",
+      "DescriptionKey": null,
+      "Polarity": "Neutral",
+      "UsesStacks": false,
+      "UsesDuration": false,
+      "UsesCharges": false,
+      "StackingBehavior": "MergeWithExistingInstance",
+      "Tags": [],
+      "PassiveModifiers": [],
+      "Triggers": [],
+      "DeathPrevention": null,
+      "DebuffBlock": null
+    },
+    {
+      "Id": "permit_prised_loose",
+      "PackageId": "scenario",
+      "NameKey": "Permit Prised Loose",
+      "DescriptionKey": null,
+      "Polarity": "Neutral",
+      "UsesStacks": false,
+      "UsesDuration": false,
+      "UsesCharges": false,
+      "StackingBehavior": "MergeWithExistingInstance",
+      "Tags": [],
+      "PassiveModifiers": [],
+      "Triggers": [],
+      "DeathPrevention": null,
+      "DebuffBlock": null
+    },
+    {
+      "Id": "burning_the_registry",
+      "PackageId": "scenario",
+      "NameKey": "Burning the Registry",
+      "DescriptionKey": "The Dragon\u0027s next action burns the hoard.",
+      "Polarity": "Neutral",
+      "UsesStacks": false,
+      "UsesDuration": false,
+      "UsesCharges": false,
+      "StackingBehavior": "MergeWithExistingInstance",
+      "Tags": [],
+      "PassiveModifiers": [],
+      "Triggers": [],
+      "DeathPrevention": null,
+      "DebuffBlock": null
+    },
+    {
+      "Id": "unlicensed",
+      "PackageId": "scenario",
+      "NameKey": "Unlicensed",
+      "DescriptionKey": "Phase II.",
+      "Polarity": "Neutral",
+      "UsesStacks": false,
+      "UsesDuration": false,
+      "UsesCharges": false,
+      "StackingBehavior": "MergeWithExistingInstance",
+      "Tags": [],
+      "PassiveModifiers": [],
+      "Triggers": [],
+      "DeathPrevention": null,
+      "DebuffBlock": null
+    },
+    {
+      "Id": "municipal_inferno_coming",
+      "PackageId": "scenario",
+      "NameKey": "Municipal Inferno Coming",
+      "DescriptionKey": "The Dragon\u0027s next action is its heaviest.",
+      "Polarity": "Neutral",
+      "UsesStacks": false,
+      "UsesDuration": false,
+      "UsesCharges": false,
+      "StackingBehavior": "MergeWithExistingInstance",
+      "Tags": [],
+      "PassiveModifiers": [],
+      "Triggers": [],
+      "DeathPrevention": null,
+      "DebuffBlock": null
+    },
+    {
+      "Id": "filed_objection",
+      "PackageId": "scenario",
+      "NameKey": "Objection Filed",
+      "DescriptionKey": "Its next attack deals 5 less.",
+      "Polarity": "Debuff",
+      "UsesStacks": false,
+      "UsesDuration": false,
+      "UsesCharges": false,
+      "StackingBehavior": "MergeWithExistingInstance",
+      "Tags": [],
+      "PassiveModifiers": [
+        {
+          "Pipeline": "DamageDealt",
+          "Operation": "AddFlat",
+          "Magnitude": -5,
+          "Priority": 100,
+          "RestrictDamageKind": "Direct",
+          "AppliesToStatusId": null,
+          "RestrictSourceCardTag": null
+        }
+      ],
+      "Triggers": [
+        {
+          "Event": "DamageDealt",
+          "Program": {
+            "Id": {
+              "Value": "(unnamed)"
+            },
+            "Root": {
+              "kind": "node.removeStatus",
+              "value": {
+                "TargetSelector": {
+                  "kind": "sel.source",
+                  "value": {
+                    "Cardinality": "ZeroOrOne",
+                    "RequiredContextCapabilities": "Source"
+                  }
+                },
+                "StatusDefinitionId": {
+                  "value": "filed_objection"
+                },
+                "ResultKey": null,
+                "Children": []
+              }
+            },
+            "MaxNodeDepth": 64,
+            "MaxProgramSteps": 1024
+          }
+        }
+      ],
+      "DeathPrevention": null,
+      "DebuffBlock": null
     }
   ],
   "Relics": [
@@ -347826,9 +352320,7 @@
           "city",
           "boss",
           "dragon",
-          "municipal",
-          "strength",
-          "boss_strength"
+          "act_1_boss"
         ],
         "Extra": {}
       },
@@ -351745,6 +356237,12 @@
           {
             "Encounter": {
               "Value": "city_boss_03"
+            },
+            "Weight": 1
+          },
+          {
+            "Encounter": {
+              "Value": "city_boss_04"
             },
             "Weight": 1
           }

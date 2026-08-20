@@ -840,7 +840,11 @@
       "boss",
       "final_office",
       "act_1_boss"
-    ]
+    ],
+    "enemy_health": [
+      142
+    ],
+    "role": "boss"
   },
   {
     "id": "city_boss_05",
