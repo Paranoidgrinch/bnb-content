@@ -354,13 +354,16 @@ exactly as the FINAL_AUDIT enemy pools did. Where the keywords now differ from w
   what earlier ones did, so every card's steps wait for the previous step to have HAPPENED. A plain engine
   sequence starts all its steps at once, which would make "if this Ratifies the target" read stale state.
 
-### Still owed by the engine before the rest of the pool can be authored
+### Engine questions the card pool raised — all now answered
 
-- **An enemy's upcoming intent is not readable from a combat program.** The telegraph is computed by a
-  Scenario-layer delegate, not stored on the combat state, so "if the target intends to Attack" (Form of Ill
-  Intent, Conditional Approval, Witchmark Citation, Silent Hearing, Guestbook Oath, and several relics) has
-  nowhere to read from.
-- **Citation** needs "the action that just resolved dealt no direct damage". The action scope added for Doubt
-  is the substrate; what is missing is the damage question.
-- **Choose one of N** inside a combat program (Malediction Review, Clerical Discretion, Grand Dispensation,
-  Mootcap). The engine has interactive card and entity picks but no option pick.
+- **An enemy's upcoming intent** is readable from a combat program: the driver that owns the intent rules
+  installs a projection on the combat state, so "if the target intends to Attack" is an ordinary condition.
+  A script-driven scenario, where the enemy's action is dictated rather than chosen, installs none and every
+  such question answers "no".
+- **Citation** works: an action now announces, when it closes, whether it struck the other side. Damaging is
+  the design's wording taken literally — at least one ordinary hit landed on an opposing combatant, and Block
+  soaking it changes nothing. A status ticking is not an action, so the action that applied that status is
+  never blamed for it.
+- **Choose one of N** is a program node: named options, the player picks, they resolve in pick order and an
+  option cannot be taken twice. It parks the fight the way an in-combat card choice does; Studio and the
+  Godot frontend both render it, and headless play takes the first options so such a card always resolves.
