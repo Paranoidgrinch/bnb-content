@@ -422,6 +422,91 @@ public class BossCombatTests
         IReadOnlyList<string>? deck = null, int? energy = null) =>
         FightProbe.Start(FightProbe.Authored("city_boss_04", energy), deck, health: 400);
 
+    // ── The Living Charter ────────────────────────────────────────────────────
+
+    // The Charter opens under one published Article and calls a Judicial Review every second action; the
+    // player answers it with a card, and striking the Article down exchanges it for the next prepared one.
+    [Fact]
+    public void A_judicial_review_exchanges_one_article_for_the_next()
+    {
+        var (play, session, charterId) = Charter();
+
+        Assert.Equal(1, FightProbe.StacksOf(Enemy(play, charterId), LivingCharter.Articles[0]));
+
+        // Two ordinary actions, then the Review.
+        for (var i = 0; i < 3 && FightProbe.StacksOf(Hero(play), LivingCharter.ReviewPendingId) == 0; i++)
+            play.CombatDriver!.EndTurn();
+        Assert.Null(session.Error);
+        Assert.Equal(1, FightProbe.StacksOf(Hero(play), LivingCharter.ReviewPendingId));
+
+        // The answer is on the table.
+        Assert.Contains(play.CombatDriver!.Current!.Hand,
+            c => c.DefinitionId.value == LivingCharter.StrikeDownCardId);
+
+        Play(play, session, LivingCharter.StrikeDownCardId);
+        Assert.Equal(0, FightProbe.StacksOf(Enemy(play, charterId), LivingCharter.Articles[0]));
+        Assert.Equal(1, FightProbe.StacksOf(Enemy(play, charterId), LivingCharter.Articles[1]));
+        Assert.Equal(0, FightProbe.StacksOf(Hero(play), LivingCharter.ReviewPendingId));
+    }
+
+    // Article of Redress: 14 HP lost in one turn is answered with 8 Block at the start of the next one.
+    [Fact]
+    public void The_article_of_redress_pays_a_remedy_next_turn()
+    {
+        var (play, session, charterId) = Charter(Enumerable.Repeat("paper_cut", 30).ToList(), energy: 9);
+
+        // Strike the opening Article down so Redress is the published law.
+        for (var i = 0; i < 4 && FightProbe.StacksOf(Hero(play), LivingCharter.ReviewPendingId) == 0; i++)
+            play.CombatDriver!.EndTurn();
+        Play(play, session, LivingCharter.StrikeDownCardId);
+        Assert.Equal(1, FightProbe.StacksOf(Enemy(play, charterId), LivingCharter.RedressId));
+
+        // The Charter guards itself, so it takes a full hand of Paper Cuts to lose 14 HP in one turn.
+        while (play.CombatDriver!.Current!.Hand.Any(c => c.DefinitionId.value == "paper_cut"))
+            Cut(play, session, charterId);
+        Assert.Equal(1, FightProbe.StacksOf(Enemy(play, charterId), LivingCharter.RemedyId));
+
+        // The remedy lands as Block when the Charter's next turn comes round.
+        play.CombatDriver!.EndTurn();
+        Assert.Null(session.Error);
+        Assert.Equal(0, FightProbe.StacksOf(Enemy(play, charterId), LivingCharter.RemedyId));
+        Assert.True(BlockOf(Enemy(play, charterId)) >= 8, "the Charter is owed its Remedy Block");
+    }
+
+    // Article of Mutual Security: the first Block a side raises each turn arms the other side as well — and
+    // that answering Block never answers itself.
+    [Fact]
+    public void The_article_of_mutual_security_arms_both_sides_once()
+    {
+        var (play, session, charterId) = Charter(Enumerable.Repeat("cower_behind_a_desk", 30).ToList(), energy: 9);
+
+        // Strike twice: Continuance out, Redress out, Mutual Security published.
+        for (var round = 0; round < 2; round++)
+        {
+            for (var i = 0; i < 5 && FightProbe.StacksOf(Hero(play), LivingCharter.ReviewPendingId) == 0; i++)
+                play.CombatDriver!.EndTurn();
+            Play(play, session, LivingCharter.StrikeDownCardId);
+        }
+        Assert.Equal(1, FightProbe.StacksOf(Enemy(play, charterId), LivingCharter.MutualSecurityId));
+
+        var charterBlock = BlockOf(Enemy(play, charterId));
+        var mine = BlockOf(Hero(play));
+        Play(play, session, "cower_behind_a_desk"); // 5 Block for me — and 4 for the law, if it is still owed
+
+        // The answering Block never answers itself: the player's guard is exactly its own 5.
+        Assert.Equal(mine + 5, BlockOf(Hero(play)));
+        var answered = BlockOf(Enemy(play, charterId)) - charterBlock;
+        Assert.True(answered is 0 or 4, $"mutual security answers with 4 Block at most, not {answered}");
+
+        // Once per side per turn: a second guard passes unanswered.
+        Play(play, session, "cower_behind_a_desk");
+        Assert.Equal(charterBlock + answered, BlockOf(Enemy(play, charterId)));
+    }
+
+    private static (RunPlayback Play, InteractiveRunSession Session, CombatantId CharterId) Charter(
+        IReadOnlyList<string>? deck = null, int? energy = null) =>
+        FightProbe.Start(FightProbe.Authored("city_boss_05", energy), deck, health: 400);
+
     private static (RunPlayback Play, InteractiveRunSession Session, CombatantId DeputyId) Deputy(
         IReadOnlyList<string>? deck = null) =>
         FightProbe.Start(FightProbe.Authored("city_boss_01"), deck, health: 400);
