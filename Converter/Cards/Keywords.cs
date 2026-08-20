@@ -60,6 +60,11 @@ public static class Keywords
     public const string UsurersMoon = "usurers_moon";
     public const string UsurersMoonPlus = "usurers_moon+";
 
+    // Standing Citation, a Rite the player carries: the Citation trigger looks for it, because only that
+    // trigger knows it is about to spend a stack.
+    public const string StandingCitation = "standing_citation";
+    public static readonly CounterId StandingCitationSpared = new("standing_citation_spared");
+
     public const string Censure = "censure";
     public const string Lien = "lien";
     public const string Citation = "citation";
@@ -75,6 +80,11 @@ public static class Keywords
     // as unblocked HP damage from an ordinary hit, and read (and cleared) when the round ends.
     public static readonly CounterId StruckThisRoundCounter = new("ward_wax_struck");
 
+    // What the round that just ended did to you, kept for the cards that ask about "the previous enemy turn"
+    // (Restitution Writ, Blood Testimony). Snapshotted when the round closes, before this round's count is
+    // cleared, so it is available all through the turn that follows.
+    public static readonly CounterId StruckLastRoundCounter = new("struck_last_round");
+
     public static IReadOnlyList<StatusData> All() =>
     [
         PaperworkStatus(),
@@ -82,6 +92,7 @@ public static class Keywords
         SealStatus(),
         RatifiedStatus(),
         ArchivedStatus(),
+        ApplicantStatus(),
         Tally(StayOfExecution, "Stay of Execution",
             "This character's Paperwork does not resolve at the end of its next turn."),
         Tally(RedInkDoctrine, "Red Ink Doctrine", "Paperwork that draws blood writes itself deeper."),
@@ -307,13 +318,41 @@ public static class Keywords
                 new ConditionalEffectNode<ActionResolvedTriggeredEffectContext>(
                     new NotExpression<ActionResolvedTriggeredEffectContext>(
                         new ActionDealtDamageExpression<ActionResolvedTriggeredEffectContext>()),
-                    new SequenceEffectNode<ActionResolvedTriggeredEffectContext>(
+                    new CausalSequenceEffectNode<ActionResolvedTriggeredEffectContext>(
                     [
                         HpLoss<ActionResolvedTriggeredEffectContext>(
                             CombatantTargetSelectors.Source, Stacks<ActionResolvedTriggeredEffectContext>(Citation)),
-                        Spend<ActionResolvedTriggeredEffectContext>(Citation, 1),
+
+                        // Standing Citation: the first trigger on each enemy every turn costs no stack. Asked
+                        // here because only this trigger knows it is about to spend one; the latch is per
+                        // bearer, so "each enemy" is per enemy, and it is cleared at that enemy's turn start.
+                        new ConditionalEffectNode<ActionResolvedTriggeredEffectContext>(
+                            new AndExpression<ActionResolvedTriggeredEffectContext>(
+                                new ComparisonExpression<ActionResolvedTriggeredEffectContext>(
+                                    new CountTargetsExpression<ActionResolvedTriggeredEffectContext>(
+                                        CombatantTargetSelectors.WithStatus(
+                                            CombatantTargetSelectors.AllCombatants,
+                                            new StatusDefinitionId(StandingCitation))),
+                                    ComparisonOperator.Greater,
+                                    new ConstantExpression<ActionResolvedTriggeredEffectContext>(0)),
+                                new ComparisonExpression<ActionResolvedTriggeredEffectContext>(
+                                    new CombatantCounterExpression<ActionResolvedTriggeredEffectContext>(
+                                        CombatantTargetSelectors.Source, StandingCitationSpared),
+                                    ComparisonOperator.Equal,
+                                    new ConstantExpression<ActionResolvedTriggeredEffectContext>(0))),
+                            new SetCombatantCounterNode<ActionResolvedTriggeredEffectContext>(
+                                CombatantTargetSelectors.Source, StandingCitationSpared,
+                                new ConstantExpression<ActionResolvedTriggeredEffectContext>(1), relative: false),
+                            @else: Spend<ActionResolvedTriggeredEffectContext>(Citation, 1)),
                     ]))),
                 nameof(TriggerEvent.ActionResolved)),
+
+            // The sparing is per turn, per bearer.
+            Trigger(new EffectProgram<TurnStartedTriggeredEffectContext>(
+                new SetCombatantCounterNode<TurnStartedTriggeredEffectContext>(
+                    CombatantTargetSelectors.Source, StandingCitationSpared,
+                    new ConstantExpression<TurnStartedTriggeredEffectContext>(0), relative: false)),
+                nameof(TriggerEvent.TurnStarted)),
         ]);
 
     // "Blood Ink X: whenever another Status on the holder loses one or more stacks in a single Status-change
@@ -405,19 +444,6 @@ public static class Keywords
                         CombatantTargetSelectors.Source, Stacks<CardsDrawnTriggeredEffectContext>(WardWax))),
                     nameof(TriggerEvent.CardsDrawn)),
 
-                // Remember a hit that got through: an ordinary hit that actually cost HP.
-                Trigger(new EffectProgram<DamageReceivedTriggeredEffectContext>(
-                    new ConditionalEffectNode<DamageReceivedTriggeredEffectContext>(
-                        new ComparisonExpression<DamageReceivedTriggeredEffectContext>(
-                            new EventAmountExpression<DamageReceivedTriggeredEffectContext>(),
-                            ComparisonOperator.Greater,
-                            new ConstantExpression<DamageReceivedTriggeredEffectContext>(0)),
-                        // The RECEIVER, not the source: in a damage event "source" is whoever swung.
-                        new SetCombatantCounterNode<DamageReceivedTriggeredEffectContext>(
-                            CombatantTargetSelectors.EventTarget, StruckThisRoundCounter,
-                            new ConstantExpression<DamageReceivedTriggeredEffectContext>(1), relative: true))),
-                    nameof(TriggerEvent.DamageTaken)),
-
                 // The round is over: pay the decay and forget the round's hits. Scoped to the whole fight,
                 // because a round ending is nobody's own event; the loop finds every wearer.
                 new StatusTriggerData(
@@ -434,13 +460,63 @@ public static class Keywords
                                         new ConstantExpression<RoundEndedTriggeredEffectContext>(0)),
                                     Decay<RoundEndedTriggeredEffectContext>(2),
                                     Decay<RoundEndedTriggeredEffectContext>(1)),
-                                new SetCombatantCounterNode<RoundEndedTriggeredEffectContext>(
-                                    CombatantTargetSelectors.IterationTarget, StruckThisRoundCounter,
-                                    new ConstantExpression<RoundEndedTriggeredEffectContext>(0), relative: false),
                             ])))),
                     StatusTriggerScope.Anywhere),
             ]);
     }
+
+    // The applicant marker: it says which combatant is the player — selectors are structural, so this is the
+    // only way a rule can ask "did that happen to the player?" — and it keeps the record of what got through.
+    //
+    // The record lives here rather than on Ward Wax because several cards ask about the enemy turn just past
+    // (Restitution Writ, Blood Testimony, Sealed Mantle) and must be able to ask whether or not the player
+    // happens to be wearing anything. Counted as it happens, and rolled over when the round closes so the
+    // figure is still there all through the turn that follows.
+    private static StatusData ApplicantStatus() => new()
+    {
+        Id = ApplicantMarker,
+        NameKey = "The Applicant",
+        DescriptionKey = "You are the one this is all happening to.",
+        Polarity = StatusPolarity.Neutral,
+        StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
+        UsesStacks = true,
+        Triggers =
+        [
+            // An ordinary hit that actually cost HP. The RECEIVER, not the source: in a damage event
+            // "source" is whoever swung.
+            Trigger(new EffectProgram<DamageReceivedTriggeredEffectContext>(
+                new ConditionalEffectNode<DamageReceivedTriggeredEffectContext>(
+                    new ComparisonExpression<DamageReceivedTriggeredEffectContext>(
+                        new EventAmountExpression<DamageReceivedTriggeredEffectContext>(),
+                        ComparisonOperator.Greater,
+                        new ConstantExpression<DamageReceivedTriggeredEffectContext>(0)),
+                    new SetCombatantCounterNode<DamageReceivedTriggeredEffectContext>(
+                        CombatantTargetSelectors.EventTarget, StruckThisRoundCounter,
+                        new EventAmountExpression<DamageReceivedTriggeredEffectContext>(), relative: true))),
+                nameof(TriggerEvent.DamageTaken)),
+
+            // The round is over: keep what it did, then start counting again. Fight-scoped, because a round
+            // ending is nobody's own event.
+            new StatusTriggerData(
+                nameof(TriggerEvent.RoundEnded),
+                Serialize(new EffectProgram<RoundEndedTriggeredEffectContext>(
+                    new ForEachTargetEffectNode<RoundEndedTriggeredEffectContext>(
+                        CombatantTargetSelectors.WithStatus(
+                            CombatantTargetSelectors.AllCombatants, new StatusDefinitionId(ApplicantMarker)),
+                        new CausalSequenceEffectNode<RoundEndedTriggeredEffectContext>(
+                        [
+                            new SetCombatantCounterNode<RoundEndedTriggeredEffectContext>(
+                                CombatantTargetSelectors.IterationTarget, StruckLastRoundCounter,
+                                new CombatantCounterExpression<RoundEndedTriggeredEffectContext>(
+                                    CombatantTargetSelectors.IterationTarget, StruckThisRoundCounter),
+                                relative: false),
+                            new SetCombatantCounterNode<RoundEndedTriggeredEffectContext>(
+                                CombatantTargetSelectors.IterationTarget, StruckThisRoundCounter,
+                                new ConstantExpression<RoundEndedTriggeredEffectContext>(0), relative: false),
+                        ])))),
+                StatusTriggerScope.Anywhere),
+        ],
+    };
 
     // ── shared authoring helpers ──────────────────────────────────────────────────────────────────────────
 

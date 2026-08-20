@@ -413,3 +413,25 @@ exactly as the FINAL_AUDIT enemy pools did. Where the keywords now differ from w
 - **Anything that asks about Block** — Tallow Reserve's requirement, Forfeit Seal's "still has Block",
   Foreclosure's claim — goes through a scratch COUNTER first: a condition compares a value read off a
   combatant, and Block is not one of the values it can read.
+
+### Act-II cards
+
+- **Cross-Filing** moves its Paperwork rather than offering to: the card cannot ask the player to point at a
+  second enemy. Written as a spread over every enemy plus a double subtraction on the original target, which
+  nets to exactly "M off the target, M onto each other enemy", and skipped outright when the target is alone.
+- **Smudged Index** Archives a chosen card from the draw pile. "Look at the top 4 and put the others back in
+  any order" is a prompt the engine does not raise; the Archiving is the part that matters.
+- **Dead Letter Office** counts Junk types in the EXHAUST pile, where Archived cards go. Junk that exhausted
+  itself counts too, so it can over-count slightly.
+- **Ghost Register** lets the player choose which Archived card comes back, because a rule that hears "the
+  archive count went up" cannot point at the card that caused it. The copy arrives with one free play rather
+  than costing 0, for want of per-instance card costs.
+- **Moonlit Counterfeit** asks twice — once for the card to copy, once for the original to Exhaust — and its
+  upgrade simply spares the original. The copy is free through one free play.
+- **Sanguine Errata** removes a stack the engine picks by rule (a polarity-filtered selection) rather than by
+  prompt, so Blood Ink itself can be the one chosen.
+- **"Different statuses" is counted by naming them.** Stacks are countable; distinct statuses are not, so
+  CardAuthoring keeps the list of negative and positive statuses the game files and asks each whether it is
+  present. A new status of either kind has to be added there.
+- **Standing Citation** is answered inside the Citation trigger, because only that trigger knows it is about
+  to spend a stack — the same shape as Red Ink Doctrine inside the Paperwork tick.

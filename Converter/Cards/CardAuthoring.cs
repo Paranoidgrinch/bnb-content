@@ -219,6 +219,28 @@ public static class CardAuthoring
     public static CombatAmountSpec Plus(CombatAmountSpec a, CombatAmountSpec b) =>
         CombatAmountSpec.Binary("add", a, b);
 
+    // How many DIFFERENT statuses of a kind a combatant carries. Stacks are countable; distinct statuses are
+    // not, so the ones the game actually files are named and each is counted as present-or-not. A new status
+    // of either kind has to be added here, which is the price of being able to ask the question at all.
+    public static readonly string[] NegativeStatuses =
+    [
+        Keywords.Paperwork, Keywords.Doubt, Keywords.Seal, Keywords.Lien, Keywords.Citation, Keywords.BloodInk,
+        "panic", "fatigue", "poison",
+    ];
+
+    public static readonly string[] PositiveStatuses = [Keywords.WardWax, "strength", "bookworm"];
+
+    public static CombatAmountSpec DistinctStatuses(IReadOnlyList<string> kinds, string on = Target)
+    {
+        CombatAmountSpec? total = null;
+        foreach (var status in kinds)
+        {
+            var present = Once(Stacks(status, on));
+            total = total is null ? present : Plus(total, present);
+        }
+        return total!;
+    }
+
     public static CombatAmountSpec Times(CombatAmountSpec a, int factor) =>
         CombatAmountSpec.Binary("mul", a, CombatAmountSpec.FromConst(factor));
 

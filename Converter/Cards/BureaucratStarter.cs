@@ -52,21 +52,21 @@ public static class BureaucratStarter
         "red_tape", "Red Tape", JunkTag, 0,
         "Unplayable.",
         Seq(),
-        Rarity: "junk", Tags: [UnplayableTag]);
+        Rarity: "junk", Tags: [UnplayableTag, "red_tape"]);
 
     // "Exhaust. No other effect." A dead draw that can at least be thrown away for free.
     public static readonly BnbCard DuplicateCopy = new(
         "duplicate_copy", "Duplicate Copy", JunkTag, 0,
         "Exhaust. No other effect.",
         Seq(),
-        Rarity: "junk", Tags: [ExhaustTag]);
+        Rarity: "junk", Tags: [ExhaustTag, "duplicate_copy"]);
 
     // "Draw 1 card. Exhaust." Cycling, taxed by the Energy it costs.
     public static readonly BnbCard MisfiledPaper = new(
         "misfiled_paper", "Misfiled Paper", JunkTag, 1,
         "Draw 1 card. Exhaust.",
         Draw(1),
-        Rarity: "junk", Tags: [ExhaustTag]);
+        Rarity: "junk", Tags: [ExhaustTag, "misfiled_paper"]);
 
     // "Exhaust. Add a fresh Unsigned Form to your discard pile." It never really leaves: exhausting it in the
     // ordinary way just files the next one, so only Archive — which takes it without playing it — disposes of
@@ -75,9 +75,13 @@ public static class BureaucratStarter
         "unsigned_form", "Unsigned Form", JunkTag, 0,
         "Exhaust. Add a fresh Unsigned Form to your discard pile.",
         AddCard("unsigned_form", CardZone.DiscardPile),
-        Rarity: "junk", Tags: [ExhaustTag, FormTag]);
+        Rarity: "junk", Tags: [ExhaustTag, FormTag, "unsigned_form"]);
 
     public static readonly IReadOnlyList<BnbCard> Junk = [RedTape, DuplicateCopy, MisfiledPaper, UnsignedForm];
+
+    // Each Junk card also carries its own id as a tag. "How many different Junk types" is a question several
+    // cards ask, and counting a zone can be narrowed to a tag but not to a definition — so the type IS a tag.
+    public static IReadOnlyList<string> JunkTypes => Junk.Select(j => j.Id).ToList();
 
     // Starters have upgrades (a campfire can amend one); Junk never does.
     public static IEnumerable<BnbCard> All() =>
