@@ -54,6 +54,7 @@ public static class Keywords
         ArchivedStatus(),
         CensureStatus(),
         LienStatus(),
+        CitationStatus(),
         BloodInkStatus(),
         WardWaxStatus(),
     ];
@@ -200,6 +201,30 @@ public static class Keywords
                     Resolve(block)))),
             ]);
     }
+
+    // "Citation X: after the holder resolves a NON-DAMAGING action, it loses X HP. Then remove 1 Citation."
+    //
+    // What counts as damaging is the design's wording and the engine's answer both: at least one ordinary hit
+    // landed on the other side, whether or not Block soaked it. Utility, guarding, healing and summoning are
+    // not; nor is a status ticking, which is not an action at all. One action asks the question once, however
+    // many sub-effects it contained — which is the whole reason the engine now has an action to ask about.
+    private static StatusData CitationStatus() => Status(
+        Citation, "Citation", StatusPolarity.Debuff,
+        "After this character takes a non-damaging action, it loses HP equal to its Citation, then loses 1 Citation.",
+        triggers:
+        [
+            Trigger(new EffectProgram<ActionResolvedTriggeredEffectContext>(
+                new ConditionalEffectNode<ActionResolvedTriggeredEffectContext>(
+                    new NotExpression<ActionResolvedTriggeredEffectContext>(
+                        new ActionDealtDamageExpression<ActionResolvedTriggeredEffectContext>()),
+                    new SequenceEffectNode<ActionResolvedTriggeredEffectContext>(
+                    [
+                        HpLoss<ActionResolvedTriggeredEffectContext>(
+                            CombatantTargetSelectors.Source, Stacks<ActionResolvedTriggeredEffectContext>(Citation)),
+                        Spend<ActionResolvedTriggeredEffectContext>(Citation, 1),
+                    ]))),
+                nameof(TriggerEvent.ActionResolved)),
+        ]);
 
     // "Blood Ink X: whenever another Status on the holder loses one or more stacks in a single Status-change
     // event, the holder loses X HP. Then remove 1 Blood Ink."

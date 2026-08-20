@@ -213,6 +213,50 @@ public class KeywordStatusTests
         play.Dispose();
     }
 
+    // "Citation X: after the holder resolves a NON-DAMAGING action, it loses X HP. Then remove 1 Citation."
+    // A Deed is a damaging action and passes untouched; a Working that only guards does not.
+    [Fact]
+    public void Citation_bites_after_a_non_damaging_action_and_leaves_a_damaging_one_alone()
+    {
+        var probe = FightProbe.SoloAgainstHero(Quiet, QuietIntent, energy: 9, (Keywords.Citation, 3));
+        var (play, session, enemyId) = FightProbe.Start(
+            probe, deck: ["paper_cut", "cower_behind_a_desk", "cower_behind_a_desk"]);
+
+        var full = Hero(play).Health.Current;
+
+        // A Paper Cut strikes the other side: no citation.
+        Play(play, session, "paper_cut", enemyId);
+        Assert.Equal(full, Hero(play).Health.Current);
+        Assert.Equal(3, FightProbe.StacksOf(Hero(play), Keywords.Citation));
+
+        // Cowering behind a desk does not: 3 HP, and one Citation spent.
+        Play(play, session, "cower_behind_a_desk", enemyId);
+        Assert.Equal(full - 3, Hero(play).Health.Current);
+        Assert.Equal(2, FightProbe.StacksOf(Hero(play), Keywords.Citation));
+
+        // …and again, at its new value.
+        Play(play, session, "cower_behind_a_desk", enemyId);
+        Assert.Equal(full - 5, Hero(play).Health.Current);
+        Assert.Equal(1, FightProbe.StacksOf(Hero(play), Keywords.Citation));
+        play.Dispose();
+    }
+
+    // "A mixed action that includes direct damage is treated as damaging." Cursed Addendum deals 6 AND files
+    // Paperwork — one damaging action, so Citation stays out of it.
+    [Fact]
+    public void A_mixed_action_that_includes_damage_is_a_damaging_action()
+    {
+        var probe = FightProbe.SoloAgainstHero(Quiet, QuietIntent, energy: 9, (Keywords.Citation, 2));
+        var (play, session, enemyId) = FightProbe.Start(probe, deck: ["cursed_addendum", "paper_cut"]);
+
+        var full = Hero(play).Health.Current;
+        Play(play, session, "cursed_addendum", enemyId);
+
+        Assert.Equal(full, Hero(play).Health.Current);
+        Assert.Equal(2, FightProbe.StacksOf(Hero(play), Keywords.Citation));
+        play.Dispose();
+    }
+
     // "Ward Wax X: at the start of your turn gain X Block. After the enemy turn lose 1 stack — or 2 if any
     // unblocked Attack damage got through."
     [Fact]
