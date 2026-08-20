@@ -291,3 +291,15 @@ older Act-I enemy pool wherever HP or intents disagree. Readings taken where the
   "Claim an Exception" (the Articles leave them alone for that turn), and the Charter's is spent automatically
   on the first Article effect that would hand the player an advantage against it.
 
+## The Act-I map
+
+- **The routes differ by design, not by luck.** The act's columns draw from three flavours — "the long queue"
+  (fights), "errands" (events and shops), "the quiet corridor" (rests and treasure) — so which side of the map
+  a path keeps to decides both what it holds and the order it holds it in. On top of that every path has
+  CEILINGS (at most 3 rests, 3 shops, 3 treasures, 5 events, 2 elites, 2 duos), so no single route can be
+  farmed for safety. Both are engine features added for this: `MapGenerationSpec.LaneProfiles` and
+  `PerPathMaximums`.
+- **The guarantees still hold underneath**: the per-path minimums (8 fights, the duo, the elite, 3 events, 2
+  rests, 2 treasures, 2 shops) are met by the narrow funnel rows as before, and a ceiling may never be set
+  below its minimum.
+

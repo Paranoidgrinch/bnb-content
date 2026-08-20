@@ -55,6 +55,61 @@ public class EndToEndSmokeTests
             fight => Assert.NotNull(fight.VictoryReward));
     }
 
+    // The act's routes must not read the same. Ceilings hold on every path, and the lanes pull the routes apart:
+    // the fightiest way through the city meets noticeably more enemies than the quietest.
+    [Theory]
+    [InlineData(1)]
+    [InlineData(7)]
+    [InlineData(20260820)]
+    public void The_routes_through_the_act_differ_in_order_and_in_upper_limits(int seed)
+    {
+        var spec = Blueprint.MapGeneration!;
+        var generated = RuleBasedMapGenerator.Generate(spec, seed, startingLoadout: 0,
+            new BalanceCalculator(Blueprint.Balance, Blueprint.Encounters),
+            (kind, coord, encounter, nodeRef) => MapNodeRealizer.Realize(spec, kind, encounter, nodeRef));
+
+        var paths = AllPaths(generated);
+        Assert.True(paths.Count > 1, "an act should offer more than one way through");
+
+        foreach (var (kind, max) in spec.PerPathMaximums)
+            foreach (var path in paths)
+                Assert.True(path.Count(k => k == kind) <= max,
+                    $"a route holds {path.Count(k => k == kind)} {kind} node(s), more than the {max} allowed");
+
+        var fightiest = paths.Max(p => p.Count(MapConstraintValidator.IsEnemyRole));
+        var calmest = paths.Min(p => p.Count(MapConstraintValidator.IsEnemyRole));
+        Assert.True(fightiest - calmest >= 2,
+            $"the routes should differ in how much fighting they ask for, but they run {calmest}..{fightiest}");
+
+        // …and in the ORDER of what they hold: the routes are not one sequence repeated.
+        Assert.True(paths.Select(p => string.Join(",", p)).Distinct().Count() > 1,
+            "every route reads the same");
+    }
+
+    // Every entry→boss route, as its sequence of node kinds.
+    private static List<List<MapNodeKind>> AllPaths(GeneratedMap generated)
+    {
+        var map = generated.Map;
+        var paths = new List<List<MapNodeKind>>();
+        var entries = map.EntryNodeIds.Count > 0 ? map.EntryNodeIds : map.RootIds();
+
+        void Walk(NodeId id, List<MapNodeKind> soFar)
+        {
+            soFar.Add(generated.Roles[id]);
+            var successors = map.SuccessorIds(id).ToList();
+            if (successors.Count == 0)
+                paths.Add([.. soFar]);
+            else
+                foreach (var next in successors)
+                    Walk(next, soFar);
+            soFar.RemoveAt(soFar.Count - 1);
+        }
+
+        foreach (var entry in entries)
+            Walk(entry, []);
+        return paths;
+    }
+
     [Fact]
     public void A_real_run_wins_its_first_fight_and_collects_the_spoils()
     {
