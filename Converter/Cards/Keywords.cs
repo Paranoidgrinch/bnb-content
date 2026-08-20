@@ -175,9 +175,130 @@ public static class Keywords
             Trigger(new EffectProgram<DamageDealtTriggeredEffectContext>(
                 new ConditionalEffectNode<DamageDealtTriggeredEffectContext>(
                     new ClaimOnceThisActionExpression<DamageDealtTriggeredEffectContext>("doubt.spent"),
-                    Spend<DamageDealtTriggeredEffectContext>(Doubt, 1))),
+                    new CausalSequenceEffectNode<DamageDealtTriggeredEffectContext>(
+                    [
+                        // Hedge Covenant: the doubted attack's softening is paid to the player as Block. The
+                        // hit that landed is three quarters of what was aimed, so a quarter was prevented —
+                        // which is a third of what landed, rounded up. The engine reports what landed, not
+                        // what was averted, so that is how the figure is worked back.
+                        Held<DamageDealtTriggeredEffectContext>(BureaucratHistory.HedgeCovenant,
+                            new ForEachTargetEffectNode<DamageDealtTriggeredEffectContext>(
+                                CombatantTargetSelectors.WithStatus(CombatantTargetSelectors.AllCombatants,
+                                    new StatusDefinitionId(ApplicantMarker)),
+                                new GainBlockNode<DamageDealtTriggeredEffectContext>(
+                                    CombatantTargetSelectors.IterationTarget,
+                                    new DivideExpression<DamageDealtTriggeredEffectContext>(
+                                        new AddExpression<DamageDealtTriggeredEffectContext>(
+                                            new EventAmountExpression<DamageDealtTriggeredEffectContext>(),
+                                            new ConstantExpression<DamageDealtTriggeredEffectContext>(2)),
+                                        new ConstantExpression<DamageDealtTriggeredEffectContext>(3))))),
+
+                        // Hearth Compact: an attack that got nothing through costs no Doubt.
+                        new ConditionalEffectNode<DamageDealtTriggeredEffectContext>(
+                            new AndExpression<DamageDealtTriggeredEffectContext>(
+                                new OrExpression<DamageDealtTriggeredEffectContext>(
+                                    Present<DamageDealtTriggeredEffectContext>(BureaucratHistory.HearthCompact),
+                                    Present<DamageDealtTriggeredEffectContext>(BureaucratHistory.HearthCompact + "+")),
+                                new ComparisonExpression<DamageDealtTriggeredEffectContext>(
+                                    new EventAmountExpression<DamageDealtTriggeredEffectContext>(),
+                                    ComparisonOperator.Equal,
+                                    new ConstantExpression<DamageDealtTriggeredEffectContext>(0))),
+                            new NoOpEffectNode<DamageDealtTriggeredEffectContext>(),
+                            @else: Spend<DamageDealtTriggeredEffectContext>(Doubt, 1)),
+                    ]))),
                 nameof(TriggerEvent.DamageDealt)),
         ]);
+
+    // Guest Right: "once per turn, when an enemy with at least 3 Doubt would deal unblocked damage, remove
+    // 3 Doubt and reduce that remaining damage to 0."
+    //
+    // Nothing can stop a hit that is already landing, so the hit is taken and immediately given back — the
+    // player ends the exchange exactly where the card says they should. Recorded in ADAPTATIONS.
+    private static IEffectNode<TContext> GuestRight<TContext>() where TContext : class
+    {
+        var attacker = CombatantTargetSelectors.Source;
+        var guest = CombatantTargetSelectors.EventTarget;
+
+        return new ConditionalEffectNode<TContext>(
+            new AndExpression<TContext>(
+                new OrExpression<TContext>(
+                    Present<TContext>(BureaucratHistory.GuestRight),
+                    Present<TContext>(BureaucratHistory.GuestRight + "+")),
+                new AndExpression<TContext>(
+                    new ComparisonExpression<TContext>(
+                        new CombatantStatusStacksExpression<TContext>(attacker, new StatusDefinitionId(Doubt)),
+                        ComparisonOperator.GreaterOrEqual, new ConstantExpression<TContext>(3)),
+                    new ComparisonExpression<TContext>(
+                        new CombatantCounterExpression<TContext>(guest, BureaucratHistory.GuestRightUsed),
+                        ComparisonOperator.Equal, new ConstantExpression<TContext>(0)))),
+            new CausalSequenceEffectNode<TContext>(
+            [
+                new HealNode<TContext>(guest, new EventAmountExpression<TContext>()),
+                new ModifyStatusStacksNode<TContext>(attacker, new StatusDefinitionId(Doubt),
+                    new ConstantExpression<TContext>(-3)),
+                new SetCombatantCounterNode<TContext>(guest, BureaucratHistory.GuestRightUsed,
+                    new ConstantExpression<TContext>(1), relative: false),
+            ]));
+    }
+
+    // Wax Indemnity: "whenever you would take unblocked Attack damage, you may consume up to 4 Ward Wax;
+    // reduce that damage by 3 per Wax consumed." Nothing can soften a hit that is already landing, so the Wax
+    // buys it back afterwards — the player ends the exchange where the card says they should, at the cost of
+    // the healing being visible as healing. Recorded in ADAPTATIONS.
+    private const int IndemnityPerWax = 3;
+
+    private static IEffectNode<TContext> WaxIndemnity<TContext>() where TContext : class
+    {
+        var guest = CombatantTargetSelectors.EventTarget;
+        // As much Wax as the hit is worth, never more than four and never more than is worn.
+        var spend = new MinExpression<TContext>(
+            new MinExpression<TContext>(
+                new CombatantStatusStacksExpression<TContext>(guest, new StatusDefinitionId(WardWax)),
+                new ConstantExpression<TContext>(4)),
+            new DivideExpression<TContext>(
+                new AddExpression<TContext>(
+                    new EventAmountExpression<TContext>(),
+                    new ConstantExpression<TContext>(IndemnityPerWax - 1)),
+                new ConstantExpression<TContext>(IndemnityPerWax)));
+
+        return new ConditionalEffectNode<TContext>(
+            new AndExpression<TContext>(
+                Present<TContext>(GeneralWax.WaxIndemnity),
+                new ComparisonExpression<TContext>(
+                    new CombatantStatusStacksExpression<TContext>(guest, new StatusDefinitionId(WardWax)),
+                    ComparisonOperator.Greater, new ConstantExpression<TContext>(0))),
+            new CausalSequenceEffectNode<TContext>(
+            [
+                new SetCombatantCounterNode<TContext>(guest, IndemnitySpent, spend, relative: false),
+                new ModifyStatusStacksNode<TContext>(guest, new StatusDefinitionId(WardWax),
+                    new SubtractExpression<TContext>(new ConstantExpression<TContext>(0),
+                        new CombatantCounterExpression<TContext>(guest, IndemnitySpent))),
+                new HealNode<TContext>(guest,
+                    new MinExpression<TContext>(
+                        new EventAmountExpression<TContext>(),
+                        new MultiplyExpression<TContext>(
+                            new CombatantCounterExpression<TContext>(guest, IndemnitySpent),
+                            new ConstantExpression<TContext>(IndemnityPerWax)))),
+            ]));
+    }
+
+    private static readonly CounterId IndemnitySpent = new("wax_indemnity_spent");
+
+    // "Is this rule in force?" — a Rite the player carries is found by looking for it on anybody, since a
+    // program run from the enemy's seat cannot address the player directly.
+    private static ICombatExpression<TContext, bool> Present<TContext>(string rite) where TContext : class =>
+        new ComparisonExpression<TContext>(
+            new CountTargetsExpression<TContext>(
+                CombatantTargetSelectors.WithStatus(CombatantTargetSelectors.AllCombatants,
+                    new StatusDefinitionId(rite))),
+            ComparisonOperator.Greater, new ConstantExpression<TContext>(0));
+
+    // The same, for both a rule and its upgrade, running the body when either is in force.
+    private static IEffectNode<TContext> Held<TContext>(string rite, IEffectNode<TContext> body)
+        where TContext : class =>
+        new ConditionalEffectNode<TContext>(
+            new OrExpression<TContext>(Present<TContext>(rite), Present<TContext>(rite + "+")),
+            body);
 
     // Seal is a plain counter of intent; the conversion to a Ratify event lives in the cards and relics that
     // apply it (CardAuthoring.ApplySeal), because a status cannot react to its own first application — the
@@ -280,6 +401,16 @@ public static class Keywords
             new ModifyStatusStacksNode<TContext>(holder, new StatusDefinitionId(Lien), Negate(taken)),
             UsurersMoonCitation<TContext>(holder, taken, perCitation: 3, moon: UsurersMoon),
             UsurersMoonCitation<TContext>(holder, taken, perCitation: 2, moon: UsurersMoonPlus),
+
+            // Debt Ouroboros: a resolved claim renews itself at half, rounded down, at most 4.
+            new ConditionalEffectNode<TContext>(
+                new OrExpression<TContext>(
+                    Present<TContext>(GeneralWax.DebtOuroboros),
+                    Present<TContext>(GeneralWax.DebtOuroboros + "+")),
+                new ApplyStatusNode<TContext>(holder, new StatusDefinitionId(Lien),
+                    new MinExpression<TContext>(
+                        new DivideExpression<TContext>(taken, new ConstantExpression<TContext>(2)),
+                        new ConstantExpression<TContext>(4)))),
         ]);
     }
 
@@ -440,8 +571,21 @@ public static class Keywords
                 // ADAPTATIONS: Ward Wax pays nothing to a bearer that does not draw, which suits a status the
                 // design calls player-facing.)
                 Trigger(new EffectProgram<CardsDrawnTriggeredEffectContext>(
-                    new GainBlockNode<CardsDrawnTriggeredEffectContext>(
-                        CombatantTargetSelectors.Source, Stacks<CardsDrawnTriggeredEffectContext>(WardWax))),
+                    new CausalSequenceEffectNode<CardsDrawnTriggeredEffectContext>(
+                    [
+                        new GainBlockNode<CardsDrawnTriggeredEffectContext>(
+                            CombatantTargetSelectors.Source, Stacks<CardsDrawnTriggeredEffectContext>(WardWax)),
+
+                        // Candle Cathedral: the wax pays half again, rounded up.
+                        Held<CardsDrawnTriggeredEffectContext>(ActIVRites.CandleCathedral,
+                            new GainBlockNode<CardsDrawnTriggeredEffectContext>(
+                                CombatantTargetSelectors.Source,
+                                new DivideExpression<CardsDrawnTriggeredEffectContext>(
+                                    new AddExpression<CardsDrawnTriggeredEffectContext>(
+                                        Stacks<CardsDrawnTriggeredEffectContext>(WardWax),
+                                        new ConstantExpression<CardsDrawnTriggeredEffectContext>(1)),
+                                    new ConstantExpression<CardsDrawnTriggeredEffectContext>(2)))),
+                    ])),
                     nameof(TriggerEvent.CardsDrawn)),
 
                 // The round is over: pay the decay and forget the round's hits. Scoped to the whole fight,
@@ -455,9 +599,17 @@ public static class Keywords
                             new SequenceEffectNode<RoundEndedTriggeredEffectContext>(
                             [
                                 new ConditionalEffectNode<RoundEndedTriggeredEffectContext>(
-                                    new ComparisonExpression<RoundEndedTriggeredEffectContext>(
-                                        struck, ComparisonOperator.Greater,
-                                        new ConstantExpression<RoundEndedTriggeredEffectContext>(0)),
+                                    new AndExpression<RoundEndedTriggeredEffectContext>(
+                                        new ComparisonExpression<RoundEndedTriggeredEffectContext>(
+                                            struck, ComparisonOperator.Greater,
+                                            new ConstantExpression<RoundEndedTriggeredEffectContext>(0)),
+                                        // Candle Cathedral and Wax Reliquary suspend the accelerated loss.
+                                        new NotExpression<RoundEndedTriggeredEffectContext>(
+                                            new OrExpression<RoundEndedTriggeredEffectContext>(
+                                                new OrExpression<RoundEndedTriggeredEffectContext>(
+                                                    Present<RoundEndedTriggeredEffectContext>(ActIVRites.CandleCathedral),
+                                                    Present<RoundEndedTriggeredEffectContext>(ActIVRites.CandleCathedral + "+")),
+                                                Present<RoundEndedTriggeredEffectContext>(GeneralWax.WaxReliquary)))),
                                     Decay<RoundEndedTriggeredEffectContext>(2),
                                     Decay<RoundEndedTriggeredEffectContext>(1)),
                             ])))),
@@ -490,10 +642,46 @@ public static class Keywords
                         new EventAmountExpression<DamageReceivedTriggeredEffectContext>(),
                         ComparisonOperator.Greater,
                         new ConstantExpression<DamageReceivedTriggeredEffectContext>(0)),
-                    new SetCombatantCounterNode<DamageReceivedTriggeredEffectContext>(
-                        CombatantTargetSelectors.EventTarget, StruckThisRoundCounter,
-                        new EventAmountExpression<DamageReceivedTriggeredEffectContext>(), relative: true))),
+                    new CausalSequenceEffectNode<DamageReceivedTriggeredEffectContext>(
+                    [
+                        new SetCombatantCounterNode<DamageReceivedTriggeredEffectContext>(
+                            CombatantTargetSelectors.EventTarget, StruckThisRoundCounter,
+                            new EventAmountExpression<DamageReceivedTriggeredEffectContext>(), relative: true),
+                        GuestRight<DamageReceivedTriggeredEffectContext>(),
+                        WaxIndemnity<DamageReceivedTriggeredEffectContext>(),
+                    ]))),
                 nameof(TriggerEvent.DamageTaken)),
+
+            // Guest Right's once-per-turn licence.
+            Trigger(new EffectProgram<TurnStartedTriggeredEffectContext>(
+                new SetCombatantCounterNode<TurnStartedTriggeredEffectContext>(
+                    CombatantTargetSelectors.Source, BureaucratHistory.GuestRightUsed,
+                    new ConstantExpression<TurnStartedTriggeredEffectContext>(0), relative: false)),
+                nameof(TriggerEvent.TurnStarted)),
+
+            // Who struck, and how often they have. Written on the ATTACKER, so "each time this enemy has
+            // attacked" is per enemy; the applicant only does the writing, because it is the one status
+            // present in every encounter and the record has to exist whether or not a card is asking yet.
+            new StatusTriggerData(
+                nameof(TriggerEvent.ActionResolved),
+                Serialize(new EffectProgram<ActionResolvedTriggeredEffectContext>(
+                    new ConditionalEffectNode<ActionResolvedTriggeredEffectContext>(
+                        new AndExpression<ActionResolvedTriggeredEffectContext>(
+                            new ActionDealtDamageExpression<ActionResolvedTriggeredEffectContext>(),
+                            new NotExpression<ActionResolvedTriggeredEffectContext>(
+                                new TargetHasStatusExpression<ActionResolvedTriggeredEffectContext>(
+                                    CombatantTargetSelectors.Source, new StatusDefinitionId(ApplicantMarker)))),
+                        new CausalSequenceEffectNode<ActionResolvedTriggeredEffectContext>(
+                        [
+                            new SetCombatantCounterNode<ActionResolvedTriggeredEffectContext>(
+                                CombatantTargetSelectors.Source, BureaucratHistory.AttacksCounter,
+                                new ConstantExpression<ActionResolvedTriggeredEffectContext>(1), relative: true),
+                            new ApplyStatusNode<ActionResolvedTriggeredEffectContext>(
+                                CombatantTargetSelectors.Source,
+                                new StatusDefinitionId(BureaucratHistory.AttackedThisRound),
+                                new ConstantExpression<ActionResolvedTriggeredEffectContext>(1)),
+                        ])))),
+                StatusTriggerScope.Anywhere),
 
             // The round is over: keep what it did, then start counting again. Fight-scoped, because a round
             // ending is nobody's own event.
@@ -514,6 +702,35 @@ public static class Keywords
                                 CombatantTargetSelectors.IterationTarget, StruckThisRoundCounter,
                                 new ConstantExpression<RoundEndedTriggeredEffectContext>(0), relative: false),
                         ])))),
+                StatusTriggerScope.Anywhere),
+
+            // …and the same rollover for who attacked: last round's marks are cleared, this round's become
+            // last round's. Two passes, because a combatant may be in either set or both.
+            new StatusTriggerData(
+                nameof(TriggerEvent.RoundEnded),
+                Serialize(new EffectProgram<RoundEndedTriggeredEffectContext>(
+                    new CausalSequenceEffectNode<RoundEndedTriggeredEffectContext>(
+                    [
+                        new ForEachTargetEffectNode<RoundEndedTriggeredEffectContext>(
+                            CombatantTargetSelectors.WithStatus(CombatantTargetSelectors.AllCombatants,
+                                new StatusDefinitionId(BureaucratHistory.AttackedLastRound)),
+                            new RemoveStatusNode<RoundEndedTriggeredEffectContext>(
+                                CombatantTargetSelectors.IterationTarget,
+                                new StatusDefinitionId(BureaucratHistory.AttackedLastRound))),
+                        new ForEachTargetEffectNode<RoundEndedTriggeredEffectContext>(
+                            CombatantTargetSelectors.WithStatus(CombatantTargetSelectors.AllCombatants,
+                                new StatusDefinitionId(BureaucratHistory.AttackedThisRound)),
+                            new CausalSequenceEffectNode<RoundEndedTriggeredEffectContext>(
+                            [
+                                new ApplyStatusNode<RoundEndedTriggeredEffectContext>(
+                                    CombatantTargetSelectors.IterationTarget,
+                                    new StatusDefinitionId(BureaucratHistory.AttackedLastRound),
+                                    new ConstantExpression<RoundEndedTriggeredEffectContext>(1)),
+                                new RemoveStatusNode<RoundEndedTriggeredEffectContext>(
+                                    CombatantTargetSelectors.IterationTarget,
+                                    new StatusDefinitionId(BureaucratHistory.AttackedThisRound)),
+                            ])),
+                    ]))),
                 StatusTriggerScope.Anywhere),
         ],
     };

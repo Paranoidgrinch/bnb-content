@@ -545,15 +545,15 @@ public static class EncounterPassives
                         new CombatantStatusStacksExpression<TContext>(gainer, marker),
                         ComparisonOperator.Equal,
                         new ConstantExpression<TContext>(0)),
-                    new ComparisonExpression<TContext>(
-                        new CombatantStatusStacksExpression<TContext>(gainer, new StatusDefinitionId("bookworm")),
-                        ComparisonOperator.Greater,
-                        new ConstantExpression<TContext>(0))),
+                    new TriggerEventStatusIsExpression<TContext>(new StatusDefinitionId("bookworm"))),
                 new ComparisonExpression<TContext>(
                     new CombatantCounterExpression<TContext>(mites, PassiveStatuses.CopiedThisRoundCounter),
                     ComparisonOperator.Equal,
                     new ConstantExpression<TContext>(0))),
-            new SequenceEffectNode<TContext>(new IEffectNode<TContext>[]
+            // CAUSAL: the latch has to be shut before anything else can read it. A plain sequence starts
+            // both steps at once, so a second Bookworm arriving in the same drain would find the gate open
+            // and the Mites would guard twice.
+            new CausalSequenceEffectNode<TContext>(new IEffectNode<TContext>[]
             {
                 new GainBlockNode<TContext>(mites, new ConstantExpression<TContext>(4)),
                 new SetCombatantCounterNode<TContext>(mites, PassiveStatuses.CopiedThisRoundCounter,

@@ -435,3 +435,29 @@ exactly as the FINAL_AUDIT enemy pools did. Where the keywords now differ from w
   present. A new status of either kind has to be added there.
 - **Standing Citation** is answered inside the Citation trigger, because only that trigger knows it is about
   to spend a stack — the same shape as Red Ink Doctrine inside the Paperwork tick.
+
+### Acts III and IV
+
+- **Priority Docket / Customary Due** charge for the queueing themselves, because the queueCard effect pays
+  nothing. Customary Due copies from the discard pile — "a card that resolved during your previous turn" is a
+  memory the engine does not keep, and the discard pile is where such a card is.
+- **Hearth Compact** retains the Doubt when the HIT that spent it got nothing through, rather than when the
+  whole attack did. A trigger fires per hit and the action is not over yet.
+- **Hedge Covenant** works the prevented damage back from what landed: the doubted hit is three quarters of
+  what was aimed, so the quarter prevented is a third of what landed, rounded up. The engine reports what
+  landed, not what was averted.
+- **Guest Right and Wax Indemnity** take the hit and give it back. Nothing can soften damage that is already
+  landing, so the player ends the exchange where the card says they should, at the cost of the mitigation
+  reading as healing.
+- **Monumental Writ** counts what is still queued behind it when it resolves. The Queue resolves oldest
+  first, so that is the same set as "cards queued after it" — but only for cards queued in the same turn.
+- **Last Office** counts the statuses the enemy does NOT carry rather than the ones that have run out on
+  anybody this combat; the engine keeps no such history.
+- **Compound Indictment** tops up every negative status the target carries, up to five kinds, rather than
+  letting the player pick which five.
+- **Temple Tally** credits each enemy for the fives it has already crossed, so a pile that shrinks and grows
+  again crosses nothing twice.
+- **A Rite that changes what a KEYWORD does is a marker the keyword looks for.** Hieratic Measure lives in
+  the Ratify conversion, Candle Cathedral and Wax Reliquary in Ward Wax, Debt Ouroboros and Usurer's Moon in
+  the Lien resolution, Standing Citation in Citation, Red Ink Doctrine in the Paperwork tick, Hearth Compact
+  and Hedge Covenant in Doubt. Only the rule that owns the moment can answer a question about it.
