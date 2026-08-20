@@ -537,9 +537,45 @@ public class BossCombatTests
         Assert.Empty(Enemy(play, charterId).PendingStatuses);
     }
 
+    // Article of Full Disclosure: the law that favours the player. The Charter shows what it will do next and
+    // lets the player read the top of their own pile — and changes nothing else.
+    [Fact]
+    public void The_article_of_full_disclosure_opens_the_charters_hand()
+    {
+        // Reaching the fifth Article takes many rounds of law-making, so the probe brings a long life.
+        var (play, session, charterId) = Charter(health: 4000);
+
+        // Before it is published, the player sees only the ordinary telegraph.
+        Assert.Equal(0, play.CombatDriver!.Current!.HeroDisclosure.DrawPileCards);
+        Assert.Single(play.CombatDriver.Current!.UpcomingIntentsFor(charterId));
+
+        for (var round = 0; round < 10
+             && FightProbe.StacksOf(Enemy(play, charterId), LivingCharter.FullDisclosureId) == 0; round++)
+        {
+            for (var i = 0; i < 5 && FightProbe.StacksOf(Hero(play), LivingCharter.ReviewPendingId) == 0; i++)
+                play.CombatDriver.EndTurn();
+            Play(play, session, LivingCharter.StrikeDownCardId);
+        }
+        Assert.Null(session.Error);
+        Assert.Equal(1, FightProbe.StacksOf(Enemy(play, charterId), LivingCharter.FullDisclosureId));
+
+        // The mirror reaches the player at their next turn start.
+        play.CombatDriver.EndTurn();
+        Assert.Null(session.Error);
+        Assert.Equal(1, FightProbe.StacksOf(Hero(play), LivingCharter.DisclosedId));
+
+        var combat = play.CombatDriver.Current!;
+        Assert.Equal(2, combat.HeroDisclosure.DrawPileCards);
+        // As far down the pile as sight reaches — or the whole pile, when it is shorter than that.
+        var pile = combat.State.GetCardZones(combat.HeroId).DrawPile.Count;
+        Assert.Equal(Math.Min(2, pile), combat.RevealedDrawPile.Count);
+        // …and one action past the telegraph.
+        Assert.Equal(2, combat.UpcomingIntentsFor(charterId).Count);
+    }
+
     private static (RunPlayback Play, InteractiveRunSession Session, CombatantId CharterId) Charter(
-        IReadOnlyList<string>? deck = null, int? energy = null) =>
-        FightProbe.Start(FightProbe.Authored("city_boss_05", energy), deck, health: 400);
+        IReadOnlyList<string>? deck = null, int? energy = null, int health = 400) =>
+        FightProbe.Start(FightProbe.Authored("city_boss_05", energy), deck, health);
 
     private static (RunPlayback Play, InteractiveRunSession Session, CombatantId DeputyId) Deputy(
         IReadOnlyList<string>? deck = null) =>

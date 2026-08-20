@@ -267,12 +267,13 @@ older Act-I enemy pool wherever HP or intents disagree. Readings taken where the
 
 ## The Living Charter (Act-I boss)
 
-- **Five of the six Articles ship**: Continuance, Redress, Mutual Security, Reciprocal Burden and Due Notice.
-  Due Notice rides on a new ENGINE capability (a status can postpone what is applied to its bearer; the waiting
-  instance is visible and cleansable but inert until the bearer's next turn) — the Charter carries the Article,
-  the player a mirror of it, so the law binds both sides. Full Disclosure (seeing the draw pile and the intent
-  after the previewed one) is a presentation capability and waits for the host.
-- **The published rotation is Continuance → Redress → Mutual Security → Due Notice.** A strike-down publishes
+- **All six Articles ship**, two of them on new ENGINE capabilities: Due Notice on postponed status
+  applications (a waiting status is visible and cleansable but inert until the bearer's next turn), Full
+  Disclosure on disclosure (a status widens what its bearer may see — the top of their own draw pile and one
+  enemy action past the ordinary telegraph). Both are laws that bind both sides, so the Charter carries the
+  Article and the player carries a mirror of it. Reciprocal Burden is implemented but currently outside the
+  published rotation.
+- **The published rotation is Continuance → Redress → Mutual Security → Due Notice → Full Disclosure.** A strike-down publishes
   the next Article in that order; the Emergency Amendment publishes one beside the standing one, so how many
   strikes it takes to reach a particular Article depends on the fight. The rotation index is kept on BOTH
   sides, because a card can only read the player's counters and a boss action only its own.
