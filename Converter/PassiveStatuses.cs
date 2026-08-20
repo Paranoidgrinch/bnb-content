@@ -106,6 +106,7 @@ public static class PassiveStatuses
         TheGatehouse(),
         .. ComplianceOrders.Select(o => Marker(o.StatusId, o.Name)),
         .. DeputyUndersecretary.Statuses(),
+        .. QueueCommissioner.Statuses(),
     ];
 
     // Iron Warrant Avatar: it issues a visible order each player turn. The orders are statuses ON THE PLAYER —

@@ -17,7 +17,12 @@ public static class RawIntentPrograms
             "lower_appellate_step.await_the_ruling" => AwaitTheRuling(),
             "middle_appellate_step.await_the_ruling" => AwaitTheRuling(),
             "upper_appellate_step.await_the_ruling" => AwaitTheRuling(),
-            _ => enemyId == "deputy_undersecretary" ? DeputyUndersecretary.Intent(intentId) : null,
+            _ => enemyId switch
+            {
+                "deputy_undersecretary" => DeputyUndersecretary.Intent(intentId),
+                "queue_commissioner" => QueueCommissioner.Intent(intentId),
+                _ => null,
+            },
         };
 
     // "Await the Ruling": the other Steps stop attacking and guard whoever holds the Case.

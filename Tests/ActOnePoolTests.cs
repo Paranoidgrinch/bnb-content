@@ -70,7 +70,8 @@ public class ActOnePoolTests
     {
         // The audit's ten elites: four enforcement, three delay, three appeal.
         Assert.Equal(10, WithRole("elite").Count());
-        Assert.Single(WithRole("boss"));
+        // The act's boss pool: the map draws one of them per run.
+        Assert.NotEmpty(WithRole("boss"));
         Assert.NotEmpty(WithRole("mimic"));
 
         // Roles are a closed vocabulary — a typo would silently drop a template out of every pool.

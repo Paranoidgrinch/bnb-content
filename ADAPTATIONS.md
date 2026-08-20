@@ -217,3 +217,18 @@ older Act-I enemy pool wherever HP or intents disagree. Readings taken where the
   → decide without hearing → Everything Outstanding) instead of per-intent cooldowns, which the engine has no
   notion of. "Close an Unanswered File" keeps its own two-use limit through a counter.
 
+## The Queue Commissioner (Act-I boss)
+
+- **The queue advances at the START of the player's turn**, not at the end of the Commissioner's — the same
+  beat, one step later, but on the side where the position can be READ. A joining marker skips the very first
+  advance so the fight opens at Position 3 as designed.
+- **"Move the player backward unless Priority prevents it" is resolved a beat later, too.** The intent marks
+  the player as sent to the back; the player's turn-start program spends Priority or takes the step. From the
+  boss's side neither the position nor Priority can be read at all.
+- **The Administrative Choice is two cards** (Petition for Priority, Yield Your Place) dealt in at the turn's
+  start and exhausted at its end; HOLD POSITION is simply playing neither. A latch enforces "one per turn".
+- **The Phase-II Service Window choice is one card** (Ask for Expedited Service): taking it swaps the 25/30 %
+  opening for 15 % and leaves the player at Position 1 instead of sending them back into the queue.
+- **Phase-II intents rotate on a beat counter** rather than per-intent cooldowns, and "Last Number of the Day"
+  is announced as a status on the player one full action before it lands, as the design requires.
+
