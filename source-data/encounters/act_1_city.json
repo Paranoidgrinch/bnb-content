@@ -800,7 +800,11 @@
       "boss",
       "final_office",
       "act_1_boss"
-    ]
+    ],
+    "enemy_health": [
+      126
+    ],
+    "role": "boss"
   },
   {
     "id": "city_boss_03",

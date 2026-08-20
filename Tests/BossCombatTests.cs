@@ -140,6 +140,122 @@ public class BossCombatTests
     private static int BlockOf(CombatantState combatant) =>
         combatant.DefensivePools.TryGetValue(StandardCombatIds.BlockDefensivePool, out var pool) ? pool.Current : 0;
 
+    // ── The Queue Commissioner ────────────────────────────────────────────────
+
+    // The queue moves one place toward the Counter each turn; reaching it opens a Service Window that strips
+    // the Commissioner's guard, opens him up, and sends the player back into the line afterwards.
+    [Fact]
+    public void The_queue_advances_and_the_counter_serves_the_player()
+    {
+        var (play, session, bossId) = Commissioner(Enumerable.Repeat("paper_cut", 20).ToList());
+
+        Assert.Equal(QueueCommissioner.StartPosition, Position(play));
+
+        // The queue starts moving once the Commissioner has had its turn.
+        play.CombatDriver!.EndTurn();
+        Assert.Null(session.Error);
+        Assert.Equal(2, Position(play));
+
+        // Sooner or later the Counter is reached — Reorder the Line can push the player back on the way.
+        for (var i = 0; i < 8 && FightProbe.StacksOf(Hero(play), QueueCommissioner.ServiceId) == 0; i++)
+            play.CombatDriver.EndTurn();
+        Assert.Null(session.Error);
+
+        // At the Counter: no position left, the Window open, the Commissioner exposed.
+        Assert.Equal(0, Position(play));
+        Assert.Equal(1, FightProbe.StacksOf(Hero(play), QueueCommissioner.ServiceId));
+        Assert.Equal(1, FightProbe.StacksOf(Enemy(play, bossId), QueueCommissioner.BeingServedId));
+
+        // 25 % more, after whatever Doubt the queue has piled on the player (one stack, −25 %, spends itself):
+        // a 6-damage Paper Cut lands as 7, or as 5 through Doubt.
+        var doubt = FightProbe.StacksOf(Hero(play), "doubt");
+        var expected = (doubt > 0 ? 6 * 75 / 100 : 6) * 125 / 100;
+        var before = Enemy(play, bossId).Health.Current;
+        Cut(play, session, bossId);
+        Assert.Equal(before - expected, Enemy(play, bossId).Health.Current);
+
+        // The Window lasts one turn; afterwards the player is back in the queue and it counts as served.
+        play.CombatDriver.EndTurn();
+        Assert.Null(session.Error);
+        Assert.Equal(0, FightProbe.StacksOf(Hero(play), QueueCommissioner.ServiceId));
+        Assert.Equal(0, FightProbe.StacksOf(Enemy(play, bossId), QueueCommissioner.BeingServedId));
+        Assert.True(Position(play) > 0, "the player rejoins the queue after being served");
+        Assert.Equal(1, Enemy(play, bossId).GetCounter(QueueCommissioner.ServicesCounter));
+    }
+
+    // The Administrative Choice is dealt as two offers, and only one of them counts per turn.
+    [Fact]
+    public void Only_one_administrative_choice_counts_per_turn()
+    {
+        var (play, session, _) = Commissioner();
+
+        var hand = play.CombatDriver!.Current!.Hand;
+        Assert.Contains(hand, c => c.DefinitionId.value == QueueCommissioner.PetitionCardId);
+        Assert.Contains(hand, c => c.DefinitionId.value == QueueCommissioner.YieldCardId);
+
+        Play(play, session, QueueCommissioner.YieldCardId);
+        Assert.Equal(QueueCommissioner.BackOfQueue, Position(play));
+
+        // The second offer is refused: one step per turn.
+        Play(play, session, QueueCommissioner.PetitionCardId);
+        Assert.Equal(QueueCommissioner.BackOfQueue, Position(play));
+        Assert.Equal(0, FightProbe.StacksOf(Hero(play), "paperwork"));
+    }
+
+    // Hitting the Commissioner hard enough in one turn earns Priority, which then eats the next push-back.
+    [Fact]
+    public void Priority_is_earned_by_pressure_and_spent_on_the_next_push_back()
+    {
+        var (play, session, bossId) = Commissioner(Enumerable.Repeat("paper_cut", 20).ToList(), energy: 9);
+
+        for (var i = 0; i < 3; i++) // 18 damage: past the 14 the Commissioner has to suffer
+            Cut(play, session, bossId);
+        Assert.Equal(1, FightProbe.StacksOf(Hero(play), QueueCommissioner.PriorityId));
+
+        play.CombatDriver!.EndTurn(); // Next, Please — the queue simply advances
+        Assert.Equal(2, Position(play));
+
+        // Reorder the Line pushes the player back — Priority spends itself instead, and only the ordinary
+        // advance remains.
+        play.CombatDriver.EndTurn();
+        Assert.Null(session.Error);
+        Assert.Equal(0, FightProbe.StacksOf(Hero(play), QueueCommissioner.PriorityId));
+        Assert.Equal(0, FightProbe.StacksOf(Hero(play), QueueCommissioner.PushedBackId));
+        Assert.Equal(1, Position(play));
+    }
+
+    // Two served Windows open the Counter of Final Appeal: the transition is telegraphed, handed down, and
+    // leaves the player in a shorter queue.
+    [Fact]
+    public void Two_service_windows_open_the_counter_of_final_appeal()
+    {
+        var (play, session, bossId) = Commissioner();
+
+        for (var i = 0; i < 12 && FightProbe.StacksOf(Enemy(play, bossId), QueueCommissioner.PriorityQueueId) == 0; i++)
+            play.CombatDriver!.EndTurn();
+        Assert.Null(session.Error);
+
+        Assert.Equal(1, FightProbe.StacksOf(Enemy(play, bossId), QueueCommissioner.PriorityQueueId));
+        Assert.Equal(0, FightProbe.StacksOf(Enemy(play, bossId), QueueCommissioner.FinalCounterId));
+        Assert.True(Enemy(play, bossId).GetCounter(QueueCommissioner.ServicesCounter) >= 2
+            || Enemy(play, bossId).Health.Current <= 60);
+    }
+
+    private static (RunPlayback Play, InteractiveRunSession Session, CombatantId BossId) Commissioner(
+        IReadOnlyList<string>? deck = null, int? energy = null) =>
+        FightProbe.Start(FightProbe.Authored("city_boss_02", energy), deck, health: 400);
+
+    private static int Position(RunPlayback play) =>
+        FightProbe.StacksOf(Hero(play), QueueCommissioner.PositionId);
+
+    private static void Play(RunPlayback play, InteractiveRunSession session, string cardId)
+    {
+        var card = play.CombatDriver!.Current!.Hand.First(c => c.DefinitionId.value == cardId);
+        play.CombatDriver.PlayCard(card.Id, play.CombatDriver.Current!.State.Combatants
+            .First(c => c.Id != play.CombatDriver.Current!.HeroId).Id);
+        Assert.Null(session.Error);
+    }
+
     private static (RunPlayback Play, InteractiveRunSession Session, CombatantId DeputyId) Deputy(
         IReadOnlyList<string>? deck = null) =>
         FightProbe.Start(FightProbe.Authored("city_boss_01"), deck, health: 400);

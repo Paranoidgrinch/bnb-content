@@ -2666,54 +2666,75 @@
   {
     "id": "queue_commissioner",
     "name": "The Queue Commissioner",
-    "max_hp": 112,
+    "max_hp": 126,
     "intent_pattern": "cycle",
     "intents": [
       {
-        "id": "call_the_wrong_number",
-        "name": "Call the Wrong Number",
-        "intent_type": "mixed",
+        "id": "next_please",
+        "name": "Next, Please",
+        "intent_type": "attack",
         "actions": [
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 8
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "panic",
-            "amount": 1
+            "amount": 9
           }
         ]
       },
       {
         "id": "reorder_the_line",
         "name": "Reorder the Line",
-        "intent_type": "block",
-        "actions": [
-          {
-            "type": "gain_block",
-            "target": "owner",
-            "amount": 10
-          }
-        ]
-      },
-      {
-        "id": "now_serving_nobody",
-        "name": "Now Serving Nobody",
         "intent_type": "mixed",
         "actions": [
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 5
+            "amount": 8
+          }
+        ]
+      },
+      {
+        "id": "counter_closed",
+        "name": "Counter Closed",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 15
           },
           {
             "type": "apply_status",
             "target": "player",
-            "status": "panic",
+            "status": "counter_closed",
             "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "everyone_has_been_waiting",
+        "name": "Everyone Has Been Waiting",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "damage_per_status",
+            "target": "player",
+            "status": "queue_position",
+            "amount": 6,
+            "amount_per_stack": 2,
+            "cap": 8
+          }
+        ]
+      },
+      {
+        "id": "call_a_number_not_yours",
+        "name": "Call a Number Not Yours",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 11
           },
           {
             "type": "apply_status",
@@ -2724,38 +2745,231 @@
         ]
       },
       {
-        "id": "crowd_pressure",
-        "name": "Crowd Pressure",
-        "intent_type": "attack",
-        "actions": [
-          {
-            "type": "damage_per_status",
-            "target": "player",
-            "status": "panic",
-            "amount_per_stack": 3
-          }
-        ]
-      },
-      {
-        "id": "close_the_counter",
-        "name": "Close the Counter",
-        "intent_type": "attack",
+        "id": "open_the_final_counter",
+        "name": "Open the Final Counter",
+        "intent_type": "mixed",
+        "special": true,
         "actions": [
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 15
+            "amount": 7
+          },
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 10
           }
         ]
+      },
+      {
+        "id": "priority_call",
+        "name": "Priority Call",
+        "intent_type": "attack",
+        "special": true,
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 11
+          }
+        ]
+      },
+      {
+        "id": "reassign_the_queue",
+        "name": "Reassign the Queue",
+        "intent_type": "mixed",
+        "special": true,
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 9
+          }
+        ]
+      },
+      {
+        "id": "final_counter_closed",
+        "name": "Final Counter Closed",
+        "intent_type": "block",
+        "special": true,
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 16
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "counter_closed",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "crowd_presses_forward",
+        "name": "Crowd Presses Forward",
+        "intent_type": "mixed",
+        "special": true,
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 13
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "panic",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "last_number_of_the_day",
+        "name": "Last Number of the Day",
+        "intent_type": "attack",
+        "special": true,
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 18
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "the_commissioner"
+      }
+    ],
+    "intent_rules": [
+      {
+        "condition": {
+          "kind": "self_status",
+          "status": "counter_of_final_appeal",
+          "min_stacks": 1
+        },
+        "action": "open_the_final_counter",
+        "priority": 100
+      },
+      {
+        "condition": {
+          "kind": "all_of",
+          "conditions": [
+            {
+              "kind": "self_status",
+              "status": "priority_queue",
+              "min_stacks": 1
+            },
+            {
+              "kind": "self_counter",
+              "counter": "queue_beat",
+              "op": "eq",
+              "value": 0
+            }
+          ]
+        },
+        "action": "priority_call",
+        "priority": 60
+      },
+      {
+        "condition": {
+          "kind": "all_of",
+          "conditions": [
+            {
+              "kind": "self_status",
+              "status": "priority_queue",
+              "min_stacks": 1
+            },
+            {
+              "kind": "self_counter",
+              "counter": "queue_beat",
+              "op": "eq",
+              "value": 1
+            }
+          ]
+        },
+        "action": "reassign_the_queue",
+        "priority": 59
+      },
+      {
+        "condition": {
+          "kind": "all_of",
+          "conditions": [
+            {
+              "kind": "self_status",
+              "status": "priority_queue",
+              "min_stacks": 1
+            },
+            {
+              "kind": "self_counter",
+              "counter": "queue_beat",
+              "op": "eq",
+              "value": 2
+            }
+          ]
+        },
+        "action": "crowd_presses_forward",
+        "priority": 58
+      },
+      {
+        "condition": {
+          "kind": "all_of",
+          "conditions": [
+            {
+              "kind": "self_status",
+              "status": "priority_queue",
+              "min_stacks": 1
+            },
+            {
+              "kind": "self_counter",
+              "counter": "queue_beat",
+              "op": "eq",
+              "value": 3
+            }
+          ]
+        },
+        "action": "final_counter_closed",
+        "priority": 57
+      },
+      {
+        "condition": {
+          "kind": "all_of",
+          "conditions": [
+            {
+              "kind": "self_status",
+              "status": "priority_queue",
+              "min_stacks": 1
+            },
+            {
+              "kind": "self_counter",
+              "counter": "queue_beat",
+              "op": "eq",
+              "value": 4
+            }
+          ]
+        },
+        "action": "last_number_of_the_day",
+        "priority": 56
+      },
+      {
+        "condition": {
+          "kind": "self_status",
+          "status": "priority_queue",
+          "min_stacks": 1
+        },
+        "action": "priority_call",
+        "priority": 10
       }
     ],
     "tags": [
       "city",
       "boss",
       "queue",
-      "commissioner",
-      "panic",
-      "boss_panic"
+      "act_1_boss"
     ]
   },
   {

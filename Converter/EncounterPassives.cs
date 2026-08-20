@@ -39,6 +39,7 @@ public static class EncounterPassives
         "final_notice_knight" => [TheDeadlineRuns(), OfferAcknowledgement()],
         "sealed_spear" => [WhenTheSpearFalls()],
         "deputy_undersecretary" => DeputyUndersecretary.Triggers(),
+        "queue_commissioner" => QueueCommissioner.Triggers(),
         _ => Array.Empty<EncounterTriggerData>(),
     };
 
@@ -167,6 +168,12 @@ public static class EncounterPassives
         // The Deputy opens its Desk on the player: the phase mirror every Desk program gates on.
         "deputy_undersecretary" =>
             [new StartingStatusSpec(new StatusDefinitionId(DeputyUndersecretary.RoutineId), 1)],
+        // The Commissioner puts the player in the queue: Position 3 of four.
+        "queue_commissioner" =>
+        [
+            new StartingStatusSpec(new StatusDefinitionId(QueueCommissioner.PositionId), QueueCommissioner.StartPosition),
+            new StartingStatusSpec(new StatusDefinitionId(QueueCommissioner.JustJoinedId), 1),
+        ],
         "final_notice_knight" =>
             [new StartingStatusSpec(new StatusDefinitionId(PassiveStatuses.FinalNoticeId), PassiveStatuses.FinalNoticeStart)],
         _ => Array.Empty<StartingStatusSpec>(),
