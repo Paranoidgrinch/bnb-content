@@ -461,3 +461,32 @@ exactly as the FINAL_AUDIT enemy pools did. Where the keywords now differ from w
   the Ratify conversion, Candle Cathedral and Wax Reliquary in Ward Wax, Debt Ouroboros and Usurer's Moon in
   the Lien resolution, Standing Citation in Citation, Red Ink Doctrine in the Paperwork tick, Hearth Compact
   and Hedge Covenant in Doubt. Only the rule that owns the moment can answer a question about it.
+
+## The final relic pool (2026-08-20)
+
+A relic that changes a fight is a hidden status handed to the player when the fight opens (`Openings.EveryCombat`
+applies it), so a relic's rule is written in exactly the language a Rite is written in. A relic that changes the
+RUN — gold after a victory, HP on pickup — is a run program instead. The deviations below are the places where a
+relic's line asks for something the engine cannot see.
+
+### The 50 Normal relics
+
+- **Brass Bookmark** retains the whole hand rather than one chosen card. Retention is a property of a card, and
+  choosing which card to keep at the moment a turn ends is not a prompt the engine raises.
+- **Redaction Knife** discards the oldest card in hand instead of a chosen one, for the same reason — the cost
+  has to be paid without stopping to ask.
+- **Binder's Awl** pays on the next draw after the draw pile runs dry, not at the shuffle itself; a reshuffle
+  is not an event a rule can hear.
+- **Hollow Wax Bead** and **Lead Counterweight** cannot read what a card cost, so they pay a flat amount rather
+  than scaling with the card that triggered them.
+- **Concordance Medallion** and **Chancery Ribbon** spread a flat 1 to the other enemies instead of matching
+  what was just filed: a rule sees THAT a status landed, not how many stacks it carried onto that target.
+- **Rootbound Staff** fires every combat rather than once per rest cycle — a relic's rule is installed fresh at
+  every opening bell and keeps no memory between fights.
+- **Blood-Price Token** takes its 3 HP rather than offering the trade; a rule cannot raise a yes/no prompt
+  outside a card's own choose-one.
+- **Refusal Rosary** pays after every victory instead of on the refusal itself, because a refused enforcement
+  is not a run-layer event.
+- **The once-a-turn latch is read and written on the WEARER**, not on the event's source: who "source" names
+  differs between a card being played, a status landing and a turn starting, but the relic's wearer is the
+  same combatant in all three, and the promise is theirs.
