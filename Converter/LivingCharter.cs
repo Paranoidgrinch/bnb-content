@@ -23,6 +23,8 @@ public static class LivingCharter
     public const string ReciprocalBurdenId = "article_of_reciprocal_burden";
     public const string DueNoticeId = "article_of_due_notice";
     public const string UnderNoticeId = "under_due_notice";      // the Article's mirror on the player
+    public const string FullDisclosureId = "article_of_full_disclosure";
+    public const string DisclosedId = "under_full_disclosure";   // the Article's mirror on the player
 
     public const string ReviewPendingId = "judicial_review_called";   // on the player: the choice is open
     public const string AmendmentPendingId = "emergency_amendment";   // telegraph, on the Charter
@@ -55,7 +57,8 @@ public static class LivingCharter
 
     // The Articles this fight reaches for, in order. Three of them are ever visible at once (one in Phase I,
     // two after the Amendment); a strike-down publishes the next in this rotation.
-    public static readonly string[] Articles = [ContinuanceId, RedressId, MutualSecurityId, DueNoticeId];
+    public static readonly string[] Articles =
+        [ContinuanceId, RedressId, MutualSecurityId, DueNoticeId, FullDisclosureId];
 
     // ── Content ───────────────────────────────────────────────────────────────
 
@@ -76,6 +79,12 @@ public static class LivingCharter
             "A negative status filed on either side takes effect at the start of that side's next turn."),
         Postponing(UnderNoticeId, "Under Due Notice",
             "Negative statuses filed on you take effect at the start of your next turn."),
+        // Full Disclosure is law that only widens the VIEW — the Charter shows its hand, and the design is
+        // explicit that an article may favour the player.
+        PassiveStatuses.NamedMarker(FullDisclosureId, "Article of Full Disclosure",
+            "The player sees the top 2 cards of their draw pile and the Charter's next two intents."),
+        Disclosing(DisclosedId, "Under Full Disclosure",
+            "You see the top 2 cards of your draw pile and the Charter's next two intents."),
         PassiveStatuses.NamedMarker(ReviewPendingId, "Judicial Review",
             "Uphold the Article or strike it down before your turn ends."),
         PassiveStatuses.NamedMarker(AmendmentPendingId, "Emergency Amendment",
@@ -109,6 +118,13 @@ public static class LivingCharter
         PassiveStatuses.NamedMarker(id, name, description) with
         {
             IncomingStatusDelay = new IncomingStatusDelayData(1, StatusPolarity.Debuff),
+        };
+
+    // A status whose whole effect is what its bearer may SEE (the engine's disclosure rule).
+    private static StatusData Disclosing(string id, string name, string description) =>
+        PassiveStatuses.NamedMarker(id, name, description) with
+        {
+            Disclosure = new DisclosureData(DrawPileCards: 2, IntentLookahead: 1),
         };
 
     // ── The Articles, at the player's turn start ──────────────────────────────
@@ -167,6 +183,14 @@ public static class LivingCharter
                                 new ConstantExpression<TurnStartedTriggeredEffectContext>(1)),
                             @else: new RemoveStatusNode<TurnStartedTriggeredEffectContext>(
                                 player, new StatusDefinitionId(UnderNoticeId))),
+                        // Full Disclosure grants its sight to the PLAYER, so it too rides on a mirror.
+                        new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
+                            CharterHas(FullDisclosureId),
+                            new ApplyStatusNode<TurnStartedTriggeredEffectContext>(
+                                player, new StatusDefinitionId(DisclosedId),
+                                new ConstantExpression<TurnStartedTriggeredEffectContext>(1)),
+                            @else: new RemoveStatusNode<TurnStartedTriggeredEffectContext>(
+                                player, new StatusDefinitionId(DisclosedId))),
                         // The per-turn latches of the Articles open again for both sides.
                         new RemoveStatusNode<TurnStartedTriggeredEffectContext>(
                             iterated, new StatusDefinitionId(SecurityUsedId)),
