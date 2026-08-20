@@ -256,6 +256,105 @@ public class BossCombatTests
         Assert.Null(session.Error);
     }
 
+    // ── The Lord Sealkeeper ───────────────────────────────────────────────────
+
+    // Three Seals raise a 16-Block Ward every player turn; the Seal of Access is 4 of it.
+    [Fact]
+    public void The_seal_ward_rises_with_every_standing_seal()
+    {
+        var (play, _, keeperId) = Sealkeeper();
+
+        Assert.Equal(16, BlockOf(Enemy(play, keeperId)));
+        Assert.All(LordSealkeeper.Seals,
+            seal => Assert.Equal(1, FightProbe.StacksOf(Enemy(play, keeperId), seal.SealId)));
+    }
+
+    // Strip the Ward, draw blood, and a Seal may be broken — the player chooses which, and keeps its Fragment.
+    [Fact]
+    public void Breaking_a_seal_cracks_the_keeper_and_leaves_a_fragment()
+    {
+        var (play, session, keeperId) = Sealkeeper(Enumerable.Repeat("paper_cut", 30).ToList(), energy: 9);
+
+        // 16 Block, then blood: the offer only appears once the Ward is gone. Two Paper Cuts are 12 — not
+        // enough; the third goes through it.
+        for (var i = 0; i < 2; i++)
+            Cut(play, session, keeperId);
+        Assert.Equal(0, FightProbe.StacksOf(Hero(play), LordSealkeeper.BreakReadyId));
+        Cut(play, session, keeperId);
+        Assert.Equal(1, FightProbe.StacksOf(Hero(play), LordSealkeeper.BreakReadyId));
+        Assert.Equal(1, FightProbe.StacksOf(Enemy(play, keeperId), LordSealkeeper.CrackedId));
+
+        // Three offers on the table; taking one shatters that Seal and hands over its Fragment.
+        var access = LordSealkeeper.Seals[0];
+        Assert.All(LordSealkeeper.Seals,
+            seal => Assert.Contains(play.CombatDriver!.Current!.Hand, c => c.DefinitionId.value == seal.BreakCardId));
+
+        Play(play, session, access.BreakCardId);
+        Assert.Equal(0, FightProbe.StacksOf(Enemy(play, keeperId), access.SealId));
+        Assert.Equal(1, FightProbe.StacksOf(Enemy(play, keeperId), access.OutstandingId));
+        Assert.Contains(play.CombatDriver!.Current!.Hand, c => c.DefinitionId.value == access.FragmentCardId);
+
+        // Only one Seal per turn: a second offer does nothing.
+        Play(play, session, LordSealkeeper.Seals[1].BreakCardId);
+        Assert.Equal(1, FightProbe.StacksOf(Enemy(play, keeperId), LordSealkeeper.Seals[1].SealId));
+
+        // The Fragment of Access takes 12 Block off the Keeper — and is a one-use piece of stolen authority.
+        play.CombatDriver.EndTurn();
+        Assert.Null(session.Error);
+        var guarded = BlockOf(Enemy(play, keeperId));
+        Assert.True(guarded > 0, "the Ward rises again on the surviving Seals");
+        Play(play, session, access.FragmentCardId);
+        Assert.Equal(Math.Max(0, guarded - 12), BlockOf(Enemy(play, keeperId)));
+        Assert.Equal(0, FightProbe.StacksOf(Enemy(play, keeperId), access.OutstandingId));
+    }
+
+    // A Fragment stays in hand across turns: it is the boss's authority, not a card of the deck.
+    [Fact]
+    public void A_fragment_is_kept_until_it_is_spent()
+    {
+        var (play, session, keeperId) = Sealkeeper(Enumerable.Repeat("paper_cut", 30).ToList(), energy: 9);
+
+        for (var i = 0; i < 4; i++)
+            Cut(play, session, keeperId);
+        Play(play, session, LordSealkeeper.Seals[2].BreakCardId); // Execution
+
+        play.CombatDriver!.EndTurn();
+        Assert.Null(session.Error);
+        Assert.Contains(play.CombatDriver.Current!.Hand,
+            c => c.DefinitionId.value == LordSealkeeper.Seals[2].FragmentCardId);
+    }
+
+    // Wearing the Keeper down unseals it: the Seals shatter, the Ward falls, and Phase II begins.
+    [Fact]
+    public void The_keeper_unseals_itself_when_the_seals_are_gone()
+    {
+        var (play, session, keeperId) = Sealkeeper(Enumerable.Repeat("paper_cut", 60).ToList(), energy: 9);
+
+        for (var turn = 0; turn < 12 && FightProbe.StacksOf(Enemy(play, keeperId), LordSealkeeper.UnsealedId) == 0; turn++)
+        {
+            while (play.CombatDriver!.Current!.Hand.Any(c => c.DefinitionId.value == "paper_cut")
+                   && Hero(play).Resources[StandardCombatIds.EnergyResource].Current > 0)
+                Cut(play, session, keeperId);
+
+            // Whatever Seal is offered, take it.
+            var offer = play.CombatDriver.Current!.Hand
+                .FirstOrDefault(c => LordSealkeeper.Seals.Any(s => s.BreakCardId == c.DefinitionId.value));
+            if (offer is not null)
+                play.CombatDriver.PlayCard(offer.Id, keeperId);
+
+            play.CombatDriver.EndTurn();
+            Assert.Null(session.Error);
+        }
+
+        Assert.Equal(1, FightProbe.StacksOf(Enemy(play, keeperId), LordSealkeeper.UnsealedId));
+        Assert.All(LordSealkeeper.Seals,
+            seal => Assert.Equal(0, FightProbe.StacksOf(Enemy(play, keeperId), seal.SealId)));
+    }
+
+    private static (RunPlayback Play, InteractiveRunSession Session, CombatantId KeeperId) Sealkeeper(
+        IReadOnlyList<string>? deck = null, int? energy = null) =>
+        FightProbe.Start(FightProbe.Authored("city_boss_03", energy), deck, health: 400);
+
     private static (RunPlayback Play, InteractiveRunSession Session, CombatantId DeputyId) Deputy(
         IReadOnlyList<string>? deck = null) =>
         FightProbe.Start(FightProbe.Authored("city_boss_01"), deck, health: 400);
