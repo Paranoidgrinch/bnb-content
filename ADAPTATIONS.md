@@ -338,3 +338,29 @@ exactly as the FINAL_AUDIT enemy pools did. Where the keywords now differ from w
   its own first application — the engine deliberately keeps a status' StatusApplied trigger from seeing
   itself — so "you now hold 3" would be invisible on the application that created the status. Every source of
   Seal therefore goes through the shared authoring helper.
+
+### Act-I Bureaucrat card deviations
+
+- **Certified Kindling** — "Archive a card from your hand. Gain 4 Block. If it was Junk, gain 4 additional
+  Block." A card program cannot inspect the card a player is ABOUT to choose, so the Junk case is settled
+  first: while the hand holds Junk the card takes the first of it and pays the bonus, and only with no Junk in
+  hand does the player pick freely. The Junk is therefore taken rather than offered — which is the choice a
+  player after the bonus would make anyway.
+- **Seal converts at most twice per application.** "At 3 Seal, spend 3 and Ratify" is written as two nested
+  questions rather than a loop, because the engine's repeat-until runs its body once before it ever asks (it
+  would Ratify a single Seal). Two is the ceiling anything in the game can reach in one application: the
+  largest grant is 3, on top of at most 2 already standing.
+- **A card's clauses run causally.** Card text is read top to bottom and later clauses routinely ask about
+  what earlier ones did, so every card's steps wait for the previous step to have HAPPENED. A plain engine
+  sequence starts all its steps at once, which would make "if this Ratifies the target" read stale state.
+
+### Still owed by the engine before the rest of the pool can be authored
+
+- **An enemy's upcoming intent is not readable from a combat program.** The telegraph is computed by a
+  Scenario-layer delegate, not stored on the combat state, so "if the target intends to Attack" (Form of Ill
+  Intent, Conditional Approval, Witchmark Citation, Silent Hearing, Guestbook Oath, and several relics) has
+  nowhere to read from.
+- **Citation** needs "the action that just resolved dealt no direct damage". The action scope added for Doubt
+  is the substrate; what is missing is the damage question.
+- **Choose one of N** inside a combat program (Malediction Review, Clerical Discretion, Grand Dispensation,
+  Mootcap). The engine has interactive card and entity picks but no option pick.

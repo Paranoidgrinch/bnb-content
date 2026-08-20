@@ -23,6 +23,13 @@ public static class Keywords
     public const string Seal = "seal";
     public const string Ratified = "ratified";
 
+    // Archive is an ACTION, not a zone: an Archived card is in the Exhaust pile, but not every exhausted card
+    // was Archived, and "whenever you Archive" must fire only for the deliberate act. The action therefore
+    // leaves a mark — one stack of this on the archivist, per card — which is both the event a Rite listens
+    // for and the running count the cards that scale on it read ("5 damage for each card you have Archived
+    // this combat"). It only ever grows, which is what keeps it out of Blood Ink's way.
+    public const string Archived = "archived";
+
     public const string Censure = "censure";
     public const string Lien = "lien";
     public const string Citation = "citation";
@@ -44,6 +51,7 @@ public static class Keywords
         DoubtStatus(),
         SealStatus(),
         RatifiedStatus(),
+        ArchivedStatus(),
         CensureStatus(),
         LienStatus(),
         BloodInkStatus(),
@@ -134,6 +142,10 @@ public static class Keywords
                                 CombatantTargetSelectors.IterationTarget, new StatusDefinitionId(Ratified)))))),
                 StatusTriggerScope.Anywhere),
         ]);
+
+    private static StatusData ArchivedStatus() => Status(
+        Archived, "Archived", StatusPolarity.Neutral,
+        "How many cards you have Archived this combat.");
 
     // ── general ───────────────────────────────────────────────────────────────────────────────────────────
 
