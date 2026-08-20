@@ -66,26 +66,28 @@ Nothing else can be built until these are real. Each row says whether it is data
 | **Blood Ink X** | another Status on the holder loses ≥1 stack in one event: lose X HP, remove 1 | data — `StatusStacksChanged` + `StatusExpired` (the last-stack gotcha) |
 | **Ward Wax X** | start of your turn gain X Block; after the enemy turn lose 1 (no unblocked Attack damage) or 2 (any) | data — `TurnStarted` + `RoundEnded` with an "unblocked damage this round" counter |
 
-### Engine gaps to close first
+### Engine gaps — status
 
-- **E-1 Queue** — new `CardZone.QueuePile`; `CardData.QueueOnPlay` (pay cost, lock the chosen
-  target on the instance, skip the play program, land in the Queue); turn-start automation resolves
-  oldest-first **before the draw**; node `resolveQueuedCard(n)` for Night Docket / Processional
-  Calendar. `zoneCards(QueuePile)` then gives Backlog Charge and Fivefold Compliance for free.
-- **E-2 `PassiveModifierData.OncePerSourceCard`** — a damage modifier that fires once per source
-  card instead of once per hit. Ratified, and the many relics phrased "+N **total** damage".
-- **E-3 partial status prevention** — `StatusData.Prevention` spec: polarity filter, stacks
-  prevented per stack held, self-exclusion, and an "is this a cost payment" exemption.
-- **E-4 choose-one-of-N inside a combat program** — Malediction Review, Clerical Discretion,
-  Grand Dispensation, Mootcap. The engine has interactive card and entity picks but no option pick.
-- **E-5 non-damaging-action classification** — for Citation. Player side = the played card resolved
-  no direct damage; enemy side = the resolved intent was not an Attack.
+**Closed** (RogueDeck-Core, all pushed, all with live tests through `RunPlayback.BuildContent`):
 
-Each gap lands in RogueDeck-Core with its own tests, authorable from Studio, before the cards that
-need it — the standing rule from the Shred arc: **test through `RunPlayback.BuildContent`, never a
-hand-built registry.**
+| # | What | Commit |
+|---|---|---|
+| E-6 | `dealDamage` carries a damage KIND, so a status tick is HP loss no Direct-restricted modifier touches | `ba87b5f` |
+| E-2 | `OncePerAction` on a damage passive — "+N **total** damage" (Ratified) | `8b38b26` |
+| E-3 | Prohibition: partial, stack-for-stack status prevention (Censure) + a trigger event for a refusal + **Anywhere-scoped status triggers**, which is what lets a Rite on the player watch the enemies | `fdb30dc`, `f7162e2` |
+| — | An **action scope**: a card play or an enemy action is one action, and `claimOnceThisAction` lets content fire once per action however many hits it makes (Doubt) | `a9dda34` |
+| E-1 | **The Queue**: a new zone, `QueueOnPlay`, the turn-start resolution window before the draw, and `resolveQueuedCards` for Night Docket / Processional Calendar | `b2fae86` |
+| — | A **causal** card sequence (each clause waits for the previous one) + counting a zone **by tag** | `14ec928` |
 
----
+**Still open** — each blocks a named set of cards:
+
+- **Reading an enemy's upcoming intent from a combat program.** The telegraph is a Scenario-layer delegate,
+  not combat state. Blocks Form of Ill Intent, Conditional Approval, Witchmark Citation, Silent Hearing,
+  Guestbook Oath, and several relics.
+- **Telling a non-damaging action from a damaging one** — all of **Citation**. The action scope is the
+  substrate; the damage question is what is missing.
+- **Choose one of N** inside a combat program. Malediction Review, Clerical Discretion, Grand Dispensation,
+  Mootcap.
 
 ## Phase B — cards
 
@@ -114,8 +116,10 @@ All numbers stay at the design's deliberate placeholders — the balance pass is
 
 ## Status
 
-- [ ] A — keyword substrate
-- [ ] B — cards
+- [x] A — keyword substrate (Paperwork, Doubt, Seal/Ratified, Archive, Censure, Lien, Blood Ink, Ward Wax;
+      Citation waits on the engine)
+- [ ] B — cards — starters + Junk + **Act I Bureaucrat commons (15/15)** done; 65 Bureaucrat and 50 general
+      cards to go
 - [ ] C — relics
 - [ ] D — events
 - [ ] E — run systems
