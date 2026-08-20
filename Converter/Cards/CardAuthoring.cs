@@ -64,7 +64,11 @@ public static class CardAuthoring
             PlayedCardDestinationZone = AllTags.Contains(ExhaustTag) ? CardZone.ExhaustPile : Destination,
             RetainInHandOnTurnEnd = RetainInHand,
             QueueOnPlay = Queued,
-            Program = CombatProgramModel.Build<CardPlayContext>(Program),
+            // A Queue card's program runs ONLY when it resolves — playing it merely files it — so the pulse
+            // appended here means exactly "a queued card has just resolved", which is what the Rites and
+            // relics that wait for that are listening to.
+            Program = CombatProgramModel.Build<CardPlayContext>(
+                Queued ? Seq(Program, Apply(Keywords.QueueResolved, 1, You)) : Program),
         };
     }
 
@@ -183,6 +187,16 @@ public static class CardAuthoring
     public static CombatNodeModel ArchiveChosen(string purpose = "choose a card to Archive") =>
         Archive(new CombatCardSpec("chosen", CardZone.Hand, Purpose: purpose));
 
+    // Creating Junk, as an event: the count only ever grows, which keeps it clear of the general pool's
+    // Blood Ink (which answers statuses LOSING stacks), and Clerk's Familiar reads the growth.
+    public static CombatNodeModel AddJunk(string cardId, CardZone zone, int copies = 1) =>
+        Seq(AddCard(cardId, zone, copies), Apply(Keywords.JunkFiled, copies, You));
+
+    // A Rite: a persistent combat effect. Playing it puts a status on you, and that status carries the rule —
+    // which is also how a Rite watches the ENEMIES, since a status trigger can be scoped to the whole fight.
+    public static CombatNodeModel InstallRite(string riteStatusId) =>
+        Apply(riteStatusId, 1, You);
+
     public static CombatAmountSpec ArchivedCount =>
         new("statusStacks", SelectorKey: You, ReadId: Keywords.Archived);
 
@@ -194,6 +208,25 @@ public static class CardAuthoring
     // effect is worth a flat bonus rather than one per matching thing.
     public static CombatAmountSpec Once(CombatAmountSpec amount) =>
         CombatAmountSpec.Binary("min", amount, CombatAmountSpec.FromConst(1));
+
+    // amount, but never above a ceiling — "count at most 3 Queued cards", "maximum 12 Block".
+    public static CombatAmountSpec AtMost(CombatAmountSpec amount, int ceiling) =>
+        CombatAmountSpec.Binary("min", amount, CombatAmountSpec.FromConst(ceiling));
+
+    public static CombatAmountSpec CardsInZone(CardZone zone) =>
+        new("zoneCards", SelectorKey: You, Zone: zone);
+
+    public static CombatAmountSpec Plus(CombatAmountSpec a, CombatAmountSpec b) =>
+        CombatAmountSpec.Binary("add", a, b);
+
+    public static CombatAmountSpec Times(CombatAmountSpec a, int factor) =>
+        CombatAmountSpec.Binary("mul", a, CombatAmountSpec.FromConst(factor));
+
+    // A Paperwork toll paid on the spot: the same HP loss the status deals at the end of a turn, which is
+    // what "trigger its Paperwork immediately" means. Not an attack, so nothing that shapes attacks reshapes it.
+    public static CombatNodeModel TriggerPaperwork(string on = Target) =>
+        new("dealDamage", on, Stacks(Keywords.Paperwork, on),
+            IgnoresBlock: true, DamageKind: DamageKind.DamageOverTime);
 
     // One Ratify event: the three Seals are spent and the enemy is Ratified. A second Ratify in the same turn
     // adds no further damage (Ratified's bonus is flat), but it is still its own event for anything watching.

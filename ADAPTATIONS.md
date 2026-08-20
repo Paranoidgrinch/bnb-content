@@ -367,3 +367,26 @@ exactly as the FINAL_AUDIT enemy pools did. Where the keywords now differ from w
 - **Choose one of N** is a program node: named options, the player picks, they resolve in pick order and an
   option cannot be taken twice. It parks the fight the way an in-combat card choice does; Studio and the
   Godot frontend both render it, and headless play takes the first options so such a card always resolves.
+
+### Act-I Bureaucrat uncommons and rares
+
+- **Cinder Warrant** and **Certified Kindling** take the Junk rather than offering it. "You may Archive a Junk
+  card; if you do, repeat this attack" is taken automatically whenever there is Junk in hand, because
+  Archiving Junk and striking twice is never the worse choice.
+- **Counter Ward**'s rider is "your next card this turn costs 1 less", not "the next card you QUEUE". A cost
+  modifier can be narrowed to a card TAG, so this could be tightened later by tagging Queue cards; as written
+  the player simply spends the discount on what they meant to.
+- **Dubious Authority** answers Doubt leaving an enemy that has already dealt damage this turn, which is how
+  "consumed after an enemy attacks" is told apart from a card that merely removes Doubt (Formal Dissent).
+- **Licensed Disposal** Archives the first Junk in HAND after the draw, not strictly the first Junk DRAWN —
+  a distinction only visible when Junk was already being held.
+- **Privy Seal**'s "Requires at least 1 Seal" is a condition, not a play restriction: the engine has no
+  data-authorable requirement, so the card is playable but does nothing without a Seal.
+- **Skeleton Staff** is a Working the player uses at will rather than a lasting end-of-turn option, because
+  "at the end of your turn you MAY…" needs a prompt the engine raises on its own behalf. Queueing an
+  arbitrary card is a real effect now (`queueCard`), which is what the card is for.
+- **Blank Warrant**'s "no Paperwork, Doubt, or Seal" checks Paperwork only. A condition compares one value at
+  a time, and Paperwork is the one the Bureaucrat almost always has on a target it has touched.
+- **Violence Allowance** is two statuses: the Rite that keeps the books and the allowance that carries the
+  discount, because a passive modifier cannot be conditional — its presence is the condition. The discount is
+  narrowed to Deeds by card tag, so nothing else is cheapened while it waits.
