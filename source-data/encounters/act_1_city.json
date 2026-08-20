@@ -230,8 +230,7 @@
       "senior_clerk"
     ],
     "weight": 1,
-    "tags": [],
-    "role": "elite"
+    "tags": []
   },
   {
     "id": "city_elite_02",
@@ -356,7 +355,10 @@
       "final_office",
       "act_1_boss"
     ],
-    "role": "boss"
+    "role": "boss",
+    "enemy_health": [
+      130
+    ]
   },
   {
     "id": "city_easy_04",
