@@ -226,7 +226,7 @@ public static class PassiveStatuses
                     new ConstantExpression<TurnEndedTriggeredEffectContext>(0)),
                 new NotExpression<TurnEndedTriggeredEffectContext>(
                     new FirstCardPlayedThisTurnHasTagExpression<TurnEndedTriggeredEffectContext>(
-                        CombatantTargetSelectors.Source, new TagId("attack"))))),
+                        CombatantTargetSelectors.Source, new TagId(Cards.CardAuthoring.DeedTag))))),
     ];
 
     // Contempt: every point makes the Avatar's next direct attack hit 4 harder, and the attack spends it all.
@@ -855,7 +855,8 @@ public static class PassiveStatuses
 
     // Self-Correcting Record: the card TYPES it can correct against (CardMapper emits a card's type as a
     // combat tag), the passive that arms a correction, and its once-per-player-turn latch.
-    public static readonly string[] CardTypes = ["action", "form", "argument"];
+    public static readonly string[] CardTypes =
+        [Cards.CardAuthoring.DeedTag, Cards.CardAuthoring.WorkingTag, Cards.CardAuthoring.RiteTag];
     public const string CorrectAgainstTheEvidenceId = "correct_against_the_evidence";
     public static readonly CounterId CorrectedThisTurnCounter = new("corrected_this_turn");
     public static string CorrectionId(string cardType) => $"correction_{cardType}";

@@ -12,6 +12,16 @@ public static class CardMapper
     // The original engine exhausts a played card carrying any of these tags (bab/combat/deck.py).
     private static readonly string[] ExhaustWhenPlayedTags = ["exhaust", "vanish", "single_use", "temporary"];
 
+    // v2 type → the final Deed/Working/Rite taxonomy. Offensive actions and spells are Deeds; the paper —
+    // forms, arguments, footnotes — is Working; a curse is Junk.
+    private static string PrimaryType(string babType) => babType switch
+    {
+        "action" or "spell" => Cards.CardAuthoring.DeedTag,
+        "form" or "argument" or "footnote" => Cards.CardAuthoring.WorkingTag,
+        "curse" => Cards.CardAuthoring.JunkTag,
+        var other => other,
+    };
+
     public static string MapCardId(string babId) =>
         babId.EndsWith("_plus", StringComparison.Ordinal)
             ? babId[..^"_plus".Length] + "+"
@@ -28,10 +38,14 @@ public static class CardMapper
             Costs = card.Cost == 0
                 ? []
                 : [new ResourceCost(StandardCombatIds.EnergyResource, card.Cost)],
-            // The card's TYPE (action/spell/form/argument/curse/…) is emitted as a combat tag alongside its own
-            // tags, so type-sequencing enemy passives (Wrong-Window Scribe, Triplicate Examiner) can read it via
-            // cardsPlayedThisTurnWithTag / firstCardPlayedHasTag. Distinct so an explicit type tag isn't doubled.
-            Tags = tags.Append(card.Type).Distinct().Select(tag => new TagId(tag)).ToArray(),
+            // The card's TYPE is emitted as a combat tag alongside its own tags, so type-sequencing enemy
+            // passives (Wrong-Window Scribe, Triplicate Examiner, the Self-Correcting Record) can read it via
+            // cardsPlayedThisTurnWithTag / firstCardPlayedHasTag. The v2 vocabulary
+            // (action/spell/form/argument/curse) rides along unchanged for flavour, and the FINAL primary type
+            // it corresponds to is added beside it — so those passives read one vocabulary across both pools
+            // while the ported cards are still in the game. Distinct so a type tag isn't doubled.
+            Tags = tags.Append(card.Type).Append(PrimaryType(card.Type))
+                .Distinct().Select(tag => new TagId(tag)).ToArray(),
             PlayedCardDestinationZone = tags.Any(ExhaustWhenPlayedTags.Contains)
                 ? CardZone.ExhaustPile
                 : CardZone.DiscardPile,
