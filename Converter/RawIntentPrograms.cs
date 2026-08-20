@@ -23,6 +23,7 @@ public static class RawIntentPrograms
                 "queue_commissioner" => QueueCommissioner.Intent(intentId),
                 "lord_sealkeeper" => LordSealkeeper.Intent(intentId),
                 "municipal_dragon" => MunicipalDragon.Intent(intentId),
+                "living_charter" => LivingCharter.Intent(intentId),
                 _ => null,
             },
         };

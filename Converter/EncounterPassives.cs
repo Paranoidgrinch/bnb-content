@@ -42,6 +42,7 @@ public static class EncounterPassives
         "queue_commissioner" => QueueCommissioner.Triggers(),
         "lord_sealkeeper" => LordSealkeeper.Triggers(),
         "municipal_dragon" => MunicipalDragon.Triggers(),
+        "living_charter" => LivingCharter.Triggers(),
         _ => Array.Empty<EncounterTriggerData>(),
     };
 

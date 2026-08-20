@@ -109,6 +109,7 @@ public static class PassiveStatuses
         .. QueueCommissioner.Statuses(),
         .. LordSealkeeper.Statuses(),
         .. MunicipalDragon.Statuses(),
+        .. LivingCharter.Statuses(),
     ];
 
     // Iron Warrant Avatar: it issues a visible order each player turn. The orders are statuses ON THE PLAYER —

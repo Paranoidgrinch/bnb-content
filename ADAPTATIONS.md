@@ -265,3 +265,23 @@ older Act-I enemy pool wherever HP or intents disagree. Readings taken where the
 - **The Inferno is announced a full player turn ahead** through a status on the player, as the design requires;
   its cooldown is the beat rotation.
 
+## The Living Charter (Act-I boss)
+
+- **Four of the six Articles ship in this first pass**: Continuance, Redress, Mutual Security and Reciprocal
+  Burden. Due Notice (pending negative statuses) and Full Disclosure (seeing the draw pile and the intent after
+  the previewed one) need engine capabilities that do not exist yet — they are being added, and the Articles
+  follow with them.
+- **Article selection is fixed rather than drawn per fight** (Continuance → Redress → Mutual Security): a
+  random per-encounter pick would have to happen in the run layer, which does not build encounters that way.
+- **Continuance is banked and re-granted rather than "retained".** Block is cleared at a combatant's own turn
+  start after that turn's triggers run, so each side banks half of its standing Block at its turn start and is
+  given it back at the first moment a trigger can act after the clear: the Charter's half lands when the
+  player's turn begins, the player's half right after their draw.
+- **Judicial Review nominates the standing Article deterministically** (the one published first), and the
+  answer is two one-turn cards; leaving them unplayed is the design's UPHOLD without its 6 Block.
+- **Reciprocal Burden counts every cross-side status application**, since a program cannot ask whether the
+  applied status was a negative one.
+- **The Constitutional Crisis Exceptions are a card and an automatic spend**: the player's Exception becomes
+  "Claim an Exception" (the Articles leave them alone for that turn), and the Charter's is spent automatically
+  on the first Article effect that would hand the player an advantage against it.
+
