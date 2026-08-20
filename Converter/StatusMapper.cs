@@ -35,14 +35,11 @@ public static class StatusMapper
         var byId = source.ToDictionary(s => s.Id);
         return
         [
-            Status(byId["paperwork"], StatusPolarity.Debuff,
-                tags: [StandardCombatIds.DamageOverTimeTag.value]),
-
-            Status(byId["doubt"], StatusPolarity.Debuff,
-                passives: [new PassiveModifierData(PassiveModifierPipeline.DamageDealt,
-                    PassiveModifierOperation.ScalePercent, 75)],
-                triggers: [Trigger("DamageDealt", ConsumeOneStack("doubt"))]),
-
+            // paperwork and doubt are NOT built here any more. The final card design gives both a rule this
+            // port had approximated (Paperwork ticks at the bearer's turn END; Doubt is spent once per Attack
+            // ACTION, not once per hit), so they are authored in Cards/Keywords.cs alongside the rest of the
+            // keyword substrate. The source data still lists them, and the completeness check below still
+            // insists it does, because the enemies reference them by id.
             Status(byId["panic"], StatusPolarity.Debuff,
                 passives: [new PassiveModifierData(PassiveModifierPipeline.TurnStartDraw,
                     PassiveModifierOperation.AddPerStack, -1, RestrictDamageKind: null)],
@@ -71,9 +68,10 @@ public static class StatusMapper
     }
 
     // Bookworm X (the reworked Act-I anti-Paperwork status): immediately before the bearer's Paperwork
-    // resolves, remove min(Paperwork, Bookworm) of EACH. It rides the bearer's TurnStarted trigger, which
-    // runs before the damage-over-time automation — and since RogueDeck-Core @a428156 the tick reads its
-    // stacks at resolution, so the removal shrinks that same tick (5 Paperwork + 2 Bookworm → ticks 3).
+    // resolves, remove min(Paperwork, Bookworm) of EACH. It stays on the bearer's TurnStarted trigger now
+    // that Paperwork ticks at the bearer's turn END: start and end of the same turn is the cleanest possible
+    // reading of "immediately before it resolves", and it needs no ordering agreement between two statuses
+    // firing on one event (5 Paperwork + 2 Bookworm → the turn ends with a 3-point tick).
     //
     // min() without a scratch value: the naive sequence fails because the second removal re-reads a value
     // the first one already changed. Branching on which side is smaller keeps every read on the status that

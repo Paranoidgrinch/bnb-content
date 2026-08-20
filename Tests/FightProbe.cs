@@ -58,6 +58,18 @@ internal static class FightProbe
 
     // `energy` raises the hero's per-turn energy when a test needs several cards inside ONE player turn (the
     // Ward's per-turn damage threshold, say) — the fight is a probe, not a balance sample.
+    // As Solo, but the HERO also opens with the given statuses — how a keyword that lives on the player
+    // (Lien, Ward Wax, Blood Ink) is put on the table without a card that grants it.
+    public static EncounterDefinition SoloAgainstHero(
+        string enemyId, string intentId, int energy, params (string Status, int Stacks)[] heroStatuses)
+    {
+        var probe = Solo(enemyId, intentId, energy);
+        return new EncounterDefinition(probe.Id, probe.Enemies, probe.HeroResources,
+            [.. probe.HeroStartingStatuses ?? [],
+             .. heroStatuses.Select(s => new StartingStatusSpec(new StatusDefinitionId(s.Status), s.Stacks))],
+            probe.HeroDisplayName, probe.CardsDrawnPerTurn, probe.TriggeredEffects);
+    }
+
     public static EncounterDefinition Solo(
         string enemyId, string intentId, int energy, params (string Status, int Stacks)[] startingStatuses)
     {

@@ -45,7 +45,7 @@ public static class BlueprintAssembler
             new RunMap([]))
         {
             MapGeneration = map.Spec,
-            Statuses = [.. StatusMapper.Map("statuses", data.Statuses), .. PassiveStatuses.All()],
+            Statuses = [.. StatusMapper.Map("statuses", data.Statuses), .. Cards.Keywords.All(), .. PassiveStatuses.All()],
             Relics = relics.Select(r => r.Relic).ToList(),
             Shops = map.Shops,
             Start = start,

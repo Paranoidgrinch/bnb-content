@@ -242,10 +242,10 @@ public class EliteCombatTests
         play.CombatDriver!.EndTurn(); // READ INTO THE RECORD
         Assert.Null(session.Error);
 
-        // 8 from the reading, then the three liabilities: 1 Fatigue, 2 Paperwork, 1 Doubt + 1 Paperwork — and
-        // the whole Paperwork pile ticks at the hero's next turn start.
+        // 8 from the reading, then the three liabilities: 1 Fatigue, 2 Paperwork, 1 Doubt + 1 Paperwork. Only
+        // the pile the hero ALREADY carried tolls, as this turn ends; the three new ones are next turn's bill.
         Assert.Equal(filedBefore + 3, FightProbe.StacksOf(Hero(play), "paperwork"));
-        Assert.Equal(before - 8 - (filedBefore + 3), Hero(play).Health.Current);
+        Assert.Equal(before - 8 - filedBefore, Hero(play).Health.Current);
         Assert.Equal(1, FightProbe.StacksOf(Hero(play), "doubt"));
         Assert.Equal(0, Enemy(play, petitionId).GetCounter(PassiveStatuses.SignaturesCounter)); // a new cycle
     }
@@ -583,10 +583,10 @@ public class EliteCombatTests
         play.CombatDriver.EndTurn();
         Assert.Null(session.Error);
 
-        // 19 + Strength from the Knight and 6 from the Spear's pierce, plus the enforcement's own Paperwork
-        // tolling 1 when the next turn starts.
+        // 19 + Strength from the Knight and 6 from the Spear's pierce. The enforcement's own Paperwork is
+        // filed during the Knight's turn, so it tolls at the end of the hero's next turn, not now.
         Assert.Equal(0, FightProbe.StacksOf(Hero(play), PassiveStatuses.ServiceAcknowledgedId));
-        Assert.Equal(before - (19 + strength) - 6 - 1, Hero(play).Health.Current);
+        Assert.Equal(before - (19 + strength) - 6, Hero(play).Health.Current);
         Assert.Equal(1, FightProbe.StacksOf(Hero(play), "paperwork"));
     }
 

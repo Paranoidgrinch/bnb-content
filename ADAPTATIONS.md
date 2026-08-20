@@ -307,3 +307,34 @@ older Act-I enemy pool wherever HP or intents disagree. Readings taken where the
   gained an optional range on its resource-change effect for this. The card offer is the same everywhere: three
   cards, pick one. Both the exact gold bands and the reward card pool are still open design questions.
 
+
+## The final card pool's keyword substrate (2026-08-20)
+
+The final design docs (`source-data/design/`) outrank both the ported v2 data and the older Act-I docs,
+exactly as the FINAL_AUDIT enemy pools did. Where the keywords now differ from what this port shipped:
+
+- **Paperwork tolls at the END of its bearer's turn**, as the design (and the original game) say. The port
+  had moved it to the bearer's TURN START, because the damage-over-time automation ticks there and that was
+  the only way to keep Doubt's attack penalty off it. It is now an authored tick of kind DamageOverTime that
+  ignores Block, so the timing is right AND no Direct-restricted modifier can reshape it. Practical effect:
+  an enemy acts once more before its Paperwork kills it, and Paperwork filed on the player during an enemy
+  turn tolls at the end of the player's next turn rather than at its start.
+- **Bookworm stays on the bearer's TURN START.** With Paperwork at the turn's end, start-and-end of the same
+  turn is the cleanest reading of "immediately before the Paperwork resolves", and it needs no ordering
+  agreement between two statuses firing on one event.
+- **Doubt is spent once per ACTION, not once per hit.** The port spent a stack per damage event, so a
+  three-hit attack ate three Doubt; the design says a multi-hit Attack consumes one. The stack is claimed on
+  the action's first hit (engine: `claimOnceThisAction`), which reads the same from both sides — one enemy
+  intent, or one card the player plays. A blocked attack still spends its Doubt, as the design says.
+- **Ward Wax pays its Block after the draw, not at the turn start.** A combatant's Block is cleared at its
+  own turn start once its triggers have run, so a guard granted there would be swept away. Consequence: Ward
+  Wax pays nothing to a bearer that does not draw cards, which suits a status the design calls player-facing.
+- **Censure's "a Status paid as a COST cannot be prevented" is not implemented**, deliberately: no card in
+  either final pool pays a status as a cost yet, and the engine has no notion of one. The rule is
+  future-proofing for later characters and gets built with the first card that needs it.
+- **Citation is not built yet.** It needs "the action that just resolved dealt no direct damage", which the
+  engine cannot yet answer; the action scope added for Doubt is the substrate it will use.
+- **Seal converts to a Ratify event in the CARDS that apply it**, not in the status. A status cannot react to
+  its own first application — the engine deliberately keeps a status' StatusApplied trigger from seeing
+  itself — so "you now hold 3" would be invisible on the application that created the status. Every source of
+  Seal therefore goes through the shared authoring helper.
