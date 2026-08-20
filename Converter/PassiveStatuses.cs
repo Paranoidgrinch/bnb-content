@@ -105,6 +105,7 @@ public static class PassiveStatuses
         Marker(HeldOpenId, "Held Open"),
         TheGatehouse(),
         .. ComplianceOrders.Select(o => Marker(o.StatusId, o.Name)),
+        .. DeputyUndersecretary.Statuses(),
     ];
 
     // Iron Warrant Avatar: it issues a visible order each player turn. The orders are statuses ON THE PLAYER —
@@ -1251,6 +1252,10 @@ public static class PassiveStatuses
             ],
         };
     }
+
+    // A marker with a player-facing description (boss state the UI should explain).
+    public static StatusData NamedMarker(string id, string name, string? description) =>
+        Marker(id, name) with { DescriptionKey = description };
 
     private static StatusData Marker(string id, string name) => new()
     {

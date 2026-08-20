@@ -68,7 +68,8 @@ public class ActOnePoolTests
     [Fact]
     public void The_map_pools_are_complete()
     {
-        Assert.NotEmpty(WithRole("elite"));
+        // The audit's ten elites: four enforcement, three delay, three appeal.
+        Assert.Equal(10, WithRole("elite").Count());
         Assert.Single(WithRole("boss"));
         Assert.NotEmpty(WithRole("mimic"));
 

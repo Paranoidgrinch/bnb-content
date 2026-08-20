@@ -38,6 +38,7 @@ public static class EncounterPassives
         "lock_cart" => [SeizeTheGoods()],
         "final_notice_knight" => [TheDeadlineRuns(), OfferAcknowledgement()],
         "sealed_spear" => [WhenTheSpearFalls()],
+        "deputy_undersecretary" => DeputyUndersecretary.Triggers(),
         _ => Array.Empty<EncounterTriggerData>(),
     };
 
@@ -163,6 +164,9 @@ public static class EncounterPassives
     // identical wherever it is built.
     public static IReadOnlyList<StartingStatusSpec> HeroOpeningStatuses(string enemyId) => enemyId switch
     {
+        // The Deputy opens its Desk on the player: the phase mirror every Desk program gates on.
+        "deputy_undersecretary" =>
+            [new StartingStatusSpec(new StatusDefinitionId(DeputyUndersecretary.RoutineId), 1)],
         "final_notice_knight" =>
             [new StartingStatusSpec(new StatusDefinitionId(PassiveStatuses.FinalNoticeId), PassiveStatuses.FinalNoticeStart)],
         _ => Array.Empty<StartingStatusSpec>(),

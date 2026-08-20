@@ -1171,12 +1171,36 @@
   {
     "id": "deputy_undersecretary",
     "name": "The Deputy Undersecretary",
-    "max_hp": 118,
+    "max_hp": 130,
     "intent_pattern": "cycle",
     "intents": [
       {
         "id": "adjourn_the_matter",
         "name": "Adjourn the Matter",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 9
+          }
+        ]
+      },
+      {
+        "id": "circulate_the_memorandum",
+        "name": "Circulate the Memorandum",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 14
+          }
+        ]
+      },
+      {
+        "id": "come_back_later",
+        "name": "Come Back Later",
         "intent_type": "mixed",
         "actions": [
           {
@@ -1193,9 +1217,40 @@
         ]
       },
       {
-        "id": "circulate_the_memo",
-        "name": "Circulate the Memo",
+        "id": "request_further_particulars",
+        "name": "Request Further Particulars",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 8
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "doubt",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "deputys_decision",
+        "name": "Deputy's Decision",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 14
+          }
+        ]
+      },
+      {
+        "id": "declare_the_matter_urgent",
+        "name": "Declare the Matter Urgent",
         "intent_type": "block",
+        "special": true,
         "actions": [
           {
             "type": "gain_block",
@@ -1205,40 +1260,15 @@
         ]
       },
       {
-        "id": "come_back_later",
-        "name": "Come Back Later",
-        "intent_type": "debuff",
-        "actions": [
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "fatigue",
-            "amount": 2
-          }
-        ]
-      },
-      {
-        "id": "delay_has_costs",
-        "name": "Delay Has Costs",
-        "intent_type": "attack",
-        "actions": [
-          {
-            "type": "damage_per_status",
-            "target": "player",
-            "status": "fatigue",
-            "amount_per_stack": 3
-          }
-        ]
-      },
-      {
-        "id": "deputys_decision",
-        "name": "Deputy's Decision",
+        "id": "executive_adjournment",
+        "name": "Executive Adjournment",
         "intent_type": "mixed",
+        "special": true,
         "actions": [
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 14
+            "amount": 11
           },
           {
             "type": "apply_status",
@@ -1247,16 +1277,241 @@
             "amount": 1
           }
         ]
+      },
+      {
+        "id": "disposition_memorandum",
+        "name": "Disposition Memorandum",
+        "intent_type": "mixed",
+        "special": true,
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 9
+          },
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 12
+          }
+        ]
+      },
+      {
+        "id": "decide_without_hearing",
+        "name": "Decide Without Hearing",
+        "intent_type": "attack",
+        "special": true,
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 16
+          }
+        ]
+      },
+      {
+        "id": "close_an_unanswered_file",
+        "name": "Close an Unanswered File",
+        "intent_type": "buff",
+        "special": true,
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 0
+          }
+        ]
+      },
+      {
+        "id": "everything_outstanding",
+        "name": "Everything Outstanding",
+        "intent_type": "attack",
+        "special": true,
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 0
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "the_deputy"
+      }
+    ],
+    "intent_rules": [
+      {
+        "condition": {
+          "kind": "self_status",
+          "status": "desk_is_full",
+          "min_stacks": 1
+        },
+        "action": "declare_the_matter_urgent",
+        "priority": 100
+      },
+      {
+        "condition": {
+          "kind": "all_of",
+          "conditions": [
+            {
+              "kind": "self_status",
+              "status": "executive_disposition",
+              "min_stacks": 1
+            },
+            {
+              "kind": "self_counter",
+              "counter": "boss_beat",
+              "op": "eq",
+              "value": 0
+            }
+          ]
+        },
+        "action": "executive_adjournment",
+        "priority": 60
+      },
+      {
+        "condition": {
+          "kind": "all_of",
+          "conditions": [
+            {
+              "kind": "self_status",
+              "status": "executive_disposition",
+              "min_stacks": 1
+            },
+            {
+              "kind": "self_counter",
+              "counter": "boss_beat",
+              "op": "eq",
+              "value": 1
+            }
+          ]
+        },
+        "action": "disposition_memorandum",
+        "priority": 59
+      },
+      {
+        "condition": {
+          "kind": "all_of",
+          "conditions": [
+            {
+              "kind": "self_status",
+              "status": "executive_disposition",
+              "min_stacks": 1
+            },
+            {
+              "kind": "self_counter",
+              "counter": "boss_beat",
+              "op": "eq",
+              "value": 2
+            },
+            {
+              "kind": "self_counter",
+              "counter": "close_file_uses",
+              "op": "lt",
+              "value": 2
+            },
+            {
+              "kind": "any_of",
+              "conditions": [
+                {
+                  "kind": "self_status",
+                  "status": "file_unanswered_complaint",
+                  "min_stacks": 1
+                },
+                {
+                  "kind": "self_status",
+                  "status": "file_accumulated_delay",
+                  "min_stacks": 1
+                },
+                {
+                  "kind": "self_status",
+                  "status": "file_defective_filing",
+                  "min_stacks": 1
+                }
+              ]
+            }
+          ]
+        },
+        "action": "close_an_unanswered_file",
+        "priority": 58
+      },
+      {
+        "condition": {
+          "kind": "all_of",
+          "conditions": [
+            {
+              "kind": "self_status",
+              "status": "executive_disposition",
+              "min_stacks": 1
+            },
+            {
+              "kind": "self_counter",
+              "counter": "boss_beat",
+              "op": "eq",
+              "value": 2
+            }
+          ]
+        },
+        "action": "disposition_memorandum",
+        "priority": 57
+      },
+      {
+        "condition": {
+          "kind": "all_of",
+          "conditions": [
+            {
+              "kind": "self_status",
+              "status": "executive_disposition",
+              "min_stacks": 1
+            },
+            {
+              "kind": "self_counter",
+              "counter": "boss_beat",
+              "op": "eq",
+              "value": 3
+            }
+          ]
+        },
+        "action": "decide_without_hearing",
+        "priority": 56
+      },
+      {
+        "condition": {
+          "kind": "all_of",
+          "conditions": [
+            {
+              "kind": "self_status",
+              "status": "executive_disposition",
+              "min_stacks": 1
+            },
+            {
+              "kind": "self_counter",
+              "counter": "boss_beat",
+              "op": "eq",
+              "value": 4
+            }
+          ]
+        },
+        "action": "everything_outstanding",
+        "priority": 55
+      },
+      {
+        "condition": {
+          "kind": "self_status",
+          "status": "executive_disposition",
+          "min_stacks": 1
+        },
+        "action": "executive_adjournment",
+        "priority": 10
       }
     ],
     "tags": [
       "city",
       "boss",
-      "deputy",
-      "undersecretary",
-      "delay",
-      "fatigue",
-      "boss_fatigue"
+      "administration",
+      "act_1_boss"
     ]
   },
   {

@@ -190,3 +190,30 @@ older Act-I enemy pool wherever HP or intents disagree. Readings taken where the
 - **The Knight's Last Warning and the Spear's Authorized Pierce have no cooldowns**; their fixed cycles space
   them out (every fifth and every fourth intent), which is what the design's cooldowns amount to here.
 
+## The Deputy Undersecretary (Act-I boss)
+
+- **The Desk files its Matters itself, at the player's turn start**, up to two a turn and never past three open.
+  The design hangs matter creation on individual intents; an intent program runs from the boss's side, where
+  the player's Desk cannot be read at all (the player is only reachable through a multi-target selector). The
+  Desk therefore lives entirely in player-turn triggers, and the "desk full" rule still pays the Deputy its 6
+  Block. Matter ELIGIBILITY (only demands the current hand could theoretically meet) is dropped: a program
+  cannot inspect the hand for playable types.
+- **Four of the six Matters are implemented.** Complaint (12 damage in a turn), Petition (10 Block in a turn),
+  Request for Additional Review (its own action, see below) and Notice of Missing Response (one Attack and one
+  Form). "Application Fee Outstanding" duplicates the Review, and "Request for Clean Record" needs the engine
+  to tell a self-inflicted status from a boss-applied one, which it cannot.
+- **The Review's "boss-context action, not a card" IS a card** (File the Request, 1 Energy), dealt into the
+  hand with the Matter — the same device the Petition's clauses and the Knight's acknowledgement use, because
+  a combat has no boss-context button.
+- **Backlog is kept twice**: on the player (where the turn-end program can read it to cap it) and mirrored onto
+  the Deputy (where its own turn-start check and the transition read it). Each side only writes what it can.
+  Per category it stops at 2 — the maximum Executive File intensity — and the total at 5.
+- **The transition closes every open Matter without extra Backlog.** "Due 1 becomes Overdue, Due 2 closes" would
+  need the Deputy to read the player's Matter stacks, which it cannot; the declaration is a clean sweep.
+- **Executive File "Unanswered Complaint" guards at the Deputy's turn END**, not its start: Block is cleared at
+  a combatant's turn start AFTER that turn's triggers have run, so a start-of-turn guard would wipe itself. The
+  guard now stands through the player's turn, which is what it is for.
+- **Phase-II intents rotate on a beat counter** (executive adjournment → disposition memorandum → close a file
+  → decide without hearing → Everything Outstanding) instead of per-intent cooldowns, which the engine has no
+  notion of. "Close an Unanswered File" keeps its own two-use limit through a counter.
+
