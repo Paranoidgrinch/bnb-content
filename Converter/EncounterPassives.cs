@@ -40,6 +40,7 @@ public static class EncounterPassives
         "sealed_spear" => [WhenTheSpearFalls()],
         "deputy_undersecretary" => DeputyUndersecretary.Triggers(),
         "queue_commissioner" => QueueCommissioner.Triggers(),
+        "lord_sealkeeper" => LordSealkeeper.Triggers(),
         _ => Array.Empty<EncounterTriggerData>(),
     };
 

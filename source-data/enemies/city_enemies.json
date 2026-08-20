@@ -2975,7 +2975,7 @@
   {
     "id": "lord_sealkeeper",
     "name": "The Lord Sealkeeper",
-    "max_hp": 124,
+    "max_hp": 136,
     "intent_pattern": "cycle",
     "intents": [
       {
@@ -2986,12 +2986,12 @@
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 9
+            "amount": 10
           },
           {
             "type": "gain_block",
             "target": "owner",
-            "amount": 7
+            "amount": 8
           }
         ]
       },
@@ -3003,7 +3003,13 @@
           {
             "type": "gain_block",
             "target": "owner",
-            "amount": 18
+            "amount": 16
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "paperwork",
+            "amount": 1
           }
         ]
       },
@@ -3013,6 +3019,11 @@
         "intent_type": "mixed",
         "actions": [
           {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 8
+          },
+          {
             "type": "apply_status",
             "target": "player",
             "status": "paperwork",
@@ -3021,7 +3032,7 @@
           {
             "type": "gain_block",
             "target": "owner",
-            "amount": 12
+            "amount": 8
           }
         ]
       },
@@ -3033,30 +3044,387 @@
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 13
+            "amount": 15
           }
         ]
       },
       {
-        "id": "unbreakable_certification",
-        "name": "Unbreakable Certification",
-        "intent_type": "block",
+        "id": "certified_denial",
+        "name": "Certified Denial",
+        "intent_type": "mixed",
         "actions": [
           {
             "type": "gain_block",
             "target": "owner",
-            "amount": 22
+            "amount": 12
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "doubt",
+            "amount": 1
           }
         ]
+      },
+      {
+        "id": "the_keeper_unsealed",
+        "name": "The Keeper Unsealed",
+        "intent_type": "buff",
+        "special": true,
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 0
+          }
+        ]
+      },
+      {
+        "id": "shattered_impression",
+        "name": "Shattered Impression",
+        "intent_type": "mixed",
+        "special": true,
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 13
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "paperwork",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "splintered_authority",
+        "name": "Splintered Authority",
+        "intent_type": "mixed",
+        "special": true,
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 10
+          },
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 10
+          }
+        ]
+      },
+      {
+        "id": "unsealed_verdict",
+        "name": "Unsealed Verdict",
+        "intent_type": "attack",
+        "special": true,
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 17
+          }
+        ]
+      },
+      {
+        "id": "stamp_the_flesh",
+        "name": "Stamp the Flesh",
+        "intent_type": "mixed",
+        "special": true,
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 11
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "paperwork",
+            "amount": 2
+          }
+        ]
+      },
+      {
+        "id": "reclaim_the_seal",
+        "name": "Reclaim the Seal",
+        "intent_type": "buff",
+        "special": true,
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 0
+          }
+        ]
+      },
+      {
+        "id": "authority_without_seal",
+        "name": "Authority Without Seal",
+        "intent_type": "attack",
+        "special": true,
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 21
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "paperwork",
+            "amount": 1
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "the_sealkeeper"
+      },
+      {
+        "status": "great_seal_of_access"
+      },
+      {
+        "status": "great_seal_of_testimony"
+      },
+      {
+        "status": "great_seal_of_execution"
+      }
+    ],
+    "intent_rules": [
+      {
+        "condition": {
+          "kind": "self_status",
+          "status": "the_keeper_unsealed_next",
+          "min_stacks": 1
+        },
+        "action": "the_keeper_unsealed",
+        "priority": 100
+      },
+      {
+        "condition": {
+          "kind": "all_of",
+          "conditions": [
+            {
+              "kind": "self_status",
+              "status": "unsealed_authority",
+              "min_stacks": 1
+            },
+            {
+              "kind": "self_counter",
+              "counter": "seal_beat",
+              "op": "eq",
+              "value": 0
+            }
+          ]
+        },
+        "action": "shattered_impression",
+        "priority": 60
+      },
+      {
+        "condition": {
+          "kind": "all_of",
+          "conditions": [
+            {
+              "kind": "self_status",
+              "status": "unsealed_authority",
+              "min_stacks": 1
+            },
+            {
+              "kind": "self_counter",
+              "counter": "seal_beat",
+              "op": "eq",
+              "value": 1
+            }
+          ]
+        },
+        "action": "splintered_authority",
+        "priority": 59
+      },
+      {
+        "condition": {
+          "kind": "all_of",
+          "conditions": [
+            {
+              "kind": "self_status",
+              "status": "unsealed_authority",
+              "min_stacks": 1
+            },
+            {
+              "kind": "self_counter",
+              "counter": "seal_beat",
+              "op": "eq",
+              "value": 2
+            },
+            {
+              "kind": "any_of",
+              "conditions": [
+                {
+                  "kind": "self_status",
+                  "status": "fragment_of_access_outstanding",
+                  "min_stacks": 1
+                },
+                {
+                  "kind": "self_status",
+                  "status": "fragment_of_testimony_outstanding",
+                  "min_stacks": 1
+                },
+                {
+                  "kind": "self_status",
+                  "status": "fragment_of_execution_outstanding",
+                  "min_stacks": 1
+                }
+              ]
+            }
+          ]
+        },
+        "action": "reclaim_the_seal",
+        "priority": 58
+      },
+      {
+        "condition": {
+          "kind": "all_of",
+          "conditions": [
+            {
+              "kind": "self_status",
+              "status": "unsealed_authority",
+              "min_stacks": 1
+            },
+            {
+              "kind": "self_counter",
+              "counter": "seal_beat",
+              "op": "eq",
+              "value": 2
+            }
+          ]
+        },
+        "action": "unsealed_verdict",
+        "priority": 57
+      },
+      {
+        "condition": {
+          "kind": "all_of",
+          "conditions": [
+            {
+              "kind": "self_status",
+              "status": "unsealed_authority",
+              "min_stacks": 1
+            },
+            {
+              "kind": "self_counter",
+              "counter": "seal_beat",
+              "op": "eq",
+              "value": 3
+            }
+          ]
+        },
+        "action": "stamp_the_flesh",
+        "priority": 56
+      },
+      {
+        "condition": {
+          "kind": "all_of",
+          "conditions": [
+            {
+              "kind": "self_status",
+              "status": "unsealed_authority",
+              "min_stacks": 1
+            },
+            {
+              "kind": "self_counter",
+              "counter": "seal_beat",
+              "op": "eq",
+              "value": 4
+            }
+          ]
+        },
+        "action": "unsealed_verdict",
+        "priority": 55
+      },
+      {
+        "condition": {
+          "kind": "all_of",
+          "conditions": [
+            {
+              "kind": "self_status",
+              "status": "unsealed_authority",
+              "min_stacks": 1
+            },
+            {
+              "kind": "self_counter",
+              "counter": "seal_beat",
+              "op": "eq",
+              "value": 5
+            },
+            {
+              "kind": "not",
+              "conditions": [
+                {
+                  "kind": "any_of",
+                  "conditions": [
+                    {
+                      "kind": "self_status",
+                      "status": "fragment_of_access_outstanding",
+                      "min_stacks": 1
+                    },
+                    {
+                      "kind": "self_status",
+                      "status": "fragment_of_testimony_outstanding",
+                      "min_stacks": 1
+                    },
+                    {
+                      "kind": "self_status",
+                      "status": "fragment_of_execution_outstanding",
+                      "min_stacks": 1
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "action": "authority_without_seal",
+        "priority": 54
+      },
+      {
+        "condition": {
+          "kind": "all_of",
+          "conditions": [
+            {
+              "kind": "self_status",
+              "status": "unsealed_authority",
+              "min_stacks": 1
+            },
+            {
+              "kind": "self_counter",
+              "counter": "seal_beat",
+              "op": "eq",
+              "value": 5
+            }
+          ]
+        },
+        "action": "splintered_authority",
+        "priority": 53
+      },
+      {
+        "condition": {
+          "kind": "self_status",
+          "status": "unsealed_authority",
+          "min_stacks": 1
+        },
+        "action": "shattered_impression",
+        "priority": 10
       }
     ],
     "tags": [
       "city",
       "boss",
-      "seal",
-      "sealkeeper",
-      "block",
-      "boss_block"
+      "seals",
+      "act_1_boss"
     ]
   },
   {

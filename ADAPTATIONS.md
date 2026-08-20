@@ -232,3 +232,21 @@ older Act-I enemy pool wherever HP or intents disagree. Readings taken where the
 - **Phase-II intents rotate on a beat counter** rather than per-intent cooldowns, and "Last Number of the Day"
   is announced as a status on the player one full action before it lands, as the design requires.
 
+## The Lord Sealkeeper (Act-I boss)
+
+- **The Seal Ward rises at the player's turn start**, not the Keeper's: Block is cleared at a combatant's own
+  turn start after its triggers run, and the Ward's whole purpose is to stand between the player and the boss.
+- **Breaking a Seal is three cards.** "The player chooses which Seal breaks" becomes three one-turn offers laid
+  into the hand the moment the break is earned; taking one shatters that Seal, and a latch keeps it to one per
+  player turn. The break condition is read as "the blow landed with no Block left on the Keeper", which is what
+  "remove all Block, then cause HP loss" amounts to in one damage event.
+- **Every Fragment exists twice**: as a card in the player's hand (kept between turns — a boss-context action,
+  not a card of the deck) and as an "outstanding" marker on the Keeper. The marker is how the boss's own
+  programs know what is still unspent, since a boss program can never read the player's hand or statuses.
+- **Fragment of Testimony scrubs 2 Paperwork.** "Up to 2 stacks of one negative status" needs the player to
+  pick a status; Paperwork is the Keeper's own currency, so that is what the Fragment removes.
+- **The Seal of Execution's +4 is a flat modifier** rather than "the first direct attack each boss turn": the
+  Keeper attacks at most once per turn, so the two are the same without a per-turn latch.
+- **Reclaim takes the first unspent Fragment in Seal order** and is announced one action ahead; with nothing
+  left to reclaim the intent is not chosen at all, and the signature unlocks in its place.
+
