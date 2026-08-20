@@ -255,5 +255,32 @@ public static class CardAuthoring
     public static CombatNodeModel Ratify(string to = Target) =>
         Seq(
             Remove(Keywords.Seal, RatifyThreshold, to),
-            Apply(Keywords.Ratified, 1, to));
+            Apply(Keywords.Ratified, 1, to),
+            // Hieratic Measure: a Ratify calls in the enemy's Paperwork on the spot. Asked here because this
+            // is where a Ratify happens; the Rite itself is only a marker the conversion looks for.
+            IfRiteInForce(ActIVRites.HieraticMeasure,
+                Seq(TriggerPaperwork(to), Remove(Keywords.Paperwork, 3, to))));
+
+    // "Is this Rite in force?" A Rite the player carries is found by counting who wears it or its upgrade —
+    // and since a condition can only compare a value read off a combatant, the count goes through a scratch
+    // counter first.
+    private static readonly CounterId RiteHeld = new("rite_in_force");
+
+    public static CombatNodeModel IfRiteInForce(string rite, CombatNodeModel then) =>
+        Seq(
+            new CombatNodeModel("setCombatantCounter", You, RiteCount(rite),
+                CounterId: RiteHeld.value, Relative: false),
+            If(new CombatConditionSpec("compare", You, ValueKind: "counter",
+                    Op: ComparisonOperator.Greater, Right: 0, Id: RiteHeld.value),
+                then));
+
+    // 1 when either the Rite or its upgrade is on the table, 0 otherwise.
+    public static CombatAmountSpec RiteCount(string rite) =>
+        Once(Plus(
+            new CombatAmountSpec("countTargets",
+                ReadSelector: new CombatSelectorSpec("withStatus", rite,
+                    [new CombatSelectorSpec("allCombatants")])),
+            new CombatAmountSpec("countTargets",
+                ReadSelector: new CombatSelectorSpec("withStatus", rite + "+",
+                    [new CombatSelectorSpec("allCombatants")]))));
 }

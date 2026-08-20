@@ -20,6 +20,9 @@ public static class FinalCards
         .. GeneralActI.All(),
         .. BureaucratActII.All(),
         .. GeneralActII.All(),
+        .. BureaucratActIII.All(),
+        .. GeneralActIII.All(),
+        .. ActIVCards.All(),
     ];
 
     public static IReadOnlyList<CardData> Compile() => All().Select(c => c.Compile()).ToList();
@@ -29,6 +32,7 @@ public static class FinalCards
     public static IReadOnlyList<StatusData> Statuses() =>
     [
         .. Keywords.All(), .. BureaucratRites.All(), .. BureaucratArchive.All(),
+        .. BureaucratHistory.All(), .. ActIVRites.All(), .. GeneralWax.All(),
         .. GeneralRites.All(), .. GeneralForgery.All(), .. GeneralPrevention.All(),
     ];
 

@@ -18,18 +18,25 @@ public class FinalCardPoolTests
     [InlineData(2, "common", 18)]
     [InlineData(2, "uncommon", 49)]
     [InlineData(2, "rare", 22)]
+    // Act III adds 1/5/6 and 0/5/5; Act IV adds 1/3/4 and 0/4/7.
+    [InlineData(3, "common", 19)]
+    [InlineData(3, "uncommon", 59)]
+    [InlineData(3, "rare", 33)]
+    [InlineData(4, "common", 20)]
+    [InlineData(4, "uncommon", 66)]
+    [InlineData(4, "rare", 44)]
     public void Each_act_offers_the_cards_the_sheets_count(int act, string rarity, int expected)
     {
         var pool = FinalCards.RewardPool(act).Where(c => c.Rarity == rarity).ToList();
         Assert.Equal(expected, pool.Count);
     }
 
+    // bureaucrat_final_cards.md: 80 regular reward cards. general_final_cards.md: 50, and no Commons.
     [Fact]
-    public void The_general_pool_has_no_commons()
+    public void Both_pools_are_the_size_the_sheets_state()
     {
-        var general = GeneralActI.All().Where(c => !c.Id.EndsWith('+')).ToList();
-        Assert.Equal(19, general.Count);
-        Assert.DoesNotContain(general, c => c.Rarity == "common");
+        var offerable = FinalCards.RewardPool(act: 4);
+        Assert.Equal(80 + 50, offerable.Count);
     }
 
     // "The Bureaucrat has 80 regular reward cards, each with a direct upgraded version." Starters and Junk
