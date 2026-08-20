@@ -50,7 +50,8 @@ public static class CardAuthoring
         int Act = 1,
         IReadOnlyList<string>? Tags = null,
         CardZone Destination = CardZone.DiscardPile,
-        bool RetainInHand = false)
+        bool RetainInHand = false,
+        bool Queued = false)
     {
         public IReadOnlyList<string> AllTags => [Type, .. Tags ?? []];
 
@@ -62,6 +63,7 @@ public static class CardAuthoring
             Tags = AllTags.Distinct().Select(t => new TagId(t)).ToArray(),
             PlayedCardDestinationZone = AllTags.Contains(ExhaustTag) ? CardZone.ExhaustPile : Destination,
             RetainInHandOnTurnEnd = RetainInHand,
+            QueueOnPlay = Queued,
             Program = CombatProgramModel.Build<CardPlayContext>(Program),
         };
     }
@@ -70,7 +72,8 @@ public static class CardAuthoring
     // upgrade that only moves a number cannot silently drop a tag or a destination zone.
     public static BnbCard Upgraded(
         this BnbCard card, string text, CombatNodeModel? program = null, int? cost = null,
-        IReadOnlyList<string>? tags = null, CardZone? destination = null, bool? retainInHand = null) =>
+        IReadOnlyList<string>? tags = null, CardZone? destination = null, bool? retainInHand = null,
+        bool? queued = null) =>
         card with
         {
             Id = card.Id + "+",
@@ -81,6 +84,7 @@ public static class CardAuthoring
             Tags = tags ?? card.Tags,
             Destination = destination ?? card.Destination,
             RetainInHand = retainInHand ?? card.RetainInHand,
+            Queued = queued ?? card.Queued,
         };
 
     // ── program shorthands ────────────────────────────────────────────────────────────────────────────────
@@ -122,8 +126,11 @@ public static class CardAuthoring
     public static CombatNodeModel AddCard(string cardId, CardZone zone, int copies = 1) =>
         new("createCardInstance", You, CombatAmountSpec.FromConst(copies), ToDefinition: cardId, ToZone: zone);
 
+    // Card text is read top to bottom, and a card's later clauses routinely ask about what its earlier ones
+    // did ("apply 2 Seal. If this Ratifies the target, …"). So a card's steps run CAUSALLY: each waits for the
+    // one before it to have happened, rather than all starting at once.
     public static CombatNodeModel Seq(params CombatNodeModel[] steps) =>
-        steps.Length == 1 ? steps[0] : CombatNodeModel.Sequence(steps);
+        steps.Length == 1 ? steps[0] : CombatNodeModel.CausalSequence(steps);
 
     public static CombatNodeModel Repeat(int times, CombatNodeModel body) =>
         CombatNodeModel.Repeat(CombatAmountSpec.FromConst(times), body);
@@ -149,14 +156,44 @@ public static class CardAuthoring
     // application that created the Seal would be invisible. Everything that grants Seal — cards, relics,
     // events — therefore grants it through this, and the loop covers a grant large enough to Ratify twice.
     public static CombatNodeModel ApplySeal(int stacks, string to = Target) =>
-        Seq(
-            Apply(Keywords.Seal, stacks, to),
-            CombatNodeModel.RepeatUntil(
-                new CombatConditionSpec("compare", to, ValueKind: "statusStacks",
-                    Op: ComparisonOperator.Less, Right: RatifyThreshold, Id: Keywords.Seal),
-                Ratify(to)));
+        Seq(Apply(Keywords.Seal, stacks, to), ConvertSeals(to));
+
+    // Spend every complete set of three the target is now holding. Written as nested questions rather than a
+    // loop on purpose: the engine's repeat-until runs its body once before it ever asks, which would Ratify a
+    // single Seal. Two conversions is the ceiling anything in the game can reach in one application — the
+    // largest grant is 3, on top of at most 2 already standing.
+    public static CombatNodeModel ConvertSeals(string to = Target) =>
+        If(HasStacks(Keywords.Seal, RatifyThreshold, to),
+            Seq(Ratify(to), If(HasStacks(Keywords.Seal, RatifyThreshold, to), Ratify(to))));
 
     public const int RatifyThreshold = 3;
+
+    // ── Archive ───────────────────────────────────────────────────────────────────────────────────────────
+
+    // "Archive" a card: it goes to the Exhaust pile, and the act is recorded on the archivist. The record is
+    // what separates Archiving from ordinary exhausting — a Rite that says "whenever you Archive" watches the
+    // record, and a card that counts "each card you have Archived this combat" reads it. One stack per card,
+    // so an effect that Archives several produces several events, as the design requires.
+    public static CombatNodeModel Archive(CombatCardSpec card) =>
+        Seq(
+            new CombatNodeModel("moveCardToZone", You, Card: card, ToZone: CardZone.ExhaustPile),
+            Apply(Keywords.Archived, 1, You));
+
+    // The player picks a card in hand to Archive.
+    public static CombatNodeModel ArchiveChosen(string purpose = "choose a card to Archive") =>
+        Archive(new CombatCardSpec("chosen", CardZone.Hand, Purpose: purpose));
+
+    public static CombatAmountSpec ArchivedCount =>
+        new("statusStacks", SelectorKey: You, ReadId: Keywords.Archived);
+
+    // How many cards in one of your zones carry a tag — "for each Junk card in your hand".
+    public static CombatAmountSpec CardsTagged(string tag, CardZone zone = CardZone.Hand) =>
+        new("zoneCards", SelectorKey: You, ReadId: tag, Zone: zone);
+
+    // 1 when the condition amount is non-zero, 0 otherwise — the "if at all" of an amount, used where an
+    // effect is worth a flat bonus rather than one per matching thing.
+    public static CombatAmountSpec Once(CombatAmountSpec amount) =>
+        CombatAmountSpec.Binary("min", amount, CombatAmountSpec.FromConst(1));
 
     // One Ratify event: the three Seals are spent and the enemy is Ratified. A second Ratify in the same turn
     // adds no further damage (Ratified's bonus is flat), but it is still its own event for anything watching.

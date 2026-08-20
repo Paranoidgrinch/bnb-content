@@ -15,6 +15,7 @@ public static class FinalCards
     public static IReadOnlyList<BnbCard> All() =>
     [
         .. BureaucratStarter.All(),
+        .. BureaucratActI.All(),
     ];
 
     public static IReadOnlyList<CardData> Compile() => All().Select(c => c.Compile()).ToList();
