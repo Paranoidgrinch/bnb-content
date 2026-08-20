@@ -17,13 +17,15 @@ public static class FinalCards
     [
         .. BureaucratStarter.All(),
         .. BureaucratActI.All(),
+        .. GeneralActI.All(),
     ];
 
     public static IReadOnlyList<CardData> Compile() => All().Select(c => c.Compile()).ToList();
 
     // The statuses the final cards install or lean on: the keyword substrate plus the Rites, whose rule
     // lives on a status rather than in the card that plays it.
-    public static IReadOnlyList<StatusData> Statuses() => [.. Keywords.All(), .. BureaucratRites.All()];
+    public static IReadOnlyList<StatusData> Statuses() =>
+        [.. Keywords.All(), .. BureaucratRites.All(), .. GeneralRites.All(), .. GeneralForgery.All()];
 
     // Ids the final pool owns — a ported card with one of these is dropped rather than duplicated.
     public static IReadOnlySet<string> Ids() => All().Select(c => c.Id).ToHashSet();

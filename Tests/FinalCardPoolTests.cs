@@ -6,15 +6,25 @@ namespace BnbContent.Tests;
 // gate, changes what a reward can offer without breaking anything — so the counts are pinned here.
 public class FinalCardPoolTests
 {
-    // bureaucrat_final_cards.md §1: Act I unlocks 15 Commons, 20 Uncommons and 11 Rares.
+    // bureaucrat_final_cards.md §1: Act I unlocks 15 Commons, 20 Uncommons and 11 Rares for the Bureaucrat.
+    // general_final_cards.md §1: 16 Uncommons and 3 Rares, and NO Commons — the general pool should bend a
+    // run, not replace a character's basics. Together: 15 / 36 / 14.
     [Theory]
     [InlineData("common", 15)]
-    [InlineData("uncommon", 20)]
-    [InlineData("rare", 11)]
-    public void Act_one_offers_the_bureaucrat_cards_the_sheet_counts(string rarity, int expected)
+    [InlineData("uncommon", 36)]
+    [InlineData("rare", 14)]
+    public void Act_one_offers_the_cards_the_sheets_count(string rarity, int expected)
     {
         var pool = FinalCards.RewardPool(act: 1).Where(c => c.Rarity == rarity).ToList();
         Assert.Equal(expected, pool.Count);
+    }
+
+    [Fact]
+    public void The_general_pool_has_no_commons()
+    {
+        var general = GeneralActI.All().Where(c => !c.Id.EndsWith('+')).ToList();
+        Assert.Equal(19, general.Count);
+        Assert.DoesNotContain(general, c => c.Rarity == "common");
     }
 
     // "The Bureaucrat has 80 regular reward cards, each with a direct upgraded version." Starters and Junk

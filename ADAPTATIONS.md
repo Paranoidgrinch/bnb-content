@@ -390,3 +390,26 @@ exactly as the FINAL_AUDIT enemy pools did. Where the keywords now differ from w
 - **Violence Allowance** is two statuses: the Rite that keeps the books and the allowance that carries the
   discount, because a passive modifier cannot be conditional — its presence is the condition. The discount is
   narrowed to Deeds by card tag, so nothing else is cheapened while it waits.
+
+### Act-I general cards
+
+- **False Signature** cheapens your NEXT card rather than a card you choose in hand. The engine prices a card
+  by what its owner is wearing, not by a mark on one card, so "choose a card in your hand; it costs 1 less"
+  has nowhere to live yet. The bargain is otherwise intact: the discount is spent by the next card, and that
+  card hands the surcharge to the one after it, for the rest of the combat. **Per-instance card cost marks
+  are the engine feature this wants**, and a long list of relics wants it too — see the relic phase.
+- **Sanctioned Charm** hands back ONE Censure. The refusal has already been paid for by the time anything can
+  answer it, and the event does not say how many stacks it cost.
+- **Silent Hearing** pays its Block after the player's next DRAW, not at the moment the enemy strikes: Block
+  granted during an enemy turn is swept away at the player's own turn start. Same reason Ward Wax pays after
+  the draw.
+- **Notary Beetle** names the negative statuses it can seed (Paperwork, Doubt, Seal, Lien, Citation, Blood
+  Ink), because no effect can apply "whatever status the event named". A new negative status has to be added
+  to that list. "Does not already have that Status" needs no state at all: a status arriving where there was
+  none raises StatusApplied, and one landing on itself raises StatusMerged, so watching only the former IS
+  the condition.
+- **Usurer's Moon** is answered inside the Lien resolution, because only the resolution knows how much Block
+  it took. Same shape as Red Ink Doctrine inside the Paperwork tick.
+- **Anything that asks about Block** — Tallow Reserve's requirement, Forfeit Seal's "still has Block",
+  Foreclosure's claim — goes through a scratch COUNTER first: a condition compares a value read off a
+  combatant, and Block is not one of the values it can read.
