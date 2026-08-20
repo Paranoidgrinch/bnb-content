@@ -30,6 +30,25 @@ public static class Keywords
     // this combat"). It only ever grows, which is what keeps it out of Blood Ink's way.
     public const string Archived = "archived";
 
+    // Two Bureaucrat cards change what a Paperwork tick does, and both are answered inside the tick rather
+    // than by watching it from outside — the tick is the only place that knows the HP loss was PAPERWORK'S
+    // and not some other lingering effect's.
+    //
+    // Stay of Execution sits on the enemy and is spent by the tick it skips. Red Ink Doctrine is a Rite the
+    // player carries; the tick looks for it on whoever holds it, which is what makes it a rule of the fight
+    // rather than a rule of one combatant.
+    public const string StayOfExecution = "stay_of_execution";
+    public const string RedInkDoctrine = "red_ink_doctrine";
+    public const int RedInkPaperwork = 2;
+
+    // A Queue card's program runs ONLY when it resolves, never when it is played — so the pulse it leaves is
+    // exactly "a queued card has just resolved", which Pending Matters and Petitioner's Token wait for.
+    public const string QueueResolved = "queue_resolved";
+
+    // Junk being FILED, as an event: the cards that create Junk leave this behind so Clerk's Familiar can
+    // answer it. A running count that only grows, which is what keeps it clear of Blood Ink.
+    public const string JunkFiled = "junk_filed";
+
     public const string Censure = "censure";
     public const string Lien = "lien";
     public const string Citation = "citation";
@@ -52,6 +71,11 @@ public static class Keywords
         SealStatus(),
         RatifiedStatus(),
         ArchivedStatus(),
+        Tally(StayOfExecution, "Stay of Execution",
+            "This character's Paperwork does not resolve at the end of its next turn."),
+        Tally(RedInkDoctrine, "Red Ink Doctrine", "Paperwork that draws blood writes itself deeper."),
+        Tally(QueueResolved, "Resolved from the Queue", "How many queued cards have resolved this combat."),
+        Tally(JunkFiled, "Junk Filed", "How much rubbish you have generated this combat."),
         CensureStatus(),
         LienStatus(),
         CitationStatus(),
@@ -74,8 +98,33 @@ public static class Keywords
         "At the end of its turn, this character loses HP equal to its Paperwork. Ignores Block. Does not decay.",
         triggers:
         [
-            Trigger(TurnEnded(HpLoss<TurnEndedTriggeredEffectContext>(
-                CombatantTargetSelectors.Source, Stacks<TurnEndedTriggeredEffectContext>(Paperwork)))),
+            Trigger(TurnEnded(new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
+                // A stay spends itself on the tick it holds off, so the reprieve is exactly one turn long.
+                Wears<TurnEndedTriggeredEffectContext>(CombatantTargetSelectors.Source, StayOfExecution),
+                new RemoveStatusNode<TurnEndedTriggeredEffectContext>(
+                    CombatantTargetSelectors.Source, new StatusDefinitionId(StayOfExecution)),
+                @else: new SequenceEffectNode<TurnEndedTriggeredEffectContext>(
+                [
+                    HpLoss<TurnEndedTriggeredEffectContext>(
+                        CombatantTargetSelectors.Source, Stacks<TurnEndedTriggeredEffectContext>(Paperwork)),
+
+                    // "After an enemy takes HP loss from its Paperwork trigger, if it survives, apply 2
+                    // Paperwork to it." Asked here because only the tick knows the loss was Paperwork's;
+                    // watching the damage from outside could not tell it from any other lingering effect.
+                    new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
+                        new AndExpression<TurnEndedTriggeredEffectContext>(
+                            new TargetIsAliveExpression<TurnEndedTriggeredEffectContext>(CombatantTargetSelectors.Source),
+                            new ComparisonExpression<TurnEndedTriggeredEffectContext>(
+                                new CountTargetsExpression<TurnEndedTriggeredEffectContext>(
+                                    CombatantTargetSelectors.WithStatus(
+                                        CombatantTargetSelectors.AllCombatants,
+                                        new StatusDefinitionId(RedInkDoctrine))),
+                                ComparisonOperator.Greater,
+                                new ConstantExpression<TurnEndedTriggeredEffectContext>(0))),
+                        new ApplyStatusNode<TurnEndedTriggeredEffectContext>(
+                            CombatantTargetSelectors.Source, new StatusDefinitionId(Paperwork),
+                            new ConstantExpression<TurnEndedTriggeredEffectContext>(RedInkPaperwork))),
+                ])))),
         ]);
 
     // "The next X enemy Attack actions each deal 25% less damage. After one full Attack action resolves,
@@ -144,9 +193,13 @@ public static class Keywords
                 StatusTriggerScope.Anywhere),
         ]);
 
-    private static StatusData ArchivedStatus() => Status(
-        Archived, "Archived", StatusPolarity.Neutral,
-        "How many cards you have Archived this combat.");
+    private static StatusData ArchivedStatus() =>
+        Tally(Archived, "Archived", "How many cards you have Archived this combat.");
+
+    // A plain running count or marker: no rules of its own, only something for other rules to read. Neutral
+    // so a cleanse cannot take it and a prohibition does not refuse it.
+    private static StatusData Tally(string id, string name, string description) =>
+        Status(id, name, StatusPolarity.Neutral, description);
 
     // ── general ───────────────────────────────────────────────────────────────────────────────────────────
 

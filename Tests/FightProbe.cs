@@ -154,10 +154,10 @@ internal static class FightProbe
         var play = new RunPlayback(() => { });
         play.Start(OneFight(probe, deck, health), seed: 1, interactive: true);
         var session = play.Session!;
-        Assert.Null(play.Error);
+        Assert.True(play.Error is null, play.Error);
         while (session.IsAwaitingInterlude)
             session.Continue();
-        Assert.Null(session.Error);
+        Assert.True(session.Error is null, session.Error);
 
         var combat = play.CombatDriver!.Current!;
         var enemyId = combat.State.Combatants.First(c => c.Id != combat.HeroId).Id;

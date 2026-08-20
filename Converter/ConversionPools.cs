@@ -3,22 +3,23 @@ using RogueDeck.Run;
 
 namespace BnbContent.Converter;
 
-// The shared random pools every mapper draws offers from: the card-reward pool (Act-1 bureaucrat
-// commons/uncommons/rares, uniform weight in Act 1), the transform pool (same cards), and the
-// event-relic pool (non-boss relics allowed for the bureaucrat), each relic offer bundling its
-// pickup effects (see RelicMapper).
+// The shared random pools every mapper draws offers from: the card-reward pool, the transform pool (the same
+// cards), and the event-relic pool (non-boss relics allowed for the bureaucrat), each relic offer bundling
+// its pickup effects (see RelicMapper).
+//
+// The reward pool is the FINAL Bureaucrat pool, gated by Act as the design sheet gates it: reaching Act N
+// makes every card gated at N or earlier offerable. Starters and Junk are never offered. Rarity weighting is
+// a balance question and is deliberately still flat — see the design's deferred balance pass.
 public sealed class ConversionPools
 {
-    public required IReadOnlyList<BabCard> RewardCards { get; init; }
+    public const int Act = 1;
+
+    public required IReadOnlyList<Cards.CardAuthoring.BnbCard> RewardCards { get; init; }
     public required IReadOnlyList<MappedRelic> Relics { get; init; }
 
     public static ConversionPools Build(BabData data, IReadOnlyList<MappedRelic> relics) => new()
     {
-        RewardCards = data.Cards
-            .Where(c => c.CardClass == data.Bureaucrat.Id
-                && c.Rarity is "common" or "uncommon" or "rare"
-                && !(c.Tags ?? []).Contains("upgraded"))
-            .ToList(),
+        RewardCards = Cards.FinalCards.RewardPool(Act),
         Relics = relics
             .Where(r => EligibleForEvents(r, data.Bureaucrat.Id))
             .ToList(),
@@ -37,9 +38,9 @@ public sealed class ConversionPools
         new IRunEffectRequest[] { new AddRelicByIdRunEffect(new RelicId(mapped.Relic.Id)) }
             .Concat(mapped.PickupEffects).ToArray());
 
-    public static RewardOffer CardOffer(BabCard card) => new(
-        $"card-{CardMapper.MapCardId(card.Id)}",
-        [new AddCardToDeckRunEffect(new CardDefinitionId(CardMapper.MapCardId(card.Id)))]);
+    public static RewardOffer CardOffer(Cards.CardAuthoring.BnbCard card) => new(
+        $"card-{card.Id}",
+        [new AddCardToDeckRunEffect(new CardDefinitionId(card.Id))]);
 
     // Post-fight card reward: 3 random pool cards, pick 1 (uniform weight in Act 1).
     public IRewardSource CardRewardSource(int count = 3) => new PoolRewardSource(
@@ -62,6 +63,5 @@ public sealed class ConversionPools
     // Transform target pool: any reward-pool card (uniform), as the original draws its replacement
     // from the card-reward chooser.
     public RunPool<CardDefinitionId> TransformPool() => new(
-        RewardCards.Select(c => new RunPool<CardDefinitionId>.Entry(
-            new CardDefinitionId(CardMapper.MapCardId(c.Id)), 1)).ToList());
+        RewardCards.Select(c => new RunPool<CardDefinitionId>.Entry(new CardDefinitionId(c.Id), 1)).ToList());
 }

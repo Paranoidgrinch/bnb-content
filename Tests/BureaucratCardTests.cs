@@ -170,4 +170,249 @@ public class BureaucratCardTests
             .ExhaustPile, c => c.Id == offered[0].Id);
         play.Dispose();
     }
+
+    // ── Rites ─────────────────────────────────────────────────────────────────────────────────────────────
+    // A Rite is a card that installs a lasting rule. The point of each test is that the rule fires ONCE per
+    // turn and for the right event — not the number it pays.
+
+    // "The first time each turn you Archive a card, draw 1 card."
+    [Fact]
+    public void Ash_register_answers_the_first_archiving_of_a_turn_and_no_more()
+    {
+        // Five cards, so the opening hand IS the deck and nothing depends on the shuffle.
+        var (play, session, enemyId) = Fight(
+            "ash_register", "certified_kindling", "certified_kindling", "paper_cut", "paper_cut");
+
+        Play(play, session, "ash_register", enemyId);
+
+        // First Archiving of the turn: the Kindling leaves the hand, the archived card leaves the hand, and
+        // the Register hands one back — so the hand is one down, not two.
+        var hand = play.CombatDriver!.Current!.Hand.Count;
+        Play(play, session, "certified_kindling", enemyId);
+        ArchiveA(play, session, "paper_cut");
+        Assert.Equal(1, FightProbe.StacksOf(Hero(play), Keywords.Archived));
+        Assert.Equal(hand - 1, play.CombatDriver.Current!.Hand.Count);
+
+        // Second Archiving of the SAME turn: no card comes back, so the hand is two down.
+        var second = play.CombatDriver.Current!.Hand.Count;
+        Play(play, session, "certified_kindling", enemyId);
+        ArchiveA(play, session, "paper_cut");
+        Assert.Equal(2, FightProbe.StacksOf(Hero(play), Keywords.Archived));
+        Assert.Equal(second - 2, play.CombatDriver.Current!.Hand.Count);
+        play.Dispose();
+    }
+
+    // "The first time each turn you Ratify an enemy, draw 1 card." The Ratify happens on the ENEMY, so the
+    // rule has to watch the whole fight and reward the player who carries it.
+    [Fact]
+    public void Seal_dividend_answers_a_ratify_that_happens_on_the_enemy()
+    {
+        var (play, session, enemyId) = Fight(
+            "seal_dividend", "seal_of_concern+", "seal_of_concern+", "paper_cut", "paper_cut");
+
+        Play(play, session, "seal_dividend", enemyId);
+        Play(play, session, "seal_of_concern+", enemyId); // 2 Seal — no Ratify yet
+
+        var hand = play.CombatDriver!.Current!.Hand.Count;
+        Play(play, session, "seal_of_concern+", enemyId); // 4 → Ratify
+        Assert.Equal(1, FightProbe.StacksOf(Enemy(play, enemyId), Keywords.Ratified));
+        Assert.Equal(hand - 1 + 1, play.CombatDriver.Current!.Hand.Count); // played one, drew one
+        play.Dispose();
+    }
+
+    // "The first Deed you play each turn costs 1 less Energy" — and only a Deed.
+    [Fact]
+    public void Violence_allowance_cheapens_the_first_deed_and_nothing_else()
+    {
+        var (play, session, enemyId) = Fight(
+            "violence_allowance", "cower_behind_a_desk", "paper_cut", "paper_cut", "paper_cut");
+
+        Play(play, session, "violence_allowance", enemyId);
+
+        // A Working is not a Deed: it still costs its 1.
+        var energy = Energy(play);
+        Play(play, session, "cower_behind_a_desk", enemyId);
+        Assert.Equal(energy - 1, Energy(play));
+
+        // The first Deed is free (1 − 1); the next costs its 1 again.
+        energy = Energy(play);
+        Play(play, session, "paper_cut", enemyId);
+        Assert.Equal(energy, Energy(play));
+
+        energy = Energy(play);
+        Play(play, session, "paper_cut", enemyId);
+        Assert.Equal(energy - 1, Energy(play));
+        play.Dispose();
+    }
+
+    // "At the end of your turn, retain up to 8 Block."
+    [Fact]
+    public void Continuance_keeps_up_to_its_ceiling_and_sheds_the_rest()
+    {
+        var (play, session, enemyId) = Fight(
+            "continuance", "deskward", "deskward", "paper_cut", "paper_cut");
+
+        Play(play, session, "continuance", enemyId);
+        Play(play, session, "deskward", enemyId);
+        Play(play, session, "deskward", enemyId);
+        Assert.Equal(16, Block(Hero(play)));
+
+        play.CombatDriver!.EndTurn();
+        Assert.Null(session.Error);
+
+        // 16 guarded, 8 kept — and the Ordinance Tablet's quiet turn took none of it.
+        Assert.Equal(8, Block(Hero(play)));
+        play.Dispose();
+    }
+
+    // "Deal 6 damage. If the target does not intend to Attack, apply 2 Seal; otherwise apply 1 Seal."
+    [Fact]
+    public void Conditional_approval_reads_the_enemys_telegraph()
+    {
+        // Stone Precedent is a guard, not an attack: the fuller Seal is owed.
+        var (play, session, enemyId) = Fight("conditional_approval", "paper_cut", "paper_cut");
+        Play(play, session, "conditional_approval", enemyId);
+        Assert.Equal(2, FightProbe.StacksOf(Enemy(play, enemyId), Keywords.Seal));
+        play.Dispose();
+
+        // The Embossed Seal's Heavy Impression IS an attack (the Tablet's own "mixed" intents are not):
+        // only one Seal is owed.
+        var attacking = FightProbe.Solo("embossed_seal", "heavy_impression", energy: 9);
+        var (play2, session2, enemy2) = FightProbe.Start(attacking, ["conditional_approval", "paper_cut", "paper_cut"]);
+        Play(play2, session2, "conditional_approval", enemy2);
+        Assert.Equal(1, FightProbe.StacksOf(Enemy(play2, enemy2), Keywords.Seal));
+        play2.Dispose();
+    }
+
+    // "Gain 5 Block. Choose one: apply 1 Doubt; or apply 1 Seal." The card raises its own prompt.
+    [Fact]
+    public void Clerical_discretion_lets_the_player_choose()
+    {
+        var (play, session, enemyId) = Fight("clerical_discretion", "paper_cut", "paper_cut");
+
+        Play(play, session, "clerical_discretion", enemyId);
+        Assert.Equal(["apply 1 Doubt", "apply 1 Seal"], play.CombatDriver!.PendingOptionChoice);
+
+        play.CombatDriver.SupplyOptionChoice([1]); // the Seal
+        Assert.Null(session.Error);
+
+        Assert.Equal(5, Block(Hero(play)));
+        Assert.Equal(1, FightProbe.StacksOf(Enemy(play, enemyId), Keywords.Seal));
+        Assert.Equal(0, FightProbe.StacksOf(Enemy(play, enemyId), Keywords.Doubt));
+        play.Dispose();
+    }
+
+    // "Deal 6 damage, plus 3 damage for each card currently in your Queue."
+    [Fact]
+    public void Backlog_charge_counts_what_is_waiting()
+    {
+        var (play, session, enemyId) = Fight("backlog_charge", "deferred_hex", "deferred_hex", "paper_cut");
+
+        Play(play, session, "deferred_hex", enemyId);
+        Play(play, session, "deferred_hex", enemyId);
+
+        var before = Enemy(play, enemyId).Health.Current;
+        Play(play, session, "backlog_charge", enemyId);
+        Assert.Equal(before - (6 + 2 * 3), Enemy(play, enemyId).Health.Current);
+        play.Dispose();
+    }
+
+    // "Deal 16 damage. If the target has at least 6 Paperwork, trigger its Paperwork immediately, then
+    // remove 3 Paperwork." The toll ignores Block, because Paperwork always does.
+    [Fact]
+    public void Summary_judgment_calls_in_the_paperwork_it_finds()
+    {
+        var (play, session, enemyId) = FightProbe.Start(
+            FightProbe.Solo("ordinance_tablet", "stone_precedent", energy: 9,
+                (Keywords.Paperwork, 7)),
+            ["summary_judgment", "paper_cut", "paper_cut"]);
+
+        var before = Enemy(play, enemyId).Health.Current;
+        Play(play, session, "summary_judgment", enemyId);
+
+        // 16 struck, then 7 tolled, and 3 Paperwork spent doing it.
+        Assert.Equal(before - 16 - 7, Enemy(play, enemyId).Health.Current);
+        Assert.Equal(4, FightProbe.StacksOf(Enemy(play, enemyId), Keywords.Paperwork));
+        play.Dispose();
+    }
+
+    // "Its Paperwork does not trigger at the end of its next turn." Exactly one turn's reprieve.
+    [Fact]
+    public void Stay_of_execution_holds_the_paperwork_off_for_one_turn_only()
+    {
+        var (play, session, enemyId) = FightProbe.Start(
+            FightProbe.Solo("ordinance_tablet", "stone_precedent", energy: 9, (Keywords.Paperwork, 5)),
+            ["stay_of_execution", "paper_cut", "paper_cut"]);
+
+        Play(play, session, "stay_of_execution", enemyId);
+        Assert.Equal(10, Block(Hero(play))); // 2 per Paperwork
+
+        var before = Enemy(play, enemyId).Health.Current;
+        play.CombatDriver!.EndTurn();
+        Assert.Null(session.Error);
+        Assert.Equal(before, Enemy(play, enemyId).Health.Current); // the stay held
+
+        play.CombatDriver.EndTurn();
+        Assert.Null(session.Error);
+        Assert.Equal(before - 5, Enemy(play, enemyId).Health.Current); // and is spent
+        play.Dispose();
+    }
+
+    // "After an enemy takes HP loss from its Paperwork, if it survives, apply 2 Paperwork to it."
+    [Fact]
+    public void Red_ink_doctrine_writes_the_paperwork_deeper_every_time_it_bites()
+    {
+        var (play, session, enemyId) = FightProbe.Start(
+            FightProbe.Solo("ordinance_tablet", "stone_precedent", energy: 9, (Keywords.Paperwork, 3)),
+            ["red_ink_doctrine", "paper_cut", "paper_cut"]);
+
+        Play(play, session, "red_ink_doctrine", enemyId);
+
+        var before = Enemy(play, enemyId).Health.Current;
+        play.CombatDriver!.EndTurn();
+        Assert.Null(session.Error);
+
+        Assert.Equal(before - 3, Enemy(play, enemyId).Health.Current);
+        Assert.Equal(5, FightProbe.StacksOf(Enemy(play, enemyId), Keywords.Paperwork));
+        play.Dispose();
+    }
+
+    // "Deal 7 damage. Archive a Junk card from your hand; if you do, repeat this attack."
+    [Fact]
+    public void Cinder_warrant_strikes_twice_only_when_there_is_junk_to_burn()
+    {
+        var (play, session, enemyId) = Fight("cinder_warrant", "tallow_budget", "cinder_warrant", "paper_cut");
+
+        // No Junk in hand: one strike.
+        var before = Enemy(play, enemyId).Health.Current;
+        Play(play, session, "cinder_warrant", enemyId);
+        Assert.Equal(before - 7, Enemy(play, enemyId).Health.Current);
+        Assert.Equal(0, FightProbe.StacksOf(Hero(play), Keywords.Archived));
+
+        // Tallow Budget puts a Red Tape IN HAND; now there is something to burn.
+        Play(play, session, "tallow_budget", enemyId);
+        before = Enemy(play, enemyId).Health.Current;
+        Play(play, session, "cinder_warrant", enemyId);
+        Assert.Equal(before - 14, Enemy(play, enemyId).Health.Current);
+        Assert.Equal(1, FightProbe.StacksOf(Hero(play), Keywords.Archived));
+        play.Dispose();
+    }
+
+    private static int Energy(RunPlayback play) =>
+        Hero(play).Resources[StandardCombatIds.EnergyResource].Current;
+
+    private static void Archive(RunPlayback play, InteractiveRunSession session) =>
+        ArchiveA(play, session, null);
+
+    // Answers a pending Archive prompt, preferring a named card so a test keeps the cards it still needs.
+    private static void ArchiveA(RunPlayback play, InteractiveRunSession session, string? definitionId)
+    {
+        var offered = play.CombatDriver!.PendingCardChoice;
+        Assert.NotNull(offered);
+        var pick = definitionId is null
+            ? offered![0]
+            : offered!.FirstOrDefault(c => c.DefinitionId.value == definitionId) ?? offered[0];
+        play.CombatDriver.SupplyCardChoice([pick.Id]);
+        Assert.Null(session.Error);
+    }
 }
