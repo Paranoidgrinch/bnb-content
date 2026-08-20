@@ -41,6 +41,7 @@ public static class EncounterPassives
         "deputy_undersecretary" => DeputyUndersecretary.Triggers(),
         "queue_commissioner" => QueueCommissioner.Triggers(),
         "lord_sealkeeper" => LordSealkeeper.Triggers(),
+        "municipal_dragon" => MunicipalDragon.Triggers(),
         _ => Array.Empty<EncounterTriggerData>(),
     };
 

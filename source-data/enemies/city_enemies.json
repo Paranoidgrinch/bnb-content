@@ -3430,7 +3430,7 @@
   {
     "id": "municipal_dragon",
     "name": "The Municipal Dragon",
-    "max_hp": 132,
+    "max_hp": 142,
     "intent_pattern": "cycle",
     "intents": [
       {
@@ -3441,24 +3441,7 @@
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 10
-          }
-        ]
-      },
-      {
-        "id": "hoard_of_permits",
-        "name": "Hoard of Permits",
-        "intent_type": "mixed",
-        "actions": [
-          {
-            "type": "gain_strength",
-            "target": "owner",
-            "amount": 1
-          },
-          {
-            "type": "gain_block",
-            "target": "owner",
-            "amount": 8
+            "amount": 11
           }
         ]
       },
@@ -3470,7 +3453,7 @@
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 8
+            "amount": 9
           },
           {
             "type": "apply_status",
@@ -3481,14 +3464,31 @@
         ]
       },
       {
-        "id": "old_city_hunger",
-        "name": "Old City Hunger",
+        "id": "emergency_permit",
+        "name": "Emergency Permit",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 0
+          }
+        ]
+      },
+      {
+        "id": "inspect_the_hoard",
+        "name": "Inspect the Hoard",
         "intent_type": "buff",
         "actions": [
           {
             "type": "gain_strength",
             "target": "owner",
-            "amount": 2
+            "amount": 1
+          },
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 10
           }
         ]
       },
@@ -3498,20 +3498,245 @@
         "intent_type": "attack",
         "actions": [
           {
-            "type": "deal_damage",
+            "type": "damage_per_status",
             "target": "player",
-            "amount": 17
+            "status": "hoarded_permit",
+            "status_on": "owner",
+            "amount": 12,
+            "amount_per_stack": 2,
+            "cap": 8
           }
         ]
+      },
+      {
+        "id": "burn_the_registry",
+        "name": "Burn the Registry",
+        "intent_type": "attack",
+        "special": true,
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 0
+          }
+        ]
+      },
+      {
+        "id": "unlicensed_claw",
+        "name": "Unlicensed Claw",
+        "intent_type": "attack",
+        "special": true,
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 12
+          }
+        ]
+      },
+      {
+        "id": "fire_code_violation",
+        "name": "Fire-Code Violation",
+        "intent_type": "mixed",
+        "special": true,
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 9
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "paperwork",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "unsafe_occupancy",
+        "name": "Unsafe Occupancy",
+        "intent_type": "buff",
+        "special": true,
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 14
+          },
+          {
+            "type": "gain_strength",
+            "target": "owner",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "collapsed_ordinance",
+        "name": "Collapsed Ordinance",
+        "intent_type": "mixed",
+        "special": true,
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 11
+          },
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 8
+          }
+        ]
+      },
+      {
+        "id": "municipal_inferno",
+        "name": "Municipal Inferno",
+        "intent_type": "attack",
+        "special": true,
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 0
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "the_municipal_dragon"
+      },
+      {
+        "status": "hoarded_permit",
+        "stacks": 2
+      }
+    ],
+    "intent_rules": [
+      {
+        "condition": {
+          "kind": "self_status",
+          "status": "burning_the_registry",
+          "min_stacks": 1
+        },
+        "action": "burn_the_registry",
+        "priority": 100
+      },
+      {
+        "condition": {
+          "kind": "all_of",
+          "conditions": [
+            {
+              "kind": "self_status",
+              "status": "unlicensed",
+              "min_stacks": 1
+            },
+            {
+              "kind": "self_counter",
+              "counter": "dragon_beat",
+              "op": "eq",
+              "value": 0
+            }
+          ]
+        },
+        "action": "unlicensed_claw",
+        "priority": 60
+      },
+      {
+        "condition": {
+          "kind": "all_of",
+          "conditions": [
+            {
+              "kind": "self_status",
+              "status": "unlicensed",
+              "min_stacks": 1
+            },
+            {
+              "kind": "self_counter",
+              "counter": "dragon_beat",
+              "op": "eq",
+              "value": 1
+            }
+          ]
+        },
+        "action": "fire_code_violation",
+        "priority": 59
+      },
+      {
+        "condition": {
+          "kind": "all_of",
+          "conditions": [
+            {
+              "kind": "self_status",
+              "status": "unlicensed",
+              "min_stacks": 1
+            },
+            {
+              "kind": "self_counter",
+              "counter": "dragon_beat",
+              "op": "eq",
+              "value": 2
+            }
+          ]
+        },
+        "action": "unsafe_occupancy",
+        "priority": 58
+      },
+      {
+        "condition": {
+          "kind": "all_of",
+          "conditions": [
+            {
+              "kind": "self_status",
+              "status": "unlicensed",
+              "min_stacks": 1
+            },
+            {
+              "kind": "self_counter",
+              "counter": "dragon_beat",
+              "op": "eq",
+              "value": 3
+            }
+          ]
+        },
+        "action": "collapsed_ordinance",
+        "priority": 57
+      },
+      {
+        "condition": {
+          "kind": "all_of",
+          "conditions": [
+            {
+              "kind": "self_status",
+              "status": "unlicensed",
+              "min_stacks": 1
+            },
+            {
+              "kind": "self_counter",
+              "counter": "dragon_beat",
+              "op": "eq",
+              "value": 4
+            }
+          ]
+        },
+        "action": "municipal_inferno",
+        "priority": 56
+      },
+      {
+        "condition": {
+          "kind": "self_status",
+          "status": "unlicensed",
+          "min_stacks": 1
+        },
+        "action": "unlicensed_claw",
+        "priority": 10
       }
     ],
     "tags": [
       "city",
       "boss",
       "dragon",
-      "municipal",
-      "strength",
-      "boss_strength"
+      "act_1_boss"
     ]
   },
   {

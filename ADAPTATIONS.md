@@ -250,3 +250,18 @@ older Act-I enemy pool wherever HP or intents disagree. Readings taken where the
 - **Reclaim takes the first unspent Fragment in Seal order** and is announced one action ahead; with nothing
   left to reclaim the intent is not chosen at all, and the signature unlocks in its place.
 
+## The Municipal Dragon (Act-I boss)
+
+- **The hoard's Block goes up at the player's turn start**, for the same reason as the Seal Ward: Block is
+  cleared at a combatant's own turn start, after its triggers have run.
+- **"Order an Inspection" became "File an Objection"** (the Dragon's next attack deals 5 less). Revealing the
+  intent after the previewed one is a UI capability, not something a combat program can do; the Authorization
+  slot keeps a defensive read-ahead of comparable value.
+- **The Authorization actions are cards dealt in while the player holds Authorization** and exhausted at the
+  turn's end; each spends one Authorization and a latch keeps it to one action per turn. The Citation only
+  appears once the Dragon is unlicensed and there is something to cite.
+- **UNLICENSED is the Code Violation status itself** (+2 direct damage per stack), so the Phase-II base values
+  are exactly the design's and the +8 cap falls out of the four-Violation ceiling the burning imposes.
+- **The Inferno is announced a full player turn ahead** through a status on the player, as the design requires;
+  its cooldown is the beat rotation.
+

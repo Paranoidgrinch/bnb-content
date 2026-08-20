@@ -22,6 +22,7 @@ public static class RawIntentPrograms
                 "deputy_undersecretary" => DeputyUndersecretary.Intent(intentId),
                 "queue_commissioner" => QueueCommissioner.Intent(intentId),
                 "lord_sealkeeper" => LordSealkeeper.Intent(intentId),
+                "municipal_dragon" => MunicipalDragon.Intent(intentId),
                 _ => null,
             },
         };
