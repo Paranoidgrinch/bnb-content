@@ -66,7 +66,7 @@ Nothing else can be built until these are real. Each row says whether it is data
 | **Blood Ink X** | another Status on the holder loses ≥1 stack in one event: lose X HP, remove 1 | data — `StatusStacksChanged` + `StatusExpired` (the last-stack gotcha) |
 | **Ward Wax X** | start of your turn gain X Block; after the enemy turn lose 1 (no unblocked Attack damage) or 2 (any) | data — `TurnStarted` + `RoundEnded` with an "unblocked damage this round" counter |
 
-### Engine gaps — status
+### Engine gaps — ALL CLOSED
 
 **Closed** (RogueDeck-Core, all pushed, all with live tests through `RunPlayback.BuildContent`):
 
@@ -79,15 +79,11 @@ Nothing else can be built until these are real. Each row says whether it is data
 | E-1 | **The Queue**: a new zone, `QueueOnPlay`, the turn-start resolution window before the draw, and `resolveQueuedCards` for Night Docket / Processional Calendar | `b2fae86` |
 | — | A **causal** card sequence (each clause waits for the previous one) + counting a zone **by tag** | `14ec928` |
 
-**Still open** — each blocks a named set of cards:
+| — | **Reading an enemy's upcoming intent** from a combat program: the driver that owns the intent rules installs a projection on the combat, and `intends to…` is an ordinary condition | `7e0915c` |
+| — | **An action announces what it turned out to be** — damaging or not — which is all of Citation | `dce5bdb` |
+| — | **`chooseOptions`**: a card offers named options, the player picks, they resolve in pick order and cannot repeat. Parks like a card choice; Studio and Godot both render it | `14ec928`+, bnb-godot |
 
-- **Reading an enemy's upcoming intent from a combat program.** The telegraph is a Scenario-layer delegate,
-  not combat state. Blocks Form of Ill Intent, Conditional Approval, Witchmark Citation, Silent Hearing,
-  Guestbook Oath, and several relics.
-- **Telling a non-damaging action from a damaging one** — all of **Citation**. The action scope is the
-  substrate; the damage question is what is missing.
-- **Choose one of N** inside a combat program. Malediction Review, Clerical Discretion, Grand Dispensation,
-  Mootcap.
+**Nothing is left open.** Every card in both final pools is now authorable.
 
 ## Phase B — cards
 
