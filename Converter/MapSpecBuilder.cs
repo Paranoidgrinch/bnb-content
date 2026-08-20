@@ -107,6 +107,10 @@ public static class MapSpecBuilder
             PerPathMinimums = PerPathMinimums,
             PerPathMaximums = PerPathMaximums,
             LaneProfiles = Lanes,
+            // Act I promises a lot per path (8 fights, the duo, the elite, 3 events, 2 rests, 2 treasures, 2
+            // shops). As funnels those promises would be most of the map, and every route would read the same;
+            // as full rows the city keeps its branches.
+            WideGuaranteeRows = true,
             // Eight ordinary fights, the duo and the elite are all enemies the player must face.
             MinEnemiesPerPath = PerPathMinimums[MapNodeKind.Combat]
                 + PerPathMinimums[MapNodeKind.MultiCombat] + PerPathMinimums[MapNodeKind.Elite],
@@ -121,7 +125,7 @@ public static class MapSpecBuilder
                 [MapNodeKind.Elite] = 1,
             },
             Encounters = new EncounterDistribution { ByRole = PoolsByRole(data) },
-            VictoryRewards = VictoryRewards(pools, rng),
+            VictoryRewards = VictoryRewards(pools),
             TreasureMimicChancePercent = 5, // Act I; 10/15/20 in the later acts
             NodeRefs = new Dictionary<MapNodeKind, string>
             {
@@ -175,14 +179,16 @@ public static class MapSpecBuilder
 
     // What a generated fight pays: gold plus a card offer, and a relic on top for the elite, the boss and the
     // mimic (which is tuned like a weak elite). The engine suffixes the id with the encounter.
-    private static Dictionary<MapNodeKind, MapVictoryReward> VictoryRewards(ConversionPools pools, Random rng)
+    private static Dictionary<MapNodeKind, MapVictoryReward> VictoryRewards(ConversionPools pools)
     {
         var rewards = new Dictionary<MapNodeKind, MapVictoryReward>();
         foreach (var (role, (min, max)) in Gold)
         {
             var grant = new List<IRunEffectRequest>
             {
-                new ChangeResourceRunEffect(StandardRunIds.Gold, rng.Next(min, max + 1)),
+                // A SPREAD, rolled per fight from the run's own RNG — the same fight does not always pay the
+                // same purse. (How much exactly is still open; the tiers are the ported difficulty bands.)
+                new ChangeResourceRunEffect(StandardRunIds.Gold, min, max),
                 new OfferRewardRunEffect(new RewardId($"cards:{role}"), pools.CardRewardSource(), 1),
             };
             if (role is MapNodeKind.Elite or MapNodeKind.Boss or MapNodeKind.Mimic)
