@@ -39,7 +39,16 @@ public static class BlueprintAssembler
             data.Bureaucrat.StartingDeck.Select(id => new CardDefinitionId(CardMapper.MapCardId(id))).ToList(),
             events,
             data.Encounters.Select(e => EncounterMapper.Map(e, enemiesById, data.Bureaucrat.StartingEnergy)).ToList(),
-            [.. data.Cards.Select(CardMapper.Map), .. ClauseCards.Cards(), NoticeCards.Acknowledge(), DeputyUndersecretary.ReviewCard(), .. QueueCommissioner.Cards(), .. LordSealkeeper.Cards(), .. MunicipalDragon.Cards(), .. LivingCharter.Cards()],
+            // The final pool wins wherever the ids meet; the ported v2 cards it has not replaced yet stay,
+            // because the ported events still name some of them.
+            [
+                .. data.Cards.Where(c => !Cards.FinalCards.Ids().Contains(CardMapper.MapCardId(c.Id)))
+                    .Select(CardMapper.Map),
+                .. Cards.FinalCards.Compile(),
+                .. ClauseCards.Cards(), NoticeCards.Acknowledge(), DeputyUndersecretary.ReviewCard(),
+                .. QueueCommissioner.Cards(), .. LordSealkeeper.Cards(), .. MunicipalDragon.Cards(),
+                .. LivingCharter.Cards(),
+            ],
             EnemyMapper.MapActions(enemies).ToList(),
             // The act's map is GENERATED per run from MapGeneration below; the authored map stays empty.
             new RunMap([]))
@@ -58,15 +67,29 @@ public static class BlueprintAssembler
     private static PresentationManifest BuildPresentation(
         BabData data, IReadOnlyList<MappedRelic> relics, IReadOnlyList<BabEnemy> enemies) => new()
         {
-            Cards = data.Cards.ToDictionary(
-                c => CardMapper.MapCardId(c.Id),
-                c => new EntityPresentation
-                {
-                    Art = $"cards/{c.Id}.png",
-                    FlavorText = c.Text,
-                    Rarity = c.Rarity,
-                    Tags = (c.Tags ?? []).Append(c.Type).ToList(),
-                }),
+            Cards = data.Cards
+                .Where(c => !Cards.FinalCards.Ids().Contains(CardMapper.MapCardId(c.Id)))
+                .ToDictionary(
+                    c => CardMapper.MapCardId(c.Id),
+                    c => new EntityPresentation
+                    {
+                        Art = $"cards/{c.Id}.png",
+                        FlavorText = c.Text,
+                        Rarity = c.Rarity,
+                        Tags = (c.Tags ?? []).Append(c.Type).ToList(),
+                    })
+                .Concat(Cards.FinalCards.All().ToDictionary(
+                    c => c.Id,
+                    c => new EntityPresentation
+                    {
+                        Art = $"cards/{c.Id.TrimEnd('+')}.png",
+                        // The engine has no rules-text renderer: a card's ability text IS presentation, and
+                        // this is what both UIs show on a reward or in the hand.
+                        FlavorText = c.Text,
+                        Rarity = c.Rarity,
+                        Tags = c.AllTags.ToList(),
+                    }))
+                .ToDictionary(e => e.Key, e => e.Value),
             Relics = relics.ToDictionary(
                 r => r.Relic.Id,
                 r => new EntityPresentation

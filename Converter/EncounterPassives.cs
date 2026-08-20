@@ -14,7 +14,9 @@ namespace BnbContent.Converter;
 public static class EncounterPassives
 {
     // The B&B card TYPES used for card-type sequencing (emitted as combat tags by CardMapper).
-    private static readonly string[] CardTypes = { "action", "spell", "form" };
+    // BnB's three primary card types, as the final design fixes them: Deed, Working, Rite. Every passive that
+    // sequences on card TYPE reads these tags, which CardAuthoring puts on each card.
+    private static readonly string[] CardTypes = { Cards.CardAuthoring.DeedTag, Cards.CardAuthoring.WorkingTag, Cards.CardAuthoring.RiteTag };
 
     public static IReadOnlyList<EncounterTriggerData> ForEnemy(string enemyId) => enemyId switch
     {
@@ -1005,8 +1007,9 @@ public static class EncounterPassives
                     ComparisonOperator.Equal,
                     new ConstantExpression<CardPlayedTriggeredEffectContext>(1)),
                 new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
+                    // "an attack" from the Signpost's side of the fight is the player's offensive type: a Deed.
                     new FirstCardPlayedThisTurnHasTagExpression<CardPlayedTriggeredEffectContext>(
-                        CombatantTargetSelectors.Source, new TagId("attack")),
+                        CombatantTargetSelectors.Source, new TagId(Cards.CardAuthoring.DeedTag)),
                     Route(signpost, 1),
                     Route(signpost, 2))));
 

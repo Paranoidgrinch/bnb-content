@@ -470,18 +470,19 @@ public class EnemySignatureCombatTests
     [Fact]
     public void The_record_corrects_against_the_card_type_that_hurt_it()
     {
-        // Approved for Disposal: a 12-damage FORM, so the study threshold is crossed and the type is unambiguous.
+        // Approved for Disposal: a 12-damage Working (a form), so the study threshold is crossed and the type is
+        // unambiguous.
         var probe = FightProbe.Solo("self_correcting_record", "correct_against_you", energy: 9);
         var (play, session, recordId) = FightProbe.Start(probe,
             Enumerable.Repeat("approved_for_disposal", 10).ToList());
 
         Disposal(play, session, recordId);
         Assert.Equal(53 - 12, Enemy(play, recordId).Health.Current); // studied, but this one lands in full
-        Assert.Equal(1, FightProbe.StacksOf(Enemy(play, recordId), "correction_form"));
+        Assert.Equal(1, FightProbe.StacksOf(Enemy(play, recordId), "correction_working"));
 
         Disposal(play, session, recordId);
         Assert.Equal(53 - 12 - 8, Enemy(play, recordId).Health.Current); // corrected: 4 less
-        Assert.Equal(0, FightProbe.StacksOf(Enemy(play, recordId), "correction_form")); // and spent
+        Assert.Equal(0, FightProbe.StacksOf(Enemy(play, recordId), "correction_working")); // and spent
 
         Disposal(play, session, recordId);
         Assert.Equal(53 - 12 - 8 - 12, Enemy(play, recordId).Health.Current); // no correction left this turn

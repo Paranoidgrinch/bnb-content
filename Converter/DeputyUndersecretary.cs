@@ -84,7 +84,7 @@ public static class DeputyUndersecretary
             () => new AndExpression<TurnEndedTriggeredEffectContext>(
                 new ComparisonExpression<TurnEndedTriggeredEffectContext>(
                     new CardsPlayedThisTurnWithTagExpression<TurnEndedTriggeredEffectContext>(
-                        CombatantTargetSelectors.Source, new TagId("attack")),
+                        CombatantTargetSelectors.Source, new TagId(Cards.CardAuthoring.DeedTag)),
                     ComparisonOperator.GreaterOrEqual,
                     new ConstantExpression<TurnEndedTriggeredEffectContext>(1)),
                 new ComparisonExpression<TurnEndedTriggeredEffectContext>(
