@@ -21,6 +21,8 @@ public static class LivingCharter
     public const string RedressId = "article_of_redress";
     public const string MutualSecurityId = "article_of_mutual_security";
     public const string ReciprocalBurdenId = "article_of_reciprocal_burden";
+    public const string DueNoticeId = "article_of_due_notice";
+    public const string UnderNoticeId = "under_due_notice";      // the Article's mirror on the player
 
     public const string ReviewPendingId = "judicial_review_called";   // on the player: the choice is open
     public const string AmendmentPendingId = "emergency_amendment";   // telegraph, on the Charter
@@ -51,8 +53,9 @@ public static class LivingCharter
     public const int CrisisHealth = 34;
     public const int CharterBeats = 5;
 
-    // The three Articles this fight publishes, in the order the Charter reaches for them.
-    public static readonly string[] Articles = [ContinuanceId, RedressId, MutualSecurityId];
+    // The Articles this fight reaches for, in order. Three of them are ever visible at once (one in Phase I,
+    // two after the Amendment); a strike-down publishes the next in this rotation.
+    public static readonly string[] Articles = [ContinuanceId, RedressId, MutualSecurityId, DueNoticeId];
 
     // ── Content ───────────────────────────────────────────────────────────────
 
@@ -67,6 +70,12 @@ public static class LivingCharter
             "The first Block a side gains each turn gives the other side 4 Block."),
         PassiveStatuses.NamedMarker(ReciprocalBurdenId, "Article of Reciprocal Burden",
             "The first status a side lands on its opponent each turn costs the applier 1 Doubt."),
+        // Due Notice is law that acts on the ENGINE's application rule rather than through a trigger: while it
+        // is published, what either side files takes effect only from the recipient's next turn.
+        Postponing(DueNoticeId, "Article of Due Notice",
+            "A negative status filed on either side takes effect at the start of that side's next turn."),
+        Postponing(UnderNoticeId, "Under Due Notice",
+            "Negative statuses filed on you take effect at the start of your next turn."),
         PassiveStatuses.NamedMarker(ReviewPendingId, "Judicial Review",
             "Uphold the Article or strike it down before your turn ends."),
         PassiveStatuses.NamedMarker(AmendmentPendingId, "Emergency Amendment",
@@ -94,6 +103,13 @@ public static class LivingCharter
         ReciprocalBurdenIsBorne(),
         ExceptionsAreIssued(),
     ];
+
+    // A status whose whole effect is the engine's postponement rule: what lands on its bearer waits a turn.
+    private static StatusData Postponing(string id, string name, string description) =>
+        PassiveStatuses.NamedMarker(id, name, description) with
+        {
+            IncomingStatusDelay = new IncomingStatusDelayData(1, StatusPolarity.Debuff),
+        };
 
     // ── The Articles, at the player's turn start ──────────────────────────────
 
@@ -142,6 +158,15 @@ public static class LivingCharter
                                 new GainBlockNode<TurnStartedTriggeredEffectContext>(
                                     iterated, new ConstantExpression<TurnStartedTriggeredEffectContext>(8)),
                             })),
+                        // Due Notice binds BOTH sides: the Charter carries the Article itself, the player
+                        // carries its mirror for as long as the Article stands.
+                        new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
+                            CharterHas(DueNoticeId),
+                            new ApplyStatusNode<TurnStartedTriggeredEffectContext>(
+                                player, new StatusDefinitionId(UnderNoticeId),
+                                new ConstantExpression<TurnStartedTriggeredEffectContext>(1)),
+                            @else: new RemoveStatusNode<TurnStartedTriggeredEffectContext>(
+                                player, new StatusDefinitionId(UnderNoticeId))),
                         // The per-turn latches of the Articles open again for both sides.
                         new RemoveStatusNode<TurnStartedTriggeredEffectContext>(
                             iterated, new StatusDefinitionId(SecurityUsedId)),
@@ -595,42 +620,45 @@ public static class LivingCharter
         ]);
 
     // Striking an Article down exchanges it for the next one in the Charter's own order — the law is replaced,
-    // never simply deleted.
+    // never simply deleted. The rotation index is kept on BOTH sides: a card can only read the player's
+    // counter (its Source), the Charter's own actions only their own, so each writes both.
     private static CardData StrikeDown()
     {
         var charter = CombatantTargetSelectors.AllEnemiesOfSourceWithStatus(new StatusDefinitionId(CharterId));
         var iterated = CombatantTargetSelectors.IterationTarget;
+        var player = CombatantTargetSelectors.Source;
 
         IEffectNode<CardPlayContext> Publish(int index) =>
             new ConditionalEffectNode<CardPlayContext>(
                 new ComparisonExpression<CardPlayContext>(
-                    new CombatantCounterExpression<CardPlayContext>(iterated, ArticleIndexCounter),
+                    new CombatantCounterExpression<CardPlayContext>(player, ArticleIndexCounter),
                     ComparisonOperator.Equal,
                     new ConstantExpression<CardPlayContext>(index)),
                 new SequenceEffectNode<CardPlayContext>(new IEffectNode<CardPlayContext>[]
                 {
-                    // The standing Article goes; the next one is published in its place.
-                    new RemoveStatusNode<CardPlayContext>(
-                        iterated, new StatusDefinitionId(Articles[index])),
-                    new ApplyStatusNode<CardPlayContext>(
-                        iterated, new StatusDefinitionId(Articles[(index + 1) % Articles.Length]),
-                        new ConstantExpression<CardPlayContext>(1)),
+                    new ForEachTargetEffectNode<CardPlayContext>(charter,
+                        new SequenceEffectNode<CardPlayContext>(new IEffectNode<CardPlayContext>[]
+                        {
+                            // The standing Article goes; the next one is published in its place.
+                            new RemoveStatusNode<CardPlayContext>(
+                                iterated, new StatusDefinitionId(Articles[index])),
+                            new ApplyStatusNode<CardPlayContext>(
+                                iterated, new StatusDefinitionId(Articles[(index + 1) % Articles.Length]),
+                                new ConstantExpression<CardPlayContext>(1)),
+                            new GainBlockNode<CardPlayContext>(iterated, new ConstantExpression<CardPlayContext>(8)),
+                            new SetCombatantCounterNode<CardPlayContext>(
+                                iterated, ArticleIndexCounter,
+                                new ConstantExpression<CardPlayContext>((index + 1) % Articles.Length),
+                                relative: false),
+                        })),
                     new SetCombatantCounterNode<CardPlayContext>(
-                        iterated, ArticleIndexCounter,
+                        player, ArticleIndexCounter,
                         new ConstantExpression<CardPlayContext>((index + 1) % Articles.Length), relative: false),
                 }));
 
         return Review(StrikeDownCardId, "Strike Down the Article",
             "The Article is struck; the next prepared Article takes its place. The Charter gains 8 Block.",
-            _ =>
-            [
-                new ForEachTargetEffectNode<CardPlayContext>(charter,
-                    new SequenceEffectNode<CardPlayContext>(
-                    [
-                        .. Enumerable.Range(0, Articles.Length).Select(Publish),
-                        new GainBlockNode<CardPlayContext>(iterated, new ConstantExpression<CardPlayContext>(8)),
-                    ])),
-            ]);
+            _ => [.. Enumerable.Range(0, Articles.Length).Select(Publish)]);
     }
 
     // Both answers are one-turn offers, and answering closes the Review.
@@ -738,6 +766,10 @@ public static class LivingCharter
                         new ConstantExpression<EnemyActionContext>(1)),
                     new SetCombatantCounterNode<EnemyActionContext>(
                         self, ArticleIndexCounter,
+                        new ConstantExpression<EnemyActionContext>((index + 1) % Articles.Length), relative: false),
+                    // The player's copy of the rotation index moves with it (see StrikeDown).
+                    new SetCombatantCounterNode<EnemyActionContext>(
+                        player, ArticleIndexCounter,
                         new ConstantExpression<EnemyActionContext>((index + 1) % Articles.Length), relative: false),
                 }));
 

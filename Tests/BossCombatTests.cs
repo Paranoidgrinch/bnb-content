@@ -503,6 +503,40 @@ public class BossCombatTests
         Assert.Equal(charterBlock + answered, BlockOf(Enemy(play, charterId)));
     }
 
+    // Article of Due Notice: what either side files takes effect only from the recipient's next turn. The
+    // Charter carries the Article, the player its mirror, and both rest on the engine's postponement rule.
+    [Fact]
+    public void The_article_of_due_notice_postpones_what_is_filed()
+    {
+        var (play, session, charterId) = Charter(Enumerable.Repeat("permit_a38", 30).ToList(), energy: 9);
+
+        // Strike Articles down until the rotation reaches Due Notice (the Emergency Amendment publishes one of
+        // its own along the way, so the number of strikes is not fixed).
+        for (var round = 0; round < 8
+             && FightProbe.StacksOf(Enemy(play, charterId), LivingCharter.DueNoticeId) == 0; round++)
+        {
+            for (var i = 0; i < 5 && FightProbe.StacksOf(Hero(play), LivingCharter.ReviewPendingId) == 0; i++)
+                play.CombatDriver!.EndTurn();
+            Play(play, session, LivingCharter.StrikeDownCardId);
+        }
+        Assert.Null(session.Error);
+        Assert.Equal(1, FightProbe.StacksOf(Enemy(play, charterId), LivingCharter.DueNoticeId));
+
+        // The Article binds the player as well, through its mirror.
+        play.CombatDriver!.EndTurn();
+        Assert.Equal(1, FightProbe.StacksOf(Hero(play), LivingCharter.UnderNoticeId));
+
+        // Permit A38 files 5 Paperwork — which does not count until the Charter's next turn begins.
+        Play(play, session, "permit_a38");
+        Assert.Equal(0, FightProbe.StacksOf(Enemy(play, charterId), "paperwork"));
+        Assert.Single(Enemy(play, charterId).PendingStatuses);
+
+        play.CombatDriver!.EndTurn();
+        Assert.Null(session.Error);
+        Assert.Equal(5, FightProbe.StacksOf(Enemy(play, charterId), "paperwork"));
+        Assert.Empty(Enemy(play, charterId).PendingStatuses);
+    }
+
     private static (RunPlayback Play, InteractiveRunSession Session, CombatantId CharterId) Charter(
         IReadOnlyList<string>? deck = null, int? energy = null) =>
         FightProbe.Start(FightProbe.Authored("city_boss_05", energy), deck, health: 400);
