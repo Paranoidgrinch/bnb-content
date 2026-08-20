@@ -31,6 +31,47 @@ public static class MapSpecBuilder
         [MapNodeKind.Shop] = 2,
     };
 
+    // Ceilings: no single route may pile up the soft stuff. A path is guaranteed its two rests, two shops and
+    // two treasures (above) and may hold at most one more of each, so a "safe" route cannot be farmed — and at
+    // most two elites, so a greedy one cannot stack them either.
+    private static readonly Dictionary<MapNodeKind, int> PerPathMaximums = new()
+    {
+        [MapNodeKind.Rest] = 3,
+        [MapNodeKind.Treasure] = 3,
+        [MapNodeKind.Shop] = 3,
+        [MapNodeKind.Event] = 5,
+        [MapNodeKind.Elite] = 2,
+        [MapNodeKind.MultiCombat] = 2,
+    };
+
+    // The three flavours the act's columns are drawn from, so the routes actually feel different: the left is a
+    // gauntlet of fights, the middle runs errands (events and shops), the right is the quiet, well-stocked way
+    // round. Which column a path keeps to decides BOTH what it holds and the order it holds it in.
+    private static readonly MapLaneProfile[] Lanes =
+    [
+        new("the long queue", new Dictionary<MapNodeKind, int>
+        {
+            [MapNodeKind.Combat] = 12,
+            [MapNodeKind.MultiCombat] = 3,
+            [MapNodeKind.Elite] = 2,
+            [MapNodeKind.Event] = 2,
+        }),
+        new("errands", new Dictionary<MapNodeKind, int>
+        {
+            [MapNodeKind.Event] = 7,
+            [MapNodeKind.Shop] = 4,
+            [MapNodeKind.Combat] = 5,
+            [MapNodeKind.MultiCombat] = 1,
+        }),
+        new("the quiet corridor", new Dictionary<MapNodeKind, int>
+        {
+            [MapNodeKind.Rest] = 6,
+            [MapNodeKind.Treasure] = 5,
+            [MapNodeKind.Combat] = 5,
+            [MapNodeKind.Event] = 2,
+        }),
+    ];
+
     // Gold ranges per role, straight from the ported difficulty tiers.
     private static readonly Dictionary<MapNodeKind, (int Min, int Max)> Gold = new()
     {
@@ -51,7 +92,7 @@ public static class MapSpecBuilder
 
         // One treasure event per treasure a path can hold, so the pool can hand out distinct ones.
         var treasureIds = new List<string>();
-        for (var i = 1; i <= PerPathMinimums[MapNodeKind.Treasure] + 1; i++)
+        for (var i = 1; i <= PerPathMaximums[MapNodeKind.Treasure] + 1; i++)
         {
             var id = $"treasure:city-{i}";
             treasureIds.Add(id);
@@ -64,9 +105,12 @@ public static class MapSpecBuilder
             MinWidth = 2,
             MaxWidth = 4,
             PerPathMinimums = PerPathMinimums,
+            PerPathMaximums = PerPathMaximums,
+            LaneProfiles = Lanes,
             // Eight ordinary fights, the duo and the elite are all enemies the player must face.
             MinEnemiesPerPath = PerPathMinimums[MapNodeKind.Combat]
                 + PerPathMinimums[MapNodeKind.MultiCombat] + PerPathMinimums[MapNodeKind.Elite],
+            // Only used if the lanes above are ever cleared: the act's overall flavour in one table.
             KindWeights = new Dictionary<MapNodeKind, int>
             {
                 [MapNodeKind.Combat] = 10,
