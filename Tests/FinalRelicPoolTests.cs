@@ -52,6 +52,25 @@ public class FinalRelicPoolTests
         Assert.NotNull(compiled["bent_auction_gavel"].RewardRules);
     }
 
+    // §5: 25 Event relics, 6 of them in Act I. Only the Act-I six are built so far — the rest are named by
+    // events that do not exist yet (Phase D).
+    [Fact]
+    public void The_act_one_event_relics_are_all_six_of_them()
+    {
+        var pool = EventRelics.ActI;
+        Assert.Equal(6, pool.Count);
+        Assert.All(pool, r => Assert.Equal(Pool.Event, r.Pool));
+    }
+
+    // An Event relic has exactly ONE source, and saying which is the whole point: it is what Phase D wires the
+    // grant to, and a relic with no source could never be won.
+    [Fact]
+    public void Every_event_relic_names_the_branch_that_grants_it()
+    {
+        foreach (var relic in FinalRelics.Pool(Pool.Event))
+            Assert.False(string.IsNullOrWhiteSpace(relic.Source), $"'{relic.Id}' names no source");
+    }
+
     [Fact]
     public void No_two_relics_share_an_id()
     {
