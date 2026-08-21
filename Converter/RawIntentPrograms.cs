@@ -55,6 +55,7 @@ public static class RawIntentPrograms
                 "living_charter" => LivingCharter.Intent(intentId),
                 Elites.ReturnBell.EnemyId => Elites.ReturnBell.Intent(intentId),
                 Elites.RollingStacksColossus.EnemyId => Elites.RollingStacksColossus.Intent(intentId),
+                Elites.CatalogueOfUnwiseNames.EnemyId => Elites.CatalogueOfUnwiseNames.Intent(intentId),
                 _ => null,
             },
         };

@@ -713,3 +713,30 @@ is on the field — the act's rule stays the act's rule.
 - **A drawn card can now be named by the draw that produced it** (engine: `cardInstance.drawnOutcome`, the
   counterpart of `cardInstance.createdOutcome`). Open Aisle needs the identity of one specific replacement
   card, and the hand it lands in is ordered but not indexable from the end.
+
+## Act II elite signatures — Catalogue of Unwise Names (2026-08-21)
+
+Enter a Name, Recognized, the three Citations and the signature are built. The ledger lives as counters on the
+PLAYER and marks on the player's cards, because both sides read it — the Catalogue's intents cash entries and
+the player's own plays turn a Recognized entry into an Established one. A counter on the Catalogue could not
+be read as a single number by a player-side rule, since "the enemies carrying this status" is a set.
+
+- **Naming is two prompts**, an option ("enter a name" / "decline") and then a card. Both decisions the design
+  names survive: declining while an eligible card exists pays the Catalogue 8 Block, and a hand with no
+  eligible card raises no prompt and owes nothing. The chosen card is marked ONCE and every later step reads
+  the mark — a chooser expression evaluated twice would ask the player twice.
+- **The Citation type rotates** (Cost → Form → Record) rather than being picked freely. It is shown on the
+  card at the moment of naming, which is what 7.4 actually trades on: the liability is known before the
+  benefit is taken.
+- **Citation of Form reads B&B's own card types.** The design's Attack / Skill / Power are the generic
+  engine's; this game has Deed and Working. A Deed cites as an attack (+5 on the Catalogue's next direct
+  attack), a Working as a skill (14 Block), anything else takes the design's own neutral fallback (8 Block).
+- **Citation of Record reuses the act's Reference machinery**, with a `cite` override so it cites the tracked
+  card rather than whatever is first in hand.
+- **"The oldest eligible Established Entry" is first-in-pile-order**, searched discard → draw → hand. The
+  engine keeps no per-entry timestamp, and an Established card is by definition one that has been played.
+- **Nothing restores the discount on play.** The engine already spends a per-copy price at the play itself,
+  which is exactly "after full resolution, Recognized is removed" — a refund of our own would have left the
+  card dearer than printed.
+- **Strike from Catalogue (7.5) is NOT built.** It turns on "a card identity not currently represented by an
+  Entry", and nothing compares one card instance's identity against a set of tracked ones.
