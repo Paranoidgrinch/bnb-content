@@ -627,11 +627,24 @@ missing is the *signature* of thirteen of them, listed here so nothing is quietl
 - **Expunged Name** — redacting a card whose name was already played earlier in the combat. Nothing reads
   per-definition play history beyond the current turn.
 - **Checkout Codex** — Behind-the-Desk, with its three player options (wait, demand, end the turn).
-- **Unoccurred Tuesday** — a skipped enemy turn with +25% damage taken during it.
-- **Hourglass With Two Bottoms** — two independent scheduled countdowns the player can each delay once.
-- **Blank Death Certificate** — returning at ~35 % HP unless a Reference was fulfilled that turn.
-- **Spare-Life Jar** — storing a dead ally's identity and reviving it after a countdown.
-- **Detached Footnote / Miscellany Index** — the Source link and the four-way Residue synthesis.
-
-Several of these need engine seams that do not exist yet (an enemy skipping its turn, reviving a dead
-combatant, per-combat play history). They are deliberately absent, not approximated.
+- **Unoccurred Tuesday's missing turn is an INTENT, not a skipped turn.** Nothing lets an enemy skip its own
+  turn — Stun only stops the player playing cards — so the missing day is an intent that does nothing but
+  leave Tuesday exposed (+25 % direct card damage for the round). At the table that is the same thing, and its
+  place third in the cycle is what makes it every third turn.
+- **Hourglass With Two Bottoms** — two independent scheduled countdowns the player can each delay once. Its
+  two futures ship as its two attacks; the delaying is not built.
+- **Blank Death Certificate** — returning at ~35 % HP. The revive itself exists
+  (`SetCombatantLifecycleStateNode` + `HealNode`), but its Downed trigger never fires: the log shows the
+  lifecycle change to Downed and nothing after it. **Open question, narrow enough for an engine test: does a
+  bearer-scoped Downed trigger fire for the bearer's own downing?**
+  Separately and definitely: **the LAST enemy can never be revived.** The combat's outcome is decided by
+  `UpdateStandardCombatResultOnLifecycleChangedHandler`, which enqueues Victory the moment no enemy is living
+  and never re-checks when that request resolves.
+- **Spare-Life Jar** — storing a dead ally's identity and reviving it after a countdown. Blocked by the same
+  Downed question.
+- **Detached Footnote** — the Source link, and gaining Notes when the Source's own signature triggers. Nothing
+  announces "another enemy's rule reached its moment", so this is not approximated.
+- **Miscellany Index counts one Residue source, not four.** Three of the design's four are moments only
+  another rule knows it reached — a Delinquency resolving, a Reference being fulfilled, a Misfiled card
+  actually being skipped — and none announces itself in a way the Index could watch. At 4 it still files
+  everything else: one card in hand Redacted, another Misfiled.

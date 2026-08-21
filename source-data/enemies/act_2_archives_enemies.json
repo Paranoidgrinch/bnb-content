@@ -1064,14 +1064,15 @@
         ]
       },
       {
-        "id": "lost_hours",
-        "name": "Lost Hours",
-        "intent_type": "block",
+        "id": "tuesday_does_not_occur",
+        "name": "Tuesday Does Not Occur",
+        "intent_type": "debuff",
         "actions": [
           {
-            "type": "gain_block",
+            "type": "apply_status",
             "target": "owner",
-            "amount": 16
+            "status": "tuesday_does_not_occur",
+            "amount": 1
           }
         ]
       }
