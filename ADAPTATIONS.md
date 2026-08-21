@@ -604,7 +604,7 @@ appendix itself says the signature wins.
 ## Act II — what is built and what is not (2026-08-21)
 
 **Built and proved in live fights:** the four universal mechanics (Overdue, Misfiled, Referenced, Redacted)
-and the signatures of stages 1–5 — Brass Maw's Return Parcel, the Object's Recognized Category, the
+and the signatures of stages 1–7 (bar the Checkout Codex) — Brass Maw's Return Parcel, the Object's Recognized Category, the
 Ouroboros's re-owing, the two misfiling shelves, the Corridor's Wrong Edition, the three Reference rules, and
 the Reading Room's three hand rules.
 
@@ -615,15 +615,18 @@ opens by 8 (as damage when there is no guard left to strip, which is the design'
 appendix and the act's vocabulary in the intents themselves (attacks that Overdue, Misfile or Redact). What is
 missing is the *signature* of thirteen of them, listed here so nothing is quietly assumed to work:
 
+- **Fatal Comma's wrong-order penalty** — "B before A: Clause A becomes Redacted immediately before
+  resolution". Nothing can step between a play and its resolution, so reading the clauses backwards is simply
+  a missed reward; the correct order still cuts the Comma for 8, and leaving both unread still owes it.
+- **Errata Doppelgänger lifts the redaction AFTER the card lands**, not before. The design has the card
+  resolve at full strength; here it lands halved and only the MARK moves on to another card in hand — again
+  because nothing intervenes between a play and its resolution.
 - **Volume Q-Null** — Misfiled propagation by matching base cost. Now expressible (the base-cost expression
   exists); simply not yet written.
 - **Second-Person Entry** — chaining its citations by the card type used to fulfil the last one.
 - **Expunged Name** — redacting a card whose name was already played earlier in the combat. Nothing reads
   per-definition play history beyond the current turn.
-- **Fatal Comma** — Clause A / Clause B ordering. Needs two marks and an order comparison between two plays.
-- **Errata Doppelgänger** — moving a redaction from the played card to another in hand.
 - **Checkout Codex** — Behind-the-Desk, with its three player options (wait, demand, end the turn).
-- **Mnemonic Chain** — remembering one concrete card INSTANCE across zones and turns.
 - **Unoccurred Tuesday** — a skipped enemy turn with +25% damage taken during it.
 - **Hourglass With Two Bottoms** — two independent scheduled countdowns the player can each delay once.
 - **Blank Death Certificate** — returning at ~35 % HP unless a Reference was fulfilled that turn.
