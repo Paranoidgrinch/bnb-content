@@ -39,7 +39,16 @@ public static class RelicAuthoring
         // The rule it puts into every fight, as the status that carries it.
         StatusData? CombatRule = null,
         // Which Act's boss gives it (Boss pool only), for the source index.
-        string? Source = null)
+        string? Source = null,
+        // What is simply TRUE about a shop or a reward while the relic is worn. These are not reactions — the
+        // shop asks what the player is carrying as it prices its shelf and stocks it, and a reward asks as it
+        // is being built — so a discount cannot miss its moment the way a trigger can.
+        IReadOnlyList<ShopPriceRule>? ShopPrices = null,
+        IReadOnlyList<ShopStockGrant>? ShopStock = null,
+        IReadOnlyList<ShopService>? ShopServices = null,
+        IReadOnlyList<ShopCreditSource>? ShopCredit = null,
+        IReadOnlyList<ShopDebtTerms>? ShopDebt = null,
+        IReadOnlyList<IRewardRule>? RewardRules = null)
     {
         public RelicData Compile() => new()
         {
@@ -50,6 +59,12 @@ public static class RelicAuthoring
                     new CombatNodeModel("applyStatus", "source", CombatAmountSpec.FromConst(1),
                         StatusId: rule.Id))]
                 : RunPrograms ?? [],
+            ShopPriceRules = ShopPrices,
+            ShopStockGrants = ShopStock,
+            ShopServices = ShopServices,
+            ShopCreditSources = ShopCredit,
+            ShopDebtTerms = ShopDebt,
+            RewardRules = RewardRules,
         };
     }
 
@@ -68,8 +83,17 @@ public static class RelicAuthoring
         Eligibility eligibility = Eligibility.General,
         IReadOnlyList<IRunEffectRequest>? pickup = null,
         IReadOnlyList<ITriggeredRunEffectDefinition>? runPrograms = null,
-        StatusData? combatRule = null) =>
-        new(id, name, text, Pool.Shop, Rarity.Shop, eligibility, pickup, runPrograms, combatRule);
+        StatusData? combatRule = null,
+        IReadOnlyList<ShopPriceRule>? shopPrices = null,
+        IReadOnlyList<ShopStockGrant>? shopStock = null,
+        IReadOnlyList<ShopService>? shopServices = null,
+        IReadOnlyList<ShopCreditSource>? shopCredit = null,
+        IReadOnlyList<ShopDebtTerms>? shopDebt = null,
+        IReadOnlyList<IRewardRule>? rewardRules = null) =>
+        new(id, name, text, Pool.Shop, Rarity.Shop, eligibility, pickup, runPrograms, combatRule,
+            Source: null,
+            ShopPrices: shopPrices, ShopStock: shopStock, ShopServices: shopServices,
+            ShopCredit: shopCredit, ShopDebt: shopDebt, RewardRules: rewardRules);
 
     public static BnbRelic Event(
         string id, string name, string source, string text,

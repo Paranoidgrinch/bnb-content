@@ -14,12 +14,13 @@ public static class FinalRelics
     public static IReadOnlyList<BnbRelic> All() =>
     [
         .. NormalRelics.All(),
+        .. ShopRelics.All(),
     ];
 
     public static IReadOnlyList<RelicData> Compile() => All().Select(r => r.Compile()).ToList();
 
     // The in-combat rules the relics install, as the statuses that carry them.
-    public static IReadOnlyList<StatusData> Statuses() => RelicRules.All();
+    public static IReadOnlyList<StatusData> Statuses() => [.. RelicRules.All(), .. ShopRelicRules.All()];
 
     // What a given pool offers a given character. Character-specific relics are only eligible while that
     // character is played; everything else is open to everyone.
