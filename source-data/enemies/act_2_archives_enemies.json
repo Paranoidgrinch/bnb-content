@@ -881,7 +881,7 @@
   },
   {
     "id": "errata_doppelganger",
-    "name": "Errata Doppelgänger",
+    "name": "Errata Doppelg\u00e4nger",
     "max_hp": 85,
     "intent_pattern": "cycle",
     "intents": [
@@ -1399,6 +1399,18 @@
         ]
       },
       {
+        "id": "toll_for_every_unreturned_thing",
+        "name": "Toll for Every Unreturned Thing",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 14
+          }
+        ]
+      },
+      {
         "id": "confiscate_the_receipt",
         "name": "Confiscate the Receipt",
         "intent_type": "attack",
@@ -1421,12 +1433,41 @@
             "amount": 15
           }
         ]
+      },
+      {
+        "id": "reopen_for_one_final_minute_again",
+        "name": "Reopen for One Final Minute",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 18
+          }
+        ]
+      },
+      {
+        "id": "toll_for_every_unreturned_thing_again",
+        "name": "Toll for Every Unreturned Thing",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 14
+          }
+        ]
       }
     ],
     "tags": [
       "archives",
       "elite",
       "act_2"
+    ],
+    "starting_statuses": [
+      {
+        "status": "bell_delinquency"
+      }
     ]
   },
   {
