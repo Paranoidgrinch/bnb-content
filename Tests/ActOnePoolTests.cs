@@ -23,8 +23,9 @@ public class ActOnePoolTests
         "warrant_bailiff", "threshold_seizure_ward", "civic_battering_ram",
     ];
 
+    // Scoped to Act I: the catalogue holds every act's encounters, and these counts are Act I's.
     private static IEnumerable<BabEncounter> WithRole(string role) =>
-        Data.Encounters.Where(e => e.Role == role);
+        Data.Encounters.Where(e => e.Act == 1 && e.Role == role);
 
     [Fact]
     public void The_standard_pool_is_the_audits_twenty_three_solos_and_nine_duos()

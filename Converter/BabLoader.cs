@@ -35,8 +35,10 @@ public sealed class BabData
             Bureaucrat = One<BabClass>("classes/bureaucrat.json"),
             Cards = Many<BabCard>("cards/bureaucrat_starter.json", "cards/bureaucrat_rewards.json"),
             Statuses = Many<BabStatus>("statuses/statuses.json"),
-            Enemies = Many<BabEnemy>("enemies/city_enemies.json"),
-            Encounters = Many<BabEncounter>("encounters/act_1_city.json"),
+            // Act I's ported roster plus the acts authored since. Every act's bodies are ordinary enemy data;
+            // what makes an act an act is its own map and its own vocabulary, not a separate catalogue.
+            Enemies = Many<BabEnemy>("enemies/city_enemies.json", "enemies/act_2_archives_enemies.json"),
+            Encounters = Many<BabEncounter>("encounters/act_1_city.json", "encounters/act_2_archives.json"),
             Events = Many<BabEvent>("events/act_1_city_events.json"),
             Relics = Many<BabRelic>("relics/act_1_relics.json", "relics/bureaucrat_relics.json"),
         };

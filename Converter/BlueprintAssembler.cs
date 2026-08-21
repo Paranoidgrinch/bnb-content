@@ -60,6 +60,7 @@ public static class BlueprintAssembler
                 .. Cards.FinalCards.Statuses(),
                 .. Relics.FinalRelics.Statuses(),
                 .. PassiveStatuses.All(),
+                .. ActTwo.All(),
             ],
             // The final relic pools replace the ported v2 relics wherever the ids meet; what is left of the
             // old pool still ships because the ported EVENTS grant some of it by name.
