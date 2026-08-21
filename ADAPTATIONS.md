@@ -576,5 +576,17 @@ appendix itself says the signature wins.
   for now a plain misfiler; the propagation is deferred rather than approximated.
 - **"Misfile 1 card" marks the top of the draw pile.** The pile is already shuffled, so its first card is the
   random one — Act I's Unclaimed Property Tag reads randomness the same way.
+- **A Reference's whole rule lives on the CITING ENEMY**, not on the player: the Overdue an unanswered
+  citation costs has to come FROM that enemy, and a rule running on the player would file it from the player.
+  The enemy checks at its own turn start, which is also the moment that knows the answer — the hand has just
+  been put down, so anything still marked was not played.
+- **Second-Person Entry does not chain its citations by card type.** The design remembers the type used to
+  fulfil a citation and cites that type next; here every draw is cited afresh. The chain needs a remembered
+  card TYPE surviving across turns, which is a counter per type and a follow-up-only flag — deferred rather
+  than approximated.
+- **What the Fanged Alphabet learns is kept on the PLAYER.** Both moments it cares about are the player's (a
+  card played, a hand drawn), and in a fight-wide trigger the player is the one structural single target
+  available: a "whoever wears the rule" selector can match several combatants and so cannot be read as one
+  counter at all.
 - **The Object's Recognized Category is the literal first card of the turn**, Junk not skipped: the engine
   records one opening type per turn, exactly as Act I reads it for the Wrong-Window Scribe.

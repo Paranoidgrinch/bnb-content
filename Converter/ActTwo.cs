@@ -190,6 +190,88 @@ public static class ActTwo
             ]);
     }
 
+    // ── Referenced ────────────────────────────────────────────────────────────────────────────────────────
+    //
+    // "A source-bound mark on a card. Play it and the reference is fulfilled; let it leave your hand unplayed
+    // and the reference clears and costs you 1 Overdue from its source."
+    //
+    // The whole rule lives on the CITING ENEMY rather than on the player, for one reason: the Overdue an
+    // unfulfilled reference costs has to come FROM that enemy, and a rule running on the player would file it
+    // from the player. The enemy checking at its own turn start is also the moment that knows the answer — the
+    // player's hand has just been put down, so anything still carrying the mark was not played.
+    //
+    // Each citer marks with its own tag, because a program cannot ask who put a mark on a card.
+    public static StatusData Reference(string id, string name, string mark, string description,
+        IEffectNode<CardsDrawnTriggeredEffectContext>? cite = null)
+    {
+        // Cite one card in the player's hand after the player's draw. `cite` overrides which one.
+        var citing = new EffectProgram<CardsDrawnTriggeredEffectContext>(
+            new ConditionalEffectNode<CardsDrawnTriggeredEffectContext>(
+                IsTheApplicant<CardsDrawnTriggeredEffectContext>(),
+                cite ?? CiteFirst(mark)));
+
+        // Played, so fulfilled — the mark simply goes.
+        var fulfil = new EffectProgram<CardPlayedTriggeredEffectContext>(
+            new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
+                new CardInstanceHasMarkExpression<CardPlayedTriggeredEffectContext>(
+                    new TriggerEventCardInstanceExpression<CardPlayedTriggeredEffectContext>(),
+                    new TagId(mark)),
+                Unmark<CardPlayedTriggeredEffectContext>(
+                    new TriggerEventCardInstanceExpression<CardPlayedTriggeredEffectContext>(), mark)));
+
+        // My turn, and the player's hand is down: anything still marked was never played.
+        var collect = new EffectProgram<TurnStartedTriggeredEffectContext>(
+            new CausalSequenceEffectNode<TurnStartedTriggeredEffectContext>(
+                [Unfulfilled(mark, CardZone.DiscardPile), Unfulfilled(mark, CardZone.Hand)]));
+
+        return Rule(id, name, description,
+        [
+            new StatusTriggerData("CardsDrawn", JsonSerializer.SerializeToElement(
+                citing, CombatJson.CreateOptions<CardsDrawnTriggeredEffectContext>()),
+                StatusTriggerScope.Anywhere),
+            new StatusTriggerData("CardPlayed", JsonSerializer.SerializeToElement(
+                fulfil, CombatJson.CreateOptions<CardPlayedTriggeredEffectContext>()),
+                StatusTriggerScope.Anywhere),
+            new StatusTriggerData("TurnStarted", JsonSerializer.SerializeToElement(
+                collect, CombatJson.CreateOptions<TurnStartedTriggeredEffectContext>())),
+        ]);
+    }
+
+    private static IEffectNode<CardsDrawnTriggeredEffectContext> CiteFirst(string mark) =>
+        new ForEachCardInZoneNode<CardsDrawnTriggeredEffectContext>(
+            CombatantTargetSelectors.Source, CardZone.Hand,
+            new MarkCardInstanceNode<CardsDrawnTriggeredEffectContext>(
+                CombatantTargetSelectors.Source,
+                new IteratedCardExpression<CardsDrawnTriggeredEffectContext>(), new TagId(mark)),
+            takeFirst: 1);
+
+    private static IEffectNode<TurnStartedTriggeredEffectContext> Unfulfilled(string mark, CardZone zone) =>
+        new ForEachCardInZoneNode<TurnStartedTriggeredEffectContext>(
+            Opponent, zone,
+            new CausalSequenceEffectNode<TurnStartedTriggeredEffectContext>(
+            [
+                new MarkCardInstanceNode<TurnStartedTriggeredEffectContext>(
+                    Opponent, new IteratedCardExpression<TurnStartedTriggeredEffectContext>(),
+                    new TagId(mark), remove: true),
+                // Filed by ME — the bearer is the acting source, which is the whole reason this rule is here
+                // and not on the player.
+                new ApplyStatusNode<TurnStartedTriggeredEffectContext>(
+                    Opponent, new StatusDefinitionId(OverdueId),
+                    new ConstantExpression<TurnStartedTriggeredEffectContext>(1)),
+            ]),
+            markFilter: new TagId(mark));
+
+    private static IEffectNode<TContext> Unmark<TContext>(ICardInstanceExpression<TContext> card, string mark)
+        where TContext : class =>
+        new MarkCardInstanceNode<TContext>(
+            CombatantTargetSelectors.Source, card, new TagId(mark), remove: true);
+
+    // "It was the player who drew / played", from inside a rule that watches the whole fight. Every fight
+    // marks the hero as the applicant (Act I), which is the only structural handle on "the player".
+    private static ICombatExpression<TContext, bool> IsTheApplicant<TContext>() where TContext : class =>
+        new TargetHasStatusExpression<TContext>(
+            CombatantTargetSelectors.Source, new StatusDefinitionId(PassiveStatuses.ApplicantId));
+
     // ── Stage 1 — The Hall of Returns ─────────────────────────────────────────────────────────────────────
 
     public const string BrassMawDelinquencyId = "brass_maw_delinquency";
@@ -208,6 +290,10 @@ public static class ActTwo
         MiscellaneousClassification(),
         ArchiveRegulations(),
         WrongEdition(),
+        SecondPersonReference(),
+        LearnedLetter(),
+        FangedAlphabetReference(),
+        OrphanCitationReference(),
     ];
 
     public const string MiscellaneousClassificationId = "miscellaneous_classification";
@@ -247,8 +333,9 @@ public static class ActTwo
                             CombatantTargetSelectors.Source, StandardCombatIds.BlockDefensivePool),
                         ComparisonOperator.Greater,
                         new ConstantExpression<TurnEndedTriggeredEffectContext>(0)),
-                    new GainBlockNode<TurnEndedTriggeredEffectContext>(
-                        CombatantTargetSelectors.Source,
+                    // Losing Block is not gaining a negative amount of it — the pool is moved directly.
+                    new ModifyDefensivePoolNode<TurnEndedTriggeredEffectContext>(
+                        CombatantTargetSelectors.Source, StandardCombatIds.BlockDefensivePool,
                         new ConstantExpression<TurnEndedTriggeredEffectContext>(-5)),
                     new DealDamageNode<TurnEndedTriggeredEffectContext>(
                         CombatantTargetSelectors.Source,
@@ -334,6 +421,151 @@ public static class ActTwo
             new ApplyStatusNode<TurnStartedTriggeredEffectContext>(
                 Opponent, new StatusDefinitionId(OverdueId),
                 new ConstantExpression<TurnStartedTriggeredEffectContext>(1)));
+
+    // ── Stage 3 — The Whispering Catalogue ────────────────────────────────────────────────────────────────
+
+    public const string EntryReferenceMark = "referenced_entry";
+    public const string AlphabetReferenceMark = "referenced_alphabet";
+    public const string CitationReferenceMark = "referenced_citation";
+    public const string EntryReferenceId = "second_person_reference";
+    public const string AlphabetReferenceId = "fanged_alphabet_reference";
+    public const string CitationReferenceId = "orphan_citation_reference";
+    public const string AlphabetMemoryId = "learned_letter";
+
+    private static readonly CounterId LastCostCounter = new("alphabet_last_cost");
+    private static readonly CounterId LearnedCostCounter = new("alphabet_learned_cost");
+    private static readonly CounterId CitedThisDrawCounter = new("alphabet_cited");
+
+    // "Second-Person Entry cites you, again and again." The design chains the follow-up citation to the TYPE
+    // of the card that fulfilled the last one; here every draw is simply cited afresh. See ADAPTATIONS.
+    public static StatusData SecondPersonReference() =>
+        Reference(EntryReferenceId, "You Are Cited Again", EntryReferenceMark,
+            "One card in your hand is cited. Play it, or owe the Entry for it.");
+
+    // "If the player plays two consecutive cards with the same Base Cost, remember that cost class; after the
+    // next draw, cite a card of that cost." Two counters: what the last card cost, and what was learned.
+    public static StatusData LearnedLetter()
+    {
+        var watch = new EffectProgram<CardPlayedTriggeredEffectContext>(
+            new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
+                IsTheApplicant<CardPlayedTriggeredEffectContext>(),
+                new CausalSequenceEffectNode<CardPlayedTriggeredEffectContext>(
+                [
+                    // Two in a row at the same price is a class worth learning.
+                    new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
+                        new ComparisonExpression<CardPlayedTriggeredEffectContext>(
+                            PlayedCost<CardPlayedTriggeredEffectContext>(),
+                            ComparisonOperator.Equal,
+                            OnWearer<CardPlayedTriggeredEffectContext>(LastCostCounter)),
+                        SetOnWearer<CardPlayedTriggeredEffectContext>(
+                            LearnedCostCounter, PlayedCost<CardPlayedTriggeredEffectContext>())),
+                    SetOnWearer<CardPlayedTriggeredEffectContext>(
+                        LastCostCounter, PlayedCost<CardPlayedTriggeredEffectContext>()),
+                ])));
+
+        return Rule(AlphabetMemoryId, "Learned Letter",
+            "The alphabet listens for a price you pay twice in a row.",
+            [new StatusTriggerData("CardPlayed", JsonSerializer.SerializeToElement(
+                watch, CombatJson.CreateOptions<CardPlayedTriggeredEffectContext>()),
+                StatusTriggerScope.Anywhere)]);
+    }
+
+    // …and cites a card of the learned price, one per draw.
+    public static StatusData FangedAlphabetReference() =>
+        Reference(AlphabetReferenceId, "Bitten Letter", AlphabetReferenceMark,
+            "A card of the price the alphabet learned is cited.",
+            cite: new CausalSequenceEffectNode<CardsDrawnTriggeredEffectContext>(
+            [
+                new SetCombatantCounterNode<CardsDrawnTriggeredEffectContext>(
+                    OnlyWearer, CitedThisDrawCounter,
+                    new ConstantExpression<CardsDrawnTriggeredEffectContext>(0), relative: false),
+                new ForEachCardInZoneNode<CardsDrawnTriggeredEffectContext>(
+                    CombatantTargetSelectors.Source, CardZone.Hand,
+                    new ConditionalEffectNode<CardsDrawnTriggeredEffectContext>(
+                        new AndExpression<CardsDrawnTriggeredEffectContext>(
+                            new ComparisonExpression<CardsDrawnTriggeredEffectContext>(
+                                IteratedCost<CardsDrawnTriggeredEffectContext>(),
+                                ComparisonOperator.Equal,
+                                new CombatantCounterExpression<CardsDrawnTriggeredEffectContext>(
+                                    OnlyWearer, LearnedCostCounter)),
+                            new ComparisonExpression<CardsDrawnTriggeredEffectContext>(
+                                new CombatantCounterExpression<CardsDrawnTriggeredEffectContext>(
+                                    OnlyWearer, CitedThisDrawCounter),
+                                ComparisonOperator.Equal,
+                                new ConstantExpression<CardsDrawnTriggeredEffectContext>(0))),
+                        new CausalSequenceEffectNode<CardsDrawnTriggeredEffectContext>(
+                        [
+                            new MarkCardInstanceNode<CardsDrawnTriggeredEffectContext>(
+                                CombatantTargetSelectors.Source,
+                                new IteratedCardExpression<CardsDrawnTriggeredEffectContext>(),
+                                new TagId(AlphabetReferenceMark)),
+                            new SetCombatantCounterNode<CardsDrawnTriggeredEffectContext>(
+                                OnlyWearer, CitedThisDrawCounter,
+                                new ConstantExpression<CardsDrawnTriggeredEffectContext>(1), relative: false),
+                        ]))),
+            ]));
+
+    // "The player may fulfil the citation by playing the exact card, OR another card of the same Base Cost and
+    // the same type." The second path is answered where the citation is: compare what was played against the
+    // card still carrying the mark.
+    public static StatusData OrphanCitationReference()
+    {
+        var citation = Reference(CitationReferenceId, "Reconstruct the Source", CitationReferenceMark,
+            "A card is cited; something enough like it will also do.");
+
+        // Same price and same kind counts as the same citation.
+        var standIn = new EffectProgram<CardPlayedTriggeredEffectContext>(
+            new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
+                new AndExpression<CardPlayedTriggeredEffectContext>(
+                    IsTheApplicant<CardPlayedTriggeredEffectContext>(),
+                    new ComparisonExpression<CardPlayedTriggeredEffectContext>(
+                        PlayedCost<CardPlayedTriggeredEffectContext>(),
+                        ComparisonOperator.Equal,
+                        new CardInstanceBaseCostExpression<CardPlayedTriggeredEffectContext>(
+                            new FirstMarkedCardInOwnerZoneExpression<CardPlayedTriggeredEffectContext>(
+                                CombatantTargetSelectors.Source, CardZone.Hand,
+                                new TagId(CitationReferenceMark)),
+                            StandardCombatIds.EnergyResource))),
+                new ForEachCardInZoneNode<CardPlayedTriggeredEffectContext>(
+                    CombatantTargetSelectors.Source, CardZone.Hand,
+                    new MarkCardInstanceNode<CardPlayedTriggeredEffectContext>(
+                        CombatantTargetSelectors.Source,
+                        new IteratedCardExpression<CardPlayedTriggeredEffectContext>(),
+                        new TagId(CitationReferenceMark), remove: true),
+                    markFilter: new TagId(CitationReferenceMark))));
+
+        return citation with
+        {
+            Triggers =
+            [
+                .. citation.Triggers,
+                new StatusTriggerData("CardPlayed", JsonSerializer.SerializeToElement(
+                    standIn, CombatJson.CreateOptions<CardPlayedTriggeredEffectContext>()),
+                    StatusTriggerScope.Anywhere),
+            ],
+        };
+    }
+
+    // What the alphabet learned is kept on the PLAYER, not on the alphabet. Both moments it cares about — a
+    // card played, a hand drawn — are the player's, and in a fight-wide trigger the player is the one
+    // structural single target available ("who did this"): a "whoever wears the rule" selector can match
+    // several combatants and so cannot be read as one counter at all.
+    private static readonly ICombatantTargetSelector OnlyWearer = CombatantTargetSelectors.Source;
+
+    private static ICombatExpression<TContext, int> PlayedCost<TContext>() where TContext : class =>
+        new CardInstanceBaseCostExpression<TContext>(
+            new TriggerEventCardInstanceExpression<TContext>(), StandardCombatIds.EnergyResource);
+
+    private static ICombatExpression<TContext, int> IteratedCost<TContext>() where TContext : class =>
+        new CardInstanceBaseCostExpression<TContext>(
+            new IteratedCardExpression<TContext>(), StandardCombatIds.EnergyResource);
+
+    private static ICombatExpression<TContext, int> OnWearer<TContext>(CounterId counter) where TContext : class =>
+        new CombatantCounterExpression<TContext>(OnlyWearer, counter);
+
+    private static IEffectNode<TContext> SetOnWearer<TContext>(
+        CounterId counter, ICombatExpression<TContext, int> value) where TContext : class =>
+        new SetCombatantCounterNode<TContext>(OnlyWearer, counter, value, relative: false);
 
     // ── shapes ────────────────────────────────────────────────────────────────────────────────────────────
 
