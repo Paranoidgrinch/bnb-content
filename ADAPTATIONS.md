@@ -550,3 +550,31 @@ which do not exist yet. What could not be translated straight:
   (`GrantUnrestrictedStepRunEffect`). "The next row" is read back out of the edges as distance from the start,
   because these maps are layered but nothing records the rows. The charge is spent only when the shortcut is
   actually taken, so walking an ordinary fork keeps it.
+
+## Act II — The Endless Archives (2026-08-21)
+
+Numbers come from the master's **MASTER COMBAT BALANCE APPENDIX**, which gives ranges rather than exact
+values. Convention: **the midpoint of each range, rounded half up to a whole number**; duo HP from the
+appendix's scaling table (ordinary body 68–78 % → 74 %). Where a number and a signature rule disagree the
+appendix itself says the signature wins.
+
+- **A source collects its Overdue at its OWN turn start**, not the instant the second Overdue lands. The
+  design collects immediately; collecting on the turn of the one owed is what makes "this source's stacks"
+  provable — the bearer is the acting source, so what it spends is demonstrably its own and never a
+  neighbour's. In play the difference is one turn of delay.
+- **Overdue is applied one stack at a time as its own instance**, so "2 from the same source" means two
+  filings. A merged stack remembers only the last source, which would let one enemy spend another's debt.
+- **A misfiled card is taken back a beat after it arrives.** The engine hands the hand over before anything
+  can object (`CardsDrawn` fires with the cards already held), so the archive reclaims the card immediately
+  afterwards and fetches a replacement. Invisible in the numbers, visible in a combat log — the same
+  beat-late shape Act I's Exception Imp uses. There is no window in which the player can act on it.
+- **Which shelf misfiled a card is written into the MARK**, not looked up from the marker's source: a program
+  cannot ask who put a mark there, and the destination has to be answerable at the moment the card is taken
+  back. Hence two marks — the plain one goes to discard, the Crabwise Shelf's goes back into the draw pile.
+- **Volume Q-Null does not propagate its misfiling.** "If the replacement has the same persistent Base Cost it
+  also becomes Misfiled" needs to compare two card instances' base costs, which nothing can read. Q-Null is
+  for now a plain misfiler; the propagation is deferred rather than approximated.
+- **"Misfile 1 card" marks the top of the draw pile.** The pile is already shuffled, so its first card is the
+  random one — Act I's Unclaimed Property Tag reads randomness the same way.
+- **The Object's Recognized Category is the literal first card of the turn**, Junk not skipped: the engine
+  records one opening type per turn, exactly as Act I reads it for the Wrong-Window Scribe.

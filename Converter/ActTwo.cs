@@ -79,6 +79,117 @@ public static class ActTwo
             },
             new ConstantExpression<TurnStartedTriggeredEffectContext>(-1));
 
+    // ── Misfiled ──────────────────────────────────────────────────────────────────────────────────────────
+    //
+    // "A Misfiled card does not enter the hand on its next draw; it goes to discard, you draw a replacement,
+    // and the mark clears." The engine hands the cards over BEFORE anything can object — CardsDrawn fires with
+    // the hand already holding them — so the archive takes its card back a beat after it arrives. Invisible in
+    // the numbers, visible in a combat log; the same beat-late shape Act I's Exception Imp uses.
+    //
+    // Which shelf a card was misfiled BY changes where it goes, so the destination is written into the mark
+    // rather than looked up from the marker's source: a program cannot ask who put a mark there, and "the
+    // Crabwise Shelf's misfilings go to the bottom of the draw pile" has to be answerable at the moment the
+    // card is taken back. One rule owns that moment, exactly as one place owns the Paperwork tick.
+    public const string MisfiledMark = "misfiled";
+    public const string MisfiledSidewaysMark = "misfiled_sideways";
+    public const string ArchiveRegulationsId = "archive_regulations";
+
+    // The hero carries this in every fight where something can misfile. Idempotent by construction: two
+    // misfiling enemies ask for the same marker and it merges, so the card is taken back once.
+    public static StatusData ArchiveRegulations()
+    {
+        var program = new EffectProgram<CardsDrawnTriggeredEffectContext>(
+            new CausalSequenceEffectNode<CardsDrawnTriggeredEffectContext>(
+            [
+                TakeBack(MisfiledMark, CardZone.DiscardPile),
+                TakeBack(MisfiledSidewaysMark, CardZone.DrawPile),
+            ]));
+
+        return Rule(ArchiveRegulationsId, "Archive Regulations",
+            "A misfiled card is taken back as it reaches you, and something else is fetched in its place.",
+            [new StatusTriggerData("CardsDrawn", JsonSerializer.SerializeToElement(
+                program, CombatJson.CreateOptions<CardsDrawnTriggeredEffectContext>()))]);
+    }
+
+    // Take back every card in hand carrying one kind of misfiling, and fetch a replacement for each. The mark
+    // is cleared BEFORE the replacement is drawn, so a replacement that is itself misfiled waits for the next
+    // draw rather than being swept up by the pass that fetched it.
+    private static IEffectNode<CardsDrawnTriggeredEffectContext> TakeBack(string mark, CardZone destination) =>
+        new ForEachCardInZoneNode<CardsDrawnTriggeredEffectContext>(
+            CombatantTargetSelectors.Source, CardZone.Hand,
+            new CausalSequenceEffectNode<CardsDrawnTriggeredEffectContext>(
+            [
+                new MarkCardInstanceNode<CardsDrawnTriggeredEffectContext>(
+                    CombatantTargetSelectors.Source,
+                    new IteratedCardExpression<CardsDrawnTriggeredEffectContext>(),
+                    new TagId(mark), remove: true),
+                new MoveCardToZoneNode<CardsDrawnTriggeredEffectContext>(
+                    CombatantTargetSelectors.Source,
+                    new IteratedCardExpression<CardsDrawnTriggeredEffectContext>(),
+                    destination),
+                new DrawCardsNode<CardsDrawnTriggeredEffectContext>(
+                    CombatantTargetSelectors.Source,
+                    new ConstantExpression<CardsDrawnTriggeredEffectContext>(1)),
+            ]),
+            markFilter: new TagId(mark));
+
+    // ── Stage 2 — The Misfiled Stacks ─────────────────────────────────────────────────────────────────────
+
+    public const string WrongEditionMark = "wrong_edition";
+    public const string WrongEditionId = "wrong_edition_rule";
+
+    // "Misfile 1 card": the mark goes on the draw pile, which is where a misfiling can still cost the player
+    // something. The pile is already shuffled, so its top card IS the random one — the reading Act I's
+    // Unclaimed Property Tag uses.
+    public static IEffectNode<EnemyActionContext> MisfileOne(string mark) =>
+        new ForEachCardInZoneNode<EnemyActionContext>(
+            Opponent, CardZone.DrawPile,
+            new MarkCardInstanceNode<EnemyActionContext>(
+                Opponent, new IteratedCardExpression<EnemyActionContext>(), new TagId(mark)),
+            takeFirst: 1);
+
+    // "After normal draw, select one valid card in hand. If the player plays it this turn, it resolves normally
+    // and THEN becomes Misfiled." The rule lives on the player because that is whose hand and whose play it is
+    // about; it is only there when the Corridor is (see EncounterPassives.HeroOpeningStatuses).
+    public static StatusData WrongEdition()
+    {
+        var mark = new EffectProgram<CardsDrawnTriggeredEffectContext>(
+            new ForEachCardInZoneNode<CardsDrawnTriggeredEffectContext>(
+                CombatantTargetSelectors.Source, CardZone.Hand,
+                new MarkCardInstanceNode<CardsDrawnTriggeredEffectContext>(
+                    CombatantTargetSelectors.Source,
+                    new IteratedCardExpression<CardsDrawnTriggeredEffectContext>(),
+                    new TagId(WrongEditionMark)),
+                takeFirst: 1));
+
+        // Played, so it resolved — and only now is it the wrong edition.
+        var convert = new EffectProgram<CardPlayedTriggeredEffectContext>(
+            new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
+                new CardInstanceHasMarkExpression<CardPlayedTriggeredEffectContext>(
+                    new TriggerEventCardInstanceExpression<CardPlayedTriggeredEffectContext>(),
+                    new TagId(WrongEditionMark)),
+                new CausalSequenceEffectNode<CardPlayedTriggeredEffectContext>(
+                [
+                    new MarkCardInstanceNode<CardPlayedTriggeredEffectContext>(
+                        CombatantTargetSelectors.Source,
+                        new TriggerEventCardInstanceExpression<CardPlayedTriggeredEffectContext>(),
+                        new TagId(WrongEditionMark), remove: true),
+                    new MarkCardInstanceNode<CardPlayedTriggeredEffectContext>(
+                        CombatantTargetSelectors.Source,
+                        new TriggerEventCardInstanceExpression<CardPlayedTriggeredEffectContext>(),
+                        new TagId(MisfiledMark)),
+                ])));
+
+        return Rule(WrongEditionId, "Wrong Edition",
+            "One card in your hand is from the wrong edition; playing it works, and then it is filed away.",
+            [
+                new StatusTriggerData("CardsDrawn", JsonSerializer.SerializeToElement(
+                    mark, CombatJson.CreateOptions<CardsDrawnTriggeredEffectContext>())),
+                new StatusTriggerData("CardPlayed", JsonSerializer.SerializeToElement(
+                    convert, CombatJson.CreateOptions<CardPlayedTriggeredEffectContext>())),
+            ]);
+    }
+
     // ── Stage 1 — The Hall of Returns ─────────────────────────────────────────────────────────────────────
 
     public const string BrassMawDelinquencyId = "brass_maw_delinquency";
@@ -95,6 +206,8 @@ public static class ActTwo
         Delinquency(OtherDelinquencyId, "Improper Storage",
             "What is kept waiting is filed against you."),
         MiscellaneousClassification(),
+        ArchiveRegulations(),
+        WrongEdition(),
     ];
 
     public const string MiscellaneousClassificationId = "miscellaneous_classification";

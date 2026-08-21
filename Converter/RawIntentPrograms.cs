@@ -8,9 +8,22 @@ namespace BnbContent.Converter;
 // cross-combatant reactions — and EnemyMapper prefers this program when one exists for "<enemy>.<intent>".
 public static class RawIntentPrograms
 {
+    private static EffectProgram<EnemyActionContext> Misfiling(int damage, string mark) =>
+        new(new CausalSequenceEffectNode<EnemyActionContext>(
+        [
+            new DealDamageNode<EnemyActionContext>(
+                CombatantTargetSelectors.LowestHealthEnemyOfSource,
+                new ConstantExpression<EnemyActionContext>(damage)),
+            ActTwo.MisfileOne(mark),
+        ]));
+
     public static EffectProgram<EnemyActionContext>? For(string enemyId, string intentId) =>
         $"{enemyId}.{intentId}" switch
         {
+            // Act II: an attack that also misfiles. Which SHELF did it decides where the card goes when it is
+            // taken back, so the destination is written into the mark itself.
+            "crabwise_shelf.mis_shelve" => Misfiling(11, ActTwo.MisfiledSidewaysMark),
+            "volume_q_null.null_index" => Misfiling(10, ActTwo.MisfiledMark),
             "minute_moth_cloud.steal_a_minute" => StealAMinute(),
             "living_petition_chorus.read_into_the_record" => ReadIntoTheRecord(),
             "escalation_writ.elevate_the_case" => ElevateTheCase(),

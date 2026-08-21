@@ -4,9 +4,15 @@
     "name": "Brass Maw of Returns",
     "act": 2,
     "difficulty": "normal",
-    "enemies": ["brass_maw_of_returns"],
+    "enemies": [
+      "brass_maw_of_returns"
+    ],
     "weight": 2,
-    "tags": ["stage_returns", "archives", "overdue_intro"],
+    "tags": [
+      "stage_returns",
+      "archives",
+      "overdue_intro"
+    ],
     "role": "combat"
   },
   {
@@ -14,9 +20,15 @@
     "name": "Object Listed as \"Other\"",
     "act": 2,
     "difficulty": "normal",
-    "enemies": ["object_listed_as_other"],
+    "enemies": [
+      "object_listed_as_other"
+    ],
     "weight": 2,
-    "tags": ["stage_returns", "archives", "classification"],
+    "tags": [
+      "stage_returns",
+      "archives",
+      "classification"
+    ],
     "role": "combat"
   },
   {
@@ -24,9 +36,16 @@
     "name": "Dead-Letter Ouroboros",
     "act": 2,
     "difficulty": "normal",
-    "enemies": ["dead_letter_ouroboros"],
+    "enemies": [
+      "dead_letter_ouroboros"
+    ],
     "weight": 2,
-    "tags": ["stage_returns", "archives", "overdue", "recursion"],
+    "tags": [
+      "stage_returns",
+      "archives",
+      "overdue",
+      "recursion"
+    ],
     "role": "combat"
   },
   {
@@ -34,10 +53,92 @@
     "name": "Returned as \"Other\"",
     "act": 2,
     "difficulty": "normal",
-    "enemies": ["brass_maw_of_returns", "object_listed_as_other"],
-    "enemy_health": [37, 40],
+    "enemies": [
+      "brass_maw_of_returns",
+      "object_listed_as_other"
+    ],
+    "enemy_health": [
+      37,
+      40
+    ],
     "weight": 2,
-    "tags": ["stage_returns", "archives", "overdue", "multi_enemy"],
+    "tags": [
+      "stage_returns",
+      "archives",
+      "overdue",
+      "multi_enemy"
+    ],
+    "role": "multi_combat"
+  },
+  {
+    "id": "archives_stacks_01",
+    "name": "Crabwise Shelf",
+    "act": 2,
+    "difficulty": "normal",
+    "enemies": [
+      "crabwise_shelf"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_stacks",
+      "archives",
+      "misfiled"
+    ],
+    "role": "combat"
+  },
+  {
+    "id": "archives_stacks_02",
+    "name": "Volume Q-Null",
+    "act": 2,
+    "difficulty": "normal",
+    "enemies": [
+      "volume_q_null"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_stacks",
+      "archives",
+      "misfiled"
+    ],
+    "role": "combat"
+  },
+  {
+    "id": "archives_stacks_03",
+    "name": "Corridor in the Wrong Edition",
+    "act": 2,
+    "difficulty": "normal",
+    "enemies": [
+      "corridor_in_the_wrong_edition"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_stacks",
+      "archives",
+      "misfiled"
+    ],
+    "role": "combat"
+  },
+  {
+    "id": "archives_stacks_duo_01",
+    "name": "Crabwise Return",
+    "act": 2,
+    "difficulty": "normal",
+    "enemies": [
+      "crabwise_shelf",
+      "dead_letter_ouroboros"
+    ],
+    "enemy_health": [
+      41,
+      35
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_stacks",
+      "archives",
+      "misfiled",
+      "overdue",
+      "multi_enemy"
+    ],
     "role": "multi_combat"
   }
 ]
