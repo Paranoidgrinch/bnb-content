@@ -525,3 +525,28 @@ price rules, shelves, credit and debt, reward rules). What could not be translat
 The city shop was relabelled to make any of this possible: its stock is now two **shelves** (`cards`,
 `relics`) whose pools are deeper than what they show, and every entry says what it is (kind + tags). Without
 that labelling a price rule matches nothing and the relics would quietly do nothing.
+
+## The Act-I Event relics (2026-08-21)
+
+Six of the 25 Event-exclusive relics belong to Act I; the other nineteen are named by events in Acts II–IV,
+which do not exist yet. What could not be translated straight:
+
+- **Originality Stamp does not check for a same-name copy.** "The first played non-Junk card that has another
+  persistent same-name copy" would mean asking how many copies of the played card's DEFINITION are still in
+  the piles; nothing can ask that. It copies the first non-Junk card you play instead. The copy's own −1 cost
+  also had to move: creating a card hands back no handle on the instance that was made, so the discount rides
+  on the wearer as "your next card costs 1 less" — the shape the card pools already use.
+- **Unclaimed Property Tag marks the top of the draw pile.** The pile is already shuffled, so its first card
+  IS the random one. The mark rides on the instance for the whole fight rather than "the first time it enters
+  hand, that turn" — the engine prices an instance, it does not price a turn.
+- **Uncalled Ticket takes whatever is still in hand,** not specifically an unaffordable card: a rule cannot ask
+  whether a particular card was affordable when the turn ended.
+- **Inherited Bone Folder does not upgrade the card it marks.** Nothing upgrades a card mid-fight — the card
+  pools have no such node either. It keeps the cheaper half and gives the extra card unconditionally, the same
+  way Rootbound Walking Staff dropped its condition.
+- **Threshold Ward answers any positive status on the other side,** which is what the design says; the rule
+  has to check that whoever gained it is not the wearer, since it watches the whole fight.
+- **Crossed-Out Map became a real engine feature** rather than an adaptation: a step that ignores the paths
+  (`GrantUnrestrictedStepRunEffect`). "The next row" is read back out of the edges as distance from the start,
+  because these maps are layered but nothing records the rows. The charge is spent only when the shortcut is
+  actually taken, so walking an ordinary fork keeps it.
