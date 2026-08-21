@@ -490,3 +490,38 @@ relic's line asks for something the engine cannot see.
 - **The once-a-turn latch is read and written on the WEARER**, not on the event's source: who "source" names
   differs between a card being played, a status landing and a turn starting, but the relic's wearer is the
   same combatant in all three, and the promise is theirs.
+
+## The 24 Shop relics (2026-08-21)
+
+Most of the Shop pool is economy, and the engine grew the seams for it (node tags, combat→run tallies, shop
+price rules, shelves, credit and debt, reward rules). What could not be translated straight:
+
+- **"The first time each Act" is a run FLAG that is never cleared.** The blueprint is one Act, so today that
+  is exactly right. **When Acts II–V arrive, the act boundary must clear these flags** —
+  `secondhand_reliquary`, `shears_discount`, `shears_penalty`, `warranty`, `guest_favor`, `dpo_deed`,
+  `dpo_working`, `dpo_rite` — or every one of those relics fires once per RUN instead of once per Act.
+- **Wastebroker's Permit counts every Archive, not only Junk.** The Archive mark records THAT a card was
+  archived, not which one; asking what was archived would mean marking every card as it goes. Still capped at
+  3 per combat, so the payout is unchanged in practice for a Junk-heavy deck.
+- **Secondhand Reliquary's blood price is charged on buying a Normal Relic, not specifically the marked one.**
+  A price rule bends a price; it cannot leave a note on the item saying which one it bent. Both halves key off
+  the same once-per-Act flag, so the relic can still only ever cost 5 HP once and only alongside its discount.
+- **Notary's Waiver banks its Waivers when the fight ends**, not the instant you Ratify. The count is kept in
+  the fight and collected on victory, like every other combat→run tally; losing the fight loses the Waivers.
+- **Witchmarket Purse pays out on entering the Act's boss node**, since the run layer has no act boundary.
+- **Guest-Favor Token's second option upgrades a card you own** instead of offering a special two-card reward:
+  a relic definition is static and has no handle on the Act's card pool. "Without entering combat" is also not
+  something the run can observe, so any resolved Event counts.
+- **Merchant Punchcard's Punches are spent automatically** as far as they help, rather than the player
+  choosing how many to redeem before the first purchase. Shop credit is spent in whole units and never
+  overpays, so nothing is ever wasted — but a player cannot deliberately save a Punch for a dearer item.
+- **Warranty Tag pays out at the next Shop instead of letting you hand the relic back.** Returning a specific
+  relic is not something a rule can name (the relic it would return is not known when the rule is written), so
+  the warranty settles as a refund of half the Gold actually paid, and does not expire.
+- **Filing-Fee Stamp reads an enemy's Paperwork as it goes down**, because a moment later the corpse's
+  statuses are gone with it. The 20-Gold-per-combat cap is applied when the run collects the tally rather than
+  while it accrues — capping the running total would silently lose the last enemy's share.
+
+The city shop was relabelled to make any of this possible: its stock is now two **shelves** (`cards`,
+`relics`) whose pools are deeper than what they show, and every entry says what it is (kind + tags). Without
+that labelling a price rule matches nothing and the relics would quietly do nothing.

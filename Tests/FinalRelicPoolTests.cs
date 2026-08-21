@@ -25,6 +25,33 @@ public class FinalRelicPoolTests
         Assert.Equal(38, pool.Count(r => r.Eligibility == Eligibility.General));
     }
 
+    // §4: 24 Shop relics — 18 General and 6 Bureaucrat-specific.
+    [Fact]
+    public void The_shop_pool_is_the_shape_the_master_states()
+    {
+        var pool = ShopRelics.All();
+        Assert.Equal(24, pool.Count);
+        Assert.Equal(6, pool.Count(r => r.Eligibility == Eligibility.Bureaucrat));
+        Assert.Equal(18, pool.Count(r => r.Eligibility == Eligibility.General));
+        Assert.All(pool, r => Assert.Equal(Pool.Shop, r.Pool));
+    }
+
+    // Most of the Shop pool is economy, and economy is not a reaction: a discount is simply true of the shelf
+    // while the relic is worn. If these stopped compiling into the relic's shop faces they would silently do
+    // nothing, since nothing ever "fires".
+    [Fact]
+    public void The_economy_relics_compile_into_standing_facts_about_a_shop()
+    {
+        var compiled = ShopRelics.All().ToDictionary(r => r.Id, r => r.Compile());
+
+        Assert.NotNull(compiled["secondhand_reliquary"].ShopPriceRules);
+        Assert.NotNull(compiled["crooked_display_case"].ShopStockGrants);
+        Assert.NotNull(compiled["backroom_kettle"].ShopServices);
+        Assert.NotNull(compiled["archive_voucher_roll"].ShopCreditSources);
+        Assert.NotNull(compiled["debtors_signet"].ShopDebtTerms);
+        Assert.NotNull(compiled["bent_auction_gavel"].RewardRules);
+    }
+
     [Fact]
     public void No_two_relics_share_an_id()
     {

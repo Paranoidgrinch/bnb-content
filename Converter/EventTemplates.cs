@@ -1,6 +1,8 @@
 using RogueDeck.Core.Combat;
 using RogueDeck.Run;
 
+using BnbContent.Converter.Relics;
+
 namespace BnbContent.Converter;
 
 // The authored non-combat stops of Act I: the waiting room (rest), the sealed evidence crate (treasure) and
@@ -47,26 +49,37 @@ public static class ShopTemplate
         var cardPrices = new Dictionary<string, int> { ["common"] = 55, ["uncommon"] = 85, ["rare"] = 130 };
         var relicPrices = new Dictionary<string, int> { ["common"] = 130, ["uncommon"] = 190, ["rare"] = 260 };
 
-        var cards = pools.RewardCards.OrderBy(_ => rng.Next()).Take(5).ToList();
-        var relics = pools.Relics.OrderBy(_ => rng.Next()).Take(2).ToList();
+        // Each shelf's POOL is deeper than what it shows, so a reroll can actually turn the stock over and a
+        // relic that adds a slot has something to put in it.
+        var cards = pools.RewardCards.OrderBy(_ => rng.Next()).Take(12).ToList();
+        var relics = pools.Relics.OrderBy(_ => rng.Next()).Take(5).ToList();
 
-        var entries = new List<ShopEntry>();
-        foreach (var card in cards)
-        {
-            var id = CardMapper.MapCardId(card.Id);
-            entries.Add(new ShopEntry($"buy-{id}", StandardRunIds.Gold,
-                cardPrices.GetValueOrDefault(card.Rarity ?? "common", 85),
-                [new AddCardToDeckRunEffect(new CardDefinitionId(id))], card.Name));
-        }
-        foreach (var relic in relics)
-        {
-            entries.Add(new ShopEntry($"buy-{relic.Relic.Id}", StandardRunIds.Gold,
-                relicPrices.GetValueOrDefault(relic.Source.Rarity ?? "common", 190),
-                ConversionPools.RelicOffer(relic).Grant, relic.Source.Name));
-        }
-        return new ShopDefinition(entries,
-            OfferCount: entries.Count,
+        // Two SHELVES rather than one bag, and every entry says what it is. A relic that makes "one Normal
+        // Relic" cheaper, or adds a slot to the relic shelf, or replaces the unsold cards, finds nothing
+        // unless the stock is labelled — the effects behind a purchase are opaque.
+        var cardEntries = cards.Select(card => new ShopEntry(
+            $"buy-{card.Id}", StandardRunIds.Gold,
+            cardPrices.GetValueOrDefault(card.Rarity, 85),
+            [new AddCardToDeckRunEffect(new CardDefinitionId(card.Id))], card.Name,
+            Kind: ShopEntryKinds.Card,
+            // The card's own vocabulary — its type (Deed/Working/Rite) and whatever else it carries — plus its
+            // rarity, so a rule that discounts "the first Form or Queue card" can find one.
+            Tags: [card.Rarity, .. card.AllTags])).ToList();
+
+        var relicEntries = relics.Select(relic => new ShopEntry(
+            $"buy-{relic.Relic.Id}", StandardRunIds.Gold,
+            relicPrices.GetValueOrDefault(relic.Source.Rarity ?? "common", 190),
+            ConversionPools.RelicOffer(relic).Grant, relic.Source.Name,
+            Kind: ShopEntryKinds.Relic,
+            Tags: [ShopRelics.NormalRelic])).ToList();
+
+        return new ShopDefinition([], OfferCount: 0,
             Reroll: new ShopReroll(StandardRunIds.Gold, 25),
-            Services: [ShopService.RemoveCard(StandardRunIds.Gold, 75)]);
+            Services: [ShopService.RemoveCard(StandardRunIds.Gold, 75)],
+            Stock:
+            [
+                new ShopStockGroup(ShopRelics.CardShelf, cardEntries, 5),
+                new ShopStockGroup(ShopRelics.RelicShelf, relicEntries, 2),
+            ]);
     }
 }
