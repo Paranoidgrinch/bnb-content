@@ -205,6 +205,8 @@ public static class EncounterPassives
         ],
         "vacant_portrait" =>
             [new StartingStatusSpec(new StatusDefinitionId(ActTwo.AbsenceBecomesVisibleId), 1)],
+        "miscellany_index" =>
+            [new StartingStatusSpec(new StatusDefinitionId(ActTwo.ResidueId), 1)],
         "mnemonic_chain" =>
             [new StartingStatusSpec(new StatusDefinitionId(ActTwo.RememberedVolumeId), 1)],
         "fatal_comma" =>

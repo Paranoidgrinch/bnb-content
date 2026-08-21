@@ -306,6 +306,8 @@ public static class ActTwo
         RevisionPass(),
         RememberedVolume(),
         ChainCollect(),
+        TuesdayDoesNotOccur(),
+        Residue(),
     ];
 
     public const string CertificateReferenceMark = "referenced_certificate";
@@ -894,6 +896,93 @@ public static class ActTwo
                         ])),
                     CombatJson.CreateOptions<TurnStartedTriggeredEffectContext>())),
             ]);
+
+    // ── Stage 8 — Archive of Misplaced Hours ──────────────────────────────────────────────────────────────
+
+    public const string TuesdayDoesNotOccurId = "tuesday_does_not_occur";
+
+    // "Every third turn belonging to Tuesday does not happen: it takes no action, and direct card damage
+    // against it is increased by 25%."
+    //
+    // Nothing lets an enemy skip its own turn — Stun only stops the player playing cards — so the missing turn
+    // is an INTENT that does nothing but leave Tuesday exposed for the round. At the table that is the same
+    // thing: it stands there, and you hit it harder. Its place in the cycle is what makes it every third.
+    public static StatusData TuesdayDoesNotOccur() => new()
+    {
+        Id = TuesdayDoesNotOccurId,
+        NameKey = "Tuesday Does Not Occur",
+        DescriptionKey = "This day did not happen. What you do to it lands 25% harder.",
+        Polarity = StatusPolarity.Debuff,
+        StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
+        UsesStacks = false,
+        UsesDuration = true,
+        Tags = [],
+        PassiveModifiers =
+        [
+            new PassiveModifierData(PassiveModifierPipeline.DamageReceived,
+                PassiveModifierOperation.ScalePercent, 125, RestrictDamageKind: DamageKind.Direct),
+        ],
+        Triggers = [],
+    };
+
+    // ── Stage 9 — Necrology Vaults ────────────────────────────────────────────────────────────────────────
+
+    // NOT BUILT: the Blank Death Certificate's return at ~35% HP. The revive itself exists
+    // (SetCombatantLifecycleState + Heal), but its Downed trigger never fires — the log shows the lifecycle
+    // change to Downed and nothing after it. Open question, narrow enough for an engine test: does a
+    // bearer-scoped Downed trigger fire for the bearer's OWN downing? See ADAPTATIONS.
+
+    // ── Stage 10 — Hall of Concordances ───────────────────────────────────────────────────────────────────
+
+    public const string ResidueId = "everything_else";
+    private static readonly CounterId ResidueCounter = new("residue");
+    private const int ResidueFull = 4;
+
+    // "The first time each round a Redacted card is played, and the first time each round a Misfiled card is
+    // actually skipped, gain 1 Residue, to a maximum of 4. At 4: Residue → 0, one card in hand becomes
+    // Redacted and another becomes Misfiled."
+    //
+    // The design counts four sources. Three of them are moments only ANOTHER rule knows it reached — a
+    // Delinquency resolving, a Reference being fulfilled, a Misfiled card actually being skipped — and none of
+    // them announces itself in a way the Index could watch. It therefore counts the one it can see for itself,
+    // and a proxy for the others would be a different enemy. See ADAPTATIONS.
+    public static StatusData Residue() =>
+        Rule(ResidueId, "Residue",
+            "Everything the archive did to you settles, and then it settles on you.",
+            [
+                Watch("CardPlayed", WhenPlayedCardIs(RedactedMark, Gain())),
+            ]);
+
+    private static IEffectNode<CardPlayedTriggeredEffectContext> Gain() =>
+        Gain<CardPlayedTriggeredEffectContext>();
+
+    // One more Residue, and at four the archive files everything else.
+    private static IEffectNode<TContext> Gain<TContext>() where TContext : class =>
+        new CausalSequenceEffectNode<TContext>(
+        [
+            new ConditionalEffectNode<TContext>(
+                new ComparisonExpression<TContext>(
+                    new CombatantCounterExpression<TContext>(CombatantTargetSelectors.Source, ResidueCounter),
+                    ComparisonOperator.Less, new ConstantExpression<TContext>(ResidueFull)),
+                new SetCombatantCounterNode<TContext>(
+                    CombatantTargetSelectors.Source, ResidueCounter,
+                    new ConstantExpression<TContext>(1), relative: true)),
+            new ConditionalEffectNode<TContext>(
+                new ComparisonExpression<TContext>(
+                    new CombatantCounterExpression<TContext>(CombatantTargetSelectors.Source, ResidueCounter),
+                    ComparisonOperator.GreaterOrEqual, new ConstantExpression<TContext>(ResidueFull)),
+                new CausalSequenceEffectNode<TContext>(
+                [
+                    new SetCombatantCounterNode<TContext>(
+                        CombatantTargetSelectors.Source, ResidueCounter,
+                        new ConstantExpression<TContext>(0), relative: false),
+                    Redact<TContext>(CombatantTargetSelectors.Source,
+                        new CardInZoneExpression<TContext>(CardZone.Hand)),
+                    new MarkCardInstanceNode<TContext>(
+                        CombatantTargetSelectors.Source,
+                        new CardInZoneExpression<TContext>(CardZone.Hand, 1), new TagId(MisfiledMark)),
+                ])),
+        ]);
 
     // ── Stage 4 — The Hushed Reading Room ─────────────────────────────────────────────────────────────────
     //
