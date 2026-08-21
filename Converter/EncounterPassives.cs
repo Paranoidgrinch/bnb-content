@@ -186,6 +186,13 @@ public static class EncounterPassives
         // once however many shelves are in the room.
         "crabwise_shelf" or "volume_q_null" =>
             [new StartingStatusSpec(new StatusDefinitionId(ActTwo.ArchiveRegulationsId), 1)],
+        // The Colossus misfiles too, so the player carries the same take-back rule — plus the other half of
+        // Open Aisle, which is about the player's hand and the player's plays.
+        Elites.RollingStacksColossus.EnemyId =>
+        [
+            new StartingStatusSpec(new StatusDefinitionId(ActTwo.ArchiveRegulationsId), 1),
+            new StartingStatusSpec(new StatusDefinitionId(Elites.RollingStacksColossus.OpenAisleRulesId), 1),
+        ],
         // The Reading Room's rules are about the player's hand and the player's plays, so the player carries
         // them: they watch the whole fight and answer what the player did.
         "unclaimed_reading_table" =>
