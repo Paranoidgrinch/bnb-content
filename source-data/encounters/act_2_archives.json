@@ -632,5 +632,200 @@
       "multi_enemy"
     ],
     "role": "multi_combat"
+  },
+  {
+    "id": "archives_elite_after_hours_return_bell",
+    "name": "After-Hours Return Bell",
+    "act": 2,
+    "difficulty": "elite",
+    "enemies": [
+      "after_hours_return_bell"
+    ],
+    "weight": 1,
+    "tags": [
+      "archives",
+      "elite"
+    ],
+    "role": "elite"
+  },
+  {
+    "id": "archives_elite_rolling_stacks_colossus",
+    "name": "The Rolling Stacks Colossus",
+    "act": 2,
+    "difficulty": "elite",
+    "enemies": [
+      "rolling_stacks_colossus"
+    ],
+    "weight": 1,
+    "tags": [
+      "archives",
+      "elite"
+    ],
+    "role": "elite"
+  },
+  {
+    "id": "archives_elite_catalogue_of_unwise_names",
+    "name": "The Catalogue of Unwise Names",
+    "act": 2,
+    "difficulty": "elite",
+    "enemies": [
+      "catalogue_of_unwise_names"
+    ],
+    "weight": 1,
+    "tags": [
+      "archives",
+      "elite"
+    ],
+    "role": "elite"
+  },
+  {
+    "id": "archives_elite_silence_between_two_words",
+    "name": "The Silence Between Two Words",
+    "act": 2,
+    "difficulty": "elite",
+    "enemies": [
+      "silence_between_two_words"
+    ],
+    "weight": 1,
+    "tags": [
+      "archives",
+      "elite"
+    ],
+    "role": "elite"
+  },
+  {
+    "id": "archives_elite_black_ink_oracle",
+    "name": "Black-Ink Oracle",
+    "act": 2,
+    "difficulty": "elite",
+    "enemies": [
+      "black_ink_oracle"
+    ],
+    "weight": 1,
+    "tags": [
+      "archives",
+      "elite"
+    ],
+    "role": "elite"
+  },
+  {
+    "id": "archives_elite_volumes_of_cause_and_consequence",
+    "name": "Volumes of Cause and Consequence",
+    "act": 2,
+    "difficulty": "elite",
+    "enemies": [
+      "volumes_of_cause_and_consequence"
+    ],
+    "weight": 1,
+    "tags": [
+      "archives",
+      "elite"
+    ],
+    "role": "elite"
+  },
+  {
+    "id": "archives_elite_drawer_of_infinite_returns",
+    "name": "The Drawer of Infinite Returns",
+    "act": 2,
+    "difficulty": "elite",
+    "enemies": [
+      "drawer_of_infinite_returns"
+    ],
+    "weight": 1,
+    "tags": [
+      "archives",
+      "elite"
+    ],
+    "role": "elite"
+  },
+  {
+    "id": "archives_elite_presentless_clock",
+    "name": "Presentless Clock",
+    "act": 2,
+    "difficulty": "elite",
+    "enemies": [
+      "presentless_clock"
+    ],
+    "weight": 1,
+    "tags": [
+      "archives",
+      "elite"
+    ],
+    "role": "elite"
+  },
+  {
+    "id": "archives_elite_obituary_with_three_endings",
+    "name": "The Obituary with Three Endings",
+    "act": 2,
+    "difficulty": "elite",
+    "enemies": [
+      "obituary_with_three_endings"
+    ],
+    "weight": 1,
+    "tags": [
+      "archives",
+      "elite"
+    ],
+    "role": "elite"
+  },
+  {
+    "id": "archives_boss_whispering_catalogue_boss",
+    "name": "The Whispering Catalogue",
+    "act": 2,
+    "difficulty": "boss",
+    "enemies": [
+      "whispering_catalogue_boss"
+    ],
+    "weight": 1,
+    "tags": [
+      "archives",
+      "boss"
+    ],
+    "role": "boss"
+  },
+  {
+    "id": "archives_boss_warden_of_sealed_volumes",
+    "name": "The Warden of Sealed Volumes",
+    "act": 2,
+    "difficulty": "boss",
+    "enemies": [
+      "warden_of_sealed_volumes"
+    ],
+    "weight": 1,
+    "tags": [
+      "archives",
+      "boss"
+    ],
+    "role": "boss"
+  },
+  {
+    "id": "archives_boss_curator_of_misplaced_hours",
+    "name": "The Curator of Misplaced Hours",
+    "act": 2,
+    "difficulty": "boss",
+    "enemies": [
+      "curator_of_misplaced_hours"
+    ],
+    "weight": 1,
+    "tags": [
+      "archives",
+      "boss"
+    ],
+    "role": "boss"
+  },
+  {
+    "id": "archives_boss_auditor_of_returned_lives",
+    "name": "The Auditor of Returned Lives",
+    "act": 2,
+    "difficulty": "boss",
+    "enemies": [
+      "auditor_of_returned_lives"
+    ],
+    "weight": 1,
+    "tags": [
+      "archives",
+      "boss"
+    ],
+    "role": "boss"
   }
 ]
