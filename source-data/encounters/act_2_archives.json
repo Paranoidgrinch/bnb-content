@@ -211,5 +211,75 @@
       "multi_enemy"
     ],
     "role": "multi_combat"
+  },
+  {
+    "id": "archives_reading_room_01",
+    "name": "Unclaimed Reading Table",
+    "act": 2,
+    "difficulty": "normal",
+    "enemies": [
+      "unclaimed_reading_table"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_reading_room",
+      "archives",
+      "hand_pressure"
+    ],
+    "role": "combat"
+  },
+  {
+    "id": "archives_reading_room_02",
+    "name": "Mute Margin",
+    "act": 2,
+    "difficulty": "normal",
+    "enemies": [
+      "mute_margin"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_reading_room",
+      "archives",
+      "misfiled"
+    ],
+    "role": "combat"
+  },
+  {
+    "id": "archives_reading_room_03",
+    "name": "Choir of Unspoken Words",
+    "act": 2,
+    "difficulty": "normal",
+    "enemies": [
+      "choir_of_unspoken_words"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_reading_room",
+      "archives",
+      "hand_pressure"
+    ],
+    "role": "combat"
+  },
+  {
+    "id": "archives_reading_room_duo_01",
+    "name": "Reserved Silence",
+    "act": 2,
+    "difficulty": "normal",
+    "enemies": [
+      "unclaimed_reading_table",
+      "second_person_entry"
+    ],
+    "enemy_health": [
+      49,
+      44
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_reading_room",
+      "archives",
+      "referenced",
+      "multi_enemy"
+    ],
+    "role": "multi_combat"
   }
 ]
