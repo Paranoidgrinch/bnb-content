@@ -10,8 +10,17 @@
         "name": "Return Intake",
         "intent_type": "mixed",
         "actions": [
-          { "type": "deal_damage", "target": "player", "amount": 9 },
-          { "type": "apply_status", "target": "player", "status": "overdue", "amount": 1 }
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 9
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "overdue",
+            "amount": 1
+          }
         ]
       },
       {
@@ -19,7 +28,11 @@
         "name": "Brass Bite",
         "intent_type": "attack",
         "actions": [
-          { "type": "deal_damage", "target": "player", "amount": 13 }
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 13
+          }
         ]
       },
       {
@@ -27,14 +40,25 @@
         "name": "Brass Shutter",
         "intent_type": "block",
         "actions": [
-          { "type": "gain_block", "target": "owner", "amount": 14 }
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 14
+          }
         ]
       }
     ],
     "starting_statuses": [
-      { "status": "brass_maw_delinquency" }
+      {
+        "status": "brass_maw_delinquency"
+      }
     ],
-    "tags": ["archives", "returns", "overdue", "stage_returns"]
+    "tags": [
+      "archives",
+      "returns",
+      "overdue",
+      "stage_returns"
+    ]
   },
   {
     "id": "object_listed_as_other",
@@ -47,8 +71,17 @@
         "name": "Improper Category",
         "intent_type": "mixed",
         "actions": [
-          { "type": "deal_damage", "target": "player", "amount": 11 },
-          { "type": "apply_status", "target": "player", "status": "overdue", "amount": 1 }
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 11
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "overdue",
+            "amount": 1
+          }
         ]
       },
       {
@@ -56,7 +89,11 @@
         "name": "Handling Fee",
         "intent_type": "attack",
         "actions": [
-          { "type": "deal_damage", "target": "player", "amount": 14 }
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 14
+          }
         ]
       },
       {
@@ -64,15 +101,28 @@
         "name": "Miscellaneous Storage",
         "intent_type": "block",
         "actions": [
-          { "type": "gain_block", "target": "owner", "amount": 16 }
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 16
+          }
         ]
       }
     ],
     "starting_statuses": [
-      { "status": "other_delinquency" },
-      { "status": "miscellaneous_classification" }
+      {
+        "status": "other_delinquency"
+      },
+      {
+        "status": "miscellaneous_classification"
+      }
     ],
-    "tags": ["archives", "returns", "classification", "stage_returns"]
+    "tags": [
+      "archives",
+      "returns",
+      "classification",
+      "stage_returns"
+    ]
   },
   {
     "id": "dead_letter_ouroboros",
@@ -85,8 +135,17 @@
         "name": "Forwarding Loop",
         "intent_type": "mixed",
         "actions": [
-          { "type": "deal_damage", "target": "player", "amount": 10 },
-          { "type": "apply_status", "target": "player", "status": "overdue", "amount": 1 }
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 10
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "overdue",
+            "amount": 1
+          }
         ]
       },
       {
@@ -94,7 +153,11 @@
         "name": "Returned Unopened",
         "intent_type": "attack",
         "actions": [
-          { "type": "deal_damage", "target": "player", "amount": 14 }
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 14
+          }
         ]
       },
       {
@@ -102,14 +165,181 @@
         "name": "Self-Addressed Notice",
         "intent_type": "mixed",
         "actions": [
-          { "type": "gain_block", "target": "owner", "amount": 12 },
-          { "type": "apply_status", "target": "player", "status": "overdue", "amount": 1 }
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 12
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "overdue",
+            "amount": 1
+          }
         ]
       }
     ],
     "starting_statuses": [
-      { "status": "ouroboros_delinquency" }
+      {
+        "status": "ouroboros_delinquency"
+      }
     ],
-    "tags": ["archives", "returns", "overdue", "recursion", "stage_returns"]
+    "tags": [
+      "archives",
+      "returns",
+      "overdue",
+      "recursion",
+      "stage_returns"
+    ]
+  },
+  {
+    "id": "crabwise_shelf",
+    "name": "Crabwise Shelf",
+    "max_hp": 56,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "mis_shelve",
+        "name": "Mis-Shelve",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 11
+          }
+        ]
+      },
+      {
+        "id": "sideways_advance",
+        "name": "Sideways Advance",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 15
+          }
+        ]
+      },
+      {
+        "id": "brace_the_stacks",
+        "name": "Brace the Stacks",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 16
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "archives",
+      "stacks",
+      "misfiled",
+      "stage_stacks"
+    ]
+  },
+  {
+    "id": "volume_q_null",
+    "name": "Volume Q-Null",
+    "max_hp": 52,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "null_index",
+        "name": "Null Index",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 10
+          }
+        ]
+      },
+      {
+        "id": "undefined_entry",
+        "name": "Undefined Entry",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 15
+          }
+        ]
+      },
+      {
+        "id": "close_the_volume",
+        "name": "Close the Volume",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 14
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "archives",
+      "stacks",
+      "misfiled",
+      "stage_stacks"
+    ]
+  },
+  {
+    "id": "corridor_in_the_wrong_edition",
+    "name": "Corridor in the Wrong Edition",
+    "max_hp": 60,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "wrong_edition",
+        "name": "Wrong Edition",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 10
+          }
+        ]
+      },
+      {
+        "id": "dead_end_turn",
+        "name": "Dead-End Turn",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 14
+          }
+        ]
+      },
+      {
+        "id": "revision_collapse",
+        "name": "Revision Collapse",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 18
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "archives",
+      "stacks",
+      "misfiled",
+      "stage_stacks"
+    ]
   }
 ]
