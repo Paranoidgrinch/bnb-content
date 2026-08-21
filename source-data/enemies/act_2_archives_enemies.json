@@ -1579,18 +1579,6 @@
         ]
       },
       {
-        "id": "close_the_catalogue",
-        "name": "Close the Catalogue",
-        "intent_type": "attack",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 14
-          }
-        ]
-      },
-      {
         "id": "index_finger_cut",
         "name": "Index-Finger Cut",
         "intent_type": "attack",
@@ -1599,6 +1587,18 @@
             "type": "deal_damage",
             "target": "player",
             "amount": 17
+          }
+        ]
+      },
+      {
+        "id": "recite_an_unwise_name",
+        "name": "Recite an Unwise Name",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 14
           }
         ]
       },
@@ -1613,12 +1613,56 @@
             "amount": 9
           }
         ]
+      },
+      {
+        "id": "close_the_catalogue",
+        "name": "Close the Catalogue",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 14
+          }
+        ]
+      },
+      {
+        "id": "index_finger_cut_again",
+        "name": "Index-Finger Cut",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 17
+          }
+        ]
+      },
+      {
+        "id": "recite_an_unwise_name_again",
+        "name": "Recite an Unwise Name",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 14
+          }
+        ]
       }
     ],
     "tags": [
       "archives",
       "elite",
       "act_2"
+    ],
+    "starting_statuses": [
+      {
+        "status": "the_black_catalogue"
+      },
+      {
+        "status": "catalogue_citation_of_record"
+      }
     ]
   },
   {

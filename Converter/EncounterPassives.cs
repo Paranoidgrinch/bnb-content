@@ -188,6 +188,9 @@ public static class EncounterPassives
             [new StartingStatusSpec(new StatusDefinitionId(ActTwo.ArchiveRegulationsId), 1)],
         // The Colossus misfiles too, so the player carries the same take-back rule — plus the other half of
         // Open Aisle, which is about the player's hand and the player's plays.
+        // The Catalogue's ledger is the player's cards and the player's plays, so the player carries the rules.
+        Elites.CatalogueOfUnwiseNames.EnemyId =>
+            [new StartingStatusSpec(new StatusDefinitionId(Elites.CatalogueOfUnwiseNames.CatalogueRulesId), 1)],
         Elites.RollingStacksColossus.EnemyId =>
         [
             new StartingStatusSpec(new StatusDefinitionId(ActTwo.ArchiveRegulationsId), 1),
