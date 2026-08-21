@@ -140,5 +140,76 @@
       "multi_enemy"
     ],
     "role": "multi_combat"
+  },
+  {
+    "id": "archives_catalogue_01",
+    "name": "Second-Person Entry",
+    "act": 2,
+    "difficulty": "normal",
+    "enemies": [
+      "second_person_entry"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_catalogue",
+      "archives",
+      "referenced"
+    ],
+    "role": "combat"
+  },
+  {
+    "id": "archives_catalogue_02",
+    "name": "Fanged Alphabet",
+    "act": 2,
+    "difficulty": "normal",
+    "enemies": [
+      "fanged_alphabet"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_catalogue",
+      "archives",
+      "referenced"
+    ],
+    "role": "combat"
+  },
+  {
+    "id": "archives_catalogue_03",
+    "name": "Orphan Citation",
+    "act": 2,
+    "difficulty": "normal",
+    "enemies": [
+      "orphan_citation"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_catalogue",
+      "archives",
+      "referenced"
+    ],
+    "role": "combat"
+  },
+  {
+    "id": "archives_catalogue_duo_01",
+    "name": "Citation in Volume Q-Null",
+    "act": 2,
+    "difficulty": "normal",
+    "enemies": [
+      "second_person_entry",
+      "volume_q_null"
+    ],
+    "enemy_health": [
+      44,
+      38
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_catalogue",
+      "archives",
+      "referenced",
+      "misfiled",
+      "multi_enemy"
+    ],
+    "role": "multi_combat"
   }
 ]

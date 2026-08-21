@@ -341,5 +341,179 @@
       "misfiled",
       "stage_stacks"
     ]
+  },
+  {
+    "id": "second_person_entry",
+    "name": "Second-Person Entry",
+    "max_hp": 60,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "second_person_citation",
+        "name": "Second-Person Citation",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 11
+          }
+        ]
+      },
+      {
+        "id": "you_are_here",
+        "name": "You Are Here",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 15
+          }
+        ]
+      },
+      {
+        "id": "cross_reference",
+        "name": "Cross-Reference",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 12
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "second_person_reference"
+      }
+    ],
+    "tags": [
+      "archives",
+      "catalogue",
+      "referenced",
+      "stage_catalogue"
+    ]
+  },
+  {
+    "id": "fanged_alphabet",
+    "name": "Fanged Alphabet",
+    "max_hp": 58,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "learned_letter",
+        "name": "Learned Letter",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 11
+          }
+        ]
+      },
+      {
+        "id": "bite_back",
+        "name": "Bite Back",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 16
+          }
+        ]
+      },
+      {
+        "id": "re_index",
+        "name": "Re-Index",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 14
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "learned_letter"
+      },
+      {
+        "status": "fanged_alphabet_reference"
+      }
+    ],
+    "tags": [
+      "archives",
+      "catalogue",
+      "referenced",
+      "stage_catalogue"
+    ]
+  },
+  {
+    "id": "orphan_citation",
+    "name": "Orphan Citation",
+    "max_hp": 62,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "missing_source",
+        "name": "Missing Source",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 4
+          }
+        ]
+      },
+      {
+        "id": "unsupported_assertion",
+        "name": "Unsupported Assertion",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 16
+          }
+        ]
+      },
+      {
+        "id": "scholarly_rebuke",
+        "name": "Scholarly Rebuke",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 12
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "overdue",
+            "amount": 1
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "orphan_citation_reference"
+      }
+    ],
+    "tags": [
+      "archives",
+      "catalogue",
+      "referenced",
+      "stage_catalogue"
+    ]
   }
 ]
