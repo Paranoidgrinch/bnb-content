@@ -205,6 +205,12 @@ public static class EncounterPassives
         ],
         "vacant_portrait" =>
             [new StartingStatusSpec(new StatusDefinitionId(ActTwo.AbsenceBecomesVisibleId), 1)],
+        "mnemonic_chain" =>
+            [new StartingStatusSpec(new StatusDefinitionId(ActTwo.RememberedVolumeId), 1)],
+        "fatal_comma" =>
+            [new StartingStatusSpec(new StatusDefinitionId(ActTwo.ClausesId), 1)],
+        "errata_doppelganger" =>
+            [new StartingStatusSpec(new StatusDefinitionId(ActTwo.RevisionPassId), 1)],
         "corridor_in_the_wrong_edition" =>
         [
             new StartingStatusSpec(new StatusDefinitionId(ActTwo.ArchiveRegulationsId), 1),

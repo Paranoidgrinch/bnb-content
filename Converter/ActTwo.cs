@@ -301,6 +301,11 @@ public static class ActTwo
         BlankCertificateReference(),
         OlderTextBeneath(),
         AbsenceBecomesVisible(),
+        Clauses(),
+        CommaDelinquency(),
+        RevisionPass(),
+        RememberedVolume(),
+        ChainCollect(),
     ];
 
     public const string CertificateReferenceMark = "referenced_certificate";
@@ -688,6 +693,207 @@ public static class ActTwo
                 ClearEachTurn(PortraitUsedCounter),
             ]);
 
+
+    // ── Stage 6 — Scriptorium of Errata ───────────────────────────────────────────────────────────────────
+
+    public const string ClauseAMark = "clause_a";
+    public const string ClauseBMark = "clause_b";
+    public const string ClausesId = "clause_a_clause_b";
+    public const string RevisionPassId = "revision_pass";
+    public const string CommaDelinquencyId = "fatal_comma_delinquency";
+
+    private static readonly CounterId PlayedAcounter = new("clause_a_played");
+    private static readonly CounterId PlayedBcounter = new("clause_b_played");
+    private static readonly CounterId RevisionUsedCounter = new("revision_used");
+
+    // "Mark two different cards as Clause A and Clause B. A before B: the Comma takes 8 direct damage."
+    //
+    // The two clauses are the first two cards in hand, addressed by position — the only way to name two
+    // DIFFERENT cards, since a zone iteration can require a mark but not refuse one. The reward lands when the
+    // pair completes in the right order, which is the same moment the design pays it.
+    public static StatusData Clauses() =>
+        Rule(ClausesId, "Clause A / Clause B",
+            "Two clauses are marked. The order you read them in is the whole sentence.",
+            [
+                Watch("CardsDrawn", Guarded(
+                    IsTheApplicant<CardsDrawnTriggeredEffectContext>(),
+                    new CausalSequenceEffectNode<CardsDrawnTriggeredEffectContext>(
+                    [
+                        MarkAt(CardZone.Hand, 0, ClauseAMark),
+                        MarkAt(CardZone.Hand, 1, ClauseBMark),
+                    ]))),
+                // Playing A records it; playing B with A already read is the correct order.
+                Watch("CardPlayed", Guarded(
+                    new AndExpression<CardPlayedTriggeredEffectContext>(
+                        IsTheApplicant<CardPlayedTriggeredEffectContext>(),
+                        PlayedCardIs<CardPlayedTriggeredEffectContext>(ClauseAMark)),
+                    Spend<CardPlayedTriggeredEffectContext>(PlayedAcounter))),
+                Watch("CardPlayed", Guarded(
+                    new AndExpression<CardPlayedTriggeredEffectContext>(
+                        new AndExpression<CardPlayedTriggeredEffectContext>(
+                            IsTheApplicant<CardPlayedTriggeredEffectContext>(),
+                            PlayedCardIs<CardPlayedTriggeredEffectContext>(ClauseBMark)),
+                        new ComparisonExpression<CardPlayedTriggeredEffectContext>(
+                            new CombatantCounterExpression<CardPlayedTriggeredEffectContext>(
+                                CombatantTargetSelectors.Source, PlayedAcounter),
+                            ComparisonOperator.Equal,
+                            new ConstantExpression<CardPlayedTriggeredEffectContext>(1))),
+                    new CausalSequenceEffectNode<CardPlayedTriggeredEffectContext>(
+                    [
+                        new DealDamageNode<CardPlayedTriggeredEffectContext>(
+                            Choir, new ConstantExpression<CardPlayedTriggeredEffectContext>(8),
+                            ignoresBlock: true),
+                        Spend<CardPlayedTriggeredEffectContext>(PlayedBcounter),
+                    ]))),
+                ClearEachTurn(PlayedAcounter),
+                ClearEachTurn(PlayedBcounter),
+            ]);
+
+    // "If neither clause is played: 1 Overdue from Fatal Comma." Filed by the Comma at its own turn, which is
+    // both the moment that knows the answer and the only place the Overdue can come from IT.
+    public static StatusData CommaDelinquency() =>
+        Rule(CommaDelinquencyId, "Unread Clauses",
+            "A sentence you never read is a sentence you owe the Comma.",
+            [
+                new StatusTriggerData("TurnStarted", JsonSerializer.SerializeToElement(
+                    new EffectProgram<TurnStartedTriggeredEffectContext>(
+                        new CausalSequenceEffectNode<TurnStartedTriggeredEffectContext>(
+                        [
+                            new NoOpEffectNode<TurnStartedTriggeredEffectContext>(),
+                            new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
+                                new AndExpression<TurnStartedTriggeredEffectContext>(
+                                    OpponentUnspent(PlayedAcounter), OpponentUnspent(PlayedBcounter)),
+                                new ApplyStatusNode<TurnStartedTriggeredEffectContext>(
+                                    Opponent, new StatusDefinitionId(OverdueId),
+                                    new ConstantExpression<TurnStartedTriggeredEffectContext>(1))),
+                        ])),
+                    CombatJson.CreateOptions<TurnStartedTriggeredEffectContext>())),
+            ]);
+
+    // "The first Redacted card played each turn has its Redaction removed, and another card in hand takes it."
+    // The design lifts the redaction BEFORE the card resolves, so the card lands whole; nothing can intervene
+    // between a play and its resolution, so here the card still lands halved and only the MARK moves on. See
+    // ADAPTATIONS.
+    public static StatusData RevisionPass() =>
+        Rule(RevisionPassId, "Revision Pass",
+            "The doppelgänger moves a redaction along rather than letting it rest.",
+            [
+                Watch("CardPlayed", OnPlayedCard(RedactedMark, RevisionUsedCounter,
+                    new CausalSequenceEffectNode<CardPlayedTriggeredEffectContext>(
+                    [
+                        new MarkCardInstanceNode<CardPlayedTriggeredEffectContext>(
+                            CombatantTargetSelectors.Source,
+                            new TriggerEventCardInstanceExpression<CardPlayedTriggeredEffectContext>(),
+                            new TagId(RedactedMark), remove: true),
+                        Redact<CardPlayedTriggeredEffectContext>(
+                            CombatantTargetSelectors.Source,
+                            new CardInZoneExpression<CardPlayedTriggeredEffectContext>(CardZone.Hand)),
+                    ]))),
+                ClearEachTurn(RevisionUsedCounter),
+            ]);
+
+    // A rule about the card that was just played, with no once-a-turn limit.
+    private static EffectProgram<CardPlayedTriggeredEffectContext> WhenPlayedCardIs(
+        string mark, IEffectNode<CardPlayedTriggeredEffectContext> then) =>
+        new(new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
+            PlayedCardIs<CardPlayedTriggeredEffectContext>(mark), then));
+
+    // "The card this play is about carries mark X."
+    private static ICombatExpression<TContext, bool> PlayedCardIs<TContext>(string mark) where TContext : class =>
+        new CardInstanceHasMarkExpression<TContext>(
+            new TriggerEventCardInstanceExpression<TContext>(), new TagId(mark));
+
+    private static IEffectNode<CardsDrawnTriggeredEffectContext> MarkAt(CardZone zone, int index, string mark) =>
+        new MarkCardInstanceNode<CardsDrawnTriggeredEffectContext>(
+            CombatantTargetSelectors.Source,
+            new CardInZoneExpression<CardsDrawnTriggeredEffectContext>(zone, index),
+            new TagId(mark));
+
+    private static ICombatExpression<TurnStartedTriggeredEffectContext, bool> OpponentUnspent(CounterId latch) =>
+        new ComparisonExpression<TurnStartedTriggeredEffectContext>(
+            new CombatantCounterExpression<TurnStartedTriggeredEffectContext>(Opponent, latch),
+            ComparisonOperator.Equal, new ConstantExpression<TurnStartedTriggeredEffectContext>(0));
+
+    // ── Stage 7 — Restricted Annex ────────────────────────────────────────────────────────────────────────
+
+    public const string RememberedMark = "remembered_volume";
+    public const string ChainReferenceMark = "referenced_chain";
+    public const string RememberedVolumeId = "remembered_volume_rule";
+    public const string ChainCollectId = "mnemonic_chain_collect";
+
+    private static readonly CounterId RememberedCounter = new("chain_remembered");
+
+    // "The first eligible card played against the Chain becomes a remembered concrete card INSTANCE. When that
+    // exact instance later re-enters the hand it is Referenced and costs 1 more; play it anyway and the Chain
+    // takes 8. Let it go unplayed and the Reference fails as usual."
+    //
+    // "That exact instance" is what a per-card mark is for: the mark rides the copy through every zone, so the
+    // Chain recognises the card coming back rather than merely a card of the same name.
+    public static StatusData RememberedVolume() =>
+        Rule(RememberedVolumeId, "Remembered Volume",
+            "The chain remembers one book, and knows it when it comes round again.",
+            [
+                // The first card played is the one it remembers.
+                Watch("CardPlayed", Guarded(
+                    new AndExpression<CardPlayedTriggeredEffectContext>(
+                        IsTheApplicant<CardPlayedTriggeredEffectContext>(),
+                        Unspent<CardPlayedTriggeredEffectContext>(RememberedCounter)),
+                    new CausalSequenceEffectNode<CardPlayedTriggeredEffectContext>(
+                    [
+                        new MarkCardInstanceNode<CardPlayedTriggeredEffectContext>(
+                            CombatantTargetSelectors.Source,
+                            new TriggerEventCardInstanceExpression<CardPlayedTriggeredEffectContext>(),
+                            new TagId(RememberedMark)),
+                        Spend<CardPlayedTriggeredEffectContext>(RememberedCounter),
+                    ]))),
+                // Coming back into the hand, it is cited and it costs more.
+                Watch("CardsDrawn", Guarded(
+                    IsTheApplicant<CardsDrawnTriggeredEffectContext>(),
+                    new ForEachCardInZoneNode<CardsDrawnTriggeredEffectContext>(
+                        CombatantTargetSelectors.Source, CardZone.Hand,
+                        new CausalSequenceEffectNode<CardsDrawnTriggeredEffectContext>(
+                        [
+                            new MarkCardInstanceNode<CardsDrawnTriggeredEffectContext>(
+                                CombatantTargetSelectors.Source,
+                                new IteratedCardExpression<CardsDrawnTriggeredEffectContext>(),
+                                new TagId(ChainReferenceMark)),
+                            new SetCardInstanceMarkCounterNode<CardsDrawnTriggeredEffectContext>(
+                                CombatantTargetSelectors.Source,
+                                new IteratedCardExpression<CardsDrawnTriggeredEffectContext>(),
+                                StandardCombatIds.CardCostDeltaCounter,
+                                new ConstantExpression<CardsDrawnTriggeredEffectContext>(1), relative: false),
+                        ]),
+                        markFilter: new TagId(RememberedMark)))),
+                // Played anyway: the citation is answered and the chain pays for it. Looks IMMEDIATELY, like
+                // every rule about the card that was just played — waiting a beat carries it out of the moment.
+                Watch("CardPlayed", WhenPlayedCardIs(ChainReferenceMark,
+                    new CausalSequenceEffectNode<CardPlayedTriggeredEffectContext>(
+                    [
+                        new DealDamageNode<CardPlayedTriggeredEffectContext>(
+                            Choir, new ConstantExpression<CardPlayedTriggeredEffectContext>(8),
+                            ignoresBlock: true),
+                        new MarkCardInstanceNode<CardPlayedTriggeredEffectContext>(
+                            CombatantTargetSelectors.Source,
+                            new TriggerEventCardInstanceExpression<CardPlayedTriggeredEffectContext>(),
+                            new TagId(ChainReferenceMark), remove: true),
+                    ]))),
+            ]);
+
+    // The Chain's own half: a citation left unanswered is filed against it, from IT.
+    public static StatusData ChainCollect() =>
+        Rule(ChainCollectId, "Overdue Volume",
+            "A book you were reminded of and did not return is a book you owe for.",
+            [
+                new StatusTriggerData("TurnStarted", JsonSerializer.SerializeToElement(
+                    new EffectProgram<TurnStartedTriggeredEffectContext>(
+                        new CausalSequenceEffectNode<TurnStartedTriggeredEffectContext>(
+                        [
+                            new NoOpEffectNode<TurnStartedTriggeredEffectContext>(),
+                            Unfulfilled(ChainReferenceMark, CardZone.DiscardPile),
+                            Unfulfilled(ChainReferenceMark, CardZone.Hand),
+                        ])),
+                    CombatJson.CreateOptions<TurnStartedTriggeredEffectContext>())),
+            ]);
 
     // ── Stage 4 — The Hushed Reading Room ─────────────────────────────────────────────────────────────────
     //

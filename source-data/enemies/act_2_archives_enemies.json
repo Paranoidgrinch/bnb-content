@@ -872,6 +872,11 @@
       "archives",
       "errata",
       "stage_errata"
+    ],
+    "starting_statuses": [
+      {
+        "status": "fatal_comma_delinquency"
+      }
     ]
   },
   {
@@ -1021,6 +1026,11 @@
       "annex",
       "referenced",
       "stage_annex"
+    ],
+    "starting_statuses": [
+      {
+        "status": "mnemonic_chain_collect"
+      }
     ]
   },
   {
