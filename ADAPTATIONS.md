@@ -593,10 +593,11 @@ appendix itself says the signature wins.
 - **The Choir's crescendo is folded into Voice itself** (+4 per Voice on its next direct attack, spent by it)
   rather than converting two Voices into a separate +8 status. Two Voices are the design's +8, and one status
   fewer to keep in step.
-- **★ Every guarded rule in Act II puts a no-op in front of its condition** (`ActTwo.Guarded`). A conditional
-  that is the FIRST thing a trigger program executes loses its body entirely — an engine defect reproduced in
-  `RogueDeck.Sandbox.Tests/ConditionalTriggerRootTortureTests`. Without the no-op the rule does not misfire,
-  it simply never happens, and nothing in the content can see it.
+- **★ Every rule in Act II that reaches into the hand puts a no-op in front of itself** (`ActTwo.Guarded`).
+  The played card is still in the hand at the very first instant of a CardPlayed trigger and gone a beat
+  later, so a rule that looks immediately takes the card the player just spent — invisibly, because that card
+  was on its way to the discard pile anyway. Not an engine defect (an earlier note here claimed one; it was
+  wrong). Demonstrated in `RogueDeck.Sandbox.Tests/CardPlayedTriggerHandTimingTests`.
 - **The Object's Recognized Category is the literal first card of the turn**, Junk not skipped: the engine
   records one opening type per turn, exactly as Act I reads it for the Wrong-Window Scribe.
 
@@ -615,8 +616,10 @@ missing is the *signature* of thirteen of them, listed here so nothing is quietl
   exists); simply not yet written.
 - **Second-Person Entry** — chaining its citations by the card type used to fulfil the last one.
 - **Palimpsest Husk / Vacant Portrait** — "a played Redacted card becomes Misfiled" and "playing a Redacted
-  card opens the frame". Both were written and could NOT be shown to work: the rule removed the Redacted mark
-  but its second half did not land. Not shipped rather than shipped unproven.
+  card opens the frame". Written three times (guarded, immediate, on either side of the beat) and never shown
+  to work: a mark put on the card that was just played does not take. Not shipped rather than shipped
+  unproven. Worth its own engine test before the next attempt — the question is narrow, "can a CardPlayed
+  trigger mark the card the event is about", and it is not the hand-timing issue.
 - **Expunged Name** — redacting a card whose name was already played earlier in the combat. Nothing reads
   per-definition play history beyond the current turn.
 - **Fatal Comma** — Clause A / Clause B ordering. Needs two marks and an order comparison between two plays.
