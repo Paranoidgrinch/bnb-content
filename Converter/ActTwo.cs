@@ -614,8 +614,9 @@ public static class ActTwo
 
     // ── Stage 5 — The Redaction Galleries ─────────────────────────────────────────────────────────────────
 
-    // NOT YET BUILT: the Husk's "a played Redacted card becomes Misfiled" and the Portrait's "playing a
-    // Redacted card opens the frame". Both were written and could not be shown to work; see ADAPTATIONS.
+    // NOT BUILT: the Husk's "a played Redacted card becomes Misfiled" and the Portrait's "playing a Redacted
+    // card opens the frame". Written three times — guarded, immediate, and with the rule on either side — and
+    // never shown to work; the mark on the played card does not take. Not shipped unproven; see ADAPTATIONS.
 
     // ── Stage 4 — The Hushed Reading Room ─────────────────────────────────────────────────────────────────
     //
@@ -626,9 +627,11 @@ public static class ActTwo
     // Three facts these rules are built on, all measured and all easy to get backwards:
     //   • the played-card count INCLUDES the card being played, so "the fourth card" is a count of four;
     //   • that card is already OUT of the hand when the rule runs, so reaching into the hand cannot catch it;
-    //   • a conditional that is the FIRST thing a trigger program executes loses its body entirely — hence
-    //     `Guarded`, which puts a no-op in front of every guard. See the engine reproduction in
-    //     RogueDeck.Sandbox.Tests/ConditionalTriggerRootTortureTests.
+    //   • the played card is STILL IN THE HAND at the very first instant of a CardPlayed trigger, and gone a
+    //     beat later — so a rule that reaches into the hand must let something run first or it takes the card
+    //     that was just played, which is invisible because that card was on its way to the discard pile
+    //     anyway. `Guarded` puts a no-op in front of every rule for exactly that reason. See
+    //     RogueDeck.Sandbox.Tests/CardPlayedTriggerHandTimingTests.
 
     public const string ReservedSeatId = "reserved_seat";
     public const string ShrinkingMarginId = "shrinking_margin";
@@ -641,7 +644,14 @@ public static class ActTwo
     private const int MarginStart = 5;
     private const int MarginFloor = 3;
 
-    // A guarded rule, with the no-op that keeps the engine from swallowing it.
+    // A rule about the PLAYED card looks immediately: waiting a beat is what carries that card out of reach.
+    private static EffectProgram<TContext> Immediate<TContext>(
+        ICombatExpression<TContext, bool> when, IEffectNode<TContext> then) where TContext : class =>
+        new(new ConditionalEffectNode<TContext>(when, then));
+
+    // A guarded rule. The no-op is not decoration: it lets the played card leave the hand before anything
+    // reaches in, which is the difference between taking a card the player still holds and taking the one they
+    // just spent.
     private static EffectProgram<TContext> Guarded<TContext>(
         ICombatExpression<TContext, bool> when, IEffectNode<TContext> then) where TContext : class =>
         new(new CausalSequenceEffectNode<TContext>(
