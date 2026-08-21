@@ -36,4 +36,73 @@ public class ActTwoStageFiveTests
     }
 
 
+
+    // "The first time each turn a Redacted card is fully played, it becomes Misfiled afterwards."
+    //
+    // Everything happens through real actions: a FightProbe fight is driven by DETERMINISTIC REPLAY, so state
+    // written into the live combat between actions is gone on the next one. The redaction comes from the
+    // Husk's own attack.
+    [Fact]
+    public void The_husk_files_away_what_it_wrote_over()
+    {
+        var (play, session, enemyId) = FightProbe.Start(
+            FightProbe.Solo("palimpsest_husk", "scrape_the_surface", energy: 9),
+            deck: [.. Enumerable.Repeat("paper_cut", 12)]);
+
+        play.CombatDriver!.EndTurn();   // the Husk redacts the top of the draw pile
+        play.CombatDriver.EndTurn();    // …and the next draw brings it into hand
+
+        var redacted = play.CombatDriver.Current!.Hand
+            .FirstOrDefault(c => c.HasMark(new TagId(ActTwo.RedactedMark)));
+        Assert.NotNull(redacted);
+
+        play.CombatDriver.PlayCard(redacted!.Id, enemyId);
+        Assert.Null(session.Error);
+
+        // About THAT card, not about the table: the Husk redacts one every turn, so others are still marked.
+        var after = Card(play, redacted.Id);
+        Assert.False(after.HasMark(new TagId(ActTwo.RedactedMark)));
+        Assert.True(after.HasMark(new TagId(ActTwo.MisfiledMark)));
+        play.Dispose();
+    }
+
+    // "The first time each turn the player plays a Redacted card, the Portrait loses 8 Block."
+    [Fact]
+    public void The_portraits_guard_opens_when_a_redacted_card_is_played()
+    {
+        var (play, session, enemyId) = FightProbe.Start(
+            FightProbe.Solo("vacant_portrait", "erase_the_face", energy: 9),
+            deck: [.. Enumerable.Repeat("paper_cut", 12)]);
+
+        play.CombatDriver!.EndTurn();
+        play.CombatDriver.EndTurn();
+
+        var redacted = play.CombatDriver.Current!.Hand
+            .FirstOrDefault(c => c.HasMark(new TagId(ActTwo.RedactedMark)));
+        Assert.NotNull(redacted);
+
+        // With no guard up, the whole 8 lands as damage — which is the half of the rule that makes the
+        // absence felt when there is nothing left to strip.
+        var plain = play.CombatDriver.Current!.Hand.First(c => c.Id != redacted!.Id);
+        var before = Health(play, enemyId);
+        play.CombatDriver.PlayCard(plain.Id, enemyId);
+        var afterPlain = Health(play, enemyId);
+
+        play.CombatDriver.PlayCard(redacted!.Id, enemyId);
+        var afterRedacted = Health(play, enemyId);
+
+        // A redacted card hits for HALF, so it would land for less than the plain one — and yet the Portrait
+        // loses more, because the frame opens for 8 on top of it.
+        Assert.True(afterPlain - afterRedacted > before - afterPlain,
+            "playing the redacted card should have cost the Portrait more than a plain card did");
+        play.Dispose();
+    }
+
+    private static CardInstance Card(RunPlayback play, CardInstanceId id) =>
+        Enum.GetValues<CardZone>()
+            .SelectMany(zone => Zones(play).GetCardsInZone(zone))
+            .Single(card => card.Id == id);
+
+    private static int Health(RunPlayback play, CombatantId id) =>
+        play.CombatDriver!.Current!.State.GetCombatant(id).Health.Current;
 }

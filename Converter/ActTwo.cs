@@ -299,6 +299,8 @@ public static class ActTwo
         LeaveOneWordUnspoken(),
         Voice(),
         BlankCertificateReference(),
+        OlderTextBeneath(),
+        AbsenceBecomesVisible(),
     ];
 
     public const string CertificateReferenceMark = "referenced_certificate";
@@ -614,9 +616,78 @@ public static class ActTwo
 
     // ── Stage 5 — The Redaction Galleries ─────────────────────────────────────────────────────────────────
 
-    // NOT BUILT: the Husk's "a played Redacted card becomes Misfiled" and the Portrait's "playing a Redacted
-    // card opens the frame". Written three times — guarded, immediate, and with the rule on either side — and
-    // never shown to work; the mark on the played card does not take. Not shipped unproven; see ADAPTATIONS.
+    public const string OlderTextBeneathId = "older_text_beneath";
+    public const string AbsenceBecomesVisibleId = "the_absence_becomes_visible";
+
+    private static readonly CounterId PalimpsestUsedCounter = new("palimpsest_used");
+    private static readonly CounterId PortraitUsedCounter = new("portrait_used");
+
+    // A rule about the card that was just PLAYED looks immediately — the opposite of a rule that reaches into
+    // the hand. Waiting a beat is what carries that card out of the moment; Wrong Edition (stage 2) is the
+    // same shape and the same reason.
+    private static EffectProgram<CardPlayedTriggeredEffectContext> OnPlayedCard(
+        string mark, CounterId latch, IEffectNode<CardPlayedTriggeredEffectContext> then) =>
+        new(new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
+            new AndExpression<CardPlayedTriggeredEffectContext>(
+                new CardInstanceHasMarkExpression<CardPlayedTriggeredEffectContext>(
+                    new TriggerEventCardInstanceExpression<CardPlayedTriggeredEffectContext>(),
+                    new TagId(mark)),
+                Unspent<CardPlayedTriggeredEffectContext>(latch)),
+            new CausalSequenceEffectNode<CardPlayedTriggeredEffectContext>(
+                [then, Spend<CardPlayedTriggeredEffectContext>(latch)])));
+
+    // "The first time each turn a Redacted card is fully played, it becomes Misfiled afterwards." The Husk
+    // does not stop the card — it files it away for next time.
+    public static StatusData OlderTextBeneath() =>
+        Rule(OlderTextBeneathId, "Older Text Beneath",
+            "What was written over you once is written over again.",
+            [
+                Watch("CardPlayed", OnPlayedCard(RedactedMark, PalimpsestUsedCounter,
+                    new CausalSequenceEffectNode<CardPlayedTriggeredEffectContext>(
+                    [
+                        new MarkCardInstanceNode<CardPlayedTriggeredEffectContext>(
+                            CombatantTargetSelectors.Source,
+                            new TriggerEventCardInstanceExpression<CardPlayedTriggeredEffectContext>(),
+                            new TagId(RedactedMark), remove: true),
+                        new MarkCardInstanceNode<CardPlayedTriggeredEffectContext>(
+                            CombatantTargetSelectors.Source,
+                            new TriggerEventCardInstanceExpression<CardPlayedTriggeredEffectContext>(),
+                            new TagId(MisfiledMark)),
+                    ]))),
+                ClearEachTurn(PalimpsestUsedCounter),
+            ]);
+
+    // "The first time each turn the player plays a Redacted card, the Portrait loses 8 Block."
+    public static StatusData AbsenceBecomesVisible() =>
+        Rule(AbsenceBecomesVisibleId, "The Absence Becomes Visible",
+            "Every redacted word makes the empty frame easier to see through.",
+            [
+                // "…loses 8 Block; if it has less than 8, the remainder becomes direct damage." Both halves,
+                // because a frame with nothing to strip is exactly when the absence should be felt.
+                Watch("CardPlayed", OnPlayedCard(RedactedMark, PortraitUsedCounter,
+                    new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
+                        new ComparisonExpression<CardPlayedTriggeredEffectContext>(
+                            PortraitBlock, ComparisonOperator.GreaterOrEqual,
+                            new ConstantExpression<CardPlayedTriggeredEffectContext>(8)),
+                        new ModifyDefensivePoolNode<CardPlayedTriggeredEffectContext>(
+                            Choir, StandardCombatIds.BlockDefensivePool,
+                            new ConstantExpression<CardPlayedTriggeredEffectContext>(-8)),
+                        new CausalSequenceEffectNode<CardPlayedTriggeredEffectContext>(
+                        [
+                            // What guard there is goes, and what is left of the 8 lands as damage.
+                            new DealDamageNode<CardPlayedTriggeredEffectContext>(
+                                Choir,
+                                new SubtractExpression<CardPlayedTriggeredEffectContext>(
+                                    new ConstantExpression<CardPlayedTriggeredEffectContext>(8), PortraitBlock),
+                                ignoresBlock: true),
+                            new ModifyDefensivePoolNode<CardPlayedTriggeredEffectContext>(
+                                Choir, StandardCombatIds.BlockDefensivePool,
+                                new SubtractExpression<CardPlayedTriggeredEffectContext>(
+                                    new ConstantExpression<CardPlayedTriggeredEffectContext>(0), PortraitBlock)),
+                        ])))),
+                ClearEachTurn(PortraitUsedCounter),
+            ]);
+
 
     // ── Stage 4 — The Hushed Reading Room ─────────────────────────────────────────────────────────────────
     //
@@ -795,6 +866,10 @@ public static class ActTwo
             ],
         };
     }
+
+    private static readonly ICombatExpression<CardPlayedTriggeredEffectContext, int> PortraitBlock =
+        new CombatantDefensivePoolExpression<CardPlayedTriggeredEffectContext>(
+            CombatantTargetSelectors.LowestHealthEnemyOfSource, StandardCombatIds.BlockDefensivePool);
 
     private static readonly ICombatantTargetSelector Choir =
         CombatantTargetSelectors.LowestHealthEnemyOfSource;

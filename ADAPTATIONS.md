@@ -608,6 +608,9 @@ and the signatures of stages 1–4 — Brass Maw's Return Parcel, the Object's R
 Ouroboros's re-owing, the two misfiling shelves, the Corridor's Wrong Edition, the three Reference rules, and
 the Reading Room's three hand rules.
 
+**Stage 5's two signatures are built too** — the Husk files away what it wrote over, and the Portrait's frame
+opens by 8 (as damage when there is no guard left to strip, which is the design's second half).
+
 **All 25 identities and all 35 encounter templates are authored**, with HP and intents from the balance
 appendix and the act's vocabulary in the intents themselves (attacks that Overdue, Misfile or Redact). What is
 missing is the *signature* of thirteen of them, listed here so nothing is quietly assumed to work:
@@ -615,11 +618,6 @@ missing is the *signature* of thirteen of them, listed here so nothing is quietl
 - **Volume Q-Null** — Misfiled propagation by matching base cost. Now expressible (the base-cost expression
   exists); simply not yet written.
 - **Second-Person Entry** — chaining its citations by the card type used to fulfil the last one.
-- **Palimpsest Husk / Vacant Portrait** — "a played Redacted card becomes Misfiled" and "playing a Redacted
-  card opens the frame". Written three times (guarded, immediate, on either side of the beat) and never shown
-  to work: a mark put on the card that was just played does not take. Not shipped rather than shipped
-  unproven. Worth its own engine test before the next attempt — the question is narrow, "can a CardPlayed
-  trigger mark the card the event is about", and it is not the hand-timing issue.
 - **Expunged Name** — redacting a card whose name was already played earlier in the combat. Nothing reads
   per-definition play history beyond the current turn.
 - **Fatal Comma** — Clause A / Clause B ordering. Needs two marks and an order comparison between two plays.
