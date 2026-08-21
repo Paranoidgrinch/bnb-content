@@ -197,6 +197,14 @@ public static class EncounterPassives
         ],
         "choir_of_unspoken_words" =>
             [new StartingStatusSpec(new StatusDefinitionId(ActTwo.UnspokenWordId), 1)],
+        // The Redaction Galleries answer what the PLAYER plays, so the player carries the rules.
+        "palimpsest_husk" =>
+        [
+            new StartingStatusSpec(new StatusDefinitionId(ActTwo.ArchiveRegulationsId), 1),
+            new StartingStatusSpec(new StatusDefinitionId(ActTwo.OlderTextBeneathId), 1),
+        ],
+        "vacant_portrait" =>
+            [new StartingStatusSpec(new StatusDefinitionId(ActTwo.AbsenceBecomesVisibleId), 1)],
         "corridor_in_the_wrong_edition" =>
         [
             new StartingStatusSpec(new StatusDefinitionId(ActTwo.ArchiveRegulationsId), 1),
