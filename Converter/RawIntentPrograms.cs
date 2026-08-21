@@ -8,6 +8,15 @@ namespace BnbContent.Converter;
 // cross-combatant reactions — and EnemyMapper prefers this program when one exists for "<enemy>.<intent>".
 public static class RawIntentPrograms
 {
+    private static EffectProgram<EnemyActionContext> Redacting(int damage) =>
+        new(new CausalSequenceEffectNode<EnemyActionContext>(
+        [
+            new DealDamageNode<EnemyActionContext>(
+                CombatantTargetSelectors.LowestHealthEnemyOfSource,
+                new ConstantExpression<EnemyActionContext>(damage)),
+            ActTwo.RedactOne(),
+        ]));
+
     private static EffectProgram<EnemyActionContext> Misfiling(int damage, string mark) =>
         new(new CausalSequenceEffectNode<EnemyActionContext>(
         [
@@ -22,6 +31,13 @@ public static class RawIntentPrograms
         {
             // Act II: an attack that also misfiles. Which SHELF did it decides where the card goes when it is
             // taken back, so the destination is written into the mark itself.
+            // Act II's redacting attacks. The halving itself is the engine's; what the intent adds is the
+            // mark beside it, which is what an enemy rule can see.
+            "palimpsest_husk.scrape_the_surface" => Redacting(13),
+            "expunged_name.strike_the_name" => Redacting(14),
+            "vacant_portrait.erase_the_face" => Redacting(13),
+            "errata_doppelganger.errata_transfer" => Redacting(14),
+            "miscellany_index.cross_list" => Redacting(12),
             "crabwise_shelf.mis_shelve" => Misfiling(11, ActTwo.MisfiledSidewaysMark),
             "volume_q_null.null_index" => Misfiling(10, ActTwo.MisfiledMark),
             "minute_moth_cloud.steal_a_minute" => StealAMinute(),

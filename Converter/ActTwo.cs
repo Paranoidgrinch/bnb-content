@@ -298,7 +298,16 @@ public static class ActTwo
         ShrinkingMargin(),
         LeaveOneWordUnspoken(),
         Voice(),
+        BlankCertificateReference(),
     ];
+
+    public const string CertificateReferenceMark = "referenced_certificate";
+    public const string CertificateReferenceId = "blank_certificate_reference";
+
+    // The Certificate cites you and then asks, when it dies, whether you answered.
+    public static StatusData BlankCertificateReference() =>
+        Reference(CertificateReferenceId, "Serve Certificate", CertificateReferenceMark,
+            "A card is cited. Answer it, or owe the Certificate for it.");
 
     public const string MiscellaneousClassificationId = "miscellaneous_classification";
 
@@ -570,6 +579,43 @@ public static class ActTwo
     private static IEffectNode<TContext> SetOnWearer<TContext>(
         CounterId counter, ICombatExpression<TContext, int> value) where TContext : class =>
         new SetCombatantCounterNode<TContext>(OnlyWearer, counter, value, relative: false);
+
+    // ── Redacted ──────────────────────────────────────────────────────────────────────────────────────────
+    //
+    // "On its next play, positive numerical effects are halved, rounded down. Then Redacted clears." The engine
+    // owns the halving: two reserved per-instance counters scale a card's next play and are consumed by it. The
+    // content's part is the MARK beside them, which is what a rule can find and answer — an enemy that cares
+    // "the player played a Redacted card" cannot see a scale factor, only a mark.
+    public const string RedactedMark = "redacted";
+
+    // The owner is a parameter and not `Source`: a redaction usually comes from an ENEMY's program, where
+    // "source" is the enemy and the card belongs to the player. Getting that wrong marks a card nobody holds,
+    // which is silent.
+    public static IEffectNode<TContext> Redact<TContext>(
+        ICombatantTargetSelector owner, ICardInstanceExpression<TContext> card) where TContext : class =>
+        new CausalSequenceEffectNode<TContext>(
+        [
+            new SetCardInstanceMarkCounterNode<TContext>(
+                owner, card, StandardCombatIds.CardOutputScaleNumeratorCounter,
+                new ConstantExpression<TContext>(1), relative: false),
+            new SetCardInstanceMarkCounterNode<TContext>(
+                owner, card, StandardCombatIds.CardOutputScaleDenominatorCounter,
+                new ConstantExpression<TContext>(2), relative: false),
+            new MarkCardInstanceNode<TContext>(owner, card, new TagId(RedactedMark)),
+        ]);
+
+    // "Redact one card": the top of the draw pile, the same reading of randomness Act I's Unclaimed Property
+    // Tag uses — the pile is already shuffled, so its first card is the random one.
+    public static IEffectNode<EnemyActionContext> RedactOne() =>
+        new ForEachCardInZoneNode<EnemyActionContext>(
+            Opponent, CardZone.DrawPile,
+            Redact<EnemyActionContext>(Opponent, new IteratedCardExpression<EnemyActionContext>()),
+            takeFirst: 1);
+
+    // ── Stage 5 — The Redaction Galleries ─────────────────────────────────────────────────────────────────
+
+    // NOT YET BUILT: the Husk's "a played Redacted card becomes Misfiled" and the Portrait's "playing a
+    // Redacted card opens the frame". Both were written and could not be shown to work; see ADAPTATIONS.
 
     // ── Stage 4 — The Hushed Reading Room ─────────────────────────────────────────────────────────────────
     //

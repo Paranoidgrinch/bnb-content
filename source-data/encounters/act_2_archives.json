@@ -281,5 +281,356 @@
       "multi_enemy"
     ],
     "role": "multi_combat"
+  },
+  {
+    "id": "archives_redaction_01",
+    "name": "Palimpsest Husk",
+    "act": 2,
+    "difficulty": "normal",
+    "enemies": [
+      "palimpsest_husk"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_redaction",
+      "archives",
+      "redaction"
+    ],
+    "role": "combat"
+  },
+  {
+    "id": "archives_redaction_02",
+    "name": "Expunged Name",
+    "act": 2,
+    "difficulty": "normal",
+    "enemies": [
+      "expunged_name"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_redaction",
+      "archives",
+      "redaction"
+    ],
+    "role": "combat"
+  },
+  {
+    "id": "archives_redaction_03",
+    "name": "Vacant Portrait",
+    "act": 2,
+    "difficulty": "normal",
+    "enemies": [
+      "vacant_portrait"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_redaction",
+      "archives",
+      "redaction"
+    ],
+    "role": "combat"
+  },
+  {
+    "id": "archives_redaction_duo_01",
+    "name": "Absent Subject Citation",
+    "act": 2,
+    "difficulty": "normal",
+    "enemies": [
+      "vacant_portrait",
+      "second_person_entry"
+    ],
+    "enemy_health": [
+      60,
+      44
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_redaction",
+      "archives",
+      "referenced",
+      "multi_enemy"
+    ],
+    "role": "multi_combat"
+  },
+  {
+    "id": "archives_errata_01",
+    "name": "Fatal Comma",
+    "act": 2,
+    "difficulty": "normal",
+    "enemies": [
+      "fatal_comma"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_errata",
+      "archives"
+    ],
+    "role": "combat"
+  },
+  {
+    "id": "archives_errata_02",
+    "name": "Errata Doppelgänger",
+    "act": 2,
+    "difficulty": "normal",
+    "enemies": [
+      "errata_doppelganger"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_errata",
+      "archives",
+      "redaction"
+    ],
+    "role": "combat"
+  },
+  {
+    "id": "archives_errata_duo_01",
+    "name": "The Comma Beneath the Palimpsest",
+    "act": 2,
+    "difficulty": "normal",
+    "enemies": [
+      "fatal_comma",
+      "palimpsest_husk"
+    ],
+    "enemy_health": [
+      57,
+      56
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_errata",
+      "archives",
+      "redaction",
+      "multi_enemy"
+    ],
+    "role": "multi_combat"
+  },
+  {
+    "id": "archives_annex_01",
+    "name": "Checkout Codex",
+    "act": 2,
+    "difficulty": "normal",
+    "enemies": [
+      "checkout_codex"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_annex",
+      "archives"
+    ],
+    "role": "combat"
+  },
+  {
+    "id": "archives_annex_02",
+    "name": "Mnemonic Chain",
+    "act": 2,
+    "difficulty": "normal",
+    "enemies": [
+      "mnemonic_chain"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_annex",
+      "archives",
+      "referenced"
+    ],
+    "role": "combat"
+  },
+  {
+    "id": "archives_annex_duo_01",
+    "name": "Borrower on Record",
+    "act": 2,
+    "difficulty": "normal",
+    "enemies": [
+      "checkout_codex",
+      "mnemonic_chain"
+    ],
+    "enemy_health": [
+      66,
+      69
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_annex",
+      "archives",
+      "referenced",
+      "multi_enemy"
+    ],
+    "role": "multi_combat"
+  },
+  {
+    "id": "archives_hours_01",
+    "name": "Unoccurred Tuesday",
+    "act": 2,
+    "difficulty": "normal",
+    "enemies": [
+      "unoccurred_tuesday"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_hours",
+      "archives"
+    ],
+    "role": "combat"
+  },
+  {
+    "id": "archives_hours_02",
+    "name": "Hourglass With Two Bottoms",
+    "act": 2,
+    "difficulty": "normal",
+    "enemies": [
+      "hourglass_with_two_bottoms"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_hours",
+      "archives"
+    ],
+    "role": "combat"
+  },
+  {
+    "id": "archives_hours_duo_01",
+    "name": "Two-Bottom Tuesday",
+    "act": 2,
+    "difficulty": "normal",
+    "enemies": [
+      "unoccurred_tuesday",
+      "hourglass_with_two_bottoms"
+    ],
+    "enemy_health": [
+      64,
+      71
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_hours",
+      "archives",
+      "multi_enemy"
+    ],
+    "role": "multi_combat"
+  },
+  {
+    "id": "archives_necrology_01",
+    "name": "Blank Death Certificate",
+    "act": 2,
+    "difficulty": "normal",
+    "enemies": [
+      "blank_death_certificate"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_necrology",
+      "archives",
+      "referenced"
+    ],
+    "role": "combat"
+  },
+  {
+    "id": "archives_necrology_duo_01",
+    "name": "Dead-Letter Revival",
+    "act": 2,
+    "difficulty": "normal",
+    "enemies": [
+      "spare_life_jar",
+      "dead_letter_ouroboros"
+    ],
+    "enemy_health": [
+      61,
+      35
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_necrology",
+      "archives",
+      "overdue",
+      "multi_enemy"
+    ],
+    "role": "multi_combat"
+  },
+  {
+    "id": "archives_necrology_duo_02",
+    "name": "Revised Mortality",
+    "act": 2,
+    "difficulty": "normal",
+    "enemies": [
+      "spare_life_jar",
+      "errata_doppelganger"
+    ],
+    "enemy_health": [
+      61,
+      63
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_necrology",
+      "archives",
+      "redaction",
+      "multi_enemy"
+    ],
+    "role": "multi_combat"
+  },
+  {
+    "id": "archives_concordance_01",
+    "name": "Miscellany Index",
+    "act": 2,
+    "difficulty": "normal",
+    "enemies": [
+      "miscellany_index"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_concordance",
+      "archives",
+      "redaction",
+      "misfiled"
+    ],
+    "role": "combat"
+  },
+  {
+    "id": "archives_concordance_duo_01",
+    "name": "Orphan Citation, See Footnote",
+    "act": 2,
+    "difficulty": "normal",
+    "enemies": [
+      "orphan_citation",
+      "detached_footnote"
+    ],
+    "enemy_health": [
+      46,
+      64
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_concordance",
+      "archives",
+      "referenced",
+      "multi_enemy"
+    ],
+    "role": "multi_combat"
+  },
+  {
+    "id": "archives_concordance_trio_01",
+    "name": "Everything Else, See Footnote",
+    "act": 2,
+    "difficulty": "hard",
+    "enemies": [
+      "palimpsest_husk",
+      "detached_footnote",
+      "miscellany_index"
+    ],
+    "enemy_health": [
+      47,
+      54,
+      67
+    ],
+    "weight": 1,
+    "tags": [
+      "stage_concordance",
+      "archives",
+      "redaction",
+      "misfiled",
+      "multi_enemy"
+    ],
+    "role": "multi_combat"
   }
 ]

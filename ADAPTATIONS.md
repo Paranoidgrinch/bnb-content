@@ -599,3 +599,35 @@ appendix itself says the signature wins.
   it simply never happens, and nothing in the content can see it.
 - **The Object's Recognized Category is the literal first card of the turn**, Junk not skipped: the engine
   records one opening type per turn, exactly as Act I reads it for the Wrong-Window Scribe.
+
+## Act II — what is built and what is not (2026-08-21)
+
+**Built and proved in live fights:** the four universal mechanics (Overdue, Misfiled, Referenced, Redacted)
+and the signatures of stages 1–4 — Brass Maw's Return Parcel, the Object's Recognized Category, the
+Ouroboros's re-owing, the two misfiling shelves, the Corridor's Wrong Edition, the three Reference rules, and
+the Reading Room's three hand rules.
+
+**All 25 identities and all 35 encounter templates are authored**, with HP and intents from the balance
+appendix and the act's vocabulary in the intents themselves (attacks that Overdue, Misfile or Redact). What is
+missing is the *signature* of thirteen of them, listed here so nothing is quietly assumed to work:
+
+- **Volume Q-Null** — Misfiled propagation by matching base cost. Now expressible (the base-cost expression
+  exists); simply not yet written.
+- **Second-Person Entry** — chaining its citations by the card type used to fulfil the last one.
+- **Palimpsest Husk / Vacant Portrait** — "a played Redacted card becomes Misfiled" and "playing a Redacted
+  card opens the frame". Both were written and could NOT be shown to work: the rule removed the Redacted mark
+  but its second half did not land. Not shipped rather than shipped unproven.
+- **Expunged Name** — redacting a card whose name was already played earlier in the combat. Nothing reads
+  per-definition play history beyond the current turn.
+- **Fatal Comma** — Clause A / Clause B ordering. Needs two marks and an order comparison between two plays.
+- **Errata Doppelgänger** — moving a redaction from the played card to another in hand.
+- **Checkout Codex** — Behind-the-Desk, with its three player options (wait, demand, end the turn).
+- **Mnemonic Chain** — remembering one concrete card INSTANCE across zones and turns.
+- **Unoccurred Tuesday** — a skipped enemy turn with +25% damage taken during it.
+- **Hourglass With Two Bottoms** — two independent scheduled countdowns the player can each delay once.
+- **Blank Death Certificate** — returning at ~35 % HP unless a Reference was fulfilled that turn.
+- **Spare-Life Jar** — storing a dead ally's identity and reviving it after a countdown.
+- **Detached Footnote / Miscellany Index** — the Source link and the four-way Residue synthesis.
+
+Several of these need engine seams that do not exist yet (an enemy skipping its turn, reviving a dead
+combatant, per-combat play history). They are deliberately absent, not approximated.
