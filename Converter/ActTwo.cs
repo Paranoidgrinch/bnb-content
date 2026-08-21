@@ -294,6 +294,10 @@ public static class ActTwo
         LearnedLetter(),
         FangedAlphabetReference(),
         OrphanCitationReference(),
+        ReservedSeat(),
+        ShrinkingMargin(),
+        LeaveOneWordUnspoken(),
+        Voice(),
     ];
 
     public const string MiscellaneousClassificationId = "miscellaneous_classification";
@@ -566,6 +570,220 @@ public static class ActTwo
     private static IEffectNode<TContext> SetOnWearer<TContext>(
         CounterId counter, ICombatExpression<TContext, int> value) where TContext : class =>
         new SetCombatantCounterNode<TContext>(OnlyWearer, counter, value, relative: false);
+
+    // ── Stage 4 — The Hushed Reading Room ─────────────────────────────────────────────────────────────────
+    //
+    // The Reading Room attacks the HAND: what you are still holding, how much of it you spent, what you never
+    // got to say. All three rules live on the PLAYER (EncounterPassives.HeroOpeningStatuses) and watch the
+    // whole fight, because the events they answer are the player's own.
+    //
+    // Three facts these rules are built on, all measured and all easy to get backwards:
+    //   • the played-card count INCLUDES the card being played, so "the fourth card" is a count of four;
+    //   • that card is already OUT of the hand when the rule runs, so reaching into the hand cannot catch it;
+    //   • a conditional that is the FIRST thing a trigger program executes loses its body entirely — hence
+    //     `Guarded`, which puts a no-op in front of every guard. See the engine reproduction in
+    //     RogueDeck.Sandbox.Tests/ConditionalTriggerRootTortureTests.
+
+    public const string ReservedSeatId = "reserved_seat";
+    public const string ShrinkingMarginId = "shrinking_margin";
+    public const string UnspokenWordId = "leave_one_word_unspoken";
+    public const string VoiceId = "voice";
+
+    private static readonly CounterId SeatTakenCounter = new("reserved_seat_taken");
+    private static readonly CounterId MarginCounter = new("mute_margin");
+    private static readonly CounterId MarginBittenCounter = new("mute_margin_bitten");
+    private const int MarginStart = 5;
+    private const int MarginFloor = 3;
+
+    // A guarded rule, with the no-op that keeps the engine from swallowing it.
+    private static EffectProgram<TContext> Guarded<TContext>(
+        ICombatExpression<TContext, bool> when, IEffectNode<TContext> then) where TContext : class =>
+        new(new CausalSequenceEffectNode<TContext>(
+        [
+            new NoOpEffectNode<TContext>(),
+            new ConditionalEffectNode<TContext>(when, then),
+        ]));
+
+    // "After the player's fourth played card in a turn, the oldest remaining card in hand goes straight to
+    // discard. Once per turn." A card taken this way was not played, so a Reference on it fails exactly as if
+    // the hand had been put down holding it — the Stage-4 duo's whole lesson, and it needs no special case:
+    // the citing enemy already collects from the discard pile.
+    //
+    // "The oldest remaining VALID non-Junk card" is read as the oldest card, full stop: a zone iteration can
+    // require a tag but not refuse one. See ADAPTATIONS.
+    public static StatusData ReservedSeat() =>
+        Rule(ReservedSeatId, "Reserved Seat",
+            "The table clears a place once a turn, whether or not you were using it.",
+            [
+                Watch("CardPlayed", Guarded(
+                    new AndExpression<CardPlayedTriggeredEffectContext>(
+                        new AndExpression<CardPlayedTriggeredEffectContext>(
+                            IsTheApplicant<CardPlayedTriggeredEffectContext>(),
+                            PlayedThisTurn<CardPlayedTriggeredEffectContext>(
+                                ComparisonOperator.GreaterOrEqual,
+                                new ConstantExpression<CardPlayedTriggeredEffectContext>(4))),
+                        Unspent<CardPlayedTriggeredEffectContext>(SeatTakenCounter)),
+                    new CausalSequenceEffectNode<CardPlayedTriggeredEffectContext>(
+                    [
+                        new ForEachCardInZoneNode<CardPlayedTriggeredEffectContext>(
+                            CombatantTargetSelectors.Source, CardZone.Hand,
+                            new MoveCardToZoneNode<CardPlayedTriggeredEffectContext>(
+                                CombatantTargetSelectors.Source,
+                                new IteratedCardExpression<CardPlayedTriggeredEffectContext>(),
+                                CardZone.DiscardPile),
+                            takeFirst: 1),
+                        Spend<CardPlayedTriggeredEffectContext>(SeatTakenCounter),
+                    ]))),
+                ClearEachTurn(SeatTakenCounter),
+            ]);
+
+    // "A visible limit of 5. Exceed it and a card in your hand is Misfiled, and the limit shrinks by one to a
+    // floor of 3; finish a turn inside it and it recovers by one, to a ceiling of 5."
+    //
+    // The limit lives on the player as a counter, and 0 means "not set yet": a starting status can put a
+    // status on a combatant but not a number, so the margin introduces itself on the first draw.
+    public static StatusData ShrinkingMargin() =>
+        Rule(ShrinkingMarginId, "Shrinking Margin",
+            "The margin allows five, and remembers every time you wrote past it.",
+            [
+                Watch("CardsDrawn", Guarded(
+                    new AndExpression<CardsDrawnTriggeredEffectContext>(
+                        IsTheApplicant<CardsDrawnTriggeredEffectContext>(),
+                        new ComparisonExpression<CardsDrawnTriggeredEffectContext>(
+                            new CombatantCounterExpression<CardsDrawnTriggeredEffectContext>(
+                                CombatantTargetSelectors.Source, MarginCounter),
+                            ComparisonOperator.Equal,
+                            new ConstantExpression<CardsDrawnTriggeredEffectContext>(0))),
+                    new SetCombatantCounterNode<CardsDrawnTriggeredEffectContext>(
+                        CombatantTargetSelectors.Source, MarginCounter,
+                        new ConstantExpression<CardsDrawnTriggeredEffectContext>(MarginStart), relative: false))),
+                // The count includes the card in flight, so a count PAST the margin is the card that went past.
+                Watch("CardPlayed", Guarded(
+                    new AndExpression<CardPlayedTriggeredEffectContext>(
+                        new AndExpression<CardPlayedTriggeredEffectContext>(
+                            IsTheApplicant<CardPlayedTriggeredEffectContext>(),
+                            PlayedThisTurn<CardPlayedTriggeredEffectContext>(
+                                ComparisonOperator.Greater,
+                                new CombatantCounterExpression<CardPlayedTriggeredEffectContext>(
+                                    CombatantTargetSelectors.Source, MarginCounter))),
+                        Unspent<CardPlayedTriggeredEffectContext>(MarginBittenCounter)),
+                    new CausalSequenceEffectNode<CardPlayedTriggeredEffectContext>(
+                    [
+                        new ForEachCardInZoneNode<CardPlayedTriggeredEffectContext>(
+                            CombatantTargetSelectors.Source, CardZone.Hand,
+                            new MarkCardInstanceNode<CardPlayedTriggeredEffectContext>(
+                                CombatantTargetSelectors.Source,
+                                new IteratedCardExpression<CardPlayedTriggeredEffectContext>(),
+                                new TagId(MisfiledMark)),
+                            takeFirst: 1),
+                        Step<CardPlayedTriggeredEffectContext>(-1, MarginFloor, ComparisonOperator.Greater),
+                        Spend<CardPlayedTriggeredEffectContext>(MarginBittenCounter),
+                    ]))),
+                Watch("TurnEnded", Guarded(
+                    new AndExpression<TurnEndedTriggeredEffectContext>(
+                        IsTheApplicant<TurnEndedTriggeredEffectContext>(),
+                        Unspent<TurnEndedTriggeredEffectContext>(MarginBittenCounter)),
+                    Step<TurnEndedTriggeredEffectContext>(1, MarginStart, ComparisonOperator.Less))),
+                ClearEachTurn(MarginBittenCounter),
+            ]);
+
+    // "End a turn holding exactly one card and the Choir's guard breaks; end holding none and it finds a
+    // Voice." The crescendo the design pays at two Voices is folded into the Voice status itself.
+    public static StatusData LeaveOneWordUnspoken() =>
+        Rule(UnspokenWordId, "Leave One Word Unspoken",
+            "The choir listens to what you did not say.",
+            [
+                Watch("TurnEnded", Guarded(
+                    IsTheApplicant<TurnEndedTriggeredEffectContext>(),
+                    new CausalSequenceEffectNode<TurnEndedTriggeredEffectContext>(
+                    [
+                        new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
+                            HandHolds<TurnEndedTriggeredEffectContext>(1),
+                            new ModifyDefensivePoolNode<TurnEndedTriggeredEffectContext>(
+                                Choir, StandardCombatIds.BlockDefensivePool,
+                                new ConstantExpression<TurnEndedTriggeredEffectContext>(-6))),
+                        new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
+                            HandHolds<TurnEndedTriggeredEffectContext>(0),
+                            new ApplyStatusNode<TurnEndedTriggeredEffectContext>(
+                                Choir, new StatusDefinitionId(VoiceId),
+                                new ConstantExpression<TurnEndedTriggeredEffectContext>(1))),
+                    ]))),
+            ]);
+
+    // Each Voice is +4 on the Choir's next direct attack, and the attack spends them all — two of them are the
+    // design's +8, without a second status to hold the total.
+    public static StatusData Voice()
+    {
+        var spend = new EffectProgram<DamageDealtTriggeredEffectContext>(
+            new RemoveStatusNode<DamageDealtTriggeredEffectContext>(
+                CombatantTargetSelectors.Source, new StatusDefinitionId(VoiceId)));
+
+        return new StatusData
+        {
+            Id = VoiceId,
+            NameKey = "Voice",
+            DescriptionKey = "A word the choir kept, waiting on its next blow.",
+            Polarity = StatusPolarity.Buff,
+            StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
+            UsesStacks = true,
+            Tags = [],
+            PassiveModifiers =
+            [
+                new PassiveModifierData(PassiveModifierPipeline.DamageDealt,
+                    PassiveModifierOperation.AddPerStack, 4, RestrictDamageKind: DamageKind.Direct),
+            ],
+            Triggers =
+            [
+                new StatusTriggerData("DamageDealt", JsonSerializer.SerializeToElement(
+                    spend, CombatJson.CreateOptions<DamageDealtTriggeredEffectContext>())),
+            ],
+        };
+    }
+
+    private static readonly ICombatantTargetSelector Choir =
+        CombatantTargetSelectors.LowestHealthEnemyOfSource;
+
+    private static ICombatExpression<TContext, bool> PlayedThisTurn<TContext>(
+        ComparisonOperator op, ICombatExpression<TContext, int> than) where TContext : class =>
+        new ComparisonExpression<TContext>(
+            new CardsPlayedThisTurnExpression<TContext>(CombatantTargetSelectors.Source), op, than);
+
+    private static ICombatExpression<TContext, bool> HandHolds<TContext>(int cards) where TContext : class =>
+        new ComparisonExpression<TContext>(
+            new CombatantZoneCardCountExpression<TContext>(CombatantTargetSelectors.Source, CardZone.Hand),
+            ComparisonOperator.Equal, new ConstantExpression<TContext>(cards));
+
+    private static IEffectNode<TContext> Step<TContext>(int step, int stop, ComparisonOperator past)
+        where TContext : class =>
+        new ConditionalEffectNode<TContext>(
+            new ComparisonExpression<TContext>(
+                new CombatantCounterExpression<TContext>(CombatantTargetSelectors.Source, MarginCounter),
+                past, new ConstantExpression<TContext>(stop)),
+            new SetCombatantCounterNode<TContext>(
+                CombatantTargetSelectors.Source, MarginCounter,
+                new ConstantExpression<TContext>(step), relative: true));
+
+    private static ICombatExpression<TContext, bool> Unspent<TContext>(CounterId latch) where TContext : class =>
+        new ComparisonExpression<TContext>(
+            new CombatantCounterExpression<TContext>(CombatantTargetSelectors.Source, latch),
+            ComparisonOperator.Equal, new ConstantExpression<TContext>(0));
+
+    private static IEffectNode<TContext> Spend<TContext>(CounterId latch) where TContext : class =>
+        new SetCombatantCounterNode<TContext>(
+            CombatantTargetSelectors.Source, latch,
+            new ConstantExpression<TContext>(1), relative: false);
+
+    private static StatusTriggerData Watch<TContext>(string trigger, EffectProgram<TContext> program)
+        where TContext : class =>
+        new(trigger, JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<TContext>()),
+            StatusTriggerScope.Anywhere);
+
+    private static StatusTriggerData ClearEachTurn(CounterId latch) =>
+        Watch("CardsDrawn", Guarded(
+            IsTheApplicant<CardsDrawnTriggeredEffectContext>(),
+            new SetCombatantCounterNode<CardsDrawnTriggeredEffectContext>(
+                CombatantTargetSelectors.Source, latch,
+                new ConstantExpression<CardsDrawnTriggeredEffectContext>(0), relative: false)));
 
     // ── shapes ────────────────────────────────────────────────────────────────────────────────────────────
 

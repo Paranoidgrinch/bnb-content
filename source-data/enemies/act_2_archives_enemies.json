@@ -515,5 +515,167 @@
       "referenced",
       "stage_catalogue"
     ]
+  },
+  {
+    "id": "unclaimed_reading_table",
+    "name": "Unclaimed Reading Table",
+    "max_hp": 66,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "clear_the_table",
+        "name": "Clear the Table",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 14
+          }
+        ]
+      },
+      {
+        "id": "quiet_reminder",
+        "name": "Quiet Reminder",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 11
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "overdue",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "reserved_seat",
+        "name": "Reserved Seat",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 18
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "archives",
+      "reading_room",
+      "hand_pressure",
+      "stage_reading_room"
+    ]
+  },
+  {
+    "id": "mute_margin",
+    "name": "Mute Margin",
+    "max_hp": 70,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "narrow_the_margin",
+        "name": "Narrow the Margin",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 12
+          }
+        ]
+      },
+      {
+        "id": "edge_cut",
+        "name": "Edge Cut",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 17
+          }
+        ]
+      },
+      {
+        "id": "white_space",
+        "name": "White Space",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 18
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "archives",
+      "reading_room",
+      "misfiled",
+      "stage_reading_room"
+    ]
+  },
+  {
+    "id": "choir_of_unspoken_words",
+    "name": "Choir of Unspoken Words",
+    "max_hp": 64,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "held_note",
+        "name": "Held Note",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 12
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "overdue",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "unspoken_crescendo",
+        "name": "Unspoken Crescendo",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 18
+          }
+        ]
+      },
+      {
+        "id": "hush",
+        "name": "Hush",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 16
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "archives",
+      "reading_room",
+      "hand_pressure",
+      "stage_reading_room"
+    ]
   }
 ]

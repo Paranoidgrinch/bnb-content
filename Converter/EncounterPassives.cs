@@ -186,6 +186,17 @@ public static class EncounterPassives
         // once however many shelves are in the room.
         "crabwise_shelf" or "volume_q_null" =>
             [new StartingStatusSpec(new StatusDefinitionId(ActTwo.ArchiveRegulationsId), 1)],
+        // The Reading Room's rules are about the player's hand and the player's plays, so the player carries
+        // them: they watch the whole fight and answer what the player did.
+        "unclaimed_reading_table" =>
+            [new StartingStatusSpec(new StatusDefinitionId(ActTwo.ReservedSeatId), 1)],
+        "mute_margin" =>
+        [
+            new StartingStatusSpec(new StatusDefinitionId(ActTwo.ArchiveRegulationsId), 1),
+            new StartingStatusSpec(new StatusDefinitionId(ActTwo.ShrinkingMarginId), 1),
+        ],
+        "choir_of_unspoken_words" =>
+            [new StartingStatusSpec(new StatusDefinitionId(ActTwo.UnspokenWordId), 1)],
         "corridor_in_the_wrong_edition" =>
         [
             new StartingStatusSpec(new StatusDefinitionId(ActTwo.ArchiveRegulationsId), 1),

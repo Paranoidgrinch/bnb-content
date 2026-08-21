@@ -588,5 +588,14 @@ appendix itself says the signature wins.
   card played, a hand drawn), and in a fight-wide trigger the player is the one structural single target
   available: a "whoever wears the rule" selector can match several combatants and so cannot be read as one
   counter at all.
+- **The Unclaimed Reading Table clears the oldest card in hand, Junk included.** "The oldest remaining valid
+  non-Junk card" would need a zone iteration that REFUSES a tag; one can require a tag but not exclude one.
+- **The Choir's crescendo is folded into Voice itself** (+4 per Voice on its next direct attack, spent by it)
+  rather than converting two Voices into a separate +8 status. Two Voices are the design's +8, and one status
+  fewer to keep in step.
+- **★ Every guarded rule in Act II puts a no-op in front of its condition** (`ActTwo.Guarded`). A conditional
+  that is the FIRST thing a trigger program executes loses its body entirely — an engine defect reproduced in
+  `RogueDeck.Sandbox.Tests/ConditionalTriggerRootTortureTests`. Without the no-op the rule does not misfire,
+  it simply never happens, and nothing in the content can see it.
 - **The Object's Recognized Category is the literal first card of the turn**, Junk not skipped: the engine
   records one opening type per turn, exactly as Act I reads it for the Wrong-Window Scribe.
