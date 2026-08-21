@@ -688,3 +688,28 @@ the Toll. Three readings had to be made explicit.
 - **Cooldown 3 is an eight-entry cycle.** The engine rotates an intent list by round, so "at most every fourth
   intent" is the Toll at slots 4 and 8 of eight. Reopen for One Final Minute appears twice to fill the cycle;
   every other intent keeps its single slot.
+
+## Act II elite signatures — Rolling Stacks Colossus (2026-08-21)
+
+Compression, Open Aisle, the Ladder's tax and Shelf Collapse are built. Compression is counted where the act
+already knows a misfiling was ACTUALLY skipped (`ActTwo.TakeBack`), and the hook does nothing when no Colossus
+is on the field — the act's rule stays the act's rule.
+
+- **"At Compression 3 the next eligible normal intent becomes Shelf Collapse" is written into every normal
+  intent**, not into the intent order: the engine rotates a fixed list, so each intent asks first whether the
+  aisles have closed, and whichever comes up IS the collapse. What cannot follow is the telegraph — an intent
+  label is fixed at authoring time, so the player sees the ordinary intent's name on the turn it becomes a
+  collapse. The Compression counter is visible throughout, which is the warning the design trades on.
+- **The collapse re-seeds itself.** It clears Compression and misfiles two cards; those two come up on the
+  very next draw and close the aisles by two again. Faithful to the loop as written, and proved by a test so
+  nobody rediscovers it as a bug.
+- **"Status/Junk replacement cards do not receive Open Aisle" is not filtered.** The mark is a path, and the
+  rule that spends it only pays out when the card is PLAYED — which is the one thing an unplayable card
+  cannot do.
+- **"The last valid card instance played" is a mark the player's own rule re-points at with every play**, so
+  Roll Across the Aisle can name it a turn later. It searches the discard pile and the hand — a card that
+  exhausted itself is exactly the one the design says "can no longer legally be tracked" — and a turn where
+  nothing was played gives it nothing to mark, rather than a random card.
+- **A drawn card can now be named by the draw that produced it** (engine: `cardInstance.drawnOutcome`, the
+  counterpart of `cardInstance.createdOutcome`). Open Aisle needs the identity of one specific replacement
+  card, and the hand it lands in is ordered but not indexable from the end.

@@ -54,6 +54,7 @@ public static class RawIntentPrograms
                 "municipal_dragon" => MunicipalDragon.Intent(intentId),
                 "living_charter" => LivingCharter.Intent(intentId),
                 Elites.ReturnBell.EnemyId => Elites.ReturnBell.Intent(intentId),
+                Elites.RollingStacksColossus.EnemyId => Elites.RollingStacksColossus.Intent(intentId),
                 _ => null,
             },
         };

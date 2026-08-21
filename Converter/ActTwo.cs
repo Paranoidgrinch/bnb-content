@@ -114,6 +114,14 @@ public static class ActTwo
     // Take back every card in hand carrying one kind of misfiling, and fetch a replacement for each. The mark
     // is cleared BEFORE the replacement is drawn, so a replacement that is itself misfiled waits for the next
     // draw rather than being swept up by the pass that fetched it.
+    //
+    // The replacement draw names its own card (`Replacement`), because one elite cares WHICH card came back:
+    // the Rolling Stacks Colossus grants it Open Aisle. Nothing else reads the key, and the skip itself is the
+    // only moment the Colossus's Compression can be counted from — so the hook lives here, in the one place
+    // that knows a misfiling was actually skipped, and does nothing when no Colossus is on the field.
+    private static readonly EffectResultKey<OrderedTargetOutcomes<DrawCardsOutcome>> Replacement =
+        new("misfiled_replacement");
+
     private static IEffectNode<CardsDrawnTriggeredEffectContext> TakeBack(string mark, CardZone destination) =>
         new ForEachCardInZoneNode<CardsDrawnTriggeredEffectContext>(
             CombatantTargetSelectors.Source, CardZone.Hand,
@@ -129,7 +137,10 @@ public static class ActTwo
                     destination),
                 new DrawCardsNode<CardsDrawnTriggeredEffectContext>(
                     CombatantTargetSelectors.Source,
-                    new ConstantExpression<CardsDrawnTriggeredEffectContext>(1)),
+                    new ConstantExpression<CardsDrawnTriggeredEffectContext>(1),
+                    resultKey: Replacement),
+                Elites.RollingStacksColossus.OnMisfilingSkipped(
+                    new DrawCardOutcomeExpression<CardsDrawnTriggeredEffectContext>(Replacement)),
             ]),
             markFilter: new TagId(mark));
 
