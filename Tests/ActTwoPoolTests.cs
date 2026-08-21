@@ -11,12 +11,35 @@ public class ActTwoPoolTests
     private static IEnumerable<BabEncounter> ActTwoWithRole(string role) =>
         Data.Encounters.Where(e => e.Act == 2 && e.Role == role);
 
+    // The STANDARD pool: elites and bosses are their own rosters and are counted separately.
     [Fact]
-    public void The_act_fields_twenty_five_identities()
+    public void The_act_fields_twenty_five_standard_identities()
     {
-        var fielded = Data.Encounters.Where(e => e.Act == 2).SelectMany(e => e.Enemies).Distinct().ToList();
+        var fielded = ActTwoWithRole("combat").Concat(ActTwoWithRole("multi_combat"))
+            .SelectMany(e => e.Enemies).Distinct().ToList();
 
         Assert.Equal(25, fielded.Count);
+    }
+
+    // Four of the five Act-II bosses ship as single bodies; the Grand Cross-Reference is three volumes plus a
+    // central body and is deliberately absent rather than flattened into one. See ADAPTATIONS.
+    [Fact]
+    public void The_act_fields_its_single_body_bosses()
+    {
+        var bosses = ActTwoWithRole("boss").ToList();
+
+        Assert.Equal(4, bosses.Count);
+        Assert.All(bosses, b => Assert.Single(b.Enemies));
+    }
+
+    // §1.1 of the elite master: nine elites, each its own encounter.
+    [Fact]
+    public void The_act_fields_nine_elites()
+    {
+        var elites = ActTwoWithRole("elite").ToList();
+
+        Assert.Equal(9, elites.Count);
+        Assert.All(elites, e => Assert.Single(e.Enemies));
     }
 
     // §3's stage table: 23 solo, 12 combination, 35 in all.

@@ -1348,5 +1348,991 @@
       "misfiled",
       "stage_concordance"
     ]
+  },
+  {
+    "id": "after_hours_return_bell",
+    "name": "After-Hours Return Bell",
+    "max_hp": 118,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "issue_the_closing_notice",
+        "name": "Issue the Closing Notice",
+        "intent_type": "debuff",
+        "actions": [
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "overdue",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "the_desk_is_now_closed",
+        "name": "The Desk Is Now Closed",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 12
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "overdue",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "reopen_for_one_final_minute",
+        "name": "Reopen for One Final Minute",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 18
+          }
+        ]
+      },
+      {
+        "id": "confiscate_the_receipt",
+        "name": "Confiscate the Receipt",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 10
+          }
+        ]
+      },
+      {
+        "id": "bell_lip_strike",
+        "name": "Bell-Lip Strike",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 15
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "archives",
+      "elite",
+      "act_2"
+    ]
+  },
+  {
+    "id": "rolling_stacks_colossus",
+    "name": "The Rolling Stacks Colossus",
+    "max_hp": 132,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "roll_across_the_aisle",
+        "name": "Roll Across the Aisle",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 15
+          }
+        ]
+      },
+      {
+        "id": "close_the_remaining_passage",
+        "name": "Close the Remaining Passage",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 27
+          }
+        ]
+      },
+      {
+        "id": "displace_the_ladder",
+        "name": "Displace the Ladder",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 11
+          }
+        ]
+      },
+      {
+        "id": "stone_wheel_crush",
+        "name": "Stone-Wheel Crush",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 17
+          }
+        ]
+      },
+      {
+        "id": "misfile_an_entire_section",
+        "name": "Misfile an Entire Section",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 23
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "archives",
+      "elite",
+      "act_2"
+    ]
+  },
+  {
+    "id": "catalogue_of_unwise_names",
+    "name": "The Catalogue of Unwise Names",
+    "max_hp": 136,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "enter_the_name_in_black_salt",
+        "name": "Enter the Name in Black Salt",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 10
+          }
+        ]
+      },
+      {
+        "id": "already_known",
+        "name": "Already Known",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 8
+          }
+        ]
+      },
+      {
+        "id": "close_the_catalogue",
+        "name": "Close the Catalogue",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 14
+          }
+        ]
+      },
+      {
+        "id": "index_finger_cut",
+        "name": "Index-Finger Cut",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 17
+          }
+        ]
+      },
+      {
+        "id": "recitation_under_breath",
+        "name": "Recitation Under Breath",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 9
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "archives",
+      "elite",
+      "act_2"
+    ]
+  },
+  {
+    "id": "silence_between_two_words",
+    "name": "The Silence Between Two Words",
+    "max_hp": 140,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "leave_space_between_the_words",
+        "name": "Leave Space Between the Words",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 19
+          }
+        ]
+      },
+      {
+        "id": "remove_the_unnecessary_word",
+        "name": "Remove the Unnecessary Word",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 13
+          }
+        ]
+      },
+      {
+        "id": "hold_the_sentence_open",
+        "name": "Hold the Sentence Open",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 11
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "doubt",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "a_word_nearly_spoken",
+        "name": "A Word Nearly Spoken",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 16
+          }
+        ]
+      },
+      {
+        "id": "the_unsaid_sentence",
+        "name": "The Unsaid Sentence",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 22
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "archives",
+      "elite",
+      "act_2"
+    ]
+  },
+  {
+    "id": "black_ink_oracle",
+    "name": "Black-Ink Oracle",
+    "max_hp": 150,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "pose_the_missing_question",
+        "name": "Pose the Missing Question",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 12
+          }
+        ]
+      },
+      {
+        "id": "seal_the_riddle",
+        "name": "Seal the Riddle",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 16
+          }
+        ]
+      },
+      {
+        "id": "blacken_the_convenient_answer",
+        "name": "Blacken the Convenient Answer",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 11
+          }
+        ]
+      },
+      {
+        "id": "stone_paw_of_omission",
+        "name": "Stone Paw of Omission",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 18
+          }
+        ]
+      },
+      {
+        "id": "ink_wing_guard",
+        "name": "Ink-Wing Guard",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 22
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "archives",
+      "elite",
+      "act_2"
+    ]
+  },
+  {
+    "id": "volumes_of_cause_and_consequence",
+    "name": "Volumes of Cause and Consequence",
+    "max_hp": 160,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "establish_the_premise",
+        "name": "Establish the Premise",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 8
+          }
+        ]
+      },
+      {
+        "id": "cause_without_warning",
+        "name": "Cause Without Warning",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 14
+          }
+        ]
+      },
+      {
+        "id": "insert_a_false_premise",
+        "name": "Insert a False Premise",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 12
+          }
+        ]
+      },
+      {
+        "id": "consequence_follows",
+        "name": "Consequence Follows",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 19
+          }
+        ]
+      },
+      {
+        "id": "bind_the_volumes",
+        "name": "Bind the Volumes",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 16
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "archives",
+      "elite",
+      "act_2"
+    ]
+  },
+  {
+    "id": "drawer_of_infinite_returns",
+    "name": "The Drawer of Infinite Returns",
+    "max_hp": 154,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "open_another_drawer",
+        "name": "Open Another Drawer",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 13
+          }
+        ]
+      },
+      {
+        "id": "mahogany_runner",
+        "name": "Mahogany Runner",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 17
+          }
+        ]
+      },
+      {
+        "id": "index_the_contents",
+        "name": "Index the Contents",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 20
+          }
+        ]
+      },
+      {
+        "id": "return_to_sender",
+        "name": "Return to Sender",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 11
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "overdue",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "inner_compartment",
+        "name": "Inner Compartment",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 12
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "archives",
+      "elite",
+      "act_2"
+    ]
+  },
+  {
+    "id": "presentless_clock",
+    "name": "Presentless Clock",
+    "max_hp": 158,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "history_refuses_revision",
+        "name": "History Refuses Revision",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 15
+          }
+        ]
+      },
+      {
+        "id": "tomorrow_has_already_been_filed",
+        "name": "Tomorrow Has Already Been Filed",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 13
+          }
+        ]
+      },
+      {
+        "id": "no_present_tense",
+        "name": "No Present Tense",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 10
+          }
+        ]
+      },
+      {
+        "id": "second_hand_no_first",
+        "name": "Second Hand, No First",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 18
+          }
+        ]
+      },
+      {
+        "id": "chronology_closed",
+        "name": "Chronology Closed",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 24
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "archives",
+      "elite",
+      "act_2"
+    ]
+  },
+  {
+    "id": "obituary_with_three_endings",
+    "name": "The Obituary with Three Endings",
+    "max_hp": 128,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "record_a_respectable_career",
+        "name": "Record a Respectable Career",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 13
+          }
+        ]
+      },
+      {
+        "id": "settled_accounts",
+        "name": "Settled Accounts",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 18
+          }
+        ]
+      },
+      {
+        "id": "an_orderly_decline",
+        "name": "An Orderly Decline",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 16
+          }
+        ]
+      },
+      {
+        "id": "no_outstanding_matters",
+        "name": "No Outstanding Matters",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 10
+          }
+        ]
+      },
+      {
+        "id": "a_third_ending",
+        "name": "A Third Ending",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 14
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "overdue",
+            "amount": 1
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "archives",
+      "elite",
+      "act_2"
+    ]
+  },
+  {
+    "id": "whispering_catalogue_boss",
+    "name": "The Whispering Catalogue",
+    "max_hp": 258,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "archive_conduct",
+        "name": "Archive Conduct",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 14
+          }
+        ]
+      },
+      {
+        "id": "established_tempo",
+        "name": "Established Tempo",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 12
+          }
+        ]
+      },
+      {
+        "id": "you_will_repeat_the_procedure",
+        "name": "You Will Repeat the Procedure",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 12
+          }
+        ]
+      },
+      {
+        "id": "established_compliance",
+        "name": "Established Compliance",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 23
+          }
+        ]
+      },
+      {
+        "id": "the_damaged_record",
+        "name": "The Damaged Record",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 28
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "archives",
+      "boss",
+      "act_2"
+    ]
+  },
+  {
+    "id": "warden_of_sealed_volumes",
+    "name": "The Warden of Sealed Volumes",
+    "max_hp": 270,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "inspect_the_claim",
+        "name": "Inspect the Claim",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 10
+          }
+        ]
+      },
+      {
+        "id": "deny_immediate_access",
+        "name": "Deny Immediate Access",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 15
+          }
+        ]
+      },
+      {
+        "id": "hold_in_custody",
+        "name": "Hold in Custody",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 20
+          }
+        ]
+      },
+      {
+        "id": "seal_the_principal_instrument",
+        "name": "Seal the Principal Instrument",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 8
+          }
+        ]
+      },
+      {
+        "id": "final_denial",
+        "name": "Final Denial",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 29
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "archives",
+      "boss",
+      "act_2"
+    ]
+  },
+  {
+    "id": "curator_of_misplaced_hours",
+    "name": "The Curator of Misplaced Hours",
+    "max_hp": 278,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "immediate_correction",
+        "name": "Immediate Correction",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 17
+          }
+        ]
+      },
+      {
+        "id": "seize_the_current_hour",
+        "name": "Seize the Current Hour",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 12
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "paperwork",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "hold_the_present_open",
+        "name": "Hold the Present Open",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 20
+          }
+        ]
+      },
+      {
+        "id": "the_only_moment_that_hurts",
+        "name": "The Only Moment That Hurts",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 22
+          }
+        ]
+      },
+      {
+        "id": "schedule_the_collapse",
+        "name": "Schedule the Collapse",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 22
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "archives",
+      "boss",
+      "act_2"
+    ]
+  },
+  {
+    "id": "auditor_of_returned_lives",
+    "name": "The Auditor of Returned Lives",
+    "max_hp": 288,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "open_the_account",
+        "name": "Open the Account",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 10
+          }
+        ]
+      },
+      {
+        "id": "suspend_the_account",
+        "name": "Suspend the Account",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 18
+          }
+        ]
+      },
+      {
+        "id": "account_of_obligation",
+        "name": "Account of Obligation",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 26
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "overdue",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "final_reconciliation",
+        "name": "Final Reconciliation",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 30
+          }
+        ]
+      },
+      {
+        "id": "unreconciled",
+        "name": "Unreconciled",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 18
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "archives",
+      "boss",
+      "act_2"
+    ]
   }
 ]

@@ -648,3 +648,22 @@ missing is the *signature* of thirteen of them, listed here so nothing is quietl
   another rule knows it reached — a Delinquency resolving, a Reference being fulfilled, a Misfiled card
   actually being skipped — and none announces itself in a way the Index could watch. At 4 it still files
   everything else: one card in hand Redacted, another Misfiled.
+
+## Act II — elites and bosses (2026-08-21)
+
+**All nine elites** are authored with the HP the elite master fixes for each (118–160) and their named intents
+at the doc's numbers. **Four of the five bosses** ship as single bodies at their stated HP (258 / 270 / 278 /
+288) with their named intents.
+
+What is deliberately NOT built, so nothing is quietly assumed:
+
+- **Every elite's SIGNATURE.** The bodies fight; the mechanics that make each one a puzzle — the Bell's Return
+  Receipts and Late Fee, the Colossus's Compression, the Catalogue's Entered Names, the Silence's Echo, the
+  Oracle's Black Ink, the linked Volumes, the Drawer's depth, the Clock's Past/Future, the Obituary's three
+  endings — are not. These are per-elite systems on the scale of a standard's whole stage.
+- **Every boss's PHASE STRUCTURE.** The Act-II bosses are structural, not statline: the Catalogue adapts to
+  the tempo you set, the Warden seals instruments, the Curator schedules collapses, the Auditor reconciles
+  accounts. Shipped as their intent cycles, they fight but do not yet think.
+- **The Grand Cross-Reference is absent entirely.** It is three volumes (68 / 72 / 76 HP) in a first phase and
+  a central 96-HP body in a second. Flattening that into one stat block would be a different boss, so it is
+  not shipped at all rather than shipped wrong.
