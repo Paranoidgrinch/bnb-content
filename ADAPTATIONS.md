@@ -604,7 +604,7 @@ appendix itself says the signature wins.
 ## Act II — what is built and what is not (2026-08-21)
 
 **Built and proved in live fights:** the four universal mechanics (Overdue, Misfiled, Referenced, Redacted)
-and the signatures of stages 1–4 — Brass Maw's Return Parcel, the Object's Recognized Category, the
+and the signatures of stages 1–5 — Brass Maw's Return Parcel, the Object's Recognized Category, the
 Ouroboros's re-owing, the two misfiling shelves, the Corridor's Wrong Edition, the three Reference rules, and
 the Reading Room's three hand rules.
 
