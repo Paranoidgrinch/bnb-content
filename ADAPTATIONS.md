@@ -667,3 +667,24 @@ What is deliberately NOT built, so nothing is quietly assumed:
 - **The Grand Cross-Reference is absent entirely.** It is three volumes (68 / 72 / 76 HP) in a first phase and
   a central 96-HP body in a second. Flattening that into one stat block would be a different boss, so it is
   not shipped at all rather than shipped wrong.
+
+## Act II elite signatures — After-Hours Return Bell (2026-08-21)
+
+The first elite signature is built in full: Proof of Return, the Late Fee ledger, the Return Receipt card and
+the Toll. Three readings had to be made explicit.
+
+- **The Bell issues its receipts from its own two Overdue intents**, not from a trigger watching status
+  applications. "Whenever the Bell ITSELF creates 1 Overdue" names exactly two places, and writing the receipt
+  where the Overdue is written makes the pairing provable rather than inferred.
+- **The three-receipt ceiling is read off the cards**, summing hand + draw pile + discard — the three zones a
+  live Receipt can be in. A played Receipt exhausts, so leaving the fight frees its slot without a counter to
+  maintain. The debt itself is uncapped: the Bell keeps filing Overdue after the printer stops.
+- **CONTEST THE FEE is offered even with no Late Fee to contest**, where the design calls it "unavailable".
+  An option list has no per-option availability; the option resolves to nothing, which is what a card played
+  into an empty board does everywhere else. Proved by a test, so it stays honest rather than silent.
+- **The Bell loses 5 HP through its own Block.** "Direct HP Loss, not a Damage event" is written as a health
+  set (current − 5), which no Block, damage modifier or damage-taken reaction can see. The test files a
+  Receipt while the Bell holds 18 Block and checks both the HP drop and the untouched Block.
+- **Cooldown 3 is an eight-entry cycle.** The engine rotates an intent list by round, so "at most every fourth
+  intent" is the Toll at slots 4 and 8 of eight. Reopen for One Final Minute appears twice to fill the cycle;
+  every other intent keeps its single slot.

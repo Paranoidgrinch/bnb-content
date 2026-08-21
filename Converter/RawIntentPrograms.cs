@@ -53,6 +53,7 @@ public static class RawIntentPrograms
                 "lord_sealkeeper" => LordSealkeeper.Intent(intentId),
                 "municipal_dragon" => MunicipalDragon.Intent(intentId),
                 "living_charter" => LivingCharter.Intent(intentId),
+                Elites.ReturnBell.EnemyId => Elites.ReturnBell.Intent(intentId),
                 _ => null,
             },
         };
