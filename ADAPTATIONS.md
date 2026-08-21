@@ -496,10 +496,9 @@ relic's line asks for something the engine cannot see.
 Most of the Shop pool is economy, and the engine grew the seams for it (node tags, combat→run tallies, shop
 price rules, shelves, credit and debt, reward rules). What could not be translated straight:
 
-- **"The first time each Act" is a run FLAG that is never cleared.** The blueprint is one Act, so today that
-  is exactly right. **When Acts II–V arrive, the act boundary must clear these flags** —
-  `secondhand_reliquary`, `shears_discount`, `shears_penalty`, `warranty`, `guest_favor`, `dpo_deed`,
-  `dpo_working`, `dpo_rite` — or every one of those relics fires once per RUN instead of once per Act.
+- ~~**"The first time each Act" is a run FLAG that is never cleared.**~~ **Resolved 2026-08-21**: the run
+  layer learned what an act is, so these are ACT flags now (`RunExpr.ActFlag` / `SetActFlagRunEffect`) and the
+  act boundary forgets them. No longer an adaptation.
 - **Wastebroker's Permit counts every Archive, not only Junk.** The Archive mark records THAT a card was
   archived, not which one; asking what was archived would mean marking every card as it goes. Still capped at
   3 per combat, so the payout is unchanged in practice for a Junk-heavy deck.
@@ -508,7 +507,8 @@ price rules, shelves, credit and debt, reward rules). What could not be translat
   the same once-per-Act flag, so the relic can still only ever cost 5 HP once and only alongside its discount.
 - **Notary's Waiver banks its Waivers when the fight ends**, not the instant you Ratify. The count is kept in
   the fight and collected on victory, like every other combat→run tally; losing the fight loses the Waivers.
-- **Witchmarket Purse pays out on entering the Act's boss node**, since the run layer has no act boundary.
+- ~~**Witchmarket Purse pays out on entering the Act's boss node.**~~ **Resolved 2026-08-21**: it waits for
+  `actCompleted`, which is a real moment now.
 - **Guest-Favor Token's second option upgrades a card you own** instead of offering a special two-card reward:
   a relic definition is static and has no handle on the Act's card pool. "Without entering combat" is also not
   something the run can observe, so any resolved Event counts.

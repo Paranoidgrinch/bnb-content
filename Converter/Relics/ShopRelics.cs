@@ -114,14 +114,12 @@ public static class ShopRelics
             ]),
 
         // ── 5 ─────────────────────────────────────────────────────────────────────────────────────────────
-        // "At the end of each Act" is the walk into the Act's boss — the run layer has no act boundary of its
-        // own. See ADAPTATIONS.
+        // "At the end of each Act" is a real moment now, so the purse simply waits for it.
         Shop("witchmarket_purse", "Witchmarket Purse",
             "At the end of each Act, gain 20 Gold for every full 100 Gold you own, up to 60 Gold.",
             runPrograms:
             [
-                RunPrograms.When<NodeEnteredRunEvent>(
-                    RunEventValues.NodeHasTag(MapNodeTags.Boss),
+                RunPrograms.On<ActCompletedRunEvent>(
                     new ComputedResourceRunEffect(StandardRunIds.Gold,
                         RunExpr.Min(
                             RunExpr.Multiply(
@@ -500,10 +498,11 @@ public static class ShopRelics
                 RunExpr.Min(RunEventValues.ShopCurrencyPaid, RunExpr.Const(15))),
             Spend($"dpo_{type}"));
 
-    // "The first time each Act" — one flag, set once and never cleared, because the blueprint is one Act.
+    // "The first time each Act" — an ACT flag, which the act boundary forgets. A run flag would make every one
+    // of these relics a once-per-RUN relic the moment a second act existed.
     private static IRunExpression<bool> Unspent(string what) => RunExpr.Not(Spent(what));
 
-    private static IRunExpression<bool> Spent(string what) => RunExpr.Flag(new RunFlagId(what));
+    private static IRunExpression<bool> Spent(string what) => RunExpr.ActFlag(new RunFlagId(what));
 
-    private static IRunEffectRequest Spend(string what) => new SetFlagRunEffect(new RunFlagId(what), true);
+    private static IRunEffectRequest Spend(string what) => new SetActFlagRunEffect(new RunFlagId(what), true);
 }
