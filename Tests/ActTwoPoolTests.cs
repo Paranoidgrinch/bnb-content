@@ -39,7 +39,10 @@ public class ActTwoPoolTests
         var elites = ActTwoWithRole("elite").ToList();
 
         Assert.Equal(9, elites.Count);
-        Assert.All(elites, e => Assert.Single(e.Enemies));
+        // Eight are single bodies. The Volumes of Cause and Consequence are two, because that is what they
+        // are: 76 and 84 HP facing each other with a Concordance line between them.
+        Assert.All(elites, e => Assert.InRange(e.Enemies.Count, 1, 2));
+        Assert.Single(elites.Where(e => e.Enemies.Count == 2));
     }
 
     // §3's stage table: 23 solo, 12 combination, 35 in all.

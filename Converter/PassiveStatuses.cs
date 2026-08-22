@@ -117,6 +117,7 @@ public static class PassiveStatuses
         .. Elites.CatalogueOfUnwiseNames.Statuses(),
         .. Elites.SilenceBetweenTwoWords.Statuses(),
         .. Elites.BlackInkOracle.Statuses(),
+        .. Elites.VolumesOfCauseAndConsequence.Statuses(),
     ];
 
     // Iron Warrant Avatar: it issues a visible order each player turn. The orders are statuses ON THE PLAYER —
