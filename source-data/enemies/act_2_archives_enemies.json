@@ -1820,6 +1820,14 @@
       "archives",
       "elite",
       "act_2"
+    ],
+    "starting_statuses": [
+      {
+        "status": "the_black_ink_oracle"
+      },
+      {
+        "status": "oracle_reference"
+      }
     ]
   },
   {

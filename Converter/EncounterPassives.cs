@@ -188,6 +188,9 @@ public static class EncounterPassives
             [new StartingStatusSpec(new StatusDefinitionId(ActTwo.ArchiveRegulationsId), 1)],
         // The Colossus misfiles too, so the player carries the same take-back rule — plus the other half of
         // Open Aisle, which is about the player's hand and the player's plays.
+        // The Oracle's riddle is asked of the player's hand, so the player carries it.
+        Elites.BlackInkOracle.EnemyId =>
+            [new StartingStatusSpec(new StatusDefinitionId(Elites.BlackInkOracle.OracleRulesId), 1)],
         // The Silence's pair is about the player's hand and the player's plays, so the player carries it —
         // and the act's take-back rule too, because a single Word spoken misfiles a card.
         Elites.SilenceBetweenTwoWords.EnemyId =>

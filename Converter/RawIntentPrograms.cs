@@ -57,6 +57,7 @@ public static class RawIntentPrograms
                 Elites.RollingStacksColossus.EnemyId => Elites.RollingStacksColossus.Intent(intentId),
                 Elites.CatalogueOfUnwiseNames.EnemyId => Elites.CatalogueOfUnwiseNames.Intent(intentId),
                 Elites.SilenceBetweenTwoWords.EnemyId => Elites.SilenceBetweenTwoWords.Intent(intentId),
+                Elites.BlackInkOracle.EnemyId => Elites.BlackInkOracle.Intent(intentId),
                 _ => null,
             },
         };
