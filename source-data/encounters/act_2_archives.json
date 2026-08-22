@@ -369,7 +369,7 @@
   },
   {
     "id": "archives_errata_02",
-    "name": "Errata Doppelg\u00e4nger",
+    "name": "Errata Doppelgänger",
     "act": 2,
     "difficulty": "normal",
     "enemies": [
@@ -821,6 +821,24 @@
     "difficulty": "boss",
     "enemies": [
       "auditor_of_returned_lives"
+    ],
+    "weight": 1,
+    "tags": [
+      "archives",
+      "boss"
+    ],
+    "role": "boss"
+  },
+  {
+    "id": "archives_boss_grand_cross_reference",
+    "name": "The Grand Cross-Reference",
+    "act": 2,
+    "difficulty": "boss",
+    "enemies": [
+      "gcr_premise",
+      "gcr_authority",
+      "gcr_conclusion",
+      "grand_cross_reference"
     ],
     "weight": 1,
     "tags": [

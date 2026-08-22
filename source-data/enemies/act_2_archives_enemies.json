@@ -2612,5 +2612,291 @@
         "status": "auditor_citation"
       }
     ]
+  },
+  {
+    "id": "gcr_premise",
+    "name": "The Premise",
+    "max_hp": 68,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "establish_the_initial_condition",
+        "name": "Establish the Initial Condition",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 6
+          }
+        ]
+      },
+      {
+        "id": "reject_the_unsupported_assumption",
+        "name": "Reject the Unsupported Assumption",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 14
+          }
+        ]
+      },
+      {
+        "id": "define_the_applicable_case",
+        "name": "Define the Applicable Case",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 8
+          }
+        ]
+      },
+      {
+        "id": "restate_the_premise",
+        "name": "Restate the Premise",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 7
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "the_premise"
+      },
+      {
+        "status": "foundational_citation"
+      },
+      {
+        "status": "grand_cross_reference_citation"
+      }
+    ],
+    "tags": [
+      "archives",
+      "boss",
+      "act_2",
+      "grand_cross_reference"
+    ]
+  },
+  {
+    "id": "gcr_authority",
+    "name": "The Authority",
+    "max_hp": 72,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "issue_the_binding_interpretation",
+        "name": "Issue the Binding Interpretation",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 16
+          }
+        ]
+      },
+      {
+        "id": "overrule_the_lesser_reading",
+        "name": "Overrule the Lesser Reading",
+        "intent_type": "debuff",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 0
+          }
+        ]
+      },
+      {
+        "id": "cite_the_higher_authority",
+        "name": "Cite the Higher Authority",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 12
+          }
+        ]
+      },
+      {
+        "id": "enforce_without_appeal",
+        "name": "Enforce Without Appeal",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 21
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "the_authority"
+      },
+      {
+        "status": "binding_authority"
+      }
+    ],
+    "tags": [
+      "archives",
+      "boss",
+      "act_2",
+      "grand_cross_reference"
+    ]
+  },
+  {
+    "id": "gcr_conclusion",
+    "name": "The Conclusion",
+    "max_hp": 76,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "draw_the_necessary_result",
+        "name": "Draw the Necessary Result",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 9
+          }
+        ]
+      },
+      {
+        "id": "conclude_from_missing_evidence",
+        "name": "Conclude From Missing Evidence",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 13
+          }
+        ]
+      },
+      {
+        "id": "preserve_the_result",
+        "name": "Preserve the Result",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 14
+          }
+        ]
+      },
+      {
+        "id": "file_the_result_elsewhere",
+        "name": "File the Result Elsewhere",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 9
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "the_conclusion"
+      },
+      {
+        "status": "stored_conclusion_ledger"
+      }
+    ],
+    "tags": [
+      "archives",
+      "boss",
+      "act_2",
+      "grand_cross_reference"
+    ]
+  },
+  {
+    "id": "grand_cross_reference",
+    "name": "The Grand Cross-Reference",
+    "max_hp": 96,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "reweave_the_references",
+        "name": "Reweave the References",
+        "intent_type": "buff",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 0
+          }
+        ]
+      },
+      {
+        "id": "all_entries_support_the_finding",
+        "name": "All Entries Support the Finding",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 0
+          }
+        ]
+      },
+      {
+        "id": "reverse_the_citation",
+        "name": "Reverse the Citation",
+        "intent_type": "buff",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 0
+          }
+        ]
+      },
+      {
+        "id": "isolate_the_margin",
+        "name": "Isolate the Margin",
+        "intent_type": "buff",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 0
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "the_concordance"
+      },
+      {
+        "status": "no_further_reference_yet"
+      },
+      {
+        "status": "the_concordance_engine"
+      }
+    ],
+    "tags": [
+      "archives",
+      "boss",
+      "act_2",
+      "grand_cross_reference"
+    ]
   }
 ]

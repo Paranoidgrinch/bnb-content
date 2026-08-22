@@ -21,15 +21,16 @@ public class ActTwoPoolTests
         Assert.Equal(25, fielded.Count);
     }
 
-    // Four of the five Act-II bosses ship as single bodies; the Grand Cross-Reference is three volumes plus a
-    // central body and is deliberately absent rather than flattened into one. See ADAPTATIONS.
+    // Five bosses. Four are single bodies; the Grand Cross-Reference is three volumes around a central
+    // concordance, and the whole point of it is that they are separate bodies you can kill in any order.
     [Fact]
-    public void The_act_fields_its_single_body_bosses()
+    public void The_act_fields_its_five_bosses()
     {
         var bosses = ActTwoWithRole("boss").ToList();
 
-        Assert.Equal(4, bosses.Count);
-        Assert.All(bosses, b => Assert.Single(b.Enemies));
+        Assert.Equal(5, bosses.Count);
+        Assert.Equal(4, bosses.Count(b => b.Enemies.Count == 1));
+        Assert.Single(bosses, b => b.Enemies.Count == 4);
     }
 
     // §1.1 of the elite master: nine elites, each its own encounter.

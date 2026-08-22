@@ -669,9 +669,8 @@ What is deliberately NOT built, so nothing is quietly assumed:
 - **Every boss's PHASE STRUCTURE.** The Act-II bosses are structural, not statline: the Catalogue adapts to
   the tempo you set, the Warden seals instruments, the Curator schedules collapses, the Auditor reconciles
   accounts. Shipped as their intent cycles, they fight but do not yet think.
-- **The Grand Cross-Reference is absent entirely.** It is three volumes (68 / 72 / 76 HP) in a first phase and
-  a central 96-HP body in a second. Flattening that into one stat block would be a different boss, so it is
-  not shipped at all rather than shipped wrong.
+- **The Grand Cross-Reference is absent entirely.** ~~It is three volumes (68 / 72 / 76 HP) in a first phase
+  and a central 96-HP body in a second.~~ **SUPERSEDED 2026-08-22: it is built.** See the section below.
 
 ## Act II elite signatures — After-Hours Return Bell (2026-08-21)
 
@@ -1043,3 +1042,41 @@ the Death Clause are built. What was read differently:
 - **A probe body for the Death Clause must be at least 72 HP.** Surviving health is CLAMPED to the
   combatant's maximum, so a frailer test body quietly turns "returns at 72" into "returns at its own max" and
   proves nothing. The same trap the Obituary's tests document.
+
+## Act II bosses — The Grand Cross-Reference (2026-08-22)
+
+The last of the five, and the one that was previously not shipped at all. Four bodies, the link rotation, the
+three volume passives, the engine's structural actions, the kill-order transition and all three Final Theses
+are built. What was read differently:
+
+- **"The central body cannot initially be attacked" is written as complete immunity**, not untargetability:
+  the engine has no targeting restriction, and a body nothing can hurt is what that means at the table (a
+  `DamageReceived` passive scaled to 0%). It has to be ON the board from the first bell all the same — the
+  combat's outcome is decided the moment no enemy is living, so a concordance that only appeared after the
+  third volume fell would never appear at all. Its 96 HP is its authored maximum from the start; the
+  transition only takes the immunity off.
+- **Which volume fell LAST is read off a roll the engine keeps.** A downed combatant's own statuses read as
+  absent and it is not selected by a living-only selector, so "did this volume just fall" is asked from
+  outside: the engine records who was standing at its own turn start, and a volume that was standing and no
+  longer is, is the one that fell. That roll is what writes the Final Thesis, which is the whole boss.
+- **Binding Authority is a reaction, not an interception.** A passive modifier is read from combatant state
+  and cannot see the size of the packet, and none can be gated once per turn. So the struck volume is HEALED
+  the 5 it should not have taken and the partner is dealt 5 — which leaves both bodies exactly where the
+  design puts them and keeps its point that the damage is redistributed rather than erased. The secondary
+  damage is dealt by the rule rather than by a card, so it cannot feed the rule again.
+- **The linked partner is named rather than derived.** Nothing selects "the other member of the current
+  pair" — a selector reaches allies or enemies, not one named half of a link. The reading goes to the
+  Authority whenever something else was struck (it is half of the pair in two rotations out of three) and the
+  other way, to whichever volume still stands, when the Authority itself was struck.
+- **"The isolated volume does not act" is a gate on each volume's own intents.** All three bodies take their
+  turn as the engine schedules them; the one outside the current pair resolves to nothing, which is what
+  keeps three bodies from becoming three times the action. With fewer than three standing there is no
+  isolated volume and everyone acts.
+- **The engine's Phase-I actions never deal direct damage**, as §9.2 requires, and its Phase-II moves live in
+  the same five slots — the structural action and the move it becomes are written side by side.
+- **Restate the Premise is a flat half rather than a copy of the previous move.** Repeating "the previous
+  non-signature move at approximately 50% magnitude" would need the engine to remember an action's shape,
+  which nothing records; the same reasoning as the Curator's Past Without Ending.
+- **Define the Applicable Case issues an ordinary citation.** Its "display 2 candidates and let the player
+  choose" needs a picker over cards restricted to a marked subset, which the engine does not have — the same
+  gap the Warden's sealing works around with an option list, and not worth a second bespoke prompt here.
