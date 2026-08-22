@@ -186,6 +186,10 @@ public static class EncounterPassives
         // once however many shelves are in the room.
         "crabwise_shelf" or "volume_q_null" =>
             [new StartingStatusSpec(new StatusDefinitionId(ActTwo.ArchiveRegulationsId), 1)],
+        // The Warden reaches into the player's hand and two of its three keys are about the player's own
+        // turn, so the player carries the rules that seal and release.
+        Bosses.WardenOfSealedVolumes.EnemyId =>
+            [new StartingStatusSpec(new StatusDefinitionId(Bosses.WardenOfSealedVolumes.WardenRulesId), 1)],
         // The Catalogue compiles a record of the PLAYER, so the player carries the ledger the whole fight
         // writes into — and the act's take-back rule too, because an Established Opening redacts a card.
         Bosses.WhisperingCatalogue.EnemyId =>

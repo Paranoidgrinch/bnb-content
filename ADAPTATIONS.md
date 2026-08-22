@@ -940,3 +940,38 @@ differently is listed here.
 - **The intent ids in the enemy JSON were renamed** from the placeholder record-names to the master's five
   Phase-I intents. The placeholder body fought at the right numbers but under names taken from the Entries;
   the boss now carries the intents the design actually gives it.
+
+## Act II bosses — The Warden of Sealed Volumes (2026-08-22)
+
+Sealed Zone, all three keys, Custody, Total Lockdown, Keys Turn Against the Lock and the Final Signature are
+built. What was read differently:
+
+- **The Sealed Zone is the Banished pile.** It is the one place nothing else in the engine reaches into,
+  which is what "leaves normal combat zones but remains fully visible" has to mean for the return to be the
+  Warden's alone. Each Seal marks its volume with its own tag, which is what says which key opens it.
+- **"Retain; Cost 0" needed an engine seam.** Cost 0 was already sayable per instance
+  (`CardCostDeltaCounter`); retention was not — the definition flag prices every copy alike and the
+  retain-hand status tag holds the WHOLE hand. `StandardCombatIds.RetainedCardMark` is the per-instance
+  counterpart, bought for this boss (RogueDeck-Core @48d0e12). The mark is cleared at the player's next turn
+  start, so the retention really is "for that turn".
+- **The two candidates are the first two cards in hand, offered as a choice.** The design's "displayed
+  selector priority" has no engine counterpart — nothing orders a zone by cost or rarity — so the priority is
+  positional. What the design actually asks for is preserved exactly: two candidates, and the player decides
+  which volume is surrendered, which is what stops the Warden sniping one irreplaceable card.
+- **The Evidence-to-Procedure conversion is decided at the SEALING, not at the announcement.** A citation
+  needs a card left in hand once the volume is taken, and the hand only exists on the player's own draw —
+  during the Warden's turn, when the announcement is made, the player's hand has already been put down, so
+  the check asked there is always answered "no" and the third key would never be turned.
+- **The key rotation is the Warden's own counter**, chosen from where it stands and advanced afterwards, so
+  the first lock a fight meets is the Seal of Restraint as the design lists them. A key whose slot is already
+  occupied is passed over, which matters only under Total Lockdown where two volumes are held at once.
+- **Review Provisional Permission grants its draw to the NEXT correct release**, rather than highlighting one
+  named Seal. With at most two seals, both released the same way, the practical effect is identical and it
+  avoids a per-seal review flag that nothing else would read.
+- **Six Phase-II intents over five slots.** "Seal the Remaining Access" is ineligible with no free slot, and
+  that is exactly where "Review Provisional Permission" goes — the two share a slot and the design's own
+  eligibility rule decides between them. No slot can repeat inside its cooldown, because a five-slot rotation
+  brings any one round again only every fifth action.
+- **Death cleanup returns every held volume to the discard.** In a `Downed` program the acting Source is the
+  FALLEN combatant — the Warden itself — so the volumes are fetched from across the table, where their owner
+  stands.
