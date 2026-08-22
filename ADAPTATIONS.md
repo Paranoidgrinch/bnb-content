@@ -895,3 +895,48 @@ elite signature.**
 - **The next life's clause only goes on at the player's next turn start**, so a rewritten body is briefly
   unprotected within the turn that rewrote it. That follows the design's "no attack occurs during the
   transition window" reading rather than contradicting it, but it is a real window and is noted here.
+
+## Act II bosses — The Whispering Catalogue (2026-08-22)
+
+The boss is built in full: Turn Record, Whispered Predictions, Authority and Contradictions, the five
+Established Entries, the transition into the Complete Description, and the Final Entry. What was read
+differently is listed here.
+
+- **The Opening categories are this game's taxonomy.** The boss master names Attack / Skill / Power-Other;
+  Bureaucrats and Broomsticks has Deed / Working / Rite / Junk, so an Opening is recorded as Deed, Working, or
+  Rite-and-anything-else. Junk is skipped exactly as the design says. The engine's own
+  `firstCardPlayedHasTag` was NOT used for this: it records the first card played whatever it is, so a Junk
+  card would fill the slot the design reserves for the first real one.
+- **The Turn Record is written at the player's turn END, and the engine's play stats survive it.**
+  `CardPlayTurnStats` resets on the combatant's TURN START, not at turn end, so at the player's `TurnEnded`
+  the count of cards played this turn is still standing and can simply be read. This is what lets the Tempo
+  be the engine's own number rather than a hand-maintained counter.
+- **The prediction is derived from the record by a rotating beat**, over three families: tempo, opening,
+  conduct. Each family falls back to tempo when the record holds no such habit, and tempo is always valid.
+  The design's further requirement that BOTH branches be currently achievable — "only generated if an Attack
+  and a non-Attack opening are both still possible from this hand" — has no question behind it in the engine
+  and is not attempted; the record's own gate is what decides which predictions are legal.
+- **Phase II's second prediction is chosen to be a DIFFERENT reading, not the next beat.** Taking the next
+  beat let both predictions fall back to tempo and merge into one, which quietly turned the Complete
+  Description back into Phase I. The second reading now asks what the record actually holds: a tempo primary
+  is joined by the opening or conduct habit, and an opening or conduct primary is joined by the tempo. A
+  record holding nothing but its tempo yields one prediction, because there is only one honest thing to say.
+- **Authority and Contradictions are visible stacks on the Catalogue; the rest of the ledger is counters on
+  the player.** The ledger is about the player's cards and the player's plays, so the player carries it and
+  the boss reads it from across the table — in a solo boss fight each side's lowest-health enemy is simply
+  the other side, which gives the whole rule one spelling from either end.
+- **The Established Entry's once-per-turn latch is a single counter**, because only one Entry can ever stand.
+  "You Have Been Described" raises the allowance to two rather than re-arming the latch.
+- **The five intent slots each carry Phase I, Phase II and the transition.** The engine rotates ONE intent
+  list. The design's cooldowns of 2 and 3 intents are satisfied by the cycle itself: a five-slot rotation
+  brings any slot round again only every fifth action, so no slot can repeat inside its cooldown.
+- **"Correct the Contradiction" is not made ineligible, it resolves to nothing** when there is no
+  Contradiction to correct. An intent cycle has no per-slot availability, and a cycled intent with nothing to
+  do doing nothing is the same answer a card played into an empty board gets everywhere in this act.
+- **All the boss's triggers are Bearer-scoped, deliberately.** Every one of these programs reads `Self`;
+  under `Anywhere` each would fire on both turns and file the player's habits against the Catalogue's body
+  and the Catalogue's phase against the player's. Only the Catalogue's citation stays `Anywhere`, because it
+  sits on the boss while the draw and the play it watches are the player's.
+- **The intent ids in the enemy JSON were renamed** from the placeholder record-names to the master's five
+  Phase-I intents. The placeholder body fought at the right numbers but under names taken from the Entries;
+  the boss now carries the intents the design actually gives it.
