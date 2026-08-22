@@ -1831,9 +1831,9 @@
     ]
   },
   {
-    "id": "volumes_of_cause_and_consequence",
-    "name": "Volumes of Cause and Consequence",
-    "max_hp": 160,
+    "id": "volume_of_causes",
+    "name": "Volume of Causes",
+    "max_hp": 76,
     "intent_pattern": "cycle",
     "intents": [
       {
@@ -1863,7 +1863,67 @@
       {
         "id": "insert_a_false_premise",
         "name": "Insert a False Premise",
+        "intent_type": "debuff",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 0
+          }
+        ]
+      },
+      {
+        "id": "repeat_the_argument",
+        "name": "Repeat the Argument",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 10
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "the_volume_of_causes"
+      },
+      {
+        "status": "causes_reference"
+      },
+      {
+        "status": "concordance_broken"
+      }
+    ],
+    "tags": [
+      "archives",
+      "elite",
+      "act_2"
+    ]
+  },
+  {
+    "id": "volume_of_consequences",
+    "name": "Volume of Consequences",
+    "max_hp": 84,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "enforce_the_result",
+        "name": "Enforce the Result",
         "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 17
+          }
+        ]
+      },
+      {
+        "id": "consequence_without_cause",
+        "name": "Consequence Without Cause",
+        "intent_type": "mixed",
         "actions": [
           {
             "type": "deal_damage",
@@ -1873,28 +1933,36 @@
         ]
       },
       {
-        "id": "consequence_follows",
-        "name": "Consequence Follows",
-        "intent_type": "attack",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 19
-          }
-        ]
-      },
-      {
-        "id": "bind_the_volumes",
-        "name": "Bind the Volumes",
+        "id": "return_to_the_premise",
+        "name": "Return to the Premise",
         "intent_type": "block",
         "actions": [
           {
             "type": "gain_block",
             "target": "owner",
-            "amount": 16
+            "amount": 8
           }
         ]
+      },
+      {
+        "id": "result_filed_as_fact",
+        "name": "Result Filed as Fact",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 14
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "the_volume_of_consequences"
+      },
+      {
+        "status": "concordance_broken"
       }
     ],
     "tags": [

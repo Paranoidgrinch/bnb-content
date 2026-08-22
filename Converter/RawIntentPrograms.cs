@@ -58,6 +58,9 @@ public static class RawIntentPrograms
                 Elites.CatalogueOfUnwiseNames.EnemyId => Elites.CatalogueOfUnwiseNames.Intent(intentId),
                 Elites.SilenceBetweenTwoWords.EnemyId => Elites.SilenceBetweenTwoWords.Intent(intentId),
                 Elites.BlackInkOracle.EnemyId => Elites.BlackInkOracle.Intent(intentId),
+                Elites.VolumesOfCauseAndConsequence.CausesId
+                    or Elites.VolumesOfCauseAndConsequence.ConsequencesId =>
+                    Elites.VolumesOfCauseAndConsequence.Intent(enemyId, intentId),
                 _ => null,
             },
         };

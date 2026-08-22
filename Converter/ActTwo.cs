@@ -212,8 +212,15 @@ public static class ActTwo
     // player's hand has just been put down, so anything still carrying the mark was not played.
     //
     // Each citer marks with its own tag, because a program cannot ask who put a mark on a card.
+    //
+    // `onFulfilled` / `onFailed` let a citer hang consequences on the two outcomes — the Volumes' Concordance
+    // is exactly that: fulfilling a Causes reference costs Causes and strengthens Consequences, failing it
+    // does the ordinary Act-II thing AND weakens the linked attack. In the fulfilment hook the acting source
+    // is the PLAYER (it is their play); in the failure hook it is the citing enemy, at its own turn start.
     public static StatusData Reference(string id, string name, string mark, string description,
-        IEffectNode<CardsDrawnTriggeredEffectContext>? cite = null)
+        IEffectNode<CardsDrawnTriggeredEffectContext>? cite = null,
+        IEffectNode<CardPlayedTriggeredEffectContext>? onFulfilled = null,
+        IEffectNode<TurnStartedTriggeredEffectContext>? onFailed = null)
     {
         // Cite one card in the player's hand after the player's draw. `cite` overrides which one.
         var citing = new EffectProgram<CardsDrawnTriggeredEffectContext>(
@@ -227,13 +234,17 @@ public static class ActTwo
                 new CardInstanceHasMarkExpression<CardPlayedTriggeredEffectContext>(
                     new TriggerEventCardInstanceExpression<CardPlayedTriggeredEffectContext>(),
                     new TagId(mark)),
-                Unmark<CardPlayedTriggeredEffectContext>(
-                    new TriggerEventCardInstanceExpression<CardPlayedTriggeredEffectContext>(), mark)));
+                new CausalSequenceEffectNode<CardPlayedTriggeredEffectContext>(
+                [
+                    Unmark<CardPlayedTriggeredEffectContext>(
+                        new TriggerEventCardInstanceExpression<CardPlayedTriggeredEffectContext>(), mark),
+                    .. onFulfilled is null ? [] : new[] { onFulfilled },
+                ])));
 
         // My turn, and the player's hand is down: anything still marked was never played.
         var collect = new EffectProgram<TurnStartedTriggeredEffectContext>(
             new CausalSequenceEffectNode<TurnStartedTriggeredEffectContext>(
-                [Unfulfilled(mark, CardZone.DiscardPile), Unfulfilled(mark, CardZone.Hand)]));
+                [Unfulfilled(mark, CardZone.DiscardPile, onFailed), Unfulfilled(mark, CardZone.Hand, onFailed)]));
 
         return Rule(id, name, description,
         [
@@ -256,7 +267,8 @@ public static class ActTwo
                 new IteratedCardExpression<CardsDrawnTriggeredEffectContext>(), new TagId(mark)),
             takeFirst: 1);
 
-    private static IEffectNode<TurnStartedTriggeredEffectContext> Unfulfilled(string mark, CardZone zone) =>
+    private static IEffectNode<TurnStartedTriggeredEffectContext> Unfulfilled(
+        string mark, CardZone zone, IEffectNode<TurnStartedTriggeredEffectContext>? onFailed = null) =>
         new ForEachCardInZoneNode<TurnStartedTriggeredEffectContext>(
             Opponent, zone,
             new CausalSequenceEffectNode<TurnStartedTriggeredEffectContext>(
@@ -269,6 +281,7 @@ public static class ActTwo
                 new ApplyStatusNode<TurnStartedTriggeredEffectContext>(
                     Opponent, new StatusDefinitionId(OverdueId),
                     new ConstantExpression<TurnStartedTriggeredEffectContext>(1)),
+                .. onFailed is null ? [] : new[] { onFailed },
             ]),
             markFilter: new TagId(mark));
 

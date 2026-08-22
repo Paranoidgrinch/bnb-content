@@ -369,7 +369,7 @@
   },
   {
     "id": "archives_errata_02",
-    "name": "Errata Doppelgänger",
+    "name": "Errata Doppelg\u00e4nger",
     "act": 2,
     "difficulty": "normal",
     "enemies": [
@@ -714,7 +714,8 @@
     "act": 2,
     "difficulty": "elite",
     "enemies": [
-      "volumes_of_cause_and_consequence"
+      "volume_of_causes",
+      "volume_of_consequences"
     ],
     "weight": 1,
     "tags": [

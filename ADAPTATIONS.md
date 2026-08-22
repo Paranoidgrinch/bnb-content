@@ -633,10 +633,13 @@ missing is the *signature* of thirteen of them, listed here so nothing is quietl
   place third in the cycle is what makes it every third turn.
 - **Hourglass With Two Bottoms** — two independent scheduled countdowns the player can each delay once. Its
   two futures ship as its two attacks; the delaying is not built.
-- **Blank Death Certificate** — returning at ~35 % HP. The revive itself exists
-  (`SetCombatantLifecycleStateNode` + `HealNode`), but its Downed trigger never fires: the log shows the
-  lifecycle change to Downed and nothing after it. **Open question, narrow enough for an engine test: does a
-  bearer-scoped Downed trigger fire for the bearer's own downing?**
+- **Blank Death Certificate** — returning at ~35 % HP. **The open question is ANSWERED (2026-08-21), and the
+  answer was not "the trigger does not fire".** A bearer-scoped Downed trigger DOES fire for the bearer's own
+  downing — the Volumes' survivor rule is built on exactly that and is proved by a test. What made the revive
+  look dead is that in a Downed program `Source` is the DOWNED COMBATANT and living-only selectors resolve to
+  nothing against it (`CombatantDownedTriggeredEffectTargetResolver` sets Source to the downed unit; the
+  engine ships `SourceIncludingDownedCombatantTargetSelector` for precisely this). Rewriting the revive with
+  that selector is the thing to try.
   Separately and definitely: **the LAST enemy can never be revived.** The combat's outcome is decided by
   `UpdateStandardCombatResultOnLifecycleChangedHandler`, which enqueues Victory the moment no enemy is living
   and never re-checks when that request resolves.
@@ -784,3 +787,29 @@ Black Ink, the riddle rhythm, all three responses and the signature are built.
   14 + 4 × ink itself and then clears the ink.
 - **9.7 low-HP evolution is not built.** "The Oracle may visually redact two fields while still asking one
   question" is entirely a presentation change; the engine's riddle is unaffected either way.
+
+## Act II elite signatures — Volumes of Cause and Consequence (2026-08-22)
+
+**The Volumes now ship as TWO bodies** (76 + 84 HP) rather than one 160-HP block, because the Concordance is
+a line drawn between two things and cannot exist inside one. The encounter fields both, and the Act-II pool
+test pins that exactly one elite is a pair.
+
+- **The Concordance is written into the reference itself.** `ActTwo.Reference` gained `onFulfilled` /
+  `onFailed` hooks, so fulfilling a Causes citation wounds Causes (9 HP through its own Block, as a health
+  set) and Supports Consequences, while failing it does the ordinary Act-II thing AND Unsupports it.
+- **Supported / Unsupported are passive ±6 modifiers on direct damage**, spent by the attack that carries
+  them. Enforce the Result is therefore a flat 17 and comes out at 11 / 17 / 23 without stating the number
+  three times.
+- **Causes ANNOUNCES a citation in its intent; the citation lands after the player's next draw.** A card
+  cited during the enemy's turn is a card about to be discarded — the design means a citation you can answer,
+  which is why every other Act-II citation rides on CardsDrawn. Insert a False Premise announces the same
+  citation plus the redaction.
+- **The survivor rule is written from the DOWNED volume's side.** In a Downed program `Source` is the downed
+  combatant, not the status's bearer, so the survivor is "the allies of the one that just fell" — and because
+  ally selectors resolve living combatants only, a simultaneous death finds no survivor and hands out
+  nothing, exactly as 10.8 requires. Bearer scope (not Anywhere) is what makes it run once for one death.
+- **10.7 and Return to the Premise are NOT built.** Both manipulate the intent PREVIEW — advancing Causes'
+  displayed move one step, swapping the two volumes' previewed intents. The engine rotates a fixed list per
+  round and nothing can reach into that order. Return to the Premise ships as its 8 Block.
+- **The shortened solo movesets (10.8) are not built** either; the survivor keeps its full cycle plus the
+  Strength.
