@@ -2510,6 +2510,17 @@
       "archives",
       "boss",
       "act_2"
+    ],
+    "starting_statuses": [
+      {
+        "status": "the_curator_of_misplaced_hours"
+      },
+      {
+        "status": "the_archival_clock"
+      },
+      {
+        "status": "curator_citation"
+      }
     ]
   },
   {

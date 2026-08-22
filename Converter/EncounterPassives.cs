@@ -186,6 +186,13 @@ public static class EncounterPassives
         // once however many shelves are in the room.
         "crabwise_shelf" or "volume_q_null" =>
             [new StartingStatusSpec(new StatusDefinitionId(ActTwo.ArchiveRegulationsId), 1)],
+        // The Curator's evidence is the player's own last turn, and Borrow One Minute is a card in the
+        // player's hand — so the player carries the record and the minute. It misfiles too.
+        Bosses.CuratorOfMisplacedHours.EnemyId =>
+        [
+            new StartingStatusSpec(new StatusDefinitionId(Bosses.CuratorOfMisplacedHours.CuratorRulesId), 1),
+            new StartingStatusSpec(new StatusDefinitionId(ActTwo.ArchiveRegulationsId), 1),
+        ],
         // The Warden reaches into the player's hand and two of its three keys are about the player's own
         // turn, so the player carries the rules that seal and release.
         Bosses.WardenOfSealedVolumes.EnemyId =>

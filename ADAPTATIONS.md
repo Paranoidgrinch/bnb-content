@@ -975,3 +975,39 @@ built. What was read differently:
 - **Death cleanup returns every held volume to the discard.** In a `Downed` program the acting Source is the
   FALLEN combatant — the Warden itself — so the volumes are fetched from across the table, where their owner
   stands.
+
+## Act II bosses — The Curator of Misplaced Hours (2026-08-22)
+
+The Dial, the Turn Record, the timeline, Borrow One Minute, Free Adjustment, the transition and the Final
+Signature are built. What was read differently:
+
+- **A scheduled hour is a TIMED STATUS on the Curator.** The engine ticks a duration down at its bearer's own
+  turn end and announces the expiry, which is exactly "in N enemy turns" — with a number on the table the
+  player can read and that both Borrow One Minute and the Curator's own moves can push around
+  (`ModifyStatusDuration`). Nothing else in the engine is a timeline, and nothing else needed to be.
+- **The Dial's zero is PRESENT.** The design starts the dial there and a counter starts at zero, so PRESENT is
+  what zero has to mean. The cycle itself is the design's: PRESENT → FUTURE → PAST → PRESENT is the same
+  rotation as PAST → PRESENT → FUTURE, entered where the design enters it.
+- **Filed hours resolve at the Curator's turn END**, which is where the engine ticks durations. The design
+  says they "resolve only at the next legal enemy-action window"; a turn end is such a window, it is
+  deterministic, and it is one the player can count to.
+- **File the Successful Method misfiles a DRAW-PILE card immediately** rather than marking a hand card after
+  the next draw. The Curator acts on its own turn, when the player's hand is already down — a mark written
+  then would land on cards about to be discarded. The act's own misfiling beat puts the mark on the draw pile,
+  which is where a misfiling can still cost the player something.
+- **Borrow One Minute chooses from a list of the Curator's hours**, not from a picker over statuses, which the
+  engine does not have. An option naming an hour that is not filed resolves to nothing — the same answer a
+  card played into an empty board gets everywhere in this act. The card lives permanently in the player's hand
+  (it returns there at turn end) and a once-per-turn latch is what limits it, so exactly one minute exists.
+- **The Free Adjustment refunds the Energy rather than pre-empting the cost.** A card's cost is paid before
+  its program runs, so "cost 0 while you hold one" is written as taking the Energy back. The maximum of 1 is
+  enforced by construction: the status does not stack.
+- **"No Present Intervention" protects whichever hour is nearest**, read as countdown 1, rather than naming
+  one at the moment it is announced. With at most three hours and a visible countdown the effect is the same,
+  and it needs no per-hour flag that nothing else would read.
+- **Past Without Ending is not built as a copy of the last PAST action.** Repeating "the numerical damage
+  structure of the last damaging PAST action at +25%" would need the engine to remember an action's damage
+  shape, which nothing records. The Phase-II PAST sector runs the same five PAST actions, which are already
+  written out of the record — the boss keeps its thesis without an engine seam bought for one intent.
+- **Temporal Overlap counts resolutions per Curator turn**, reset at its turn start, which is the window the
+  durations tick in.

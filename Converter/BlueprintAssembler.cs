@@ -48,6 +48,7 @@ public static class BlueprintAssembler
                 .. ClauseCards.Cards(), NoticeCards.Acknowledge(), DeputyUndersecretary.ReviewCard(),
                 .. QueueCommissioner.Cards(), .. LordSealkeeper.Cards(), .. MunicipalDragon.Cards(),
                 .. LivingCharter.Cards(), .. Elites.ReturnBell.Cards(),
+                .. Bosses.CuratorOfMisplacedHours.Cards(),
             ],
             EnemyMapper.MapActions(enemies).ToList(),
             // The act's map is GENERATED per run from MapGeneration below; the authored map stays empty.
