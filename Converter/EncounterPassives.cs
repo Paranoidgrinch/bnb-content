@@ -186,8 +186,12 @@ public static class EncounterPassives
         // once however many shelves are in the room.
         "crabwise_shelf" or "volume_q_null" =>
             [new StartingStatusSpec(new StatusDefinitionId(ActTwo.ArchiveRegulationsId), 1)],
-        // The Colossus misfiles too, so the player carries the same take-back rule — plus the other half of
-        // Open Aisle, which is about the player's hand and the player's plays.
+        // The Drawer's nesting is about the player's card and the player's turn, and it misfiles too.
+        Elites.DrawerOfInfiniteReturns.EnemyId =>
+        [
+            new StartingStatusSpec(new StatusDefinitionId(Elites.DrawerOfInfiniteReturns.DrawerRulesId), 1),
+            new StartingStatusSpec(new StatusDefinitionId(ActTwo.ArchiveRegulationsId), 1),
+        ],
         // The Oracle's riddle is asked of the player's hand, so the player carries it.
         Elites.BlackInkOracle.EnemyId =>
             [new StartingStatusSpec(new StatusDefinitionId(Elites.BlackInkOracle.OracleRulesId), 1)],
@@ -201,6 +205,8 @@ public static class EncounterPassives
         // The Catalogue's ledger is the player's cards and the player's plays, so the player carries the rules.
         Elites.CatalogueOfUnwiseNames.EnemyId =>
             [new StartingStatusSpec(new StatusDefinitionId(Elites.CatalogueOfUnwiseNames.CatalogueRulesId), 1)],
+        // The Colossus misfiles too, so the player carries the same take-back rule — plus the other half of
+        // Open Aisle, which is about the player's hand and the player's plays.
         Elites.RollingStacksColossus.EnemyId =>
         [
             new StartingStatusSpec(new StatusDefinitionId(ActTwo.ArchiveRegulationsId), 1),
