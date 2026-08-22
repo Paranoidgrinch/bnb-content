@@ -65,6 +65,11 @@ public static class RawIntentPrograms
                 Bosses.WardenOfSealedVolumes.EnemyId => Bosses.WardenOfSealedVolumes.Intent(intentId),
                 Bosses.CuratorOfMisplacedHours.EnemyId => Bosses.CuratorOfMisplacedHours.Intent(intentId),
                 Bosses.AuditorOfReturnedLives.EnemyId => Bosses.AuditorOfReturnedLives.Intent(intentId),
+                Bosses.GrandCrossReference.PremiseId
+                    or Bosses.GrandCrossReference.AuthorityId
+                    or Bosses.GrandCrossReference.ConclusionId
+                    or Bosses.GrandCrossReference.EngineId =>
+                    Bosses.GrandCrossReference.Intent(enemyId, intentId),
                 Elites.VolumesOfCauseAndConsequence.CausesId
                     or Elites.VolumesOfCauseAndConsequence.ConsequencesId =>
                     Elites.VolumesOfCauseAndConsequence.Intent(enemyId, intentId),

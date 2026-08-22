@@ -186,6 +186,16 @@ public static class EncounterPassives
         // once however many shelves are in the room.
         "crabwise_shelf" or "volume_q_null" =>
             [new StartingStatusSpec(new StatusDefinitionId(ActTwo.ArchiveRegulationsId), 1)],
+        // The Cross-Reference's citations land on the player's hand, its Binding Guard is broken by what the
+        // player plays, and its misfilings need the act's own take-back rule.
+        Bosses.GrandCrossReference.PremiseId
+            or Bosses.GrandCrossReference.AuthorityId
+            or Bosses.GrandCrossReference.ConclusionId
+            or Bosses.GrandCrossReference.EngineId =>
+        [
+            new StartingStatusSpec(new StatusDefinitionId(Bosses.GrandCrossReference.CrossReferenceRulesId), 1),
+            new StartingStatusSpec(new StatusDefinitionId(ActTwo.ArchiveRegulationsId), 1),
+        ],
         // The Auditor's Documentation is the player's, its citations are answered from the player's hand,
         // and the answer to an Account is the player's to give — so the player carries the record. It
         // redacts on an unreconciled Identity, so the act's own rules ride along.
