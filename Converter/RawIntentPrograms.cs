@@ -60,6 +60,7 @@ public static class RawIntentPrograms
                 Elites.BlackInkOracle.EnemyId => Elites.BlackInkOracle.Intent(intentId),
                 Elites.DrawerOfInfiniteReturns.EnemyId => Elites.DrawerOfInfiniteReturns.Intent(intentId),
                 Elites.PresentlessClock.EnemyId => Elites.PresentlessClock.Intent(intentId),
+                Elites.ObituaryWithThreeEndings.EnemyId => Elites.ObituaryWithThreeEndings.Intent(intentId),
                 Elites.VolumesOfCauseAndConsequence.CausesId
                     or Elites.VolumesOfCauseAndConsequence.ConsequencesId =>
                     Elites.VolumesOfCauseAndConsequence.Intent(enemyId, intentId),

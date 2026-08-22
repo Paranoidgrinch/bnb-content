@@ -2255,6 +2255,14 @@
       "archives",
       "elite",
       "act_2"
+    ],
+    "starting_statuses": [
+      {
+        "status": "the_obituary"
+      },
+      {
+        "status": "proper_notice_of_passing"
+      }
     ]
   },
   {

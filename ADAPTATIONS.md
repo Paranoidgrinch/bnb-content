@@ -644,7 +644,9 @@ missing is the *signature* of thirteen of them, listed here so nothing is quietl
   `UpdateStandardCombatResultOnLifecycleChangedHandler`, which enqueues Victory the moment no enemy is living
   and never re-checks when that request resolves.
 - **Spare-Life Jar** — storing a dead ally's identity and reviving it after a countdown. Blocked by the same
-  Downed question.
+  Downed question. **NOTE (2026-08-22):** the Obituary shows the shape that DOES work — the engine's data-driven
+  `StatusDeathPreventionData` (a one-shot pre-down interceptor) stands BEFORE the down instead of undoing it,
+  which is the only place to stand: a downed combatant refuses healing and status application.
 - **Detached Footnote** — the Source link, and gaining Notes when the Source's own signature triggers. Nothing
   announces "another enemy's rule reached its moment", so this is not approximated.
 - **Miscellany Index counts one Residue source, not four.** Three of the design's four are moments only
@@ -867,3 +869,29 @@ Temporal Attribution, both hands, the record slots, both Clock reactions and bot
 `EndTurn()` hands control back while the new turn's start effects are still draining, so a test that measures
 immediately can miss them. Answering the turn's prompt (or any further interaction) carries them to the end.
 This is a property of the probe, not of the rules.
+
+## Act II elite signatures — Obituary with Three Endings (2026-08-22)
+
+All three lives, both rewrites, both death conditions and the Notice are built. **This completes every Act-II
+elite signature.**
+
+- **The rewrites are death PREVENTION, not resurrection.** `StatusDeathPreventionData` is the engine's
+  data-driven one-shot pre-down interceptor: it stands before the down and hands back a surviving HP total.
+  Reviving afterwards is impossible by construction — a downed combatant refuses healing and status
+  application — so this is the only place to stand. The prevention consumes its own status, which is exactly
+  the design's "Phase-I rewrite: maximum once".
+- **A prevention interceptor cannot ask a question**, so the death CONDITION is expressed by whether the
+  clause is on the Obituary at all, and the player's own rules keep it in step: a settled record takes the
+  Respectable Life off, a Redacted card played takes the Heroic Life off. With nothing owed at the start, the
+  first death really is final — which is 13.1 as written.
+- **"Obituary-issued Overdue" is tracked as a counter on the player.** A source-bound status cannot be read
+  as a scalar from the player's side, and both ends of this rule have to agree on the number. The real
+  Overdue is still applied; the counter is what the clause reads.
+- **Each of the five intent slots carries all three lives.** The engine rotates ONE intent list, so a slot
+  reads differently depending on which life is being lived. The telegraph shows the Phase-I name throughout;
+  the phase marker on the Obituary is what a player actually reads.
+- **Surviving HP is clamped to the combatant's MAXIMUM.** Worth knowing when probing: a frail test body turns
+  "survives at 46" into "survives at 12" and proves nothing. The tests use the authored 128-HP body.
+- **The next life's clause only goes on at the player's next turn start**, so a rewritten body is briefly
+  unprotected within the turn that rewrote it. That follows the design's "no attack occurs during the
+  transition window" reading rather than contradicting it, but it is a real window and is noted here.
