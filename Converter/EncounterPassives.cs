@@ -186,6 +186,9 @@ public static class EncounterPassives
         // once however many shelves are in the room.
         "crabwise_shelf" or "volume_q_null" =>
             [new StartingStatusSpec(new StatusDefinitionId(ActTwo.ArchiveRegulationsId), 1)],
+        // The Obituary's death clauses are kept in step by the player's own record and plays.
+        Elites.ObituaryWithThreeEndings.EnemyId =>
+            [new StartingStatusSpec(new StatusDefinitionId(Elites.ObituaryWithThreeEndings.ObituaryRulesId), 1)],
         // The Clock changes when the PLAYER's effects happened, so the player carries the attribution.
         Elites.PresentlessClock.EnemyId =>
         [
