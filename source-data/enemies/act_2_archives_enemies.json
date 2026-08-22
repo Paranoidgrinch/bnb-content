@@ -2420,6 +2420,17 @@
       "archives",
       "boss",
       "act_2"
+    ],
+    "starting_statuses": [
+      {
+        "status": "the_warden_of_sealed_volumes"
+      },
+      {
+        "status": "the_warden_keys"
+      },
+      {
+        "status": "warden_citation"
+      }
     ]
   },
   {
