@@ -64,6 +64,7 @@ public static class RawIntentPrograms
                 Bosses.WhisperingCatalogue.EnemyId => Bosses.WhisperingCatalogue.Intent(intentId),
                 Bosses.WardenOfSealedVolumes.EnemyId => Bosses.WardenOfSealedVolumes.Intent(intentId),
                 Bosses.CuratorOfMisplacedHours.EnemyId => Bosses.CuratorOfMisplacedHours.Intent(intentId),
+                Bosses.AuditorOfReturnedLives.EnemyId => Bosses.AuditorOfReturnedLives.Intent(intentId),
                 Elites.VolumesOfCauseAndConsequence.CausesId
                     or Elites.VolumesOfCauseAndConsequence.ConsequencesId =>
                     Elites.VolumesOfCauseAndConsequence.Intent(enemyId, intentId),

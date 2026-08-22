@@ -186,6 +186,14 @@ public static class EncounterPassives
         // once however many shelves are in the room.
         "crabwise_shelf" or "volume_q_null" =>
             [new StartingStatusSpec(new StatusDefinitionId(ActTwo.ArchiveRegulationsId), 1)],
+        // The Auditor's Documentation is the player's, its citations are answered from the player's hand,
+        // and the answer to an Account is the player's to give — so the player carries the record. It
+        // redacts on an unreconciled Identity, so the act's own rules ride along.
+        Bosses.AuditorOfReturnedLives.EnemyId =>
+        [
+            new StartingStatusSpec(new StatusDefinitionId(Bosses.AuditorOfReturnedLives.AuditorRulesId), 1),
+            new StartingStatusSpec(new StatusDefinitionId(ActTwo.ArchiveRegulationsId), 1),
+        ],
         // The Curator's evidence is the player's own last turn, and Borrow One Minute is a card in the
         // player's hand — so the player carries the record and the minute. It misfiles too.
         Bosses.CuratorOfMisplacedHours.EnemyId =>

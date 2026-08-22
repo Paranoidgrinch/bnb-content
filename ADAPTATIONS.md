@@ -1011,3 +1011,35 @@ Signature are built. What was read differently:
   written out of the record — the boss keeps its thesis without an engine seam bought for one intent.
 - **Temporal Overlap counts resolutions per Curator turn**, reset at its turn start, which is the window the
   durations tick in.
+
+## Act II bosses — The Auditor of Returned Lives (2026-08-22)
+
+Supporting Documentation, the three Accounts and their response window, Discrepancy, the two later phases and
+the Death Clause are built. What was read differently:
+
+- **The Death Clause is the engine's death PREVENTION**, the same tool the Obituary uses: a one-shot pre-down
+  interceptor that hands back a surviving health total. There is no other place to stand — a downed combatant
+  refuses healing and status application, so a death cannot be undone afterwards — and consuming its own
+  status is exactly "the Death Clause can trigger only once".
+- **SUBMIT FINAL RECEIPT is a standing readiness, not a prompt at the moment of death.** A prevention
+  interceptor cannot ask a question, so the condition is expressed by whether the clause is ON the Auditor,
+  and the player's own record keeps it in step: while the two Documentation a receipt costs are on the table
+  the clause comes off and the death is final; below that it goes back on. This is the design's own
+  counterplay bullet — "keep 2 Documentation available before lethal" — made into the rule itself. The
+  Documentation is not spent, because nothing fires on a death that takes; what it buys is being ready.
+- **The response window is one full player turn, enforced by the answer counter.** The Account is queued at
+  the Auditor's turn start, so the action in THAT turn is an ordinary one; the answer is given on the player's
+  next draw, and only the action after that is the resolution. Resolving in the queueing turn would take the
+  window away, which §8.11 explicitly forbids.
+- **The answer is counted on the AUDITOR.** It belongs to the Account, so it is written from the player's side
+  as "across" and read from the Auditor's own side as "self" — writing it on whichever body happened to be
+  opposite the acting one put the queue's reset and the player's answer on two different combatants.
+- **With fewer than 2 Documentation the Account goes unreconciled without asking.** The design calls the
+  choice "voluntary if enough Documentation exists"; there is nothing to submit below two, and an option list
+  has no per-option availability.
+- **The Identity penalty redacts AND cites the same card in one beat**, on the hand after the crossing, so the
+  card that was damaged is the card that can pay it back — which is what makes that citation Auditor-issued
+  and therefore worth Documentation.
+- **A probe body for the Death Clause must be at least 72 HP.** Surviving health is CLAMPED to the
+  combatant's maximum, so a frailer test body quietly turns "returns at 72" into "returns at its own max" and
+  proves nothing. The same trap the Obituary's tests document.

@@ -2600,6 +2600,17 @@
       "archives",
       "boss",
       "act_2"
+    ],
+    "starting_statuses": [
+      {
+        "status": "the_auditor_of_returned_lives"
+      },
+      {
+        "status": "the_sealed_accounts"
+      },
+      {
+        "status": "auditor_citation"
+      }
     ]
   }
 ]
