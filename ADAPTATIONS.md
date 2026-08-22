@@ -763,3 +763,24 @@ Verdict are built.
 - **Engine seam bought:** counting a zone by a per-instance MARK (`CombatantZoneCardCountExpression.Mark`).
   The sieve has to ask how many cards are still eligible, and the count could previously only ask what KIND
   of card each was.
+
+## Act II elite signatures — Black-Ink Oracle (2026-08-21)
+
+Black Ink, the riddle rhythm, all three responses and the signature are built.
+
+- **The hiding is presentation; the engine poses and GRADES.** 9.4 is what makes the riddle buildable: the
+  queried field must be deterministic and part of the card definition, so the question asks about the printed
+  cost and the answer is checked against the card itself. A frontend is what can actually black the field
+  out — and nothing in the exchange depends on it being invisible, which 9.8 explicitly allows ("the
+  encounter never requires memorizing the deck to remain playable").
+- **The three responses are five options**: three ANSWER claims about the cost (0 / 1 / 2-or-more), plus
+  REVEAL and DECLINE. An option list is the only prompt shape there is, and a claim the engine can grade is
+  the only kind of answer it can score.
+- **REVEAL is always selectable.** With an Energy it costs the Energy; without one it costs an Overdue owed
+  to the Oracle — the design is explicit that it must never be a safe option that cannot be chosen.
+- **Being wrong and declining cost the same** (an ink and a Redaction), which is what keeps DECLINE a
+  decision rather than a free out.
+- **Black Ink is NOT a damage modifier** (unlike the Silence's Echo), so Devour the Unstated Answer computes
+  14 + 4 × ink itself and then clears the ink.
+- **9.7 low-HP evolution is not built.** "The Oracle may visually redact two fields while still asking one
+  question" is entirely a presentation change; the engine's riddle is unaffected either way.
