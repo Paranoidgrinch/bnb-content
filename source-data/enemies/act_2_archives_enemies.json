@@ -2077,18 +2077,6 @@
         ]
       },
       {
-        "id": "tomorrow_has_already_been_filed",
-        "name": "Tomorrow Has Already Been Filed",
-        "intent_type": "attack",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 13
-          }
-        ]
-      },
-      {
         "id": "no_present_tense",
         "name": "No Present Tense",
         "intent_type": "attack",
@@ -2113,6 +2101,30 @@
         ]
       },
       {
+        "id": "borrowed_tomorrow",
+        "name": "Borrowed Tomorrow",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 11
+          }
+        ]
+      },
+      {
+        "id": "tomorrow_has_already_been_filed",
+        "name": "Tomorrow Has Already Been Filed",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 13
+          }
+        ]
+      },
+      {
         "id": "chronology_closed",
         "name": "Chronology Closed",
         "intent_type": "block",
@@ -2123,12 +2135,47 @@
             "amount": 24
           }
         ]
+      },
+      {
+        "id": "second_hand_no_first_again",
+        "name": "Second Hand, No First",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 18
+          }
+        ]
+      },
+      {
+        "id": "history_repeats_incorrectly",
+        "name": "History Repeats Incorrectly",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 19
+          }
+        ]
       }
     ],
     "tags": [
       "archives",
       "elite",
       "act_2"
+    ],
+    "starting_statuses": [
+      {
+        "status": "the_presentless_clock"
+      },
+      {
+        "status": "clock_reference"
+      },
+      {
+        "status": "clock_delinquency"
+      }
     ]
   },
   {

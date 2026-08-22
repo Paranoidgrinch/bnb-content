@@ -838,3 +838,32 @@ The opening hand is dealt while the fight is still being set up, before an inter
 Drawer's FIRST offer is answered by the headless default (it files the first card). That is a property of the
 test harness — from the second player turn on the offer is a real prompt with a real refusal, and the tests
 exercise it there.
+
+## Act II elite signatures — Presentless Clock (2026-08-22)
+
+Temporal Attribution, both hands, the record slots, both Clock reactions and both signatures are built.
+
+- **Future is a passive ScalePercent(50) on the two eligible pipelines** (`DamageDealt` restricted to Direct,
+  and `BlockGain`), and the status records what was DEALT as the remainder still owed. Recording the dealt
+  amount rather than "original minus dealt" is the design's own "approximately 50 %", and it keeps the two
+  halves equal without the original ever being knowable after the fact.
+- **Past records a fraction and lets the effect land in full**, which is exactly what the design distinguishes
+  between the two hands.
+- **Eligible primary effects are direct card damage and card-generated Block.** The design's third kind,
+  a direct negative status application, is NOT built: an echo would have to name WHICH status to apply again,
+  and the record keeps a kind and a number, not a status identity. (`OutgoingStatusApplicationStacks` exists
+  as a pipeline, so the Future half would be reachable; the Past echo is what has nowhere to put the answer.)
+- **An arming expires at the player's TURN END, not at the turn start.** Written at the turn start it would
+  arrive AFTER the new arming and take it straight off again — a turn-start program is still draining when
+  the draw happens. Without the expiry, a hand armed and never used goes on catching, so the turn you filed
+  to the Future would quietly file to the Past as well. (Found in the combat log: applied, then removed, one
+  line apart.)
+- **The Clock reads the PLAYER's record counters.** The records are the player's effects and live on the
+  player; the Clock reaches across at its own turn start.
+- **12.5's "that mode is unavailable"** is an offer that does nothing when the slot is full — an option list
+  cannot hide an option. The rule that matters, that a record is never overwritten, is kept.
+
+### A harness note
+`EndTurn()` hands control back while the new turn's start effects are still draining, so a test that measures
+immediately can miss them. Answering the turn's prompt (or any further interaction) carries them to the end.
+This is a property of the probe, not of the rules.

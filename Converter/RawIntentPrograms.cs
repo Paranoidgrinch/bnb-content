@@ -59,6 +59,7 @@ public static class RawIntentPrograms
                 Elites.SilenceBetweenTwoWords.EnemyId => Elites.SilenceBetweenTwoWords.Intent(intentId),
                 Elites.BlackInkOracle.EnemyId => Elites.BlackInkOracle.Intent(intentId),
                 Elites.DrawerOfInfiniteReturns.EnemyId => Elites.DrawerOfInfiniteReturns.Intent(intentId),
+                Elites.PresentlessClock.EnemyId => Elites.PresentlessClock.Intent(intentId),
                 Elites.VolumesOfCauseAndConsequence.CausesId
                     or Elites.VolumesOfCauseAndConsequence.ConsequencesId =>
                     Elites.VolumesOfCauseAndConsequence.Intent(enemyId, intentId),

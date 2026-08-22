@@ -186,6 +186,12 @@ public static class EncounterPassives
         // once however many shelves are in the room.
         "crabwise_shelf" or "volume_q_null" =>
             [new StartingStatusSpec(new StatusDefinitionId(ActTwo.ArchiveRegulationsId), 1)],
+        // The Clock changes when the PLAYER's effects happened, so the player carries the attribution.
+        Elites.PresentlessClock.EnemyId =>
+        [
+            new StartingStatusSpec(new StatusDefinitionId(Elites.PresentlessClock.ClockRulesId), 1),
+            new StartingStatusSpec(new StatusDefinitionId(ActTwo.ArchiveRegulationsId), 1),
+        ],
         // The Drawer's nesting is about the player's card and the player's turn, and it misfiles too.
         Elites.DrawerOfInfiniteReturns.EnemyId =>
         [
