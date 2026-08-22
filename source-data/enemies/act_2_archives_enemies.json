@@ -881,7 +881,7 @@
   },
   {
     "id": "errata_doppelganger",
-    "name": "Errata Doppelg\u00e4nger",
+    "name": "Errata Doppelgänger",
     "max_hp": 85,
     "intent_pattern": "cycle",
     "intents": [
@@ -2272,20 +2272,8 @@
     "intent_pattern": "cycle",
     "intents": [
       {
-        "id": "archive_conduct",
-        "name": "Archive Conduct",
-        "intent_type": "attack",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 14
-          }
-        ]
-      },
-      {
-        "id": "established_tempo",
-        "name": "Established Tempo",
+        "id": "open_a_new_entry",
+        "name": "Open a New Entry",
         "intent_type": "block",
         "actions": [
           {
@@ -2296,8 +2284,20 @@
         ]
       },
       {
-        "id": "you_will_repeat_the_procedure",
-        "name": "You Will Repeat the Procedure",
+        "id": "compare_with_prior_conduct",
+        "name": "Compare With Prior Conduct",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 14
+          }
+        ]
+      },
+      {
+        "id": "index_the_deviation",
+        "name": "Index the Deviation",
         "intent_type": "attack",
         "actions": [
           {
@@ -2308,26 +2308,26 @@
         ]
       },
       {
-        "id": "established_compliance",
-        "name": "Established Compliance",
+        "id": "publish_the_preliminary_finding",
+        "name": "Publish the Preliminary Finding",
         "intent_type": "attack",
         "actions": [
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 23
+            "amount": 14
           }
         ]
       },
       {
-        "id": "the_damaged_record",
-        "name": "The Damaged Record",
-        "intent_type": "attack",
+        "id": "reclassify_the_evidence",
+        "name": "Reclassify the Evidence",
+        "intent_type": "block",
         "actions": [
           {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 28
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 10
           }
         ]
       }
@@ -2336,6 +2336,17 @@
       "archives",
       "boss",
       "act_2"
+    ],
+    "starting_statuses": [
+      {
+        "status": "the_whispering_catalogue"
+      },
+      {
+        "status": "the_whispering_catalogue_state"
+      },
+      {
+        "status": "whispering_catalogue_reference"
+      }
     ]
   },
   {

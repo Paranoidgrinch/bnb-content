@@ -186,6 +186,13 @@ public static class EncounterPassives
         // once however many shelves are in the room.
         "crabwise_shelf" or "volume_q_null" =>
             [new StartingStatusSpec(new StatusDefinitionId(ActTwo.ArchiveRegulationsId), 1)],
+        // The Catalogue compiles a record of the PLAYER, so the player carries the ledger the whole fight
+        // writes into — and the act's take-back rule too, because an Established Opening redacts a card.
+        Bosses.WhisperingCatalogue.EnemyId =>
+        [
+            new StartingStatusSpec(new StatusDefinitionId(Bosses.WhisperingCatalogue.CatalogueRulesId), 1),
+            new StartingStatusSpec(new StatusDefinitionId(ActTwo.ArchiveRegulationsId), 1),
+        ],
         // The Obituary's death clauses are kept in step by the player's own record and plays.
         Elites.ObituaryWithThreeEndings.EnemyId =>
             [new StartingStatusSpec(new StatusDefinitionId(Elites.ObituaryWithThreeEndings.ObituaryRulesId), 1)],
