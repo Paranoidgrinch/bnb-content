@@ -56,6 +56,7 @@ public static class RawIntentPrograms
                 Elites.ReturnBell.EnemyId => Elites.ReturnBell.Intent(intentId),
                 Elites.RollingStacksColossus.EnemyId => Elites.RollingStacksColossus.Intent(intentId),
                 Elites.CatalogueOfUnwiseNames.EnemyId => Elites.CatalogueOfUnwiseNames.Intent(intentId),
+                Elites.SilenceBetweenTwoWords.EnemyId => Elites.SilenceBetweenTwoWords.Intent(intentId),
                 _ => null,
             },
         };

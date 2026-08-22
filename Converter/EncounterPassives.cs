@@ -188,6 +188,13 @@ public static class EncounterPassives
             [new StartingStatusSpec(new StatusDefinitionId(ActTwo.ArchiveRegulationsId), 1)],
         // The Colossus misfiles too, so the player carries the same take-back rule — plus the other half of
         // Open Aisle, which is about the player's hand and the player's plays.
+        // The Silence's pair is about the player's hand and the player's plays, so the player carries it —
+        // and the act's take-back rule too, because a single Word spoken misfiles a card.
+        Elites.SilenceBetweenTwoWords.EnemyId =>
+        [
+            new StartingStatusSpec(new StatusDefinitionId(Elites.SilenceBetweenTwoWords.SilenceRulesId), 1),
+            new StartingStatusSpec(new StatusDefinitionId(ActTwo.ArchiveRegulationsId), 1),
+        ],
         // The Catalogue's ledger is the player's cards and the player's plays, so the player carries the rules.
         Elites.CatalogueOfUnwiseNames.EnemyId =>
             [new StartingStatusSpec(new StatusDefinitionId(Elites.CatalogueOfUnwiseNames.CatalogueRulesId), 1)],

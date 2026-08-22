@@ -740,3 +740,26 @@ be read as a single number by a player-side rule, since "the enemies carrying th
   card dearer than printed.
 - **Strike from Catalogue (7.5) is NOT built.** It turns on "a card identity not currently represented by an
   Entry", and nothing compares one card instance's identity against a set of tracked ones.
+
+## Act II elite signatures — Silence Between Two Words (2026-08-21)
+
+The Unspoken Pair, the spoken/unspoken distinction, all three turn-end outcomes, Echo and the Unspoken
+Verdict are built.
+
+- **The resolution runs at the PLAYER's turn end**, where the design puts it — and it is the only moment that
+  works. The Silence's Block is wiped when its own turn begins, so a resolution one beat later (the act's
+  usual "collect at your own turn start" shape) could never take "up to 10 current Block" off anything.
+- **The Verdict deals a flat 6.** Echo is a passive damage modifier (+4 per stack on direct damage) that the
+  next attack spends, so the signature's "6 + 4 per Echo" is written as 6 and let the modifier add the rest —
+  at Echo 4 that is exactly 22, counted once rather than twice.
+- **Echo is capped, not refused.** At Echo 3 a two-Echo turn takes the one that fits.
+- **"The same instance cannot be selected two turns running" is a three-pass sieve**: mark every non-Junk card
+  eligible, strike the eligibility of last turn's Words, and put them back only if fewer than two survive.
+  That last pass is the design's "if at least three alternatives exist", read from the other side — when the
+  hand is too thin to avoid a repeat, the repeat is allowed.
+- **Junk is excluded by marking and then striking**, because a loop can select BY a tag but not around one.
+- **Which two cards become the Words is the SILENCE's choice, not the player's** (the design says "select",
+  where the Catalogue says "the player may select"), so it is deterministic: the first two eligible cards.
+- **Engine seam bought:** counting a zone by a per-instance MARK (`CombatantZoneCardCountExpression.Mark`).
+  The sieve has to ask how many cards are still eligible, and the count could previously only ask what KIND
+  of card each was.
