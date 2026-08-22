@@ -1742,6 +1742,11 @@
       "archives",
       "elite",
       "act_2"
+    ],
+    "starting_statuses": [
+      {
+        "status": "the_silence"
+      }
     ]
   },
   {
