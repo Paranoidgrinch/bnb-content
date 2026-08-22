@@ -813,3 +813,28 @@ test pins that exactly one elite is a pair.
   round and nothing can reach into that order. Return to the Premise ships as its 8 Block.
 - **The shortened solo movesets (10.8) are not built** either; the survivor keeps its full cycle plus the
   Strength.
+
+## Act II elite signatures — Drawer of Infinite Returns (2026-08-22)
+
+Nested Return at all three depths, Closed Drawer, Depth Pressure and the signature are built.
+
+- **The drawer is the Banished pile.** "The card leaves normal combat zones temporarily" needs a zone nothing
+  else reaches into, and Banished is the only one — Exhaust is touched by ordinary cards.
+- **A turn-end program must not look in the hand.** By the time a TurnEnded program reaches its
+  card-touching nodes the hand has already been put down, so the returning card is in the discard pile. The
+  rule therefore reads "not in the drawer" rather than "in hand", and takes the card back from wherever it
+  landed. (Found from the combat log, after the counters moved and the card did not.)
+- **Depth 3's "Retain for that turn" is not built.** Retain is a property of a card DEFINITION
+  (`TurnEndHandDestinationZone`), not of one copy, so a per-instance Retain has nothing to hang on. It costs
+  little here: an unplayed Depth-3 card returns to Depth 3 anyway, which is what Retain was protecting.
+- **Depth Pressure counts entering Depth 2 and every Depth-3 return let pass** — not the step from 2 to 3,
+  which the design leaves free.
+- **11.9 death cleanup is not built.** Returning the nested card to the discard pile when the Drawer dies
+  matters only for what the combat hands back afterwards, and the run layer rebuilds the deck from the run's
+  own list — a banished copy is not lost from the deck, only from that fight.
+
+### A note on probes, not on the rule
+The opening hand is dealt while the fight is still being set up, before an interactive driver exists, so the
+Drawer's FIRST offer is answered by the headless default (it files the first card). That is a property of the
+test harness — from the second player turn on the offer is a real prompt with a real refusal, and the tests
+exercise it there.
