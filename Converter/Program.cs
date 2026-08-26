@@ -30,7 +30,10 @@ try
         return 1;
     }
 
-    var options = RunJson.CreateOptions();
+    // The SHIPPED form: no indentation. Nobody reads this file by hand — the source data is what gets read —
+    // and the whitespace was two thirds of it (13.6 MB indented against 4.1 MB, and 134 MB of heap at load
+    // against 54 MB). The Studio's own JSON view keeps its indentation; that is a different document.
+    var options = RunJson.CreateOptions(indented: false);
     var json = RunJson.ToJson(blueprint, options);
 
     // The document must survive its own round trip byte-for-byte.
