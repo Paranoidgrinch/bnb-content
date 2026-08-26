@@ -84,7 +84,24 @@ public static class ActOneEventObjects
     public const string FastTrack = "fast_track";     // guaranteed in the opening hand
     public const string UnderReview = "under_review"; // held out of the fight entirely; returns upgraded after
 
-    public static IReadOnlyList<string> Markings() => [Misfiled, Sealed, FastTrack, UnderReview];
+    // ADAPTATION (the Almost-Helpful Clerk): the design's "a temporary 0-cost Exhaust copy of the card you
+    // chose" cannot be built — a card is Exhaust because its DEFINITION says so, and there is no per-instance
+    // Exhaust mark, so a copy of an arbitrary card cannot be made temporary. The stamp is therefore put on the
+    // card itself: it is in the opening hand and its first play is free. Same tempo, one card fewer.
+    public const string Stamped = "stamped";          // opening hand, and that first play costs nothing
+
+    // The PERMANENT marking. Unlike the four above it is never cleared, and the rule that reads it has to be in
+    // every later fight rather than the next one (ActOneEventPrograms.CertifiedOriginal installs it).
+    //
+    // ADAPTATION: "cost −1 for that play AND gain Exhaust for that play" keeps only the discount, for the same
+    // reason the stamp does — one play of one copy cannot be made to Exhaust.
+    public const string CertifiedOriginal = "certified_original";
+
+    // The three markings a single fight consumes. Under Review outlives it (the card is away for the fight and
+    // comes back upgraded afterwards) and Certified Original is forever, so neither is expired with these.
+    public static IReadOnlyList<string> SpentAfterOneFight() => [Misfiled, Sealed, FastTrack, Stamped];
+
+    public static IReadOnlyList<string> Markings() => [Misfiled, Sealed, FastTrack, UnderReview, Stamped];
 
     public static readonly StatusData MarkingsRule = new()
     {
@@ -112,6 +129,10 @@ public static class ActOneEventObjects
                             MoveMarked<CardsDrawnTriggeredEffectContext>(UnderReview, CardZone.DrawPile, CardZone.BanishedPile),
                             MoveMarked<CardsDrawnTriggeredEffectContext>(UnderReview, CardZone.Hand, CardZone.BanishedPile),
                             MoveMarked<CardsDrawnTriggeredEffectContext>(FastTrack, CardZone.DrawPile, CardZone.Hand),
+                            MoveMarked<CardsDrawnTriggeredEffectContext>(Stamped, CardZone.DrawPile, CardZone.Hand),
+                            // …and the stamped one is free the first time it is played: a per-instance price
+                            // the play itself consumes, clamped at zero, so "−9" is simply "nothing".
+                            Discount<CardsDrawnTriggeredEffectContext>(Stamped, 9),
                         ])),
                     // Round 3: what was sealed is unsealed. What is Under Review stays away for the fight.
                     new ConditionalEffectNode<CardsDrawnTriggeredEffectContext>(
@@ -132,10 +153,18 @@ public static class ActOneEventObjects
     public const string AuthorizedOvertime = "authorized_overtime";
     public const string CorrectWindow = "correct_window";
 
+    public const string AuditNotice = "audit_notice";
+    public const string GarnishedReward = "garnished_reward";
+    public const string ExpeditedRoute = "expedited_route";
+    public const string ReceiptOfPriorEffort = "receipt_of_prior_effort";
+    public const string CertifiedOriginalRuleId = "certified_original_rule";
+
     public static IReadOnlyList<StatusData> Statuses() =>
     [
         MarkingsRule, WitnessedProcedureRule, RestrictedPublicHoursRule, AdministrativeExemptionRule,
         WitnessProtectionRule, PriorityNumberRule, AuthorizedOvertimeRule, CorrectWindowRule, FinePrintTax,
+        AuditNoticeNote, GarnishedRewardNote, ExpeditedRouteNote, ReceiptOfPriorEffortRule,
+        CertifiedOriginalRule,
     ];
 
     // "Playing the same primary card type twice consecutively gives 1 Doubt."
@@ -301,6 +330,58 @@ public static class ActOneEventObjects
                 nameof(TriggerEvent.CardsDrawn)),
         ]);
 
+    // ── what the run does after the fight, announced inside it ────────────────────────────────────────────
+    //
+    // Three of the shared rules are not rules of the fight at all — they are what the RUN does when the fight
+    // is over (a fee taken out of the purse, a purse that never arrives, a purse traded for a weaker enemy).
+    // The work is done by an authored run program (ActOneEventPrograms); what lives here is the NOTE the fight
+    // wears, so a promise the player was given at an event is visible at the table where it is paid.
+
+    public static readonly StatusData AuditNoticeNote = Note(
+        AuditNotice, "Audit Notice",
+        "This fight is audited: afterwards you lose 4 Gold for every point of health it cost you, up to 80.");
+
+    public static readonly StatusData GarnishedRewardNote = Note(
+        GarnishedReward, "Garnished Reward",
+        "Your fee for this fight has already been claimed by someone else. It pays no Gold.");
+
+    public static readonly StatusData ExpeditedRouteNote = Note(
+        ExpeditedRoute, "Expedited Route",
+        "You were sent the short way round: your opposition arrived diminished, and unpaid work pays no Gold.");
+
+    // "Next combat visibly pays 125 Gold if won by end of round 3, otherwise 25." The fight cannot pay anything
+    // — the purse is the run's — so it writes down how long it took and the run reads that off the result.
+    public static readonly CounterId RoundsTaken = new("rounds_taken");
+
+    public static readonly StatusData ReceiptOfPriorEffortRule = Rule(
+        ReceiptOfPriorEffort, "Receipt of Prior Effort",
+        "Prior effort is on file: win by the end of round 3 and the claim pays 125 Gold, later only 25.",
+        [
+            Trigger(new EffectProgram<CardsDrawnTriggeredEffectContext>(
+                new SetCombatantCounterNode<CardsDrawnTriggeredEffectContext>(
+                    CombatantTargetSelectors.Source, RoundsTaken,
+                    new RoundNumberExpression<CardsDrawnTriggeredEffectContext>(), relative: false)),
+                nameof(TriggerEvent.CardsDrawn)),
+        ]);
+
+    // The permanent marking's rule. Unlike the four one-fight markings it is installed in EVERY later fight, so
+    // the discount is put on the marked copy wherever it is standing when the fight opens — in the opening hand
+    // or still in the draw pile — and the play itself consumes it.
+    public static readonly StatusData CertifiedOriginalRule = Rule(
+        CertifiedOriginalRuleId, "Certified Original",
+        "A certified original is cheaper to file: the first time you play it each fight it costs 1 less.",
+        [
+            Trigger(new EffectProgram<CardsDrawnTriggeredEffectContext>(
+                new ConditionalEffectNode<CardsDrawnTriggeredEffectContext>(
+                    OnRound<CardsDrawnTriggeredEffectContext>(1),
+                    new CausalSequenceEffectNode<CardsDrawnTriggeredEffectContext>(
+                    [
+                        Discount<CardsDrawnTriggeredEffectContext>(CertifiedOriginal, 1),
+                        DiscountIn<CardsDrawnTriggeredEffectContext>(CertifiedOriginal, 1, CardZone.DrawPile),
+                    ]))),
+                nameof(TriggerEvent.CardsDrawn)),
+        ]);
+
     // ── shorthands ────────────────────────────────────────────────────────────────────────────────────────
 
     private static readonly CounterId LastType = new("witnessed_last_type");
@@ -329,6 +410,32 @@ public static class ActOneEventObjects
             new MoveCardToZoneNode<TContext>(
                 CombatantTargetSelectors.Source, new IteratedCardExpression<TContext>(), to),
             markFilter: new TagId(mark));
+
+    // A price written on the marked COPY rather than on its kind: the card's own cost, minus `amount`, clamped
+    // at zero by the engine and consumed by the play it pays for.
+    private static IEffectNode<TContext> Discount<TContext>(string mark, int amount) where TContext : class =>
+        DiscountIn<TContext>(mark, amount, CardZone.Hand);
+
+    private static IEffectNode<TContext> DiscountIn<TContext>(string mark, int amount, CardZone zone)
+        where TContext : class =>
+        new ForEachCardInZoneNode<TContext>(
+            CombatantTargetSelectors.Source, zone,
+            new SetCardInstanceMarkCounterNode<TContext>(
+                CombatantTargetSelectors.Source, new IteratedCardExpression<TContext>(),
+                StandardCombatIds.CardCostDeltaCounter,
+                new ConstantExpression<TContext>(-amount), relative: true),
+            markFilter: new TagId(mark));
+
+    // A status that carries no rule at all: a line the fight shows because the RUN is going to act on it.
+    private static StatusData Note(string id, string name, string description) => new()
+    {
+        Id = id,
+        NameKey = name,
+        DescriptionKey = description,
+        Polarity = StatusPolarity.Neutral,
+        StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
+        UsesStacks = true,
+    };
 
     private static IEffectNode<CardsDrawnTriggeredEffectContext> CheapenWindow(int remainder, string tag) =>
         new ConditionalEffectNode<CardsDrawnTriggeredEffectContext>(

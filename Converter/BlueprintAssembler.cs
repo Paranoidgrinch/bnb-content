@@ -20,9 +20,13 @@ public static class BlueprintAssembler
         // is one walk across all of them: the engine lays every act out at run start (RunSetup.BuildActPlan,
         // its own seed per act) and advances by itself when an act's boss falls.
         var pools = data.Acts.ToDictionary(a => a.Act, a => ConversionPools.Build(data, relics, a.Act));
+        // The events an act AUTHORS (Act I's fifteen), built before its map so the map can draw from them.
+        var authored = data.Acts.ToDictionary(
+            a => a.Act, a => Events.AuthoredEvents.For(a.Act, pools[a.Act], new Random(seed + a.Act)));
         var maps = data.Acts
             .Select((act, index) =>
-                (Act: act, Map: MapSpecBuilder.Build(data, pools[act.Act], seed + index, act)))
+                (Act: act, Map: MapSpecBuilder.Build(data, pools[act.Act], seed + index, act,
+                    authored[act.Act].Select(e => e.Id).ToList())))
             .ToList();
 
         // Only enemies an encounter actually fields contribute action definitions.
@@ -32,6 +36,8 @@ public static class BlueprintAssembler
 
         // An event offers what its OWN act offers — the archives' doors do not hand out city commons.
         var events = data.Events.ToDictionary(e => e.Id, e => EventMapper.Map(e, PoolsFor(pools, e)));
+        foreach (var authoredEvent in authored.Values.SelectMany(e => e))
+            events[authoredEvent.Id] = authoredEvent.Script;
         foreach (var (_, actMap) in maps)
             foreach (var (id, script) in actMap.Events)
                 events[id] = script;
@@ -90,12 +96,18 @@ public static class BlueprintAssembler
                 .. Relics.FinalRelics.Compile(),
             ],
             Shops = maps.SelectMany(m => m.Map.Shops).ToDictionary(e => e.Key, e => e.Value),
+            // What the authored events promise for AFTER a fight. The bodies live here once; the events that
+            // hand them out name them (fx.installProgramById).
+            Programs = pools.TryGetValue(Events.ActOneEvents.Act, out var actOne)
+                ? Events.ActOneEventPrograms.All(actOne)
+                : null,
             Start = start,
             Characters = [new RunCharacter(data.Bureaucrat.Id, start)],
             // Victory now means the WHOLE run — the city and the archives behind it. (The engine's meta rules
             // key off the run's result; a per-act flag would need an act-completed hook that is not data yet.)
             MetaRules = [new MetaRule([RunResult.Victory], [new SetMetaFlag("bnb.run.cleared")])],
-            Presentation = BuildPresentation(data, relics, enemies),
+            Presentation = BuildPresentation(
+                data, relics, enemies, [.. authored.Values.SelectMany(e => e)]),
         };
     }
 
@@ -107,7 +119,8 @@ public static class BlueprintAssembler
             : throw new ConversionException($"event '{babEvent.Id}'", $"belongs to act {babEvent.Act}, which the run does not walk");
 
     private static PresentationManifest BuildPresentation(
-        BabData data, IReadOnlyList<MappedRelic> relics, IReadOnlyList<BabEnemy> enemies) => new()
+        BabData data, IReadOnlyList<MappedRelic> relics, IReadOnlyList<BabEnemy> enemies,
+        IReadOnlyList<Events.BnbEvent> authored) => new()
         {
             Cards = data.Cards
                 .Where(c => !Cards.FinalCards.Ids().Contains(CardMapper.MapCardId(c.Id)))
@@ -163,9 +176,12 @@ public static class BlueprintAssembler
                     FlavorText = e.Name,
                     Tags = [e.Difficulty, .. e.Tags ?? []],
                 }),
-            Events = data.Events.ToDictionary(
-                e => e.Id,
-                e => new EntityPresentation { FlavorText = e.Name, Tags = e.Tags ?? [] }),
+            Events = data.Events
+                .Select(e => (e.Id, Look: new EntityPresentation { FlavorText = e.Name, Tags = e.Tags ?? [] }))
+                .Concat(authored.Select(a => (
+                    a.Id,
+                    Look: new EntityPresentation { FlavorText = a.Name, Tags = a.Tags ?? [] })))
+                .ToDictionary(e => e.Id, e => e.Look),
             Characters = new Dictionary<string, EntityPresentation>
             {
                 [data.Bureaucrat.Id] = new()

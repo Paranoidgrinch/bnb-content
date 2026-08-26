@@ -40,7 +40,9 @@ public static class MapSpecBuilder
         [MapNodeKind.Boss] = (90, 120),
     };
 
-    public static ActMap Build(BabData data, ConversionPools pools, int seed, BabActManifest act)
+    public static ActMap Build(
+        BabData data, ConversionPools pools, int seed, BabActManifest act,
+        IReadOnlyList<string> authoredEventIds)
     {
         var rng = new Random(seed);
         var rules = ActRules.For(act);
@@ -58,7 +60,9 @@ public static class MapSpecBuilder
             events[id] = EventTemplates.Treasure(pools, id, rules);
         }
 
-        var actEvents = data.Events.Where(e => e.Act == act.Act).Select(e => e.Id).ToList();
+        // The act's doors: whatever it still converts, plus whatever it now authors (Events/AuthoredEvents).
+        var actEvents = data.Events.Where(e => e.Act == act.Act).Select(e => e.Id)
+            .Concat(authoredEventIds).ToList();
         if (actEvents.Count == 0)
             throw new ConversionException($"act '{act.Id}'", "no event belongs to this act");
 
