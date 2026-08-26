@@ -14,7 +14,12 @@ public static class BlueprintAssembler
     {
         var relics = data.Relics.Select(RelicMapper.Map).ToList();
         var pools = ConversionPools.Build(data, relics);
-        var map = MapSpecBuilder.Build(data, pools, seed);
+        // One set of map rules PER ACT, each drawing only from its own act. The run is one walk across all of
+        // them: the engine lays every act out at run start (RunSetup.BuildActPlan, its own seed per act) and
+        // advances by itself when an act's boss falls.
+        var maps = data.Acts
+            .Select((act, index) => (Act: act, Map: MapSpecBuilder.Build(data, pools, seed + index, act)))
+            .ToList();
 
         // Only enemies an encounter actually fields contribute action definitions.
         var referencedEnemies = data.Encounters.SelectMany(e => e.Enemies).ToHashSet();
@@ -22,8 +27,9 @@ public static class BlueprintAssembler
         var enemiesById = data.Enemies.ToDictionary(e => e.Id);
 
         var events = data.Events.ToDictionary(e => e.Id, e => EventMapper.Map(e, pools));
-        foreach (var (id, script) in map.Events)
-            events[id] = script;
+        foreach (var (_, actMap) in maps)
+            foreach (var (id, script) in actMap.Events)
+                events[id] = script;
 
         var start = new RunStart
         {
@@ -54,7 +60,12 @@ public static class BlueprintAssembler
             // The act's map is GENERATED per run from MapGeneration below; the authored map stays empty.
             new RunMap([]))
         {
-            MapGeneration = map.Spec,
+            // The first act's rules stay on the blueprint as well: they are the fallback for anything that asks
+            // a document for "the" map (and what a one-act reader sees), while Acts below is what a run walks.
+            MapGeneration = maps[0].Map.Spec,
+            Acts = maps
+                .Select(m => new RunAct(m.Act.Id, m.Map.Spec, NameKey: m.Act.Name))
+                .ToList(),
             Statuses =
             [
                 .. StatusMapper.Map("statuses", data.Statuses),
@@ -70,7 +81,7 @@ public static class BlueprintAssembler
                 .. relics.Select(r => r.Relic).Where(r => !Relics.FinalRelics.All().Any(f => f.Id == r.Id)),
                 .. Relics.FinalRelics.Compile(),
             ],
-            Shops = map.Shops,
+            Shops = maps.SelectMany(m => m.Map.Shops).ToDictionary(e => e.Key, e => e.Value),
             Start = start,
             Characters = [new RunCharacter(data.Bureaucrat.Id, start)],
             MetaRules = [new MetaRule([RunResult.Victory], [new SetMetaFlag("bnb.act1.cleared")])],

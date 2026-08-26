@@ -9,7 +9,7 @@ namespace BnbContent.Converter;
 // reads the outcome exactly like the original console did.
 //
 // Effect semantics mirror the original's event_effects.py:
-// - lose_hp cannot kill (clamped to leave 1 HP) → computed damage min(N, currentHealth − 1)
+// - lose_hp / lose_percent_max_hp cannot kill (clamped to leave 1 HP) → computed damage min(N, currentHealth − 1)
 // - heal_percent_max_hp rounds UP → (maxHealth·p + 99) / 100
 // - remove_card / upgrade_card are player choices; transform/duplicate hit random cards
 // - gain_relic grants ONE random eligible relic (pickup effects bundled into the offer)
@@ -60,6 +60,17 @@ public static class EventMapper
                 break;
             case "lose_gold":
                 yield return new ChangeResourceRunEffect(StandardRunIds.Gold, -Amount(0));
+                break;
+            case "lose_percent_max_hp":
+                // Like lose_hp, an event never kills: p% of MAX health, floored, clamped to leave 1 HP.
+                yield return new ComputedDamageRunEffect(RunExpr.Min(
+                    RunExpr.Divide(
+                        RunExpr.Multiply(RunExpr.MaxHealth, RunExpr.Const(Amount(0))), RunExpr.Const(100)),
+                    RunExpr.Subtract(RunExpr.CurrentHealth, RunExpr.Const(1))));
+                break;
+            case "none":
+                // A choice that costs and gives nothing — the result text IS the outcome. Authored explicitly
+                // in the source data, so it must map to "no effects" rather than to a conversion failure.
                 break;
             case "heal_percent_max_hp":
                 yield return new ComputedHealRunEffect(RunExpr.Divide(

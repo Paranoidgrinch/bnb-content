@@ -175,14 +175,16 @@ public sealed record BabActManifest(
     BabTreasureSettings? Treasure,
     BabWaitingRoomSettings? WaitingRoom);
 
+// Only the length and the width are read (the rest were the ORIGINAL generator's knobs, and the acts authored
+// since do not repeat them); everything after Width is optional so a later act's manifest can leave it out.
 public sealed record BabMapSettings(
     int StepsBeforeBoss,
     int Width,
-    string Layout,
-    int MaxEvents,
-    int MaxTreasures,
-    int MaxElites,
-    double EventCombatChance);
+    string? Layout = null,
+    int MaxEvents = 0,
+    int MaxTreasures = 0,
+    int MaxElites = 0,
+    double EventCombatChance = 0);
 
 public sealed record BabTreasureSettings(double MimicChance, string? MimicEncounterId);
 

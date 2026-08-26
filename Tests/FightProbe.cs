@@ -25,8 +25,10 @@ internal static class FightProbe
         {
             Encounters = [probe],
             Map = new RunMap([new Node(new NodeId("probe"), StandardRunIds.CombatNode, new EncounterRef(probe.Id))]),
-            // The real game GENERATES its map per run, which would replace the probe node with a whole act.
+            // The real game GENERATES its map per run, act by act, which would replace the probe node with a
+            // whole act (drawn from encounters this blueprint no longer holds). A probe is one fight.
             MapGeneration = null,
+            Acts = null,
         };
 
         if (deck is not null and not { Count: 0 })
