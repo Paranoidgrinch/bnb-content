@@ -46,47 +46,10 @@ public static class BossRelicRules
         PremiseSlip, ConcordanceThread, ConclusionLeaf,
         // The discounts and bonuses these relics hand out are statuses of their own, for the same reason the
         // other pools' are: a passive modifier's PRESENCE is its condition, so it has to be removable.
-        SealedStrike, DefusedIntent, TestimonySeal, ConcludedStrike, HeldEnergy,
+        SealedStrike, DefusedIntent, TestimonySeal, ConcludedStrike,
+        // Six of these promise Energy at a moment the pool is full; they all hold it instead (HeldEnergy).
+        Converter.HeldEnergy.Status,
     ];
-
-    // ── Energy a relic promises before there is room for it ────────────────────────────────────────────────
-    //
-    // ADAPTATION, and it applies to six of the thirty. A combatant's Energy pool has a HARD ceiling — the
-    // engine clamps every gain to the pool's own max, which for this game is the 3 the turn refills to — so
-    // "at the start of your turn, gain 1 Energy" lands on a full pool and does nothing at all. (The same is
-    // true of the Normal relics that promise it; see ADAPTATIONS.md.)
-    //
-    // So Energy promised while the pool is full is HELD instead, and arrives the moment the holder runs dry:
-    // the point is not lost, it is spent later in the same turn. That is what the design's numbers are for —
-    // one more card played — and it is the only shape this engine can pay them in.
-    public static readonly StatusData HeldEnergy = new()
-    {
-        Id = HeldEnergyId,
-        NameKey = "Held Energy",
-        DescriptionKey = "Energy kept in reserve. It arrives the moment you run out.",
-        Polarity = StatusPolarity.Buff,
-        StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
-        UsesStacks = true,
-        Triggers =
-        [
-            Trigger(new EffectProgram<CardPlayedTriggeredEffectContext>(
-                new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
-                    new ComparisonExpression<CardPlayedTriggeredEffectContext>(
-                        new CombatantCurrentResourceExpression<CardPlayedTriggeredEffectContext>(
-                            Self, StandardCombatIds.EnergyResource),
-                        ComparisonOperator.Equal, new ConstantExpression<CardPlayedTriggeredEffectContext>(0)),
-                    new CausalSequenceEffectNode<CardPlayedTriggeredEffectContext>(
-                    [
-                        new GainResourceNode<CardPlayedTriggeredEffectContext>(
-                            Self, StandardCombatIds.EnergyResource,
-                            new CombatantStatusStacksExpression<CardPlayedTriggeredEffectContext>(
-                                Self, new StatusDefinitionId(HeldEnergyId))),
-                        new RemoveStatusNode<CardPlayedTriggeredEffectContext>(
-                            Self, new StatusDefinitionId(HeldEnergyId)),
-                    ]))),
-                nameof(TriggerEvent.CardPlayed)),
-        ],
-    };
 
     // ── ids, counters and shorthands ──────────────────────────────────────────────────────────────────────
     //
@@ -97,7 +60,6 @@ public static class BossRelicRules
     public const string SealedStrikeId = "sealed_strike";
     public const string TestimonySealId = "testimony_seal";
     public const string ConcludedStrikeId = "concluded_strike";
-    public const string HeldEnergyId = "held_energy";
     public const string DefusedIntentId = "defused_intent";
 
     private static readonly TagId RibbonedMark = new("ribboned");
@@ -410,11 +372,10 @@ public static class BossRelicRules
 
     // Energy asked for while the pool may be full: held, and paid when the holder runs dry (see HeldEnergy).
     private static IEffectNode<TContext> Hold<TContext>(int amount) where TContext : class =>
-        Hold<TContext>(new ConstantExpression<TContext>(amount));
+        Converter.HeldEnergy.Hold<TContext>(amount);
 
     private static IEffectNode<TContext> Hold<TContext>(ICombatExpression<TContext, int> amount)
-        where TContext : class =>
-        new ApplyStatusNode<TContext>(Self, new StatusDefinitionId(HeldEnergyId), amount);
+        where TContext : class => Converter.HeldEnergy.Hold(amount);
 
     // Energy asked for at a moment the pool is known to have room — the holder has just run out.
     private static IEffectNode<TContext> Energy<TContext>(int amount) where TContext : class =>
@@ -900,7 +861,7 @@ public static class BossRelicRules
                 [
                     new ConditionalEffectNode<CardsDrawnTriggeredEffectContext>(
                         Counter<CardsDrawnTriggeredEffectContext>(ErrataOwed, ComparisonOperator.Equal, 1),
-                        Energy<CardsDrawnTriggeredEffectContext>(1)),
+                        Hold<CardsDrawnTriggeredEffectContext>(1)),
                     new ConditionalEffectNode<CardsDrawnTriggeredEffectContext>(
                         Counter<CardsDrawnTriggeredEffectContext>(ErrataOwed, ComparisonOperator.Equal, 2),
                         Block<CardsDrawnTriggeredEffectContext>(6)),
@@ -1100,7 +1061,7 @@ public static class BossRelicRules
                                 NonJunkPlayedLastTurn<CardsDrawnTriggeredEffectContext>(),
                                 ComparisonOperator.LessOrEqual,
                                 new ConstantExpression<CardsDrawnTriggeredEffectContext>(2)),
-                            Energy<CardsDrawnTriggeredEffectContext>(1),
+                            Hold<CardsDrawnTriggeredEffectContext>(1),
                             @else: Draw<CardsDrawnTriggeredEffectContext>(1))))),
                 nameof(TriggerEvent.CardsDrawn)),
         ]);

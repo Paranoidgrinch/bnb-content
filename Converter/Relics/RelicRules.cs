@@ -48,7 +48,7 @@ public static class RelicRules
                 new DealDamageNode<CardsDrawnTriggeredEffectContext>(
                     CombatantTargetSelectors.Source, new ConstantExpression<CardsDrawnTriggeredEffectContext>(6),
                     ignoresBlock: true, kind: DamageKind.DamageOverTime),
-                Energy<CardsDrawnTriggeredEffectContext>(1),
+                HeldEnergy.Hold<CardsDrawnTriggeredEffectContext>(1),
                 Draw<CardsDrawnTriggeredEffectContext>(1),
             ]), nameof(TriggerEvent.CardsDrawn));
 
@@ -58,7 +58,8 @@ public static class RelicRules
     public static readonly StatusData RootboundStaff =
         Once("rootbound_walking_staff", "Rootbound Walking Staff", "The road rested you.",
             new CausalSequenceEffectNode<CardsDrawnTriggeredEffectContext>(
-                [Energy<CardsDrawnTriggeredEffectContext>(1), Block<CardsDrawnTriggeredEffectContext>(6)]),
+                [HeldEnergy.Hold<CardsDrawnTriggeredEffectContext>(1),
+                 Block<CardsDrawnTriggeredEffectContext>(6)]),
             nameof(TriggerEvent.CardsDrawn));
 
     // "At the start of your turn, draw 1 additional card."
@@ -91,7 +92,8 @@ public static class RelicRules
     public static readonly StatusData BindersAwl =
         Once("binders_awl", "Binder's Awl", "The rebinding pays once.",
             new CausalSequenceEffectNode<CardsDrawnTriggeredEffectContext>(
-                [Energy<CardsDrawnTriggeredEffectContext>(1), Draw<CardsDrawnTriggeredEffectContext>(1)]),
+                [HeldEnergy.Hold<CardsDrawnTriggeredEffectContext>(1),
+                 Draw<CardsDrawnTriggeredEffectContext>(1)]),
             nameof(TriggerEvent.CardsDrawn));
 
     // "If you end your turn with at least 1 unspent Energy, gain 5 Block." The Block is granted after the
@@ -398,15 +400,20 @@ public static class RelicRules
     // "The first time each turn a card leaves your hand without being played, gain 4 Block." A card leaving
     // unplayed is not an event a rule can hear, so it pays at the turn's end when the hand is discarded —
     // the moment that is almost always about. See ADAPTATIONS.
+    //
+    // The hand is READ as it stands, at the draw and after each card played, because a turn-end program no
+    // longer has one: the engine's discard handler is registered ahead of the turn-end triggers, so the test
+    // this rule used to make ("is anything still in hand?") was answered "no" every single time.
     public static readonly StatusData ConservatorsThread = Rule(
         "conservators_thread", "Conservator's Thread",
         "What you set aside at the end of a turn guards you next turn.",
-        [Trigger(new EffectProgram<TurnEndedTriggeredEffectContext>(
+        [Trigger(new EffectProgram<CardsDrawnTriggeredEffectContext>(
+            RecordHand<CardsDrawnTriggeredEffectContext>()), nameof(TriggerEvent.CardsDrawn)),
+         Trigger(new EffectProgram<CardPlayedTriggeredEffectContext>(
+            RecordHand<CardPlayedTriggeredEffectContext>()), nameof(TriggerEvent.CardPlayed)),
+         Trigger(new EffectProgram<TurnEndedTriggeredEffectContext>(
             new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
-                new ComparisonExpression<TurnEndedTriggeredEffectContext>(
-                    new CombatantZoneCardCountExpression<TurnEndedTriggeredEffectContext>(
-                        CombatantTargetSelectors.Source, CardZone.Hand),
-                    ComparisonOperator.Greater, new ConstantExpression<TurnEndedTriggeredEffectContext>(0)),
+                Counter<TurnEndedTriggeredEffectContext>("thread_hand", ComparisonOperator.Greater, 0),
                 SetCounter<TurnEndedTriggeredEffectContext>("thread_owed", 1))),
             nameof(TriggerEvent.TurnEnded)),
          Trigger(new EffectProgram<CardsDrawnTriggeredEffectContext>(
@@ -455,7 +462,7 @@ public static class RelicRules
         "The first draw of each turn pays an Energy.",
         [Trigger(new EffectProgram<CardsDrawnTriggeredEffectContext>(
             OnceEachTurn<CardsDrawnTriggeredEffectContext>("iron_astrolabe",
-                Energy<CardsDrawnTriggeredEffectContext>(1))), nameof(TriggerEvent.CardsDrawn)),
+                HeldEnergy.Hold<CardsDrawnTriggeredEffectContext>(1))), nameof(TriggerEvent.CardsDrawn)),
          ClearLatch("iron_astrolabe")]);
 
     // "At the start of your turn, lose 3 HP; your next card that turn costs 1 less." Taken every turn rather
@@ -747,6 +754,13 @@ public static class RelicRules
         new SetCombatantCounterNode<TContext>(
             CombatantTargetSelectors.Source, new CounterId(id),
             new ConstantExpression<TContext>(value), relative: false);
+
+    // What the hand holds right now, written down for the turn's end to read.
+    private static IEffectNode<TContext> RecordHand<TContext>() where TContext : class =>
+        new SetCombatantCounterNode<TContext>(
+            CombatantTargetSelectors.Source, new CounterId("thread_hand"),
+            new CombatantZoneCardCountExpression<TContext>(CombatantTargetSelectors.Source, CardZone.Hand),
+            relative: false);
 
     private static IEffectNode<TContext> Block<TContext>(int amount) where TContext : class =>
         new GainBlockNode<TContext>(CombatantTargetSelectors.Source, new ConstantExpression<TContext>(amount));

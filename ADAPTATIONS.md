@@ -1088,18 +1088,24 @@ Three of these are engine limits rather than choices, and each one bites several
 - **★ Energy promised while the pool is full is HELD, not gained.** A combatant's Energy pool has a hard
   ceiling — the engine clamps every gain to the pool's own max, which in this game is the 3 the turn refills
   to — so "at the start of your turn, gain 1 Energy" lands on a full pool and does nothing whatsoever. The
-  affected boss relics apply a `held_energy` status instead: the point arrives the moment the holder runs
-  dry, so it still buys the extra card the design's numbers are for. Affects Unfinished Docket, Access
-  Seal-Shard, Brass Service Bell, Ivory Number Disc, Borrowed Minute and the Deferred Appointment Book's
-  third turn. **The same ceiling silently voids the Energy halves of four NORMAL relics** (Blood-Stamped
-  Bond, Rootbound Walking Staff, Emergency Inkwell, Archive Key) — they are not part of this pass.
+  affected content applies a `held_energy` status instead (`Converter/HeldEnergy.cs`): the point arrives the
+  moment the holder runs dry, so it still buys the extra card the design's numbers are for.
+
+  Eight boss relics hold their Energy this way — Unfinished Docket, Access Seal-Shard, Brass Service Bell,
+  Ivory Number Disc, Errata Ribbon, Misdated Pocket Watch, Borrowed Minute, and the Deferred Appointment
+  Book's third turn. **The same ceiling had silently voided six pieces of content written earlier**, all
+  fixed in the same pass: the Blood-Stamped Bond, the Rootbound Walking Staff, the Binder's Awl and the Iron
+  Astrolabe (Normal relics — the Astrolabe's whole promise is that Energy), the Called Next boon (Event
+  relic), and the Rite that pays out recorded refusals. Anything that grants Energy MID-turn (the Emergency
+  Inkwell at an empty pool, the Archive Censer when a keyword lands) was never affected and is untouched.
 - **★ A turn-end program cannot see the hand.** `DiscardHandOnTurnEndedHandler` is registered ahead of the
   turn-end triggers, so by the time a relic's end-of-turn rule runs the hand is already in the discard pile.
   The Backlog Counterseal therefore writes the hand down as it stands (at the draw, and after each card
   played) and pays out what was last written; the Red-Ribboned Matter's choice and the Custody Shackle's
   custody both move to the DRAW, with the Shackle letting its card go again the moment the turn turns busy —
-  which is the condition the design states, read from the other end. (The same ordering silently voids the
-  existing Conservator's Thread, which tests a hand that is never there.)
+  which is the condition the design states, read from the other end. **The same ordering had silently voided
+  the Conservator's Thread**, which tested a hand that is never there; it now reads the hand as it stands and
+  is fixed in this pass.
 - **★ "Turn N" is counted per relic.** `turnNumber` counts turns within a ROUND — in a duel the player's turn
   is always turn 1 — so the Deferred Appointment Book, the Brass Service Bell and the Master Release Key
   count their own turns in a counter instead.

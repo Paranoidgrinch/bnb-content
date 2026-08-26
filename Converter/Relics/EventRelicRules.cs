@@ -84,7 +84,8 @@ public static class EventRelicRules
             Trigger(new EffectProgram<CardsDrawnTriggeredEffectContext>(
                 new CausalSequenceEffectNode<CardsDrawnTriggeredEffectContext>(
                 [
-                    Energy<CardsDrawnTriggeredEffectContext>(1),
+                    // Held, not gained: the turn's refill has already filled the pool (see HeldEnergy).
+                    HeldEnergy.Hold<CardsDrawnTriggeredEffectContext>(1),
                     Draw<CardsDrawnTriggeredEffectContext>(1),
                     new RemoveStatusNode<CardsDrawnTriggeredEffectContext>(
                         CombatantTargetSelectors.Source, new StatusDefinitionId("uncalled_ticket_boon")),

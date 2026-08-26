@@ -136,9 +136,9 @@ public static class GeneralWax
                             new CombatantCounterExpression<TurnStartedTriggeredEffectContext>(
                                 CombatantTargetSelectors.Source, RefusalsRecorded),
                             new ConstantExpression<TurnStartedTriggeredEffectContext>(2))),
-                    new GainResourceNode<TurnStartedTriggeredEffectContext>(
-                        CombatantTargetSelectors.Source, StandardCombatIds.EnergyResource,
-                        new ConstantExpression<TurnStartedTriggeredEffectContext>(1)),
+                    // Held, not gained: a turn's Energy is refilled before its triggers run, so a point
+                    // added here would be clamped away (see HeldEnergy).
+                    HeldEnergy.Hold<TurnStartedTriggeredEffectContext>(1),
                     new SetCombatantCounterNode<TurnStartedTriggeredEffectContext>(
                         CombatantTargetSelectors.Source, RefusalsRecorded,
                         new ConstantExpression<TurnStartedTriggeredEffectContext>(0), relative: false),
