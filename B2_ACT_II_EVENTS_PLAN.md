@@ -76,23 +76,83 @@ What the two events need, in the vocabulary that now exists:
 - **15 The Librarian** — "Ask for a forgotten book" → `ConditionalRunEffect` on `removedCardCount > 0`:
   `RestoreRemovedCardRunEffect(ExtraUpgrades: 1, Tags: ["true_name"])`, else a Rare card reward.
 
-## B-2d — the fifteen, and the earliest-stage gate
+## B-2d — the fifteen (NEXT: this is all that is left of B-2)
 
-`Converter/Events/ActTwoEvents.cs`, `AuthoredEvents.For` gains act 2, then Act II's event JSON leaves
-`BabLoader`. The four shapes from B-1 all apply (a run effect now · a marking · a one-fight rule · a promise
-installed by name in `ActTwoEventPrograms`).
+### The shape, and what to copy
 
-⚠ **Earliest Stage N is not expressible.** Every Act-II event carries one (Misfiled Prophecy 2 … The Necrology
-Window 9), and `MapGenerationSpec.NodeRefPools` draws refs without any notion of depth — a stage-1 node can
-open the Librarian. Either add a per-ref minimum row to the spec (the third seam of this block) or note the
-gate as unhonoured. The pools already draw WITHOUT replacement, so the seam is a filter at draw time.
+Mirror B-1 exactly — that pass is the worked example, and every piece of it has a twin here:
 
-Events needing more than the vocabulary above:
-- **3, 13** "the first fourth card each turn Redacts a random remaining hand card" — a per-turn card-play count.
-- **4, 7** Borrower's Keeping / Reservation — done in B-2a; the permanent upgrade on victory is a run program.
-- **11 The Necrology Window** — "the primary enemy's first lethal event returns it once at 30 % Max HP" is the
-  engine's pre-down interceptor (the Appellate Phantom's Remand is the same shape), installed for one fight.
-  "Waits through ineligible Elite/Boss nodes" needs a run program that only fires on a normal combat.
-- **13 The Last Quiet Table** — the Vow is a cap on non-Junk cards per turn, and breaking it only forfeits.
-- **15 The Librarian** — "enemies have 25 % less Max HP, no Gold, one extra card reward" is Act I's Expedited
-  Route plus the Sealed Back Door's extra reward; both already exist as Act-I programs to copy.
+| B-1 (Act I, done) | B-2d (Act II, to write) |
+|---|---|
+| `Converter/Events/ActOneEvents.cs` | `Converter/Events/ActTwoEvents.cs` |
+| `Converter/Events/ActOneEventPrograms.cs` | `Converter/Events/ActTwoEventPrograms.cs` |
+| `AuthoredEvents.For` returns Act I's | …gains `act == ActTwoEvents.Act ? ActTwoEvents.All(pools, rng) : []` |
+| `BabLoader` dropped `events/act_1_city_events.json` | drop `events/act_2_archives_events.json` — then `Many<BabEvent>` loads NOTHING and the whole ported-event path (`EventMapper`, `BabEvent`, `PoolsFor`) can go |
+| `Tests/EventStory.cs` + `ActOneEventTests` + `ActOneEventLiveTests` | the same three; `EventStory` needs an ARCHIVES fight (it hardcodes `form_rat_a`) — give it the enemy/intent as parameters, or copy `ArchiveProbe`'s `dead_letter_ouroboros` / `self_addressed_notice` |
+
+An event says its thing in one of four ways, all of which now exist:
+1. **a run effect now** — gold, a card removed/transformed/upgraded, a relic taken, a card recovered;
+2. **something written on one card for ONE fight** — `ActTwoEventObjects` (Misfiled, Redacted, Borrower's
+   Keeping, Reservation) + `Openings.NextCombat(Applies(ArchiveMarkings))` + the expire program;
+3. **a one-fight RULE** — a status the next fight opens with;
+4. **a lasting PROMISE** — an authored run program installed by name (`fx.installProgramById`).
+
+⚠ **An event that writes Misfiled must also open the fight with `ActTwo.ArchiveRegulations`** — that is the
+rule which takes a misfiled card back as it reaches your hand, and it is otherwise only installed by the
+enemies that misfile. It is idempotent by construction, so installing it twice is free.
+
+### The fifteen, branch by branch (canon: `BnB_Final_Events_Master_PostAudit.md` §ACT II)
+
+| # · Event (earliest stage) | Branches | Beyond the vocabulary |
+|---|---|---|
+| 1 · Misfiled Prophecy (2) | transform 1 + a different card begins Misfiled · give 1 card **Authorized Revision** + Unfinished Citation into next combat's discard | — |
+| 2 · The Self-Correcting Index (6) | upgrade 2, one of them begins Redacted · remove 1, up to 2 others begin Misfiled | — |
+| 3 · The Locked Reading Room (4) | **Rare** card reward + next combat: the first FOURTH card each turn Redacts a random other hand card · pay 40 Gold, give 1 card **Illuminated Initial** · heal 20 % | the fourth-card rule (see below) · a RARE-only reward pool |
+| 4 · The Perpetual Borrower (7) | lend a card → **Borrower's Keeping**, and victory upgrades the original · choose 1 of 3 Uncommon cards + Borrower's Claim · pay 60 Gold, heal 15 %, upgrade 1 · **Unreturned Library Card** + lose 8 % max HP + Borrower's Claim | the victory upgrade is a run program (Act I's `UnderReviewReturns` is the model) · rarity-filtered reward pools |
+| 5 · The Reciprocal Shelf (2) | transform 1 + 50 Gold · card reward + a different card begins Misfiled **and** Redacted (if none eligible: 1 Paperwork instead) · **Reversible Shelf Label** + 1 random card Misfiled in each of the next 2 combats | "each of the next 2" = Act I's `WrongFormAgain` shape |
+| 6 · The Margin Notes (3) | give 2 cards **Concordant Pair** · give 1 card **Illuminated Initial** · upgrade 1 + Redacted Leaf into next combat | the Pair needs ONE choice tagging TWO cards — `ForEachCardRunEffect(Choose(2), [TagThisCard])` |
+| 7 · Unclaimed Reservation (7) | choose 1 of 3 Uncommon + it begins next combat in **Reservation** · heal 25 % · 70 Gold + one opening-hand card cannot be played until another is | the "locked until another is played" card |
+| 8 · The Infinite Return Slot (7) | remove 1 + 40 Gold (the removal writes the history by itself) · **`RestoreRemovedCardRunEffect()`** + Borrower's Claim into next combat | ✅ B-2c |
+| 9 · The Redacted Portrait (5) | pay 100 Gold → **Blank Cameo** · give 1 card **True Name** · heal 15 % | — |
+| 10 · The Lost-Hour Bottle (8) | next combat R1 +1 Energy, R2 +1, R3 −2 · give 1 card **Late-Bound** | the Energy must be HELD (`HeldEnergy`), never gained — Act I's `RestrictedPublicHours` is the model |
+| 11 · The Necrology Window (9) | heal 35 % + next normal combat the primary enemy returns once at 30 % max HP, then +75 Gold on victory · lose 8 HP, remove 1, upgrade another (unavailable if lethal) | the revive is the engine's **pre-down interceptor** (the Appellate Phantom's Remand is the same shape) · "waits through ineligible Elite/Boss nodes" needs a program that only fires on a normal combat |
+| 12 · The Almost-Helpful Clerk, Reassigned (1) | a card begins Redacted; playing it while Redacted upgrades it after victory · next combat prevents the first enemy marker + 35 Gold · heal 20 % | "played while still Redacted" needs a combat counter the run reads (Act I's Receipt is the mirror trick) |
+| 13 · The Last Quiet Table (4) | the **Vow**: win a combat never playing >3 non-Junk cards in a turn → **Vow Bead** · **Rare** card reward + Redacted Leaf in the opening hand + the fourth-card rule · heal 25 % | the Vow is a combat counter (highest non-Junk count in any turn) the run reads on victory |
+| 14 · The Inward Seal (7) | **Inverted Sealstone** + 2 cards begin Misfiled **and** Redacted · upgrade 2, one begins Redacted and the other Misfiled · +8 max HP + next combat opens with 2 Paperwork and 1 Doubt | — |
+| 15 · The Librarian at the End of the Aisle (8 · Rare) | if the history has entries: `RestoreRemovedCardRunEffect(ExtraUpgrades: 1, Tags: ["true_name"])`, else a **Rare** card reward · remove 1 + heal 15 % · next normal combat: enemies −25 % max HP, no Gold, one extra card reward | branch 1 is a `ConditionalRunEffect` on `removedCardCount` ✅ B-2c · branch 3 is Act I's Expedited Route + the Sealed Back Door's extra reward, both already written |
+
+Recurring pieces worth building ONCE, in `ActTwoEventPrograms`:
+- **the markings expire** after the fight that honoured them (Act I's `MarkingsExpire`, with
+  `ActTwoEventObjects.SpentAfterOneFight()`);
+- **the inscriptions' rules install in every later fight** (Act I's `CertifiedOriginal`, one per inscription —
+  or one program applying all five rules, since a card without the tag makes each rule a no-op);
+- **the victory upgrade** of a lent / redacted card (Act I's `UnderReviewReturns`);
+- **again next fight** (Act I's `WrongFormAgain`);
+- **no Gold** (Act I's `GarnishedReward` + `GarnishThePurse`);
+- **an extra card reward** (Act I's `ExtraCardReward`).
+
+### The two things still unbuilt
+
+⚠ **1. Earliest Stage N is not expressible.** Every Act-II event carries one, and
+`MapGenerationSpec.NodeRefPools` draws refs with no notion of depth — a stage-1 node can open the Librarian
+today. The pools already draw WITHOUT replacement, so the seam is a filter at draw time: a per-ref minimum
+row on the spec (`NodeRefMinimumRows`, ref id → row), honoured in `RuleBasedMapGenerator` where it picks a
+ref. Act I has no such gate, so nothing existing changes. Decide: build the seam, or write the gate down as
+unhonoured in ADAPTATIONS.
+
+⚠ **2. A RARE-only card reward.** Three branches ask for one; `ConversionPools.CardRewardSource()` draws
+uniformly from the whole act pool. A `CardRewardSource(rarity)` overload is content-side and small.
+
+### Traps (all paid for already — do not re-derive)
+
+- A run is rebuilt from its own answers under the **replay model**: a tag written straight onto `session.Run`
+  is written away again. Always go through a real event choice, then the fight.
+- **Energy above the pool max is impossible** — hold it (`HeldEnergy`).
+- **A turn-end program cannot see the hand** — the discard runs first. Write the hand down at the draw.
+- **`turnNumber` counts turns within a ROUND** — use `roundNumber`.
+- **Static field initializers run in declaration order**: ids, counters and shared arrays go ABOVE the rules
+  that name them (this bit once already in `ActTwoEventObjects`).
+- A **CombatNodeModel has no mark filter** — a card program that must find a card by a per-copy mark is
+  written with raw engine nodes and set on `CardData.Program` in `Compile()` (the Unfinished Citation does
+  exactly this).
+- A **same-zone move only repositions with `ZonePlacement.Top`**; Bottom is still a no-op.
