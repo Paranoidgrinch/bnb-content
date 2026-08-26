@@ -107,6 +107,11 @@ public static class ActTwoEventObjects
     public static IReadOnlyList<string> SpentAfterOneFight() =>
         [ActTwo.MisfiledMark, ActTwo.RedactedMark, BorrowersKeeping, Reservation];
 
+    // Everything the archive can write on one of your cards. A rule that undoes the archive's work — True
+    // Name, the Blank Cameo — has to name them all, so they are named once, here.
+    public static IReadOnlyList<string> ArchiveMarks() =>
+        [ActTwo.MisfiledMark, ActTwo.RedactedMark, ActTwo.MisfiledSidewaysMark, .. References];
+
     public const string ArchiveMarkings = "act_two_markings";
 
     public static readonly StatusData ArchiveMarkingsRule = Rule(
@@ -462,9 +467,7 @@ public static class ActTwoEventObjects
                     Overwritten(),
                     new CausalSequenceEffectNode<CardsDrawnTriggeredEffectContext>(
                     [
-                        .. new[] { ActTwo.MisfiledMark, ActTwo.RedactedMark, ActTwo.MisfiledSidewaysMark }
-                            .Concat(References)
-                            .Select(Unmark),
+                        .. ArchiveMarks().Select(Unmark),
                         // A redaction is a mark AND the halving beside it; striking off only the mark would
                         // leave the card quietly worth half.
                         ScaleIterated<CardsDrawnTriggeredEffectContext>(1, 1),
@@ -479,8 +482,7 @@ public static class ActTwoEventObjects
             new ComparisonExpression<CardsDrawnTriggeredEffectContext>(
                 new ConstantExpression<CardsDrawnTriggeredEffectContext>(0), ComparisonOperator.Equal,
                 new ConstantExpression<CardsDrawnTriggeredEffectContext>(1));
-        foreach (var mark in new[] { ActTwo.MisfiledMark, ActTwo.RedactedMark, ActTwo.MisfiledSidewaysMark }
-            .Concat(References))
+        foreach (var mark in ArchiveMarks())
         {
             any = new OrExpression<CardsDrawnTriggeredEffectContext>(any,
                 new CardInstanceHasMarkExpression<CardsDrawnTriggeredEffectContext>(

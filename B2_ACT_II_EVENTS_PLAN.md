@@ -40,17 +40,24 @@ yet. So it is built in four steps, and the first is done.
 - A borrowed/reserved card comes back Retaining and free, but **not combat-upgraded**: an in-combat upgrade
   would have to transform a card into its own `<id>+`, which no node can name.
 
-## B-2b — the five Act-II event relics
+## ✅ B-2b — the five Act-II event relics (DONE)
 
-`Converter/Relics/EventRelics.cs` gets an `ActII` list (the Act-I six are the model). From the master §ACT II:
+`Converter/Relics/EventRelics.cs` §ActII + `Converter/Relics/ActTwoEventRelicRules.cs`, tested live in
+`Tests/ActTwoEventRelicTests.cs` — each relic taken at a real door, so the test exercises the relic's own run
+program installing its rule as the fight opens.
 
-| Relic | Source branch |
-|---|---|
-| **Unreturned Library Card** | The Perpetual Borrower — Pocket the borrower's library card |
-| **Reversible Shelf Label** | The Reciprocal Shelf — Take the loose shelf label |
-| **Blank Cameo** | The Redacted Portrait — Restore the missing face |
-| **Vow Bead** | The Last Quiet Table — win without breaking the Vow |
-| **Inverted Sealstone** | The Inward Seal — Break the seal outward |
+| Relic | Source branch | Adaptation |
+|---|---|---|
+| **Unreturned Library Card** | The Perpetual Borrower — Pocket the library card | the Exhaust half is dropped (a card Exhausts by DEFINITION) |
+| **Reversible Shelf Label** | The Reciprocal Shelf — Take the loose shelf label | it remembers the **copy**, not the name — nothing can hold a name or compare one later |
+| **Blank Cameo** | The Redacted Portrait — Restore the missing face | the protection is a **correction**, struck off at the next round's start, like True Name |
+| **Vow Bead** | The Last Quiet Table — complete the Vow | the opt-in **cap is dropped**; a cap the player takes each turn would be a prompt every turn, and breaking the Vow costs nothing anyway — the Bead just notices restraint |
+| **Inverted Sealstone** | The Inward Seal — Break the seal outward | the card comes home at the **next draw**, not mid-play: the play puts the card where it belongs after the trigger has run |
+
+★ **The two remembering relics pay for the turn-end blindness.** A turn-end program cannot see the hand
+(`DiscardHandOnTurnEndedHandler` runs first), so "the card you did not play" is written down while it is still
+true: the hand is marked as it is dealt, each played card loses the mark as it is played, and what is still
+marked in the discard pile when the turn ends is exactly what was held and never used.
 
 ## B-2c — Removed History
 
