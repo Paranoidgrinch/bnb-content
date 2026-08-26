@@ -1080,3 +1080,42 @@ are built. What was read differently:
 - **Define the Applicable Case issues an ordinary citation.** Its "display 2 candidates and let the player
   choose" needs a picker over cards restricted to a marked subset, which the engine does not have — the same
   gap the Warden's sealing works around with an option list, and not worth a second bespoke prompt here.
+
+## Boss relics (BnB_Final_Relics_Master_PostAudit.md §6)
+
+Three of these are engine limits rather than choices, and each one bites several relics at once.
+
+- **★ Energy promised while the pool is full is HELD, not gained.** A combatant's Energy pool has a hard
+  ceiling — the engine clamps every gain to the pool's own max, which in this game is the 3 the turn refills
+  to — so "at the start of your turn, gain 1 Energy" lands on a full pool and does nothing whatsoever. The
+  affected boss relics apply a `held_energy` status instead: the point arrives the moment the holder runs
+  dry, so it still buys the extra card the design's numbers are for. Affects Unfinished Docket, Access
+  Seal-Shard, Brass Service Bell, Ivory Number Disc, Borrowed Minute and the Deferred Appointment Book's
+  third turn. **The same ceiling silently voids the Energy halves of four NORMAL relics** (Blood-Stamped
+  Bond, Rootbound Walking Staff, Emergency Inkwell, Archive Key) — they are not part of this pass.
+- **★ A turn-end program cannot see the hand.** `DiscardHandOnTurnEndedHandler` is registered ahead of the
+  turn-end triggers, so by the time a relic's end-of-turn rule runs the hand is already in the discard pile.
+  The Backlog Counterseal therefore writes the hand down as it stands (at the draw, and after each card
+  played) and pays out what was last written; the Red-Ribboned Matter's choice and the Custody Shackle's
+  custody both move to the DRAW, with the Shackle letting its card go again the moment the turn turns busy —
+  which is the condition the design states, read from the other end. (The same ordering silently voids the
+  existing Conservator's Thread, which tests a hand that is never there.)
+- **★ "Turn N" is counted per relic.** `turnNumber` counts turns within a ROUND — in a duel the player's turn
+  is always turn 1 — so the Deferred Appointment Book, the Brass Service Bell and the Master Release Key
+  count their own turns in a counter instead.
+- **The Municipal Dragon's two writs fire themselves.** The design gives them a free action the holder spends;
+  the engine has no player-activated relic, so each fires at the moment it would have been spent — the first
+  time in a fight the holder runs out of Energy with cards still in hand. The Civic Entry Warrant strips the
+  enemies' standing Block rather than ignoring it, which is the same outcome for the turn it is spent in.
+- **The Inspector's Brass Charter ships as its Block half.** Revealing an enemy's *following* intent is a
+  frontend affordance the engine does not carry.
+- **The Margin of Appeal defuses an intent instead of replacing it.** Choosing what an enemy does instead is
+  not something a relic can reach — intents are the enemy's own rotation — so once per combat the enemies'
+  next turn deals half damage.
+- **The Custody Shackle takes the first card in hand, not the dearest.** There is no "the highest-cost card in
+  this zone" expression.
+- **The Identity Writ watches types, not names.** Nothing in a fight remembers which card NAMES have been
+  played; the stats it keeps are per turn and per type. The repeat that counts is the second card of the same
+  type in a turn.
+- **The Closure Writ heals a quarter of what is MISSING, capped at 10.** The run layer does not track how much
+  health a particular fight cost.

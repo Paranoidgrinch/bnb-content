@@ -82,6 +82,9 @@ public static class MapSpecBuilder
             KindWeights = rules.KindWeights,
             Encounters = new EncounterDistribution { ByRole = byRole },
             VictoryRewards = VictoryRewards(pools),
+            // A boss pays out what its ROLE pays plus one of its own three relics — so the payout has to be
+            // stated per boss rather than per role (docs: BnB_Final_Relics_Master_PostAudit.md §6).
+            VictoryRewardsByEncounter = BossRewards(data, pools, act),
             // A treasure only bites where the act HAS a mimic to field (5 / 10 / 15 / 20 % across the acts,
             // from the act's own manifest); a chance without a candidate would fail generation.
             TreasureMimicChancePercent = byRole.ContainsKey(MapNodeKind.Mimic) ? MimicChance(act) : 0,
@@ -108,6 +111,41 @@ public static class MapSpecBuilder
                 [ShopId(act)] = ShopTemplate.Build(data, pools, rng),
             },
         };
+    }
+
+    // Each boss of this act: its role's gold and card offer, and then ONE of its own three relics at random,
+    // taken without a choice screen — a single-offer reward the player does not pick from.
+    private static Dictionary<string, MapVictoryReward> BossRewards(
+        BabData data, ConversionPools pools, BabActManifest act)
+    {
+        var rewards = new Dictionary<string, MapVictoryReward>();
+        foreach (var boss in data.Encounters.Where(e => e.Act == act.Act && e.Role == "boss"))
+        {
+            var three = Relics.BossRelics.For(boss.Name);
+            if (three.Count == 0)
+                throw new ConversionException($"boss '{boss.Id}'", $"no boss relics are authored for '{boss.Name}'");
+
+            var (min, max) = Gold[MapNodeKind.Boss];
+            rewards[boss.Id] = new MapVictoryReward(new FixedRewardSource(
+            [
+                new RewardOffer("spoils",
+                [
+                    new ChangeResourceRunEffect(StandardRunIds.Gold, min, max),
+                    new OfferRewardRunEffect(new RewardId($"cards:{boss.Id}"), pools.CardRewardSource(), 1),
+                    new OfferRewardRunEffect(
+                        new RewardId($"relic:{boss.Id}"),
+                        new PoolRewardSource(
+                            new RunPool<RewardOffer>(three
+                                .Select(relic => new RunPool<RewardOffer>.Entry(
+                                    new RewardOffer($"relic-{relic.Id}",
+                                        [new AddRelicByIdRunEffect(new RelicId(relic.Id))]), 1))
+                                .ToList()),
+                            1),
+                        1),
+                ]),
+            ]));
+        }
+        return rewards;
     }
 
     private static int MimicChance(BabActManifest act) =>
