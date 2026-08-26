@@ -9,7 +9,7 @@ public class EventAndRelicMappingTests
 {
     private static readonly BabData Data = BabData.Load(TestData.Directory);
     private static readonly IReadOnlyList<MappedRelic> Relics = Data.Relics.Select(RelicMapper.Map).ToList();
-    private static readonly ConversionPools Pools = ConversionPools.Build(Data, Relics);
+    private static readonly ConversionPools Pools = ConversionPools.Build(Data, Relics, act: 1);
 
     [Fact]
     public void Every_relic_converts()

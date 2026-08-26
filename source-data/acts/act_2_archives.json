@@ -67,8 +67,8 @@
     "width": 4
   },
   "treasure": {
-    "mimic_chance": 0.05,
-    "mimic_encounter_id": "archive_mimic_01"
+    "mimic_chance": 0.1,
+    "mimic_encounter_id": "archives_mimic_01"
   },
   "waiting_room": {
     "heal_percent": 25

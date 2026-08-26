@@ -13,7 +13,7 @@ public class ShopRelicLiveTests
 {
     private static readonly BabData Data = BabData.Load(TestData.Directory);
     private static readonly IReadOnlyList<MappedRelic> Relics = Data.Relics.Select(RelicMapper.Map).ToList();
-    private static readonly ConversionPools Pools = ConversionPools.Build(Data, Relics);
+    private static readonly ConversionPools Pools = ConversionPools.Build(Data, Relics, act: 1);
     private static readonly RunResourceId Gold = StandardRunIds.Gold;
 
     private static ShopDefinition CityShop() => ShopTemplate.Build(Data, Pools, new Random(7));

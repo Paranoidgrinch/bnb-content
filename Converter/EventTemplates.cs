@@ -5,41 +5,40 @@ using BnbContent.Converter.Relics;
 
 namespace BnbContent.Converter;
 
-// The authored non-combat stops of Act I: the waiting room (rest), the sealed evidence crate (treasure) and
-// the city shop. Written once here and referenced by the generated map's NodeRefs — they used to be created
-// inline while baking a fixed map.
+// The authored non-combat stops of an act: its campfire (rest), its treasure room and its shop. The SHAPE is
+// shared — heal a percentage, open a container for a relic, two shelves and a reroll — while the room the
+// player is standing in is the act's own (ActRules). Referenced by the generated map's NodeRefs.
 public static class EventTemplates
 {
-    public static EventScript Treasure(ConversionPools pools, string where) => new("start",
+    internal static EventScript Treasure(ConversionPools pools, string where, ActRules act) => new("start",
     [
-        new EventSituation("start",
-            "A sealed evidence crate, stamped in three colors of wax. Nobody has claimed it in decades.",
+        new EventSituation("start", act.TreasureText,
         [
             new EventChoice("open",
             [
                 new OfferRewardRunEffect(new RewardId($"{where}:relic"), pools.RelicGrantSource(null, where), 1),
-            ], TextKey: "Break the seals"),
-            new EventChoice("leave", [], TextKey: "Leave it for the archivists"),
+            ], TextKey: act.TreasureOpenText),
+            new EventChoice("leave", [], TextKey: act.TreasureLeaveText),
         ]),
     ]);
 
-    public static EventScript Rest(int healPercent) => new("start",
+    internal static EventScript Rest(int healPercent, ActRules act) => new("start",
     [
-        new EventSituation("start",
-            "The waiting room. The chairs are terrible, but nobody can reach you here.",
+        new EventSituation("start", act.RestText,
         [
             new EventChoice("rest",
             [
                 new ComputedHealRunEffect(RunExpr.Divide(
                     RunExpr.Add(RunExpr.Multiply(RunExpr.MaxHealth, RunExpr.Const(healPercent)), RunExpr.Const(99)),
                     RunExpr.Const(100))),
-            ], TextKey: $"Wait it out (heal {healPercent}% of max HP)"),
-            new EventChoice("leave", [], TextKey: "Skip the queue"),
+            ], TextKey: $"{act.RestChoiceText} (heal {healPercent}% of max HP)"),
+            new EventChoice("leave", [], TextKey: "Move on"),
         ]),
     ]);
 
-    // The city shop: five rarity-weighted cards at the original's base prices, two relics (pickup
-    // effects bundled), the card-removal service, and a paid reroll.
+    // The act's shop: five rarity-weighted cards at the original's base prices, two relics (pickup effects
+    // bundled), the card-removal service, and a paid reroll. Its STOCK is the act's own — the pools it is
+    // built from are gated to the act the shop stands in.
 }
 
 public static class ShopTemplate

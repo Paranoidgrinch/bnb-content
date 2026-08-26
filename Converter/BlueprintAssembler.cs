@@ -8,17 +8,21 @@ namespace BnbContent.Converter;
 // layout per run), the character roster, the presentation manifest. One call, deterministic per seed.
 public static class BlueprintAssembler
 {
-    public const string GameTitle = "Bureaucrats & Broomsticks — Act I: The Old City Offices";
+    // The GAME's title. Which act the player is in is the act's own NameKey ("Act I: The Old City Offices",
+    // "Act II: The Endless Archives"), carried per act in RunBlueprint.Acts — a run crosses more than one, so
+    // the title cannot name one of them.
+    public const string GameTitle = "Bureaucrats & Broomsticks";
 
     public static RunBlueprint Build(BabData data, int seed)
     {
         var relics = data.Relics.Select(RelicMapper.Map).ToList();
-        var pools = ConversionPools.Build(data, relics);
-        // One set of map rules PER ACT, each drawing only from its own act. The run is one walk across all of
-        // them: the engine lays every act out at run start (RunSetup.BuildActPlan, its own seed per act) and
-        // advances by itself when an act's boss falls.
+        // One set of card pools and one set of map rules PER ACT, each drawing only from its own act. The run
+        // is one walk across all of them: the engine lays every act out at run start (RunSetup.BuildActPlan,
+        // its own seed per act) and advances by itself when an act's boss falls.
+        var pools = data.Acts.ToDictionary(a => a.Act, a => ConversionPools.Build(data, relics, a.Act));
         var maps = data.Acts
-            .Select((act, index) => (Act: act, Map: MapSpecBuilder.Build(data, pools, seed + index, act)))
+            .Select((act, index) =>
+                (Act: act, Map: MapSpecBuilder.Build(data, pools[act.Act], seed + index, act)))
             .ToList();
 
         // Only enemies an encounter actually fields contribute action definitions.
@@ -26,7 +30,8 @@ public static class BlueprintAssembler
         var enemies = data.Enemies.Where(e => referencedEnemies.Contains(e.Id)).ToList();
         var enemiesById = data.Enemies.ToDictionary(e => e.Id);
 
-        var events = data.Events.ToDictionary(e => e.Id, e => EventMapper.Map(e, pools));
+        // An event offers what its OWN act offers — the archives' doors do not hand out city commons.
+        var events = data.Events.ToDictionary(e => e.Id, e => EventMapper.Map(e, PoolsFor(pools, e)));
         foreach (var (_, actMap) in maps)
             foreach (var (id, script) in actMap.Events)
                 events[id] = script;
@@ -84,10 +89,19 @@ public static class BlueprintAssembler
             Shops = maps.SelectMany(m => m.Map.Shops).ToDictionary(e => e.Key, e => e.Value),
             Start = start,
             Characters = [new RunCharacter(data.Bureaucrat.Id, start)],
-            MetaRules = [new MetaRule([RunResult.Victory], [new SetMetaFlag("bnb.act1.cleared")])],
+            // Victory now means the WHOLE run — the city and the archives behind it. (The engine's meta rules
+            // key off the run's result; a per-act flag would need an act-completed hook that is not data yet.)
+            MetaRules = [new MetaRule([RunResult.Victory], [new SetMetaFlag("bnb.run.cleared")])],
             Presentation = BuildPresentation(data, relics, enemies),
         };
     }
+
+    // The pools of the act an event belongs to. An event whose act the run does not walk is a content bug —
+    // it would otherwise silently offer another act's cards.
+    private static ConversionPools PoolsFor(IReadOnlyDictionary<int, ConversionPools> pools, BabEvent babEvent) =>
+        pools.TryGetValue(babEvent.Act, out var forAct)
+            ? forAct
+            : throw new ConversionException($"event '{babEvent.Id}'", $"belongs to act {babEvent.Act}, which the run does not walk");
 
     private static PresentationManifest BuildPresentation(
         BabData data, IReadOnlyList<MappedRelic> relics, IReadOnlyList<BabEnemy> enemies) => new()

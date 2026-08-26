@@ -10,16 +10,21 @@ namespace BnbContent.Converter;
 // The reward pool is the FINAL Bureaucrat pool, gated by Act as the design sheet gates it: reaching Act N
 // makes every card gated at N or earlier offerable. Starters and Junk are never offered. Rarity weighting is
 // a balance question and is deliberately still flat — see the design's deferred balance pass.
+//
+// There is one instance PER ACT, and every offer an act makes — its fights' card rewards, its shop's shelves,
+// its treasure rooms, the events that belong to it — is built from that act's pool. An Act-II fight handing
+// out Act-I commons would make the archives read like the city.
 public sealed class ConversionPools
 {
-    public const int Act = 1;
+    public required int Act { get; init; }
 
     public required IReadOnlyList<Cards.CardAuthoring.BnbCard> RewardCards { get; init; }
     public required IReadOnlyList<MappedRelic> Relics { get; init; }
 
-    public static ConversionPools Build(BabData data, IReadOnlyList<MappedRelic> relics) => new()
+    public static ConversionPools Build(BabData data, IReadOnlyList<MappedRelic> relics, int act) => new()
     {
-        RewardCards = Cards.FinalCards.RewardPool(Act),
+        Act = act,
+        RewardCards = Cards.FinalCards.RewardPool(act),
         Relics = relics
             .Where(r => EligibleForEvents(r, data.Bureaucrat.Id))
             .ToList(),

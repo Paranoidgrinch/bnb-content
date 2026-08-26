@@ -30,61 +30,6 @@ public static class MapSpecBuilder
         return parts.Length == 3 ? parts[2] : act.Id;
     }
 
-    // Per-path guarantees for Act I (docs/bnb-act-map-specs.md). Combat 8 counts ordinary fights; the duo is a
-    // MultiCombat on top, and the enemy floor counts both plus the elite. Act II walks the same shape on a
-    // longer backbone for now — its own rules are A-3 in ACT_I_II_COMPLETION_PLAN.md.
-    private static readonly Dictionary<MapNodeKind, int> PerPathMinimums = new()
-    {
-        [MapNodeKind.Combat] = 8,
-        [MapNodeKind.MultiCombat] = 1,
-        [MapNodeKind.Elite] = 1,
-        [MapNodeKind.Event] = 3,
-        [MapNodeKind.Rest] = 2,
-        [MapNodeKind.Treasure] = 2,
-        [MapNodeKind.Shop] = 2,
-    };
-
-    // Ceilings: no single route may pile up the soft stuff. A path is guaranteed its two rests, two shops and
-    // two treasures (above) and may hold at most one more of each, so a "safe" route cannot be farmed — and at
-    // most two elites, so a greedy one cannot stack them either.
-    private static readonly Dictionary<MapNodeKind, int> PerPathMaximums = new()
-    {
-        [MapNodeKind.Rest] = 3,
-        [MapNodeKind.Treasure] = 3,
-        [MapNodeKind.Shop] = 3,
-        [MapNodeKind.Event] = 5,
-        [MapNodeKind.Elite] = 2,
-        [MapNodeKind.MultiCombat] = 2,
-    };
-
-    // The three flavours the act's columns are drawn from, so the routes actually feel different: the left is a
-    // gauntlet of fights, the middle runs errands (events and shops), the right is the quiet, well-stocked way
-    // round. Which column a path keeps to decides BOTH what it holds and the order it holds it in.
-    private static readonly MapLaneProfile[] Lanes =
-    [
-        new("the long queue", new Dictionary<MapNodeKind, int>
-        {
-            [MapNodeKind.Combat] = 12,
-            [MapNodeKind.MultiCombat] = 3,
-            [MapNodeKind.Elite] = 2,
-            [MapNodeKind.Event] = 2,
-        }),
-        new("errands", new Dictionary<MapNodeKind, int>
-        {
-            [MapNodeKind.Event] = 7,
-            [MapNodeKind.Shop] = 4,
-            [MapNodeKind.Combat] = 5,
-            [MapNodeKind.MultiCombat] = 1,
-        }),
-        new("the quiet corridor", new Dictionary<MapNodeKind, int>
-        {
-            [MapNodeKind.Rest] = 6,
-            [MapNodeKind.Treasure] = 5,
-            [MapNodeKind.Combat] = 5,
-            [MapNodeKind.Event] = 2,
-        }),
-    ];
-
     // Gold ranges per role, straight from the ported difficulty tiers.
     private static readonly Dictionary<MapNodeKind, (int Min, int Max)> Gold = new()
     {
@@ -98,18 +43,19 @@ public static class MapSpecBuilder
     public static ActMap Build(BabData data, ConversionPools pools, int seed, BabActManifest act)
     {
         var rng = new Random(seed);
+        var rules = ActRules.For(act);
         var events = new Dictionary<string, EventScript>
         {
-            [RestEventId(act)] = EventTemplates.Rest(act.WaitingRoom?.HealPercent ?? 25),
+            [RestEventId(act)] = EventTemplates.Rest(act.WaitingRoom?.HealPercent ?? 25, rules),
         };
 
         // One treasure event per treasure a path can hold, so the pool can hand out distinct ones.
         var treasureIds = new List<string>();
-        for (var i = 1; i <= PerPathMaximums[MapNodeKind.Treasure] + 1; i++)
+        for (var i = 1; i <= rules.PerPathMaximums[MapNodeKind.Treasure] + 1; i++)
         {
             var id = TreasureId(act, i);
             treasureIds.Add(id);
-            events[id] = EventTemplates.Treasure(pools, id);
+            events[id] = EventTemplates.Treasure(pools, id, rules);
         }
 
         var actEvents = data.Events.Where(e => e.Act == act.Act).Select(e => e.Id).ToList();
@@ -123,31 +69,21 @@ public static class MapSpecBuilder
             Rows = act.Map.StepsBeforeBoss,
             MinWidth = 2,
             MaxWidth = 4,
-            PerPathMinimums = PerPathMinimums,
-            PerPathMaximums = PerPathMaximums,
-            LaneProfiles = Lanes,
-            // Act I promises a lot per path (8 fights, the duo, the elite, 3 events, 2 rests, 2 treasures, 2
-            // shops). As funnels those promises would be most of the map, and every route would read the same;
-            // as full rows the city keeps its branches.
+            PerPathMinimums = rules.PerPathMinimums,
+            PerPathMaximums = rules.PerPathMaximums,
+            LaneProfiles = [.. rules.Lanes],
+            // An act promises a lot per path (Act I: 8 fights, the duo, the elite, 3 events, 2 rests, 2
+            // treasures, 2 shops). As funnels those promises would be most of the map and every route would
+            // read the same; as full rows the act keeps its branches.
             WideGuaranteeRows = true,
-            // Eight ordinary fights, the duo and the elite are all enemies the player must face.
-            MinEnemiesPerPath = PerPathMinimums[MapNodeKind.Combat]
-                + PerPathMinimums[MapNodeKind.MultiCombat] + PerPathMinimums[MapNodeKind.Elite],
-            // Only used if the lanes above are ever cleared: the act's overall flavour in one table.
-            KindWeights = new Dictionary<MapNodeKind, int>
-            {
-                [MapNodeKind.Combat] = 10,
-                [MapNodeKind.Event] = 4,
-                [MapNodeKind.Treasure] = 2,
-                [MapNodeKind.Rest] = 2,
-                [MapNodeKind.Shop] = 1,
-                [MapNodeKind.Elite] = 1,
-            },
+            // The ordinary fights, the multi-enemy ones and the elites are all enemies the player must face.
+            MinEnemiesPerPath = rules.PerPathMinimums[MapNodeKind.Combat]
+                + rules.PerPathMinimums[MapNodeKind.MultiCombat] + rules.PerPathMinimums[MapNodeKind.Elite],
+            KindWeights = rules.KindWeights,
             Encounters = new EncounterDistribution { ByRole = byRole },
             VictoryRewards = VictoryRewards(pools),
-            // A treasure only bites where the act HAS a mimic to field. Act I's chance is 5 % (10/15/20 in the
-            // later acts); the archives name a mimic in their manifest but no encounter carries the role yet,
-            // and a chance without a candidate would fail generation rather than surprise anyone.
+            // A treasure only bites where the act HAS a mimic to field (5 / 10 / 15 / 20 % across the acts,
+            // from the act's own manifest); a chance without a candidate would fail generation.
             TreasureMimicChancePercent = byRole.ContainsKey(MapNodeKind.Mimic) ? MimicChance(act) : 0,
             NodeRefs = new Dictionary<MapNodeKind, string>
             {
