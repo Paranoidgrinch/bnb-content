@@ -12,7 +12,7 @@ namespace BnbContent.Converter.Relics;
 // once. The rules live in EventRelicRules.
 public static class EventRelics
 {
-    public static IReadOnlyList<BnbRelic> All() => [.. ActI];
+    public static IReadOnlyList<BnbRelic> All() => [.. ActI, .. ActII];
 
     // ── Act I ─────────────────────────────────────────────────────────────────────────────────────────────
 
@@ -53,5 +53,42 @@ public static class EventRelics
             "At the start of each combat, one card in your draw pile costs 1 less this fight, and you draw 1 "
             + "extra card.",
             combatRule: EventRelicRules.InheritedBoneFolder),
+    ];
+
+    // ── Act II ────────────────────────────────────────────────────────────────────────────────────────────
+    //
+    // The archives' five are all about ONE card: the one you did not get to play, the one you kept back, the
+    // one that will not stay filed. Each marks a copy at the right moment and answers for it afterwards.
+
+    public static readonly IReadOnlyList<BnbRelic> ActII =
+    [
+        Event("unreturned_library_card", "Unreturned Library Card",
+            "The Perpetual Borrower — Pocket the borrower's library card.",
+            "Once each combat, a card you end your turn still holding is waiting in your hand next turn, and "
+            + "it is free.",
+            combatRule: ActTwoEventRelicRules.UnreturnedLibraryCard),
+
+        Event("reversible_shelf_label", "Reversible Shelf Label",
+            "The Reciprocal Shelf — Take the loose shelf label.",
+            "Once each combat, the label remembers a card you put down unplayed. When it next reaches your "
+            + "hand you draw 1 and it costs 1 less.",
+            combatRule: ActTwoEventRelicRules.ReversibleShelfLabel),
+
+        Event("blank_cameo", "Blank Cameo",
+            "The Redacted Portrait — Restore the missing face.",
+            "At each combat's opening one card in your hand is kept, costs 1 less, and cannot be marked by "
+            + "the archive.",
+            combatRule: ActTwoEventRelicRules.BlankCameo),
+
+        Event("vow_bead", "Vow Bead",
+            "The Last Quiet Table — win without breaking the Vow.",
+            "End a turn having played exactly 3 non-Junk cards and your next turn gains 1 Energy and 1 card.",
+            combatRule: ActTwoEventRelicRules.VowBead),
+
+        Event("inverted_sealstone", "Inverted Sealstone",
+            "The Inward Seal — Break the seal outward.",
+            "At each combat's opening one Deed or Working is sealed: the first time you play it, it comes "
+            + "back to your hand.",
+            combatRule: ActTwoEventRelicRules.InvertedSealstone),
     ];
 }

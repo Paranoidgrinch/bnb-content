@@ -75,7 +75,8 @@ internal sealed class ArchiveProbe : IDisposable
         IReadOnlyList<(string Card, string Tag)> inscriptions,
         IReadOnlyList<string> rules,
         int energy = 3,
-        int? drawnPerTurn = null)
+        int? drawnPerTurn = null,
+        IReadOnlyList<string>? relics = null)
     {
         var opening = FightProbe.SoloAgainstHero(
             Ouroboros, Quiet, energy, [.. rules.Select(r => (r, 1))]);
@@ -87,10 +88,15 @@ internal sealed class ArchiveProbe : IDisposable
                 opening.HeroStartingStatuses, opening.HeroDisplayName, drawn, opening.TriggeredEffects);
         var cards = deck.Select(id => new CardDefinitionId(id)).ToList();
 
+        // A relic is taken at the door like any other prize, so the fight behind it exercises the real wiring
+        // — the relic's run program installing its rule as the fight opens — rather than a status handed out.
         var write = new EventChoice("write",
-            [.. inscriptions.Select(i => (IRunEffectRequest)new TagCardsRunEffect(
-                RunSelectors.DeckCards.OfKind(new CardDefinitionId(i.Card)).Take(1),
-                new RunCardTagId(i.Tag), true))]);
+            [
+                .. inscriptions.Select(i => (IRunEffectRequest)new TagCardsRunEffect(
+                    RunSelectors.DeckCards.OfKind(new CardDefinitionId(i.Card)).Take(1),
+                    new RunCardTagId(i.Tag), true)),
+                .. (relics ?? []).Select(r => (IRunEffectRequest)new AddRelicByIdRunEffect(new RelicId(r))),
+            ]);
 
         var blueprint = FightProbe.Game with
         {
