@@ -1,5 +1,33 @@
 # B-1 — Act I's fifteen events, against the Post-Audit master
 
+> **DONE 2026-08-26** (bnb-content @3f2990b · Core @90fd7c0 · bnb-godot @1952986; 496 / 1417-754-562-346 green,
+> smokes green, `game.roguedeck.json` regenerated and synced). What was actually built, and what it cost:
+>
+> - `Converter/Events/ActOneEvents.cs` — the fifteen; `AuthoredEvents.cs` is the one door everything downstream
+>   reads them through (blueprint, map pool, presentation). `BabLoader` no longer loads Act I's ported file.
+> - `Converter/Events/ActOneEventPrograms.cs` — the nine promises kept AFTER a fight, as authored run programs.
+> - `ActOneEventObjects` gained the **Stamped** marking, **Certified Original**, three visible Notes and the
+>   Receipt's round counter.
+> - **Two engine seams bought** (both in Core, both tested there):
+>   1. `RunBlueprint.Programs` + `fx.installProgramById` — a lasting consequence that belongs to no relic.
+>      `InstallRunProgramRunEffect` embeds its body and is neither serializable nor saveable; the body now
+>      lives in the document and is installed by name. **Instance id == source id**, so installing twice is a
+>      no-op and a one-shot body names itself to step down.
+>   2. A pending next-combat OPENING no longer blocks `RunState.Snapshot`. It used to: any pending combat
+>      modifier refused the save, so "next combat gains X" made the run unsaveable until that fight.
+> - Adaptations (all in `ADAPTATIONS.md` §Events): the Licensed Vendor is a counter inside the event (no
+>   reroll, authored shelf); "a 0-cost Exhaust copy" became the Stamped marking; Certified Original keeps the
+>   discount and drops the Exhaust; Expedited Route's −30 % max HP is opening damage read per body; "grants no
+>   Gold" is a two-beat garnishment (the purse is paid by the MAP, after the resolved event); the Receipt's
+>   rate is arithmetic, not an if-expression.
+> - Tests: `Tests/EventStory.cs` (walk the door, win the fight, save and resume), `ActOneEventTests.cs` (the
+>   shape of the set), `ActOneEventLiveTests.cs` (every branch of all fifteen, plus 30 behaviour tests).
+>
+> **Next:** B-2 (Act II's fifteen). Act II's ported events still load; the same four shapes apply, and
+> `AuthoredEvents.For` is where act 2 gets listed.
+
+---
+
 Written at the end of the session that finished B-3, so the next one does not have to re-derive any of it.
 The canon is `source-data/design/BnB_Final_Events_Master_PostAudit.md` §"ACT I". The shipped 15 events carry
 the same names but different rules — they are ported v2 and are being **replaced**, not edited.
