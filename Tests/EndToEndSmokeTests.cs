@@ -30,16 +30,19 @@ public class EndToEndSmokeTests
         Assert.Equal(json, RunJson.ToJson(RunJson.BlueprintFromJson(json, options), options));
     }
 
-    // The act is GENERATED per run now, so the document carries rules instead of nodes: every generated layout
+    // Every act is GENERATED per run now, so the document carries rules instead of nodes: EVERY act's layout
     // must honour the audit's per-path minimums (docs/bnb-act-map-specs.md) and end on the boss.
     [Theory]
-    [InlineData(1)]
-    [InlineData(7)]
-    [InlineData(20260819)]
-    public void Every_generated_act_honours_the_per_path_minimums(int seed)
+    [InlineData(0, 1)]
+    [InlineData(0, 7)]
+    [InlineData(0, 20260819)]
+    [InlineData(1, 1)]
+    [InlineData(1, 7)]
+    [InlineData(1, 20260819)]
+    public void Every_generated_act_honours_the_per_path_minimums(int act, int seed)
     {
         Assert.Empty(Blueprint.Map.Nodes); // nothing baked
-        var spec = Blueprint.MapGeneration!;
+        var spec = Blueprint.Acts![act].MapGeneration!;
 
         var generated = RuleBasedMapGenerator.Generate(spec, seed, startingLoadout: 0,
             new BalanceCalculator(Blueprint.Balance, Blueprint.Encounters),
@@ -58,12 +61,15 @@ public class EndToEndSmokeTests
     // The act's routes must not read the same. Ceilings hold on every path, and the lanes pull the routes apart:
     // the fightiest way through the city meets noticeably more enemies than the quietest.
     [Theory]
-    [InlineData(1)]
-    [InlineData(7)]
-    [InlineData(20260820)]
-    public void The_routes_through_the_act_differ_in_order_and_in_upper_limits(int seed)
+    [InlineData(0, 1)]
+    [InlineData(0, 7)]
+    [InlineData(0, 20260820)]
+    [InlineData(1, 1)]
+    [InlineData(1, 7)]
+    [InlineData(1, 20260820)]
+    public void The_routes_through_the_act_differ_in_order_and_in_upper_limits(int act, int seed)
     {
-        var spec = Blueprint.MapGeneration!;
+        var spec = Blueprint.Acts![act].MapGeneration!;
         var generated = RuleBasedMapGenerator.Generate(spec, seed, startingLoadout: 0,
             new BalanceCalculator(Blueprint.Balance, Blueprint.Encounters),
             (kind, coord, encounter, nodeRef) => MapNodeRealizer.Realize(spec, kind, encounter, nodeRef));

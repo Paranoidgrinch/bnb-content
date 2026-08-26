@@ -846,5 +846,25 @@
       "boss"
     ],
     "role": "boss"
+  },
+  {
+    "id": "archives_mimic_01",
+    "name": "The Overfull Return Slot",
+    "act": 2,
+    "difficulty": "mimic",
+    "enemies": [
+      "brass_maw_of_returns"
+    ],
+    "weight": 1,
+    "tags": [
+      "archives",
+      "returns",
+      "mimic",
+      "treasure"
+    ],
+    "role": "mimic",
+    "enemy_health": [
+      110
+    ]
   }
 ]
