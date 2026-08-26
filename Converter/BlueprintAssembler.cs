@@ -56,6 +56,8 @@ public static class BlueprintAssembler
                 .. data.Cards.Where(c => !Cards.FinalCards.Ids().Contains(CardMapper.MapCardId(c.Id)))
                     .Select(CardMapper.Map),
                 .. Cards.FinalCards.Compile(),
+                // The Act-I events' temporary cards: never dealt into a deck, only pushed into a fight.
+                .. Events.ActOneEventObjects.Compile(),
                 .. ClauseCards.Cards(), NoticeCards.Acknowledge(), DeputyUndersecretary.ReviewCard(),
                 .. QueueCommissioner.Cards(), .. LordSealkeeper.Cards(), .. MunicipalDragon.Cards(),
                 .. LivingCharter.Cards(), .. Elites.ReturnBell.Cards(),
@@ -78,6 +80,7 @@ public static class BlueprintAssembler
                 .. Relics.FinalRelics.Statuses(),
                 .. PassiveStatuses.All(),
                 .. ActTwo.All(),
+                .. Events.ActOneEventObjects.Statuses(),
             ],
             // The final relic pools replace the ported v2 relics wherever the ids meet; what is left of the
             // old pool still ships because the ported EVENTS grant some of it by name.
