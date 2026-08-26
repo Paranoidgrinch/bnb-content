@@ -46,8 +46,10 @@ public sealed class BabData
             // what makes an act an act is its own map and its own vocabulary, not a separate catalogue.
             Enemies = Many<BabEnemy>("enemies/city_enemies.json", "enemies/act_2_archives_enemies.json"),
             Encounters = Many<BabEncounter>("encounters/act_1_city.json", "encounters/act_2_archives.json"),
-            Events = Many<BabEvent>(
-                "events/act_1_city_events.json", "events/act_2_archives_events.json"),
+            // Act I's fifteen are AUTHORED now (Converter/Events/ActOneEvents.cs), so its ported file is no
+            // longer loaded — the two sets wear the same names and would otherwise both stand in the pool.
+            // Act II's stay until B-2 replaces them.
+            Events = Many<BabEvent>("events/act_2_archives_events.json"),
             Relics = Many<BabRelic>("relics/act_1_relics.json", "relics/bureaucrat_relics.json"),
         };
     }

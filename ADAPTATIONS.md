@@ -128,6 +128,38 @@ older Act-I enemy pool wherever HP or intents disagree. Readings taken where the
   Panic cash-out is one telegraphed hit per cycle rather than a permanent global multiplier.
 
 ## Events
+
+### Act I's authored fifteen
+Act I's events are no longer converted at all — they are authored from the post-audit master
+(`Converter/Events/ActOneEvents.cs`), and the ported v2 events that wore the same names are gone from the
+loader. What the master asks for and the port does differently:
+
+- **The Licensed Vendor's "open the regular vendor"** is a counter built INSIDE the event — five cards, six
+  relic offers and one removal, each buyable once, at the city shop's prices. An event cannot open a shop
+  NODE, and the node is where the engine keeps a shop's live state, so this vendor has no reroll and its
+  shelf is authored once rather than dealt fresh each run. (The act's two shop nodes per path still are.)
+- **"A temporary 0-cost Exhaust copy of the card you chose"** (The Almost-Helpful Clerk) becomes the card
+  itself, in the opening hand, free for that first play — a new marking, *Stamped*. A card Exhausts because
+  its DEFINITION says so and there is no per-instance Exhaust mark, so a copy of an arbitrary card cannot be
+  made temporary. Same tempo, one card fewer.
+- **Certified Original** keeps its "cost −1 for that play" and drops its "and gain Exhaust for that play",
+  for the same reason.
+- **Expedited Route's "30% less Max HP"** is paid as unblockable damage at the opening bell — 30% of each
+  enemy's own maximum, read per body. Maximum health cannot be lowered from outside a fight.
+- **"Combat grants no Gold"** (Garnished Reward, Expedited Route) is a garnishment in two beats: the fight
+  ending arms a bailiff, and the bailiff cancels the very next Gold that arrives, which is that fight's
+  purse. The purse is paid out by the MAP, after the resolved event every rule hears, so it cannot be
+  withheld — only taken back.
+- **"125 Gold if won by end of round 3, otherwise 25"** (Receipt of Prior Effort): the fight writes down the
+  round it is on, and the run reads that off the result. There is no if-expression for a number, so the rate
+  is arithmetic — `125 − 100·min(1, max(0, rounds−3))`.
+- **Transform / duplicate / upgrade / remove let the PLAYER choose** the card, where the ported events rolled
+  it at random. "A different card is Misfiled" needs no exclusion rule: the refiled card is gone by then.
+- A promise an event makes for after the next fight is an authored RUN PROGRAM installed by name
+  (`Converter/Events/ActOneEventPrograms.cs`, `RunBlueprint.Programs`, `fx.installProgramById`), which is
+  what makes it survive both the export and a save.
+
+### The ported events (Act II's, until B-2)
 - `lose_hp` keeps the original's "events cannot kill" clamp (computed damage, min HP 1).
 - `heal_percent_max_hp` keeps the original's round-up.
 - `duplicate_card` picks distinct random cards (the original could roll the same card twice).
