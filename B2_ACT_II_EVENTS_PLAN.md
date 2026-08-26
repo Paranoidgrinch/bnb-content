@@ -59,21 +59,22 @@ program installing its rule as the fight opens.
 true: the hand is marked as it is dealt, each played card loses the mark as it is played, and what is still
 marked in the discard pile when the turn ends is exactly what was held and never used.
 
-## B-2c — Removed History
+## ✅ B-2c — Removed History (DONE — decided (a), the engine seam)
 
-"When a persistent card is permanently removed, store identity, permanent upgrade state, inscriptions and
-explicitly restorable persistent modifications. Restoring recreates the card and deletes the entry."
+`RunState.RemovedCards` (RogueDeck-Core @52ee1a4). Every permanent removal writes a `RemovedCardRecord` —
+definition, upgrade level, run tags (which is what an inscription is), shred composition — and
+`fx.restoreRemovedCard` gives one back: the player picks, the card returns with the state it left with plus
+whatever the recovering event adds (`ExtraUpgrades`, `Tags`), and the entry is struck out, so a card is
+recoverable once. `removedCardCount` is the expression "if the history has entries" asks. The history rides
+through a save with the deck.
 
-Three events read it (8 The Infinite Return Slot, 15 The Librarian) and two write to it. **The run layer has no
-such store**, and this is the open design decision of B-2:
+Per-copy MEMORY is deliberately not kept: it is a scratchpad a rule owns for as long as the copy exists.
+The design's "explicitly restorable persistent modifications" are the run tags, which are kept.
 
-- `RunState` has flags and counters (ints), not a list of card records. A removed card's identity + upgrade
-  level + tags is a record, and there may be several.
-- Candidate shapes: (a) an engine seam — a `RemovedCards` list on RunState, snapshotted like the deck; (b) a
-  content-only encoding — counters keyed by card id (`removed.<cardId>`), which loses the upgrade level and
-  the inscriptions; (c) drop the restore branches and pay those events out another way.
-- (a) is the honest one and is small — the deck already snapshots exactly this record shape
-  (`RunCardSaveData`). **Decide before writing events 8 and 15.**
+What the two events need, in the vocabulary that now exists:
+- **8 The Infinite Return Slot** — "Reach for a lost page" → `RestoreRemovedCardRunEffect()`.
+- **15 The Librarian** — "Ask for a forgotten book" → `ConditionalRunEffect` on `removedCardCount > 0`:
+  `RestoreRemovedCardRunEffect(ExtraUpgrades: 1, Tags: ["true_name"])`, else a Rare card reward.
 
 ## B-2d — the fifteen, and the earliest-stage gate
 
