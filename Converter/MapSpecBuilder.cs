@@ -2,10 +2,13 @@ using RogueDeck.Run;
 
 namespace BnbContent.Converter;
 
-// The act's MAP RULES instead of a baked map: one MapGenerationSpec the engine generates a fresh Act-I layout
-// from at the start of every run (RunSetup.CreateInitialRun), honouring the per-path minimums from
-// docs/bnb-act-map-specs.md. What used to be decided once at conversion time — which fight sits where, which
-// treasure is a mimic — is now decided per run, from the curated role pools (BabEncounter.role).
+// An act's MAP RULES instead of a baked map: one MapGenerationSpec per act, which the engine generates a fresh
+// layout from at the start of every run (RunSetup.CreateInitialRun / BuildActPlan), honouring the per-path
+// minimums from docs/bnb-act-map-specs.md. What used to be decided once at conversion time — which fight sits
+// where, which treasure is a mimic — is now decided per run, from the curated role pools (BabEncounter.role).
+//
+// Everything an act draws from is filtered to THAT act: its encounters, its events, its own shop, waiting room
+// and treasure rooms. An act that pulled from the whole catalogue would end on another act's boss.
 public sealed class ActMap
 {
     public required MapGenerationSpec Spec { get; init; }
@@ -15,11 +18,21 @@ public sealed class ActMap
 
 public static class MapSpecBuilder
 {
-    public const string ShopId = "city-shop";
-    public const string RestEventId = "rest:waiting-room";
+    // Each act's furniture is its own: the city does not send you back to the archives' shop. The slug comes
+    // from the manifest id ("act_2_archives" → "archives"), so a new act brings its own ids with it.
+    public static string ShopId(BabActManifest act) => $"{Slug(act)}-shop";
+    public static string RestEventId(BabActManifest act) => $"rest:{Slug(act)}-waiting-room";
+    public static string TreasureId(BabActManifest act, int index) => $"treasure:{Slug(act)}-{index}";
+
+    private static string Slug(BabActManifest act)
+    {
+        var parts = act.Id.Split('_', 3);
+        return parts.Length == 3 ? parts[2] : act.Id;
+    }
 
     // Per-path guarantees for Act I (docs/bnb-act-map-specs.md). Combat 8 counts ordinary fights; the duo is a
-    // MultiCombat on top, and the enemy floor counts both plus the elite.
+    // MultiCombat on top, and the enemy floor counts both plus the elite. Act II walks the same shape on a
+    // longer backbone for now — its own rules are A-3 in ACT_I_II_COMPLETION_PLAN.md.
     private static readonly Dictionary<MapNodeKind, int> PerPathMinimums = new()
     {
         [MapNodeKind.Combat] = 8,
@@ -82,26 +95,32 @@ public static class MapSpecBuilder
         [MapNodeKind.Boss] = (90, 120),
     };
 
-    public static ActMap Build(BabData data, ConversionPools pools, int seed)
+    public static ActMap Build(BabData data, ConversionPools pools, int seed, BabActManifest act)
     {
         var rng = new Random(seed);
         var events = new Dictionary<string, EventScript>
         {
-            [RestEventId] = EventTemplates.Rest(data.Act.WaitingRoom?.HealPercent ?? 25),
+            [RestEventId(act)] = EventTemplates.Rest(act.WaitingRoom?.HealPercent ?? 25),
         };
 
         // One treasure event per treasure a path can hold, so the pool can hand out distinct ones.
         var treasureIds = new List<string>();
         for (var i = 1; i <= PerPathMaximums[MapNodeKind.Treasure] + 1; i++)
         {
-            var id = $"treasure:city-{i}";
+            var id = TreasureId(act, i);
             treasureIds.Add(id);
             events[id] = EventTemplates.Treasure(pools, id);
         }
 
+        var actEvents = data.Events.Where(e => e.Act == act.Act).Select(e => e.Id).ToList();
+        if (actEvents.Count == 0)
+            throw new ConversionException($"act '{act.Id}'", "no event belongs to this act");
+
+        var byRole = PoolsByRole(data, act);
         var spec = new MapGenerationSpec
         {
-            Rows = 9,
+            // The act's own length: the original's steps_before_boss.
+            Rows = act.Map.StepsBeforeBoss,
             MinWidth = 2,
             MaxWidth = 4,
             PerPathMinimums = PerPathMinimums,
@@ -124,19 +143,22 @@ public static class MapSpecBuilder
                 [MapNodeKind.Shop] = 1,
                 [MapNodeKind.Elite] = 1,
             },
-            Encounters = new EncounterDistribution { ByRole = PoolsByRole(data) },
+            Encounters = new EncounterDistribution { ByRole = byRole },
             VictoryRewards = VictoryRewards(pools),
-            TreasureMimicChancePercent = 5, // Act I; 10/15/20 in the later acts
+            // A treasure only bites where the act HAS a mimic to field. Act I's chance is 5 % (10/15/20 in the
+            // later acts); the archives name a mimic in their manifest but no encounter carries the role yet,
+            // and a chance without a candidate would fail generation rather than surprise anyone.
+            TreasureMimicChancePercent = byRole.ContainsKey(MapNodeKind.Mimic) ? MimicChance(act) : 0,
             NodeRefs = new Dictionary<MapNodeKind, string>
             {
-                [MapNodeKind.Shop] = ShopId,
-                [MapNodeKind.Rest] = RestEventId,
+                [MapNodeKind.Shop] = ShopId(act),
+                [MapNodeKind.Rest] = RestEventId(act),
                 [MapNodeKind.Treasure] = treasureIds[0],
-                [MapNodeKind.Event] = data.Events[0].Id,
+                [MapNodeKind.Event] = actEvents[0],
             },
             NodeRefPools = new Dictionary<MapNodeKind, IReadOnlyList<string>>
             {
-                [MapNodeKind.Event] = data.Events.Select(e => e.Id).ToList(),
+                [MapNodeKind.Event] = actEvents,
                 [MapNodeKind.Treasure] = treasureIds,
             },
         };
@@ -145,15 +167,25 @@ public static class MapSpecBuilder
         {
             Spec = spec,
             Events = events,
-            Shops = new Dictionary<string, ShopDefinition> { [ShopId] = ShopTemplate.Build(data, pools, rng) },
+            Shops = new Dictionary<string, ShopDefinition>
+            {
+                [ShopId(act)] = ShopTemplate.Build(data, pools, rng),
+            },
         };
     }
 
-    // The curated pools: every encounter that carries a role, weighted as authored.
-    private static Dictionary<MapNodeKind, IReadOnlyList<EncounterPoolEntry>> PoolsByRole(BabData data)
+    private static int MimicChance(BabActManifest act) =>
+        (int)Math.Round((act.Treasure?.MimicChance ?? 0.05) * 100);
+
+    // The curated pools: every encounter of THIS act that carries a role, weighted as authored. The act filter
+    // is the whole point — without it the city's boss row drew the archives' bosses too.
+    private static Dictionary<MapNodeKind, IReadOnlyList<EncounterPoolEntry>> PoolsByRole(
+        BabData data, BabActManifest act)
     {
         var byRole = new Dictionary<MapNodeKind, IReadOnlyList<EncounterPoolEntry>>();
-        foreach (var group in data.Encounters.Where(e => e.Role is not null).GroupBy(e => Role(e.Role!)))
+        foreach (var group in data.Encounters
+            .Where(e => e.Role is not null && e.Act == act.Act)
+            .GroupBy(e => Role(e.Role!)))
         {
             byRole[group.Key] = group
                 .Select(e => new EncounterPoolEntry(new EncounterId(e.Id), Math.Max(1, (int)(e.Weight ?? 1))))
@@ -162,7 +194,8 @@ public static class MapSpecBuilder
 
         foreach (var required in new[] { MapNodeKind.Combat, MapNodeKind.MultiCombat, MapNodeKind.Elite, MapNodeKind.Boss })
             if (!byRole.ContainsKey(required))
-                throw new ConversionException("map generation", $"no encounter carries the '{required}' role");
+                throw new ConversionException(
+                    $"map generation for act '{act.Id}'", $"no encounter of this act carries the '{required}' role");
 
         return byRole;
     }
