@@ -121,7 +121,17 @@ public sealed record BabEncounter(
     IReadOnlyList<int?>? EnemyHealth = null,
     // Which map ROLE draws this template: combat / multi_combat / elite / boss / mimic. Only encounters that
     // carry a role are part of the act's curated pools — anything else is inert content the map never picks.
-    string? Role = null);
+    string? Role = null,
+    // Statuses one BODY carries in THIS fight and not in its others — encounter scaffolding rather than a
+    // universal passive. Act III's design asks for it by name: the Boundary Stone begins its two teaching
+    // encounters holding a Claim so that Claim transfer is actually demonstrated inside a standard fight,
+    // "later appearances receive no free Claim". Indexed into Enemies, so the same identity can be scaffolded
+    // in one encounter and bare in the next.
+    IReadOnlyList<BabEncounterEnemyStatus>? EnemyStatuses = null);
+
+// A status served on ONE of an encounter's bodies at the first bell. `Index` is the position in the
+// encounter's own Enemies list, not an enemy id, because an encounter may field the same identity twice.
+public sealed record BabEncounterEnemyStatus(int Index, string Status, int? Stacks);
 
 public sealed record BabRelic(
     string Id,

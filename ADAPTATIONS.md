@@ -1322,3 +1322,25 @@ identities that count "per player turn" use the same window.
 did, so the acting source of the rule is the player. Filing the violation in the player's name would mean
 no source ever reaches three, so the engine grew a seam for it (`applyStatus` may name its source), and a
 law whose author is dead files nothing at all.
+
+**Encounter scaffolding is a per-encounter starting status.** The design asks for the Boundary Stone to open
+its two teaching fights already holding a Claim, and to open every later one bare — so a body's opening
+statuses can now be extended per ENCOUNTER (`BabEncounter.enemy_statuses`, indexed into the roster) rather
+than only per identity.
+
+The scaffolding itself is a rule and not a Claim, because a Claim placed as a starting status is placed
+without ever being APPLIED — no event, so nothing that listens for a new Claim would hear it, and Wandering
+Title would never fire. `Prior Dispute` therefore grants the Claim at the player's first turn start, before
+the draw and before any action, and then removes itself.
+
+**"Two consecutive cards" is read within a turn.** The Reckoning Hedge's memory of the last Base Cost is
+cleared when the player's turn starts, so the first card of a turn is never consecutive with the last card of
+the one before it.
+
+**The Hedge's survey is flipped only by Claims it was GRANTED.** A Claim handed to it by the Boundary Stone
+standing next to it does not reverse the law, which is exactly what the design's Encounter 6 is built to
+teach — and it falls out of reading the announcement rather than the resource.
+
+**Prior Possession is a mark, not a prohibition.** Nothing in the engine asks a status's permission before
+moving it. Every rule in the act that moves or spends somebody ELSE's Claim goes through one selector
+(`ActThree.ClaimsOthersMayTake`), which excludes whoever the fight has recognised as the sitting occupier.

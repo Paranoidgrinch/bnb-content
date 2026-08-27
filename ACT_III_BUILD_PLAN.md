@@ -51,8 +51,8 @@ announcement, and only a creation raises the announcement.
 
 Open seams the later stages will want, listed when they are first needed:
 
-- **"the living enemy with the fewest / most Claims"** — a selector that orders by status stacks
-  (Crossroads Cup, Bracken Moot, Handworn Tally Coin). Stage 5.
+- ~~"the living enemy with the fewest / most Claims"~~ — **bought** (Core `caa029d`), and Stage 2's
+  Wandering Title is its first reader.
 - **a free encounter action** — Make Amends. Stage 4. Likely a card the fight puts in hand, the
   Notice/Clause shape.
 
@@ -63,7 +63,8 @@ Open seams the later stages will want, listed when they are first needed:
 - [x] **0 — the vocabulary + Stage 1.** DONE 2026-08-28 — 11 live tests in `Tests/ActThreeStageOneTests.cs`. `Converter/ActThree.cs`: Trespass, Safe-Conduct, Claim,
       the announcement, and the act's customs (the rule on the player that turns 3 Trespass into a
       Claim). Permit Hare, Mossbound Clerk, Cairn of Stray Paths + encounters 1–4.
-- [ ] 1 — Stage 2, the Surveyed Hedgerows (Reckoning Hedge, Errant Boundary Stone, Hawthorn Tenant)
+- [x] 1 — Stage 2, the Surveyed Hedgerows (Reckoning Hedge, Errant Boundary Stone, Hawthorn Tenant)
+      DONE 2026-08-28 — 11 live tests in `Tests/ActThreeStageTwoTests.cs`.
 - [ ] 2 — Stage 3, the Meadow of Living Testimony (Foxglove Witness, Contrary Magpie)
 - [ ] 3 — Stage 4, the Tollwater Crossings — **Wergild + Make Amends** (Charter-Shell Snail,
       Streamside Oath-Fish, Two-Bank Toll Ford)
