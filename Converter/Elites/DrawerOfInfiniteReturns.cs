@@ -26,8 +26,8 @@ public static class DrawerOfInfiniteReturns
 
     // All of Nested Return's state, kept on the player: which depth the card is at (0 = the drawer is empty)
     // and how many player turns it still has to wait down there.
-    private static readonly CounterId DepthCounter = new("nested_depth");
-    private static readonly CounterId WaitCounter = new("nested_wait");
+    private static CounterId DepthCounter => new("nested_depth");
+    private static CounterId WaitCounter => new("nested_wait");
 
     private const int MaxDepth = 3;
     private const int MaxPressure = 3;

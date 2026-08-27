@@ -87,7 +87,7 @@ public static class BureaucratRites
     // presence, not depth. So the rule walks the enemies that carry Paperwork and asks each one; the first
     // that is deep enough draws the card and shuts the gate, which is what makes it one card and not one per
     // enemy. The gate is opened again at the top of the same program, so it is per turn by construction.
-    private static readonly CounterId LedgerDrawn = new("black_ledger_drawn");
+    private static CounterId LedgerDrawn => new("black_ledger_drawn");
 
     private static StatusData Ledger(string id, string name, int threshold)
     {
@@ -216,7 +216,7 @@ public static class BureaucratRites
     // Read after the draw, when the hand already holds what arrived. It takes the first Junk in HAND rather
     // than strictly the first Junk DRAWN — a distinction only visible when Junk was already being held; see
     // ADAPTATIONS. Archiving is recorded, so the Archive Rites answer it exactly as they would a card's own.
-    private static readonly CounterId DisposalUsed = new("licensed_disposal_used");
+    private static CounterId DisposalUsed => new("licensed_disposal_used");
 
     private static StatusData Disposal(string id, string name)
     {

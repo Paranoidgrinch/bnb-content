@@ -266,7 +266,7 @@ public static class GeneralActI
 
     // "Remove all Citation from an enemy. Gain N Block per Citation removed." How much was there has to be
     // read before it is taken away, so it is written to a scratch counter first.
-    private static readonly CounterId CitationFound = new("contempt_finding_found");
+    private static CounterId CitationFound => new("contempt_finding_found");
 
     private static CombatNodeModel CashOutCitation(int blockEach) =>
         Seq(
@@ -277,7 +277,7 @@ public static class GeneralActI
     // "Requires at least N Block. Lose N Block. Gain M Ward Wax." A condition compares a value read off a
     // combatant, and Block is not one of the values it can read — so the Block is written to a scratch counter
     // and the counter is what the card asks about.
-    private static readonly CounterId BlockOnHand = new("tallow_reserve_block");
+    private static CounterId BlockOnHand => new("tallow_reserve_block");
 
     private static CombatNodeModel SpendBlockForWax(int price, int wax) =>
         Seq(
@@ -298,7 +298,7 @@ public static class GeneralActI
 
     // "If the target still has Block after this attack" — Block is not a value a condition can read, so it
     // goes through a scratch counter like everything else that asks about it.
-    private static readonly CounterId GuardLeft = new("forfeit_seal_guard");
+    private static CounterId GuardLeft => new("forfeit_seal_guard");
 
     private static CombatNodeModel IfStillGuarded(CombatNodeModel then) =>
         Seq(
@@ -312,7 +312,7 @@ public static class GeneralActI
     // "If this is the first card you play this turn" — asked before anything else the card does, when the
     // count still excludes the card in flight, so "first" means "none before it". How many were played is an
     // amount, not one of the values a condition can read, so it goes through a scratch counter.
-    private static readonly CounterId PlayedSoFar = new("dawn_summons_played");
+    private static CounterId PlayedSoFar => new("dawn_summons_played");
 
     private static CombatNodeModel DawnStrike(int damage) =>
         Seq(

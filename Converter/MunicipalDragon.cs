@@ -32,10 +32,10 @@ public static class MunicipalDragon
     public const string ObjectionCardId = "file_an_objection";
     public const string CitationCardId = "issue_a_citation";
 
-    public static readonly CounterId StealDamageCounter = new("hoard_pressure");
-    public static readonly CounterId StolenPermitsCounter = new("permits_stolen");
-    public static readonly CounterId PermitChargesCounter = new("permit_charges");
-    public static readonly CounterId DragonBeatCounter = new("dragon_beat");
+    public static CounterId StealDamageCounter => new("hoard_pressure");
+    public static CounterId StolenPermitsCounter => new("permits_stolen");
+    public static CounterId PermitChargesCounter => new("permit_charges");
+    public static CounterId DragonBeatCounter => new("dragon_beat");
 
     public const int StartingPermits = 2;
     public const int PermitMaximum = 4;

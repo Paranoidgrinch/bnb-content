@@ -14,10 +14,10 @@ namespace BnbContent.Converter.Relics;
 // So each of these rules is a mirror: it watches the tally and writes the number where the run will find it.
 public static class ShopRelicRules
 {
-    public static readonly CounterId Salvage = new("salvage");
-    public static readonly CounterId ArchiveTally = new("archive_tally");
-    public static readonly CounterId RatifyTally = new("ratify_tally");
-    public static readonly CounterId FilingFee = new("filing_fee");
+    public static CounterId Salvage => new("salvage");
+    public static CounterId ArchiveTally => new("archive_tally");
+    public static CounterId RatifyTally => new("ratify_tally");
+    public static CounterId FilingFee => new("filing_fee");
 
     public static IReadOnlyList<StatusData> All() =>
         [WastebrokersPermit, ArchiveVoucherRoll, NotarysWaiver, FilingFeeStamp];

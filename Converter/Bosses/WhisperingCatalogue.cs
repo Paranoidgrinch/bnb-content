@@ -64,30 +64,30 @@ public static class WhisperingCatalogue
     //
     // Everything the record is made of is counted on the PLAYER, so the rules that watch a play can write it
     // with `Self` and the Catalogue's intents can read it with `Across`. Both sides name the same numbers.
-    private static readonly CounterId OpeningCounter = new("catalogue_opening");          // 0 none 1 Deed 2 Working 3 other
-    private static readonly CounterId ReferencesMetCounter = new("catalogue_references_met");
-    private static readonly CounterId RedactedPlayedCounter = new("catalogue_redacted_played");
+    private static CounterId OpeningCounter => new("catalogue_opening");          // 0 none 1 Deed 2 Working 3 other
+    private static CounterId ReferencesMetCounter => new("catalogue_references_met");
+    private static CounterId RedactedPlayedCounter => new("catalogue_redacted_played");
 
     // The Turn Record itself: last completed turn only.
-    private static readonly CounterId RecordTempoCounter = new("catalogue_record_tempo");     // 1 busy 0 sparse
-    private static readonly CounterId RecordOpeningCounter = new("catalogue_record_opening");
-    private static readonly CounterId RecordReferenceCounter = new("catalogue_record_reference");
-    private static readonly CounterId RecordRedactedCounter = new("catalogue_record_redacted");
-    private static readonly CounterId HasRecordCounter = new("catalogue_has_record");
+    private static CounterId RecordTempoCounter => new("catalogue_record_tempo");     // 1 busy 0 sparse
+    private static CounterId RecordOpeningCounter => new("catalogue_record_opening");
+    private static CounterId RecordReferenceCounter => new("catalogue_record_reference");
+    private static CounterId RecordRedactedCounter => new("catalogue_record_redacted");
+    private static CounterId HasRecordCounter => new("catalogue_has_record");
 
-    private static readonly CounterId ReferenceDueCounter = new("catalogue_reference_due");
-    private static readonly CounterId LastConfirmedCounter = new("catalogue_last_confirmed");
-    private static readonly CounterId ConfirmedLastTurnCounter = new("catalogue_confirmed_last_turn");
-    private static readonly CounterId ConfirmedThisTurnCounter = new("catalogue_confirmed_this_turn");
-    private static readonly CounterId AuthorityGainedCounter = new("catalogue_authority_gained");
-    private static readonly CounterId NoAuthorityCounter = new("catalogue_no_authority");
-    private static readonly CounterId LastEntryCounter = new("catalogue_last_entry");        // 1..5, see Entries
-    private static readonly CounterId EntryUsedCounter = new("catalogue_entry_used");
-    private static readonly CounterId BeatCounter = new("catalogue_beat");
+    private static CounterId ReferenceDueCounter => new("catalogue_reference_due");
+    private static CounterId LastConfirmedCounter => new("catalogue_last_confirmed");
+    private static CounterId ConfirmedLastTurnCounter => new("catalogue_confirmed_last_turn");
+    private static CounterId ConfirmedThisTurnCounter => new("catalogue_confirmed_this_turn");
+    private static CounterId AuthorityGainedCounter => new("catalogue_authority_gained");
+    private static CounterId NoAuthorityCounter => new("catalogue_no_authority");
+    private static CounterId LastEntryCounter => new("catalogue_last_entry");        // 1..5, see Entries
+    private static CounterId EntryUsedCounter => new("catalogue_entry_used");
+    private static CounterId BeatCounter => new("catalogue_beat");
 
     // On the Catalogue: how many Entries it has ever established, which is what calls Phase II.
-    private static readonly CounterId HistoryCounter = new("catalogue_history");
-    private static readonly CounterId FinalEntrySpentCounter = new("catalogue_final_entry_spent");
+    private static CounterId HistoryCounter => new("catalogue_history");
+    private static CounterId FinalEntrySpentCounter => new("catalogue_final_entry_spent");
 
     public const int AuthorityMaximum = 3;
     public const int ContradictionMaximum = 3;

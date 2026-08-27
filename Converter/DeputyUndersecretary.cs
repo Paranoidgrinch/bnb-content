@@ -26,13 +26,13 @@ public static class DeputyUndersecretary
     public const string FilingNotedId = "filing_noted";          // once-per-turn latch, on the player
     public const string ReviewCardId = "file_the_request";
 
-    public static readonly CounterId OpenMattersCounter = new("open_matters");
-    public static readonly CounterId MatterIndexCounter = new("matter_index");
-    public static readonly CounterId BlockThisTurnCounter = new("block_this_turn");
-    public static readonly CounterId DelayBeatCounter = new("delay_beat");
-    public static readonly CounterId BossBeatCounter = new("boss_beat");
-    public static readonly CounterId CloseFileUsesCounter = new("close_file_uses");
-    public static readonly CounterId BacklogTotalCounter = new("backlog_total");
+    public static CounterId OpenMattersCounter => new("open_matters");
+    public static CounterId MatterIndexCounter => new("matter_index");
+    public static CounterId BlockThisTurnCounter => new("block_this_turn");
+    public static CounterId DelayBeatCounter => new("delay_beat");
+    public static CounterId BossBeatCounter => new("boss_beat");
+    public static CounterId CloseFileUsesCounter => new("close_file_uses");
+    public static CounterId BacklogTotalCounter => new("backlog_total");
 
     public const int DeskCapacity = 3;
     public const int MatterDue = 2;
@@ -51,9 +51,9 @@ public static class DeputyUndersecretary
         string BacklogFile,
         Func<ICombatExpression<TurnEndedTriggeredEffectContext, bool>>? Resolved);
 
-    public static readonly CounterId PerformanceBacklog = new("backlog_performance");
-    public static readonly CounterId ExpenditureBacklog = new("backlog_expenditure");
-    public static readonly CounterId ProceduralBacklog = new("backlog_procedural");
+    public static CounterId PerformanceBacklog => new("backlog_performance");
+    public static CounterId ExpenditureBacklog => new("backlog_expenditure");
+    public static CounterId ProceduralBacklog => new("backlog_procedural");
 
     public static readonly Matter[] Matters =
     [

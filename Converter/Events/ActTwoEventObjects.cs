@@ -32,22 +32,22 @@ public static class ActTwoEventObjects
         ActTwo.CitationReferenceMark, ActTwo.ChainReferenceMark,
     ];
 
-    private static readonly CounterId IlluminatedInitialSpent = new("illuminated_initial_spent");
-    private static readonly CounterId ConcordantPairSpent = new("concordant_pair_spent");
-    private static readonly CounterId TrueNameSpent = new("true_name_spent");
-    private static readonly CounterId LateBoundSpent = new("late_bound_spent");
-    private static readonly CounterId LeafSpent = new("redacted_leaf_spent");
-    private static readonly CounterId RegisterReleased = new("act_two_register_released");
-    private static readonly CounterId ReadersPassSpent = new("act_two_readers_pass_spent");
-    private static readonly CounterId UnfinishedLifeSpent = new("act_two_unfinished_life_spent");
+    private static CounterId IlluminatedInitialSpent => new("illuminated_initial_spent");
+    private static CounterId ConcordantPairSpent => new("concordant_pair_spent");
+    private static CounterId TrueNameSpent => new("true_name_spent");
+    private static CounterId LateBoundSpent => new("late_bound_spent");
+    private static CounterId LeafSpent => new("redacted_leaf_spent");
+    private static CounterId RegisterReleased => new("act_two_register_released");
+    private static CounterId ReadersPassSpent => new("act_two_readers_pass_spent");
+    private static CounterId UnfinishedLifeSpent => new("act_two_unfinished_life_spent");
 
     // Two counters the RUN reads off the finished fight rather than the fight itself: whether the amendment was
     // played while it was still Redacted, and whether the Vow of Silent Scholarship held.
     //
     // ★ Both are written down as a ONE at the opening bell and only ever fall, because a fight that never had
     // the rule reads them as zero — which is exactly what a promise waiting on the WRONG fight has to see.
-    public static readonly CounterId AmendmentPlayed = new("act_two_amendment_played");
-    public static readonly CounterId VowHeld = new("act_two_vow_held");
+    public static CounterId AmendmentPlayed => new("act_two_amendment_played");
+    public static CounterId VowHeld => new("act_two_vow_held");
 
     // ── Temporary cards ───────────────────────────────────────────────────────────────────────────────────
 

@@ -508,7 +508,7 @@ public static class BureaucratActI
     // "Deal N damage. Archive a Junk card from your hand; if you do, repeat this attack." Whether there was
     // Junk to take is remembered in a counter, because a marker status would have to be removed again — and a
     // status losing stacks is something the general pool's Blood Ink answers.
-    private static readonly CounterId CinderFed = new("cinder_warrant_fed");
+    private static CounterId CinderFed => new("cinder_warrant_fed");
 
     private static CombatNodeModel CinderStrike(int damage) =>
         Seq(
@@ -563,7 +563,7 @@ public static class BureaucratActI
     // marker status — a marker would have to be removed again, and a status losing stacks is something the
     // general pool's Blood Ink reacts to. The deviation (Junk is taken rather than offered) is recorded in
     // ADAPTATIONS; it is the choice a player after the bonus would make anyway.
-    private static readonly CounterId TookJunk = new("certified_kindling_took_junk");
+    private static CounterId TookJunk => new("certified_kindling_took_junk");
 
     private static CombatNodeModel ArchiveJunkFirst() =>
         Seq(

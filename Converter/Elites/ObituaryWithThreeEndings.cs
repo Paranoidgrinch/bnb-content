@@ -35,8 +35,8 @@ public static class ObituaryWithThreeEndings
     // "Only source-bound obligations created by this Obituary count." Kept as a counter on the player rather
     // than read off the Overdue instances: it is the one number both sides have to agree on, and a counter is
     // readable as a scalar from either end where a source-bound status is not.
-    private static readonly CounterId DebtCounter = new("obituary_debt");
-    private static readonly CounterId RedactedPlayedCounter = new("obituary_redacted_played");
+    private static CounterId DebtCounter => new("obituary_debt");
+    private static CounterId RedactedPlayedCounter => new("obituary_redacted_played");
 
     private const int HeroicHealth = 46;
     private const int AccurateHealth = 32;

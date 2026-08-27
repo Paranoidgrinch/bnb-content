@@ -52,7 +52,7 @@ public static class GeneralRites
     // "Does not already have it" is answered by the EVENT rather than by looking: a status arriving where
     // there was none raises StatusApplied, and one landing on top of itself raises StatusMerged. So watching
     // only StatusApplied IS the "new to that enemy" condition, and no state has to be remembered.
-    private static readonly CounterId BeetleFed = new("notary_beetle_fed");
+    private static CounterId BeetleFed => new("notary_beetle_fed");
 
     private static StatusData Beetle(string id, string name)
     {
@@ -101,8 +101,8 @@ public static class GeneralRites
     // Both halves are the same event seen from either side of the fight: a refusal reports who refused
     // (source) and who was refused (eventTarget). Which half is which is decided by whether the refuser is
     // the applicant.
-    private static readonly CounterId EdictOnYou = new("reciprocal_edict_yours");
-    private static readonly CounterId EdictOnThem = new("reciprocal_edict_theirs");
+    private static CounterId EdictOnYou => new("reciprocal_edict_yours");
+    private static CounterId EdictOnThem => new("reciprocal_edict_theirs");
 
     private static StatusData Edict(string id, string name)
     {
