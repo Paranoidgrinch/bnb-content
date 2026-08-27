@@ -145,12 +145,20 @@ public static partial class ActThree
                             bench, new StatusDefinitionId(SedgeBenchId)),
                         ComparisonOperator.Greater,
                         new ConstantExpression<TurnStartedTriggeredEffectContext>(0)),
-                    // … and a matter to hear.
-                    new ComparisonExpression<TurnStartedTriggeredEffectContext>(
-                        new CombatantStatusStacksExpression<TurnStartedTriggeredEffectContext>(
-                            matter, new StatusDefinitionId(ClaimId)),
-                        ComparisonOperator.Greater,
-                        new ConstantExpression<TurnStartedTriggeredEffectContext>(0))),
+                    new AndExpression<TurnStartedTriggeredEffectContext>(
+                        // … a matter to hear …
+                        new ComparisonExpression<TurnStartedTriggeredEffectContext>(
+                            new CombatantStatusStacksExpression<TurnStartedTriggeredEffectContext>(
+                                matter, new StatusDefinitionId(ClaimId)),
+                            ComparisonOperator.Greater,
+                            new ConstantExpression<TurnStartedTriggeredEffectContext>(0)),
+                        // … and nothing already before it. The Bench hears one matter at a time; that is
+                        // what makes it slow enough for reeds to grow through the record.
+                        new ComparisonExpression<TurnStartedTriggeredEffectContext>(
+                            new CombatantStatusStacksExpression<TurnStartedTriggeredEffectContext>(
+                                Lawgiver(UnderReviewId), new StatusDefinitionId(UnderReviewId)),
+                            ComparisonOperator.Equal,
+                            new ConstantExpression<TurnStartedTriggeredEffectContext>(0)))),
                 new ApplyStatusNode<TurnStartedTriggeredEffectContext>(
                     matter, new StatusDefinitionId(UnderReviewId),
                     new ConstantExpression<TurnStartedTriggeredEffectContext>(1))));

@@ -630,5 +630,267 @@
       "multi_enemy"
     ],
     "role": "multi_combat"
+  },
+  {
+    "id": "green_docket_precedents_01",
+    "name": "The Old Measure",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "sleeping_stump_auditor"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_precedents",
+      "green_docket",
+      "claim"
+    ],
+    "role": "combat"
+  },
+  {
+    "id": "green_docket_precedents_02",
+    "name": "Footsteps Become Precedent",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "footfall_root"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_precedents",
+      "green_docket",
+      "claim"
+    ],
+    "role": "combat"
+  },
+  {
+    "id": "green_docket_precedents_duo_01",
+    "name": "Two Authorities Agree",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "precedent_lichen",
+      "sleeping_stump_auditor"
+    ],
+    "enemy_health": [
+      70,
+      88
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_precedents",
+      "green_docket",
+      "claim",
+      "multi_enemy"
+    ],
+    "role": "multi_combat"
+  },
+  {
+    "id": "green_docket_precedents_duo_02",
+    "name": "Deep-Root Precedent",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "precedent_lichen",
+      "footfall_root"
+    ],
+    "enemy_health": [
+      70,
+      90
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_precedents",
+      "green_docket",
+      "claim",
+      "multi_enemy"
+    ],
+    "role": "multi_combat"
+  },
+  {
+    "id": "green_docket_jurisdictions_01",
+    "name": "Three Readings on One Stone",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "untranslated_trail_marker"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_jurisdictions",
+      "green_docket",
+      "claim"
+    ],
+    "role": "combat"
+  },
+  {
+    "id": "green_docket_jurisdictions_duo_01",
+    "name": "The Hawthorn Destination",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "elsewhere_path",
+      "hawthorn_tenant"
+    ],
+    "enemy_health": [
+      80,
+      71
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_jurisdictions",
+      "green_docket",
+      "multi_enemy"
+    ],
+    "role": "multi_combat"
+  },
+  {
+    "id": "green_docket_jurisdictions_duo_02",
+    "name": "Two Courts Claim the Hare",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "permit_hare",
+      "errant_boundary_stone"
+    ],
+    "enemy_health": [
+      78,
+      85
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_jurisdictions",
+      "green_docket",
+      "claim",
+      "recurrence",
+      "multi_enemy"
+    ],
+    "role": "multi_combat",
+    "enemy_statuses": [
+      {
+        "index": 0,
+        "status": "claim",
+        "stacks": 2
+      },
+      {
+        "index": 0,
+        "status": "claim_created",
+        "stacks": 2
+      },
+      {
+        "index": 1,
+        "status": "superior_jurisdiction"
+      }
+    ]
+  },
+  {
+    "id": "green_docket_jurisdictions_duo_03",
+    "name": "No Path Has Final Authority",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "untranslated_trail_marker",
+      "elsewhere_path"
+    ],
+    "enemy_health": [
+      88,
+      80
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_jurisdictions",
+      "green_docket",
+      "claim",
+      "multi_enemy"
+    ],
+    "role": "multi_combat"
+  },
+  {
+    "id": "green_docket_court_01",
+    "name": "Names Kept Below Ground",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "keeper_of_buried_names"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_court",
+      "green_docket",
+      "claim",
+      "wergild"
+    ],
+    "role": "combat"
+  },
+  {
+    "id": "green_docket_court_duo_01",
+    "name": "A Small Promise Reaches the Court",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "crossroads_cup",
+      "keeper_of_buried_names"
+    ],
+    "enemy_health": [
+      53,
+      102
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_court",
+      "green_docket",
+      "claim",
+      "wergild",
+      "multi_enemy"
+    ],
+    "role": "multi_combat"
+  },
+  {
+    "id": "green_docket_court_duo_02",
+    "name": "Every Name Has Value",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "keeper_of_buried_names",
+      "handworn_tally_coin"
+    ],
+    "enemy_health": [
+      102,
+      79
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_court",
+      "green_docket",
+      "claim",
+      "wergild",
+      "multi_enemy"
+    ],
+    "role": "multi_combat"
+  },
+  {
+    "id": "green_docket_court_trio_01",
+    "name": "Handworn Reckoning",
+    "act": 3,
+    "difficulty": "hard",
+    "enemies": [
+      "crossroads_cup",
+      "keeper_of_buried_names",
+      "handworn_tally_coin"
+    ],
+    "enemy_health": [
+      45,
+      92,
+      68
+    ],
+    "weight": 1,
+    "tags": [
+      "stage_court",
+      "green_docket",
+      "claim",
+      "wergild",
+      "multi_enemy"
+    ],
+    "role": "multi_combat"
   }
 ]

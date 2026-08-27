@@ -156,7 +156,7 @@ public static partial class ActThree
                         ComparisonOperator.Less,
                         new CombatantStatusStacksExpression<TContext>(
                             stone, new StatusDefinitionId(ClaimId)))),
-                TransferClaim<TContext>(stone, neighbour)));
+                TransferClaim<TContext>(stone, neighbour, foreign: false)));
     }
 
     // Encounter scaffolding, not a passive: in the two fights where Claim transfer is being TAUGHT, the Stone

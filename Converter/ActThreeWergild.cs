@@ -165,6 +165,8 @@ public static partial class ActThree
                     new CombatantStatusStacksExpression<TurnEndedTriggeredEffectContext>(
                         creditor, new StatusDefinitionId(OathAcceptedId))),
                 sourceSelector: creditor),
+            // A coin at the table is worn down by other people keeping their word.
+            PaidInKind(),
             new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
                 new ComparisonExpression<TurnEndedTriggeredEffectContext>(
                     new CombatantStatusStacksExpression<TurnEndedTriggeredEffectContext>(
@@ -304,7 +306,14 @@ public static partial class ActThree
                     new CausalSequenceEffectNode<CardPlayContext>(
                     [
                         new MarkCardInstanceNode<CardPlayContext>(player, offering, OfferingMark, remove: true),
-                        new ConditionalEffectNode<CardPlayContext>(acceptable, PayOneWergild<CardPlayContext>()),
+                        new ConditionalEffectNode<CardPlayContext>(
+                            acceptable,
+                            new CausalSequenceEffectNode<CardPlayContext>(
+                            [
+                                PayOneWergild<CardPlayContext>(),
+                                // A name already spoken is worth twice as much to the Keeper.
+                                BuriedNamesAsPayment(offering),
+                            ])),
                         new MoveCardToZoneNode<CardPlayContext>(player, offering, CardZone.DiscardPile),
                     ]))),
         ]);

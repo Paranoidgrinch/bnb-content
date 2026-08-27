@@ -104,9 +104,17 @@ Open seams the later stages will want, listed when they are first needed:
       grant (the Boundary Stone passing a title on and the Lamprey attaching to it are written to meet), and
       between them they would otherwise make two Claims out of one — standing created by a transfer, which
       is the one thing the act's vocabulary exists to prevent.
-- [ ] 7 — Stage 8, Old-Growth Precedents (Sleeping Stump Auditor, Precedent Lichen, Footfall Root)
-- [ ] 8 — Stage 9, Moonlit Jurisdictions (Untranslated Trail Marker, Elsewhere Path + two returning forms)
-- [ ] 9 — Stage 10, the Court Beneath the Hill (Keeper of Buried Names, Handworn Tally Coin)
+- [x] 7 — Stage 8, Old-Growth Precedents (Sleeping Stump Auditor, Precedent Lichen, Footfall Root) —
+      DONE 2026-08-28, 7 live tests. The Lichen reuses the Foxglove's seam: a second party answering a
+      violation from inside the filing.
+- [x] 8 — Stage 9, Moonlit Jurisdictions (Untranslated Trail Marker, Elsewhere Path + two returning forms) —
+      DONE 2026-08-28, 7 live tests. **Where the player's attention went is not a number**, so the fight
+      marks whoever a card was aimed at — and each identity writes its OWN mark, because the Path asks
+      whether the destination was ever reached and the Marker asks how often you changed your mind, and one
+      shared mark would race.
+- [x] 9 — Stage 10, the Court Beneath the Hill (Keeper of Buried Names, Handworn Tally Coin) —
+      DONE 2026-08-28, 5 live tests. **THE STANDARD POOL IS COMPLETE**: 25 identities, 40 encounters,
+      12 solo and 28 combination, pinned in `Tests/ActThreePoolTests.cs`.
 - [ ] 10 — the elites
 - [ ] 11 — the bosses
 - [ ] 12 — the act itself: `ActRules.For(3)`, `BabLoader.Acts`, the act's own map lanes and rest /

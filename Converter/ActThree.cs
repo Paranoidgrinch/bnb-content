@@ -214,20 +214,40 @@ public static partial class ActThree
     // never touched. The design spends a section on this distinction because it is what keeps the Boundary
     // Stone, the Ditch Lamprey and the Bracken Moot from feeding each other forever.
     public static IEffectNode<TContext> TransferClaim<TContext>(
-        ICombatantTargetSelector from, ICombatantTargetSelector to)
+        ICombatantTargetSelector from, ICombatantTargetSelector to, bool foreign = true)
         where TContext : class
     {
         var giver = CombatantTargetSelectors.FirstTarget(from);
+
+        // "No foreign rule may move a Claim downhill." By Stage 9 the Boundary Stone has precedence over
+        // lesser border disputes, and every transfer in the act asks whether one is standing — except the
+        // Stone's own, which is the rule the precedence belongs to.
+        ICombatExpression<TContext, bool> Permitted() => foreign
+            ? new OrExpression<TContext>(
+                new ComparisonExpression<TContext>(
+                    new CombatantCurrentHealthExpression<TContext>(Lawgiver(SuperiorJurisdictionId)),
+                    ComparisonOperator.Equal,
+                    new ConstantExpression<TContext>(0)),
+                new ComparisonExpression<TContext>(
+                    new CombatantStatusStacksExpression<TContext>(giver, new StatusDefinitionId(ClaimId)),
+                    ComparisonOperator.LessOrEqual,
+                    new CombatantStatusStacksExpression<TContext>(
+                        CombatantTargetSelectors.FirstTarget(to), new StatusDefinitionId(ClaimId))))
+            : new ComparisonExpression<TContext>(
+                new ConstantExpression<TContext>(1), ComparisonOperator.Equal,
+                new ConstantExpression<TContext>(1));
 
         // Nothing arrives that did not leave. Two rules can answer the same grant — the Boundary Stone
         // passing a title on and the Ditch Lamprey attaching to it are written to meet — and without this
         // the pair would between them hand the recipient two Claims out of one, which is standing created
         // by a transfer and the one thing the act's whole vocabulary is built to prevent.
         return new ConditionalEffectNode<TContext>(
-            new ComparisonExpression<TContext>(
-                new CombatantStatusStacksExpression<TContext>(giver, new StatusDefinitionId(ClaimId)),
-                ComparisonOperator.Greater,
-                new ConstantExpression<TContext>(0)),
+            new AndExpression<TContext>(
+                new ComparisonExpression<TContext>(
+                    new CombatantStatusStacksExpression<TContext>(giver, new StatusDefinitionId(ClaimId)),
+                    ComparisonOperator.Greater,
+                    new ConstantExpression<TContext>(0)),
+                Permitted()),
             new CausalSequenceEffectNode<TContext>(
             [
                 new ModifySelectedStatusStacksNode<TContext>(
@@ -272,7 +292,15 @@ public static partial class ActThree
             "mandated_mushroom_circle.call_quorum" => Pressure(11),
             "bracken_moot.hear_petition" => Pressure(11),
             "the_sedge_bench.contempt_of_review" => Pressure(19),
+            "sleeping_stump_auditor.old_measure" => Pressure(13),
+            "precedent_lichen.cite_authority" => Pressure(10),
+            "footfall_root.remember_footstep" => Pressure(14),
+            "untranslated_trail_marker.unreadable_warning" => Pressure(14),
+            "elsewhere_path.arrive_elsewhere" => Pressure(15),
+            "keeper_of_buried_names.speak_the_name" => Pressure(16),
             _ when AppealsIntent(enemyId, intentId) is { } appeals => appeals,
+            _ when PrecedentsIntent(enemyId, intentId) is { } precedents => precedents,
+            _ when CourtIntent(enemyId, intentId) is { } court => court,
             // The two that GIVE. A gift carries its giver's name, which is the whole of the Witchling.
             "roadside_witchling.courtesy_gift" => Hospitality(0),
             "crossroads_cup.offer_the_cup" => Hospitality(0),
@@ -323,6 +351,7 @@ public static partial class ActThree
         ClaimCreated(),
         GreenDocketCustoms(),
         NoHastyPassage(),
+        HillLawHeard(),
         FirstUseBecameCustom(),
         EveryDetourLeavesAStone(),
         DetourStone(),
@@ -346,6 +375,23 @@ public static partial class ActThree
         CommonMandateGranted(),
         ClaimsAreHeardTogether(),
         Hearing(),
+        Attended(),
+        AimedLast(),
+        NamesOnceSpoken(),
+        NameHeardThisTurn(),
+        AllClaimsHaveValue(),
+        Tally(),
+        ThreeReadings(),
+        ReadingObserved(),
+        Destination(),
+        TheDestination(),
+        SuperiorJurisdiction(),
+        TheOldMeasure(),
+        MeasuredThisTurn(),
+        CitedAuthority(),
+        CitedThisTurn(),
+        DeepMemory(),
+        Memory(),
         AttachToTheAppeal(),
         AppealRemembered(),
         AppealTakenThisTurn(),
@@ -387,6 +433,12 @@ public static partial class ActThree
         "mandated_mushroom_circle", "bracken_moot",
         // Stage 7 — the Mire of Appeals
         "ditch_lamprey_of_appeals", "the_sedge_bench",
+        // Stage 8 — the Old-Growth Precedents
+        "sleeping_stump_auditor", "precedent_lichen", "footfall_root",
+        // Stage 9 — the Moonlit Jurisdictions
+        "untranslated_trail_marker", "elsewhere_path",
+        // Stage 10 — the Court Beneath the Hill
+        "keeper_of_buried_names", "handworn_tally_coin",
     };
 
     // What the player carries into a fight against any Green Docket body: the customs that turn three
@@ -464,6 +516,11 @@ public static partial class ActThree
     public const int OccupiedPlotLaw = 4;
     public const int PairedPromiseLaw = 5;
     public const int QuorumLaw = 6;
+    public const int OldMeasureLaw = 7;
+    public const int InscriptionLaw = 8;
+    public const int DestinationLaw = 9;
+    public const int HillLaw = 10;
+    public const int BuriedNamesLaw = 11;
 
     // Which law is being broken by the violation currently being filed. Kept on the player because the player
     // is the one combatant every rule can address, and read again the instant the Trespass lands.
@@ -513,7 +570,11 @@ public static partial class ActThree
         [
             new SetCombatantCounterNode<TContext>(
                 Applicant, LawBeingFiledCounter, new ConstantExpression<TContext>(law), relative: false),
+            // What the fight has established, for anything that cites authority rather than making it.
+            new SetCombatantCounterNode<TContext>(
+                Applicant, LastLawBrokenCounter, new ConstantExpression<TContext>(law), relative: false),
             WitnessTestimony<TContext>(law),
+            CitedAuthoritySpeaks<TContext>(law),
             theLawSpeaks,
         ]);
     }
