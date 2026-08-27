@@ -4,9 +4,15 @@
     "name": "The Hare Checks the Road",
     "act": 3,
     "difficulty": "normal",
-    "enemies": ["permit_hare"],
+    "enemies": [
+      "permit_hare"
+    ],
     "weight": 2,
-    "tags": ["stage_road", "green_docket", "trespass_intro"],
+    "tags": [
+      "stage_road",
+      "green_docket",
+      "trespass_intro"
+    ],
     "role": "combat"
   },
   {
@@ -14,9 +20,15 @@
     "name": "The First Use Became Custom",
     "act": 3,
     "difficulty": "normal",
-    "enemies": ["mossbound_clerk"],
+    "enemies": [
+      "mossbound_clerk"
+    ],
     "weight": 2,
-    "tags": ["stage_road", "green_docket", "precedent"],
+    "tags": [
+      "stage_road",
+      "green_docket",
+      "precedent"
+    ],
     "role": "combat"
   },
   {
@@ -24,10 +36,21 @@
     "name": "Every Detour Leaves a Stone",
     "act": 3,
     "difficulty": "normal",
-    "enemies": ["permit_hare", "cairn_of_stray_paths"],
-    "enemy_health": [48, 38],
+    "enemies": [
+      "permit_hare",
+      "cairn_of_stray_paths"
+    ],
+    "enemy_health": [
+      48,
+      38
+    ],
     "weight": 2,
-    "tags": ["stage_road", "green_docket", "trespass", "multi_enemy"],
+    "tags": [
+      "stage_road",
+      "green_docket",
+      "trespass",
+      "multi_enemy"
+    ],
     "role": "multi_combat"
   },
   {
@@ -35,10 +58,116 @@
     "name": "Stray-Path Precedent",
     "act": 3,
     "difficulty": "normal",
-    "enemies": ["mossbound_clerk", "cairn_of_stray_paths"],
-    "enemy_health": [51, 38],
+    "enemies": [
+      "mossbound_clerk",
+      "cairn_of_stray_paths"
+    ],
+    "enemy_health": [
+      51,
+      38
+    ],
     "weight": 2,
-    "tags": ["stage_road", "green_docket", "precedent", "multi_enemy"],
+    "tags": [
+      "stage_road",
+      "green_docket",
+      "precedent",
+      "multi_enemy"
+    ],
     "role": "multi_combat"
+  },
+  {
+    "id": "green_docket_hedgerows_01",
+    "name": "Counter-Survey",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "reckoning_hedge"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_hedgerows",
+      "green_docket",
+      "survey"
+    ],
+    "role": "combat"
+  },
+  {
+    "id": "green_docket_hedgerows_duo_01",
+    "name": "The Errant Line",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "reckoning_hedge",
+      "errant_boundary_stone"
+    ],
+    "enemy_health": [
+      55,
+      54
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_hedgerows",
+      "green_docket",
+      "claim_transfer",
+      "multi_enemy"
+    ],
+    "role": "multi_combat",
+    "enemy_statuses": [
+      {
+        "index": 1,
+        "status": "prior_dispute"
+      }
+    ]
+  },
+  {
+    "id": "green_docket_hedgerows_duo_02",
+    "name": "Thorn Lease",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "reckoning_hedge",
+      "hawthorn_tenant"
+    ],
+    "enemy_health": [
+      50,
+      68
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_hedgerows",
+      "green_docket",
+      "tenant",
+      "multi_enemy"
+    ],
+    "role": "multi_combat"
+  },
+  {
+    "id": "green_docket_hedgerows_duo_03",
+    "name": "Title Lodged in Hawthorn",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "errant_boundary_stone",
+      "hawthorn_tenant"
+    ],
+    "enemy_health": [
+      49,
+      68
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_hedgerows",
+      "green_docket",
+      "claim_transfer",
+      "tenant",
+      "multi_enemy"
+    ],
+    "role": "multi_combat",
+    "enemy_statuses": [
+      {
+        "index": 0,
+        "status": "prior_dispute"
+      }
+    ]
   }
 ]

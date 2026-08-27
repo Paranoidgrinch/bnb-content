@@ -158,6 +158,10 @@ public static class ActThree
     // A Claim is CREATED: the resource and the announcement together, and neither happens once the party is
     // already at the ceiling. Everything in the act that says "gains 1 newly created Claim" goes through here,
     // so a rule listening for a new Claim hears every one of them and no transfer at all.
+    //
+    // Both are filed in the HOLDER's own name rather than in the name of whoever's rule made them, because
+    // standing belongs to the party that holds it — and because a rule woken by the announcement then finds
+    // itself looking at the fight from the holder's side, which is the only side its question makes sense on.
     public static IEffectNode<TContext> CreateClaim<TContext>(ICombatantTargetSelector holder)
         where TContext : class =>
         new ConditionalEffectNode<TContext>(
@@ -168,10 +172,28 @@ public static class ActThree
             new CausalSequenceEffectNode<TContext>(
             [
                 new ApplyStatusNode<TContext>(
-                    holder, new StatusDefinitionId(ClaimId), new ConstantExpression<TContext>(1)),
+                    holder, new StatusDefinitionId(ClaimId), new ConstantExpression<TContext>(1),
+                    sourceSelector: holder),
                 new ApplyStatusNode<TContext>(
-                    holder, new StatusDefinitionId(ClaimCreatedId), new ConstantExpression<TContext>(1)),
+                    holder, new StatusDefinitionId(ClaimCreatedId), new ConstantExpression<TContext>(1),
+                    sourceSelector: holder),
             ]));
+
+    // A Claim CHANGES HANDS: one leaves the holder and one arrives with the new one, and the announcement is
+    // never touched. The design spends a section on this distinction because it is what keeps the Boundary
+    // Stone, the Ditch Lamprey and the Bracken Moot from feeding each other forever.
+    public static IEffectNode<TContext> TransferClaim<TContext>(
+        ICombatantTargetSelector from, ICombatantTargetSelector to)
+        where TContext : class =>
+        new CausalSequenceEffectNode<TContext>(
+        [
+            new ModifySelectedStatusStacksNode<TContext>(
+                from,
+                new StatusSelectionSpec(StatusPolarityFilter.Any) { Definition = new StatusDefinitionId(ClaimId) },
+                new ConstantExpression<TContext>(-1)),
+            new ApplyStatusNode<TContext>(
+                to, new StatusDefinitionId(ClaimId), new ConstantExpression<TContext>(1), sourceSelector: to),
+        ]);
 
     // ── Stage 1 — The Road of Permitted Turns ─────────────────────────────────────────────────────────────
     //
@@ -401,6 +423,279 @@ public static class ActThree
         Triggers = [],
     };
 
+    // ── Stage 2 — The Surveyed Hedgerows ──────────────────────────────────────────────────────────────────
+    //
+    // Where Stage 1 taught that a law has an author, Stage 2 teaches that standing CHANGES the law: a Claim
+    // reverses what the Hedge measures, moves where the Boundary Stone says it moves, and cannot be taken off
+    // the Hawthorn Tenant at all.
+
+    public const string CurrentSurveyId = "current_survey";
+    public const string SurveyedThisTurnId = "surveyed_this_turn";
+    public const string WanderingTitleId = "wandering_title";
+    public const string PriorDisputeId = "prior_dispute";
+    public const string PriorPossessionId = "prior_possession";
+    public const string OccupiedPlotId = "respect_the_occupied_plot";
+    public const string PlotEnforcedThisTurnId = "plot_enforced_this_turn";
+
+    // The Base Cost of the last card played this turn, plus one — so that zero can mean "no card yet" and a
+    // free card can still be compared. Kept on the player, the one combatant every part of the program can
+    // address with a single selector.
+    public static CounterId LastBaseCostCounter => new("last_base_cost");
+
+    // "Playing two consecutive cards with the same Base Cost applies 1 Trespass. When the Hedge gains a
+    // Claim, reverse the law; each new Claim flips it again. One Trespass from this law per player turn."
+    //
+    // Only a Claim that was MADE flips the survey. A Claim handed to the Hedge by the Boundary Stone standing
+    // next to it does not, which is the whole of the design's Encounter 6: the transferred political
+    // landscape and the Hedge's own later Claims are different legal facts.
+    public static StatusData CurrentSurvey()
+    {
+        var player = CombatantTargetSelectors.Source;
+        var hedge = EnemyLawgiver(CurrentSurveyId);
+
+        // Base Cost of the card just played, plus one.
+        ICombatExpression<CardPlayedTriggeredEffectContext, int> ThisCost() =>
+            new AddExpression<CardPlayedTriggeredEffectContext>(
+                new CardInstanceBaseCostExpression<CardPlayedTriggeredEffectContext>(
+                    new TriggerEventCardInstanceExpression<CardPlayedTriggeredEffectContext>(),
+                    StandardCombatIds.EnergyResource),
+                new ConstantExpression<CardPlayedTriggeredEffectContext>(1));
+
+        var sameAsLast = new ComparisonExpression<CardPlayedTriggeredEffectContext>(
+            new CombatantCounterExpression<CardPlayedTriggeredEffectContext>(player, LastBaseCostCounter),
+            ComparisonOperator.Equal,
+            ThisCost());
+
+        // The survey is reversed on every ODD Claim the Hedge has been granted.
+        var reversed = new ComparisonExpression<CardPlayedTriggeredEffectContext>(
+            new RemainderExpression<CardPlayedTriggeredEffectContext>(
+                new CombatantStatusStacksExpression<CardPlayedTriggeredEffectContext>(
+                    hedge, new StatusDefinitionId(ClaimCreatedId)),
+                new ConstantExpression<CardPlayedTriggeredEffectContext>(2)),
+            ComparisonOperator.Equal,
+            new ConstantExpression<CardPlayedTriggeredEffectContext>(1));
+
+        var violates = new OrExpression<CardPlayedTriggeredEffectContext>(
+            new AndExpression<CardPlayedTriggeredEffectContext>(
+                new NotExpression<CardPlayedTriggeredEffectContext>(reversed), sameAsLast),
+            new AndExpression<CardPlayedTriggeredEffectContext>(
+                reversed, new NotExpression<CardPlayedTriggeredEffectContext>(sameAsLast)));
+
+        var measure = new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
+            new AndExpression<CardPlayedTriggeredEffectContext>(
+                // There has to BE a previous card for two of them to be consecutive …
+                new ComparisonExpression<CardPlayedTriggeredEffectContext>(
+                    new CombatantCounterExpression<CardPlayedTriggeredEffectContext>(player, LastBaseCostCounter),
+                    ComparisonOperator.Greater,
+                    new ConstantExpression<CardPlayedTriggeredEffectContext>(0)),
+                new AndExpression<CardPlayedTriggeredEffectContext>(
+                    // … the survey may only speak once a turn …
+                    new ComparisonExpression<CardPlayedTriggeredEffectContext>(
+                        new CombatantStatusStacksExpression<CardPlayedTriggeredEffectContext>(
+                            hedge, new StatusDefinitionId(SurveyedThisTurnId)),
+                        ComparisonOperator.Equal,
+                        new ConstantExpression<CardPlayedTriggeredEffectContext>(0)),
+                    violates)),
+            new CausalSequenceEffectNode<CardPlayedTriggeredEffectContext>(
+            [
+                FileTrespass<CardPlayedTriggeredEffectContext>(player, hedge),
+                new ApplyStatusNode<CardPlayedTriggeredEffectContext>(
+                    hedge, new StatusDefinitionId(SurveyedThisTurnId),
+                    new ConstantExpression<CardPlayedTriggeredEffectContext>(1)),
+            ]));
+
+        var program = new EffectProgram<CardPlayedTriggeredEffectContext>(
+            new CausalSequenceEffectNode<CardPlayedTriggeredEffectContext>(
+            [
+                measure,
+                // …and whatever the survey made of it, this card is what the next one is measured against.
+                new SetCombatantCounterNode<CardPlayedTriggeredEffectContext>(
+                    player, LastBaseCostCounter, ThisCost(), relative: false),
+            ]));
+
+        // A new turn is a new survey: nothing was played before the first card of it.
+        var reset = new EffectProgram<TurnStartedTriggeredEffectContext>(
+            new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
+                PlayersTurn<TurnStartedTriggeredEffectContext>(),
+                new CausalSequenceEffectNode<TurnStartedTriggeredEffectContext>(
+                [
+                    new SetCombatantCounterNode<TurnStartedTriggeredEffectContext>(
+                        CombatantTargetSelectors.Source, LastBaseCostCounter,
+                        new ConstantExpression<TurnStartedTriggeredEffectContext>(0), relative: false),
+                    new RemoveStatusNode<TurnStartedTriggeredEffectContext>(
+                        EnemyLawgiver(CurrentSurveyId), new StatusDefinitionId(SurveyedThisTurnId)),
+                ])));
+
+        return Rule(CurrentSurveyId, "Current Survey",
+            "Two cards in a row of the same Base Cost are a Trespass owed to the Reckoning Hedge — until the "
+            + "Hedge is granted a Claim, after which two of DIFFERENT Base Cost are. Once a turn.",
+            [
+                new StatusTriggerData("CardPlayed", JsonSerializer.SerializeToElement(
+                    program, CombatJson.CreateOptions<CardPlayedTriggeredEffectContext>()),
+                    StatusTriggerScope.Anywhere),
+                new StatusTriggerData("TurnStarted", JsonSerializer.SerializeToElement(
+                    reset, CombatJson.CreateOptions<TurnStartedTriggeredEffectContext>()),
+                    StatusTriggerScope.Anywhere),
+            ]);
+    }
+
+    public static StatusData SurveyedThisTurn() =>
+        Marker(SurveyedThisTurnId, "Surveyed",
+            "The hedge has already measured against you this turn.");
+
+    // "Whenever this Stone gains a newly created Claim, it may pass one of its Claims to an ally holding
+    // fewer." The Stone is the event's target, so this one is BEARER-scoped: the rule is about what happened
+    // to its own wearer, and it fires from the Stone's own side of the fight.
+    public static StatusData WanderingTitle() =>
+        Rule(WanderingTitleId, "Wandering Title",
+            "When the Boundary Stone is granted a Claim it passes one on to whichever neighbour holds fewer. "
+            + "A Claim that changes hands is not a new one.",
+            [
+                // A merged status raises StatusApplied the first time and StatusMerged every time after, and
+                // the second Claim is the first one this rule can actually act on — so it must hear both.
+                new StatusTriggerData("StatusApplied", JsonSerializer.SerializeToElement(
+                    WanderingTitleProgram<StatusAppliedTriggeredEffectContext>(),
+                    CombatJson.CreateOptions<StatusAppliedTriggeredEffectContext>())),
+                new StatusTriggerData("StatusMerged", JsonSerializer.SerializeToElement(
+                    WanderingTitleProgram<StatusMergedTriggeredEffectContext>(),
+                    CombatJson.CreateOptions<StatusMergedTriggeredEffectContext>())),
+            ]);
+
+    private static EffectProgram<TContext> WanderingTitleProgram<TContext>()
+        where TContext : class
+    {
+        var stone = CombatantTargetSelectors.EventTarget;
+        var neighbour = CombatantTargetSelectors.LowestStatusStacks(
+            CombatantTargetSelectors.WithoutStatus(
+                CombatantTargetSelectors.AllAlliesOfSource, new StatusDefinitionId(WanderingTitleId)),
+            new StatusDefinitionId(ClaimId));
+
+        return new EffectProgram<TContext>(
+            new ConditionalEffectNode<TContext>(
+                new AndExpression<TContext>(
+                    // A Claim being MADE, not one arriving from somewhere else.
+                    new TriggerEventStatusIsExpression<TContext>(new StatusDefinitionId(ClaimCreatedId)),
+                    // …and only downhill: a title wanders towards whoever holds fewer of them.
+                    new ComparisonExpression<TContext>(
+                        new CombatantStatusStacksExpression<TContext>(
+                            neighbour, new StatusDefinitionId(ClaimId)),
+                        ComparisonOperator.Less,
+                        new CombatantStatusStacksExpression<TContext>(
+                            stone, new StatusDefinitionId(ClaimId)))),
+                TransferClaim<TContext>(stone, neighbour)));
+    }
+
+    // Encounter scaffolding, not a passive: in the two fights where Claim transfer is being TAUGHT, the Stone
+    // already holds a Claim when the player arrives, and passes it on before anybody has done anything. It
+    // spends itself doing so, which is why later appearances get no free Claim.
+    public static StatusData PriorDispute()
+    {
+        var stone = EnemyLawgiver(PriorDisputeId);
+
+        var program = new EffectProgram<TurnStartedTriggeredEffectContext>(
+            new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
+                PlayersTurn<TurnStartedTriggeredEffectContext>(),
+                new CausalSequenceEffectNode<TurnStartedTriggeredEffectContext>(
+                [
+                    CreateClaim<TurnStartedTriggeredEffectContext>(stone),
+                    new RemoveStatusNode<TurnStartedTriggeredEffectContext>(
+                        stone, new StatusDefinitionId(PriorDisputeId)),
+                ])));
+
+        return Rule(PriorDisputeId, "Prior Dispute",
+            "There was already an argument here before you arrived: the Boundary Stone opens holding a Claim.",
+            [new StatusTriggerData("TurnStarted", JsonSerializer.SerializeToElement(
+                program, CombatJson.CreateOptions<TurnStartedTriggeredEffectContext>()),
+                StatusTriggerScope.Anywhere)]);
+    }
+
+    // "The first time each player turn the player attacks the Tenant while another living enemy has lower
+    // current HP: 1 Trespass." Attacking the occupier while somebody weaker is standing right there is what
+    // makes it a tenancy dispute rather than a fight.
+    public static StatusData RespectTheOccupiedPlot()
+    {
+        // In a damage-received trigger the receiver is the event target and the attacker is the source.
+        var tenant = CombatantTargetSelectors.EventTarget;
+        var attacker = CombatantTargetSelectors.Source;
+        var weakestNeighbour = CombatantTargetSelectors.LowestHealth(
+            CombatantTargetSelectors.WithoutStatus(
+                CombatantTargetSelectors.AllEnemiesOfSource, new StatusDefinitionId(OccupiedPlotId)));
+
+        var program = new EffectProgram<DamageReceivedTriggeredEffectContext>(
+            new ConditionalEffectNode<DamageReceivedTriggeredEffectContext>(
+                new AndExpression<DamageReceivedTriggeredEffectContext>(
+                    // It has to be the PLAYER doing the attacking, and not this turn's second attempt.
+                    new AndExpression<DamageReceivedTriggeredEffectContext>(
+                        new ComparisonExpression<DamageReceivedTriggeredEffectContext>(
+                            new CombatantStatusStacksExpression<DamageReceivedTriggeredEffectContext>(
+                                attacker, new StatusDefinitionId(PassiveStatuses.ApplicantId)),
+                            ComparisonOperator.Greater,
+                            new ConstantExpression<DamageReceivedTriggeredEffectContext>(0)),
+                        new ComparisonExpression<DamageReceivedTriggeredEffectContext>(
+                            new CombatantStatusStacksExpression<DamageReceivedTriggeredEffectContext>(
+                                tenant, new StatusDefinitionId(PlotEnforcedThisTurnId)),
+                            ComparisonOperator.Equal,
+                            new ConstantExpression<DamageReceivedTriggeredEffectContext>(0))),
+                    // …and somebody weaker has to be standing right there. With nobody else on the field the
+                    // read is zero, which is below the Tenant's health and would wrongly pass, so the
+                    // neighbour must actually be alive and holding something.
+                    new AndExpression<DamageReceivedTriggeredEffectContext>(
+                        new ComparisonExpression<DamageReceivedTriggeredEffectContext>(
+                            new CombatantCurrentHealthExpression<DamageReceivedTriggeredEffectContext>(
+                                weakestNeighbour),
+                            ComparisonOperator.Greater,
+                            new ConstantExpression<DamageReceivedTriggeredEffectContext>(0)),
+                        new ComparisonExpression<DamageReceivedTriggeredEffectContext>(
+                            new CombatantCurrentHealthExpression<DamageReceivedTriggeredEffectContext>(
+                                weakestNeighbour),
+                            ComparisonOperator.Less,
+                            new CombatantCurrentHealthExpression<DamageReceivedTriggeredEffectContext>(tenant)))),
+                new CausalSequenceEffectNode<DamageReceivedTriggeredEffectContext>(
+                [
+                    FileTrespass<DamageReceivedTriggeredEffectContext>(attacker, tenant),
+                    new ApplyStatusNode<DamageReceivedTriggeredEffectContext>(
+                        tenant, new StatusDefinitionId(PlotEnforcedThisTurnId),
+                        new ConstantExpression<DamageReceivedTriggeredEffectContext>(1)),
+                ])));
+
+        var reset = new EffectProgram<TurnStartedTriggeredEffectContext>(
+            new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
+                PlayersTurn<TurnStartedTriggeredEffectContext>(),
+                new RemoveStatusNode<TurnStartedTriggeredEffectContext>(
+                    EnemyLawgiver(OccupiedPlotId), new StatusDefinitionId(PlotEnforcedThisTurnId))));
+
+        return Rule(OccupiedPlotId, "Respect the Occupied Plot",
+            "Strike the Hawthorn Tenant while a weaker party is standing beside it and you owe the Tenant 1 "
+            + "Trespass. Once a turn.",
+            [
+                new StatusTriggerData("DamageTaken", JsonSerializer.SerializeToElement(
+                    program, CombatJson.CreateOptions<DamageReceivedTriggeredEffectContext>()),
+                    StatusTriggerScope.Anywhere),
+                new StatusTriggerData("TurnStarted", JsonSerializer.SerializeToElement(
+                    reset, CombatJson.CreateOptions<TurnStartedTriggeredEffectContext>()),
+                    StatusTriggerScope.Anywhere),
+            ]);
+    }
+
+    public static StatusData PlotEnforcedThisTurn() =>
+        Marker(PlotEnforcedThisTurnId, "Plot Enforced",
+            "The Tenant has already objected to being struck this turn.");
+
+    // "Claims belonging to the Hawthorn Tenant cannot be transferred away, copied, or consumed as the cost of
+    // another party's ability. Others may still give it Claims."
+    //
+    // A prohibition on what OTHER rules may do is not a rule of its own: nothing in the engine asks the
+    // Tenant's permission. It is a mark, and every rule in the act that moves or spends somebody else's Claim
+    // reads it — `ActThree.ClaimsOthersMayTake` is the one selector they all go through.
+    public static StatusData PriorPossession() =>
+        Marker(PriorPossessionId, "Prior Possession",
+            "This party's Claims cannot be taken, copied or spent by anybody else. It may still be given more.");
+
+    // The parties whose Claims another rule is allowed to move or spend: everybody except whoever the fight
+    // has already recognised as the sitting occupier.
+    public static ICombatantTargetSelector ClaimsOthersMayTake(ICombatantTargetSelector among) =>
+        CombatantTargetSelectors.WithoutStatus(among, new StatusDefinitionId(PriorPossessionId));
+
     // ── shapes ────────────────────────────────────────────────────────────────────────────────────────────
 
     // Every Green Docket identity, and the rule the player carries into a fight with any of them: the act's
@@ -417,13 +712,23 @@ public static class ActThree
         EveryDetourLeavesAStone(),
         DetourStone(),
         DetourLatch(),
+        CurrentSurvey(),
+        SurveyedThisTurn(),
+        WanderingTitle(),
+        PriorDispute(),
+        RespectTheOccupiedPlot(),
+        PlotEnforcedThisTurn(),
+        PriorPossession(),
     ];
 
     // The standard roster, stage by stage. Anything in here is a Green Docket body, which is how a fight
     // knows to open under the act's customs.
     public static readonly IReadOnlySet<string> Identities = new HashSet<string>(StringComparer.Ordinal)
     {
+        // Stage 1 — the Road of Permitted Turns
         "permit_hare", "mossbound_clerk", "cairn_of_stray_paths",
+        // Stage 2 — the Surveyed Hedgerows
+        "reckoning_hedge", "errant_boundary_stone", "hawthorn_tenant",
     };
 
     // What the player carries into a fight against any Green Docket body: the customs that turn three
@@ -460,6 +765,30 @@ public static class ActThree
         new ApplyStatusNode<TContext>(
             player, new StatusDefinitionId(TrespassId), new ConstantExpression<TContext>(1),
             sourceSelector: lawgiver);
+
+    // "Whoever's turn just started is the player" — how a rule that counts per PLAYER turn tells the player's
+    // turn boundary from an enemy's, turns here belonging to combatants rather than to the table.
+    private static ICombatExpression<TContext, bool> PlayersTurn<TContext>()
+        where TContext : class =>
+        new ComparisonExpression<TContext>(
+            new CombatantStatusStacksExpression<TContext>(
+                CombatantTargetSelectors.Source, new StatusDefinitionId(PassiveStatuses.ApplicantId)),
+            ComparisonOperator.Greater,
+            new ConstantExpression<TContext>(0));
+
+    // An inert status: something the fight can see and other rules can ask about, carrying nothing itself.
+    private static StatusData Marker(string id, string name, string description) => new()
+    {
+        Id = id,
+        NameKey = name,
+        DescriptionKey = description,
+        Polarity = StatusPolarity.Neutral,
+        StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
+        UsesStacks = false,
+        Tags = [],
+        PassiveModifiers = [],
+        Triggers = [],
+    };
 
     // A rule, not a resource: a status that exists only to carry triggers.
     private static StatusData Rule(

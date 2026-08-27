@@ -137,7 +137,7 @@ public static class EncounterMapper
                 // (special or not) still get action definitions (EnemyMapper.MapActions), so rules can name them.
                 enemy.Intents.Where(i => i.Special != true)
                     .Select(i => new EnemyActionDefinitionId(EnemyMapper.ActionId(enemyId, i.Id))).ToList(),
-                StartingStatuses: MapStartingStatuses(enemy),
+                StartingStatuses: MapStartingStatuses(enemy, encounter, slot),
                 DisplayName: enemy.Name,
                 IntentRules: MapIntentRules(where, enemyId, enemy)));
         }
@@ -166,13 +166,23 @@ public static class EncounterMapper
             triggeredEffects: triggeredEffects);
     }
 
-    // Passive signatures + standing buffs the enemy carries into the fight (a status with triggers).
-    private static IReadOnlyList<StartingStatusSpec>? MapStartingStatuses(BabEnemy enemy) =>
-        enemy.StartingStatuses is null || enemy.StartingStatuses.Count == 0
-            ? null
-            : enemy.StartingStatuses
-                .Select(s => new StartingStatusSpec(new StatusDefinitionId(s.Status), s.Stacks ?? 1))
-                .ToList();
+    // Passive signatures + standing buffs the enemy carries into the fight (a status with triggers), plus
+    // whatever THIS encounter scaffolds onto that particular body — a Claim the Boundary Stone holds in its
+    // two teaching fights and nowhere else.
+    private static IReadOnlyList<StartingStatusSpec>? MapStartingStatuses(
+        BabEnemy enemy, BabEncounter encounter, int slot)
+    {
+        var own = enemy.StartingStatuses ?? [];
+        var scaffolded = (encounter.EnemyStatuses ?? []).Where(s => s.Index == slot).ToList();
+        if (own.Count == 0 && scaffolded.Count == 0)
+            return null;
+
+        return
+        [
+            .. own.Select(s => new StartingStatusSpec(new StatusDefinitionId(s.Status), s.Stacks ?? 1)),
+            .. scaffolded.Select(s => new StartingStatusSpec(new StatusDefinitionId(s.Status), s.Stacks ?? 1)),
+        ];
+    }
 
     // State-conditional intents → engine EnemyIntentRule. Action names an intent on this enemy.
     private static IReadOnlyList<EnemyIntentRule>? MapIntentRules(string where, string enemyId, BabEnemy enemy) =>

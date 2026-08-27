@@ -10,8 +10,17 @@
         "name": "Check the Permit",
         "intent_type": "mixed",
         "actions": [
-          { "type": "deal_damage", "target": "player", "amount": 10 },
-          { "type": "apply_status", "target": "player", "status": "trespass", "amount": 1 }
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 10
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "trespass",
+            "amount": 1
+          }
         ]
       },
       {
@@ -19,7 +28,11 @@
         "name": "Road Kick",
         "intent_type": "attack",
         "actions": [
-          { "type": "deal_damage", "target": "player", "amount": 13 }
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 13
+          }
         ]
       },
       {
@@ -27,14 +40,25 @@
         "name": "Stamp Passage",
         "intent_type": "block",
         "actions": [
-          { "type": "gain_block", "target": "owner", "amount": 14 }
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 14
+          }
         ]
       }
     ],
     "starting_statuses": [
-      { "status": "no_hasty_passage" }
+      {
+        "status": "no_hasty_passage"
+      }
     ],
-    "tags": ["green_docket", "road", "normal", "stage_road"]
+    "tags": [
+      "green_docket",
+      "road",
+      "normal",
+      "stage_road"
+    ]
   },
   {
     "id": "mossbound_clerk",
@@ -47,8 +71,17 @@
         "name": "Record Custom",
         "intent_type": "mixed",
         "actions": [
-          { "type": "deal_damage", "target": "player", "amount": 10 },
-          { "type": "apply_status", "target": "player", "status": "trespass", "amount": 1 }
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 10
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "trespass",
+            "amount": 1
+          }
         ]
       },
       {
@@ -56,7 +89,11 @@
         "name": "Old Procedure",
         "intent_type": "attack",
         "actions": [
-          { "type": "deal_damage", "target": "player", "amount": 14 }
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 14
+          }
         ]
       },
       {
@@ -64,14 +101,26 @@
         "name": "Moss Seal",
         "intent_type": "block",
         "actions": [
-          { "type": "gain_block", "target": "owner", "amount": 16 }
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 16
+          }
         ]
       }
     ],
     "starting_statuses": [
-      { "status": "first_use_became_custom" }
+      {
+        "status": "first_use_became_custom"
+      }
     ],
-    "tags": ["green_docket", "road", "normal", "precedent", "stage_road"]
+    "tags": [
+      "green_docket",
+      "road",
+      "normal",
+      "precedent",
+      "stage_road"
+    ]
   },
   {
     "id": "cairn_of_stray_paths",
@@ -84,7 +133,11 @@
         "name": "Loose Stone",
         "intent_type": "attack",
         "actions": [
-          { "type": "deal_damage", "target": "player", "amount": 9 }
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 9
+          }
         ]
       },
       {
@@ -92,7 +145,11 @@
         "name": "Stonefall",
         "intent_type": "attack",
         "actions": [
-          { "type": "deal_damage", "target": "player", "amount": 13 }
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 13
+          }
         ]
       },
       {
@@ -100,13 +157,215 @@
         "name": "Brace Cairn",
         "intent_type": "block",
         "actions": [
-          { "type": "gain_block", "target": "owner", "amount": 17 }
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 17
+          }
         ]
       }
     ],
     "starting_statuses": [
-      { "status": "every_detour_leaves_a_stone" }
+      {
+        "status": "every_detour_leaves_a_stone"
+      }
     ],
-    "tags": ["green_docket", "road", "normal", "support", "stage_road"]
+    "tags": [
+      "green_docket",
+      "road",
+      "normal",
+      "support",
+      "stage_road"
+    ]
+  },
+  {
+    "id": "reckoning_hedge",
+    "name": "Reckoning Hedge",
+    "max_hp": 77,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "measure_back",
+        "name": "Measure Back",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 10
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "trespass",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "thorn_retaliation",
+        "name": "Thorn Retaliation",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 16
+          }
+        ]
+      },
+      {
+        "id": "close_the_hedge",
+        "name": "Close the Hedge",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 18
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "current_survey"
+      }
+    ],
+    "tags": [
+      "green_docket",
+      "hedgerow",
+      "normal",
+      "survey",
+      "stage_hedgerows"
+    ]
+  },
+  {
+    "id": "errant_boundary_stone",
+    "name": "Errant Boundary Stone",
+    "max_hp": 75,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "move_the_marker",
+        "name": "Move the Marker",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 11
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "trespass",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "boundary_slam",
+        "name": "Boundary Slam",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 17
+          }
+        ]
+      },
+      {
+        "id": "settle_the_line",
+        "name": "Settle the Line",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 19
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "wandering_title"
+      }
+    ],
+    "tags": [
+      "green_docket",
+      "hedgerow",
+      "normal",
+      "support",
+      "claim_transfer",
+      "stage_hedgerows"
+    ]
+  },
+  {
+    "id": "hawthorn_tenant",
+    "name": "The Hawthorn Tenant",
+    "max_hp": 83,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "enforce_the_plot",
+        "name": "Enforce the Plot",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 12
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "trespass",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "eviction",
+        "name": "Eviction",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 18
+          }
+        ]
+      },
+      {
+        "id": "thorn_lease",
+        "name": "Thorn Lease",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 18
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "respect_the_occupied_plot"
+      },
+      {
+        "status": "prior_possession"
+      }
+    ],
+    "tags": [
+      "green_docket",
+      "hedgerow",
+      "normal",
+      "tenant",
+      "stage_hedgerows"
+    ]
   }
 ]
