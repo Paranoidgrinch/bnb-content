@@ -2428,5 +2428,155 @@
       "act_3",
       "precedent"
     ]
+  },
+  {
+    "id": "hearing_reed",
+    "name": "Hearing Reed",
+    "max_hp": 78,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "hear_the_complaint",
+        "name": "Hear the Complaint",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 12
+          }
+        ]
+      },
+      {
+        "id": "take_the_testimony",
+        "name": "Take the Testimony",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 14
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "safe_conduct",
+            "amount": 1
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "green_docket_body"
+      },
+      {
+        "status": "hearing_reed"
+      }
+    ],
+    "tags": [
+      "green_docket",
+      "elite",
+      "act_3",
+      "appeal"
+    ]
+  },
+  {
+    "id": "remand_reed",
+    "name": "Remand Reed",
+    "max_hp": 84,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "send_it_upstream",
+        "name": "Send It Upstream",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 10
+          }
+        ]
+      },
+      {
+        "id": "hold_under_review",
+        "name": "Hold Under Review",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 18
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "green_docket_body"
+      },
+      {
+        "status": "remand_reed"
+      }
+    ],
+    "tags": [
+      "green_docket",
+      "elite",
+      "act_3",
+      "appeal"
+    ]
+  },
+  {
+    "id": "refusal_reed",
+    "name": "Refusal Reed",
+    "max_hp": 90,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "no_further_appeal",
+        "name": "No Further Appeal",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 18
+          }
+        ]
+      },
+      {
+        "id": "written_refusal",
+        "name": "Written Refusal",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 13
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "doubt",
+            "amount": 1
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "green_docket_body"
+      },
+      {
+        "status": "refusal_reed"
+      }
+    ],
+    "tags": [
+      "green_docket",
+      "elite",
+      "act_3",
+      "appeal"
+    ]
   }
 ]

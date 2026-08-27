@@ -1013,5 +1013,24 @@
       "precedent"
     ],
     "role": "elite"
+  },
+  {
+    "id": "green_docket_elite_three_reeds_of_appeal",
+    "name": "Three Reeds of Appeal",
+    "act": 3,
+    "difficulty": "elite",
+    "enemies": [
+      "hearing_reed",
+      "remand_reed",
+      "refusal_reed"
+    ],
+    "weight": 1,
+    "tags": [
+      "green_docket",
+      "elite",
+      "claim",
+      "multi_enemy"
+    ],
+    "role": "elite"
   }
 ]
