@@ -1809,5 +1809,88 @@
       "act_3",
       "custom"
     ]
+  },
+  {
+    "id": "the_wrong_bridge_in_person",
+    "name": "The Wrong Bridge in Person",
+    "max_hp": 200,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "approaching_abutment",
+        "name": "Approaching Abutment",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 15
+          }
+        ]
+      },
+      {
+        "id": "raise_the_tollgate",
+        "name": "Raise the Tollgate",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 18
+          }
+        ]
+      },
+      {
+        "id": "future_toll",
+        "name": "Future Toll",
+        "intent_type": "debuff",
+        "actions": [
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "wergild",
+            "amount": 2
+          }
+        ]
+      },
+      {
+        "id": "charge_for_the_crossing",
+        "name": "Charge for the Crossing",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 17
+          }
+        ]
+      },
+      {
+        "id": "collapse_before_completion",
+        "name": "Collapse Before Completion",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 15
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "green_docket_body"
+      },
+      {
+        "status": "debt_before_passage"
+      }
+    ],
+    "tags": [
+      "green_docket",
+      "elite",
+      "act_3",
+      "crossing"
+    ]
   }
 ]
