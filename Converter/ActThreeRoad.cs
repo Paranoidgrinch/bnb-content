@@ -30,24 +30,66 @@ public static partial class ActThree
 
     // "If the player plays a third card during a player turn: 1 Trespass. Once per player turn." The count is
     // its own latch — a turn passes through exactly three played cards once.
+    //
+    // By Stage 9 two legal systems claim authority over the same hare, and which of them governs depends on
+    // how much standing it has been granted. At 0–1 Claims the ROAD law applies, which is the one the player
+    // learned in the first room of the act; at 2 or more, HILL law does, and the first free card of a turn is
+    // the breach instead. The character does not change. The court does.
     public static StatusData NoHastyPassage()
     {
         var player = CombatantTargetSelectors.Source;
+        var hare = Lawgiver(NoHastyPassageId);
+
+        var underHillLaw = new ComparisonExpression<CardPlayedTriggeredEffectContext>(
+            new CombatantStatusStacksExpression<CardPlayedTriggeredEffectContext>(
+                hare, new StatusDefinitionId(ClaimId)),
+            ComparisonOperator.GreaterOrEqual,
+            new ConstantExpression<CardPlayedTriggeredEffectContext>(2));
+
+        var roadLaw = new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
+            new ComparisonExpression<CardPlayedTriggeredEffectContext>(
+                new CardsPlayedThisTurnExpression<CardPlayedTriggeredEffectContext>(player),
+                ComparisonOperator.Equal,
+                new ConstantExpression<CardPlayedTriggeredEffectContext>(3)),
+            Violate<CardPlayedTriggeredEffectContext>(hare, HastyPassageLaw));
+
+        var hillLaw = new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
+            new ComparisonExpression<CardPlayedTriggeredEffectContext>(
+                new CardInstanceBaseCostExpression<CardPlayedTriggeredEffectContext>(
+                    new TriggerEventCardInstanceExpression<CardPlayedTriggeredEffectContext>(),
+                    StandardCombatIds.EnergyResource),
+                ComparisonOperator.Equal,
+                new ConstantExpression<CardPlayedTriggeredEffectContext>(0)),
+            Violate<CardPlayedTriggeredEffectContext>(hare, HillLaw, HillLawHeardId));
 
         var program = new EffectProgram<CardPlayedTriggeredEffectContext>(
-            new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
-                new ComparisonExpression<CardPlayedTriggeredEffectContext>(
-                    new CardsPlayedThisTurnExpression<CardPlayedTriggeredEffectContext>(player),
-                    ComparisonOperator.Equal,
-                    new ConstantExpression<CardPlayedTriggeredEffectContext>(3)),
-                Violate<CardPlayedTriggeredEffectContext>(Lawgiver(NoHastyPassageId), HastyPassageLaw)));
+            new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(underHillLaw, hillLaw, roadLaw));
+
+        var reset = new EffectProgram<TurnStartedTriggeredEffectContext>(
+            new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
+                PlayersTurn<TurnStartedTriggeredEffectContext>(),
+                new RemoveStatusNode<TurnStartedTriggeredEffectContext>(
+                    Lawgiver(NoHastyPassageId), new StatusDefinitionId(HillLawHeardId))));
 
         return Rule(NoHastyPassageId, "No Hasty Passage",
-            "The third card you play in a turn is a hasty passage: 1 Trespass owed to the Permit Hare.",
-            [new StatusTriggerData("CardPlayed", JsonSerializer.SerializeToElement(
-                program, CombatJson.CreateOptions<CardPlayedTriggeredEffectContext>()),
-                StatusTriggerScope.Anywhere)]);
+            "Under road law — which governs while the Permit Hare holds fewer than 2 Claims — the third card "
+            + "you play in a turn is a hasty passage. Under hill law, the first card that costs you nothing "
+            + "is. Either way it is 1 Trespass owed to the Hare.",
+            [
+                new StatusTriggerData("CardPlayed", JsonSerializer.SerializeToElement(
+                    program, CombatJson.CreateOptions<CardPlayedTriggeredEffectContext>()),
+                    StatusTriggerScope.Anywhere),
+                new StatusTriggerData("TurnStarted", JsonSerializer.SerializeToElement(
+                    reset, CombatJson.CreateOptions<TurnStartedTriggeredEffectContext>()),
+                    StatusTriggerScope.Anywhere),
+            ]);
     }
+
+    public const string HillLawHeardId = "hill_law_heard";
+
+    public static StatusData HillLawHeard() =>
+        Marker(HillLawHeardId, "Hill Law Applied",
+            "The hill court has already spoken this turn.");
 
     // "The first non-Junk card played in the combat establishes its card type as Customary Use. From then on,
     // a turn whose first non-Junk card is of another type is a Trespass."

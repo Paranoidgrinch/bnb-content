@@ -1436,3 +1436,29 @@ settlement, where the creditor that paid in full and happens to be under review 
 **A transfer hands over only what was handed in.** Two rules can answer the same grant, and the pair would
 otherwise make two Claims out of one. The transfer is guarded on the giver actually holding something —
 which also proves, incidentally, that two triggered programs on one event do see each other's effects.
+
+## Act III — precedent, jurisdiction and the court (2026-08-28)
+
+**Rings of Precedent are a placeholder the design asked for.** The master states the intent — an early Claim
+makes the consequence stricter — and leaves the numbers to the balance pass. The plainest reading of it is
+what is built: the Old Measure costs 1 Trespass, and one more for every Claim the Stump holds.
+
+**The Precedent Lichen cites the last law anybody was found to have broken.** The design says it chooses a
+neighbour's Local Law; a law here is a number written down as the violation goes past, and the only
+authority a fight has actually established is the last one invoked. From then on the Lichen answers every
+breach of that law as well — the Foxglove's shape exactly, and for the same reason: a law's own answer is
+capped once a turn and a breach is not.
+
+**Where the player's attention went is not a number.** Two Stage-9 identities ask about it and each writes
+its OWN mark: the Elsewhere Path marks everything aimed at this turn (was the destination ever reached), the
+Trail Marker marks only the last thing aimed at (how often did the eye move). Sharing one mark would race —
+the Marker must read where the eye WAS before it moves, and the order two CardPlayed rules fire in is not
+decided.
+
+**"A name already spoken" is a copy already played.** The engine keeps no history of which card DEFINITIONS
+have been played in a combat, and a per-instance mark answers the question the Keeper actually asks in play:
+you played that card again. Two copies of the same card in a deck count as two names here, which is a
+deviation — and a defensible one, since they are two pieces of paper.
+
+**The Bench hears one matter at a time**, which is what makes it slow enough for reeds to grow through the
+record — and which stops the review marker stacking up round after round.

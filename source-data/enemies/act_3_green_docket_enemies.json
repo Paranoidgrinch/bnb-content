@@ -1180,5 +1180,452 @@
       "wergild",
       "stage_appeals"
     ]
+  },
+  {
+    "id": "sleeping_stump_auditor",
+    "name": "Sleeping Stump Auditor",
+    "max_hp": 117,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "old_measure",
+        "name": "Old Measure",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 13
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "trespass",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "ring_strike",
+        "name": "Ring Strike",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 20
+          }
+        ]
+      },
+      {
+        "id": "rooted_stay",
+        "name": "Rooted Stay",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 24
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "green_docket_body"
+      },
+      {
+        "status": "the_old_measure"
+      }
+    ],
+    "tags": [
+      "green_docket",
+      "precedents",
+      "normal",
+      "claim",
+      "stage_precedents"
+    ]
+  },
+  {
+    "id": "precedent_lichen",
+    "name": "Precedent Lichen",
+    "max_hp": 98,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "cite_authority",
+        "name": "Cite Authority",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 10
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "trespass",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "old_stone_flake",
+        "name": "Old Stone Flake",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 16
+          }
+        ]
+      },
+      {
+        "id": "lichen_hold",
+        "name": "Lichen Hold",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 20
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "green_docket_body"
+      },
+      {
+        "status": "cited_authority"
+      }
+    ],
+    "tags": [
+      "green_docket",
+      "precedents",
+      "normal",
+      "support",
+      "claim",
+      "stage_precedents"
+    ]
+  },
+  {
+    "id": "footfall_root",
+    "name": "Footfall Root",
+    "max_hp": 124,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "remember_footstep",
+        "name": "Remember Footstep",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 14
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "trespass",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "memory_crush",
+        "name": "Memory Crush",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 18
+          }
+        ]
+      },
+      {
+        "id": "deep_root",
+        "name": "Deep Root",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 25
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "green_docket_body"
+      },
+      {
+        "status": "deep_memory"
+      }
+    ],
+    "tags": [
+      "green_docket",
+      "precedents",
+      "normal",
+      "claim",
+      "stage_precedents"
+    ]
+  },
+  {
+    "id": "untranslated_trail_marker",
+    "name": "The Untranslated Trail Marker",
+    "max_hp": 121,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "unreadable_warning",
+        "name": "Unreadable Warning",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 14
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "trespass",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "turn_the_sign",
+        "name": "Turn the Sign",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 22
+          }
+        ]
+      },
+      {
+        "id": "weathered_edge",
+        "name": "Weathered Edge",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 19
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "green_docket_body"
+      },
+      {
+        "status": "three_readings"
+      }
+    ],
+    "tags": [
+      "green_docket",
+      "jurisdictions",
+      "normal",
+      "claim",
+      "stage_jurisdictions"
+    ]
+  },
+  {
+    "id": "elsewhere_path",
+    "name": "Elsewhere Path",
+    "max_hp": 113,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "arrive_elsewhere",
+        "name": "Arrive Elsewhere",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 15
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "trespass",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "dead_end",
+        "name": "Dead-End",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 21
+          }
+        ]
+      },
+      {
+        "id": "name_the_way",
+        "name": "Name the Way",
+        "intent_type": "debuff",
+        "actions": []
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "green_docket_body"
+      },
+      {
+        "status": "destination"
+      }
+    ],
+    "tags": [
+      "green_docket",
+      "jurisdictions",
+      "normal",
+      "support",
+      "stage_jurisdictions"
+    ]
+  },
+  {
+    "id": "keeper_of_buried_names",
+    "name": "Keeper of Buried Names",
+    "max_hp": 132,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "speak_the_name",
+        "name": "Speak the Name",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 16
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "trespass",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "buried_demand",
+        "name": "Buried Demand",
+        "intent_type": "debuff",
+        "actions": [
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "wergild",
+            "amount": 2
+          }
+        ]
+      },
+      {
+        "id": "crypt_seal",
+        "name": "Crypt Seal",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 24
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "green_docket_body"
+      },
+      {
+        "status": "names_once_spoken"
+      }
+    ],
+    "tags": [
+      "green_docket",
+      "court",
+      "normal",
+      "claim",
+      "wergild",
+      "stage_court"
+    ]
+  },
+  {
+    "id": "handworn_tally_coin",
+    "name": "Handworn Tally Coin",
+    "max_hp": 113,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "pass_hand_to_hand",
+        "name": "Pass Hand to Hand",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 13
+          }
+        ]
+      },
+      {
+        "id": "minted_rebuke",
+        "name": "Minted Rebuke",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 19
+          }
+        ]
+      },
+      {
+        "id": "minted_shelter",
+        "name": "Minted Shelter",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 20
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "green_docket_body"
+      },
+      {
+        "status": "all_claims_have_value"
+      }
+    ],
+    "tags": [
+      "green_docket",
+      "court",
+      "normal",
+      "support",
+      "claim",
+      "stage_court"
+    ]
   }
 ]
