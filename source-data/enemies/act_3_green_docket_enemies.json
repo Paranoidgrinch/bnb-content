@@ -1892,5 +1892,88 @@
       "act_3",
       "crossing"
     ]
+  },
+  {
+    "id": "great_toll_frog",
+    "name": "Great Toll Frog",
+    "max_hp": 176,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "tongue_of_collection",
+        "name": "Tongue of Collection",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 15
+          }
+        ]
+      },
+      {
+        "id": "croak_the_amount_due",
+        "name": "Croak the Amount Due",
+        "intent_type": "debuff",
+        "actions": [
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "wergild",
+            "amount": 2
+          }
+        ]
+      },
+      {
+        "id": "swallow_the_offering",
+        "name": "Swallow the Offering",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 10
+          }
+        ]
+      },
+      {
+        "id": "mud_bank_impact",
+        "name": "Mud-Bank Impact",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 19
+          }
+        ]
+      },
+      {
+        "id": "regurgitate_the_toll",
+        "name": "Regurgitate the Toll",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 12
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "green_docket_body"
+      },
+      {
+        "status": "nothing_crosses_for_free"
+      }
+    ],
+    "tags": [
+      "green_docket",
+      "elite",
+      "act_3",
+      "restitution"
+    ]
   }
 ]
