@@ -32,6 +32,16 @@ public static class EventTemplates
                     RunExpr.Add(RunExpr.Multiply(RunExpr.MaxHealth, RunExpr.Const(healPercent)), RunExpr.Const(99)),
                     RunExpr.Const(100))),
             ], TextKey: $"{act.RestChoiceText} (heal {healPercent}% of max HP)"),
+            // The campfire's other half: the design gives a waiting room two actions (BnB_Run_Systems_Master
+            // §3 — Authorized Leave *or* Submit an Amendment) and only the heal was ever built. Offered
+            // unconditionally: a "how many cards could be improved" guard is not expressible as DATA (a count
+            // over a selector is an escape node and would not serialize), and it is not needed — a choice with
+            // nothing to improve picks nothing and does nothing.
+            new EventChoice("amend",
+            [
+                new UpgradeCardsRunEffect(
+                    RunSelectors.DeckCards.Upgradable().ChooseByPlayer(1, "improve one card, permanently")),
+            ], TextKey: $"{act.RestUpgradeChoiceText} (improve a card)"),
             new EventChoice("leave", [], TextKey: "Move on"),
         ]),
     ]);

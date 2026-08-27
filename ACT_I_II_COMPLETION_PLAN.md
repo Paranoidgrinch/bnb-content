@@ -170,3 +170,41 @@ out of scope for "mechanically complete".
 7. **C-4 / C-5** — the two cleanups, once nothing depends on the leftovers.
 
 Steps 1–3 are the ones that turn "Act II exists" into "Act II is played".
+
+---
+
+## Status after the alpha pass (2026-08-27)
+
+Acts I and II are **playable end to end**: three whole runs walked to the Act-II boss with no error, no loop
+and no unanswerable state (`Converter --playtest`), and the same walk now stands in the suite as
+`Tests/WholeRunTests`. What that pass changed:
+
+| | |
+|---|---|
+| **B / C / D-1** | The campfire's *Submit an Amendment* is built (D-1). D-2 (per-act rest %) and D-3 (shop audit vs the master) are still open — both acts still heal 25 % and the shop is still the pre-master one. |
+| **G-1** | Done: the act's name and the room count stand over the map, and crossing into Act II raises a title card. |
+| **G-2** | Was already done (status chips read their authored names). |
+| **G-3** | Still open: combatant COUNTERS are not rendered. The recommendation stands — promote the player-facing ones to marker statuses in content rather than rendering counters in Godot. |
+| **G-4** | Still open (phase bosses telegraph their Phase-I intent name). |
+| **G-5** | Two-body fights checked and read fine (`--smoke-ambush`); the four-body Grand Cross-Reference is Act V's and still unseen. |
+| **G-6** | Partly: the boss's own relic arrives as a one-option pick that is announced, but it reads as "The spoils" rather than as the relic's name. |
+| **G-7** | Unchanged — no art ships. |
+
+### The three bugs the walk found
+
+1. **A card wrote a nameless counter and killed the run** at the end of every fight it was played in (22 cards
+   affected). C# static-field order; see ADAPTATIONS. Fixed, with `Tests/DocumentIdTests` as the net.
+2. **The map was invisible.** Godot drew `Blueprint.Map`, which is empty in a generated game; the run's map is
+   `RunState.Map`. It also read a room's kind off its id, so no boss, elite or ambush was ever labelled.
+3. **The shop was an empty room.** The engine offers only AFFORDABLE choices, and a shop's question is asked
+   from inside a visit that ends as the replay parks — so the shelf was gone by the time the UI drew it. The
+   session now publishes it (`InteractiveRunSession.PendingShopShelf`) and the shop screen draws the whole
+   shelf with prices, greying out what the purse cannot reach.
+
+### The one thing that is not a bug and will get worse
+
+Under the replay model every answer re-runs the whole run, so input latency grows with run length: about
+0.2 s per answer early in Act I, ~0.6 s by the middle of Act II, and it keeps climbing. Two acts are playable;
+five will not be. The fix already has its machinery — a run can be SAVED at an interlude and resumed
+(`RunPlayback.SaveJson` / `Resume`), so the session could checkpoint there and replay only the answers since
+the last interlude, which caps the cost at one node's worth of work.
