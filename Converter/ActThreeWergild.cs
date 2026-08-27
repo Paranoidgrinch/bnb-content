@@ -91,13 +91,37 @@ public static partial class ActThree
     private static IEffectNode<TContext> OfferTheMeansToPay<TContext>()
         where TContext : class =>
         new ConditionalEffectNode<TContext>(
-            new ComparisonExpression<TContext>(
-                new CombatantZoneCardCountExpression<TContext>(Applicant, CardZone.Hand, MakeAmendsTag),
-                ComparisonOperator.Equal,
-                new ConstantExpression<TContext>(0)),
+            new AndExpression<TContext>(
+                new ComparisonExpression<TContext>(
+                    new CombatantStatusStacksExpression<TContext>(
+                        Applicant, new StatusDefinitionId(WergildId)),
+                    ComparisonOperator.Greater,
+                    new ConstantExpression<TContext>(0)),
+                new ComparisonExpression<TContext>(
+                    new CombatantZoneCardCountExpression<TContext>(Applicant, CardZone.Hand, MakeAmendsTag),
+                    ComparisonOperator.Equal,
+                    new ConstantExpression<TContext>(0))),
             new CreateCardInstanceNode<TContext>(
                 Applicant, new CardDefinitionId(MakeAmendsCardId), CardZone.Hand,
                 new ConstantExpression<TContext>(1)));
+
+    // The same offer, made from inside the card itself: the copy being played is still counted in hand.
+    private static IEffectNode<CardPlayContext> AnotherMeansToPay() =>
+        new ConditionalEffectNode<CardPlayContext>(
+            new AndExpression<CardPlayContext>(
+                new ComparisonExpression<CardPlayContext>(
+                    new CombatantStatusStacksExpression<CardPlayContext>(
+                        Applicant, new StatusDefinitionId(WergildId)),
+                    ComparisonOperator.Greater,
+                    new ConstantExpression<CardPlayContext>(0)),
+                new ComparisonExpression<CardPlayContext>(
+                    new CombatantZoneCardCountExpression<CardPlayContext>(
+                        Applicant, CardZone.Hand, MakeAmendsTag),
+                    ComparisonOperator.LessOrEqual,
+                    new ConstantExpression<CardPlayContext>(1))),
+            new CreateCardInstanceNode<CardPlayContext>(
+                Applicant, new CardDefinitionId(MakeAmendsCardId), CardZone.Hand,
+                new ConstantExpression<CardPlayContext>(1)));
 
     // ── the demand falling due ────────────────────────────────────────────────────────────────────────────
 
@@ -245,22 +269,37 @@ public static partial class ActThree
         Costs = [],
         Tags = [MakeAmendsTag, new TagId("form")],
         Program = new EffectProgram<CardPlayContext>(
-            new ChooseOptionsNode<CardPlayContext>(
-                [PayInCoin(), OfferACard()],
-                ["pay in coin", "offer a card"],
-                count: 1,
-                purpose: "make amends")),
+            new CausalSequenceEffectNode<CardPlayContext>(
+            [
+                new ChooseOptionsNode<CardPlayContext>(
+                    [PayInCoin(), OfferACard()],
+                    ["pay in coin", "offer a card"],
+                    count: 1,
+                    purpose: "make amends"),
+                // The card exhausts when it is played, and comes back while anything is still owed — here
+                // rather than inside the payment, because a payment that could not go through (the Juniper's
+                // injunction, an empty purse) still has to leave the player a way to try again. The count is
+                // ONE rather than none, because the copy being played is still in hand while its own program
+                // runs and is about to leave.
+                AnotherMeansToPay(),
+            ])),
         PlayedCardDestinationZone = CardZone.ExhaustPile,
         TurnEndHandDestinationZone = CardZone.Hand,
     };
 
+    // The Juniper's injunction against coin closes this route while it stands. With the hedge on the field
+    // its demand is the only one there is, so "the Juniper's Wergild cannot be paid with Energy" and "coin
+    // pays nothing" are the same sentence — and the offering route is guaranteed open beside it.
     private static IEffectNode<CardPlayContext> PayInCoin() =>
         new ConditionalEffectNode<CardPlayContext>(
-            new ComparisonExpression<CardPlayContext>(
-                new CombatantCurrentResourceExpression<CardPlayContext>(
-                    CombatantTargetSelectors.Source, StandardCombatIds.EnergyResource),
-                ComparisonOperator.GreaterOrEqual,
-                new ConstantExpression<CardPlayContext>(1)),
+            new AndExpression<CardPlayContext>(
+                new NotExpression<CardPlayContext>(
+                    PaymentEnjoined<CardPlayContext>(InjunctionCoinId)),
+                new ComparisonExpression<CardPlayContext>(
+                    new CombatantCurrentResourceExpression<CardPlayContext>(
+                        CombatantTargetSelectors.Source, StandardCombatIds.EnergyResource),
+                    ComparisonOperator.GreaterOrEqual,
+                    new ConstantExpression<CardPlayContext>(1))),
             new CausalSequenceEffectNode<CardPlayContext>(
             [
                 new LoseResourceNode<CardPlayContext>(
@@ -279,7 +318,10 @@ public static partial class ActThree
 
         // "Cards with Base Cost 0 cannot be used as Offerings to pay Wergild owed to Charter-Shell Snail."
         // The charter is the Snail's, so it applies while the Snail is one of the parties owed anything.
-        var acceptable = new NotExpression<CardPlayContext>(
+        var acceptable = new AndExpression<CardPlayContext>(
+            new NotExpression<CardPlayContext>(
+                PaymentEnjoined<CardPlayContext>(InjunctionOfferingId)),
+            new NotExpression<CardPlayContext>(
             new AndExpression<CardPlayContext>(
                 new ComparisonExpression<CardPlayContext>(
                     new CombatantStatusStacksFromSourceExpression<CardPlayContext>(
@@ -290,7 +332,7 @@ public static partial class ActThree
                     new CardInstanceBaseCostExpression<CardPlayContext>(
                         offering, StandardCombatIds.EnergyResource),
                     ComparisonOperator.Equal,
-                    new ConstantExpression<CardPlayContext>(0))));
+                    new ConstantExpression<CardPlayContext>(0)))));
 
         return new CausalSequenceEffectNode<CardPlayContext>(
         [
@@ -339,15 +381,6 @@ public static partial class ActThree
                     Definition = new StatusDefinitionId(WergildId),
                 },
                 new ConstantExpression<TContext>(-1)),
-            new ConditionalEffectNode<TContext>(
-                new ComparisonExpression<TContext>(
-                    new CombatantStatusStacksExpression<TContext>(
-                        Applicant, new StatusDefinitionId(WergildId)),
-                    ComparisonOperator.Greater,
-                    new ConstantExpression<TContext>(0)),
-                new CreateCardInstanceNode<TContext>(
-                    Applicant, new CardDefinitionId(MakeAmendsCardId), CardZone.Hand,
-                    new ConstantExpression<TContext>(1))),
             SwallowThePayment<TContext>(),
         ]);
 }

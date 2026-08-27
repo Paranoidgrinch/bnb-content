@@ -979,5 +979,39 @@
       "multi_enemy"
     ],
     "role": "elite"
+  },
+  {
+    "id": "green_docket_elite_juniper_injunction",
+    "name": "Juniper Injunction",
+    "act": 3,
+    "difficulty": "elite",
+    "enemies": [
+      "juniper_injunction"
+    ],
+    "weight": 1,
+    "tags": [
+      "green_docket",
+      "elite",
+      "claim",
+      "wergild"
+    ],
+    "role": "elite"
+  },
+  {
+    "id": "green_docket_elite_surveyor_of_forgotten_paths",
+    "name": "Surveyor of Forgotten Paths",
+    "act": 3,
+    "difficulty": "elite",
+    "enemies": [
+      "surveyor_of_forgotten_paths"
+    ],
+    "weight": 1,
+    "tags": [
+      "green_docket",
+      "elite",
+      "claim",
+      "precedent"
+    ],
+    "role": "elite"
   }
 ]

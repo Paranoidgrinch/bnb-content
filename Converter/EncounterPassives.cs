@@ -243,6 +243,10 @@ public static class EncounterPassives
             new StartingStatusSpec(new StatusDefinitionId(Elites.DrawerOfInfiniteReturns.DrawerRulesId), 1),
             new StartingStatusSpec(new StatusDefinitionId(ActTwo.ArchiveRegulationsId), 1),
         ],
+        // The Juniper grants its leave at the start of the player's turn, of the player's own hand, so the
+        // player carries the asking.
+        ActThree.JuniperEnemyId =>
+            [new StartingStatusSpec(new StatusDefinitionId(ActThree.GrantedUseId), 1)],
         // The Oracle's riddle is asked of the player's hand, so the player carries it.
         Elites.BlackInkOracle.EnemyId =>
             [new StartingStatusSpec(new StatusDefinitionId(Elites.BlackInkOracle.OracleRulesId), 1)],
