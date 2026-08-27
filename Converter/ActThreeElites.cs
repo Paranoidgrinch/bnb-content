@@ -26,6 +26,8 @@ public static partial class ActThree
         GrandmotherWebEnemyId,
         WrongBridgeEnemyId,
         GreatTollFrogEnemyId,
+        AntQueenEnemyId,
+        "first_line_bearer", "second_line_bearer", "third_line_bearer",
     };
 
     // Every elite's own statuses, gathered where the act's own list can splice them in.
@@ -35,6 +37,7 @@ public static partial class ActThree
         .. WebStatuses(),
         .. BridgeStatuses(),
         .. FrogStatuses(),
+        .. QueenStatuses(),
     ];
 
     // An elite's intents. Dispatched ahead of the standard pool's, because an elite's pressure is never the
@@ -43,7 +46,8 @@ public static partial class ActThree
         StagIntent(enemyId, intentId)
         ?? WebIntent(enemyId, intentId)
         ?? BridgeIntent(enemyId, intentId)
-        ?? FrogIntent(enemyId, intentId);
+        ?? FrogIntent(enemyId, intentId)
+        ?? QueenIntent(enemyId, intentId);
 
     // What settling a demand IN FULL does over and above the act's own reward, when the creditor is an elite
     // that has written its own terms. Spliced into the one settlement in `ActThreeWergild`, because only the

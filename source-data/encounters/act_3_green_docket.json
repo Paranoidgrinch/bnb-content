@@ -959,5 +959,25 @@
       "wergild"
     ],
     "role": "elite"
+  },
+  {
+    "id": "green_docket_elite_ant_queen_of_the_proper_line",
+    "name": "Ant Queen of the Proper Line",
+    "act": 3,
+    "difficulty": "elite",
+    "enemies": [
+      "ant_queen_of_the_proper_line",
+      "first_line_bearer",
+      "second_line_bearer",
+      "third_line_bearer"
+    ],
+    "weight": 1,
+    "tags": [
+      "green_docket",
+      "elite",
+      "claim",
+      "multi_enemy"
+    ],
+    "role": "elite"
   }
 ]

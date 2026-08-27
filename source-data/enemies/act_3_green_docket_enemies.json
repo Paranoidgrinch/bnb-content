@@ -1975,5 +1975,269 @@
       "act_3",
       "restitution"
     ]
+  },
+  {
+    "id": "ant_queen_of_the_proper_line",
+    "name": "Ant Queen of the Proper Line",
+    "max_hp": 160,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "count_the_proper_order",
+        "name": "Count the Proper Order",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 24
+          }
+        ]
+      },
+      {
+        "id": "collect_the_queens_claim",
+        "name": "Collect the Queen's Claim",
+        "intent_type": "debuff",
+        "actions": [
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "wergild",
+            "amount": 2
+          }
+        ]
+      },
+      {
+        "id": "royal_survey_of_the_line",
+        "name": "Royal Survey of the Line",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 14
+          }
+        ]
+      },
+      {
+        "id": "replace_the_fallen",
+        "name": "Replace the Fallen",
+        "intent_type": "buff",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 0
+          }
+        ]
+      },
+      {
+        "id": "royal_enforcement",
+        "name": "Royal Enforcement",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 27
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "green_docket_body"
+      },
+      {
+        "status": "the_proper_line"
+      },
+      {
+        "status": "reconstruction_charge",
+        "stacks": 2
+      }
+    ],
+    "tags": [
+      "green_docket",
+      "elite",
+      "act_3",
+      "formation"
+    ]
+  },
+  {
+    "id": "first_line_bearer",
+    "name": "First Line-Bearer",
+    "max_hp": 27,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "carry_forward",
+        "name": "Carry Forward",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 9
+          }
+        ]
+      },
+      {
+        "id": "hold_the_line",
+        "name": "Hold the Line",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 7
+          }
+        ]
+      },
+      {
+        "id": "bite_out_of_order",
+        "name": "Bite Out of Order",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 13
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "green_docket_body"
+      },
+      {
+        "status": "line_bearer_first"
+      }
+    ],
+    "tags": [
+      "green_docket",
+      "elite",
+      "act_3",
+      "formation",
+      "line_bearer"
+    ]
+  },
+  {
+    "id": "second_line_bearer",
+    "name": "Second Line-Bearer",
+    "max_hp": 27,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "carry_forward",
+        "name": "Carry Forward",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 9
+          }
+        ]
+      },
+      {
+        "id": "hold_the_line",
+        "name": "Hold the Line",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 7
+          }
+        ]
+      },
+      {
+        "id": "bite_out_of_order",
+        "name": "Bite Out of Order",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 13
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "green_docket_body"
+      },
+      {
+        "status": "line_bearer_second"
+      }
+    ],
+    "tags": [
+      "green_docket",
+      "elite",
+      "act_3",
+      "formation",
+      "line_bearer"
+    ]
+  },
+  {
+    "id": "third_line_bearer",
+    "name": "Third Line-Bearer",
+    "max_hp": 27,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "carry_forward",
+        "name": "Carry Forward",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 9
+          }
+        ]
+      },
+      {
+        "id": "hold_the_line",
+        "name": "Hold the Line",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 7
+          }
+        ]
+      },
+      {
+        "id": "bite_out_of_order",
+        "name": "Bite Out of Order",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 13
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "green_docket_body"
+      },
+      {
+        "status": "line_bearer_third"
+      }
+    ],
+    "tags": [
+      "green_docket",
+      "elite",
+      "act_3",
+      "formation",
+      "line_bearer"
+    ]
   }
 ]
