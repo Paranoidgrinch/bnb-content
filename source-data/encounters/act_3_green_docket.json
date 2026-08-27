@@ -279,5 +279,76 @@
         "status": "claim_created"
       }
     ]
+  },
+  {
+    "id": "green_docket_tollwater_01",
+    "name": "Shell Charter",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "charter_shell_snail"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_tollwater",
+      "green_docket",
+      "wergild"
+    ],
+    "role": "combat"
+  },
+  {
+    "id": "green_docket_tollwater_02",
+    "name": "Oaths in Running Water",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "streamside_oath_fish"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_tollwater",
+      "green_docket",
+      "wergild"
+    ],
+    "role": "combat"
+  },
+  {
+    "id": "green_docket_tollwater_03",
+    "name": "Both Banks Demand Payment",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "two_bank_toll_ford"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_tollwater",
+      "green_docket",
+      "wergild",
+      "claim"
+    ],
+    "role": "combat"
+  },
+  {
+    "id": "green_docket_tollwater_duo_01",
+    "name": "Oaths on Both Banks",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "two_bank_toll_ford",
+      "streamside_oath_fish"
+    ],
+    "enemy_health": [
+      73,
+      57
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_tollwater",
+      "green_docket",
+      "wergild",
+      "multi_enemy"
+    ],
+    "role": "multi_combat"
   }
 ]

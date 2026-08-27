@@ -1362,3 +1362,32 @@ you, just not through the Hedge.
 One consequence worth knowing: a turn whose FIRST breach is refused by Safe-Conduct is a turn the meadow
 hears nothing, because the refusal still spends the law's once-a-turn answer and nothing ever lands to be
 witnessed.
+
+## Act III — Wergild, and the free action that had to be a card
+
+**Make Amends is a card.** The design calls it a "free encounter action"; a combat here has no such thing,
+only cards. So the fight puts one in the player's hand the moment a demand is raised. It costs nothing,
+survives the turn boundary, and returns to hand after each use for as long as anything is still owed —
+which is also how it disappears: nothing owed, nothing offered.
+
+It never offers ITSELF as the payment. A card being played is still in its owner's hand while its own
+program runs, and being free it would be refused under the Snail's charter — a trap rather than a decision.
+The engine grew a card choice that can name what it will not offer.
+
+**A payment answers the oldest demand.** The design does not say which creditor a point of Wergild goes to
+when several are owed, and the oldest-first reading is the one a court would take.
+
+**A demand's clock belongs to the creditor.** Raised is not yet due: it matures at the player's next turn
+start and falls due at that turn's end, so a demand raised during the player's own turn does not expire
+before the player has had a turn to answer it. Two markers on the creditor say which state it is in.
+
+**The Snail's charter is read from the fight, not from the creditor of the payment.** "Cards with Base Cost
+0 cannot be used as Offerings to pay Wergild owed to Charter-Shell Snail" — a payment cannot be told which
+creditor it will land on before it lands, so the charter applies while the Snail is owed anything at all. In
+the Snail's own encounters that is the same rule; in a hypothetical fight where the Snail and another
+creditor are both owed, it is stricter than the design.
+
+**An unpaid demand is cleared by its own creditor.** Each one reads what it is owed, deals 2 damage a point,
+takes its Claim and then spends exactly its own stacks — which is what the engine seam for naming whose
+status instances a rule means was bought for. A blanket removal would have wiped a demand that had not yet
+come due.
