@@ -3,8 +3,10 @@ using RogueDeck.Run;
 
 namespace BnbContent.Tests;
 
-// Conversion gate for events and relics against the real source data: everything converts (fail-loud
-// mappers), and hand-checked spot values pin the ported semantics.
+// Conversion gate for RELICS against the real source data: everything converts (fail-loud mappers), and
+// hand-checked spot values pin the ported semantics. Events no longer appear here — every door in the game is
+// authored (ActOneEvents / ActTwoEvents), the ported v2 event JSON is out of the loader, and the mapper that
+// converted it has been deleted.
 public class EventAndRelicMappingTests
 {
     private static readonly BabData Data = BabData.Load(TestData.Directory);
@@ -16,21 +18,6 @@ public class EventAndRelicMappingTests
     {
         Assert.Equal(Data.Relics.Count, Relics.Count);
         Assert.Equal(Relics.Count, Relics.Select(r => r.Relic.Id).Distinct().Count());
-    }
-
-    [Fact]
-    public void Every_event_converts()
-    {
-        foreach (var babEvent in Data.Events)
-        {
-            var script = EventMapper.Map(babEvent, Pools);
-            Assert.Equal("start", script.StartSituationId);
-            // Every result situation a choice points at exists.
-            var situationIds = script.Situations.Values.Select(s => s.Id).ToHashSet();
-            foreach (var choice in script.Situations.Values.SelectMany(s => s.Choices))
-                if (choice.NextSituationId is { } next)
-                    Assert.Contains(next, situationIds);
-        }
     }
 
     [Fact]
@@ -58,27 +45,6 @@ public class EventAndRelicMappingTests
         var offer = ConversionPools.RelicOffer(mug);
         Assert.Equal(2, offer.Grant.Count);
         Assert.IsType<AddRelicByIdRunEffect>(offer.Grant[0]);
-    }
-
-    // The remaining ported events are Act II's; Act I's fifteen are authored now (ActOneEventTests).
-    [Fact]
-    public void Spot_check_the_haunted_suggestion_box_costs_health_and_pays_a_card()
-    {
-        var babEvent = Data.Events.First(e => e.Id == "act_2_haunted_suggestion_box");
-        var script = EventMapper.Map(babEvent, Pools);
-        var start = script.Situations.Values.First(s => s.Id == "start");
-        var choice = start.Choices.First(c => c.Id == "read_every_complaint");
-        Assert.Collection(choice.Effects,
-            e => Assert.IsType<ComputedDamageRunEffect>(e),
-            e => Assert.IsType<OfferRewardRunEffect>(e));
-        Assert.NotNull(choice.NextSituationId); // the result text is readable before the event ends
-    }
-
-    // …and no ported event answers to an Act-I name any more, or the pool would hold two of each.
-    [Fact]
-    public void The_ported_events_are_act_twos_alone()
-    {
-        Assert.All(Data.Events, e => Assert.Equal(2, e.Act));
     }
 
     [Fact]

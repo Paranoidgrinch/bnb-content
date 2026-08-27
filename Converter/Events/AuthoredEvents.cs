@@ -8,6 +8,10 @@ namespace BnbContent.Converter.Events;
 // dictionary, the map draws its Event nodes from their ids, and the presentation manifest names them.
 public static class AuthoredEvents
 {
-    public static IReadOnlyList<BnbEvent> For(int act, ConversionPools pools, Random rng) =>
-        act == ActOneEvents.Act ? ActOneEvents.All(pools, rng) : [];
+    public static IReadOnlyList<BnbEvent> For(int act, ConversionPools pools, Random rng) => act switch
+    {
+        ActOneEvents.Act => ActOneEvents.All(pools, rng),
+        ActTwoEvents.Act => ActTwoEvents.All(pools, rng),
+        _ => [],
+    };
 }

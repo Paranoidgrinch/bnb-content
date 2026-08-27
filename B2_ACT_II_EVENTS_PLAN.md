@@ -76,7 +76,7 @@ What the two events need, in the vocabulary that now exists:
 - **15 The Librarian** — "Ask for a forgotten book" → `ConditionalRunEffect` on `removedCardCount > 0`:
   `RestoreRemovedCardRunEffect(ExtraUpgrades: 1, Tags: ["true_name"])`, else a Rare card reward.
 
-## B-2d — the fifteen (NEXT: this is all that is left of B-2)
+## ✅ B-2d — the fifteen (DONE 2026-08-27 — and with it all of B-2)
 
 ### The shape, and what to copy
 
@@ -131,7 +131,32 @@ Recurring pieces worth building ONCE, in `ActTwoEventPrograms`:
 - **no Gold** (Act I's `GarnishedReward` + `GarnishThePurse`);
 - **an extra card reward** (Act I's `ExtraCardReward`).
 
-### The two things still unbuilt
+### ✅ Built, and how it landed
+
+`Converter/Events/ActTwoEvents.cs` + `ActTwoEventPrograms.cs`, tested by `Tests/ActTwoEventTests.cs` (the
+shape of the set + the depth gate, against a really generated Act-II map) and `Tests/ActTwoEventLiveTests.cs`
+(34 tests: every door walked for real, and where it promised something for afterwards the fight is won and the
+run is asked). `EventStory` now takes the enemy as a parameter and TAGS its fight nodes with their role, which
+is what a promise waiting for "the next normal combat" reads.
+
+Both open questions were BUILT rather than written off:
+
+1. **Earliest Stage N** → `MapGenerationSpec.NodeRefMinimumDepthPercent` in RogueDeck-Core, as a percentage of
+   the act's depth rather than a row index (the generated map is taller than the stage ladder). Act I gates
+   nothing and generation is byte-identical.
+2. **A rarity-filtered reward** → `ConversionPools.CardRewardSource(rarity, count, tags)`, with the tags
+   riding inside the offer so a declined reward writes nothing.
+
+The ported event path is GONE with this pass: `events/act_2_archives_events.json` is out of the loader,
+`EventMapper`, `BabEvent`/`BabEventChoice` and `BabData.Events` are deleted, and every door in the game is
+authored. `game.roguedeck.json` is regenerated (3.99 MB, 39 events) and synced to bnb-godot.
+
+The two traps this cost — a fight-decided branch has to be a program CONDITION (a `ConditionalRunEffect` is
+evaluated after the event is gone, and `RunEffectTemplates.Custom` cannot be serialized), and a counter the
+run will read is written down at the opening bell — are in ADAPTATIONS.md §"Act II — the fifteen archives
+events".
+
+### The two things that were still unbuilt (both now built — see above)
 
 ⚠ **1. Earliest Stage N is not expressible.** Every Act-II event carries one, and
 `MapGenerationSpec.NodeRefPools` draws refs with no notion of depth — a stage-1 node can open the Librarian

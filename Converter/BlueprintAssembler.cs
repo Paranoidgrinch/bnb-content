@@ -26,7 +26,7 @@ public static class BlueprintAssembler
         var maps = data.Acts
             .Select((act, index) =>
                 (Act: act, Map: MapSpecBuilder.Build(data, pools[act.Act], seed + index, act,
-                    authored[act.Act].Select(e => e.Id).ToList())))
+                    authored[act.Act])))
             .ToList();
 
         // Only enemies an encounter actually fields contribute action definitions.
@@ -34,8 +34,10 @@ public static class BlueprintAssembler
         var enemies = data.Enemies.Where(e => referencedEnemies.Contains(e.Id)).ToList();
         var enemiesById = data.Enemies.ToDictionary(e => e.Id);
 
-        // An event offers what its OWN act offers — the archives' doors do not hand out city commons.
-        var events = data.Events.ToDictionary(e => e.Id, e => EventMapper.Map(e, PoolsFor(pools, e)));
+        // Every door in the game is authored now — the ported v2 event JSON is gone, and with it the mapper
+        // that converted it. What is left here is the act's own fifteen plus the furniture its map builds
+        // (the waiting room, the treasure rooms), each offering what its OWN act offers.
+        var events = new Dictionary<string, EventScript>();
         foreach (var authoredEvent in authored.Values.SelectMany(e => e))
             events[authoredEvent.Id] = authoredEvent.Script;
         foreach (var (_, actMap) in maps)
@@ -98,9 +100,10 @@ public static class BlueprintAssembler
             Shops = maps.SelectMany(m => m.Map.Shops).ToDictionary(e => e.Key, e => e.Value),
             // What the authored events promise for AFTER a fight. The bodies live here once; the events that
             // hand them out name them (fx.installProgramById).
-            Programs = pools.TryGetValue(Events.ActOneEvents.Act, out var actOne)
-                ? Events.ActOneEventPrograms.All(actOne)
-                : null,
+            // Both acts' promise bodies in one dictionary. An act's programs are its OWN — the extra card
+            // reward draws from the act's pool — so a run that walks both carries both sets, under names that
+            // say which act made the promise.
+            Programs = AuthoredPrograms(pools),
             Start = start,
             Characters = [new RunCharacter(data.Bureaucrat.Id, start)],
             // Victory now means the WHOLE run — the city and the archives behind it. (The engine's meta rules
@@ -111,12 +114,19 @@ public static class BlueprintAssembler
         };
     }
 
-    // The pools of the act an event belongs to. An event whose act the run does not walk is a content bug —
-    // it would otherwise silently offer another act's cards.
-    private static ConversionPools PoolsFor(IReadOnlyDictionary<int, ConversionPools> pools, BabEvent babEvent) =>
-        pools.TryGetValue(babEvent.Act, out var forAct)
-            ? forAct
-            : throw new ConversionException($"event '{babEvent.Id}'", $"belongs to act {babEvent.Act}, which the run does not walk");
+    // Every authored run program the document ships: the bodies an event installs by name.
+    private static IReadOnlyDictionary<string, ITriggeredRunEffectDefinition>? AuthoredPrograms(
+        IReadOnlyDictionary<int, ConversionPools> pools)
+    {
+        var programs = new Dictionary<string, ITriggeredRunEffectDefinition>();
+        if (pools.TryGetValue(Events.ActOneEvents.Act, out var actOne))
+            foreach (var (id, body) in Events.ActOneEventPrograms.All(actOne))
+                programs[id] = body;
+        if (pools.TryGetValue(Events.ActTwoEvents.Act, out var actTwo))
+            foreach (var (id, body) in Events.ActTwoEventPrograms.All(actTwo))
+                programs[id] = body;
+        return programs.Count > 0 ? programs : null;
+    }
 
     private static PresentationManifest BuildPresentation(
         BabData data, IReadOnlyList<MappedRelic> relics, IReadOnlyList<BabEnemy> enemies,
@@ -176,12 +186,9 @@ public static class BlueprintAssembler
                     FlavorText = e.Name,
                     Tags = [e.Difficulty, .. e.Tags ?? []],
                 }),
-            Events = data.Events
-                .Select(e => (e.Id, Look: new EntityPresentation { FlavorText = e.Name, Tags = e.Tags ?? [] }))
-                .Concat(authored.Select(a => (
-                    a.Id,
-                    Look: new EntityPresentation { FlavorText = a.Name, Tags = a.Tags ?? [] })))
-                .ToDictionary(e => e.Id, e => e.Look),
+            Events = authored.ToDictionary(
+                a => a.Id,
+                a => new EntityPresentation { FlavorText = a.Name, Tags = a.Tags ?? [] }),
             Characters = new Dictionary<string, EntityPresentation>
             {
                 [data.Bureaucrat.Id] = new()

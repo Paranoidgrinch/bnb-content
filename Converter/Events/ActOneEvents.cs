@@ -541,5 +541,9 @@ public static class ActOneEvents
 // An authored event: its identity and the flavour a frontend shows, plus the script the engine walks. The
 // ported events carry the same three things on BabEvent; this is what they look like when nobody has to
 // convert them.
+// `EarliestDepthPercent` is the design's "Earliest Stage N", already converted to the act's own depth: the
+// map may not put this door in the first N% of the act (MapGenerationSpec.NodeRefMinimumDepthPercent). Act I
+// gates nothing, so it leaves it at 0.
 public sealed record BnbEvent(
-    string Id, string Name, EventScript Script, IReadOnlyList<string>? Tags = null);
+    string Id, string Name, EventScript Script, IReadOnlyList<string>? Tags = null,
+    int EarliestDepthPercent = 0);

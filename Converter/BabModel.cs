@@ -123,23 +123,6 @@ public sealed record BabEncounter(
     // carry a role are part of the act's curated pools — anything else is inert content the map never picks.
     string? Role = null);
 
-public sealed record BabEvent(
-    string Id,
-    string Name,
-    int Act,
-    string EventType,
-    double? Weight,
-    string Text,
-    IReadOnlyList<BabEventChoice> Choices,
-    IReadOnlyList<string>? Tags);
-
-public sealed record BabEventChoice(
-    string Id,
-    string Text,
-    string? ResultText,
-    IReadOnlyList<BabEffect>? Effects,
-    string? EncounterId);
-
 public sealed record BabRelic(
     string Id,
     string Name,

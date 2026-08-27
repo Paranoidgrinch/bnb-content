@@ -20,6 +20,11 @@ internal sealed class EventStory : IDisposable
     public const string Rat = "form_rat_a";
     public const string RatIntent = "gnaw_the_margins";
 
+    // …and the archives' own quiet body, for the doors whose promise is about a real Act-II fight (a life the
+    // Necrology Window lent out has to have somewhere to come back to).
+    public const string Ouroboros = "dead_letter_ouroboros";
+    public const string OuroborosIntent = "self_addressed_notice";
+
     public RunPlayback Play { get; }
     public InteractiveRunSession Session { get; }
 
@@ -39,9 +44,10 @@ internal sealed class EventStory : IDisposable
     // Stand in the doorway with the event's first situation on the table, having chosen nothing.
     public static EventStory AtTheDoor(
         string eventId, IReadOnlyList<string>? deck = null, int fights = 1,
-        bool paying = false, int gold = 0, string intent = RatIntent, int? health = null)
+        bool paying = false, int gold = 0, string intent = RatIntent, int? health = null,
+        string enemy = Rat)
     {
-        var document = Blueprint(eventId, fights, deck, paying, gold, intent, health);
+        var document = Blueprint(eventId, fights, deck, paying, gold, intent, health, enemy);
         var play = new RunPlayback(() => { });
         play.Start(document, seed: 1, interactive: true);
         Assert.True(play.Error is null, play.Error);
@@ -53,9 +59,10 @@ internal sealed class EventStory : IDisposable
     // Walk into the event, take the named branch, read the outcome, then step to the first fight.
     public static EventStory Enter(
         string eventId, string choiceId, IReadOnlyList<string>? deck = null, int fights = 1,
-        bool paying = false, int gold = 0, string intent = RatIntent, int? health = null)
+        bool paying = false, int gold = 0, string intent = RatIntent, int? health = null,
+        string enemy = Rat)
     {
-        var story = AtTheDoor(eventId, deck, fights, paying, gold, intent, health);
+        var story = AtTheDoor(eventId, deck, fights, paying, gold, intent, health, enemy);
         story.Session.Pick(choiceId);
         Assert.Null(story.Session.Error);
         story.Settle();
@@ -180,9 +187,9 @@ internal sealed class EventStory : IDisposable
     // promise about "the Gold this fight pays" has something to be about.
     private static RunBlueprint Blueprint(
         string eventId, int fights, IReadOnlyList<string>? deck, bool paying, int gold, string intent,
-        int? health)
+        int? health, string enemy)
     {
-        var probe = FightProbe.Solo(Rat, intent, energy: 3);
+        var probe = FightProbe.Solo(enemy, intent, energy: 3);
         var reward = paying
             ? new FixedRewardSource([new RewardOffer("spoils",
                 [new ChangeResourceRunEffect(StandardRunIds.Gold, 30)])])
@@ -195,8 +202,11 @@ internal sealed class EventStory : IDisposable
         var edges = new List<MapEdge>();
         for (var i = 1; i <= fights; i++)
         {
+            // TAGGED as the ordinary fight it is: a promise that waits for "the next normal combat" reads the
+            // node's role, and an untagged node would keep it waiting forever.
             nodes.Add(new Node(new NodeId($"fight{i}"), StandardRunIds.CombatNode,
-                new EncounterRef(probe.Id, reward, new RewardId($"spoils{i}"))));
+                new EncounterRef(probe.Id, reward, new RewardId($"spoils{i}")),
+                [MapNodeTags.Combat]));
             edges.Add(new MapEdge(new NodeId(i == 1 ? "door" : $"fight{i - 1}"), new NodeId($"fight{i}")));
         }
 

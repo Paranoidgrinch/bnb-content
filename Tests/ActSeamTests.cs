@@ -16,7 +16,7 @@ public class ActSeamTests
     private static IEnumerable<string> PoolFor(RunAct act, MapNodeKind role) =>
         act.MapGeneration!.Encounters.For(role).Select(e => e.Encounter.Value);
 
-    // The ids of the events this act AUTHORS (Act I's fifteen), built the way the assembler builds them.
+    // The ids of the events this act AUTHORS (its fifteen), built the way the assembler builds them.
     private static IReadOnlyList<string> AuthoredIds(int act) =>
         Converter.Events.AuthoredEvents
             .For(act, ConversionPools.Build(Data, Data.Relics.Select(RelicMapper.Map).ToList(), act), new Random(1))
@@ -111,11 +111,8 @@ public class ActSeamTests
         Assert.NotEmpty(events);
         Assert.All(events, id =>
         {
-            // An act's door is either one it still converts or one it authors — and never the other act's.
-            if (Data.Events.FirstOrDefault(e => e.Id == id) is { } ported)
-                Assert.Equal(actNumber, ported.Act);
-            else
-                Assert.Contains(id, AuthoredIds(actNumber));
+            // Every door is one the act authors — and never the other act's.
+            Assert.Contains(id, AuthoredIds(actNumber));
             Assert.True(Game.Events.ContainsKey(id), $"event '{id}' has no script");
         });
         Assert.Contains(spec.NodeRefs[MapNodeKind.Event], events);
