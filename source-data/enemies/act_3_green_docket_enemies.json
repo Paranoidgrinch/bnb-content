@@ -493,5 +493,192 @@
       "testimony",
       "stage_testimony"
     ]
+  },
+  {
+    "id": "charter_shell_snail",
+    "name": "Charter-Shell Snail",
+    "max_hp": 90,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "charter_toll",
+        "name": "Charter Toll",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 11
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "wergild",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "slow_levy",
+        "name": "Slow Levy",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 16
+          }
+        ]
+      },
+      {
+        "id": "shell_charter",
+        "name": "Shell Charter",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 22
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "payment_according_to_charter"
+      }
+    ],
+    "tags": [
+      "green_docket",
+      "tollwater",
+      "normal",
+      "wergild",
+      "stage_tollwater"
+    ]
+  },
+  {
+    "id": "streamside_oath_fish",
+    "name": "Streamside Oath-Fish",
+    "max_hp": 84,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "oath_bite",
+        "name": "Oath Bite",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 12
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "wergild",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "current_strike",
+        "name": "Current Strike",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 17
+          }
+        ]
+      },
+      {
+        "id": "river_shelter",
+        "name": "River Shelter",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 18
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "oath_accepted"
+      }
+    ],
+    "tags": [
+      "green_docket",
+      "tollwater",
+      "normal",
+      "wergild",
+      "stage_tollwater"
+    ]
+  },
+  {
+    "id": "two_bank_toll_ford",
+    "name": "Two-Bank Toll Ford",
+    "max_hp": 97,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "collect_both_banks",
+        "name": "Collect Both Banks",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 13
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "trespass",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "flood_toll",
+        "name": "Flood Toll",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 18
+          }
+        ]
+      },
+      {
+        "id": "close_the_crossing",
+        "name": "Close the Crossing",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 22
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "toll_on_both_banks"
+      }
+    ],
+    "tags": [
+      "green_docket",
+      "tollwater",
+      "normal",
+      "wergild",
+      "claim",
+      "stage_tollwater"
+    ]
   }
 ]

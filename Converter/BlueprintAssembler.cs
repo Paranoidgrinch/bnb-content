@@ -66,6 +66,7 @@ public static class BlueprintAssembler
                 .. Cards.FinalCards.Compile(),
                 // The events' temporary cards: never dealt into a deck, only pushed into a fight.
                 .. Events.ActOneEventObjects.Compile(), .. Events.ActTwoEventObjects.Compile(),
+                .. ActThree.GivenCards(),
                 .. ClauseCards.Cards(), NoticeCards.Acknowledge(), DeputyUndersecretary.ReviewCard(),
                 .. QueueCommissioner.Cards(), .. LordSealkeeper.Cards(), .. MunicipalDragon.Cards(),
                 .. LivingCharter.Cards(), .. Elites.ReturnBell.Cards(),

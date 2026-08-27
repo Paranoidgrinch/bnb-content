@@ -47,14 +47,17 @@ announcement, and only a creation raises the announcement.
 |---|---|---|
 | 1 | **A prohibition can name the one status it refuses.** Safe-Conduct is protection against Trespass and nothing else; the broad Censure reading would have made it the best defensive status in the game. | Core `53906de` |
 | 2 | **An applied status can say who it is from.** Every Local Law fires on a PLAYER action, where the acting source is the player — and the Trespass it applies is owed to the enemy whose law it is. A named source that is not there files nothing. | Core `59f0dff`, `e35c00f` |
+| 4 | **A rule can settle what is owed to one named party** — `modifySelectedStatus` / `removeSelectedStatus` take the same source selector `applyStatus` grew. Wergild falls due on the PLAYER's turn, and each creditor must clear its own demand. | Core `817bf0f` |
+| 5 | **A card choice can say what it will not offer.** The card being played is still in hand while its own program runs, so "discard a card" offered Make Amends itself. | Core `658aa30` |
 | 3 | **The wrapping selectors can be written down** — `first` above all, which is the only sanctioned way to read ONE combatant out of a list, and therefore the only way a serialized program can say "the enemy that carries this mark". | Core `a211ada` |
 
 Open seams the later stages will want, listed when they are first needed:
 
 - ~~"the living enemy with the fewest / most Claims"~~ — **bought** (Core `caa029d`), and Stage 2's
   Wandering Title is its first reader.
-- **a free encounter action** — Make Amends. Stage 4. Likely a card the fight puts in hand, the
-  Notice/Clause shape.
+- ~~a free encounter action~~ — **built**: a combat here has no free actions, only cards, so Make Amends is
+  a card the fight puts in your hand when a demand is raised. It costs nothing, survives the turn boundary
+  (`TurnEndHandDestinationZone = Hand`) and returns to hand after each use while anything is still owed.
 
 ## The act's own shapes, once Stage 3 had settled them
 
@@ -85,8 +88,10 @@ Open seams the later stages will want, listed when they are first needed:
       architecture:** every Trespass in Act III is now filed through one place (`ActThree.Violate` for a law,
       `FileTrespass` for anything else), including the pressure INTENTS, because the Magpie decides who a
       violation is owed to BEFORE it lands and the Foxglove needs to know which law was broken.
-- [ ] 3 — Stage 4, the Tollwater Crossings — **Wergild + Make Amends** (Charter-Shell Snail,
-      Streamside Oath-Fish, Two-Bank Toll Ford)
+- [x] 3 — Stage 4, the Tollwater Crossings — **Wergild + Make Amends** (Charter-Shell Snail,
+      Streamside Oath-Fish, Two-Bank Toll Ford). DONE 2026-08-28 — 10 live tests in
+      `Tests/ActThreeStageFourTests.cs`. A demand belongs to ONE creditor: its clock, its settlement and its
+      reward are all the creditor's, kept in `Converter/ActThreeWergild.cs`.
 - [ ] 4 — Stage 5, the Wayside Covenants (Roadside Witchling, Blackthorn Bride, Crossroads Cup)
 - [ ] 5 — Stage 6, the Quorum Ring (Mandated Mushroom Circle, Bracken Moot)
 - [ ] 6 — Stage 7, the Mire of Appeals (Ditch Lamprey, Sedge Bench)

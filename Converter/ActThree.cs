@@ -213,8 +213,22 @@ public static partial class ActThree
             "hawthorn_tenant.enforce_the_plot" => Pressure(12),
             "foxglove_witness.testify" => Pressure(10),
             "contrary_magpie.contrary_cry" => Pressure(10),
+            "two_bank_toll_ford.collect_both_banks" => Pressure(13),
+            // The tollkeepers do not accuse; they charge. Their pressure intent names a price instead of
+            // filing a violation.
+            "charter_shell_snail.charter_toll" => Toll(11, 1),
+            "streamside_oath_fish.oath_bite" => Toll(12, 1),
             _ => null,
         };
+
+    // A blow, and a demand for restitution owed to whoever struck.
+    private static EffectProgram<EnemyActionContext> Toll(int damage, int points) =>
+        new(new CausalSequenceEffectNode<EnemyActionContext>(
+        [
+            new DealDamageNode<EnemyActionContext>(
+                Applicant, new ConstantExpression<EnemyActionContext>(damage)),
+            DemandWergild<EnemyActionContext>(CombatantTargetSelectors.Source, points),
+        ]));
 
     // A blow, and then a violation owed to whoever struck — no Local Law was broken, so nothing that asks
     // about laws answers this one.
@@ -253,7 +267,17 @@ public static partial class ActThree
         TestifiedThisTurn(),
         ContraryTestimony(),
         ContestedThisTurn(),
+        Wergild(),
+        WergildDemanded(),
+        WergildDue(),
+        WergildFallsDue(),
+        OathAccepted(),
+        PaymentAccordingToCharter(),
+        TollOnBothBanks(),
     ];
+
+    // The cards the act itself hands the player: never dealt into a deck, only pushed into a fight.
+    public static IReadOnlyList<CardData> GivenCards() => [MakeAmends()];
 
     // The standard roster, stage by stage. Anything in here is a Green Docket body, which is how a fight
     // knows to open under the act's customs.
@@ -265,6 +289,8 @@ public static partial class ActThree
         "reckoning_hedge", "errant_boundary_stone", "hawthorn_tenant",
         // Stage 3 — the Meadow of Living Testimony
         "foxglove_witness", "contrary_magpie",
+        // Stage 4 — the Tollwater Crossings
+        "charter_shell_snail", "streamside_oath_fish", "two_bank_toll_ford",
     };
 
     // What the player carries into a fight against any Green Docket body: the customs that turn three
@@ -278,6 +304,7 @@ public static partial class ActThree
             ?
             [
                 new StartingStatusSpec(new StatusDefinitionId(GreenDocketCustomsId), 1),
+                new StartingStatusSpec(new StatusDefinitionId(WergildFallsDueId), 1),
                 new StartingStatusSpec(new StatusDefinitionId(SafeConductId), 1),
             ]
             : [];
