@@ -909,5 +909,22 @@
       "claim"
     ],
     "role": "elite"
+  },
+  {
+    "id": "green_docket_elite_grandmother_web",
+    "name": "Grandmother Web",
+    "act": 3,
+    "difficulty": "elite",
+    "enemies": [
+      "grandmother_web"
+    ],
+    "weight": 1,
+    "tags": [
+      "green_docket",
+      "elite",
+      "safe_conduct",
+      "claim"
+    ],
+    "role": "elite"
   }
 ]

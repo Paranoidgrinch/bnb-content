@@ -23,18 +23,21 @@ public static partial class ActThree
     public static readonly IReadOnlySet<string> EliteIdentities = new HashSet<string>(StringComparer.Ordinal)
     {
         StagEnemyId,
+        GrandmotherWebEnemyId,
     };
 
     // Every elite's own statuses, gathered where the act's own list can splice them in.
     public static IReadOnlyList<StatusData> EliteStatuses() =>
     [
         .. StagStatuses(),
+        .. WebStatuses(),
     ];
 
     // An elite's intents. Dispatched ahead of the standard pool's, because an elite's pressure is never the
     // standard `Pressure(n)` shape — each of them charges for something of its own.
     public static EffectProgram<EnemyActionContext>? EliteIntent(string enemyId, string intentId) =>
-        StagIntent(enemyId, intentId);
+        StagIntent(enemyId, intentId)
+        ?? WebIntent(enemyId, intentId);
 
     // What settling a demand IN FULL does over and above the act's own reward, when the creditor is an elite
     // that has written its own terms. Spliced into the one settlement in `ActThreeWergild`, because only the
