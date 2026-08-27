@@ -57,13 +57,15 @@ public static class QueueCommissioner
         PassiveStatuses.NamedMarker(ServiceId, "Serving You", "The Counter is yours this turn."),
         PassiveStatuses.NamedMarker(CounterClosedId, "Counter Closed", "The queue does not move this turn."),
         PassiveStatuses.NamedMarker(PushedBackId, "Sent to the Back", "You lose a place when your turn begins."),
-        PassiveStatuses.NamedMarker(ChoiceMadeId, "Administrative Choice Made", null),
+        PassiveStatuses.NamedMarker(ChoiceMadeId, "Administrative Choice Made",
+            "You have already taken your one administrative action this turn."),
         PassiveStatuses.NamedMarker(FinalCounterId, "Counter of Final Appeal",
             "The Commissioner's next action opens the final counter."),
         PassiveStatuses.NamedMarker(PriorityQueueId, "Priority Queue", "Phase II."),
         PassiveStatuses.NamedMarker(LastNumberId, "Last Number of the Day",
             "The Commissioner's next action is its heaviest."),
-        PassiveStatuses.NamedMarker(JustJoinedId, "Just Joined the Queue", null),
+        PassiveStatuses.NamedMarker(JustJoinedId, "Just Joined the Queue",
+            "You have only just taken your place. The queue does not move for you this turn."),
         Amplifier(BeingServedId, "Being Served", 125),
         Amplifier(ExpeditedId, "Expedited Service", 115),
     ];
@@ -393,6 +395,8 @@ public static class QueueCommissioner
         {
             Id = CommissionerId,
             NameKey = "The Queue Commissioner",
+            DescriptionKey = "You are inside the queue. Your position moves one closer at the start of each of your turns unless the "
++ "Counter was closed; reaching the Counter opens a Service Window, and two served Windows open Phase II.",
             Polarity = StatusPolarity.Neutral,
             StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
             UsesStacks = false,

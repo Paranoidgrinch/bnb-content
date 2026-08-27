@@ -1259,3 +1259,30 @@ fight one of them was played in, the run died with `ArgumentNullException` out o
 it because a null id serializes perfectly happily. Every `CounterId` in the converter is now a **property**
 (`static CounterId X => new("…")`), which cannot be ordered wrong, and `Tests/DocumentIdTests` fails the build
 if any id reaches the document without a name.
+
+---
+
+## Every name now says what it means (2026-08-28)
+
+Three quiet holes, all of the same shape — a thing with a name and nothing behind it:
+
+- **82 of the game's 500 statuses** reached the player with a name and no explanation, among them Panic,
+  Fatigue, Strength, Poison and Bookworm — the five words a player meets first. Eight more "explained"
+  themselves by repeating their own name.
+- **113 of the 162 relics** had no hover text: only the PORTED relics got a presentation entry, and the
+  authored pools (normal, shop, boss, event) are two thirds of them.
+- **31 of the 353 cards** had none either — and they were the encounter-given ones (a Notice, a Clause, a
+  Fragment, a boss's action card), which is to say the cards a player meets without warning.
+
+Nothing noticed, because all three are perfectly valid data.
+
+All of them explain themselves now, and `Tests/EverythingExplainsItselfTests` fails the build if a new one
+arrives mute (or explains itself by echoing its name). The fixes went to the causes rather than the symptoms:
+three authoring helpers took a name and no description (`PassiveStatuses.Marker` / `Passive`, and the elites'
+local `Marker`, which passed the NAME as the description) and now require one; `BnbCard.Compile` carries the
+card's rules text into the document itself rather than leaving it in the manifest; and the manifest fills in
+anything it did not name from the entity's own text.
+
+The five keyword statuses are described **here** rather than copied from `source-data/statuses/statuses.json`:
+the original's text says "at the start of the player's turn" for statuses this engine ticks on whoever is
+carrying them, and a description that describes another game's rule is worse than none.

@@ -50,8 +50,12 @@ public static class VolumesOfCauseAndConsequence
 
     public static IEnumerable<StatusData> Statuses() =>
     [
-        Marker(TheCausesId, "Volume of Causes"),
-        Marker(TheConsequencesId, "Volume of Consequences"),
+        Marker(TheCausesId, "Volume of Causes",
+            "Causes cites your cards. Fulfil a citation and Causes itself is wounded — but Consequences comes "
+            + "down 6 harder."),
+        Marker(TheConsequencesId, "Volume of Consequences",
+            "Consequences hits you with whatever the citation turned out to mean: 6 harder when you fulfilled "
+            + "it, 6 softer when you did not."),
         Concordance(SupportedId, "Supported Result",
             "The Concordance holds. The next direct attack from Consequences lands 6 harder.", +ConcordanceSwing),
         Concordance(UnsupportedId, "Unsupported Result",
@@ -265,7 +269,9 @@ public static class VolumesOfCauseAndConsequence
 
     private static ConstantExpression<EnemyActionContext> Const(int value) => new(value);
 
-    private static StatusData Marker(string id, string name) => Rule(id, name, name, []);
+    // A marker still owes the player an explanation on hover: naming it twice explains nothing.
+    private static StatusData Marker(string id, string name, string description) =>
+        Rule(id, name, description, []);
 
     private static StatusData Rule(
         string id, string name, string description, IReadOnlyList<StatusTriggerData> triggers) => new()

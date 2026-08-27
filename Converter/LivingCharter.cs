@@ -93,8 +93,10 @@ public static class LivingCharter
         PassiveStatuses.NamedMarker(CrisisId, "Constitutional Crisis",
             "Each round both sides receive an Exception."),
         PassiveStatuses.NamedMarker(RemedyId, "Remedy Due", "8 Block at the start of your next turn."),
-        PassiveStatuses.NamedMarker(SecurityUsedId, "Security Invoked", null),
-        PassiveStatuses.NamedMarker(BurdenUsedId, "Burden Borne", null),
+        PassiveStatuses.NamedMarker(SecurityUsedId, "Security Invoked",
+            "The Charter has already invoked its security this turn."),
+        PassiveStatuses.NamedMarker(BurdenUsedId, "Burden Borne",
+            "The burden has already been borne this turn."),
         PassiveStatuses.NamedMarker(ExceptionId, "Exception", "May be claimed to ignore an Article this turn."),
         PassiveStatuses.NamedMarker(ExceptionClaimedId, "Exception Claimed",
             "The Articles do not touch you this turn."),
@@ -619,6 +621,8 @@ public static class LivingCharter
         {
             Id = CharterId,
             NameKey = "The Living Charter",
+            DescriptionKey = "The Charter publishes Articles — rules that rewrite the fight for both sides. Every second action it "
++ "calls a Judicial Review and lets you uphold the standing Article or strike it down for the next one.",
             Polarity = StatusPolarity.Neutral,
             StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
             UsesStacks = false,

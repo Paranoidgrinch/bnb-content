@@ -41,7 +41,10 @@ public static class SilenceBetweenTwoWords
     private static readonly ICombatantTargetSelector Silences =
         CombatantTargetSelectors.AllEnemiesOfSourceWithStatus(new StatusDefinitionId(TheSilenceId));
 
-    public static IEnumerable<StatusData> Statuses() => [Marker(TheSilenceId, "The Silence"), Echo(), Rules()];
+    public static IEnumerable<StatusData> Statuses() => [Marker(TheSilenceId, "The Silence",
+        "Each turn it marks two of your cards as its Words. Speak both and it Echoes twice; speak one and it "
+        + "Echoes once and misfiles a card; speak neither and the silence is perfect — it loses 10 HP, 10 Block "
+        + "and an Echo."), Echo(), Rules()];
 
     // ── 8.5 Echo ──────────────────────────────────────────────────────────────────────────────────────────
     //
@@ -374,7 +377,9 @@ public static class SilenceBetweenTwoWords
                 new TagId(mark), remove: true),
             markFilter: new TagId(mark));
 
-    private static StatusData Marker(string id, string name) => Rule(id, name, name, []);
+    // A marker still owes the player an explanation on hover: naming it twice explains nothing.
+    private static StatusData Marker(string id, string name, string description) =>
+        Rule(id, name, description, []);
 
     private static StatusData Rule(
         string id, string name, string description, IReadOnlyList<StatusTriggerData> triggers) => new()

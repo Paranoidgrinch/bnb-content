@@ -54,7 +54,7 @@ public static class BlueprintAssembler
                 .Select(id => new CardDefinitionId(CardMapper.MapCardId(id))).ToList(),
         };
 
-        return new RunBlueprint(
+        var blueprint = new RunBlueprint(
             data.Bureaucrat.StartingDeck.Select(id => new CardDefinitionId(CardMapper.MapCardId(id))).ToList(),
             events,
             data.Encounters.Select(e => EncounterMapper.Map(e, enemiesById, data.Bureaucrat.StartingEnergy)).ToList(),
@@ -112,6 +112,9 @@ public static class BlueprintAssembler
             Presentation = BuildPresentation(
                 data, relics, enemies, [.. authored.Values.SelectMany(e => e)]),
         };
+
+        // …and then let anything the manifest did not name explain itself from its own rules text.
+        return blueprint with { Presentation = WithEveryCard(blueprint.Presentation, blueprint.Cards) };
     }
 
     // Every authored run program the document ships: the bodies an event installs by name.
@@ -126,6 +129,29 @@ public static class BlueprintAssembler
             foreach (var (id, body) in Events.ActTwoEventPrograms.All(actTwo))
                 programs[id] = body;
         return programs.Count > 0 ? programs : null;
+    }
+
+    // Anything the document ships that the manifest above did not name explains itself from its OWN
+    // DescriptionKey. That is what the encounter-given cards have — a Notice, a Clause, a Fragment, a boss's
+    // action card — and they are the cards a player meets without warning, so they are the last ones that
+    // should reach the hand unexplained.
+    private static PresentationManifest WithEveryCard(PresentationManifest manifest, IReadOnlyList<CardData> cards)
+    {
+        var byId = new Dictionary<string, EntityPresentation>(manifest.Cards, StringComparer.Ordinal);
+        foreach (var card in cards)
+        {
+            if (byId.TryGetValue(card.Id, out var known) && !string.IsNullOrWhiteSpace(known.FlavorText))
+                continue;
+            if (string.IsNullOrWhiteSpace(card.DescriptionKey))
+                continue;
+            byId[card.Id] = new EntityPresentation
+            {
+                Art = $"cards/{card.Id.TrimEnd('+')}.png",
+                FlavorText = card.DescriptionKey,
+                Tags = [.. card.Tags.Select(t => t.value)],
+            };
+        }
+        return manifest with { Cards = byId };
     }
 
     private static PresentationManifest BuildPresentation(
@@ -155,15 +181,32 @@ public static class BlueprintAssembler
                         Tags = c.AllTags.ToList(),
                     }))
                 .ToDictionary(e => e.Key, e => e.Value),
-            Relics = relics.ToDictionary(
-                r => r.Relic.Id,
-                r => new EntityPresentation
-                {
-                    Art = $"relics/{r.Relic.Id}.png",
-                    FlavorText = r.Source.Description,
-                    Rarity = r.Source.Rarity,
-                    Tags = r.Source.Tags ?? [],
-                }),
+            // Both kinds of relic, because both are worn: the ported ones carry their text in the source data,
+            // the AUTHORED ones (the final pools — normal, shop, boss, event) carry it on the authoring record.
+            // Only the ported ones used to get an entry, so two thirds of the relics in the game showed the
+            // player a name and nothing else on hover.
+            Relics = relics
+                .ToDictionary(
+                    r => r.Relic.Id,
+                    r => new EntityPresentation
+                    {
+                        Art = $"relics/{r.Relic.Id}.png",
+                        FlavorText = r.Source.Description,
+                        Rarity = r.Source.Rarity,
+                        Tags = r.Source.Tags ?? [],
+                    })
+                .Concat(Relics.FinalRelics.All().ToDictionary(
+                    r => r.Id,
+                    r => new EntityPresentation
+                    {
+                        Art = $"relics/{r.Id}.png",
+                        FlavorText = r.Text,
+                        Rarity = r.Rarity.ToString().ToLowerInvariant(),
+                        Tags = [],
+                    }))
+                // An id in both places is the authored one: that is the relic the document ships.
+                .GroupBy(e => e.Key)
+                .ToDictionary(g => g.Key, g => g.Last().Value),
             Statuses = data.Statuses.ToDictionary(
                 s => s.Id,
                 s => new EntityPresentation

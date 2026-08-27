@@ -59,6 +59,10 @@ public static class CardAuthoring
         {
             Id = Id,
             NameKey = Name,
+            // The rules text travels WITH the card. It used to live only in the presentation manifest, which
+            // the event-given cards (the Junk a door leaves you, a boss's clause, a Fragment) never reached —
+            // so the cards a player has never seen before were the ones that explained themselves least.
+            DescriptionKey = Text,
             Costs = Cost == 0 ? [] : [new ResourceCost(Energy, Cost)],
             Tags = AllTags.Distinct().Select(t => new TagId(t)).ToArray(),
             PlayedCardDestinationZone = AllTags.Contains(ExhaustTag) ? CardZone.ExhaustPile : Destination,
