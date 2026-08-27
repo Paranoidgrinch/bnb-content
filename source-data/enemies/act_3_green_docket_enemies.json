@@ -2239,5 +2239,194 @@
       "formation",
       "line_bearer"
     ]
+  },
+  {
+    "id": "juniper_injunction",
+    "name": "Juniper Injunction",
+    "max_hp": 188,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "narrow_the_granted_use",
+        "name": "Narrow the Granted Use",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 14
+          }
+        ]
+      },
+      {
+        "id": "bind_the_path",
+        "name": "Bind the Path",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 17
+          }
+        ]
+      },
+      {
+        "id": "thorned_enforcement",
+        "name": "Thorned Enforcement",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 20
+          }
+        ]
+      },
+      {
+        "id": "demand_relief_in_proper_form",
+        "name": "Demand Relief in Proper Form",
+        "intent_type": "debuff",
+        "actions": [
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "wergild",
+            "amount": 2
+          },
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 10
+          }
+        ]
+      },
+      {
+        "id": "no_remedy_is_absolute",
+        "name": "No Remedy Is Absolute",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 15
+          }
+        ]
+      },
+      {
+        "id": "the_final_injunction",
+        "name": "The Final Injunction",
+        "intent_type": "debuff",
+        "actions": [
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "wergild",
+            "amount": 3
+          },
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 16
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "green_docket_body"
+      },
+      {
+        "status": "the_juniper_injunction"
+      }
+    ],
+    "tags": [
+      "green_docket",
+      "elite",
+      "act_3",
+      "injunction"
+    ]
+  },
+  {
+    "id": "surveyor_of_forgotten_paths",
+    "name": "Surveyor of Forgotten Paths",
+    "max_hp": 198,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "drive_the_first_stake",
+        "name": "Drive the First Stake",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 16
+          }
+        ]
+      },
+      {
+        "id": "measure_what_was_forgotten",
+        "name": "Measure What Was Forgotten",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 14
+          }
+        ]
+      },
+      {
+        "id": "declare_the_new_boundary",
+        "name": "Declare the New Boundary",
+        "intent_type": "buff",
+        "actions": [
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "safe_conduct",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "stake_through_the_map",
+        "name": "Stake Through the Map",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 20
+          }
+        ]
+      },
+      {
+        "id": "close_the_survey",
+        "name": "Close the Survey",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 16
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "green_docket_body"
+      },
+      {
+        "status": "the_survey_map"
+      }
+    ],
+    "tags": [
+      "green_docket",
+      "elite",
+      "act_3",
+      "precedent"
+    ]
   }
 ]

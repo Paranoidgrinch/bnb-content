@@ -418,7 +418,7 @@ public static partial class ActThree
     ];
 
     // The cards the act itself hands the player: never dealt into a deck, only pushed into a fight.
-    public static IReadOnlyList<CardData> GivenCards() => [MakeAmends()];
+    public static IReadOnlyList<CardData> GivenCards() => [MakeAmends(), CiteTheOldSurvey()];
 
     // The standard roster, stage by stage. Anything in here is a Green Docket body, which is how a fight
     // knows to open under the act's customs.
@@ -533,13 +533,14 @@ public static partial class ActThree
 
     // One Trespass that is not a law violation — a pressure intent's blow, or a witness's own testimony.
     public static IEffectNode<TContext> FileTrespass<TContext>(
-        ICombatantTargetSelector lawgiver, ICombatExpression<TContext, int>? stacks = null)
+        ICombatantTargetSelector lawgiver, ICombatExpression<TContext, int>? stacks = null,
+        string? unrefusableBy = null)
         where TContext : class =>
         new CausalSequenceEffectNode<TContext>(
         [
             new SetCombatantCounterNode<TContext>(
                 Applicant, LawBeingFiledCounter, new ConstantExpression<TContext>(NoLaw), relative: false),
-            ContestedFiling(lawgiver, stacks),
+            ContestedFiling(lawgiver, stacks, unrefusableBy),
         ]);
 
     // A LAW is broken. Three separate things happen, and they are not the same thing:
@@ -556,11 +557,11 @@ public static partial class ActThree
     // card, the Clerk's opening card) passes no latch.
     public static IEffectNode<TContext> Violate<TContext>(
         ICombatantTargetSelector lawgiver, int law, string? latch = null,
-        ICombatExpression<TContext, int>? stacks = null)
+        ICombatExpression<TContext, int>? stacks = null, string? unrefusableBy = null)
         where TContext : class
     {
         IEffectNode<TContext> theLawSpeaks = latch is null
-            ? ContestedFiling(lawgiver, stacks)
+            ? ContestedFiling(lawgiver, stacks, unrefusableBy)
             : new ConditionalEffectNode<TContext>(
                 new ComparisonExpression<TContext>(
                     new CombatantStatusStacksExpression<TContext>(lawgiver, new StatusDefinitionId(latch)),
@@ -568,7 +569,7 @@ public static partial class ActThree
                     new ConstantExpression<TContext>(0)),
                 new CausalSequenceEffectNode<TContext>(
                 [
-                    ContestedFiling(lawgiver, stacks),
+                    ContestedFiling(lawgiver, stacks, unrefusableBy),
                     new ApplyStatusNode<TContext>(
                         lawgiver, new StatusDefinitionId(latch), new ConstantExpression<TContext>(1)),
                 ]));
@@ -593,17 +594,22 @@ public static partial class ActThree
     // `stacks` is how many the filing attempts at once — one everywhere except where a party has staked
     // something (the Stag's verge, the Web's knot). It stays ONE application whatever the count, because a
     // licence refuses an application rather than a stack.
+    // `unrefusableBy` names the ONE licence that may not be spent against this filing — the Juniper's
+    // injunction against safe passage, and nothing else in the act. The licence is not removed and is still
+    // spendable against everything else; it simply has no say in this violation.
     private static IEffectNode<TContext> ContestedFiling<TContext>(
-        ICombatantTargetSelector lawgiver, ICombatExpression<TContext, int>? stacks = null)
+        ICombatantTargetSelector lawgiver, ICombatExpression<TContext, int>? stacks = null,
+        string? unrefusableBy = null)
         where TContext : class
     {
         var magpie = Lawgiver(ContraryTestimonyId);
         var howMany = stacks ?? new ConstantExpression<TContext>(1);
+        StatusDefinitionId? beyond = unrefusableBy is null ? null : new StatusDefinitionId(unrefusableBy);
 
         IEffectNode<TContext> Trespass(ICombatantTargetSelector owed) =>
             new ApplyStatusNode<TContext>(
                 Applicant, new StatusDefinitionId(TrespassId), howMany,
-                sourceSelector: owed);
+                sourceSelector: owed, unrefusableBy: beyond);
 
         var mayContest = new AndExpression<TContext>(
             // There has to be a Magpie standing, and it has to have kept quiet so far this turn. With no
