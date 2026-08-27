@@ -1,0 +1,92 @@
+# Act III — The Green Docket: the build sheet
+
+Sources, in the order they outrank each other:
+
+| Doc | Scope |
+|---|---|
+| `source-data/design/…Standard_Encounter_Pools_Acts_I-IV_FINAL_AUDIT.md` §Act III | 25 identities, 40 encounters, the four universal mechanics, and the balance appendix's HP/intent bands |
+| `source-data/design/…Master_Elite_Pool_Acts_I-IV_FINAL_AUDIT.md` §Act III | the elites |
+| `source-data/design/…Master_Boss_Pool_Acts_I-V_FINAL_AUDIT.md` §Act III | the bosses |
+| `source-data/design/bureaucrat_final_cards.md`, `general_final_cards.md` | the Act-III card pools — ALREADY BUILT (Phase B) |
+| `source-data/design/BnB_Final_Relics_Master_PostAudit.md` | the relics |
+| `source-data/design/BnB_Final_Events_Master_PostAudit.md` §ACT III | the fifteen events |
+| `docs/bnb-act-map-specs.md` (RogueDeck-Core) | the act's map shape: Combat 8, MultiCombat 2, Elite 3, Event 3, Rest 2, Treasure 1, Shop 2, MimicChance 15 |
+
+**Build order (the user's, set 2026-08-28):** normal enemies + encounters → elites → bosses →
+cards → relics → events. The same order Act II was built in: first what you fight, then what
+you fight with.
+
+---
+
+## What Act III IS
+
+> **Law exists because everyone remembers what everyone else did.**
+
+Act II's pressure was source-bound DEBT. Act III's is source-bound STANDING. Four universal
+mechanics carry the whole act, and 25 identities are 40 encounters because the act recombines
+known parties rather than inventing new bodies.
+
+| Mechanic | Whose it is | Rule |
+|---|---|---|
+| **Trespass** | on the player, bound to a source | at 3 from one source: remove those 3, that source gains 1 **newly created** Claim. Deals no damage itself. |
+| **Safe-Conduct** | on the player | spend 1 to prevent a Trespass application. Normal Act-III combats open with 1. Suggested max 3. |
+| **Claim** | on an enemy | recognised standing, max 3. NOT a damage multiplier — each party reads its own Claims differently. |
+| **Wergild** | owed by the player to a source | due by the end of the next player turn; **Make Amends** pays a point with 1 Energy or an eligible card. Paid in full ⇒ 1 Safe-Conduct. Unpaid ⇒ 2 direct damage per point, and the source gains 1 Claim. |
+
+**Newly created ≠ transferred.** A Claim is newly created only by 3 Trespass, by unpaid Wergild,
+or by an effect that says "create". A transfer changes owner and retriggers nothing. This is
+the rule that keeps Boundary Stone / Ditch Lamprey / Bracken Moot from looping, so the two are
+two different things in the content as well: `claim` is the resource, `claim_created` is the
+announcement, and only a creation raises the announcement.
+
+---
+
+## Engine seams this arc has bought
+
+| # | What | Where |
+|---|---|---|
+| 1 | **A prohibition can name the one status it refuses.** Safe-Conduct is protection against Trespass and nothing else; the broad Censure reading would have made it the best defensive status in the game. | Core `53906de` |
+| 2 | **An applied status can say who it is from.** Every Local Law fires on a PLAYER action, where the acting source is the player — and the Trespass it applies is owed to the enemy whose law it is. A named source that is not there files nothing. | Core `59f0dff`, `e35c00f` |
+| 3 | **The wrapping selectors can be written down** — `first` above all, which is the only sanctioned way to read ONE combatant out of a list, and therefore the only way a serialized program can say "the enemy that carries this mark". | Core `a211ada` |
+
+Open seams the later stages will want, listed when they are first needed:
+
+- **"the living enemy with the fewest / most Claims"** — a selector that orders by status stacks
+  (Crossroads Cup, Bracken Moot, Handworn Tally Coin). Stage 5.
+- **a free encounter action** — Make Amends. Stage 4. Likely a card the fight puts in hand, the
+  Notice/Clause shape.
+
+---
+
+## Steps
+
+- [x] **0 — the vocabulary + Stage 1.** DONE 2026-08-28 — 11 live tests in `Tests/ActThreeStageOneTests.cs`. `Converter/ActThree.cs`: Trespass, Safe-Conduct, Claim,
+      the announcement, and the act's customs (the rule on the player that turns 3 Trespass into a
+      Claim). Permit Hare, Mossbound Clerk, Cairn of Stray Paths + encounters 1–4.
+- [ ] 1 — Stage 2, the Surveyed Hedgerows (Reckoning Hedge, Errant Boundary Stone, Hawthorn Tenant)
+- [ ] 2 — Stage 3, the Meadow of Living Testimony (Foxglove Witness, Contrary Magpie)
+- [ ] 3 — Stage 4, the Tollwater Crossings — **Wergild + Make Amends** (Charter-Shell Snail,
+      Streamside Oath-Fish, Two-Bank Toll Ford)
+- [ ] 4 — Stage 5, the Wayside Covenants (Roadside Witchling, Blackthorn Bride, Crossroads Cup)
+- [ ] 5 — Stage 6, the Quorum Ring (Mandated Mushroom Circle, Bracken Moot)
+- [ ] 6 — Stage 7, the Mire of Appeals (Ditch Lamprey, Sedge Bench)
+- [ ] 7 — Stage 8, Old-Growth Precedents (Sleeping Stump Auditor, Precedent Lichen, Footfall Root)
+- [ ] 8 — Stage 9, Moonlit Jurisdictions (Untranslated Trail Marker, Elsewhere Path + two returning forms)
+- [ ] 9 — Stage 10, the Court Beneath the Hill (Keeper of Buried Names, Handworn Tally Coin)
+- [ ] 10 — the elites
+- [ ] 11 — the bosses
+- [ ] 12 — the act itself: `ActRules.For(3)`, `BabLoader.Acts`, the act's own map lanes and rest /
+      treasure voice, and Act III joins the walked run
+- [ ] 13 — relics, then the fifteen events
+
+## House rules that already cost a day each
+
+- Every new status / card / relic needs a **description**, or `Tests/EverythingExplainsItselfTests`
+  breaks the build.
+- Every `CounterId` is a **property** (`static CounterId X => new("…")`), never a `static readonly`
+  field — a field declared below the card that uses it is still `default` when that card
+  initialises, and `default` of an id struct is a null string (`Tests/DocumentIdTests`).
+- `CombatantTargetSelectors.FirstTarget` has **no serialization kind**. A list selector is fine
+  wherever one combatant is wanted; the effect takes the first it resolves to.
+- After each block: `dotnet run --project Converter -- --playtest 3` and `-- --maps 3`, then
+  `tools/sync-content.sh` and `godot --headless -- --smoke-marathon`.

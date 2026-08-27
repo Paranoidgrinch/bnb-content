@@ -168,6 +168,12 @@ public static class EncounterPassives
     // The applicant's opening statuses this enemy brings to the fight — the Final Notice Knight serves its
     // deadline ON THE PLAYER at the first bell. Encounter mapping and probes both read this, so a fight is
     // identical wherever it is built.
+    // What the ACT serves on the player once per fight, whoever else is standing in it — Act III's customs
+    // and its opening Safe-Conduct. Asked of the whole roster rather than of each body, or a duo would hand
+    // the player two licences.
+    public static IReadOnlyList<StartingStatusSpec> ActOpeningStatuses(IEnumerable<string> enemyIds) =>
+        ActThree.HeroOpening(enemyIds);
+
     public static IReadOnlyList<StartingStatusSpec> HeroOpeningStatuses(string enemyId) => enemyId switch
     {
         // The Deputy opens its Desk on the player: the phase mirror every Desk program gates on.

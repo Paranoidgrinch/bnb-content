@@ -88,6 +88,7 @@ public static class BlueprintAssembler
                 .. Relics.FinalRelics.Statuses(),
                 .. PassiveStatuses.All(),
                 .. ActTwo.All(),
+                .. ActThree.All(),
                 .. Events.ActOneEventObjects.Statuses(), .. Events.ActTwoEventObjects.Statuses(),
             ],
             // The final relic pools replace the ported v2 relics wherever the ids meet; what is left of the

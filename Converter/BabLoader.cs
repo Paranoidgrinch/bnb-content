@@ -43,8 +43,14 @@ public sealed class BabData
             Statuses = Many<BabStatus>("statuses/statuses.json"),
             // Act I's ported roster plus the acts authored since. Every act's bodies are ordinary enemy data;
             // what makes an act an act is its own map and its own vocabulary, not a separate catalogue.
-            Enemies = Many<BabEnemy>("enemies/city_enemies.json", "enemies/act_2_archives_enemies.json"),
-            Encounters = Many<BabEncounter>("encounters/act_1_city.json", "encounters/act_2_archives.json"),
+            // Act III's bodies and fights load with the rest; the act itself does not join the walked run
+            // until it has a full roster and its own events (ACT_III_BUILD_PLAN §12).
+            Enemies = Many<BabEnemy>(
+                "enemies/city_enemies.json", "enemies/act_2_archives_enemies.json",
+                "enemies/act_3_green_docket_enemies.json"),
+            Encounters = Many<BabEncounter>(
+                "encounters/act_1_city.json", "encounters/act_2_archives.json",
+                "encounters/act_3_green_docket.json"),
             Relics = Many<BabRelic>("relics/act_1_relics.json", "relics/bureaucrat_relics.json"),
         };
     }

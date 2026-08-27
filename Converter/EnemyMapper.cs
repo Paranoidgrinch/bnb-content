@@ -159,6 +159,9 @@ public static class EncounterMapper
                 new StartingStatusSpec(new StatusDefinitionId(PassiveStatuses.ApplicantId), 1),
                 // Some enemies serve something ON the player at the first bell (the Knight's Final Notice).
                 .. encounter.Enemies.Distinct().SelectMany(EncounterPassives.HeroOpeningStatuses),
+                // …and an ACT may serve something once per fight, whoever is standing in it (Act III's
+                // customs and the Safe-Conduct it opens you with).
+                .. EncounterPassives.ActOpeningStatuses(encounter.Enemies),
             ],
             triggeredEffects: triggeredEffects);
     }
