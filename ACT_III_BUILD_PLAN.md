@@ -92,7 +92,10 @@ Open seams the later stages will want, listed when they are first needed:
       Streamside Oath-Fish, Two-Bank Toll Ford). DONE 2026-08-28 — 10 live tests in
       `Tests/ActThreeStageFourTests.cs`. A demand belongs to ONE creditor: its clock, its settlement and its
       reward are all the creditor's, kept in `Converter/ActThreeWergild.cs`.
-- [ ] 4 — Stage 5, the Wayside Covenants (Roadside Witchling, Blackthorn Bride, Crossroads Cup)
+- [x] 4 — Stage 5, the Wayside Covenants (Roadside Witchling, Blackthorn Bride, Crossroads Cup)
+      DONE 2026-08-28 — 9 live tests in `Tests/ActThreeStageFiveTests.cs`. Provenance needed no engine work:
+      a licence carries its giver's name because Safe-Conduct is per-grant instances, and "was any of HERS
+      spent" is the difference between two readings a turn apart.
 - [ ] 5 — Stage 6, the Quorum Ring (Mandated Mushroom Circle, Bracken Moot)
 - [ ] 6 — Stage 7, the Mire of Appeals (Ditch Lamprey, Sedge Bench)
 - [ ] 7 — Stage 8, Old-Growth Precedents (Sleeping Stump Auditor, Precedent Lichen, Footfall Root)

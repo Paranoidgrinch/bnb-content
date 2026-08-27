@@ -350,5 +350,83 @@
       "multi_enemy"
     ],
     "role": "multi_combat"
+  },
+  {
+    "id": "green_docket_covenants_01",
+    "name": "The Witch at the Milestone",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "roadside_witchling"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_covenants",
+      "green_docket",
+      "hospitality"
+    ],
+    "role": "combat"
+  },
+  {
+    "id": "green_docket_covenants_02",
+    "name": "The Bride at the Threshold",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "blackthorn_bride"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_covenants",
+      "green_docket",
+      "claim",
+      "wergild"
+    ],
+    "role": "combat"
+  },
+  {
+    "id": "green_docket_covenants_duo_01",
+    "name": "A Cup at the Crossroads",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "crossroads_cup",
+      "roadside_witchling"
+    ],
+    "enemy_health": [
+      53,
+      67
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_covenants",
+      "green_docket",
+      "hospitality",
+      "multi_enemy"
+    ],
+    "role": "multi_combat"
+  },
+  {
+    "id": "green_docket_covenants_duo_02",
+    "name": "Blackthorn Toast",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "blackthorn_bride",
+      "crossroads_cup"
+    ],
+    "enemy_health": [
+      81,
+      53
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_covenants",
+      "green_docket",
+      "claim",
+      "wergild",
+      "multi_enemy"
+    ],
+    "role": "multi_combat"
   }
 ]
