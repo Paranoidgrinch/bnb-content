@@ -24,6 +24,7 @@ public static partial class ActThree
     {
         StagEnemyId,
         GrandmotherWebEnemyId,
+        WrongBridgeEnemyId,
     };
 
     // Every elite's own statuses, gathered where the act's own list can splice them in.
@@ -31,13 +32,15 @@ public static partial class ActThree
     [
         .. StagStatuses(),
         .. WebStatuses(),
+        .. BridgeStatuses(),
     ];
 
     // An elite's intents. Dispatched ahead of the standard pool's, because an elite's pressure is never the
     // standard `Pressure(n)` shape — each of them charges for something of its own.
     public static EffectProgram<EnemyActionContext>? EliteIntent(string enemyId, string intentId) =>
         StagIntent(enemyId, intentId)
-        ?? WebIntent(enemyId, intentId);
+        ?? WebIntent(enemyId, intentId)
+        ?? BridgeIntent(enemyId, intentId);
 
     // What settling a demand IN FULL does over and above the act's own reward, when the creditor is an elite
     // that has written its own terms. Spliced into the one settlement in `ActThreeWergild`, because only the
@@ -46,6 +49,7 @@ public static partial class ActThree
         new CausalSequenceEffectNode<TurnEndedTriggeredEffectContext>(
         [
             ACleanFight(),
+            TheTollForCrossing(),
         ]);
 
     // ── the laws the elites add ───────────────────────────────────────────────────────────────────────────

@@ -926,5 +926,22 @@
       "claim"
     ],
     "role": "elite"
+  },
+  {
+    "id": "green_docket_elite_the_wrong_bridge_in_person",
+    "name": "The Wrong Bridge in Person",
+    "act": 3,
+    "difficulty": "elite",
+    "enemies": [
+      "the_wrong_bridge_in_person"
+    ],
+    "weight": 1,
+    "tags": [
+      "green_docket",
+      "elite",
+      "wergild",
+      "claim"
+    ],
+    "role": "elite"
   }
 ]
