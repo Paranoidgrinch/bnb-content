@@ -96,8 +96,14 @@ Open seams the later stages will want, listed when they are first needed:
       DONE 2026-08-28 — 9 live tests in `Tests/ActThreeStageFiveTests.cs`. Provenance needed no engine work:
       a licence carries its giver's name because Safe-Conduct is per-grant instances, and "was any of HERS
       spent" is the difference between two readings a turn apart.
-- [ ] 5 — Stage 6, the Quorum Ring (Mandated Mushroom Circle, Bracken Moot)
-- [ ] 6 — Stage 7, the Mire of Appeals (Ditch Lamprey, Sedge Bench)
+- [x] 5 — Stage 6, the Quorum Ring (Mandated Mushroom Circle, Bracken Moot) — DONE 2026-08-28, 6 live
+      tests. Added the act's third announcement, `claim_consumed`: a Claim SPENT is not one moved or one
+      taken away, and Stage 10 counts nothing else.
+- [x] 6 — Stage 7, the Mire of Appeals (Ditch Lamprey, Sedge Bench) — DONE 2026-08-28, 6 live tests.
+      **`TransferClaim` now refuses to hand over what nobody handed in**: two rules can answer the same
+      grant (the Boundary Stone passing a title on and the Lamprey attaching to it are written to meet), and
+      between them they would otherwise make two Claims out of one — standing created by a transfer, which
+      is the one thing the act's vocabulary exists to prevent.
 - [ ] 7 — Stage 8, Old-Growth Precedents (Sleeping Stump Auditor, Precedent Lichen, Footfall Root)
 - [ ] 8 — Stage 9, Moonlit Jurisdictions (Untranslated Trail Marker, Elsewhere Path + two returning forms)
 - [ ] 9 — Stage 10, the Court Beneath the Hill (Keeper of Buried Names, Handworn Tally Coin)

@@ -152,13 +152,38 @@ public static partial class ActThree
             Applicant, new StatusDefinitionId(WergildId), creditor);
 
         // Paid in full. Most parties grant one Safe-Conduct; the Oath-Fish says otherwise by wearing a marker.
-        var settled = new ApplyStatusNode<TurnEndedTriggeredEffectContext>(
-            Applicant, new StatusDefinitionId(SafeConductId),
-            new AddExpression<TurnEndedTriggeredEffectContext>(
-                new ConstantExpression<TurnEndedTriggeredEffectContext>(1),
-                new CombatantStatusStacksExpression<TurnEndedTriggeredEffectContext>(
-                    creditor, new StatusDefinitionId(OathAcceptedId))),
-            sourceSelector: creditor);
+        //
+        // And this is where the Sedge Bench's other half lives: an appeal does not erase ownership, it
+        // suspends the Claim long enough for settlement to extinguish it. The Bench cannot do that itself —
+        // only the moment a demand is settled knows it was settled — so the rule belongs here.
+        var settled = new CausalSequenceEffectNode<TurnEndedTriggeredEffectContext>(
+        [
+            new ApplyStatusNode<TurnEndedTriggeredEffectContext>(
+                Applicant, new StatusDefinitionId(SafeConductId),
+                new AddExpression<TurnEndedTriggeredEffectContext>(
+                    new ConstantExpression<TurnEndedTriggeredEffectContext>(1),
+                    new CombatantStatusStacksExpression<TurnEndedTriggeredEffectContext>(
+                        creditor, new StatusDefinitionId(OathAcceptedId))),
+                sourceSelector: creditor),
+            new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
+                new ComparisonExpression<TurnEndedTriggeredEffectContext>(
+                    new CombatantStatusStacksExpression<TurnEndedTriggeredEffectContext>(
+                        creditor, new StatusDefinitionId(UnderReviewId)),
+                    ComparisonOperator.Greater,
+                    new ConstantExpression<TurnEndedTriggeredEffectContext>(0)),
+                new CausalSequenceEffectNode<TurnEndedTriggeredEffectContext>(
+                [
+                    new ModifySelectedStatusStacksNode<TurnEndedTriggeredEffectContext>(
+                        creditor,
+                        new StatusSelectionSpec(StatusPolarityFilter.Any)
+                        {
+                            Definition = new StatusDefinitionId(ClaimId),
+                        },
+                        new ConstantExpression<TurnEndedTriggeredEffectContext>(-1)),
+                    new RemoveStatusNode<TurnEndedTriggeredEffectContext>(
+                        creditor, new StatusDefinitionId(UnderReviewId)),
+                ])),
+        ]);
 
         // Left owing. Each creditor clears its OWN demand one point at a time and leaves every other
         // creditor's standing — which is what naming whose instances a rule means is for.

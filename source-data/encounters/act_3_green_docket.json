@@ -428,5 +428,207 @@
       "multi_enemy"
     ],
     "role": "multi_combat"
+  },
+  {
+    "id": "green_docket_quorum_duo_01",
+    "name": "Hare Before the Quorum",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "mandated_mushroom_circle",
+      "permit_hare"
+    ],
+    "enemy_health": [
+      68,
+      48
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_quorum",
+      "green_docket",
+      "claim",
+      "multi_enemy"
+    ],
+    "role": "multi_combat"
+  },
+  {
+    "id": "green_docket_quorum_duo_02",
+    "name": "Boundary Hearing",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "bracken_moot",
+      "errant_boundary_stone"
+    ],
+    "enemy_health": [
+      70,
+      54
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_quorum",
+      "green_docket",
+      "claim",
+      "multi_enemy"
+    ],
+    "role": "multi_combat",
+    "enemy_statuses": [
+      {
+        "index": 1,
+        "status": "prior_dispute"
+      }
+    ]
+  },
+  {
+    "id": "green_docket_quorum_duo_03",
+    "name": "Two-Bank Quorum",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "mandated_mushroom_circle",
+      "two_bank_toll_ford"
+    ],
+    "enemy_health": [
+      68,
+      70
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_quorum",
+      "green_docket",
+      "claim",
+      "wergild",
+      "multi_enemy"
+    ],
+    "role": "multi_combat",
+    "enemy_statuses": [
+      {
+        "index": 0,
+        "status": "claim"
+      },
+      {
+        "index": 0,
+        "status": "claim_created"
+      }
+    ]
+  },
+  {
+    "id": "green_docket_quorum_duo_04",
+    "name": "Detour Hearing",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "bracken_moot",
+      "cairn_of_stray_paths"
+    ],
+    "enemy_health": [
+      70,
+      38
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_quorum",
+      "green_docket",
+      "claim",
+      "multi_enemy"
+    ],
+    "role": "multi_combat"
+  },
+  {
+    "id": "green_docket_appeals_duo_01",
+    "name": "Upstream Appeal",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "ditch_lamprey_of_appeals",
+      "two_bank_toll_ford"
+    ],
+    "enemy_health": [
+      70,
+      70
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_appeals",
+      "green_docket",
+      "claim",
+      "wergild",
+      "multi_enemy"
+    ],
+    "role": "multi_combat"
+  },
+  {
+    "id": "green_docket_appeals_duo_02",
+    "name": "Charter Review",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "the_sedge_bench",
+      "charter_shell_snail"
+    ],
+    "enemy_health": [
+      90,
+      66
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_appeals",
+      "green_docket",
+      "claim",
+      "wergild",
+      "multi_enemy"
+    ],
+    "role": "multi_combat"
+  },
+  {
+    "id": "green_docket_appeals_duo_03",
+    "name": "Boundary Appeal",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "ditch_lamprey_of_appeals",
+      "errant_boundary_stone"
+    ],
+    "enemy_health": [
+      70,
+      54
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_appeals",
+      "green_docket",
+      "claim",
+      "multi_enemy"
+    ],
+    "role": "multi_combat",
+    "enemy_statuses": [
+      {
+        "index": 1,
+        "status": "prior_dispute"
+      }
+    ]
+  },
+  {
+    "id": "green_docket_appeals_duo_04",
+    "name": "Betrothal Review",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "the_sedge_bench",
+      "blackthorn_bride"
+    ],
+    "enemy_health": [
+      90,
+      76
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_appeals",
+      "green_docket",
+      "claim",
+      "wergild",
+      "multi_enemy"
+    ],
+    "role": "multi_combat"
   }
 ]

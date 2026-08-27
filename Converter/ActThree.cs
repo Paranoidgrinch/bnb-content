@@ -32,6 +32,7 @@ public static partial class ActThree
     public const string SafeConductId = "safe_conduct";
     public const string ClaimId = "claim";
     public const string ClaimCreatedId = "claim_created";
+    public const string ClaimConsumedId = "claim_consumed";
     public const string GreenDocketCustomsId = "green_docket_customs";
 
     // At most three Claims to a party — the design's suggested ceiling, enforced where claims are made.
@@ -99,6 +100,21 @@ public static partial class ActThree
         Id = ClaimCreatedId,
         NameKey = "Claim Lodged",
         DescriptionKey = "How many Claims this party has been granted outright, as opposed to handed.",
+        Polarity = StatusPolarity.Neutral,
+        StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
+        UsesStacks = true,
+        Tags = [],
+        PassiveModifiers = [],
+        Triggers = [],
+    };
+
+    // The other announcement: a Claim SPENT. Consumption is not transfer and not removal — it is a party
+    // cashing standing in for something — and by Stage 10 there is a body that counts nothing else.
+    public static StatusData ClaimConsumed() => new()
+    {
+        Id = ClaimConsumedId,
+        NameKey = "Claim Spent",
+        DescriptionKey = "How many Claims this party has cashed in.",
         Polarity = StatusPolarity.Neutral,
         StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
         UsesStacks = true,
@@ -179,21 +195,53 @@ public static partial class ActThree
                     sourceSelector: holder),
             ]));
 
+    // A Claim is SPENT: it leaves its holder for good, and the fact that it was spent — rather than moved
+    // or taken away — is announced, because the act's last stage has a body that counts exactly that.
+    public static IEffectNode<TContext> ConsumeClaim<TContext>(ICombatantTargetSelector holder)
+        where TContext : class =>
+        new CausalSequenceEffectNode<TContext>(
+        [
+            new ModifySelectedStatusStacksNode<TContext>(
+                holder,
+                new StatusSelectionSpec(StatusPolarityFilter.Any) { Definition = new StatusDefinitionId(ClaimId) },
+                new ConstantExpression<TContext>(-1)),
+            new ApplyStatusNode<TContext>(
+                holder, new StatusDefinitionId(ClaimConsumedId), new ConstantExpression<TContext>(1),
+                sourceSelector: holder),
+        ]);
+
     // A Claim CHANGES HANDS: one leaves the holder and one arrives with the new one, and the announcement is
     // never touched. The design spends a section on this distinction because it is what keeps the Boundary
     // Stone, the Ditch Lamprey and the Bracken Moot from feeding each other forever.
     public static IEffectNode<TContext> TransferClaim<TContext>(
         ICombatantTargetSelector from, ICombatantTargetSelector to)
-        where TContext : class =>
-        new CausalSequenceEffectNode<TContext>(
-        [
-            new ModifySelectedStatusStacksNode<TContext>(
-                from,
-                new StatusSelectionSpec(StatusPolarityFilter.Any) { Definition = new StatusDefinitionId(ClaimId) },
-                new ConstantExpression<TContext>(-1)),
-            new ApplyStatusNode<TContext>(
-                to, new StatusDefinitionId(ClaimId), new ConstantExpression<TContext>(1), sourceSelector: to),
-        ]);
+        where TContext : class
+    {
+        var giver = CombatantTargetSelectors.FirstTarget(from);
+
+        // Nothing arrives that did not leave. Two rules can answer the same grant — the Boundary Stone
+        // passing a title on and the Ditch Lamprey attaching to it are written to meet — and without this
+        // the pair would between them hand the recipient two Claims out of one, which is standing created
+        // by a transfer and the one thing the act's whole vocabulary is built to prevent.
+        return new ConditionalEffectNode<TContext>(
+            new ComparisonExpression<TContext>(
+                new CombatantStatusStacksExpression<TContext>(giver, new StatusDefinitionId(ClaimId)),
+                ComparisonOperator.Greater,
+                new ConstantExpression<TContext>(0)),
+            new CausalSequenceEffectNode<TContext>(
+            [
+                new ModifySelectedStatusStacksNode<TContext>(
+                    giver,
+                    new StatusSelectionSpec(StatusPolarityFilter.Any)
+                    {
+                        Definition = new StatusDefinitionId(ClaimId),
+                    },
+                    new ConstantExpression<TContext>(-1)),
+                new ApplyStatusNode<TContext>(
+                    to, new StatusDefinitionId(ClaimId), new ConstantExpression<TContext>(1),
+                    sourceSelector: to),
+            ]));
+    }
 
     // ── the pressure intents ──────────────────────────────────────────────────────────────────────────────
 
@@ -221,6 +269,10 @@ public static partial class ActThree
             "blackthorn_bride.thorn_vow" => Pressure(14),
             "crossroads_cup.spill_at_the_crossroads" => Pressure(11),
             "roadside_witchling.roadside_hex" => Pressure(13),
+            "mandated_mushroom_circle.call_quorum" => Pressure(11),
+            "bracken_moot.hear_petition" => Pressure(11),
+            "the_sedge_bench.contempt_of_review" => Pressure(19),
+            _ when AppealsIntent(enemyId, intentId) is { } appeals => appeals,
             // The two that GIVE. A gift carries its giver's name, which is the whole of the Witchling.
             "roadside_witchling.courtesy_gift" => Hospitality(0),
             "crossroads_cup.offer_the_cup" => Hospitality(0),
@@ -287,6 +339,18 @@ public static partial class ActThree
         ContraryTestimony(),
         ContestedThisTurn(),
         GreenDocketBody(),
+        ClaimConsumed(),
+        QuorumRequiresDissent(),
+        QuorumFailedThisTurn(),
+        CommonMandate(),
+        CommonMandateGranted(),
+        ClaimsAreHeardTogether(),
+        Hearing(),
+        AttachToTheAppeal(),
+        AppealRemembered(),
+        AppealTakenThisTurn(),
+        UnderReviewBench(),
+        UnderReview(),
         CourtesySafeConduct(),
         APromiseMustBePaired(),
         BetrothalClaim(),
@@ -319,6 +383,10 @@ public static partial class ActThree
         "charter_shell_snail", "streamside_oath_fish", "two_bank_toll_ford",
         // Stage 5 — the Wayside Covenants
         "roadside_witchling", "blackthorn_bride", "crossroads_cup",
+        // Stage 6 — the Quorum Ring
+        "mandated_mushroom_circle", "bracken_moot",
+        // Stage 7 — the Mire of Appeals
+        "ditch_lamprey_of_appeals", "the_sedge_bench",
     };
 
     // What the player carries into a fight against any Green Docket body: the customs that turn three
@@ -395,6 +463,7 @@ public static partial class ActThree
     public const int CurrentSurveyLaw = 3;
     public const int OccupiedPlotLaw = 4;
     public const int PairedPromiseLaw = 5;
+    public const int QuorumLaw = 6;
 
     // Which law is being broken by the violation currently being filed. Kept on the player because the player
     // is the one combatant every rule can address, and read again the instant the Trespass lands.
