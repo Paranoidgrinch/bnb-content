@@ -14,8 +14,18 @@ internal sealed record ActRules
     public required IReadOnlyDictionary<MapNodeKind, int> PerPathMaximums { get; init; }
     public required IReadOnlyList<MapLaneProfile> Lanes { get; init; }
     public required IReadOnlyDictionary<MapNodeKind, int> KindWeights { get; init; }
+
+    // How deep into the act each kind of room may FIRST stand, as a percentage of the act's own depth. The
+    // per-path table says how much of each thing a route holds; it says nothing about where, and without this
+    // the answer is the gate order — which put a shop in the opening row (where nobody has any gold) and an
+    // elite in the fourth (with the starting deck). Kinds not named here may stand anywhere.
+    public required IReadOnlyDictionary<MapNodeKind, int> EarliestDepthPercent { get; init; }
     public required string RestText { get; init; }
     public required string RestChoiceText { get; init; }
+
+    // The campfire's SECOND action (BnB_Run_Systems_Master §3: a waiting room offers Authorized Leave *or*
+    // Submit an Amendment). Upgrading a card is the same act in every act; only the room's voice changes.
+    public required string RestUpgradeChoiceText { get; init; }
     public required string TreasureText { get; init; }
     public required string TreasureOpenText { get; init; }
     public required string TreasureLeaveText { get; init; }
@@ -91,8 +101,18 @@ internal sealed record ActRules
             [MapNodeKind.Shop] = 1,
             [MapNodeKind.Elite] = 1,
         },
+        // The city eases you in: the first rooms are fights and doors, the shop opens once a fight or two has
+        // paid for it, the duo and the elite wait until the deck has had a chance to become one.
+        EarliestDepthPercent = new Dictionary<MapNodeKind, int>
+        {
+            [MapNodeKind.Shop] = 12,
+            [MapNodeKind.Rest] = 10,
+            [MapNodeKind.MultiCombat] = 20,
+            [MapNodeKind.Elite] = 35,
+        },
         RestText = "The waiting room. The chairs are terrible, but nobody can reach you here.",
         RestChoiceText = "Wait it out",
+        RestUpgradeChoiceText = "Submit an amendment",
         TreasureText = "A sealed evidence crate, stamped in three colors of wax. Nobody has claimed it in decades.",
         TreasureOpenText = "Break the seals",
         TreasureLeaveText = "Leave it for the archivists",
@@ -159,9 +179,19 @@ internal sealed record ActRules
             [MapNodeKind.Treasure] = 1,
             [MapNodeKind.Shop] = 1,
         },
+        // The archives are less patient than the city: the elites start earlier, because by Act II the deck is
+        // a deck. The shop still waits for the first fight to pay for it.
+        EarliestDepthPercent = new Dictionary<MapNodeKind, int>
+        {
+            [MapNodeKind.Shop] = 10,
+            [MapNodeKind.Rest] = 10,
+            [MapNodeKind.MultiCombat] = 12,
+            [MapNodeKind.Elite] = 22,
+        },
         RestText = "A reading alcove behind the returns desk. The lamp works, and the shelf above you has not "
             + "moved once in the hour you have been watching it.",
         RestChoiceText = "Sit until the shelf gives up",
+        RestUpgradeChoiceText = "Amend a filing while nobody is looking",
         TreasureText = "A returns trolley nobody has emptied. The bottom shelf is still checked out to someone, "
             + "and the card says the loan period has not started yet.",
         TreasureOpenText = "Check the bottom shelf",

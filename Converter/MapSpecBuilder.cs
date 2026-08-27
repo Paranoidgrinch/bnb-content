@@ -24,6 +24,15 @@ public static class MapSpecBuilder
     public static string RestEventId(BabActManifest act) => $"rest:{Slug(act)}-waiting-room";
     public static string TreasureId(BabActManifest act, int index) => $"treasure:{Slug(act)}-{index}";
 
+    // The rows the act keeps for itself, once its per-path promises have taken theirs. The floor is not a
+    // taste: every promise is a full row EVERY route crosses, so the free rows are the only ones where two
+    // routes can hold different kinds of room, and below five the fightiest and the quietest way through the
+    // city stop differing at all (EndToEndSmokeTests.The_routes_through_the_act_differ…).
+    private const int MinimumFreeRows = 5;
+
+    private static int FreeRows(BabActManifest act, ActRules rules) =>
+        Math.Max(MinimumFreeRows, act.Map.StepsBeforeBoss - rules.PerPathMinimums.Values.Sum());
+
     private static string Slug(BabActManifest act)
     {
         var parts = act.Id.Split('_', 3);
@@ -68,8 +77,16 @@ public static class MapSpecBuilder
         var byRole = PoolsByRole(data, act);
         var spec = new MapGenerationSpec
         {
-            // The act's own length: the original's steps_before_boss.
-            Rows = act.Map.StepsBeforeBoss,
+            // How many FREE rows the act gets on top of its promises.
+            //
+            // Two prescriptions disagree here and the newer one wins. The audit's per-path table
+            // (docs/bnb-act-map-specs.md) already fixes an act's length: every promise becomes a full row every
+            // route crosses, so Act I's nineteen promises ARE nineteen rooms. The manifest's `steps_before_boss`
+            // is the ported v2 number from a map model that had no such promises, and adding it on top made a
+            // nine-stage act twenty-eight rooms long. So it counts toward the promises rather than after them,
+            // and what is left over (never less than a few, or no route could differ from another) is the part
+            // of the act the player's chosen lane actually decides.
+            Rows = FreeRows(act, rules),
             MinWidth = 2,
             MaxWidth = 4,
             PerPathMinimums = rules.PerPathMinimums,
@@ -105,6 +122,9 @@ public static class MapSpecBuilder
             },
             // The design's "Earliest Stage N", act by act: a door the archives only open at the far end of the
             // aisle is filtered out of the shallow rows. An act whose events name no stage gates nothing.
+            // Where each KIND of room may first stand (ActRules.EarliestDepthPercent) — the act's difficulty
+            // curve, as opposed to its contents.
+            RoleMinimumDepthPercent = rules.EarliestDepthPercent,
             NodeRefMinimumDepthPercent = authoredEvents
                 .Where(e => e.EarliestDepthPercent > 0)
                 .ToDictionary(e => e.Id, e => e.EarliestDepthPercent),

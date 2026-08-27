@@ -153,7 +153,11 @@ public class ActSeamTests
         Assert.Equal(1, archives.PerPathMinimums[MapNodeKind.Treasure]);
         Assert.Equal(2, archives.PerPathMinimums[MapNodeKind.Shop]);
 
-        Assert.True(archives.Rows > city.Rows, "the archives are the longer act");
+        // The act's LENGTH is what it promises plus the rows it leaves free — every promise is a full row that
+        // every route crosses (MapSpecBuilder.FreeRows), so `Rows` alone is only the free part.
+        int Length(MapGenerationSpec spec) => spec.PerPathMinimums.Values.Sum() + spec.Rows;
+        Assert.True(Length(archives) > Length(city),
+            $"the archives should be the longer act, but they run {Length(archives)} against {Length(city)}");
         Assert.NotEqual(
             city.LaneProfiles.Select(l => l.Name).ToList(),
             archives.LaneProfiles.Select(l => l.Name).ToList());

@@ -1216,3 +1216,46 @@ What could not be translated straight:
 deck's draw pile, and an empty pile is reshuffled from the discard. Anything a door FILED somewhere (a
 misfiled card taken back, a Citation put in the discard) is dealt straight back into the hand. A test that
 wants to see where a card was put needs a deck that does not fit in one hand.
+
+---
+
+## The alpha pass — Acts I & II, played end to end (2026-08-27)
+
+Everything below came out of actually walking whole runs (`Converter --playtest`, `Tests/WholeRunTests`)
+rather than out of reading the design.
+
+**An act is as long as it PROMISES to be.** Two prescriptions disagreed. The audit's per-path table
+(`docs/bnb-act-map-specs.md`) already fixes an act's length: every promise becomes a full row every route
+crosses, so Act I's nineteen promises *are* nineteen rooms. The act manifest's `steps_before_boss` (9) is the
+ported v2 number from a map model that had no such promises — and it was being added **on top**, which made a
+nine-stage act twenty-eight rooms long. It now counts toward the promises rather than after them
+(`MapSpecBuilder.FreeRows`), leaving a floor of five free rows. Five is not a taste: the free rows are the
+only ones where two routes can hold different KINDS of room — every promise is a full row every route crosses
+— and below five the fightiest and the quietest way through the city stop differing at all
+(`EndToEndSmokeTests.The_routes_through_the_act_differ…`). A route is now 24 rooms rather than 28, and what it
+costs is admitted here: with nineteen of them promised, this act is a **staged pilgrimage** (the manifest's own
+word for its layout) where the choice is mostly WHICH fight and WHICH door, not what kind of room comes next.
+
+**Where a kind of room may first stand is now authored** (`ActRules.EarliestDepthPercent` →
+`MapGenerationSpec.RoleMinimumDepthPercent`, new engine seam). The per-path table says how much of a thing a
+route holds and nothing about where, and the answer used to be the gate order: a **shop in the opening row**,
+where nobody has any gold, and an **elite in the fourth**, with the starting deck. The city now opens its shop
+at 12 % of the act, its ambush at 20 % and its elite at 35 %; the archives at 10 / 12 / 22 %.
+
+**A promise is spread across the act, not taken in turns.** `FlattenGates` round-robined the kinds, which
+looked even and was not: with eight fights promised and one of everything else, the rare kinds all fell in the
+opening passes and Act I ended in a wall of seven identical fights with nothing to recover at. Each copy is
+now placed at its own share of the sequence.
+
+**The campfire has its second action.** `BnB_Run_Systems_Master` §3 gives a waiting room *Authorized Leave*
+**or** *Submit an Amendment*; only the heal was ever built. The amendment is offered unconditionally — a "how
+many cards could be improved" guard is not expressible as data (a count over a selector is an escape node and
+would not serialize) and is not needed, since a choice with nothing to improve picks nothing.
+
+★ **The trap this pass paid for: C# static field ORDER can leave an id nameless.** A `static readonly CounterId`
+declared BELOW the card that uses it is still `default` when that card's initializer runs — and `default` of
+an id struct is a **null string**. Twenty-two cards shipped with nameless counters, and at the end of every
+fight one of them was played in, the run died with `ArgumentNullException` out of a dictionary. Nothing caught
+it because a null id serializes perfectly happily. Every `CounterId` in the converter is now a **property**
+(`static CounterId X => new("…")`), which cannot be ordered wrong, and `Tests/DocumentIdTests` fails the build
+if any id reaches the document without a name.
