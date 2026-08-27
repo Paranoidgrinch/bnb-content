@@ -218,8 +218,27 @@ public static partial class ActThree
             // filing a violation.
             "charter_shell_snail.charter_toll" => Toll(11, 1),
             "streamside_oath_fish.oath_bite" => Toll(12, 1),
+            "blackthorn_bride.thorn_vow" => Pressure(14),
+            "crossroads_cup.spill_at_the_crossroads" => Pressure(11),
+            "roadside_witchling.roadside_hex" => Pressure(13),
+            // The two that GIVE. A gift carries its giver's name, which is the whole of the Witchling.
+            "roadside_witchling.courtesy_gift" => Hospitality(0),
+            "crossroads_cup.offer_the_cup" => Hospitality(0),
             _ => null,
         };
+
+    // A licence granted, carrying the name of whoever granted it — the Witchling's courtesy is only her
+    // courtesy if her own stacks can be told from anybody else's.
+    private static EffectProgram<EnemyActionContext> Hospitality(int damage) =>
+        new(new CausalSequenceEffectNode<EnemyActionContext>(
+        [
+            new DealDamageNode<EnemyActionContext>(
+                Applicant, new ConstantExpression<EnemyActionContext>(damage)),
+            new ApplyStatusNode<EnemyActionContext>(
+                Applicant, new StatusDefinitionId(SafeConductId),
+                new ConstantExpression<EnemyActionContext>(1),
+                sourceSelector: CombatantTargetSelectors.Source),
+        ]));
 
     // A blow, and a demand for restitution owed to whoever struck.
     private static EffectProgram<EnemyActionContext> Toll(int damage, int points) =>
@@ -267,6 +286,13 @@ public static partial class ActThree
         TestifiedThisTurn(),
         ContraryTestimony(),
         ContestedThisTurn(),
+        GreenDocketBody(),
+        CourtesySafeConduct(),
+        APromiseMustBePaired(),
+        BetrothalClaim(),
+        BetrothalGiftGiven(),
+        DrinkBeforeChoosing(),
+        CupPouredThisTurn(),
         Wergild(),
         WergildDemanded(),
         WergildDue(),
@@ -291,6 +317,8 @@ public static partial class ActThree
         "foxglove_witness", "contrary_magpie",
         // Stage 4 — the Tollwater Crossings
         "charter_shell_snail", "streamside_oath_fish", "two_bank_toll_ford",
+        // Stage 5 — the Wayside Covenants
+        "roadside_witchling", "blackthorn_bride", "crossroads_cup",
     };
 
     // What the player carries into a fight against any Green Docket body: the customs that turn three
@@ -318,6 +346,19 @@ public static partial class ActThree
     // against the field is right in both, and the act has too many rules that fire from both sides to keep
     // two mirrored spellings of each.
 
+    // Every Green Docket body wears this, so a rule can say "the parties in this fight" without knowing
+    // which side of it the rule happens to be looking from.
+    public const string GreenDocketBodyId = "green_docket_body";
+
+    public static StatusData GreenDocketBody() =>
+        Marker(GreenDocketBodyId, "Party to the Docket",
+            "A party under the customary law of the Green Docket.");
+
+    // All of them, however the fight is being looked at.
+    private static ICombatantTargetSelector Parties { get; } =
+        CombatantTargetSelectors.WithStatus(
+            CombatantTargetSelectors.AllAliveCombatants, new StatusDefinitionId(GreenDocketBodyId));
+
     // The player: the one combatant every fight marks as the applicant.
     private static ICombatantTargetSelector Applicant { get; } =
         CombatantTargetSelectors.FirstTarget(
@@ -331,6 +372,12 @@ public static partial class ActThree
         CombatantTargetSelectors.FirstTarget(
             CombatantTargetSelectors.WithStatus(
                 CombatantTargetSelectors.AllAliveCombatants, new StatusDefinitionId(lawId)));
+
+    // What the last card played this turn cost, plus one — so that zero can mean "nothing yet" and a free
+    // card can still be compared. Each law that measures consecutive cards keeps its OWN memory: two laws
+    // sharing one would race, since the order two CardPlayed rules fire in is not decided, and whichever
+    // wrote first would leave the other comparing a card against itself.
+    public static CounterId CostMemory(string law) => new($"last_base_cost.{law}");
 
     // ── filing a Trespass ─────────────────────────────────────────────────────────────────────────────────
     //
@@ -347,6 +394,7 @@ public static partial class ActThree
     public const int CustomaryUseLaw = 2;
     public const int CurrentSurveyLaw = 3;
     public const int OccupiedPlotLaw = 4;
+    public const int PairedPromiseLaw = 5;
 
     // Which law is being broken by the violation currently being filed. Kept on the player because the player
     // is the one combatant every rule can address, and read again the instant the Trespass lands.

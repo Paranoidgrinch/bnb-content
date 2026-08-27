@@ -25,7 +25,7 @@ public static partial class ActThree
     // The Base Cost of the last card played this turn, plus one — so that zero can mean "no card yet" and a
     // free card can still be compared. Kept on the player, the one combatant every part of the program can
     // address with a single selector.
-    public static CounterId LastBaseCostCounter => new("last_base_cost");
+    public static CounterId LastBaseCostCounter => CostMemory("survey");
 
     // "Playing two consecutive cards with the same Base Cost applies 1 Trespass. When the Hedge gains a
     // Claim, reverse the law; each new Claim flips it again. One Trespass from this law per player turn."

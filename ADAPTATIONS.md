@@ -1391,3 +1391,25 @@ creditor are both owed, it is stricter than the design.
 takes its Claim and then spends exactly its own stacks — which is what the engine seam for naming whose
 status instances a rule means was bought for. A blanket removal would have wiped a demand that had not yet
 come due.
+
+## Act III — hospitality, and whose licence was spent (2026-08-28)
+
+**Safe-Conduct provenance costs nothing.** The design allows a Safe-Conduct stack to remember
+`granted_by = Roadside Witchling`; it already does, because Safe-Conduct is per-grant instances and an
+instance carries its source. What the engine cannot answer is which stack an interceptor happened to spend —
+so the Witchling does not ask. She counts her own stacks when the player's turn begins and counts them again
+when it ends, and the difference is the whole rule.
+
+**Her grievance is refused by her own gift.** She files a Trespass for a courtesy carried unspent, and the
+player is holding licences — including hers — which refuse Trespass. That reads exactly right: the gift is
+real, it is not free, and spending it on her own complaint is one of the ways out.
+
+**Every Green Docket body wears a party marker** (`green_docket_body`), so a rule can say "the parties in
+this fight" without knowing which side it is looking from. The Crossroads Cup needs it: it answers a
+REFUSAL, where the fight's source is the player, and "the enemy with the fewest Claims" would otherwise have
+to be spelled twice.
+
+**Each law that measures consecutive cards keeps its own memory of the last Base Cost.** Two laws sharing
+one counter would race — the order two CardPlayed rules fire in is not decided — and whichever wrote first
+would leave the other comparing a card against itself. The Reckoning Hedge and the Blackthorn Bride both
+measure, and can stand in the same fight.

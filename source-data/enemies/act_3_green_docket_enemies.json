@@ -50,6 +50,9 @@
     ],
     "starting_statuses": [
       {
+        "status": "green_docket_body"
+      },
+      {
         "status": "no_hasty_passage"
       }
     ],
@@ -111,6 +114,9 @@
     ],
     "starting_statuses": [
       {
+        "status": "green_docket_body"
+      },
+      {
         "status": "first_use_became_custom"
       }
     ],
@@ -166,6 +172,9 @@
       }
     ],
     "starting_statuses": [
+      {
+        "status": "green_docket_body"
+      },
       {
         "status": "every_detour_leaves_a_stone"
       }
@@ -229,6 +238,9 @@
     ],
     "starting_statuses": [
       {
+        "status": "green_docket_body"
+      },
+      {
         "status": "current_survey"
       }
     ],
@@ -290,6 +302,9 @@
       }
     ],
     "starting_statuses": [
+      {
+        "status": "green_docket_body"
+      },
       {
         "status": "wandering_title"
       }
@@ -353,6 +368,9 @@
       }
     ],
     "starting_statuses": [
+      {
+        "status": "green_docket_body"
+      },
       {
         "status": "respect_the_occupied_plot"
       },
@@ -419,6 +437,9 @@
     ],
     "starting_statuses": [
       {
+        "status": "green_docket_body"
+      },
+      {
         "status": "i_saw_that_too"
       }
     ],
@@ -481,6 +502,9 @@
       }
     ],
     "starting_statuses": [
+      {
+        "status": "green_docket_body"
+      },
       {
         "status": "contrary_testimony"
       }
@@ -545,6 +569,9 @@
     ],
     "starting_statuses": [
       {
+        "status": "green_docket_body"
+      },
+      {
         "status": "payment_according_to_charter"
       }
     ],
@@ -606,6 +633,9 @@
       }
     ],
     "starting_statuses": [
+      {
+        "status": "green_docket_body"
+      },
       {
         "status": "oath_accepted"
       }
@@ -669,6 +699,9 @@
     ],
     "starting_statuses": [
       {
+        "status": "green_docket_body"
+      },
+      {
         "status": "toll_on_both_banks"
       }
     ],
@@ -679,6 +712,208 @@
       "wergild",
       "claim",
       "stage_tollwater"
+    ]
+  },
+  {
+    "id": "roadside_witchling",
+    "name": "Roadside Witchling",
+    "max_hp": 92,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "courtesy_gift",
+        "name": "Courtesy Gift",
+        "intent_type": "buff",
+        "actions": [
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "safe_conduct",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "roadside_hex",
+        "name": "Roadside Hex",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 13
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "trespass",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "warm_kettle",
+        "name": "Warm Kettle",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 18
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "green_docket_body"
+      },
+      {
+        "status": "courtesy_safe_conduct"
+      }
+    ],
+    "tags": [
+      "green_docket",
+      "covenants",
+      "normal",
+      "hospitality",
+      "stage_covenants"
+    ]
+  },
+  {
+    "id": "blackthorn_bride",
+    "name": "The Blackthorn Bride",
+    "max_hp": 101,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "thorn_vow",
+        "name": "Thorn Vow",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 14
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "trespass",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "blackthorn_embrace",
+        "name": "Blackthorn Embrace",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 20
+          }
+        ]
+      },
+      {
+        "id": "veil_of_thorns",
+        "name": "Veil of Thorns",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 20
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "green_docket_body"
+      },
+      {
+        "status": "a_promise_must_be_paired"
+      },
+      {
+        "status": "betrothal_claim"
+      }
+    ],
+    "tags": [
+      "green_docket",
+      "covenants",
+      "normal",
+      "claim",
+      "wergild",
+      "stage_covenants"
+    ]
+  },
+  {
+    "id": "crossroads_cup",
+    "name": "Crossroads Cup",
+    "max_hp": 82,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "offer_the_cup",
+        "name": "Offer the Cup",
+        "intent_type": "buff",
+        "actions": [
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "safe_conduct",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "spill_at_the_crossroads",
+        "name": "Spill at the Crossroads",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 11
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "trespass",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "silver_rim",
+        "name": "Silver Rim",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 18
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "green_docket_body"
+      },
+      {
+        "status": "drink_before_choosing"
+      }
+    ],
+    "tags": [
+      "green_docket",
+      "covenants",
+      "normal",
+      "support",
+      "hospitality",
+      "stage_covenants"
     ]
   }
 ]
