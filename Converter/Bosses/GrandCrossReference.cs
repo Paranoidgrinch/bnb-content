@@ -68,23 +68,23 @@ public static class GrandCrossReference
     public const string CitationMark = "referenced_by_the_concordance";
 
     // On the engine: the link rotation, the roll of who is still standing, and who fell last.
-    private static readonly CounterId RotationCounter = new("gcr_rotation");
-    private static readonly CounterId PremiseStandingCounter = new("gcr_premise_standing");
-    private static readonly CounterId AuthorityStandingCounter = new("gcr_authority_standing");
-    private static readonly CounterId ConclusionStandingCounter = new("gcr_conclusion_standing");
-    private static readonly CounterId LastBrokenCounter = new("gcr_last_broken");   // 1 Premise 2 Authority 3 Conclusion
-    private static readonly CounterId TransitionSpentCounter = new("gcr_transition_spent");
-    private static readonly CounterId SignatureSpentCounter = new("gcr_signature_spent");
-    private static readonly CounterId FinalResultDamageCounter = new("gcr_final_result_damage");
+    private static CounterId RotationCounter => new("gcr_rotation");
+    private static CounterId PremiseStandingCounter => new("gcr_premise_standing");
+    private static CounterId AuthorityStandingCounter => new("gcr_authority_standing");
+    private static CounterId ConclusionStandingCounter => new("gcr_conclusion_standing");
+    private static CounterId LastBrokenCounter => new("gcr_last_broken");   // 1 Premise 2 Authority 3 Conclusion
+    private static CounterId TransitionSpentCounter => new("gcr_transition_spent");
+    private static CounterId SignatureSpentCounter => new("gcr_signature_spent");
+    private static CounterId FinalResultDamageCounter => new("gcr_final_result_damage");
 
     // On the Conclusion: what the linked pair has paid it.
-    private static readonly CounterId StoredCounter = new("gcr_stored_conclusion");
+    private static CounterId StoredCounter => new("gcr_stored_conclusion");
 
     // On the player: this fight's own bookkeeping.
-    private static readonly CounterId CitationDueCounter = new("gcr_citation_due");
-    private static readonly CounterId FoundationUsedCounter = new("gcr_foundation_used");
-    private static readonly CounterId BindingUsedCounter = new("gcr_binding_used");
-    private static readonly CounterId RedactedPlayedCounter = new("gcr_redacted_played");
+    private static CounterId CitationDueCounter => new("gcr_citation_due");
+    private static CounterId FoundationUsedCounter => new("gcr_foundation_used");
+    private static CounterId BindingUsedCounter => new("gcr_binding_used");
+    private static CounterId RedactedPlayedCounter => new("gcr_redacted_played");
 
     public const int StoredMaximum = 22;
     public const int StoredShare = 5;              // a fifth of what the linked pair takes

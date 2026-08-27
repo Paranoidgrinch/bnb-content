@@ -55,21 +55,21 @@ public static class WardenOfSealedVolumes
     // The announcement and the sealing are two different acts, as the design has them: "Inspect the Claim"
     // prepares the TYPE and seals nothing, and "Seal the Principal Instrument" is what actually reaches. Both
     // counters live on the PLAYER, because that is whose hand is reached into — one spelling serves both ends.
-    private static readonly CounterId SealTypeCounter = new("warden_seal_type");
-    private static readonly CounterId SealDueCounter = new("warden_seal_due");
-    private static readonly CounterId RestraintDueCounter = new("warden_restraint_due");
+    private static CounterId SealTypeCounter => new("warden_seal_type");
+    private static CounterId SealDueCounter => new("warden_seal_due");
+    private static CounterId RestraintDueCounter => new("warden_restraint_due");
 
     // The turn's play profile, which is what two of the three Release Conditions are about.
-    private static readonly CounterId PlayedDeedCounter = new("warden_played_deed");
-    private static readonly CounterId PlayedWorkingCounter = new("warden_played_working");
-    private static readonly CounterId PlayedOtherCounter = new("warden_played_other");
+    private static CounterId PlayedDeedCounter => new("warden_played_deed");
+    private static CounterId PlayedWorkingCounter => new("warden_played_working");
+    private static CounterId PlayedOtherCounter => new("warden_played_other");
 
     // Which key the Warden reaches for next. Kept on the Warden and advanced with every announcement, so a
     // fight sees all three locks rather than the same one over and over.
-    private static readonly CounterId SealRotationCounter = new("warden_seal_rotation");
+    private static CounterId SealRotationCounter => new("warden_seal_rotation");
 
-    private static readonly CounterId LockdownSpentCounter = new("warden_lockdown_spent");
-    private static readonly CounterId FinalSignatureSpentCounter = new("warden_final_signature_spent");
+    private static CounterId LockdownSpentCounter => new("warden_lockdown_spent");
+    private static CounterId FinalSignatureSpentCounter => new("warden_final_signature_spent");
 
     public const int CustodyMaximum = 2;
     public const int LockdownHealth = 135;

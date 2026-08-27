@@ -241,7 +241,7 @@ public static class ActIVCards
 
     // "Remove up to N of your Block. Deal M damage plus 2 per Block removed." What is there is read before it
     // is spent.
-    private static readonly CounterId Levied = new("stone_levy_taken");
+    private static CounterId Levied => new("stone_levy_taken");
 
     private static CombatNodeModel Levy(int cap, int damage) =>
         Seq(
@@ -255,7 +255,7 @@ public static class ActIVCards
             Damage(Plus(CombatAmountSpec.FromConst(damage), Times(Taken(Levied), 2))));
 
     // Five clauses, each worth another swing. Counted first, because striking changes several of them.
-    private static readonly CounterId Clauses = new("fivefold_clauses");
+    private static CounterId Clauses => new("fivefold_clauses");
 
     private static CombatNodeModel Fivefold(int damage)
     {
@@ -311,7 +311,7 @@ public static class ActIVCards
                         Remove(Keywords.Citation, 1, "iterationTarget")),
                 ]));
 
-    private static readonly CounterId Repossessed = new("crown_repossession_taken");
+    private static CounterId Repossessed => new("crown_repossession_taken");
 
     private static CombatNodeModel Repossess(int damage, int cap) =>
         Seq(
@@ -327,7 +327,7 @@ public static class ActIVCards
                 IgnoresBlock: true, DamageKind: DamageKind.DamageOverTime),
             Apply(Keywords.Lien, 6));
 
-    private static readonly CounterId WaxSpent = new("tallow_judgment_wax");
+    private static CounterId WaxSpent => new("tallow_judgment_wax");
 
     private static CombatNodeModel Judgment(int cap, int damage, int per) =>
         Seq(
@@ -362,7 +362,7 @@ public static class ActIVCards
                     .Select(status => If(HasStacks(status), Apply(status, stacks)))
                     .ToArray())));
 
-    private static readonly CounterId Compounded = new("compound_indictment_kinds");
+    private static CounterId Compounded => new("compound_indictment_kinds");
 
     private static CombatNodeModel Dispensation(int picks) =>
         CombatNodeModel.ChooseOptions(picks,

@@ -156,7 +156,7 @@ public static class GeneralActIII
 
     // "Remove up to 5 Citation. For each removed, ALL enemies lose N HP. Then deal M damage to it." Counted
     // before it is erased.
-    private static readonly CounterId Sentenced = new("exemplary_sentence_count");
+    private static CounterId Sentenced => new("exemplary_sentence_count");
 
     private static CombatNodeModel Sentence(int damage, int perCitation) =>
         Seq(

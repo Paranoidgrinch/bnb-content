@@ -31,8 +31,8 @@ public static class RollingStacksColossus
     private const int MaxPassageBlock = 27;
 
     // "Maximum once per player turn" for the Compression refund, and the Ladder's pending tax.
-    private static readonly CounterId AisleWalkedCounter = new("open_aisle_walked");
-    private static readonly CounterId LadderDisplacedCounter = new("ladder_displaced");
+    private static CounterId AisleWalkedCounter => new("open_aisle_walked");
+    private static CounterId LadderDisplacedCounter => new("ladder_displaced");
 
     private static readonly ICombatantTargetSelector Opponent = CombatantTargetSelectors.LowestHealthEnemyOfSource;
     private static readonly ICombatantTargetSelector Self = CombatantTargetSelectors.Source;

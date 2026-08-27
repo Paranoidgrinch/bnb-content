@@ -29,16 +29,16 @@ public static class PresentlessClock
     private const int KindDamage = 1;
     private const int KindBlock = 2;
 
-    private static readonly CounterId PastKind = new("clock_past_kind");
-    private static readonly CounterId PastAmount = new("clock_past_amount");
-    private static readonly CounterId FutureKind = new("clock_future_kind");
-    private static readonly CounterId FutureAmount = new("clock_future_amount");
+    private static CounterId PastKind => new("clock_past_kind");
+    private static CounterId PastAmount => new("clock_past_amount");
+    private static CounterId FutureKind => new("clock_future_kind");
+    private static CounterId FutureAmount => new("clock_future_amount");
     // Signature state: the Past echo can be made to repeat at 75 %, and a Future record can be held back one
     // extra turn — once.
-    private static readonly CounterId PastScale = new("clock_past_scale");
-    private static readonly CounterId FutureDelay = new("clock_future_delay");
+    private static CounterId PastScale => new("clock_past_scale");
+    private static CounterId FutureDelay => new("clock_future_delay");
     // "Maximum once per enemy turn" for each of the Clock's two reactions.
-    private static readonly CounterId ArchivedCounter = new("clock_archived");
+    private static CounterId ArchivedCounter => new("clock_archived");
 
     private const int DefaultEchoPercent = 50;
     private const int RepeatedEchoPercent = 75;

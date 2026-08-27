@@ -18,7 +18,7 @@ public static class ActIVRites
 
     // Temple Tally remembers how many fives each enemy has already crossed, so a multiple is only ever
     // crossed once.
-    public static readonly CounterId FivesCrossed = new("temple_tally_fives");
+    public static CounterId FivesCrossed => new("temple_tally_fives");
 
     public static IReadOnlyList<StatusData> All() =>
     [

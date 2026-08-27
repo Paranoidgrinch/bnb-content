@@ -167,7 +167,7 @@ public static class BureaucratActIII
 
     // "Queue another card from your hand, paying N less Energy." Queueing itself is free (the queueCard node
     // pays nothing), so the card charges the price: what the chosen card costs, less the discount, floored.
-    private static readonly CounterId DocketPrice = new("priority_docket_price");
+    private static CounterId DocketPrice => new("priority_docket_price");
 
     private static CombatNodeModel QueueForLess(int discount)
     {
@@ -197,7 +197,7 @@ public static class BureaucratActIII
                 HasCardTarget: true, ToSelectorKey: Target));
 
     // "Deal N damage, plus M per Doubt (max 6). Then remove all Doubt." Counted before it is cleared.
-    private static readonly CounterId DoubtCashed = new("due_recompense_doubt");
+    private static CounterId DoubtCashed => new("due_recompense_doubt");
 
     private static CombatNodeModel Recompense(int damage, int per) =>
         Seq(

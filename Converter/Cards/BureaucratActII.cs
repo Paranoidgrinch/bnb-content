@@ -203,7 +203,7 @@ public static class BureaucratActII
     // the original target, which nets to exactly "M off the target, M onto each other enemy" — and it is
     // skipped outright when the target is alone, which is what the card says. Counting the enemies goes
     // through a scratch counter, since a condition cannot compare a count.
-    private static readonly CounterId EnemiesPresent = new("cross_filing_company");
+    private static CounterId EnemiesPresent => new("cross_filing_company");
 
     private static CombatNodeModel CrossFile(int paperwork, int moved) =>
         Seq(
@@ -219,7 +219,7 @@ public static class BureaucratActII
 
     // "Remove up to N Paperwork from an enemy. Gain M Block for each removed." How much was there has to be
     // read before it is taken away, so it goes through a scratch counter.
-    private static readonly CounterId Redacted = new("redaction_veil_taken");
+    private static CounterId Redacted => new("redaction_veil_taken");
 
     private static CombatNodeModel RedactPaperwork(int cap, int blockEach) =>
         Seq(
@@ -232,7 +232,7 @@ public static class BureaucratActII
                 StatusId: Keywords.Paperwork));
 
     // "Archive a non-Junk card from your hand. Apply Paperwork equal to N plus its base Energy cost."
-    private static readonly CounterId FeeCost = new("binding_fee_cost");
+    private static CounterId FeeCost => new("binding_fee_cost");
 
     private static CombatNodeModel BindingFeePaperwork(int baseAmount)
     {
@@ -249,7 +249,7 @@ public static class BureaucratActII
 
     // "Archive all Junk cards in your hand. Deal N damage to ALL enemies, plus M for each Junk Archived."
     // The tally is taken before the burning, because afterwards there is nothing left to count.
-    private static readonly CounterId PyreFuel = new("archive_pyre_fuel");
+    private static CounterId PyreFuel => new("archive_pyre_fuel");
 
     private static CombatNodeModel PyreStrike(int damage, int perJunk) =>
         Seq(

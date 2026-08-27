@@ -32,10 +32,10 @@ public static class CatalogueOfUnwiseNames
     public const string CitationOfRecordMark = "citation_of_record";
     public const string CatalogueReferenceMark = "referenced_by_catalogue";
 
-    private static readonly CounterId EntriesCounter = new("catalogue_entries");
-    private static readonly CounterId NamingPreparedCounter = new("catalogue_naming_prepared");
-    private static readonly CounterId RotationCounter = new("catalogue_rotation");
-    private static readonly CounterId CashedCounter = new("catalogue_cashed");
+    private static CounterId EntriesCounter => new("catalogue_entries");
+    private static CounterId NamingPreparedCounter => new("catalogue_naming_prepared");
+    private static CounterId RotationCounter => new("catalogue_rotation");
+    private static CounterId CashedCounter => new("catalogue_cashed");
 
     private const int MaxEntries = 3;
     private const int DeclineBlock = 8;

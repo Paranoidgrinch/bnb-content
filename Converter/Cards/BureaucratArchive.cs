@@ -20,7 +20,7 @@ public static class BureaucratArchive
     public const string GhostRegister = "ghost_register";
 
     // Whether anything was archived during the turn that just ended — the "recorded" half of the card.
-    private static readonly CounterId Recorded = new("ghost_register_recorded");
+    private static CounterId Recorded => new("ghost_register_recorded");
 
     public static IReadOnlyList<StatusData> All() =>
     [

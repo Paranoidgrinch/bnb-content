@@ -40,12 +40,12 @@ public static class LivingCharter
     public const string StrikeDownCardId = "strike_down_the_article";
     public const string ExceptionCardId = "claim_an_exception";
 
-    public static readonly CounterId RetainedBlockCounter = new("retained_block");
-    public static readonly CounterId RedressDamageCounter = new("redress_damage");
-    public static readonly CounterId ActionsSinceReviewCounter = new("actions_since_review");
-    public static readonly CounterId ReviewsCounter = new("reviews_completed");
-    public static readonly CounterId ArticleIndexCounter = new("article_index");
-    public static readonly CounterId CharterBeatCounter = new("charter_beat");
+    public static CounterId RetainedBlockCounter => new("retained_block");
+    public static CounterId RedressDamageCounter => new("redress_damage");
+    public static CounterId ActionsSinceReviewCounter => new("actions_since_review");
+    public static CounterId ReviewsCounter => new("reviews_completed");
+    public static CounterId ArticleIndexCounter => new("article_index");
+    public static CounterId CharterBeatCounter => new("charter_beat");
 
     public const int RedressThreshold = 14;
     public const int PhaseOneActionsPerReview = 2;

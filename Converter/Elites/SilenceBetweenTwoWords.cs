@@ -29,8 +29,8 @@ public static class SilenceBetweenTwoWords
     public const string EligibleMark = "word_eligible";
     public const string WasWordMark = "was_word";
 
-    private static readonly CounterId SpokenCounter = new("words_spoken");
-    private static readonly CounterId PairSizeCounter = new("unspoken_pair_size");
+    private static CounterId SpokenCounter => new("words_spoken");
+    private static CounterId PairSizeCounter => new("unspoken_pair_size");
 
     private const int MaxEcho = 4;
     private const int PerfectSilenceHpLoss = 10;

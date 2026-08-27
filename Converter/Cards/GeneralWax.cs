@@ -18,8 +18,8 @@ public static class GeneralWax
     public const string DebtOuroboros = "debt_ouroboros";     // read by the Lien resolution
     public const string OathOfRefusal = "oath_of_refusal";
 
-    public static readonly CounterId TestamentPaid = new("consecrated_testament_paid");
-    public static readonly CounterId RefusalsRecorded = new("oath_of_refusal_recorded");
+    public static CounterId TestamentPaid => new("consecrated_testament_paid");
+    public static CounterId RefusalsRecorded => new("oath_of_refusal_recorded");
 
     public static IReadOnlyList<StatusData> All() =>
     [

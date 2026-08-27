@@ -58,22 +58,22 @@ public static class CuratorOfMisplacedHours
     public static readonly TagId BorrowTag = new("borrowed_minute");
 
     // The Turn Record, kept on the player: it is the player's own turn that becomes the evidence.
-    private static readonly CounterId ActivityCounter = new("curator_activity");
-    private static readonly CounterId OpeningCounter = new("curator_opening");         // 0 none 1 Deed 2 Working 3 other
-    private static readonly CounterId ComplianceCounter = new("curator_compliance");
-    private static readonly CounterId ForceCounter = new("curator_force");
+    private static CounterId ActivityCounter => new("curator_activity");
+    private static CounterId OpeningCounter => new("curator_opening");         // 0 none 1 Deed 2 Working 3 other
+    private static CounterId ComplianceCounter => new("curator_compliance");
+    private static CounterId ForceCounter => new("curator_force");
 
-    private static readonly CounterId ReferencesMetCounter = new("curator_references_met");
-    private static readonly CounterId LiveOpeningCounter = new("curator_live_opening");
-    private static readonly CounterId ReferenceDueCounter = new("curator_reference_due");
-    private static readonly CounterId BorrowedCounter = new("curator_borrowed");
+    private static CounterId ReferencesMetCounter => new("curator_references_met");
+    private static CounterId LiveOpeningCounter => new("curator_live_opening");
+    private static CounterId ReferenceDueCounter => new("curator_reference_due");
+    private static CounterId BorrowedCounter => new("curator_borrowed");
 
     // On the Curator: where the Dial stands, and what has already been spent.
-    private static readonly CounterId DialCounter = new("curator_dial");               // 0 PRESENT 1 FUTURE 2 PAST
-    private static readonly CounterId ResolvedThisWindowCounter = new("curator_resolved_window");
-    private static readonly CounterId LastPastDamageCounter = new("curator_last_past_damage");
-    private static readonly CounterId TransitionSpentCounter = new("curator_transition_spent");
-    private static readonly CounterId SignatureSpentCounter = new("curator_signature_spent");
+    private static CounterId DialCounter => new("curator_dial");               // 0 PRESENT 1 FUTURE 2 PAST
+    private static CounterId ResolvedThisWindowCounter => new("curator_resolved_window");
+    private static CounterId LastPastDamageCounter => new("curator_last_past_damage");
+    private static CounterId TransitionSpentCounter => new("curator_transition_spent");
+    private static CounterId SignatureSpentCounter => new("curator_signature_spent");
 
     public const int ActivityCeiling = 5;
     public const int ForceThreshold = 20;

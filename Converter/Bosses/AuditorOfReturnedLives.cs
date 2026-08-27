@@ -45,18 +45,18 @@ public static class AuditorOfReturnedLives
     public const string AuditorReferenceMark = "referenced_by_the_auditor";
 
     // Which Account is on the table, and how far the audit has got.
-    private static readonly CounterId AccountCounter = new("auditor_account");           // 0 none 1 Identity 2 Obligation 3 Life
-    private static readonly CounterId AccountsQueuedCounter = new("auditor_accounts_queued");
-    private static readonly CounterId AnsweredCounter = new("auditor_answered");         // 0 unanswered 1 submitted 2 withheld
-    private static readonly CounterId LifeUnreconciledCounter = new("auditor_life_open");
-    private static readonly CounterId ClauseSpentCounter = new("auditor_clause_spent");
+    private static CounterId AccountCounter => new("auditor_account");           // 0 none 1 Identity 2 Obligation 3 Life
+    private static CounterId AccountsQueuedCounter => new("auditor_accounts_queued");
+    private static CounterId AnsweredCounter => new("auditor_answered");         // 0 unanswered 1 submitted 2 withheld
+    private static CounterId LifeUnreconciledCounter => new("auditor_life_open");
+    private static CounterId ClauseSpentCounter => new("auditor_clause_spent");
 
     // On the player: the citation ledger.
-    private static readonly CounterId ReferenceDueCounter = new("auditor_reference_due");
-    private static readonly CounterId AnsweredLastTurnCounter = new("auditor_answered_last_turn");
-    private static readonly CounterId AnsweredThisTurnCounter = new("auditor_answered_this_turn");
-    private static readonly CounterId DelayedDocumentationCounter = new("auditor_delayed_documentation");
-    private static readonly CounterId IdentityPenaltyCounter = new("auditor_identity_penalty");
+    private static CounterId ReferenceDueCounter => new("auditor_reference_due");
+    private static CounterId AnsweredLastTurnCounter => new("auditor_answered_last_turn");
+    private static CounterId AnsweredThisTurnCounter => new("auditor_answered_this_turn");
+    private static CounterId DelayedDocumentationCounter => new("auditor_delayed_documentation");
+    private static CounterId IdentityPenaltyCounter => new("auditor_identity_penalty");
 
     public const int DocumentationMaximum = 6;
     public const int DocumentationPerAccount = 2;

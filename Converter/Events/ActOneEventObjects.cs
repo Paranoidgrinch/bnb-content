@@ -351,7 +351,7 @@ public static class ActOneEventObjects
 
     // "Next combat visibly pays 125 Gold if won by end of round 3, otherwise 25." The fight cannot pay anything
     // — the purse is the run's — so it writes down how long it took and the run reads that off the result.
-    public static readonly CounterId RoundsTaken = new("rounds_taken");
+    public static CounterId RoundsTaken => new("rounds_taken");
 
     public static readonly StatusData ReceiptOfPriorEffortRule = Rule(
         ReceiptOfPriorEffort, "Receipt of Prior Effort",
@@ -384,7 +384,7 @@ public static class ActOneEventObjects
 
     // ── shorthands ────────────────────────────────────────────────────────────────────────────────────────
 
-    private static readonly CounterId LastType = new("witnessed_last_type");
+    private static CounterId LastType => new("witnessed_last_type");
 
     private static IReadOnlyDictionary<CardLifecycleTrigger, EffectProgram<CardLifecycleContext>> EndOfTurn(
         IEffectNode<CardLifecycleContext> body) =>

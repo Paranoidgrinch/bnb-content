@@ -15,7 +15,7 @@ public static class PassiveStatuses
 {
     // Well-known content ids.
     public const string QueueAdvancesId = "queue_advances";
-    public static readonly CounterId QueuePositionCounter = new("queue_position");
+    public static CounterId QueuePositionCounter => new("queue_position");
 
     // A single-opponent selector usable inside an enemy's own status trigger and SERIALIZABLE into the export
     // (unlike FirstTarget, an escape node): the lowest-health enemy of the owner — in a solo fight, the hero.
@@ -31,20 +31,20 @@ public static class PassiveStatuses
 
     // Wax Notary: one status carrying both halves of "Paper Seals Wax".
     public const string PaperSealsWaxId = "paper_seals_wax";
-    private static readonly CounterId SeenPaperworkCounter = new("seen_paperwork");
-    private static readonly CounterId SealedThisTurnCounter = new("wax_sealed_this_turn");
+    private static CounterId SeenPaperworkCounter => new("seen_paperwork");
+    private static CounterId SealedThisTurnCounter => new("wax_sealed_this_turn");
 
     // Sealed Door Ward: the seal itself (carries the rules, and its absence IS the broken seal) plus the
     // per-hit dampener it re-arms each player turn.
     public const string OneRemainingSealId = "one_remaining_seal";
     public const string SealIntactId = "seal_intact";
-    private static readonly CounterId SealDamageThisTurnCounter = new("seal_damage_this_turn");
+    private static CounterId SealDamageThisTurnCounter => new("seal_damage_this_turn");
     private const int SealBreakThreshold = 18;
 
     // Oath Candle: a marker the Candle carries so a cross-combatant trigger can find it (EncounterPassives),
     // and the once-per-round latch it keeps.
     public const string WitnessTheSealId = "witness_the_seal";
-    public static readonly CounterId WitnessedThisRoundCounter = new("witnessed_this_round");
+    public static CounterId WitnessedThisRoundCounter => new("witnessed_this_round");
 
     public static IReadOnlyList<StatusData> All() =>
     [
@@ -132,7 +132,7 @@ public static class PassiveStatuses
     // the only thing a combat UI shows by name — and the Avatar checks them when the turn ends.
     public const string IronWarrantId = "iron_warrant";
     public const string ContemptId = "contempt";
-    public static readonly CounterId OrderIndexCounter = new("compliance_order");
+    public static CounterId OrderIndexCounter => new("compliance_order");
     public const int ContemptMaximum = 3;
 
     // The Seizure Procession: the Lantern marks, the Cart takes, the Marshal profits. Each body is found by
@@ -145,8 +145,8 @@ public static class PassiveStatuses
     // this turn" (it is cleared when the player's turn starts). A latch on the Lantern itself would have to be
     // read through an iteration target, which expressions cannot do reliably inside a loop.
     public const string InventoryPendingId = "inventory_pending";
-    public static readonly CounterId SeizedCardsCounter = new("seized_cards");
-    public static readonly CounterId MarshalStrengthCounter = new("marshal_strength");
+    public static CounterId SeizedCardsCounter => new("seized_cards");
+    public static CounterId MarshalStrengthCounter => new("marshal_strength");
     public const int SeizureCapacity = 2;
     public const int MarshalStrengthLimit = 4;
 
@@ -157,8 +157,8 @@ public static class PassiveStatuses
     public const string GateOpenId = "gate_open";
     public const string HeldOpenId = "held_open";
     public const string GatehouseId = "the_gatehouse";
-    public static readonly CounterId GatePressureCounter = new("gate_pressure");
-    public static readonly CounterId GateBeatCounter = new("gate_beat");
+    public static CounterId GatePressureCounter => new("gate_pressure");
+    public static CounterId GateBeatCounter => new("gate_beat");
     public const int GateThreshold = 12;
 
     // Final Notice Knight: the deadline is the PLAYER's — Final Notice, Enforcement Served and the
@@ -284,11 +284,11 @@ public static class PassiveStatuses
     public const string StepUpperId = "step_upper";
     public const string HoldsTheCaseId = "holds_the_case";
     public const string RulingPendingId = "ruling_pending";
-    public static readonly CounterId CaseDamageThisTurnCounter = new("case_damage_this_turn");
-    public static readonly CounterId RemandedThisTurnCounter = new("remanded_this_turn");
-    public static readonly CounterId FinalRulingCounter = new("final_ruling");
-    private static readonly CounterId TriedAscentCounter = new("tried_ascent");
-    private static readonly CounterId CaseMovedThisRoundCounter = new("case_moved_this_round");
+    public static CounterId CaseDamageThisTurnCounter => new("case_damage_this_turn");
+    public static CounterId RemandedThisTurnCounter => new("remanded_this_turn");
+    public static CounterId FinalRulingCounter => new("final_ruling");
+    private static CounterId TriedAscentCounter => new("tried_ascent");
+    private static CounterId CaseMovedThisRoundCounter => new("case_moved_this_round");
     private const int RemandThreshold = 12;
 
     // The Case itself: its holder hits 2 harder, takes the Remand threshold, and carries the ladder's movement.
@@ -458,7 +458,7 @@ public static class PassiveStatuses
     public const string RemandableId = "remandable";
     public const string RemandingWritId = "remanding_writ";
     public const string SpentWritId = "spent_writ";
-    public static readonly CounterId FinalityCounter = new("finality");
+    public static CounterId FinalityCounter => new("finality");
 
     // Route A — the Phantom would be downed while a living, unspent Writ still stands: the case is REMANDED
     // instead. Authored as death prevention (the engine's one-shot pre-down interceptor) rather than a revive:
@@ -520,23 +520,23 @@ public static class PassiveStatuses
 
     // Living Petition Chorus: the marker the clause cards write their signatures and liabilities onto.
     public const string PetitionId = "the_petition";
-    public static readonly CounterId SignaturesCounter = new("signatures");
-    public static readonly CounterId ClauseIndexCounter = new("clause_index");
+    public static CounterId SignaturesCounter => new("signatures");
+    public static CounterId ClauseIndexCounter => new("clause_index");
 
     // Devouring Waiting Room: the Room keeps the Lost Time ledger (so killing it erases the resource, while
     // killing the Moth Cloud leaves what was already lost). The marker is how the Moth and the encounter
     // trigger find the Room.
     public const string LostTimeLedgerId = "lost_time_ledger";
-    public static readonly CounterId LostTimeCounter = new("lost_time");
+    public static CounterId LostTimeCounter => new("lost_time");
     public const int LostTimeMaximum = 3;
 
     // Reopening-Hours Monolith: the office's own schedule. Closed windows bank whatever the player does; the
     // open window processes the backlog in one go.
     public const string OfficeHoursId = "office_hours";
-    public static readonly CounterId PendingBusinessCounter = new("pending_business");
-    public static readonly CounterId OfficeOpenCounter = new("office_open");
-    private static readonly CounterId ClosedWindowsCounter = new("closed_windows");
-    private static readonly CounterId OpenWindowsCounter = new("open_windows");
+    public static CounterId PendingBusinessCounter => new("pending_business");
+    public static CounterId OfficeOpenCounter => new("office_open");
+    private static CounterId ClosedWindowsCounter => new("closed_windows");
+    private static CounterId OpenWindowsCounter => new("open_windows");
 
     // "OFFICE CLOSED — Reopening in 2": while closed, HP loss the player causes is not removed but STORED as
     // Pending Business; two closed windows later the office opens and processes the lot at once, then shuts
@@ -623,10 +623,10 @@ public static class PassiveStatuses
     // The Three Appointments (elite): each body carries its own visible countdown and its own consequence when
     // it runs out. The countdown ticks at the body's OWN turn end — once per round, exactly like the design's
     // "end of each player turn", only a beat later in the round (see ADAPTATIONS.md).
-    public static readonly CounterId AppointmentDueCounter = new("appointment_due");
+    public static CounterId AppointmentDueCounter => new("appointment_due");
     public const string AppointmentsAcceleratedId = "appointments_accelerated";
 
-    private static readonly CounterId AppointmentStartedCounter = new("appointment_started");
+    private static CounterId AppointmentStartedCounter => new("appointment_started");
 
     public static readonly (string StatusId, string Name, int Due, Func<IEffectNode<TurnEndedTriggeredEffectContext>> Expiry)[]
         Appointments =
@@ -728,7 +728,7 @@ public static class PassiveStatuses
 
     // Duplicate Copy Mites: marker + the once-per-round latch, cleared at round end like its siblings.
     public const string CarbonCopiesId = "carbon_copies";
-    public static readonly CounterId CopiedThisRoundCounter = new("copied_this_round");
+    public static CounterId CopiedThisRoundCounter => new("copied_this_round");
 
     private static StatusData CarbonCopies()
     {
@@ -768,13 +768,13 @@ public static class PassiveStatuses
 
     // Threshold Seizure Ward: marker + the once-per-round latch its encounter trigger reads.
     public const string SeizeTheFilingId = "seize_the_filing";
-    public static readonly CounterId SeizedThisRoundCounter = new("seized_this_round");
+    public static CounterId SeizedThisRoundCounter => new("seized_this_round");
 
     // Civic Battering Ram: Momentum, plus the two bits of bookkeeping "Break the Approach" needs.
     public const string BreakTheApproachId = "break_the_approach";
-    public static readonly CounterId MomentumCounter = new("momentum");
-    private static readonly CounterId HadBlockCounter = new("ram_had_block");
-    private static readonly CounterId ApproachBrokenCounter = new("approach_broken_this_turn");
+    public static CounterId MomentumCounter => new("momentum");
+    private static CounterId HadBlockCounter => new("ram_had_block");
+    private static CounterId ApproachBrokenCounter => new("approach_broken_this_turn");
 
     // "Outstanding Warrant" is a plain buff the Bailiff wears while the player is 4 Paperwork deep — the
     // watcher that switches it lives on the encounter (EncounterPassives), because the condition is about the
@@ -874,7 +874,7 @@ public static class PassiveStatuses
     public static readonly string[] CardTypes =
         [Cards.CardAuthoring.DeedTag, Cards.CardAuthoring.WorkingTag, Cards.CardAuthoring.RiteTag];
     public const string CorrectAgainstTheEvidenceId = "correct_against_the_evidence";
-    public static readonly CounterId CorrectedThisTurnCounter = new("corrected_this_turn");
+    public static CounterId CorrectedThisTurnCounter => new("corrected_this_turn");
     public static string CorrectionId(string cardType) => $"correction_{cardType}";
     private const int CorrectionThreshold = 10;
 
@@ -976,7 +976,7 @@ public static class PassiveStatuses
     // Counterclaim Imp: the passive itself is owner-scoped (the Imp is what gets filed on), so one status
     // carries both the reaction and the once-per-player-turn latch it clears at its own turn end.
     public const string CounterclaimId = "counterclaim";
-    public static readonly CounterId CounterclaimUsedCounter = new("counterclaim_used");
+    public static CounterId CounterclaimUsedCounter => new("counterclaim_used");
 
     private static StatusData Counterclaim()
     {
@@ -1034,7 +1034,7 @@ public static class PassiveStatuses
 
     // Sustaining Gavel: marker + the once-per-round latch its encounter trigger reads (EncounterPassives).
     public const string SustainedId = "sustained";
-    public static readonly CounterId SustainedThisRoundCounter = new("sustained_this_round");
+    public static CounterId SustainedThisRoundCounter => new("sustained_this_round");
 
     private static StatusData Sustained()
     {
@@ -1051,11 +1051,11 @@ public static class PassiveStatuses
 
     // Inverted Hourglass: the marker its encounter trigger finds it by; the sand itself is a counter.
     public const string StolenSandId = "stolen_sand_passive";
-    public static readonly CounterId StolenSandCounter = new("stolen_sand");
+    public static CounterId StolenSandCounter => new("stolen_sand");
 
     // Minute Moth: same shape — marker + the counter its intent rule reads.
     public const string StolenMinuteId = "stolen_minute_passive";
-    public static readonly CounterId StolenMinuteCounter = new("stolen_minute");
+    public static CounterId StolenMinuteCounter => new("stolen_minute");
 
     // "Your Number Is Fading" (Fading Number Token): at the end of each of its own turns the Token loses 3 HP
     // unless the player is carrying Fatigue — it only lasts as long as it can keep the queue waiting. Purely
@@ -1083,8 +1083,8 @@ public static class PassiveStatuses
 
     // Old Statute Ghost: marker + the two tracks of "Still in Force".
     public const string StillInForceId = "still_in_force_passive";
-    public static readonly CounterId PrecedentCounter = new("precedent");
-    public static readonly CounterId PrecedentLatchCounter = new("precedent_this_round");
+    public static CounterId PrecedentCounter => new("precedent");
+    public static CounterId PrecedentLatchCounter => new("precedent_this_round");
 
     private static StatusData StillInForce()
     {
@@ -1102,7 +1102,7 @@ public static class PassiveStatuses
     // Exception Imp: the marker its encounter trigger finds it by, plus the once-per-round latch it clears at
     // round end (like the Oath Candle's, and for the same reason — RoundEnded triggers have no bearer filter).
     public const string LoopholeId = "loophole";
-    public static readonly CounterId LoopholeUsedCounter = new("loophole_used");
+    public static CounterId LoopholeUsedCounter => new("loophole_used");
 
     private static StatusData Loophole()
     {
@@ -1120,7 +1120,7 @@ public static class PassiveStatuses
     // Contradictory Signpost: a pure marker so its encounter trigger can write the route counter to the
     // Signpost and nobody else (see EncounterPassives.BothDirectionsMandatory).
     public const string BothDirectionsMandatoryId = "both_directions_mandatory";
-    public static readonly CounterId SignpostedRouteCounter = new("signposted_route");
+    public static CounterId SignpostedRouteCounter => new("signposted_route");
 
     // A status that carries nothing but its own presence: the handle a cross-combatant trigger uses to find
     // one specific enemy, since selectors are structural and cannot name a combatant.

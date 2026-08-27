@@ -16,7 +16,7 @@ public static class BureaucratHistory
     // Written on an ENEMY by the applicant's bookkeeping.
     public const string AttackedThisRound = "attacked_this_round";
     public const string AttackedLastRound = "attacked_last_round";
-    public static readonly CounterId AttacksCounter = new("attacks_this_combat");
+    public static CounterId AttacksCounter => new("attacks_this_combat");
 
     public const string HedgeHospitality = "hedge_hospitality";
     public const string WitnessKnot = "witness_knot";
@@ -24,7 +24,7 @@ public static class BureaucratHistory
     public const string HearthCompact = "hearth_compact";
     public const string HedgeCovenant = "hedge_covenant";
     public const string GuestRight = "guest_right";
-    public static readonly CounterId GuestRightUsed = new("guest_right_used");
+    public static CounterId GuestRightUsed => new("guest_right_used");
 
     public static IReadOnlyList<StatusData> All() =>
     [

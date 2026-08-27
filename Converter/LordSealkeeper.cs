@@ -31,7 +31,7 @@ public static class LordSealkeeper
     public const string BluntedId = "blunted_stamp";                 // Fragment of Execution, on the boss
     public const string ReclaimPendingId = "reclaiming_a_fragment";  // telegraph, on the boss
 
-    public static readonly CounterId SealBeatCounter = new("seal_beat");
+    public static CounterId SealBeatCounter => new("seal_beat");
     public const int SealBeats = 6;
     public const int UnsealHealth = 58;
 

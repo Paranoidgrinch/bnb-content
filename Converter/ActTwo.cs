@@ -478,9 +478,9 @@ public static class ActTwo
     public const string CitationReferenceId = "orphan_citation_reference";
     public const string AlphabetMemoryId = "learned_letter";
 
-    private static readonly CounterId LastCostCounter = new("alphabet_last_cost");
-    private static readonly CounterId LearnedCostCounter = new("alphabet_learned_cost");
-    private static readonly CounterId CitedThisDrawCounter = new("alphabet_cited");
+    private static CounterId LastCostCounter => new("alphabet_last_cost");
+    private static CounterId LearnedCostCounter => new("alphabet_learned_cost");
+    private static CounterId CitedThisDrawCounter => new("alphabet_cited");
 
     // "Second-Person Entry cites you, again and again." The design chains the follow-up citation to the TYPE
     // of the card that fulfilled the last one; here every draw is simply cited afresh. See ADAPTATIONS.
@@ -650,8 +650,8 @@ public static class ActTwo
     public const string OlderTextBeneathId = "older_text_beneath";
     public const string AbsenceBecomesVisibleId = "the_absence_becomes_visible";
 
-    private static readonly CounterId PalimpsestUsedCounter = new("palimpsest_used");
-    private static readonly CounterId PortraitUsedCounter = new("portrait_used");
+    private static CounterId PalimpsestUsedCounter => new("palimpsest_used");
+    private static CounterId PortraitUsedCounter => new("portrait_used");
 
     // A rule about the card that was just PLAYED looks immediately — the opposite of a rule that reaches into
     // the hand. Waiting a beat is what carries that card out of the moment; Wrong Edition (stage 2) is the
@@ -728,9 +728,9 @@ public static class ActTwo
     public const string RevisionPassId = "revision_pass";
     public const string CommaDelinquencyId = "fatal_comma_delinquency";
 
-    private static readonly CounterId PlayedAcounter = new("clause_a_played");
-    private static readonly CounterId PlayedBcounter = new("clause_b_played");
-    private static readonly CounterId RevisionUsedCounter = new("revision_used");
+    private static CounterId PlayedAcounter => new("clause_a_played");
+    private static CounterId PlayedBcounter => new("clause_b_played");
+    private static CounterId RevisionUsedCounter => new("revision_used");
 
     // "Mark two different cards as Clause A and Clause B. A before B: the Comma takes 8 direct damage."
     //
@@ -847,7 +847,7 @@ public static class ActTwo
     public const string RememberedVolumeId = "remembered_volume_rule";
     public const string ChainCollectId = "mnemonic_chain_collect";
 
-    private static readonly CounterId RememberedCounter = new("chain_remembered");
+    private static CounterId RememberedCounter => new("chain_remembered");
 
     // "The first eligible card played against the Chain becomes a remembered concrete card INSTANCE. When that
     // exact instance later re-enters the hand it is Referenced and costs 1 more; play it anyway and the Chain
@@ -959,7 +959,7 @@ public static class ActTwo
     // ── Stage 10 — Hall of Concordances ───────────────────────────────────────────────────────────────────
 
     public const string ResidueId = "everything_else";
-    private static readonly CounterId ResidueCounter = new("residue");
+    private static CounterId ResidueCounter => new("residue");
     private const int ResidueFull = 4;
 
     // "The first time each round a Redacted card is played, and the first time each round a Misfiled card is
@@ -1028,9 +1028,9 @@ public static class ActTwo
     public const string UnspokenWordId = "leave_one_word_unspoken";
     public const string VoiceId = "voice";
 
-    private static readonly CounterId SeatTakenCounter = new("reserved_seat_taken");
-    private static readonly CounterId MarginCounter = new("mute_margin");
-    private static readonly CounterId MarginBittenCounter = new("mute_margin_bitten");
+    private static CounterId SeatTakenCounter => new("reserved_seat_taken");
+    private static CounterId MarginCounter => new("mute_margin");
+    private static CounterId MarginBittenCounter => new("mute_margin_bitten");
     private const int MarginStart = 5;
     private const int MarginFloor = 3;
 

@@ -35,9 +35,9 @@ public static class QueueCommissioner
     public const string YieldCardId = "yield_your_place";
     public const string ExpediteCardId = "ask_for_expedited_service";
 
-    public static readonly CounterId PriorityDamageCounter = new("priority_damage");
-    public static readonly CounterId ServicesCounter = new("services_completed");
-    public static readonly CounterId QueueBeatCounter = new("queue_beat");
+    public static CounterId PriorityDamageCounter => new("priority_damage");
+    public static CounterId ServicesCounter => new("services_completed");
+    public static CounterId QueueBeatCounter => new("queue_beat");
 
     public const int StartPosition = 3;
     public const int PhaseTwoPosition = 2;

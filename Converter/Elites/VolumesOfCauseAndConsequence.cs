@@ -29,7 +29,7 @@ public static class VolumesOfCauseAndConsequence
 
     // What Causes has announced it will cite: 1 = an ordinary citation, 2 = a false premise, which redacts
     // the same card. Kept on the player, because that is who both ends of the rule can read.
-    private static readonly CounterId CitePendingCounter = new("causes_cite_pending");
+    private static CounterId CitePendingCounter => new("causes_cite_pending");
 
     private const int FulfilledHpLoss = 9;
     private const int FulfilledBlockLoss = 8;

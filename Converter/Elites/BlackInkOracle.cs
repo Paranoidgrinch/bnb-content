@@ -26,7 +26,7 @@ public static class BlackInkOracle
     public const string OracleReferenceId = "oracle_reference";
     public const string OracleReferenceMark = "referenced_by_the_oracle";
 
-    private static readonly CounterId RiddlePreparedCounter = new("oracle_riddle_prepared");
+    private static CounterId RiddlePreparedCounter => new("oracle_riddle_prepared");
 
     private const int MaxBlackInk = 3;
     private const int WrongAnswerCost = 8;

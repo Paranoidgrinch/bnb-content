@@ -53,7 +53,7 @@ public static class Keywords
     // only way to do this at all: the three steps of a resolution each change something the next one would
     // otherwise re-read, so the amount is computed ONCE, stored, and spent from storage. It is also the
     // number Usurer's Moon needs ("1 Citation for every 3 Block removed").
-    public static readonly CounterId LienResolvedCounter = new("lien_resolved");
+    public static CounterId LienResolvedCounter => new("lien_resolved");
 
     // Usurer's Moon, a Rite the player carries: the Lien resolution looks for it, because only the resolution
     // knows how much Block it took.
@@ -63,7 +63,7 @@ public static class Keywords
     // Standing Citation, a Rite the player carries: the Citation trigger looks for it, because only that
     // trigger knows it is about to spend a stack.
     public const string StandingCitation = "standing_citation";
-    public static readonly CounterId StandingCitationSpared = new("standing_citation_spared");
+    public static CounterId StandingCitationSpared => new("standing_citation_spared");
 
     public const string Censure = "censure";
     public const string Lien = "lien";
@@ -78,12 +78,12 @@ public static class Keywords
 
     // Ward Wax decays faster when the enemy turn actually got through. "Got through" is counted on the bearer
     // as unblocked HP damage from an ordinary hit, and read (and cleared) when the round ends.
-    public static readonly CounterId StruckThisRoundCounter = new("ward_wax_struck");
+    public static CounterId StruckThisRoundCounter => new("ward_wax_struck");
 
     // What the round that just ended did to you, kept for the cards that ask about "the previous enemy turn"
     // (Restitution Writ, Blood Testimony). Snapshotted when the round closes, before this round's count is
     // cleared, so it is available all through the turn that follows.
-    public static readonly CounterId StruckLastRoundCounter = new("struck_last_round");
+    public static CounterId StruckLastRoundCounter => new("struck_last_round");
 
     public static IReadOnlyList<StatusData> All() =>
     [
@@ -282,7 +282,7 @@ public static class Keywords
             ]));
     }
 
-    private static readonly CounterId IndemnitySpent = new("wax_indemnity_spent");
+    private static CounterId IndemnitySpent => new("wax_indemnity_spent");
 
     // "Is this rule in force?" — a Rite the player carries is found by looking for it on anybody, since a
     // program run from the enemy's seat cannot address the player directly.

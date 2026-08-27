@@ -264,7 +264,7 @@ public static class CardAuthoring
     // "Is this Rite in force?" A Rite the player carries is found by counting who wears it or its upgrade —
     // and since a condition can only compare a value read off a combatant, the count goes through a scratch
     // counter first.
-    private static readonly CounterId RiteHeld = new("rite_in_force");
+    private static CounterId RiteHeld => new("rite_in_force");
 
     public static CombatNodeModel IfRiteInForce(string rite, CombatNodeModel then) =>
         Seq(

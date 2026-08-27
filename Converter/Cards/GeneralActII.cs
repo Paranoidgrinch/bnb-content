@@ -150,7 +150,7 @@ public static class GeneralActII
 
     // "Remove up to N stacks of a negative Status; turn each removed stack into something else." How much can
     // be taken has to be known before it is taken, so it goes through a scratch counter.
-    private static readonly CounterId Converted = new("status_conversion");
+    private static CounterId Converted => new("status_conversion");
 
     private static CombatNodeModel Convert(string from, string to, int cap, string into) =>
         Seq(
@@ -168,7 +168,7 @@ public static class GeneralActII
 
     // "Remove 1 stack of a negative Status from yourself. Then apply N Censure to an enemy. If you had none
     // to remove, gain N Censure instead." What you were carrying is read before anything is taken.
-    private static readonly CounterId Carried = new("crossed_sigil_carried");
+    private static CounterId Carried => new("crossed_sigil_carried");
 
     private static CombatNodeModel CrossSigil(int censure) =>
         Seq(
@@ -185,7 +185,7 @@ public static class GeneralActII
 
     // "Remove all remaining Block. For every N removed, apply 1 Lien, max 6." What was there is read before
     // it is taken.
-    private static readonly CounterId Seized = new("seizure_writ_taken");
+    private static CounterId Seized => new("seizure_writ_taken");
 
     private static CombatNodeModel Seize(int damage, int per) =>
         Seq(
