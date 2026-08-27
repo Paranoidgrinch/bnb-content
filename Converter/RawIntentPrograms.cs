@@ -46,6 +46,9 @@ public static class RawIntentPrograms
             "lower_appellate_step.await_the_ruling" => AwaitTheRuling(),
             "middle_appellate_step.await_the_ruling" => AwaitTheRuling(),
             "upper_appellate_step.await_the_ruling" => AwaitTheRuling(),
+            // Act III: every pressure intent files its Trespass through the act's one filing point, so the
+            // Contrary Magpie can contest an intent's violation the same way it contests a Local Law's.
+            _ when ActThree.Intent(enemyId, intentId) is { } greenDocket => greenDocket,
             _ => enemyId switch
             {
                 "deputy_undersecretary" => DeputyUndersecretary.Intent(intentId),

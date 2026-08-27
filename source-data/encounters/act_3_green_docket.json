@@ -169,5 +169,115 @@
         "status": "prior_dispute"
       }
     ]
+  },
+  {
+    "id": "green_docket_testimony_duo_01",
+    "name": "Roadside Testimony",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "reckoning_hedge",
+      "foxglove_witness"
+    ],
+    "enemy_health": [
+      55,
+      48
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_testimony",
+      "green_docket",
+      "testimony",
+      "multi_enemy"
+    ],
+    "role": "multi_combat"
+  },
+  {
+    "id": "green_docket_testimony_duo_02",
+    "name": "Contrary Permit",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "permit_hare",
+      "contrary_magpie"
+    ],
+    "enemy_health": [
+      48,
+      47
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_testimony",
+      "green_docket",
+      "testimony",
+      "multi_enemy"
+    ],
+    "role": "multi_combat",
+    "enemy_statuses": [
+      {
+        "index": 0,
+        "status": "claim"
+      },
+      {
+        "index": 0,
+        "status": "claim_created"
+      }
+    ]
+  },
+  {
+    "id": "green_docket_testimony_duo_03",
+    "name": "Surveyed Detours",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "reckoning_hedge",
+      "cairn_of_stray_paths"
+    ],
+    "enemy_health": [
+      55,
+      38
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_testimony",
+      "green_docket",
+      "precedent",
+      "multi_enemy"
+    ],
+    "role": "multi_combat"
+  },
+  {
+    "id": "green_docket_testimony_trio_01",
+    "name": "Two Witnesses, One Account",
+    "act": 3,
+    "difficulty": "hard",
+    "enemies": [
+      "reckoning_hedge",
+      "foxglove_witness",
+      "contrary_magpie"
+    ],
+    "enemy_health": [
+      48,
+      41,
+      41
+    ],
+    "weight": 1,
+    "tags": [
+      "stage_testimony",
+      "green_docket",
+      "testimony",
+      "multi_enemy"
+    ],
+    "role": "multi_combat",
+    "enemy_statuses": [
+      {
+        "index": 0,
+        "status": "claim"
+      },
+      {
+        "index": 0,
+        "status": "claim_created"
+      }
+    ]
   }
 ]

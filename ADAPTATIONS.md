@@ -1344,3 +1344,21 @@ teach — and it falls out of reading the announcement rather than the resource.
 **Prior Possession is a mark, not a prohibition.** Nothing in the engine asks a status's permission before
 moving it. Every rule in the act that moves or spends somebody ELSE's Claim goes through one selector
 (`ActThree.ClaimsOthersMayTake`), which excludes whoever the fight has recognised as the sitting occupier.
+
+**Act III files every Trespass in one place.** The Contrary Magpie decides who a violation is owed to BEFORE
+it lands — the design is explicit that Safe-Conduct is only offered against the source the argument leaves
+behind — so it cannot be a reaction to the application. And the Foxglove Witness needs to know WHICH law was
+broken, which a Trespass does not carry and which the Magpie's rewriting would destroy anyway. So a law is a
+number written onto the player as the violation goes past, and the pressure intents are authored programs
+rather than DSL effects so that an intent's Trespass is filed the same way a Local Law's is. Their JSON
+entries keep their own actions, because the telegraph is written from those.
+
+**A violation and the law's answer to it are two different things.** The design caps a Local Law at one
+Trespass per player turn and then, in Encounter 9, asks the Foxglove to witness "a concrete second violation"
+of that same law in the same turn. Both are true: the BREACH is uncapped, and only the law's own Trespass is
+once a turn. That is exactly why the Foxglove is put beside the Hedge — breaking the survey twice still costs
+you, just not through the Hedge.
+
+One consequence worth knowing: a turn whose FIRST breach is refused by Safe-Conduct is a turn the meadow
+hears nothing, because the refusal still spends the law's once-a-turn answer and nothing ever lands to be
+witnessed.
