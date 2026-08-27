@@ -328,6 +328,10 @@ public static partial class ActThree
         where TContext : class =>
         new CausalSequenceEffectNode<TContext>(
         [
+            // The Great Toll Frog swallows every point of ITS demand that is actually paid, so what it was
+            // owed is written down before the payment and read again after: Make Amends settles the oldest
+            // demand first and never says whose that was.
+            RememberWhatTheFrogIsOwed<TContext>(),
             new ModifySelectedStatusStacksNode<TContext>(
                 Applicant,
                 new StatusSelectionSpec(StatusPolarityFilter.Debuff)
@@ -344,5 +348,6 @@ public static partial class ActThree
                 new CreateCardInstanceNode<TContext>(
                     Applicant, new CardDefinitionId(MakeAmendsCardId), CardZone.Hand,
                     new ConstantExpression<TContext>(1))),
+            SwallowThePayment<TContext>(),
         ]);
 }

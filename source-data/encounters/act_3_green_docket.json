@@ -943,5 +943,21 @@
       "claim"
     ],
     "role": "elite"
+  },
+  {
+    "id": "green_docket_elite_great_toll_frog",
+    "name": "Great Toll Frog",
+    "act": 3,
+    "difficulty": "elite",
+    "enemies": [
+      "great_toll_frog"
+    ],
+    "weight": 1,
+    "tags": [
+      "green_docket",
+      "elite",
+      "wergild"
+    ],
+    "role": "elite"
   }
 ]
