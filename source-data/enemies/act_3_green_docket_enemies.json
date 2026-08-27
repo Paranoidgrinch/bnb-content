@@ -1715,5 +1715,99 @@
       "act_3",
       "permission"
     ]
+  },
+  {
+    "id": "grandmother_web",
+    "name": "Grandmother Web",
+    "max_hp": 154,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "needle_leg_courtesy",
+        "name": "Needle-Leg Courtesy",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 8
+          },
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 8
+          }
+        ]
+      },
+      {
+        "id": "knot_an_older_promise",
+        "name": "Knot an Older Promise",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 8
+          }
+        ]
+      },
+      {
+        "id": "close_the_web_around_the_guest",
+        "name": "Close the Web Around the Guest",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 18
+          }
+        ]
+      },
+      {
+        "id": "hospitality_has_its_price",
+        "name": "Hospitality Has Its Price",
+        "intent_type": "debuff",
+        "actions": [
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "wergild",
+            "amount": 2
+          }
+        ]
+      },
+      {
+        "id": "mend_the_household_law",
+        "name": "Mend the Household Law",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 14
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "green_docket_body"
+      },
+      {
+        "status": "grandmother_web_threads"
+      },
+      {
+        "status": "web_thread_entry_taut"
+      },
+      {
+        "status": "web_thread_measure_taut"
+      }
+    ],
+    "tags": [
+      "green_docket",
+      "elite",
+      "act_3",
+      "custom"
+    ]
   }
 ]
