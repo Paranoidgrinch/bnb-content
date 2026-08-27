@@ -167,6 +167,8 @@ public static partial class ActThree
                 sourceSelector: creditor),
             // A coin at the table is worn down by other people keeping their word.
             PaidInKind(),
+            // …and the elites that wrote their own terms of settlement read them here.
+            EliteSettlement(),
             new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
                 new ComparisonExpression<TurnEndedTriggeredEffectContext>(
                     new CombatantStatusStacksExpression<TurnEndedTriggeredEffectContext>(

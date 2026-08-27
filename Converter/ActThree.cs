@@ -72,8 +72,11 @@ public static partial class ActThree
         Tags = [],
         PassiveModifiers = [],
         Triggers = [],
+        // Two stacks per stack, which is §5.2 exactly: a licence pays for one WHOLE application, and an
+        // application of two Trespass at once (a marked verge, a knotted thread) is refused entire. A single
+        // Trespass still costs a whole licence — the engine rounds the spend up.
         Prevention = new StatusPreventionData(
-            StatusPreventionScope.Debuffs, StacksPerStack: 1, Only: TrespassId),
+            StatusPreventionScope.Debuffs, StacksPerStack: 2, Only: TrespassId),
     };
 
     // Standing. Merged, because a party's Claims are one fact about that party — how many it holds — and
@@ -298,6 +301,7 @@ public static partial class ActThree
             "untranslated_trail_marker.unreadable_warning" => Pressure(14),
             "elsewhere_path.arrive_elsewhere" => Pressure(15),
             "keeper_of_buried_names.speak_the_name" => Pressure(16),
+            _ when EliteIntent(enemyId, intentId) is { } elite => elite,
             _ when AppealsIntent(enemyId, intentId) is { } appeals => appeals,
             _ when PrecedentsIntent(enemyId, intentId) is { } precedents => precedents,
             _ when CourtIntent(enemyId, intentId) is { } court => court,
@@ -410,6 +414,7 @@ public static partial class ActThree
         OathAccepted(),
         PaymentAccordingToCharter(),
         TollOnBothBanks(),
+        .. EliteStatuses(),
     ];
 
     // The cards the act itself hands the player: never dealt into a deck, only pushed into a fight.
@@ -448,7 +453,7 @@ public static partial class ActThree
     // than to any one identity — a duo of Green Docket bodies is still one road, and asking twice would hand
     // the player two safe conducts (Safe-Conduct is per-grant instances, so they would not even merge).
     public static IReadOnlyList<StartingStatusSpec> HeroOpening(IEnumerable<string> enemyIds) =>
-        enemyIds.Any(Identities.Contains)
+        enemyIds.Any(id => Identities.Contains(id) || EliteIdentities.Contains(id))
             ?
             [
                 new StartingStatusSpec(new StatusDefinitionId(GreenDocketCustomsId), 1),
@@ -527,13 +532,14 @@ public static partial class ActThree
     public static CounterId LawBeingFiledCounter => new("law_being_filed");
 
     // One Trespass that is not a law violation — a pressure intent's blow, or a witness's own testimony.
-    public static IEffectNode<TContext> FileTrespass<TContext>(ICombatantTargetSelector lawgiver)
+    public static IEffectNode<TContext> FileTrespass<TContext>(
+        ICombatantTargetSelector lawgiver, ICombatExpression<TContext, int>? stacks = null)
         where TContext : class =>
         new CausalSequenceEffectNode<TContext>(
         [
             new SetCombatantCounterNode<TContext>(
                 Applicant, LawBeingFiledCounter, new ConstantExpression<TContext>(NoLaw), relative: false),
-            ContestedFiling<TContext>(lawgiver),
+            ContestedFiling(lawgiver, stacks),
         ]);
 
     // A LAW is broken. Three separate things happen, and they are not the same thing:
@@ -549,11 +555,12 @@ public static partial class ActThree
     // costs the player something. A law that can only be broken once a turn to begin with (the Hare's third
     // card, the Clerk's opening card) passes no latch.
     public static IEffectNode<TContext> Violate<TContext>(
-        ICombatantTargetSelector lawgiver, int law, string? latch = null)
+        ICombatantTargetSelector lawgiver, int law, string? latch = null,
+        ICombatExpression<TContext, int>? stacks = null)
         where TContext : class
     {
         IEffectNode<TContext> theLawSpeaks = latch is null
-            ? ContestedFiling<TContext>(lawgiver)
+            ? ContestedFiling(lawgiver, stacks)
             : new ConditionalEffectNode<TContext>(
                 new ComparisonExpression<TContext>(
                     new CombatantStatusStacksExpression<TContext>(lawgiver, new StatusDefinitionId(latch)),
@@ -561,7 +568,7 @@ public static partial class ActThree
                     new ConstantExpression<TContext>(0)),
                 new CausalSequenceEffectNode<TContext>(
                 [
-                    ContestedFiling<TContext>(lawgiver),
+                    ContestedFiling(lawgiver, stacks),
                     new ApplyStatusNode<TContext>(
                         lawgiver, new StatusDefinitionId(latch), new ConstantExpression<TContext>(1)),
                 ]));
@@ -583,14 +590,19 @@ public static partial class ActThree
     // about who gets to say they saw it. It has to sit INSIDE the filing rather than react to it, because a
     // violation that has already landed is owed to somebody, and the design is explicit that Safe-Conduct is
     // only offered against the source the Magpie leaves behind.
-    private static IEffectNode<TContext> ContestedFiling<TContext>(ICombatantTargetSelector lawgiver)
+    // `stacks` is how many the filing attempts at once — one everywhere except where a party has staked
+    // something (the Stag's verge, the Web's knot). It stays ONE application whatever the count, because a
+    // licence refuses an application rather than a stack.
+    private static IEffectNode<TContext> ContestedFiling<TContext>(
+        ICombatantTargetSelector lawgiver, ICombatExpression<TContext, int>? stacks = null)
         where TContext : class
     {
         var magpie = Lawgiver(ContraryTestimonyId);
+        var howMany = stacks ?? new ConstantExpression<TContext>(1);
 
         IEffectNode<TContext> Trespass(ICombatantTargetSelector owed) =>
             new ApplyStatusNode<TContext>(
-                Applicant, new StatusDefinitionId(TrespassId), new ConstantExpression<TContext>(1),
+                Applicant, new StatusDefinitionId(TrespassId), howMany,
                 sourceSelector: owed);
 
         var mayContest = new AndExpression<TContext>(
