@@ -12,7 +12,6 @@ public sealed class BabData
     public required IReadOnlyList<BabStatus> Statuses { get; init; }
     public required IReadOnlyList<BabEnemy> Enemies { get; init; }
     public required IReadOnlyList<BabEncounter> Encounters { get; init; }
-    public required IReadOnlyList<BabEvent> Events { get; init; }
     public required IReadOnlyList<BabRelic> Relics { get; init; }
     // The acts the run walks, in order. Each manifest owns its own map settings, its treasure and its waiting
     // room; which ENCOUNTERS and EVENTS belong to it is decided by the act number the entries carry, not by the
@@ -46,10 +45,6 @@ public sealed class BabData
             // what makes an act an act is its own map and its own vocabulary, not a separate catalogue.
             Enemies = Many<BabEnemy>("enemies/city_enemies.json", "enemies/act_2_archives_enemies.json"),
             Encounters = Many<BabEncounter>("encounters/act_1_city.json", "encounters/act_2_archives.json"),
-            // Act I's fifteen are AUTHORED now (Converter/Events/ActOneEvents.cs), so its ported file is no
-            // longer loaded — the two sets wear the same names and would otherwise both stand in the pool.
-            // Act II's stay until B-2 replaces them.
-            Events = Many<BabEvent>("events/act_2_archives_events.json"),
             Relics = Many<BabRelic>("relics/act_1_relics.json", "relics/bureaucrat_relics.json"),
         };
     }

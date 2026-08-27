@@ -1157,3 +1157,62 @@ Three of these are engine limits rather than choices, and each one bites several
   type in a turn.
 - **The Closure Writ heals a quarter of what is MISSING, capped at 10.** The run layer does not track how much
   health a particular fight cost.
+
+## Act II — the fifteen archives events (2026-08-27)
+
+The archives' doors, from `BnB_Final_Events_Master_PostAudit.md` §"ACT II". Like Act I's they are AUTHORED
+(`Converter/Events/ActTwoEvents.cs` + `ActTwoEventPrograms.cs`) rather than converted; with this pass the
+ported v2 event JSON is out of the loader entirely, and `EventMapper`, `BabEvent` and `BabData.Events` are
+deleted — every door in the game is now written in C# against the engine's own vocabulary.
+
+**One engine seam bought.** "Earliest Stage N" is on every Act-II event and had nowhere to go:
+`MapGenerationSpec.NodeRefPools` draws refs with no notion of depth, so the Librarian at the end of the aisle
+could be the first room of the run. `MapGenerationSpec.NodeRefMinimumDepthPercent` (RogueDeck-Core) gates a
+ref by how deep into the act its node sits. It is a **percentage, not a row index**, because the generated
+map is taller than the act's stage ladder — gate funnels are inserted into the backbone — so a row number
+authored against the design's stage count would land at the wrong depth. Act II converts stage N of ten to
+`(N−1)·100/9`; Act I gates nothing and is byte-identical.
+
+What could not be translated straight:
+
+- **A card cannot be made unplayable for a while, so it is priced instead.** Unclaimed Reservation's third
+  branch registers a card to somebody else; there is no per-instance Unplayable (a card Exhausts or is
+  unplayable because its DEFINITION says so), so the register writes +9 Energy on the copy, which nobody can
+  pay. The first card played strikes the price off. "If left unplayed it becomes Misfiled" is read one beat
+  later, at the next turn's draw — the established Act-II idiom, since a turn-end program cannot see the hand.
+- **The Necrology Window's borrowed life is two statuses.** The engine's death prevention is authored data,
+  but the health it survives at is a CONSTANT, and an act's bodies do not share a maximum. So the prevention
+  catches the body at 1 HP and a companion rule immediately writes it back up to 30 % of its OWN maximum,
+  once. "The primary enemy" is `highestHealthEnemy`: nothing in a generated fight says which body an encounter
+  thinks of as primary.
+- **"One of the two you just improved" is asked as "one of your improved cards."** A single prompt cannot
+  improve two cards and then point at one of them; the second prompt reaches every upgraded card in the deck.
+  The archives are not fussy about which.
+- **A rarity-filtered reward is a real pool, and its tag rides INSIDE the offer.** `CardRewardSource(rarity)`
+  draws Rare/Uncommon only. Where the door promises something about the card taken ("choose 1 of 3 Uncommon
+  cards, and it starts in a Reservation"), the tag is part of the offer's own effects rather than a following
+  `LastAddedCard` write — a reward is declinable, and a declined offer must write nothing.
+- **The Reciprocal Shelf's "if no eligible card exists, 1 Paperwork instead" is unreachable.** Run selectors
+  cannot see a card's printed type, so "no eligible non-Junk card" cannot be asked; a deck always has a card
+  to mark. The fallback is dropped.
+- **8 % of Max HP is a flat 6.** `ChangeMaxHealthRunEffect` takes a constant, and the bureaucrat's maximum is
+  70. The Perpetual Borrower's library card costs 6.
+- **The Librarian is not drawn as a Rare event.** `NodeRefPools` has no per-ref weights; its depth gate is
+  what makes it late instead of unlikely.
+
+★ **Two traps this pass paid for, both worth remembering:**
+
+1. **A branch decided by the fight that just ended must be a program CONDITION.** `ConditionalRunEffect` is
+   enqueued and evaluated LATER, when the resolved combat is no longer the event in context, and asking that
+   context for `combat.counter.…` throws rather than returning zero. A run program is DATA — `game.roguedeck.json`
+   is the whole game — so `RunEffectTemplates.Custom` is not an escape either: it has no serialization kind
+   and the document stops round-tripping. So the two outcomes are **two programs over the same event**, each
+   ruling the other out and each cleaning up after both (the Vow, the whispered amendment). Exactly one fires.
+2. **A counter the run will read is written down at the opening bell.** A fight the rule was never in reads
+   the counter as zero, which is how a waiting promise tells "the fight I was about" from any other fight —
+   so the Vow writes a ONE it can only lose, and the amendment a zero it can only gain.
+
+…and one thing that is NOT an adaptation but reads like a bug in a test: the opening draw empties a small
+deck's draw pile, and an empty pile is reshuffled from the discard. Anything a door FILED somewhere (a
+misfiled card taken back, a Citation put in the discard) is dealt straight back into the hand. A test that
+wants to see where a card was put needs a deck that does not fit in one hand.

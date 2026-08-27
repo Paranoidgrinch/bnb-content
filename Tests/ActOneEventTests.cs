@@ -40,13 +40,6 @@ public class ActOneEventTests
         }
     }
 
-    // The ported originals wore the same names; both sets in one pool would have offered each event twice.
-    [Fact]
-    public void The_ported_city_events_are_gone()
-    {
-        Assert.DoesNotContain("misfiling_cabinet", BabData.Load(TestData.Directory).Events.Select(e => e.Id));
-    }
-
     // Every branch offers its outcome before the door closes, and every outcome is somewhere to go.
     [Fact]
     public void Every_branch_reads_its_outcome_back()
@@ -113,7 +106,9 @@ public class ActOneEventTests
 
         // …except the bailiff, which is installed by the garnishment rather than by an event.
         installed.Add(ActOneEventPrograms.GarnishThePurse);
-        Assert.Equal(Game.Programs!.Keys.OrderBy(k => k), installed.OrderBy(k => k));
+        // The document carries BOTH acts' promises now, so the city is measured against the city's own names.
+        var city = Game.Programs!.Keys.Where(k => k.StartsWith("act_one_", StringComparison.Ordinal));
+        Assert.Equal(city.OrderBy(k => k), installed.OrderBy(k => k));
     }
 
     private static IEnumerable<IRunEffectRequest> Effects(EventScript script) =>

@@ -43,14 +43,37 @@ public sealed class ConversionPools
         new IRunEffectRequest[] { new AddRelicByIdRunEffect(new RelicId(mapped.Relic.Id)) }
             .Concat(mapped.PickupEffects).ToArray());
 
-    public static RewardOffer CardOffer(Cards.CardAuthoring.BnbCard card) => new(
+    public static RewardOffer CardOffer(
+        Cards.CardAuthoring.BnbCard card, IReadOnlyList<string>? tags = null) => new(
         $"card-{card.Id}",
-        [new AddCardToDeckRunEffect(new CardDefinitionId(card.Id))]);
+        [
+            new AddCardToDeckRunEffect(new CardDefinitionId(card.Id)),
+            // The card the deck just gained is the one the offer is about — the tag rides along with the take,
+            // so a declined offer writes nothing.
+            .. (tags ?? []).Select(tag => (IRunEffectRequest)new TagCardsRunEffect(
+                RunSelectors.LastAddedCard, new RunCardTagId(tag), true)),
+        ]);
 
     // Post-fight card reward: 3 random pool cards, pick 1 (uniform weight in Act 1).
     public IRewardSource CardRewardSource(int count = 3) => new PoolRewardSource(
         new RunPool<RewardOffer>(RewardCards.Select(c => new RunPool<RewardOffer>.Entry(CardOffer(c), 1)).ToList()),
         count);
+
+    // A reward drawn from ONE rarity — "a Rare Card Reward", "choose 1 of 3 Uncommon cards". The archives' doors
+    // ask for these by name, and a uniform draw from the whole act pool would quietly hand out commons instead.
+    // `tags` are run card tags written on whatever the player takes, so an offer can BE the thing the event
+    // promised ("choose one of three, and it starts the next fight in a Reservation") without a second prompt
+    // that could land on the wrong card if the reward is declined.
+    public IRewardSource CardRewardSource(string rarity, int count = 3, IReadOnlyList<string>? tags = null)
+    {
+        var eligible = RewardCards.Where(c => c.Rarity == rarity).ToList();
+        if (eligible.Count == 0)
+            throw new ConversionException($"act {Act} card pool", $"holds no '{rarity}' card to offer");
+        return new PoolRewardSource(
+            new RunPool<RewardOffer>(
+                eligible.Select(c => new RunPool<RewardOffer>.Entry(CardOffer(c, tags), 1)).ToList()),
+            count);
+    }
 
     // Event relic grant: ONE random eligible relic (optionally tag-filtered), auto-taken.
     public IRewardSource RelicGrantSource(string? tag, string where)

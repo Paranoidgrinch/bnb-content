@@ -42,7 +42,7 @@ public static class MapSpecBuilder
 
     public static ActMap Build(
         BabData data, ConversionPools pools, int seed, BabActManifest act,
-        IReadOnlyList<string> authoredEventIds)
+        IReadOnlyList<Events.BnbEvent> authoredEvents)
     {
         var rng = new Random(seed);
         var rules = ActRules.For(act);
@@ -60,9 +60,8 @@ public static class MapSpecBuilder
             events[id] = EventTemplates.Treasure(pools, id, rules);
         }
 
-        // The act's doors: whatever it still converts, plus whatever it now authors (Events/AuthoredEvents).
-        var actEvents = data.Events.Where(e => e.Act == act.Act).Select(e => e.Id)
-            .Concat(authoredEventIds).ToList();
+        // The act's doors, all fifteen of them authored (Events/AuthoredEvents).
+        var actEvents = authoredEvents.Select(e => e.Id).ToList();
         if (actEvents.Count == 0)
             throw new ConversionException($"act '{act.Id}'", "no event belongs to this act");
 
@@ -104,6 +103,11 @@ public static class MapSpecBuilder
                 [MapNodeKind.Event] = actEvents,
                 [MapNodeKind.Treasure] = treasureIds,
             },
+            // The design's "Earliest Stage N", act by act: a door the archives only open at the far end of the
+            // aisle is filtered out of the shallow rows. An act whose events name no stage gates nothing.
+            NodeRefMinimumDepthPercent = authoredEvents
+                .Where(e => e.EarliestDepthPercent > 0)
+                .ToDictionary(e => e.Id, e => e.EarliestDepthPercent),
         };
 
         return new ActMap
