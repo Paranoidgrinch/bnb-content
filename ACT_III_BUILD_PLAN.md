@@ -56,6 +56,21 @@ Open seams the later stages will want, listed when they are first needed:
 - **a free encounter action** — Make Amends. Stage 4. Likely a card the fight puts in hand, the
   Notice/Clause shape.
 
+## The act's own shapes, once Stage 3 had settled them
+
+- **One filing point.** `ActThree.Violate(lawgiver, law, latch)` is what a Local Law calls;
+  `ActThree.FileTrespass(lawgiver)` is what anything that is not a law calls (a pressure intent, a witness's
+  own testimony). The pressure intents are authored programs (`ActThree.Intent`) for exactly this reason —
+  their JSON entries stay as they are, because that is what the telegraph is written from.
+- **A violation and the law's answer to it are two things.** A law answers one breach a turn; the breach
+  itself is uncapped, and that is what the witnesses hear. It is why the Foxglove is put beside the Hedge.
+- **Selectors read the whole field**, never "my allies" or "my enemies": which side a selector means depends
+  on whose action woke the rule, and Act III's rules fire from both sides. `Applicant` and `Lawgiver(law)`
+  are the two addresses everything uses.
+- **A law is a number** (`HastyPassageLaw`, `CustomaryUseLaw`, …) written onto the player as the violation is
+  filed, because the Trespass itself cannot carry which law it came from — and because the Magpie rewriting
+  the source must not change what the Foxglove says it saw.
+
 ---
 
 ## Steps
@@ -65,7 +80,11 @@ Open seams the later stages will want, listed when they are first needed:
       Claim). Permit Hare, Mossbound Clerk, Cairn of Stray Paths + encounters 1–4.
 - [x] 1 — Stage 2, the Surveyed Hedgerows (Reckoning Hedge, Errant Boundary Stone, Hawthorn Tenant)
       DONE 2026-08-28 — 11 live tests in `Tests/ActThreeStageTwoTests.cs`.
-- [ ] 2 — Stage 3, the Meadow of Living Testimony (Foxglove Witness, Contrary Magpie)
+- [x] 2 — Stage 3, the Meadow of Living Testimony (Foxglove Witness, Contrary Magpie)
+      DONE 2026-08-28 — 7 live tests in `Tests/ActThreeStageThreeTests.cs`. **This stage forced the act's
+      architecture:** every Trespass in Act III is now filed through one place (`ActThree.Violate` for a law,
+      `FileTrespass` for anything else), including the pressure INTENTS, because the Magpie decides who a
+      violation is owed to BEFORE it lands and the Foxglove needs to know which law was broken.
 - [ ] 3 — Stage 4, the Tollwater Crossings — **Wergild + Make Amends** (Charter-Shell Snail,
       Streamside Oath-Fish, Two-Bank Toll Ford)
 - [ ] 4 — Stage 5, the Wayside Covenants (Roadside Witchling, Blackthorn Bride, Crossroads Cup)

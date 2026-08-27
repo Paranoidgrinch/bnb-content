@@ -367,5 +367,131 @@
       "tenant",
       "stage_hedgerows"
     ]
+  },
+  {
+    "id": "foxglove_witness",
+    "name": "Foxglove Witness",
+    "max_hp": 75,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "testify",
+        "name": "Testify",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 10
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "trespass",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "poisoned_statement",
+        "name": "Poisoned Statement",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 14
+          }
+        ]
+      },
+      {
+        "id": "witness_shelter",
+        "name": "Witness Shelter",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 16
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "i_saw_that_too"
+      }
+    ],
+    "tags": [
+      "green_docket",
+      "meadow",
+      "normal",
+      "support",
+      "testimony",
+      "stage_testimony"
+    ]
+  },
+  {
+    "id": "contrary_magpie",
+    "name": "Contrary Magpie",
+    "max_hp": 73,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "contrary_cry",
+        "name": "Contrary Cry",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 10
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "trespass",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "steal_testimony",
+        "name": "Steal Testimony",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 15
+          }
+        ]
+      },
+      {
+        "id": "bright_evidence",
+        "name": "Bright Evidence",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 16
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "contrary_testimony"
+      }
+    ],
+    "tags": [
+      "green_docket",
+      "meadow",
+      "normal",
+      "support",
+      "testimony",
+      "stage_testimony"
+    ]
   }
 ]
