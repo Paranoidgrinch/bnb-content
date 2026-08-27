@@ -892,5 +892,22 @@
       "multi_enemy"
     ],
     "role": "multi_combat"
+  },
+  {
+    "id": "green_docket_elite_stag_of_pre_approved_violence",
+    "name": "The Stag of Pre-Approved Violence",
+    "act": 3,
+    "difficulty": "elite",
+    "enemies": [
+      "stag_of_pre_approved_violence"
+    ],
+    "weight": 1,
+    "tags": [
+      "green_docket",
+      "elite",
+      "safe_conduct",
+      "claim"
+    ],
+    "role": "elite"
   }
 ]

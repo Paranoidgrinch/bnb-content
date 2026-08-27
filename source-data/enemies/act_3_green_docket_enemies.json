@@ -1627,5 +1627,93 @@
       "claim",
       "stage_court"
     ]
+  },
+  {
+    "id": "stag_of_pre_approved_violence",
+    "name": "The Stag of Pre-Approved Violence",
+    "max_hp": 138,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "stamp_the_hoof",
+        "name": "Stamp the Hoof",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 15
+          }
+        ]
+      },
+      {
+        "id": "grant_leave_to_resist",
+        "name": "Grant Leave to Resist",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "safe_conduct",
+            "amount": 1
+          },
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 10
+          }
+        ]
+      },
+      {
+        "id": "antlered_enforcement",
+        "name": "Antlered Enforcement",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 18
+          }
+        ]
+      },
+      {
+        "id": "mark_the_verge",
+        "name": "Mark the Verge",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 16
+          }
+        ]
+      },
+      {
+        "id": "trample_the_boundary",
+        "name": "Trample the Boundary",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 16
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "green_docket_body"
+      },
+      {
+        "status": "pre_approved_violence"
+      }
+    ],
+    "tags": [
+      "green_docket",
+      "elite",
+      "act_3",
+      "permission"
+    ]
   }
 ]
