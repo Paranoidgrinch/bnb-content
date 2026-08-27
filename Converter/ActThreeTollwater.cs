@@ -30,14 +30,27 @@ public static partial class ActThree
     {
         var ford = CombatantTargetSelectors.EventTarget;
 
+        // The toll is charged on standing the Ford has been granted — and, from Stage 6 on, on standing it
+        // has merely been LENT: the Mushroom Circle's mandate lets a party with nothing of its own exercise
+        // a right for one turn, and this is the right the Ford exercises.
         EffectProgram<TContext> Program<TContext>() where TContext : class =>
             new(new ConditionalEffectNode<TContext>(
                 new TriggerEventStatusIsExpression<TContext>(new StatusDefinitionId(ClaimCreatedId)),
-                DemandWergild<TContext>(ford, 1)));
+                DemandWergild<TContext>(ford, 1),
+                new ConditionalEffectNode<TContext>(
+                    new TriggerEventStatusIsExpression<TContext>(
+                        new StatusDefinitionId(CommonMandateGrantedId)),
+                    new CausalSequenceEffectNode<TContext>(
+                    [
+                        DemandWergild<TContext>(ford, 1),
+                        new RemoveStatusNode<TContext>(
+                            ford, new StatusDefinitionId(CommonMandateGrantedId)),
+                    ]))));
 
         return Rule(TollOnBothBanksId, "Toll on Both Banks",
-            "Every Claim the Two-Bank Toll Ford is granted becomes a demand for 1 Wergild as well. The Claim "
-            + "stays where it is: a right and a price are two different things.",
+            "Every Claim the Two-Bank Toll Ford is granted becomes a demand for 1 Wergild as well — and so "
+            + "does standing merely lent to it. The Claim stays where it is: a right and a price are two "
+            + "different things.",
             [
                 // A merged status raises StatusApplied for the first grant and StatusMerged for every one
                 // after, so the toll has to be collected at both.

@@ -255,7 +255,10 @@ public static partial class ActThree
             "This party's Claims cannot be taken, copied or spent by anybody else. It may still be given more.");
 
     // The parties whose Claims another rule is allowed to move or spend: everybody except whoever the fight
-    // has already recognised as the sitting occupier.
+    // has already recognised as the sitting occupier, and whoever's standing is currently before the bench.
+    // Every rule in the act that reaches for somebody ELSE's Claim goes through this one door.
     public static ICombatantTargetSelector ClaimsOthersMayTake(ICombatantTargetSelector among) =>
-        CombatantTargetSelectors.WithoutStatus(among, new StatusDefinitionId(PriorPossessionId));
+        CombatantTargetSelectors.WithoutStatus(
+            CombatantTargetSelectors.WithoutStatus(among, new StatusDefinitionId(PriorPossessionId)),
+            new StatusDefinitionId(UnderReviewId));
 }

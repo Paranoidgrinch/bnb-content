@@ -1413,3 +1413,26 @@ to be spelled twice.
 one counter would race — the order two CardPlayed rules fire in is not decided — and whichever wrote first
 would leave the other comparing a card against itself. The Reckoning Hedge and the Blackthorn Bride both
 measure, and can stand in the same fight.
+
+## Act III — the quorum and the appeal (2026-08-28)
+
+**Common Mandate is a licence, not standing.** "Another party may spend 1 Claim belonging to the Mushroom
+Circle to pay the Claim cost of its own ability" — nothing changes hands, so the Circle spends one of its
+own and marks its neighbour as acting under it. Each identity with a Claim-driven ability answers that
+marker as well as the Claim: the Two-Bank Toll Ford charges for standing merely lent to it exactly as it
+charges for standing it was granted.
+
+**A spent Claim is announced too** (`claim_consumed`), because Stage 10's Handworn Tally Coin counts
+consumption and nothing else, and consumption is distinct from a transfer, a review, or a removal.
+
+**Under Review is read by the one door.** Every rule in the act that reaches for somebody ELSE's Claim goes
+through `ActThree.ClaimsOthersMayTake`, which now excludes both the sitting occupier (Prior Possession) and
+whoever is currently before the bench.
+
+**Settlement on Appeal lives in the settlement.** Only the moment a demand is settled knows that it was
+settled, so the Sedge Bench cannot extinguish the reviewed Claim itself — the rule sits in the Wergild
+settlement, where the creditor that paid in full and happens to be under review loses the Claim as well.
+
+**A transfer hands over only what was handed in.** Two rules can answer the same grant, and the pair would
+otherwise make two Claims out of one. The transfer is guarded on the giver actually holding something —
+which also proves, incidentally, that two triggered programs on one event do see each other's effects.

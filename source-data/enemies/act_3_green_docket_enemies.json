@@ -915,5 +915,270 @@
       "hospitality",
       "stage_covenants"
     ]
+  },
+  {
+    "id": "mandated_mushroom_circle",
+    "name": "Mandated Mushroom Circle",
+    "max_hp": 94,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "call_quorum",
+        "name": "Call Quorum",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 11
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "trespass",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "ring_of_caps",
+        "name": "Ring of Caps",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 22
+          }
+        ]
+      },
+      {
+        "id": "spore_press",
+        "name": "Spore Press",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 16
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "green_docket_body"
+      },
+      {
+        "status": "quorum_requires_dissent"
+      },
+      {
+        "status": "common_mandate"
+      }
+    ],
+    "tags": [
+      "green_docket",
+      "quorum",
+      "normal",
+      "claim",
+      "stage_quorum"
+    ]
+  },
+  {
+    "id": "bracken_moot",
+    "name": "The Bracken Moot",
+    "max_hp": 98,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "hear_petition",
+        "name": "Hear Petition",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 11
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "trespass",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "majority_finding",
+        "name": "Majority Finding",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 18
+          }
+        ]
+      },
+      {
+        "id": "adjourn",
+        "name": "Adjourn",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 22
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "green_docket_body"
+      },
+      {
+        "status": "claims_are_heard_together"
+      }
+    ],
+    "tags": [
+      "green_docket",
+      "quorum",
+      "normal",
+      "claim",
+      "stage_quorum"
+    ]
+  },
+  {
+    "id": "ditch_lamprey_of_appeals",
+    "name": "Ditch Lamprey of Appeals",
+    "max_hp": 98,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "attach_to_the_appeal",
+        "name": "Attach to the Appeal",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 12
+          }
+        ]
+      },
+      {
+        "id": "drain_standing",
+        "name": "Drain Standing",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 18
+          }
+        ]
+      },
+      {
+        "id": "return_the_appeal",
+        "name": "Return the Appeal",
+        "intent_type": "debuff",
+        "actions": []
+      },
+      {
+        "id": "bog_grip",
+        "name": "Bog Grip",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 20
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "green_docket_body"
+      },
+      {
+        "status": "attach_to_the_appeal"
+      }
+    ],
+    "tags": [
+      "green_docket",
+      "appeals",
+      "normal",
+      "claim",
+      "stage_appeals"
+    ]
+  },
+  {
+    "id": "the_sedge_bench",
+    "name": "The Sedge Bench",
+    "max_hp": 111,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "contempt_of_review",
+        "name": "Contempt of Review",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 19
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "trespass",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "call_the_matter",
+        "name": "Call the Matter",
+        "intent_type": "debuff",
+        "actions": [
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "wergild",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "hold_under_review",
+        "name": "Hold Under Review",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 22
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "green_docket_body"
+      },
+      {
+        "status": "under_review_bench"
+      }
+    ],
+    "tags": [
+      "green_docket",
+      "appeals",
+      "normal",
+      "claim",
+      "wergild",
+      "stage_appeals"
+    ]
   }
 ]
