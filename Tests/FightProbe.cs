@@ -101,8 +101,10 @@ internal static class FightProbe
     private static IReadOnlyList<StartingStatusSpec> HeroStatuses(params string[] enemyIds) =>
     [
         new StartingStatusSpec(new StatusDefinitionId(PassiveStatuses.ApplicantId), 1),
-        // …plus whatever the roster serves ON the player at the first bell (the Knight's Final Notice).
+        // …plus whatever the roster serves ON the player at the first bell (the Knight's Final Notice) …
         .. enemyIds.Distinct().SelectMany(EncounterPassives.HeroOpeningStatuses),
+        // … and whatever the ACT serves once per fight (Act III's customs and its opening Safe-Conduct).
+        .. EncounterPassives.ActOpeningStatuses(enemyIds),
     ];
 
     // A multi-enemy probe: each member is an authored enemy narrowed to one intent, optionally at the reduced

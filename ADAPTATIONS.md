@@ -1286,3 +1286,39 @@ anything it did not name from the entity's own text.
 The five keyword statuses are described **here** rather than copied from `source-data/statuses/statuses.json`:
 the original's text says "at the start of the player's turn" for statuses this engine ticks on whoever is
 carrying them, and a description that describes another game's rule is worse than none.
+
+---
+
+## Act III — the Green Docket's vocabulary (2026-08-28)
+
+**Safe-Conduct spends itself.** The design says the player *may* spend 1 Safe-Conduct to prevent a Trespass
+application "from a concrete source". There is no moment in this engine at which a player is asked; a
+prohibition is an interceptor and answers before anyone can be consulted. Safe-Conduct therefore refuses the
+next Trespass automatically, oldest stack first. Since the licence refuses Trespass and nothing else, there
+is nothing to save it for.
+
+**One stack pays for one stack.** Every Trespass in the act is applied one at a time, so "prevent the full
+Trespass application" and "prevent one stack" are the same rule today. If a later source ever files 2 at
+once, one Safe-Conduct will refuse one of them.
+
+**A Claim is a resource; a claim being MADE is a separate announcement.** The design's own §3 spends a page
+keeping "newly created" apart from "transferred", because that distinction is what stops the Boundary
+Stone / Ditch Lamprey / Bracken Moot loop. A single status could not carry both readings — moving stacks
+between two enemies raises the same events as granting them — so the content keeps two: `claim`, the
+standing, and `claim_created`, a count that only ever grows. Everything that "creates" a Claim goes through
+`ActThree.CreateClaim`, which raises both; a transfer moves only the first.
+
+**The Claim ceiling is enforced where Claims are made**, not by the status. An enemy already holding 3
+neither gains a fourth nor announces one, so a rule waiting on a new Claim does not fire for a Claim that
+was never granted.
+
+**"The first time each player turn" is a latch cleared at the player's turn start.** Turns here belong to
+combatants, not to the table, so the window a rule counts in runs from one player turn start to the next —
+which means a violation the enemies file during their own turn belongs to the player turn that just ended.
+The Cairn of Stray Paths is the first rule this matters for and it reads correctly either way; later
+identities that count "per player turn" use the same window.
+
+**Trespass from a Local Law is filed in the lawgiver's name.** A Local Law answers something the PLAYER
+did, so the acting source of the rule is the player. Filing the violation in the player's name would mean
+no source ever reaches three, so the engine grew a seam for it (`applyStatus` may name its source), and a
+law whose author is dead files nothing at all.
