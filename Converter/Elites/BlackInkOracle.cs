@@ -40,7 +40,9 @@ public static class BlackInkOracle
 
     public static IEnumerable<StatusData> Statuses() =>
     [
-        Marker(TheOracleId, "The Black-Ink Oracle"),
+        Marker(TheOracleId, "The Black-Ink Oracle",
+            "On a Riddle turn it blacks out a field of one of your cards and asks about it. Answer, buy the "
+            + "certainty for an Energy, or refuse — refusing costs exactly what being wrong costs."),
         BlackInk(),
         Rules(),
         ActTwo.Reference(OracleReferenceId, "Blackened Citation", OracleReferenceMark,
@@ -271,7 +273,9 @@ public static class BlackInkOracle
     private static IEffectNode<EnemyActionContext> Damage(int amount) =>
         new DealDamageNode<EnemyActionContext>(Opponent, new ConstantExpression<EnemyActionContext>(amount));
 
-    private static StatusData Marker(string id, string name) => Rule(id, name, name, []);
+    // A marker still owes the player an explanation on hover: naming it twice explains nothing.
+    private static StatusData Marker(string id, string name, string description) =>
+        Rule(id, name, description, []);
 
     private static StatusData Rule(
         string id, string name, string description, IReadOnlyList<StatusTriggerData> triggers) => new()

@@ -48,9 +48,13 @@ public static class ObituaryWithThreeEndings
 
     public static IEnumerable<StatusData> Statuses() =>
     [
-        Marker(TheObituaryId, "The Obituary"),
-        Marker(HeroicPhaseId, "A Heroic Life"),
-        Marker(AccuratePhaseId, "A Completely Accurate Account"),
+        Marker(TheObituaryId, "The Obituary",
+            "A biography that will not be finished badly. Kill it while its record is unsettled and the death "
+            + "does not take — it is rewritten and comes back as a different life."),
+        Marker(HeroicPhaseId, "A Heroic Life",
+            "The second ending. This death is only final if you have played a Redacted card this turn."),
+        Marker(AccuratePhaseId, "A Completely Accurate Account",
+            "The last ending. There is nothing left to rewrite: this death takes."),
         RespectableLife(),
         HeroicLife(),
         Rules(),
@@ -293,7 +297,9 @@ public static class ObituaryWithThreeEndings
 
     private static ConstantExpression<EnemyActionContext> Const(int value) => new(value);
 
-    private static StatusData Marker(string id, string name) => Rule(id, name, name, []);
+    // A marker still owes the player an explanation on hover: naming it twice explains nothing.
+    private static StatusData Marker(string id, string name, string description) =>
+        Rule(id, name, description, []);
 
     private static StatusData Rule(
         string id, string name, string description, IReadOnlyList<StatusTriggerData> triggers) => new()

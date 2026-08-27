@@ -104,7 +104,8 @@ public static class DeputyUndersecretary
         PassiveStatuses.NamedMarker(DeskFullId, "The Desk Is Full",
             "The Deputy's next action declares the matter urgent."),
         PassiveStatuses.NamedMarker(ExecutiveId, "Executive Disposition", "Phase II."),
-        PassiveStatuses.NamedMarker(FilingNotedId, "Filing Noted", null),
+        PassiveStatuses.NamedMarker(FilingNotedId, "Filing Noted",
+            "The Desk has already noted a filing this turn."),
         Stacked(FileComplaintId, "Executive File: Unanswered Complaint",
             "The Deputy gains 4 Block per intensity when its turn starts."),
         Stacked(FileDelayId, "Executive File: Accumulated Delay",
@@ -553,6 +554,8 @@ public static class DeputyUndersecretary
         {
             Id = DeputyId,
             NameKey = "The Deputy Undersecretary",
+            DescriptionKey = "The Desk holds up to three Matters at once, each of them a countdown on you. Let one run out and it "
++ "goes Overdue and leaves Backlog; four Backlog fills the Desk and the Deputy takes over.",
             Polarity = StatusPolarity.Neutral,
             StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
             UsesStacks = false,

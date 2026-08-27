@@ -41,11 +41,13 @@ public static class StatusMapper
             // keyword substrate. The source data still lists them, and the completeness check below still
             // insists it does, because the enemies reference them by id.
             Status(byId["panic"], StatusPolarity.Debuff,
+                "At the start of its turn, this character draws 1 fewer card per stack. One stack fades each turn.",
                 passives: [new PassiveModifierData(PassiveModifierPipeline.TurnStartDraw,
                     PassiveModifierOperation.AddPerStack, -1, RestrictDamageKind: null)],
                 triggers: [TurnEnded(ConsumeOneStack("panic"))]),
 
             Status(byId["fatigue"], StatusPolarity.Debuff,
+                "At the start of its turn, this character loses 1 Energy. One stack fades each turn.",
                 triggers: [Trigger("TurnStarted", CombatProgramModel.Build<TurnStartedTriggeredEffectContext>(
                     CombatNodeModel.Sequence(
                     [
@@ -55,14 +57,19 @@ public static class StatusMapper
                     ])))]),
 
             Status(byId["strength"], StatusPolarity.Buff,
+                "This character's attacks deal 1 more damage per stack.",
                 passives: [new PassiveModifierData(PassiveModifierPipeline.DamageDealt,
                     PassiveModifierOperation.AddPerStack, 1)]),
 
             Status(byId["poison"], StatusPolarity.Debuff,
+                "At the start of its turn, this character loses HP equal to its Poison, ignoring Block. "
+                + "Then one stack fades.",
                 tags: [StandardCombatIds.DamageOverTimeTag.value],
                 triggers: [TurnEnded(ConsumeOneStack("poison"))]),
 
             Status(byId["bookworm"], StatusPolarity.Buff,
+                "Just before this character's Paperwork resolves, that much Paperwork is eaten instead — one "
+                + "stack of Bookworm per stack of Paperwork, and both are spent together. What is not eaten stays.",
                 triggers: [Trigger("TurnStarted", Bookworm())]),
         ];
     }
@@ -109,14 +116,19 @@ public static class StatusMapper
             new SubtractExpression<TurnStartedTriggeredEffectContext>(
                 new ConstantExpression<TurnStartedTriggeredEffectContext>(0), amount));
 
+    // `rules` is the description the PLAYER reads on hover, and it is written here rather than copied from
+    // the source data because this port deviates: the original's text says "the player's turn" for statuses
+    // the engine ticks on whoever is carrying them, and a description that describes another game's rule is
+    // worse than none. Every status the player can see owes them one (Tests/StatusDescriptionTests).
     private static StatusData Status(
-        BabStatus source, StatusPolarity polarity,
+        BabStatus source, StatusPolarity polarity, string rules,
         IReadOnlyList<string>? tags = null,
         IReadOnlyList<PassiveModifierData>? passives = null,
         IReadOnlyList<StatusTriggerData>? triggers = null) => new()
         {
             Id = source.Id,
             NameKey = source.Name,
+            DescriptionKey = rules,
             Polarity = polarity,
             StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
             UsesStacks = true,

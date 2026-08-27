@@ -54,8 +54,10 @@ public static class MunicipalDragon
         Stacked(PermitId, "Hoarded Permit", "3 Block a turn, and 2 damage on the Dragon's Assessment."),
         CodeViolation(),
         Stacked(AuthorizationId, "Authorization", "Spend one on a boss-context action, once per turn."),
-        PassiveStatuses.NamedMarker(ActionUsedId, "Authority Exercised", null),
-        PassiveStatuses.NamedMarker(StealUsedId, "Permit Prised Loose", null),
+        PassiveStatuses.NamedMarker(ActionUsedId, "Authority Exercised",
+            "You have already used your stolen authority this turn."),
+        PassiveStatuses.NamedMarker(StealUsedId, "Permit Prised Loose",
+            "A Permit has already been prised out of the hoard this turn."),
         PassiveStatuses.NamedMarker(BurnPendingId, "Burning the Registry",
             "The Dragon's next action burns the hoard."),
         PassiveStatuses.NamedMarker(UnlicensedId, "Unlicensed", "Phase II."),
@@ -276,6 +278,8 @@ public static class MunicipalDragon
         {
             Id = DragonId,
             NameKey = "The Municipal Dragon",
+            DescriptionKey = "The hoard is a stack of Hoarded Permits: each one is 3 Block a turn and 2 damage on its Assessment. "
++ "Hit hard enough in a single turn to prise one loose and spend it as Authorization.",
             Polarity = StatusPolarity.Neutral,
             StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
             UsesStacks = false,

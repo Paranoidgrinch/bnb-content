@@ -48,7 +48,9 @@ public static class CatalogueOfUnwiseNames
 
     public static IEnumerable<StatusData> Statuses() =>
     [
-        Marker(TheBlackCatalogueId, "The Black Catalogue"),
+        Marker(TheBlackCatalogueId, "The Black Catalogue",
+            "Three empty lines in a black book. Naming a card of yours makes it cheaper once — and the Citation "
+            + "that naming incurs is chosen and shown before you take the benefit."),
         NextNameStrikes(),
         CatalogueRules(),
         // Citation of Record reuses the act's own Reference machinery: the tracked instance becomes Referenced
@@ -358,7 +360,9 @@ public static class CatalogueOfUnwiseNames
         new ComparisonExpression<TContext>(
             Count<TContext>(counter), ComparisonOperator.Greater, new ConstantExpression<TContext>(0));
 
-    private static StatusData Marker(string id, string name) => Rule(id, name, name, []);
+    // A marker still owes the player an explanation on hover: naming it twice explains nothing.
+    private static StatusData Marker(string id, string name, string description) =>
+        Rule(id, name, description, []);
 
     private static StatusData Rule(
         string id, string name, string description, IReadOnlyList<StatusTriggerData> triggers) => new()

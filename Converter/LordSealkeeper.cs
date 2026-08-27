@@ -63,16 +63,20 @@ public static class LordSealkeeper
         PassiveStatuses.NamedMarker(AccessSealId, Seals[0].SealName, Seals[0].SealText),
         PassiveStatuses.NamedMarker(TestimonySealId, Seals[1].SealName, Seals[1].SealText),
         GreatSealOfExecution(),
-        PassiveStatuses.NamedMarker(TestimonyNotedId, "Testimony Recorded", null),
+        PassiveStatuses.NamedMarker(TestimonyNotedId, "Testimony Recorded",
+            "Testimony has already been recorded this turn."),
         PassiveStatuses.NamedMarker(BreakReadyId, "A Seal May Break",
             "Choose a Great Seal to break this turn."),
-        PassiveStatuses.NamedMarker(BreakUsedId, "A Seal Has Broken", null),
+        PassiveStatuses.NamedMarker(BreakUsedId, "A Seal Has Broken",
+            "One Seal has already been broken this turn. The next has to wait."),
         PassiveStatuses.NamedMarker(UnsealPendingId, "The Keeper Unseals Itself",
             "Its next action sheds what is left of the Seals."),
         PassiveStatuses.NamedMarker(UnsealedId, "Unsealed Authority", "Phase II."),
         PassiveStatuses.NamedMarker(ReclaimPendingId, "Reclaiming a Fragment",
             "Its next action takes back a Fragment you have not spent."),
-        .. Seals.Select(s => PassiveStatuses.NamedMarker(s.OutstandingId, s.FragmentName + " (unspent)", null)),
+        .. Seals.Select(s => PassiveStatuses.NamedMarker(s.OutstandingId, s.FragmentName + " (unspent)",
+            $"{s.FragmentName} is out of the Keeper's hands and still unspent. In Phase II it will try to take "
+            + "it back.")),
         Cracked(),
         BluntedStamp(),
     ];
@@ -350,6 +354,8 @@ public static class LordSealkeeper
         {
             Id = SealkeeperId,
             NameKey = "The Lord Sealkeeper",
+            DescriptionKey = "Three Great Seals stand on the Keeper. Each of your turns they raise a Ward of Block; strip that Block "
++ "and draw blood to break a Seal of your choosing — and take the Fragment it leaves in your hand.",
             Polarity = StatusPolarity.Neutral,
             StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
             UsesStacks = false,

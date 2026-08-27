@@ -55,58 +55,91 @@ public static class PassiveStatuses
         OneRemainingSeal(),
         SealIntact(),
         WitnessTheSeal(),
-        Marker(BothDirectionsMandatoryId, "Both Directions Mandatory"),
+        Marker(BothDirectionsMandatoryId, "Both Directions Mandatory",
+            "The first card you play each turn picks the road: a Deed sends the Signpost down the dangerous "
+            + "shortcut, anything else down the long administrative route. Play nothing and it lists no route."),
         Loophole(),
         // The applicant marker itself is built in Cards/Keywords.cs: besides marking the player it keeps the
         // record of what got through each round, which several cards ask about and which therefore has to be
         // kept whether or not the player is wearing anything else.
         StillInForce(),
-        Marker(StolenSandId, "Stolen Sand"),
+        Marker(StolenSandId, "Stolen Sand",
+            "Every time Fatigue actually takes Energy from you, the Hourglass banks a grain — up to three."),
         YourNumberIsFading(),
-        Marker(StolenMinuteId, "Stolen Minute"),
+        Marker(StolenMinuteId, "Stolen Minute",
+            "End a turn on exactly 0 Energy and the Moth keeps the minute, up to two. At two it spends them."),
         Counterclaim(),
         Sustained(),
         CorrectAgainstTheEvidence(),
         .. CardTypes.Select(Correction),
-        Marker(OutstandingWarrantId, "Outstanding Warrant"),
+        Marker(OutstandingWarrantId, "Outstanding Warrant",
+            "While you are carrying 4 or more Paperwork, the Bailiff's attacks hit for 5 more."),
         WarrantServed(),
         SeizeTheFiling(),
         BreakTheApproach(),
-        Marker(YourNumberCameUpId, "Your Number Came Up"),
+        Marker(YourNumberCameUpId, "Your Number Came Up",
+            "Each time a stack of Panic fades from you on its own, the Wisp burns and you take 4 damage. "
+            + "Cleansing Panic outright does not feed it."),
         CarbonCopies(),
-        .. Appointments.Select(a => AppointmentDue(a.StatusId, a.Name, a.Due, a.Expiry)),
+        .. Appointments.Select(a => AppointmentDue(a.StatusId, a.Name, a.Description, a.Due, a.Expiry)),
         AppointmentsAccelerated(),
         OfficeHours(),
-        Marker(LostTimeLedgerId, "Lost Time"),
-        Marker(PetitionId, "The Petition"),
-        Marker(PhantomId, "Remanded Case"),
+        Marker(LostTimeLedgerId, "Lost Time",
+            "Every point of Energy you leave unspent at the end of your turn becomes Lost Time here, up to three."),
+        Marker(PetitionId, "The Petition",
+            "At the start of each of your turns the Chorus lays one of its three clauses into your hand. "
+            + "They take turns."),
+        Marker(PhantomId, "Remanded Case",
+            "The case itself. While a living, unspent Remanding Writ still stands, downing this body sends the "
+            + "case back instead of ending it."),
         RemandingWrit(),
         Remandable(),
-        Marker(SpentWritId, "Spent Writ"),
-        Marker(StepLowerId, "Lower Step"),
-        Marker(StepMiddleId, "Middle Step"),
-        Marker(StepUpperId, "Upper Step"),
+        Marker(SpentWritId, "Spent Writ",
+            "This Writ has already sent the case back once. It cannot do it again."),
+        Marker(StepLowerId, "Lower Step",
+            "The bottom of the staircase. A case held here climbs at the end of its holder's turn."),
+        Marker(StepMiddleId, "Middle Step",
+            "The middle of the staircase. A case held here climbs one step, or is remanded back down."),
+        Marker(StepUpperId, "Upper Step",
+            "The top of the staircase. A case that gets here has nowhere left to climb, and the ruling is "
+            + "announced instead."),
         HoldsTheCase(),
         RulingPending(),
-        Marker(IronWarrantId, "Iron Warrant"),
+        Marker(IronWarrantId, "Iron Warrant",
+            "At the start of each of your turns the Avatar issues one achievable demand. The orders take turns, "
+            + "so the same one never comes twice running."),
         Contempt(),
-        Marker(InventoryLanternId, "Inventory Lantern"),
-        Marker(LockCartId, "Lock Cart"),
-        Marker(SeizureMarshalId, "Seizure Marshal"),
-        Marker(InventoryPendingId, "Inventoried"),
+        Marker(InventoryLanternId, "Inventory Lantern",
+            "One card you draw each turn is marked as the Procession's property."),
+        Marker(LockCartId, "Lock Cart",
+            "A marked card still in your hand when your turn ends is taken away — and every seizure hardens "
+            + "the Marshal."),
+        Marker(SeizureMarshalId, "Seizure Marshal",
+            "Grows stronger with every card the Lock Cart takes."),
+        Marker(InventoryPendingId, "Inventoried",
+            "The Lantern has marked a card of yours as property this turn."),
         FinalNotice(),
         EnforcementServed(),
-        Marker(ServiceAcknowledgedId, "Service Acknowledged"),
-        Marker(FinalNoticeKnightId, "Final Notice Knight"),
-        Marker(SealedSpearId, "Sealed Spear"),
-        Marker(DeadlineCountingId, "Deadline Running"),
-        Marker(DeadlineServedId, "Deadline Served"),
-        Marker(GateShutId, "Gate: Shut"),
+        Marker(ServiceAcknowledgedId, "Service Acknowledged",
+            "You signed for the notice: 2 Paperwork now, and a lighter enforcement when the deadline lands."),
+        Marker(FinalNoticeKnightId, "Final Notice Knight",
+            "The one serving the notice. The deadline runs on you, not on it."),
+        Marker(SealedSpearId, "Sealed Spear",
+            "Bound to the notice. What its death does depends on whether the deadline has already been served."),
+        Marker(DeadlineCountingId, "Deadline Running",
+            "The Final Notice is counting down at the end of each of your turns."),
+        Marker(DeadlineServedId, "Deadline Served",
+            "The deadline has run out. Enforcement lands on the Knight's next action, so you get one turn to "
+            + "answer it."),
+        Marker(GateShutId, "Gate: Shut",
+            "The portcullis is down. Hit hard enough in a single turn and it grinds upward."),
         GateHalfRaised(),
         GateOpen(),
-        Marker(HeldOpenId, "Held Open"),
+        Marker(HeldOpenId, "Held Open",
+            "The gate has been forced and is being kept there. A turn that does not hit hard enough lets it "
+            + "grind back down."),
         TheGatehouse(),
-        .. ComplianceOrders.Select(o => Marker(o.StatusId, o.Name)),
+        .. ComplianceOrders.Select(o => Marker(o.StatusId, o.Name, o.Description)),
         .. DeputyUndersecretary.Statuses(),
         .. QueueCommissioner.Statuses(),
         .. LordSealkeeper.Statuses(),
@@ -203,12 +236,16 @@ public static class PassiveStatuses
         Triggers = [],
     };
 
-    public sealed record ComplianceOrder(string StatusId, string Name, Func<ICombatExpression<TurnEndedTriggeredEffectContext, bool>> Fulfilled);
+    public sealed record ComplianceOrder(
+        string StatusId, string Name, string Description,
+        Func<ICombatExpression<TurnEndedTriggeredEffectContext, bool>> Fulfilled);
 
     public static readonly ComplianceOrder[] ComplianceOrders =
     [
         // "Spend at least 3 Energy this turn" — with a three-Energy hero that is an emptied pool.
-        new("order_pay_the_fee", "Order: Pay the Fee", () =>
+        new("order_pay_the_fee", "Order: Pay the Fee",
+            "Spend at least 3 Energy this turn. Obey and the Avatar takes 5; refuse and it takes it in Contempt.",
+            () =>
             new ComparisonExpression<TurnEndedTriggeredEffectContext>(
                 new CombatantCurrentResourceExpression<TurnEndedTriggeredEffectContext>(
                     CombatantTargetSelectors.Source, StandardCombatIds.EnergyResource),
@@ -216,7 +253,10 @@ public static class PassiveStatuses
                 new ConstantExpression<TurnEndedTriggeredEffectContext>(0))),
 
         // "Play at least two different card types this turn."
-        new("order_file_two_kinds", "Order: File Two Kinds", () =>
+        new("order_file_two_kinds", "Order: File Two Kinds",
+            "Play at least two different kinds of card this turn. Obey and the Avatar takes 5; refuse and it "
+            + "takes it in Contempt.",
+            () =>
         {
             ICombatExpression<TurnEndedTriggeredEffectContext, int>? kinds = null;
             foreach (var type in CardTypes)
@@ -234,7 +274,9 @@ public static class PassiveStatuses
         }),
 
         // "Play a Skill before the first Attack" — the turn's opening card must not be an attack.
-        new("order_observe_the_sequence", "Order: Observe the Sequence", () =>
+        new("order_observe_the_sequence", "Order: Observe the Sequence",
+            "Do not open the turn with a Deed. Obey and the Avatar takes 5; refuse and it takes it in Contempt.",
+            () =>
             new AndExpression<TurnEndedTriggeredEffectContext>(
                 new ComparisonExpression<TurnEndedTriggeredEffectContext>(
                     new CardsPlayedThisTurnExpression<TurnEndedTriggeredEffectContext>(CombatantTargetSelectors.Source),
@@ -260,6 +302,7 @@ public static class PassiveStatuses
         {
             Id = ContemptId,
             NameKey = "Contempt",
+            DescriptionKey = "Every point makes the Avatar's next direct attack hit 4 harder — and that attack spends the lot.",
             Polarity = StatusPolarity.Buff,
             StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
             UsesStacks = true,
@@ -419,6 +462,8 @@ public static class PassiveStatuses
         {
             Id = HoldsTheCaseId,
             NameKey = "Holds the Case",
+            DescriptionKey = "Whoever holds the case hits 2 harder. Deal 12 damage to the holder inside one of your turns and the "
++ "case is remanded a step down; otherwise it climbs at the holder's turn end.",
             Polarity = StatusPolarity.Buff,
             StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
             UsesStacks = true,
@@ -449,7 +494,9 @@ public static class PassiveStatuses
                 marked, new StatusDefinitionId(RulingPendingId),
                 new ConstantExpression<RoundEndedTriggeredEffectContext>(-1)));
 
-        return Passive(RulingPendingId, "Ruling Pending", "RoundEnded", program);
+        return Passive(RulingPendingId, "Ruling Pending",
+            "A ruling has been announced against you. The other Steps stand aside for the round it takes to land.",
+            "RoundEnded", program);
     }
 
     // The Remanded Case: two bodies and two legitimate kill orders. The Phantom carries the return rule, the
@@ -469,6 +516,8 @@ public static class PassiveStatuses
     {
         Id = RemandableId,
         NameKey = "Remandable",
+        DescriptionKey = "While a living, unspent Remanding Writ still stands, the first time this body would go down the case "
++ "is remanded instead — and it comes back angrier.",
         Polarity = StatusPolarity.Buff,
         StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
         UsesStacks = false,
@@ -515,7 +564,10 @@ public static class PassiveStatuses
                         new ConstantExpression<CombatantDownedTriggeredEffectContext>(-1)),
                 })));
 
-        return Passive(RemandingWritId, "Remanding Writ", "Downed", program);
+        return Passive(RemandingWritId, "Remanding Writ",
+            "While this Writ lives, downing the case remands it instead of ending it. Kill the Writ first and "
+            + "the case takes Finality — and its next move is Final Judgment.",
+            "Downed", program);
     }
 
     // Living Petition Chorus: the marker the clause cards write their signatures and liabilities onto.
@@ -605,6 +657,8 @@ public static class PassiveStatuses
         {
             Id = OfficeHoursId,
             NameKey = "Office Hours",
+            DescriptionKey = "While the window is closed, the HP you take off is banked as Pending Business rather than lost. Two "
++ "closed windows later the office opens and processes the lot at once, then shuts after its next action.",
             Polarity = StatusPolarity.Neutral,
             StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
             UsesStacks = false,
@@ -628,12 +682,19 @@ public static class PassiveStatuses
 
     private static CounterId AppointmentStartedCounter => new("appointment_started");
 
-    public static readonly (string StatusId, string Name, int Due, Func<IEffectNode<TurnEndedTriggeredEffectContext>> Expiry)[]
+    public static readonly (string StatusId, string Name, string Description, int Due,
+        Func<IEffectNode<TurnEndedTriggeredEffectContext>> Expiry)[]
         Appointments =
         [
-            ("appointment_due_first", "Appointment Due (First)", 2, () => Expiry(damage: 7, fatigue: 1)),
-            ("appointment_due_second", "Appointment Due (Second)", 3, () => Expiry(paperwork: 2, fatigue: 1)),
-            ("appointment_due_final", "Appointment Due (Final)", 4, () => Expiry(damage: 15, fatigue: 1)),
+            ("appointment_due_first", "Appointment Due (First)",
+                "Counts down at the end of this body's turn. When it runs out you take 7 damage and 1 Fatigue.",
+                2, () => Expiry(damage: 7, fatigue: 1)),
+            ("appointment_due_second", "Appointment Due (Second)",
+                "Counts down at the end of this body's turn. When it runs out you take 2 Paperwork and 1 Fatigue.",
+                3, () => Expiry(paperwork: 2, fatigue: 1)),
+            ("appointment_due_final", "Appointment Due (Final)",
+                "Counts down at the end of this body's turn. When it runs out you take 15 damage and 1 Fatigue.",
+                4, () => Expiry(damage: 15, fatigue: 1)),
         ];
 
     private static IEffectNode<TurnEndedTriggeredEffectContext> Expiry(
@@ -655,7 +716,8 @@ public static class PassiveStatuses
     }
 
     private static StatusData AppointmentDue(
-        string id, string name, int due, Func<IEffectNode<TurnEndedTriggeredEffectContext>> expiry)
+        string id, string name, string description, int due,
+        Func<IEffectNode<TurnEndedTriggeredEffectContext>> expiry)
     {
         var self = CombatantTargetSelectors.Source;
         var remaining = new CombatantCounterExpression<TurnEndedTriggeredEffectContext>(self, AppointmentDueCounter);
@@ -702,7 +764,7 @@ public static class PassiveStatuses
                         new ConstantExpression<TurnStartedTriggeredEffectContext>(1), relative: false),
                 })));
 
-        var status = Passive(id, name, "TurnEnded", program);
+        var status = Passive(id, name, description, "TurnEnded", program);
         return status with
         {
             Triggers = [.. status.Triggers, new StatusTriggerData("TurnStarted",
@@ -723,7 +785,9 @@ public static class PassiveStatuses
                 marked, new StatusDefinitionId(AppointmentsAcceleratedId),
                 new ConstantExpression<RoundEndedTriggeredEffectContext>(-1)));
 
-        return Passive(AppointmentsAcceleratedId, "Appointments Accelerated", "RoundEnded", program);
+        return Passive(AppointmentsAcceleratedId, "Appointments Accelerated",
+            "One appointment has been moved forward. While this stands, the others hold off.",
+            "RoundEnded", program);
     }
 
     // Duplicate Copy Mites: marker + the once-per-round latch, cleared at round end like its siblings.
@@ -740,7 +804,9 @@ public static class PassiveStatuses
                 carriers, CopiedThisRoundCounter,
                 new ConstantExpression<RoundEndedTriggeredEffectContext>(0), relative: false));
 
-        return Passive(CarbonCopiesId, "Carbon Copies", "RoundEnded", program);
+        return Passive(CarbonCopiesId, "Carbon Copies",
+            "The first time each round another enemy gains Bookworm, the Mites guard themselves for 4.",
+            "RoundEnded", program);
     }
 
     // Number-Ticket Wisp: the marker its encounter trigger finds it by (the rule itself watches the PLAYER's
@@ -759,7 +825,10 @@ public static class PassiveStatuses
                 carriers, SeizedThisRoundCounter,
                 new ConstantExpression<RoundEndedTriggeredEffectContext>(0), relative: false));
 
-        return Passive(SeizeTheFilingId, "Seize the Filing", "RoundEnded", program);
+        return Passive(SeizeTheFilingId, "Seize the Filing",
+            "The first Paperwork you file on any enemy each round is turned against you: that enemy gains "
+            + "1 Bookworm, and will eat the filing at its turn start.",
+            "RoundEnded", program);
     }
 
     // Warrant Bailiff: the marker its watcher finds it by, and the buff the watcher switches on and off.
@@ -783,6 +852,7 @@ public static class PassiveStatuses
     {
         Id = WarrantServedId,
         NameKey = "Warrant Served",
+        DescriptionKey = "The warrant is out: this character's attacks hit for 5 more.",
         Polarity = StatusPolarity.Buff,
         StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
         UsesStacks = true,
@@ -852,6 +922,7 @@ public static class PassiveStatuses
         {
             Id = BreakTheApproachId,
             NameKey = "Break the Approach",
+            DescriptionKey = "The first time each turn a card strips the Ram's Block away entirely, it loses a Momentum.",
             Polarity = StatusPolarity.Neutral,
             StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
             UsesStacks = false,
@@ -929,6 +1000,8 @@ public static class PassiveStatuses
         {
             Id = CorrectAgainstTheEvidenceId,
             NameKey = "Correct Against the Evidence",
+            DescriptionKey = "The first card to take 10 or more HP off the Record each turn is studied. The next damaging card of "
++ "that same kind deals 4 less.",
             Polarity = StatusPolarity.Neutral,
             StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
             UsesStacks = false,
@@ -949,6 +1022,8 @@ public static class PassiveStatuses
     {
         Id = CorrectionId(cardType),
         NameKey = $"Corrected ({cardType})",
+        DescriptionKey = $"The Record has studied a {cardType}. The next damaging {cardType} deals 4 less, "
+            + "and the correction is spent.",
         Polarity = StatusPolarity.Buff,
         StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
         UsesStacks = true,
@@ -1013,6 +1088,7 @@ public static class PassiveStatuses
         {
             Id = CounterclaimId,
             NameKey = "Counterclaim",
+            DescriptionKey = "The first Paperwork you file on the Imp each turn is answered — you get 1 Paperwork back.",
             Polarity = StatusPolarity.Neutral,
             StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
             UsesStacks = false,
@@ -1046,7 +1122,9 @@ public static class PassiveStatuses
                 carriers, SustainedThisRoundCounter,
                 new ConstantExpression<RoundEndedTriggeredEffectContext>(0), relative: false));
 
-        return Passive(SustainedId, "Sustained", "RoundEnded", program);
+        return Passive(SustainedId, "Sustained",
+            "The first time each round another living enemy gains Block, the Gavel copies half of it, rounded down.",
+            "RoundEnded", program);
     }
 
     // Inverted Hourglass: the marker its encounter trigger finds it by; the sand itself is a counter.
@@ -1074,7 +1152,10 @@ public static class PassiveStatuses
                     CombatantTargetSelectors.Source,
                     new ConstantExpression<TurnEndedTriggeredEffectContext>(3))));
 
-        return Passive("your_number_is_fading", "Your Number Is Fading", "TurnEnded", program);
+        return Passive("your_number_is_fading", "Your Number Is Fading",
+            "At the end of each of its own turns the Token loses 3 HP unless you are carrying Fatigue. It only "
+            + "lasts as long as it can keep the queue waiting.",
+            "TurnEnded", program);
     }
 
     // The hero carries this in every fight (EncounterMapper) so a program can ask "did this happen to the
@@ -1096,7 +1177,10 @@ public static class PassiveStatuses
                 carriers, PrecedentLatchCounter,
                 new ConstantExpression<RoundEndedTriggeredEffectContext>(0), relative: false));
 
-        return Passive(StillInForceId, "Still in Force", "RoundEnded", program);
+        return Passive(StillInForceId, "Still in Force",
+            "The first time each round Panic, Doubt or Fatigue leaves you entirely, the Ghost gains 1 Precedent. "
+            + "At 2 it re-files one stack of whatever just went, and clears its Precedent.",
+            "RoundEnded", program);
     }
 
     // Exception Imp: the marker its encounter trigger finds it by, plus the once-per-round latch it clears at
@@ -1114,7 +1198,10 @@ public static class PassiveStatuses
                 carriers, LoopholeUsedCounter,
                 new ConstantExpression<RoundEndedTriggeredEffectContext>(0), relative: false));
 
-        return Passive(LoopholeId, "Loophole", "RoundEnded", program);
+        return Passive(LoopholeId, "Loophole",
+            "The first time each round the enemy side would put a negative status on you, one stack of it is "
+            + "struck out — a single stack is voided entirely — and the Imp gains 1 Strength for the exception.",
+            "RoundEnded", program);
     }
 
     // Contradictory Signpost: a pure marker so its encounter trigger can write the route counter to the
@@ -1125,11 +1212,13 @@ public static class PassiveStatuses
     // A status that carries nothing but its own presence: the handle a cross-combatant trigger uses to find
     // one specific enemy, since selectors are structural and cannot name a combatant.
     // HALF-RAISED and OPEN are markers like SHUT; OPEN additionally makes the Judicator take 20 % more.
-    private static StatusData GateHalfRaised() => Marker(GateHalfId, "Gate: Half-Raised");
+    private static StatusData GateHalfRaised() => Marker(GateHalfId, "Gate: Half-Raised",
+        "The portcullis is halfway up. Another hard turn opens it; a soft one lets it fall.");
 
     private static StatusData GateOpen()
     {
-        var open = Marker(GateOpenId, "Gate: Open");
+        var open = Marker(GateOpenId, "Gate: Open",
+            "The portcullis is up and the Judicator is exposed: while it stands open it takes 20 % more damage.");
         return open with
         {
             PassiveModifiers =
@@ -1259,6 +1348,8 @@ public static class PassiveStatuses
         {
             Id = GatehouseId,
             NameKey = "The Gatehouse",
+            DescriptionKey = "The portcullis answers how hard you hit in a single turn: enough forces it up the moment the threshold "
++ "is crossed, and a turn that falls short lets it grind back down.",
             Polarity = StatusPolarity.Neutral,
             StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
             UsesStacks = false,
@@ -1275,13 +1366,16 @@ public static class PassiveStatuses
     }
 
     // A marker with a player-facing description (boss state the UI should explain).
-    public static StatusData NamedMarker(string id, string name, string? description) =>
-        Marker(id, name) with { DescriptionKey = description };
+    public static StatusData NamedMarker(string id, string name, string description) =>
+        Marker(id, name, description);
 
-    private static StatusData Marker(string id, string name) => new()
+    // Every status the player can see owes them an explanation on hover, so a description is not optional
+    // here — a marker with a name and nothing else is a riddle on a chip (Tests/StatusDescriptionTests).
+    private static StatusData Marker(string id, string name, string description) => new()
     {
         Id = id,
         NameKey = name,
+        DescriptionKey = description,
         Polarity = StatusPolarity.Neutral,
         StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
         UsesStacks = false,
@@ -1316,7 +1410,10 @@ public static class PassiveStatuses
                 new SetCombatantCounterNode<TurnStartedTriggeredEffectContext>(
                     CombatantTargetSelectors.Source, QueuePositionCounter, cappedIncrement, relative: false)));
 
-        return Passive(QueueAdvancesId, "The Queue Advances", "TurnStarted", program);
+        return Passive(QueueAdvancesId, "The Queue Advances",
+            "End a turn having played 3 or more cards and the line moves: 1 Queue Position, up to 3. At 3 it "
+            + "does Everyone Moves at Once and the count goes back to nothing.",
+            "TurnStarted", program);
     }
 
     // "Still Missing a Signature" (Unsigned Form Ghost): while the Ghost carries fewer than 3 Paperwork it takes
@@ -1333,6 +1430,8 @@ public static class PassiveStatuses
     {
         Id = StillMissingASignatureId,
         NameKey = "Still Missing a Signature",
+        DescriptionKey = "While the Ghost carries fewer than 3 Paperwork, it takes 25 % less damage from cards and attacks. "
++ "File enough on it and the form is finally signed.",
         Polarity = StatusPolarity.Neutral,
         StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
         UsesStacks = false,
@@ -1380,6 +1479,7 @@ public static class PassiveStatuses
     {
         Id = SignaturePendingId,
         NameKey = "Signature Pending",
+        DescriptionKey = "The form is unsigned: 25 % less damage from cards and attacks. Paperwork's own tick goes through it.",
         Polarity = StatusPolarity.Buff,
         StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
         UsesStacks = true,
@@ -1401,6 +1501,7 @@ public static class PassiveStatuses
     {
         Id = PaperSealsWaxId,
         NameKey = "Paper Seals Wax",
+        DescriptionKey = "The first time each of your turns the Notary receives Paperwork, it gains 5 Block. The Paperwork stays.",
         Polarity = StatusPolarity.Neutral,
         StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
         UsesStacks = false,
@@ -1513,6 +1614,8 @@ public static class PassiveStatuses
         {
             Id = OneRemainingSealId,
             NameKey = "One Remaining Seal",
+            DescriptionKey = "While the seal holds, the first card to hit the Ward each turn deals 4 less. Deal it 18 or more damage "
++ "inside a single turn and the seal breaks for good, taking 6 off the Ward with it.",
             Polarity = StatusPolarity.Buff,
             StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
             UsesStacks = true,
@@ -1533,6 +1636,7 @@ public static class PassiveStatuses
     {
         Id = SealIntactId,
         NameKey = "Seal Intact",
+        DescriptionKey = "The seal's dampener is armed: the next card to hit the Ward this turn deals 4 less.",
         Polarity = StatusPolarity.Buff,
         StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
         UsesStacks = true,
@@ -1559,15 +1663,19 @@ public static class PassiveStatuses
                 carriers, WitnessedThisRoundCounter,
                 new ConstantExpression<RoundEndedTriggeredEffectContext>(0), relative: false));
 
-        return Passive(WitnessTheSealId, "Witness the Seal", "RoundEnded", program);
+        return Passive(WitnessTheSealId, "Witness the Seal",
+            "The first time each round another enemy gains Block, the Candle gives it 3 more.",
+            "RoundEnded", program);
     }
 
     // Builds a hidden, non-stacking enemy status whose sole job is to carry one trigger program.
     private static StatusData Passive<TContext>(
-        string id, string name, string trigger, EffectProgram<TContext> program) where TContext : class => new()
+        string id, string name, string description, string trigger, EffectProgram<TContext> program)
+        where TContext : class => new()
     {
         Id = id,
         NameKey = name,
+        DescriptionKey = description,
         Polarity = StatusPolarity.Neutral,
         StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
         UsesStacks = false,
