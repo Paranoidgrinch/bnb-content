@@ -123,7 +123,12 @@ Open seams the later stages will want, listed when they are first needed:
       (Core `280ebf2`, which is the Juniper's injunction against safe passage), and a selector can name the
       body that fell where a mark still is (Core `285ac00`, which is Replace the Fallen). Every deviation
       from the master is written down in `ADAPTATIONS.md` §"Act III — the nine elites".
-- [ ] 11 — the bosses
+- [x] **11 — the bosses.** DONE 2026-08-28 — five encounters, 60 live tests across five files
+      (`Tests/ActThreeBoss*Tests.cs`), pinned against the master's HP table in `Tests/ActThreePoolTests.cs`.
+      Files: `Converter/ActThreeBoss{Ombudsman,Notary,Grandmother,Hill,Queen}.cs`. **No engine seam was
+      needed**; what the bosses did buy is the act's **hand budget** — a turn-end rule cannot read the hand,
+      because the turn's end puts it away first, and four rules already shipped were quietly wrong about it.
+      Every deviation is written down in `ADAPTATIONS.md` §"Act III — the five bosses".
 - [ ] 12 — the act itself: `ActRules.For(3)`, `BabLoader.Acts`, the act's own map lanes and rest /
       treasure voice, and Act III joins the walked run
 - [ ] 13 — relics, then the fifteen events

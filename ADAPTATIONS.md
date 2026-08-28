@@ -1536,3 +1536,53 @@ was dealt into is put away in the same breath.
 doubled attempt whole — so the Stag's verge is worth nothing to a player who still holds one. In a solo
 Stag fight, where the Stag itself refills the licence every turn, that is never. It is left as the master
 wrote it and belongs on the playtest watchlist rather than in a silent rewrite.
+
+## Act III — the five bosses (2026-08-28)
+
+The bosses add no sixth Act-wide mechanic either. Their local systems — Ground, Notarial Seal, Courtesy,
+Buried Claim, Favour — live and die inside their own encounters. What follows is every deviation.
+
+**A rule about the end of a turn cannot read the hand.** The turn's end puts the hand away before a rule
+about the turn's end runs, so four rules in the act that ask what the player is still holding — the Web's
+Thread of Departure, the Trail Marker's third reading, the Notary's Ring of Keeping and Grandmother's Better
+Chair — read an empty hand and were silently always-true or always-false. The act now keeps a **hand budget**
+instead (`ActThree.HandBudgetCounter`): how many real cards the hand held when it was last dealt to, counted
+forward, minus what has been played. It answers the same question, it survives a mid-turn draw because a draw
+rewrites it, and it needed no engine change.
+
+**A choice offered at the bell is offered in full, and the first one is not offered at all.** As with the
+elites: the Grandmother lays the whole table rather than showing two courtesies, and the Queen's court offers
+all four graces. The rule that matters — at most one, and declining is free — is kept exactly. And the
+opening hand is dealt while the fight is still being handed over, so the first grant is made rather than
+asked: the Ombudsman opens its hearings on the Road, Grandmother lays the table, the Queen's court settles.
+
+**"At the end of the enemy turn" and "the boss's next action" are written where they can be seen.** A
+transition is a MARKER that replaces the boss's next action rather than a hook in the turn machinery — which
+is exactly the design's "queue it as the next legal boss-state action, no direct attack" — and the Answering
+Hill's two-step thresholds fall out of it for free: the stirring sets the answering, and the whole player
+turn between them is a real turn to settle in.
+
+**Grandmother's honey is Block on a full purse.** A purse has a hard ceiling here, and the honey is poured
+while it is still full. The promise it asks for is unchanged, and that is the half of a courtesy that
+matters. Her Warm Tea keeps only the first half of its clause (play a Working); the design's second half,
+about the order of a second Attack, is not something a player can read at a glance.
+
+**The Queen's law is filed rather than gated.** "The first non-Junk card played while the player has no
+Safe-Conduct" could never fire in this port: the act opens every Green Docket fight with a licence, her own
+graces hand out more, and in a solo court nothing else spends them. Filed unconditionally it behaves exactly
+as the design describes — leave to speak is what a licence IS, so while you hold one the court takes it and
+says nothing, and the first word you say without one is the violation.
+
+**Block granted where the turn ends is Block that never existed.** The Reeds' "Nothing Ends Here" books the
+Remand's guard and raises it at the next bell; the Queen's Sovereign Reciprocity gives the player its 4 Block
+inside her own action, where a solo fight has nothing left to spend it on — it is left as the master wrote it
+and belongs on the playtest watchlist.
+
+**Small readings, listed once.** The Ombudsman's Grounds are two counts beside the Claim, not a per-stack
+label, so a Counter-Petition moves one from the one count to the other and raises no announcement — which is
+the design's "neither creation nor transfer" exactly. The Notary's "oldest binding" and the Magistrate's are
+both read as the shortest-lived, since every one starts at the same length and runs down together. The Hill
+buries the standing it is granted by removing the Claim the instant it is made, which is what "would gain"
+means where a Claim cannot be intercepted. And every player-side free action in the act — Make Amends, Cite
+the Old Survey, Counter-Petition, Spend a Counterseal, Right of Audience — is a card the fight puts in the
+player's hand, because a combat here has no free actions, only cards.
