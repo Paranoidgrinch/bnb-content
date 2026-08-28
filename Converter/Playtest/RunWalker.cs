@@ -47,13 +47,35 @@ public static class RunWalker
         };
     }
 
+    // What a walk COSTS, as the instrument that finds the replay baseline. Every answer re-executes the run
+    // from that baseline up to the first unanswered prompt, so the price of one answer grows with the number
+    // of answers behind it — and where the curve bends is where the baseline is too far back. This counts the
+    // HOST's replay model, not the run: an answer is anything a player clicks.
+    private sealed class Meter
+    {
+        private readonly System.Diagnostics.Stopwatch _clock = System.Diagnostics.Stopwatch.StartNew();
+
+        public int Answers { get; private set; }
+        public double Seconds => _clock.Elapsed.TotalSeconds;
+
+        public void Answered() => Answers++;
+
+        // "3.1s over 48 answers (65 ms/answer)" — the cost of everything since a mark was taken.
+        public string Since(double seconds, int answers)
+        {
+            var dt = Seconds - seconds;
+            var da = Answers - answers;
+            return $"{dt,5:0.0}s over {da,4} answers ({(da == 0 ? 0 : dt * 1000 / da),6:0} ms/answer)";
+        }
+    }
+
     public static Report Walk(
         RunBlueprint blueprint, int seed, int stepBudget = 30000, int saveEvery = 0,
         Action<string>? progress = null)
     {
         ArgumentNullException.ThrowIfNull(blueprint);
         var rng = new Random(seed);
-        var clock = System.Diagnostics.Stopwatch.StartNew();
+        var meter = new Meter();
         var stops = new List<Stop>();
         var notes = new List<string>();
         var steps = 0;
@@ -67,6 +89,8 @@ public static class RunWalker
         var session = play.Session!;
         var interludes = 0;
         var lastNode = "";
+        var roomSeconds = 0.0;
+        var roomAnswers = 0;
         var clockedRooms = new HashSet<string>(StringComparer.Ordinal);
 
         // Every room the run STANDS in, in the order it is walked. Not every room is chosen: where a row offers
@@ -84,9 +108,15 @@ public static class RunWalker
                 return;
             var stop = Describe(session.Run, node);
             stops.Add(stop);
+            // The room we are leaving is the one whose price is now known — a room is only as expensive as
+            // the answers it took, and that number is not in until the next room begins.
+            if (lastNode.Length > 0)
+                progress?.Invoke($"      ^ {lastNode} cost {meter.Since(roomSeconds, roomAnswers)}");
+            roomSeconds = meter.Seconds;
+            roomAnswers = meter.Answers;
             lastNode = stop.NodeId;
             progress?.Invoke(
-                $"    [{clock.Elapsed.TotalSeconds,7:0.0}s, {steps,5} answers] act {stop.Act} "
+                $"    [{meter.Seconds,7:0.0}s, {meter.Answers,5} answers] act {stop.Act} "
                 + $"{stop.NodeId} {stop.Role} — {stop.Content}");
         }
 
@@ -104,6 +134,7 @@ public static class RunWalker
             {
                 var pick = session.PendingNodeChoices[rng.Next(session.PendingNodeChoices.Count)];
                 session.PickNode(pick.Id.Value);
+                meter.Answered();
             }
             else if (session.IsAwaitingChoice)
             {
@@ -114,6 +145,7 @@ public static class RunWalker
                     break;
                 }
                 session.Pick(choices[rng.Next(choices.Count)].Id);
+                meter.Answered();
             }
             else if (session.IsAwaitingEntities)
             {
@@ -122,10 +154,11 @@ public static class RunWalker
                 var take = Math.Min(request.Count, offered);
                 var picks = Enumerable.Range(0, offered).OrderBy(_ => rng.Next()).Take(take).ToList();
                 session.PickEntities(picks);
+                meter.Answered();
             }
             else if (play.CombatDriver?.Current is not null)
             {
-                if (!Fight(play, session, rng, notes, lastNode))
+                if (!Fight(play, session, rng, notes, lastNode, meter, progress))
                     break;
             }
             else if (session.IsAwaitingInterlude)
@@ -134,6 +167,7 @@ public static class RunWalker
                 if (saveEvery > 0 && interludes % saveEvery == 0 && !Reload(ref play, ref session, blueprint, notes))
                     break;
                 session.Continue();
+                meter.Answered();
             }
             else
             {
@@ -178,27 +212,57 @@ public static class RunWalker
     // walk grinds to a halt. Refusals are read back off the fight's own step report and that card is not
     // offered again this turn. Returns false when the fight is stuck (then the note says so).
     private static bool Fight(
-        RunPlayback play, InteractiveRunSession session, Random rng, List<string> notes, string node)
+        RunPlayback play, InteractiveRunSession session, Random rng, List<string> notes, string node,
+        Meter meter, Action<string>? progress)
     {
         var driver = play.CombatDriver!;
         var refused = new HashSet<CardInstanceId>();
+        // Cards that CHANGED NOTHING when they were played this turn, by definition rather than by copy. A
+        // card is allowed to put a fresh copy of itself back in your hand — Act III's Make Amends does it on
+        // purpose, so that a payment which could not go through can be tried again — and a greedy player will
+        // then play it for ever: the copy is new, so refusing the instance does not help, and nothing about
+        // the table moves. A human ends the turn; the walker is told to by this.
+        var barren = new HashSet<string>(StringComparer.Ordinal);
         for (var turn = 0; turn < 100; turn++)
         {
+            // A fight is where the answers pile up fastest — one per card played, one per turn ended, one per
+            // question a card asks — so the per-TURN price is what says whether a fight is the thing to cap.
+            var turnSeconds = meter.Seconds;
+            var turnAnswers = meter.Answers;
+            var playsThisTurn = 0;
+            var lastPlayed = (string?)null;
+            var tableBeforeThePlay = "";
             refused.Clear();
+            barren.Clear();
             while (true)
             {
                 if (driver.Current is null)
                     return true;
                 if (Answer(driver, rng))
+                {
+                    meter.Answered();
                     continue;
+                }
                 if (session.Error is not null || play.Error is not null)
                     return true; // reported by the caller
                 var combat = driver.Current;
+
+                // Only HERE is the previous play finished. A card that asks a question parks halfway through
+                // its own resolution, so a reading taken the moment PlayCard returns straddles an open
+                // question and always differs; this is the first point at which nothing is pending.
+                if (lastPlayed is { } finished)
+                {
+                    if (TableState(combat) == tableBeforeThePlay)
+                        barren.Add(finished);
+                    lastPlayed = null;
+                }
+
                 var hero = combat.State.GetCombatant(combat.HeroId);
                 var energy = hero.Resources.TryGetValue(StandardCombatIds.EnergyResource, out var pool)
                     ? pool.Current : 0;
                 var candidates = combat.Hand
-                    .Where(c => !refused.Contains(c.Id) && Affordable(play, combat, c, energy))
+                    .Where(c => !refused.Contains(c.Id) && !barren.Contains(c.DefinitionId.value)
+                        && Affordable(play, combat, c, energy))
                     .ToList();
                 if (candidates.Count == 0)
                     break;
@@ -207,7 +271,21 @@ public static class RunWalker
                     .FirstOrDefault(c => c.Id != combat.HeroId && c.TeamId == StandardCombatIds.EnemyTeam && c.IsAlive);
                 var needsTarget = play.CardNeedsTarget.TryGetValue(card.DefinitionId.value, out var needs) && needs;
                 var stepsBefore = combat.Steps.Count;
+                tableBeforeThePlay = TableState(combat);
+                lastPlayed = card.DefinitionId.value;
                 driver.PlayCard(card.Id, needsTarget ? enemy?.Id : null);
+                meter.Answered();
+                // A turn that never runs out of affordable cards is a finding, not a slow fight — and it is
+                // invisible from outside, because a turn only reports itself when it ends. Say what is being
+                // played while it happens.
+                // The backstop behind the barren rule: two cards that undo each other would still cycle.
+                // Nothing in this game plays fifty cards in a turn, so hitting this is a finding.
+                if (++playsThisTurn >= PlaysInATurnNobodyMakes)
+                {
+                    notes.Add($"{node}: a turn played {playsThisTurn} cards without ending — "
+                        + $"last '{card.DefinitionId.value}'");
+                    return false;
+                }
                 if (session.Error is not null || play.Error is not null)
                     return true;
                 if (Refused(driver.Current, stepsBefore))
@@ -216,13 +294,45 @@ public static class RunWalker
             if (driver.Current is null)
                 return true;
             if (Answer(driver, rng))
+            {
+                meter.Answered();
                 continue;
+            }
             driver.EndTurn();
+            meter.Answered();
+            // Only turns that COST something are worth a line. A walk prints a few hundred turns and almost
+            // all of them are four answers long; the ones that matter are the ones that are not.
+            if (meter.Seconds - turnSeconds > 1.0 || meter.Answers - turnAnswers > 15)
+                progress?.Invoke($"        turn {turn + 1,3}: {meter.Since(turnSeconds, turnAnswers)}");
             if (session.Error is not null || play.Error is not null)
                 return true;
         }
         notes.Add($"{node}: a fight did not end in 100 turns");
         return false;
+    }
+
+    private const int PlaysInATurnNobodyMakes = 50;
+
+    // Everything about the table a play could visibly move. Two plays with the same reading either side of
+    // them did nothing — which is the only way to tell a card that regenerates itself apart from one that
+    // achieves something.
+    //
+    // The EXHAUST PILE is deliberately not in it. A card that burns itself and puts a fresh copy back in hand
+    // grows that pile on every play, so counting it would make every such card look busy for ever — which is
+    // exactly the loop this reading exists to find. Statuses are counted by their STACKS as well as their
+    // number, because paying a debt down usually moves the stack and not the count.
+    private static string TableState(InteractiveCombat combat)
+    {
+        var hero = combat.State.GetCombatant(combat.HeroId);
+        var energy = hero.Resources.TryGetValue(StandardCombatIds.EnergyResource, out var pool) ? pool.Current : 0;
+        var enemies = combat.State.Combatants.Where(c => c.Id != combat.HeroId).ToList();
+        var zones = combat.State.GetCardZones(combat.HeroId);
+        int Count(CardZone zone) => zones.GetCardsInZone(zone).Count;
+        static int Stacks(IEnumerable<StatusInstance> statuses) => statuses.Sum(status => status.Stacks);
+        return $"{energy}/{hero.Health.Current}/{hero.Statuses.Count}/{Stacks(hero.Statuses)}/"
+            + $"{Count(CardZone.Hand)}/{Count(CardZone.DiscardPile)}/{Count(CardZone.DrawPile)}/"
+            + $"{enemies.Sum(e => e.Health.Current)}/{enemies.Sum(e => e.Statuses.Count)}/"
+            + $"{enemies.Sum(e => Stacks(e.Statuses))}";
     }
 
     // Did the play the walker just made go through? The fight records every attempt as a step, and a refused
