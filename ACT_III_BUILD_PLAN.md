@@ -175,6 +175,10 @@ Open seams the later stages will want, listed when they are first needed:
 
 - **`--playtest` cannot walk past Act II on most seeds.** The Warden of Sealed Volumes still does not end
   within 100 turns (the pre-existing Act-II finding), so a walk that draws him stops there.
+  ★ **WITHDRAWN 2026-08-28 — he was never guilty.** Nothing had ever drawn him; the accusation was inference
+  from a walk that stopped in Act II for another reason. He falls in 25 turns to the starting deck, and two
+  walks now draw him and finish the game. What was really stopping walks was a stack overflow in the card
+  Queue (`ADAPTATIONS.md` §"The boss that would not end, and the crash that was actually killing the walk").
 - **A walk that DOES reach Act III stalls inside the Great Toll Frog elite** (seed 20260801, r22c2): the
   walker spins at 100% CPU for half an hour without producing the next room. The run is replayed from its
   own answers for every answer, so the cost of one more answer grows with the run — and by the third act, a
@@ -188,5 +192,5 @@ Open seams the later stages will want, listed when they are first needed:
 never moved (fixed in Core — `InteractiveRunSession.Continue` now checkpoints at every interlude), and the
 walker would replay `Make Amends` for ever, because that card is *designed* to keep coming back while a debt
 stands. `--playtest` now walks all three acts to a Victory. Both are written up in `ADAPTATIONS.md`
-§"The replay baseline, and the card a greedy player can play for ever". **The Warden of Sealed Volumes is
-still open** — see `ACT_II_III_FINISH_PLAN.md` step 3.
+§"The replay baseline, and the card a greedy player can play for ever". **The Warden of Sealed Volumes was closed
+on 2026-08-28** — see the withdrawal above and `ACT_II_III_FINISH_PLAN.md` step 3.

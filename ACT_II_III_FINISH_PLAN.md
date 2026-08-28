@@ -165,6 +165,42 @@ boss must die inside, with the walker's own greedy player.
 **Done when:** the Warden dies inside a stated turn budget under the walker's play, and a `--playtest` seed
 that draws him walks through.
 
+**Done — 2026-08-28. ★ The Warden was never guilty.** Nothing had ever drawn him — no walk, no marathon — and
+the finding was inference from a walk that stopped in Act II for another reason. Put on the table against the
+character's own starting deck with the walker's greedy player, he goes down in **25 turns**; seeds 20260901
+and 20260904 now draw him and finish the game. The week he spent on this list is the argument for everything
+below: an accusation nothing ever tested is not a finding.
+
+Two real faults were underneath, both bought as engine seams in RogueDeck-Core (details in `ADAPTATIONS.md`
+§"The boss that would not end, and the crash that was actually killing the walk"):
+
+1. **★ A card that resolves the Queue could be put IN the Queue, and then resolved itself for ever — a stack
+   overflow that took the process down.** Night Docket ("resolve your oldest Queued card") plus Skeleton
+   Staff ("queue a card from your hand", which does not ask what the card does). A queued card leaves the
+   Queue only once its program has finished, so the nested window found it still waiting. Priority Docket and
+   Customary Due are the same door in Act III. Fixed in the engine, not the content: no rule an author writes
+   should be able to kill the process. `CombatState.IsResolvingQueuedCard` + `QueueResolution` passes over a
+   card that is mid-resolution. Pinned by two new `QueueTortureTests`.
+2. **★ A body at zero was not down unless DAMAGE put it there.** The Grandmother Clause pays 5 HP for every
+   courtesy the player keeps — a `SetHealthNode`, not damage — and paying her last five left her standing at
+   `0/350` for eighty-eight turns in a fight that could not end. Content writes "loses N HP" that way in
+   nineteen files. `SetHealthEffectHandler` now downs a combatant whose pool it empties. This reverses a
+   documented decision (`SetHealthTests` said the opposite in its header and pinned it in a test named for
+   it); of 3110 tests exactly one depended on the old reading. **User decision, asked and given.**
+
+And two faults in the instruments themselves, which is why the Warden was blamed for a week:
+
+3. **A walk's turn line reported only its timing.** A fight at turn 80 losing 6 HP a turn and a fight stuck
+   since turn 12 looked identical. It now names who is still standing and on how much health — and that one
+   line turned the Grandmother from a mystery into a diagnosis on the first run.
+4. **`--playtest n --seed s` seeds two things**, the game and the first walk (`s`, `s+1`, …), so a failure
+   reported as "seed 20260909" is not reproducible by `--seed 20260909`: that builds a different game. The
+   header now says which game is being walked.
+
+**And the test is a net, not a probe:** `Tests/BossLengthTests.cs` fights **all fifteen bosses of Acts I–III**
+with the walker's greedy player, the starting deck and an unkillable tester, against a 40-turn budget. A walk
+only ever meets the boss its seed picked; every one of the fifteen was one seed away from being that boss.
+
 ---
 
 ## Step 4 · The shop, against Run Systems Master §4.1–4.3
