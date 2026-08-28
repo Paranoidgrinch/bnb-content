@@ -1135,5 +1135,25 @@
       "court"
     ],
     "role": "boss"
+  },
+  {
+    "id": "green_docket_mimic_01",
+    "name": "The Counted Cairn",
+    "act": 3,
+    "difficulty": "mimic",
+    "enemies": [
+      "cairn_of_stray_paths"
+    ],
+    "weight": 1,
+    "tags": [
+      "green_docket",
+      "boundary",
+      "mimic",
+      "treasure"
+    ],
+    "role": "mimic",
+    "enemy_health": [
+      104
+    ]
   }
 ]

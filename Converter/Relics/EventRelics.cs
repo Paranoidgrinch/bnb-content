@@ -12,7 +12,7 @@ namespace BnbContent.Converter.Relics;
 // once. The rules live in EventRelicRules.
 public static class EventRelics
 {
-    public static IReadOnlyList<BnbRelic> All() => [.. ActI, .. ActII];
+    public static IReadOnlyList<BnbRelic> All() => [.. ActI, .. ActII, .. ActIII];
 
     // ── Act I ─────────────────────────────────────────────────────────────────────────────────────────────
 
@@ -90,5 +90,47 @@ public static class EventRelics
             "At each combat's opening one Deed or Working is sealed: the first time you play it, it comes "
             + "back to your hand.",
             combatRule: ActTwoEventRelicRules.InvertedSealstone),
+    ];
+
+    // ── Act III ───────────────────────────────────────────────────────────────────────────────────────────
+    //
+    // The Green Docket's five are about the SHAPE of a turn — how many things you did, and in what order —
+    // which is the question every Local Law in the act asks. Four of them are rules of a fight; the brooch
+    // is a rule of the road.
+
+    public static readonly IReadOnlyList<BnbRelic> ActIII =
+    [
+        Event("mootcap", "Mootcap",
+            "Moonlit Mushrooms — Step inside the circle.",
+            "The third real card you play each turn is put to the circle, and it answers: 10 Block, a card, "
+            + "or 7 damage to everything standing.",
+            combatRule: ActThreeEventRelicRules.Mootcap),
+
+        Event("dissenting_spore", "Dissenting Spore",
+            "Moonlit Mushrooms — Wait for quorum, and win without breaking it.",
+            "An odd turn grows a spore and an even one costs you one. At three, the ring speaks: 1 Energy, "
+            + "an extra card and 6 Block.",
+            combatRule: ActThreeEventRelicRules.DissentingSpore),
+
+        Event("antway_marker", "Antway Marker",
+            "The Ant Queue — Walk with the proper line, and win cleanly.",
+            "Three real cards in a row, none cheaper than the one before: the third is worth 1 Energy and a "
+            + "card. Step out of order and the line is broken for the turn.",
+            combatRule: ActThreeEventRelicRules.AntwayMarker),
+
+        Event("complaint_leaf", "Complaint Leaf",
+            "The Ombudsman's Warning — Keep the leaf.",
+            "The first party to lay a hand on you is named the Respondent. While it is standing, one card in "
+            + "your hand each turn costs 1 less.",
+            combatRule: ActThreeEventRelicRules.ComplaintLeaf),
+
+        // ADAPTATION: "once per Event, reduce one explicit Gold/HP option cost by 25%" has no engine face —
+        // an event's costs are settled by the door, not by what the traveller is carrying. The brooch is
+        // guest-right instead, which is what it IS: the road looks after somebody who has been welcomed, and
+        // every fight opens a little kinder.
+        Event("guest_right_brooch", "Guest-Right Brooch",
+            "The Kindly Procession — Walk three steps with them.",
+            "You have been welcomed. Every combat opens with 8 Block and 1 Safe-Conduct.",
+            combatRule: ActThreeEventRelicRules.GuestRightBrooch),
     ];
 }

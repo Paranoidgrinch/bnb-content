@@ -29,6 +29,11 @@ public class ActThreePoolTests
     {
         Assert.Equal(12, ActThreeWithRole("combat").Count());
         Assert.Equal(28, ActThreeWithRole("multi_combat").Count());
+        // …and the one fight that is not on the stage table at all: the treasure that bites, which the map
+        // spec fields on 15% of the act's cairns.
+        var mimic = Assert.Single(ActThreeWithRole("mimic"));
+        Assert.Equal("green_docket_mimic_01", mimic.Id);
+        Assert.Equal(15, FightProbe.Game.Acts![2].MapGeneration!.TreasureMimicChancePercent);
     }
 
     // Ten stages, four encounters each — the act is a curriculum, and every stage teaches its four.

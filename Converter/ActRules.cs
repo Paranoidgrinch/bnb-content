@@ -34,6 +34,7 @@ internal sealed record ActRules
     {
         1 => City,
         2 => Archives,
+        3 => GreenDocket,
         var other => throw new ConversionException($"act '{act.Id}'", $"no map rules are authored for act {other}"),
     };
 
@@ -196,5 +197,87 @@ internal sealed record ActRules
             + "and the card says the loan period has not started yet.",
         TreasureOpenText = "Check the bottom shelf",
         TreasureLeaveText = "Push it back into the dark",
+    };
+
+    // ── Act III: The Green Docket ──────────────────────────────────────────────────
+    // The road out of the archives. The audit asks for three elites a route rather than two and keeps
+    // everything else where Act II left it: eight fights, two of them crowded, one treasure, two shops.
+    private static readonly ActRules GreenDocket = new()
+    {
+        PerPathMinimums = new Dictionary<MapNodeKind, int>
+        {
+            [MapNodeKind.Combat] = 8,
+            [MapNodeKind.MultiCombat] = 2,
+            [MapNodeKind.Elite] = 3,
+            [MapNodeKind.Event] = 3,
+            [MapNodeKind.Rest] = 2,
+            [MapNodeKind.Treasure] = 1,
+            [MapNodeKind.Shop] = 2,
+        },
+        // Out here the soft rooms are what is scarce: a route may find one spare rest and one spare shop and
+        // no spare treasure at all, because there is nothing on this road that keeps anything. What it may
+        // pile up instead is trouble — a fourth elite and a fourth crowded fight are both allowed.
+        PerPathMaximums = new Dictionary<MapNodeKind, int>
+        {
+            [MapNodeKind.Rest] = 3,
+            [MapNodeKind.Treasure] = 2,
+            [MapNodeKind.Shop] = 3,
+            [MapNodeKind.Event] = 6,
+            [MapNodeKind.Elite] = 4,
+            [MapNodeKind.MultiCombat] = 4,
+        },
+        // Three ways across the same country: the old road that everything with a right to it is standing on,
+        // the hedgeways where the doors are, and the long way round through the water meadows.
+        Lanes =
+        [
+            new("the old road", new Dictionary<MapNodeKind, int>
+            {
+                [MapNodeKind.Combat] = 12,
+                [MapNodeKind.MultiCombat] = 4,
+                [MapNodeKind.Elite] = 4,
+                [MapNodeKind.Event] = 2,
+            }),
+            new("the hedgeways", new Dictionary<MapNodeKind, int>
+            {
+                [MapNodeKind.Event] = 8,
+                [MapNodeKind.Shop] = 3,
+                [MapNodeKind.Combat] = 5,
+                [MapNodeKind.MultiCombat] = 2,
+            }),
+            new("the water meadows", new Dictionary<MapNodeKind, int>
+            {
+                [MapNodeKind.Rest] = 6,
+                [MapNodeKind.Treasure] = 3,
+                [MapNodeKind.Combat] = 5,
+                [MapNodeKind.Event] = 3,
+            }),
+        ],
+        KindWeights = new Dictionary<MapNodeKind, int>
+        {
+            [MapNodeKind.Combat] = 10,
+            [MapNodeKind.Event] = 5,
+            [MapNodeKind.Elite] = 3,
+            [MapNodeKind.Rest] = 2,
+            [MapNodeKind.Treasure] = 1,
+            [MapNodeKind.Shop] = 1,
+        },
+        // The road has no patience left at all: its elites stand almost from the start, and its shops are
+        // carts, which are wherever they happen to be. What it does keep back is the crowded fight — being
+        // surrounded on open ground is the act's own threat and it is not the first thing you meet.
+        EarliestDepthPercent = new Dictionary<MapNodeKind, int>
+        {
+            [MapNodeKind.Shop] = 8,
+            [MapNodeKind.Rest] = 10,
+            [MapNodeKind.MultiCombat] = 15,
+            [MapNodeKind.Elite] = 18,
+        },
+        RestText = "A hollow out of the wind, with a stone somebody has sat on often enough to wear it. "
+            + "Nothing here has a right to you for as long as you stay off the road.",
+        RestChoiceText = "Sit out of the wind",
+        RestUpgradeChoiceText = "Put a filing in order by daylight",
+        TreasureText = "A boundary cairn with a hollow in it, and something in the hollow that was left for "
+            + "whoever came next. The stones around it have been counted recently.",
+        TreasureOpenText = "Take what was left",
+        TreasureLeaveText = "Add a stone and walk on",
     };
 }

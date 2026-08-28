@@ -138,8 +138,12 @@ Open seams the later stages will want, listed when they are first needed:
       Lien), not the act's four mechanics — the sheets ask for exactly that, and Safe-Conduct, Trespass,
       Claim and Wergild stay enemy-side vocabulary answered by the cards the FIGHT hands over.
 
-- [ ] 12 — the act itself: `ActRules.For(3)`, `BabLoader.Acts`, the act's own map lanes and rest /
-      treasure voice, and Act III joins the walked run
+- [x] **12 — the act itself.** DONE 2026-08-28 — `ActRules.For(3)` (the audit's per-path table, ceilings,
+      three lanes — the old road / the hedgeways / the water meadows — depth gates, and the act's rest and
+      treasure voice), `BabLoader.Acts` loads `acts/act_3_green_docket.json`, and the act's missing mimic is
+      authored (`green_docket_mimic_01`, The Counted Cairn) with the manifest's chance corrected to the
+      audit's 15%. `BabMapSettings` now tolerates the manifest's two dead knobs (`first_elite_depth`,
+      `elite_weight_multiplier`). **Act III is in the walked run.**
 - [x] **13a — the fifteen Act-III boss relics.** DONE 2026-08-28 — three per boss, in
       `Converter/Relics/BossRelics.cs` (+ `ActThreeBossRelicRules.cs` and the six action cards in
       `ActThreeBossRelicCards.cs`), 15 live tests in `Tests/ActThreeBossRelicTests.cs` and the pool pinned
@@ -147,7 +151,13 @@ Open seams the later stages will want, listed when they are first needed:
       relics". NOTE: the relic master calls the fourth boss "The Hill That Answers"; the encounter is named
       for the boss master's "The Answering Hill", and that name wins.
 
-- [ ] 13b — the fifteen events (and the Act-III event relics that come with them)
+- [x] **13b — the fifteen events.** DONE 2026-08-28 — `Converter/Events/ActThreeEvents.cs` (the doors),
+      `ActThreeEventPrograms.cs` (the promises), `ActThreeEventObjects.cs` (five permanent inscriptions, the
+      two vows, the environmental demand, the bottled water) and `Relics/ActThreeEventRelicRules.cs` +
+      `EventRelics.ActIII` (Mootcap, Dissenting Spore, Antway Marker, Complaint Leaf, Guest-Right Brooch).
+      46 tests: `Tests/ActThreeEventTests.cs` (7, the shape of the set and the depth gate) and
+      `Tests/ActThreeEventLiveTests.cs` (39, every door played). No engine seam was needed. Every deviation
+      from the master is written down in `ADAPTATIONS.md` §"Act III — the fifteen Green Docket events".
 
 ## House rules that already cost a day each
 
@@ -160,3 +170,16 @@ Open seams the later stages will want, listed when they are first needed:
   wherever one combatant is wanted; the effect takes the first it resolves to.
 - After each block: `dotnet run --project Converter -- --playtest 3` and `-- --maps 3`, then
   `tools/sync-content.sh` and `godot --headless -- --smoke-marathon`.
+
+## Open findings after the act closed (2026-08-28)
+
+- **`--playtest` cannot walk past Act II on most seeds.** The Warden of Sealed Volumes still does not end
+  within 100 turns (the pre-existing Act-II finding), so a walk that draws him stops there.
+- **A walk that DOES reach Act III stalls inside the Great Toll Frog elite** (seed 20260801, r22c2): the
+  walker spins at 100% CPU for half an hour without producing the next room. The run is replayed from its
+  own answers for every answer, so the cost of one more answer grows with the run — and by the third act, a
+  long fight is where that finally bites. This is the same **growing replay latency** that stopped
+  `--smoke-marathon`, and it is now the most expensive open item in the port: it blocks the end-to-end check
+  of every act from here on. **The interlude checkpoint is the fix.**
+  Everything before that stall walked correctly: the act's rooms, its doors (`the_ombudsmans_warning`,
+  `moonlit_mushrooms`, …), its shop, its rest and its elites all resolve.

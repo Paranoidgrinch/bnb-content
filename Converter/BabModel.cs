@@ -177,7 +177,12 @@ public sealed record BabMapSettings(
     int MaxEvents = 0,
     int MaxTreasures = 0,
     int MaxElites = 0,
-    double EventCombatChance = 0);
+    double EventCombatChance = 0,
+    // …and Act III's manifest carries two more of the original's knobs. Both are answered by this port's own
+    // map rules (ActRules.EarliestDepthPercent and the lane weights), so they are read and ignored rather
+    // than left to abort a strict load.
+    int FirstEliteDepth = 0,
+    double EliteWeightMultiplier = 0);
 
 public sealed record BabTreasureSettings(double MimicChance, string? MimicEncounterId);
 

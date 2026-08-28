@@ -1623,3 +1623,66 @@ are the same; who holds them is not.
 end has nobody to ask, and the trade is the same either way: twelve Block about to be swept up, for an
 Energy and a card. The Milestone's landmark is the highest-health enemy on the field rather than the
 highest-MAX-health, which is the same body in every encounter that has one.
+
+## Act III — the fifteen Green Docket events, and the act itself (2026-08-28)
+
+The road's doors, from `BnB_Final_Events_Master_PostAudit.md` §"ACT III", AUTHORED like Act I's and Act II's
+(`Converter/Events/ActThreeEvents.cs` + `ActThreeEventPrograms.cs` + `ActThreeEventObjects.cs`), and with
+them **Act III joins the walked run**: `ActRules.For(3)` gives the act its per-path table (the audit's
+Combat 8 / MultiCombat 2 / Elite 3 / Event 3 / Rest 2 / Treasure 1 / Shop 2), its three lanes — the old
+road, the hedgeways, the water meadows — its depth gates and its rest and treasure voice, and
+`BabLoader.Acts` loads `acts/act_3_green_docket.json`.
+
+**No engine seam was needed.** Everything the fifteen ask for is said with pieces the first two acts bought:
+authored run programs installed by name, combat openings, per-card tags read by a status rule, and the act's
+own Wergild machinery.
+
+What could not be translated straight:
+
+- **The manifest's two extra map knobs are read and ignored.** `act_3_green_docket.json` still carries the
+  original generator's `first_elite_depth` and `elite_weight_multiplier`. Both are answered by this port's
+  own map rules (`EarliestDepthPercent[Elite]` and the lane weights), so `BabMapSettings` accepts them
+  rather than letting a strict load abort on them — which is the same treatment the other four dead knobs
+  already get.
+- **The act had no mimic, and the map spec asks for one at 15%.** `green_docket_mimic_01` — The Counted
+  Cairn, a `cairn_of_stray_paths` at 104 HP — is authored into the encounter file and the manifest's
+  `mimic_chance` corrected from the ported 0.10 to the audit's 0.15. It is the one Act-III fight that is not
+  on §5's stage table, which is why `ActThreePoolTests` pins it separately from the 12 + 28.
+- **A shop node cannot be opened from a door**, so the Conceptual Toll and the Travelling Chandler are
+  counters built INSIDE the event, exactly as Act I's Licensed Vendor is: an authored stock, each item
+  bought at most once, at the city's prices less the discount the design names (15% and 20%). What it costs
+  is the reroll and the per-run redraw — these two shelves are the same shelf every run.
+- **"Enemies have 20% less Max HP" is paid at the bell.** Max health cannot be lowered from outside a fight,
+  so the shortcut roads (the Witch's shortest road, the Waystone's forgotten name) take the shortfall as
+  unblockable damage at the opening, read per body off its own maximum.
+- **"Grants no Gold" is a bailiff, not a suppression.** A fight's purse is paid out by the map after the
+  combat resolves, so `GarnishedReward` arms `GarnishThePurse`, which takes back the very next positive Gold
+  change and then steps down.
+- **"After victory gain N Gold" is its own promise.** The footpath's 80 and the complaint's 60 are paid by
+  the fight the door was about — and paid whether or not something else garnished that fight's purse, which
+  is why they are separate programs rather than a branch of the bailiff.
+- **A vow is written down, not enforced.** Moonlit Mushrooms' quorum and the Ant Queue's line never stop a
+  card; each opens a counter at 1 on the first round and only ever lowers it, and the run reads the outcome
+  off `CombatResolvedRunEvent` afterwards — the same idiom Act II's `VowHeld` uses. Kept and lapsed are two
+  programs over the same event, each ruling the other out and each uninstalling both, because a branch
+  decided by the fight that just ended has to be a program CONDITION and not a conditional effect.
+- **"First full Wergild payment grants 1 extra Safe-Conduct"** is read off the payer. A Clear Stream's
+  bottle is a marker status the fight opens with; the act's one settlement (`ActThreeWergild.Settlement`)
+  adds the bearer's stacks of it to the licence it grants and then empties the bottle — the same shape the
+  Oath-Fish's marker already had on the creditor's side.
+- **The Chandler's flame is HELD, not gained.** "+1 Energy on turn 1" lands on a full pool at the opening
+  bell and would be silently clamped away, so the point waits as `held_energy` and arrives the moment its
+  holder runs dry (`HeldEnergy`).
+- **"1 less Safe-Conduct, minimum 0"** is a `modifyStatusStacks` of −1 in the next fight's opening: a stack
+  removed from a status nobody has is simply not removed, so the floor needs nothing said about it.
+- **The Spider's exception is written on any card, not on an Exhaust card.** The design asks for "one
+  compatible Exhaust card"; an event's card picker cannot filter on a tag the deck may not contain at all,
+  and a branch that can offer nothing is worse than one that offers everything.
+- **The Kindly Procession's fourth step is not gated by stage.** The engine has no reading of how deep the
+  run is at the moment a door OPENS — only of which depths a door may appear at — so "Stage 9+" would have
+  nothing to test. The door itself waits for Stage 8, and the step's own price (12 Max HP, and every party
+  on the next road with standing) is what keeps it honest.
+- **The Ombudsman's Warning cannot un-file a boss's first Claim.** "If the Act Boss is the Ombudsman of Root
+  and Road, remove his first generated Claim once" would need a promise that reaches inside a specific
+  fight's rules and cancels one application; the branch keeps its two upgrades and its Elite-or-Boss
+  licence, which is the part the player can plan around.
