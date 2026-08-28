@@ -23,6 +23,14 @@ public static class BossRelics
     public const string AuditorOfReturnedLives = "The Auditor of Returned Lives";
     public const string GrandCrossReference = "The Grand Cross-Reference";
 
+    // Act III. The relic master calls the fourth of these "The Hill That Answers"; the boss master calls it
+    // "The Answering Hill", and the encounter is named for the boss master, so the boss master wins.
+    public const string OmbudsmanOfRootAndRoad = "The Ombudsman of Root and Road";
+    public const string NotaryOfOldGrowth = "The Notary of Old Growth";
+    public const string GrandmotherClause = "Grandmother Clause";
+    public const string AnsweringHill = "The Answering Hill";
+    public const string QueenUnderTheHill = "The Queen Under the Hill";
+
     public static IReadOnlyList<BnbRelic> All() =>
     [
         // ── Act I ─────────────────────────────────────────────────────────────────────────────────────────
@@ -133,6 +141,57 @@ public static class BossRelics
         Boss("conclusion_leaf", "Conclusion Leaf", GrandCrossReference,
             "The last card type you played decides your next turn: Deed → your first Deed deals 8 more, Working → 8 Block, Rite → draw 1.",
             combatRule: BossRelicRules.ConclusionLeaf),
+
+        // ── Act III ───────────────────────────────────────────────────────────────────────────────────────
+        Boss("boundary_tally", "Boundary Tally", OmbudsmanOfRootAndRoad,
+            "The road and the root take it in turns: on a road turn your first real card costs 1 less, on a root turn you open with 10 Block.",
+            combatRule: BossRelicRules.BoundaryTally),
+        Boss("counter_petition_twine", "Counter-Petition Twine", OmbudsmanOfRootAndRoad,
+            "Once a turn you may re-argue a card: discard one, draw one, and gain 1 Energy.",
+            combatRule: BossRelicRules.CounterPetitionTwine),
+        Boss("signed_settlement", "Signed Settlement", OmbudsmanOfRootAndRoad,
+            "Come through an enemy turn untouched for 1 Energy and a card; come through it hurt for 8 Block.",
+            combatRule: BossRelicRules.SignedSettlement),
+
+        Boss("countersealed_ring_of_passage", "Countersealed Ring of Passage", NotaryOfOldGrowth,
+            "Your first real card each turn sets a price; the next card at that price is refunded. A turn with no match ends in 5 Block.",
+            combatRule: BossRelicRules.CountersealedRingOfPassage),
+        Boss("countersealed_ring_of_restraint", "Countersealed Ring of Restraint", NotaryOfOldGrowth,
+            "Play three real cards and the fourth is refunded and draws a card. A turn that never reaches three keeps the ring armed.",
+            combatRule: BossRelicRules.CountersealedRingOfRestraint),
+        Boss("countersealed_ring_of_keeping", "Countersealed Ring of Keeping", NotaryOfOldGrowth,
+            "Empty your hand of real cards and the next turn opens with 1 Energy and two extra cards; keep something back and one card stays, cheaper.",
+            combatRule: BossRelicRules.CountersealedRingOfKeeping),
+
+        Boss("honey_spoon", "Honey Spoon", GrandmotherClause,
+            "Once a turn you may take 2 Energy. End that turn with at least 1 Energy, or it costs you 6 HP.",
+            combatRule: BossRelicRules.HoneySpoon),
+        Boss("better_chair_cushion", "Better Chair Cushion", GrandmotherClause,
+            "Once a turn you may take 14 Block. End that turn holding a real card, or it costs you 6 HP.",
+            combatRule: BossRelicRules.BetterChairCushion),
+        Boss("last_slice_tin", "Last-Slice Tin", GrandmotherClause,
+            "Once a turn you may draw 2. Play no more than four real cards that turn, or it costs you 6 HP.",
+            combatRule: BossRelicRules.LastSliceTin),
+
+        Boss("surveyed_milestone", "Surveyed Milestone", AnsweringHill,
+            "The largest thing on the field is a landmark: first bringing it past three quarters, half and a quarter grants 1 Energy and a card.",
+            combatRule: BossRelicRules.SurveyedMilestone),
+        Boss("survey_cairn", "Survey Cairn", AnsweringHill,
+            "End a turn with 12 Block or more and the cairn buries twelve of it; the next turn opens with 1 Energy and a card.",
+            combatRule: BossRelicRules.SurveyCairn),
+        Boss("loadstone_cairn", "Loadstone Cairn", AnsweringHill,
+            "What the enemies take out of you is weight in the stone: next turn it is Block, and it is on your first Deed. Up to 12.",
+            combatRule: BossRelicRules.LoadstoneCairn),
+
+        Boss("royal_grace_cup", "Royal Grace Cup", QueenUnderTheHill,
+            "Once a turn the cup offers an Energy, a card or 10 Block. Take it and every enemy guards for 6.",
+            combatRule: BossRelicRules.RoyalGraceCup),
+        Boss("hollow_court_token", "Hollow-Court Token", QueenUnderTheHill,
+            "Spending your purse to the bottom is remembered, up to three times; open a turn owed all three and it pays 1 Energy, two cards and 8 Block.",
+            combatRule: BossRelicRules.HollowCourtToken),
+        Boss("silver_name_tally", "Silver Name-Tally", QueenUnderTheHill,
+            "Once a combat: one enemy's guard is gone, you gain 10 Block against what it was about to do, and your next card that turn is refunded.",
+            combatRule: BossRelicRules.SilverNameTally),
     ];
 
     // A boss's own three, in the order the design lists them.

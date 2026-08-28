@@ -1586,3 +1586,40 @@ buries the standing it is granted by removing the Claim the instant it is made, 
 means where a Claim cannot be intercepted. And every player-side free action in the act — Make Amends, Cite
 the Old Survey, Counter-Petition, Spend a Counterseal, Right of Audience — is a card the fight puts in the
 player's hand, because a combat here has no free actions, only cards.
+
+## Act III — the fifteen boss relics (2026-08-28)
+
+Each of the five Act-III bosses hands over one of its own three, and each of the fifteen is a piece of ITS
+boss's machinery given to the player. The deviations:
+
+**Every "once per turn, free action" is a card.** A combat in the Green Docket has no free actions — the act
+settled that when Make Amends was built — so the Ombudsman's twine, Grandmother's three courtesies, the
+Queen's cup and her name-tally are cards the relic puts in the holder's hand at the bell. Each is free,
+exhausts when played, and is offered again next turn (the tally only once a combat). The relic is what
+remembers; the card is the hand the player reaches out with.
+
+**A relic's own turn-start trigger has already been and gone.** A relic is put on at the first bell, so a
+rule it installs on TurnStarted misses the turn it was installed in. Everything that has to be true from the
+first turn — the Notary's two rings arming and resetting — is written on the DRAWING of the hand instead.
+
+**Boundary Tally does not ask which Ground.** The opening choice is dropped and the alternation kept, for
+the same reason the Ombudsman's own hearings open on the Road: a question put before the fight has begun has
+nobody to answer it.
+
+**"Costs 0" is the price refunded.** Both Countersealed Rings and the Silver Name-Tally make a card free
+AFTER it has been paid for, because that is when the rule knows which card it was — and what the holder
+feels is the same Energy back. It arrives through HeldEnergy, like every other Energy this pool promises
+while the purse may be full.
+
+**The Ring of Restraint keeps its own consolation.** The design gives both it and the Ring of Keeping the
+same one — retain a chosen card and cheapen it — which would make them one relic. Here a turn that never
+reaches three cards simply keeps the ring armed into the next.
+
+**Silver Name-Tally guards instead of weakening.** "Its next attack deals 10 less" has no engine face — there
+is no per-enemy outgoing-damage reduction — so the holder takes 10 Block against what was coming. The points
+are the same; who holds them is not.
+
+**Survey Cairn buries without asking, and the Surveyed Milestone reads percentages.** A prompt at the turn's
+end has nobody to ask, and the trade is the same either way: twelve Block about to be swept up, for an
+Energy and a card. The Milestone's landmark is the highest-health enemy on the field rather than the
+highest-MAX-health, which is the same body in every encounter that has one.

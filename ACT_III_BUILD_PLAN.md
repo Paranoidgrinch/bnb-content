@@ -129,9 +129,25 @@ Open seams the later stages will want, listed when they are first needed:
       needed**; what the bosses did buy is the act's **hand budget** — a turn-end rule cannot read the hand,
       because the turn's end puts it away first, and four rules already shipped were quietly wrong about it.
       Every deviation is written down in `ADAPTATIONS.md` §"Act III — the five bosses".
+- [x] **(cards) — the Act-III card pools, checked rather than built.** DONE 2026-08-28. The 22 Act-III
+      reward cards were authored in Phase B (`Converter/Cards/BureaucratActIII.cs` 1/5/6 and
+      `GeneralActIII.cs` 0/5/5) and were already pinned by rarity and Act gate in
+      `Tests/FinalCardPoolTests.cs`. What the check added is a pin on WHICH cards Act III adds, card for
+      card, and a cross-read of every name against the two sheets. Nothing was missing and nothing was
+      wrong. Note: the Act-III cards speak the CHARACTER's keywords (Paperwork, Doubt, Blood Ink, Ward Wax,
+      Lien), not the act's four mechanics — the sheets ask for exactly that, and Safe-Conduct, Trespass,
+      Claim and Wergild stay enemy-side vocabulary answered by the cards the FIGHT hands over.
+
 - [ ] 12 — the act itself: `ActRules.For(3)`, `BabLoader.Acts`, the act's own map lanes and rest /
       treasure voice, and Act III joins the walked run
-- [ ] 13 — relics, then the fifteen events
+- [x] **13a — the fifteen Act-III boss relics.** DONE 2026-08-28 — three per boss, in
+      `Converter/Relics/BossRelics.cs` (+ `ActThreeBossRelicRules.cs` and the six action cards in
+      `ActThreeBossRelicCards.cs`), 15 live tests in `Tests/ActThreeBossRelicTests.cs` and the pool pinned
+      at 45 in `Tests/BossRelicTests.cs`. Deviations in `ADAPTATIONS.md` §"Act III — the fifteen boss
+      relics". NOTE: the relic master calls the fourth boss "The Hill That Answers"; the encounter is named
+      for the boss master's "The Answering Hill", and that name wins.
+
+- [ ] 13b — the fifteen events (and the Act-III event relics that come with them)
 
 ## House rules that already cost a day each
 

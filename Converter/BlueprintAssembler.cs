@@ -67,6 +67,7 @@ public static class BlueprintAssembler
                 // The events' temporary cards: never dealt into a deck, only pushed into a fight.
                 .. Events.ActOneEventObjects.Compile(), .. Events.ActTwoEventObjects.Compile(),
                 .. ActThree.GivenCards(),
+                .. Relics.ActThreeBossRelicCards.All(),
                 .. ClauseCards.Cards(), NoticeCards.Acknowledge(), DeputyUndersecretary.ReviewCard(),
                 .. QueueCommissioner.Cards(), .. LordSealkeeper.Cards(), .. MunicipalDragon.Cards(),
                 .. LivingCharter.Cards(), .. Elites.ReturnBell.Cards(),
@@ -91,6 +92,7 @@ public static class BlueprintAssembler
                 .. ActTwo.All(),
                 .. ActThree.All(),
                 .. Events.ActOneEventObjects.Statuses(), .. Events.ActTwoEventObjects.Statuses(),
+                .. Events.ActThreeEventObjects.Statuses(),
             ],
             // The final relic pools replace the ported v2 relics wherever the ids meet; what is left of the
             // old pool still ships because the ported EVENTS grant some of it by name.
