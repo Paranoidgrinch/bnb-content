@@ -123,6 +123,32 @@ Docket exists only in the converter.
 
 **Done when:** a Godot marathon reports a victory over three acts.
 
+**Done — 2026-08-28.** `smoke-marathon: result=Victory acts=3 rooms=73 error=none` — the Godot host plays
+the whole game, 23 + 24 + 26 rooms, each act ending on its boss. The document carries all three acts (364
+cards, 214 encounters, 182 relics, 58 events, 3 shops) and is synced into `bnb-godot/content/`. The three
+`--playtest` walks and `--maps 3` are clean.
+
+*What it cost, and why it is worth writing down.* Regenerating and syncing took a minute; the marathon then
+stopped at `archives_elite_after_hours_return_bell` with `result=Ongoing acts=2` and — this was the whole
+problem — **said nothing about why**. Three things had to be fixed, none of them in the content:
+
+1. **The probe now says why it stopped.** Every `break` in `SmokeMarathon` sets a reason, and the summary
+   prints it with the room and the encounter that was being fought (`stopped because the step limit ran out
+   at act 2 r7c1 (archives_elite_after_hours_return_bell)`). A probe that stops silently is worth nothing:
+   `result=Ongoing` looks identical whether the run met a wall or the harness did.
+2. **The probe's greedy player got RunWalker's three guards** — do not replay a card the engine REFUSED, do
+   not repeat a card that moved nothing on the table, and cap the turn (50 plays) and the fight (100 turns).
+   Without them it spent its entire 20 000-step budget in one elite. See step 1 and `ADAPTATIONS.md`.
+3. **★ The guards must not key on `driver.Current`.** Under the replay model the fight is rebuilt from the
+   blueprint on *every answer*, so an instance comparison reports "a new fight" at every step and silently
+   resets every counter. This cost one whole run to find: the guards were in, and nothing changed. A fight
+   begins when the driver has one and ends when it does not; turns are counted where the probe ends them.
+
+Also removed: `CardVisuals.Back` called `VideoStreamPlayer.Play()` before the node was in the tree, next to an
+`Autoplay = true` that already does exactly that when it enters. Harmless, but it printed one
+`Condition "!is_inside_tree()" is true` plus a fourteen-frame backtrace per card back — 283 error lines in a
+single marathon, enough to bury the verdict itself.
+
 ---
 
 ## Step 3 · The Warden of Sealed Volumes ends

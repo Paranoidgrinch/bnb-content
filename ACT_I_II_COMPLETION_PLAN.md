@@ -48,6 +48,10 @@ per-act filter, and it deserves a test that pins each act's pools to that act.
 > **The shipped export is deliberately stale.** `game.roguedeck.json` (here and in `bnb-godot/content/`) was
 > last generated before Act II existed, so what ships today is a correct Act-I-only game. Regenerating it
 > right now would make this bug live. **Do not run `sync-content.sh` until A-2 is fixed.**
+>
+> **★ OBSOLETE 2026-08-28.** A-2 was fixed in the act-seam work — `MapSpecBuilder` filters every pool to its
+> own act — and the document has since been regenerated and synced with all three acts in it. Nothing here
+> holds `sync-content.sh` back any more.
 
 **A-3 · Author Act II's map spec.** Act I's rows / lanes / per-path minimums and maximums / mimic chance are
 hand-written in `MapSpecBuilder`. Act II needs its own: its ten stages, its own lane flavours, and the mimic
