@@ -1686,3 +1686,49 @@ What could not be translated straight:
   and Road, remove his first generated Claim once" would need a promise that reaches inside a specific
   fight's rules and cancels one application; the branch keeps its two upgrades and its Elite-or-Boss
   licence, which is the part the player can plan around.
+
+---
+
+## The replay baseline, and the card a greedy player can play for ever (2026-08-28)
+
+Two findings, both about the HOST rather than the game, and together they are why a walk could not reach the
+end of Act III. Neither changed a rule of Bureaucrats & Broomsticks.
+
+**1 · The replay baseline never moved.** The interactive session re-executes the whole run from its baseline
+for every answer, so the price of one answer grew with the number of answers behind it. Measured on the walk
+(`RunWalker` now carries a `Meter`: answers are counted where they are given, every room reports its cost when
+the walk leaves it, every combat turn reports its own): **10–14 ms per answer right after a checkpoint, and
+200–295 ms four rooms later.** The constant part — rebuilding the initial run, every act's map included — is
+under 13 ms, so the distance to the baseline was the whole cost.
+
+The fix is in Core, in `InteractiveRunSession.Continue`: continuing past an interlude snapshots the run,
+rebases the baseline onto a restore of that snapshot and empties the replay script. The interlude is the run's
+one quiescent point, and `RunRunner.WalkGraph`'s resume arm continues *past* the node a save was taken at —
+which is exactly what continuing means, so the rebase IS the answer and nothing is recorded. A run that cannot
+be captured (a pending combat modifier whose body is not value-capturable) falls back to recording: slow,
+never wrong. Same walk, same seed, **answer for answer identical**, and 28.2 s instead of 54.3 s to the same
+room. Godot gets it for free — the session keeps its identity, so nothing subscribed to it changed.
+
+**2 · `Make Amends` is a card a greedy player can play for ever, and that is correct.** It costs nothing and
+puts a fresh copy of itself back in your hand while anything is still owed — deliberately, so that a payment
+which could not go through (an empty purse, the Juniper's injunction against coin) still leaves a way to try
+again. A human ends the turn. The walker had no reason to: the returned copy is a NEW instance, so refusing
+the instance does not help, and the play is not *refused* — it simply achieves nothing. It span at 100 % CPU
+inside one turn of the Great Toll Frog, which is what had been read as "the replay latency" for a week.
+
+The walker now reads the table either side of a play — energy, both healths, both status counts AND their
+stacks, hand, draw and discard — and stops offering a card whose play moved none of it, **by definition id**,
+for the rest of that turn. Two details cost an attempt each:
+
+- **the exhaust pile must not be in the reading.** A card that burns itself and returns a copy grows that pile
+  every time, so counting it makes exactly this loop look busy for ever;
+- **the reading has to be taken where nothing is pending.** `Make Amends` parks halfway through its own
+  resolution to ask which way you are paying, so a reading taken the moment `PlayCard` returns straddles an
+  open question and always differs. The judgement now happens at the next quiescent point instead.
+
+Behind it sits a backstop: fifty plays in one turn is not a turn anybody makes, so it ends the walk with a
+note rather than spinning.
+
+**The result: `--playtest` walks the whole game.** `ok seed 20260801: Victory, 73 rooms over 3/3 acts` — the
+first time a run has ever been played from the first room of the city to the last of the Green Docket.
+`WholeRunTests` is no longer bounded to two acts.

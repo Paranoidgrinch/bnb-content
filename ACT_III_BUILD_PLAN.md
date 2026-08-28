@@ -171,7 +171,7 @@ Open seams the later stages will want, listed when they are first needed:
 - After each block: `dotnet run --project Converter -- --playtest 3` and `-- --maps 3`, then
   `tools/sync-content.sh` and `godot --headless -- --smoke-marathon`.
 
-## Open findings after the act closed (2026-08-28)
+## Open findings after the act closed (2026-08-28) — the second one is FIXED, see below
 
 - **`--playtest` cannot walk past Act II on most seeds.** The Warden of Sealed Volumes still does not end
   within 100 turns (the pre-existing Act-II finding), so a walk that draws him stops there.
@@ -183,3 +183,10 @@ Open seams the later stages will want, listed when they are first needed:
   of every act from here on. **The interlude checkpoint is the fix.**
   Everything before that stall walked correctly: the act's rooms, its doors (`the_ombudsmans_warning`,
   `moonlit_mushrooms`, …), its shop, its rest and its elites all resolve.
+
+**★ RESOLVED the same day.** The stall was two things, neither of them a rule of the act: the replay baseline
+never moved (fixed in Core — `InteractiveRunSession.Continue` now checkpoints at every interlude), and the
+walker would replay `Make Amends` for ever, because that card is *designed* to keep coming back while a debt
+stands. `--playtest` now walks all three acts to a Victory. Both are written up in `ADAPTATIONS.md`
+§"The replay baseline, and the card a greedy player can play for ever". **The Warden of Sealed Volumes is
+still open** — see `ACT_II_III_FINISH_PLAN.md` step 3.
