@@ -20,7 +20,7 @@ namespace BnbContent.Converter.Relics;
 //   · a LATCH — a counter set to 1 and cleared at turn start — is "the first time each turn";
 //   · a LEDGER — a counter written at turn end and read at the next turn's draw — is "based on last turn";
 //   · a MARK on a card instance is "this copy, until it is played".
-public static class BossRelicRules
+public static partial class BossRelicRules
 {
     public static IReadOnlyList<StatusData> All() =>
     [
@@ -44,6 +44,8 @@ public static class BossRelicRules
         IdentityWrit, SettledLedger,
         // The Grand Cross-Reference
         PremiseSlip, ConcordanceThread, ConclusionLeaf,
+        // Act III — the Green Docket's five courts
+        .. ActThreeRules(),
         // The discounts and bonuses these relics hand out are statuses of their own, for the same reason the
         // other pools' are: a passive modifier's PRESENCE is its condition, so it has to be removable.
         SealedStrike, DefusedIntent, TestimonySeal, ConcludedStrike,

@@ -96,6 +96,30 @@ public class FinalCardPoolTests
                 Assert.True(statuses.Contains(id), $"Rite '{rite.Id}' installs unknown status '{id}'");
         }
     }
+
+    // The Act-III additions, card for card. The counts above say how many; this says WHICH — the sheets'
+    // own Act-III themes (custom, testimony, hospitality, restitution, grievance) on the Bureaucrat side,
+    // and the general pool's defensive engines and cash-outs beside them.
+    [Fact]
+    public void Act_three_adds_exactly_the_cards_the_sheets_name()
+    {
+        var added = FinalCards.RewardPool(act: 3)
+            .Except(FinalCards.RewardPool(act: 2))
+            .Select(c => c.Name)
+            .OrderBy(n => n, StringComparer.Ordinal)
+            .ToList();
+
+        string[] expected =
+        [
+            "Blood Testimony", "Blood Tithe", "Consecrated Testament", "Customary Due", "Debt Ouroboros",
+            "Due Recompense", "Exemplary Sentence", "Grievance Ledger", "Guest Right", "Guestbook Oath",
+            "Hearth Compact", "Hedge Covenant", "Hedge Hospitality", "Mortgaged Aegis", "Oath of Refusal",
+            "Priority Docket", "Restitution Writ", "Vital Census", "Votive Covenant", "Wax Indemnity",
+            "Wax Reliquary", "Witness Knot",
+        ];
+
+        Assert.Equal(expected.OrderBy(n => n, StringComparer.Ordinal).ToList(), added);
+    }
 }
 
 // Reads the statuses a card's authored program applies, so a test can check what a Rite actually installs.
@@ -115,4 +139,5 @@ internal static class CardIds
         foreach (var child in node.ChildrenOrEmpty)
             Walk(child, found);
     }
+
 }

@@ -93,8 +93,10 @@ public static partial class ActThree
         new ConditionalEffectNode<TContext>(
             new AndExpression<TContext>(
                 new ComparisonExpression<TContext>(
-                    new CombatantStatusStacksExpression<TContext>(
-                        Applicant, new StatusDefinitionId(WergildId)),
+                    new AddExpression<TContext>(
+                        new CombatantStatusStacksExpression<TContext>(
+                            Applicant, new StatusDefinitionId(WergildId)),
+                        OwedToTheRoad<TContext>()),
                     ComparisonOperator.Greater,
                     new ConstantExpression<TContext>(0)),
                 new ComparisonExpression<TContext>(
@@ -110,8 +112,10 @@ public static partial class ActThree
         new ConditionalEffectNode<CardPlayContext>(
             new AndExpression<CardPlayContext>(
                 new ComparisonExpression<CardPlayContext>(
-                    new CombatantStatusStacksExpression<CardPlayContext>(
-                        Applicant, new StatusDefinitionId(WergildId)),
+                    new AddExpression<CardPlayContext>(
+                        new CombatantStatusStacksExpression<CardPlayContext>(
+                            Applicant, new StatusDefinitionId(WergildId)),
+                        OwedToTheRoad<CardPlayContext>()),
                     ComparisonOperator.Greater,
                     new ConstantExpression<CardPlayContext>(0)),
                 new ComparisonExpression<CardPlayContext>(
@@ -192,8 +196,12 @@ public static partial class ActThree
                     ]))));
 
         var settle = new EffectProgram<TurnEndedTriggeredEffectContext>(
-            new ForEachTargetEffectNode<TurnEndedTriggeredEffectContext>(
-                CombatantTargetSelectors.AllEnemiesOfSource, Settlement()));
+            new CausalSequenceEffectNode<TurnEndedTriggeredEffectContext>(
+            [
+                new ForEachTargetEffectNode<TurnEndedTriggeredEffectContext>(
+                    CombatantTargetSelectors.AllEnemiesOfSource, Settlement()),
+                TheRoadsOwnDemand(),
+            ]));
 
         return Rule(WergildFallsDueId, "Restitution",
             "A demand raised against you comes due at the end of your next turn. Settle it in full and you "
@@ -206,6 +214,43 @@ public static partial class ActThree
                     settle, CombatJson.CreateOptions<TurnEndedTriggeredEffectContext>())),
                 KeepTheHandBudget(),
             ]);
+    }
+
+    // A demand owed to NOBODY — what an event writes on the fight rather than on a party. It matures and
+    // falls due on the same clock as every other demand and is paid through the same card; the only thing it
+    // does differently is create no standing when it is left owing, because there is nobody for standing to
+    // belong to.
+    private static IEffectNode<TurnEndedTriggeredEffectContext> TheRoadsOwnDemand()
+    {
+        var owed = new CombatantStatusStacksExpression<TurnEndedTriggeredEffectContext>(
+            Applicant, new StatusDefinitionId(Events.ActThreeEventObjects.EnvironmentalWergildId));
+
+        return new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
+            new ComparisonExpression<TurnEndedTriggeredEffectContext>(
+                owed, ComparisonOperator.Greater, new ConstantExpression<TurnEndedTriggeredEffectContext>(0)),
+            new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
+                new ComparisonExpression<TurnEndedTriggeredEffectContext>(
+                    new CombatantStatusStacksExpression<TurnEndedTriggeredEffectContext>(
+                        Applicant, new StatusDefinitionId(Events.ActThreeEventObjects.EnvironmentalDueId)),
+                    ComparisonOperator.Greater,
+                    new ConstantExpression<TurnEndedTriggeredEffectContext>(0)),
+                new CausalSequenceEffectNode<TurnEndedTriggeredEffectContext>(
+                [
+                    new DealDamageNode<TurnEndedTriggeredEffectContext>(
+                        Applicant,
+                        new MultiplyExpression<TurnEndedTriggeredEffectContext>(
+                            owed,
+                            new ConstantExpression<TurnEndedTriggeredEffectContext>(UnpaidDamagePerPoint))),
+                    new RemoveStatusNode<TurnEndedTriggeredEffectContext>(
+                        Applicant,
+                        new StatusDefinitionId(Events.ActThreeEventObjects.EnvironmentalWergildId)),
+                    new RemoveStatusNode<TurnEndedTriggeredEffectContext>(
+                        Applicant, new StatusDefinitionId(Events.ActThreeEventObjects.EnvironmentalDueId)),
+                ]),
+                // Not yet: it falls due at the end of your NEXT turn, like everything else in the act.
+                new ApplyStatusNode<TurnEndedTriggeredEffectContext>(
+                    Applicant, new StatusDefinitionId(Events.ActThreeEventObjects.EnvironmentalDueId),
+                    new ConstantExpression<TurnEndedTriggeredEffectContext>(1))));
     }
 
     // What one creditor's demand does when it falls due.
@@ -407,7 +452,25 @@ public static partial class ActThree
     // One point off the OLDEST demand — the design does not say which creditor a payment answers when
     // several are owed, and settling the oldest first is the reading a court would take. The card comes back
     // while anything is still owed.
+    private static ICombatExpression<TContext, int> OwedToTheRoad<TContext>()
+        where TContext : class =>
+        new CombatantStatusStacksExpression<TContext>(
+            Applicant, new StatusDefinitionId(Events.ActThreeEventObjects.EnvironmentalWergildId));
+
     private static IEffectNode<TContext> PayOneWergild<TContext>()
+        where TContext : class =>
+        new ConditionalEffectNode<TContext>(
+            new ComparisonExpression<TContext>(
+                new CombatantStatusStacksExpression<TContext>(
+                    Applicant, new StatusDefinitionId(WergildId)),
+                ComparisonOperator.Equal, new ConstantExpression<TContext>(0)),
+            // Nobody is owed anything, so what is being settled is the road's own demand.
+            new ModifyStatusStacksNode<TContext>(
+                Applicant, new StatusDefinitionId(Events.ActThreeEventObjects.EnvironmentalWergildId),
+                new ConstantExpression<TContext>(-1)),
+            PayOneCreditor<TContext>());
+
+    private static IEffectNode<TContext> PayOneCreditor<TContext>()
         where TContext : class =>
         new CausalSequenceEffectNode<TContext>(
         [
