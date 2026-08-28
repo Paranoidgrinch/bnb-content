@@ -302,8 +302,15 @@ public static class RunWalker
             meter.Answered();
             // Only turns that COST something are worth a line. A walk prints a few hundred turns and almost
             // all of them are four answers long; the ones that matter are the ones that are not.
+            //
+            // The line says who is still standing, because that is the whole question about a long fight and
+            // the walk is the only place it can be asked: a fight at turn 80 whose enemy is losing 6 HP a turn
+            // is slow, and one whose enemy has not moved since turn 12 is stuck, and a timing alone cannot
+            // tell them apart. The Warden of Sealed Volumes was carried for a week as "does not end" for want
+            // of exactly this.
             if (meter.Seconds - turnSeconds > 1.0 || meter.Answers - turnAnswers > 15)
-                progress?.Invoke($"        turn {turn + 1,3}: {meter.Since(turnSeconds, turnAnswers)}");
+                progress?.Invoke($"        turn {turn + 1,3}: {meter.Since(turnSeconds, turnAnswers)}"
+                    + $" — {Standing(driver.Current)}");
             if (session.Error is not null || play.Error is not null)
                 return true;
         }
@@ -312,6 +319,14 @@ public static class RunWalker
     }
 
     private const int PlaysInATurnNobodyMakes = 50;
+
+    // Who is left on the other side of the table, and on how much health.
+    private static string Standing(InteractiveCombat? combat) =>
+        combat is null
+            ? "the fight is over"
+            : string.Join(", ", combat.State.Combatants
+                .Where(c => c.Id != combat.HeroId && c.IsAlive)
+                .Select(c => $"{c.Id.value} {c.Health.Current}/{c.Health.Max}"));
 
     // Everything about the table a play could visibly move. Two plays with the same reading either side of
     // them did nothing — which is the only way to tell a card that regenerates itself apart from one that
