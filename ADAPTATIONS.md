@@ -1462,3 +1462,77 @@ deviation — and a defensible one, since they are two pieces of paper.
 
 **The Bench hears one matter at a time**, which is what makes it slow enough for reeds to grow through the
 record — and which stops the review marker stacking up round after round.
+
+## Act III — the nine elites (2026-08-28)
+
+The elite layer adds no fifth Act-wide mechanic. What follows is every place the port's shape differs from
+the master, and why.
+
+**Safe-Conduct refuses a whole application, not a stack.** §5.2 says one licence prevents a full Trespass
+application "if a source attempts 2 at once". That is exactly a prohibition that pays for two incoming
+stacks with one of its own, so the licence's `StacksPerStack` is 2 — a single Trespass still costs a whole
+licence, because the spend rounds up. The Stag's marked verge and the Web's knotted thread are therefore
+written as ONE application of two rather than two of one.
+
+**An injunction names the licence that may not answer it.** The Juniper's Against Safe Passage does not
+remove the licence and does not make it unspendable — it says that THIS violation is beyond it. That is the
+mirror of a prohibition's own "the one status I refuse", and it was bought as an engine seam
+(`ApplyStatusEffectRequest.UnrefusableBy`), threaded through the act's single filing point.
+
+**A fallen body can still be named by the mark it wears.** Replace the Fallen has to reach a Line-Bearer
+that is down; every status-filtered selector in the engine was living-only. `WithStatus(..., includeFallen)`
+is the second seam this arc bought. Standing the Bearer up comes first and healing it second, because
+setting health is a living-only operation.
+
+**The Wrong Bridge is one 200-HP body, not 96 + 104.** The design spawns a second body at Phase-I lethal,
+transferring the surviving Claims and preserving the open Wergild. Built as one body that turns around at
+104, both of those are true by construction rather than by a transfer that would have to be written, tested
+and kept from announcing itself as a grant.
+
+**A rule about the whole fight is carried by the player.** The tribunal's Appeal Chain, the Juniper's
+Granted Use and the Magistrate's Three Judgments all live on the hero, because they have to outlive any
+body they are about (a rule kept on a reed stops working the moment that reed is cut) or because they are
+asked of the player's own hand.
+
+**"At the end of the enemy turn" is written at the player's bell.** A turn ENDING happens once per body, so
+the Ant Queen's Closed Formation and the Reeds' Appeal Chain would fire once per enemy in a multi-body
+encounter. Both are written at the player's turn start instead — the same board, seen from the side that has
+to get through it, and exactly once a round.
+
+**A choice offered at the bell is offered in full, and the first one is not offered at all.** An option list
+is a fixed list, so the Juniper offers all four Granted Uses and the Magistrate all three Judgments rather
+than two of them; the design's "no impossible category may be offered" then holds trivially, because the
+traveller picks the one they can live under. The Juniper's own NARROWING is what removes the choice. And the
+opening hand is dealt while the fight is still being handed over, before there is anybody to put the
+question to — so the first leave and the first judgment are handed down (Deeds, and Conduct) and the asking
+starts on the next turn.
+
+**The bell is written into the drawing, in front of the question.** A parked question holds the turn's other
+triggers behind it, so a Binding Judgment established by the answer would be run down by the same bell that
+established it. The Magistrate's rulings therefore run down inside the same program that asks, before it
+asks — and that program only fires on the hand a turn OPENS with, so a card that draws mid-turn does not
+reopen the hearing.
+
+**Blocked at settlement is Block that never existed.** A demand falls due as a turn ENDS, and Block granted
+there is swept away before the player can meet it. The Reeds' "Nothing Ends Here" therefore books the
+Remand's guard and puts it up at the next bell, which is the turn it was ever meant to survive.
+
+**Permitted Exception strikes the Block off there and then.** The design says the next direct hit ignores up
+to 6 of the Bearer's Block. A Bearer's Block is only ever gained on the Queen's own turn, so removing up to
+6 at the moment the licence is spent leaves exactly the board the design describes.
+
+**Small readings, listed once.** "Directly targets a Line-Bearer" is the card's own target, and an area
+effect names nobody — which is the design's AoE exemption for free. "No VALID non-Junk card in hand" is read
+as "no non-Junk card": whether a card could legally be played is not a question the rules layer can put to
+itself. The Magistrate's redress lifts the OLDEST binding, read as the one with the fewest turns left, since
+every binding starts at two and runs down together; the Juniper's relief lifts the first injunction in
+order, because a settlement resolves as a turn ends and there is nobody there to ask. Written Refusal files
+a Trespass in the Refusal Reed's name — without it, Final Refusal would have nothing to answer, since
+nothing else in the tribunal files in the Refusal's name. And the Surveyor's citation, like Make Amends, is
+offered again at the bell: a right earned as a turn ENDED has no card to cite it with, because the hand it
+was dealt into is put away in the same breath.
+
+**Mark the Verge is a threat that only bites a dry traveller.** With §5.2 as written, one licence refuses a
+doubled attempt whole — so the Stag's verge is worth nothing to a player who still holds one. In a solo
+Stag fight, where the Stag itself refills the licence every turn, that is never. It is left as the master
+wrote it and belongs on the playtest watchlist rather than in a silent rewrite.

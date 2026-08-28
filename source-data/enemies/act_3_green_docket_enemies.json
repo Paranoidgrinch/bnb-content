@@ -2578,5 +2578,106 @@
       "act_3",
       "appeal"
     ]
+  },
+  {
+    "id": "magistrate_of_thorns",
+    "name": "Magistrate of Thorns",
+    "max_hp": 220,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "hear_the_trespass",
+        "name": "Hear the Trespass",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 15
+          }
+        ]
+      },
+      {
+        "id": "establish_the_judgment",
+        "name": "Establish the Judgment",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 12
+          }
+        ]
+      },
+      {
+        "id": "thorn_gavel",
+        "name": "Thorn-Gavel",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 21
+          }
+        ]
+      },
+      {
+        "id": "demand_redress",
+        "name": "Demand Redress",
+        "intent_type": "debuff",
+        "actions": [
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "wergild",
+            "amount": 2
+          }
+        ]
+      },
+      {
+        "id": "stay_of_judgment",
+        "name": "Stay of Judgment",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 16
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "safe_conduct",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "judgment_of_the_green_docket",
+        "name": "Judgment of the Green Docket",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 30
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "green_docket_body"
+      },
+      {
+        "status": "the_magistrate_of_thorns"
+      }
+    ],
+    "tags": [
+      "green_docket",
+      "elite",
+      "act_3",
+      "judgment"
+    ]
   }
 ]

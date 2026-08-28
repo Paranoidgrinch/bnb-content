@@ -101,4 +101,55 @@ public class ActThreePoolTests
                 s => s.Status == ActThree.GreenDocketBodyId);
         }
     }
+
+    // ── the elite layer ───────────────────────────────────────────────────────────────────────────────────
+
+    // Nine elites, and the master's own roster: permission, custom, crossing, restitution, formation,
+    // injunction, obsolete right, appeal, judgment. Act III requires three elites on every valid path, so a
+    // nine-encounter pool is what gives a run variance without padding.
+    [Fact]
+    public void The_act_fields_nine_elite_encounters()
+    {
+        var elites = Data.Encounters.Where(e => e.Act == 3 && e.Role == "elite").ToList();
+
+        Assert.Equal(9, elites.Count);
+    }
+
+    // An elite is a Green Docket body like any other — the act's customs open on it — but it is never a
+    // standard identity, so the two rosters are counted apart.
+    [Fact]
+    public void Every_elite_body_is_a_party_and_never_a_standard()
+    {
+        foreach (var encounter in Data.Encounters.Where(e => e.Act == 3 && e.Role == "elite"))
+            foreach (var id in encounter.Enemies)
+            {
+                var enemy = Data.Enemies.Single(e => e.Id == id);
+                Assert.Contains(enemy.StartingStatuses ?? [], s => s.Status == ActThree.GreenDocketBodyId);
+                Assert.Contains(id, ActThree.EliteIdentities);
+                Assert.DoesNotContain(id, ActThree.Identities);
+            }
+    }
+
+    // The master's HP targets, body for body.
+    [Fact]
+    public void The_elites_are_the_size_the_master_states()
+    {
+        (string Id, int Health)[] expected =
+        [
+            (ActThree.StagEnemyId, 138),
+            (ActThree.GrandmotherWebEnemyId, 154),
+            // ADAPTATION: one 200-HP body rather than 96 + 104, turning around at the far bank.
+            (ActThree.WrongBridgeEnemyId, 200),
+            (ActThree.GreatTollFrogEnemyId, 176),
+            (ActThree.AntQueenEnemyId, 160),
+            ("first_line_bearer", 27), ("second_line_bearer", 27), ("third_line_bearer", 27),
+            (ActThree.JuniperEnemyId, 188),
+            (ActThree.SurveyorEnemyId, 198),
+            (ActThree.HearingReedId, 78), (ActThree.RemandReedId, 84), (ActThree.RefusalReedId, 90),
+            (ActThree.MagistrateEnemyId, 220),
+        ];
+
+        foreach (var (id, health) in expected)
+            Assert.Equal(health, Data.Enemies.Single(e => e.Id == id).MaxHp);
+    }
 }

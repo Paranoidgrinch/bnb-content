@@ -243,6 +243,9 @@ public static class EncounterPassives
             new StartingStatusSpec(new StatusDefinitionId(Elites.DrawerOfInfiniteReturns.DrawerRulesId), 1),
             new StartingStatusSpec(new StatusDefinitionId(ActTwo.ArchiveRegulationsId), 1),
         ],
+        // The Magistrate asks its question at the start of the player's turn, so the player carries it.
+        ActThree.MagistrateEnemyId =>
+            [new StartingStatusSpec(new StatusDefinitionId(ActThree.JudgmentOfferId), 1)],
         // The tribunal's chain has to outlive any of its three reeds, so the player carries it: a rule kept
         // on a reed would stop working the moment that reed was cut.
         ActThree.HearingReedId or ActThree.RemandReedId or ActThree.RefusalReedId =>

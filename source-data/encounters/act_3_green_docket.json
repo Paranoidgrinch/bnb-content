@@ -1032,5 +1032,22 @@
       "multi_enemy"
     ],
     "role": "elite"
+  },
+  {
+    "id": "green_docket_elite_magistrate_of_thorns",
+    "name": "Magistrate of Thorns",
+    "act": 3,
+    "difficulty": "elite",
+    "enemies": [
+      "magistrate_of_thorns"
+    ],
+    "weight": 1,
+    "tags": [
+      "green_docket",
+      "elite",
+      "claim",
+      "judgment"
+    ],
+    "role": "elite"
   }
 ]

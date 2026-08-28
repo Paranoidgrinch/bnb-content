@@ -108,10 +108,16 @@ public static partial class ActThree
 
         var program = new EffectProgram<CardsDrawnTriggeredEffectContext>(
             new ConditionalEffectNode<CardsDrawnTriggeredEffectContext>(
-                new ComparisonExpression<CardsDrawnTriggeredEffectContext>(
-                    new CombatantCurrentHealthExpression<CardsDrawnTriggeredEffectContext>(Juniper),
-                    ComparisonOperator.Greater,
-                    new ConstantExpression<CardsDrawnTriggeredEffectContext>(0)),
+                new AndExpression<CardsDrawnTriggeredEffectContext>(
+                    new ComparisonExpression<CardsDrawnTriggeredEffectContext>(
+                        new CombatantCurrentHealthExpression<CardsDrawnTriggeredEffectContext>(Juniper),
+                        ComparisonOperator.Greater,
+                        new ConstantExpression<CardsDrawnTriggeredEffectContext>(0)),
+                    // Only the hand a turn OPENS with: a card that draws mid-turn does not re-grant leave.
+                    new ComparisonExpression<CardsDrawnTriggeredEffectContext>(
+                        new CardsPlayedThisTurnExpression<CardsDrawnTriggeredEffectContext>(Applicant),
+                        ComparisonOperator.Equal,
+                        new ConstantExpression<CardsDrawnTriggeredEffectContext>(0))),
                 new ConditionalEffectNode<CardsDrawnTriggeredEffectContext>(
                     Enjoined<CardsDrawnTriggeredEffectContext>(GrantedUseNarrowedId),
                     // Narrowed: there is one achievable use and no choice about it.
