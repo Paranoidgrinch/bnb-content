@@ -1732,3 +1732,35 @@ note rather than spinning.
 **The result: `--playtest` walks the whole game.** `ok seed 20260801: Victory, 73 rooms over 3/3 acts` — the
 first time a run has ever been played from the first room of the city to the last of the Green Docket.
 `WholeRunTests` is no longer bounded to two acts.
+
+## The same lesson, one repo over: the Godot smoke marathon (2026-08-28)
+
+With the walk fixed and Act III finally in the exported document, `godot --headless -- --smoke-marathon`
+still reported `result=Ongoing acts=2`. The content was not at fault — the probe was, in three ways worth
+keeping written down, because all three are traps the *next* headless player will fall into too.
+
+**It did not say why it stopped.** Every exit from the marathon's loop looked the same from outside:
+`Ongoing`, no error. Each `break` now sets a reason and the summary prints it together with the room and the
+encounter — `stopped because the step limit ran out at act 2 r7c1 (archives_elite_after_hours_return_bell)`.
+That one line turned a guessing game into a diagnosis.
+
+**Its greedy player had none of the walker's guards.** It played the first affordable card in hand, for ever
+— never noticing a play the engine had *refused*, never noticing a play that moved nothing, and with no
+ceiling on a turn or a fight. It had crossed two acts on luck. It now carries the same three rules the walker
+learned above, `TableState` reading included.
+
+**★ And the guards must not key on `driver.Current`.** This is the one that cost a whole run to find. Under
+the replay model the fight is rebuilt from the blueprint on *every answer*, so `ReferenceEquals(combat,
+fight)` announces a brand-new fight at every step — which reset the turn counter, the play counter, the
+refused set and the barren set each time, leaving the guards in place and completely inert. A fight begins
+when the driver has one and ends when it does not; turns are counted where the probe itself ends them. Card
+*instance* ids, by contrast, are stable across replays — the rebuild is deterministic — which is why keying
+`refused` on them works and keying anything on object identity does not.
+
+Result: `smoke-marathon: result=Victory acts=3 rooms=73 error=none`, 242 s over 2534 answers, and the
+per-answer cost stays flat across the three acts (72 → 87 → 113 ms) instead of climbing with the run.
+
+One unrelated fix fell out of it: `CardVisuals.Back` called `VideoStreamPlayer.Play()` before the node was in
+the tree, directly under an `Autoplay = true` that does precisely that on entry. The call was redundant and
+printed `Condition "!is_inside_tree()" is true` with a fourteen-frame backtrace per card back — 283 error
+lines in one marathon, which is how the verdict got buried in the first place.
