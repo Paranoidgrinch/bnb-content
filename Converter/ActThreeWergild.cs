@@ -271,10 +271,17 @@ public static partial class ActThree
             new ApplyStatusNode<TurnEndedTriggeredEffectContext>(
                 Applicant, new StatusDefinitionId(SafeConductId),
                 new AddExpression<TurnEndedTriggeredEffectContext>(
-                    new ConstantExpression<TurnEndedTriggeredEffectContext>(1),
+                    new AddExpression<TurnEndedTriggeredEffectContext>(
+                        new ConstantExpression<TurnEndedTriggeredEffectContext>(1),
+                        new CombatantStatusStacksExpression<TurnEndedTriggeredEffectContext>(
+                            creditor, new StatusDefinitionId(OathAcceptedId))),
+                    // …and A Clear Stream's bottle, which is worth one extra leave and is then empty.
                     new CombatantStatusStacksExpression<TurnEndedTriggeredEffectContext>(
-                        creditor, new StatusDefinitionId(OathAcceptedId))),
+                        Applicant,
+                        new StatusDefinitionId(Events.ActThreeEventObjects.BottledWaterId))),
                 sourceSelector: creditor),
+            new RemoveStatusNode<TurnEndedTriggeredEffectContext>(
+                Applicant, new StatusDefinitionId(Events.ActThreeEventObjects.BottledWaterId)),
             // A coin at the table is worn down by other people keeping their word.
             PaidInKind(),
             // …and the elites that wrote their own terms of settlement read them here.

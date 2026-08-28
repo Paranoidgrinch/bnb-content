@@ -73,7 +73,7 @@
     "elite_weight_multiplier": 1.3
   },
   "treasure": {
-    "mimic_chance": 0.1,
+    "mimic_chance": 0.15,
     "mimic_encounter_id": "green_docket_mimic_01"
   },
   "waiting_room": {

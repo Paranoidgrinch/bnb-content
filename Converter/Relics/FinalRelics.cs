@@ -24,7 +24,7 @@ public static class FinalRelics
     // The in-combat rules the relics install, as the statuses that carry them.
     public static IReadOnlyList<StatusData> Statuses() =>
         [.. RelicRules.All(), .. ShopRelicRules.All(), .. EventRelicRules.All(), .. ActTwoEventRelicRules.All(),
-         .. BossRelicRules.All()];
+         .. BossRelicRules.All(), .. ActThreeEventRelicRules.All()];
 
     // What a given pool offers a given character. Character-specific relics are only eligible while that
     // character is played; everything else is open to everyone.

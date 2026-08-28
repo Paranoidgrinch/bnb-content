@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace BnbContent.Converter;
 
-// Loads the original game's data directory for the ported slice: Acts I–II, Bureaucrat only.
+// Loads the original game's data directory for the ported slice: Acts I–III, Bureaucrat only.
 // Strict JSON: snake_case member names, unknown members abort — nothing is silently dropped.
 public sealed class BabData
 {
@@ -37,14 +37,15 @@ public sealed class BabData
             [
                 One<BabActManifest>("acts/act_1_city.json"),
                 One<BabActManifest>("acts/act_2_archives.json"),
+                One<BabActManifest>("acts/act_3_green_docket.json"),
             ],
             Bureaucrat = One<BabClass>("classes/bureaucrat.json"),
             Cards = Many<BabCard>("cards/bureaucrat_starter.json", "cards/bureaucrat_rewards.json"),
             Statuses = Many<BabStatus>("statuses/statuses.json"),
             // Act I's ported roster plus the acts authored since. Every act's bodies are ordinary enemy data;
             // what makes an act an act is its own map and its own vocabulary, not a separate catalogue.
-            // Act III's bodies and fights load with the rest; the act itself does not join the walked run
-            // until it has a full roster and its own events (ACT_III_BUILD_PLAN §12).
+            // Act III's bodies and fights load with the rest, and since its roster and its fifteen doors are
+            // authored, the act itself now joins the walked run (ACT_III_BUILD_PLAN §12).
             Enemies = Many<BabEnemy>(
                 "enemies/city_enemies.json", "enemies/act_2_archives_enemies.json",
                 "enemies/act_3_green_docket_enemies.json"),

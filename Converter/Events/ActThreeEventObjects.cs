@@ -44,6 +44,9 @@ public static class ActThreeEventObjects
     private static CounterId OldRightSpent => new("old_right_spent");
     private static CounterId KnotMemory => new("way_knotted_last_cost");
 
+    // A courtesy carried into one fight: the act's settlement reads it off the payer and drinks it.
+    public const string BottledWaterId = "bottled_stream_water";
+
     public static IReadOnlyList<string> Inscriptions() =>
         [RowanBlessed, WayKnotted, HearthKept, StoneWitnessed, OldRightInscription];
 
@@ -53,6 +56,9 @@ public static class ActThreeEventObjects
         Marker(AttendedByYou, "Attended To",
             "You have aimed something at this party this turn."),
         EnvironmentalWergild(), EnvironmentalDue(),
+        QuorumVowRule, AntLineVowRule,
+        Marker(BottledWaterId, "Bottled Stream-Water",
+            "The next demand you settle in full grants one more leave to pass than it would have."),
     ];
 
     // ── Rowan-Blessed ─────────────────────────────────────────────────────────────────────────────────────
@@ -220,6 +226,99 @@ public static class ActThreeEventObjects
                         markFilter: new TagId(OldRightInscription), takeFirst: 1))),
                 nameof(TriggerEvent.CardsDrawn)),
         ]);
+
+    // ── The two vows ──────────────────────────────────────────────────────────────────────────────────────
+    //
+    // Two of the act's doors ask the traveller to fight in a particular shape and pay off only if the shape
+    // held. Neither rule STOPS anything: it writes down that the promise was broken, and the run reads that
+    // off the finished fight. Both are written as a ONE at the opening bell that only ever falls, so a fight
+    // that never carried the vow reads as zero — which is what a promise waiting on the wrong fight must see.
+
+    public const string QuorumVowId = "quorum_vow";
+    public const string AntLineVowId = "ant_line_vow";
+
+    public static CounterId QuorumHeld => new("quorum_vow_held");
+    public static CounterId AntLineHeld => new("ant_line_vow_held");
+
+    private static CounterId AntLineMemory => new("ant_line_last_cost");
+
+    // "Every player turn must end with exactly 1 or 3 non-Junk cards played; 0 is failure."
+    public static readonly StatusData QuorumVowRule = Rule(
+        QuorumVowId, "Wait for Quorum",
+        "The circle is watching how many things you do: end each turn having played exactly one real card, "
+        + "or exactly three. Nothing stops a second or a fourth; the ring simply notices.",
+        [
+            OpensAt(QuorumHeld),
+            Trigger(new EffectProgram<TurnEndedTriggeredEffectContext>(
+                new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
+                    new NotExpression<TurnEndedTriggeredEffectContext>(
+                        new OrExpression<TurnEndedTriggeredEffectContext>(
+                            Played<TurnEndedTriggeredEffectContext>(1),
+                            Played<TurnEndedTriggeredEffectContext>(3))),
+                    new SetCombatantCounterNode<TurnEndedTriggeredEffectContext>(
+                        You, QuorumHeld, new ConstantExpression<TurnEndedTriggeredEffectContext>(0),
+                        relative: false))),
+                nameof(TriggerEvent.TurnEnded)),
+        ]);
+
+    // "Played non-Junk base costs may never decrease within a turn."
+    public static readonly StatusData AntLineVowRule = Rule(
+        AntLineVowId, "Walk with the Proper Line",
+        "Within a turn, no real card may be cheaper than the one you played before it. Nothing stops you; "
+        + "the line simply notices.",
+        [
+            OpensAt(AntLineHeld),
+            Trigger(new EffectProgram<CardPlayedTriggeredEffectContext>(
+                new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
+                    new NotExpression<CardPlayedTriggeredEffectContext>(
+                        new TriggerEventSourceCardHasTagExpression<CardPlayedTriggeredEffectContext>(
+                            new TagId(JunkTag))),
+                    new CausalSequenceEffectNode<CardPlayedTriggeredEffectContext>(
+                    [
+                        new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
+                            new AndExpression<CardPlayedTriggeredEffectContext>(
+                                new ComparisonExpression<CardPlayedTriggeredEffectContext>(
+                                    new CombatantCounterExpression<CardPlayedTriggeredEffectContext>(
+                                        You, AntLineMemory),
+                                    ComparisonOperator.Greater,
+                                    new ConstantExpression<CardPlayedTriggeredEffectContext>(0)),
+                                new ComparisonExpression<CardPlayedTriggeredEffectContext>(
+                                    PlayedCostPlusOne(), ComparisonOperator.Less,
+                                    new CombatantCounterExpression<CardPlayedTriggeredEffectContext>(
+                                        You, AntLineMemory))),
+                            new SetCombatantCounterNode<CardPlayedTriggeredEffectContext>(
+                                You, AntLineHeld, new ConstantExpression<CardPlayedTriggeredEffectContext>(0),
+                                relative: false)),
+                        new SetCombatantCounterNode<CardPlayedTriggeredEffectContext>(
+                            You, AntLineMemory, PlayedCostPlusOne(), relative: false),
+                    ]))),
+                nameof(TriggerEvent.CardPlayed)),
+            Trigger(new EffectProgram<TurnStartedTriggeredEffectContext>(
+                new SetCombatantCounterNode<TurnStartedTriggeredEffectContext>(
+                    You, AntLineMemory, new ConstantExpression<TurnStartedTriggeredEffectContext>(0),
+                    relative: false)),
+                nameof(TriggerEvent.TurnStarted)),
+        ]);
+
+    private static ICombatExpression<TContext, bool> Played<TContext>(int count) where TContext : class =>
+        new ComparisonExpression<TContext>(
+            new SubtractExpression<TContext>(
+                new CardsPlayedThisTurnExpression<TContext>(You),
+                new CardsPlayedThisTurnWithTagExpression<TContext>(You, new TagId(JunkTag))),
+            ComparisonOperator.Equal, new ConstantExpression<TContext>(count));
+
+    // A vow is written down as a ONE the moment the fight opens, and only ever falls.
+    private static StatusTriggerData OpensAt(CounterId counter) =>
+        Trigger(new EffectProgram<CardsDrawnTriggeredEffectContext>(
+            new ConditionalEffectNode<CardsDrawnTriggeredEffectContext>(
+                new ComparisonExpression<CardsDrawnTriggeredEffectContext>(
+                    new RoundNumberExpression<CardsDrawnTriggeredEffectContext>(),
+                    ComparisonOperator.Equal,
+                    new ConstantExpression<CardsDrawnTriggeredEffectContext>(1)),
+                new SetCombatantCounterNode<CardsDrawnTriggeredEffectContext>(
+                    You, counter, new ConstantExpression<CardsDrawnTriggeredEffectContext>(1),
+                    relative: false))),
+            nameof(TriggerEvent.CardsDrawn));
 
     // ── An environmental demand ───────────────────────────────────────────────────────────────────────────
     //

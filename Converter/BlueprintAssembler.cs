@@ -132,6 +132,9 @@ public static class BlueprintAssembler
         if (pools.TryGetValue(Events.ActTwoEvents.Act, out var actTwo))
             foreach (var (id, body) in Events.ActTwoEventPrograms.All(actTwo))
                 programs[id] = body;
+        if (pools.TryGetValue(Events.ActThreeEvents.Act, out var actThree))
+            foreach (var (id, body) in Events.ActThreeEventPrograms.All(actThree))
+                programs[id] = body;
         return programs.Count > 0 ? programs : null;
     }
 
