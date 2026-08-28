@@ -3088,5 +3088,119 @@
       "act_3",
       "landscape"
     ]
+  },
+  {
+    "id": "queen_under_the_hill",
+    "name": "The Queen Under the Hill",
+    "max_hp": 392,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "open_the_hill_registry",
+        "name": "Open the Hill Registry",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 16
+          }
+        ]
+      },
+      {
+        "id": "call_in_the_gift",
+        "name": "Call in the Gift",
+        "intent_type": "debuff",
+        "actions": [
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "wergild",
+            "amount": 2
+          }
+        ]
+      },
+      {
+        "id": "royal_subterranean_correction",
+        "name": "Royal Subterranean Correction",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 14
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "doubt",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "count_every_buried_name",
+        "name": "Count Every Buried Name",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 14
+          }
+        ]
+      },
+      {
+        "id": "a_gift_in_return",
+        "name": "A Gift in Return",
+        "intent_type": "buff",
+        "actions": [
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "safe_conduct",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "no_further_gift",
+        "name": "No Further Gift",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 18
+          }
+        ]
+      },
+      {
+        "id": "hill_court_final_order",
+        "name": "Hill Court Final Order",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 22
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "green_docket_body"
+      },
+      {
+        "status": "the_hill_court"
+      }
+    ],
+    "tags": [
+      "green_docket",
+      "boss",
+      "act_3",
+      "court"
+    ]
   }
 ]

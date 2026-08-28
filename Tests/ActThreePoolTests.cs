@@ -152,4 +152,49 @@ public class ActThreePoolTests
         foreach (var (id, health) in expected)
             Assert.Equal(health, Data.Enemies.Single(e => e.Id == id).MaxHp);
     }
+
+    // ── the boss layer ────────────────────────────────────────────────────────────────────────────────────
+
+    // Five bosses, and the master's roster: the Ombudsman, the Notary, Grandmother Clause, the Answering
+    // Hill and the Queen Under the Hill. No sixth is required.
+    [Fact]
+    public void The_act_fields_five_boss_encounters()
+    {
+        var bosses = Data.Encounters.Where(e => e.Act == 3 && e.Role == "boss").ToList();
+
+        Assert.Equal(5, bosses.Count);
+        Assert.Equal(5, ActThree.BossIdentities.Count);
+    }
+
+    // A boss is a Green Docket body like any other, and never a standard or an elite identity.
+    [Fact]
+    public void Every_boss_body_is_a_party_and_nothing_else()
+    {
+        foreach (var encounter in Data.Encounters.Where(e => e.Act == 3 && e.Role == "boss"))
+            foreach (var id in encounter.Enemies)
+            {
+                var enemy = Data.Enemies.Single(e => e.Id == id);
+                Assert.Contains(enemy.StartingStatuses ?? [], s => s.Status == ActThree.GreenDocketBodyId);
+                Assert.Contains(id, ActThree.BossIdentities);
+                Assert.DoesNotContain(id, ActThree.Identities);
+                Assert.DoesNotContain(id, ActThree.EliteIdentities);
+            }
+    }
+
+    // The master's HP table. Bosses scale into the mid/high 300s rather than inflating.
+    [Fact]
+    public void The_bosses_are_the_size_the_master_states()
+    {
+        (string Id, int Health)[] expected =
+        [
+            (ActThree.OmbudsmanEnemyId, 342),
+            (ActThree.GrandmotherEnemyId, 350),
+            (ActThree.NotaryEnemyId, 360),
+            (ActThree.HillEnemyId, 374),
+            (ActThree.QueenEnemyId, 392),
+        ];
+
+        foreach (var (id, health) in expected)
+            Assert.Equal(health, Data.Enemies.Single(e => e.Id == id).MaxHp);
+    }
 }

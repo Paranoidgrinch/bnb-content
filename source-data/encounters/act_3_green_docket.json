@@ -1117,5 +1117,23 @@
       "landscape"
     ],
     "role": "boss"
+  },
+  {
+    "id": "green_docket_boss_queen_under_the_hill",
+    "name": "The Queen Under the Hill",
+    "act": 3,
+    "difficulty": "boss",
+    "enemies": [
+      "queen_under_the_hill"
+    ],
+    "weight": 1,
+    "tags": [
+      "green_docket",
+      "boss",
+      "claim",
+      "wergild",
+      "court"
+    ],
+    "role": "boss"
   }
 ]
