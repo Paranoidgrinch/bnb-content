@@ -112,6 +112,11 @@ static int Playtest(RunBlueprint blueprint, int seed, int runs)
     var tester = RunWalker.WithHealth(shipped, 9999);
     var failures = 0;
 
+    // Which GAME is being walked, said once. The walk seeds run from the same number, so a walk reported as
+    // "seed 20260909" is not reproducible on its own: --seed 20260909 builds a different game and walks it
+    // once. To get that walk back, walk the same game far enough to reach it.
+    Console.WriteLine($"walking {runs} run(s) of the game built with seed {seed}");
+
     for (var i = 0; i < runs; i++)
     {
         var walkSeed = seed + i;
