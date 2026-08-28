@@ -123,6 +123,46 @@ public static partial class ActThree
                 Applicant, new CardDefinitionId(MakeAmendsCardId), CardZone.Hand,
                 new ConstantExpression<CardPlayContext>(1)));
 
+    // ── what is left in your hand when the turn ends ──────────────────────────────────────────────────────
+    //
+    // Four rules in the act ask whether the player finished a turn holding something, and NONE of them can
+    // read the hand where they are asked: the turn's end puts the hand away before a rule about the turn's
+    // end runs. So the act keeps a budget instead — how many real cards the hand held when it was last dealt
+    // to, counted forward — and what is left is that budget minus what was played. It answers the same
+    // question and it survives a mid-turn draw, because a draw rewrites the budget.
+    public static CounterId HandBudgetCounter => new("real_cards_dealt");
+
+    public static ICombatExpression<TContext, int> RealCardsPlayed<TContext>()
+        where TContext : class =>
+        new SubtractExpression<TContext>(
+            new CardsPlayedThisTurnExpression<TContext>(Applicant),
+            new CardsPlayedThisTurnWithTagExpression<TContext>(
+                Applicant, new TagId(Cards.CardAuthoring.JunkTag)));
+
+    public static ICombatExpression<TContext, int> RealCardsLeftInHand<TContext>()
+        where TContext : class =>
+        new SubtractExpression<TContext>(
+            new CombatantCounterExpression<TContext>(Applicant, HandBudgetCounter),
+            RealCardsPlayed<TContext>());
+
+    private static StatusTriggerData KeepTheHandBudget()
+    {
+        var program = new EffectProgram<CardsDrawnTriggeredEffectContext>(
+            new SetCombatantCounterNode<CardsDrawnTriggeredEffectContext>(
+                Applicant, HandBudgetCounter,
+                new AddExpression<CardsDrawnTriggeredEffectContext>(
+                    new SubtractExpression<CardsDrawnTriggeredEffectContext>(
+                        new CombatantZoneCardCountExpression<CardsDrawnTriggeredEffectContext>(
+                            Applicant, CardZone.Hand),
+                        new CombatantZoneCardCountExpression<CardsDrawnTriggeredEffectContext>(
+                            Applicant, CardZone.Hand, new TagId(Cards.CardAuthoring.JunkTag))),
+                    RealCardsPlayed<CardsDrawnTriggeredEffectContext>()),
+                relative: false));
+
+        return new StatusTriggerData("CardsDrawn", JsonSerializer.SerializeToElement(
+            program, CombatJson.CreateOptions<CardsDrawnTriggeredEffectContext>()));
+    }
+
     // ── the demand falling due ────────────────────────────────────────────────────────────────────────────
 
     // The rule the player carries into every Green Docket fight beside the act's customs. It is bearer-scoped
@@ -164,6 +204,7 @@ public static partial class ActThree
                     mature, CombatJson.CreateOptions<TurnStartedTriggeredEffectContext>())),
                 new StatusTriggerData("TurnEnded", JsonSerializer.SerializeToElement(
                     settle, CombatJson.CreateOptions<TurnEndedTriggeredEffectContext>())),
+                KeepTheHandBudget(),
             ]);
     }
 

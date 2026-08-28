@@ -193,12 +193,8 @@ public static partial class ActThree
                 PlayersTurn<TurnEndedTriggeredEffectContext>(),
                 Breach("keeping", RingOfKeepingLaw,
                     new ComparisonExpression<TurnEndedTriggeredEffectContext>(
-                        new SubtractExpression<TurnEndedTriggeredEffectContext>(
-                            new CombatantZoneCardCountExpression<TurnEndedTriggeredEffectContext>(
-                                Applicant, CardZone.Hand),
-                            new CombatantZoneCardCountExpression<TurnEndedTriggeredEffectContext>(
-                                Applicant, CardZone.Hand, new TagId(Cards.CardAuthoring.JunkTag))),
-                        ComparisonOperator.Equal,
+                        RealCardsLeftInHand<TurnEndedTriggeredEffectContext>(),
+                        ComparisonOperator.LessOrEqual,
                         new ConstantExpression<TurnEndedTriggeredEffectContext>(0)))));
 
         var bell = new EffectProgram<TurnStartedTriggeredEffectContext>(

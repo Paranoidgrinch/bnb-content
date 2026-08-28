@@ -2887,5 +2887,206 @@
       "act_3",
       "precedent"
     ]
+  },
+  {
+    "id": "grandmother_clause",
+    "name": "Grandmother Clause",
+    "max_hp": 350,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "knitting_needle_precedent",
+        "name": "Knitting-Needle Precedent",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 8
+          },
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 8
+          }
+        ]
+      },
+      {
+        "id": "ask_after_your_health",
+        "name": "Ask After Your Health",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 14
+          }
+        ]
+      },
+      {
+        "id": "call_in_a_small_favor",
+        "name": "Call in a Small Favour",
+        "intent_type": "debuff",
+        "actions": [
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "wergild",
+            "amount": 2
+          }
+        ]
+      },
+      {
+        "id": "the_door_was_open_for_you",
+        "name": "The Door Was Open for You",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 16
+          }
+        ]
+      },
+      {
+        "id": "set_another_place",
+        "name": "Set Another Place",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 16
+          }
+        ]
+      },
+      {
+        "id": "you_accepted_the_hospitality",
+        "name": "You Accepted the Hospitality",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 18
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "green_docket_body"
+      },
+      {
+        "status": "the_courtesies"
+      }
+    ],
+    "tags": [
+      "green_docket",
+      "boss",
+      "act_3",
+      "hospitality"
+    ]
+  },
+  {
+    "id": "the_answering_hill",
+    "name": "The Answering Hill",
+    "max_hp": 374,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "loose_earth",
+        "name": "Loose Earth",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 15
+          }
+        ]
+      },
+      {
+        "id": "raise_the_footpath",
+        "name": "Raise the Footpath",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 18
+          }
+        ]
+      },
+      {
+        "id": "the_ground_remembers_weight",
+        "name": "The Ground Remembers Weight",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 14
+          }
+        ]
+      },
+      {
+        "id": "mark_the_old_boundary",
+        "name": "Mark the Old Boundary",
+        "intent_type": "debuff",
+        "actions": [
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "wergild",
+            "amount": 1
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "safe_conduct",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "root_beneath_the_road",
+        "name": "Root Beneath the Road",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 12
+          }
+        ]
+      },
+      {
+        "id": "the_hill_answers_entirely",
+        "name": "The Hill Answers Entirely",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 24
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "green_docket_body"
+      },
+      {
+        "status": "the_landscape_has_standing"
+      }
+    ],
+    "tags": [
+      "green_docket",
+      "boss",
+      "act_3",
+      "landscape"
+    ]
   }
 ]
