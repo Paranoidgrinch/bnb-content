@@ -89,6 +89,32 @@ public class ActThreeEliteWebTests
         play.Dispose();
     }
 
+    // …and once it is drawn tight, ending a turn having played everything you were dealt IS the breach. What
+    // is left in hand cannot be read where the rule is asked — the turn's end puts the hand away first — so
+    // the act counts the real cards dealt and subtracts the ones played.
+    [Fact]
+    public void The_thread_of_departure_answers_an_empty_hand()
+    {
+        var (play, session, web) = FightProbe.Start(
+            FightProbe.Solo(ActThree.GrandmotherWebEnemyId, "needle_leg_courtesy", energy: 9),
+            deck: [Working, TwoCost, Working, TwoCost, Working], health: 400);
+
+        // Two of the Web's actions turn the threads: the Departure is drawn tight and the Entry goes slack.
+        play.CombatDriver!.EndTurn();
+        play.CombatDriver.EndTurn();
+        Assert.Equal(1, FightProbe.StacksOf(Web(play), DepartureTaut));
+
+        Play(play, session, Working, web);
+        Play(play, session, TwoCost, web);
+        Play(play, session, Working, web);
+        Play(play, session, TwoCost, web);
+        Play(play, session, Working, web); // everything dealt is played
+        play.CombatDriver.EndTurn();
+
+        Assert.Equal(0, FightProbe.StacksOf(Hero(play), ActThree.SafeConductId));
+        play.Dispose();
+    }
+
     // ── Cut the Thread ────────────────────────────────────────────────────────────────────────────────────
 
     // A licence spent against a Thread cuts THAT Thread — the act writes down which law is being filed, and

@@ -1083,5 +1083,39 @@
       "precedent"
     ],
     "role": "boss"
+  },
+  {
+    "id": "green_docket_boss_grandmother_clause",
+    "name": "Grandmother Clause",
+    "act": 3,
+    "difficulty": "boss",
+    "enemies": [
+      "grandmother_clause"
+    ],
+    "weight": 1,
+    "tags": [
+      "green_docket",
+      "boss",
+      "claim",
+      "hospitality"
+    ],
+    "role": "boss"
+  },
+  {
+    "id": "green_docket_boss_the_answering_hill",
+    "name": "The Answering Hill",
+    "act": 3,
+    "difficulty": "boss",
+    "enemies": [
+      "the_answering_hill"
+    ],
+    "weight": 1,
+    "tags": [
+      "green_docket",
+      "boss",
+      "claim",
+      "landscape"
+    ],
+    "role": "boss"
   }
 ]

@@ -144,7 +144,7 @@ public static partial class ActThree
                     new AndExpression<TurnEndedTriggeredEffectContext>(
                         Live<TurnEndedTriggeredEffectContext>("departure"),
                         new ComparisonExpression<TurnEndedTriggeredEffectContext>(
-                            RealCardsInHand<TurnEndedTriggeredEffectContext>(),
+                            RealCardsLeftInHand<TurnEndedTriggeredEffectContext>(),
                             ComparisonOperator.Equal,
                             new ConstantExpression<TurnEndedTriggeredEffectContext>(0)))),
                 Violate<TurnEndedTriggeredEffectContext>(
@@ -258,13 +258,6 @@ public static partial class ActThree
             new MinExpression<TContext>(
                 new ConstantExpression<TContext>(1),
                 new CombatantStatusStacksExpression<TContext>(Web, new StatusDefinitionId(KnotId(key)))));
-
-    private static ICombatExpression<TContext, int> RealCardsInHand<TContext>()
-        where TContext : class =>
-        new SubtractExpression<TContext>(
-            new CombatantZoneCardCountExpression<TContext>(Applicant, CardZone.Hand),
-            new CombatantZoneCardCountExpression<TContext>(
-                Applicant, CardZone.Hand, new TagId(Cards.CardAuthoring.JunkTag)));
 
     // ── cutting, mending, knotting, rotating ──────────────────────────────────────────────────────────────
 

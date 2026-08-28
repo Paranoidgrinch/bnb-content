@@ -142,13 +142,8 @@ public static partial class ActThree
                             ComparisonOperator.Equal,
                             new ConstantExpression<TurnEndedTriggeredEffectContext>(3)),
                         new ComparisonExpression<TurnEndedTriggeredEffectContext>(
-                            new SubtractExpression<TurnEndedTriggeredEffectContext>(
-                                new CombatantZoneCardCountExpression<TurnEndedTriggeredEffectContext>(
-                                    Applicant, CardZone.Hand),
-                                new CombatantZoneCardCountExpression<TurnEndedTriggeredEffectContext>(
-                                    Applicant, CardZone.Hand,
-                                    new TagId(Cards.CardAuthoring.JunkTag))),
-                            ComparisonOperator.Equal,
+                            RealCardsLeftInHand<TurnEndedTriggeredEffectContext>(),
+                            ComparisonOperator.LessOrEqual,
                             new ConstantExpression<TurnEndedTriggeredEffectContext>(0)))),
                 Violate<TurnEndedTriggeredEffectContext>(marker, InscriptionLaw, ReadingObservedId)));
 
