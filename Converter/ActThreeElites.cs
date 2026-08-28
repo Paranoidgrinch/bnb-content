@@ -18,6 +18,17 @@ namespace BnbContent.Converter;
 // their violations through the act's one filing point. What is shared between them lives here.
 public static partial class ActThree
 {
+    // The five bosses, kept apart from the nine elites only so the pool tests can count them.
+    public static readonly IReadOnlySet<string> BossIdentities = new HashSet<string>(StringComparer.Ordinal)
+    {
+        OmbudsmanEnemyId,
+    };
+
+    public static IReadOnlyList<StatusData> BossStatuses() => [.. OmbudsmanStatuses()];
+
+    public static EffectProgram<EnemyActionContext>? BossIntent(string enemyId, string intentId) =>
+        OmbudsmanIntent(enemyId, intentId);
+
     // The nine. An elite is a Green Docket body like any other — the act's customs open on it — but it is
     // never a standard identity, so the pool tests count the two rosters apart.
     public static readonly IReadOnlySet<string> EliteIdentities = new HashSet<string>(StringComparer.Ordinal)
@@ -46,6 +57,7 @@ public static partial class ActThree
         .. SurveyorStatuses(),
         .. ReedStatuses(),
         .. MagistrateStatuses(),
+        .. BossStatuses(),
     ];
 
     // An elite's intents. Dispatched ahead of the standard pool's, because an elite's pressure is never the
@@ -59,7 +71,8 @@ public static partial class ActThree
         ?? JuniperIntent(enemyId, intentId)
         ?? SurveyorIntent(enemyId, intentId)
         ?? ReedIntent(enemyId, intentId)
-        ?? MagistrateIntent(enemyId, intentId);
+        ?? MagistrateIntent(enemyId, intentId)
+        ?? BossIntent(enemyId, intentId);
 
     // What settling a demand IN FULL does over and above the act's own reward, when the creditor is an elite
     // that has written its own terms. Spliced into the one settlement in `ActThreeWergild`, because only the
@@ -72,6 +85,7 @@ public static partial class ActThree
             PetitionForRelief(),
             NothingEndsHere(),
             FullRedress(),
+            SettlementHasWeight(),
         ]);
 
     // ── the laws the elites add ───────────────────────────────────────────────────────────────────────────

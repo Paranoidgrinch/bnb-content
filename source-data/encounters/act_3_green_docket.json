@@ -1049,5 +1049,22 @@
       "judgment"
     ],
     "role": "elite"
+  },
+  {
+    "id": "green_docket_boss_ombudsman_of_root_and_road",
+    "name": "The Ombudsman of Root and Road",
+    "act": 3,
+    "difficulty": "boss",
+    "enemies": [
+      "ombudsman_of_root_and_road"
+    ],
+    "weight": 1,
+    "tags": [
+      "green_docket",
+      "boss",
+      "claim",
+      "wergild"
+    ],
+    "role": "boss"
   }
 ]

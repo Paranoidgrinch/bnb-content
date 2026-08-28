@@ -2679,5 +2679,117 @@
       "act_3",
       "judgment"
     ]
+  },
+  {
+    "id": "ombudsman_of_root_and_road",
+    "name": "The Ombudsman of Root and Road",
+    "max_hp": 342,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "hear_the_road",
+        "name": "Hear the Road",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 10
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "wergild",
+            "amount": 2
+          }
+        ]
+      },
+      {
+        "id": "walk_the_boundary",
+        "name": "Walk the Boundary",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 14
+          }
+        ]
+      },
+      {
+        "id": "recommend_amends",
+        "name": "Recommend Amends",
+        "intent_type": "debuff",
+        "actions": [
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "wergild",
+            "amount": 1
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "safe_conduct",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "hear_the_root",
+        "name": "Hear the Root",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 20
+          },
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 10
+          }
+        ]
+      },
+      {
+        "id": "hear_both_parties",
+        "name": "Hear Both Parties",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 18
+          }
+        ]
+      },
+      {
+        "id": "hear_every_complaint",
+        "name": "Hear Every Complaint",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 18
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "green_docket_body"
+      },
+      {
+        "status": "grounds_of_complaint"
+      }
+    ],
+    "tags": [
+      "green_docket",
+      "boss",
+      "act_3",
+      "ombudsman"
+    ]
   }
 ]

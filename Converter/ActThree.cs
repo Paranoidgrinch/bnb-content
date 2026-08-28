@@ -418,7 +418,8 @@ public static partial class ActThree
     ];
 
     // The cards the act itself hands the player: never dealt into a deck, only pushed into a fight.
-    public static IReadOnlyList<CardData> GivenCards() => [MakeAmends(), CiteTheOldSurvey()];
+    public static IReadOnlyList<CardData> GivenCards() =>
+        [MakeAmends(), CiteTheOldSurvey(), CounterPetition()];
 
     // The standard roster, stage by stage. Anything in here is a Green Docket body, which is how a fight
     // knows to open under the act's customs.
@@ -453,7 +454,8 @@ public static partial class ActThree
     // than to any one identity — a duo of Green Docket bodies is still one road, and asking twice would hand
     // the player two safe conducts (Safe-Conduct is per-grant instances, so they would not even merge).
     public static IReadOnlyList<StartingStatusSpec> HeroOpening(IEnumerable<string> enemyIds) =>
-        enemyIds.Any(id => Identities.Contains(id) || EliteIdentities.Contains(id))
+        enemyIds.Any(id =>
+            Identities.Contains(id) || EliteIdentities.Contains(id) || BossIdentities.Contains(id))
             ?
             [
                 new StartingStatusSpec(new StatusDefinitionId(GreenDocketCustomsId), 1),
