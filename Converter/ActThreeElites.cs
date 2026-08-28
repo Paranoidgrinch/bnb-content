@@ -31,6 +31,7 @@ public static partial class ActThree
         JuniperEnemyId,
         SurveyorEnemyId,
         HearingReedId, RemandReedId, RefusalReedId,
+        MagistrateEnemyId,
     };
 
     // Every elite's own statuses, gathered where the act's own list can splice them in.
@@ -44,6 +45,7 @@ public static partial class ActThree
         .. JuniperStatuses(),
         .. SurveyorStatuses(),
         .. ReedStatuses(),
+        .. MagistrateStatuses(),
     ];
 
     // An elite's intents. Dispatched ahead of the standard pool's, because an elite's pressure is never the
@@ -56,7 +58,8 @@ public static partial class ActThree
         ?? QueenIntent(enemyId, intentId)
         ?? JuniperIntent(enemyId, intentId)
         ?? SurveyorIntent(enemyId, intentId)
-        ?? ReedIntent(enemyId, intentId);
+        ?? ReedIntent(enemyId, intentId)
+        ?? MagistrateIntent(enemyId, intentId);
 
     // What settling a demand IN FULL does over and above the act's own reward, when the creditor is an elite
     // that has written its own terms. Spliced into the one settlement in `ActThreeWergild`, because only the
@@ -68,6 +71,7 @@ public static partial class ActThree
             TheTollForCrossing(),
             PetitionForRelief(),
             NothingEndsHere(),
+            FullRedress(),
         ]);
 
     // ── the laws the elites add ───────────────────────────────────────────────────────────────────────────

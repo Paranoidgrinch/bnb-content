@@ -115,7 +115,14 @@ Open seams the later stages will want, listed when they are first needed:
 - [x] 9 — Stage 10, the Court Beneath the Hill (Keeper of Buried Names, Handworn Tally Coin) —
       DONE 2026-08-28, 5 live tests. **THE STANDARD POOL IS COMPLETE**: 25 identities, 40 encounters,
       12 solo and 28 combination, pinned in `Tests/ActThreePoolTests.cs`.
-- [ ] 10 — the elites
+- [x] **10 — the elites.** DONE 2026-08-28 — nine encounters, 85 live tests across nine files
+      (`Tests/ActThreeElite*Tests.cs`), pinned against the master's HP table in `Tests/ActThreePoolTests.cs`.
+      Files: `Converter/ActThreeElites.cs` (roster, intent dispatch, the shared settlement hook) plus one
+      per elite — `Stag / Web / Bridge / Frog / Queen / Juniper / Surveyor / Reeds / Magistrate`.
+      **Two engine seams bought:** an application can name the one prohibition that may not refuse it
+      (Core `280ebf2`, which is the Juniper's injunction against safe passage), and a selector can name the
+      body that fell where a mark still is (Core `285ac00`, which is Replace the Fallen). Every deviation
+      from the master is written down in `ADAPTATIONS.md` §"Act III — the nine elites".
 - [ ] 11 — the bosses
 - [ ] 12 — the act itself: `ActRules.For(3)`, `BabLoader.Acts`, the act's own map lanes and rest /
       treasure voice, and Act III joins the walked run
