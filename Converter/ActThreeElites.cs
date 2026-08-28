@@ -22,12 +22,15 @@ public static partial class ActThree
     public static readonly IReadOnlySet<string> BossIdentities = new HashSet<string>(StringComparer.Ordinal)
     {
         OmbudsmanEnemyId,
+        NotaryEnemyId,
     };
 
-    public static IReadOnlyList<StatusData> BossStatuses() => [.. OmbudsmanStatuses()];
+    public static IReadOnlyList<StatusData> BossStatuses() =>
+        [.. OmbudsmanStatuses(), .. NotaryStatuses()];
 
     public static EffectProgram<EnemyActionContext>? BossIntent(string enemyId, string intentId) =>
-        OmbudsmanIntent(enemyId, intentId);
+        OmbudsmanIntent(enemyId, intentId)
+        ?? NotaryIntent(enemyId, intentId);
 
     // The nine. An elite is a Green Docket body like any other — the act's customs open on it — but it is
     // never a standard identity, so the pool tests count the two rosters apart.
@@ -86,6 +89,7 @@ public static partial class ActThree
             NothingEndsHere(),
             FullRedress(),
             SettlementHasWeight(),
+            TheCounterseal(),
         ]);
 
     // ── the laws the elites add ───────────────────────────────────────────────────────────────────────────

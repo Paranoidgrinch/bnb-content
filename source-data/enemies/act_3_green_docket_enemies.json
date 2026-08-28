@@ -2791,5 +2791,101 @@
       "act_3",
       "ombudsman"
     ]
+  },
+  {
+    "id": "notary_of_old_growth",
+    "name": "The Notary of Old Growth",
+    "max_hp": 360,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "read_the_annual_clause",
+        "name": "Read the Annual Clause",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 15
+          }
+        ]
+      },
+      {
+        "id": "seal_it_in_sap",
+        "name": "Seal It in Sap",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 20
+          }
+        ]
+      },
+      {
+        "id": "witnessed_by_every_branch",
+        "name": "Witnessed by Every Branch",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 16
+          }
+        ]
+      },
+      {
+        "id": "demand_the_countermark",
+        "name": "Demand the Countermark",
+        "intent_type": "debuff",
+        "actions": [
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "wergild",
+            "amount": 2
+          }
+        ]
+      },
+      {
+        "id": "old_growth_signature",
+        "name": "Old Growth Signature",
+        "intent_type": "buff",
+        "actions": [
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "safe_conduct",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "every_ring_is_evidence",
+        "name": "Every Ring Is Evidence",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 16
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "green_docket_body"
+      },
+      {
+        "status": "three_rings_of_law"
+      }
+    ],
+    "tags": [
+      "green_docket",
+      "boss",
+      "act_3",
+      "precedent"
+    ]
   }
 ]

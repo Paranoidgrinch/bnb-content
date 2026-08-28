@@ -1066,5 +1066,22 @@
       "wergild"
     ],
     "role": "boss"
+  },
+  {
+    "id": "green_docket_boss_notary_of_old_growth",
+    "name": "The Notary of Old Growth",
+    "act": 3,
+    "difficulty": "boss",
+    "enemies": [
+      "notary_of_old_growth"
+    ],
+    "weight": 1,
+    "tags": [
+      "green_docket",
+      "boss",
+      "claim",
+      "precedent"
+    ],
+    "role": "boss"
   }
 ]
