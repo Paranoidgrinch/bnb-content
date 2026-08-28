@@ -1764,3 +1764,57 @@ One unrelated fix fell out of it: `CardVisuals.Back` called `VideoStreamPlayer.P
 the tree, directly under an `Autoplay = true` that does precisely that on entry. The call was redundant and
 printed `Condition "!is_inside_tree()" is true` with a fourteen-frame backtrace per card back — 283 error
 lines in one marathon, which is how the verdict got buried in the first place.
+
+## The boss that would not end, and the crash that was actually killing the walk (2026-08-28)
+
+The Warden of Sealed Volumes had been carried for a week as the oldest open finding: *does not end within 100
+turns, so a walk that draws him stops there*. He was never guilty. Nothing had ever drawn him — no walk, no
+marathon — and the accusation was inference from a walk that stopped in Act II for another reason entirely.
+Put on the table against the character's own starting deck, with the walker's greedy play, he goes down in
+**25 turns**. Two walks now draw him and finish the game (`seed 20260901`, `seed 20260904`).
+
+What was really stopping walks is worth the entry:
+
+**★ A card that resolves the Queue can be put IN the Queue, and then it resolves itself for ever.** Night
+Docket says "Resolve your oldest Queued card immediately". Skeleton Staff says "Queue a card from your hand"
+— and does not ask what the card does. Queue Night Docket with it, and at the next turn start the Queue's
+resolution window runs Night Docket, whose program opens a *nested* window; the card is still sitting in the
+Queue, because a queued card leaves it only once its program has finished; so the nested window finds it and
+starts it again. Not a slow fight, not a loop the walker's guards could see: a **stack overflow**, which
+takes the whole process down with it and cannot be caught. Priority Docket and Customary Due are the same
+door in Act III.
+
+Bought as an engine seam rather than patched in content, because no rule an author writes should be able to
+kill the process, and the trap is generic — any card that resolves the Queue is one "queue a card" away from
+it, the Act IV Processional Calendar included. `CombatState` now knows which queued cards are mid-resolution
+(`IsResolvingQueuedCard`), and `QueueResolution` passes over them: a card resolves once per window, and
+"your oldest Queued card" means the oldest that is not the one asking. Night Docket keeps working exactly as
+written from the hand, and a queued Night Docket now reaches the card *below* it — once. Pinned by
+`QueueTortureTests` (RogueDeck-Core).
+
+**The instrument had two faults of its own.** A walk's turn line reported only its timing, so a fight at turn
+80 losing 6 HP a turn and a fight stuck since turn 12 looked identical — which is precisely how the Warden
+came to be blamed. It now names who is still standing and on how much health. And `--playtest n --seed s`
+seeds *two* things, the game and the first walk (`s`, `s+1`, …), so a walk reported as "seed 20260909" is not
+reproducible by `--seed 20260909`: that builds a different game. The header now says which game is being
+walked.
+
+**★ And a body at zero was not down unless DAMAGE put it there.** With the crash gone, one walk in ten still
+stopped at `a fight did not end in 100 turns` — and the walk's new turn line said why in one word:
+`grandmother_clause 0/350`, for eighty-eight turns. She pays 5 HP for every courtesy the player keeps, and
+that payment is a `SetHealthNode`, not damage; only `DamageDealt` downed a combatant, so paying her last five
+left her standing at zero, unremovable, in a fight that could not end. Content writes "loses N HP" that way
+in **nineteen files** — every one of them was the same trap.
+
+Fixed in the engine after weighing it against the content fix, because the alternative was the same three
+lines repeated at twenty-one sites and remembered again in Acts IV and V. `SetHealthEffectHandler` now
+enqueues the Downed request when it empties a pool, whatever emptied it. This REVERSES a documented decision:
+`SetHealthTests` used to say in its header that "setting HP to 0 here does not down the combatant" and pinned
+it in a test named for it. The header and the test now say the opposite, and the reason is that alive-at-zero
+is a state nothing else in the engine can act on. Of 3110 tests across the four suites, exactly one depended
+on the old reading. Setting health UP is untouched, which is what the revival pattern needs.
+
+**And the fix for a finding like this is a net, not a probe.** `Tests/BossLengthTests.cs` fights all fifteen
+bosses of Acts I–III with the walker's greedy player, the starting deck and an unkillable tester, and gives
+each a 40-turn budget. A walk only ever meets the boss its seed picked; every one of the fifteen is one seed
+away from being that boss.

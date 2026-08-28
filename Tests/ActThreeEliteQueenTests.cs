@@ -272,9 +272,13 @@ public class ActThreeEliteQueenTests
 
         Play(play, session, Deed, Queen(play).Id);
 
-        Assert.Equal(0, Queen(play).Health.Current);
-        Assert.Equal(0, Body(play, First).Health.Current);
-        Assert.Equal(0, Body(play, Third).Health.Current);
+        // "…and combat ends", which is the whole claim: the procession is hers and has nothing to carry once
+        // she is gone. It used to assert three bodies at 0 health instead, because that is all that happened —
+        // a Bearer set to zero was not DOWNED unless damage put it there, so the three of them stood at zero
+        // and the elite could not be finished. See ADAPTATIONS.md §"The boss that would not end, and the crash
+        // that was actually killing the walk".
+        Assert.Null(session.Error);
+        Assert.Null(play.CombatDriver!.Current);
         play.Dispose();
     }
 }
