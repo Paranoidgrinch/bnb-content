@@ -1986,4 +1986,17 @@ enemy row was a fixed HBox of 200-wide columns, and a fixed row does not shrink:
 simply walk off the right edge, taking a boss's health bar and intent with them. It is an `HFlowContainer`
 now, so a crowd wraps to a second line; a one- or two-body fight is unchanged (one line, right-aligned).
 `godot -- --smoke-crowd` walks to the widest fight it can reach, measures the row against the screen and says
-whether anything is off it.
+whether anything is off it; `--smoke-boss <act>` stands in a named act's boss fight and captures that.
+
+Two further faults came out of the same look, both about what a crowded column does to everything below it.
+The combatant NAME did not wrap, so its full length was a minimum width no share-out could argue with — and a
+body carrying a dozen statuses made its column taller than the arena, where a `VBoxContainer` hands out
+minimum heights before it hands out the leftovers, so **the hand, the deck and the End-turn button were pushed
+off the bottom of the screen** by the very state this pass is about making readable. Names wrap, the arena
+scrolls, and a long chip list is bounded so it cannot push the enemy's intent below the fold either.
+
+And two about the probes: a walk that never yields to the tree fills Godot's message queue and segfaults in the
+second act, and the **marathon** — which never yielded either — reached its Victory line holding **14 GB** of
+undeleted screens and was then killed by the OOM killer. Every answer rebuilds the screen out of fresh Control
+nodes and frees the old ones with `QueueFree`, which is deferred: a walk that never lets the tree collect never
+collects. Both yield one frame every twenty answers now, and a probe stops queueing the card-draw animation.
