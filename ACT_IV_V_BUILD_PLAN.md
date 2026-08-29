@@ -82,38 +82,86 @@ stays loadable only until the authored pool replaces it.
 
 ---
 
-# ★ DECISION REQUIRED BEFORE STEP IV-0
+# ★ THE FIVE ACT-IV KEYWORDS — RATIFIED 2026-08-29
 
 **The five Act-IV keywords have no canonical definition in any handed-over master.** All three masters say
 "the existing Act-IV core vocabulary — Weighed · Burdened · Inscribed · Entombed · Embalmed" and then use them
-several hundred times without ever writing down their rule. The document they refer to (`act_iv_*.md`) is not
-in `source-data/design/`.
+several hundred times without ever writing down their rule; the document they refer to (`act_iv_*.md`) is not
+in `source-data/design/`. They were therefore reconstructed from usage and **ratified by the user on
+2026-08-29**. The table below is now canon for the whole act — every one of the 35 identities, 10 elites and
+8 bosses is a reading of these five words.
 
-They must therefore be **reconstructed from usage and signed off by the user before a single enemy is
-written** — every one of the 35 identities, 10 elites and 8 bosses is a reading of these five words, so
-getting one wrong is a rewrite of the act, not a patch.
+## Weighed X — *the measure*
 
-The reading the usages support (to be confirmed or corrected):
+The player is given a **visible requirement for this turn: spend exactly X Energy**. At end of turn, required
+is compared against actual expenditure.
 
-| Keyword | Whose | Proposed rule | Evidence |
-|---|---|---|---|
-| **Weighed X** | on the player | a visible **requirement to spend exactly X Energy** during your turn, resolved at end of turn; failure is punished by the enemy that owns the check, and the *absolute distance* from X is readable | "required and actual Energy expenditure", "absolute distance between", "exact Energy requirement", "a Weighed value greater than the player's realistically spendable Energy is not offered" |
-| **Burdened X** | on the player | a weight that makes acting more expensive (cost/energy pressure), the counterpart Weighed conflicts with | "Weighed vs Burdened resource conflict"; Weighed failure converts into Burdened on the Broken Royal Weight relic |
-| **Inscribed X** | on the player | being **written into the register**: a stack the act reads as a state ("while the player has at least 1 Inscribed…"), amplified by some enemies | Uncounted Pilgrim, §3.x "Inscribed amplification", Name-Erasing Chisel Spirit prevents the gain |
-| **Entombed X** | on the player | accumulating burial; **at 5 it stuns** (skips the player's turn) and resets | elite §6.3 "Entombed retains its universal stun at 5" |
-| **Embalmed X** | on either side | **preservation: prevents status decay** on the bearer; some enemies need it to function at all and must self-enable it | §3.5 "Embalmed-dependent solo enemies must self-enable"; "Embalmed decay prevention" |
+- exact ⇒ success;
+- otherwise failure, and the **absolute distance** between required and actual is itself readable, so an
+  enemy can punish by error band (Reed-Cord Surveyor) instead of binary pass/fail.
+- Several enemies in one encounter observe **one Primary Measure** rather than raising contradictory checks
+  (audit §3.1, §3.2).
+- **An impossible requirement is never offered as the only option** (elite §6.2, boss §5.2): the value must be
+  achievable from the deterministic current state.
 
-**The two engine questions that follow from it**, both to be answered in IV-0:
+## Burdened X — *the tax*
 
-1. **Weighed needs "how much Energy did the player spend this turn".** Core has no such value today
-   (no `EnergySpent`). Two routes: (a) a content-side counter that adds the played card's cost on
-   `CardPlayed` — needs an expression for *the cost of the card that was just played*, which may not exist;
-   (b) an engine seam: the resource system records per-turn spend, readable as an ordinary combatant value.
-   **(b) is the recommendation** — Weighed is the spine of the whole act, and the Act-III lesson is that the
-   act's central question must be askable in one place.
-2. **`Replicated` status applications** (audit §3.3/§3.4): an application must be able to carry a mark saying
-   it was copied, so replication cannot chain. Core applies statuses without such a mark today. Likely the
-   second seam.
+Not general cost pressure but a concrete, temporary **tax on playing cards**: Burdened raises the Energy
+actually paid for a card, and **playing such a taxed card works one stack of Burdened off** (it is consumed by
+being paid).
+
+- That is exactly why it collides with Weighed: the tax changes what "actual expenditure" comes to, so paying
+  it and hitting the measure are one decision.
+- The Colossus of the Endless Procession explicitly checks whether **at least one Burdened stack was worked
+  off by playing a taxed card** — so "a stack was consumed by payment" must be an observable event, not just
+  a smaller number afterwards.
+
+## Inscribed X — *the register, and the amplifier*
+
+Thematically: **you are written into the register**, and enemies may simply ask whether `Inscribed > 0`
+(Uncounted Pilgrim). But its universal mechanic is the important half:
+
+> **Inscribed amplifies the NEXT status application on the player and is consumed doing it.**
+
+- It applies to a **negative** application (an enemy debuff lands harder) **and to a positive** one.
+- Therefore the player can deliberately **spend Inscribed on their own buff** rather than let it magnify the
+  next incoming debuff. That choice is the act's central player-side decision, and the Act-IV relics and the
+  **Keeper of the Living Cartouche** are built on it.
+- Name-Erasing Chisel Spirit preventing a gain means the amplification never happens (and the Royal Genealogy
+  Wall receives no Royal Favor, §3.8).
+
+## Entombed X — *burial pressure*
+
+Accumulates. **At 5 the player is stunned and loses the turn**; the threshold then resolves/resets so the
+cycle can build again. This universal 5-threshold is used explicitly and repeatedly by the elite master
+(§6.3), including the rule that a queued elite action does not resolve during the skipped turn unless its own
+countdown says so.
+
+## Embalmed X — *preservation*
+
+Prevents the **natural decay / natural expiry of temporary status values on its bearer**, in both polarities:
+
+- a player can exploit it to **preserve their own buffs**;
+- an enemy uses it to **hold a debuff in place**;
+- an enemy whose signature needs Embalmed **must be able to create it itself** (§3.5: Hieroglyphic Complaint
+  Wall, Natron Bearer, Unfinished Mummy) and may not depend on a second body to function.
+
+---
+
+## What this costs in the engine — the seam list IV-0 must settle
+
+Each row is a capability the ratified vocabulary requires. **IV-0's first job is to check each against
+RogueDeck-Core** and buy only what is genuinely missing (the standing rule: if it composes from existing
+primitives, it is a capability test, not a feature).
+
+| # | Capability | Status as far as the audit could tell |
+|---|---|---|
+| 1 | **How much Energy the player has spent this turn**, readable by a condition at end of turn | Core has no `EnergySpent`. The spine of the act — recommendation: an engine seam (per-turn resource spend recorded on the combatant), not a content counter, so every Weighed reader asks in one place |
+| 2 | **A cost tax that is consumed by being paid** — Burdened raises a card's paid cost and loses a stack when such a card is played, and the payment is an observable event | Cost modifiers exist (incl. tag-restricted ones, bought for the relics); "the modifier is spent by the play, and announces it" is the new part |
+| 3 | **A status that amplifies the next status application on its bearer and is consumed** — either polarity | Statuses can prevent an application (Censure's prohibition) and can be marked; amplifying an application's magnitude from the receiving side is unproven |
+| 4 | **`Replicated` applications** (§3.3/§3.4): an application carries a mark saying it was copied, and a replicated application can never trigger another replication | Statuses are applied without such a mark today |
+| 5 | **Stun at a threshold, then reset** (Entombed 5) | Stun exists (`StandardCombatIds.StunStatus` + `StunCardPlayValidator`); the threshold-and-reset is content |
+| 6 | **Decay prevention on a bearer, both polarities** (Embalmed) | Prohibition and passive modifiers exist; whether "this status does not tick down" is expressible without a seam is IV-0's check |
 
 Everything else in the audit — Primary Measure, observed results, one office per turn, Royal Favor — is
 content, not engine.
@@ -132,13 +180,18 @@ each signature in a live fight (`FightProbe`) with one test file per stage. HP a
 the **balance appendix** §ACT IV, stage by stage; where the master says "balance-tunable", the appendix band
 decides and the choice is written into `ADAPTATIONS.md`.
 
-- [ ] **IV-0 — the vocabulary + Stage 1 (Boundary Stelae).** The five keywords as decided above, in
-      `Converter/ActFour.cs`; the one place a Weighed check is raised, resolved and observed (the Act-III
+- [ ] **IV-0 — the vocabulary + Stage 1 (Boundary Stelae).** All five ratified keywords, in
+      `Converter/ActFour.cs`, each with a live test of its own rule (Weighed's exact-spend comparison and its
+      error distance, Burdened's tax **and its consumption by payment**, Inscribed amplifying the next
+      application in **both** polarities, Entombed's stun at 5 and its reset, Embalmed holding a value that
+      would otherwise decay); the six-row seam list above is worked through against Core FIRST; the one place a Weighed check is raised, resolved and observed (the Act-III
       lesson: `ActThree.Violate` was worth the day it cost); `ActRules.For(4)` minimally walkable;
       `BabLoader` loads `acts/act_4_licensing_labyrinth.json`. Identities: Reed-Cord Surveyor, Crooked Rod
       Bearer. Encounters 1–3, incl. the audit's §3.1 Primary Measure rule (E3 is its first reader).
 - [ ] **IV-1 — Stage 2, the Gate of Counted Names.** Uncounted Pilgrim, Cobra of the Entry Mark,
-      Name-Eating Baboon. Encounters 4–7. First readers of **Inscribed**.
+      Name-Eating Baboon. Encounters 4–7. First readers of **Inscribed** — the Pilgrim reads it as a mere
+      state (`Inscribed > 0`), while the stage must also show its amplifying half, or the player never learns
+      that the register is spendable.
 - [ ] **IV-2 — Stage 3, the Granary Courts.** Crocodile of the Short Measure, Jar-Seal Scarab Swarm,
       Hungry Grain Thief. Encounters 8–11.
 - [ ] **IV-3 — Stage 4, the Floodmark Basins.** Flood-Mark Reader, Drowned Field Scribe, Silt-Buried Farmer
@@ -146,7 +199,8 @@ decides and the choice is written into `ADAPTATIONS.md`.
 - [ ] **IV-4 — Stage 5, the Tribute Causeway.** Foreign Tribute Shade, Donkey of the Third Tally,
       Empty-Handed Envoy. Encounters 16–18.
 - [ ] **IV-5 — Stage 6, the Corvée Yards.** Rope-Gang Wraith, Runaway Laborer, Stone-Hauler Ushabti.
-      Encounters 19–21. First **Burdened** pressure block.
+      Encounters 19–21. First **Burdened** pressure block — the stage where the tax and the measure collide
+      on purpose: paying the tax changes what the turn's actual expenditure comes to.
 - [ ] **IV-6 — Stages 7 + 8.** Fallen Capstone Golem, Cornerstone Oath-Stone · Palette-Bearing Apprentice,
       Hieroglyphic Complaint Wall. Encounters 22–27. §3.5 (Embalmed self-enabling) is binding for the Wall.
 - [ ] **IV-7 — Stages 9 + 10.** Sun-Seal Bearer, False-Seal Forger · Kneeling Petitioners. Encounters 28–33.
@@ -177,12 +231,16 @@ resolution. HP from the master's table.
       Rope-Master of the Corvée (275 + summons).** The Surveyor offers **two achievable Weighed values** —
       the solvability filter is its own machinery, written once and reused by every later elite.
 - [ ] **IV-13 — Keeper of the Living Cartouche (300) · Mummified Overseer of the Linen House (318) ·
-      The Treasury of the Two Pans (330).** Glyphs, Wrapping, Value-vs-Quantity accounting.
+      The Treasury of the Two Pans (330).** Glyphs, Wrapping, Value-vs-Quantity accounting. The Cartouche is
+      **Inscribed's boss-grade reader**: it writes Black/Golden Glyphs out of amplified applications, so this
+      is where the ratified amplifier is either proven or shown to be underspecified.
 - [ ] **IV-14 — Sphinx of the Processional Measure (344) · The Tombbreakers Three (112+100+108).**
       Voluntary ritual costs; a three-body kill-order elite (the Ant-Queen lesson: a body whose pool is
       emptied by anything falls — already fixed in Core).
 - [ ] **IV-15 — Keeper of the Thirty-Six Decans (365) · Colossus of the Endless Procession (388).**
-      The six-watch exam and the three-step discipline cycle; escalation is capped.
+      The six-watch exam and the three-step discipline cycle; escalation is capped. The Colossus asks whether
+      **a Burdened stack was worked off by playing a taxed card** — the observable-payment half of seam 2 is
+      what this encounter is built on.
       **Acceptance: 10 elite encounters, earliest-depth table honoured, all pinned.**
 
 ## Bosses — 4 steps
@@ -298,7 +356,7 @@ force — these fights are "almost a separate game mode"); each god enters `Boss
 
 ## Status
 
-- [ ] ★ the five-keyword decision
+- [x] ★ the five-keyword decision — **ratified 2026-08-29**, written up above as canon
 - [ ] IV-0 … IV-11 standards · IV-12 … IV-15 elites · IV-16 … IV-19 bosses · IV-20 … IV-21 cards+relics ·
       IV-22 … IV-23 events · IV-24 the act
 - [ ] V-0 structure · V-1 … V-6 the six gods · V-7 the whole game
