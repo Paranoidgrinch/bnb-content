@@ -23,9 +23,6 @@ public static class NormalRelics
             pickup: [Gold(30)],
             runPrograms: [AfterEveryVictory(Gold(4))]),
 
-        // "Retain until the start of your next turn" for a card that arrived outside the draw step. Retention
-        // is a property of a card DEFINITION, not of one copy, so this keeps the whole hand instead for one
-        // turn — see ADAPTATIONS.
         Normal("brass_bookmark", "Brass Bookmark", Rarity.Common,
             "The first card that enters your hand outside the normal draw each turn is kept until your next turn.",
             combatRule: RelicRules.BrassBookmark),
