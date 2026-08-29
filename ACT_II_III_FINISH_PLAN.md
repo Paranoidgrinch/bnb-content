@@ -254,6 +254,25 @@ the named card survives the turn and nothing else does.
 **Done when:** the relic's behaviour and its text are the same sentence, and the deviation is struck from
 `ADAPTATIONS.md`.
 
+> **Done — 2026-08-29.** (Core `@1d94de4`, bnb-content `@28deec9`, bnb-godot `@24ba1c3`.) The relic is three triggers and keeps
+> exactly one card; the deviation is struck.
+>
+> The `RetainedCardMark` seam was only half of what the sentence needed. The other half was the QUESTION:
+> nothing in authored content could hear a card ARRIVE. The two events that say it — `CardMovedToZone` (a card
+> moved into a pile) and `CardInstanceCreated` (a card made in one) — existed as trigger contexts in Core with
+> no way to bind a status trigger to either. Both are now `TriggerEvent` values with a bearer filter each, in
+> both rebuild switches; `TriggerEventCardInstance` answers in all the card-shaped contexts, so a rule can
+> name the card its event is about; and one new expression, `eventCardZone`, asks the thing a move trigger has
+> to ask first — a card leaving your hand and a card arriving in it are the same event, and every rule about
+> one of them is wrong about the other.
+>
+> "Outside the normal draw step" needed no clause: drawing reports as a draw, not as a move, so a drawn card
+> never reaches the trigger. Both arrivals share the once-a-turn latch; a third trigger takes the mark off at
+> the start of your next turn, which is where "until your next turn" ends.
+>
+> New nets: `Tests/BrassBookmarkTests` (7 facts — one per clause of the sentence, plus the control that
+> without the relic none of it happens) and Core's `CardEntersHandTriggerTests`.
+
 ---
 
 ## Step 6 · The Godot presentation pass

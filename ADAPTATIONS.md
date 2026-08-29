@@ -503,8 +503,6 @@ relic's line asks for something the engine cannot see.
 
 ### The 50 Normal relics
 
-- **Brass Bookmark** retains the whole hand rather than one chosen card. Retention is a property of a card, and
-  choosing which card to keep at the moment a turn ends is not a prompt the engine raises.
 - **Redaction Knife** discards the oldest card in hand instead of a chosen one, for the same reason — the cost
   has to be paid without stopping to ask.
 - **Binder's Awl** pays on the next draw after the draw pile runs dry, not at the shuffle itself; a reshuffle
@@ -1894,3 +1892,24 @@ Two things came out of it that outlive the bug:
   assembled document and fails on any event-reading expression buried inside a queued effect. Its second fact
   runs the detector against the shape Bounty Hook had, because a net nobody has seen catch anything is not
   evidence that the water is empty — the Warden's lesson, applied.
+
+## The Brass Bookmark keeps one card, and the engine learned to hear a card arrive (2026-08-29)
+
+The relic's line is "the first non-Junk card that enters your hand outside the normal draw step each turn gains
+Retain until the start of your next turn." It used to retain the WHOLE hand for one turn, on the excuse that
+retention was a property of a card definition. That excuse expired with the per-instance `RetainedCardMark`
+seam: a mark can hold one COPY back where a definition flag holds every copy of that card.
+
+What was still missing was the question, not the answer. Nothing could hear a card ARRIVE. Two events say it —
+a card MOVED into a pile, and a card MADE in one — and neither was reachable from authored content: the
+`CardMovedToZone` and `CardInstanceCreated` trigger contexts existed in Core with nothing that could bind a
+status trigger to them. So the engine gained the two trigger events, a bearer filter each, and one expression
+(`eventCardZone`) for the thing a move trigger must ask first: a card leaving your hand and a card arriving in
+it are the same event, and every rule about one of them is wrong about the other. `TriggerEventCardInstance`
+now answers in all of those contexts, so a rule can name the card the event is about rather than guess it back
+out of a pile by position.
+
+"Outside the normal draw step" then needs no clause of its own: drawing reports as a draw, not as a move, so a
+drawn card never reaches the trigger at all. The relic is three triggers — one per way a card can arrive, and
+one at the start of your turn that takes the mark off again, which is where "until your next turn" ends. Both
+arrivals share the once-a-turn latch, so exactly one card is kept however it got there.

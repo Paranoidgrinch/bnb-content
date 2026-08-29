@@ -478,10 +478,58 @@ public static class RelicRules
                 GiveDiscount<CardsDrawnTriggeredEffectContext>(),
             ])), nameof(TriggerEvent.CardsDrawn))]);
 
-    // "Retain the hand for one turn" — the nearest the engine has to keeping one card. See ADAPTATIONS.
+    // "The first non-Junk card that enters your hand outside the normal draw step each turn gains Retain until
+    // the start of your next turn."
+    //
+    // "Outside the normal draw" needs no clause of its own: drawing reports as a draw, not as a card MOVE, so
+    // a drawn card never reaches this trigger at all. What is left is the two things the line does say —
+    // the card ARRIVED (the same event carries every card that leaves, and a rule that could not tell the
+    // directions apart would keep whatever it last saw go), and it is the FIRST one, which is the usual latch.
+    //
+    // The keeping is a mark on that one COPY, so the relic keeps the card its text names rather than the hand
+    // it happens to be in; the turn start takes the mark off again, which is where "until your next turn" ends.
     public static readonly StatusData BrassBookmark = Rule("brass_bookmark", "Brass Bookmark",
-        "Your hand is kept through the first turn of a fight.",
-        [], tags: [StandardCombatIds.RetainHandTag.value]);
+        "The first card that arrives in your hand outside your draw each turn is kept until your next turn.",
+        // Two triggers for one sentence, because a card reaches a hand two ways it was not drawn into: it is
+        // MOVED there (a tutor, a card handed back from the discard pile) or it is MADE there (what an enemy
+        // pushes into your hand). Neither hears the other, and the latch is shared, so between them they keep
+        // exactly one card however it arrived.
+        [Trigger(new EffectProgram<CardMovedToZoneTriggeredEffectContext>(
+            KeepTheFirstArrival<CardMovedToZoneTriggeredEffectContext>()),
+            nameof(TriggerEvent.CardMovedToZone)),
+         Trigger(new EffectProgram<CardInstanceCreatedTriggeredEffectContext>(
+            KeepTheFirstArrival<CardInstanceCreatedTriggeredEffectContext>()),
+            nameof(TriggerEvent.CardInstanceCreated)),
+         // The release, and the latch cleared in the same breath: at most one card carries the mark, because
+         // only one is ever given it per turn, so the first marked card in hand IS the kept one.
+         Trigger(new EffectProgram<TurnStartedTriggeredEffectContext>(
+            new CausalSequenceEffectNode<TurnStartedTriggeredEffectContext>(
+            [
+                Keep<TurnStartedTriggeredEffectContext>(
+                    new FirstMarkedCardInOwnerZoneExpression<TurnStartedTriggeredEffectContext>(
+                        CombatantTargetSelectors.Source, CardZone.Hand, StandardCombatIds.RetainedCardMark),
+                    release: true),
+                SetCounter<TurnStartedTriggeredEffectContext>(BookmarkLatch, 0),
+            ])), nameof(TriggerEvent.TurnStarted))]);
+
+    private const string BookmarkLatch = "brass_bookmark";
+
+    private static IEffectNode<TContext> KeepTheFirstArrival<TContext>() where TContext : class =>
+        new ConditionalEffectNode<TContext>(
+            new AndExpression<TContext>(
+                new TriggerEventCardZoneExpression<TContext>(CardZone.Hand),
+                new NotExpression<TContext>(
+                    new CardInstanceHasTagExpression<TContext>(
+                        new TriggerEventCardInstanceExpression<TContext>(),
+                        new TagId(CardAuthoring.JunkTag)))),
+            OnceEachTurn<TContext>(BookmarkLatch,
+                Keep<TContext>(new TriggerEventCardInstanceExpression<TContext>())));
+
+    // Keep this COPY of a card past the end of the turn — or, released, stop keeping it.
+    private static IEffectNode<TContext> Keep<TContext>(
+        ICardInstanceExpression<TContext> card, bool release = false) where TContext : class =>
+        new MarkCardInstanceNode<TContext>(
+            CombatantTargetSelectors.Source, card, StandardCombatIds.RetainedCardMark, remove: release);
 
     // ── the discounts these relics hand out ───────────────────────────────────────────────────────────────
 
