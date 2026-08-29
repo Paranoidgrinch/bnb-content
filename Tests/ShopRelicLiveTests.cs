@@ -16,7 +16,7 @@ public class ShopRelicLiveTests
     private static readonly ConversionPools Pools = ConversionPools.Build(Data, Relics, act: 1);
     private static readonly RunResourceId Gold = StandardRunIds.Gold;
 
-    private static ShopDefinition CityShop() => ShopTemplate.Build(Data, Pools, new Random(7));
+    private static ShopDefinition CityShop() => ShopTemplate.Build(Pools, new Random(7));
 
     // The shop's stock has to SAY what it is, or nothing the relics do can find it.
     [Fact]
@@ -25,11 +25,13 @@ public class ShopRelicLiveTests
         var shop = CityShop();
         var shelves = shop.Shelves().ToDictionary(shelf => shelf.Id);
 
-        Assert.Equal(2, shelves.Count);
-        Assert.All(shelves[ShopRelics.CardShelf].Offers,
-            entry => Assert.Equal(ShopEntryKinds.Card, entry.Kind));
-        Assert.All(shelves[ShopRelics.RelicShelf].Offers,
-            entry => Assert.Contains(ShopRelics.NormalRelic, entry.Tags!));
+        Assert.Equal(4, shelves.Count);
+        foreach (var cards in ShopRelics.CardShelves)
+            Assert.All(shelves[cards].Offers, entry => Assert.Equal(ShopEntryKinds.Card, entry.Kind));
+        // The relic shelves are labelled by the SHELF, not by each entry: a relic is a Normal Relic because of
+        // where it stands, and the shelf's tag is stamped on every slot it puts out.
+        Assert.Equal([ShopRelics.NormalRelic], shelves[ShopRelics.NormalRelicShelf].Tags);
+        Assert.Equal([ShopRelics.ShopRelic], shelves[ShopRelics.ShopRelicShelf].Tags);
         Assert.Contains(shop.Services!, service => service.Tags!.Contains(ShopRelics.Removal));
     }
 
@@ -38,7 +40,7 @@ public class ShopRelicLiveTests
     public void A_secondhand_relic_is_cheaper_and_costs_blood()
     {
         var shop = CityShop();
-        var relic = OnOffer(shop, ShopRelics.RelicShelf, "secondhand_reliquary")[0];
+        var relic = OnOffer(shop, ShopRelics.NormalRelicShelf, "secondhand_reliquary")[0];
         var run = Visit("secondhand_reliquary", shop, gold: 1000, relic.Entry.Id, "leave");
 
         Assert.Equal(1000 - relic.Price, run.GetResource(Gold));
@@ -55,7 +57,7 @@ public class ShopRelicLiveTests
         run.AddRelic(Wearing("crooked_display_case"));
         var shelf = new ShopShelf(run, shop);
 
-        var relics = shelf.Slots.Where(slot => slot.GroupId == ShopRelics.RelicShelf).ToList();
+        var relics = shelf.Slots.Where(slot => slot.GroupId == ShopRelics.NormalRelicShelf).ToList();
         Assert.Equal(3, relics.Count);
         var extra = Assert.Single(relics, slot => slot.Entry.Tags!.Contains(ShopRelics.Extra));
         Assert.Equal((int)Math.Round(extra.Entry.Price * 1.2, MidpointRounding.AwayFromZero), extra.Price);
@@ -92,7 +94,7 @@ public class ShopRelicLiveTests
     public void The_signet_buys_what_the_purse_cannot()
     {
         var shop = CityShop();
-        var card = OnOffer(shop, ShopRelics.CardShelf, "debtors_signet")[0];
+        var card = OnOffer(shop, ShopRelics.GeneralCardShelf, "debtors_signet")[0];
         var run = Visit("debtors_signet", shop, gold: 10, card.Entry.Id, "leave");
 
         Assert.Equal(0, run.GetResource(Gold));
@@ -104,7 +106,7 @@ public class ShopRelicLiveTests
     public void Vouchers_pay_at_the_till_and_are_not_gold()
     {
         var shop = CityShop();
-        var card = OnOffer(shop, ShopRelics.CardShelf, "archive_voucher_roll")[0];
+        var card = OnOffer(shop, ShopRelics.GeneralCardShelf, "archive_voucher_roll")[0];
         var run = NewRun(1000);
         run.SetResource(ShopRelics.ArchiveVoucher, 3);
 
@@ -121,7 +123,7 @@ public class ShopRelicLiveTests
     public void Every_third_purchase_pays()
     {
         var shop = CityShop();
-        var ids = OnOffer(shop, ShopRelics.CardShelf, "copper_receipt_roll").Take(3).ToList();
+        var ids = OnOffer(shop, ShopRelics.CharacterCardShelf, "copper_receipt_roll").Take(3).ToList();
         var run = Visit("copper_receipt_roll", shop, gold: 1000, [.. ids.Select(s => s.Entry.Id), "leave"]);
 
         Assert.Equal(1000 - ids.Sum(s => s.Price) + 35, run.GetResource(Gold));
@@ -150,8 +152,10 @@ public class ShopRelicLiveTests
     private static RunContentRegistry BuildContent()
     {
         var builder = new RunContentRegistryBuilder();
-        foreach (var relic in Relics)
-            builder.RegisterRelic(relic.Relic.ToDefinition());
+        var known = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var relic in FinalRelics.Compile().Concat(Relics.Select(r => r.Relic)))
+            if (known.Add(relic.Id))
+                builder.RegisterRelic(relic.ToDefinition());
         return builder.Build();
     }
 

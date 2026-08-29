@@ -32,11 +32,23 @@ public static class ShopRelics
 
     // What the shop's shelves are called and how its stock is labelled. A price rule finds nothing unless the
     // shelf says what it is holding — see ShopTemplate, which stamps these.
-    public const string CardShelf = "cards";
-    public const string RelicShelf = "relics";
+    //
+    // There are FOUR shelves, not two, because the design fixes the inventory as 3 General + 4 Character cards
+    // and 2 Shop + 2 Normal relics (BnB_Run_Systems_Master §4.1): a shelf draws from its own pool up to its own
+    // count, so four shelves is what makes those numbers true rather than an average. A relic that names one
+    // shelf therefore has to mean it — "one additional Normal Relic" is the normal shelf and nothing else,
+    // while "all unsold cards" is both card shelves.
+    public const string GeneralCardShelf = "cards-general";
+    public const string CharacterCardShelf = "cards-character";
+    public const string ShopRelicShelf = "relics-shop";
+    public const string NormalRelicShelf = "relics-normal";
     public const string NormalRelic = "normal";
+    public const string ShopRelic = "shop";
     public const string Removal = "removal";
     public const string Extra = "extra";
+
+    // Both card shelves, for a rule that means "the cards on sale" without caring which pool they came from.
+    public static readonly IReadOnlyList<string> CardShelves = [GeneralCardShelf, CharacterCardShelf];
 
     public static IReadOnlyList<BnbRelic> All() =>
     [
@@ -97,20 +109,19 @@ public static class ShopRelics
         // ── 4 ─────────────────────────────────────────────────────────────────────────────────────────────
         // An elite is an ordinary combat node wearing a tag; without the tag nothing downstream could tell this
         // win from any other.
+        //
+        // TWO triggers rather than one with a branch inside it, because "how much HP you finished on" is a
+        // field of the EVENT. A trigger's condition is evaluated at dispatch, with the event in scope; its
+        // effects are queued and drain afterwards, when the event is gone — so a branch nested in the effect
+        // asks a question nobody is left to answer, and throws. The two conditions are exhaustive and mutually
+        // exclusive, so exactly one of them pays.
         Shop("bounty_hook", "Bounty Hook",
             "After defeating an Elite, gain 20 Gold — or 35 if you finished that combat below half your Max HP.",
             runPrograms:
             [
+                RunPrograms.When<CombatResolvedRunEvent>(RunExpr.And(WonAnElite, FinishedBelowHalf), Gold(35)),
                 RunPrograms.When<CombatResolvedRunEvent>(
-                    RunExpr.And(
-                        RunEventValues.CombatWasVictory,
-                        RunEventValues.NodeHasTag(MapNodeTags.Elite)),
-                    new ConditionalRunEffect(
-                        new RunComparisonExpression(
-                            RunExpr.Multiply(RunEventValues.CombatHeroHpRemaining, RunExpr.Const(2)),
-                            RunComparisonOperator.LessThan, RunExpr.MaxHealth),
-                        [Gold(35)],
-                        [Gold(20)])),
+                    RunExpr.And(WonAnElite, RunExpr.Not(FinishedBelowHalf)), Gold(20)),
             ]),
 
         // ── 5 ─────────────────────────────────────────────────────────────────────────────────────────────
@@ -148,7 +159,7 @@ public static class ShopRelics
             combatRule: ShopRelicRules.WastebrokersPermit,
             runPrograms:
             [
-                AfterVictory(new ComputedResourceRunEffect(StandardRunIds.Gold,
+                AfterVictory(RunEffectTemplates.GainResource(StandardRunIds.Gold,
                     RunExpr.Multiply(Tallied(ShopRelicRules.Salvage), RunExpr.Const(5)))),
             ]),
 
@@ -162,7 +173,7 @@ public static class ShopRelics
             combatRule: ShopRelicRules.FilingFeeStamp,
             runPrograms:
             [
-                AfterVictory(new ComputedResourceRunEffect(StandardRunIds.Gold,
+                AfterVictory(RunEffectTemplates.GainResource(StandardRunIds.Gold,
                     RunExpr.Min(Tallied(ShopRelicRules.FilingFee), RunExpr.Const(20)))),
             ]),
 
@@ -227,8 +238,8 @@ public static class ShopRelics
         // tag the grant stamps on the extra one.
         Shop("crooked_display_case", "Crooked Display Case",
             "Adds one additional Normal Relic to this Shop and to every future Shop. The extra relic costs 20% more.",
-            pickup: [new AddShopStockRunEffect(RelicShelf, 1, [Extra])],
-            shopStock: [new ShopStockGrant(RelicShelf, 1, [Extra])],
+            pickup: [new AddShopStockRunEffect(NormalRelicShelf, 1, [Extra])],
+            shopStock: [new ShopStockGrant(NormalRelicShelf, 1, [Extra])],
             shopPrices: [new ShopPriceRule(new ShopPriceMatch(AnyTag: [Extra]), PercentDelta: 20)]),
 
         // ── 13 ────────────────────────────────────────────────────────────────────────────────────────────
@@ -238,7 +249,8 @@ public static class ShopRelics
             shopServices:
             [
                 new ShopService("turnover-bell", StandardRunIds.Gold, 30,
-                    [new RestockShopStockRunEffect(CardShelf)],
+                    // Both card shelves: the bell says "all unsold cards", and the cards stand on two.
+                    [.. CardShelves.Select(shelf => new RestockShopStockRunEffect(shelf))],
                     TextKey: "Ring for fresh stock."),
             ]),
 
@@ -260,8 +272,8 @@ public static class ShopRelics
                                 RunEventValues.ResourceDelta, RunComparisonOperator.GreaterThan, RunExpr.Const(0))),
                         new RunComparisonExpression(
                             RunExpr.Counter(Debt), RunComparisonOperator.GreaterThan, RunExpr.Const(0))),
-                    new ComputedResourceRunEffect(StandardRunIds.Gold, RunExpr.Negate(Repayment)),
-                    new ComputedCounterRunEffect(Debt, RunExpr.Negate(Repayment))),
+                    RunEffectTemplates.GainResource(StandardRunIds.Gold, RunExpr.Negate(Repayment)),
+                    RunEffectTemplates.ChangeCounter(Debt, RunExpr.Negate(Repayment))),
             ]),
 
         // ── 15 ────────────────────────────────────────────────────────────────────────────────────────────
@@ -280,7 +292,7 @@ public static class ShopRelics
             runPrograms:
             [
                 // Banked at the end of the fight rather than the instant you Ratify — see ADAPTATIONS.
-                AfterVictory(new ComputedResourceRunEffect(Waiver,
+                AfterVictory(RunEffectTemplates.GainResource(Waiver,
                     RunExpr.Max(
                         RunExpr.Const(0),
                         RunExpr.Min(
@@ -288,7 +300,7 @@ public static class ShopRelics
                             RunExpr.Subtract(RunExpr.Const(4), RunExpr.Resource(Waiver)))))),
                 RunPrograms.When<ShopItemPurchasedRunEvent>(
                     RunEventValues.ShopItemHasTag(Removal),
-                    new ComputedResourceRunEffect(Waiver, RunExpr.Negate(RunExpr.Resource(Waiver)))),
+                    RunEffectTemplates.GainResource(Waiver, RunExpr.Negate(RunExpr.Resource(Waiver)))),
             ]),
 
         // ── 16 ────────────────────────────────────────────────────────────────────────────────────────────
@@ -311,7 +323,7 @@ public static class ShopRelics
                         RunExpr.Or(
                             RunEventValues.ShopItemHasTag("form"),
                             RunEventValues.ShopItemHasTag("queue"))),
-                    new ComputedResourceRunEffect(StandardRunIds.Gold,
+                    RunEffectTemplates.GainResource(StandardRunIds.Gold,
                         RunExpr.Min(RunEventValues.ShopCurrencyPaid, RunExpr.Const(15)))),
             ]),
 
@@ -393,9 +405,9 @@ public static class ShopRelics
                     RunExpr.And(
                         RunEventValues.ShopItemIsKind(ShopEntryKinds.Relic),
                         Unspent("warranty")),
-                    new ComputedCounterRunEffect(WarrantyValue,
+                    RunEffectTemplates.ChangeCounter(WarrantyValue,
                         RunExpr.Divide(RunEventValues.ShopCurrencyPaid, RunExpr.Const(2))),
-                    Spend("warranty")),
+                    RunEffectTemplates.Literal(Spend("warranty"))),
                 RunPrograms.When<NodeEnteredRunEvent>(
                     RunExpr.And(
                         RunEventValues.NodeHasTag(MapNodeTags.Shop),
@@ -419,7 +431,7 @@ public static class ShopRelics
                             new RunComparisonExpression(
                                 RunEventValues.ResourceDelta, RunComparisonOperator.LessThan, RunExpr.Const(0))),
                         RunExpr.Not(RunExpr.InShop)),
-                    new ComputedResourceRunEffect(StandardRunIds.Gold,
+                    RunEffectTemplates.GainResource(StandardRunIds.Gold,
                         RunExpr.Min(
                             RunExpr.Divide(RunExpr.Negate(RunEventValues.ResourceDelta), RunExpr.Const(2)),
                             RunExpr.Const(50)))),
@@ -464,6 +476,14 @@ public static class ShopRelics
 
     // ── shared pieces ─────────────────────────────────────────────────────────────────────────────────────
 
+    // The two halves of Bounty Hook's question, kept apart so each can be one trigger's condition.
+    private static readonly IRunExpression<bool> WonAnElite =
+        RunExpr.And(RunEventValues.CombatWasVictory, RunEventValues.NodeHasTag(MapNodeTags.Elite));
+
+    private static readonly IRunExpression<bool> FinishedBelowHalf =
+        RunExpr.LessThan(
+            RunExpr.Multiply(RunEventValues.CombatHeroHpRemaining, RunExpr.Const(2)), RunExpr.MaxHealth);
+
     private static readonly RewardMatch CardReward =
         new(RewardKinds.Card, [NormalRelic], NoneTag: ["boss", "event"]);
 
@@ -482,6 +502,12 @@ public static class ShopRelics
     private static ITriggeredRunEffectDefinition AfterVictory(params IRunEffectRequest[] effects) =>
         RunPrograms.When<CombatResolvedRunEvent>(RunEventValues.CombatWasVictory, effects);
 
+    // The same, for a payout whose SIZE the fight decides. What a trigger is handed as a plain effect is
+    // queued and drains after the event is gone; a template is built at dispatch, while the fight's tally can
+    // still be read. Everything here that collects a tally has to take this door.
+    private static ITriggeredRunEffectDefinition AfterVictory(params IRunEffectTemplate[] templates) =>
+        RunPrograms.When<CombatResolvedRunEvent>(RunEventValues.CombatWasVictory, templates);
+
     private static ITriggeredRunEffectDefinition WhenSkipping(RewardMatch match, params IRunEffectRequest[] effects) =>
         RunPrograms.When<RewardSkippedRunEvent>(
             RunExpr.And(
@@ -494,9 +520,9 @@ public static class ShopRelics
             RunExpr.And(
                 RunEventValues.ShopItemHasTag(type),
                 Unspent($"dpo_{type}")),
-            new ComputedResourceRunEffect(StandardRunIds.Gold,
+            RunEffectTemplates.GainResource(StandardRunIds.Gold,
                 RunExpr.Min(RunEventValues.ShopCurrencyPaid, RunExpr.Const(15))),
-            Spend($"dpo_{type}"));
+            RunEffectTemplates.Literal(Spend($"dpo_{type}")));
 
     // "The first time each Act" — an ACT flag, which the act boundary forgets. A run flag would make every one
     // of these relics a once-per-RUN relic the moment a second act existed.

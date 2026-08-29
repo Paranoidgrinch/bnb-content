@@ -1,6 +1,9 @@
 using RogueDeck.Core.Combat;
 using RogueDeck.Run;
 
+using BnbContent.Converter.Relics;
+using static BnbContent.Converter.Relics.RelicAuthoring;
+
 namespace BnbContent.Converter;
 
 // The shared random pools every mapper draws offers from: the card-reward pool, the transform pool (the same
@@ -21,10 +24,26 @@ public sealed class ConversionPools
     public required IReadOnlyList<Cards.CardAuthoring.BnbCard> RewardCards { get; init; }
     public required IReadOnlyList<MappedRelic> Relics { get; init; }
 
+    // The four pools a SHOP asks for by name (BnB_Run_Systems_Master §4.2/§4.3). A shop does not draw from
+    // "the cards" and "the relics" — it fills three General slots, four Character slots, two Shop-relic slots
+    // and two Normal-relic slots, each from its own pool. Kept apart here because the moment they are one bag
+    // the shelf can no longer be the shape the design fixed.
+    public required IReadOnlyList<Cards.CardAuthoring.BnbCard> GeneralCards { get; init; }
+    public required IReadOnlyList<Cards.CardAuthoring.BnbCard> CharacterCards { get; init; }
+    public required IReadOnlyList<BnbRelic> ShopRelicStock { get; init; }
+    public required IReadOnlyList<BnbRelic> NormalRelicStock { get; init; }
+
     public static ConversionPools Build(BabData data, IReadOnlyList<MappedRelic> relics, int act) => new()
     {
         Act = act,
         RewardCards = Cards.FinalCards.RewardPool(act),
+        GeneralCards = Cards.FinalCards.GeneralPool(act),
+        CharacterCards = Cards.FinalCards.CharacterPool(act),
+        // The final relic pools, gated by who is being played. Neither can hold an Event or a Boss relic —
+        // those are separate pools by construction (RelicAuthoring.Pool), which is how §2.5/§2.6 keeps them
+        // out of a shop rather than by a filter that could be forgotten.
+        ShopRelicStock = FinalRelics.Pool(Pool.Shop),
+        NormalRelicStock = FinalRelics.Pool(Pool.Normal),
         Relics = relics
             .Where(r => EligibleForEvents(r, data.Bureaucrat.Id))
             .ToList(),
@@ -36,6 +55,11 @@ public sealed class ConversionPools
         return source.Rarity != "boss"
             && (source.AllowedClasses is null || source.AllowedClasses.Contains(classId));
     }
+
+    // One final relic's grant: the relic, plus whatever it does the moment it is taken. The engine has no
+    // per-relic pickup hook, so every place that hands one over carries them — a shelf included.
+    public static IReadOnlyList<IRunEffectRequest> Grant(BnbRelic relic) =>
+        [new AddRelicByIdRunEffect(new RelicId(relic.Id)), .. relic.Pickup ?? []];
 
     // One relic offer: grant the relic + its bundled pickup effects.
     public static RewardOffer RelicOffer(MappedRelic mapped) => new(

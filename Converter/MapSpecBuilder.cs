@@ -136,7 +136,7 @@ public static class MapSpecBuilder
             Events = events,
             Shops = new Dictionary<string, ShopDefinition>
             {
-                [ShopId(act)] = ShopTemplate.Build(data, pools, rng),
+                [ShopId(act)] = ShopTemplate.Build(pools, rng),
             },
         };
     }

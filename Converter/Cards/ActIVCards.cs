@@ -140,7 +140,12 @@ public static class ActIVCards
 
     // ── the pool ──────────────────────────────────────────────────────────────────────────────────────────
 
-    public static IEnumerable<BnbCard> All() =>
+    public static IEnumerable<BnbCard> All() => [.. Bureaucrat(), .. General()];
+
+    // The two pools this file holds, kept apart because a shop asks for them separately: three General slots
+    // and four Character slots (BnB_Run_Systems_Master §4.2). Everything else — rewards, transforms — takes
+    // both together, which is what All() is.
+    public static IReadOnlyList<BnbCard> Bureaucrat() =>
     [
         FinalAttestation, FinalAttestation.Upgraded("Deal 11 damage. If the target is Ratified, gain 1 Energy.",
             Seq(Damage(11), If(HasStacks(Keywords.Ratified), Energy_(1)))),
@@ -171,7 +176,10 @@ public static class ActIVCards
 
         FivefoldCompliance, FivefoldCompliance.Upgraded(
             "Deal 15 damage, then repeat once for each fulfilled clause.", Fivefold(15)),
+    ];
 
+    public static IReadOnlyList<BnbCard> General() =>
+    [
         BlackTribunal, BlackTribunal.Upgraded(
             "Deal 18 damage, plus 8 damage for each different negative Status on the target. Count at most 5.",
             Tribunal(18)),

@@ -219,6 +219,26 @@ shop**, which §4.3 forbids outright.
 
 **Done when:** the shelf matches the master and a test pins it.
 
+> **Done — 2026-08-29.** The shelf is 3 + 4 and 2 + 2, `Tests/ShopShelfTests` pins both the counts (by drawing
+> the shelf) and the pools (against the authored offers). Three faults, in rising order of size:
+>
+> 1. the card shelf had no pools at all, so a General/Character split could not be made — `FinalCards` now
+>    composes `GeneralPool`/`CharacterPool` from the sheets the cards were written on;
+> 2. **Event relics were on sale** (§2.5), because the filter was `Rarity != "boss"` alone;
+> 3. ★ the shelf drew from the **ported** relics, so **72 of the 74 authored Normal and Shop relics had never
+>    been obtainable in a run**. Only `archive_key` and `emergency_inkwell` share an id with the ported data.
+>
+> Opening the Shop pool then exposed **nine programs across eight Shop relics** that crash when they fire: a
+> plain effect handed to a trigger is queued and drains after the event is gone, so a `Computed…RunEffect`
+> reading the event throws. All nine are effect TEMPLATES now; Bounty Hook, whose question is a branch rather
+> than an amount, is two triggers. Engine: `RunEffectTemplates.ChangeCounter` (the counter twin of
+> `GainResource`, simply missing) plus a test that pins the trap. Content: `Tests/QueuedEffectTests` walks
+> every relic and installed program in the document and proves itself on the shape that was wrong.
+>
+> **Still open, and not this step's:** Treasure and the combat/elite relic rewards still draw the *ported*
+> pool (`ConversionPools.RelicGrantSource`), so §3.3 — "1 random eligible **Normal** Relic" — is not kept
+> anywhere but the shop.
+
 ---
 
 ## Step 5 · The Brass Bookmark says what it does
