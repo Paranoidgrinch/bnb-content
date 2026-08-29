@@ -219,7 +219,9 @@ shop**, which §4.3 forbids outright.
 
 **Done when:** the shelf matches the master and a test pins it.
 
-> **Done — 2026-08-29.** The shelf is 3 + 4 and 2 + 2, `Tests/ShopShelfTests` pins both the counts (by drawing
+> **Done — 2026-08-29.** (Core `676c446`, bnb-content `a30afd7`+`b3b09e4`, bnb-godot `3fe5f4c`; Core
+> 1430/754/573/365, bnb-content 925/925, `--playtest 3` all Victory 3/3, `--maps 3` clean, Godot
+> `Victory acts=3 rooms=73 error=none`, and an eyes-on capture of an Act-II and an Act-III boss.) The shelf is 3 + 4 and 2 + 2, `Tests/ShopShelfTests` pins both the counts (by drawing
 > the shelf) and the pools (against the authored offers). Three faults, in rising order of size:
 >
 > 1. the card shelf had no pools at all, so a General/Character split could not be made — `FinalCards` now
@@ -336,7 +338,9 @@ Out of scope, and stated so: **G-7, art.** Nothing here ships art; the game stay
 > names wrap, and the arena scrolls. Two probe-side lessons: a walk that never yields fills Godot's message
 > queue and segfaults in the second act, and a probe that fast-forwards must not queue the draw animation.
 >
-> Also found, reported, **not** fixed: nothing else — but see the note on Treasure relic pools under step 4.
+> **The whole six-step plan is done.** Still open and reported, not fixed: the note on Treasure relic pools
+> under step 4 (Treasure and the combat/elite relic rewards still draw the PORTED relic pool, so §3.3's
+> "1 random eligible Normal Relic" is unkept outside the shop).
 
 ---
 
