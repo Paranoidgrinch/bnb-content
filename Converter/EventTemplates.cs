@@ -2,6 +2,7 @@ using RogueDeck.Core.Combat;
 using RogueDeck.Run;
 
 using BnbContent.Converter.Relics;
+using static BnbContent.Converter.Relics.RelicAuthoring;
 
 namespace BnbContent.Converter;
 
@@ -46,49 +47,71 @@ public static class EventTemplates
         ]),
     ]);
 
-    // The act's shop: five rarity-weighted cards at the original's base prices, two relics (pickup effects
-    // bundled), the card-removal service, and a paid reroll. Its STOCK is the act's own — the pools it is
-    // built from are gated to the act the shop stands in.
+    // The act's shop: the fixed inventory BnB_Run_Systems_Master §4.1 gives every regular shop — 3 General
+    // cards, 4 Character cards, 2 Shop relics, 2 Normal relics — at the original's base prices, with the
+    // card-removal service and a paid reroll. Its STOCK is the act's own: the card pools are gated to the act
+    // the shop stands in.
 }
 
 public static class ShopTemplate
 {
-    public static ShopDefinition Build(BabData data, ConversionPools pools, Random rng)
-    {
-        var cardPrices = new Dictionary<string, int> { ["common"] = 55, ["uncommon"] = 85, ["rare"] = 130 };
-        var relicPrices = new Dictionary<string, int> { ["common"] = 130, ["uncommon"] = 190, ["rare"] = 260 };
+    private static readonly Dictionary<string, int> CardPrices =
+        new() { ["common"] = 55, ["uncommon"] = 85, ["rare"] = 130 };
 
+    // §4.5 declares prices balance variables, not content, so these are exactly what they were. A Shop relic
+    // has no Common/Uncommon/Rare — its pool is its rarity — so it is priced at what an unlabelled relic
+    // already cost on this shelf.
+    private const int DefaultRelicPrice = 190;
+
+    private static readonly Dictionary<Rarity, int> RelicPrices = new()
+    {
+        [Rarity.Common] = 130,
+        [Rarity.Uncommon] = 190,
+        [Rarity.Rare] = 260,
+        [Rarity.Shop] = DefaultRelicPrice,
+    };
+
+    public static ShopDefinition Build(ConversionPools pools, Random rng)
+    {
         // Each shelf's POOL is deeper than what it shows, so a reroll can actually turn the stock over and a
         // relic that adds a slot has something to put in it.
-        var cards = pools.RewardCards.OrderBy(_ => rng.Next()).Take(12).ToList();
-        var relics = pools.Relics.OrderBy(_ => rng.Next()).Take(5).ToList();
+        var general = Cards(pools.GeneralCards, rng, depth: 8);
+        var character = Cards(pools.CharacterCards, rng, depth: 10);
+        var shopRelics = Relics(pools.ShopRelicStock, rng, depth: 5);
+        var normalRelics = Relics(pools.NormalRelicStock, rng, depth: 5);
 
-        // Two SHELVES rather than one bag, and every entry says what it is. A relic that makes "one Normal
-        // Relic" cheaper, or adds a slot to the relic shelf, or replaces the unsold cards, finds nothing
-        // unless the stock is labelled — the effects behind a purchase are opaque.
-        var cardEntries = cards.Select(card => new ShopEntry(
+        // FOUR SHELVES rather than one bag, and every entry says what it is. A relic that makes "one Normal
+        // Relic" cheaper, or adds a slot to the normal relic shelf, or replaces the unsold cards, finds
+        // nothing unless the stock is labelled — the effects behind a purchase are opaque. The shelf stamps
+        // what the whole shelf is (ShopStockGroup.Tags); the entry says what the thing itself is.
+        return new ShopDefinition([], OfferCount: 0,
+            Reroll: new ShopReroll(StandardRunIds.Gold, 25),
+            Services: [ShopService.RemoveCard(StandardRunIds.Gold, 75)],
+            Stock:
+            [
+                new ShopStockGroup(ShopRelics.GeneralCardShelf, general, 3),
+                new ShopStockGroup(ShopRelics.CharacterCardShelf, character, 4),
+                new ShopStockGroup(ShopRelics.ShopRelicShelf, shopRelics, 2, [ShopRelics.ShopRelic]),
+                new ShopStockGroup(ShopRelics.NormalRelicShelf, normalRelics, 2, [ShopRelics.NormalRelic]),
+            ]);
+    }
+
+    private static IReadOnlyList<ShopEntry> Cards(
+        IReadOnlyList<Cards.CardAuthoring.BnbCard> pool, Random rng, int depth) =>
+        pool.OrderBy(_ => rng.Next()).Take(depth).Select(card => new ShopEntry(
             $"buy-{card.Id}", StandardRunIds.Gold,
-            cardPrices.GetValueOrDefault(card.Rarity, 85),
+            CardPrices.GetValueOrDefault(card.Rarity, 85),
             [new AddCardToDeckRunEffect(new CardDefinitionId(card.Id))], card.Name,
             Kind: ShopEntryKinds.Card,
             // The card's own vocabulary — its type (Deed/Working/Rite) and whatever else it carries — plus its
             // rarity, so a rule that discounts "the first Form or Queue card" can find one.
             Tags: [card.Rarity, .. card.AllTags])).ToList();
 
-        var relicEntries = relics.Select(relic => new ShopEntry(
-            $"buy-{relic.Relic.Id}", StandardRunIds.Gold,
-            relicPrices.GetValueOrDefault(relic.Source.Rarity ?? "common", 190),
-            ConversionPools.RelicOffer(relic).Grant, relic.Source.Name,
-            Kind: ShopEntryKinds.Relic,
-            Tags: [ShopRelics.NormalRelic])).ToList();
-
-        return new ShopDefinition([], OfferCount: 0,
-            Reroll: new ShopReroll(StandardRunIds.Gold, 25),
-            Services: [ShopService.RemoveCard(StandardRunIds.Gold, 75)],
-            Stock:
-            [
-                new ShopStockGroup(ShopRelics.CardShelf, cardEntries, 5),
-                new ShopStockGroup(ShopRelics.RelicShelf, relicEntries, 2),
-            ]);
-    }
+    private static IReadOnlyList<ShopEntry> Relics(
+        IReadOnlyList<BnbRelic> pool, Random rng, int depth) =>
+        pool.OrderBy(_ => rng.Next()).Take(depth).Select(relic => new ShopEntry(
+            $"buy-{relic.Id}", StandardRunIds.Gold,
+            RelicPrices.GetValueOrDefault(relic.Rarity, DefaultRelicPrice),
+            ConversionPools.Grant(relic), relic.Name,
+            Kind: ShopEntryKinds.Relic)).ToList();
 }

@@ -554,9 +554,10 @@ price rules, shelves, credit and debt, reward rules). What could not be translat
   statuses are gone with it. The 20-Gold-per-combat cap is applied when the run collects the tally rather than
   while it accrues — capping the running total would silently lose the last enemy's share.
 
-The city shop was relabelled to make any of this possible: its stock is now two **shelves** (`cards`,
-`relics`) whose pools are deeper than what they show, and every entry says what it is (kind + tags). Without
-that labelling a price rule matches nothing and the relics would quietly do nothing.
+The city shop was relabelled to make any of this possible: its stock is **shelves** whose pools are deeper
+than what they show, and every entry says what it is (kind + tags). Without that labelling a price rule matches
+nothing and the relics would quietly do nothing. (There were two shelves then, `cards` and `relics`; there are
+four now — see "The shop is a fixed shape".)
 
 ## The Act-I Event relics (2026-08-21)
 
@@ -1818,3 +1819,78 @@ on the old reading. Setting health UP is untouched, which is what the revival pa
 bosses of Acts I–III with the walker's greedy player, the starting deck and an unkillable tester, and gives
 each a 40-turn budget. A walk only ever meets the boss its seed picked; every one of the fifteen is one seed
 away from being that boss.
+
+## The shop is a fixed shape, and most of the relics were unreachable (2026-08-29)
+
+`BnB_Run_Systems_Master` §4.1 does not describe a shop, it fixes one: **3 General cards, 4 Character cards,
+2 Shop relics, 2 Normal relics**, plus the removal desk. What was built showed **5 cards from one mixed pool
+and 2 relics drawn from every relic whose rarity was not "boss"**, which is a different shop wearing the same
+name. Three things were wrong under that, in rising order of size.
+
+- **The card shelf had no pools.** One bag of five cannot be 3 + 4, and the split is not cosmetic: §4.2 says a
+  future character replaces the four Character slots and *inherits* the three General ones. A mixed shelf hands
+  the next character the Bureaucrat's cards. The pool a card belongs to is not a field on the card — it is
+  which design sheet it was written on, which is the file it lives in — so `FinalCards` composes
+  `GeneralPool`/`CharacterPool` from the `General*`/`Bureaucrat*` classes, and `ActIVCards`, which holds both,
+  says which half is which.
+
+- **Event relics were on sale.** §2.5 and §2.6 say an Event or Boss relic never enters Treasure or Shop
+  generation. The shelf filtered on `Rarity != "boss"` alone, so every Event relic — each of them the payoff of
+  one named branch — could be bought over the counter. The fix is not a longer filter: the four pools are
+  already separate by construction (`RelicAuthoring.Pool`), so the shelves now draw from
+  `FinalRelics.Pool(Shop)` and `Pool(Normal)` and there is no filter to forget.
+
+- ★ **And the shelf was drawing from the wrong world entirely.** Its pool was `ConversionPools.Relics` — the
+  *ported* v1 relics — while the 50 authored Normal relics and 24 authored Shop relics sat in the exported
+  document with nothing able to hand any of them out. Only **2 of those 74 ids** also exist in the ported data
+  (`archive_key`, `emergency_inkwell`), which is the only reason the number is not 74. So **72 authored relics
+  had never once been obtainable in a run**, and no test noticed, because a shop full of valid relics looks
+  exactly like a shop full of the right ones. The shop reaches both final pools now. **Treasure and the
+  combat/elite relic rewards still draw the ported pool** (`pools.RelicGrantSource`) — that is §3.3, a
+  different node, and still open.
+
+Two smaller consequences of there being four shelves rather than two. A relic that names a shelf now has to
+mean it: Crooked Display Case says "one additional **Normal** Relic", so it grants on the normal shelf alone,
+and Turnover Bell says "all unsold **cards**", so it restocks both card shelves. And a Shop relic has no
+Common/Uncommon/Rare — its pool is its rarity — so it is priced at 190, which is what an unlabelled relic
+already cost on that shelf; §4.5 declares prices balance variables, so nothing else moved.
+
+`Tests/ShopShelfTests` pins both halves of the promise, and pins them differently: the COUNTS are checked by
+drawing the shelf the way a visit does, because a count is a property of the display; the POOLS are checked
+against the authored offers, because a wrong pool is a wrong shop even on the draw where it does not surface.
+
+## Nine Shop relics asked the event a question after it had left (2026-08-29)
+
+Opening the shop to the Shop pool made eight relics reachable that had never once fired, and the first walk
+through the new shelf died on one of them: `InvalidOperationException: Event field 'combat.heroHpRemaining'
+was evaluated without a matching event in context`.
+
+A declarative run program is evaluated in **two moments**, not one. Its condition — and any effect TEMPLATE —
+is built at *dispatch*, while the event that woke it is still in scope. A plain effect handed to the same
+trigger is wrapped as a literal, queued, and drained *afterwards*, when the event is gone. So
+
+```csharp
+RunPrograms.When<CombatResolvedRunEvent>(WonAnElite,
+    new ComputedResourceRunEffect(Gold, RunExpr.Min(RunEventValues.ShopCurrencyPaid, …)))
+```
+
+reads correctly, compiles, and serializes — and throws the moment it fires, because by then nobody is left to
+answer. Nine programs across eight relics had it: Bounty Hook, Wastebroker's Permit, Filing-Fee Stamp,
+Debtor's Signet, Notary's Waiver, Priority Window Pass, Warranty Tag, Indemnity Stamp and Departmental
+Purchase Order — every one of them a Shop relic, which is exactly why none of it had ever surfaced.
+
+All nine are templates now (`RunEffectTemplates.GainResource` / `.ChangeCounter`), except Bounty Hook, whose
+question is a *branch* rather than an amount: "20 Gold, or 35 below half HP" is two triggers with exhaustive,
+mutually exclusive conditions, because a condition is allowed to read the event and a queued
+`ConditionalRunEffect` is not.
+
+Two things came out of it that outlive the bug:
+
+- **`RunEffectTemplates.ChangeCounter` (engine).** The counter twin of `GainResource` was simply missing, so
+  "record half of the Gold you just paid" had no data shape at all — the two counter cases could not have been
+  written correctly. `tests/RogueDeck.Run.Tests/DeclarativeProgramTests` now also pins the trap itself: a
+  queued `ComputedResourceRunEffect` reading the event throws, and that test is the reason the templates exist.
+- **`Tests/QueuedEffectTests` (content).** It walks every relic program and every installed program in the
+  assembled document and fails on any event-reading expression buried inside a queued effect. Its second fact
+  runs the detector against the shape Bounty Hook had, because a net nobody has seen catch anything is not
+  evidence that the water is empty — the Warden's lesson, applied.

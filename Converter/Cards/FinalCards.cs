@@ -41,7 +41,24 @@ public static class FinalCards
 
     // The reward pool, by the cumulative Act gate the design sheets give: reaching Act N makes every card
     // gated at N or earlier offerable. Starters and Junk are never rewards.
-    public static IReadOnlyList<BnbCard> RewardPool(int act) => All()
+    public static IReadOnlyList<BnbCard> RewardPool(int act) => Offerable(All(), act);
+
+    // The same pool, split the way a shop asks for it (BnB_Run_Systems_Master §2.1/§2.2): the General pool is
+    // character-unspecific and every future character keeps it, the Character pool is the played character's
+    // own — today the Bureaucrat's. The two partition RewardPool exactly; nothing is in both and nothing is
+    // in neither, which is what the WHICH POOL a card belongs to means. It is not a field on the card because
+    // it is not a property a card was given — it is which sheet it was written on, and that is the file it
+    // lives in.
+    public static IReadOnlyList<BnbCard> GeneralPool(int act) => Offerable(
+        [.. GeneralActI.All(), .. GeneralActII.All(), .. GeneralActIII.All(), .. ActIVCards.General()], act);
+
+    public static IReadOnlyList<BnbCard> CharacterPool(int act) => Offerable(
+        [.. BureaucratActI.All(), .. BureaucratActII.All(), .. BureaucratActIII.All(),
+         .. ActIVCards.Bureaucrat()], act);
+
+    // Starters and Junk are never rewards, and neither is an upgraded twin — the "+" version is what an
+    // improvement makes, not what a shelf sells.
+    private static IReadOnlyList<BnbCard> Offerable(IEnumerable<BnbCard> cards, int act) => cards
         .Where(c => c.Rarity is "common" or "uncommon" or "rare" && c.Act <= act && !c.Id.EndsWith('+'))
         .ToList();
 }
