@@ -254,7 +254,7 @@ the named card survives the turn and nothing else does.
 **Done when:** the relic's behaviour and its text are the same sentence, and the deviation is struck from
 `ADAPTATIONS.md`.
 
-> **Done — 2026-08-29.** (Core `@1d94de4`, bnb-content `@28deec9`, bnb-godot `@24ba1c3`.) The relic is three triggers and keeps
+> **Done — 2026-08-29.** (Core `@1d94de4`, bnb-content `@9afad6c`, bnb-godot `@24ba1c3`.) The relic is three triggers and keeps
 > exactly one card; the deviation is struck.
 >
 > The `RetainedCardMark` seam was only half of what the sentence needed. The other half was the QUESTION:
