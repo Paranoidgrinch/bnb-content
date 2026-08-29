@@ -48,6 +48,17 @@ public static class CuratorOfMisplacedHours
 
     public const string NoInterventionId = "no_present_intervention";
 
+    // Where the dial STANDS, one status per sector. The dial itself is a counter, because turning it is
+    // arithmetic; but a counter is not something the player can look at, and this boss's whole bargain is that
+    // the next hour is readable a turn ahead. So the counter stays the mechanism and these are its face — the
+    // Curator wears exactly one of them, and it is the sector its next action will be drawn from.
+    public const string DialPresentId = "curator_dial_present";
+    public const string DialFutureId = "curator_dial_future";
+    public const string DialPastId = "curator_dial_past";
+
+    // In dial order: index 0 PRESENT, 1 FUTURE, 2 PAST — the same numbers the counter holds.
+    public static readonly string[] DialFaces = [DialPresentId, DialFutureId, DialPastId];
+
     // On the player.
     public const string CuratorRulesId = "curator_rules";
     public const string CuratorReferenceId = "curator_citation";
@@ -104,6 +115,13 @@ public static class CuratorOfMisplacedHours
             "There is no present left to act in."),
         Marker(NoInterventionId, "No Present Intervention",
             "The nearest filed hour cannot be borrowed against."),
+
+        Marker(DialPresentId, "The Dial: the Present",
+            "Its next action is the present hour's."),
+        Marker(DialFutureId, "The Dial: the Future",
+            "Its next action files an hour ahead."),
+        Marker(DialPastId, "The Dial: the Past",
+            "Its next action is drawn from an hour already gone."),
 
         Filed(ScheduledCollapseId, "Scheduled: The Collapse", "22 damage, when this runs out."),
         Filed(ScheduledFailureId, "Appointed: A Later Failure", "14 damage and 1 Paperwork, when this runs out."),
@@ -510,7 +528,20 @@ public static class CuratorOfMisplacedHours
                     DialIs(0), present,
                     @else: new ConditionalEffectNode<EnemyActionContext>(DialIs(1), future, @else: past))),
             TurnTheDial(),
+            ShowTheDial(),
         ]));
+
+    // The dial turns in one place and is shown in the next line, so the number and the face cannot come apart:
+    // whatever the sector now is, that marker is on and the other two are off.
+    private static IEffectNode<EnemyActionContext> ShowTheDial() =>
+        new CausalSequenceEffectNode<EnemyActionContext>(
+        [
+            .. DialFaces.Select((face, sector) => new ConditionalEffectNode<EnemyActionContext>(
+                DialIs(sector),
+                new ApplyStatusNode<EnemyActionContext>(
+                    Self, new StatusDefinitionId(face), new ConstantExpression<EnemyActionContext>(1)),
+                @else: new RemoveStatusNode<EnemyActionContext>(Self, new StatusDefinitionId(face)))),
+        ]);
 
     // PAST → PRESENT → FUTURE, and once the present is gone, PAST ↔ FUTURE.
     private static IEffectNode<EnemyActionContext> TurnTheDial() =>

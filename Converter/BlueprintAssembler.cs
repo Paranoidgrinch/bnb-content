@@ -214,14 +214,22 @@ public static class BlueprintAssembler
                 // An id in both places is the authored one: that is the relic the document ships.
                 .GroupBy(e => e.Key)
                 .ToDictionary(g => g.Key, g => g.Last().Value),
-            Statuses = data.Statuses.ToDictionary(
-                s => s.Id,
-                s => new EntityPresentation
-                {
-                    Icon = $"statuses/{s.Id}.png",
-                    FlavorText = s.Description,
-                    Tags = s.Tags ?? [],
-                }),
+            Statuses = data.Statuses
+                .ToDictionary(
+                    s => s.Id,
+                    s => new EntityPresentation
+                    {
+                        Icon = $"statuses/{s.Id}.png",
+                        FlavorText = s.Description,
+                        Tags = s.Tags ?? [],
+                    })
+                // …and the phase markers, which are authored rather than ported and so had no entry at all.
+                // A frontend cannot tell "the boss is in its second phase" from "the boss has 3 Paperwork" by
+                // looking at either — the status has to say which it is, and this is where it says it.
+                .Concat(BossPhases.Markers.Select(id => KeyValuePair.Create(
+                    id, new EntityPresentation { Tags = [BossPhases.PhaseTag] })))
+                .GroupBy(e => e.Key)
+                .ToDictionary(g => g.Key, g => g.Last().Value),
             Enemies = enemies.ToDictionary(
                 e => e.Id,
                 e => new EntityPresentation
