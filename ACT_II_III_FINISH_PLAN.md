@@ -295,6 +295,49 @@ Out of scope, and stated so: **G-7, art.** Nothing here ships art; the game stay
 
 **Done when:** a marathon plus an eyes-on pass through an Act-II and an Act-III boss shows no unnamed state.
 
+> **Done — 2026-08-29.**
+>
+> **G-3.** Two counters were promoted, and the rest were given a rule instead of a shrug. The two are the ones
+> where *the player is asked to act on a number the game never showed them*: the **Curator's dial** (its own
+> marker's text says "its dial shows which hour it is working in", and it showed nothing — the dial is what
+> the five telegraphed intent names MEAN) and the **Warden's announced key** (the announcement and the sealing
+> are deliberately a turn apart, and that turn was spent planning against a number nobody could see). Each
+> wears one of three markers now; the counter stays the arithmetic and is written and shown in the same
+> breath, so the face and the number cannot disagree — which is what `Tests/ReadableBossStateTests` checks,
+> after every write, rather than checking that a status exists. Everything else stays a counter under a stated
+> rule (ADAPTATIONS), family by family: spent latches, records of the player's own turn, scalars that restate
+> what is on the table, rotations whose result is already telegraphed. The **Catalogue's beat** is the judged
+> case and it is named as one: it is bumped at the player's own turn end, so the value standing during their
+> turn is never the one the Catalogue will read — a face on it would be off by one from the only question it
+> could answer.
+>
+> **G-4.** The phase is drawn **on** the intent, not filed after it. All fifteen bosses' phase markers — the
+> phase a boss is IN and the telegraph that it is about to change — are tagged `phase` in the presentation
+> manifest (`Converter/BossPhases.cs`), and the frontend draws a tagged status as a banner directly above the
+> intent instead of as one chip among a dozen. Presentation is engine-ignored, so no rule moved. Two thirds of
+> the fix was elsewhere: the authored statuses had **no presentation entry at all** (only the seven ported
+> ones did), so there was nowhere for the document to say this.
+>
+> **G-6.** A boss's spoils are one bundle that opens two further picks, and BOTH read "a card reward" — the
+> engine described any reward-that-opens-a-reward as a card, so a boss announced its relic as a card, twice,
+> and the relic then arrived under the same heading as the card pick before it. A nested reward cannot know
+> what is inside it (its source has not been generated, and generating it early rolls the run's dice), so the
+> offer now declares its `Kind`; the engine describes it from that and asks under `reward-<kind>`, and the
+> frontend titles the screen after what is being handed over.
+>
+> **G-5.** The widest fights are four enemies and the hero. `godot -- --smoke-crowd` walks to one, measures the
+> row against the screen and captures it; `--smoke-boss <act>` does the same for a named act's boss. What they
+> found was three separate faults, none of which a fight can report about itself: the enemy row was a fixed
+> HBox that **walked off the right edge** rather than shrinking; the combatant NAME did not wrap, so its full
+> length was a minimum width no share-out could argue with; and — worst — a body carrying a dozen statuses
+> made its column taller than the arena, and a `VBoxContainer` hands out minimum heights first, so **the hand,
+> the deck and the End-turn button were pushed off the bottom of the screen** by the very state this pass is
+> about making readable. The row now shares its room out among the columns and wraps only as a last resort,
+> names wrap, and the arena scrolls. Two probe-side lessons: a walk that never yields fills Godot's message
+> queue and segfaults in the second act, and a probe that fast-forwards must not queue the draw animation.
+>
+> Also found, reported, **not** fixed: nothing else — but see the note on Treasure relic pools under step 4.
+
 ---
 
 ## What this plan deliberately does NOT contain

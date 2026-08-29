@@ -47,6 +47,13 @@ public static class WardenOfSealedVolumes
     public const string WardenReferenceId = "warden_citation";
     public const string WardenReferenceMark = "referenced_by_the_warden";
 
+    // What has been NAMED but not yet turned. The announcement and the sealing are a turn apart by design, and
+    // the turn in between is the one the player is meant to plan in — which cannot be done against a number
+    // nobody can see. One of these three stands on the player from the announcement until the seal falls.
+    public const string AnnouncedRestraintId = "warden_announced_restraint";
+    public const string AnnouncedProcedureId = "warden_announced_procedure";
+    public const string AnnouncedEvidenceId = "warden_announced_evidence";
+
     // On the cards themselves.
     public const string RestraintMark = "sealed_by_restraint";
     public const string ProcedureMark = "sealed_by_procedure";
@@ -83,11 +90,11 @@ public static class WardenOfSealedVolumes
     private static readonly ICombatantTargetSelector Across = CombatantTargetSelectors.LowestHealthEnemyOfSource;
 
     // The three Seals, each with the mark it puts on a card and the number the announcement uses for it.
-    private static readonly (string Status, string Mark, int Announcement)[] Seals =
+    private static readonly (string Status, string Mark, int Announcement, string Announced)[] Seals =
     [
-        (SealOfRestraintId, RestraintMark, 1),
-        (SealOfProcedureId, ProcedureMark, 2),
-        (SealOfEvidenceId, EvidenceMark, 3),
+        (SealOfRestraintId, RestraintMark, 1, AnnouncedRestraintId),
+        (SealOfProcedureId, ProcedureMark, 2, AnnouncedProcedureId),
+        (SealOfEvidenceId, EvidenceMark, 3, AnnouncedEvidenceId),
     ];
 
     // ── Content ───────────────────────────────────────────────────────────────────────────────────────────
@@ -113,6 +120,13 @@ public static class WardenOfSealedVolumes
             "Held until you play two different kinds of card in one turn."),
         Marker(SealOfEvidenceId, "Seal of Evidence",
             "Held until you answer the Warden's citation."),
+
+        Marker(AnnouncedRestraintId, "Announced: the Seal of Restraint",
+            "The Warden's next sealing takes a card and holds it under Restraint."),
+        Marker(AnnouncedProcedureId, "Announced: the Seal of Procedure",
+            "The Warden's next sealing takes a card and holds it under Procedure."),
+        Marker(AnnouncedEvidenceId, "Announced: the Seal of Evidence",
+            "The Warden's next sealing takes a card and holds it under Evidence."),
 
         // The citation the Seal of Evidence hangs on. It is issued only when that Seal is set, and the sealed
         // card cannot be its target because a sealed card is not in the hand to be cited.
@@ -243,6 +257,7 @@ public static class WardenOfSealedVolumes
                 .. Seals.Select(s => ForAnnouncement(s.Announcement, s.Status, s.Mark)),
                 SetOn<CardsDrawnTriggeredEffectContext>(Self, SealDueCounter, 0),
                 SetOn<CardsDrawnTriggeredEffectContext>(Self, SealTypeCounter, 0),
+                ShowTheAnnouncement<CardsDrawnTriggeredEffectContext>(Self),
             ]));
     }
 
@@ -563,7 +578,25 @@ public static class WardenOfSealedVolumes
     }
 
     private static IEffectNode<TContext> Announce<TContext>(int announcement) where TContext : class =>
-        SetOn<TContext>(Across, SealTypeCounter, announcement);
+        new CausalSequenceEffectNode<TContext>(
+        [
+            SetOn<TContext>(Across, SealTypeCounter, announcement),
+            ShowTheAnnouncement<TContext>(Across),
+        ]);
+
+    // The counter turns in one place and its face is set in the next line, so the two cannot come apart:
+    // whichever key now stands announced wears its marker, and the other two do not. Run after every write —
+    // including the write back to nothing, which is what takes the last marker off.
+    private static IEffectNode<TContext> ShowTheAnnouncement<TContext>(ICombatantTargetSelector on)
+        where TContext : class =>
+        new CausalSequenceEffectNode<TContext>(
+        [
+            .. Seals.Select(seal => new ConditionalEffectNode<TContext>(
+                CounterIs<TContext>(on, SealTypeCounter, seal.Announcement),
+                new ApplyStatusNode<TContext>(on, new StatusDefinitionId(seal.Announced),
+                    new ConstantExpression<TContext>(1)),
+                @else: new RemoveStatusNode<TContext>(on, new StatusDefinitionId(seal.Announced)))),
+        ]);
 
     // Nothing can be sealed under a key that was never named, so a sealing called for without a standing
     // announcement names one on the way past.

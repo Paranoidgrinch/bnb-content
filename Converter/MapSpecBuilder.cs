@@ -159,7 +159,11 @@ public static class MapSpecBuilder
                 new RewardOffer("spoils",
                 [
                     new ChangeResourceRunEffect(StandardRunIds.Gold, min, max),
-                    new OfferRewardRunEffect(new RewardId($"cards:{boss.Id}"), pools.CardRewardSource(), 1),
+                    // Both nested rewards SAY what they are. A reward that does not is announced as a card,
+                    // which is how the one thing a boss is fought for — its relic — reached the player behind
+                    // the words "a card reward", twice over and under the same heading as the card.
+                    new OfferRewardRunEffect(new RewardId($"cards:{boss.Id}"), pools.CardRewardSource(), 1)
+                        { Kind = RewardKinds.Card },
                     new OfferRewardRunEffect(
                         new RewardId($"relic:{boss.Id}"),
                         new PoolRewardSource(
@@ -169,7 +173,8 @@ public static class MapSpecBuilder
                                         [new AddRelicByIdRunEffect(new RelicId(relic.Id))]), 1))
                                 .ToList()),
                             1),
-                        1),
+                        1)
+                        { Kind = RewardKinds.Relic },
                 ]),
             ]));
         }
@@ -224,11 +229,13 @@ public static class MapSpecBuilder
                 // A SPREAD, rolled per fight from the run's own RNG — the same fight does not always pay the
                 // same purse. (How much exactly is still open; the tiers are the ported difficulty bands.)
                 new ChangeResourceRunEffect(StandardRunIds.Gold, min, max),
-                new OfferRewardRunEffect(new RewardId($"cards:{role}"), pools.CardRewardSource(), 1),
+                new OfferRewardRunEffect(new RewardId($"cards:{role}"), pools.CardRewardSource(), 1)
+                    { Kind = RewardKinds.Card },
             };
             if (role is MapNodeKind.Elite or MapNodeKind.Boss or MapNodeKind.Mimic)
                 grant.Add(new OfferRewardRunEffect(new RewardId($"relic:{role}"),
-                    pools.RelicGrantSource(null, $"{role} relic reward"), 1));
+                    pools.RelicGrantSource(null, $"{role} relic reward"), 1)
+                    { Kind = RewardKinds.Relic });
 
             rewards[role] = new MapVictoryReward(new FixedRewardSource([new RewardOffer("spoils", grant)]));
         }

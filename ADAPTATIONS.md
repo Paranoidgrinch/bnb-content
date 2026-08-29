@@ -1913,3 +1913,77 @@ out of a pile by position.
 drawn card never reaches the trigger at all. The relic is three triggers — one per way a card can arrive, and
 one at the start of your turn that takes the mark off again, which is where "until your next turn" ends. Both
 arrivals share the once-a-turn latch, so exactly one card is kept however it got there.
+
+## What the player can see of a boss (2026-08-29)
+
+Three of these are presentation decisions, and one is a rule about what may stay hidden. All four came out of
+the same eyes-on pass: a boss's state is only state if it reaches the screen.
+
+**Two counters were promoted; the rest stay counters, on purpose.** Some boss state is a counter rather than a
+status, and a counter reaches no frontend: it has no name, no rules text, and no registry to look either up
+in. Rendering counters generically was rejected — "curator_dial 2" is not readable and never could be — so the
+player-facing ones become marker statuses in content and the frontend stays content-agnostic.
+
+Two qualified, and both by the same test: **the player is asked to act on a number the game never showed
+them.**
+
+- **The Curator's dial** (`curator_dial`, 0 PRESENT / 1 FUTURE / 2 PAST). Its own marker's text says "its dial
+  shows which hour it is working in", and it showed nothing. The dial is what the five telegraphed intent
+  names MEAN — the same slot hits, files or reaches back depending on where it stands — so the telegraph
+  without the dial is a name with no sense in it. It now wears one of three faces (`curator_dial_present` /
+  `_future` / `_past`); the counter stays the arithmetic, `ShowTheDial()` runs in the same breath as
+  `TurnTheDial()`, and the fight starts wearing the PRESENT face because the dial has not turned yet.
+- **The Warden's announced key** (`warden_seal_type`, 1 Restraint / 2 Procedure / 3 Evidence). The
+  announcement and the sealing are deliberately a turn apart: "Inspect the Claim" names the key, and the seal
+  falls at the player's next draw. That turn in between is the one the design gives the player to plan in, and
+  it was spent against a number nobody could see. Three markers now stand on the PLAYER (that is whose hand is
+  reached into), applied and cleared wherever the counter is written.
+
+Everything else stays a counter, and the rule is: **a counter may stay invisible when what it holds is already
+on the screen, or when showing it would be a promise the fight does not keep.** By family:
+
+- **Spent latches** (`*_spent`, `*_used`, `*_this_turn`, `*_due`, `catalogue_entry_used`). They only stop a
+  thing happening twice. Either it has happened, and its effect is visible, or it has not.
+- **Records of the player's own turn** (`curator_activity` / `_opening` / `_compliance` / `_force`,
+  `catalogue_record_*`, `warden_played_*`, `seen_*`). They restate a turn the player just took. Where a boss
+  ACTS on such a record, the acting is a status: the Catalogue's "Established Tempo — Busy" and its siblings
+  are exactly the record made readable at the moment it starts to matter.
+- **Scalars two rules must agree on** (`real_cards_dealt` — Act III's hand budget — `notary_ring`,
+  `liability_*`). The hand budget is the clearest case: it exists because a turn's end puts the hand away
+  before a rule about the turn's end can read it, and what it holds is *the hand the player is looking at*.
+- **Rotations whose result is already telegraphed** (`warden_seal_rotation`, `gcr_rotation`). Which slot comes
+  next is answered by the intent shown.
+- **The Whispering Catalogue's beat** (`catalogue_beat`) is the one judged case, and it fails on the second
+  half of the rule rather than the first. The beat picks which family the next prediction is read from — but
+  it is bumped at the player's own turn end and again whenever the Catalogue reclassifies, so the value
+  standing during the player's turn is never the one the Catalogue will read. A face on it would be off by one
+  from the only question it could answer, and the prediction it produces arrives as a status the player reads
+  and answers anyway.
+
+**The phase is drawn on the intent, not filed after it.** Every phased boss rotates ONE intent list, so a slot
+keeps its Phase-I name for the whole fight: the Warden still telegraphs "Inspect the Claim" while that slot
+means the Phase-II thing now. That reads as a wrong label — and the one thing that makes it read as the boss
+changing instead is the phase marker, which was one chip among a dozen, filed after the stacks and the
+countdowns. The phase markers of all fifteen bosses (the phase a boss is IN and the telegraph that it is about
+to change) are now tagged `phase` in the presentation manifest — `Converter/BossPhases.cs` — and the frontend
+draws a tagged status as a banner directly above the intent instead of as a chip. Presentation is
+engine-ignored, so this changes no rule; it decides where a true thing is written. The Curator's three dial
+faces ride along, because the dial is read at the same moment and answers the same question about the same
+line.
+
+**A boss's relic arrives as a relic.** Its spoils are one bundle that opens two further picks, and both of
+them read "a card reward", because the engine described any reward-that-opens-a-reward as a card. So a boss
+announced its relic as a card, twice, under one heading — and the relic then arrived on a screen titled
+"Your reward", exactly like the card pick before it. A reward that opens another one cannot know what is
+inside (its source has not been generated yet, and generating it early would roll the run's dice), so the
+offer now DECLARES its kind: `RewardKinds.Card` / `RewardKinds.Relic` on the nested offers, the engine
+describing them from that, and the chooser asking under `reward-<kind>` so a frontend can title the screen
+after what is actually being handed over. An offer that declares nothing keeps the plain word "reward".
+
+**Five bodies fit on the screen.** The widest fights in the game are four enemies and the hero — the Grand
+Cross-Reference (three volumes and the boss) and Act III's Ant Queen — and nothing had ever looked at one. The
+enemy row was a fixed HBox of 200-wide columns, and a fixed row does not shrink: five columns and their gaps
+simply walk off the right edge, taking a boss's health bar and intent with them. It is an `HFlowContainer`
+now, so a crowd wraps to a second line; a one- or two-body fight is unchanged (one line, right-aligned).
+`godot -- --smoke-crowd` walks to the widest fight it can reach, measures the row against the screen and says
+whether anything is off it.
