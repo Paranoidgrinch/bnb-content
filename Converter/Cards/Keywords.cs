@@ -551,10 +551,10 @@ public static class Keywords
     // acted; the accelerated loss therefore happens once per enemy turn however many hits landed.
     private static StatusData WardWaxStatus()
     {
+        // The wax paying for the enemy turn is a fade like any other, so it asks Act IV's one fading point:
+        // a preserved bearer spends an Embalmed instead and keeps the wax.
         IEffectNode<TContext> Decay<TContext>(int amount) where TContext : class =>
-            new ModifyStatusStacksNode<TContext>(
-                CombatantTargetSelectors.IterationTarget, new StatusDefinitionId(WardWax),
-                new ConstantExpression<TContext>(-amount));
+            ActFour.Fade<TContext>(CombatantTargetSelectors.IterationTarget, WardWax, amount);
 
         var struck = new CombatantCounterExpression<RoundEndedTriggeredEffectContext>(
             CombatantTargetSelectors.IterationTarget, StruckThisRoundCounter);

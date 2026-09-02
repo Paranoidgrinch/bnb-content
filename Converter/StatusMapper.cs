@@ -44,16 +44,18 @@ public static class StatusMapper
                 "At the start of its turn, this character draws 1 fewer card per stack. One stack fades each turn.",
                 passives: [new PassiveModifierData(PassiveModifierPipeline.TurnStartDraw,
                     PassiveModifierOperation.AddPerStack, -1, RestrictDamageKind: null)],
-                triggers: [TurnEnded(ConsumeOneStack("panic"))]),
+                triggers: [TurnEnded(Fades("panic"))]),
 
             Status(byId["fatigue"], StatusPolarity.Debuff,
                 "At the start of its turn, this character loses 1 Energy. One stack fades each turn.",
-                triggers: [Trigger("TurnStarted", CombatProgramModel.Build<TurnStartedTriggeredEffectContext>(
-                    CombatNodeModel.Sequence(
+                triggers: [Trigger("TurnStarted", new EffectProgram<TurnStartedTriggeredEffectContext>(
+                    new CausalSequenceEffectNode<TurnStartedTriggeredEffectContext>(
                     [
-                        new CombatNodeModel("loseResource", "source", CombatAmountSpec.FromConst(1),
-                            StandardCombatIds.EnergyResource.value),
-                        ConsumeOneStackModel("fatigue"),
+                        new LoseResourceNode<TurnStartedTriggeredEffectContext>(
+                            CombatantTargetSelectors.Source, StandardCombatIds.EnergyResource,
+                            new ConstantExpression<TurnStartedTriggeredEffectContext>(1)),
+                        ActFour.Fade<TurnStartedTriggeredEffectContext>(
+                            CombatantTargetSelectors.Source, "fatigue"),
                     ])))]),
 
             Status(byId["strength"], StatusPolarity.Buff,
@@ -65,7 +67,7 @@ public static class StatusMapper
                 "At the start of its turn, this character loses HP equal to its Poison, ignoring Block. "
                 + "Then one stack fades.",
                 tags: [StandardCombatIds.DamageOverTimeTag.value],
-                triggers: [TurnEnded(ConsumeOneStack("poison"))]),
+                triggers: [TurnEnded(Fades("poison"))]),
 
             Status(byId["bookworm"], StatusPolarity.Buff,
                 "Just before this character's Paperwork resolves, that much Paperwork is eaten instead — one "
@@ -137,13 +139,13 @@ public static class StatusMapper
             Triggers = triggers ?? [],
         };
 
-    private static CombatNodeModel ConsumeOneStackModel(string statusId) =>
-        new("modifyStatusStacks", "source", CombatAmountSpec.FromConst(-1), StatusId: statusId);
-
     // Status triggers store their program as context-free CombatJson; any context type serializes the
     // same document, so everything builds under the turn-ended context for uniformity.
-    private static EffectProgram<TurnEndedTriggeredEffectContext> ConsumeOneStack(string statusId) =>
-        CombatProgramModel.Build<TurnEndedTriggeredEffectContext>(ConsumeOneStackModel(statusId));
+    //
+    // A stack fading is written through Act IV's one fading point, so that a preserved bearer keeps it: an
+    // Embalmed character sheds nothing of its own accord, whichever status was about to shrink.
+    private static EffectProgram<TurnEndedTriggeredEffectContext> Fades(string statusId) =>
+        new(ActFour.Fade<TurnEndedTriggeredEffectContext>(CombatantTargetSelectors.Source, statusId));
 
     private static StatusTriggerData TurnEnded(EffectProgram<TurnEndedTriggeredEffectContext> program) =>
         Trigger("TurnEnded", program);

@@ -156,12 +156,12 @@ primitives, it is a capability test, not a feature).
 
 | # | Capability | Status as far as the audit could tell |
 |---|---|---|
-| 1 | **How much Energy the player has spent this turn**, readable by a condition at end of turn | Core has no `EnergySpent`. The spine of the act — recommendation: an engine seam (per-turn resource spend recorded on the combatant), not a content counter, so every Weighed reader asks in one place |
-| 2 | **A cost tax that is consumed by being paid** — Burdened raises a card's paid cost and loses a stack when such a card is played, and the payment is an observable event | Cost modifiers exist (incl. tag-restricted ones, bought for the relics); "the modifier is spent by the play, and announces it" is the new part |
-| 3 | **A status that amplifies the next status application on its bearer and is consumed** — either polarity | Statuses can prevent an application (Censure's prohibition) and can be marked; amplifying an application's magnitude from the receiving side is unproven |
+| 1 | **How much Energy the player has spent this turn**, readable by a condition at end of turn | ✅ **BOUGHT (IV-0)** — `CombatantCardPlayTurnStats.ResourceSpentThisTurn`, fed from the cost-payment event, read by the `resourceSpentThisTurn` expression. The exact twin of `resourceGainedThisTurn`; counts what was ACTUALLY paid |
+| 2 | **A cost tax that is consumed by being paid** | ✅ **COMPOSES (IV-0)** — a flat `CardCost` passive modifier plus a `CardCostPaid` trigger that works a stack off and counts the payment (`burden_paid`). The one engine touch: `event` now means "what the play cost" under that trigger, where it used to mean 0 |
+| 3 | **A status that amplifies the next status application on its bearer and is consumed** — either polarity | ✅ **BOUGHT (IV-0)** — `StatusAmplificationSpec` + `DeclarativeStatusAmplificationInterceptor`, the mirror of `StatusPreventionSpec`: runs after prevention, never enlarges itself, one enlargement per application (`ApplyStatusEffectRequest.Amplified`), and announces polarity + size for IV-13 |
 | 4 | **`Replicated` applications** (§3.3/§3.4): an application carries a mark saying it was copied, and a replicated application can never trigger another replication | Statuses are applied without such a mark today |
-| 5 | **Stun at a threshold, then reset** (Entombed 5) | Stun exists (`StandardCombatIds.StunStatus` + `StunCardPlayValidator`); the threshold-and-reset is content |
-| 6 | **Decay prevention on a bearer, both polarities** (Embalmed) | Prohibition and passive modifiers exist; whether "this status does not tick down" is expressible without a seam is IV-0's check |
+| 5 | **Stun at a threshold, then reset** (Entombed 5) | ✅ **COMPOSES (IV-0)** — read at the bearer's turn start; Stun for one turn, five spent. ⚠ but the validator was inert on the path the game is played on; fixed in Core, see IV-0's record |
+| 6 | **Decay prevention on a bearer, both polarities** (Embalmed) | ✅ **COMPOSES (IV-0)** — almost nothing in this game decays by DURATION; fading is authored (Panic, Poison, Fatigue, Ward Wax), so preservation is written at the one fading point, `ActFour.Fade`, which all four now go through |
 
 Everything else in the audit — Primary Measure, observed results, one office per turn, Royal Favor — is
 content, not engine.
@@ -180,7 +180,7 @@ each signature in a live fight (`FightProbe`) with one test file per stage. HP a
 the **balance appendix** §ACT IV, stage by stage; where the master says "balance-tunable", the appendix band
 decides and the choice is written into `ADAPTATIONS.md`.
 
-- [ ] **IV-0 — the vocabulary + Stage 1 (Boundary Stelae).** All five ratified keywords, in
+- [x] **IV-0 — the vocabulary + Stage 1 (Boundary Stelae). DONE 2026-09-02.** All five ratified keywords, in
       `Converter/ActFour.cs`, each with a live test of its own rule (Weighed's exact-spend comparison and its
       error distance, Burdened's tax **and its consumption by payment**, Inscribed amplifying the next
       application in **both** polarities, Entombed's stun at 5 and its reset, Embalmed holding a value that
@@ -188,6 +188,25 @@ decides and the choice is written into `ADAPTATIONS.md`.
       lesson: `ActThree.Violate` was worth the day it cost); `ActRules.For(4)` minimally walkable;
       `BabLoader` loads `acts/act_4_licensing_labyrinth.json`. Identities: Reed-Cord Surveyor, Crooked Rod
       Bearer. Encounters 1–3, incl. the audit's §3.1 Primary Measure rule (E3 is its first reader).
+      ▸ **What landed:** all five keywords in `Converter/ActFour.cs` with a live test each
+      (`Tests/ActFourStelaeTests.cs`, 12 tests); Stage 1's two identities + 3 encounters
+      (`Converter/ActFourStelae.cs`, `source-data/{enemies,encounters}/act_4_licensing_labyrinth*.json` — the
+      ported v2 demo pool is REPLACED, as Acts II/III replaced theirs); `BabLoader` loads Act IV's enemies and
+      encounters. Seam list settled: rows 1 and 3 were bought in Core (`resourceSpentThisTurn` on
+      `CardPlayTurnStats`; `StatusAmplificationSpec` + `DeclarativeStatusAmplificationInterceptor` +
+      `StatusApplicationAmplified` trigger + `Amplified` mark on the request), rows 2/5/6 compose and are
+      capability tests only, row 4 (`Replicated`) is untouched and still belongs to IV-7. Design choices in
+      `ADAPTATIONS.md` §"Act IV — the five words".
+      ▸ **Deliberate deviation:** `ActRules.For(4)` still throws and the act-4 MANIFEST is still not in
+      `BabLoader.Acts`. An act in `Acts` is an act the run walks, and `MapSpecBuilder` requires it to field a
+      boss — which Act IV has none of until IV-16…IV-19. The act therefore joins the walked run at **IV-24**,
+      which is where the plan already puts it. Loading its bodies and fights (done) is what a probe needs.
+      ▸ **A finding that outlived the step:** card-play validators (Stun, one-attack-per-turn, unplayable)
+      were consulted only on `CombatCardPlayProcessor`'s strict path — never on `PlayCardEffectRequest`, which
+      is the path the host, the playtest walker and Godot all use. A stunned player could play their whole
+      hand. Fixed in Core (`PlayCardEffects.cs` asks the validators and no-ops on refusal;
+      `tests/.../PlayCardEffectValidatorTests.cs`). Nothing in Acts I–III used stun, so nothing had asked.
+
 - [ ] **IV-1 — Stage 2, the Gate of Counted Names.** Uncounted Pilgrim, Cobra of the Entry Mark,
       Name-Eating Baboon. Encounters 4–7. First readers of **Inscribed** — the Pilgrim reads it as a mere
       state (`Inscribed > 0`), while the stage must also show its amplifying half, or the player never learns
@@ -357,6 +376,7 @@ force — these fights are "almost a separate game mode"); each god enters `Boss
 ## Status
 
 - [x] ★ the five-keyword decision — **ratified 2026-08-29**, written up above as canon
-- [ ] IV-0 … IV-11 standards · IV-12 … IV-15 elites · IV-16 … IV-19 bosses · IV-20 … IV-21 cards+relics ·
+- [x] **IV-0 — vocabulary + Stage 1 — DONE 2026-09-02** (Core seams 1 + 3 bought; 2/5/6 compose; 4 open for IV-7)
+- [ ] IV-1 … IV-11 standards · IV-12 … IV-15 elites · IV-16 … IV-19 bosses · IV-20 … IV-21 cards+relics ·
       IV-22 … IV-23 events · IV-24 the act
 - [ ] V-0 structure · V-1 … V-6 the six gods · V-7 the whole game

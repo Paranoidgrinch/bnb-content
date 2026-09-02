@@ -49,6 +49,8 @@ public static class RawIntentPrograms
             // Act III: every pressure intent files its Trespass through the act's one filing point, so the
             // Contrary Magpie can contest an intent's violation the same way it contests a Local Law's.
             _ when ActThree.Intent(enemyId, intentId) is { } greenDocket => greenDocket,
+            // Act IV: the measure is raised, and its result answered, through the act's own vocabulary.
+            _ when ActFour.Intent(enemyId, intentId) is { } labyrinth => labyrinth,
             _ => enemyId switch
             {
                 "deputy_undersecretary" => DeputyUndersecretary.Intent(intentId),
