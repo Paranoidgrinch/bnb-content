@@ -325,6 +325,12 @@ public static partial class ActFour
         SiltedRecordRule(),
         Flood(),
         RisingFlood(),
+        // Stage 5 — the Tribute Causeway
+        AdministrativeCostOfTribute(),
+        Tally(),
+        ThirdTally(),
+        PresentedInFull(),
+        NothingWasPresented(),
     ];
 
     // The standard roster, stage by stage.
@@ -338,6 +344,8 @@ public static partial class ActFour
         "crocodile_of_the_short_measure", "jar_seal_scarab_swarm", "hungry_grain_thief",
         // Stage 4 — the Floodmark Basins
         "flood_mark_reader", "drowned_field_scribe", "silt_buried_farmer_shade",
+        // Stage 5 — the Tribute Causeway
+        "foreign_tribute_shade", "donkey_of_the_third_tally", "empty_handed_envoy",
     };
 
     // ── shared idioms ─────────────────────────────────────────────────────────────────────────────────────
@@ -361,6 +369,22 @@ public static partial class ActFour
         new SubtractExpression<TContext>(
             new CombatantCounterExpression<TContext>(Applicant, tally),
             new CombatantCounterExpression<TContext>(body, bookmark));
+
+    // The same idiom over RESOLUTIONS rather than over one of the two tallies: a body that answers every
+    // measure that resolves, met or missed, reads both and keeps one bookmark in their sum.
+    public static ICombatExpression<TContext, int> ResolutionsSinceLastLooked<TContext>(
+        ICombatantTargetSelector body, CounterId bookmark) where TContext : class =>
+        new SubtractExpression<TContext>(Resolutions<TContext>(),
+            new CombatantCounterExpression<TContext>(body, bookmark));
+
+    public static IEffectNode<TContext> MoveTheResolutionBookmark<TContext>(
+        ICombatantTargetSelector body, CounterId bookmark) where TContext : class =>
+        new SetCombatantCounterNode<TContext>(body, bookmark, Resolutions<TContext>(), relative: false);
+
+    private static ICombatExpression<TContext, int> Resolutions<TContext>() where TContext : class =>
+        new AddExpression<TContext>(
+            new CombatantCounterExpression<TContext>(Applicant, MeasuresMet),
+            new CombatantCounterExpression<TContext>(Applicant, MeasuresFailed));
 
     public static IEffectNode<TContext> MoveTheBookmark<TContext>(
         ICombatantTargetSelector body, CounterId tally, CounterId bookmark) where TContext : class =>

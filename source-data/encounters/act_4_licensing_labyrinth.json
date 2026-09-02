@@ -243,5 +243,54 @@
       "entombed"
     ],
     "role": "multi_combat"
+  },
+  {
+    "id": "labyrinth_causeway_01",
+    "name": "Correct Tribute, Wrong Procedure",
+    "act": 4,
+    "difficulty": "normal",
+    "enemies": [
+      "foreign_tribute_shade"
+    ],
+    "weight": 2,
+    "tags": [
+      "licensing_labyrinth",
+      "stage_causeway",
+      "weighed"
+    ],
+    "role": "combat"
+  },
+  {
+    "id": "labyrinth_causeway_02",
+    "name": "The Donkey Was Counted Three Times",
+    "act": 4,
+    "difficulty": "normal",
+    "enemies": [
+      "donkey_of_the_third_tally"
+    ],
+    "weight": 2,
+    "tags": [
+      "licensing_labyrinth",
+      "stage_causeway",
+      "tally"
+    ],
+    "role": "combat"
+  },
+  {
+    "id": "labyrinth_causeway_duo_01",
+    "name": "Nothing Was Presented, Yet the Fee Remains",
+    "act": 4,
+    "difficulty": "hard",
+    "enemies": [
+      "foreign_tribute_shade",
+      "empty_handed_envoy"
+    ],
+    "weight": 1,
+    "tags": [
+      "licensing_labyrinth",
+      "stage_causeway",
+      "empty_hand"
+    ],
+    "role": "multi_combat"
   }
 ]

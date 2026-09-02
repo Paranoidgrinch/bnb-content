@@ -238,8 +238,16 @@ decides and the choice is written into `ADAPTATIONS.md`.
       / `MoveTheBookmark`, the idiom the Hungry Grain Thief already ate by). The Stage-2 watcher is now the
       shared `ActFour.FollowTheApplicant`, carrying both lessons it paid for (watch the EXPIRY; settle at the
       TURN start), and the Drowned Field Scribe is its second user.
-- [ ] **IV-4 — Stage 5, the Tribute Causeway.** Foreign Tribute Shade, Donkey of the Third Tally,
-      Empty-Handed Envoy. Encounters 16–18.
+- [x] **IV-4 — Stage 5, the Tribute Causeway. DONE 2026-09-02.** Foreign Tribute Shade, Donkey of the Third
+      Tally, Empty-Handed Envoy. Encounters 16–18.
+      ▸ **What landed:** `Converter/ActFourCauseway.cs` + 8 live tests (`Tests/ActFourCausewayTests.cs`).
+      Nothing new from the engine. The Shade charges a sheet for the first measure MET each round
+      (`measures_met`, ready since IV-3); the Donkey counts RESOLUTIONS through one bookmark in their sum
+      (`ResolutionsSinceLastLooked`) and its third entry weighs 2, or 1 if that third measure was met. ★ The
+      Envoy needed the player's HAND counted while it still exists — a turn-end rule cannot see it — so the
+      count is taken on `CardsDrawn` and on `ActionResolved` (not CardPlayed: the card is still in hand while
+      its own play resolves) and **only when the player is the actor**, since an enemy acts after the hand is
+      discarded.
 - [ ] **IV-5 — Stage 6, the Corvée Yards.** Rope-Gang Wraith, Runaway Laborer, Stone-Hauler Ushabti.
       Encounters 19–21. First **Burdened** pressure block — the stage where the tax and the measure collide
       on purpose: paying the tax changes what the turn's actual expenditure comes to.
@@ -403,6 +411,7 @@ force — these fights are "almost a separate game mode"); each god enters `Boss
 - [x] **IV-1 — Stage 2, the Gate of Counted Names — DONE 2026-09-02** (5 identities / 7 encounters so far)
 - [x] **IV-2 — Stage 3, the Granary Courts — DONE 2026-09-02** (8 identities / 11 encounters so far)
 - [x] **IV-3 — Stage 4, the Floodmark Basins — DONE 2026-09-02** (11 identities / 15 encounters so far)
-- [ ] IV-4 … IV-11 standards · IV-12 … IV-15 elites · IV-16 … IV-19 bosses · IV-20 … IV-21 cards+relics ·
+- [x] **IV-4 — Stage 5, the Tribute Causeway — DONE 2026-09-02** (14 identities / 18 encounters so far)
+- [ ] IV-5 … IV-11 standards · IV-12 … IV-15 elites · IV-16 … IV-19 bosses · IV-20 … IV-21 cards+relics ·
       IV-22 … IV-23 events · IV-24 the act
 - [ ] V-0 structure · V-1 … V-6 the six gods · V-7 the whole game

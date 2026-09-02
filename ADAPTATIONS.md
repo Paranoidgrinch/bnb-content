@@ -2245,3 +2245,48 @@ the Flood is 3 marks.
 
 **A consequence worth knowing:** the burial spends the Entombed that caused it, so the Scribe's ink thins in
 the same breath as the player loses the turn. Being buried is the moment the silt drains.
+
+## Act IV, Stage 5 — the Tribute Causeway (2026-09-02)
+
+Stage 4 asked what a missed measure costs. This one asks what a MET one costs, and the answer is the act's
+whole joke: "The tribute was correct. Processing was not included." **Nothing new from the engine again** —
+the third content-only stage in a row.
+
+**Two acts may share a word without sharing a rule.** Act III's Court already owns a status called `tally`
+(the Keeper of Buried Names'), so the Donkey's resource is `donkey_tally` with the same display name. The
+converter fails loudly on a duplicate status id, which is how this was caught — the id space is one, the
+vocabulary is per act.
+
+**The Donkey counts RESOLUTIONS, not failures.** "It was entered three times" — met or missed, an entry is an
+entry, which is why it reads both tallies through one bookmark (`ActFour.ResolutionsSinceLastLooked`). What
+being right changes is what the third entry weighs: 1 Burdened instead of 2, read off `measure_result` (1 is
+exact). Being counted correctly is still being counted.
+
+**The player's hand had to be counted while it still existed.** The Empty-Handed Envoy reads "the player
+ended the turn with nothing left in hand", and a rule at turn end cannot see the hand: the engine discards it
+before turn-end triggers run (the house rule from Act III). So the count is taken AS THE TURN HAPPENS — on
+`CardsDrawn`, and on `ActionResolved` after each action the player finishes — and written to a counter the
+Envoy reads afterwards.
+
+Two things in that are load-bearing, and both were paid for:
+- **ActionResolved, not CardPlayed.** A card is still in the hand while its own play resolves, so a
+  CardPlayed recount is one too high. ActionResolved closes after the card has been placed.
+- **Only when the PLAYER is the actor.** ActionResolved fires for enemies too, and an enemy acts during the
+  enemy turn — by which time the player's hand has been discarded. Without that gate every turn read as
+  empty-handed, which is exactly what the first run of the tests reported.
+
+**The Envoy's "defensive layer" is an exposure that lasts the player's turn.** The appendix says a successful
+empty-hand measure "removes 14–18 Block / defensive layer"; stripping Block at the Envoy's own turn start
+would take nothing, because a combatant's Block is cleared at its own turn start anyway. So it is a visible
+debuff instead — `Presented in Full`, +50 % damage taken — applied when the Envoy reads the measure and
+removed at its next turn start, which is precisely the window the player can use it in.
+
+**Stage 5 numbers, where the appendix gave bands:** Foreign Tribute Shade 115 HP (108–122), Donkey of the
+Third Tally 119 (112–126), Empty-Handed Envoy 102 (96–108); Assess Tribute 13 damage + a measure of 2,
+Foreign Levy 19, Seal Receipt 20 Block; Tally Kick 14, Load Register 11 + 1 Burdened, Brace the Load 20 Block;
+Diplomatic Rebuke 15, Empty Palm 19 Block. The Shade files 1 Paperwork per round in which a measure was met;
+the third entry weighs 2 Burdened, or 1 if that third measure was met.
+
+**The Envoy is never fielded alone**, as the master requires ("intentionally combination-first"): it
+interprets somebody else's measure, so it appears only in Encounter 18 beside the Shade — and it has two
+intents rather than three, because it has no measure of its own to raise.

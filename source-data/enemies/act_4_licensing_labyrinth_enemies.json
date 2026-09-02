@@ -714,5 +714,179 @@
       "entombed",
       "clock"
     ]
+  },
+  {
+    "id": "foreign_tribute_shade",
+    "name": "Foreign Tribute Shade",
+    "max_hp": 115,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "assess_tribute",
+        "name": "Assess Tribute",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 13
+          }
+        ]
+      },
+      {
+        "id": "foreign_levy",
+        "name": "Foreign Levy",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 19
+          }
+        ]
+      },
+      {
+        "id": "seal_receipt",
+        "name": "Seal Receipt",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 20
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "labyrinth_body"
+      },
+      {
+        "status": "administrative_cost_of_tribute"
+      }
+    ],
+    "tags": [
+      "licensing_labyrinth",
+      "normal",
+      "stage_causeway",
+      "weighed",
+      "paperwork",
+      "tribute"
+    ]
+  },
+  {
+    "id": "donkey_of_the_third_tally",
+    "name": "Donkey of the Third Tally",
+    "max_hp": 119,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "tally_kick",
+        "name": "Tally Kick",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 14
+          }
+        ]
+      },
+      {
+        "id": "load_register",
+        "name": "Load Register",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 11
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "burdened",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "brace_the_load",
+        "name": "Brace the Load",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 20
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "labyrinth_body"
+      },
+      {
+        "status": "third_tally"
+      }
+    ],
+    "tags": [
+      "licensing_labyrinth",
+      "normal",
+      "stage_causeway",
+      "weighed",
+      "burdened",
+      "donkey"
+    ]
+  },
+  {
+    "id": "empty_handed_envoy",
+    "name": "Empty-Handed Envoy",
+    "max_hp": 102,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "diplomatic_rebuke",
+        "name": "Diplomatic Rebuke",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 15
+          }
+        ]
+      },
+      {
+        "id": "empty_palm",
+        "name": "Empty Palm",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 19
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "labyrinth_body"
+      },
+      {
+        "status": "nothing_was_presented"
+      }
+    ],
+    "tags": [
+      "licensing_labyrinth",
+      "normal",
+      "stage_causeway",
+      "weighed",
+      "support",
+      "envoy"
+    ]
   }
 ]
