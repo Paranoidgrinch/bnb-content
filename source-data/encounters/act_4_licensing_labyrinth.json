@@ -540,5 +540,120 @@
       "replicated"
     ],
     "role": "multi_combat"
+  },
+  {
+    "id": "labyrinth_linen_01",
+    "name": "Dry What Would Decay",
+    "act": 4,
+    "difficulty": "normal",
+    "enemies": [
+      "natron_bearer"
+    ],
+    "weight": 2,
+    "tags": [
+      "licensing_labyrinth",
+      "stage_linen",
+      "embalmed"
+    ],
+    "role": "combat"
+  },
+  {
+    "id": "labyrinth_linen_02",
+    "name": "Instructions for Wrapping",
+    "act": 4,
+    "difficulty": "normal",
+    "enemies": [
+      "linen_wrapped_embalmer"
+    ],
+    "weight": 2,
+    "tags": [
+      "licensing_labyrinth",
+      "stage_linen",
+      "embalmed"
+    ],
+    "role": "combat"
+  },
+  {
+    "id": "labyrinth_linen_03",
+    "name": "Hooks Still Attached",
+    "act": 4,
+    "difficulty": "normal",
+    "enemies": [
+      "unfinished_mummy"
+    ],
+    "weight": 2,
+    "tags": [
+      "licensing_labyrinth",
+      "stage_linen",
+      "entombed"
+    ],
+    "role": "combat"
+  },
+  {
+    "id": "labyrinth_linen_duo_01",
+    "name": "The Body Is Not Yet Finished",
+    "act": 4,
+    "difficulty": "hard",
+    "enemies": [
+      "linen_wrapped_embalmer",
+      "unfinished_mummy"
+    ],
+    "weight": 1,
+    "tags": [
+      "licensing_labyrinth",
+      "stage_linen",
+      "chain"
+    ],
+    "role": "multi_combat"
+  },
+  {
+    "id": "labyrinth_vaults_01",
+    "name": "The Fourfold Office",
+    "act": 4,
+    "difficulty": "normal",
+    "enemies": [
+      "fourfold_vessel_guardian"
+    ],
+    "weight": 2,
+    "tags": [
+      "licensing_labyrinth",
+      "stage_vaults",
+      "rotation"
+    ],
+    "role": "combat"
+  },
+  {
+    "id": "labyrinth_vaults_duo_01",
+    "name": "Wrapped Before Division",
+    "act": 4,
+    "difficulty": "hard",
+    "enemies": [
+      "fourfold_vessel_guardian",
+      "unfinished_mummy"
+    ],
+    "weight": 1,
+    "tags": [
+      "licensing_labyrinth",
+      "stage_vaults",
+      "embalmed"
+    ],
+    "role": "multi_combat"
+  },
+  {
+    "id": "labyrinth_vaults_duo_02",
+    "name": "Vessel of the Name",
+    "act": 4,
+    "difficulty": "hard",
+    "enemies": [
+      "fourfold_vessel_guardian",
+      "linen_wrapped_embalmer"
+    ],
+    "weight": 1,
+    "tags": [
+      "licensing_labyrinth",
+      "stage_vaults",
+      "inscribed"
+    ],
+    "role": "multi_combat"
   }
 ]
