@@ -110,5 +110,213 @@
       "weighed",
       "rod"
     ]
+  },
+  {
+    "id": "uncounted_pilgrim",
+    "name": "Uncounted Pilgrim",
+    "max_hp": 92,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "petition_entry",
+        "name": "Petition Entry",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 11
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "inscribed",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "uncounted_blow",
+        "name": "Uncounted Blow",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 15
+          }
+        ]
+      },
+      {
+        "id": "unregistered_shelter",
+        "name": "Unregistered Shelter",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 18
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "labyrinth_body"
+      },
+      {
+        "status": "no_number_in_the_register"
+      },
+      {
+        "status": "uncounted"
+      }
+    ],
+    "tags": [
+      "licensing_labyrinth",
+      "normal",
+      "stage_gate",
+      "inscribed",
+      "pilgrim"
+    ]
+  },
+  {
+    "id": "cobra_of_the_entry_mark",
+    "name": "Cobra of the Entry Mark",
+    "max_hp": 94,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "entry_mark",
+        "name": "Entry Mark",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 10
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "inscribed",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "entry_venom",
+        "name": "Entry Venom",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 13
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "poison",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "coiled_seal",
+        "name": "Coiled Seal",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 17
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "labyrinth_body"
+      }
+    ],
+    "tags": [
+      "licensing_labyrinth",
+      "normal",
+      "stage_gate",
+      "inscribed",
+      "cobra"
+    ]
+  },
+  {
+    "id": "name_eating_baboon",
+    "name": "Name-Eating Baboon",
+    "max_hp": 90,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "steal_the_name",
+        "name": "Steal the Name",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 9
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "inscribed",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "false_credential",
+        "name": "False Credential",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 12
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "doubt",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "scramble_the_gate",
+        "name": "Scramble the Gate",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 18
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "labyrinth_body"
+      },
+      {
+        "status": "chewed_credentials"
+      }
+    ],
+    "tags": [
+      "licensing_labyrinth",
+      "normal",
+      "stage_gate",
+      "inscribed",
+      "support",
+      "baboon"
+    ]
   }
 ]

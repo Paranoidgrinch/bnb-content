@@ -2093,3 +2093,64 @@ play through `PlayCardEffectRequest`, which never asked them, and the message th
 asks the same validators and no-ops on refusal, so the card stays in hand, nothing is paid and the session
 stands. Nothing in Acts I–III used stun, which is why no test had ever asked. **A rule that is only enforced
 on the road the game is not played on is not enforced.**
+
+## Act IV, Stage 2 — the Gate of Counted Names (2026-09-02)
+
+The stage's job is that the player cannot learn only half of Inscribed, so its three bodies read the register
+three different ways — as a state, as the amplifier, and as something to steal from.
+
+**The Cobra of the Entry Mark has no code at all.** It marks the player, and then the register makes its venom
+land larger by itself. Its whole authored existence is three JSON intents. That is the vocabulary working as
+designed, and it is the reason the amplification was bought as an engine seam rather than written into each
+body that wants it.
+
+**"The modification is telegraphed before resolution" is the register's own status text.** The master asks the
+Cobra to announce that the next application will be stronger. There is no per-intent telegraph for it: an
+intent's telegraph is generated from its authored JSON actions, so a program that changed the number would
+make the telegraph lie. What the player sees instead is Inscribed on their own bar, whose description states
+the rule exactly ("the next status applied to you lands with 1 more stack"), plus the incoming intent's plain
+"1 Poison". Both facts are on screen before the enemy acts, which is what telegraphing is for.
+
+**The Pilgrim's defensive benefit is a passive on a visible marker, not a conditional inside its intents.**
+The appendix ties the benefit to the shelter intent ("16–20 Block while Uncounted"); a shelter that blocks 18
+while telegraphing 18 in one state and 0 in the other would be a lying telegraph, and the state the player is
+being asked to change would be invisible. So `Uncounted` is a status the player can see, worth 30 % less
+attack damage taken, and the shelter blocks what it says it blocks in both states.
+
+**The count watches five events, and the important one is EXPIRY.** A status losing its LAST stack is reported
+as an expiry, not as a stack change or a removal — and running out is the commonest way a player leaves the
+register, because the last stack goes by being spent on an amplification. A count that watched only
+applied/merged/changed/removed showed the Pilgrim as Counted for the rest of the fight. It also recounts at
+every turn start from nothing at all, which is what settles the state for a player who walks in already
+inscribed: no status event ever fires for that, and a **fight's first round starts before its bodies are
+dressed**, so a round-start hook fires for nobody. **Merke: a rule nobody wears yet does not fire.**
+
+**Stolen Name is spent the moment the second name is stolen.** The master says maximum 2, and at 2 the next
+negative application gets +1. Rather than keep a full jar and enlarge later, the Baboon puts the forgery on
+the player's file at once — so the player sees what is coming and can act on it — and the names reset. A
+consequence worth knowing: the Stolen Name status never displays 2.
+
+**The forgery is an amplification of the Baboon's own**, scoped to debuffs. That is what makes "+1 stack to
+the next negative application" expressible at all, and it is also why the loop guard the master demands
+(§3.4: a copy may never start another copy chain) is answerable: the amplification event names WHICH status
+paid, so a magnification the forgery caused is visibly not the register working. Two small engine reads were
+bought for it, both general: `eventStatusPolarityIs` ("was the thing that just happened a debuff?" — the
+Royal Genealogy Wall at Stage 15 needs the same question with Buff) and `eventAmplifierIs` ("what paid for
+this enlargement?"). Encounter triggers can now also hear amplification, prevention and resolved actions,
+which they could not before.
+
+**"By another enemy" is asked by status, not by identity.** A program cannot compare two combatants, so the
+Baboon asks whether whoever applied the enlarged status wears the Baboon's own rule. One Baboon or three, the
+answer is the same, and its own Doubt never feeds it.
+
+**Stage 2 numbers, where the appendix gave bands:** Uncounted Pilgrim 92 HP (86–98), Cobra of the Entry Mark
+94 (88–100), Name-Eating Baboon 90 (84–96); Petition Entry 11 damage + 1 Inscribed, Uncounted Blow 15,
+Unregistered Shelter 18 Block; Entry Mark 10 + 1 Inscribed, Entry Venom 13 + 1 Poison, Coiled Seal 17 Block;
+Steal the Name 9 + 1 Inscribed, False Credential 12 + 1 Doubt, Scramble the Gate 18 Block. Uncounted is worth
+30 % less attack damage (the master says only "a defensive benefit").
+
+**A test lesson, paid for twice: an interactive fight is a REPLAY.** Poking a status into the live combat
+state between answers looks like it works — and is thrown away by the next answer, which replays the fight
+from its baseline. Anything a probe needs on the table has to be a STARTING status
+(`FightProbe.SoloAgainstHero`, and now `FightProbe.RosterAgainstHero` for multi-body probes) or something the
+fight itself produces.

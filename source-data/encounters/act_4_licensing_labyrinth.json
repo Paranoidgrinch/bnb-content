@@ -47,5 +47,71 @@
       "primary_measure"
     ],
     "role": "multi_combat"
+  },
+  {
+    "id": "labyrinth_gate_01",
+    "name": "No Number in the Register",
+    "act": 4,
+    "difficulty": "normal",
+    "enemies": [
+      "uncounted_pilgrim"
+    ],
+    "weight": 2,
+    "tags": [
+      "licensing_labyrinth",
+      "stage_gate",
+      "inscribed_intro"
+    ],
+    "role": "combat"
+  },
+  {
+    "id": "labyrinth_gate_02",
+    "name": "The Entry Mark",
+    "act": 4,
+    "difficulty": "normal",
+    "enemies": [
+      "cobra_of_the_entry_mark"
+    ],
+    "weight": 2,
+    "tags": [
+      "licensing_labyrinth",
+      "stage_gate",
+      "inscribed_intro"
+    ],
+    "role": "combat"
+  },
+  {
+    "id": "labyrinth_gate_duo_01",
+    "name": "Chewed Credentials",
+    "act": 4,
+    "difficulty": "hard",
+    "enemies": [
+      "uncounted_pilgrim",
+      "name_eating_baboon"
+    ],
+    "weight": 1,
+    "tags": [
+      "licensing_labyrinth",
+      "stage_gate",
+      "stolen_name"
+    ],
+    "role": "multi_combat"
+  },
+  {
+    "id": "labyrinth_gate_duo_02",
+    "name": "Counterfeit Entry Mark",
+    "act": 4,
+    "difficulty": "hard",
+    "enemies": [
+      "cobra_of_the_entry_mark",
+      "name_eating_baboon"
+    ],
+    "weight": 1,
+    "tags": [
+      "licensing_labyrinth",
+      "stage_gate",
+      "stolen_name"
+    ],
+    "role": "multi_combat"
   }
 ]
