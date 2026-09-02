@@ -91,6 +91,7 @@ public static class BlueprintAssembler
                 .. PassiveStatuses.All(),
                 .. ActTwo.All(),
                 .. ActThree.All(),
+                .. ActFour.All(),
                 .. Events.ActOneEventObjects.Statuses(), .. Events.ActTwoEventObjects.Statuses(),
                 .. Events.ActThreeEventObjects.Statuses(),
             ],

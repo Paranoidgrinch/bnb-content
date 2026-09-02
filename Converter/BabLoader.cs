@@ -48,10 +48,14 @@ public sealed class BabData
             // authored, the act itself now joins the walked run (ACT_III_BUILD_PLAN §12).
             Enemies = Many<BabEnemy>(
                 "enemies/city_enemies.json", "enemies/act_2_archives_enemies.json",
-                "enemies/act_3_green_docket_enemies.json"),
+                "enemies/act_3_green_docket_enemies.json",
+                // Act IV's bodies load as soon as the first of them is authored, so a probe can fight one —
+                // the act itself only becomes a room the run walks once it has bosses to end on (IV-24).
+                "enemies/act_4_licensing_labyrinth_enemies.json"),
             Encounters = Many<BabEncounter>(
                 "encounters/act_1_city.json", "encounters/act_2_archives.json",
-                "encounters/act_3_green_docket.json"),
+                "encounters/act_3_green_docket.json",
+                "encounters/act_4_licensing_labyrinth.json"),
             Relics = Many<BabRelic>("relics/act_1_relics.json", "relics/bureaucrat_relics.json"),
         };
     }

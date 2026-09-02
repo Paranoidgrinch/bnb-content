@@ -2000,3 +2000,96 @@ second act, and the **marathon** — which never yielded either — reached its 
 undeleted screens and was then killed by the OOM killer. Every answer rebuilds the screen out of fresh Control
 nodes and frees the old ones with `QueueFree`, which is deferred: a walk that never lets the tree collect never
 collects. Both yield one frame every twenty answers now, and a probe stops queueing the card-draw animation.
+
+## Act IV — the five words, and the two the engine had to learn (2026-09-02)
+
+The Licensing Labyrinth is written in five keywords no handed-over master ever defines: **Weighed ·
+Burdened · Inscribed · Entombed · Embalmed**. All three masters cite an `act_iv_*.md` that is not in
+`source-data/design/`. They were reconstructed from several hundred uses and **ratified by the user on
+2026-08-29** (`ACT_IV_V_BUILD_PLAN.md` §"THE FIVE ACT-IV KEYWORDS"). What follows is how that ratification
+became code, and every number in it that the masters left open.
+
+**Two of the five needed the engine; three did not.** The seam list the plan carried was worked through
+against RogueDeck-Core first, and only what was genuinely missing was bought:
+
+- **What a turn has COST** did not exist. There was `resourceGainedThisTurn` and no mirror, so a measure had
+  nothing to compare against. Bought as its symmetric twin: `CombatantCardPlayTurnStats.ResourceSpentThisTurn`,
+  fed from the cost-payment event and read by a new `resourceSpentThisTurn` expression. It counts the cost
+  ACTUALLY paid, after every modifier — which is what makes Burdened and Weighed one decision instead of two —
+  and it sums every resource a cost names, exactly as its twin does. A card played for free adds nothing.
+- **A status that ENLARGES the next application to its bearer** did not exist either. The engine could refuse
+  an application from the receiving side (Act III's Safe-Conduct, a `StatusPreventionSpec`) but not magnify
+  one. Bought as that spec's mirror, `StatusAmplificationSpec` + its interceptor: the next application lands
+  larger and the amplifier is spent doing it. It runs AFTER prevention, so what is refused is never enlarged
+  into existence; it never enlarges an application of itself; and one application is enlarged once however
+  many stacks are held (the enlarged request carries a mark). It announces itself
+  (`StatusApplicationAmplifiedCombatEvent` + a `StatusApplicationAmplified` trigger) with the polarity of what
+  grew, because IV-13's Keeper of the Living Cartouche writes one glyph for an enlarged blessing and another
+  for an enlarged curse, and that is the only place the two are distinguishable.
+- **Burdened, Entombed and Embalmed compose** out of what was already there: a flat cost modifier plus a rule
+  that hears the payment; the engine's Stun for one turn at a threshold; and a decay that asks whether the
+  bearer is preserved. No feature was bought for them — only tests.
+
+**Weighed is exact-spend, and what it leaves behind is a DISTANCE.** The requirement is the stack count, so
+the player reads the demand off the status. It resolves at the end of the bearer's turn — the only moment the
+question has an answer — and removes itself doing so. The record is one counter on the player,
+`measure_result` = 1 + |spent − required|: 0 means no measure has ever been taken in this fight, 1 means
+exact, 2 means off by one, 3 or more a major error. One counter rather than two because "was there a measure"
+and "how far off" are always asked together, and a reader that had to check two could punish for a distance
+belonging to no measure. It stays a counter and is not promoted to a marker status because what the player
+must ACT on is the requirement, and that is already a status they can see.
+
+**The record is the LAST completed measure, and it is not cleared.** A punishing intent reads whatever the
+last measure came to. In a three-intent cycle that raises one measure and answers it once, the value a body
+reads is always the one from its own cycle. Nothing yet needs "a measure resolved *this* turn"; §3.2's
+observers at Stage 4 may, and that is where it would be added.
+
+**§3.1's Primary Measure is one condition, not a scheduler.** A measure is raised only if none stands. So in
+Encounter 3 whoever acts first that turn owns the check and the other body merely strikes — which is why the
+Crooked Rod Bearer is listed FIRST in that encounter's roster, exactly as the design says it should establish
+the measure. No second, contradictory Weighed can exist.
+
+**Burdened is a flat surcharge, not a per-stack one.** The masters never price it. Per stack, three stacks
+would price a whole hand out of a turn; flat, Burdened X reads "the next X cards you play cost 1 more each",
+and the stack is worked off by that surcharge being PAID. Payment is the operative word: a play that ends up
+costing nothing works nothing off. The payment is also counted (`burden_paid`), because IV-15's Colossus asks
+whether a burden was paid off rather than merely lost — a cleanse takes stacks too.
+
+**Entombed buries at five and resets, and it is read at the bearer's TURN START.** A turn can only be lost
+before it is had, so a fifth stack applied during the player's own turn takes the next one. The burial is the
+engine's Stun for one turn; five stacks are spent, so the cycle can build again.
+
+**Embalmed spends itself per fade.** The ratified text says preservation prevents "natural decay". In this
+game almost nothing decays by duration — fading is authored, one stack at a turn or round boundary (Panic,
+Poison, Fatigue, Ward Wax) — so preservation is written at the one place fading happens
+(`ActFour.Fade`, which every one of those now goes through): if the bearer is preserved, one Embalmed is
+spent instead and the stack stays. That makes Embalmed X read "the next X fades on this character do not
+happen", needs no ordering agreement between two turn-end triggers, and gives the same answer whichever
+status was about to shrink. A stack spent, cleansed or paid away is not a fade and is untouched.
+
+**Stage 1 numbers, where the appendix gave bands:** Reed-Cord Surveyor 85 HP (band 80–90), Crooked Rod Bearer
+88 (84–94); Set the Measure 10 damage, Reed Lash 14, Re-Tension Cord 16 Block; Crooked Measure 11, Rod Strike
+15, Brace the Standard 17 Block. The Surveyor's error bands are the appendix's: exact passes, one step away is
+1 Paperwork, two or more is 2. The Bearer files 1 Paperwork for any failure and does not care how far off it
+was — that difference between the two officials IS the stage.
+
+**The Surveyor asks for exactly 2.** The masters call the value balance-tunable and the elite master requires
+a solvability filter (never an impossible requirement); that filter is elite machinery written once at IV-12.
+A standard body in the act's opening stage asks for a constant that three Energy can always meet. The Crooked
+Rod Bearer's standard alternates 1 → 3 on a counter kept on the body itself, advanced only when a measure was
+actually raised — so a turn spent measuring against somebody else's standard does not silently skip a step
+and break the sequence the player is being taught to read.
+
+**Act IV's bodies load; Act IV is not yet a room the run walks.** The act's enemies and encounters are in the
+blueprint from this step on, so probes can fight them, but the act joins the walked run only at IV-24, when it
+has bosses to end on. The ported v2 Act-IV demo pool (42 enemies / 41 encounters of pure damage-and-block) was
+replaced rather than kept beside the authored one, exactly as Acts II and III replaced theirs.
+
+**A finding that outlived its step: a stunned player could play their whole hand.** Card-play validators —
+Stun, the one-attack-per-turn limit, the unplayable-card refusal — were consulted only on the strict
+processor path used by scripted scenarios and tests. The interactive host, the playtest walker and Godot all
+play through `PlayCardEffectRequest`, which never asked them, and the message that path already prints
+("unaffordable or rejected by a validator") shows this was always meant to. Fixed in Core: the effect path
+asks the same validators and no-ops on refusal, so the card stays in hand, nothing is paid and the session
+stands. Nothing in Acts I–III used stun, which is why no test had ever asked. **A rule that is only enforced
+on the road the game is not played on is not enforced.**
