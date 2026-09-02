@@ -554,7 +554,7 @@ public static class Keywords
         // The wax paying for the enemy turn is a fade like any other, so it asks Act IV's one fading point:
         // a preserved bearer spends an Embalmed instead and keeps the wax.
         IEffectNode<TContext> Decay<TContext>(int amount) where TContext : class =>
-            ActFour.Fade<TContext>(CombatantTargetSelectors.IterationTarget, WardWax, amount);
+            ActFour.Fade<TContext>(CombatantTargetSelectors.IterationTarget, WardWax, amount, negative: false);
 
         var struck = new CombatantCounterExpression<RoundEndedTriggeredEffectContext>(
             CombatantTargetSelectors.IterationTarget, StruckThisRoundCounter);

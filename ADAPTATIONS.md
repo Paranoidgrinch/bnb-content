@@ -2342,3 +2342,52 @@ cap +9), Brace the Load 25 Block. Two Escapes buy the conscript its freedom.
 **The Ushabti does not spend its stones**, which is what the appendix's cap is for: the blow carries them,
 the bracing is its own intent, and the rotation keeps a regular Block generator so Encounter 21 has something
 to break.
+
+## Act IV, Stages 7 and 8 — the Monument Works and the Hall of Reed and Ink (2026-09-02)
+
+Two stages of one idea: the building remembers, and so does the ink. **Nothing new from the engine.**
+
+**The Capstone's Placement is a status and a rule, not a rotation.** The master asks for a "visible Placement
+sequence" whose completion brings the stone down. So the Golem's ordinary actions each add a stack of
+`Placement`, and an intent rule (`self_status`, min 3) swaps in `Set the Capstone`, which spends the whole
+placement. The stone therefore falls every fourth turn with the count visible on the body for three of them —
+and the drop weighs what the player is already carrying (+4 per Entombed, capped at +12, telegraphed as the
+formula).
+
+A consequence the test pins: **five Entombed take the turn before the stone can fall on it**, and spend
+themselves doing it — so the heaviest capstone in practice is the one that lands at four. The act's two
+burial clocks meet there, and they do not stack.
+
+**Kept Oaths strike Broken Oaths off the record.** The master gives the Oath-Stone two tokens (kept and
+broken) and says only that kept oaths "weaken selected later actions", with the appendix pricing it as "may
+reduce a later hit by 3–5". A hammer that swings by the record cannot be telegraphed off two opposing
+statuses at once — the intent label carries ONE scaling term — so compliance is recorded against the fault:
+a kept oath removes a broken one, which is exactly a later hit reduced by 4. The Kept Oath token stays
+visible as the ledger of compliance (Stage 17's Oathbound Gate is this same identity, and will want it).
+
+**Only one oath a round** falls out of the bookmark idiom rather than a latch: the stone looks once, at its
+own turn start, at the resolutions it has not read yet.
+
+**Fresh Pigment is a passive on the applying side, spent by the scribe's OWN entry.** An
+outgoing-application modifier reads the applier's statuses, so the palette thickens only what this body
+writes into the register; the rule that spends it therefore also asks whether the applier is the scribe (in a
+status-application trigger, `source` is whoever applied it). Another body writing into the register leaves
+the palette intact — which the test pins, because that is the half a naive listener gets wrong.
+
+A consequence worth knowing: **the palette's consumption is not observable from outside a round**, because a
+fresh one is ground at every round start and no authored body writes into the register twice in one round.
+The tests pin what is observable — two stacks per round, and an untouched palette when somebody else writes.
+
+**The Complaint Wall is §3.5 in one intent.** A solo body whose signature needs Embalmed must be able to
+create it itself, so `Preserve the Complaint` applies both halves: 1 Panic (which would fade at the player's
+turn end) and 1 Embalmed (which stops it). The complaint itself is fed from the one fading point — `Fade` now
+records a preserved AFFLICTION on its bearer (`decays_preserved`), and the wall keeps a bookmark in it. Ward
+Wax being held is not a grievance, so the recording is negative-only.
+
+**Stage 7 and 8 numbers, where the appendix gave bands:** Fallen Capstone Golem 145 HP (136–154), Cornerstone
+Oath-Stone 137 (128–146), Palette-Bearing Apprentice 119 (112–126), Hieroglyphic Complaint Wall 150
+(142–160); Falling Dust 15 + 1 Entombed + 1 Placement, Set Support 27 Block + 1 Placement, Set the Capstone 25
+(+4 per Entombed, cap +12); Foundation Measure 13 + a measure of 2, Broken-Oath Smash 20 (+4 per Broken Oath,
+cap +12), Foundation Wall 27 Block; Fresh Pigment 12 + 1 Inscribed, Brush Stroke 17, Palette Guard 20 Block;
+Preserve the Complaint 11 + 1 Panic + 1 Embalmed, Carved Accusation 18 (+2 per Complaint, cap +8) + 1
+Paperwork, Stone Defense 31 Block.

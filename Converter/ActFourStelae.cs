@@ -36,7 +36,8 @@ public static partial class ActFour
             _ => GranaryIntent(enemyId, intentId)
                  ?? BasinIntent(enemyId, intentId)
                  ?? CausewayIntent(enemyId, intentId)
-                 ?? YardIntent(enemyId, intentId),
+                 ?? YardIntent(enemyId, intentId)
+                 ?? MonumentIntent(enemyId, intentId),
         };
 
     // ── the Reed-Cord Surveyor ────────────────────────────────────────────────────────────────────────────

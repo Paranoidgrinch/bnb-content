@@ -341,5 +341,103 @@
       "escape"
     ],
     "role": "multi_combat"
+  },
+  {
+    "id": "labyrinth_monument_01",
+    "name": "The Capstone Is Already Above You",
+    "act": 4,
+    "difficulty": "normal",
+    "enemies": [
+      "fallen_capstone_golem"
+    ],
+    "weight": 2,
+    "tags": [
+      "licensing_labyrinth",
+      "stage_monument",
+      "entombed"
+    ],
+    "role": "combat"
+  },
+  {
+    "id": "labyrinth_monument_02",
+    "name": "Oath in the Foundation",
+    "act": 4,
+    "difficulty": "normal",
+    "enemies": [
+      "cornerstone_oath_stone"
+    ],
+    "weight": 2,
+    "tags": [
+      "licensing_labyrinth",
+      "stage_monument",
+      "weighed"
+    ],
+    "role": "combat"
+  },
+  {
+    "id": "labyrinth_monument_duo_01",
+    "name": "Fault in the Monument",
+    "act": 4,
+    "difficulty": "hard",
+    "enemies": [
+      "cornerstone_oath_stone",
+      "fallen_capstone_golem"
+    ],
+    "weight": 1,
+    "tags": [
+      "licensing_labyrinth",
+      "stage_monument",
+      "oath"
+    ],
+    "role": "multi_combat"
+  },
+  {
+    "id": "labyrinth_hall_01",
+    "name": "Fresh Pigment",
+    "act": 4,
+    "difficulty": "normal",
+    "enemies": [
+      "palette_bearing_apprentice"
+    ],
+    "weight": 2,
+    "tags": [
+      "licensing_labyrinth",
+      "stage_hall",
+      "inscribed"
+    ],
+    "role": "combat"
+  },
+  {
+    "id": "labyrinth_hall_02",
+    "name": "Undismissed Complaint",
+    "act": 4,
+    "difficulty": "normal",
+    "enemies": [
+      "hieroglyphic_complaint_wall"
+    ],
+    "weight": 2,
+    "tags": [
+      "licensing_labyrinth",
+      "stage_hall",
+      "embalmed"
+    ],
+    "role": "combat"
+  },
+  {
+    "id": "labyrinth_hall_duo_01",
+    "name": "Fresh-Pigment Grievance",
+    "act": 4,
+    "difficulty": "hard",
+    "enemies": [
+      "palette_bearing_apprentice",
+      "hieroglyphic_complaint_wall"
+    ],
+    "weight": 1,
+    "tags": [
+      "licensing_labyrinth",
+      "stage_hall",
+      "complaint"
+    ],
+    "role": "multi_combat"
   }
 ]
