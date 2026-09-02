@@ -2479,3 +2479,53 @@ Inscribed, Wrap Tight 14 + 1 Embalmed, Linen Guard 27 Block; Incomplete Wrapping
 **All three House-of-Linen bodies make their own Embalmed** (§3.5), so each solo is self-sufficient — and
 Encounter 37's chain (register → thickened wrapping → weight → blow under linen → burial) works because every
 link is capped at once a round, which is what keeps it legible rather than explosive.
+
+## Act IV, Stages 13 and 14 — the Necropolis Warrens and the Chamber of Fixed Days (2026-09-02)
+
+Two stages about what a procedure looks like when it stops pretending not to be a calendar.
+**Nothing new from the engine.**
+
+**§3.9 is implemented by REUSE, and reuse is the whole point.** Stage 13 borrows Act III's `green_docket_customs`
+and `safe_conduct` unchanged — the same statuses, the same "three Trespass from one source are that source's
+Claim", the same prevention that spends a whole licence to refuse one filing. Forking them into
+`necropolis_safe_conduct` would have made the localized return a sixth word for the act, which is exactly what
+the audit says it is not. The grant is asked of the WHOLE roster (`ActFour.NecropolisOpening`, beside Act III's
+own `HeroOpening`), because Safe-Conduct is kept as per-grant instances: asking each body would hand a duo two
+licences rather than merging one.
+
+**What the Finder's Claim entitles it to had to be decided.** The master gives the Claim machinery back and
+says nothing about what the Finder does with standing — but Act III's own rule is that a Claim is never a
+damage multiplier and every party reads its own Claims its own way. The Finder reads its as authority to call
+a false threshold a threshold: `False Threshold` is 19 + 4 per Claim, capped at +12, authored as
+`damage_per_status` off the OWNER so the telegraph carries the whole formula.
+
+**The Finder answers on its own turn start, with a bookmark in EACH tally.** It is the first body in the act to
+need both `measures_met` and `measures_failed` — every earlier one cared about a resolution, or about failures,
+but the Finder gives a different thing for each. Answering at its own turn start (rather than off the
+resolution) is the act's ordering-free idiom: it takes each resolution once however many other bodies also
+watched it.
+
+**The Cursed Loot Bearer has no rule of its own.** "Whenever Burdened actually increases the Energy cost paid
+for a card" is a moment the act already writes down — `burden_paid`, the tally Burdened keeps when a surcharge
+is PAID rather than cleansed away — so the Bearer is a bookmark in it. The master's "max once per card" is
+structural (the tally moves once per card), and the total needs no ceiling either: a turn can only pay as many
+surcharges as it had Burdened for.
+
+**The Ibis's Last Rite is a FACE, not a variable — and the face decides the next rite too.** A program can
+answer a status it learns at fire time (that is what `Replicated` bought at IV-7) but cannot pocket one for
+three turns, so the memory is two marker statuses written by the act's own "an original affliction, on the
+player, by this body" gate. An ibis with only one rite in its kit would make that memory inert, so `Set the
+Rite` reads the same face and lays **the other** rite: one pair of markers carries the memory AND what is
+coming, and the player reads both off the body. The return is one stack (§3.7), and a fight in which the ibis
+never landed a rite repeats nothing — "successfully applies" is the master's own wording.
+
+**"Every fourth own turn" is three approaches plus the turn itself**, using the Fallen Capstone Golem's
+placement idiom: a visible `approach_of_noon` climbing on the body, an intent rule at 3, and the count cleared
+by Black Noon so the procession begins again. A catastrophe the player cannot count down to is just a big
+number, which is why the schedule is a status and not a hidden counter.
+
+**Two small local decisions.** Safe-Conduct is capped at 2 in the Warrens — the room opens you with one and
+compliance can put one more in your pocket, but nothing stockpiles a way out of the stage. And the Star-Table
+Scribe's "failed measure may add 1 Inscribed" lands on `Table Cover`, answering any failure with one stack:
+measuring error by BAND is the Reed-Cord Surveyor's office, and giving it to the astronomer as well would blur
+the one distinction Stage 1 exists to teach.

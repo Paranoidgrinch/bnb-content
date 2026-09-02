@@ -377,6 +377,12 @@ public static partial class ActFour
         InstructionsForWrapping(),
         HooksStillAttached(),
         .. VesselOffices(),
+        // Stages 13 and 14 — the Necropolis Warrens and the Chamber of Fixed Days
+        NecropolisPassage(),
+        EveryObjectRequiresAForm(),
+        LunarReturn(),
+        .. LastRites(),
+        ApproachOfNoon(),
     ];
 
     // The standard roster, stage by stage.
@@ -406,6 +412,10 @@ public static partial class ActFour
         "natron_bearer", "linen_wrapped_embalmer", "unfinished_mummy",
         // Stage 12 — the Canopic Vaults
         "fourfold_vessel_guardian",
+        // Stage 13 — the Necropolis Warrens
+        "false_door_finder", "cursed_loot_bearer",
+        // Stage 14 — the Chamber of Fixed Days
+        "star_table_scribe", "moon_cycle_ibis", "eclipse_scarab",
     };
 
     // ── shared idioms ─────────────────────────────────────────────────────────────────────────────────────

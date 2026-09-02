@@ -655,5 +655,103 @@
       "inscribed"
     ],
     "role": "multi_combat"
+  },
+  {
+    "id": "labyrinth_warrens_01",
+    "name": "This Entrance Is Legally Valid",
+    "act": 4,
+    "difficulty": "normal",
+    "enemies": [
+      "false_door_finder"
+    ],
+    "weight": 2,
+    "tags": [
+      "licensing_labyrinth",
+      "stage_warrens",
+      "necropolis_law"
+    ],
+    "role": "combat"
+  },
+  {
+    "id": "labyrinth_warrens_02",
+    "name": "Every Object Requires a Form",
+    "act": 4,
+    "difficulty": "normal",
+    "enemies": [
+      "cursed_loot_bearer"
+    ],
+    "weight": 2,
+    "tags": [
+      "licensing_labyrinth",
+      "stage_warrens",
+      "burdened"
+    ],
+    "role": "combat"
+  },
+  {
+    "id": "labyrinth_warrens_duo_01",
+    "name": "False-Door Contraband",
+    "act": 4,
+    "difficulty": "hard",
+    "enemies": [
+      "false_door_finder",
+      "cursed_loot_bearer"
+    ],
+    "weight": 1,
+    "tags": [
+      "licensing_labyrinth",
+      "stage_warrens",
+      "necropolis_law"
+    ],
+    "role": "multi_combat"
+  },
+  {
+    "id": "labyrinth_fixed_days_01",
+    "name": "The Fixed Decan Measure",
+    "act": 4,
+    "difficulty": "normal",
+    "enemies": [
+      "star_table_scribe"
+    ],
+    "weight": 2,
+    "tags": [
+      "licensing_labyrinth",
+      "stage_fixed_days",
+      "weighed"
+    ],
+    "role": "combat"
+  },
+  {
+    "id": "labyrinth_fixed_days_02",
+    "name": "Black Noon",
+    "act": 4,
+    "difficulty": "normal",
+    "enemies": [
+      "eclipse_scarab"
+    ],
+    "weight": 2,
+    "tags": [
+      "licensing_labyrinth",
+      "stage_fixed_days",
+      "clock"
+    ],
+    "role": "combat"
+  },
+  {
+    "id": "labyrinth_fixed_days_duo_01",
+    "name": "Fixed-Day Moon",
+    "act": 4,
+    "difficulty": "hard",
+    "enemies": [
+      "star_table_scribe",
+      "moon_cycle_ibis"
+    ],
+    "weight": 1,
+    "tags": [
+      "licensing_labyrinth",
+      "stage_fixed_days",
+      "calendar"
+    ],
+    "role": "multi_combat"
   }
 ]
