@@ -285,6 +285,12 @@ public static partial class ActFour
         Entombed(),
         Embalmed(),
         LabyrinthBody(),
+        // Stage 2 — the Gate of Counted Names
+        Uncounted(),
+        NoNumberInTheRegister(),
+        StolenName(),
+        ForgedEntry(),
+        ChewedCredentials(),
     ];
 
     // The standard roster, stage by stage.
@@ -292,6 +298,8 @@ public static partial class ActFour
     {
         // Stage 1 — the Boundary Stelae
         "reed_cord_surveyor", "crooked_rod_bearer",
+        // Stage 2 — the Gate of Counted Names
+        "uncounted_pilgrim", "cobra_of_the_entry_mark", "name_eating_baboon",
     };
 
     private static StatusTriggerData Trigger<TContext>(

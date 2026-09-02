@@ -113,6 +113,20 @@ internal static class FightProbe
         string probeId, params (string EnemyId, string IntentId, int? MaxHealth)[] members) =>
         Roster(probeId, energy: 3, members);
 
+    // As Roster, but the HERO also opens with the given statuses — how a keyword that lives on the player is
+    // put on the table in a multi-body probe. (Granting one mid-fight is not an option: an interactive fight
+    // is a REPLAY, so a state poked into the live combat is thrown away by the next answer.)
+    public static EncounterDefinition RosterAgainstHero(
+        string probeId, int energy, (string Status, int Stacks)[] heroStatuses,
+        params (string EnemyId, string IntentId, int? MaxHealth)[] members)
+    {
+        var probe = Roster(probeId, energy, members);
+        return new EncounterDefinition(probe.Id, probe.Enemies, probe.HeroResources,
+            [.. probe.HeroStartingStatuses ?? [],
+             .. heroStatuses.Select(s => new StartingStatusSpec(new StatusDefinitionId(s.Status), s.Stacks))],
+            probe.HeroDisplayName, probe.CardsDrawnPerTurn, probe.TriggeredEffects);
+    }
+
     public static EncounterDefinition Roster(
         string probeId, int energy, params (string EnemyId, string IntentId, int? MaxHealth)[] members)
     {

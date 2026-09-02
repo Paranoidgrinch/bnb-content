@@ -207,10 +207,21 @@ decides and the choice is written into `ADAPTATIONS.md`.
       hand. Fixed in Core (`PlayCardEffects.cs` asks the validators and no-ops on refusal;
       `tests/.../PlayCardEffectValidatorTests.cs`). Nothing in Acts I–III used stun, so nothing had asked.
 
-- [ ] **IV-1 — Stage 2, the Gate of Counted Names.** Uncounted Pilgrim, Cobra of the Entry Mark,
-      Name-Eating Baboon. Encounters 4–7. First readers of **Inscribed** — the Pilgrim reads it as a mere
-      state (`Inscribed > 0`), while the stage must also show its amplifying half, or the player never learns
-      that the register is spendable.
+- [x] **IV-1 — Stage 2, the Gate of Counted Names. DONE 2026-09-02.** Uncounted Pilgrim, Cobra of the Entry
+      Mark, Name-Eating Baboon. Encounters 4–7. First readers of **Inscribed** — the Pilgrim reads it as a
+      mere state (`Inscribed > 0`), while the stage must also show its amplifying half, or the player never
+      learns that the register is spendable.
+      ▸ **What landed:** `Converter/ActFourGate.cs` + 9 live tests (`Tests/ActFourGateTests.cs`). The Cobra
+      needs NO code — the register enlarges its venom by itself. The Pilgrim's Uncounted is a visible marker
+      worth 30 % less attack damage, recounted on five events (**expiry is the one that matters**: the last
+      stack of the register goes by being SPENT) plus every turn start (a fight's first round starts before
+      its bodies are dressed, so a round-start hook fires for nobody). The Baboon reads the amplification
+      EVENT — two general engine reads were bought for it, `eventStatusPolarityIs` (Stage 15's Royal Genealogy
+      Wall wants the same question with Buff) and `eventAmplifierIs` (§3.4's copy-never-feeds-the-copier
+      guard); encounter triggers can now also hear amplification/prevention/resolved actions.
+      ▸ **Test lesson worth keeping:** an interactive fight is a REPLAY — a status poked into the live combat
+      between answers is thrown away by the next one. Use starting statuses (`FightProbe.SoloAgainstHero`,
+      new `FightProbe.RosterAgainstHero`) or let the fight produce it.
 - [ ] **IV-2 — Stage 3, the Granary Courts.** Crocodile of the Short Measure, Jar-Seal Scarab Swarm,
       Hungry Grain Thief. Encounters 8–11.
 - [ ] **IV-3 — Stage 4, the Floodmark Basins.** Flood-Mark Reader, Drowned Field Scribe, Silt-Buried Farmer
@@ -377,6 +388,7 @@ force — these fights are "almost a separate game mode"); each god enters `Boss
 
 - [x] ★ the five-keyword decision — **ratified 2026-08-29**, written up above as canon
 - [x] **IV-0 — vocabulary + Stage 1 — DONE 2026-09-02** (Core seams 1 + 3 bought; 2/5/6 compose; 4 open for IV-7)
-- [ ] IV-1 … IV-11 standards · IV-12 … IV-15 elites · IV-16 … IV-19 bosses · IV-20 … IV-21 cards+relics ·
+- [x] **IV-1 — Stage 2, the Gate of Counted Names — DONE 2026-09-02** (5 identities / 7 encounters so far)
+- [ ] IV-2 … IV-11 standards · IV-12 … IV-15 elites · IV-16 … IV-19 bosses · IV-20 … IV-21 cards+relics ·
       IV-22 … IV-23 events · IV-24 the act
 - [ ] V-0 structure · V-1 … V-6 the six gods · V-7 the whole game
