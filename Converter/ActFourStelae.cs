@@ -35,7 +35,8 @@ public static partial class ActFour
             "crooked_rod_bearer.brace_the_standard" => BraceTheStandard(17),
             _ => GranaryIntent(enemyId, intentId)
                  ?? BasinIntent(enemyId, intentId)
-                 ?? CausewayIntent(enemyId, intentId),
+                 ?? CausewayIntent(enemyId, intentId)
+                 ?? YardIntent(enemyId, intentId),
         };
 
     // ── the Reed-Cord Surveyor ────────────────────────────────────────────────────────────────────────────

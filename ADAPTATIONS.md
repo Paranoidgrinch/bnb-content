@@ -2290,3 +2290,55 @@ the third entry weighs 2 Burdened, or 1 if that third measure was met.
 **The Envoy is never fielded alone**, as the master requires ("intentionally combination-first"): it
 interprets somebody else's measure, so it appears only in Encounter 18 beside the Shade — and it has two
 intents rather than three, because it has no measure of its own to raise.
+
+## Act IV, Stage 6 — the Corvée Yards (2026-09-02)
+
+Compulsory labour, and the three things it does to the people in it. **Nothing new from the engine** — the
+fourth content-only stage — but one thing the port had never written down.
+
+**Fatigue now records that it actually took something.** The Rope-Gang Wraith answers "when Fatigue actually
+removes Energy from the player", and that is not the same fact as "the player has Fatigue": a bearer with no
+pool to refill into loses nothing. Losing a resource raises no event content can hear, so Fatigue writes the
+moment down itself (`energy_taken_by_fatigue`), exactly as Burdened writes down its surcharges, and the gang
+keeps a bookmark in it.
+
+★ **And WHERE that question is asked cost this step its one bug.** The first version guarded the loss with
+"does the bearer have any Energy right now?" — and broke a three-act-old Minute Moth test, which is how it was
+caught. **The turn-start refill is an enqueued effect like every other**, so a program that reads the pool
+before its own loss resolves is looking at LAST turn's leftovers, not at the refilled pool: a player who spent
+everything reads as having nothing, and the bite that is about to land reads as no bite at all. The question
+therefore stands BEHIND the loss in a causal sequence (a causal step waits for the queue to drain, which is
+what makes before-and-after readings work at all), and it asks whether the pool is now less than FULL —
+because the refill has just filled it. Both halves are load-bearing.
+
+A consequence worth knowing, and the reason the test for the negative case looks artificial: since Energy
+refills before Fatigue bites, a player who merely spent everything last turn still has something to lose. The
+only way to have nothing taken is to have no Energy to refill into.
+
+**Rope Snap's bonus is telegraphed as a formula, not hidden in a program.** The port's intent labels are built
+from the authored JSON, and the DSL has a scaling shape for exactly this (`damage_per_status` with a base, a
+per-stack bonus and a cap), so the telegraph reads "20 dmg +6 per Work Strain (max +6)" and tells the whole
+truth. The intent's program repeats that arithmetic because the strain has to be SPENT in the same breath;
+the numbers live in two places on purpose, and the test pins both. Same shape for the Ushabti's Stone Blow
+("19 dmg +3 per Stone (max +9)").
+
+**"The player removes all Block from another enemy that had Block" is read as a before and after.** No damage
+bookkeeping: the Laborer records what the rest of the gang had standing when the player's turn BEGAN, and
+asks at the player's turn end whether it is gone. A combatant's Block is cleared at its own turn start, so a
+brace that vanished during your turn is a brace you broke — and the rule is once per player turn by
+construction rather than by a latch.
+
+**The Runaway Laborer leaves by being downed.** "Leaves combat; this counts as resolved for encounter
+completion" — the engine has no third state between fighting and down, and downing is exactly what makes the
+room resolve. The fiction is carried by the status the player watches climb (`Escape`) and by the fact that
+nothing is rewarded for it beyond the room ending.
+
+**Stage 6 numbers, where the appendix gave bands:** Rope-Gang Wraith 120 HP (112–128), Runaway Laborer 102
+(96–108, and its HP is deliberately NOT inflated to compensate for the escape), Stone-Hauler Ushabti 128
+(120–136); Keep the Rhythm 14 damage + 1 Fatigue, Rope Snap 20 (+6 strained), Pull Together 22 Block;
+Desperate Swing 13, Hide Behind the Gang 18 Block; Haul Stone 15 + 1 Burdened, Stone Blow 19 (+3 per Stone,
+cap +9), Brace the Load 25 Block. Two Escapes buy the conscript its freedom.
+
+**The Ushabti does not spend its stones**, which is what the appendix's cap is for: the blow carries them,
+the bracing is its own intent, and the rotation keeps a regular Block generator so Encounter 21 has something
+to break.

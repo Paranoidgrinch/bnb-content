@@ -71,6 +71,11 @@ public static partial class ActFour
     // cleanse takes stacks too.
     public static CounterId BurdenPaid => new("burden_paid");
 
+    // How much Energy Fatigue has actually taken out of the player's hands in this fight — written by
+    // Fatigue itself at the one moment it takes any, because losing a resource raises nothing a rule can
+    // hear, and "the player has Fatigue" is a different fact: a player at zero Energy loses nothing to it.
+    public static CounterId EnergyTakenByFatigue => new("energy_taken_by_fatigue");
+
     // The Crooked Rod Bearer's alternation, on the Bearer itself: one crooked standard per body.
     public static CounterId CrookedStep => new("crooked_rod_step");
 
@@ -331,6 +336,13 @@ public static partial class ActFour
         ThirdTally(),
         PresentedInFull(),
         NothingWasPresented(),
+        // Stage 6 — the Corvée Yards
+        WorkStrain(),
+        LoseTheWorkRhythm(),
+        Escape(),
+        EscapePlan(),
+        Stone(),
+        StoneWork(),
     ];
 
     // The standard roster, stage by stage.
@@ -346,6 +358,8 @@ public static partial class ActFour
         "flood_mark_reader", "drowned_field_scribe", "silt_buried_farmer_shade",
         // Stage 5 — the Tribute Causeway
         "foreign_tribute_shade", "donkey_of_the_third_tally", "empty_handed_envoy",
+        // Stage 6 — the Corvée Yards
+        "rope_gang_wraith", "runaway_laborer", "stone_hauler_ushabti",
     };
 
     // ── shared idioms ─────────────────────────────────────────────────────────────────────────────────────
