@@ -248,9 +248,19 @@ decides and the choice is written into `ADAPTATIONS.md`.
       count is taken on `CardsDrawn` and on `ActionResolved` (not CardPlayed: the card is still in hand while
       its own play resolves) and **only when the player is the actor**, since an enemy acts after the hand is
       discarded.
-- [ ] **IV-5 — Stage 6, the Corvée Yards.** Rope-Gang Wraith, Runaway Laborer, Stone-Hauler Ushabti.
-      Encounters 19–21. First **Burdened** pressure block — the stage where the tax and the measure collide
-      on purpose: paying the tax changes what the turn's actual expenditure comes to.
+- [x] **IV-5 — Stage 6, the Corvée Yards. DONE 2026-09-02.** Rope-Gang Wraith, Runaway Laborer, Stone-Hauler
+      Ushabti. Encounters 19–21.
+      ▸ **What landed:** `Converter/ActFourYards.cs` + 8 live tests (`Tests/ActFourYardsTests.cs`). Nothing
+      new from the engine. ★ **Fatigue now writes down that it actually took Energy** (`energy_taken_by_fatigue`)
+      — losing a resource raises no event a rule can hear, and "has Fatigue" is a different fact; the Wraith
+      keeps a bookmark in it. ⚠ The question had to be asked BEHIND the loss in a causal sequence and against
+      the pool's MAXIMUM: the turn-start refill is an enqueued effect, so a program reading the pool before
+      its own loss resolves sees last turn's leftovers (a three-act-old Minute Moth test caught it). The Laborer's escape reads the gang's brace BEFORE and AFTER the player's turn
+      (no damage bookkeeping, once per turn by construction) and leaves by being downed, which is what makes
+      the room resolve. Both scaling attacks are authored as `damage_per_status` so the telegraph carries the
+      whole formula.
+      ▸ (The plan's own line called this the first Burdened pressure block; the master's Stage 6 is Fatigue,
+      escape and stone. The master governs — Burdened's pressure block was Stage 3.)
 - [ ] **IV-6 — Stages 7 + 8.** Fallen Capstone Golem, Cornerstone Oath-Stone · Palette-Bearing Apprentice,
       Hieroglyphic Complaint Wall. Encounters 22–27. §3.5 (Embalmed self-enabling) is binding for the Wall.
 - [ ] **IV-7 — Stages 9 + 10.** Sun-Seal Bearer, False-Seal Forger · Kneeling Petitioners. Encounters 28–33.
@@ -412,6 +422,7 @@ force — these fights are "almost a separate game mode"); each god enters `Boss
 - [x] **IV-2 — Stage 3, the Granary Courts — DONE 2026-09-02** (8 identities / 11 encounters so far)
 - [x] **IV-3 — Stage 4, the Floodmark Basins — DONE 2026-09-02** (11 identities / 15 encounters so far)
 - [x] **IV-4 — Stage 5, the Tribute Causeway — DONE 2026-09-02** (14 identities / 18 encounters so far)
-- [ ] IV-5 … IV-11 standards · IV-12 … IV-15 elites · IV-16 … IV-19 bosses · IV-20 … IV-21 cards+relics ·
+- [x] **IV-5 — Stage 6, the Corvée Yards — DONE 2026-09-02** (17 identities / 21 encounters so far)
+- [ ] IV-6 … IV-11 standards · IV-12 … IV-15 elites · IV-16 … IV-19 bosses · IV-20 … IV-21 cards+relics ·
       IV-22 … IV-23 events · IV-24 the act
 - [ ] V-0 structure · V-1 … V-6 the six gods · V-7 the whole game

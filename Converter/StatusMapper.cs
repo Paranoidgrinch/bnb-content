@@ -54,6 +54,29 @@ public static class StatusMapper
                         new LoseResourceNode<TurnStartedTriggeredEffectContext>(
                             CombatantTargetSelectors.Source, StandardCombatIds.EnergyResource,
                             new ConstantExpression<TurnStartedTriggeredEffectContext>(1)),
+
+                        // …and whether it actually TOOK anything, written down for whatever answers the loss
+                        // (Act IV's Rope-Gang Wraith). Losing a resource raises no event a rule can hear, and
+                        // "has Fatigue" is a different fact: a bearer with no pool to refill into loses
+                        // nothing at all.
+                        //
+                        // The question is asked AFTER the loss and against the pool's own maximum, and both
+                        // halves are load-bearing. The turn-start refill is an enqueued effect like any
+                        // other, so a program reading the pool before its own loss resolves sees LAST turn's
+                        // leftovers, not the refilled pool — the read has to stand behind the loss in a
+                        // causal sequence. And "less than full" is what a bite looks like at that moment,
+                        // because the refill has just filled it.
+                        new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
+                            new ComparisonExpression<TurnStartedTriggeredEffectContext>(
+                                new CombatantCurrentResourceExpression<TurnStartedTriggeredEffectContext>(
+                                    CombatantTargetSelectors.Source, StandardCombatIds.EnergyResource),
+                                ComparisonOperator.Less,
+                                new CombatantMaxResourceExpression<TurnStartedTriggeredEffectContext>(
+                                    CombatantTargetSelectors.Source, StandardCombatIds.EnergyResource)),
+                            new SetCombatantCounterNode<TurnStartedTriggeredEffectContext>(
+                                CombatantTargetSelectors.Source, ActFour.EnergyTakenByFatigue,
+                                new ConstantExpression<TurnStartedTriggeredEffectContext>(1), relative: true)),
+
                         ActFour.Fade<TurnStartedTriggeredEffectContext>(
                             CombatantTargetSelectors.Source, "fatigue"),
                     ])))]),

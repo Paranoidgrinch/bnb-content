@@ -888,5 +888,190 @@
       "support",
       "envoy"
     ]
+  },
+  {
+    "id": "rope_gang_wraith",
+    "name": "Rope-Gang Wraith",
+    "max_hp": 120,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "keep_the_rhythm",
+        "name": "Keep the Rhythm",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 14
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "fatigue",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "rope_snap",
+        "name": "Rope Snap",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "damage_per_status",
+            "target": "player",
+            "status": "work_strain",
+            "status_on": "owner",
+            "amount": 20,
+            "amount_per_stack": 6,
+            "cap": 6
+          }
+        ]
+      },
+      {
+        "id": "pull_together",
+        "name": "Pull Together",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 22
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "labyrinth_body"
+      },
+      {
+        "status": "lose_the_work_rhythm"
+      }
+    ],
+    "tags": [
+      "licensing_labyrinth",
+      "normal",
+      "stage_yards",
+      "fatigue",
+      "gang"
+    ]
+  },
+  {
+    "id": "runaway_laborer",
+    "name": "Runaway Laborer",
+    "max_hp": 102,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "desperate_swing",
+        "name": "Desperate Swing",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 13
+          }
+        ]
+      },
+      {
+        "id": "hide_behind_the_gang",
+        "name": "Hide Behind the Gang",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 18
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "labyrinth_body"
+      },
+      {
+        "status": "escape_plan"
+      }
+    ],
+    "tags": [
+      "licensing_labyrinth",
+      "normal",
+      "stage_yards",
+      "escape",
+      "conscript"
+    ]
+  },
+  {
+    "id": "stone_hauler_ushabti",
+    "name": "Stone-Hauler Ushabti",
+    "max_hp": 128,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "haul_stone",
+        "name": "Haul Stone",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 15
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "burdened",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "stone_blow",
+        "name": "Stone Blow",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "damage_per_status",
+            "target": "player",
+            "status": "stone",
+            "status_on": "owner",
+            "amount": 19,
+            "amount_per_stack": 3,
+            "cap": 9
+          }
+        ]
+      },
+      {
+        "id": "brace_the_stone",
+        "name": "Brace the Load",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 25
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "labyrinth_body"
+      },
+      {
+        "status": "stone_work"
+      }
+    ],
+    "tags": [
+      "licensing_labyrinth",
+      "normal",
+      "stage_yards",
+      "burdened",
+      "ushabti"
+    ]
   }
 ]

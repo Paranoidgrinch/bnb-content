@@ -292,5 +292,54 @@
       "empty_hand"
     ],
     "role": "multi_combat"
+  },
+  {
+    "id": "labyrinth_yards_01",
+    "name": "Keep the Work Rhythm",
+    "act": 4,
+    "difficulty": "normal",
+    "enemies": [
+      "rope_gang_wraith"
+    ],
+    "weight": 2,
+    "tags": [
+      "licensing_labyrinth",
+      "stage_yards",
+      "fatigue"
+    ],
+    "role": "combat"
+  },
+  {
+    "id": "labyrinth_yards_02",
+    "name": "The Stones Grow Heavier",
+    "act": 4,
+    "difficulty": "normal",
+    "enemies": [
+      "stone_hauler_ushabti"
+    ],
+    "weight": 2,
+    "tags": [
+      "licensing_labyrinth",
+      "stage_yards",
+      "burdened"
+    ],
+    "role": "combat"
+  },
+  {
+    "id": "labyrinth_yards_duo_01",
+    "name": "Break the Gang",
+    "act": 4,
+    "difficulty": "hard",
+    "enemies": [
+      "runaway_laborer",
+      "stone_hauler_ushabti"
+    ],
+    "weight": 1,
+    "tags": [
+      "licensing_labyrinth",
+      "stage_yards",
+      "escape"
+    ],
+    "role": "multi_combat"
   }
 ]
