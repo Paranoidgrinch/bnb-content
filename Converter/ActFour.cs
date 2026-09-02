@@ -291,6 +291,9 @@ public static partial class ActFour
         StolenName(),
         ForgedEntry(),
         ChewedCredentials(),
+        // Stage 3 — the Granary Courts
+        Ration(),
+        HungryForRations(),
     ];
 
     // The standard roster, stage by stage.
@@ -300,6 +303,8 @@ public static partial class ActFour
         "reed_cord_surveyor", "crooked_rod_bearer",
         // Stage 2 — the Gate of Counted Names
         "uncounted_pilgrim", "cobra_of_the_entry_mark", "name_eating_baboon",
+        // Stage 3 — the Granary Courts
+        "crocodile_of_the_short_measure", "jar_seal_scarab_swarm", "hungry_grain_thief",
     };
 
     private static StatusTriggerData Trigger<TContext>(
