@@ -2195,3 +2195,53 @@ Scarab Swarm 94 (88–100), Hungry Grain Thief 96 (90–102); Short Measure 12 d
 Scale 11 + 1 Burdened, Snap at the Deficit 19; Seal Swarm 3 × 4, Scuttle 11, Seal the Jar 18 Block; Sack
 Weight 11 + 1 Burdened, Feast on Rations 18 (+5 healing at 3 Rations), Hide in the Granary 18 Block. The
 Thief's threshold and reward are the "balance-tunable" the master left open.
+
+## Act IV, Stage 4 — the Floodmark Basins (2026-09-02)
+
+Where a missed measure stops being an embarrassment and becomes a burial, and where the audit's §3.2 lands: a
+body may answer a measure it never demanded. **Like Stage 3 it needed nothing new from the engine.**
+
+**"Once per Weighed resolution" is arithmetic, not a latch.** The record the measure leaves (`measure_result`)
+says what the LAST one came to and is never cleared, so a body that punished off it would punish the same
+failure again every time it looked. So the resolution also keeps two tallies that only ever grow —
+`measures_met` and `measures_failed` — and every body that answers resolutions keeps its own bookmark in one
+of them, reads the difference at its own turn start, and moves the bookmark up. Several bodies can listen to
+the same measure in any order, each answering exactly the resolutions it has not answered yet; a body that
+joins late or dies and is replaced takes its own share and no more. It is the same idiom the Hungry Grain
+Thief eats surcharges by, and it is now written once (`ActFour.SinceLastLooked` / `MoveTheBookmark`).
+
+**The Reader's consequence is the passive, not the intent.** The master states it as a passive ("when the
+player fails a Weighed requirement: apply 1 Entombed"); the appendix hangs the same cost off the `Levee Notes`
+budget line. The passive wins: the Reader answers every resolution wherever the demand came from, which is
+what makes Encounter 15 and the cross-stage case work at all. The appendix line is read as where the cost
+sits in its budget.
+
+**The Scribe's threshold is a status on the body, because that is how this game telegraphs.** An intent's
+telegraph is a fixed string built from its authored JSON (`EnemyMapper.Label`), so no intent can announce a
+conditional number. The threshold is therefore a marker the player can see appear on the Scribe (`Silted
+Record`), whose text states the rule, and the extra stack rides on the engine's outgoing-application scaling
+rather than being written into one intent. Same shape as the Uncounted Pilgrim, and the watcher is now one
+shared helper (`ActFour.FollowTheApplicant`) carrying both lessons Stage 2 paid for: **watch the EXPIRY**, and
+settle the state at every TURN start.
+
+**The Scribe's second intent applies Entombed**, which the appendix's bare "16–20 dmg" does not say — but
+Encounter 13's own note requires the solo to be self-sufficient ("its own move set can apply Entombed before
+Silted Record becomes relevant"), and nothing else in its kit could bury anybody. `Drowned Record` is
+therefore 18 damage + 1 Entombed.
+
+**The Farmer arrives with the water already standing.** The master asks for "a visible Flood countdown" from
+the start; a counter at zero shows nothing, so the Farmer opens with 1 of 3 marks — its own field was buried
+by this same flood — and two missed measures finish what is already begun. The water rises by ONE mark per
+cycle however many measures were missed in it (a flood is a clock, not a tally), and meeting the furrow does
+not lower it: nothing in this act gives anything back. It holds where it stands, which is exactly the
+design's "correct measurement can delay the burial".
+
+**Stage 4 numbers, where the appendix gave bands:** Flood-Mark Reader 105 HP (98–112), Drowned Field Scribe
+106 (100–114), Silt-Buried Farmer Shade 109 (102–116); Read the High Mark 12 damage + a measure of 2, Silt
+Lash 17, Levee Notes 19 Block; Silted Filing 13 + 1 Paperwork, Drowned Record 18 + 1 Entombed, Mud Ledger 20
+Block; Keep the Furrow 11 + a measure of 2, Mud Pull 14 + 1 Entombed, Raise the Bank 20 Block. The Silted
+Record threshold is 3 Entombed of the 5 that bury (the master says only "a visible Entombed threshold"), and
+the Flood is 3 marks.
+
+**A consequence worth knowing:** the burial spends the Entombed that caused it, so the Scribe's ink thins in
+the same breath as the player loses the turn. Being buried is the moment the silt drains.
