@@ -222,8 +222,13 @@ decides and the choice is written into `ADAPTATIONS.md`.
       ▸ **Test lesson worth keeping:** an interactive fight is a REPLAY — a status poked into the live combat
       between answers is thrown away by the next one. Use starting statuses (`FightProbe.SoloAgainstHero`,
       new `FightProbe.RosterAgainstHero`) or let the fight produce it.
-- [ ] **IV-2 — Stage 3, the Granary Courts.** Crocodile of the Short Measure, Jar-Seal Scarab Swarm,
-      Hungry Grain Thief. Encounters 8–11.
+- [x] **IV-2 — Stage 3, the Granary Courts. DONE 2026-09-02.** Crocodile of the Short Measure, Jar-Seal
+      Scarab Swarm, Hungry Grain Thief. Encounters 8–11.
+      ▸ **What landed:** `Converter/ActFourGranary.cs` + 10 live tests (`Tests/ActFourGranaryTests.cs`). The
+      first stage that needed NOTHING from the engine — the measure asks for the whole turn (3) and the
+      Crocodile's own other jaw is what makes it unmeetable; the Swarm reads "did any of the three hits reach
+      flesh" as health before/after; the Thief takes its cut of `burden_paid` at its OWN turn start against a
+      bookmark, which is ordering-free and is the master's "once per card played" for nothing.
 - [ ] **IV-3 — Stage 4, the Floodmark Basins.** Flood-Mark Reader, Drowned Field Scribe, Silt-Buried Farmer
       Shade. Encounters 12–15. §3.2 Observed Weighed Result lands here.
 - [ ] **IV-4 — Stage 5, the Tribute Causeway.** Foreign Tribute Shade, Donkey of the Third Tally,
@@ -389,6 +394,7 @@ force — these fights are "almost a separate game mode"); each god enters `Boss
 - [x] ★ the five-keyword decision — **ratified 2026-08-29**, written up above as canon
 - [x] **IV-0 — vocabulary + Stage 1 — DONE 2026-09-02** (Core seams 1 + 3 bought; 2/5/6 compose; 4 open for IV-7)
 - [x] **IV-1 — Stage 2, the Gate of Counted Names — DONE 2026-09-02** (5 identities / 7 encounters so far)
-- [ ] IV-2 … IV-11 standards · IV-12 … IV-15 elites · IV-16 … IV-19 bosses · IV-20 … IV-21 cards+relics ·
+- [x] **IV-2 — Stage 3, the Granary Courts — DONE 2026-09-02** (8 identities / 11 encounters so far)
+- [ ] IV-3 … IV-11 standards · IV-12 … IV-15 elites · IV-16 … IV-19 bosses · IV-20 … IV-21 cards+relics ·
       IV-22 … IV-23 events · IV-24 the act
 - [ ] V-0 structure · V-1 … V-6 the six gods · V-7 the whole game

@@ -113,5 +113,70 @@
       "stolen_name"
     ],
     "role": "multi_combat"
+  },
+  {
+    "id": "labyrinth_granary_01",
+    "name": "The Short Measure",
+    "act": 4,
+    "difficulty": "normal",
+    "enemies": [
+      "crocodile_of_the_short_measure"
+    ],
+    "weight": 2,
+    "tags": [
+      "licensing_labyrinth",
+      "stage_granary",
+      "burdened_intro"
+    ],
+    "role": "combat"
+  },
+  {
+    "id": "labyrinth_granary_02",
+    "name": "The Jar Seal Breaks",
+    "act": 4,
+    "difficulty": "normal",
+    "enemies": [
+      "jar_seal_scarab_swarm"
+    ],
+    "weight": 2,
+    "tags": [
+      "licensing_labyrinth",
+      "stage_granary",
+      "burdened_intro"
+    ],
+    "role": "combat"
+  },
+  {
+    "id": "labyrinth_granary_03",
+    "name": "Granary Theft",
+    "act": 4,
+    "difficulty": "normal",
+    "enemies": [
+      "hungry_grain_thief"
+    ],
+    "weight": 2,
+    "tags": [
+      "licensing_labyrinth",
+      "stage_granary",
+      "ration"
+    ],
+    "role": "combat"
+  },
+  {
+    "id": "labyrinth_granary_duo_01",
+    "name": "Weighted Theft",
+    "act": 4,
+    "difficulty": "hard",
+    "enemies": [
+      "crocodile_of_the_short_measure",
+      "hungry_grain_thief"
+    ],
+    "weight": 1,
+    "tags": [
+      "licensing_labyrinth",
+      "stage_granary",
+      "ration"
+    ],
+    "role": "multi_combat"
   }
 ]

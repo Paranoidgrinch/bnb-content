@@ -33,7 +33,7 @@ public static partial class ActFour
             "reed_cord_surveyor.re_tension_cord" => SurveyError(16),
             "crooked_rod_bearer.crooked_measure" => CrookedMeasure(11),
             "crooked_rod_bearer.brace_the_standard" => BraceTheStandard(17),
-            _ => null,
+            _ => GranaryIntent(enemyId, intentId),
         };
 
     // ── the Reed-Cord Surveyor ────────────────────────────────────────────────────────────────────────────

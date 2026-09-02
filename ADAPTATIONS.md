@@ -2154,3 +2154,44 @@ state between answers looks like it works — and is thrown away by the next ans
 from its baseline. Anything a probe needs on the table has to be a STARTING status
 (`FightProbe.SoloAgainstHero`, and now `FightProbe.RosterAgainstHero` for multi-body probes) or something the
 fight itself produces.
+
+## Act IV, Stage 3 — the Granary Courts (2026-09-02)
+
+The stage where the act's two economic words are pushed into each other on purpose. **It needed nothing new
+from the engine** — the first Act-IV stage that is pure content, which is what the vocabulary was bought for.
+
+**The short measure asks for the whole turn (3).** The master calls the Crocodile's standard "deliberately
+unfair" and leaves the number open. Three is exactly meetable with an unburdened hand of one-cost Deeds and
+awkward with a burdened one — the Crocodile's own other jaw is what makes its own demand unmeetable, which is
+the design's stated purpose ("the imposed burden sabotages the player's ability to meet the official
+measure"). No solvability filter is applied: that is elite machinery (§6.2), and a standard body is allowed
+to ask for something the turn cannot afford.
+
+**Snap at the Deficit reads the deficit.** The appendix lists it as flat damage in the *signature* column, and
+a signature intent named for the deficit that ignores it is a wasted beat — but a program that changed its
+damage would make the telegraph lie, because an intent's telegraph is generated from its authored JSON. So
+the bite is always the 19 it says, and what the deficit changes is whether one more burden comes with it. A
+measure met exactly is bitten just the same: the bite is not the punishment, the burden is.
+
+**"At least one unblocked HP hit" is read as flesh before and after.** The Swarm's three hits are dealt, and
+the seal is attached only if the player's health actually went down. Counting damage EVENTS would count the
+hits that Block ate; watching the player's Block would be wrong the moment something else on the field spent
+it. One seal per swarm, however many of the three got through.
+
+**The Thief takes its cut at its own turn start, not on each payment.** The tax already writes down how many
+surcharges have been paid (`burden_paid`, from IV-0); the Thief keeps a bookmark in that tally
+(`rations_collected`) and takes the difference when it comes round. That is ordering-free — no agreement is
+needed about whether the Thief's rule or the tax's own rule fires first on a payment — and it is the master's
+"once per card played" for nothing, because the tax writes one payment per card. It also suits the fiction: a
+thief collects its cut, it does not follow you around the office.
+
+**The feast heals ON TOP of the bite rather than instead of it.** The appendix offers "16–20 dmg *or* heal
+4–6 at threshold"; an intent that sometimes deals its telegraphed damage and sometimes deals none would be a
+lying telegraph. So Feast on Rations always bites for 18, and three rations buy 5 healing on top and are
+eaten doing it.
+
+**Stage 3 numbers, where the appendix gave bands:** Crocodile of the Short Measure 100 HP (94–108), Jar-Seal
+Scarab Swarm 94 (88–100), Hungry Grain Thief 96 (90–102); Short Measure 12 damage + the measure of 3, Load the
+Scale 11 + 1 Burdened, Snap at the Deficit 19; Seal Swarm 3 × 4, Scuttle 11, Seal the Jar 18 Block; Sack
+Weight 11 + 1 Burdened, Feast on Rations 18 (+5 healing at 3 Rations), Hide in the Granary 18 Block. The
+Thief's threshold and reward are the "balance-tunable" the master left open.

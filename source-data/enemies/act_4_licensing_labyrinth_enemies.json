@@ -318,5 +318,199 @@
       "support",
       "baboon"
     ]
+  },
+  {
+    "id": "crocodile_of_the_short_measure",
+    "name": "Crocodile of the Short Measure",
+    "max_hp": 100,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "short_measure",
+        "name": "Short Measure",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 12
+          }
+        ]
+      },
+      {
+        "id": "load_the_scale",
+        "name": "Load the Scale",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 11
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "burdened",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "snap_at_the_deficit",
+        "name": "Snap at the Deficit",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 19
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "labyrinth_body"
+      }
+    ],
+    "tags": [
+      "licensing_labyrinth",
+      "normal",
+      "stage_granary",
+      "weighed",
+      "burdened",
+      "crocodile"
+    ]
+  },
+  {
+    "id": "jar_seal_scarab_swarm",
+    "name": "Jar-Seal Scarab Swarm",
+    "max_hp": 94,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "seal_swarm",
+        "name": "Seal Swarm",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 4
+          },
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 4
+          },
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 4
+          }
+        ]
+      },
+      {
+        "id": "scuttle",
+        "name": "Scuttle",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 11
+          }
+        ]
+      },
+      {
+        "id": "seal_the_jar",
+        "name": "Seal the Jar",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 18
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "labyrinth_body"
+      }
+    ],
+    "tags": [
+      "licensing_labyrinth",
+      "normal",
+      "stage_granary",
+      "burdened",
+      "swarm"
+    ]
+  },
+  {
+    "id": "hungry_grain_thief",
+    "name": "Hungry Grain Thief",
+    "max_hp": 96,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "sack_weight",
+        "name": "Sack Weight",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 11
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "burdened",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "feast_on_rations",
+        "name": "Feast on Rations",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 18
+          }
+        ]
+      },
+      {
+        "id": "hide_in_the_granary",
+        "name": "Hide in the Granary",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 18
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "labyrinth_body"
+      },
+      {
+        "status": "hungry_for_rations"
+      }
+    ],
+    "tags": [
+      "licensing_labyrinth",
+      "normal",
+      "stage_granary",
+      "burdened",
+      "thief"
+    ]
   }
 ]
