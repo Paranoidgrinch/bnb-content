@@ -1869,5 +1869,345 @@
       "rotation",
       "guardian"
     ]
+  },
+  {
+    "id": "false_door_finder",
+    "name": "False-Door Finder",
+    "max_hp": 150,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "certify_passage",
+        "name": "Certify Passage",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 13
+          }
+        ]
+      },
+      {
+        "id": "false_threshold",
+        "name": "False Threshold",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "damage_per_status",
+            "target": "player",
+            "status": "claim",
+            "status_on": "owner",
+            "amount": 19,
+            "amount_per_stack": 4,
+            "cap": 12
+          }
+        ]
+      },
+      {
+        "id": "stone_door",
+        "name": "Stone Door",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 27
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "labyrinth_body"
+      },
+      {
+        "status": "necropolis_passage"
+      }
+    ],
+    "tags": [
+      "licensing_labyrinth",
+      "normal",
+      "stage_warrens",
+      "weighed",
+      "trespass",
+      "claim"
+    ]
+  },
+  {
+    "id": "cursed_loot_bearer",
+    "name": "Cursed Loot Bearer",
+    "max_hp": 156,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "cursed_load",
+        "name": "Cursed Load",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 16
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "burdened",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "loot_swing",
+        "name": "Loot Swing",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 22
+          }
+        ]
+      },
+      {
+        "id": "inventory_shield",
+        "name": "Inventory Shield",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 27
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "labyrinth_body"
+      },
+      {
+        "status": "every_object_requires_a_form"
+      }
+    ],
+    "tags": [
+      "licensing_labyrinth",
+      "normal",
+      "stage_warrens",
+      "burdened",
+      "paperwork",
+      "loot"
+    ]
+  },
+  {
+    "id": "star_table_scribe",
+    "name": "Star-Table Scribe",
+    "max_hp": 160,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "fixed_decan_measure",
+        "name": "Fixed Decan Measure",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 14
+          }
+        ]
+      },
+      {
+        "id": "star_stroke",
+        "name": "Star Stroke",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 20
+          }
+        ]
+      },
+      {
+        "id": "table_cover",
+        "name": "Table Cover",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 27
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "labyrinth_body"
+      }
+    ],
+    "tags": [
+      "licensing_labyrinth",
+      "normal",
+      "stage_fixed_days",
+      "weighed",
+      "inscribed",
+      "calendar"
+    ]
+  },
+  {
+    "id": "moon_cycle_ibis",
+    "name": "Moon-Cycle Ibis",
+    "max_hp": 155,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "set_the_rite",
+        "name": "Set the Rite",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 15
+          }
+        ]
+      },
+      {
+        "id": "moon_peck",
+        "name": "Moon Peck",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 21
+          }
+        ]
+      },
+      {
+        "id": "wing_shelter",
+        "name": "Wing Shelter",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 25
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "labyrinth_body"
+      },
+      {
+        "status": "lunar_return"
+      }
+    ],
+    "tags": [
+      "licensing_labyrinth",
+      "normal",
+      "stage_fixed_days",
+      "burdened",
+      "entombed",
+      "moon"
+    ]
+  },
+  {
+    "id": "eclipse_scarab",
+    "name": "Eclipse Scarab",
+    "max_hp": 174,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "solar_scar",
+        "name": "Solar Scar",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 20
+          },
+          {
+            "type": "apply_status",
+            "target": "owner",
+            "status": "approach_of_noon",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "approach_noon",
+        "name": "Approach Noon",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 27
+          },
+          {
+            "type": "apply_status",
+            "target": "owner",
+            "status": "approach_of_noon",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "black_noon",
+        "name": "Black Noon",
+        "intent_type": "mixed",
+        "special": true,
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 12
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "panic",
+            "amount": 2
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "entombed",
+            "amount": 1
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "labyrinth_body"
+      }
+    ],
+    "intent_rules": [
+      {
+        "condition": {
+          "kind": "self_status",
+          "status": "approach_of_noon",
+          "min_stacks": 3
+        },
+        "action": "black_noon",
+        "priority": 10
+      }
+    ],
+    "tags": [
+      "licensing_labyrinth",
+      "normal",
+      "stage_fixed_days",
+      "entombed",
+      "panic",
+      "clock"
+    ]
   }
 ]

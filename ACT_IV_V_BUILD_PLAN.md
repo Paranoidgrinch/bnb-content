@@ -296,10 +296,31 @@ decides and the choice is written into `ADAPTATIONS.md`.
       statuses, each intent opening its own and closing the other three.
       ▸ The appendix's optional cycle guard (a Block turn) was declined: the master's signature is four
       offices and "then repeat", and a fifth step blurs the one thing the identity is for.
-- [ ] **IV-9 — Stages 13 + 14.** False-Door Finder, Cursed Loot Bearer · Star-Table Scribe, Moon-Cycle Ibis,
-      Eclipse Scarab. Encounters 41–46. §3.9: Stage 13 reintroduces **Act-III law** locally — Safe-Conduct is
-      granted at combat start, never assumed. Reuses `ActThree`'s vocabulary; do not fork it. §3.7: the Ibis
-      repeats **1 stack**.
+- [x] **IV-9 — Stages 13 + 14. DONE 2026-09-02.** False-Door Finder, Cursed Loot Bearer · Star-Table Scribe,
+      Moon-Cycle Ibis, Eclipse Scarab. Encounters 41–46. §3.9: Stage 13 reintroduces **Act-III law** locally —
+      Safe-Conduct is granted at combat start, never assumed. Reuses `ActThree`'s vocabulary; do not fork it.
+      §3.7: the Ibis repeats **1 stack**.
+      ▸ **What landed:** `Converter/ActFourWarrens.cs` + 11 live tests (`Tests/ActFourWarrensTests.cs`).
+      Nothing new from the engine. §3.9 is one function — `ActFour.NecropolisOpening`, asked of the whole
+      roster beside Act III's own `HeroOpening`, so a Finder duo still hands out ONE licence — and it grants
+      **Act III's own statuses unchanged**: `green_docket_customs` + 1 `safe_conduct`. Nothing was forked, so
+      three Trespass owed to the Finder become the Finder's Claim through the act-III customs verbatim, and
+      the Claim is what `False Threshold` swings with (`damage_per_status` off the OWNER, so the telegraph
+      carries the whole formula).
+      ▸ The Finder answers the passage check on **its own turn start**, with one bookmark in each of the act's
+      two tallies (met and missed) — the first body to need BOTH, because it gives a different thing for each.
+      The Loot Bearer needed no rule beyond a bookmark in `burden_paid`: "once per card" is structural (the
+      tally moves once per card) and the total needs no ceiling (a turn can only pay as many surcharges as it
+      had Burdened for).
+      ▸ ★ **The Ibis's memory is a FACE, not a variable.** A program can answer a status it learns at fire
+      time (`Replicated`, IV-7) but cannot pocket one for three turns, so "remember the Last Rite" is two
+      marker statuses on the body, written by the act's own `OriginalAfflictionOnThePlayer` gate. That buys
+      more than storage: `Set the Rite` reads the same face and lays **the other** rite, so one pair of
+      markers carries both the memory and what is coming — and the player reads both off the ibis.
+      ▸ New probe primitive: **`FightProbe.SoloCycle`** — one authored body kept on SEVERAL of its intents, in
+      order, with nothing else acting over the top. A body whose identity IS a cycle could not be tested
+      before without dragging its whole encounter in (and the Scribe's Inscribed would have quietly resized
+      every assertion about the Ibis).
 - [ ] **IV-10 — Stage 15, the Cartouche Chambers.** Name-Erasing Chisel Spirit, Royal Genealogy Wall.
       Encounters 47–49. §3.8: **Royal Favor** is the Wall's own local resource; the player's status is never
       stolen, and a prevented gain grants nothing.
@@ -454,6 +475,7 @@ force — these fights are "almost a separate game mode"); each god enters `Boss
 - [x] **IV-6 — Stages 7 + 8 — DONE 2026-09-02** (21 identities / 27 encounters so far)
 - [x] **IV-7 — Stages 9 + 10 — DONE 2026-09-02** (24 identities / 33 encounters so far; **seam list closed**)
 - [x] **IV-8 — Stages 11 + 12 — DONE 2026-09-02** (28 identities / 40 encounters so far)
-- [ ] IV-9 … IV-11 standards · IV-12 … IV-15 elites · IV-16 … IV-19 bosses · IV-20 … IV-21 cards+relics ·
+- [x] **IV-9 — Stages 13 + 14 — DONE 2026-09-02** (33 identities / 46 encounters so far)
+- [ ] IV-10 … IV-11 standards · IV-12 … IV-15 elites · IV-16 … IV-19 bosses · IV-20 … IV-21 cards+relics ·
       IV-22 … IV-23 events · IV-24 the act
 - [ ] V-0 structure · V-1 … V-6 the six gods · V-7 the whole game

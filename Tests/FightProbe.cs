@@ -107,6 +107,25 @@ internal static class FightProbe
         .. EncounterPassives.ActOpeningStatuses(enemyIds),
     ];
 
+    // A solo probe that keeps SEVERAL of the enemy's intents, in the order given — how a body whose identity
+    // IS a cycle (the Moon-Cycle Ibis sets a rite, pecks, and returns to it) is driven without the rest of its
+    // encounter acting over the top of it. Special intents stay out of the list and are reached, as in the real
+    // game, only by the enemy's own intent rules.
+    public static EncounterDefinition SoloCycle(string enemyId, params string[] intentIds) =>
+        SoloCycle(enemyId, energy: 3, intentIds);
+
+    public static EncounterDefinition SoloCycle(string enemyId, int energy, params string[] intentIds)
+    {
+        var probe = Solo(enemyId, intentIds[0], energy);
+        var body = probe.Enemies[0] with
+        {
+            Actions = [.. intentIds.Select(i => new EnemyActionDefinitionId($"{enemyId}.{i}"))],
+        };
+
+        return new EncounterDefinition(probe.Id, [body], probe.HeroResources,
+            probe.HeroStartingStatuses, probe.HeroDisplayName, probe.CardsDrawnPerTurn, probe.TriggeredEffects);
+    }
+
     // A multi-enemy probe: each member is an authored enemy narrowed to one intent, optionally at the reduced
     // HP its encounter fields it at. Roster order is turn order.
     public static EncounterDefinition Roster(
