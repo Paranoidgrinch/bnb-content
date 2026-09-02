@@ -261,8 +261,18 @@ decides and the choice is written into `ADAPTATIONS.md`.
       whole formula.
       ▸ (The plan's own line called this the first Burdened pressure block; the master's Stage 6 is Fatigue,
       escape and stone. The master governs — Burdened's pressure block was Stage 3.)
-- [ ] **IV-6 — Stages 7 + 8.** Fallen Capstone Golem, Cornerstone Oath-Stone · Palette-Bearing Apprentice,
-      Hieroglyphic Complaint Wall. Encounters 22–27. §3.5 (Embalmed self-enabling) is binding for the Wall.
+- [x] **IV-6 — Stages 7 + 8. DONE 2026-09-02.** Fallen Capstone Golem, Cornerstone Oath-Stone ·
+      Palette-Bearing Apprentice, Hieroglyphic Complaint Wall. Encounters 22–27. §3.5 (Embalmed
+      self-enabling) is binding for the Wall.
+      ▸ **What landed:** `Converter/ActFourMonument.cs` + 10 live tests (`Tests/ActFourMonumentTests.cs`).
+      Nothing new from the engine. Placement is a visible status plus an intent rule (`self_status` min 3),
+      so the stone falls every fourth turn with the count on the body; Kept Oaths strike Broken Oaths off the
+      record (one telegraphed scaling term, and "a later hit reduced by 4" is what cancelling one comes to);
+      Fresh Pigment is an outgoing-application passive spent by the scribe's OWN entry; and the Wall makes
+      both halves of its signature itself — `Fade` now records a preserved AFFLICTION (`decays_preserved`)
+      and the Wall keeps a bookmark in it.
+      ▸ Pinned by test: **five Entombed take the turn before the capstone can fall on it**, so the heaviest
+      stone in practice lands at four. The act's two burial clocks meet there and do not stack.
 - [ ] **IV-7 — Stages 9 + 10.** Sun-Seal Bearer, False-Seal Forger · Kneeling Petitioners. Encounters 28–33.
       **§3.3 + §3.4 (Replicated) are the whole point of this step** — the second engine seam is proved here.
 - [ ] **IV-8 — Stages 11 + 12.** Natron Bearer, Linen-Wrapped Embalmer, Unfinished Mummy · Fourfold Vessel
@@ -423,6 +433,7 @@ force — these fights are "almost a separate game mode"); each god enters `Boss
 - [x] **IV-3 — Stage 4, the Floodmark Basins — DONE 2026-09-02** (11 identities / 15 encounters so far)
 - [x] **IV-4 — Stage 5, the Tribute Causeway — DONE 2026-09-02** (14 identities / 18 encounters so far)
 - [x] **IV-5 — Stage 6, the Corvée Yards — DONE 2026-09-02** (17 identities / 21 encounters so far)
-- [ ] IV-6 … IV-11 standards · IV-12 … IV-15 elites · IV-16 … IV-19 bosses · IV-20 … IV-21 cards+relics ·
+- [x] **IV-6 — Stages 7 + 8 — DONE 2026-09-02** (21 identities / 27 encounters so far)
+- [ ] IV-7 … IV-11 standards · IV-12 … IV-15 elites · IV-16 … IV-19 bosses · IV-20 … IV-21 cards+relics ·
       IV-22 … IV-23 events · IV-24 the act
 - [ ] V-0 structure · V-1 … V-6 the six gods · V-7 the whole game

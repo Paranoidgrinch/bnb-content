@@ -71,6 +71,10 @@ public static partial class ActFour
     // cleanse takes stacks too.
     public static CounterId BurdenPaid => new("burden_paid");
 
+    // How many afflictions preservation has held in place on this character — written at the one fading
+    // point, because "Embalmed prevented a decay" is a moment and not a state.
+    public static CounterId DecaysPreserved => new("decays_preserved");
+
     // How much Energy Fatigue has actually taken out of the player's hands in this fight — written by
     // Fatigue itself at the one moment it takes any, because losing a resource raises nothing a rule can
     // hear, and "the player has Fatigue" is a different fact: a player at zero Energy loses nothing to it.
@@ -293,15 +297,27 @@ public static partial class ActFour
     // When the bearer is preserved the fade does not happen and one Embalmed is spent in its place, which
     // makes Embalmed X read "the next X fades on this character do not happen" — one rule, no ordering
     // agreement between two turn-end triggers, and the same answer whichever status was about to shrink.
+    // `negative` says whether the thing being held is an affliction. A preservation is written down only for
+    // those, because the one body that lives off preservation — Stage 8's Hieroglyphic Complaint Wall — is
+    // built on grievances staying legally active, and a player's own wax being held is not a grievance.
     public static IEffectNode<TContext> Fade<TContext>(
-        ICombatantTargetSelector bearer, string statusId, int stacks = 1) where TContext : class =>
+        ICombatantTargetSelector bearer, string statusId, int stacks = 1, bool negative = true)
+        where TContext : class =>
         new ConditionalEffectNode<TContext>(
             new ComparisonExpression<TContext>(
                 new CombatantStatusStacksExpression<TContext>(bearer, new StatusDefinitionId(EmbalmedId)),
                 ComparisonOperator.Greater,
                 new ConstantExpression<TContext>(0)),
-            new ModifyStatusStacksNode<TContext>(
-                bearer, new StatusDefinitionId(EmbalmedId), new ConstantExpression<TContext>(-1)),
+            negative
+                ? new CausalSequenceEffectNode<TContext>(
+                [
+                    new ModifyStatusStacksNode<TContext>(
+                        bearer, new StatusDefinitionId(EmbalmedId), new ConstantExpression<TContext>(-1)),
+                    new SetCombatantCounterNode<TContext>(
+                        bearer, DecaysPreserved, new ConstantExpression<TContext>(1), relative: true),
+                ])
+                : new ModifyStatusStacksNode<TContext>(
+                    bearer, new StatusDefinitionId(EmbalmedId), new ConstantExpression<TContext>(-1)),
             new ModifyStatusStacksNode<TContext>(
                 bearer, new StatusDefinitionId(statusId), new ConstantExpression<TContext>(-stacks)));
 
@@ -343,6 +359,15 @@ public static partial class ActFour
         EscapePlan(),
         Stone(),
         StoneWork(),
+        // Stages 7 and 8 — the Monument Works and the Hall of Reed and Ink
+        Placement(),
+        KeptOath(),
+        BrokenOath(),
+        FoundationOath(),
+        FreshPigment(),
+        FreshPigmentRule(),
+        Complaint(),
+        UndismissedComplaint(),
     ];
 
     // The standard roster, stage by stage.
@@ -360,6 +385,10 @@ public static partial class ActFour
         "foreign_tribute_shade", "donkey_of_the_third_tally", "empty_handed_envoy",
         // Stage 6 — the Corvée Yards
         "rope_gang_wraith", "runaway_laborer", "stone_hauler_ushabti",
+        // Stage 7 — the Monument Works
+        "fallen_capstone_golem", "cornerstone_oath_stone",
+        // Stage 8 — the Hall of Reed and Ink
+        "palette_bearing_apprentice", "hieroglyphic_complaint_wall",
     };
 
     // ── shared idioms ─────────────────────────────────────────────────────────────────────────────────────

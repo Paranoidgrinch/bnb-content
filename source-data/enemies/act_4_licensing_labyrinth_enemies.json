@@ -1073,5 +1073,309 @@
       "burdened",
       "ushabti"
     ]
+  },
+  {
+    "id": "fallen_capstone_golem",
+    "name": "Fallen Capstone Golem",
+    "max_hp": 145,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "falling_dust",
+        "name": "Falling Dust",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 15
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "entombed",
+            "amount": 1
+          },
+          {
+            "type": "apply_status",
+            "target": "owner",
+            "status": "placement",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "set_support",
+        "name": "Set Support",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 27
+          },
+          {
+            "type": "apply_status",
+            "target": "owner",
+            "status": "placement",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "set_the_capstone",
+        "name": "Set the Capstone",
+        "intent_type": "attack",
+        "special": true,
+        "actions": [
+          {
+            "type": "damage_per_status",
+            "target": "player",
+            "status": "entombed",
+            "amount": 25,
+            "amount_per_stack": 4,
+            "cap": 12
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "labyrinth_body"
+      }
+    ],
+    "intent_rules": [
+      {
+        "condition": {
+          "kind": "self_status",
+          "status": "placement",
+          "min_stacks": 3
+        },
+        "action": "set_the_capstone",
+        "priority": 10
+      }
+    ],
+    "tags": [
+      "licensing_labyrinth",
+      "normal",
+      "stage_monument",
+      "entombed",
+      "clock",
+      "golem"
+    ]
+  },
+  {
+    "id": "cornerstone_oath_stone",
+    "name": "Cornerstone Oath-Stone",
+    "max_hp": 137,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "foundation_measure",
+        "name": "Foundation Measure",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 13
+          }
+        ]
+      },
+      {
+        "id": "broken_oath_smash",
+        "name": "Broken-Oath Smash",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "damage_per_status",
+            "target": "player",
+            "status": "broken_oath",
+            "status_on": "owner",
+            "amount": 20,
+            "amount_per_stack": 4,
+            "cap": 12
+          }
+        ]
+      },
+      {
+        "id": "foundation_wall",
+        "name": "Foundation Wall",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 27
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "labyrinth_body"
+      },
+      {
+        "status": "foundation_oath"
+      }
+    ],
+    "tags": [
+      "licensing_labyrinth",
+      "normal",
+      "stage_monument",
+      "weighed",
+      "oath",
+      "stone"
+    ]
+  },
+  {
+    "id": "palette_bearing_apprentice",
+    "name": "Palette-Bearing Apprentice",
+    "max_hp": 119,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "fresh_pigment_entry",
+        "name": "Fresh Pigment",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 12
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "inscribed",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "brush_stroke",
+        "name": "Brush Stroke",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 17
+          }
+        ]
+      },
+      {
+        "id": "palette_guard",
+        "name": "Palette Guard",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 20
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "labyrinth_body"
+      },
+      {
+        "status": "fresh_pigment_rule"
+      },
+      {
+        "status": "fresh_pigment"
+      }
+    ],
+    "tags": [
+      "licensing_labyrinth",
+      "normal",
+      "stage_hall",
+      "inscribed",
+      "scribe"
+    ]
+  },
+  {
+    "id": "hieroglyphic_complaint_wall",
+    "name": "Hieroglyphic Complaint Wall",
+    "max_hp": 150,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "preserve_the_complaint",
+        "name": "Preserve the Complaint",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 11
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "panic",
+            "amount": 1
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "embalmed",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "carved_accusation",
+        "name": "Carved Accusation",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "damage_per_status",
+            "target": "player",
+            "status": "complaint",
+            "status_on": "owner",
+            "amount": 18,
+            "amount_per_stack": 2,
+            "cap": 8
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "paperwork",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "stone_defense",
+        "name": "Stone Defense",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 31
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "labyrinth_body"
+      },
+      {
+        "status": "undismissed_complaint"
+      }
+    ],
+    "tags": [
+      "licensing_labyrinth",
+      "normal",
+      "stage_hall",
+      "embalmed",
+      "complaint",
+      "wall"
+    ]
   }
 ]
