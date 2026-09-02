@@ -159,7 +159,7 @@ primitives, it is a capability test, not a feature).
 | 1 | **How much Energy the player has spent this turn**, readable by a condition at end of turn | ✅ **BOUGHT (IV-0)** — `CombatantCardPlayTurnStats.ResourceSpentThisTurn`, fed from the cost-payment event, read by the `resourceSpentThisTurn` expression. The exact twin of `resourceGainedThisTurn`; counts what was ACTUALLY paid |
 | 2 | **A cost tax that is consumed by being paid** | ✅ **COMPOSES (IV-0)** — a flat `CardCost` passive modifier plus a `CardCostPaid` trigger that works a stack off and counts the payment (`burden_paid`). The one engine touch: `event` now means "what the play cost" under that trigger, where it used to mean 0 |
 | 3 | **A status that amplifies the next status application on its bearer and is consumed** — either polarity | ✅ **BOUGHT (IV-0)** — `StatusAmplificationSpec` + `DeclarativeStatusAmplificationInterceptor`, the mirror of `StatusPreventionSpec`: runs after prevention, never enlarges itself, one enlargement per application (`ApplyStatusEffectRequest.Amplified`), and announces polarity + size for IV-13 |
-| 4 | **`Replicated` applications** (§3.3/§3.4): an application carries a mark saying it was copied, and a replicated application can never trigger another replication | Statuses are applied without such a mark today |
+| 4 | **`Replicated` applications** (§3.3/§3.4) | ✅ **BOUGHT (IV-7)** — `ApplyStatusEffectRequest.Replicated`, carried as far as the applied/merged event, read by `eventIsReplicated`; plus `ApplyTriggerEventStatusNode`, which applies the status the event was about (a copy needs to name a status it only learns at fire time). **The seam list is now closed.** |
 | 5 | **Stun at a threshold, then reset** (Entombed 5) | ✅ **COMPOSES (IV-0)** — read at the bearer's turn start; Stun for one turn, five spent. ⚠ but the validator was inert on the path the game is played on; fixed in Core, see IV-0's record |
 | 6 | **Decay prevention on a bearer, both polarities** (Embalmed) | ✅ **COMPOSES (IV-0)** — almost nothing in this game decays by DURATION; fading is authored (Panic, Poison, Fatigue, Ward Wax), so preservation is written at the one fading point, `ActFour.Fade`, which all four now go through |
 
@@ -273,8 +273,18 @@ decides and the choice is written into `ADAPTATIONS.md`.
       and the Wall keeps a bookmark in it.
       ▸ Pinned by test: **five Entombed take the turn before the capstone can fall on it**, so the heaviest
       stone in practice lands at four. The act's two burial clocks meet there and do not stack.
-- [ ] **IV-7 — Stages 9 + 10.** Sun-Seal Bearer, False-Seal Forger · Kneeling Petitioners. Encounters 28–33.
-      **§3.3 + §3.4 (Replicated) are the whole point of this step** — the second engine seam is proved here.
+- [x] **IV-7 — Stages 9 + 10. DONE 2026-09-02.** Sun-Seal Bearer, False-Seal Forger · Kneeling Petitioners.
+      Encounters 28–33. **§3.3 + §3.4 (Replicated) are the whole point of this step.**
+      ▸ **What landed:** `Converter/ActFourSeal.cs` + 8 live tests (`Tests/ActFourSealTests.cs`), and **the
+      last row of the seam list**: `ApplyStatusEffectRequest.Replicated` (carried as far as the applied/merged
+      event), `eventIsReplicated`, and `ApplyTriggerEventStatusNode` — a rule can now answer an application
+      with an application of the SAME thing, which no content could express because a program had no way to
+      name a status it only learns at fire time.
+      ▸ ★ **Engine finding: a merge named the wrong body.** `StatusMergedCombatEvent` reported the existing
+      instance's source, so every "did somebody ELSE just apply something?" rule was wrong whenever the status
+      was already there. Fixed: the event answers "who did this?", the instance keeps its own source.
+      ▸ ★ **A body's Block lives from its own turn until its next turn start** — which is why the support body
+      acts FIRST in all five authored encounters of these stages, and why the tests pin that order.
 - [ ] **IV-8 — Stages 11 + 12.** Natron Bearer, Linen-Wrapped Embalmer, Unfinished Mummy · Fourfold Vessel
       Guardian. Encounters 34–40. §3.6: the Guardian cycles Body → Breath → Blood → Name, one office a turn,
       and the office is a **marker status**, not a counter.
@@ -434,6 +444,7 @@ force — these fights are "almost a separate game mode"); each god enters `Boss
 - [x] **IV-4 — Stage 5, the Tribute Causeway — DONE 2026-09-02** (14 identities / 18 encounters so far)
 - [x] **IV-5 — Stage 6, the Corvée Yards — DONE 2026-09-02** (17 identities / 21 encounters so far)
 - [x] **IV-6 — Stages 7 + 8 — DONE 2026-09-02** (21 identities / 27 encounters so far)
-- [ ] IV-7 … IV-11 standards · IV-12 … IV-15 elites · IV-16 … IV-19 bosses · IV-20 … IV-21 cards+relics ·
+- [x] **IV-7 — Stages 9 + 10 — DONE 2026-09-02** (24 identities / 33 encounters so far; **seam list closed**)
+- [ ] IV-8 … IV-11 standards · IV-12 … IV-15 elites · IV-16 … IV-19 bosses · IV-20 … IV-21 cards+relics ·
       IV-22 … IV-23 events · IV-24 the act
 - [ ] V-0 structure · V-1 … V-6 the six gods · V-7 the whole game

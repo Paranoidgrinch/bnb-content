@@ -1377,5 +1377,189 @@
       "complaint",
       "wall"
     ]
+  },
+  {
+    "id": "sun_seal_bearer",
+    "name": "Sun-Seal Bearer",
+    "max_hp": 134,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "authorized_mark",
+        "name": "Authorized Mark",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 13
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "inscribed",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "seal_strike",
+        "name": "Seal Strike",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 20
+          }
+        ]
+      },
+      {
+        "id": "royal_impression",
+        "name": "Royal Impression",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 25
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "labyrinth_body"
+      },
+      {
+        "status": "authorized_impression"
+      }
+    ],
+    "tags": [
+      "licensing_labyrinth",
+      "normal",
+      "stage_seal",
+      "inscribed",
+      "seal"
+    ]
+  },
+  {
+    "id": "false_seal_forger",
+    "name": "False-Seal Forger",
+    "max_hp": 124,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "forgery_setup",
+        "name": "Forgery Setup",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 11
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "doubt",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "imitation_cut",
+        "name": "Imitation Cut",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 16
+          }
+        ]
+      },
+      {
+        "id": "counterfeit_seal",
+        "name": "Counterfeit Seal",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 20
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "labyrinth_body"
+      },
+      {
+        "status": "counterfeit_authorization"
+      }
+    ],
+    "tags": [
+      "licensing_labyrinth",
+      "normal",
+      "stage_seal",
+      "replicated",
+      "support",
+      "forger"
+    ]
+  },
+  {
+    "id": "kneeling_petitioners",
+    "name": "Kneeling Petitioners",
+    "max_hp": 120,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "petition_chant",
+        "name": "Petition Chant",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 13
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "doubt",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "kneel_in_unison",
+        "name": "Kneel in Unison",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "all_enemies",
+            "amount": 10
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "labyrinth_body"
+      },
+      {
+        "status": "processional_approval"
+      }
+    ],
+    "tags": [
+      "licensing_labyrinth",
+      "normal",
+      "stage_procession",
+      "support",
+      "petitioners"
+    ]
   }
 ]
