@@ -368,6 +368,10 @@ public static partial class ActFour
         FreshPigmentRule(),
         Complaint(),
         UndismissedComplaint(),
+        // Stages 9 and 10 — the Courts of the Royal Seal and the Processional Galleries
+        AuthorizedImpression(),
+        CounterfeitAuthorization(),
+        ProcessionalApproval(),
     ];
 
     // The standard roster, stage by stage.
@@ -389,6 +393,10 @@ public static partial class ActFour
         "fallen_capstone_golem", "cornerstone_oath_stone",
         // Stage 8 — the Hall of Reed and Ink
         "palette_bearing_apprentice", "hieroglyphic_complaint_wall",
+        // Stage 9 — the Courts of the Royal Seal
+        "sun_seal_bearer", "false_seal_forger",
+        // Stage 10 — the Processional Galleries
+        "kneeling_petitioners",
     };
 
     // ── shared idioms ─────────────────────────────────────────────────────────────────────────────────────

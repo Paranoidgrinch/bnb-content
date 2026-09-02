@@ -439,5 +439,106 @@
       "complaint"
     ],
     "role": "multi_combat"
+  },
+  {
+    "id": "labyrinth_seal_01",
+    "name": "The Authorized Impression",
+    "act": 4,
+    "difficulty": "normal",
+    "enemies": [
+      "sun_seal_bearer"
+    ],
+    "weight": 2,
+    "tags": [
+      "licensing_labyrinth",
+      "stage_seal",
+      "inscribed"
+    ],
+    "role": "combat"
+  },
+  {
+    "id": "labyrinth_seal_duo_01",
+    "name": "Counterfeit Venom",
+    "act": 4,
+    "difficulty": "hard",
+    "enemies": [
+      "cobra_of_the_entry_mark",
+      "false_seal_forger"
+    ],
+    "weight": 1,
+    "tags": [
+      "licensing_labyrinth",
+      "stage_seal",
+      "replicated"
+    ],
+    "role": "multi_combat"
+  },
+  {
+    "id": "labyrinth_seal_duo_02",
+    "name": "Authorized Counterfeit",
+    "act": 4,
+    "difficulty": "hard",
+    "enemies": [
+      "sun_seal_bearer",
+      "false_seal_forger"
+    ],
+    "weight": 1,
+    "tags": [
+      "licensing_labyrinth",
+      "stage_seal",
+      "replicated"
+    ],
+    "role": "multi_combat"
+  },
+  {
+    "id": "labyrinth_procession_duo_01",
+    "name": "Processional Seal",
+    "act": 4,
+    "difficulty": "hard",
+    "enemies": [
+      "kneeling_petitioners",
+      "sun_seal_bearer"
+    ],
+    "weight": 1,
+    "tags": [
+      "licensing_labyrinth",
+      "stage_procession",
+      "block"
+    ],
+    "role": "multi_combat"
+  },
+  {
+    "id": "labyrinth_procession_duo_02",
+    "name": "Fresh Ink Before the Procession",
+    "act": 4,
+    "difficulty": "hard",
+    "enemies": [
+      "kneeling_petitioners",
+      "palette_bearing_apprentice"
+    ],
+    "weight": 1,
+    "tags": [
+      "licensing_labyrinth",
+      "stage_procession",
+      "inscribed"
+    ],
+    "role": "multi_combat"
+  },
+  {
+    "id": "labyrinth_procession_duo_03",
+    "name": "False-Sealed Petition",
+    "act": 4,
+    "difficulty": "hard",
+    "enemies": [
+      "kneeling_petitioners",
+      "false_seal_forger"
+    ],
+    "weight": 1,
+    "tags": [
+      "licensing_labyrinth",
+      "stage_procession",
+      "replicated"
+    ],
+    "role": "multi_combat"
   }
 ]

@@ -2391,3 +2391,54 @@ Oath-Stone 137 (128–146), Palette-Bearing Apprentice 119 (112–126), Hierogly
 cap +12), Foundation Wall 27 Block; Fresh Pigment 12 + 1 Inscribed, Brush Stroke 17, Palette Guard 20 Block;
 Preserve the Complaint 11 + 1 Panic + 1 Embalmed, Carved Accusation 18 (+2 per Complaint, cap +8) + 1
 Paperwork, Stone Defense 31 Block.
+
+## Act IV, Stages 9 and 10 — the Royal Seal and the Processional Galleries (2026-09-02)
+
+Three bodies that do nothing to the player directly and change everything about what the others do: one
+authorises, one counterfeits, one legitimises. **This is where the last row of the seam list was bought**
+(§3.3 + §3.4), and where two engine findings came out of it.
+
+**`Replicated` is a mark on the application, exactly like `Amplified`.** An `ApplyStatusEffectRequest` can now
+say it is a COPY, and the mark rides as far as the applied/merged event — which is the only place a rule can
+see it. A copy is an ordinary application in every other way: it lands, it is refused or enlarged like any
+other, and rules may answer it (the Kneeling Petitioners deliberately do). What it must never do is start
+another copy chain or count as the ORIGINAL a chain is measured from, and both are one question
+(`eventIsReplicated`) asked before copying.
+
+**A rule can now answer an application with an application of the same thing** (`ApplyTriggerEventStatusNode`,
+`node.applyTriggerEventStatus`). No amount of content could express that: a program had no way to name a
+status it only learns at fire time. It is the node the False-Seal Forger is, and the Sun-Seal Bearer uses it
+too.
+
+★ **A merge now names the body that just applied it, not the instance's owner.** Found by the Forger:
+`StatusMergedCombatEvent` reported `existingStatus.SourceCombatantId`, so every rule that asks "did somebody
+ELSE just apply something?" got the wrong body the moment the status was already on the player — which is
+most of the time. "Who did this to me?" and "whose status is this?" are different questions, and an event
+answers the first; the instance keeps its own source untouched for rules about standing (Act III's
+source-bound Trespass reads the STATUS, not the event). Fixed in Core with a test on both halves.
+
+**The Sun-Seal's +1 arrives as a second, marked application rather than by enlarging the first.** By the time
+anything can answer an application it has already landed, so "gains +1 stack" is authored as one more stack of
+the same status — and marked a copy, so the Forger standing beside it cannot counterfeit the authorization as
+if it were the original (§3.3: a replicated application never becomes the round's original). Encounter 30's
+order therefore comes out as 1 original + 1 authorised + 1 forged = 3 stacks, and no cascade.
+
+★ **A body's Block lives from its own turn until its next turn start**, and that decides the roster order of
+every encounter on these two stages. The seal can only authorise while its impression is intact, and the
+procession's bracing is swept away by the braced body's own turn start — so the support body acts FIRST in
+all five authored encounters (Bearer before Cobra, Petitioners before everyone). The tests pin the same
+ordering, and pin the negative case: a bearer that spent its turn attacking authorises nothing.
+
+**The procession does not check paperwork.** Its approval deliberately omits the replicated question — a
+forged affliction legitimises just as well, which is the master's own clause. The case is reachable exactly
+once: the procession's OWN chant is not foreign and wins no approval, and the Forger's copy of it is.
+
+**Stage 9 and 10 numbers, where the appendix gave bands:** Sun-Seal Bearer 134 HP (126–142), False-Seal Forger
+124 (116–132), Kneeling Petitioners 120 (112–128); Authorized Mark 13 + 1 Inscribed, Seal Strike 20, Royal
+Impression 25 Block (pressing the seal costs 6 of it); Forgery Setup 11 + 1 Doubt, Imitation Cut 16,
+Counterfeit Seal 20 Block; Petition Chant 13 + 1 Doubt, Kneel in Unison 10 Block to every ally, and the
+approval is 7 Block to each body still standing.
+
+**Neither support body is ever fielded alone** — the Forger has nothing to counterfeit and the Petitioners
+nothing to legitimise — so both appear only in duos, and the Forger's own encounter borrows Stage 2's Cobra
+as the cleanest original status source in the act, exactly as the master prescribes.
