@@ -178,5 +178,70 @@
       "ration"
     ],
     "role": "multi_combat"
+  },
+  {
+    "id": "labyrinth_floodmark_01",
+    "name": "Read the Floodmark",
+    "act": 4,
+    "difficulty": "normal",
+    "enemies": [
+      "flood_mark_reader"
+    ],
+    "weight": 2,
+    "tags": [
+      "licensing_labyrinth",
+      "stage_basins",
+      "entombed_intro"
+    ],
+    "role": "combat"
+  },
+  {
+    "id": "labyrinth_floodmark_02",
+    "name": "Silted Record",
+    "act": 4,
+    "difficulty": "normal",
+    "enemies": [
+      "drowned_field_scribe"
+    ],
+    "weight": 2,
+    "tags": [
+      "licensing_labyrinth",
+      "stage_basins",
+      "entombed_intro"
+    ],
+    "role": "combat"
+  },
+  {
+    "id": "labyrinth_floodmark_03",
+    "name": "Rising Field",
+    "act": 4,
+    "difficulty": "normal",
+    "enemies": [
+      "silt_buried_farmer_shade"
+    ],
+    "weight": 2,
+    "tags": [
+      "licensing_labyrinth",
+      "stage_basins",
+      "flood"
+    ],
+    "role": "combat"
+  },
+  {
+    "id": "labyrinth_floodmark_duo_01",
+    "name": "Faulty Flood Record",
+    "act": 4,
+    "difficulty": "hard",
+    "enemies": [
+      "flood_mark_reader",
+      "drowned_field_scribe"
+    ],
+    "weight": 1,
+    "tags": [
+      "licensing_labyrinth",
+      "stage_basins",
+      "entombed"
+    ],
+    "role": "multi_combat"
   }
 ]

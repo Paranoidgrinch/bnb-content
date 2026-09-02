@@ -229,8 +229,15 @@ decides and the choice is written into `ADAPTATIONS.md`.
       Crocodile's own other jaw is what makes it unmeetable; the Swarm reads "did any of the three hits reach
       flesh" as health before/after; the Thief takes its cut of `burden_paid` at its OWN turn start against a
       bookmark, which is ordering-free and is the master's "once per card played" for nothing.
-- [ ] **IV-3 — Stage 4, the Floodmark Basins.** Flood-Mark Reader, Drowned Field Scribe, Silt-Buried Farmer
-      Shade. Encounters 12–15. §3.2 Observed Weighed Result lands here.
+- [x] **IV-3 — Stage 4, the Floodmark Basins. DONE 2026-09-02.** Flood-Mark Reader, Drowned Field Scribe,
+      Silt-Buried Farmer Shade. Encounters 12–15. §3.2 Observed Weighed Result lands here.
+      ▸ **What landed:** `Converter/ActFourBasins.cs` + 9 live tests (`Tests/ActFourBasinsTests.cs`). Nothing
+      new from the engine again. **"Once per Weighed resolution" became arithmetic:** the resolution keeps two
+      growing tallies (`measures_met`, `measures_failed`) and every body that answers resolutions keeps its own
+      bookmark in one — so several bodies may listen to the same measure in any order (`ActFour.SinceLastLooked`
+      / `MoveTheBookmark`, the idiom the Hungry Grain Thief already ate by). The Stage-2 watcher is now the
+      shared `ActFour.FollowTheApplicant`, carrying both lessons it paid for (watch the EXPIRY; settle at the
+      TURN start), and the Drowned Field Scribe is its second user.
 - [ ] **IV-4 — Stage 5, the Tribute Causeway.** Foreign Tribute Shade, Donkey of the Third Tally,
       Empty-Handed Envoy. Encounters 16–18.
 - [ ] **IV-5 — Stage 6, the Corvée Yards.** Rope-Gang Wraith, Runaway Laborer, Stone-Hauler Ushabti.
@@ -395,6 +402,7 @@ force — these fights are "almost a separate game mode"); each god enters `Boss
 - [x] **IV-0 — vocabulary + Stage 1 — DONE 2026-09-02** (Core seams 1 + 3 bought; 2/5/6 compose; 4 open for IV-7)
 - [x] **IV-1 — Stage 2, the Gate of Counted Names — DONE 2026-09-02** (5 identities / 7 encounters so far)
 - [x] **IV-2 — Stage 3, the Granary Courts — DONE 2026-09-02** (8 identities / 11 encounters so far)
-- [ ] IV-3 … IV-11 standards · IV-12 … IV-15 elites · IV-16 … IV-19 bosses · IV-20 … IV-21 cards+relics ·
+- [x] **IV-3 — Stage 4, the Floodmark Basins — DONE 2026-09-02** (11 identities / 15 encounters so far)
+- [ ] IV-4 … IV-11 standards · IV-12 … IV-15 elites · IV-16 … IV-19 bosses · IV-20 … IV-21 cards+relics ·
       IV-22 … IV-23 events · IV-24 the act
 - [ ] V-0 structure · V-1 … V-6 the six gods · V-7 the whole game

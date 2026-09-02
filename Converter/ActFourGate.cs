@@ -89,64 +89,8 @@ public static partial class ActFour
         UsesStacks = false,
         Tags = [],
         PassiveModifiers = [],
-        Triggers =
-        [
-            Trigger(Recount<StatusAppliedTriggeredEffectContext>(), nameof(TriggerEvent.StatusApplied),
-                StatusTriggerScope.Anywhere),
-            Trigger(Recount<StatusMergedTriggeredEffectContext>(), nameof(TriggerEvent.StatusMerged),
-                StatusTriggerScope.Anywhere),
-            Trigger(Recount<StatusStacksChangedTriggeredEffectContext>(), nameof(TriggerEvent.StatusStacksChanged),
-                StatusTriggerScope.Anywhere),
-            Trigger(Recount<StatusRemovedTriggeredEffectContext>(), nameof(TriggerEvent.StatusRemoved),
-                StatusTriggerScope.Anywhere),
-            // The register running out is reported as an EXPIRY, not as a removal or a stack change — and
-            // running out is the commonest way a player leaves the register, since the last stack goes by
-            // being spent. A count that did not watch this one would show the Pilgrim as Counted for the
-            // rest of the fight.
-            Trigger(Recount<StatusExpiredTriggeredEffectContext>(), nameof(TriggerEvent.StatusExpired),
-                StatusTriggerScope.Anywhere),
-            // …and at every turn start from nothing at all, which is what settles the OPENING state: a
-            // player who walks in already inscribed raises no status event for the count to hear. It is the
-            // TURN and not the round, because a fight's first round starts before its bodies are dressed —
-            // at that moment nothing wears this rule, and a rule nobody wears does not fire.
-            Trigger(Recount<TurnStartedTriggeredEffectContext>(gated: false), nameof(TriggerEvent.TurnStarted),
-                StatusTriggerScope.Anywhere),
-        ],
+        Triggers = FollowTheApplicant(NoNumberId, UncountedId, InscribedId, threshold: 1, wornAtOrAbove: false),
     };
-
-    // Read the register and set the state to match. Idempotent: it is safe to ask twice, which matters
-    // because one application can raise two of the events it answers.
-    //
-    // `gated` is whether the program should first ask that the event was about the register at all. Every
-    // status event does; a round turning has no status to ask about and recounts unconditionally.
-    private static EffectProgram<TContext> Recount<TContext>(bool gated = true) where TContext : class
-    {
-        var pilgrim = Bearer<TContext>(NoNumberId);
-
-        IEffectNode<TContext> count =
-                new ConditionalEffectNode<TContext>(
-                    new ComparisonExpression<TContext>(
-                        new CombatantStatusStacksExpression<TContext>(
-                            Applicant, new StatusDefinitionId(InscribedId)),
-                        ComparisonOperator.Greater,
-                        new ConstantExpression<TContext>(0)),
-                    // In the register: the Pilgrim is Counted, and takes what it is given.
-                    new RemoveStatusNode<TContext>(pilgrim, new StatusDefinitionId(UncountedId)),
-                    // Out of it: Uncounted again — but only once, or a marker would pile up.
-                    new ConditionalEffectNode<TContext>(
-                        new NotExpression<TContext>(
-                            new TargetHasStatusExpression<TContext>(
-                                pilgrim, new StatusDefinitionId(UncountedId))),
-                        new ApplyStatusNode<TContext>(
-                            pilgrim, new StatusDefinitionId(UncountedId), new ConstantExpression<TContext>(1))));
-
-        return new EffectProgram<TContext>(
-            gated
-                ? new ConditionalEffectNode<TContext>(
-                    // Only the register's own movements are worth a recount.
-                    new TriggerEventStatusIsExpression<TContext>(new StatusDefinitionId(InscribedId)), count)
-                : count);
-    }
 
     // ── the Name-Eating Baboon ────────────────────────────────────────────────────────────────────────────
 
@@ -217,7 +161,7 @@ public static partial class ActFour
 
     private static EffectProgram<StatusApplicationAmplifiedTriggeredEffectContext> ChewTheName()
     {
-        var baboon = Bearer<StatusApplicationAmplifiedTriggeredEffectContext>(ChewedCredentialsId);
+        var baboon = Bearer(ChewedCredentialsId);
 
         // "source" here is the combatant the enlarged status landed on, and "eventTarget" is whoever applied
         // it — so this asks: it happened to the player, and the applier was not a Baboon.
@@ -289,13 +233,4 @@ public static partial class ActFour
             new SetCombatantCounterNode<RoundStartedTriggeredEffectContext>(
                 CombatantTargetSelectors.IterationTarget, NameStolenThisRound,
                 new ConstantExpression<RoundStartedTriggeredEffectContext>(0), relative: false)));
-
-    // ── addressing the parties ────────────────────────────────────────────────────────────────────────────
-
-    // "The body whose rule this is" — the living combatant carrying that rule. FirstTarget because a scalar
-    // read needs one combatant; two bodies never carry the same rule in this stage.
-    private static ICombatantTargetSelector Bearer<TContext>(string ruleId) where TContext : class =>
-        CombatantTargetSelectors.FirstTarget(
-            CombatantTargetSelectors.WithStatus(
-                CombatantTargetSelectors.AllAliveCombatants, new StatusDefinitionId(ruleId)));
 }

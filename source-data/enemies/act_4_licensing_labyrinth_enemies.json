@@ -512,5 +512,207 @@
       "burdened",
       "thief"
     ]
+  },
+  {
+    "id": "flood_mark_reader",
+    "name": "Flood-Mark Reader",
+    "max_hp": 105,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "read_the_high_mark",
+        "name": "Read the High Mark",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 12
+          }
+        ]
+      },
+      {
+        "id": "silt_lash",
+        "name": "Silt Lash",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 17
+          }
+        ]
+      },
+      {
+        "id": "levee_notes",
+        "name": "Levee Notes",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 19
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "labyrinth_body"
+      },
+      {
+        "status": "high_water_mark"
+      }
+    ],
+    "tags": [
+      "licensing_labyrinth",
+      "normal",
+      "stage_basins",
+      "weighed",
+      "entombed",
+      "reader"
+    ]
+  },
+  {
+    "id": "drowned_field_scribe",
+    "name": "Drowned Field Scribe",
+    "max_hp": 106,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "silted_filing",
+        "name": "Silted Filing",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 13
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "paperwork",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "drowned_record",
+        "name": "Drowned Record",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 18
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "entombed",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "mud_ledger",
+        "name": "Mud Ledger",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 20
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "labyrinth_body"
+      },
+      {
+        "status": "silted_record_rule"
+      }
+    ],
+    "tags": [
+      "licensing_labyrinth",
+      "normal",
+      "stage_basins",
+      "entombed",
+      "paperwork",
+      "scribe"
+    ]
+  },
+  {
+    "id": "silt_buried_farmer_shade",
+    "name": "Silt-Buried Farmer Shade",
+    "max_hp": 109,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "keep_the_furrow",
+        "name": "Keep the Furrow",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 11
+          }
+        ]
+      },
+      {
+        "id": "mud_pull",
+        "name": "Mud Pull",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 14
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "entombed",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "raise_the_bank",
+        "name": "Raise the Bank",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 20
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "labyrinth_body"
+      },
+      {
+        "status": "rising_flood"
+      },
+      {
+        "status": "flood",
+        "stacks": 1
+      }
+    ],
+    "tags": [
+      "licensing_labyrinth",
+      "normal",
+      "stage_basins",
+      "weighed",
+      "entombed",
+      "clock"
+    ]
   }
 ]

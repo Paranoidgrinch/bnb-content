@@ -59,6 +59,13 @@ public static partial class ActFour
     // requirement, and that is a status they can see (the marker rule from Act III's boss pass).
     public static CounterId MeasureResult => new("measure_result");
 
+    // How many measures have been MET and how many MISSED in this fight — two tallies that only ever grow.
+    // A record of the last measure cannot answer "once per resolution": the same failure would be answered
+    // again every time a body looked. A body that cares keeps its own bookmark in one of these and takes the
+    // difference, which is the same ordering-free idiom the Hungry Grain Thief eats by.
+    public static CounterId MeasuresMet => new("measures_met");
+    public static CounterId MeasuresFailed => new("measures_failed");
+
     // How many times the bearer has worked a stack of Burdened off by paying its surcharge. The Colossus of
     // the Endless Procession (IV-15) asks exactly this, and "a stack is gone" is not the same question: a
     // cleanse takes stacks too.
@@ -105,6 +112,24 @@ public static partial class ActFour
                                     new CombatantStatusStacksExpression<TurnEndedTriggeredEffectContext>(
                                         CombatantTargetSelectors.Source, new StatusDefinitionId(WeighedId))))),
                         relative: false),
+
+                    // …and the running tallies a body can keep a bookmark in. The record above says what the
+                    // LAST measure came to; these say how many have been met and missed altogether, which is
+                    // the only way a rule can answer "once per resolution" without agreeing with anybody
+                    // about the order two turn-end rules fire in.
+                    new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
+                        new ComparisonExpression<TurnEndedTriggeredEffectContext>(
+                            new ResourceSpentThisTurnExpression<TurnEndedTriggeredEffectContext>(
+                                CombatantTargetSelectors.Source),
+                            ComparisonOperator.Equal,
+                            new CombatantStatusStacksExpression<TurnEndedTriggeredEffectContext>(
+                                CombatantTargetSelectors.Source, new StatusDefinitionId(WeighedId))),
+                        new SetCombatantCounterNode<TurnEndedTriggeredEffectContext>(
+                            CombatantTargetSelectors.Source, MeasuresMet,
+                            new ConstantExpression<TurnEndedTriggeredEffectContext>(1), relative: true),
+                        new SetCombatantCounterNode<TurnEndedTriggeredEffectContext>(
+                            CombatantTargetSelectors.Source, MeasuresFailed,
+                            new ConstantExpression<TurnEndedTriggeredEffectContext>(1), relative: true)),
 
                     new RemoveStatusNode<TurnEndedTriggeredEffectContext>(
                         CombatantTargetSelectors.Source, new StatusDefinitionId(WeighedId)),
@@ -294,6 +319,12 @@ public static partial class ActFour
         // Stage 3 — the Granary Courts
         Ration(),
         HungryForRations(),
+        // Stage 4 — the Floodmark Basins
+        HighWaterMark(),
+        SiltedRecord(),
+        SiltedRecordRule(),
+        Flood(),
+        RisingFlood(),
     ];
 
     // The standard roster, stage by stage.
@@ -305,7 +336,100 @@ public static partial class ActFour
         "uncounted_pilgrim", "cobra_of_the_entry_mark", "name_eating_baboon",
         // Stage 3 — the Granary Courts
         "crocodile_of_the_short_measure", "jar_seal_scarab_swarm", "hungry_grain_thief",
+        // Stage 4 — the Floodmark Basins
+        "flood_mark_reader", "drowned_field_scribe", "silt_buried_farmer_shade",
     };
+
+    // ── shared idioms ─────────────────────────────────────────────────────────────────────────────────────
+
+    // "The body whose rule this is" — the living combatant carrying that rule. FirstTarget because a scalar
+    // read needs one combatant; no two bodies in this act carry the same rule.
+    public static ICombatantTargetSelector Bearer(string ruleId) =>
+        CombatantTargetSelectors.FirstTarget(
+            CombatantTargetSelectors.WithStatus(
+                CombatantTargetSelectors.AllAliveCombatants, new StatusDefinitionId(ruleId)));
+
+    // The bookmark idiom, twice over.
+    //
+    // A body that lives off a running tally the player keeps — surcharges paid, measures missed — must not
+    // answer the same entry twice, and must not depend on the order two rules fire in. So it keeps a
+    // bookmark in the tally, reads the DIFFERENCE at a fixed moment of its own (its own turn start), and
+    // then moves the bookmark up. A body that joins late, looks twice, or misses a turn takes exactly its
+    // share and no more.
+    public static ICombatExpression<TContext, int> SinceLastLooked<TContext>(
+        ICombatantTargetSelector body, CounterId tally, CounterId bookmark) where TContext : class =>
+        new SubtractExpression<TContext>(
+            new CombatantCounterExpression<TContext>(Applicant, tally),
+            new CombatantCounterExpression<TContext>(body, bookmark));
+
+    public static IEffectNode<TContext> MoveTheBookmark<TContext>(
+        ICombatantTargetSelector body, CounterId tally, CounterId bookmark) where TContext : class =>
+        new SetCombatantCounterNode<TContext>(
+            body, bookmark, new CombatantCounterExpression<TContext>(Applicant, tally), relative: false);
+
+    // A body whose STATE follows a number on the player: while the applicant's `watchedId` is at (or below)
+    // `threshold`, the body wearing `ruleId` also wears `markerId`, and otherwise it does not.
+    //
+    // Two bodies in this act live on this — the Uncounted Pilgrim, legible only while the player is in the
+    // register, and the Drowned Field Scribe, whose ink thickens once the player is deep enough in silt —
+    // and both taught the same two lessons, which is why the rule is written once:
+    //
+    //   a status losing its LAST stack is reported as an EXPIRY, not as a removal or a stack change, and
+    //   running out is the commonest way a number reaches zero. A watcher blind to expiry shows a stale
+    //   state for the rest of the fight;
+    //   and the OPENING state has no event at all: a player who walks in already carrying the number raises
+    //   nothing to hear. So the state is also settled at every turn start — the TURN and not the round,
+    //   because a fight's first round starts before its bodies are dressed, and a rule nobody wears yet
+    //   does not fire.
+    public static IReadOnlyList<StatusTriggerData> FollowTheApplicant(
+        string ruleId, string markerId, string watchedId, int threshold, bool wornAtOrAbove)
+    {
+        EffectProgram<TContext> Settle<TContext>(bool gated) where TContext : class
+        {
+            var body = Bearer(ruleId);
+
+            var atOrAbove = new ComparisonExpression<TContext>(
+                new CombatantStatusStacksExpression<TContext>(Applicant, new StatusDefinitionId(watchedId)),
+                ComparisonOperator.GreaterOrEqual,
+                new ConstantExpression<TContext>(threshold));
+
+            IEffectNode<TContext> wear =
+                new ConditionalEffectNode<TContext>(
+                    new NotExpression<TContext>(
+                        new TargetHasStatusExpression<TContext>(body, new StatusDefinitionId(markerId))),
+                    new ApplyStatusNode<TContext>(
+                        body, new StatusDefinitionId(markerId), new ConstantExpression<TContext>(1)));
+
+            IEffectNode<TContext> shed = new RemoveStatusNode<TContext>(body, new StatusDefinitionId(markerId));
+
+            IEffectNode<TContext> settle = wornAtOrAbove
+                ? new ConditionalEffectNode<TContext>(atOrAbove, wear, shed)
+                : new ConditionalEffectNode<TContext>(atOrAbove, shed, wear);
+
+            return new EffectProgram<TContext>(
+                gated
+                    // Only movements of the number being watched are worth settling for.
+                    ? new ConditionalEffectNode<TContext>(
+                        new TriggerEventStatusIsExpression<TContext>(new StatusDefinitionId(watchedId)), settle)
+                    : settle);
+        }
+
+        return
+        [
+            Trigger(Settle<StatusAppliedTriggeredEffectContext>(gated: true),
+                nameof(TriggerEvent.StatusApplied), StatusTriggerScope.Anywhere),
+            Trigger(Settle<StatusMergedTriggeredEffectContext>(gated: true),
+                nameof(TriggerEvent.StatusMerged), StatusTriggerScope.Anywhere),
+            Trigger(Settle<StatusStacksChangedTriggeredEffectContext>(gated: true),
+                nameof(TriggerEvent.StatusStacksChanged), StatusTriggerScope.Anywhere),
+            Trigger(Settle<StatusRemovedTriggeredEffectContext>(gated: true),
+                nameof(TriggerEvent.StatusRemoved), StatusTriggerScope.Anywhere),
+            Trigger(Settle<StatusExpiredTriggeredEffectContext>(gated: true),
+                nameof(TriggerEvent.StatusExpired), StatusTriggerScope.Anywhere),
+            Trigger(Settle<TurnStartedTriggeredEffectContext>(gated: false),
+                nameof(TriggerEvent.TurnStarted), StatusTriggerScope.Anywhere),
+        ];
+    }
 
     private static StatusTriggerData Trigger<TContext>(
         EffectProgram<TContext> program, string trigger,
