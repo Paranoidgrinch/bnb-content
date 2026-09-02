@@ -1561,5 +1561,313 @@
       "support",
       "petitioners"
     ]
+  },
+  {
+    "id": "natron_bearer",
+    "name": "Natron Bearer",
+    "max_hp": 144,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "drying_rite",
+        "name": "Drying Rite",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 13
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "fatigue",
+            "amount": 1
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "embalmed",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "natron_dust",
+        "name": "Natron Dust",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 18
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "doubt",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "pack_natron",
+        "name": "Pack Natron",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 27
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "labyrinth_body"
+      },
+      {
+        "status": "dry_what_would_decay"
+      }
+    ],
+    "tags": [
+      "licensing_labyrinth",
+      "normal",
+      "stage_linen",
+      "embalmed",
+      "entombed",
+      "natron"
+    ]
+  },
+  {
+    "id": "linen_wrapped_embalmer",
+    "name": "Linen-Wrapped Embalmer",
+    "max_hp": 150,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "write_instructions",
+        "name": "Write Instructions",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 12
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "inscribed",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "wrap_tight",
+        "name": "Wrap Tight",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 14
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "embalmed",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "linen_guard",
+        "name": "Linen Guard",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 27
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "labyrinth_body"
+      },
+      {
+        "status": "instructions_for_wrapping"
+      }
+    ],
+    "tags": [
+      "licensing_labyrinth",
+      "normal",
+      "stage_linen",
+      "inscribed",
+      "embalmed",
+      "burdened"
+    ]
+  },
+  {
+    "id": "unfinished_mummy",
+    "name": "Unfinished Mummy",
+    "max_hp": 160,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "incomplete_wrapping",
+        "name": "Incomplete Wrapping",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 13
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "embalmed",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "hook_drag",
+        "name": "Hook Drag",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 21
+          }
+        ]
+      },
+      {
+        "id": "stillness",
+        "name": "Stillness",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 27
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "labyrinth_body"
+      },
+      {
+        "status": "hooks_still_attached"
+      }
+    ],
+    "tags": [
+      "licensing_labyrinth",
+      "normal",
+      "stage_linen",
+      "embalmed",
+      "entombed",
+      "mummy"
+    ]
+  },
+  {
+    "id": "fourfold_vessel_guardian",
+    "name": "Fourfold Vessel Guardian",
+    "max_hp": 170,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "body_office",
+        "name": "Body Office",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 14
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "burdened",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "breath_office",
+        "name": "Breath Office",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 13
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "panic",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "blood_office",
+        "name": "Blood Office",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 14
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "poison",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "name_office",
+        "name": "Name Office",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 11
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "inscribed",
+            "amount": 1
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "labyrinth_body"
+      }
+    ],
+    "tags": [
+      "licensing_labyrinth",
+      "normal",
+      "stage_vaults",
+      "rotation",
+      "guardian"
+    ]
   }
 ]

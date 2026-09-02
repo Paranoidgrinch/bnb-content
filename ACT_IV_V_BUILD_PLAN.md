@@ -285,9 +285,17 @@ decides and the choice is written into `ADAPTATIONS.md`.
       was already there. Fixed: the event answers "who did this?", the instance keeps its own source.
       ▸ ★ **A body's Block lives from its own turn until its next turn start** — which is why the support body
       acts FIRST in all five authored encounters of these stages, and why the tests pin that order.
-- [ ] **IV-8 — Stages 11 + 12.** Natron Bearer, Linen-Wrapped Embalmer, Unfinished Mummy · Fourfold Vessel
-      Guardian. Encounters 34–40. §3.6: the Guardian cycles Body → Breath → Blood → Name, one office a turn,
-      and the office is a **marker status**, not a counter.
+- [x] **IV-8 — Stages 11 + 12. DONE 2026-09-02.** Natron Bearer, Linen-Wrapped Embalmer, Unfinished Mummy ·
+      Fourfold Vessel Guardian. Encounters 34–40. §3.6: the Guardian cycles Body → Breath → Blood → Name, one
+      office a turn, and the office is a **marker status**, not a counter.
+      ▸ **What landed:** `Converter/ActFourLinen.cs` + 8 live tests (`Tests/ActFourLinenTests.cs`). Nothing
+      new from the engine. Four conversions, each capped at once a round and each read from its own shape:
+      the Natron Bearer off `decays_preserved` (the tally the Complaint Wall shares), the Embalmer off the
+      amplification EVENT ("was the enlarged thing a wrapping, and did the register enlarge it?"), the Mummy
+      off a Deed played while the player is preserved. The Guardian's four offices are four named marker
+      statuses, each intent opening its own and closing the other three.
+      ▸ The appendix's optional cycle guard (a Block turn) was declined: the master's signature is four
+      offices and "then repeat", and a fifth step blurs the one thing the identity is for.
 - [ ] **IV-9 — Stages 13 + 14.** False-Door Finder, Cursed Loot Bearer · Star-Table Scribe, Moon-Cycle Ibis,
       Eclipse Scarab. Encounters 41–46. §3.9: Stage 13 reintroduces **Act-III law** locally — Safe-Conduct is
       granted at combat start, never assumed. Reuses `ActThree`'s vocabulary; do not fork it. §3.7: the Ibis
@@ -445,6 +453,7 @@ force — these fights are "almost a separate game mode"); each god enters `Boss
 - [x] **IV-5 — Stage 6, the Corvée Yards — DONE 2026-09-02** (17 identities / 21 encounters so far)
 - [x] **IV-6 — Stages 7 + 8 — DONE 2026-09-02** (21 identities / 27 encounters so far)
 - [x] **IV-7 — Stages 9 + 10 — DONE 2026-09-02** (24 identities / 33 encounters so far; **seam list closed**)
-- [ ] IV-8 … IV-11 standards · IV-12 … IV-15 elites · IV-16 … IV-19 bosses · IV-20 … IV-21 cards+relics ·
+- [x] **IV-8 — Stages 11 + 12 — DONE 2026-09-02** (28 identities / 40 encounters so far)
+- [ ] IV-9 … IV-11 standards · IV-12 … IV-15 elites · IV-16 … IV-19 bosses · IV-20 … IV-21 cards+relics ·
       IV-22 … IV-23 events · IV-24 the act
 - [ ] V-0 structure · V-1 … V-6 the six gods · V-7 the whole game

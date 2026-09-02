@@ -2442,3 +2442,40 @@ approval is 7 Block to each body still standing.
 **Neither support body is ever fielded alone** — the Forger has nothing to counterfeit and the Petitioners
 nothing to legitimise — so both appear only in duos, and the Forger's own encounter borrows Stage 2's Cobra
 as the cleanest original status source in the act, exactly as the master prescribes.
+
+## Act IV, Stages 11 and 12 — the House of Linen and the Canopic Vaults (2026-09-02)
+
+Preservation stops being a favour: everything the linen holds in place is one more thing packed around you.
+**Nothing new from the engine** — the seam list closed at IV-7, and these two stages are four conversions
+built out of what it left.
+
+**Each conversion is capped at once a round, and each is read from a different place.** The Natron Bearer
+answers the same `decays_preserved` tally the Complaint Wall carves from, with burial instead of grievance.
+The Linen-Wrapped Embalmer answers the amplification EVENT — "was the enlarged thing a wrapping, and was it
+the register that enlarged it?" — which is one question now that an amplification names both halves. The
+Unfinished Mummy answers a card play while a state stands. That is three different shapes for "a conversion
+happened", and each is the cheapest reading of its own trigger.
+
+**The Mummy counts Deeds, because Deed is this game's word for an attack.** The master says "the first Attack
+played each player turn"; B&B's card types are Deed / Working / Rite, and the port's cards carry those tags,
+so the hooks catch on the first Deed. Its latch is cleared at the PLAYER's turn start rather than the round's,
+because the rule is written per player turn.
+
+**The Guardian's office is a face, not a number.** §3.6 and the plan's own marker rule agree: a rotation the
+player is meant to plan around must be readable off the body. So the four offices are four named marker
+statuses (Body, Breath, Blood, Name), each intent opens its own and closes the other three, and only the open
+office applies anything. A counter would have shown "3" and meant nothing.
+
+**The optional cycle guard was declined.** The appendix offers the Guardian a 26–32 Block turn "instead of
+adding extra statuses"; the master's signature is four offices and "then repeat", and a fifth step would blur
+the one thing the identity is for. Its defence is its 170 HP, and the fight is shorter for it.
+
+**Stage 11 and 12 numbers, where the appendix gave bands:** Natron Bearer 144 HP (136–152), Linen-Wrapped
+Embalmer 150 (142–160), Unfinished Mummy 160 (150–170), Fourfold Vessel Guardian 170 (160–180); Drying Rite
+13 + 1 Fatigue + 1 Embalmed, Natron Dust 18 + 1 Doubt, Pack Natron 27 Block; Write Instructions 12 + 1
+Inscribed, Wrap Tight 14 + 1 Embalmed, Linen Guard 27 Block; Incomplete Wrapping 13 + 1 Embalmed, Hook Drag
+21, Stillness 27 Block; Body 14 + 1 Burdened, Breath 13 + 1 Panic, Blood 14 + 1 Poison, Name 11 + 1 Inscribed.
+
+**All three House-of-Linen bodies make their own Embalmed** (§3.5), so each solo is self-sufficient — and
+Encounter 37's chain (register → thickened wrapping → weight → blow under linen → burial) works because every
+link is capped at once a round, which is what keeps it legible rather than explosive.

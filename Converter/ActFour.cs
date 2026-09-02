@@ -372,6 +372,11 @@ public static partial class ActFour
         AuthorizedImpression(),
         CounterfeitAuthorization(),
         ProcessionalApproval(),
+        // Stages 11 and 12 — the House of Linen and the Canopic Vaults
+        DryWhatWouldDecay(),
+        InstructionsForWrapping(),
+        HooksStillAttached(),
+        .. VesselOffices(),
     ];
 
     // The standard roster, stage by stage.
@@ -397,6 +402,10 @@ public static partial class ActFour
         "sun_seal_bearer", "false_seal_forger",
         // Stage 10 — the Processional Galleries
         "kneeling_petitioners",
+        // Stage 11 — the House of Linen
+        "natron_bearer", "linen_wrapped_embalmer", "unfinished_mummy",
+        // Stage 12 — the Canopic Vaults
+        "fourfold_vessel_guardian",
     };
 
     // ── shared idioms ─────────────────────────────────────────────────────────────────────────────────────
