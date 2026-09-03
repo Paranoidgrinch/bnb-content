@@ -803,5 +803,117 @@
       "royal_favor"
     ],
     "role": "multi_combat"
+  },
+  {
+    "id": "labyrinth_balance_01",
+    "name": "Feather's True Measure",
+    "act": 4,
+    "difficulty": "hard",
+    "enemies": [
+      "feather_bearer"
+    ],
+    "weight": 2,
+    "tags": [
+      "licensing_labyrinth",
+      "stage_balance",
+      "weighed"
+    ],
+    "role": "combat"
+  },
+  {
+    "id": "labyrinth_balance_02",
+    "name": "Jaws Beneath the Scale",
+    "act": 4,
+    "difficulty": "hard",
+    "enemies": [
+      "crocodile_beneath_the_balance"
+    ],
+    "weight": 2,
+    "tags": [
+      "licensing_labyrinth",
+      "stage_balance",
+      "entombed"
+    ],
+    "role": "combat"
+  },
+  {
+    "id": "labyrinth_balance_duo_01",
+    "name": "The Measure and the Jaws",
+    "act": 4,
+    "difficulty": "hard",
+    "enemies": [
+      "feather_bearer",
+      "crocodile_beneath_the_balance"
+    ],
+    "weight": 1,
+    "tags": [
+      "licensing_labyrinth",
+      "stage_balance",
+      "weighed"
+    ],
+    "role": "multi_combat"
+  },
+  {
+    "id": "labyrinth_sealed_court_01",
+    "name": "Oathbound Gate",
+    "act": 4,
+    "difficulty": "hard",
+    "enemies": [
+      "oathbound_gate"
+    ],
+    "weight": 1,
+    "tags": [
+      "licensing_labyrinth",
+      "stage_sealed_court",
+      "oath"
+    ],
+    "role": "combat",
+    "enemy_statuses": [
+      {
+        "index": 0,
+        "status": "broken_oath",
+        "stacks": 2
+      }
+    ]
+  },
+  {
+    "id": "labyrinth_sealed_court_duo_01",
+    "name": "The Eternal Shift",
+    "act": 4,
+    "difficulty": "hard",
+    "enemies": [
+      "golden_ushabti_captain",
+      "eternal_reed_scribe"
+    ],
+    "weight": 1,
+    "tags": [
+      "licensing_labyrinth",
+      "stage_sealed_court",
+      "stone"
+    ],
+    "role": "multi_combat"
+  },
+  {
+    "id": "labyrinth_sealed_court_trio_01",
+    "name": "The Sealed Court Before Eternity",
+    "act": 4,
+    "difficulty": "hard",
+    "enemies": [
+      "oathbound_gate",
+      "golden_ushabti_captain",
+      "eternal_reed_scribe"
+    ],
+    "enemy_health": [
+      141,
+      97,
+      84
+    ],
+    "weight": 1,
+    "tags": [
+      "licensing_labyrinth",
+      "stage_sealed_court",
+      "capstone"
+    ],
+    "role": "multi_combat"
   }
 ]

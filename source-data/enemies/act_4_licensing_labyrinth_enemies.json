@@ -2341,5 +2341,342 @@
       "royal_favor",
       "lineage"
     ]
+  },
+  {
+    "id": "feather_bearer",
+    "name": "Feather-Bearer",
+    "max_hp": 184,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "true_balance",
+        "name": "True Balance",
+        "intent_type": "debuff",
+        "actions": [
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "weighed",
+            "amount": 3
+          }
+        ]
+      },
+      {
+        "id": "feather_sweep",
+        "name": "Feather Sweep",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 22
+          }
+        ]
+      },
+      {
+        "id": "balance_guard",
+        "name": "Balance Guard",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 29
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "labyrinth_body"
+      },
+      {
+        "status": "feather_of_final_measure"
+      }
+    ],
+    "tags": [
+      "licensing_labyrinth",
+      "normal",
+      "stage_balance",
+      "weighed",
+      "final_form"
+    ]
+  },
+  {
+    "id": "crocodile_beneath_the_balance",
+    "name": "Crocodile Beneath the Balance",
+    "max_hp": 196,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "jaws_closed",
+        "name": "Jaws Closed",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 20
+          }
+        ]
+      },
+      {
+        "id": "wait_beneath",
+        "name": "Wait Beneath",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 27
+          }
+        ]
+      },
+      {
+        "id": "jaws_of_misjudgment",
+        "name": "Jaws of Misjudgment",
+        "intent_type": "attack",
+        "special": true,
+        "actions": [
+          {
+            "type": "damage_per_status",
+            "target": "player",
+            "status": "entombed",
+            "amount": 29,
+            "amount_per_stack": 3,
+            "cap": 9
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "labyrinth_body"
+      },
+      {
+        "status": "waits_beneath_the_scale"
+      }
+    ],
+    "intent_rules": [
+      {
+        "condition": {
+          "kind": "self_status",
+          "status": "jaws_open",
+          "min_stacks": 1
+        },
+        "action": "jaws_of_misjudgment",
+        "priority": 10
+      }
+    ],
+    "tags": [
+      "licensing_labyrinth",
+      "normal",
+      "stage_balance",
+      "entombed",
+      "final_form"
+    ]
+  },
+  {
+    "id": "golden_ushabti_captain",
+    "name": "Golden Ushabti Captain",
+    "max_hp": 194,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "golden_maul",
+        "name": "Golden Maul",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 23
+          }
+        ]
+      },
+      {
+        "id": "issue_the_load",
+        "name": "Issue the Load",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 15
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "burdened",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "command_brace",
+        "name": "Command Brace",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "block_per_status",
+            "target": "owner",
+            "status": "stone",
+            "status_on": "owner",
+            "amount": 12,
+            "amount_per_stack": 4,
+            "cap": 12
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "labyrinth_body"
+      },
+      {
+        "status": "stone_work"
+      }
+    ],
+    "tags": [
+      "licensing_labyrinth",
+      "normal",
+      "stage_sealed_court",
+      "stone",
+      "final_form"
+    ]
+  },
+  {
+    "id": "eternal_reed_scribe",
+    "name": "Eternal Reed Scribe",
+    "max_hp": 177,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "unclosing_entry",
+        "name": "Unclosing Entry",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 15
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "panic",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "eternal_script",
+        "name": "Eternal Script",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 22
+          }
+        ]
+      },
+      {
+        "id": "reed_ward",
+        "name": "Reed Ward",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 27
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "labyrinth_body"
+      },
+      {
+        "status": "entry_does_not_close"
+      }
+    ],
+    "tags": [
+      "licensing_labyrinth",
+      "normal",
+      "stage_sealed_court",
+      "embalmed",
+      "final_form"
+    ]
+  },
+  {
+    "id": "oathbound_gate",
+    "name": "Oathbound Gate",
+    "max_hp": 224,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "read_the_oath",
+        "name": "Read the Oath",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 16
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "weighed",
+            "amount": 2
+          }
+        ]
+      },
+      {
+        "id": "broken_oath_judgment",
+        "name": "Broken-Oath Judgment",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "damage_per_status",
+            "target": "player",
+            "status": "broken_oath",
+            "status_on": "owner",
+            "amount": 27,
+            "amount_per_stack": 4,
+            "cap": 12
+          }
+        ]
+      },
+      {
+        "id": "bar_the_way",
+        "name": "Bar the Way",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 34
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "labyrinth_body"
+      },
+      {
+        "status": "foundation_oath"
+      }
+    ],
+    "tags": [
+      "licensing_labyrinth",
+      "normal",
+      "stage_sealed_court",
+      "oath",
+      "final_form"
+    ]
   }
 ]

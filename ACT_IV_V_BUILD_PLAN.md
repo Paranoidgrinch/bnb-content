@@ -347,11 +347,35 @@ decides and the choice is written into `ADAPTATIONS.md`.
       the Wall's `Royal Line` telegraphs its whole formula instead of only its floor.
       **Acceptance for the standard roster's IDENTITIES is met here: 35 of 35** (Stages 16–17 are final forms
       of existing bodies and add none).
-- [ ] **IV-11 — Stages 16 + 17, the final forms.** No new identities: Crooked Rod Bearer → Feather-Bearer,
-      Crocodile → Crocodile Beneath the Balance, Stone-Hauler → Golden Ushabti Captain, Palette-Bearer →
-      Eternal Reed Scribe, Cornerstone Oath-Stone → Oathbound Gate. Encounters 50–55.
-      **Acceptance: the standard pool is complete — 35 identities / 55 encounters pinned in
-      `Tests/ActFourPoolTests.cs` against the master's roster and the appendix's HP table.**
+- [x] **IV-11 — Stages 16 + 17, the final forms. DONE 2026-09-03.** No new identities: Crooked Rod Bearer →
+      Feather-Bearer, Crocodile → Crocodile Beneath the Balance, Stone-Hauler → Golden Ushabti Captain,
+      Palette-Bearer → Eternal Reed Scribe, Cornerstone Oath-Stone → Oathbound Gate. Encounters 50–55.
+      ▸ **What landed:** `Converter/ActFourBalance.cs` + 10 live tests (`Tests/ActFourBalanceTests.cs`) and
+      the acceptance gate `Tests/ActFourPoolTests.cs` (6 tests). Nothing new from the engine, and **no new
+      vocabulary**, which is both stages' whole point: every word here — the measure and its distance, Stone,
+      preservation, Kept and Broken Oaths — is one the player was taught by the body now holding the office.
+      ▸ The Feather-Bearer answers a resolution two ways and the SUCCESS is the interesting one: an exact
+      measure opens the balance ON THE BEARER (+8 to every blow that lands) for exactly one player turn. The
+      window is closed by the NEXT weighing rather than by a duration, because the answer fires at the
+      bearer's own turn start and a duration counted from there would expire before the player could use it.
+      A miss is 16 + 5 per point of distance, and the cap of 31 is reached at exactly three out — the widest
+      a measure of 3 can be missed.
+      ▸ The Crocodile's jaws open on either of two conditions the player can see (a failed weighing, or 3
+      Entombed) and close on the bite. The Captain quarries the same Stone the Hauler did and spends it all
+      on the Court. The Scribe's "Preserved Entry" IS Embalmed, one stack — the act's own preservation
+      language rather than a second one, so nothing becomes permanent.
+      ▸ ⚠ **One thing the master asks for is NOT implemented, and it needs an engine seam:** the Oathbound
+      Gate's "import up to 2 visible stored Oath Memories **if the player previously encountered the
+      Oath-Stone in the current run**". The engine has no run→combat memory — nothing between a finished
+      encounter and the next one's roster build — so the Gate is fielded with 2 Broken Oath as ENCOUNTER
+      SCAFFOLDING (`enemy_statuses`, the same seam Act III's Boundary Stone uses). That is visible before the
+      first player action and capped at 2 exactly as the audit requires; what it is not is conditional. The
+      seam it wants: a run-level counter written at encounter end and readable at encounter build.
+      ▸ The Sealed Court trio is the **only Act-IV encounter with per-roster HP** (141/97/84 = 322). The
+      master prices it explicitly (62–64% / 49–51% / 46–49%, 296–349 together) and three solo bodies would be
+      595 against an act whose duos land at 300–360.
+      **Acceptance MET: the standard pool is complete — 35 identities / 40 rosters / 55 encounters / 17
+      stages, and every body inside its appendix HP band, pinned in `Tests/ActFourPoolTests.cs`.**
 
 ## Elites — 4 steps
 
@@ -500,6 +524,8 @@ force — these fights are "almost a separate game mode"); each god enters `Boss
 - [x] **IV-8 — Stages 11 + 12 — DONE 2026-09-02** (28 identities / 40 encounters so far)
 - [x] **IV-9 — Stages 13 + 14 — DONE 2026-09-02** (33 identities / 46 encounters so far)
 - [x] **IV-10 — Stage 15 — DONE 2026-09-03** (35 identities / 49 encounters — the identity roster is COMPLETE)
-- [ ] IV-11 standards (final forms) · IV-12 … IV-15 elites · IV-16 … IV-19 bosses · IV-20 … IV-21 cards+relics ·
+- [x] **IV-11 — Stages 16 + 17 — DONE 2026-09-03** (35 identities / 55 encounters — **THE STANDARD POOL IS
+      COMPLETE**, pinned in `Tests/ActFourPoolTests.cs`)
+- [ ] IV-12 … IV-15 elites · IV-16 … IV-19 bosses · IV-20 … IV-21 cards+relics ·
       IV-22 … IV-23 events · IV-24 the act
 - [ ] V-0 structure · V-1 … V-6 the six gods · V-7 the whole game
