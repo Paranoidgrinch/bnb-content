@@ -4007,5 +4007,281 @@
         "priority": 10
       }
     ]
+  },
+  {
+    "id": "pharaoh_of_the_sealed_name",
+    "name": "The Pharaoh of the Sealed Name",
+    "max_hp": 630,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "speak_the_throne_name",
+        "name": "Speak the Throne Name",
+        "intent_type": "debuff",
+        "actions": [
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "inscribed",
+            "amount": 2
+          }
+        ]
+      },
+      {
+        "id": "staff_of_the_two_lands",
+        "name": "Staff of the Two Lands",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 26
+          },
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 18
+          }
+        ]
+      },
+      {
+        "id": "those_not_counted_kneel",
+        "name": "Those Not Counted Kneel",
+        "intent_type": "debuff",
+        "actions": [
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "burdened",
+            "amount": 1
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "paperwork",
+            "amount": 2
+          }
+        ]
+      },
+      {
+        "id": "golden_sandal",
+        "name": "Golden Sandal",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 15
+          },
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 15
+          }
+        ]
+      },
+      {
+        "id": "royal_audience_ends",
+        "name": "Royal Audience Ends",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 32
+          }
+        ]
+      },
+      {
+        "id": "all_three_names_are_mine",
+        "name": "All Three Names Are Mine",
+        "intent_type": "attack",
+        "special": true,
+        "actions": [
+          {
+            "type": "damage_per_status",
+            "target": "player",
+            "status": "royal_authority",
+            "status_on": "owner",
+            "amount": 34,
+            "amount_per_stack": 2,
+            "cap": 8
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "labyrinth_body"
+      },
+      {
+        "status": "the_sealed_name"
+      },
+      {
+        "status": "cartouche_ward",
+        "stacks": 36
+      }
+    ],
+    "intent_rules": [
+      {
+        "condition": {
+          "kind": "health_percent",
+          "op": "le",
+          "percent": 14
+        },
+        "action": "all_three_names_are_mine",
+        "priority": 10
+      }
+    ],
+    "tags": [
+      "licensing_labyrinth",
+      "boss",
+      "act_4",
+      "kingship"
+    ]
+  },
+  {
+    "id": "weigher_of_the_unspoken_heart",
+    "name": "The Weigher of the Unspoken Heart",
+    "max_hp": 610,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "place_the_heart",
+        "name": "Place the Heart",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 15
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "inscribed",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "read_the_deviation",
+        "name": "Read the Deviation",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "damage_per_counter",
+            "target": "player",
+            "counter": "balance",
+            "amount": 22,
+            "amount_per_stack": 4,
+            "cap": 12
+          }
+        ]
+      },
+      {
+        "id": "feathers_silence",
+        "name": "Feather's Silence",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 24
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "doubt",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "weight_of_regret",
+        "name": "Weight of Regret",
+        "intent_type": "debuff",
+        "actions": [
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "paperwork",
+            "amount": 2
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "embalmed",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "the_crocodile_opens_one_eye",
+        "name": "The Crocodile Opens One Eye",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 30
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "entombed",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "the_heart_has_spoken",
+        "name": "The Heart Has Spoken",
+        "intent_type": "attack",
+        "special": true,
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 32
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "labyrinth_body"
+      },
+      {
+        "status": "the_unspoken_heart"
+      }
+    ],
+    "intent_rules": [
+      {
+        "condition": {
+          "kind": "all_of",
+          "conditions": [
+            {
+              "kind": "self_status",
+              "status": "the_heart_remembers",
+              "min_stacks": 1
+            },
+            {
+              "kind": "health_percent",
+              "op": "le",
+              "percent": 19
+            }
+          ]
+        },
+        "action": "the_heart_has_spoken",
+        "priority": 10
+      }
+    ],
+    "tags": [
+      "licensing_labyrinth",
+      "boss",
+      "act_4",
+      "judgment"
+    ]
   }
 ]

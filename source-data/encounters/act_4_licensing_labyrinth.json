@@ -1087,5 +1087,35 @@
     ],
     "role": "elite",
     "earliest_depth_percent": 71
+  },
+  {
+    "id": "labyrinth_boss_pharaoh_of_the_sealed_name",
+    "name": "The Pharaoh of the Sealed Name",
+    "act": 4,
+    "difficulty": "boss",
+    "enemies": [
+      "pharaoh_of_the_sealed_name"
+    ],
+    "weight": 1,
+    "tags": [
+      "licensing_labyrinth",
+      "boss"
+    ],
+    "role": "boss"
+  },
+  {
+    "id": "labyrinth_boss_weigher_of_the_unspoken_heart",
+    "name": "The Weigher of the Unspoken Heart",
+    "act": 4,
+    "difficulty": "boss",
+    "enemies": [
+      "weigher_of_the_unspoken_heart"
+    ],
+    "weight": 1,
+    "tags": [
+      "licensing_labyrinth",
+      "boss"
+    ],
+    "role": "boss"
   }
 ]

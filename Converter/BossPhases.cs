@@ -68,5 +68,17 @@ public static class BossPhases
         ActThree.CourtInSessionId,
         ActThree.GrantedNamePendingId,
         ActThree.SovereignReciprocityId,
+
+        // ── Act IV ────────────────────────────────────────────────────────────────────────────────────────
+        //
+        // The Pharaoh's three names ARE his three phases, and the exposure is the transition telegraphed one
+        // turn early — the ward is empty and everybody can see it.
+        ActFour.TwoLandsNameId,
+        ActFour.EternalNameId,
+        ActFour.NameExposedId,
+
+        // The Weigher's second half, and the window that leads to it.
+        ActFour.HeartRemembersId,
+        ActFour.HeartDeclaredLightId,
     ];
 }
