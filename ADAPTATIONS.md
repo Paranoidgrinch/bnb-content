@@ -2753,3 +2753,45 @@ preserving; the Curse-Bearer is the one who says so out loud.
 **The Veteran's Strength rides with its Claim** rather than being re-checked while it holds one. Nothing in
 this encounter ever takes a Claim off a robber, so granting the two Strength with the Claim is the same rule
 with one fewer moving part.
+
+## Act IV, elites 9 and 10 — the Thirty-Six Decans and the Endless Procession (2026-09-03)
+
+The act's final examination and its last word on discipline, and with them the elite pool closes at ten.
+**Nothing new from the engine** — the Colossus's central question ("was a Burdened stack worked off by
+PLAYING a taxed card, rather than cleansed or lost?") is `burden_paid`, written at IV-0 for exactly this.
+
+**★ The examination teaches the act to itself.** Watch II of the Thirty-Six Decans hands the player 1
+Inscribed; Watch III applies 1 Burdened — and it lands at TWO, because the register enlarges the next thing
+that happens to you. Nobody authored that interaction; it is the five words meeting each other, and it makes
+the examination's own lesson ("answered by spending the register") true at the table rather than only in the
+description. A test asserting 1 caught it, and the test now asserts 2 and says why.
+
+**★ A prohibition cannot answer its own last spend.** The Colossus refuses all outside Strength permanently,
+which wants a prohibition that re-arms whenever it is used — but the spend is SYNCHRONOUS, inside the
+interception, so by the time the refusal event is handled the final stack is gone and the status with it, and
+a bearer-scoped trigger on the prohibition matches nothing at all. The re-arm therefore lives on the body's
+own rule status, which is never spent, and says which prohibition it is answering. That last part is what
+`eventPreventerIs` was bought for at IV-10: without it the Colossus would restore its refusal every time any
+ward anywhere turned anything away.
+
+**Both bodies keep their record at their OWN turn start**, through bookmarks in the act's tallies — which for
+the Colossus also means Step III reads a record that is already complete when its own action resolves, with
+no agreement needed about the order two turn-end rules fire in.
+
+**Two cycle shapes worth naming.** The Decans' six watches are a counter read at the player's turn start and
+advanced at the Keeper's, so the watch standing is always the one the player has a whole turn to answer. The
+Colossus's ceremonial pause alternates by a flag the foot raises and the sweep takes down — a flag that can
+only ever stand during the one slot it is for, which is how "one secondary action after every completed
+cycle" is expressed without an action list that repeats itself.
+
+**The earliest-depth table is data now.** `earliest_depth_percent` on each elite encounter, from the elite
+master's "Earliest depth/stage" out of the act's seventeen stages, pinned in `ActFourPoolTests` along with the
+property the table encodes: the curve rises across the single-body elites. **The Tombbreakers are the master's
+stated exception** — deeper than the Sphinx and lighter than it, because three bodies that all act every round
+are worth more than their combined HP says, which is the master's own reason for pricing them low.
+
+⚠ **Wiring the gate into generation waits for Act IV becoming walkable.** The generator gates events and
+treasure by ref id (`MapGenerationSpec.NodeRefMinimumDepthPercent`) and roles by kind
+(`RoleMinimumDepthPercent`), but elites are not drawn from a ref pool — they are selected by role and weight.
+Making them one is a generation change that would move Acts I–III as well, so the table is authored and
+pinned now and connected at IV-24, where the act enters the run.

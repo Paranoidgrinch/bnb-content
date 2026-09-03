@@ -451,11 +451,28 @@ resolution. HP from the master's table.
       most of the act — but the Sphinx alone cannot reach it, and the cap of 37 never binds.
       ▸ Tomb-Preserved is deliberately NOT Embalmed, as the master insists: the act's preservation holds a
       fading thing in place on its wearer, and a robber wearing that could prolong its own afflictions.
-- [ ] **IV-15 — Keeper of the Thirty-Six Decans (365) · Colossus of the Endless Procession (388).**
-      The six-watch exam and the three-step discipline cycle; escalation is capped. The Colossus asks whether
-      **a Burdened stack was worked off by playing a taxed card** — the observable-payment half of seam 2 is
-      what this encounter is built on.
-      **Acceptance: 10 elite encounters, earliest-depth table honoured, all pinned.**
+- [x] **IV-15 — Keeper of the Thirty-Six Decans (365) · Colossus of the Endless Procession (388).
+      DONE 2026-09-03.** The six-watch exam and the three-step discipline cycle; escalation capped. The
+      Colossus asks whether **a Burdened stack was worked off by playing a taxed card** — and `burden_paid`,
+      written at IV-0, answered it with nothing new.
+      ▸ **What landed:** `Converter/ActFourEliteDecans.cs`, `ActFourEliteColossus.cs` + 5 live tests
+      (`Tests/ActFourEliteExaminationTests.cs`). **Nothing new from the engine.**
+      ▸ ★ **The Decans' examination teaches the act to itself, and a test caught it doing so.** Watch II hands
+      the player the register and Watch III's burden arrives ONE LARGER unless they spent it — nobody wrote
+      that, it is the five words meeting each other, and it is now pinned.
+      ▸ ★ **A prohibition cannot answer its own last spend.** The spend is synchronous, inside the
+      interception, so by the time the refusal event is handled the final stack is gone and the status with
+      it — and a bearer-scoped trigger on the prohibition matches nothing. The Colossus's permanent refusal of
+      outside Strength therefore re-arms from the BODY's rule status, which is never spent, and names the
+      prohibition it is answering with `eventPreventerIs` (bought at IV-10, and this is what it is for).
+      ▸ The **earliest-depth table is now data**: `earliest_depth_percent` on each elite encounter, pinned in
+      `ActFourPoolTests` together with the rising curve — and the Tombbreakers as the master's stated
+      exception to it, deeper than the Sphinx and lighter, because three bodies acting every round are worth
+      more than their combined HP says. ⚠ Wiring the gate into generation waits for the act to become
+      walkable: the generator gates events and treasure by ref id (`NodeRefMinimumDepthPercent`) and elites
+      are not drawn from a ref pool today.
+      **Acceptance MET: 10 elite encounters, the master's HP to the point, the earliest-depth table authored
+      and pinned.**
 
 ## Bosses — 4 steps
 
@@ -587,6 +604,6 @@ force — these fights are "almost a separate game mode"); each god enters `Boss
 - [x] **IV-12 — the first three elites — DONE 2026-09-03** (3 of 10 elite encounters)
 - [x] **IV-13 — elites 4-6 — DONE 2026-09-03** (6 of 10 elite encounters)
 - [x] **IV-14 — elites 7-8 — DONE 2026-09-03** (8 of 10 elite encounters)
-- [ ] IV-15 elites · IV-16 … IV-19 bosses · IV-20 … IV-21 cards+relics ·
+- [x] **IV-15 — elites 9-10 — DONE 2026-09-03** (**THE ELITE POOL IS COMPLETE** — 10 encounters, pinned) · IV-16 … IV-19 bosses · IV-20 … IV-21 cards+relics ·
       IV-22 … IV-23 events · IV-24 the act
 - [ ] V-0 structure · V-1 … V-6 the six gods · V-7 the whole game

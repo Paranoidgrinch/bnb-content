@@ -122,6 +122,12 @@ public sealed record BabEncounter(
     // Which map ROLE draws this template: combat / multi_combat / elite / boss / mimic. Only encounters that
     // carry a role are part of the act's curated pools — anything else is inert content the map never picks.
     string? Role = null,
+    // How deep into the act this encounter may FIRST stand, as a percentage of the act's depth — the elite
+    // master's "Earliest depth/stage" table, which is what stops the act's hardest bodies opening the third
+    // room. Authored here so the table is data rather than prose; the generator gates events and treasure by
+    // ref id already (MapGenerationSpec.NodeRefMinimumDepthPercent) and elites join that seam when Act IV
+    // becomes a walkable act. Absent ⇒ the encounter may stand anywhere.
+    int? EarliestDepthPercent = null,
     // Statuses one BODY carries in THIS fight and not in its others — encounter scaffolding rather than a
     // universal passive. Act III's design asks for it by name: the Boundary Stone begins its two teaching
     // encounters holding a Claim so that Claim transfer is actually demonstrated inside a standard fight,

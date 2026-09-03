@@ -3765,5 +3765,247 @@
       "tombbreakers",
       "curse"
     ]
+  },
+  {
+    "id": "keeper_of_the_thirty_six_decans",
+    "name": "Keeper of the Thirty-Six Decans",
+    "max_hp": 365,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "read_the_decan",
+        "name": "Read the Decan",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 20
+          }
+        ]
+      },
+      {
+        "id": "move_the_star_peg",
+        "name": "Move the Star Peg",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 24
+          }
+        ]
+      },
+      {
+        "id": "night_without_error",
+        "name": "Night Without Error",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 28
+          }
+        ]
+      },
+      {
+        "id": "black_horizon",
+        "name": "Black Horizon",
+        "intent_type": "debuff",
+        "actions": [
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "paperwork",
+            "amount": 2
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "panic",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "star_reckoning",
+        "name": "Star Reckoning",
+        "intent_type": "attack",
+        "special": true,
+        "actions": [
+          {
+            "type": "damage_per_status",
+            "target": "player",
+            "status": "entombed",
+            "amount": 16,
+            "amount_per_stack": 4,
+            "cap": 20
+          }
+        ]
+      },
+      {
+        "id": "minor_reckoning",
+        "name": "Minor Reckoning",
+        "intent_type": "attack",
+        "special": true,
+        "actions": [
+          {
+            "type": "damage_per_status",
+            "target": "player",
+            "status": "entombed",
+            "amount": 10,
+            "amount_per_stack": 2,
+            "cap": 10
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "labyrinth_body"
+      },
+      {
+        "status": "the_thirty_six_decans"
+      }
+    ],
+    "intent_rules": [
+      {
+        "condition": {
+          "kind": "self_counter",
+          "counter": "reckoning_due",
+          "op": "ge",
+          "value": 1
+        },
+        "action": "star_reckoning",
+        "priority": 20
+      },
+      {
+        "condition": {
+          "kind": "self_counter",
+          "counter": "minor_reckoning_due",
+          "op": "ge",
+          "value": 1
+        },
+        "action": "minor_reckoning",
+        "priority": 10
+      }
+    ],
+    "tags": [
+      "licensing_labyrinth",
+      "elite",
+      "weighed",
+      "decans"
+    ]
+  },
+  {
+    "id": "colossus_of_the_endless_procession",
+    "name": "Colossus of the Endless Procession",
+    "max_hp": 388,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "processional_measure",
+        "name": "Processional Measure",
+        "intent_type": "debuff",
+        "actions": [
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "weighed",
+            "amount": 2
+          }
+        ]
+      },
+      {
+        "id": "the_burden_advances",
+        "name": "The Burden Advances",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 18
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "burdened",
+            "amount": 2
+          }
+        ]
+      },
+      {
+        "id": "the_foot_descends",
+        "name": "The Foot Descends",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 26
+          }
+        ]
+      },
+      {
+        "id": "shadow_of_the_procession",
+        "name": "Shadow of the Procession",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 24
+          }
+        ]
+      },
+      {
+        "id": "clear_the_causeway",
+        "name": "Clear the Causeway",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 14
+          },
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 14
+          }
+        ],
+        "special": true
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "labyrinth_body"
+      },
+      {
+        "status": "the_endless_procession"
+      },
+      {
+        "status": "stone_does_not_hurry"
+      }
+    ],
+    "tags": [
+      "licensing_labyrinth",
+      "elite",
+      "weighed",
+      "burdened",
+      "colossus"
+    ],
+    "intent_rules": [
+      {
+        "condition": {
+          "kind": "self_counter",
+          "counter": "causeway_due",
+          "op": "ge",
+          "value": 1
+        },
+        "action": "clear_the_causeway",
+        "priority": 10
+      }
+    ]
   }
 ]
