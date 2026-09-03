@@ -41,7 +41,8 @@ public static partial class ActFour
                  ?? LinenIntent(enemyId, intentId)
                  ?? WarrenIntent(enemyId, intentId)
                  ?? CartoucheIntent(enemyId, intentId)
-                 ?? BalanceIntent(enemyId, intentId),
+                 ?? BalanceIntent(enemyId, intentId)
+                 ?? EliteIntent(enemyId, intentId),
         };
 
     // ── the Reed-Cord Surveyor ────────────────────────────────────────────────────────────────────────────

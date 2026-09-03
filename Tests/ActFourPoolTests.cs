@@ -157,6 +157,33 @@ public class ActFourPoolTests
         }
     }
 
+    // The elite layer, as far as it is built: the master's HP to the point, and one encounter each.
+    [Fact]
+    public void The_elites_built_so_far_are_priced_to_the_point()
+    {
+        var bands = new Dictionary<string, int>(StringComparer.Ordinal)
+        {
+            ["surveyor_of_the_errant_cord"] = 248,
+            ["scarab_host_of_the_sealed_granary"] = 255,
+            ["rope_master_of_the_corvee"] = 275,
+        };
+
+        var elites = WithRole("elite").ToList();
+        Assert.Equal(bands.Count, elites.Count);
+
+        foreach (var encounter in elites)
+        {
+            var id = Assert.Single(encounter.Enemies);
+            Assert.True(bands.TryGetValue(id, out var hp), $"'{id}' is not one of the priced elites");
+            Assert.Equal(hp, Data.Enemies.Single(e => e.Id == id).MaxHp);
+            Assert.Contains(id, ActFour.EliteIdentities);
+        }
+
+        // The Rope-Master's hands are summoned, never fielded — the roster never names them.
+        Assert.DoesNotContain(ActFour.StoneHaulerSummonEnemyId, Data.Enemies.Select(e => e.Id));
+        Assert.Contains(ActFour.StoneHaulerSummonEnemyId, ActFour.EliteIdentities);
+    }
+
     // Every intent an encounter can reach is authored, and every authored intent is reachable: a special one
     // only through an intent rule, everything else through the cycle.
     [Fact]

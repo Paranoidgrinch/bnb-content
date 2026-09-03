@@ -915,5 +915,53 @@
       "capstone"
     ],
     "role": "multi_combat"
+  },
+  {
+    "id": "labyrinth_elite_surveyor_of_the_errant_cord",
+    "name": "Surveyor of the Errant Cord",
+    "act": 4,
+    "difficulty": "elite",
+    "enemies": [
+      "surveyor_of_the_errant_cord"
+    ],
+    "weight": 1,
+    "tags": [
+      "licensing_labyrinth",
+      "elite",
+      "weighed"
+    ],
+    "role": "elite"
+  },
+  {
+    "id": "labyrinth_elite_scarab_host_of_the_sealed_granary",
+    "name": "Scarab Host of the Sealed Granary",
+    "act": 4,
+    "difficulty": "elite",
+    "enemies": [
+      "scarab_host_of_the_sealed_granary"
+    ],
+    "weight": 1,
+    "tags": [
+      "licensing_labyrinth",
+      "elite",
+      "granary"
+    ],
+    "role": "elite"
+  },
+  {
+    "id": "labyrinth_elite_rope_master_of_the_corvee",
+    "name": "Rope-Master of the Corv\u00e9e",
+    "act": 4,
+    "difficulty": "elite",
+    "enemies": [
+      "rope_master_of_the_corvee"
+    ],
+    "weight": 1,
+    "tags": [
+      "licensing_labyrinth",
+      "elite",
+      "burdened"
+    ],
+    "role": "elite"
   }
 ]

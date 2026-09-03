@@ -394,6 +394,8 @@ public static partial class ActFour
         WaitsBeneathTheScale(),
         JawsOpen(),
         EntryDoesNotClose(),
+        // The elite layer
+        .. EliteStatuses(),
     ];
 
     // The standard roster, stage by stage.

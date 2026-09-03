@@ -2626,3 +2626,47 @@ as its duos rather than in elite territory.
 authored encounter that fields it, **scaffolding included**. A probe of the Oathbound Gate therefore starts
 with the two Broken Oaths its solo encounter gives it. That is correct — the probe is meant to be the body as
 the game fields it — but it means a probe's opening state is not always the enemy's bare `starting_statuses`.
+
+## Act IV, elites — the Surveyor, the Scarab Host and the Rope-Master (2026-09-03)
+
+The first three elite encounters, and the shared layer the other seven will stand on. **Nothing new from the
+engine**; three findings, two of them the kind that would have shipped as a quiet lie.
+
+**§6.2 is written once, in the shared file.** "Any elite-generated exact requirement must be checked against
+the deterministic current state" is `ActFour.Achievable(demand)`: the demand clamped to the player's Energy
+pool at the moment it is made, floored at 1. It lives with the elite layer rather than with the Surveyor
+because the Surveyor is only the first body to generate a requirement — the Sphinx, the Decans and the
+Treasury all do — and a filter each of them re-derived would drift apart by the fourth one.
+
+**A choice an enemy offers is CARDS.** A combat has no generic prompt, and the Living Petition Chorus already
+solved this in Act II: the offer IS cards in the player's hand, playing one is the choice, and leaving them
+there is also an answer. Both bodies that needed a choice took it. The Surveyor's two boundaries are ONE pair
+of card definitions whose Weighed amount is read from a counter on the player, so a single pair covers every
+figure the Surveyor can ever offer; the Scarab Host's three seal-breaking cards are offered only for chambers
+still intact. Both exhaust at the turn's end, so refusing costs nothing but gets nothing.
+
+**★ Block expires at its owner's turn start, so "remove up to 10 current Block" was answering into an empty
+pool.** The far-boundary success is resolved at the Surveyor's own turn start — the act's ordering-free idiom
+— and by that moment the brace it put up last turn is already gone. Removing Block there is a no-op every
+time. What a stripped brace actually costs a body is the brace it does not get, so the success now leaves
+SLACK IN THE CORD: a status whose stacks reduce the next Block the Surveyor gains, spent on that gain. The
+number the master prices (10, or 14 after a re-tension) is unchanged, and it lands somewhere the player can
+watch it happen instead of nowhere at all.
+
+**★ A summoned body has no action script.** The engine's intent selector is built from the roster the fight
+opened with, so a combatant summoned mid-fight is asked for an intent and answers nothing. It does get turns —
+`AddCombatant` appends to the turn order — so the Rope-Master's Stone-Haulers act the way every summon in this
+engine acts, and the way the player-board units were designed to: a marker status carrying a turn-start
+program. The same marker is where the Hauler's death is heard, which is the only place "when a Hauler dies"
+can be asked. `countTargets` over the marker gives the master's "one hand works per enemy turn, taking it in
+turns if two live" honestly, sole-hauler case included.
+
+**⚠ A damage-received trigger's SOURCE is the attacker, not the bearer.** The Scarab Host's break-offer read
+its own seals off the *player* until a live test caught it — every seal looked broken, so nothing was ever
+offered. In that context the receiver is the event's target and the source is whoever struck; a body must
+address itself through the rule it is the only one wearing whenever the acting side is not its own.
+
+**Two smaller readings.** "Seal the Jars — only while at least one Seal remains" is authored as what a swarm
+with no jars left actually does: it walls up instead (24 Block), rather than an intent that resolves to
+nothing. And the Rope-Master's summon roll is counted UP from zero rather than down from two, because a
+counter nobody has written reads zero, and "none left" must not be the same answer as "not started".
