@@ -166,6 +166,9 @@ public class ActFourPoolTests
             ["surveyor_of_the_errant_cord"] = 248,
             ["scarab_host_of_the_sealed_granary"] = 255,
             ["rope_master_of_the_corvee"] = 275,
+            ["keeper_of_the_living_cartouche"] = 300,
+            ["mummified_overseer_of_the_linen_house"] = 318,
+            ["treasury_of_the_two_pans"] = 330,
         };
 
         var elites = WithRole("elite").ToList();

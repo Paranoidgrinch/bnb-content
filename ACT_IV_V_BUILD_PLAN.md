@@ -410,10 +410,28 @@ resolution. HP from the master's table.
       ▸ ⚠ **A damage-received trigger's SOURCE is the attacker, not the bearer.** The Scarab Host's break
       offer read its own seals off the player until a test caught it; a body must address itself through the
       rule it wears whenever the acting side is not its own.
-- [ ] **IV-13 — Keeper of the Living Cartouche (300) · Mummified Overseer of the Linen House (318) ·
-      The Treasury of the Two Pans (330).** Glyphs, Wrapping, Value-vs-Quantity accounting. The Cartouche is
-      **Inscribed's boss-grade reader**: it writes Black/Golden Glyphs out of amplified applications, so this
-      is where the ratified amplifier is either proven or shown to be underspecified.
+- [x] **IV-13 — Keeper of the Living Cartouche (300) · Mummified Overseer of the Linen House (318) ·
+      The Treasury of the Two Pans (330). DONE 2026-09-03.** Glyphs, Wrapping, Value-vs-Quantity accounting.
+      The Cartouche is **Inscribed's boss-grade reader**.
+      ▸ **What landed:** `Converter/ActFourEliteCartouche.cs`, `ActFourEliteOverseer.cs`,
+      `ActFourEliteTreasury.cs` + 8 live tests (`Tests/ActFourEliteReadingTests.cs`). **Nothing new from the
+      engine** — and the ratified amplifier came through: the Keeper needed no more than the two questions
+      IV-1 and IV-7 bought (`eventAmplifierIs`, `eventStatusPolarityIs`), so the register is proven, not
+      underspecified.
+      ▸ ★ **AN AMPLIFICATION READS THE OTHER WAY ROUND FROM EVERY OTHER STATUS EVENT.** In that context
+      `source` is the body the enlarged status LANDED ON — the one wearing the register — and `eventTarget` is
+      whoever applied it, so a rule can answer the applier. The Keeper's glyph gate asked the event target for
+      the applicant marker, which reads "did the PLAYER apply it": true of a blessing they cast on themselves
+      (golden glyphs worked) and false of every curse the Keeper writes (black glyphs never landed). Second
+      body of this session to be bitten by per-family source semantics, after the Scarab Host's damage
+      trigger — the two are now written down together in ADAPTATIONS.
+      ▸ The Overseer's wrapping needed a mirror for `decays_preserved`: **`decays_unpreserved`**, written at
+      the same one fading point in `ActFour.Fade`. Tighten on a held affliction, loosen on a lapsed one — and
+      reading a whole turn's worth at the Overseer's own turn start is what makes the master's "at most twice
+      a round" enforceable at all, since a rule firing per fade could only count, never cap.
+      ▸ The Treasury weighs a turn against ITSELF: cards played (junk not counted) against Energy actually
+      spent, both read from expressions the act already had. Its Credits are cards again, and "once per player
+      turn" is a latch the first draw sets on the player.
 - [ ] **IV-14 — Sphinx of the Processional Measure (344) · The Tombbreakers Three (112+100+108).**
       Voluntary ritual costs; a three-body kill-order elite (the Ant-Queen lesson: a body whose pool is
       emptied by anything falls — already fixed in Core).
@@ -551,6 +569,7 @@ force — these fights are "almost a separate game mode"); each god enters `Boss
 - [x] **IV-11 — Stages 16 + 17 — DONE 2026-09-03** (35 identities / 55 encounters — **THE STANDARD POOL IS
       COMPLETE**, pinned in `Tests/ActFourPoolTests.cs`)
 - [x] **IV-12 — the first three elites — DONE 2026-09-03** (3 of 10 elite encounters)
-- [ ] IV-13 … IV-15 elites · IV-16 … IV-19 bosses · IV-20 … IV-21 cards+relics ·
+- [x] **IV-13 — elites 4-6 — DONE 2026-09-03** (6 of 10 elite encounters)
+- [ ] IV-14 … IV-15 elites · IV-16 … IV-19 bosses · IV-20 … IV-21 cards+relics ·
       IV-22 … IV-23 events · IV-24 the act
 - [ ] V-0 structure · V-1 … V-6 the six gods · V-7 the whole game

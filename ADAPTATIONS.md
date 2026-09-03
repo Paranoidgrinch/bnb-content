@@ -2670,3 +2670,46 @@ address itself through the rule it is the only one wearing whenever the acting s
 with no jars left actually does: it walls up instead (24 Block), rather than an intent that resolves to
 nothing. And the Rope-Master's summon roll is counted UP from zero rather than down from two, because a
 counter nobody has written reads zero, and "none left" must not be the same answer as "not started".
+
+## Act IV, elites 4–6 — the Cartouche, the Linen House and the Two Pans (2026-09-03)
+
+Three elites that read the act's last three words at boss grade. **Nothing new from the engine** — and the
+important negative result: **the ratified amplifier held up**. The Keeper of the Living Cartouche is the body
+the plan expected to either prove Inscribed or show it underspecified, and it needed nothing beyond the two
+questions IV-1 and IV-7 already bought — "what paid for this enlargement" and "was the thing that grew a curse
+or a blessing".
+
+**★ An amplification reads the other way round from every other status event in this engine.** In a
+`StatusApplicationAmplified` context, `source` is the body the enlarged status LANDED ON — the one wearing the
+register — and `eventTarget` is whoever applied it, so a rule can answer the applier. The Keeper's glyph gate
+asked the event target for the applicant marker, which actually reads "did the PLAYER apply this": true of a
+blessing the player casts on themselves, false of every curse the Keeper writes. Golden glyphs worked
+perfectly and black ones never landed once, which is the most convincing kind of wrong.
+
+Together with the Scarab Host's damage trigger (where `source` is the ATTACKER, not the bearer), that is two
+bodies in one session bitten by the same class of thing. The rule to carry forward: **a triggered program's
+`source` and `eventTarget` mean whatever that event family found most useful, and they are not the same
+across families.** A body that must address ITSELF should do it through the rule it is the only one wearing;
+a body that must address the PLAYER should use the applicant marker; and which selector carries which is
+worth checking against the adapter every time an event family is used for the first time.
+
+**The Overseer needed a mirror the act was missing.** `decays_preserved` has been written at the one fading
+point since Stage 8; the wrapping loosens on the opposite event, so `decays_unpreserved` is now written in the
+same place and only for afflictions (a player's own wax lapsing is not a wrapping coming loose). Both halves
+are read at the Overseer's own turn start through one bookmark each — which is also what makes the master's
+"at most twice a round" enforceable at all: a rule firing once per fade could count them but could never cap
+them.
+
+**"Select up to two currently existing temporary negative statuses"** is two picks at index 0 and index 1 of
+the player's debuffs. Deterministic (so a replay reproduces it), and a player carrying one affliction has
+exactly one wrapped tighter while a clean player takes nothing at all — the master's "no hidden status is
+created to fill empty slots" falls out of the selector returning nothing.
+
+**The Treasury weighs a turn against itself.** Quantity is cards played less junk-tagged ones; Value is
+`resourceSpentThisTurn`, the same figure the act's own measure reads — so a turn is weighed by one number
+throughout the labyrinth rather than by a second accounting. Its Credits are cards again (the third body this
+session to take the card-offer idiom), and the master's "once per player turn" is a latch the first draw sets
+on the player: both offers stand, and using one closes the counter for the day.
+
+**Two cooldowns are the cycle.** `Correct the Name` and `Close the Accounts` are asked for with a cooldown of
+3 intents; both sit in a six-intent cycle, which is twice that, so no separate cooldown machinery was written.
