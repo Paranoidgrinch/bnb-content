@@ -191,6 +191,9 @@ public static class EncounterPassives
         ],
         "final_notice_knight" =>
             [new StartingStatusSpec(new StatusDefinitionId(PassiveStatuses.FinalNoticeId), PassiveStatuses.FinalNoticeStart)],
+        // Act IV: the Chisel Spirit sets its chisel against the player's name from the first bell — a round
+        // top-up alone would miss the opening round, which starts before the bodies in it are dressed.
+        ActFour.ChiselSpiritEnemyId => ActFour.CartoucheOpening(ActFour.ChiselSpiritEnemyId),
         // Act II: the archive's rules live on the player, because it is the player's hand and the player's draw
         // they are about. Two misfiling enemies ask for the same marker and it merges, so a card is taken back
         // once however many shelves are in the room.
