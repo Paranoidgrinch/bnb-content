@@ -128,6 +128,17 @@ public static class EffectMapper
                         : throw new ConversionException(where, $"unmapped status_on '{seat}'")
                     : Sel())),
 
+            // block = amount (base, optional) + min(stacks of <status> × amount_per_stack, cap?) — the same
+            // shape as damage_per_status on the other side of the ledger. A body that spends a resource it
+            // keeps on itself for DEFENCE (the Royal Genealogy Wall's Royal Line) had no way to telegraph
+            // the formula before: the program could compute it, but the intent line showed only the base.
+            "block_per_status" => new CombatNodeModel("gainBlock", Sel(),
+                DamagePerStatusAmount(where, effect, effect.StatusOn is { } blockSeat
+                    ? targets.TryGetValue(blockSeat, out var blockReadSelector)
+                        ? blockReadSelector
+                        : throw new ConversionException(where, $"unmapped status_on '{blockSeat}'")
+                    : Sel())),
+
             // set_counter: write a per-fight track (Queue Position, …). relative (default true) adds; else sets.
             // With a cap, the add is rewritten as an absolute min(current + amount, cap) — tracks like Momentum
             // that fill to a ceiling.

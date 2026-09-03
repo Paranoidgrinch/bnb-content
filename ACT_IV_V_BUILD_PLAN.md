@@ -321,9 +321,32 @@ decides and the choice is written into `ADAPTATIONS.md`.
       order, with nothing else acting over the top. A body whose identity IS a cycle could not be tested
       before without dragging its whole encounter in (and the Scribe's Inscribed would have quietly resized
       every assertion about the Ibis).
-- [ ] **IV-10 — Stage 15, the Cartouche Chambers.** Name-Erasing Chisel Spirit, Royal Genealogy Wall.
-      Encounters 47–49. §3.8: **Royal Favor** is the Wall's own local resource; the player's status is never
-      stolen, and a prevented gain grants nothing.
+- [x] **IV-10 — Stage 15, the Cartouche Chambers. DONE 2026-09-03.** Name-Erasing Chisel Spirit, Royal
+      Genealogy Wall. Encounters 47–49. §3.8: **Royal Favor** is the Wall's own local resource; the player's
+      status is never stolen, and a prevented gain grants nothing.
+      ▸ **What landed:** `Converter/ActFourCartouche.cs` + 7 live tests (`Tests/ActFourCartoucheTests.cs`),
+      and — against this plan's own expectation that the act was pure content from IV-8 on — **two small
+      engine buys**, both general and both proved in Core:
+      **(a) an application now reports HOW MUCH it landed.** `StatusMergedCombatEvent.AppliedStacks` (the
+      delta; `Stacks` stays the resulting total) and `eventAmount` answering with it on both application
+      events. §3.8 says "Royal Favor equal to the stacks gained", and a merge could only report the pile:
+      one stack on top of three read as four.
+      **(b) `eventPreventerIs` — which prohibition refused this?** The exact mirror of IV-7's
+      `eventAmplifierIs` ("what paid for the enlargement?"). What was refused was already askable; who did the
+      refusing was not, and a rule that answers its own refusals must not fire for a stranger's ward.
+      ▸ ★ **ERASED is not REMOVED, and the stage is built on the difference.** The chisel is a PROHIBITION on
+      the player (scope Buffs, one stack, re-set each round) — the only shape in this engine that means "never
+      gained". A status that landed and was then stripped was still gained, and every rule that answers a gain
+      would already have heard it, the Wall's lineage first. So §3.8's priority rule needs no priority table:
+      an erased blessing raises no application, the Wall hears nothing, and a later one that survives is still
+      the first it hears. The two bodies order themselves.
+      ▸ The chisel is served with the fight (`HeroOpeningStatuses`) as well as topped up each round, because a
+      fight's first round starts before its bodies are dressed — the same lesson `FollowTheApplicant` paid for
+      at IV-0.
+      ▸ Also new in the converter DSL: **`block_per_status`**, the defensive twin of `damage_per_status`, so
+      the Wall's `Royal Line` telegraphs its whole formula instead of only its floor.
+      **Acceptance for the standard roster's IDENTITIES is met here: 35 of 35** (Stages 16–17 are final forms
+      of existing bodies and add none).
 - [ ] **IV-11 — Stages 16 + 17, the final forms.** No new identities: Crooked Rod Bearer → Feather-Bearer,
       Crocodile → Crocodile Beneath the Balance, Stone-Hauler → Golden Ushabti Captain, Palette-Bearer →
       Eternal Reed Scribe, Cornerstone Oath-Stone → Oathbound Gate. Encounters 50–55.
@@ -476,6 +499,7 @@ force — these fights are "almost a separate game mode"); each god enters `Boss
 - [x] **IV-7 — Stages 9 + 10 — DONE 2026-09-02** (24 identities / 33 encounters so far; **seam list closed**)
 - [x] **IV-8 — Stages 11 + 12 — DONE 2026-09-02** (28 identities / 40 encounters so far)
 - [x] **IV-9 — Stages 13 + 14 — DONE 2026-09-02** (33 identities / 46 encounters so far)
-- [ ] IV-10 … IV-11 standards · IV-12 … IV-15 elites · IV-16 … IV-19 bosses · IV-20 … IV-21 cards+relics ·
+- [x] **IV-10 — Stage 15 — DONE 2026-09-03** (35 identities / 49 encounters — the identity roster is COMPLETE)
+- [ ] IV-11 standards (final forms) · IV-12 … IV-15 elites · IV-16 … IV-19 bosses · IV-20 … IV-21 cards+relics ·
       IV-22 … IV-23 events · IV-24 the act
 - [ ] V-0 structure · V-1 … V-6 the six gods · V-7 the whole game

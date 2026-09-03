@@ -2209,5 +2209,137 @@
       "panic",
       "clock"
     ]
+  },
+  {
+    "id": "name_erasing_chisel_spirit",
+    "name": "Name-Erasing Chisel Spirit",
+    "max_hp": 166,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "chisel_cut",
+        "name": "Chisel Cut",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 20
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "doubt",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "chip_the_cartouche",
+        "name": "Chip the Cartouche",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 23
+          }
+        ]
+      },
+      {
+        "id": "stone_dust",
+        "name": "Stone Dust",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 27
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "labyrinth_body"
+      },
+      {
+        "status": "erase_the_favor"
+      }
+    ],
+    "tags": [
+      "licensing_labyrinth",
+      "normal",
+      "stage_cartouche",
+      "erasure",
+      "doubt"
+    ]
+  },
+  {
+    "id": "royal_genealogy_wall",
+    "name": "Royal Genealogy Wall",
+    "max_hp": 188,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "dynastic_rebuke",
+        "name": "Dynastic Rebuke",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 20
+          }
+        ]
+      },
+      {
+        "id": "ancestral_claim",
+        "name": "Ancestral Claim",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "damage_per_status",
+            "target": "player",
+            "status": "royal_favor",
+            "status_on": "owner",
+            "amount": 20,
+            "amount_per_stack": 3,
+            "cap": 9
+          }
+        ]
+      },
+      {
+        "id": "royal_line",
+        "name": "Royal Line",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "block_per_status",
+            "target": "owner",
+            "status": "royal_favor",
+            "status_on": "owner",
+            "amount": 32,
+            "amount_per_stack": 4,
+            "cap": 12
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "labyrinth_body"
+      },
+      {
+        "status": "dynastic_favor"
+      }
+    ],
+    "tags": [
+      "licensing_labyrinth",
+      "normal",
+      "stage_cartouche",
+      "royal_favor",
+      "lineage"
+    ]
   }
 ]

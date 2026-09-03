@@ -753,5 +753,55 @@
       "calendar"
     ],
     "role": "multi_combat"
+  },
+  {
+    "id": "labyrinth_cartouche_01",
+    "name": "Erase the Favor",
+    "act": 4,
+    "difficulty": "normal",
+    "enemies": [
+      "name_erasing_chisel_spirit"
+    ],
+    "weight": 2,
+    "tags": [
+      "licensing_labyrinth",
+      "stage_cartouche",
+      "erasure"
+    ],
+    "role": "combat"
+  },
+  {
+    "id": "labyrinth_cartouche_02",
+    "name": "Dynastic Favor Claim",
+    "act": 4,
+    "difficulty": "normal",
+    "enemies": [
+      "royal_genealogy_wall"
+    ],
+    "weight": 2,
+    "tags": [
+      "licensing_labyrinth",
+      "stage_cartouche",
+      "royal_favor"
+    ],
+    "role": "combat"
+  },
+  {
+    "id": "labyrinth_cartouche_duo_01",
+    "name": "Expunged Royal Favor",
+    "act": 4,
+    "difficulty": "hard",
+    "enemies": [
+      "name_erasing_chisel_spirit",
+      "royal_genealogy_wall"
+    ],
+    "weight": 1,
+    "tags": [
+      "licensing_labyrinth",
+      "stage_cartouche",
+      "erasure",
+      "royal_favor"
+    ],
+    "role": "multi_combat"
   }
 ]

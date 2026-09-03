@@ -2529,3 +2529,52 @@ compliance can put one more in your pocket, but nothing stockpiles a way out of 
 Scribe's "failed measure may add 1 Inscribed" lands on `Table Cover`, answering any failure with one stack:
 measuring error by BAND is the Reed-Cord Surveyor's office, and giving it to the astronomer as well would blur
 the one distinction Stage 1 exists to teach.
+
+## Act IV, Stage 15 — the Cartouche Chambers (2026-09-03)
+
+Two bodies that decide what a blessing of yours is for, and neither answer is "yours". **Two small engine
+buys**, both general and both proved in Core, against this act's own expectation that it was pure content
+from Stage 11 on — and both were bought because the master's wording could not be honoured without them.
+
+**ERASED is not REMOVED, and the whole stage rests on the difference.** The Name-Erasing Chisel Spirit is a
+PROHIBITION worn by the player (scope Buffs, one stack, re-set each round), not a rule that strips a status
+after it lands. A status that landed and was then taken away was still GAINED: every rule that answers a gain
+has already heard it — the Royal Genealogy Wall's lineage first — and the master is explicit that the erased
+status is "never gained". A refusal is the only shape in this engine that means that.
+
+**§3.8's priority rule therefore needs no priority table.** An erased blessing raises no application at all,
+so the Wall is fed nothing by it, and a later blessing that survives the same round is still the first one the
+Wall hears. The two bodies order themselves, deterministically, out of their own definitions — which is what
+lets the player deliberately expose a blessing they can afford to lose in order to spend the chisel.
+
+**Engine buy (a): an application now says how much it landed.** §3.8 asks for "Royal Favor equal to the
+stacks gained", and a merge could only report the resulting pile — a one-stack blessing on top of three read
+as four. `StatusMergedCombatEvent` now carries `AppliedStacks` beside `Stacks`, and the event-amount
+expression answers with it (a first application's total IS its delta, so only the merge needed the extra
+field).
+
+**Engine buy (b): `eventPreventerIs`, the mirror of `eventAmplifierIs`.** The engine could already say what
+was refused and, since IV-7, what paid for an enlargement — but not which prohibition did the refusing. The
+chisel answers its own refusals and must not answer a stranger's. Today nothing else in the port refuses a
+buff on the player, so a coarser gate would have worked by accident; the narrow question is the one the rule
+actually asks, and it does not compose out of anything already there.
+
+**The chisel is served with the fight as well as topped up each round.** A fight's first round starts before
+its bodies are dressed, so a rule nobody wears yet does not fire — the lesson `FollowTheApplicant` paid for in
+Stage 1 — and the opening round would otherwise be a free one.
+
+**Royal Favor is spent, not merely used.** The Wall cashes the whole lineage on whichever of its two royal
+actions comes round — +3 damage a Favor on the retaliation, +4 Block a Favor on the defence — and is a plain
+wall again until the next blessing feeds it. A Favor that survived being cashed would turn the cap of 3 into
+a floor.
+
+**New in the converter's effect DSL: `block_per_status`,** the defensive twin of `damage_per_status`. A body
+that spends a resource it keeps on itself for DEFENCE could compute the number in a program but could not
+telegraph it, and the intent line showed only the floor. Now `Royal Line` reads "32 block +4 per own Royal
+Favor (max +12)".
+
+**And a telegraph fix the new statuses forced into the open: intent lines had been printing raw status IDS.**
+Any status whose id is more than one word came out with its underscore — "Safe_conduct +1", "+4 per own
+Royal_favor" — in 24 intents going back to Act II. The intent line is the one thing a player plans against,
+so the id is now read out as words with the small joining ones left lower case: "Safe Conduct",
+"Approach of Noon", "Royal Favor".

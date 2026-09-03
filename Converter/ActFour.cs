@@ -383,6 +383,11 @@ public static partial class ActFour
         LunarReturn(),
         .. LastRites(),
         ApproachOfNoon(),
+        // Stage 15 — the Cartouche Chambers
+        ChiselSet(),
+        EraseTheFavor(),
+        RoyalFavor(),
+        DynasticFavor(),
     ];
 
     // The standard roster, stage by stage.
@@ -416,6 +421,8 @@ public static partial class ActFour
         "false_door_finder", "cursed_loot_bearer",
         // Stage 14 — the Chamber of Fixed Days
         "star_table_scribe", "moon_cycle_ibis", "eclipse_scarab",
+        // Stage 15 — the Cartouche Chambers
+        "name_erasing_chisel_spirit", "royal_genealogy_wall",
     };
 
     // ── shared idioms ─────────────────────────────────────────────────────────────────────────────────────

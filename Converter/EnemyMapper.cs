@@ -89,13 +89,36 @@ public static class EnemyMapper
                         ? $"{baseDamage} dmg {scaling}"
                         : $"dmg {scaling}");
                     break;
+                // …and the same for a scaling defence, so a body that spends its own resource on Block
+                // telegraphs what that comes to rather than only its floor.
+                case "block_per_status" when effect.Status is { } blockStatus:
+                    var blockGroup = effect.PerStacks is { } blockPer && blockPer > 1 ? $"{blockPer} " : "";
+                    var blockWhose = effect.StatusOn is "owner" or "self" ? "own " : "";
+                    var blockScaling =
+                        $"+{effect.AmountPerStack ?? 0} per {blockGroup}{blockWhose}{Capitalize(blockStatus)}";
+                    if (effect.Cap is { } blockCap)
+                        blockScaling += $" (max +{blockCap})";
+                    parts.Add(effect.Amount is { } baseBlock && baseBlock != 0
+                        ? $"{baseBlock} block {blockScaling}"
+                        : $"block {blockScaling}");
+                    break;
             }
         }
         return parts.Count > 0 ? $"{intent.Name} · {string.Join(", ", parts)}" : intent.Name;
     }
 
+    // A status id read out loud. The telegraph is the one line a player plans against, and it had been
+    // printing raw ids into it — "Safe_conduct +1", "+3 per own Royal_favor" — for every status whose id is
+    // more than one word. Words, then, with the small joining ones left in lower case, which is how the
+    // statuses are named where they are authored.
+    private static readonly HashSet<string> Particles =
+        new(StringComparer.Ordinal) { "of", "the", "in", "and", "to", "a", "for" };
+
     private static string Capitalize(string text) =>
-        text.Length == 0 ? text : char.ToUpperInvariant(text[0]) + text[1..];
+        string.Join(' ', text.Split('_', StringSplitOptions.RemoveEmptyEntries)
+            .Select((word, index) => index > 0 && Particles.Contains(word)
+                ? word
+                : char.ToUpperInvariant(word[0]) + word[1..]));
 
     private static IntentKind Kind(string where, string intentType) => intentType switch
     {
