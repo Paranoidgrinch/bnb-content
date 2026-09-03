@@ -383,9 +383,33 @@ Shared rules §6.1–6.5: elite-local counters stay encounter-local; a Weighed v
 deterministic current state; a queued signature is telegraphed and never interrupts a card or a Weighed
 resolution. HP from the master's table.
 
-- [ ] **IV-12 — Surveyor of the Errant Cord (248) · Scarab Host of the Sealed Granary (255) ·
-      Rope-Master of the Corvée (275 + summons).** The Surveyor offers **two achievable Weighed values** —
-      the solvability filter is its own machinery, written once and reused by every later elite.
+- [x] **IV-12 — Surveyor of the Errant Cord (248) · Scarab Host of the Sealed Granary (255) ·
+      Rope-Master of the Corvée (275 + summons). DONE 2026-09-03.** The Surveyor offers **two achievable
+      Weighed values** — the solvability filter is its own machinery, written once and reused by every later
+      elite.
+      ▸ **What landed:** `Converter/ActFourElites.cs` (the shared layer) + `ActFourEliteSurveyor.cs`,
+      `ActFourEliteScarab.cs`, `ActFourEliteRope.cs`, and 8 live tests (`Tests/ActFourEliteTests.cs`) plus an
+      HP pin in `ActFourPoolTests`. **Nothing new from the engine.**
+      ▸ §6.2 is `ActFour.Achievable(demand)` — clamped to the player's Energy pool at the moment the demand
+      is made, floored at 1 — and it is in the shared file because the Surveyor is only the first body to
+      ask: the Sphinx, the Decans and the Treasury all generate requirements, and a filter each of them
+      re-derived would drift.
+      ▸ **A choice an enemy offers is CARDS**, the Living Petition Chorus's idiom, and it carried both bodies
+      that needed one: the Surveyor's two boundaries (whose figures are counters on the player, so one card
+      pair covers every offer) and the Scarab Host's three seals (offered only for chambers still intact).
+      Both exhaust at the turn's end, so refusing is an answer.
+      ▸ ★ **BLOCK EXPIRES AT ITS OWNER'S TURN START, so "remove up to 10 current Block" answered at the
+      elite's own turn start would always find nothing there.** What a stripped brace actually costs a body
+      is the brace it does not get, so a far-boundary success leaves SLACK IN THE CORD: the next Block it
+      gains is that much weaker, and the slack is spent making it. Same number, and it lands where the player
+      can see it.
+      ▸ ★ **A summoned body has no action script** — the engine's intent selector only knows the roster the
+      fight opened with — so the Rope-Master's Haulers act the way every summon in this engine acts: a marker
+      status with a turn-start program, which is also where the Hauler's death is heard. `countTargets` gives
+      the "one hand works per enemy turn, taking it in turns" bound honestly, including the sole-hauler case.
+      ▸ ⚠ **A damage-received trigger's SOURCE is the attacker, not the bearer.** The Scarab Host's break
+      offer read its own seals off the player until a test caught it; a body must address itself through the
+      rule it wears whenever the acting side is not its own.
 - [ ] **IV-13 — Keeper of the Living Cartouche (300) · Mummified Overseer of the Linen House (318) ·
       The Treasury of the Two Pans (330).** Glyphs, Wrapping, Value-vs-Quantity accounting. The Cartouche is
       **Inscribed's boss-grade reader**: it writes Black/Golden Glyphs out of amplified applications, so this
@@ -526,6 +550,7 @@ force — these fights are "almost a separate game mode"); each god enters `Boss
 - [x] **IV-10 — Stage 15 — DONE 2026-09-03** (35 identities / 49 encounters — the identity roster is COMPLETE)
 - [x] **IV-11 — Stages 16 + 17 — DONE 2026-09-03** (35 identities / 55 encounters — **THE STANDARD POOL IS
       COMPLETE**, pinned in `Tests/ActFourPoolTests.cs`)
-- [ ] IV-12 … IV-15 elites · IV-16 … IV-19 bosses · IV-20 … IV-21 cards+relics ·
+- [x] **IV-12 — the first three elites — DONE 2026-09-03** (3 of 10 elite encounters)
+- [ ] IV-13 … IV-15 elites · IV-16 … IV-19 bosses · IV-20 … IV-21 cards+relics ·
       IV-22 … IV-23 events · IV-24 the act
 - [ ] V-0 structure · V-1 … V-6 the six gods · V-7 the whole game

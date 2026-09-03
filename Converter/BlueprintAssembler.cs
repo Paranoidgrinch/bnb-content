@@ -67,6 +67,8 @@ public static class BlueprintAssembler
                 // The events' temporary cards: never dealt into a deck, only pushed into a fight.
                 .. Events.ActOneEventObjects.Compile(), .. Events.ActTwoEventObjects.Compile(),
                 .. ActThree.GivenCards(),
+                // The Act-IV elites' offers: two boundaries and three seals, never dealt into a deck.
+                .. ActFour.EliteCards(),
                 .. Relics.ActThreeBossRelicCards.All(),
                 .. ClauseCards.Cards(), NoticeCards.Acknowledge(), DeputyUndersecretary.ReviewCard(),
                 .. QueueCommissioner.Cards(), .. LordSealkeeper.Cards(), .. MunicipalDragon.Cards(),

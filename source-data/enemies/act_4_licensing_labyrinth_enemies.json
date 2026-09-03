@@ -2678,5 +2678,384 @@
       "oath",
       "final_form"
     ]
+  },
+  {
+    "id": "surveyor_of_the_errant_cord",
+    "name": "Surveyor of the Errant Cord",
+    "max_hp": 248,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "drive_the_first_stake",
+        "name": "Drive the First Stake",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 16
+          }
+        ]
+      },
+      {
+        "id": "strike_the_cord",
+        "name": "Strike the Cord",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 11
+          },
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 11
+          }
+        ]
+      },
+      {
+        "id": "disputed_ground",
+        "name": "Disputed Ground",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 20
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "entombed",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "re_tension_the_measure",
+        "name": "Re-Tension the Measure",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 22
+          }
+        ]
+      },
+      {
+        "id": "the_boundary_moves",
+        "name": "The Boundary Moves",
+        "intent_type": "mixed",
+        "special": true,
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 31
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "burdened",
+            "amount": 1
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "labyrinth_body"
+      },
+      {
+        "status": "the_errant_cord"
+      }
+    ],
+    "intent_rules": [
+      {
+        "condition": {
+          "kind": "self_counter",
+          "counter": "boundary_error",
+          "op": "ge",
+          "value": 2
+        },
+        "action": "the_boundary_moves",
+        "priority": 10
+      }
+    ],
+    "tags": [
+      "licensing_labyrinth",
+      "elite",
+      "weighed",
+      "entombed",
+      "survey"
+    ]
+  },
+  {
+    "id": "scarab_host_of_the_sealed_granary",
+    "name": "Scarab Host of the Sealed Granary",
+    "max_hp": 255,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "seal_the_jars",
+        "name": "Seal the Jars",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 20
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "burdened",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "spoiled_grain",
+        "name": "Spoiled Grain",
+        "intent_type": "debuff",
+        "actions": [
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "poison",
+            "amount": 3
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "inscribed",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "black_swarm",
+        "name": "Black Swarm",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 5
+          },
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 5
+          },
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 5
+          },
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 5
+          },
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 5
+          }
+        ]
+      },
+      {
+        "id": "through_every_crack",
+        "name": "Through Every Crack",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 6
+          },
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 6
+          },
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 6
+          },
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 6
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "burdened",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "granary_wall",
+        "name": "Granary Wall",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 24
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "labyrinth_body"
+      },
+      {
+        "status": "the_sealed_granary"
+      },
+      {
+        "status": "ration_seal"
+      },
+      {
+        "status": "pest_seal"
+      },
+      {
+        "status": "burden_seal"
+      }
+    ],
+    "tags": [
+      "licensing_labyrinth",
+      "elite",
+      "burdened",
+      "inscribed",
+      "granary"
+    ]
+  },
+  {
+    "id": "rope_master_of_the_corvee",
+    "name": "Rope-Master of the Corv\u00e9e",
+    "max_hp": 275,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "tie_to_the_gang",
+        "name": "Tie to the Gang",
+        "intent_type": "debuff",
+        "actions": [
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "burdened",
+            "amount": 2
+          }
+        ]
+      },
+      {
+        "id": "no_rest_at_dawn",
+        "name": "No Rest at Dawn",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 15
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "fatigue",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "rope_across_the_back",
+        "name": "Rope Across the Back",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 8
+          },
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 8
+          },
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 8
+          }
+        ]
+      },
+      {
+        "id": "count_the_missing_hands",
+        "name": "Count the Missing Hands",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "paperwork",
+            "amount": 2
+          },
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 12
+          }
+        ]
+      },
+      {
+        "id": "call_the_missing_hands",
+        "name": "Call the Missing Hands",
+        "intent_type": "buff",
+        "special": true,
+        "actions": [
+          {
+            "type": "apply_status",
+            "target": "owner",
+            "status": "at_the_rope",
+            "amount": 1
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "labyrinth_body"
+      },
+      {
+        "status": "the_corvee"
+      }
+    ],
+    "intent_rules": [
+      {
+        "condition": {
+          "kind": "self_counter",
+          "counter": "labor_owed",
+          "op": "ge",
+          "value": 3
+        },
+        "action": "call_the_missing_hands",
+        "priority": 10
+      }
+    ],
+    "tags": [
+      "licensing_labyrinth",
+      "elite",
+      "burdened",
+      "summons",
+      "corvee"
+    ]
   }
 ]
