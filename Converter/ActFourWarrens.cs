@@ -75,9 +75,12 @@ public static partial class ActFour
     // into a Claim, and the one Safe-Conduct §3.9 insists the player is never expected to arrive with.
     //
     // Asked of the whole roster, like Act III's own opening and for the same reason — Safe-Conduct is kept as
-    // per-grant instances, so asking twice would hand out two licences rather than merging one.
+    // per-grant instances, so asking twice would hand out two licences rather than merging one. The
+    // Tombbreakers Three bring the same law with them for the same reason the Finder does: their Lamp Thief
+    // files Trespass, and the audit is emphatic that the player never arrives with unexplained Act-III
+    // resources.
     public static IReadOnlyList<StartingStatusSpec> NecropolisOpening(IEnumerable<string> enemyIds) =>
-        enemyIds.Contains(FalseDoorFinderEnemyId, StringComparer.Ordinal)
+        enemyIds.Any(id => id == FalseDoorFinderEnemyId || Tombbreakers.Contains(id))
             ?
             [
                 new StartingStatusSpec(new StatusDefinitionId(ActThree.GreenDocketCustomsId), 1),
