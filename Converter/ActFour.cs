@@ -388,6 +388,12 @@ public static partial class ActFour
         EraseTheFavor(),
         RoyalFavor(),
         DynasticFavor(),
+        // Stages 16 and 17 — the Hall of the Balance and the Sealed Court Before Eternity
+        FeatherOfFinalMeasure(),
+        BalanceOpen(),
+        WaitsBeneathTheScale(),
+        JawsOpen(),
+        EntryDoesNotClose(),
     ];
 
     // The standard roster, stage by stage.
@@ -423,6 +429,10 @@ public static partial class ActFour
         "star_table_scribe", "moon_cycle_ibis", "eclipse_scarab",
         // Stage 15 — the Cartouche Chambers
         "name_erasing_chisel_spirit", "royal_genealogy_wall",
+        // Stages 16 and 17 — the final forms. No new identities: each of these five is a body from an
+        // earlier stage in the office the act promoted it into, and the roster counts it once, there.
+        "feather_bearer", "crocodile_beneath_the_balance",
+        "golden_ushabti_captain", "eternal_reed_scribe", "oathbound_gate",
     };
 
     // ── shared idioms ─────────────────────────────────────────────────────────────────────────────────────

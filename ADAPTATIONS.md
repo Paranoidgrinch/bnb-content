@@ -2578,3 +2578,51 @@ Any status whose id is more than one word came out with its underscore — "Safe
 Royal_favor" — in 24 intents going back to Act II. The intent line is the one thing a player plans against,
 so the id is now read out as words with the small joining ones left lower case: "Safe Conduct",
 "Approach of Noon", "Royal Favor".
+
+## Act IV, Stages 16 and 17 — the Hall of the Balance and the Sealed Court Before Eternity (2026-09-03)
+
+Five bodies the player already knows, in the offices the labyrinth was always going to promote them into.
+**Nothing new from the engine, and — the whole point of both stages — no new vocabulary.** Every word here is
+one the player was taught by the body now holding the office: the measure and its distance, Stone,
+preservation, Kept and Broken Oaths.
+
+**The Feather-Bearer's success is the interesting half.** The master asks a met measure to "open a large
+defensive vulnerability / damage window", worth 18–24 points. That is authored as a status ON THE BEARER: the
+balance is open, and every blow that lands on it goes 8 deeper — three cards' worth is 24, right in the band,
+and a player who plays fewer gets less, which is the honest shape of a window. It is closed by the NEXT
+weighing rather than by a turn duration, because the answer fires at the bearer's own turn start and a
+duration counted from there would expire before the player ever had a turn to use it. A miss is 16 + 5 per
+point of distance; the cap of 31 falls at exactly three out, which is the widest a measure of 3 can be missed,
+so the cap is a statement about the demand rather than an arbitrary ceiling.
+
+**The Crocodile's two opening conditions are both visible before the player acts** — a weighing they missed,
+or 3 Entombed they are already carrying. That is the difference the master draws between a predator and an
+ambush, and it is why the jaws are a face on the body and not a hidden flag.
+
+**"Preserved Entry" is Embalmed, one stack.** The master describes it as "derived from the same preservation
+language", and the act already has that language with a single fading point every status in the port runs
+through. So the Scribe applies 1 Embalmed rather than inventing a per-status preservation: preservation of the
+PERSON rather than of one entry, which at the table comes to the same thing, since the entry the Court just
+made is the one due to fade next. One stack means exactly one fade is held, which is the audit's "it does not
+create an infinite no-decay state".
+
+**⚠ The Oathbound Gate's run-history import is NOT implemented, and it needs an engine seam.** The master says
+the Door "may import up to 2 visible stored Oath Memories" *if the player previously encountered the
+Oath-Stone in the current Act-IV run*. There is nothing in the engine between a finished encounter and the
+next one's roster build — no run-level memory a combat can read — so the Door is fielded with 2 Broken Oath as
+ENCOUNTER SCAFFOLDING (`enemy_statuses`, the same seam Act III's Boundary Stone uses to hold a Claim in its
+two teaching fights). That satisfies everything the audit checks — visible before the first player action,
+capped at two tokens, only Oath tokens, no inspection of hidden history — except the condition itself. The
+seam it wants is small and general: a run-level counter written when an encounter ends and readable when the
+next one's roster is built. It is deferred rather than bodged, and named here so it is not lost.
+
+**The Sealed Court trio is the only Act-IV encounter with per-roster HP.** Every other combination in this act
+fields its bodies at full solo strength, and the act's duos land at 300–360 HP together. Three solo bodies here
+would be 595. The master prices the capstone explicitly — 62–64% / 49–51% / 46–49%, 296–349 combined — so the
+trio is fielded at 141 / 97 / 84 = 322, which puts the act's hardest standard fight in the same body-mass band
+as its duos rather than in elite territory.
+
+**A test-writing gotcha worth stating once:** `FightProbe.Solo` takes the enemy's roster entry from the first
+authored encounter that fields it, **scaffolding included**. A probe of the Oathbound Gate therefore starts
+with the two Broken Oaths its solo encounter gives it. That is correct — the probe is meant to be the body as
+the game fields it — but it means a probe's opening state is not always the enemy's bare `starting_statuses`.
