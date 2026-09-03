@@ -230,9 +230,12 @@ public static partial class ActFour
         var energy = new CombatantCurrentResourceExpression<TurnStartedTriggeredEffectContext>(
             Applicant, StandardCombatIds.EnergyResource);
 
+        // The command stands on HIM, not on the player: a command is the KING asking, and — see ADAPTATIONS —
+        // a neutral rule-marker applied to the player is an application like any other, so the register would
+        // enlarge it and spend an Inscribed doing it.
         IEffectNode<TurnStartedTriggeredEffectContext> Issue(string commandId) =>
             new ApplyStatusNode<TurnStartedTriggeredEffectContext>(
-                Applicant, new StatusDefinitionId(commandId),
+                pharaoh, new StatusDefinitionId(commandId),
                 new ConstantExpression<TurnStartedTriggeredEffectContext>(1), sourceSelector: pharaoh);
 
         // Solvability, §5.2: a command is only issued when this turn's deterministic state can meet it.
@@ -307,7 +310,7 @@ public static partial class ActFour
                     .. Commands.Select(id =>
                         (IEffectNode<TurnStartedTriggeredEffectContext>)
                         new RemoveStatusNode<TurnStartedTriggeredEffectContext>(
-                            Applicant, new StatusDefinitionId(id))),
+                            pharaoh, new StatusDefinitionId(id))),
 
                     // What the record stood at when the turn opened — the only way "lower than you began
                     // with" can be asked at its end.
@@ -345,7 +348,7 @@ public static partial class ActFour
             string commandId, ICombatExpression<TurnEndedTriggeredEffectContext, bool> met) =>
             new AndExpression<TurnEndedTriggeredEffectContext>(
                 new TargetHasStatusExpression<TurnEndedTriggeredEffectContext>(
-                    Applicant, new StatusDefinitionId(commandId)),
+                    pharaoh, new StatusDefinitionId(commandId)),
                 met);
 
         var standing = new OrExpression<TurnEndedTriggeredEffectContext>(
@@ -434,7 +437,7 @@ public static partial class ActFour
         var anyCommand = Commands
             .Select(id => (ICombatExpression<TurnEndedTriggeredEffectContext, bool>)
                 new TargetHasStatusExpression<TurnEndedTriggeredEffectContext>(
-                    Applicant, new StatusDefinitionId(id)))
+                    pharaoh, new StatusDefinitionId(id)))
             .Aggregate((a, b) => new OrExpression<TurnEndedTriggeredEffectContext>(a, b));
 
         return new EffectProgram<TurnEndedTriggeredEffectContext>(

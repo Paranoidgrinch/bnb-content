@@ -42,7 +42,7 @@ public class ActFourBossPharaohTests
         var (play, _, _) = Court();
 
         Assert.Equal(ActFour.WardFull, FightProbe.StacksOf(King(play), ActFour.CartoucheWardId));
-        Assert.Equal(1, FightProbe.StacksOf(Hero(play), ActFour.CommandMeasureId));
+        Assert.Equal(1, FightProbe.StacksOf(King(play), ActFour.CommandMeasureId));
         play.Dispose();
     }
 
@@ -152,7 +152,7 @@ public class ActFourBossPharaohTests
         play.CombatDriver!.EndTurn();
 
         var command = new[] { ActFour.CommandSouthId, ActFour.CommandNorthId }
-            .Count(id => FightProbe.StacksOf(Hero(play), id) > 0);
+            .Count(id => FightProbe.StacksOf(King(play), id) > 0);
         Assert.Equal(1, command);
         play.Dispose();
     }

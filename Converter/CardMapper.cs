@@ -196,6 +196,10 @@ public static class EffectMapper
                 tag: effect.Tag ?? throw new ConversionException(where, "exhaust_cards_by_tag without tag"),
                 takeFirst: effect.Amount),
 
+            // heal: the other side of deal_damage. A body that mends itself (the Lady opening a jar) could
+            // only be authored as a raw program before, which left its telegraph saying something else.
+            "heal" => new CombatNodeModel("heal", Sel(), CombatAmountSpec.FromConst(Amount())),
+
             "gain_strength" => new CombatNodeModel("applyStatus", Sel(), CombatAmountSpec.FromConst(Amount()),
                 StatusId: "strength"),
 

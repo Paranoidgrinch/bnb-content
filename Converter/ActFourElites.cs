@@ -17,12 +17,22 @@ public static partial class ActFour
     {
         PharaohEnemyId,
         WeigherEnemyId,
+        ArchitectEnemyId,
+        LadyEnemyId,
     };
 
-    public static IReadOnlyList<StatusData> BossStatuses() => [.. PharaohStatuses(), .. WeigherStatuses()];
+    public static IReadOnlyList<StatusData> BossStatuses() =>
+        [.. PharaohStatuses(), .. WeigherStatuses(), .. ArchitectStatuses(), .. LadyStatuses()];
+
+    // The bosses' own offers: the Architect's four blueprints and the Lady's four seals, never dealt into a
+    // deck — pushed into the fight by the body that offers them.
+    public static IReadOnlyList<CardData> BossCards() => [.. ArchitectCards(), .. LadySealCards()];
 
     public static EffectProgram<EnemyActionContext>? BossIntent(string enemyId, string intentId) =>
-        PharaohIntent(enemyId, intentId) ?? WeigherIntent(enemyId, intentId);
+        PharaohIntent(enemyId, intentId)
+        ?? WeigherIntent(enemyId, intentId)
+        ?? ArchitectIntent(enemyId, intentId)
+        ?? LadyIntent(enemyId, intentId);
 
     public static readonly IReadOnlySet<string> EliteIdentities = new HashSet<string>(StringComparer.Ordinal)
     {

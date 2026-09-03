@@ -69,6 +69,8 @@ public static class BlueprintAssembler
                 .. ActThree.GivenCards(),
                 // The Act-IV elites' offers: two boundaries and three seals, never dealt into a deck.
                 .. ActFour.EliteCards(),
+                // …and the bosses' own: the Architect's blueprints, the Lady's four seals.
+                .. ActFour.BossCards(),
                 .. Relics.ActThreeBossRelicCards.All(),
                 .. ClauseCards.Cards(), NoticeCards.Acknowledge(), DeputyUndersecretary.ReviewCard(),
                 .. QueueCommissioner.Cards(), .. LordSealkeeper.Cards(), .. MunicipalDragon.Cards(),
