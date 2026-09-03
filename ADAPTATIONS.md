@@ -2795,3 +2795,41 @@ treasure by ref id (`MapGenerationSpec.NodeRefMinimumDepthPercent`) and roles by
 (`RoleMinimumDepthPercent`), but elites are not drawn from a ref pool — they are selected by role and weight.
 Making them one is a generation change that would move Acts I–III as well, so the table is authored and
 pinned now and connected at IV-24, where the act enters the run.
+
+## Act IV, bosses 1 and 2 — the Sealed Name and the Unspoken Heart (2026-09-03)
+
+The first two of the act's eight bosses. **Nothing new from the engine**, and both follow the Act-I–III boss
+shape: ONE rotating intent list whose slots mean different things per phase, with the phase written beside the
+telegraph through `BossPhases` — the only thing that makes a slot keeping its Phase-I name read as the boss
+CHANGING rather than as a bug.
+
+**The Cartouche Ward is legitimacy, not armour.** No blow takes it off; only obeying a Royal Command does, 18
+at a time. That inverts the usual boss-shield question: the player is not asked to grind through it, they are
+asked every single turn whether THIS command is worth less than the Authority that refusing it hands over. The
+commands are the act's own vocabulary read as royal demands — spend exactly 2, end with exactly 1 unspent,
+lead with a Deed, lead with a Working, end carrying less register and burial than you began with — and §5.2 is
+honoured by issuing only what the turn's deterministic state can meet, with Measure the Throne as the fallback
+everywhere because two Energy is what a turn opens with.
+
+**None of the Pharaoh's commands uses the act's measure.** Measure the Throne asks the same question Weighed
+asks, and reads `resourceSpentThisTurn` directly instead. That is deliberate twice over: a royal command is
+the KING asking and the act's measure belongs to the act, and reading live state at the player's turn end
+avoids agreeing with Weighed's own turn-end resolution about which of them runs first.
+
+**★ A card is weighed BEFORE its blow lands.** The Weigher tips its pan on `CardPlayed` and transitions on
+`DamageTaken`, and a test that expected the causing card's tip to survive the transition was wrong: the pan
+moves first, then the damage resolves, so a transition triggered by a card has the last word on the turn that
+caused it. Worth knowing for every boss whose phase change is driven by damage and whose state is driven by
+card plays — which is most of them.
+
+**The pan is a signed counter with two visible faces.** A signed number is not a thing a player can look at,
+so `balance` is mirrored into `toward_the_heart` / `toward_the_feather` at every move, stacks equal to its
+distance from true. Same principle as the Guardian's four offices and the Ibis's remembered rite: what the
+player must plan around is a face on the body.
+
+**⚠ `BossLengthTests` now takes a per-boss budget.** Act IV's bosses are priced against a deck three acts of
+upgrades deep, and that file's walker brings the character's starting deck on purpose — AND never engages: it
+refuses every Royal Command, so the Ward stands at its fifth reduction for the whole fight and never once
+opens into an exposure window. The Pharaoh at 630 behind that is the worst case the fight has by construction,
+so the two Act-IV bosses get 80 turns rather than 40. The property the file exists for is unchanged: the fight
+still ends, and the file still catches one that has stopped ending.

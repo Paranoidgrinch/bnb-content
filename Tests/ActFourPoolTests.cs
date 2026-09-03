@@ -239,6 +239,37 @@ public class ActFourPoolTests
         Assert.Contains(ActFour.StoneHaulerSummonEnemyId, ActFour.EliteIdentities);
     }
 
+    // The bosses, as far as they are built: the master's HP to the point, one encounter each — and the phase
+    // markers filed where a frontend puts them beside the telegraph, which is the only thing that makes one
+    // rotating intent list read as a boss CHANGING rather than as a bug.
+    [Fact]
+    public void The_bosses_built_so_far_are_priced_and_their_phases_are_filed()
+    {
+        var bands = new Dictionary<string, int>(StringComparer.Ordinal)
+        {
+            ["pharaoh_of_the_sealed_name"] = 630,
+            ["weigher_of_the_unspoken_heart"] = 610,
+        };
+
+        var bosses = WithRole("boss").ToList();
+        Assert.Equal(bands.Count, bosses.Count);
+
+        foreach (var encounter in bosses)
+        {
+            var id = Assert.Single(encounter.Enemies);
+            Assert.True(bands.TryGetValue(id, out var hp), $"'{id}' is not one of the priced bosses");
+            Assert.Equal(hp, Data.Enemies.Single(e => e.Id == id).MaxHp);
+            Assert.Contains(id, ActFour.BossIdentities);
+        }
+
+        foreach (var marker in new[]
+                 {
+                     ActFour.TwoLandsNameId, ActFour.EternalNameId, ActFour.NameExposedId,
+                     ActFour.HeartRemembersId, ActFour.HeartDeclaredLightId,
+                 })
+            Assert.Contains(marker, BossPhases.Markers);
+    }
+
     // Every intent an encounter can reach is authored, and every authored intent is reachable: a special one
     // only through an intent rule, everything else through the cycle.
     [Fact]

@@ -12,6 +12,18 @@ namespace BnbContent.Converter;
 // construction, because they are counters and statuses on the elite's own body).
 public static partial class ActFour
 {
+    // The act's bosses, kept apart from the elites only so the pool tests can count them.
+    public static readonly IReadOnlySet<string> BossIdentities = new HashSet<string>(StringComparer.Ordinal)
+    {
+        PharaohEnemyId,
+        WeigherEnemyId,
+    };
+
+    public static IReadOnlyList<StatusData> BossStatuses() => [.. PharaohStatuses(), .. WeigherStatuses()];
+
+    public static EffectProgram<EnemyActionContext>? BossIntent(string enemyId, string intentId) =>
+        PharaohIntent(enemyId, intentId) ?? WeigherIntent(enemyId, intentId);
+
     public static readonly IReadOnlySet<string> EliteIdentities = new HashSet<string>(StringComparer.Ordinal)
     {
         SurveyorEliteEnemyId,

@@ -409,6 +409,8 @@ public static partial class ActFour
         EntryDoesNotClose(),
         // The elite layer
         .. EliteStatuses(),
+        // …and the bosses
+        .. BossStatuses(),
     ];
 
     // The standard roster, stage by stage.

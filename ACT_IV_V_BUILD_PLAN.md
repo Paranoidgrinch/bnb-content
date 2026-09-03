@@ -480,8 +480,28 @@ HP 580–640. §5.2 solvability filter, §5.3 player agency before punishment, �
 Act-I–III rule that **the phase is written ON the intent** (`BossPhases.cs`, tagged `phase`). Every boss gets
 its live test file and enters `Tests/BossLengthTests` (40-turn budget against the starting deck).
 
-- [ ] **IV-16 — The Pharaoh of the Sealed Name (630) · The Weigher of the Unspoken Heart (610).**
-      Three Royal Names / Cartouche Ward; Balance + earned Feather windows.
+- [x] **IV-16 — The Pharaoh of the Sealed Name (630) · The Weigher of the Unspoken Heart (610).
+      DONE 2026-09-03.** Three Royal Names / Cartouche Ward; Balance + earned Feather windows.
+      ▸ **What landed:** `Converter/ActFourBossPharaoh.cs`, `ActFourBossWeigher.cs` + 12 live tests
+      (`ActFourBossPharaohTests` 6, `ActFourBossWeigherTests` 6), both bosses in `BossLengthTests`, and their
+      five phase markers filed in `BossPhases`. **Nothing new from the engine.**
+      ▸ The Pharaoh's Ward is legitimacy and not armour: no blow takes it off, only OBEYING does. Every turn
+      the player is asked whether this particular command is worth less than the Authority refusing it hands
+      over — and the commands are the act's own vocabulary read as royal demands (spend exactly 2; end with
+      exactly 1 unspent; lead with a Deed; lead with a Working; end with less register and burial than you
+      began with), each issued only when the turn can actually meet it (§5.2).
+      ▸ The Weigher weighs the COMPOSITION of a turn — Deeds toward the Heart, Workings toward the Feather —
+      and the pan is a signed counter kept in step with two visible faces, because a signed number is not a
+      thing a player can look at.
+      ▸ ★ **A card is weighed BEFORE its blow lands.** The Weigher's transition fires on damage taken and
+      levels the scale, and a test that expected the causing card's tip to survive it was wrong: the pan is
+      tipped by the CardPlayed trigger first, then the damage resolves, so a transition has the last word on
+      the turn that caused it.
+      ▸ ⚠ **`BossLengthTests` now takes a per-boss budget.** The Act-IV bosses are priced against a deck three
+      acts deep and the walker brings the starting one AND never engages — it refuses every Royal Command, so
+      the Ward stands at a fifth reduction all fight and never opens into an exposure window. That is the
+      fight's worst case by construction, so those two get 80 turns rather than 40; the property the file
+      exists for (the fight still ENDS) is unchanged.
 - [ ] **IV-17 — The Architect of the Impossible Pyramid (640) · The Lady of the Black Granaries (600).**
       Monument + player-chosen Blueprint; four Granary Seals as four state functions.
 - [ ] **IV-18 — The First Scribe of the House of Life (580) · The Mother of Natron and Resin (610).**
@@ -604,6 +624,7 @@ force — these fights are "almost a separate game mode"); each god enters `Boss
 - [x] **IV-12 — the first three elites — DONE 2026-09-03** (3 of 10 elite encounters)
 - [x] **IV-13 — elites 4-6 — DONE 2026-09-03** (6 of 10 elite encounters)
 - [x] **IV-14 — elites 7-8 — DONE 2026-09-03** (8 of 10 elite encounters)
-- [x] **IV-15 — elites 9-10 — DONE 2026-09-03** (**THE ELITE POOL IS COMPLETE** — 10 encounters, pinned) · IV-16 … IV-19 bosses · IV-20 … IV-21 cards+relics ·
+- [x] **IV-15 — elites 9-10 — DONE 2026-09-03** (**THE ELITE POOL IS COMPLETE** — 10 encounters, pinned)
+- [x] **IV-16 — bosses 1-2 — DONE 2026-09-03** (2 of 8 bosses) · IV-16 … IV-19 bosses · IV-20 … IV-21 cards+relics ·
       IV-22 … IV-23 events · IV-24 the act
 - [ ] V-0 structure · V-1 … V-6 the six gods · V-7 the whole game

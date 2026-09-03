@@ -41,7 +41,14 @@ public class BossLengthTests(ITestOutputHelper output)
     [InlineData("green_docket_boss_grandmother_clause")]
     [InlineData("green_docket_boss_the_answering_hill")]
     [InlineData("green_docket_boss_queen_under_the_hill")]
-    public void A_boss_dies_inside_the_turn_budget(string encounterId)
+    // Act IV's bosses are priced against a deck three acts of upgrades deep, and this walker brings the
+    // starting one — AND never engages: it refuses every Royal Command, so the Pharaoh's Cartouche Ward
+    // stands at a fifth reduction for the whole fight and never once opens into an exposure window. That is
+    // the worst case the fight has by construction, so it gets a longer rope. The property this file exists
+    // for is unchanged: the fight still ENDS.
+    [InlineData("labyrinth_boss_pharaoh_of_the_sealed_name", 80)]
+    [InlineData("labyrinth_boss_weigher_of_the_unspoken_heart", 80)]
+    public void A_boss_dies_inside_the_turn_budget(string encounterId, int budget = TurnBudget)
     {
         var (play, session, _) = FightProbe.Start(FightProbe.Authored(encounterId), health: 9999);
         using (play)
@@ -52,7 +59,7 @@ public class BossLengthTests(ITestOutputHelper output)
             var barren = new HashSet<string>(StringComparer.Ordinal);
             var turn = 0;
 
-            while (turn < TurnBudget && driver.Current is not null)
+            while (turn < budget && driver.Current is not null)
             {
                 turn++;
                 refused.Clear();
@@ -112,7 +119,7 @@ public class BossLengthTests(ITestOutputHelper output)
             // on the passing path too, where there is no combat left to describe.
             if (driver.Current is { } stillStanding)
                 Assert.Fail($"'{encounterId}' was still standing after {turn} turns: {Standing(stillStanding)}");
-            output.WriteLine($"{encounterId}: down in {turn} turns (budget {TurnBudget})");
+            output.WriteLine($"{encounterId}: down in {turn} turns (budget {budget})");
         }
     }
 
