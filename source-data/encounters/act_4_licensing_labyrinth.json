@@ -930,7 +930,8 @@
       "elite",
       "weighed"
     ],
-    "role": "elite"
+    "role": "elite",
+    "earliest_depth_percent": 18
   },
   {
     "id": "labyrinth_elite_scarab_host_of_the_sealed_granary",
@@ -946,7 +947,8 @@
       "elite",
       "granary"
     ],
-    "role": "elite"
+    "role": "elite",
+    "earliest_depth_percent": 18
   },
   {
     "id": "labyrinth_elite_rope_master_of_the_corvee",
@@ -962,7 +964,8 @@
       "elite",
       "burdened"
     ],
-    "role": "elite"
+    "role": "elite",
+    "earliest_depth_percent": 24
   },
   {
     "id": "labyrinth_elite_keeper_of_the_living_cartouche",
@@ -978,7 +981,8 @@
       "elite",
       "inscribed"
     ],
-    "role": "elite"
+    "role": "elite",
+    "earliest_depth_percent": 35
   },
   {
     "id": "labyrinth_elite_mummified_overseer_of_the_linen_house",
@@ -994,7 +998,8 @@
       "elite",
       "embalmed"
     ],
-    "role": "elite"
+    "role": "elite",
+    "earliest_depth_percent": 41
   },
   {
     "id": "labyrinth_elite_treasury_of_the_two_pans",
@@ -1010,7 +1015,8 @@
       "elite",
       "treasury"
     ],
-    "role": "elite"
+    "role": "elite",
+    "earliest_depth_percent": 41
   },
   {
     "id": "labyrinth_elite_sphinx_of_the_processional_measure",
@@ -1026,7 +1032,8 @@
       "elite",
       "weighed"
     ],
-    "role": "elite"
+    "role": "elite",
+    "earliest_depth_percent": 47
   },
   {
     "id": "labyrinth_elite_the_tombbreakers_three",
@@ -1044,6 +1051,41 @@
       "elite",
       "tombbreakers"
     ],
-    "role": "elite"
+    "role": "elite",
+    "earliest_depth_percent": 65
+  },
+  {
+    "id": "labyrinth_elite_keeper_of_the_thirty_six_decans",
+    "name": "Keeper of the Thirty-Six Decans",
+    "act": 4,
+    "difficulty": "elite",
+    "enemies": [
+      "keeper_of_the_thirty_six_decans"
+    ],
+    "weight": 1,
+    "tags": [
+      "licensing_labyrinth",
+      "elite",
+      "weighed"
+    ],
+    "role": "elite",
+    "earliest_depth_percent": 71
+  },
+  {
+    "id": "labyrinth_elite_colossus_of_the_endless_procession",
+    "name": "Colossus of the Endless Procession",
+    "act": 4,
+    "difficulty": "elite",
+    "enemies": [
+      "colossus_of_the_endless_procession"
+    ],
+    "weight": 1,
+    "tags": [
+      "licensing_labyrinth",
+      "elite",
+      "burdened"
+    ],
+    "role": "elite",
+    "earliest_depth_percent": 71
   }
 ]

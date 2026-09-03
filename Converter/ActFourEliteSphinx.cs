@@ -187,15 +187,7 @@ public static partial class ActFour
     // The master's ceiling of 37 is kept as written; with three kinds in the act it never binds.
     private static EffectProgram<EnemyActionContext> HeardEnough()
     {
-        ICombatExpression<EnemyActionContext, int> Present(string statusId) =>
-            new MinExpression<EnemyActionContext>(
-                new CombatantStatusStacksExpression<EnemyActionContext>(
-                    Applicant, new StatusDefinitionId(statusId)),
-                Const(1));
-
-        var kinds = new AddExpression<EnemyActionContext>(
-            Present(WeighedId),
-            new AddExpression<EnemyActionContext>(Present(BurdenedId), Present(EntombedId)));
+        var kinds = NegativeKinds<EnemyActionContext>();
 
         return new EffectProgram<EnemyActionContext>(
             new DealDamageNode<EnemyActionContext>(

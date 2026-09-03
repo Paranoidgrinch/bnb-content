@@ -157,9 +157,28 @@ public class ActFourPoolTests
         }
     }
 
-    // The elite layer, as far as it is built: the master's HP to the point, and one encounter each.
+    // The elite master's "Earliest depth/stage" table, as a percentage of the act's seventeen stages. It is
+    // authored ON the encounters so the curve is data rather than prose; wiring it into generation waits for
+    // Act IV becoming a walkable act, since elites are not drawn from a ref pool today.
+    private static readonly IReadOnlyDictionary<string, int> EarliestDepth =
+        new Dictionary<string, int>(StringComparer.Ordinal)
+        {
+            ["surveyor_of_the_errant_cord"] = 18,
+            ["scarab_host_of_the_sealed_granary"] = 18,
+            ["rope_master_of_the_corvee"] = 24,
+            ["keeper_of_the_living_cartouche"] = 35,
+            ["mummified_overseer_of_the_linen_house"] = 41,
+            ["treasury_of_the_two_pans"] = 41,
+            ["sphinx_of_the_processional_measure"] = 47,
+            ["pry_bar_veteran"] = 65,
+            ["keeper_of_the_thirty_six_decans"] = 71,
+            ["colossus_of_the_endless_procession"] = 71,
+        };
+
+    // The whole elite pool: ten encounters, the master's HP to the point, and the earliest-depth table
+    // honoured — the act's difficulty curve as opposed to its contents.
     [Fact]
-    public void The_elites_built_so_far_are_priced_to_the_point()
+    public void The_elite_pool_is_complete_and_priced_to_the_point()
     {
         var bands = new Dictionary<string, int>(StringComparer.Ordinal)
         {
@@ -174,10 +193,12 @@ public class ActFourPoolTests
             ["pry_bar_veteran"] = 112,
             ["lamp_thief"] = 100,
             ["curse_bearer"] = 108,
+            ["keeper_of_the_thirty_six_decans"] = 365,
+            ["colossus_of_the_endless_procession"] = 388,
         };
 
         var elites = WithRole("elite").ToList();
-        Assert.Equal(8, elites.Count);
+        Assert.Equal(10, elites.Count);
 
         foreach (var encounter in elites)
             foreach (var id in encounter.Enemies)
@@ -191,6 +212,27 @@ public class ActFourPoolTests
         var many = Assert.Single(elites, e => e.Enemies.Count > 1);
         Assert.Equal("labyrinth_elite_the_tombbreakers_three", many.Id);
         Assert.Equal(320, many.Enemies.Sum(id => Data.Enemies.Single(e => e.Id == id).MaxHp));
+
+        // …and every one of them carries the depth it may first stand at.
+        foreach (var encounter in elites)
+        {
+            var lead = encounter.Enemies[0];
+            Assert.True(EarliestDepth.TryGetValue(lead, out var depth), $"'{lead}' has no earliest depth");
+            Assert.Equal(depth, encounter.EarliestDepthPercent);
+        }
+
+        // The curve only ever rises across the single-body elites: a deeper one is never a lighter one. The
+        // Tombbreakers are the master's stated exception and are excluded — three bodies that all act every
+        // round are worth more than their combined HP says, which is exactly why theirs is lower.
+        var byDepth = elites
+            .Where(e => e.Enemies.Count == 1)
+            .OrderBy(e => e.EarliestDepthPercent)
+            .Select(e => Data.Enemies.Single(x => x.Id == e.Enemies[0]).MaxHp)
+            .ToList();
+        Assert.Equal(byDepth.OrderBy(hp => hp), byDepth);
+        Assert.True(many.EarliestDepthPercent > 47 && many.Enemies.Sum(
+                id => Data.Enemies.Single(x => x.Id == id).MaxHp) < 344,
+            "the Tombbreakers are supposed to be the exception: deeper than the Sphinx and lighter than it");
 
         // The Rope-Master's hands are summoned, never fielded — the roster never names them.
         Assert.DoesNotContain(ActFour.StoneHaulerSummonEnemyId, Data.Enemies.Select(e => e.Id));

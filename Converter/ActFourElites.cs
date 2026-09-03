@@ -22,6 +22,8 @@ public static partial class ActFour
         LinenOverseerEnemyId,
         TreasuryEnemyId,
         SphinxEnemyId,
+        DecanKeeperEnemyId,
+        ColossusEnemyId,
         PryBarVeteranEnemyId,
         LampThiefEnemyId,
         CurseBearerEnemyId,
@@ -37,6 +39,8 @@ public static partial class ActFour
         .. TreasuryStatuses(),
         .. SphinxStatuses(),
         .. TombbreakerStatuses(),
+        .. DecanKeeperStatuses(),
+        .. ColossusStatuses(),
     ];
 
     public static EffectProgram<EnemyActionContext>? EliteIntent(string enemyId, string intentId) =>
@@ -47,7 +51,9 @@ public static partial class ActFour
         ?? LinenOverseerIntent(enemyId, intentId)
         ?? TreasuryIntent(enemyId, intentId)
         ?? SphinxIntent(enemyId, intentId)
-        ?? TombbreakerIntent(enemyId, intentId);
+        ?? TombbreakerIntent(enemyId, intentId)
+        ?? DecanKeeperIntent(enemyId, intentId)
+        ?? ColossusIntent(enemyId, intentId);
 
     public static IReadOnlyList<CardData> EliteCards() =>
         [.. SurveyorOfferCards(), .. ScarabSealCards(), .. TreasuryCreditCards(), .. SphinxAnswerCards()];
@@ -75,6 +81,26 @@ public static partial class ActFour
 
     private static ICombatExpression<TContext, int> SpendableEnergy<TContext>() where TContext : class =>
         new CombatantCurrentResourceExpression<TContext>(Applicant, StandardCombatIds.EnergyResource);
+
+    // ── counting the act's pressure ───────────────────────────────────────────────────────────────────────
+
+    // "How many different Act-IV negative status TYPES is the player carrying?" — asked by the Sphinx and by
+    // both of the last two elites, so it is written here. KINDS and not stacks: a player buried five deep in
+    // one thing is answered more gently than one carrying a little of everything, which is the point.
+    //
+    // `min(stacks, 1)` is how "is this one present" is spelled as a number. ⚠ A measure is TAKEN at the end
+    // of the turn it stands in and removes itself doing so, so an enemy acting after that turn never meets
+    // one — the Weighed term is live only against a body that raises a measure on its own turn.
+    public static ICombatExpression<TContext, int> NegativeKinds<TContext>() where TContext : class
+    {
+        ICombatExpression<TContext, int> Present(string statusId) =>
+            new MinExpression<TContext>(
+                new CombatantStatusStacksExpression<TContext>(Applicant, new StatusDefinitionId(statusId)),
+                new ConstantExpression<TContext>(1));
+
+        return new AddExpression<TContext>(
+            Present(WeighedId), new AddExpression<TContext>(Present(BurdenedId), Present(EntombedId)));
+    }
 
     // ── addressing an elite's own body ────────────────────────────────────────────────────────────────────
 
