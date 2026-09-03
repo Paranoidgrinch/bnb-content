@@ -2833,3 +2833,54 @@ refuses every Royal Command, so the Ward stands at its fifth reduction for the w
 opens into an exposure window. The Pharaoh at 630 behind that is the worst case the fight has by construction,
 so the two Act-IV bosses get 80 turns rather than 40. The property the file exists for is unchanged: the fight
 still ends, and the file still catches one that has stopped ending.
+
+## Act IV, bosses 3 and 4 — the Impossible Pyramid and the Black Granaries (2026-09-04)
+
+Two state-project bosses: a schedule the player can only brake, and four state functions the player takes
+apart in an order of their choosing. **No engine buy** — one small converter buy, below.
+
+**★★ A neutral rule-marker applied to the PLAYER is an application like any other.** The Lady announces a
+ration measured against what the turn can actually reach, and the first live fight announced **6** where the
+filter had computed 5: the player was carrying `Inscribed`, whose ratified reading is `Any` — *the next status
+applied to you, good or bad, lands with one more stack, and one Inscribed is spent doing it* — and the engine
+does not care that this particular application was a piece of the boss's own bookkeeping. So the ration was
+one bigger than solvability allowed AND the player's register was silently eaten to do it.
+
+The fix is not in the engine: `Any` is the ratified reading of the register and Act IV wants it. **An
+announcement belongs on the body that makes it.** The Ration is a face on the Lady (master §9.1 — "the next
+Ration is always visible" — and it belongs beside her seals), the Blueprints lie on the Architect's table
+(§8.2 — *he* presents them), and the Pharaoh's five Royal Commands were moved onto the king in the same
+breath: they had the same wart since IV-16, invisible only because a stackless marker hides its extra stack
+while still spending the Inscribed. Whenever a boss writes state about the player, ask whose state it is.
+
+**§5.2 for a number of CARDS rather than a number of Energy.** The elites' filter (`ActFour.Achievable`) is a
+ceiling on a demand paid in Energy. The Lady demands a COUNT of cards, so her reachable ration is
+`max(2, min(preferred, energy, non-junk cards in hand))` — playable cards cost at least one Energy each, so
+the pool and the hand are both ceilings, and two is the floor the master gives. Announced BEFORE her seal
+cards are laid in hand, because a seal card is not one of the cards a ration counts (it is tagged, and the
+count subtracts the tag exactly as it subtracts rubbish).
+
+**A boss's choice is CARDS, and the first one played governs.** The Architect lays two sheets after the draw
+and the Lady lays the intact seals when an exact ration has earned one. Both cards check, before they do
+anything, that the choice has not already been made — so playing both sheets does not buy two chances, and
+"maximum one Seal break per player turn" is the card asking whether the break is still owed.
+
+**Two intents the master calls "ineligible" get a fallback instead.** An intent the engine has already reached
+cannot step aside, so Seal the Storehouse with no seal left, and Open One Jar with no Reserve, become the
+plainest thing she has: a blow. That is also how "the Lady cannot choose defensive intents while the Stores
+Stand Open" is implemented — with all four seals broken there is nothing defensive left for her to choose,
+and her Phase-I heal is gone with the Reserve. The master's own gating does the work.
+
+**A transition is a rider, not a turn.** "Gain 18 Block, no attack" is written onto the event that causes it —
+the first Capstone resolving, or the failsafe at 320 — exactly as the Pharaoh's name-taking is. The engine has
+no do-nothing action slot, and inventing one would put a phase change into the intent cycle where a player
+would read it as an attack that missed.
+
+**The Monument is a stacked status and not a counter.** The whole fight is planned around that number, so it
+has to be a thing the player can look at; the intent rule that brings the Capstone down reads the same stacks
+(`self_status monument min_stacks 6`), which means the telegraph and the arithmetic can never disagree. The
+Weigher's pan needed a counter with two mirrored faces only because it is SIGNED.
+
+**Converter buy: `heal` in the effect DSL.** A body that mends itself could only be authored as a raw program,
+which left its telegraph saying something else (the Grain Thief's feast is labelled as 18 damage). `heal` now
+maps to the engine's heal node and reads as "heal 18" in the intent line, so Open One Jar tells the truth.

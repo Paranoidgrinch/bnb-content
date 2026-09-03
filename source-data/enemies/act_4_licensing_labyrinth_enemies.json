@@ -4283,5 +4283,369 @@
       "act_4",
       "judgment"
     ]
+  },
+  {
+    "id": "architect_of_the_impossible_pyramid",
+    "name": "The Architect of the Impossible Pyramid",
+    "max_hp": 640,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "raise_the_ramp",
+        "name": "Raise the Ramp",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 30
+          }
+        ]
+      },
+      {
+        "id": "stone_sledge",
+        "name": "Stone Sledge",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 30
+          }
+        ]
+      },
+      {
+        "id": "draft_another_thousand",
+        "name": "Draft Another Thousand",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "burdened",
+            "amount": 2
+          },
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 14
+          }
+        ]
+      },
+      {
+        "id": "revise_the_foundation",
+        "name": "Revise the Foundation",
+        "intent_type": "debuff",
+        "actions": [
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "inscribed",
+            "amount": 1
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "weighed",
+            "amount": 2
+          }
+        ]
+      },
+      {
+        "id": "the_angle_is_your_fault",
+        "name": "The Angle Is Your Fault",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 32
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "paperwork",
+            "amount": 2
+          }
+        ]
+      },
+      {
+        "id": "night_shift_on_the_ramp",
+        "name": "Night Shift on the Ramp",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 18
+          }
+        ]
+      },
+      {
+        "id": "capstone_descends",
+        "name": "Capstone Descends",
+        "intent_type": "mixed",
+        "special": true,
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 42
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "entombed",
+            "amount": 2
+          },
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 24
+          }
+        ]
+      },
+      {
+        "id": "place_the_eternal_capstone",
+        "name": "Place the Eternal Capstone",
+        "intent_type": "attack",
+        "special": true,
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 48
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "entombed",
+            "amount": 1
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "labyrinth_body"
+      },
+      {
+        "status": "the_impossible_pyramid"
+      },
+      {
+        "status": "monument",
+        "stacks": 2
+      }
+    ],
+    "intent_rules": [
+      {
+        "condition": {
+          "kind": "all_of",
+          "conditions": [
+            {
+              "kind": "self_status",
+              "status": "the_plan_was_always_correct",
+              "min_stacks": 1
+            },
+            {
+              "kind": "self_status",
+              "status": "monument",
+              "min_stacks": 4
+            },
+            {
+              "kind": "health_percent",
+              "op": "le",
+              "percent": 16
+            },
+            {
+              "kind": "not",
+              "conditions": [
+                {
+                  "kind": "self_status",
+                  "status": "the_eternal_capstone_is_placed",
+                  "min_stacks": 1
+                }
+              ]
+            }
+          ]
+        },
+        "action": "place_the_eternal_capstone",
+        "priority": 20
+      },
+      {
+        "condition": {
+          "kind": "self_status",
+          "status": "monument",
+          "min_stacks": 6
+        },
+        "action": "capstone_descends",
+        "priority": 10
+      }
+    ],
+    "tags": [
+      "licensing_labyrinth",
+      "boss",
+      "act_4",
+      "construction"
+    ]
+  },
+  {
+    "id": "lady_of_the_black_granaries",
+    "name": "The Lady of the Black Granaries",
+    "max_hp": 600,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "seal_the_storehouse",
+        "name": "Seal the Storehouse",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 28
+          }
+        ]
+      },
+      {
+        "id": "nothing_leaves_uncounted",
+        "name": "Nothing Leaves Uncounted",
+        "intent_type": "debuff",
+        "actions": [
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "paperwork",
+            "amount": 3
+          }
+        ]
+      },
+      {
+        "id": "ration_the_living",
+        "name": "Ration the Living",
+        "intent_type": "debuff",
+        "actions": [
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "burdened",
+            "amount": 2
+          }
+        ]
+      },
+      {
+        "id": "the_hungry_crowd",
+        "name": "The Hungry Crowd",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 8
+          },
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 8
+          },
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 8
+          },
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 8
+          }
+        ]
+      },
+      {
+        "id": "open_one_jar",
+        "name": "Open One Jar",
+        "intent_type": "buff",
+        "actions": [
+          {
+            "type": "heal",
+            "target": "owner",
+            "amount": 18
+          }
+        ]
+      },
+      {
+        "id": "black_granary_staff",
+        "name": "Black Granary Staff",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 28
+          }
+        ]
+      },
+      {
+        "id": "the_empty_storehouse",
+        "name": "The Empty Storehouse",
+        "intent_type": "mixed",
+        "special": true,
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 38
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "burdened",
+            "amount": 1
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "inscribed",
+            "amount": 1
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "labyrinth_body"
+      },
+      {
+        "status": "the_black_granaries"
+      },
+      {
+        "status": "granary_reserve_seal"
+      },
+      {
+        "status": "granary_labor_seal"
+      },
+      {
+        "status": "granary_record_seal"
+      },
+      {
+        "status": "granary_ration_seal"
+      }
+    ],
+    "intent_rules": [
+      {
+        "condition": {
+          "kind": "self_status",
+          "status": "famine",
+          "min_stacks": 3
+        },
+        "action": "the_empty_storehouse",
+        "priority": 10
+      }
+    ],
+    "tags": [
+      "licensing_labyrinth",
+      "boss",
+      "act_4",
+      "rationing"
+    ]
   }
 ]

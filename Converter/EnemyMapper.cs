@@ -65,6 +65,9 @@ public static class EnemyMapper
         {
             switch (effect.Type)
             {
+                case "heal" when effect.Amount is { } healed:
+                    parts.Add($"heal {healed}");
+                    break;
                 case "gain_block" when effect.Amount is { } block:
                     parts.Add($"{block} block");
                     break;

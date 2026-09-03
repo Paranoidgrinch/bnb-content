@@ -48,6 +48,8 @@ public class BossLengthTests(ITestOutputHelper output)
     // for is unchanged: the fight still ENDS.
     [InlineData("labyrinth_boss_pharaoh_of_the_sealed_name", 80)]
     [InlineData("labyrinth_boss_weigher_of_the_unspoken_heart", 80)]
+    [InlineData("labyrinth_boss_architect_of_the_impossible_pyramid", 80)]
+    [InlineData("labyrinth_boss_lady_of_the_black_granaries", 80)]
     public void A_boss_dies_inside_the_turn_budget(string encounterId, int budget = TurnBudget)
     {
         var (play, session, _) = FightProbe.Start(FightProbe.Authored(encounterId), health: 9999);

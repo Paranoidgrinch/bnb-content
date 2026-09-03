@@ -249,6 +249,8 @@ public class ActFourPoolTests
         {
             ["pharaoh_of_the_sealed_name"] = 630,
             ["weigher_of_the_unspoken_heart"] = 610,
+            ["architect_of_the_impossible_pyramid"] = 640,
+            ["lady_of_the_black_granaries"] = 600,
         };
 
         var bosses = WithRole("boss").ToList();
@@ -266,6 +268,7 @@ public class ActFourPoolTests
                  {
                      ActFour.TwoLandsNameId, ActFour.EternalNameId, ActFour.NameExposedId,
                      ActFour.HeartRemembersId, ActFour.HeartDeclaredLightId,
+                     ActFour.PlanAlwaysCorrectId, ActFour.GranariesOpenId, ActFour.FamineAccountingId,
                  })
             Assert.Contains(marker, BossPhases.Markers);
     }

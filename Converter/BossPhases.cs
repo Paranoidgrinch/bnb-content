@@ -80,5 +80,13 @@ public static class BossPhases
         // The Weigher's second half, and the window that leads to it.
         ActFour.HeartRemembersId,
         ActFour.HeartDeclaredLightId,
+
+        // The Architect's second half — the schedule that can no longer be reversed.
+        ActFour.PlanAlwaysCorrectId,
+
+        // The Lady's, and the two open-store turns that are its telegraph: the seals are all broken and
+        // everybody can see what is coming.
+        ActFour.GranariesOpenId,
+        ActFour.FamineAccountingId,
     ];
 }

@@ -1117,5 +1117,35 @@
       "boss"
     ],
     "role": "boss"
+  },
+  {
+    "id": "labyrinth_boss_architect_of_the_impossible_pyramid",
+    "name": "The Architect of the Impossible Pyramid",
+    "act": 4,
+    "difficulty": "boss",
+    "enemies": [
+      "architect_of_the_impossible_pyramid"
+    ],
+    "weight": 1,
+    "tags": [
+      "licensing_labyrinth",
+      "boss"
+    ],
+    "role": "boss"
+  },
+  {
+    "id": "labyrinth_boss_lady_of_the_black_granaries",
+    "name": "The Lady of the Black Granaries",
+    "act": 4,
+    "difficulty": "boss",
+    "enemies": [
+      "lady_of_the_black_granaries"
+    ],
+    "weight": 1,
+    "tags": [
+      "licensing_labyrinth",
+      "boss"
+    ],
+    "role": "boss"
   }
 ]

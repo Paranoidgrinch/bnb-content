@@ -502,8 +502,31 @@ its live test file and enters `Tests/BossLengthTests` (40-turn budget against th
       the Ward stands at a fifth reduction all fight and never opens into an exposure window. That is the
       fight's worst case by construction, so those two get 80 turns rather than 40; the property the file
       exists for (the fight still ENDS) is unchanged.
-- [ ] **IV-17 — The Architect of the Impossible Pyramid (640) · The Lady of the Black Granaries (600).**
-      Monument + player-chosen Blueprint; four Granary Seals as four state functions.
+- [x] **IV-17 — The Architect of the Impossible Pyramid (640) · The Lady of the Black Granaries (600).
+      DONE 2026-09-04.** Monument + player-chosen Blueprint; four Granary Seals as four state functions.
+      ▸ **What landed:** `Converter/ActFourBossArchitect.cs`, `ActFourBossLady.cs` + 13 live tests
+      (`ActFourBossArchitectTests` 7, `ActFourBossLadyTests` 6), both in `BossLengthTests` (budget 80), their
+      four phase markers filed in `BossPhases`, and their offers (4 blueprints, 4 seals) in `BossCards()` —
+      wired through `BlueprintAssembler` exactly as the elites' offers are. **Nothing new from the engine**;
+      one converter buy (`heal` in the effect DSL, so a healing intent telegraphs honestly).
+      ▸ The Architect is a SCHEDULE, not a test: the Monument climbs a step at the end of every one of his
+      turns and at six the Capstone comes down. The two blueprints laid after the draw are the brake, and
+      every second course laid true is 8 of his own blood — succeeding does more than slow the clock.
+      ▸ The Lady is four STATE FUNCTIONS: healing, burden, paperwork, and the seal that turns correct
+      rationing into a damage window. An exact ration lets the player choose which to dismantle; the seals
+      still standing are what a miss is charged with.
+      ▸ ★★ **A neutral rule-marker applied to the PLAYER is an application like any other.** The first live
+      fight announced a ration of 6 where §5.2 had measured 5: `Inscribed` (scope `Any`) enlarged the
+      announcement and spent itself doing it. The register's ratified reading is right; the marker was in the
+      wrong place. **An announcement belongs on the body that makes it** — the Ration is a face on the Lady,
+      the Blueprints lie on the Architect's table, and IV-16's five Royal Commands were moved onto the king
+      in the same breath (same wart, invisible only because a stackless marker hides its extra stack).
+      ▸ §5.2 for a COUNT of cards rather than a figure of Energy: `max(2, min(preferred, energy, non-junk
+      hand))`, announced BEFORE her seal cards are laid in hand, because a seal card is not a card the ration
+      counts.
+      ▸ An intent the engine has reached cannot step aside, so the master's two "otherwise ineligible" intents
+      get a fallback blow — which is also how "cannot choose defensive intents while the Stores Stand Open"
+      implements itself: with the seals gone there is nothing defensive left to choose.
 - [ ] **IV-18 — The First Scribe of the House of Life (580) · The Mother of Natron and Resin (610).**
       The player writes the next enemy turn and may erase at a cost; Vessels + washing.
 - [ ] **IV-19 — The Vizier of the King's Mouth (590 + Offices) · The Queen of the Flood Reckoning (620).**
@@ -625,6 +648,7 @@ force — these fights are "almost a separate game mode"); each god enters `Boss
 - [x] **IV-13 — elites 4-6 — DONE 2026-09-03** (6 of 10 elite encounters)
 - [x] **IV-14 — elites 7-8 — DONE 2026-09-03** (8 of 10 elite encounters)
 - [x] **IV-15 — elites 9-10 — DONE 2026-09-03** (**THE ELITE POOL IS COMPLETE** — 10 encounters, pinned)
-- [x] **IV-16 — bosses 1-2 — DONE 2026-09-03** (2 of 8 bosses) · IV-16 … IV-19 bosses · IV-20 … IV-21 cards+relics ·
+- [x] **IV-16 — bosses 1-2 — DONE 2026-09-03** (2 of 8 bosses)
+- [x] **IV-17 — bosses 3-4 — DONE 2026-09-04** (4 of 8 bosses) · IV-18 … IV-19 bosses · IV-20 … IV-21 cards+relics ·
       IV-22 … IV-23 events · IV-24 the act
 - [ ] V-0 structure · V-1 … V-6 the six gods · V-7 the whole game
