@@ -3443,5 +3443,327 @@
       "burdened",
       "treasury"
     ]
+  },
+  {
+    "id": "sphinx_of_the_processional_measure",
+    "name": "Sphinx of the Processional Measure",
+    "max_hp": 344,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "first_riddle",
+        "name": "First Riddle",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 12
+          }
+        ]
+      },
+      {
+        "id": "lions_answer",
+        "name": "Lion's Answer",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 28
+          }
+        ]
+      },
+      {
+        "id": "no_answer_is_silence",
+        "name": "No Answer Is Silence",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 22
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "panic",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "stone_along_the_causeway",
+        "name": "Stone Along the Causeway",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 18
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "burdened",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "name_on_the_procession_wall",
+        "name": "Name on the Procession Wall",
+        "intent_type": "debuff",
+        "actions": [
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "inscribed",
+            "amount": 1
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "paperwork",
+            "amount": 2
+          }
+        ]
+      },
+      {
+        "id": "the_procession_has_heard_enough",
+        "name": "The Procession Has Heard Enough",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "damage_per_status",
+            "target": "player",
+            "status": "entombed",
+            "amount": 25,
+            "amount_per_stack": 3,
+            "cap": 12
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "labyrinth_body"
+      },
+      {
+        "status": "the_processional_measure"
+      }
+    ],
+    "tags": [
+      "licensing_labyrinth",
+      "elite",
+      "weighed",
+      "sphinx"
+    ]
+  },
+  {
+    "id": "pry_bar_veteran",
+    "name": "Pry-Bar Veteran",
+    "max_hp": 112,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "bronze_pry_bar",
+        "name": "Bronze Pry-Bar",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 20
+          }
+        ]
+      },
+      {
+        "id": "break_the_seal",
+        "name": "Break the Seal",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 12
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "inscribed",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "take_the_first_share",
+        "name": "Take the First Share",
+        "intent_type": "buff",
+        "actions": [
+          {
+            "type": "apply_status",
+            "target": "owner",
+            "status": "claim",
+            "amount": 1
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "labyrinth_body"
+      },
+      {
+        "status": "tombbreaker"
+      }
+    ],
+    "tags": [
+      "licensing_labyrinth",
+      "elite",
+      "tombbreakers",
+      "claim"
+    ]
+  },
+  {
+    "id": "lamp_thief",
+    "name": "Lamp Thief",
+    "max_hp": 100,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "snuff_the_lamp",
+        "name": "Snuff the Lamp",
+        "intent_type": "debuff",
+        "actions": [
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "panic",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "knife_between_stones",
+        "name": "Knife Between Stones",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 10
+          },
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 10
+          }
+        ]
+      },
+      {
+        "id": "find_another_passage",
+        "name": "Find Another Passage",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 10
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "trespass",
+            "amount": 1
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "labyrinth_body"
+      },
+      {
+        "status": "tombbreaker"
+      }
+    ],
+    "tags": [
+      "licensing_labyrinth",
+      "elite",
+      "tombbreakers",
+      "trespass"
+    ]
+  },
+  {
+    "id": "curse_bearer",
+    "name": "Curse-Bearer",
+    "max_hp": 108,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "load_the_gold",
+        "name": "Load the Gold",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 12
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "burdened",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "cursed_amulet",
+        "name": "Cursed Amulet",
+        "intent_type": "debuff",
+        "actions": [
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "doubt",
+            "amount": 1
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "paperwork",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "throw_the_idol",
+        "name": "Throw the Idol",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 21
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "labyrinth_body"
+      },
+      {
+        "status": "tombbreaker"
+      }
+    ],
+    "tags": [
+      "licensing_labyrinth",
+      "elite",
+      "tombbreakers",
+      "curse"
+    ]
   }
 ]

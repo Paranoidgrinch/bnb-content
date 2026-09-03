@@ -380,7 +380,8 @@ public static partial class ActFour
             DescriptionKey = text,
             Costs = [],
             Tags = [new TagId("seal"), new TagId(Cards.CardAuthoring.TemporaryTag)],
-            Program = new EffectProgram<CardPlayContext>(new SequenceEffectNode<CardPlayContext>(play)),
+            // Causal: the last seal broken has to see itself gone before it can ask whether any remain.
+            Program = new EffectProgram<CardPlayContext>(new CausalSequenceEffectNode<CardPlayContext>(play)),
             PlayedCardDestinationZone = CardZone.ExhaustPile,
             TurnEndHandDestinationZone = CardZone.ExhaustPile,
         };

@@ -169,18 +169,28 @@ public class ActFourPoolTests
             ["keeper_of_the_living_cartouche"] = 300,
             ["mummified_overseer_of_the_linen_house"] = 318,
             ["treasury_of_the_two_pans"] = 330,
+            ["sphinx_of_the_processional_measure"] = 344,
+            // The Tombbreakers are priced as three bodies that all act every round: 320 together.
+            ["pry_bar_veteran"] = 112,
+            ["lamp_thief"] = 100,
+            ["curse_bearer"] = 108,
         };
 
         var elites = WithRole("elite").ToList();
-        Assert.Equal(bands.Count, elites.Count);
+        Assert.Equal(8, elites.Count);
 
         foreach (var encounter in elites)
-        {
-            var id = Assert.Single(encounter.Enemies);
-            Assert.True(bands.TryGetValue(id, out var hp), $"'{id}' is not one of the priced elites");
-            Assert.Equal(hp, Data.Enemies.Single(e => e.Id == id).MaxHp);
-            Assert.Contains(id, ActFour.EliteIdentities);
-        }
+            foreach (var id in encounter.Enemies)
+            {
+                Assert.True(bands.TryGetValue(id, out var hp), $"'{id}' is not one of the priced elites");
+                Assert.Equal(hp, Data.Enemies.Single(e => e.Id == id).MaxHp);
+                Assert.Contains(id, ActFour.EliteIdentities);
+            }
+
+        // Only the Tombbreakers field more than one body, and they field exactly three.
+        var many = Assert.Single(elites, e => e.Enemies.Count > 1);
+        Assert.Equal("labyrinth_elite_the_tombbreakers_three", many.Id);
+        Assert.Equal(320, many.Enemies.Sum(id => Data.Enemies.Single(e => e.Id == id).MaxHp));
 
         // The Rope-Master's hands are summoned, never fielded — the roster never names them.
         Assert.DoesNotContain(ActFour.StoneHaulerSummonEnemyId, Data.Enemies.Select(e => e.Id));

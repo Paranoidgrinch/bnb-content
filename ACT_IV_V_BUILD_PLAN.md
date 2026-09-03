@@ -432,9 +432,25 @@ resolution. HP from the master's table.
       ▸ The Treasury weighs a turn against ITSELF: cards played (junk not counted) against Energy actually
       spent, both read from expressions the act already had. Its Credits are cards again, and "once per player
       turn" is a latch the first draw sets on the player.
-- [ ] **IV-14 — Sphinx of the Processional Measure (344) · The Tombbreakers Three (112+100+108).**
-      Voluntary ritual costs; a three-body kill-order elite (the Ant-Queen lesson: a body whose pool is
-      emptied by anything falls — already fixed in Core).
+- [x] **IV-14 — Sphinx of the Processional Measure (344) · The Tombbreakers Three (112+100+108).
+      DONE 2026-09-03.** Voluntary ritual costs; a three-body kill-order elite.
+      ▸ **What landed:** `Converter/ActFourEliteSphinx.cs`, `ActFourEliteTombbreakers.cs` + 7 live tests
+      (`Tests/ActFourEliteProcessionTests.cs`). **Nothing new from the engine.** The Sphinx is the fourth body
+      to take the card-offer idiom — three prices, two shown a turn, no hidden right answer — and the
+      Tombbreakers bring Act-III law into the tomb with them, so `NecropolisOpening` now answers for them too.
+      ▸ ★ **A `SequenceEffectNode` does not see what it just wrote.** The Sphinx's third answer has to read
+      the mark it left one node earlier, and it read the count from BEFORE — so the procession never opened
+      on the answer that opened it. Causal sequencing is not a stylistic preference: any program that asks
+      about state it has changed in the same breath must be a `CausalSequenceEffectNode`. The Scarab Host's
+      seal card had the same latent shape (break the last seal, then ask whether any remain) and was fixed
+      with it, untested and unnoticed until this one surfaced.
+      ▸ ★ **A measure is never standing when an enemy acts.** Weighed is taken at the end of the turn it
+      stands in and removes itself doing so, so the Sphinx's "3 per Act-IV negative status TYPE" can only ever
+      meet Burdened and Entombed on its own: the reachable band is 25–31 against the master's stated 25–37.
+      The Weighed term is kept — it is live against any body that raises a measure on its OWN turn, which is
+      most of the act — but the Sphinx alone cannot reach it, and the cap of 37 never binds.
+      ▸ Tomb-Preserved is deliberately NOT Embalmed, as the master insists: the act's preservation holds a
+      fading thing in place on its wearer, and a robber wearing that could prolong its own afflictions.
 - [ ] **IV-15 — Keeper of the Thirty-Six Decans (365) · Colossus of the Endless Procession (388).**
       The six-watch exam and the three-step discipline cycle; escalation is capped. The Colossus asks whether
       **a Burdened stack was worked off by playing a taxed card** — the observable-payment half of seam 2 is
@@ -570,6 +586,7 @@ force — these fights are "almost a separate game mode"); each god enters `Boss
       COMPLETE**, pinned in `Tests/ActFourPoolTests.cs`)
 - [x] **IV-12 — the first three elites — DONE 2026-09-03** (3 of 10 elite encounters)
 - [x] **IV-13 — elites 4-6 — DONE 2026-09-03** (6 of 10 elite encounters)
-- [ ] IV-14 … IV-15 elites · IV-16 … IV-19 bosses · IV-20 … IV-21 cards+relics ·
+- [x] **IV-14 — elites 7-8 — DONE 2026-09-03** (8 of 10 elite encounters)
+- [ ] IV-15 elites · IV-16 … IV-19 bosses · IV-20 … IV-21 cards+relics ·
       IV-22 … IV-23 events · IV-24 the act
 - [ ] V-0 structure · V-1 … V-6 the six gods · V-7 the whole game

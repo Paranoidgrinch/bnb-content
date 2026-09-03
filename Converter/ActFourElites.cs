@@ -21,6 +21,10 @@ public static partial class ActFour
         CartoucheKeeperEnemyId,
         LinenOverseerEnemyId,
         TreasuryEnemyId,
+        SphinxEnemyId,
+        PryBarVeteranEnemyId,
+        LampThiefEnemyId,
+        CurseBearerEnemyId,
     };
 
     public static IReadOnlyList<StatusData> EliteStatuses() =>
@@ -31,6 +35,8 @@ public static partial class ActFour
         .. CartoucheKeeperStatuses(),
         .. LinenOverseerStatuses(),
         .. TreasuryStatuses(),
+        .. SphinxStatuses(),
+        .. TombbreakerStatuses(),
     ];
 
     public static EffectProgram<EnemyActionContext>? EliteIntent(string enemyId, string intentId) =>
@@ -39,10 +45,12 @@ public static partial class ActFour
         ?? RopeMasterIntent(enemyId, intentId)
         ?? CartoucheKeeperIntent(enemyId, intentId)
         ?? LinenOverseerIntent(enemyId, intentId)
-        ?? TreasuryIntent(enemyId, intentId);
+        ?? TreasuryIntent(enemyId, intentId)
+        ?? SphinxIntent(enemyId, intentId)
+        ?? TombbreakerIntent(enemyId, intentId);
 
     public static IReadOnlyList<CardData> EliteCards() =>
-        [.. SurveyorOfferCards(), .. ScarabSealCards(), .. TreasuryCreditCards()];
+        [.. SurveyorOfferCards(), .. ScarabSealCards(), .. TreasuryCreditCards(), .. SphinxAnswerCards()];
 
     // ── §6.2, written once ────────────────────────────────────────────────────────────────────────────────
 

@@ -2713,3 +2713,43 @@ on the player: both offers stand, and using one closes the counter for the day.
 
 **Two cooldowns are the cycle.** `Correct the Name` and `Close the Accounts` are asked for with a cooldown of
 3 intents; both sit in a six-intent cycle, which is twice that, so no separate cooldown machinery was written.
+
+## Act IV, elites 7 and 8 — the Sphinx and the Tombbreakers Three (2026-09-03)
+
+The body that sells you a price list, and the three bodies whose order of death is the fight. **Nothing new
+from the engine**; two findings, one of which had been sitting in already-shipped content.
+
+**★ A `SequenceEffectNode` does not see what it just wrote.** The Sphinx's answers each leave a mark and then
+ask whether that was the third — and the conditional read the count from before the mark landed, so the
+procession never opened on the answer that opened it. Causal sequencing in this codebase is not a stylistic
+preference: **any program that asks about state it changed in the same breath must be a
+`CausalSequenceEffectNode`.** The Scarab Host's seal card (break the last seal, then ask whether any remain)
+had exactly the same latent shape and had shipped two steps earlier without a test that would have caught it;
+it is fixed here too.
+
+**★ A measure is never standing when an enemy acts.** Weighed is taken at the END of the turn it stands in and
+removes itself doing so, and every enemy action happens after that. So the Sphinx's "+3 per Act-IV negative
+status TYPE on the player" can only ever meet two of the three — Burdened and Entombed — and its reachable
+band is 25–31 against the master's stated 25–37. The Weighed term stays in the formula because it is live
+against any body that raises a measure on its own turn (which is most of the act, and how a second body in a
+room meets one standing); what does not hold is the Sphinx's own ceiling, and the cap of 37 never binds. Left
+as a balance note rather than quietly re-tuned, because the number is the master's.
+
+**The Tombbreakers bring Act-III law into the tomb with them.** Their Lamp Thief files Trespass under the
+source-bound rule, so `ActFour.NecropolisOpening` — written for the False-Door Finder at IV-9 — now answers
+for them as well: the same `green_docket_customs` and the same single opening Safe-Conduct, unforked, asked of
+the whole roster so three robbers still hand out one licence.
+
+**Tomb-Preserved is deliberately not Embalmed**, and the master says why: the act's preservation holds a fading
+thing in place on whoever wears it, so a robber wearing Embalmed could prolong its own afflictions. What the
+opened tomb does to its surviving intruders is simpler and only ever good for them, so it is its own
+encounter-local word — 4 Block a stack at that robber's turn start, capped at 2.
+
+**Who preserves the survivors.** The master attributes it to the Curse-Bearer ("We Should Not Have Taken
+This"), but the effect is written on the shared Tombbreaker marker, which is the only place a robber's death
+can be heard at all — and it keeps working when the Curse-Bearer is the one who falls. The tomb is doing the
+preserving; the Curse-Bearer is the one who says so out loud.
+
+**The Veteran's Strength rides with its Claim** rather than being re-checked while it holds one. Nothing in
+this encounter ever takes a Claim off a robber, so granting the two Strength with the Claim is the same rule
+with one fewer moving part.

@@ -1011,5 +1011,39 @@
       "treasury"
     ],
     "role": "elite"
+  },
+  {
+    "id": "labyrinth_elite_sphinx_of_the_processional_measure",
+    "name": "Sphinx of the Processional Measure",
+    "act": 4,
+    "difficulty": "elite",
+    "enemies": [
+      "sphinx_of_the_processional_measure"
+    ],
+    "weight": 1,
+    "tags": [
+      "licensing_labyrinth",
+      "elite",
+      "weighed"
+    ],
+    "role": "elite"
+  },
+  {
+    "id": "labyrinth_elite_the_tombbreakers_three",
+    "name": "The Tombbreakers Three",
+    "act": 4,
+    "difficulty": "elite",
+    "enemies": [
+      "pry_bar_veteran",
+      "lamp_thief",
+      "curse_bearer"
+    ],
+    "weight": 1,
+    "tags": [
+      "licensing_labyrinth",
+      "elite",
+      "tombbreakers"
+    ],
+    "role": "elite"
   }
 ]
