@@ -3057,5 +3057,391 @@
       "summons",
       "corvee"
     ]
+  },
+  {
+    "id": "keeper_of_the_living_cartouche",
+    "name": "Keeper of the Living Cartouche",
+    "max_hp": 300,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "open_the_cartouche",
+        "name": "Open the Cartouche",
+        "intent_type": "debuff",
+        "actions": [
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "inscribed",
+            "amount": 2
+          }
+        ]
+      },
+      {
+        "id": "write_misfortune",
+        "name": "Write Misfortune",
+        "intent_type": "debuff",
+        "actions": [
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "doubt",
+            "amount": 1
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "panic",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "write_the_burden",
+        "name": "Write the Burden",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 15
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "burdened",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "name_bound_blade",
+        "name": "Name-Bound Blade",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 24
+          }
+        ]
+      },
+      {
+        "id": "preserve_the_reading",
+        "name": "Preserve the Reading",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 16
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "embalmed",
+            "amount": 2
+          }
+        ]
+      },
+      {
+        "id": "correct_the_name",
+        "name": "Correct the Name",
+        "intent_type": "debuff",
+        "actions": [
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "inscribed",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "read_the_living_name",
+        "name": "Read the Living Name",
+        "intent_type": "attack",
+        "special": true,
+        "actions": [
+          {
+            "type": "damage_per_status",
+            "target": "player",
+            "status": "black_glyph",
+            "status_on": "owner",
+            "amount": 14,
+            "amount_per_stack": 6,
+            "cap": 18
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "labyrinth_body"
+      },
+      {
+        "status": "the_living_cartouche"
+      }
+    ],
+    "intent_rules": [
+      {
+        "condition": {
+          "kind": "self_counter",
+          "counter": "glyphs",
+          "op": "ge",
+          "value": 3
+        },
+        "action": "read_the_living_name",
+        "priority": 10
+      }
+    ],
+    "tags": [
+      "licensing_labyrinth",
+      "elite",
+      "inscribed",
+      "cartouche"
+    ]
+  },
+  {
+    "id": "mummified_overseer_of_the_linen_house",
+    "name": "Mummified Overseer of the Linen House",
+    "max_hp": 318,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "natron_decree",
+        "name": "Natron Decree",
+        "intent_type": "debuff",
+        "actions": [
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "embalmed",
+            "amount": 2
+          }
+        ]
+      },
+      {
+        "id": "bind_the_limbs",
+        "name": "Bind the Limbs",
+        "intent_type": "debuff",
+        "actions": [
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "burdened",
+            "amount": 1
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "entombed",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "preserve_the_error",
+        "name": "Preserve the Error",
+        "intent_type": "debuff",
+        "actions": [
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "paperwork",
+            "amount": 2
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "embalmed",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "dry_hand_of_authority",
+        "name": "Dry Hand of Authority",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 25
+          }
+        ]
+      },
+      {
+        "id": "wrapped_beyond_recognition",
+        "name": "Wrapped Beyond Recognition",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 22
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "inscribed",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "second_wrapping",
+        "name": "Second Wrapping",
+        "intent_type": "block",
+        "special": true,
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 24
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "labyrinth_body"
+      },
+      {
+        "status": "the_linen_house"
+      }
+    ],
+    "intent_rules": [
+      {
+        "condition": {
+          "kind": "self_status",
+          "status": "wrapping",
+          "min_stacks": 4
+        },
+        "action": "second_wrapping",
+        "priority": 10
+      }
+    ],
+    "tags": [
+      "licensing_labyrinth",
+      "elite",
+      "embalmed",
+      "linen"
+    ]
+  },
+  {
+    "id": "treasury_of_the_two_pans",
+    "name": "The Treasury of the Two Pans",
+    "max_hp": 330,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "receive_the_offering",
+        "name": "Receive the Offering",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 22
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "burdened",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "inventory_of_copper",
+        "name": "Inventory of Copper",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 13
+          },
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 13
+          }
+        ]
+      },
+      {
+        "id": "record_the_deficit",
+        "name": "Record the Deficit",
+        "intent_type": "debuff",
+        "actions": [
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "paperwork",
+            "amount": 3
+          }
+        ]
+      },
+      {
+        "id": "stone_counterweight",
+        "name": "Stone Counterweight",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 28
+          }
+        ]
+      },
+      {
+        "id": "seal_the_treasury",
+        "name": "Seal the Treasury",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 28
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "doubt",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "close_the_accounts",
+        "name": "Close the Accounts",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "damage_per_status",
+            "target": "player",
+            "status": "treasury_credit",
+            "amount": 24,
+            "amount_per_stack": 4,
+            "cap": 8
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "labyrinth_body"
+      },
+      {
+        "status": "the_two_pans"
+      }
+    ],
+    "tags": [
+      "licensing_labyrinth",
+      "elite",
+      "burdened",
+      "treasury"
+    ]
   }
 ]

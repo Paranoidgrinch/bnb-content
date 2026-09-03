@@ -75,6 +75,11 @@ public static partial class ActFour
     // point, because "Embalmed prevented a decay" is a moment and not a state.
     public static CounterId DecaysPreserved => new("decays_preserved");
 
+    // …and its mirror: how many afflictions faded on this character with nothing holding them. Written at the
+    // same one place and for the same reason — the Mummified Overseer's wrapping tightens on the first and
+    // loosens on the second, and neither is a state anything else could read off the character afterwards.
+    public static CounterId DecaysUnpreserved => new("decays_unpreserved");
+
     // How much Energy Fatigue has actually taken out of the player's hands in this fight — written by
     // Fatigue itself at the one moment it takes any, because losing a resource raises nothing a rule can
     // hear, and "the player has Fatigue" is a different fact: a player at zero Energy loses nothing to it.
@@ -318,8 +323,16 @@ public static partial class ActFour
                 ])
                 : new ModifyStatusStacksNode<TContext>(
                     bearer, new StatusDefinitionId(EmbalmedId), new ConstantExpression<TContext>(-1)),
-            new ModifyStatusStacksNode<TContext>(
-                bearer, new StatusDefinitionId(statusId), new ConstantExpression<TContext>(-stacks)));
+            negative
+                ? new CausalSequenceEffectNode<TContext>(
+                [
+                    new ModifyStatusStacksNode<TContext>(
+                        bearer, new StatusDefinitionId(statusId), new ConstantExpression<TContext>(-stacks)),
+                    new SetCombatantCounterNode<TContext>(
+                        bearer, DecaysUnpreserved, new ConstantExpression<TContext>(1), relative: true),
+                ])
+                : new ModifyStatusStacksNode<TContext>(
+                    bearer, new StatusDefinitionId(statusId), new ConstantExpression<TContext>(-stacks)));
 
     // ── shapes ────────────────────────────────────────────────────────────────────────────────────────────
 

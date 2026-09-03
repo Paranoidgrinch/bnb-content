@@ -963,5 +963,53 @@
       "burdened"
     ],
     "role": "elite"
+  },
+  {
+    "id": "labyrinth_elite_keeper_of_the_living_cartouche",
+    "name": "Keeper of the Living Cartouche",
+    "act": 4,
+    "difficulty": "elite",
+    "enemies": [
+      "keeper_of_the_living_cartouche"
+    ],
+    "weight": 1,
+    "tags": [
+      "licensing_labyrinth",
+      "elite",
+      "inscribed"
+    ],
+    "role": "elite"
+  },
+  {
+    "id": "labyrinth_elite_mummified_overseer_of_the_linen_house",
+    "name": "Mummified Overseer of the Linen House",
+    "act": 4,
+    "difficulty": "elite",
+    "enemies": [
+      "mummified_overseer_of_the_linen_house"
+    ],
+    "weight": 1,
+    "tags": [
+      "licensing_labyrinth",
+      "elite",
+      "embalmed"
+    ],
+    "role": "elite"
+  },
+  {
+    "id": "labyrinth_elite_treasury_of_the_two_pans",
+    "name": "The Treasury of the Two Pans",
+    "act": 4,
+    "difficulty": "elite",
+    "enemies": [
+      "treasury_of_the_two_pans"
+    ],
+    "weight": 1,
+    "tags": [
+      "licensing_labyrinth",
+      "elite",
+      "treasury"
+    ],
+    "role": "elite"
   }
 ]
