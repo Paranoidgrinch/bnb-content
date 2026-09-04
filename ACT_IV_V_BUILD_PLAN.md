@@ -628,11 +628,36 @@ its live test file and enters `Tests/BossLengthTests` (40-turn budget against th
       not contain, so it is the user's decision and not a fix.
       ▸ Test-shape lesson: **a Rite has to be DRAWN** — the probe deck is shuffled, so `Install` waits for it
       and `PlayTimes` lets turns pass when a sequence needs more plays than a hand holds.
-- [ ] **IV-21 — the 24 boss relics**, 3 per boss, forced 1-of-3 on the kill, in `Relics/ActFourBossRelic*.cs`
-      following the Act-III shape (including relic-granted action cards where a relic needs one).
-      ⚠ The two traps from Act III's relic step: a `Computed…RunEffect` that reads the event **crashes** when
-      it is queued as a literal — use templates (`QueuedEffectTests` covers every relic in the document); and
-      a relic pool nothing draws from looks exactly like a working one (`ShopShelfTests`).
+- [x] **IV-21 — the 24 boss relics. DONE 2026-09-04.** `Converter/Relics/ActFourBossRelicRules.cs` (28
+      statuses), `ActFourBossRelicCards.cs` (the six action cards), 24 entries in `BossRelics.cs`, and
+      `Tests/ActFourBossRelicTests.cs` — **one live fight per relic**, because a relic that does nothing
+      installs, validates and is quietly played without it. **No engine buy, no converter buy.** The pool is
+      69 boss relics over four acts, three per boss, and the wiring test that ties each boss to ITS three now
+      covers Act IV's eight names.
+      ▸ ★★ **EVERYTHING in a partial rule file must be a PROPERTY — result keys too.** The Palimpsest Reed
+      made its copy and never marked it: `private static readonly EffectResultKey<…> Copied` was declared
+      BELOW the status that named it, so it was null when that status was built, a create-node handed a null
+      result key records nothing, the outcome expression returns nothing, and the mark lands on nothing.
+      Silent on all three counts. The file header already said this about ids; it is wider than ids.
+      ▸ ★★ **Block expires at the start of its OWNER's turn — paid a third time, by an ENEMY.** The Erasure
+      Tablet's "and it gains 20 Block instead" was handed out during the PLAYER's turn and swept away at the
+      enemy's turn start. It is paid by the erasure status at the enemy's turn END, where it stands through
+      the player's next turn.
+      ▸ ★ **The Eternal Cartouche is the one relic that destroys itself**, and it needed the run↔combat door:
+      a death-prevention spec takes a NUMBER (18, a quarter of the roster's middle, not "25 % of Max HP"),
+      the interceptor removes the cartouche BEFORE its own effects run so it cannot write anything down, and
+      a marker status it applies writes the combat counter that the relic's `combatResolved` program reads to
+      call `RemoveRelicRunEffect` on itself.
+      ▸ **The Canopic Cabinet cannot count kinds**: "the first application of each DISTINCT status" is a
+      question about ids and a prohibition counts applications, so it carries two whole-application charges
+      (`RefusesWholeApplication`, bought at IV-20) at a priority below the Absolute Interdict's.
+      ▸ **A status registry is one flat namespace**: the Ration Seal relic's rule status is
+      `ration_seal_relic`, because the Scarab elite of this act already owns `ration_seal`.
+      ▸ Test-shape lesson: **the quiet probe intent GUARDS for 10.** A relic measured in damage against
+      `stone_precedent` is measured against the tablet's Block; the Pyramidion is read against the same six
+      plays without the relic on, and on the striking intent.
+      ▸ Neither Act-III trap fired: nothing here queues a `Computed…RunEffect` (`QueuedEffectTests` green),
+      and no boss relic reaches any other pool (`ShopShelfTests`, `BossRelicTests` green).
 
 ## Events — 2 steps
 
@@ -738,6 +763,6 @@ force — these fights are "almost a separate game mode"); each god enters `Boss
 - [x] **IV-15 — elites 9-10 — DONE 2026-09-03** (**THE ELITE POOL IS COMPLETE** — 10 encounters, pinned)
 - [x] **IV-16 — bosses 1-2 — DONE 2026-09-03** (2 of 8 bosses)
 - [x] **IV-17 — bosses 3-4 — DONE 2026-09-04** (4 of 8 bosses)
-- [x] **IV-20 — die Karten — DONE 2026-09-04** (★★ 8 von 8 Bossen, Karten auditiert) · IV-21 relics ·
-      IV-22 … IV-23 events · IV-24 the act
+- [x] **IV-21 — die 24 Boss-Relikte — DONE 2026-09-04** (★★ 8 von 8 Bossen, Karten auditiert, 69 Boss-
+      Relikte) · IV-22 … IV-23 events · IV-24 the act
 - [ ] V-0 structure · V-1 … V-6 the six gods · V-7 the whole game
