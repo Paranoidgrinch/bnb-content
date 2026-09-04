@@ -88,5 +88,10 @@ public static class BossPhases
         // everybody can see what is coming.
         ActFour.GranariesOpenId,
         ActFour.FamineAccountingId,
+        ActFour.PalimpsestId,
+        ActFour.TextIsCanonId,
+        ActFour.VesselsFullId,
+        ActFour.ThreeJarsId,
+        ActFour.LastPreparationId,
     ];
 }

@@ -527,8 +527,39 @@ its live test file and enters `Tests/BossLengthTests` (40-turn budget against th
       ▸ An intent the engine has reached cannot step aside, so the master's two "otherwise ineligible" intents
       get a fallback blow — which is also how "cannot choose defensive intents while the Stores Stand Open"
       implements itself: with the seals gone there is nothing defensive left to choose.
-- [ ] **IV-18 — The First Scribe of the House of Life (580) · The Mother of Natron and Resin (610).**
-      The player writes the next enemy turn and may erase at a cost; Vessels + washing.
+- [x] **IV-18 — The First Scribe of the House of Life (580) · The Mother of Natron and Resin (610).
+      DONE 2026-09-04.** The player writes the next enemy turn and may erase at a cost; Vessels + washing.
+      ▸ **What landed:** `Converter/ActFourBossScribe.cs`, `ActFourBossMother.cs` + 14 live tests
+      (`ActFourBossScribeTests` 8, `ActFourBossMotherTests` 6), both in `BossLengthTests` (budget 80), their
+      five phase markers filed in `BossPhases`, and their offers (3 scrape sheets, 6 wash sheets) in
+      `BossCards()`. **Nothing new from the engine and nothing new from the converter** — both are built out
+      of what IV-16 and IV-17 already bought.
+      ▸ The Scribe is a RECORD the player writes: the first three cards of the turn become three Tablet
+      entries (Deed → 6 damage · Working → 6 Block for him and a sheet for you · anything else → one Strength
+      a tablet and Inscribed each time · Empty → Doubt), read back at the end of his own window. Scraping is
+      offered the moment the first entry lands: one entry a turn blanked for a sheet of Paperwork. Two whole
+      tablets (or 290) and the PALIMPSEST keeps the LAST three instead of the first and inherits each
+      tablet's final entry into the next, where it cannot be scraped. Below 100 the text is CANON: the turn
+      after the announcement may not scrape at all, and he reads it out for 24.
+      ▸ The Mother is a SHELF the player fills: every affliction that leaves them is kept in a jar, and a
+      full shelf gives all of it back at a stack per jar with two Embalmed on top. Washing — one jar a turn,
+      1 Energy, and Embalmed 1 for handling it — is the whole bargain: preservation later or preservation
+      now. The first unsealing (or 305) shortens the shelf to three and adds 12 straight out of the player;
+      below 90 FINISH THE PREPARATION is 34 and 3 more for every jar still standing.
+      ▸ ★★ **A tablet read before the intent that edits it is a tablet no correction can reach.** The master
+      reads at the start of his window and also gives him `Correct the Margin`; both cannot hold, so the read
+      moved to the END of his window. Bookkeeping that a boss's own intents edit resolves AFTER the intents.
+      ▸ ★★ **A trigger that must fire exactly once cannot be spelled "the count is exactly one."** The scrape
+      sheets stopped coming at 102 HP: the same card play crossed 290, and the failsafe's counter reset landed
+      between another trigger's increment and its own read. Two triggers on one event have no order the
+      content may assume — the offer is now a STATE (something on the tablet, scraping unspent, no sheets in
+      hand), read with `CombatantZoneCardCountExpression`, and therefore idempotent.
+      ▸ A stack lost is an **expiry**, a status taken off outright is a **removal**: the shelf carries both
+      triggers with one generic program behind them, and asks the EVENT which status moved
+      (`TriggerEventStatusIsExpression`) rather than mirroring one counter per keyword.
+      ▸ The promised response turn is a status, not a hope: fullness is judged once at the player's turn
+      start and written on her as `the_vessels_are_full`, which the intent rule reads beside the live total —
+      so washing a jar makes the rule fail, and "cancel the queued Unseal" needs no extra machinery.
 - [ ] **IV-19 — The Vizier of the King's Mouth (590 + Offices) · The Queen of the Flood Reckoning (620).**
       Office kill order permanently shapes Phase II; Water Level + player-side Sluice Authority.
 
@@ -649,6 +680,7 @@ force — these fights are "almost a separate game mode"); each god enters `Boss
 - [x] **IV-14 — elites 7-8 — DONE 2026-09-03** (8 of 10 elite encounters)
 - [x] **IV-15 — elites 9-10 — DONE 2026-09-03** (**THE ELITE POOL IS COMPLETE** — 10 encounters, pinned)
 - [x] **IV-16 — bosses 1-2 — DONE 2026-09-03** (2 of 8 bosses)
-- [x] **IV-17 — bosses 3-4 — DONE 2026-09-04** (4 of 8 bosses) · IV-18 … IV-19 bosses · IV-20 … IV-21 cards+relics ·
+- [x] **IV-17 — bosses 3-4 — DONE 2026-09-04** (4 of 8 bosses)
+- [x] **IV-18 — bosses 5-6 — DONE 2026-09-04** (6 of 8 bosses) · IV-19 bosses · IV-20 … IV-21 cards+relics ·
       IV-22 … IV-23 events · IV-24 the act
 - [ ] V-0 structure · V-1 … V-6 the six gods · V-7 the whole game

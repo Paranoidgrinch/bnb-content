@@ -1147,5 +1147,35 @@
       "boss"
     ],
     "role": "boss"
+  },
+  {
+    "id": "labyrinth_boss_first_scribe_of_the_house_of_life",
+    "name": "The First Scribe of the House of Life",
+    "act": 4,
+    "difficulty": "boss",
+    "enemies": [
+      "first_scribe_of_the_house_of_life"
+    ],
+    "weight": 1,
+    "tags": [
+      "licensing_labyrinth",
+      "boss"
+    ],
+    "role": "boss"
+  },
+  {
+    "id": "labyrinth_boss_mother_of_natron_and_resin",
+    "name": "The Mother of Natron and Resin",
+    "act": 4,
+    "difficulty": "boss",
+    "enemies": [
+      "mother_of_natron_and_resin"
+    ],
+    "weight": 1,
+    "tags": [
+      "licensing_labyrinth",
+      "boss"
+    ],
+    "role": "boss"
   }
 ]

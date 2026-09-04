@@ -2884,3 +2884,61 @@ Weigher's pan needed a counter with two mirrored faces only because it is SIGNED
 **Converter buy: `heal` in the effect DSL.** A body that mends itself could only be authored as a raw program,
 which left its telegraph saying something else (the Grain Thief's feast is labelled as 18 damage). `heal` now
 maps to the engine's heal node and reads as "heal 18" in the intent line, so Open One Jar tells the truth.
+
+## Act IV, bosses 5 and 6 — the House of Life and the Natron and Resin (2026-09-04)
+
+Two bosses whose whole content is a thing the PLAYER writes: a record of the cards they played, and a shelf of
+the afflictions they shed. **No engine buy, and no converter buy** — both are built out of what IV-16 and IV-17
+already bought.
+
+**★★ A tablet read before the intent that edits it is a tablet no correction can reach.** The master reads the
+Scribe's tablet "at the beginning of the next Scribe action window, before his ordinary intent", and gives him
+`Correct the Margin`, an intent that CHANGES a standing entry. Both cannot be true in one window: the engine
+resolves the intent inside the turn, and a read at the turn's start has already spent every entry the
+correction was for. So the read moved to the END of his window. Nothing the player plans against changes —
+they write, he answers, all of it before their next turn — and the correction now has something to correct.
+Whenever a master gives a boss an intent that edits its own bookkeeping, the bookkeeping resolves after the
+intents, not before.
+
+**★★ A trigger that must fire exactly once cannot be spelled as "the count is exactly one".** The scrape sheets
+were offered when `EntriesWritten == 1`, and at 102 HP they silently stopped coming: the same card play that
+wrote the first entry also crossed 290, and the failsafe's own `EntriesWritten = 0` landed between the
+increment and the read. Two triggers on one event have no order the content may assume. The offer is now a
+STATE — "something stands on the tablet, this turn may still scrape, and no sheets are out" — read with
+`CombatantZoneCardCountExpression(hand, tag)`, which makes it idempotent instead of punctual. The failsafe also
+stopped resetting the count: clearing the SLOTS is what "the tablet is cleared" means.
+
+**A status losing its last stack is an EXPIRY; a status taken off outright is a REMOVAL.** The Mother's shelf
+is built on hearing afflictions leave, and the engine reports the two through different events
+(`StatusExpiredCombatEvent` from `ModifyStatusStacks` reaching zero, `StatusRemovedCombatEvent` from an
+explicit removal). One trigger hears half the fight. She carries both, with the same program behind each —
+written once, generic over its context.
+
+**Which status moved, asked of the event rather than mirrored in counters.** `TriggerEventStatusIsExpression`
+lets one program sort a removal into the right jar; the alternative is one counter per status watched, which
+ages badly and doubles every time a keyword is added. The sort's innermost branch is a NoOp on purpose: an
+affliction this act does not keep must not move the shelf's total either.
+
+**The response turn is a status, not a hope.** "Fill the shelf and the player receives one full response turn"
+cannot be built on the shelf's live total: the afflictions that fill it leave at the END of the player's turn,
+and her action is the next thing that happens. So fullness is judged ONCE, at the start of the player's turn,
+and written on her as `the_vessels_are_full` — which the intent rule keys on beside the live total. Wash a jar
+and the total falls below the line: the rule fails, and the master's "cancel the queued Unseal" is the same
+sentence read forwards.
+
+**A shelf of kinds, not a shelf of slots.** Four numbered vessels would need one status per slot AND a code per
+affliction inside it; instead each KIND is a jar carrying how many of that affliction are stored, and
+`vessels_filled` is the shelf's own total — one number the telegraph, the intent rule and the signature's
+arithmetic all read. Washing therefore chooses an affliction rather than a slot, which is the choice the master
+actually describes ("wash dangerous Vessels"), and an unsealing gives back a stack per jar.
+
+**A cost paid inside the program, not as a card cost.** The wash sheets cost no Energy to PLAY and spend one
+inside their successful branch. A real cost would tax the second sheet of a turn where the washing is already
+spent — a trap on a card the boss put in the player's hand. The Lady's seal sheets cost nothing at all for the
+same reason; this is the same rule where the ability does have a price.
+
+**Two master clauses are deliberately not built.** *Resin Over the Mouth*'s rider ("the next expiring status is
+stored even if a vessel was washed this turn") is vacuous here: washing frees capacity rather than closing the
+storage window, so nothing about it could stop a store. And the failsafe's "player chooses one stored Vessel to
+discard harmlessly" spills in a fixed order — the engine cannot ask mid-trigger, and nothing about the choice
+can hurt the player.

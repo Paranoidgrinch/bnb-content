@@ -251,6 +251,8 @@ public class ActFourPoolTests
             ["weigher_of_the_unspoken_heart"] = 610,
             ["architect_of_the_impossible_pyramid"] = 640,
             ["lady_of_the_black_granaries"] = 600,
+            ["first_scribe_of_the_house_of_life"] = 580,
+            ["mother_of_natron_and_resin"] = 610,
         };
 
         var bosses = WithRole("boss").ToList();
@@ -269,6 +271,8 @@ public class ActFourPoolTests
                      ActFour.TwoLandsNameId, ActFour.EternalNameId, ActFour.NameExposedId,
                      ActFour.HeartRemembersId, ActFour.HeartDeclaredLightId,
                      ActFour.PlanAlwaysCorrectId, ActFour.GranariesOpenId, ActFour.FamineAccountingId,
+                     ActFour.PalimpsestId, ActFour.TextIsCanonId,
+                     ActFour.VesselsFullId, ActFour.ThreeJarsId, ActFour.LastPreparationId,
                  })
             Assert.Contains(marker, BossPhases.Markers);
     }
