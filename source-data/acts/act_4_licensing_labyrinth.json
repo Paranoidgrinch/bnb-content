@@ -75,8 +75,8 @@
     "elite_weight_multiplier": 1.5
   },
   "treasure": {
-    "mimic_chance": 0.15,
-    "mimic_encounter_id": "act_4_elite_02"
+    "mimic_chance": 0.2,
+    "mimic_encounter_id": "labyrinth_mimic_01"
   },
   "waiting_room": {
     "heal_percent": 15

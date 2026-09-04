@@ -36,14 +36,18 @@ public class ActFourEventTests
         }
     }
 
-    // The one thing that is deliberately NOT true yet: Act IV is not a room the run walks (IV-24 makes it
-    // one), so no map draws these doors. This pins the seam — when the act arrives, this test is the one
-    // that has to change.
+    // The seam this file used to pin from the other side: until IV-24 no map drew these doors at all, because
+    // Act IV was a catalogue the document shipped rather than an act a run crossed. Now it is the fourth act,
+    // and the twenty are exactly the doors ITS map opens — and no earlier act's.
     [Fact]
-    public void No_map_draws_them_yet_because_the_act_is_not_walkable()
+    public void The_fourth_acts_map_opens_these_twenty_doors_and_no_earlier_act_opens_any_of_them()
     {
-        Assert.Equal(3, Game.Acts!.Count);
-        foreach (var act in Game.Acts)
+        Assert.Equal(4, Game.Acts!.Count);
+
+        var labyrinth = Game.Acts[3].MapGeneration!.NodeRefPools[MapNodeKind.Event];
+        Assert.Equal([.. Twenty.Order()], [.. labyrinth.Order()]);
+
+        foreach (var act in Game.Acts.Take(3))
             foreach (var id in Twenty)
                 Assert.DoesNotContain(id, act.MapGeneration!.NodeRefPools[MapNodeKind.Event]);
     }

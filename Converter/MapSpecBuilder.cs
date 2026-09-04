@@ -128,6 +128,12 @@ public static class MapSpecBuilder
             NodeRefMinimumDepthPercent = authoredEvents
                 .Where(e => e.EarliestDepthPercent > 0)
                 .ToDictionary(e => e.Id, e => e.EarliestDepthPercent),
+            // And which FIGHT may stand where: the elite masters' "earliest depth/stage" tables, carried on
+            // the encounters themselves. The role gate above says an elite waits until a fifth of the way in;
+            // this says which elite the act opens with and which one it keeps for the last quarter.
+            EncounterMinimumDepthPercent = data.Encounters
+                .Where(e => e.Act == act.Act && e.Role is not null && e.EarliestDepthPercent > 0)
+                .ToDictionary(e => e.Id, e => e.EarliestDepthPercent!.Value),
         };
 
         return new ActMap

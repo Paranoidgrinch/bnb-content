@@ -1210,5 +1210,26 @@
       "boss"
     ],
     "role": "boss"
+  },
+  {
+    "id": "labyrinth_mimic_01",
+    "name": "The Jar's Licensed Contents",
+    "act": 4,
+    "difficulty": "mimic",
+    "enemies": [
+      "cursed_loot_bearer"
+    ],
+    "weight": 1,
+    "tags": [
+      "licensing_labyrinth",
+      "mimic",
+      "treasure",
+      "burdened",
+      "loot"
+    ],
+    "role": "mimic",
+    "enemy_health": [
+      220
+    ]
   }
 ]

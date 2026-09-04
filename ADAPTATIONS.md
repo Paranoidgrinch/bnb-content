@@ -3251,3 +3251,60 @@ Deed and 1 Working; if a category is absent, use another eligible card" is asked
 falls back exactly as written. And the Survey of the Dead's prize asks what to **strike out before** what to
 enter correctly, which is the design's set of rewards in the order a player can actually use: nobody improves
 a card they are about to have struck from the file.
+
+## Act IV, the act itself — a room the run walks (2026-09-04)
+
+IV-24. Act IV stops being a catalogue the document ships and becomes the fourth act a run crosses:
+`BabLoader.Acts` loads its manifest, `ActRules.For(4)` answers with the Labyrinth, and the hand-built branch
+in `BlueprintAssembler` that used to put the act's doors and programs in by hand is gone — one loop now
+builds all four acts the same way.
+
+**The act's length is the audit's, and it is very long.** The per-path table (`docs/bnb-act-map-specs.md`)
+asks for Combat 12, MultiCombat 3, Elite 4, Event 4, Rest 3, Treasure 2, Shop 3 — thirty-one promises against
+Act III's twenty-one, and since every promise is a full row every route crosses, the generated act runs
+**35–37 rows** where Act III runs 26. That is the design's own "substantially longer and mechanically denser
+than the earlier acts" in map form, and it is deliberate rather than an accident of the arithmetic.
+
+**The ceilings and the lanes are this act's, chosen here.** The masters say nothing about either. Each
+comfort gets exactly one spare above its floor, as in every act (Rest 4, Treasure 3, Shop 4), and the ceiling
+that is NOT one spare is the elite's: six against a floor of four, because by Act IV a route that goes
+looking for elites is a build rather than a mistake. The three lanes are the processional ramp (fights,
+crowds and elites), the licence counters (doors and shops) and the sealed storerooms (campfires and
+treasure) — and unlike the earlier acts' third lane, the storerooms still fight, because the labyrinth has no
+quiet way through it.
+
+**★★ The elite table's "earliest depth/stage" needed an engine seam, and it is a per-ENCOUNTER one.** The
+elite master gives a depth per elite (3 to 12 of seventeen stages: the Surveyor and the Scarab Host open at
+3, the Colossus and the Thirty-Six Decans not before 12), and the act's encounter data has carried those as
+`earliest_depth_percent` since the elites were authored — with nothing reading them. Neither existing gate
+could: `RoleMinimumDepthPercent` only knows "an Elite", and `NodeRefMinimumDepthPercent` is keyed by ref id,
+which combat nodes do not have. So Core grew the third of the family, `MapGenerationSpec.
+EncounterMinimumDepthPercent`, keyed by encounter id and asked before threat and before the no-repeat set;
+where a row can honour no candidate of its role the gate yields, because a combat node with no fight in it is
+worse than an early one. The role gate stays as the act's coarse curve (an Elite from 18 % of the way in,
+which is that table's own shallowest entry).
+
+**The Labyrinth's mimic is the jar's licensed contents.** The act had no `mimic` encounter at all — the
+manifest pointed its `mimic_encounter_id` at an elite as a placeholder — and the audit asks for 20 %, the
+highest of the four acts. The mimic is **the Cursed Loot-Bearer at 220 HP**, priced just under the act's
+weakest elite (248) the way a mimic is meant to be, and it reads as the treasure room's own text answering
+back: the jar in the wall-slot was licensed to hold something, and what it held was a person entered on the
+manifest. The manifest's `rewards` block (`card_choices`, `card_reward_chance`) is the original generator's
+knob and joins `first_elite_depth` and `elite_weight_multiplier` as read-and-ignored — this port answers
+what a victory offers in `MapSpecBuilder.VictoryRewards`.
+
+**The campfire heals 15 % here, against 25 % in Acts I–III** — the manifest already said so, and §5 of the
+Run-Systems Master asks for exactly that shape ("later Acts heal a smaller percentage than earlier Acts").
+
+**★★ And the act found a bug in ANOTHER act's relics, which is the point of making it walkable.** The first
+four-act walk stalled in an Act-IV corridor on `last_slice_tin_action` — a turn that played fifty cards
+without ending. Five of Grandmother's and the Queen's and the Ombudsman's graces (Counter-Petition Twine,
+Honey Spoon, Better Chair Cushion, **Last-Slice Tin**, Royal Grace Cup) put their once-a-turn card into the
+hand on `CardsDrawn` and cleared their counter in the same breath. `CardsDrawn` fires on EVERY draw, not only
+on the hand a turn opens with — so a grace whose card draws re-armed itself out of its own effect: take a
+slice, draw 2, and the draw hands over another tin. The quieter half of the same defect: that counter is also
+the memory of "the gift was taken", which the clause is read against when the turn ends, and any draw at all
+wiped it — so the clause could not fire. The reset now belongs to the TURN (`TurnStarted`) and only the offer
+to the draw, guarded on the gift not already having been taken; the Silver Name-Tally, once per COMBAT, always
+had that shape and is why it never looped. **Why now: before Act IV was walkable, Act III's boss relics were
+handed over after the last boss of the game and there was no fight left to spend them in.**

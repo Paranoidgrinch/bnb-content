@@ -72,7 +72,8 @@ stays loadable only until the authored pool replaces it.
   `Elites/`, `Bosses/`, `BossPhases.cs`, `EventStory`, `FightProbe`, `RunWalker`, the Godot smokes.
 - **The run simulator and the balance trainer** (bnb-godot `tools/simulate.sh`, `tools/train.py`) — the
   instruments that will verify both acts. ⚠ Their fitness is currently written against the **Act-III** boss
-  (`damageToAct3Boss`); step **IV-24** and step **V-7** move it.
+  (`damageToAct3Boss`); step **IV-24** moved it (now `--target-act`, default the game's last act) and
+  step **V-7** re-points it at Act V.
 
 ## What does NOT exist yet
 
@@ -739,14 +740,27 @@ tested with `EventStory` (walk the door, name the branch, win the fight, ask the
 
 ## The act itself — 1 step
 
-- [ ] **IV-24 — Act IV becomes a room the run walks.** `ActRules.For(4)` in full: per-path minimums
-      (Combat 12, MultiCombat 3, Elite 4, Event 4, Rest 3, Treasure 2, Shop 3), per-path ceilings, lanes,
-      `EarliestDepthPercent` (the elite table's depths 3–12 mapped to percent, the way Act II's stages were),
-      mimic **20 %** with its own mimic encounter, the act's rest/treasure room texts, and the campfire heal
-      percentage for act 4 (§13: it decreases per act). Then:
-      `--playtest 3` must report **Victory 4/4 acts**, `--maps 3` clean, Godot `--smoke-marathon` clean,
-      and the run simulator's fitness moves from `damageToAct3Boss` to a per-act table so the trainer keeps
-      measuring (`bnb-godot/scripts/RunSimulator.cs`, `tools/train.py`, both ANLEITUNGen).
+- [x] **IV-24 — Act IV becomes a room the run walks. DONE 2026-09-04.** `ActRules.For(4)` is the Labyrinth
+      (per-path minimums Combat 12 / MultiCombat 3 / Elite 4 / Event 4 / Rest 3 / Treasure 2 / Shop 3, one
+      spare of each comfort and a sixth elite as ceilings, three lanes — the processional ramp, the licence
+      counters, the sealed storerooms); Act IV joined `BabLoader.Acts` and the hand-built branch in
+      `BlueprintAssembler` is gone. Mimic **20 %** with its own encounter (`labyrinth_mimic_01`, the Cursed
+      Loot-Bearer at 220 HP); campfire 15 %; the act's own waiting room and jar-in-the-wall-slot treasure.
+      **`--playtest 3` Victory 4/4 on all three seeds** (111/112/112 rooms), `--maps 3` clean, Godot
+      `--smoke-marathon` `Victory acts=4 rooms=108 error=none`. Suites Core 1452/754/575/367.
+      ▸ **Two engine buys.** `MapGenerationSpec.EncounterMinimumDepthPercent` — a depth gate per ENCOUNTER,
+      which is what the elite master's "earliest depth/stage" table actually is (the role gate only knows
+      "an Elite", the ref gate is keyed by an id combat nodes do not have); the data had been sitting in the
+      act's encounters unread since the elites were authored. And the **grace-at-the-bell loop**: five Act-III
+      boss relics cleared their once-a-turn counter on `CardsDrawn`, which fires on every draw, so a grace
+      whose card draws re-armed itself out of its own effect — invisible until Act IV gave those relics a
+      fight to be spent in.
+      ▸ **Risk 1 measured** (replay latency, per act): 155 / 163 / 229 / **291 ms per answer** over acts I–IV
+      (3.4 / 5.0 / 11.1 / 21.1 s per room). The checkpoint holds — +27 % across an act 35 % longer — so no
+      rebuild is needed for Act IV. **Act V is the real test**: a three-room gauntlet moves the checkpoint
+      three times in a whole act, so V-0 must measure this again before the gods are authored.
+      ▸ The trainer no longer names an act: `sim-fitness` reports `deepestActBoss` plus the `actBossDamage`
+      table, and `tools/train.py --target-act` (default `LAST_ACT`) says what is being measured to.
 
 ---
 
@@ -790,8 +804,11 @@ force — these fights are "almost a separate game mode"); each god enters `Boss
 
 1. **Replay latency over five acts.** Every answer replays the run from its baseline; the interlude
    checkpoint (`InteractiveRunSession.Continue`) caps it, but the cap has never been measured past act 3.
-   **Measure it at IV-24 and again at V-7**; if act 4 answers cost noticeably more than act 3 answers, the
-   checkpoint must move inside the act before Act V is authored.
+   **Measured at IV-24** (Godot `--smoke-marathon`, per-act ms/answer): 155 / 163 / 229 / **291** across
+   acts I–IV. The checkpoint holds — Act IV is 35 % longer and its answers cost 27 % more — so it does not
+   have to move for Act IV. ★ But Act V is a THREE-ROOM act, so the checkpoint moves three times in the whole
+   of it while the run behind it is the longest it has ever been: **measure again at V-0**, not only at V-7,
+   and be ready to move the checkpoint inside a boss fight.
 2. **Act IV is bigger than any act so far and its design is looser** — the master repeatedly says
    "balance-tunable" and "conceptual bands" where Act III gave exact numbers. Every such choice goes into
    `ADAPTATIONS.md` in the step that makes it, or the act becomes unreviewable.
@@ -827,5 +844,5 @@ force — these fights are "almost a separate game mode"); each god enters `Boss
 - [x] **IV-17 — bosses 3-4 — DONE 2026-09-04** (4 of 8 bosses)
 - [x] **IV-21 — die 24 Boss-Relikte — DONE 2026-09-04** (★★ 8 von 8 Bossen, Karten auditiert, 69 Boss-
       Relikte) · IV-22 (Events 1–10 + 5 Event-Relikte) · **IV-23 (Events 11–20 + 4 Event-Relikte — DIE
-      ZWANZIG TÜREN STEHEN)** · IV-24 the act
+      ZWANZIG TÜREN STEHEN)** · **IV-24 (der Akt selbst — AKT IV IST BEGEHBAR, Victory 4/4)**
 - [ ] V-0 structure · V-1 … V-6 the six gods · V-7 the whole game
