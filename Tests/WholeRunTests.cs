@@ -68,6 +68,7 @@ public class WholeRunTests
     [InlineData(0)]
     [InlineData(1)]
     [InlineData(2)]
+    [InlineData(3)]
     public void An_act_is_as_long_as_it_promises_to_be(int act)
     {
         var spec = Game.Acts![act].MapGeneration!;

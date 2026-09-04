@@ -172,7 +172,11 @@ public sealed record BabActManifest(
     IReadOnlyList<string> RelicFiles,
     BabMapSettings Map,
     BabTreasureSettings? Treasure,
-    BabWaitingRoomSettings? WaitingRoom);
+    BabWaitingRoomSettings? WaitingRoom,
+    // The original generator's reward knobs, carried by Act IV's manifest. This port answers both elsewhere —
+    // how many cards a victory offers is the reward's own (MapSpecBuilder.VictoryRewards), and every fight
+    // here offers one — so they are read and ignored rather than left to abort a strict load.
+    BabRewardSettings? Rewards = null);
 
 // Only the length and the width are read (the rest were the ORIGINAL generator's knobs, and the acts authored
 // since do not repeat them); everything after Width is optional so a later act's manifest can leave it out.
@@ -191,6 +195,8 @@ public sealed record BabMapSettings(
     double EliteWeightMultiplier = 0);
 
 public sealed record BabTreasureSettings(double MimicChance, string? MimicEncounterId);
+
+public sealed record BabRewardSettings(int CardChoices = 0, double CardRewardChance = 0);
 
 public sealed record BabWaitingRoomSettings(int HealPercent);
 

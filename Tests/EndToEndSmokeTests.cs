@@ -67,6 +67,9 @@ public class EndToEndSmokeTests
     [InlineData(1, 1)]
     [InlineData(1, 7)]
     [InlineData(1, 20260820)]
+    [InlineData(3, 1)]
+    [InlineData(3, 7)]
+    [InlineData(3, 20260820)]
     public void The_routes_through_the_act_differ_in_order_and_in_upper_limits(int act, int seed)
     {
         var spec = Blueprint.Acts![act].MapGeneration!;

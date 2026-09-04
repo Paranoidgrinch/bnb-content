@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace BnbContent.Converter;
 
-// Loads the original game's data directory for the ported slice: Acts I–III, Bureaucrat only.
+// Loads the original game's data directory for the ported slice: Acts I–IV, Bureaucrat only.
 // Strict JSON: snake_case member names, unknown members abort — nothing is silently dropped.
 public sealed class BabData
 {
@@ -38,19 +38,18 @@ public sealed class BabData
                 One<BabActManifest>("acts/act_1_city.json"),
                 One<BabActManifest>("acts/act_2_archives.json"),
                 One<BabActManifest>("acts/act_3_green_docket.json"),
+                One<BabActManifest>("acts/act_4_licensing_labyrinth.json"),
             ],
             Bureaucrat = One<BabClass>("classes/bureaucrat.json"),
             Cards = Many<BabCard>("cards/bureaucrat_starter.json", "cards/bureaucrat_rewards.json"),
             Statuses = Many<BabStatus>("statuses/statuses.json"),
             // Act I's ported roster plus the acts authored since. Every act's bodies are ordinary enemy data;
-            // what makes an act an act is its own map and its own vocabulary, not a separate catalogue.
-            // Act III's bodies and fights load with the rest, and since its roster and its fifteen doors are
-            // authored, the act itself now joins the walked run (ACT_III_BUILD_PLAN §12).
+            // what makes an act an act is its own map and its own vocabulary, not a separate catalogue. An act
+            // joins the WALKED run (the Acts list above) once it has a roster, doors and bosses to end on;
+            // Act IV did at IV-24, and Act V is the one still missing.
             Enemies = Many<BabEnemy>(
                 "enemies/city_enemies.json", "enemies/act_2_archives_enemies.json",
                 "enemies/act_3_green_docket_enemies.json",
-                // Act IV's bodies load as soon as the first of them is authored, so a probe can fight one —
-                // the act itself only becomes a room the run walks once it has bosses to end on (IV-24).
                 "enemies/act_4_licensing_labyrinth_enemies.json"),
             Encounters = Many<BabEncounter>(
                 "encounters/act_1_city.json", "encounters/act_2_archives.json",

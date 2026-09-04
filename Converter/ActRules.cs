@@ -35,6 +35,7 @@ internal sealed record ActRules
         1 => City,
         2 => Archives,
         3 => GreenDocket,
+        4 => Labyrinth,
         var other => throw new ConversionException($"act '{act.Id}'", $"no map rules are authored for act {other}"),
     };
 
@@ -279,5 +280,91 @@ internal sealed record ActRules
             + "whoever came next. The stones around it have been counted recently.",
         TreasureOpenText = "Take what was left",
         TreasureLeaveText = "Add a stone and walk on",
+    };
+
+    // ── Act IV: The Licensing Labyrinth ────────────────────────────────────────────
+    // The act the design calls "substantially longer and mechanically denser than the earlier acts", and the
+    // per-path table says so in numbers: twelve fights a route instead of eight, three of them crowded, four
+    // elites, four doors. The soft rooms grow with it — three campfires, three shops, two treasures — because
+    // an act half again as long with Act III's comforts is not harder, only meaner.
+    private static readonly ActRules Labyrinth = new()
+    {
+        PerPathMinimums = new Dictionary<MapNodeKind, int>
+        {
+            [MapNodeKind.Combat] = 12,
+            [MapNodeKind.MultiCombat] = 3,
+            [MapNodeKind.Elite] = 4,
+            [MapNodeKind.Event] = 4,
+            [MapNodeKind.Rest] = 3,
+            [MapNodeKind.Treasure] = 2,
+            [MapNodeKind.Shop] = 3,
+        },
+        // One spare of each comfort, as everywhere else — and the labyrinth's own indulgence, a sixth elite,
+        // because by Act IV a route that goes looking for elites is a build rather than a mistake.
+        PerPathMaximums = new Dictionary<MapNodeKind, int>
+        {
+            [MapNodeKind.Rest] = 4,
+            [MapNodeKind.Treasure] = 3,
+            [MapNodeKind.Shop] = 4,
+            [MapNodeKind.Event] = 7,
+            [MapNodeKind.Elite] = 6,
+            [MapNodeKind.MultiCombat] = 5,
+        },
+        // Three ways through the same institution: up the ramp with everything that has been licensed to walk
+        // it, along the counters where the licences are actually issued, or down through the storerooms where
+        // what has been licensed is kept. The labyrinth has no quiet way — the third lane still fights.
+        Lanes =
+        [
+            new("the processional ramp", new Dictionary<MapNodeKind, int>
+            {
+                [MapNodeKind.Combat] = 12,
+                [MapNodeKind.MultiCombat] = 5,
+                [MapNodeKind.Elite] = 5,
+                [MapNodeKind.Event] = 2,
+            }),
+            new("the licence counters", new Dictionary<MapNodeKind, int>
+            {
+                [MapNodeKind.Event] = 8,
+                [MapNodeKind.Shop] = 4,
+                [MapNodeKind.Combat] = 6,
+                [MapNodeKind.MultiCombat] = 2,
+            }),
+            new("the sealed storerooms", new Dictionary<MapNodeKind, int>
+            {
+                [MapNodeKind.Rest] = 5,
+                [MapNodeKind.Treasure] = 4,
+                [MapNodeKind.Combat] = 6,
+                [MapNodeKind.Event] = 3,
+            }),
+        ],
+        KindWeights = new Dictionary<MapNodeKind, int>
+        {
+            [MapNodeKind.Combat] = 10,
+            [MapNodeKind.Event] = 5,
+            [MapNodeKind.Elite] = 4,
+            [MapNodeKind.Rest] = 2,
+            [MapNodeKind.Treasure] = 2,
+            [MapNodeKind.Shop] = 1,
+        },
+        // The elite table's own earliest column (elite master §5: depths 3 to 12 of seventeen stages), read as
+        // the shallowest of them — an elite may stand from a fifth of the way in, and WHICH elite stands there
+        // is the encounters' own gate (BabEncounter.EarliestDepthPercent → EncounterMinimumDepthPercent).
+        // The rest is the labyrinth's temper: it fills a room before it sells you anything, and its crowds
+        // form early, because being outnumbered in a corridor is what the act is.
+        EarliestDepthPercent = new Dictionary<MapNodeKind, int>
+        {
+            [MapNodeKind.Shop] = 8,
+            [MapNodeKind.Rest] = 8,
+            [MapNodeKind.MultiCombat] = 12,
+            [MapNodeKind.Elite] = 18,
+        },
+        RestText = "A niche off the ramp with a water jar in it, left for the workmen and never collected. "
+            + "Nothing here is licensed to notice you, which in this building is the same as being alone.",
+        RestChoiceText = "Sit in the niche until the shift changes",
+        RestUpgradeChoiceText = "Recut one of your own procedures while the stone is soft",
+        TreasureText = "A sealed jar in a wall-slot, with the impression of a seal that has not been valid "
+            + "for four reigns. Whatever it was licensed to hold is still inside.",
+        TreasureOpenText = "Break the old seal",
+        TreasureLeaveText = "Press the slot shut and log nothing",
     };
 }

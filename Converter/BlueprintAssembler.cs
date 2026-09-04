@@ -37,16 +37,8 @@ public static class BlueprintAssembler
         // Every door in the game is authored now — the ported v2 event JSON is gone, and with it the mapper
         // that converted it. What is left here is the act's own fifteen plus the furniture its map builds
         // (the waiting room, the treasure rooms), each offering what its OWN act offers.
-        // Act IV's doors are authored and ship in the document, but Act IV is not yet a room the run walks
-        // (IV-24 makes it one). Its pools therefore have no entry in `authored` — nothing generated a map to
-        // draw them into — so the act's own card and relic pools are built here and its doors put in by hand.
-        // At IV-24 the act joins data.Acts and this becomes one more line in the loop above.
-        var actFourPool = ConversionPools.Build(data, relics, Events.ActFourEvents.Act);
-        var actFourEvents = Events.ActFourEvents.All(
-            actFourPool, new Random(seed + Events.ActFourEvents.Act));
-
         var events = new Dictionary<string, EventScript>();
-        foreach (var authoredEvent in authored.Values.SelectMany(e => e).Concat(actFourEvents))
+        foreach (var authoredEvent in authored.Values.SelectMany(e => e))
             events[authoredEvent.Id] = authoredEvent.Script;
         foreach (var (_, actMap) in maps)
             foreach (var (id, script) in actMap.Events)
@@ -118,17 +110,17 @@ public static class BlueprintAssembler
             Shops = maps.SelectMany(m => m.Map.Shops).ToDictionary(e => e.Key, e => e.Value),
             // What the authored events promise for AFTER a fight. The bodies live here once; the events that
             // hand them out name them (fx.installProgramById).
-            // Both acts' promise bodies in one dictionary. An act's programs are its OWN — the extra card
-            // reward draws from the act's pool — so a run that walks both carries both sets, under names that
-            // say which act made the promise.
-            Programs = AuthoredPrograms(pools, actFourPool),
+            // Every act's promise bodies in one dictionary. An act's programs are its OWN — the extra card
+            // reward draws from the act's pool — so a run that walks them all carries every set, under names
+            // that say which act made the promise.
+            Programs = AuthoredPrograms(pools),
             Start = start,
             Characters = [new RunCharacter(data.Bureaucrat.Id, start)],
             // Victory now means the WHOLE run — the city and the archives behind it. (The engine's meta rules
             // key off the run's result; a per-act flag would need an act-completed hook that is not data yet.)
             MetaRules = [new MetaRule([RunResult.Victory], [new SetMetaFlag("bnb.run.cleared")])],
             Presentation = BuildPresentation(
-                data, relics, enemies, [.. authored.Values.SelectMany(e => e), .. actFourEvents]),
+                data, relics, enemies, [.. authored.Values.SelectMany(e => e)]),
         };
 
         // …and then let anything the manifest did not name explain itself from its own rules text.
@@ -137,7 +129,7 @@ public static class BlueprintAssembler
 
     // Every authored run program the document ships: the bodies an event installs by name.
     private static IReadOnlyDictionary<string, ITriggeredRunEffectDefinition>? AuthoredPrograms(
-        IReadOnlyDictionary<int, ConversionPools> pools, ConversionPools actFour)
+        IReadOnlyDictionary<int, ConversionPools> pools)
     {
         var programs = new Dictionary<string, ITriggeredRunEffectDefinition>();
         if (pools.TryGetValue(Events.ActOneEvents.Act, out var actOne))
@@ -149,8 +141,9 @@ public static class BlueprintAssembler
         if (pools.TryGetValue(Events.ActThreeEvents.Act, out var actThree))
             foreach (var (id, body) in Events.ActThreeEventPrograms.All(actThree))
                 programs[id] = body;
-        foreach (var (id, body) in Events.ActFourEventPrograms.All(actFour))
-            programs[id] = body;
+        if (pools.TryGetValue(Events.ActFourEvents.Act, out var actFour))
+            foreach (var (id, body) in Events.ActFourEventPrograms.All(actFour))
+                programs[id] = body;
         return programs.Count > 0 ? programs : null;
     }
 
