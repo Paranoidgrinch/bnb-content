@@ -3072,3 +3072,62 @@ that plays a Rite from the opening hand passes or fails by seed. `ActFourCardTes
 `PlayTimes` lets turns pass when a sequence needs more plays than a hand holds. And the Interdict's own test
 puts the Rite on as a STARTING rule rather than playing it: its charge is laid at the top of a combatant's own
 turn, so a Rite installed part-way through the player's first turn has already missed it.
+
+## Act IV, the boss relics — twenty-four offices handed to the player (2026-09-04)
+
+Three per boss, forced 1-of-3 on the kill, `Converter/Relics/ActFourBossRelicRules.cs` and its six action
+cards. Nothing was bought from the engine for them; what follows is where the design's sentence and the
+engine's shape did not line up.
+
+**Six more "free actions" are cards.** Established in Act III and unchanged: a combat here has no free
+actions, so the Edict, the Erasure Tablet, the Correction Reed, the Vacant-Throne Decree, the Sluice Gate and
+the Black Flood Vessel are cards the fight puts in the holder's hand at the bell — free, exhausting, returned
+next turn while the relic is worn, inert once spent for the period they belong to.
+
+**The Eternal Cartouche, twice adapted, and the only relic in the game that destroys itself.** "Set HP to 25 %
+Max HP" is not something a death-prevention interceptor can say: `StatusDeathPreventionData` takes a NUMBER,
+built before the fight, and nothing there can read the holder's Max HP. It survives at 18, a quarter of the
+roster's middle. And "permanently destroy this relic" happens in the RUN, which never sees the moment the
+blow lands — so the fight writes a combat counter (`eternal_cartouche_spent`, laid by a marker status the
+interceptor applies, because the cartouche itself is taken off BEFORE its own effects run and cannot write
+anything down), and the relic's run program reads that counter at `combatResolved` and removes itself. That
+counter is the only door between the two layers (`RunEventValues.CombatCounter`).
+
+**The Canopic Cabinet cannot count kinds.** "The first application of each DISTINCT negative status" is a
+question about ids, and a prohibition counts applications, not kinds — nothing in the engine holds a set of
+what has already been refused once. The cabinet carries TWO whole-application charges instead
+(`RefusesWholeApplication`, the field Act IV's cards bought a step earlier), at a priority BELOW the Absolute
+Interdict's: the Interdict is a choice the holder made, the wrapping is merely worn.
+
+**The Basin chooses for the holder, and the Resin Shroud answers at the other end of the same instant.** A
+prompt every turn start for one stack of one affliction is four clicks a fight for a decision that is nearly
+always the same, so the basin takes the first. The shroud's "the first time an enemy turn ends while you are
+below half" is read as the holder's own turn opening, which is the same instant seen from the other side —
+and the side on which 25 Block survives the turn's own clear.
+
+**★★ Block expires at the start of its OWNER's turn — paid for a third time, by an ENEMY this time.** The
+Erasure Tablet gives the erased enemy 20 Block "instead", and the card that erases the line is played during
+the PLAYER's turn: the guard was swept away at the enemy's turn start before the enemy had done anything with
+it, and the test read 0. The Block is paid by the erasure status at the enemy's turn END, where it stands
+through the player's next turn — which is the turn it was supposed to be worth something against. (What the
+erasure itself removes is the line's damage, scaled to nothing: an intent is the enemy's own rotation and no
+rule can take a turn out of it.)
+
+**★★ EVERYTHING in a partial rule file must be a PROPERTY, result keys included.** The Palimpsest Reed makes
+a copy of the card just played, marks it, and fetches the marked card back next turn. It made the copy and
+never marked it. The cause was not the program: `private static readonly EffectResultKey<…> Copied` was
+declared BELOW the status that named it, so it was still null when that status was built — and a create-node
+handed a null result key records nothing, the outcome expression returns nothing, and the mark lands on
+nothing. Silently, on all three counts. The file header of `BossRelicRules` already says ids must come first;
+the rule is wider than ids, and the fix is the same one the counters use — an expression-bodied property.
+
+**A status registry is one flat namespace, and this act already used the name.** The Ration Seal relic
+installs the status `ration_seal_relic`, because the Scarab elite of this same act owns `ration_seal`. The
+RELIC keeps the design's name; only its rule status is renamed. `Status definition 'ration_seal' is already
+registered` is a loud failure, which is the one mercy here.
+
+**Two things that were not adaptations at all, and are worth knowing.** The Acquittal Scarab's "upcoming
+judgment is shown one turn ahead" is a `Disclosure`, not a rule — the engine grants a bearer sight outright,
+so nothing has to fire for it. And the Pyramidion's repeat is `ReplayCardProgramNode`, which re-runs the
+card's own program rather than playing the card again: it costs nothing, and it does not tell the fight that
+a card was played, so a sixth card cannot be its own seventh.

@@ -31,6 +31,16 @@ public static class BossRelics
     public const string AnsweringHill = "The Answering Hill";
     public const string QueenUnderTheHill = "The Queen Under the Hill";
 
+    // Act IV. The names are the encounter names, because that is what the reward wiring matches on.
+    public const string PharaohOfTheSealedName = "The Pharaoh of the Sealed Name";
+    public const string WeigherOfTheUnspokenHeart = "The Weigher of the Unspoken Heart";
+    public const string ArchitectOfTheImpossiblePyramid = "The Architect of the Impossible Pyramid";
+    public const string LadyOfTheBlackGranaries = "The Lady of the Black Granaries";
+    public const string FirstScribeOfTheHouseOfLife = "The First Scribe of the House of Life";
+    public const string MotherOfNatronAndResin = "The Mother of Natron and Resin";
+    public const string VizierOfTheKingsMouth = "The Vizier of the King's Mouth";
+    public const string QueenOfTheFloodReckoning = "The Queen of the Flood Reckoning";
+
     public static IReadOnlyList<BnbRelic> All() =>
     [
         // ── Act I ─────────────────────────────────────────────────────────────────────────────────────────
@@ -192,6 +202,111 @@ public static class BossRelics
         Boss("silver_name_tally", "Silver Name-Tally", QueenUnderTheHill,
             "Once a combat: one enemy's guard is gone, you gain 10 Block against what it was about to do, and your next card that turn is refunded.",
             combatRule: BossRelicRules.SilverNameTally),
+
+        // ── Act IV ────────────────────────────────────────────────────────────────────────────────────────
+        Boss("crown_of_the_three_names", "Crown of the Three Names", PharaohOfTheSealedName,
+            "Every turn is worth one more Energy.",
+            combatRule: BossRelicRules.CrownOfTheThreeNames),
+        Boss("edict_of_the_open_audience", "Edict of the Open Audience", PharaohOfTheSealedName,
+            "Once a combat, every card in your hand is heard for nothing.",
+            combatRule: BossRelicRules.EdictOfTheOpenAudience),
+        // The one relic in the pool that takes itself off. The fight writes down that the cartouche was read;
+        // the run reads that when the fight resolves, and destroys the relic — which is the only door between
+        // the two layers (see RunEventValues.CombatCounter).
+        Boss("eternal_cartouche", "Eternal Cartouche", PharaohOfTheSealedName,
+            "The first blow that would end you does not: you stand again, clean of every affliction, and the "
+            + "cartouche is spent for good.",
+            runPrograms:
+            [
+                RunPrograms.When<CombatResolvedRunEvent>(
+                    RunExpr.GreaterThan(
+                        RunEventValues.CombatCounter(BossRelicRules.CartoucheSpentCounter), RunExpr.Const(0)),
+                    [new RemoveRelicRunEffect(new RelicId("eternal_cartouche"))]),
+            ],
+            combatRule: BossRelicRules.EternalCartouche),
+
+        Boss("feather_of_perfect_measure", "Feather of Perfect Measure", WeigherOfTheUnspokenHeart,
+            "Whichever kind you lead with costs 1 less, and the first answer in the other kind draws 1 and "
+            + "gains 8 Block.",
+            combatRule: BossRelicRules.FeatherOfPerfectMeasure),
+        Boss("acquittal_scarab", "Acquittal Scarab", WeigherOfTheUnspokenHeart,
+            "Every third turn the court sits: enemy guards fall and you strike 30% harder. You read one "
+            + "judgment further ahead than anyone else.",
+            combatRule: BossRelicRules.AcquittalScarab),
+        Boss("balance_of_the_two_pans", "Balance of the Two Pans", WeigherOfTheUnspokenHeart,
+            "End a turn with as many Deeds as Workings, one of each at least, to heal 2 and open the next "
+            + "turn with an Energy. An unbalanced turn ends in 12 Block.",
+            combatRule: BossRelicRules.BalanceOfTheTwoPans),
+
+        Boss("impossible_capstone", "Impossible Capstone", ArchitectOfTheImpossiblePyramid,
+            "Half of whatever Block you still hold at the end of a turn is still there at the start of the next.",
+            combatRule: BossRelicRules.ImpossibleCapstone),
+        Boss("pyramidion_of_repetition", "Pyramidion of Repetition", ArchitectOfTheImpossiblePyramid,
+            "Every sixth real card you play in a fight happens twice, and the second time is free.",
+            combatRule: BossRelicRules.PyramidionOfRepetition),
+        Boss("crooked_plumb_line", "Crooked Plumb Line", ArchitectOfTheImpossiblePyramid,
+            "The first time in a turn you follow a card with one of another kind, up to 2 Energy comes back. "
+            + "A turn that never bends ends in 10 Block.",
+            combatRule: BossRelicRules.CrookedPlumbLine),
+
+        Boss("black_granary_key", "Black Granary Key", LadyOfTheBlackGranaries,
+            "Energy you do not spend is stored, and it comes back the moment you run out.",
+            combatRule: BossRelicRules.BlackGranaryKey),
+        // The one relic here with nothing to say inside a fight: what it does happens after one.
+        Boss("granary_reserve_seal", "Granary Reserve Seal", LadyOfTheBlackGranaries,
+            "Every fight you win puts 15 HP back.",
+            runPrograms: [AfterEveryVictory(Heal(15))]),
+        Boss("ration_seal", "Ration Seal", LadyOfTheBlackGranaries,
+            "The fourth real card of a turn is free and draws you another. A turn that never gets there ends "
+            + "in 10 Block.",
+            combatRule: BossRelicRules.RationSeal),
+
+        Boss("palimpsest_reed", "Palimpsest Reed", FirstScribeOfTheHouseOfLife,
+            "The first real card you play each turn is copied down; the copy is in your hand next turn, and "
+            + "it is free.",
+            combatRule: BossRelicRules.PalimpsestReed),
+        Boss("erasure_tablet", "Erasure Tablet", FirstScribeOfTheHouseOfLife,
+            "Once a combat you may erase what the enemies were about to do; they guard for 20 instead.",
+            combatRule: BossRelicRules.ErasureTablet),
+        Boss("correction_reed", "Correction Reed", FirstScribeOfTheHouseOfLife,
+            "Once a turn you may correct the record: a card away, a card back out of the discard pile, and "
+            + "the one you take back comes cheaper.",
+            combatRule: BossRelicRules.CorrectionReed),
+
+        Boss("canopic_cabinet", "Canopic Cabinet", MotherOfNatronAndResin,
+            "The fight opens with 12 Block, and the first two afflictions laid on you are refused outright.",
+            combatRule: BossRelicRules.CanopicCabinet),
+        Boss("resin_shroud", "Resin Shroud", MotherOfNatronAndResin,
+            "Once a fight, coming round below half your health strips every affliction and wraps you in 25 "
+            + "Block.",
+            combatRule: BossRelicRules.ResinShroud),
+        Boss("basin_of_black_natron", "Basin of Black Natron", MotherOfNatronAndResin,
+            "Each turn the basin washes a stack off one of your afflictions — or gives you 12 Block if you "
+            + "have none.",
+            combatRule: BossRelicRules.BasinOfBlackNatron),
+
+        Boss("triune_office_seal", "Triune Office Seal", VizierOfTheKingsMouth,
+            "All three offices answer to you: an extra card each turn, 8 more on your first Deed, and 8 "
+            + "Block on your first Working.",
+            combatRule: BossRelicRules.TriuneOfficeSeal),
+        Boss("staff_of_the_kings_mouth", "Staff of the King's Mouth", VizierOfTheKingsMouth,
+            "The first real card of each turn is paid for out of the King's own purse, up to 2 Energy.",
+            combatRule: BossRelicRules.StaffOfTheKingsMouth),
+        Boss("vacant_throne_decree", "Vacant-Throne Decree", VizierOfTheKingsMouth,
+            "Once a combat, the empty throne pays: 3 Energy, three cards and 20 Block.",
+            combatRule: BossRelicRules.VacantThroneDecree),
+
+        Boss("sluice_gate_of_the_two_lands", "Sluice Gate of the Two Lands", QueenOfTheFloodReckoning,
+            "Once a turn you may work the gate: 12 Block into an Energy, or an Energy into 12 Block.",
+            combatRule: BossRelicRules.SluiceGateOfTheTwoLands),
+        Boss("flood_reckoning_crown", "Flood-Reckoning Crown", QueenOfTheFloodReckoning,
+            "How you ended decides how you open: dry, and the crown pays an Energy and a card; with "
+            + "something left, an Energy and 15 Block. The first turn opens with 10 Block.",
+            combatRule: BossRelicRules.FloodReckoningCrown),
+        Boss("black_flood_vessel", "Black Flood Vessel", QueenOfTheFloodReckoning,
+            "Once a combat you may pour the whole hand away and draw seven fresh ones, with 2 Energy to "
+            + "spend on them.",
+            combatRule: BossRelicRules.BlackFloodVessel),
     ];
 
     // A boss's own three, in the order the design lists them.

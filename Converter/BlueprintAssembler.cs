@@ -72,6 +72,7 @@ public static class BlueprintAssembler
                 // …and the bosses' own: the Architect's blueprints, the Lady's four seals.
                 .. ActFour.BossCards(),
                 .. Relics.ActThreeBossRelicCards.All(),
+                .. Relics.ActFourBossRelicCards.All(),
                 .. ClauseCards.Cards(), NoticeCards.Acknowledge(), DeputyUndersecretary.ReviewCard(),
                 .. QueueCommissioner.Cards(), .. LordSealkeeper.Cards(), .. MunicipalDragon.Cards(),
                 .. LivingCharter.Cards(), .. Elites.ReturnBell.Cards(),

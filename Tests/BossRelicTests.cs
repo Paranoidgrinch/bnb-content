@@ -24,14 +24,18 @@ public class BossRelicTests
         BossRelics.AuditorOfReturnedLives, BossRelics.GrandCrossReference,
         BossRelics.OmbudsmanOfRootAndRoad, BossRelics.NotaryOfOldGrowth, BossRelics.GrandmotherClause,
         BossRelics.AnsweringHill, BossRelics.QueenUnderTheHill,
+        BossRelics.PharaohOfTheSealedName, BossRelics.WeigherOfTheUnspokenHeart,
+        BossRelics.ArchitectOfTheImpossiblePyramid, BossRelics.LadyOfTheBlackGranaries,
+        BossRelics.FirstScribeOfTheHouseOfLife, BossRelics.MotherOfNatronAndResin,
+        BossRelics.VizierOfTheKingsMouth, BossRelics.QueenOfTheFloodReckoning,
     ];
 
     // ── the pool ──────────────────────────────────────────────────────────────────────────────────────────
 
     [Fact]
-    public void Every_boss_of_all_three_acts_has_exactly_three()
+    public void Every_boss_of_all_four_acts_has_exactly_three()
     {
-        Assert.Equal(45, BossRelics.All().Count);
+        Assert.Equal(69, BossRelics.All().Count);
         foreach (var boss in Bosses)
             Assert.Equal(3, BossRelics.For(boss).Count);
         Assert.All(BossRelics.All(), relic =>

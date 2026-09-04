@@ -46,6 +46,8 @@ public static partial class BossRelicRules
         PremiseSlip, ConcordanceThread, ConclusionLeaf,
         // Act III — the Green Docket's five courts
         .. ActThreeRules(),
+        // Act IV — the Licensing Labyrinth's eight offices
+        .. ActFourRules(),
         // The discounts and bonuses these relics hand out are statuses of their own, for the same reason the
         // other pools' are: a passive modifier's PRESENCE is its condition, so it has to be removable.
         SealedStrike, DefusedIntent, TestimonySeal, ConcludedStrike,
