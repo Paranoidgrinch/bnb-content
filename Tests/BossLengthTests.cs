@@ -52,6 +52,10 @@ public class BossLengthTests(ITestOutputHelper output)
     [InlineData("labyrinth_boss_lady_of_the_black_granaries", 80)]
     [InlineData("labyrinth_boss_first_scribe_of_the_house_of_life", 80)]
     [InlineData("labyrinth_boss_mother_of_natron_and_resin", 80)]
+    // Four bodies rather than one, and 940 HP between them: the offices are the fight's own reason to be
+    // longer, and a walker that kills them all before touching the Vizier has taken the worst road there is.
+    [InlineData("labyrinth_boss_vizier_of_the_kings_mouth", 100)]
+    [InlineData("labyrinth_boss_queen_of_the_flood_reckoning", 80)]
     public void A_boss_dies_inside_the_turn_budget(string encounterId, int budget = TurnBudget)
     {
         var (play, session, _) = FightProbe.Start(FightProbe.Authored(encounterId), health: 9999);

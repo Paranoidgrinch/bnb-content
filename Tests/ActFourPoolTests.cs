@@ -253,6 +253,17 @@ public class ActFourPoolTests
             ["lady_of_the_black_granaries"] = 600,
             ["first_scribe_of_the_house_of_life"] = 580,
             ["mother_of_natron_and_resin"] = 610,
+            ["vizier_of_the_kings_mouth"] = 590,
+            ["queen_of_the_flood_reckoning"] = 620,
+        };
+
+        // A boss encounter is named for ONE body; the Vizier's three Offices stand in the same room and are
+        // priced separately, and nothing else in the act fields them.
+        var offices = new Dictionary<string, int>(StringComparer.Ordinal)
+        {
+            ["royal_seal_bearer"] = 110,
+            ["keeper_of_tallies"] = 116,
+            ["captain_of_the_inner_stair"] = 124,
         };
 
         var bosses = WithRole("boss").ToList();
@@ -260,10 +271,18 @@ public class ActFourPoolTests
 
         foreach (var encounter in bosses)
         {
-            var id = Assert.Single(encounter.Enemies);
+            var id = encounter.Enemies[0];
             Assert.True(bands.TryGetValue(id, out var hp), $"'{id}' is not one of the priced bosses");
             Assert.Equal(hp, Data.Enemies.Single(e => e.Id == id).MaxHp);
             Assert.Contains(id, ActFour.BossIdentities);
+
+            foreach (var subordinate in encounter.Enemies.Skip(1))
+            {
+                Assert.True(offices.TryGetValue(subordinate, out var officeHp),
+                    $"'{subordinate}' stands in a boss room without a price");
+                Assert.Equal(officeHp, Data.Enemies.Single(e => e.Id == subordinate).MaxHp);
+                Assert.Contains(subordinate, ActFour.BossOffices);
+            }
         }
 
         foreach (var marker in new[]
@@ -273,6 +292,10 @@ public class ActFourPoolTests
                      ActFour.PlanAlwaysCorrectId, ActFour.GranariesOpenId, ActFour.FamineAccountingId,
                      ActFour.PalimpsestId, ActFour.TextIsCanonId,
                      ActFour.VesselsFullId, ActFour.ThreeJarsId, ActFour.LastPreparationId,
+                     ActFour.MouthOpensNextId, ActFour.MouthHasOpenedId, ActFour.KingNotHereId,
+                     ActFour.ActingOfficeId,
+                     ActFour.FloodStirsId, ActFour.FloodDisobeysId, ActFour.FloodCountedId,
+                     ActFour.WaterBlackId, ActFour.FloodDriftsId,
                  })
             Assert.Contains(marker, BossPhases.Markers);
     }

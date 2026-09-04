@@ -93,5 +93,22 @@ public static class BossPhases
         ActFour.VesselsFullId,
         ActFour.ThreeJarsId,
         ActFour.LastPreparationId,
+
+        // The Vizier's second half, the turn it is announced on, and his signature. The acting office is
+        // not a phase either — but like the Curator's dial it says which body the telegraphed turn belongs
+        // to, and it is read at the same moment.
+        ActFour.MouthOpensNextId,
+        ActFour.MouthHasOpenedId,
+        ActFour.KingNotHereId,
+        ActFour.ActingOfficeId,
+
+        // The Queen's second half, the turn it is announced on, her signature — and the two readings of the
+        // gauge that are not levels but ANNOUNCEMENTS: the black flood queued for her next action, and the
+        // drift she shows one turn before it moves.
+        ActFour.FloodStirsId,
+        ActFour.FloodDisobeysId,
+        ActFour.FloodCountedId,
+        ActFour.WaterBlackId,
+        ActFour.FloodDriftsId,
     ];
 }

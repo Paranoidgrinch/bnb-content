@@ -560,8 +560,43 @@ its live test file and enters `Tests/BossLengthTests` (40-turn budget against th
       ▸ The promised response turn is a status, not a hope: fullness is judged once at the player's turn
       start and written on her as `the_vessels_are_full`, which the intent rule reads beside the live total —
       so washing a jar makes the rule fail, and "cancel the queued Unseal" needs no extra machinery.
-- [ ] **IV-19 — The Vizier of the King's Mouth (590 + Offices) · The Queen of the Flood Reckoning (620).**
-      Office kill order permanently shapes Phase II; Water Level + player-side Sluice Authority.
+- [x] **IV-19 — The Vizier of the King's Mouth (590 + Offices) · The Queen of the Flood Reckoning (620).
+      DONE 2026-09-04.** ★★ **ACT IV'S EIGHT BOSSES ARE COMPLETE.** `Converter/ActFourBossVizier.cs` (+8 live
+      tests) and `Converter/ActFourBossQueen.cs` (+8 live tests). No engine buy, no converter buy.
+      ▸ The Vizier is a KILL ORDER. Three Offices stand with him (Seal Bearer 110 · Keeper of Tallies 116 ·
+      Captain of the Inner Stair 124); only ONE acts per enemy turn, the token rotating through the living
+      list, and he takes 6 Block per office at the top of the player's turn. Each office LENDS him a function
+      while it lives — the seal that enlarges the round's first affliction, the tally that files a sheet and
+      buys 8 Block for every missed measure, the +6 on his blows — and at 295 every office still standing is
+      ABSORBED and its function is his for good (the Captain's at 5). Below 100, THE KING IS NOT HERE: 32 and
+      4 an office, and the blow itself lays the sheets that silence one of them for exactly one action.
+      ▸ The Queen is a GAUGE the player moves. Five readings, start at Ordered Flood; leftover Energy lowers
+      the river at the end of the player's turn and an empty pool raises it. Drought lends her Strength while
+      it lasts, Exposed Fields files a sheet, the ORDERED MIDDLE strips 12 of her Block and pays a SLUICE
+      AUTHORITY, Rising Water buries, and the Black Mark IS the queue for The River Takes the Boundary.
+      Three authorities earned (or 310) and the flood no longer obeys: the cap rises to 3 and the river
+      drifts away from the middle every second turn of hers, announced a turn early. Below 90 it is counted
+      anyway — 36 and one more step.
+      ▸ ★★ **A body absorbed is REMOVED, a body beaten is DOWNED.** The functions come off him on a `Downed`
+      trigger carried by each office's own warrant; `SetCombatantLifecycleStateNode(→ Removed)` raises the
+      lifecycle event and NOT that one, so absorption keeps what death would take. "Defeated offices grant
+      nothing" then needs no rule — theirs was already gone.
+      ▸ ★★ **A passive modifier cannot be asked whether it is silenced, so the silence carries the opposite
+      modifier.** The Captain's inheritance is `AddFlat +5` on DamageDealt; the sheet that quiets it applies a
+      status carrying `AddFlat −5`. A declarative modifier is switched off by a second one, never from inside.
+      ▸ ★★ **Block expires at the start of its OWNER's turn**, so the master's "remove up to 12 Queen Block at
+      the start of her turn" strips an empty pool. It moved to the top of the PLAYER's turn — the only moment
+      her Block is real, being the wall they stand in front of — and the authority is paid in the same breath,
+      into the turn that can spend it.
+      ▸ Sluice Authority is DECLARED and not spent on the spot: this engine's only window is the player's own
+      turn, so the card sets a flag that resolves at the turn's end in the master's order (Energy, then
+      sluice, then the black mark). The player commits before they know where the river lands, which is the
+      decision.
+      ▸ The rotation is a TOKEN handed to the first office still standing after the holder — three orders and
+      a default — not an index, because the list shortens. An office not acting needs an intent that says so
+      (`stand_at_the_shoulder`, empty actions), and its own three are picked by `self_counter` equality
+      against a step it advances itself: a round-based cycle gives a body that acts every third round the
+      same intent forever.
 
 ## Cards and relics — 2 steps
 
@@ -681,6 +716,6 @@ force — these fights are "almost a separate game mode"); each god enters `Boss
 - [x] **IV-15 — elites 9-10 — DONE 2026-09-03** (**THE ELITE POOL IS COMPLETE** — 10 encounters, pinned)
 - [x] **IV-16 — bosses 1-2 — DONE 2026-09-03** (2 of 8 bosses)
 - [x] **IV-17 — bosses 3-4 — DONE 2026-09-04** (4 of 8 bosses)
-- [x] **IV-18 — bosses 5-6 — DONE 2026-09-04** (6 of 8 bosses) · IV-19 bosses · IV-20 … IV-21 cards+relics ·
+- [x] **IV-19 — bosses 7-8 — DONE 2026-09-04** (★★ 8 of 8 bosses: the boss layer is CLOSED) · IV-20 … IV-21 cards+relics ·
       IV-22 … IV-23 events · IV-24 the act
 - [ ] V-0 structure · V-1 … V-6 the six gods · V-7 the whole game

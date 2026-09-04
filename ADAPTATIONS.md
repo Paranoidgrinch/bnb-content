@@ -2942,3 +2942,73 @@ stored even if a vessel was washed this turn") is vacuous here: washing frees ca
 storage window, so nothing about it could stop a store. And the failsafe's "player chooses one stored Vessel to
 discard harmlessly" spills in a fixed order — the engine cannot ask mid-trigger, and nothing about the choice
 can hurt the player.
+
+## Act IV, bosses 7 and 8 — the King's Mouth and the Flood Reckoning (2026-09-04)
+
+The act's last two. One is a HIERARCHY the player takes apart in whatever order they choose, and pays for that
+order for the rest of the fight; the other is a GAUGE the player moves with their own leftover Energy. **No
+engine buy and no converter buy** — both are compositions of what the act already had.
+
+**★★ A body absorbed is REMOVED; a body beaten is DOWNED — and the difference is what the whole Vizier fight
+is made of.** Each of his three Offices lends him a function while it lives, worn on HIM and taken off him by
+a `Downed` trigger on the office's own warrant (the Tombbreakers' idiom: a death can only be heard on the body
+that dies). At 295 the offices still standing are absorbed, and absorption must not read as death or every
+function would come off in the same breath. `SetCombatantLifecycleStateNode(→ Removed)` raises
+`CombatantLifecycleChangedCombatEvent` and NOT the downed event, and a non-alive body is skipped by every
+selector and every turn — so "absorbed into the Vizier, and no office can return" is one node, and the
+inheritance is simply what the transition did not take away. **Defeated offices grant nothing** needs no rule
+at all: their functions were already gone.
+
+**★★ A passive modifier cannot be asked whether it is suppressed, so the suppression carries the opposite
+modifier.** Two of the three inherited functions are programs and can simply check for their silence; the
+Captain's is `PassiveModifierSpec(DamageDealt, AddFlat, +5)`, and a passive modifier has no access to state.
+The sheet that silences it therefore applies a status carrying `AddFlat, -5`, and the two cancel while it
+stands. Generally: **a declarative modifier is switched off by a second declarative modifier, never by a
+condition inside it.**
+
+**The rotation is a TOKEN handed on, not an index computed.** "The acting Office rotates through the living
+Office list" has no modulo in it once offices start dying. Written as: take the marker off whoever holds it,
+and give it to the first office still standing in the cyclic order after them — three orders, one per holder,
+and a fourth reading for "nobody holds it", which is both how the fight opens and what an office that died
+holding it falls through to. The marker is a status because the player has to see whose turn it is, and it is
+filed in `BossPhases` beside the telegraph for the same reason the Curator's dial is: it says which body the
+coming turn belongs to.
+
+**An office that is not acting needs an intent that says so.** Only one office acts per enemy turn, but the
+engine gives every living body a turn. So each office carries `stand_at_the_shoulder` — an intent with an
+empty action list, which prints its name and does nothing — picked by the rule `not(self_status
+the_acting_office)`. Its own three intents are then chosen by `self_counter` equality against a step it
+advances itself when it acts, because a round-based cycle read `(round − 1) % 3` gives a body that acts every
+third round the same intent every time.
+
+**★★ Block expires at the start of its OWNER's turn, so "remove up to 12 of her Block at the start of her
+turn" strips an empty pool.** The Queen's Ordered Flood is the master's reward for holding the gauge at the
+middle, and its block half is dead on arrival at the moment the master names: whatever she raised on her turn
+is gone before her next one begins. It was moved to the start of the PLAYER's turn — which is the only moment
+her Block is real, because it is the wall the player is standing in front of — and the authority is paid in
+the same breath, into the turn that can spend it. Same rule, one turn boundary later; both halves finally mean
+something.
+
+**The five readings of the gauge ARE five statuses, and there is no second number anywhere.** Water Level 0–4
+could have been a counter with a marker beside it, and then the counter and the marker could disagree. Instead
+the reading is exactly which of `water_drought … water_black_flood` she is standing at: the intent rules key
+on it directly (Black Flood needs no queue — the mark IS the queue, and "the next Queen action" is what an
+intent rule means), the arithmetic is a chain of "where does each reading go?", and the clamp at either end is
+a reading with nowhere to go rather than a rule of its own.
+
+**A player-owned resource needs a window, and this engine's only window is the player's own turn.** Sluice
+Authority is spent AFTER the end-of-turn Energy shift, which is a moment the player cannot act in. So the card
+DECLARES it: playing `Work the Sluice` spends the stack and sets a flag, and the flag resolves at the turn's
+end in the master's order — Energy first, sluice second, the black mark judged last. The decision survives
+intact and gets sharper: the player commits before they know exactly where the river will land, which is what
+makes an authority spent on a turn that was going to fall anyway a wasted one.
+
+**A count is only a count until the flood disobeys.** The master's two Phase-II intents (Count the Dry Years,
+Count the Drowned Fields) have no Phase-I reading at all, and a boss has ONE rotating intent list. They sit in
+the cycle from the first turn and are worth a flat 22 until the transition, after which they read the gauge
+and are worth 30 with a keyword. The slot keeps its name; what the name is worth is the phase.
+
+**The middle cannot be held, only reached.** The gauge moves at the end of EVERY player turn — there is no
+"stay" — so the Ordered Flood is earned by landing on 2 from 1 or from 3, and three of those are what §13.6's
+primary trigger counts. That is the fight's rhythm, and it falls out of the two rules rather than being
+imposed by a third.
