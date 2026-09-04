@@ -3131,3 +3131,52 @@ judgment is shown one turn ahead" is a `Disclosure`, not a rule — the engine g
 so nothing has to fire for it. And the Pyramidion's repeat is `ReplayCardProgramNode`, which re-runs the
 card's own program rather than playing the card again: it costs nothing, and it does not tell the fight that
 a card was played, so a sixth card cannot be its own seventh.
+
+## Act IV, the first ten doors — offices that file something about you (2026-09-04)
+
+The Licensing Labyrinth's doors are OFFICES. What an office does is measure you, write the measurement down,
+and let the writing follow you down the corridor — which is why so many of these branches promise a STRETCH
+of rooms rather than one fight, and why almost every one of them is written in the act's own five words.
+
+**★★ A door cannot open a fight, so a door that offers one SETS IT ON THE ROAD.** Four Act-IV events offer a
+named party to fight — "Demand the Tablet: fight Reed-Pen Scribe + Cartouche Recarver + Palette-Bearing
+Apprentice" — and two of them are in this batch. Nothing in the run layer hands the run from an event into a
+combat and takes it back, and the one route that looked open is closed for a reason worth writing down: the
+map CAN be spliced mid-run (`AddMapNodeRunEffect` + `AddMapEdgeRunEffect`), but splicing a fight in after the
+door would need the door to know which node it is standing on, and an event never knows that — the effects
+take literal node ids, and an authored event is written once for every place the generator may put it. So a
+fight door arms the next ORDINARY corridor instead: the party's terms are on that fight (its enemies
+reinforced by the bodies that joined, the party's own pressure on the player), and the design's prize is
+installed alongside, so it is paid only for winning. Losing pays nothing, which is what "Victory:" means.
+
+**"The next N combats start with X" is a CHAIN, not a counter.** An opening is consumed by one fight, so the
+door arms the first and installs the body that arms the second, which installs the body that arms the third,
+each stepping down as it is kept. The remaining length IS the name of the program still installed
+(`act_four_inscribed_1_again_2`), which means a save between rooms writes it down for free and a resumed run
+still owes exactly what it owed.
+
+**★★ Under Bearer scope, `StatusExpired` does not mean "on the bearer" — it means "this status is the one
+that ran out".** Every other status trigger's Bearer scope filters the event down to the wearer; this one
+filters it down to the status. The Jar of Borrowed Breath, which answers the first affliction to leave you
+completely, heard nothing at all until both of its doors were opened to `Anywhere` with the wearer asked for
+explicitly in the program (`EventTarget has the jar`). The mirror door, `StatusRemoved`, does scope the
+ordinary way; they are written the same anyway, so the rule reads once.
+
+**A card drawn into a hand about to be discarded is not a card.** Both the Cup of the Lowest Mark and the Jar
+fire at a turn's end, and both design texts promise a card. The card is a LEDGER — written at the moment and
+paid at the next hand — which is the same idiom the act's own bodies use, and the only one where the promise
+is worth what it says.
+
+**Three relics are readings of the act's words rather than new machinery.** The Red Linen Knot's "prevent one
+natural loss of stacks or duration" IS Embalmed, so the knot opens the fight with 8 Block and one Embalmed
+and pays its second 8 at the hand after the linen has held (Block at the hand, again, because Block expires
+at the start of its owner's turn). The Blank Cartouche's two halves are one object: an extra card in the
+first hand, and a register that will not hold the first entry made in it. Only the **Broken Royal Weight**
+needed a real adaptation — "prevent the direct HP loss from a failed Weighed" has nothing to intercept,
+because a missed measure costs no HP in this port (the act answers a miss through the body that SET the
+measure, by error band). What the design is buying is "the first miss does not hurt", and the broken weight
+pays it as 10 Block at the next hand plus one Burdened for having used a false weight.
+
+**Five of Act IV's nine Event relics are built here rather than with the other four**, because these ten doors
+are the doors that hand them over, and a branch that grants nothing is a branch nobody can test — the lesson
+IV-20 paid for. The remaining four arrive with events 11–20.

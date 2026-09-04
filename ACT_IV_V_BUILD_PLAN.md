@@ -665,15 +665,49 @@ its live test file and enters `Tests/BossLengthTests` (40-turn budget against th
 Late / Late·Rare), in `Converter/Events/ActFourEvents.cs` + `ActFourEventPrograms.cs` + `ActFourEventObjects.cs`,
 tested with `EventStory` (walk the door, name the branch, win the fight, ask the run what it paid).
 
-- [ ] **IV-22 — events 1–10.** The Dry Nilometer · The Black Granary · The Red Linen Procession ·
-      The Nameless Cartouche · The Forewritten Tablet · The Tomb Robbers' Fire · The Triple-Counted Donkey ·
-      The Four Canopic Jars · The Chamber of False Measures · The Crocodile at the Weighing Place.
-- [ ] **IV-23 — events 11–20 + the 9 event relics.** The Wall of Old Complaints · The Copper Tithe ·
+- [x] **IV-22 — events 1–10. DONE 2026-09-04.** `Converter/Events/ActFourEvents.cs` (ten doors, 31 branches),
+      `ActFourEventPrograms.cs` (the stretches and the two fight doors) and — brought forward — the FIVE Event
+      relics these doors hand over, in `Converter/Relics/ActFourEventRelicRules.cs` + `EventRelics.ActIV`.
+      Tests: `ActFourEventTests` (8, the shape of the set), `ActFourEventLiveTests` (34, one walk per branch
+      plus the stretch itself), `ActFourEventRelicTests` (6, one live fight per relic). **No engine buy.**
+      No `ActFourEventObjects.cs`: these ten doors write nothing a status of their own has to carry — the act's
+      own five words and the five relics carry all of it.
+      ▸ ★★ **A door cannot open a fight, so a door that offers one SETS IT ON THE ROAD.** Two of these ten
+      (and two more at IV-23) offer a named party to fight. Nothing hands the run from an event into a combat
+      and back, and the route that looked open is closed for a reason worth keeping: the map CAN be spliced
+      mid-run (`AddMapNodeRunEffect` + `AddMapEdgeRunEffect`), but splicing a fight in after the door needs the
+      door to know which node it is standing on — the effects take literal node ids and an authored event is
+      written once for every place the generator may put it. So the branch arms the next ORDINARY corridor
+      with the party's terms and installs the prize alongside it: winning pays, losing pays nothing.
+      ▸ **"The next N combats start with X" is a CHAIN, not a counter.** An opening is consumed by one fight,
+      so the door arms the first and installs the link that arms the second, which installs the third. The
+      remaining length IS the name of the installed program (`act_four_inscribed_1_again_2`), so a save
+      between rooms writes it down for free — pinned by `A_stretch_survives_a_save_between_rooms`.
+      ▸ ★★ **Under Bearer scope `StatusExpired` does not mean "on the bearer" — it means "THIS status is the
+      one that ran out".** Every other status trigger scopes to the wearer; this one scopes to the status. The
+      Jar of Borrowed Breath heard nothing until both of its doors were opened to `Anywhere` with the wearer
+      asked for in the program itself.
+      ▸ **A card drawn into a hand about to be discarded is not a card.** The Cup and the Jar both fire at a
+      turn's end, so both pay their promised card as a LEDGER at the next hand.
+      ▸ **The Broken Royal Weight is the one relic that needed a real adaptation**: "prevent the direct HP
+      loss from a failed Weighed" has nothing to intercept, because a missed measure costs no HP here — the
+      act answers a miss through the body that SET the measure. It pays "the first miss does not hurt" as 10
+      Block at the next hand plus one Burdened for a false weight.
+      ▸ **Five of the nine Event relics are built here** rather than at IV-23, because these are the doors
+      that hand them over and a branch that grants nothing is a branch nobody can test (the IV-20 lesson).
+      ▸ Test-shape lesson: **`WinTheFight` looped forever on Burdened.** The harness picked cards by PRINTED
+      cost, and a card refused for an unpaid surcharge stays in hand — so it offered the same card for ever.
+      `EventStory.WinTheFight` now ends the turn when a play leaves the hand unchanged, and `EventStory` takes
+      an `energy` so a Burdened probe can afford a second card.
+- [ ] **IV-23 — events 11–20 + the remaining 4 event relics.** The Wall of Old Complaints · The Copper Tithe ·
       The Unnamed Throne · The Fixed-Day Festival · The Broken Sluice · The Unfinished Burial ·
       The Survey of the Dead · The House of Life at Night · The Merciful Balance · Cartouche Repair Bench.
-      Relics: Cup of the Lowest Mark · Red Linen Knot · Blank Cartouche · Jar of Borrowed Breath ·
-      Broken Royal Weight · Petition Chisel · Tablet of the Missing Name · Funerary Linen Coil ·
-      Mercy Counterweight. Also §4.6 of the Run-Systems Master: two of these are **shop-like event markets**.
+      Relics: **only the four these ten doors hand over** — Petition Chisel · Tablet of the Missing Name ·
+      Funerary Linen Coil · Mercy Counterweight. (The other five — Cup of the Lowest Mark, Red Linen Knot,
+      Blank Cartouche, Jar of Borrowed Breath, Broken Royal Weight — shipped with IV-22, because events 1–10
+      are the doors that grant them.) Also §4.6 of the Run-Systems Master: two of these are **shop-like event
+      markets**. And two of these ten offer a FIGHT (The Copper Tithe, The Survey of the Dead): they take the
+      same shape IV-22 settled — the door sets the fight on the next ordinary corridor and arms its prize.
 
 ## The act itself — 1 step
 
@@ -764,5 +798,5 @@ force — these fights are "almost a separate game mode"); each god enters `Boss
 - [x] **IV-16 — bosses 1-2 — DONE 2026-09-03** (2 of 8 bosses)
 - [x] **IV-17 — bosses 3-4 — DONE 2026-09-04** (4 of 8 bosses)
 - [x] **IV-21 — die 24 Boss-Relikte — DONE 2026-09-04** (★★ 8 von 8 Bossen, Karten auditiert, 69 Boss-
-      Relikte) · IV-22 … IV-23 events · IV-24 the act
+      Relikte) · **IV-22 (Events 1–10 + 5 Event-Relikte)** · IV-23 events · IV-24 the act
 - [ ] V-0 structure · V-1 … V-6 the six gods · V-7 the whole game

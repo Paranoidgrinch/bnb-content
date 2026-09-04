@@ -45,9 +45,9 @@ internal sealed class EventStory : IDisposable
     public static EventStory AtTheDoor(
         string eventId, IReadOnlyList<string>? deck = null, int fights = 1,
         bool paying = false, int gold = 0, string intent = RatIntent, int? health = null,
-        string enemy = Rat)
+        string enemy = Rat, int energy = 3)
     {
-        var document = Blueprint(eventId, fights, deck, paying, gold, intent, health, enemy);
+        var document = Blueprint(eventId, fights, deck, paying, gold, intent, health, enemy, energy);
         var play = new RunPlayback(() => { });
         play.Start(document, seed: 1, interactive: true);
         Assert.True(play.Error is null, play.Error);
@@ -60,9 +60,9 @@ internal sealed class EventStory : IDisposable
     public static EventStory Enter(
         string eventId, string choiceId, IReadOnlyList<string>? deck = null, int fights = 1,
         bool paying = false, int gold = 0, string intent = RatIntent, int? health = null,
-        string enemy = Rat)
+        string enemy = Rat, int energy = 3)
     {
-        var story = AtTheDoor(eventId, deck, fights, paying, gold, intent, health, enemy);
+        var story = AtTheDoor(eventId, deck, fights, paying, gold, intent, health, enemy, energy);
         story.Session.Pick(choiceId);
         Assert.Null(story.Session.Error);
         story.Settle();
@@ -93,9 +93,10 @@ internal sealed class EventStory : IDisposable
 
     // Walk the door, take the branch, and stop BETWEEN nodes — the one place a run may be written to disk.
     public static EventStory EnterAndPark(
-        string eventId, string choiceId, IReadOnlyList<string>? deck = null)
+        string eventId, string choiceId, IReadOnlyList<string>? deck = null, int fights = 1,
+        string intent = RatIntent, string enemy = Rat, int energy = 3)
     {
-        var story = AtTheDoor(eventId, deck);
+        var story = AtTheDoor(eventId, deck, fights, intent: intent, enemy: enemy, energy: energy);
         story.Session.Pick(choiceId);
         Assert.Null(story.Session.Error);
         for (var i = 0; i < 20 && !story.Session.IsAwaitingInterlude; i++)
@@ -153,6 +154,11 @@ internal sealed class EventStory : IDisposable
                     break;
                 Play.CombatDriver.PlayCard(playable.Id, target.Id);
                 Assert.Null(Session.Error);
+                // A card whose PRINTED cost is affordable may still be refused — Act IV's Burdened puts a
+                // surcharge on every card — and a refused play leaves the hand exactly as it was. Without
+                // this the loop would offer the same card forever.
+                if (Play.CombatDriver.Current is { } after && after.Hand.Any(c => c.Id == playable.Id))
+                    break;
             }
             if (Play.CombatDriver.Current is null)
                 break;
@@ -187,9 +193,9 @@ internal sealed class EventStory : IDisposable
     // promise about "the Gold this fight pays" has something to be about.
     private static RunBlueprint Blueprint(
         string eventId, int fights, IReadOnlyList<string>? deck, bool paying, int gold, string intent,
-        int? health, string enemy)
+        int? health, string enemy, int energy)
     {
-        var probe = FightProbe.Solo(enemy, intent, energy: 3);
+        var probe = FightProbe.Solo(enemy, intent, energy);
         var reward = paying
             ? new FixedRewardSource([new RewardOffer("spoils",
                 [new ChangeResourceRunEffect(StandardRunIds.Gold, 30)])])

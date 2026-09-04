@@ -12,7 +12,7 @@ namespace BnbContent.Converter.Relics;
 // once. The rules live in EventRelicRules.
 public static class EventRelics
 {
-    public static IReadOnlyList<BnbRelic> All() => [.. ActI, .. ActII, .. ActIII];
+    public static IReadOnlyList<BnbRelic> All() => [.. ActI, .. ActII, .. ActIII, .. ActIV];
 
     // ── Act I ─────────────────────────────────────────────────────────────────────────────────────────────
 
@@ -132,5 +132,45 @@ public static class EventRelics
             "The Kindly Procession — Walk three steps with them.",
             "You have been welcomed. Every combat opens with 8 Block and 1 Safe-Conduct.",
             combatRule: ActThreeEventRelicRules.GuestRightBrooch),
+    ];
+
+    // ── Act IV ────────────────────────────────────────────────────────────────────────────────────────────
+    //
+    // The Licensing Labyrinth's five — the ones its first ten doors hand over. Every one of them is a reading
+    // of one of the act's own five words: what a turn COST, what is held in place against its own fading,
+    // what the register does to the first thing entered in it, what leaving completely is worth, and what a
+    // missed measure is answered with. The other four arrive with events 11–20.
+
+    public static readonly IReadOnlyList<BnbRelic> ActIV =
+    [
+        Event(ActFourEventRelicRules.CupId, "Cup of the Lowest Mark",
+            "The Dry Nilometer — Accept the True Level.",
+            "The first turn each fight you end with exactly one Energy unspent: heal 4, and one more card at "
+            + "your next hand.",
+            combatRule: ActFourEventRelicRules.CupOfTheLowestMark),
+
+        Event(ActFourEventRelicRules.KnotId, "Red Linen Knot",
+            "The Red Linen Procession — Follow Until the Last Gate.",
+            "Every fight opens with 8 Block and one Embalmed, and the first time the linen holds something "
+            + "in place you are wrapped again for 8.",
+            combatRule: ActFourEventRelicRules.RedLinenKnot),
+
+        Event(ActFourEventRelicRules.CartoucheId, "Blank Cartouche",
+            "The Nameless Cartouche — Take the Fragment.",
+            "An extra card in your first hand. The first Inscribed you gain each fight finds no name to be "
+            + "written under and comes off again.",
+            combatRule: ActFourEventRelicRules.BlankCartouche),
+
+        Event(ActFourEventRelicRules.JarId, "Jar of Borrowed Breath",
+            "The Four Canopic Jars — Jar of Breath.",
+            "The first affliction to leave you completely each fight is breath given back: heal 3, and one "
+            + "more card at your next hand.",
+            combatRule: ActFourEventRelicRules.JarOfBorrowedBreath),
+
+        Event(ActFourEventRelicRules.WeightId, "Broken Royal Weight",
+            "The Chamber of False Measures — Break the Scale.",
+            "Every fight opens with 10 Block. The first measure you miss is taken on the weight instead: 10 "
+            + "Block at your next hand, and one Burdened.",
+            combatRule: ActFourEventRelicRules.BrokenRoyalWeight),
     ];
 }
