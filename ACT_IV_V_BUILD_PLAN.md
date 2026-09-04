@@ -600,12 +600,34 @@ its live test file and enters `Tests/BossLengthTests` (40-turn budget against th
 
 ## Cards and relics — 2 steps
 
-- [ ] **IV-20 — the cards, audited against the act that now exists.** The pool is written; what is NOT proven
-      is that the five Act-IV Rites do what the finished vocabulary means (`ActIVRites`: Hieratic Measure is
-      read inside `CardAuthoring.Ratify`, Candle Cathedral inside Ward Wax, Absolute Interdict through
-      Censure's prohibition, Processional Calendar resolves the Queue — the queue-self-resolution trap is
-      fixed in Core but must be re-proved here). Pin the Act-IV offer by rarity, and check every Act-IV card
-      whose text names a keyword this act now defines.
+- [x] **IV-20 — the cards, audited against the act that now exists. DONE 2026-09-04.** `Tests/ActFourCardTests.cs`
+      (7 live fights, one per Rite plus the Interdict's second half) and two new pins in
+      `FinalCardPoolTests`. ★★ **Two of the five Rites were DEAD**, and each died a different death.
+      ▸ **Temple Tally read the wrong body**: `Source` in a status-APPLICATION event is whoever APPLIED the
+      status, so the tally counted the PLAYER's Paperwork against the enemy's credit and sealed nothing, ever.
+      `EventTarget` now, plus the applicant marker in the negative, because "an enemy" is not something a
+      selector can say by itself.
+      ▸ ★★ **A refusal reads `source`/`eventTarget` BACKWARDS from every other event family**: in
+      `StatusApplicationBlockedTriggeredEffectContext`, `source` is the combatant that REFUSED and
+      `eventTarget` is whoever tried to apply the status. Core's own `PreventionAuthorshipTests` cannot catch
+      it — with no named applier the event target falls back to the refuser, so the two read alike there.
+      ▸ ★ **ENGINE BUY (the only one this step needed).** The Absolute Interdict changes what Censure's
+      prohibition DOES, which no program can reach and no after-the-fact reaction can repair (the prevention
+      event carries what was refused and by whom, never how much was spent). Two general fields on
+      `StatusPreventionSpec` + `StatusPreventionData`, proved in `tests/…/PreventionPriorityTests.cs`:
+      **`RefusesWholeApplication`** (the all-or-nothing charge the engine's own comment already named but
+      could not say) and **`Priority`** (which prohibition answers; ties still fall back to the old
+      oldest-pays rule, so a bearer with one prohibition is unaffected). The Interdict is content again: a
+      one-stack charge laid on every combatant carrying Censure at the top of its own turn.
+      ▸ Hieratic Measure, Candle Cathedral and the Processional Calendar were already wired and are now
+      pinned in live fights (a queued card resolves at the START of the player's next turn; the Calendar
+      spends the oldest of a backlog one turn earlier, at the END of this one).
+      ▸ **An audit finding left deliberately standing:** the Act-IV card tier speaks NONE of Act IV's five
+      words — the sheets predate the vocabulary, so the tier is entirely in the older keywords. Pinned as
+      `No_act_four_card_yet_speaks_the_acts_own_five_words`; closing it means authoring cards the masters do
+      not contain, so it is the user's decision and not a fix.
+      ▸ Test-shape lesson: **a Rite has to be DRAWN** — the probe deck is shuffled, so `Install` waits for it
+      and `PlayTimes` lets turns pass when a sequence needs more plays than a hand holds.
 - [ ] **IV-21 — the 24 boss relics**, 3 per boss, forced 1-of-3 on the kill, in `Relics/ActFourBossRelic*.cs`
       following the Act-III shape (including relic-granted action cards where a relic needs one).
       ⚠ The two traps from Act III's relic step: a `Computed…RunEffect` that reads the event **crashes** when
@@ -716,6 +738,6 @@ force — these fights are "almost a separate game mode"); each god enters `Boss
 - [x] **IV-15 — elites 9-10 — DONE 2026-09-03** (**THE ELITE POOL IS COMPLETE** — 10 encounters, pinned)
 - [x] **IV-16 — bosses 1-2 — DONE 2026-09-03** (2 of 8 bosses)
 - [x] **IV-17 — bosses 3-4 — DONE 2026-09-04** (4 of 8 bosses)
-- [x] **IV-19 — bosses 7-8 — DONE 2026-09-04** (★★ 8 of 8 bosses: the boss layer is CLOSED) · IV-20 … IV-21 cards+relics ·
+- [x] **IV-20 — die Karten — DONE 2026-09-04** (★★ 8 von 8 Bossen, Karten auditiert) · IV-21 relics ·
       IV-22 … IV-23 events · IV-24 the act
 - [ ] V-0 structure · V-1 … V-6 the six gods · V-7 the whole game
