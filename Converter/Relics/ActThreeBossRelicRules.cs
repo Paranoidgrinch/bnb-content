@@ -100,15 +100,7 @@ public static partial class BossRelicRules
     public static readonly StatusData CounterPetitionTwine = Rule(
         "counter_petition_twine", "Counter-Petition Twine",
         "Once a turn you may re-argue a card: discard one, draw one, and gain 1 Energy.",
-        [
-            Trigger(new EffectProgram<CardsDrawnTriggeredEffectContext>(
-                new CausalSequenceEffectNode<CardsDrawnTriggeredEffectContext>(
-                [
-                    SetCounter<CardsDrawnTriggeredEffectContext>(TwineUsed, 0),
-                    OfferTheCard<CardsDrawnTriggeredEffectContext>(ActThreeBossRelicCards.TwineId, ActThreeBossRelicCards.TwineTag),
-                ])),
-                nameof(TriggerEvent.CardsDrawn)),
-        ]);
+        GraceAtTheBell(TwineUsed, ActThreeBossRelicCards.TwineId, ActThreeBossRelicCards.TwineTag));
 
     // "Start turn: if no HP lost during the previous enemy turn, gain 1 Energy and draw 1; otherwise gain 8
     // Block. No turn-1 effect."
@@ -329,13 +321,7 @@ public static partial class BossRelicRules
         ICombatExpression<TurnEndedTriggeredEffectContext, bool> kept) =>
         Rule(id, name, text,
         [
-            Trigger(new EffectProgram<CardsDrawnTriggeredEffectContext>(
-                new CausalSequenceEffectNode<CardsDrawnTriggeredEffectContext>(
-                [
-                    SetCounter<CardsDrawnTriggeredEffectContext>(used, 0),
-                    OfferTheCard<CardsDrawnTriggeredEffectContext>(cardId, tag),
-                ])),
-                nameof(TriggerEvent.CardsDrawn)),
+            .. GraceAtTheBell(used, cardId, tag),
             Trigger(new EffectProgram<TurnEndedTriggeredEffectContext>(
                 new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
                     new AndExpression<TurnEndedTriggeredEffectContext>(
@@ -489,16 +475,7 @@ public static partial class BossRelicRules
     public static readonly StatusData RoyalGraceCup = Rule(
         "royal_grace_cup", "Royal Grace Cup",
         "Once a turn the cup offers: an Energy, a card, or 10 Block. Take it and every enemy guards for 6.",
-        [
-            Trigger(new EffectProgram<CardsDrawnTriggeredEffectContext>(
-                new CausalSequenceEffectNode<CardsDrawnTriggeredEffectContext>(
-                [
-                    SetCounter<CardsDrawnTriggeredEffectContext>(GraceUsed, 0),
-                    OfferTheCard<CardsDrawnTriggeredEffectContext>(
-                        ActThreeBossRelicCards.GraceId, ActThreeBossRelicCards.GraceTag),
-                ])),
-                nameof(TriggerEvent.CardsDrawn)),
-        ]);
+        GraceAtTheBell(GraceUsed, ActThreeBossRelicCards.GraceId, ActThreeBossRelicCards.GraceTag));
 
     // "The first time each turn you spend your last Energy by playing a card: +1 Favor, max 3. Start a turn
     // at 3: consume all, gain 1 Energy, 2 Draw and 8 Block."
@@ -551,6 +528,29 @@ public static partial class BossRelicRules
                         ActThreeBossRelicCards.TallyId, ActThreeBossRelicCards.TallyTag))),
                 nameof(TriggerEvent.CardsDrawn)),
         ]);
+
+    // ★★ A GRACE at the bell, in two triggers, and it MUST be two.
+    //
+    // All of these once-a-turn gifts used to do both jobs on `CardsDrawn`: clear the counter, then offer the
+    // card. That reads right and is wrong twice over, because CardsDrawn fires on EVERY draw and not only on
+    // the hand a turn opens with. A grace whose card DRAWS therefore re-armed itself out of its own effect —
+    // play the Last-Slice Tin, draw 2, the draw clears the counter and hands over a fresh Tin, for ever — and
+    // even the graces that draw nothing lost their clause the moment anything else drew a card, because the
+    // counter that remembers "the gift was taken" had been wiped before the turn ended to ask about it.
+    //
+    // So the RESET belongs to the turn, and only the OFFER belongs to the draw: cleared at TurnStarted, handed
+    // over at any draw where it has not already been taken. (The Silver Name-Tally, once per COMBAT, always
+    // had this shape and is the reason it never looped.)
+    private static IReadOnlyList<StatusTriggerData> GraceAtTheBell(CounterId used, string cardId, TagId tag) =>
+    [
+        Trigger(new EffectProgram<TurnStartedTriggeredEffectContext>(
+            SetCounter<TurnStartedTriggeredEffectContext>(used, 0)), nameof(TriggerEvent.TurnStarted)),
+        Trigger(new EffectProgram<CardsDrawnTriggeredEffectContext>(
+            new ConditionalEffectNode<CardsDrawnTriggeredEffectContext>(
+                Counter<CardsDrawnTriggeredEffectContext>(used, ComparisonOperator.Equal, 0),
+                OfferTheCard<CardsDrawnTriggeredEffectContext>(cardId, tag))),
+            nameof(TriggerEvent.CardsDrawn)),
+    ];
 
     // The card a relic hands over, offered while it is not already in hand.
     private static IEffectNode<TContext> OfferTheCard<TContext>(string cardId, TagId tag)
