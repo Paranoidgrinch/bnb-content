@@ -13,6 +13,7 @@ public static class AuthoredEvents
         ActOneEvents.Act => ActOneEvents.All(pools, rng),
         ActTwoEvents.Act => ActTwoEvents.All(pools, rng),
         ActThreeEvents.Act => ActThreeEvents.All(pools, rng),
+        ActFourEvents.Act => ActFourEvents.All(pools, rng),
         _ => [],
     };
 }

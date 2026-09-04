@@ -112,6 +112,33 @@ public sealed class ConversionPools
             1);
     }
 
+    // "A random eligible Common / Uncommon / Rare NORMAL relic", which is the Labyrinth's doors' own
+    // wording — the Normal pool, not the event-exclusive one, gated by rarity. `mix` is the design's odds
+    // between rarities ("60% Uncommon / 40% Rare"): each entry of a rarity is weighted by that rarity's
+    // share times the SIZE of every other rarity in the draw, so the class odds are what the design wrote
+    // however many relics happen to sit in each class.
+    public IRewardSource NormalRelicOfRarity(string where, params (Relics.RelicAuthoring.Rarity Rarity, int Share)[] mix)
+    {
+        ArgumentNullException.ThrowIfNull(mix);
+        var classes = mix
+            .Select(m => (m.Share, Relics: NormalRelicStock.Where(r => r.Rarity == m.Rarity).ToList()))
+            .ToList();
+        foreach (var (_, relics) in classes)
+            if (relics.Count == 0)
+                throw new ConversionException(where, "the normal relic pool holds no relic of a named rarity");
+
+        var entries = new List<RunPool<RewardOffer>.Entry>();
+        foreach (var (share, relics) in classes)
+        {
+            var others = classes.Where(c => !ReferenceEquals(c.Relics, relics))
+                .Aggregate(1, (product, c) => product * c.Relics.Count);
+            foreach (var relic in relics)
+                entries.Add(new RunPool<RewardOffer>.Entry(
+                    new RewardOffer($"relic-{relic.Id}", [.. Grant(relic)]), share * others));
+        }
+        return new PoolRewardSource(new RunPool<RewardOffer>(entries), 1);
+    }
+
     // Transform target pool: any reward-pool card (uniform), as the original draws its replacement
     // from the card-reward chooser.
     public RunPool<CardDefinitionId> TransformPool() => new(
