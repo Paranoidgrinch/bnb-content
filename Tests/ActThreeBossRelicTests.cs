@@ -256,6 +256,44 @@ public class ActThreeBossRelicTests
         play.Dispose();
     }
 
+    // ★★ A grace that DRAWS must not re-arm itself out of its own draw. The tin's offer used to be cleared on
+    // every CardsDrawn — including the one the tin itself caused — so taking a slice handed over another tin,
+    // for ever. It only surfaced when Act IV made Act III's boss relics something a run still has fights to
+    // spend, and a walk then met a turn that played fifty cards without ending.
+    [Fact]
+    public void A_grace_that_draws_does_not_hand_itself_over_again_the_same_turn()
+    {
+        var (play, session, target) = WithRelic("last_slice_tin", energy: 9);
+
+        PlayAction(play, session, ActThreeBossRelicCards.TinId, target);
+        Assert.DoesNotContain(play.CombatDriver!.Current!.Hand,
+            c => c.DefinitionId.value == ActThreeBossRelicCards.TinId);
+
+        // …and the next bell hands over a fresh one, because it is once a TURN and not once a combat.
+        play.CombatDriver.EndTurn();
+        Assert.Contains(play.CombatDriver.Current!.Hand,
+            c => c.DefinitionId.value == ActThreeBossRelicCards.TinId);
+        play.Dispose();
+    }
+
+    // The other half of the same bug, and the quiet one: the counter that remembers "the gift was taken" was
+    // wiped by any draw at all, so the clause it is read against at the turn's end could not fire. The tin is
+    // taken and then five real cards are played, which is exactly what it asked you not to do.
+    [Fact]
+    public void A_graces_clause_survives_a_draw_made_after_the_gift_was_taken()
+    {
+        var (play, session, target) = WithRelic("last_slice_tin", card: Working, energy: 9);
+        var before = Hero(play).Health.Current;
+
+        PlayAction(play, session, ActThreeBossRelicCards.TinId, target);
+        for (var i = 0; i < 5; i++)
+            Play(play, session, Working, target);
+
+        play.CombatDriver!.EndTurn();
+        Assert.Equal(before - 6, Hero(play).Health.Current);
+        play.Dispose();
+    }
+
     // ── the Hill ──────────────────────────────────────────────────────────────────────────────────────────
 
     // "What the enemies take out of you is weight in the stone: next turn it is Block."
