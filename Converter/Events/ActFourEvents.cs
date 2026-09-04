@@ -6,17 +6,18 @@ using BnbContent.Converter.Relics;
 
 namespace BnbContent.Converter.Events;
 
-// Act IV's doors, from `source-data/design/BnB_Final_Events_Master_PostAudit.md` §"ACT IV" — the first ten of
-// twenty (events 11–20 arrive with IV-23).
+// Act IV's doors, from `source-data/design/BnB_Final_Events_Master_PostAudit.md` §"ACT IV" — all twenty.
 //
 // The Licensing Labyrinth's doors are OFFICES, and an office does not bargain: it measures you, files the
 // measurement, and the filing follows you down the corridor. That is why so many of these promise a STRETCH
 // of road rather than a single fight — "the next three combats start Inscribed 1" — and why nearly every one
-// of them is written in the act's own five words. The two exceptions are the doors that offer a fight, and
+// of them is written in the act's own five words. The exceptions are the four doors that offer a fight, and
 // what a door can do about a fight is set one on the road ahead (see ActFourEventPrograms).
 //
-// Five of the ten hand over an Event relic. Those five are built with this step rather than with the other
-// four at IV-23, because a branch that hands over nothing is a branch nobody can test.
+// Nine of the twenty hand over an Event relic, and each of the nine is the ONLY place that relic can be got.
+//
+// The design's §4.6 "shop-like event markets" are all in earlier acts (the Licensed Vendor, the Conceptual
+// Toll, the Travelling Chandler); the Labyrinth has none. Its offices do not sell — they assess.
 public static class ActFourEvents
 {
     public const int Act = 4;
@@ -36,6 +37,16 @@ public static class ActFourEvents
             TheFourCanopicJars(),
             TheChamberOfFalseMeasures(),
             TheCrocodileAtTheWeighingPlace(pools),
+            TheWallOfOldComplaints(),
+            TheCopperTithe(pools),
+            TheUnnamedThrone(),
+            TheFixedDayFestival(),
+            TheBrokenSluice(),
+            TheUnfinishedBurial(pools),
+            TheSurveyOfTheDead(),
+            TheHouseOfLifeAtNight(pools),
+            TheMercifulBalance(),
+            TheCartoucheRepairBench(pools),
         ];
     }
 
@@ -273,6 +284,223 @@ public static class ActFourEvents
             + "noted for three rooms.",
             [Gold(120), .. Stretch(ActFourEventPrograms.Inscribed1, 3)]));
 
+    // ── 11 · All ──────────────────────────────────────────────────────────────────────────────────────────
+
+    private static BnbEvent TheWallOfOldComplaints() => Event(
+        "the_wall_of_old_complaints", "The Wall of Old Complaints", Band.All,
+        "Every hand's breadth of it is a grievance somebody scratched in and nobody answered, going back so "
+        + "far that the oldest are underneath the newest and the wall is thicker for it.",
+        Branch("add_your_own", "Add Your Own.",
+            "You scratch in your two corrections, which is two of your procedures improved and one more "
+            + "complaint on a wall of them. The next office has read it.",
+            [Upgrade(2, "choose two complaints worth making properly"), .. Stretch(ActFourEventPrograms.Paperwork3, 1)]),
+        Branch("erase_one", "Erase One.",
+            "You take one grievance off the wall — yours — and it costs six of you to have never had it.",
+            [Remove("choose the complaint to withdraw"), new ChangeMaxHealthRunEffect(-6)]),
+        Branch("read_them_all", "Read Them All.",
+            "All of them, in order, which takes as long as it takes. What you carry away is the chisel "
+            + "somebody left in the wall, and two rooms' worth of doubt about everything.",
+            [.. Grant(ActFourEventRelicRules.ChiselId), .. Stretch(ActFourEventPrograms.Doubt1, 2)]));
+
+    // ── 12 · All ──────────────────────────────────────────────────────────────────────────────────────────
+
+    private static BnbEvent TheCopperTithe(ConversionPools pools) => Event(
+        "the_copper_tithe", "The Copper Tithe", Band.All,
+        "A table across the corridor, a copper bowl on the table, and a bearer beside the bowl who has been "
+        + "told what the tithe is and has no authority to hear anything else.",
+        Branch("pay_the_tithe", "Pay the Tithe.",
+            "A part of what you carry into the bowl, and the receipt is worth having: two of your procedures "
+            + "come back stamped.",
+            [LosePercentGold(15), Upgrade(2, "choose two the receipt covers")]),
+        Branch("give_more_than_required", "Give More Than Required.",
+            "More than a third, which nobody asks twice about. What comes back out of the bowl was not put "
+            + "there by you.",
+            [
+                LosePercentGold(35),
+                new OfferRewardRunEffect(
+                    new RewardId("event:copper_tithe:relic"),
+                    pools.NormalRelicOfRarity("the Copper Tithe's overpayment",
+                        (RelicAuthoring.Rarity.Uncommon, 50), (RelicAuthoring.Rarity.Rare, 50)),
+                    1),
+            ]),
+        Branch("give_nothing", "Give Nothing.",
+            "You keep what you carry, which is the whole of the point. The bearer writes nothing down and "
+            + "sends word ahead, and the word is waiting on the next ordinary road.",
+            [Install(ActFourEventPrograms.TitheRefused)]));
+
+    // ── 13 · Late · Rare ──────────────────────────────────────────────────────────────────────────────────
+
+    private static BnbEvent TheUnnamedThrone() => Event(
+        "the_unnamed_throne", "The Unnamed Throne", Band.Late,
+        "A throne with the name cut out of it — not worn away, cut, carefully, by somebody who was paid to "
+        + "and knew exactly how much had to go. The gold leaf around the hole is untouched.",
+        Branch("restore_the_name", "Restore the Name.",
+            "You cut a name back into it, which is eight of yourself and a very great deal of nerve. The "
+            + "tablet they used for the erasure is still under the seat, and it works both ways.",
+            [new ChangeMaxHealthRunEffect(-8), .. Grant(ActFourEventRelicRules.TabletId)]),
+        Branch("erase_it_completely", "Erase It Completely.",
+            "The rest of it goes, and two of your own procedures go with it because the chisel does not "
+            + "distinguish. The corridor afterwards is not a restful place.",
+            [
+                new RemoveCardsRunEffect(
+                    RunSelectors.DeckCards.ChooseByPlayer(2, "choose the two that go with the name")),
+                .. Stretch(ActFourEventPrograms.Panic2, 1),
+            ]),
+        Branch("take_the_gold_leaf", "Take the Gold Leaf.",
+            "A hundred and fifty Gold's worth of leaf off a throne nobody sits on, and three rooms of "
+            + "paperwork about where it went.",
+            [Gold(150), .. Stretch(ActFourEventPrograms.Paperwork2, 3)]));
+
+    // ── 14 · Mid ──────────────────────────────────────────────────────────────────────────────────────────
+
+    private static BnbEvent TheFixedDayFestival() => Event(
+        "the_fixed_day_festival", "The Fixed-Day Festival", Band.Mid,
+        "The festival is held on a fixed day, which was fixed by a calendar that has since been corrected "
+        + "twice. It is being held anyway, today, by people who are not going to be told otherwise.",
+        Branch("carry_the_standard", "Carry the Standard.",
+            "You carry it the length of the hall, which is heavier than it looks and improves one deed and "
+            + "one working of yours in the eyes of everyone watching.",
+            [
+                UpgradeOfKind(Cards.CardAuthoring.DeedTag, "choose the deed the standard honours"),
+                UpgradeOfKind(Cards.CardAuthoring.WorkingTag, "choose the working the standard honours"),
+                .. Stretch(ActFourEventPrograms.Burdened1, 1),
+            ]),
+        Branch("beat_the_drum", "Beat the Drum.",
+            "You beat it badly and much too fast, and for two rooms afterwards everything begins in a hurry "
+            + "— more in hand at once, and less sense in it.",
+            [.. Stretch(ActFourEventPrograms.EnergyAndPanic, 2)]),
+        Branch("wait_for_the_correct_star", "Wait for the Correct Star.",
+            "You wait for the star the festival was meant for. It comes up, eventually, and you are a great "
+            + "deal better for the rest and forty Gold poorer for the wait.",
+            [Heal(40), Gold(-40)]));
+
+    // ── 15 · Early–Mid ────────────────────────────────────────────────────────────────────────────────────
+
+    private static BnbEvent TheBrokenSluice() => Event(
+        "the_broken_sluice", "The Broken Sluice", Band.EarlyMid,
+        "A sluice gate jammed half open, and behind it water that has been standing long enough to be "
+        + "somebody's responsibility. There is a form for opening it and a form for closing it properly.",
+        Branch("open_it", "Open It.",
+            "It goes with a noise, and what comes through is clean and cold and takes a purse's worth of "
+            + "everything loose with it.",
+            [Heal(25), Gold(-50)]),
+        Branch("close_it_properly", "Close It Properly.",
+            "Properly means the form, the seal and an hour on your knees in the channel. You come out of it "
+            + "eight the sturdier and carrying the hour into the next room.",
+            [new ChangeMaxHealthRunEffect(8), .. Stretch(ActFourEventPrograms.Burdened1, 1)]),
+        Branch("reroute_the_channel", "Reroute the Channel.",
+            "You send the water the way it should have gone in the first place. Two of your procedures are "
+            + "the better for the survey, and two rooms of it are measured against what you drew.",
+            [Upgrade(2, "choose two the survey corrects"), .. Stretch(ActFourEventPrograms.Weighed2, 2)]));
+
+    // ── 16 · Mid–Late ─────────────────────────────────────────────────────────────────────────────────────
+
+    private static BnbEvent TheUnfinishedBurial(ConversionPools pools) => Event(
+        "the_unfinished_burial", "The Unfinished Burial", Band.MidLate,
+        "Wrapped to the shoulders and left. The linen is still soft, the tools are still laid out in order, "
+        + "and whoever was doing it put them down mid-turn and did not come back.",
+        Branch("finish_the_wrapping", "Finish the Wrapping.",
+            "You finish it the way it was being done, and something of yours goes into the last turn of the "
+            + "linen. What is left over on the spool is yours.",
+            [Remove("choose what goes into the last turn"), .. Grant(ActFourEventRelicRules.CoilId)]),
+        Branch("take_the_amulet", "Take the Amulet.",
+            "It is under the third layer, where they always are. Taking it costs the wrapping, and the "
+            + "wrapping notices: the next fight begins preserved and half buried.",
+            [
+                NormalRelic(pools, "the_unfinished_burial", RelicAuthoring.Rarity.Uncommon),
+                Openings.NextCombat(Applies(ActFour.EmbalmedId, 3), Applies(ActFour.EntombedId, 1)),
+            ]),
+        Branch("unwrap_the_name", "Unwrap the Name.",
+            "You go back to the collar for the name, and two of your own procedures come away as something "
+            + "else entirely. Two rooms of the register have you now.",
+            [Transform(2, pools, "choose two to unwrap"), .. Stretch(ActFourEventPrograms.Inscribed1, 2)]));
+
+    // ── 17 · Late ─────────────────────────────────────────────────────────────────────────────────────────
+
+    private static BnbEvent TheSurveyOfTheDead() => Event(
+        "the_survey_of_the_dead", "The Survey of the Dead", Band.Late,
+        "A table, three clerks and a queue that does not move, because the survey counts the dead and the "
+        + "living in one column and settles which you are at the table.",
+        Branch("be_counted_among_the_living", "Be Counted Among the Living.",
+            "You are entered as living, and the entry is worth everything: you come away whole. It costs "
+            + "eight off the ceiling, because a living body is a body that can be counted again.",
+            [Heal(100), new ChangeMaxHealthRunEffect(-8)]),
+        Branch("be_counted_among_the_dead", "Be Counted Among the Dead.",
+            "Entered as dead, which nobody argues with. The dead are wrapped properly, and the wrapping is "
+            + "on you for three rooms.",
+            [new ChangeMaxHealthRunEffect(12), .. Stretch(ActFourEventPrograms.Embalmed1, 3)]),
+        Branch("refuse_the_count", "Refuse the Count.",
+            "You will be one or the other and not on their say-so. Three clerks leave the table at once, and "
+            + "they are not going to catch up with you until the next ordinary road.",
+            [Install(ActFourEventPrograms.CountRefused)]));
+
+    // ── 18 · Late · Rare ──────────────────────────────────────────────────────────────────────────────────
+
+    private static BnbEvent TheHouseOfLifeAtNight(ConversionPools pools) => Event(
+        "the_house_of_life_at_night", "The House of Life at Night", Band.Late,
+        "The scriptorium after hours, which is when the real work is done: copying, erasing and replacing "
+        + "lines in formulae nobody is going to check until it is far too late.",
+        Branch("copy_a_formula", "Copy a Formula.",
+            "One of yours, copied out fair, twice as much of it as you had. There is paperwork about the "
+            + "second copy for exactly one room.",
+            [
+                new DuplicateCardsRunEffect(Choose("choose the formula to copy out fair")),
+                .. Stretch(ActFourEventPrograms.Paperwork2, 1),
+            ]),
+        Branch("erase_a_formula", "Erase a Formula.",
+            "A line taken out of the world entirely. You are five the sturdier for its absence, which is how "
+            + "these things usually go.",
+            [Remove("choose the formula to erase"), new ChangeMaxHealthRunEffect(5)]),
+        Branch("replace_a_line", "Replace a Line.",
+            "Two of yours become two others, and both are written in the improved hand. The register does "
+            + "not miss a substitution of that size.",
+            [
+                Transform(2, pools, "choose two lines to replace"),
+                Upgrade(2, "choose two to write out in the better hand"),
+                .. Stretch(ActFourEventPrograms.Inscribed2, 1),
+            ]));
+
+    // ── 19 · All ──────────────────────────────────────────────────────────────────────────────────────────
+
+    private static BnbEvent TheMercifulBalance() => Event(
+        "the_merciful_balance", "The Merciful Balance", Band.All,
+        "A scale kept by an office that grants relief, which means the pans are the same as everywhere else "
+        + "and the difference is entirely in what they will let you put on them.",
+        Branch("place_gold_on_the_pan", "Place Gold on the Pan.",
+            "Seventy-five Gold, weighed and accepted, and a thing struck from your file for it.",
+            [Remove("choose what the relief strikes out")],
+            costs: [Price(75)]),
+        Branch("place_blood_on_the_pan", "Place Blood on the Pan.",
+            "Ten off the ceiling and onto the pan. Relief granted: two of your procedures come back in "
+            + "better order than you left them.",
+            [new ChangeMaxHealthRunEffect(-10), Upgrade(2, "choose two the relief puts in order")]),
+        Branch("place_your_burden_on_the_pan", "Place Your Burden on the Pan.",
+            "What you put on the pan is what you have been carrying, and they take it, and they give you "
+            + "back the counterweight. It is heavy, and the next room is heavier.",
+            [
+                .. Grant(ActFourEventRelicRules.MercyId),
+                Openings.NextCombat(Applies(ActFour.BurdenedId, 2), Applies(ActFour.EntombedId, 1)),
+            ]));
+
+    // ── 20 · All ──────────────────────────────────────────────────────────────────────────────────────────
+
+    private static BnbEvent TheCartoucheRepairBench(ConversionPools pools) => Event(
+        "the_cartouche_repair_bench", "Cartouche Repair Bench", Band.All,
+        "A bench, a rack of chisels by size, and a row of names in various stages of being put right. The "
+        + "one at the near end has been at the near end for some time.",
+        Branch("restore_the_name", "Restore the Name.",
+            "You put one of them right, which is slow work and good work, and the bench is a restful place "
+            + "to have spent an afternoon.",
+            [Upgrade(1, "choose the name to put right"), Heal(15)]),
+        Branch("replace_the_name", "Replace the Name.",
+            "Out with one and in with another, and fifty Gold from a drawer for the trouble. Nobody at the "
+            + "bench asks whose it was.",
+            [Transform(1, pools, "choose the name to replace"), Gold(50)]),
+        Branch("leave_no_name", "Leave No Name.",
+            "You take a name out and put nothing in, which is the one thing the bench is not for. The "
+            + "register spends the next room looking for what should have been there.",
+            [Remove("choose the name to leave out"), .. Stretch(ActFourEventPrograms.Inscribed2, 1)]));
+
     // ── the shared shapes ─────────────────────────────────────────────────────────────────────────────────
 
     private static IRunSelector<RunCardInstance> Choose(string purpose) =>
@@ -309,6 +537,30 @@ public static class ActFourEvents
 
     private static IReadOnlyList<IRunEffectRequest> Stretch(string key, int combats) =>
         ActFourEventPrograms.Stretch(key, combats);
+
+    // "Lose N% of your current Gold", rounded up the way every other percentage in this act is rounded, and
+    // read at the moment the branch resolves rather than when the door was written.
+    private static IRunEffectRequest LosePercentGold(int percent) =>
+        new ComputedResourceRunEffect(StandardRunIds.Gold, RunExpr.Negate(RunExpr.Divide(
+            RunExpr.Add(
+                RunExpr.Multiply(RunExpr.Resource(StandardRunIds.Gold), RunExpr.Const(percent)),
+                RunExpr.Const(99)),
+            RunExpr.Const(100))));
+
+    // "Upgrade 1 <category>; if the category is absent, use another eligible card" — the festival's own
+    // clause, which is why it is asked as a count and not assumed.
+    private static IRunEffectRequest UpgradeOfKind(string tag, string purpose)
+    {
+        var ofKind = RunSelectors.DeckCards.Upgradable().WithTag(new RunCardTagId(tag));
+        return new ConditionalRunEffect(
+            RunExpr.GreaterThan(RunExpr.Count(ofKind), RunExpr.Const(0)),
+            [new UpgradeCardsRunEffect(ofKind.ChooseByPlayer(1, purpose))],
+            [Upgrade(1, purpose)]);
+    }
+
+    private static IRunEffectRequest Transform(int count, ConversionPools pools, string purpose) =>
+        new TransformCardsRunEffect(
+            RunSelectors.DeckCards.ChooseByPlayer(count, purpose), pools.TransformPool());
 
     private static CombatNodeModel Applies(string statusId, int stacks) =>
         new("applyStatus", "source", CombatAmountSpec.FromConst(stacks), StatusId: statusId);

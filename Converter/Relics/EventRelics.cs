@@ -172,5 +172,29 @@ public static class EventRelics
             "Every fight opens with 10 Block. The first measure you miss is taken on the weight instead: 10 "
             + "Block at your next hand, and one Burdened.",
             combatRule: ActFourEventRelicRules.BrokenRoyalWeight),
+
+        Event(ActFourEventRelicRules.ChiselId, "Petition Chisel",
+            "The Wall of Old Complaints — Read Them All.",
+            "Every enemy action that marks you is one Grievance, at most 3. At the start of a turn with 3: "
+            + "draw 2, take a Spare Hand, and one affliction loses a stack.",
+            combatRule: ActFourEventRelicRules.PetitionChisel),
+
+        Event(ActFourEventRelicRules.TabletId, "Tablet of the Missing Name",
+            "The Unnamed Throne — Restore the Name.",
+            "Every fight opens with one Nameless Authority: the first blessing you gain lands one stack "
+            + "larger. If the register holds you afterwards, 1 Inscribed comes off.",
+            combatRule: ActFourEventRelicRules.TabletOfTheMissingName),
+
+        Event(ActFourEventRelicRules.CoilId, "Funerary Linen Coil",
+            "The Unfinished Burial — Finish the Wrapping.",
+            "The first card each fight you put out of the fight yourself — archived, exhausted, banished, "
+            + "never merely played — heals 4 and draws 1. Junk is not worth the linen.",
+            combatRule: ActFourEventRelicRules.FuneraryLinenCoil),
+
+        Event(ActFourEventRelicRules.MercyId, "Mercy Counterweight",
+            "The Merciful Balance — Place Your Burden on the Pan.",
+            "At your first hand each fight, choose a pan: mercy, and the first affliction lands one stack "
+            + "lighter; or payment, and it pays a Spare Hand and a card at your next hand.",
+            combatRule: ActFourEventRelicRules.MercyCounterweight),
     ];
 }

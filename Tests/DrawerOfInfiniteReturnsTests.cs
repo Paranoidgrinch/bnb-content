@@ -31,16 +31,25 @@ public class DrawerOfInfiniteReturnsTests
             .GetCardZones(play.CombatDriver.Current!.HeroId).GetCardsInZone(zone)
             .FirstOrDefault(c => c.HasMark(new TagId(DrawerOfInfiniteReturns.NestedMark)));
 
+    // The Drawer's offer comes at the OPENING HAND, which is a real prompt now that the interactive driver
+    // installs its choosers before the hand is dealt: the probe takes it up (option 0, "file a card away")
+    // so every test below starts from a drawer with a card already in it. That the offer can be REFUSED is
+    // its own test, from the second hand on.
     private static (RunPlayback, InteractiveRunSession, CombatantId) Fight(
-        string intent = "open_another_drawer", params (string, int)[] statuses) =>
-        FightProbe.Start(
+        string intent = "open_another_drawer", params (string, int)[] statuses)
+    {
+        var started = FightProbe.Start(
             FightProbe.Solo(DrawerOfInfiniteReturns.EnemyId, intent, 9, statuses),
             deck: [.. Enumerable.Repeat("paper_cut", 16)], health: 400);
+        // Two prompts, in order: which way the drawer goes, then which card goes into it.
+        if (started.Play.CombatDriver!.PendingOptionChoice is not null)
+            started.Play.CombatDriver.SupplyOptionChoice([0]);
+        if (started.Play.CombatDriver.PendingCardChoice is { } candidates)
+            started.Play.CombatDriver.SupplyCardChoice([candidates[0].Id]);
+        Assert.Null(started.Session.Error);
+        return (started.Play, started.Session, started.EnemyId);
+    }
 
-    // The opening hand is dealt while the fight is still being set up, before the interactive driver exists,
-    // so the Drawer's first offer is answered by the headless default — it files the first card. That is a
-    // property of the probe, not of the rule: from the second player turn on the offer is a real prompt.
-    // These tests therefore start from the card that is already inside.
     private static CardInstanceId AlreadyFiled(RunPlayback play) =>
         Nested(play, CardZone.BanishedPile)!.Id;
 

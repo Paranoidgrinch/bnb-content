@@ -75,6 +75,8 @@ internal sealed class EventStory : IDisposable
     {
         for (var i = 0; i < guard && Play.CombatDriver?.Current is null; i++)
         {
+            if (AnswerAnyPrompt())
+                continue;
             if (Session.IsAwaitingChoice)
                 Session.Pick(Session.PendingChoices[0].Id);
             else if (Session.IsAwaitingEntities)
@@ -133,9 +135,23 @@ internal sealed class EventStory : IDisposable
     {
         for (var i = 0; i < turns && Play.CombatDriver?.Current is not null; i++)
         {
+            AnswerAnyPrompt();
             Play.CombatDriver.EndTurn();
             Assert.Null(Session.Error);
         }
+    }
+
+    // A prompt a rule inside the FIGHT raised for itself — Act IV's Mercy Counterweight asks which pan it
+    // sits on at the first hand. Under interactive replay an unanswered prompt PARKS the combat, so nothing
+    // else here can make progress until it is answered; the first option is taken unless a test wants the
+    // other. Returns whether there was anything to answer.
+    public bool AnswerAnyPrompt(int option = 0)
+    {
+        if (Play.CombatDriver?.PendingOptionChoice is null)
+            return false;
+        Play.CombatDriver.SupplyOptionChoice([option]);
+        Assert.Null(Session.Error);
+        return true;
     }
 
     // Take the fight on the table apart with whatever is affordable, then settle whatever it paid out.
@@ -146,6 +162,8 @@ internal sealed class EventStory : IDisposable
         {
             while (Play.CombatDriver.Current is { } current)
             {
+                if (AnswerAnyPrompt())
+                    continue;
                 var hero = current.State.GetCombatant(current.HeroId);
                 var energy = hero.Resources[StandardCombatIds.EnergyResource].Current;
                 var playable = current.Hand.FirstOrDefault(c => CostOf(c.DefinitionId) <= energy && Attacks(c));

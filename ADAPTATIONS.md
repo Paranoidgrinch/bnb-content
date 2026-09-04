@@ -3180,3 +3180,74 @@ pays it as 10 Block at the next hand plus one Burdened for having used a false w
 **Five of Act IV's nine Event relics are built here rather than with the other four**, because these ten doors
 are the doors that hand them over, and a branch that grants nothing is a branch nobody can test — the lesson
 IV-20 paid for. The remaining four arrive with events 11–20.
+
+## Act IV, the last ten doors — and what "+1 Energy" costs to say (2026-09-04)
+
+Events 11–20 finish the Labyrinth's twenty and bring the remaining four Event relics: the **Petition Chisel**,
+the **Tablet of the Missing Name**, the **Funerary Linen Coil** and the **Mercy Counterweight**. The plan
+expected two of these doors to be shop-like event markets; they are not. §4.6 of the Run-Systems Master names
+its three markets by name — the Licensed Vendor, the Conceptual Toll, the Travelling Chandler — and all three
+are in earlier acts. The Labyrinth has no market at all, which is right for it: its offices do not sell, they
+assess. **Two of the ten offer a fight** (the Copper Tithe, the Survey of the Dead), and both take the shape
+IV-22 settled — the door sets the party on the next ordinary corridor and arms the prize beside it.
+
+**★★ "Gain 1 Energy" at the start of a turn buys nothing, and this is a rule of the engine rather than a bug
+in the content.** An Energy pool has a maximum, and the engine refuses to fill one past it (`GainResource`
+and `ModifyResource` both clamp on `pool.Max`, and nothing outside the run layer can raise that max). A gain
+handed over at a turn's START — the Petition Chisel's filing, the Fixed-Day Festival's drum, the Mercy
+Counterweight's payment — is handed into a pool the turn's refill has just filled, and is worth exactly
+nothing. What the design means by it is one more card out of the turn, so that is what is given, in the
+grammar Act IV already owns: **Spare Hand** is Burdened with the sign turned round (a `CardCost` passive of
+−1, worked off by a card being played, and gone at the end of the turn the way unspent Energy is). Three
+things in this step say "+1 Energy" and all three now say Spare Hand.
+
+**★★ A prompt raised as the OPENING HAND is dealt could not reach the player — an engine buy.** The Mercy
+Counterweight asks, at the fight's first hand, which pan it sits on. It was answered silently and always the
+same way, because `InteractiveCombat` dealt the opening hand inside its CONSTRUCTOR, before the interactive
+driver had installed its choosers — so `ChooseOptions` fell through to its headless default (the first
+option) with nobody asked. This is not new and not only ours: the **Drawer of Infinite Returns** offers to
+file a card away at every hand, and its own tests carried a comment explaining that the first offer was
+answered by the default "because the opening hand is dealt while the fight is still being set up" — a
+work-around for this exact defect, written down and lived with. Eight of those tests changed when the fix
+landed, which is what a real fix looks like: the first offer is now a prompt, and the probe answers it.
+Fixed in Core by splitting the opening turn out of the constructor (`InteractiveCombat.StartOpeningTurn`,
+`PartyCombat.StartOpeningPhase`): both interactive drivers now build the fight, install their choosers,
+publish it so a parked prompt has something to render behind it, and only then open the turn. Every other
+caller keeps the old shape. Pinned by `OpeningHandPromptTests`.
+
+**The Mercy Counterweight asks at the first hand, not at the affliction.** The design says "the first time
+each combat you would gain a negative status, choose: reduce the application by 1 stack; or accept it and be
+paid next turn". Reducing an application by a stack IS a prohibition, and a prohibition is a property of a
+status, not a program — nothing can halt an application halfway through to ask a question. So the balance
+asks while there is still a decision to make: mercy puts a **Mercy** weight on the pan (a one-stack
+`Debuffs` prohibition that eats a stack of the first affliction and is spent), payment leaves the pan empty
+and pays 1 Spare Hand and a card at the hand after the first affliction lands.
+
+**The Petition Chisel counts ACTIONS, not afflictions.** "Each enemy action that applies one or more negative
+statuses" is one grievance however many markings it carried, and the only engine event that can say
+"one or more" is `ActionResolved` — which closes an action after everything it set in motion. So an
+affliction landing sets a flag and the action that carried it converts the flag as it closes. It listens
+ANYWHERE, because the action being closed is somebody else's; and it asks whether the applier was the wearer,
+so a marking you inflict on yourself is not a grievance against the office.
+
+**The Funerary Linen Coil stamps the card it played.** "Deliberately Exhausted, Archived or player-Banished
+**without being played normally**" is one engine fact — a card landing in the Exhaust or Banished pile — plus
+a clause nothing in the move can answer, because a card that exhausts itself on being played makes the same
+move out of the same hand. So the coil writes it down: playing a card stamps that copy with the turn number,
+and a card arriving in the pile carrying this turn's stamp is a card that was played. Junk is excluded by
+reading the moved card's own tag.
+
+**The Tablet of the Missing Name pays a flat +1 rather than half.** The design's Nameless Authority increases
+the first positive-status gain by "50 %, rounded up, minimum +1 stack"; the engine's amplification seam adds
+STACKS and does not scale. For every blessing of one or two stacks the flat +1 IS the design's own
+arithmetic; a gain of three or more is worth one stack less than the throne promised. The rest is exact,
+including the clause that gives the relic its character — the throne will not have you registered twice, so
+if the register still holds you after the amplification, one Inscribed comes off.
+
+**Smaller readings.** "Lose 15 % / 35 % of your current Gold" is read at the moment the branch resolves and
+rounded up, like every other percentage in the act. "Lose up to 50 Gold" is a plain loss: the resource effect
+already floors at zero, so a purse with less than that in it is emptied rather than overdrawn. "Upgrade 1
+Deed and 1 Working; if a category is absent, use another eligible card" is asked as a count over the deck and
+falls back exactly as written. And the Survey of the Dead's prize asks what to **strike out before** what to
+enter correctly, which is the design's set of rewards in the order a player can actually use: nobody improves
+a card they are about to have struck from the file.
