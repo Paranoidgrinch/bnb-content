@@ -120,6 +120,56 @@ public class FinalCardPoolTests
 
         Assert.Equal(expected.OrderBy(n => n, StringComparer.Ordinal).ToList(), added);
     }
+
+    // The Act-IV additions, card for card and rarity for rarity — the last tier the deck gets before the
+    // boss gauntlet, so what it offers is what a run has to answer Act V with. The sheets' rows are the
+    // Bureaucrat's 1/3/4 and the general pool's 0/4/7.
+    [Fact]
+    public void Act_four_adds_exactly_the_cards_the_sheets_name()
+    {
+        var added = FinalCards.RewardPool(act: 4)
+            .Except(FinalCards.RewardPool(act: 3))
+            .ToList();
+
+        string[] expected =
+        [
+            "Absolute Interdict", "Black Tribunal", "Candle Cathedral", "Cartouche Reckoning",
+            "Compound Indictment", "Crown Repossession", "Final Attestation", "Fivefold Compliance",
+            "Grand Citation", "Grand Dispensation", "Hemal Audit", "Hieratic Measure", "Last Office",
+            "Monumental Writ", "Processional Calendar", "Sovereign Prohibition", "Stone Levy",
+            "Tallow Judgment", "Temple Tally",
+        ];
+
+        Assert.Equal(
+            expected.OrderBy(n => n, StringComparer.Ordinal).ToList(),
+            added.Select(c => c.Name).OrderBy(n => n, StringComparer.Ordinal).ToList());
+
+        Assert.Equal(1, added.Count(c => c.Rarity == "common"));
+        Assert.Equal(7, added.Count(c => c.Rarity == "uncommon"));
+        Assert.Equal(11, added.Count(c => c.Rarity == "rare"));
+    }
+
+    // ★★ An audit finding, pinned so it cannot drift back unnoticed: the Act-IV card tier speaks NONE of Act
+    // IV's own five words. The sheets were written before Weighed, Burdened, Inscribed, Entombed and Embalmed
+    // were ratified, so the act's cards are all in the older vocabulary — Paperwork, Doubt, Seal, Censure,
+    // Lien, Citation, Ward Wax, Blood Ink — and the only card-side reader of the new five is Ward Wax's
+    // decay asking whether its bearer is Embalmed.
+    //
+    // This is a DESIGN gap and not a bug, and it is deliberately left standing: closing it means authoring
+    // cards the masters do not contain. The test states the fact so that the day somebody does author one,
+    // the assertion is what tells them the tier's vocabulary has changed.
+    [Fact]
+    public void No_act_four_card_yet_speaks_the_acts_own_five_words()
+    {
+        string[] theFive = ["Weighed", "Burdened", "Inscribed", "Entombed", "Embalmed"];
+
+        var speaking = FinalCards.RewardPool(act: 4)
+            .Where(c => theFive.Any(w => c.Text.Contains(w, StringComparison.OrdinalIgnoreCase)))
+            .Select(c => c.Name)
+            .ToList();
+
+        Assert.Empty(speaking);
+    }
 }
 
 // Reads the statuses a card's authored program applies, so a test can check what a Rite actually installs.

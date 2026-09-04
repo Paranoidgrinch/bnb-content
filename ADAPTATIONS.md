@@ -3012,3 +3012,63 @@ and are worth 30 with a keyword. The slot keeps its name; what the name is worth
 "stay" — so the Ordered Flood is earned by landing on 2 from 1 or from 3, and three of those are what §13.6's
 primary trigger counts. That is the fight's rhythm, and it falls out of the two rules rather than being
 imposed by a third.
+
+## Act IV, the cards — the four Rites that worked and the one that never had (2026-09-04)
+
+IV-20 is an AUDIT step: Act IV's card tier was authored before the act existed, and the five Act-IV Rites are
+the only cards in the game that can be silently inert — four of the five do not act at all, they change what
+an EXISTING keyword does, and the keyword has to be the thing that looks for them. A marker nobody reads
+installs cleanly, validates cleanly, and does nothing for a whole run.
+
+**Two of the five were dead, and each died a different death.**
+
+**★★ Temple Tally read the wrong body.** "Whenever an enemy reaches a new multiple of 5 Paperwork" was written
+against `CombatantTargetSelectors.Source`, and in a status-APPLICATION event `source` is whoever APPLIED the
+status — the player. So the tally counted the player's own Paperwork against the enemy's credit, found
+nothing, and sealed nothing, for every fight since it was written. It reads `EventTarget` now, plus the
+applicant marker in the negative, because "an enemy" is a thing the selector cannot say on its own.
+
+**★★ And a refusal reads `source` and `eventTarget` BACKWARDS from every other event family.** The Absolute
+Interdict's second half — "and only 1 Censure is consumed" — spends a Censure when the charge refuses
+something, and the obvious `EventTarget` is wrong: in `StatusApplicationBlockedTriggeredEffectContext`,
+**`source` is the combatant that REFUSED** (the one wearing the prohibition, whose Censure it is) and
+**`eventTarget` is whoever was trying to apply the status**. Written the intuitive way the rule spends the
+attacker's Censure, which it does not have, and is silently free. Core's own `PreventionAuthorshipTests` does
+not catch this: with no named applier the event target FALLS BACK to the refuser, so the two read the same in
+a test that applies a status from nobody.
+
+**★ ENGINE BUY — the one Rite that could not be composed.** The Absolute Interdict changes what Censure's own
+prohibition DOES, and a prohibition is engine machinery read off the status definition: no effect program can
+reach inside it, and no `StatusApplicationPrevented` reaction can repair it afterwards (the event carries what
+was refused and by whom, but not how much was spent, so neither the refund nor the leftover stacks are
+knowable). Two small, general fields were bought on `StatusPreventionSpec` (mirrored in
+`StatusPreventionData`, both proved in `tests/…/PreventionPriorityTests.cs`):
+
+- **`RefusesWholeApplication`** — the all-or-nothing CHARGE, as against the stack-for-stack toll
+  `StacksPerStack` pays: one stack refuses the whole application however many stacks it carried, and exactly
+  one stack is spent. The engine's own comment already contrasted prohibitions with "the all-or-nothing block
+  an Artifact charge gives" — it just could not say it. An absurdly large `StacksPerStack` is a different
+  sentence that happens to round the same way, and rounds differently the moment an application is larger
+  than the number chosen.
+- **`Priority`** — WHICH prohibition answers when a bearer carries several that all refuse the same
+  application. Without it the interceptor's old rule stands (the oldest instance pays), and a charge laid
+  beside a standing Censure would never once be the one to speak. Ties still fall back to age, so a bearer
+  with one prohibition — which is every bearer until content stacks two — behaves exactly as before.
+
+The Interdict is then content again: the Rite lays a one-stack CHARGE on every combatant that is carrying
+Censure, at the top of that combatant's own turn, which is what "the first time each turn, independently for
+each of them" comes to; and when the charge is what refused, one Censure is spent for it.
+
+**An audit finding left deliberately standing: the Act-IV card tier speaks none of Act IV's five words.**
+Weighed, Burdened, Inscribed, Entombed and Embalmed appear on no Act-IV card — the sheets were written before
+the vocabulary was ratified, so the act's own tier is entirely in the older words (Paperwork, Doubt, Seal,
+Censure, Lien, Citation, Ward Wax, Blood Ink), and the only card-side reader of the new five is Ward Wax's
+decay asking whether its bearer is preserved. Closing it means authoring cards the masters do not contain, so
+it is a decision and not a fix; `FinalCardPoolTests.No_act_four_card_yet_speaks_the_acts_own_five_words`
+states the fact so the day somebody authors one, the assertion is what tells them.
+
+**A test-shape lesson, cheap and permanent: a Rite has to be DRAWN.** The probe deck is shuffled, so a test
+that plays a Rite from the opening hand passes or fails by seed. `ActFourCardTests.Install` waits for it, and
+`PlayTimes` lets turns pass when a sequence needs more plays than a hand holds. And the Interdict's own test
+puts the Rite on as a STARTING rule rather than playing it: its charge is laid at the top of a combatant's own
+turn, so a Rite installed part-way through the player's first turn has already missed it.
