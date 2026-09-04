@@ -4647,5 +4647,364 @@
       "act_4",
       "rationing"
     ]
+  },
+  {
+    "id": "first_scribe_of_the_house_of_life",
+    "name": "The First Scribe of the House of Life",
+    "max_hp": 580,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "dip_the_reed",
+        "name": "Dip the Reed",
+        "intent_type": "debuff",
+        "actions": [
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "inscribed",
+            "amount": 2
+          }
+        ]
+      },
+      {
+        "id": "margin_of_arrears",
+        "name": "Margin of Arrears",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "paperwork",
+            "amount": 2
+          },
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 15
+          }
+        ]
+      },
+      {
+        "id": "erase_the_honorific",
+        "name": "Erase the Honorific",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 18
+          }
+        ]
+      },
+      {
+        "id": "reed_through_flesh",
+        "name": "Reed Through Flesh",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 27
+          }
+        ]
+      },
+      {
+        "id": "seal_the_scroll",
+        "name": "Seal the Scroll",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 24
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "embalmed",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "correct_the_margin",
+        "name": "Correct the Margin",
+        "intent_type": "mixed",
+        "actions": []
+      },
+      {
+        "id": "the_text_is_now_canon",
+        "name": "The Text Is Now Canon",
+        "intent_type": "attack",
+        "special": true,
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 24
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "labyrinth_body"
+      },
+      {
+        "status": "the_house_of_life"
+      }
+    ],
+    "intent_rules": [
+      {
+        "condition": {
+          "kind": "self_status",
+          "status": "the_text_is_now_canon"
+        },
+        "action": "the_text_is_now_canon",
+        "priority": 10
+      }
+    ],
+    "tags": [
+      "licensing_labyrinth",
+      "boss",
+      "act_4",
+      "writing"
+    ]
+  },
+  {
+    "id": "mother_of_natron_and_resin",
+    "name": "The Mother of Natron and Resin",
+    "max_hp": 610,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "pack_with_natron",
+        "name": "Pack with Natron",
+        "intent_type": "debuff",
+        "actions": [
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "embalmed",
+            "amount": 2
+          }
+        ]
+      },
+      {
+        "id": "black_resin",
+        "name": "Black Resin",
+        "intent_type": "debuff",
+        "actions": [
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "poison",
+            "amount": 3
+          }
+        ]
+      },
+      {
+        "id": "bind_the_limbs",
+        "name": "Bind the Limbs",
+        "intent_type": "debuff",
+        "actions": [
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "burdened",
+            "amount": 1
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "entombed",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "name_the_body",
+        "name": "Name the Body",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "inscribed",
+            "amount": 1
+          },
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 14
+          }
+        ]
+      },
+      {
+        "id": "funerary_hook",
+        "name": "Funerary Hook",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 14
+          },
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 14
+          }
+        ]
+      },
+      {
+        "id": "you_have_already_died",
+        "name": "You Have Already Died",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "doubt",
+            "amount": 1
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "panic",
+            "amount": 1
+          },
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 16
+          }
+        ]
+      },
+      {
+        "id": "resin_over_the_mouth",
+        "name": "Resin Over the Mouth",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 26
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "embalmed",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "unseal_the_vessels",
+        "name": "Unseal the Vessels",
+        "intent_type": "mixed",
+        "special": true,
+        "actions": [
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "embalmed",
+            "amount": 2
+          }
+        ]
+      },
+      {
+        "id": "finish_the_preparation",
+        "name": "Finish the Preparation",
+        "intent_type": "attack",
+        "special": true,
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 34
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "labyrinth_body"
+      },
+      {
+        "status": "natron_and_resin"
+      }
+    ],
+    "intent_rules": [
+      {
+        "condition": {
+          "kind": "self_status",
+          "status": "finish_the_preparation_announced",
+          "min_stacks": 1
+        },
+        "action": "finish_the_preparation",
+        "priority": 30
+      },
+      {
+        "condition": {
+          "kind": "all_of",
+          "conditions": [
+            {
+              "kind": "self_status",
+              "status": "the_vessels_are_full",
+              "min_stacks": 1
+            },
+            {
+              "kind": "self_status",
+              "status": "three_jars_are_enough",
+              "min_stacks": 1
+            },
+            {
+              "kind": "self_status",
+              "status": "vessels_filled",
+              "min_stacks": 3
+            }
+          ]
+        },
+        "action": "unseal_the_vessels",
+        "priority": 20
+      },
+      {
+        "condition": {
+          "kind": "all_of",
+          "conditions": [
+            {
+              "kind": "self_status",
+              "status": "the_vessels_are_full",
+              "min_stacks": 1
+            },
+            {
+              "kind": "not",
+              "conditions": [
+                {
+                  "kind": "self_status",
+                  "status": "three_jars_are_enough",
+                  "min_stacks": 1
+                }
+              ]
+            },
+            {
+              "kind": "self_status",
+              "status": "vessels_filled",
+              "min_stacks": 4
+            }
+          ]
+        },
+        "action": "unseal_the_vessels",
+        "priority": 10
+      }
+    ],
+    "tags": [
+      "licensing_labyrinth",
+      "boss",
+      "act_4",
+      "preservation"
+    ]
   }
 ]
