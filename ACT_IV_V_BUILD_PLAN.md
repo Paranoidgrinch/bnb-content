@@ -699,15 +699,43 @@ tested with `EventStory` (walk the door, name the branch, win the fight, ask the
       cost, and a card refused for an unpaid surcharge stays in hand — so it offered the same card for ever.
       `EventStory.WinTheFight` now ends the turn when a play leaves the hand unchanged, and `EventStory` takes
       an `energy` so a Burdened probe can afford a second card.
-- [ ] **IV-23 — events 11–20 + the remaining 4 event relics.** The Wall of Old Complaints · The Copper Tithe ·
-      The Unnamed Throne · The Fixed-Day Festival · The Broken Sluice · The Unfinished Burial ·
-      The Survey of the Dead · The House of Life at Night · The Merciful Balance · Cartouche Repair Bench.
-      Relics: **only the four these ten doors hand over** — Petition Chisel · Tablet of the Missing Name ·
-      Funerary Linen Coil · Mercy Counterweight. (The other five — Cup of the Lowest Mark, Red Linen Knot,
-      Blank Cartouche, Jar of Borrowed Breath, Broken Royal Weight — shipped with IV-22, because events 1–10
-      are the doors that grant them.) Also §4.6 of the Run-Systems Master: two of these are **shop-like event
-      markets**. And two of these ten offer a FIGHT (The Copper Tithe, The Survey of the Dead): they take the
-      same shape IV-22 settled — the door sets the fight on the next ordinary corridor and arms its prize.
+- [x] **IV-23 — events 11–20 + the remaining 4 event relics. DONE 2026-09-04.** The Wall of Old Complaints ·
+      The Copper Tithe · The Unnamed Throne · The Fixed-Day Festival · The Broken Sluice · The Unfinished
+      Burial · The Survey of the Dead · The House of Life at Night · The Merciful Balance · Cartouche Repair
+      Bench — thirty branches, in `Converter/Events/ActFourEvents.cs` (now all twenty doors) and
+      `ActFourEventPrograms.cs` (nine more stretches, two more fight doors). Relics: **Petition Chisel ·
+      Tablet of the Missing Name · Funerary Linen Coil · Mercy Counterweight**, plus the three OBJECTS they
+      lean on — Nameless Authority, Mercy, and Spare Hand — in `Converter/Relics/ActFourEventRelicRules.cs`.
+      Tests: `ActFourEventTests` (8, now over twenty), `ActFourEventLiveTests` (30 more walks, one per
+      branch), `ActFourEventRelicTests` (8 more live fights). **One engine buy**, in Core.
+      ▸ **There are no shop-like markets here.** §4.6 of the Run-Systems Master names its three markets, and
+      all three are in earlier acts. The Labyrinth's offices do not sell; they assess. Two of the ten offer a
+      FIGHT (the Copper Tithe, the Survey of the Dead) and both take IV-22's shape.
+      ▸ ★★ **"Gain 1 Energy" at a turn's start buys nothing** — the pool has a maximum and the refill has
+      just filled it, and neither `GainResource` nor `ModifyResource` will go past `pool.Max`. Three things
+      in this step said it (the Chisel's filing, the drum, the Counterweight's payment); all three now say
+      **Spare Hand**, which is Burdened with the sign turned round: a `CardCost` passive of −1, worked off by
+      a card being played, gone at the end of the turn the way unspent Energy is.
+      ▸ ★★ **ENGINE BUY: a prompt raised as the OPENING HAND is dealt could not reach the player.**
+      `InteractiveCombat` dealt the first hand inside its CONSTRUCTOR, before the interactive driver had
+      installed its choosers, so a `ChooseOptions` there fell through to the headless default — the first
+      option, silently. Not only ours: the **Drawer of Infinite Returns** offers to file a card away at
+      every hand, and its own tests carried a comment explaining away the unanswered first offer. Eight of
+      them changed when the fix landed — the offer is a prompt now, and the probe answers it. Fixed by splitting the opening turn out
+      (`InteractiveCombat.StartOpeningTurn`, `PartyCombat.StartOpeningPhase`); both interactive drivers build
+      the fight, install the choosers, publish it, then open the turn. `OpeningHandPromptTests` pins it, and
+      `EventStory` learned to answer an in-fight prompt.
+      ▸ **The Mercy Counterweight asks at the first hand, not at the affliction**: reducing an application by
+      a stack IS a prohibition, and a prohibition is a property of a status, not a program — nothing can halt
+      an application halfway to ask a question. Mercy puts a one-stack `Debuffs` prohibition on the pan;
+      payment leaves it empty and pays a Spare Hand and a card at the hand after the first affliction lands.
+      ▸ **The Petition Chisel counts ACTIONS, not afflictions** — `ActionResolved` is the only event that can
+      say "one or more", so an affliction sets a flag and the action closing converts it. Anywhere-scoped,
+      because the action being closed is somebody else's.
+      ▸ **The Funerary Linen Coil stamps the card it played** with the turn number, which is the only way to
+      tell a card exhausted by its own play from one the player put out of the fight on purpose.
+      ▸ **The Tablet of the Missing Name pays a flat +1 rather than half**: the amplification seam adds
+      stacks and does not scale. For a blessing of one or two stacks that is the design's own arithmetic.
 
 ## The act itself — 1 step
 
@@ -798,5 +826,6 @@ force — these fights are "almost a separate game mode"); each god enters `Boss
 - [x] **IV-16 — bosses 1-2 — DONE 2026-09-03** (2 of 8 bosses)
 - [x] **IV-17 — bosses 3-4 — DONE 2026-09-04** (4 of 8 bosses)
 - [x] **IV-21 — die 24 Boss-Relikte — DONE 2026-09-04** (★★ 8 von 8 Bossen, Karten auditiert, 69 Boss-
-      Relikte) · **IV-22 (Events 1–10 + 5 Event-Relikte)** · IV-23 events · IV-24 the act
+      Relikte) · IV-22 (Events 1–10 + 5 Event-Relikte) · **IV-23 (Events 11–20 + 4 Event-Relikte — DIE
+      ZWANZIG TÜREN STEHEN)** · IV-24 the act
 - [ ] V-0 structure · V-1 … V-6 the six gods · V-7 the whole game

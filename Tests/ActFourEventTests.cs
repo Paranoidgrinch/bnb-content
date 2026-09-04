@@ -7,26 +7,29 @@ using RogueDeck.Scenario.Authoring;
 
 namespace BnbContent.Tests;
 
-// Act IV's first ten authored doors (BnB_Final_Events_Master_PostAudit.md §"ACT IV") — the shape of the set.
+// Act IV's twenty authored doors (BnB_Final_Events_Master_PostAudit.md §"ACT IV") — the shape of the set.
 // What each one DOES is checked where it lands, in ActFourEventLiveTests.
 public class ActFourEventTests
 {
     private static readonly RunBlueprint Game = FightProbe.Game;
 
-    internal static readonly string[] Ten =
+    internal static readonly string[] Twenty =
     [
         "the_dry_nilometer", "the_black_granary", "the_red_linen_procession", "the_nameless_cartouche",
         "the_forewritten_tablet", "the_tomb_robbers_fire", "the_triple_counted_donkey",
         "the_four_canopic_jars", "the_chamber_of_false_measures", "the_crocodile_at_the_weighing_place",
+        "the_wall_of_old_complaints", "the_copper_tithe", "the_unnamed_throne", "the_fixed_day_festival",
+        "the_broken_sluice", "the_unfinished_burial", "the_survey_of_the_dead",
+        "the_house_of_life_at_night", "the_merciful_balance", "the_cartouche_repair_bench",
     ];
 
     // ── the shape of the set ──────────────────────────────────────────────────────────────────────────────
 
     [Fact]
-    public void All_ten_ship_with_a_script_and_a_look()
+    public void All_twenty_ship_with_a_script_and_a_look()
     {
-        Assert.Equal(10, Ten.Length);
-        foreach (var id in Ten)
+        Assert.Equal(20, Twenty.Length);
+        foreach (var id in Twenty)
         {
             Assert.True(Game.Events.ContainsKey(id), $"'{id}' has no script");
             Assert.True(Game.Presentation.Events.ContainsKey(id), $"'{id}' has no look");
@@ -41,14 +44,14 @@ public class ActFourEventTests
     {
         Assert.Equal(3, Game.Acts!.Count);
         foreach (var act in Game.Acts)
-            foreach (var id in Ten)
+            foreach (var id in Twenty)
                 Assert.DoesNotContain(id, act.MapGeneration!.NodeRefPools[MapNodeKind.Event]);
     }
 
     [Fact]
     public void Every_branch_reads_its_outcome_back()
     {
-        foreach (var id in Ten)
+        foreach (var id in Twenty)
         {
             var script = Game.Events[id];
             foreach (var choice in script.Situations.Values.SelectMany(s => s.Choices))
@@ -71,7 +74,7 @@ public class ActFourEventTests
         var relics = Game.Relics.Select(r => r.Id).ToHashSet();
         var statuses = Game.Statuses.Select(s => s.Id).ToHashSet();
 
-        foreach (var id in Ten)
+        foreach (var id in Twenty)
             foreach (var effect in Effects(Game.Events[id]).SelectMany(Flatten))
                 switch (effect)
                 {
@@ -94,7 +97,7 @@ public class ActFourEventTests
     [Fact]
     public void Every_authored_promise_is_installed_by_someone()
     {
-        var installed = Ten
+        var installed = Twenty
             .SelectMany(id => Effects(Game.Events[id]))
             .SelectMany(Flatten)
             .OfType<InstallProgramByIdRunEffect>()
@@ -105,6 +108,8 @@ public class ActFourEventTests
         // fight doors arm when the fight they set is actually walked into.
         installed.Add(ActFourEventPrograms.TabletPrize);
         installed.Add(ActFourEventPrograms.RobbersPrize);
+        installed.Add(ActFourEventPrograms.TithePrize);
+        installed.Add(ActFourEventPrograms.CountPrize);
         foreach (var name in Game.Programs!.Keys.Where(k => k.Contains("_again_", StringComparison.Ordinal)))
             installed.Add(name);
 
@@ -112,16 +117,17 @@ public class ActFourEventTests
         Assert.Equal(labyrinth.OrderBy(k => k), installed.OrderBy(k => k));
     }
 
-    // ── the five relics the ten hand over ─────────────────────────────────────────────────────────────────
+    // ── the nine relics the twenty hand over ──────────────────────────────────────────────────────────────
 
-    // Five of Act IV's nine Event relics are built with these ten doors, because they are what those doors
-    // hand over: a branch that grants nothing is a branch nobody can test. The other four wait for IV-23.
+    // Act IV's nine Event relics, each granted by exactly one branch of exactly one door and reachable
+    // nowhere else. A branch that grants nothing is a branch nobody can test (the IV-20 lesson), which is
+    // why every relic ships with the door that hands it over.
     [Fact]
-    public void The_five_relics_these_doors_grant_are_authored_and_granted_exactly_once()
+    public void The_nine_relics_these_doors_grant_are_authored_and_granted_exactly_once()
     {
-        Assert.Equal(5, EventRelics.ActIV.Count);
+        Assert.Equal(9, EventRelics.ActIV.Count);
 
-        var granted = Ten
+        var granted = Twenty
             .SelectMany(id => Effects(Game.Events[id]))
             .OfType<AddRelicByIdRunEffect>()
             .Select(e => e.Relic.Value)
@@ -169,6 +175,11 @@ public class ActFourEventTests
         Assert.Equal(40, doors["the_chamber_of_false_measures"]);       // Mid
         Assert.Equal(0, doors["the_dry_nilometer"]);                    // Early–Mid
         Assert.Equal(0, doors["the_red_linen_procession"]);             // All
+        Assert.Equal(75, doors["the_unnamed_throne"]);                  // Late · Rare
+        Assert.Equal(75, doors["the_survey_of_the_dead"]);              // Late
+        Assert.Equal(55, doors["the_unfinished_burial"]);               // Mid–Late
+        Assert.Equal(40, doors["the_fixed_day_festival"]);              // Mid
+        Assert.Equal(0, doors["the_broken_sluice"]);                    // Early–Mid
     }
 
     // ── the shared shapes ─────────────────────────────────────────────────────────────────────────────────

@@ -15,8 +15,8 @@ namespace BnbContent.Converter.Events;
 // which installs the body that arms the third, each stepping down as it is kept. No counter, no state — the
 // remaining length IS the name of the program still installed, which is also what a save writes down.
 //
-// The other two are the act's fight doors. ADAPTATION, and the biggest one this step: a door cannot open a
-// fight. Nothing lets an event hand the run into a combat and take it back, and splicing a combat node into
+// The other four are the act's fight doors. ADAPTATION, and the biggest one of the events: a door cannot
+// open a fight. Nothing lets an event hand the run into a combat and take it back, and splicing a combat node into
 // the map would need the event to know which node it is standing on, which an event never knows. So a door
 // that offers a fight SETS ONE ON THE ROAD: the next ordinary combat is fought against the party the design
 // names — they are in it, the enemies standing there are reinforced by them, their pressure is on you — and
@@ -30,13 +30,25 @@ public static class ActFourEventPrograms
     public const string Paperwork3 = "paperwork_3";
     public const string PanicAndBurden = "panic_1_burdened_1";
     public const string Weighed3 = "weighed_3";
+    public const string Weighed2 = "weighed_2";
+    public const string Doubt1 = "doubt_1";
+    public const string Panic2 = "panic_2";
+    public const string Paperwork2 = "paperwork_2";
+    public const string Burdened1 = "burdened_1";
+    public const string Embalmed1 = "embalmed_1";
+    public const string Inscribed2 = "inscribed_2";
+    public const string EnergyAndPanic = "energy_1_panic_1";
 
-    // ── the two fight doors ───────────────────────────────────────────────────────────────────────────────
+    // ── the four fight doors ──────────────────────────────────────────────────────────────────────────────
 
     public const string TabletDemanded = "act_four_tablet_demanded";
     public const string TabletPrize = "act_four_tablet_prize";
     public const string RobbersJoined = "act_four_robbers_joined";
     public const string RobbersPrize = "act_four_robbers_prize";
+    public const string TitheRefused = "act_four_tithe_refused";
+    public const string TithePrize = "act_four_tithe_prize";
+    public const string CountRefused = "act_four_count_refused";
+    public const string CountPrize = "act_four_count_prize";
 
     public static IReadOnlyDictionary<string, ITriggeredRunEffectDefinition> All(ConversionPools pools)
     {
@@ -62,6 +74,26 @@ public static class ActFourEventPrograms
                     pools.NormalRelicOfRarity("the Tomb Robbers' share",
                         (RelicAuthoring.Rarity.Common, 100)),
                     1)),
+            [TitheRefused] = FightWaitsBody(TitheRefused, TithePrize,
+                // The Copper Tribute Bearer and the Ivory-Weight Jackal: a collector and the thing that goes
+                // with the collector, and the collector never comes to the door unaccompanied.
+                EveryEnemyGains("strength", 2), Applies(ActFour.BurdenedId, 1)),
+            // Refusing the tithe keeps the Gold you were holding — the branch takes nothing — and winning
+            // adds seventy to it.
+            [TithePrize] = VictoryBody(TithePrize,
+                new ChangeResourceRunEffect(StandardRunIds.Gold, 70)),
+            [CountRefused] = FightWaitsBody(CountRefused, CountPrize,
+                // The Gate Tally Scribe, the Uncounted Pilgrim and the Ancestral Witness: three ways of being
+                // counted, and every one of them has your name half-written already.
+                EveryEnemyGains("strength", 3), Applies(ActFour.InscribedId, 1)),
+            // Struck out BEFORE entered correctly, deliberately: nobody improves a card they are about to
+            // have struck from the file, and asking in that order would let them.
+            [CountPrize] = VictoryBody(CountPrize,
+                new ChangeResourceRunEffect(StandardRunIds.Gold, 90),
+                new RemoveCardsRunEffect(RunSelectors.DeckCards
+                    .ChooseByPlayer(1, "choose what the survey strikes out")),
+                new UpgradeCardsRunEffect(RunSelectors.DeckCards.Upgradable()
+                    .ChooseByPlayer(1, "choose what the survey enters correctly"))),
         };
 
         // Every link of every stretch. A chain of N is registered down to 1, so a door that promises two
@@ -91,6 +123,14 @@ public static class ActFourEventPrograms
         [Paperwork3] = 2,
         [PanicAndBurden] = 2,
         [Weighed3] = 2,
+        [Weighed2] = 2,
+        [Doubt1] = 2,
+        [Panic2] = 1,
+        [Paperwork2] = 3,
+        [Burdened1] = 1,
+        [Embalmed1] = 3,
+        [Inscribed2] = 1,
+        [EnergyAndPanic] = 2,
     };
 
     private static IReadOnlyList<CombatNodeModel> Nodes(string key) => key switch
@@ -100,6 +140,17 @@ public static class ActFourEventPrograms
         Paperwork3 => [Applies("paperwork", 3)],
         PanicAndBurden => [Applies("panic", 1), Applies(ActFour.BurdenedId, 1)],
         Weighed3 => [Applies(ActFour.WeighedId, 3)],
+        Weighed2 => [Applies(ActFour.WeighedId, 2)],
+        Doubt1 => [Applies("doubt", 1)],
+        Panic2 => [Applies("panic", 2)],
+        Paperwork2 => [Applies("paperwork", 2)],
+        Burdened1 => [Applies(ActFour.BurdenedId, 1)],
+        Embalmed1 => [Applies(ActFour.EmbalmedId, 1)],
+        Inscribed2 => [Applies(ActFour.InscribedId, 2)],
+        // The festival's drum: the turn opens louder and worse. Both halves land at the first turn start,
+        // which is the one moment an opening is read — and the "+1 Energy" is a Spare Hand, because the
+        // pool an opening gives into has just been refilled to its maximum (see ActFourEventRelicRules).
+        EnergyAndPanic => [Applies(ActFourEventRelicRules.SpareId, 1), Applies("panic", 1)],
         _ => throw new ConversionException("act IV event promise", $"no stretch named '{key}'"),
     };
 
