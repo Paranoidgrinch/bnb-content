@@ -952,7 +952,7 @@
   },
   {
     "id": "labyrinth_elite_rope_master_of_the_corvee",
-    "name": "Rope-Master of the Corv\u00e9e",
+    "name": "Rope-Master of the Corvée",
     "act": 4,
     "difficulty": "elite",
     "enemies": [
@@ -1170,6 +1170,39 @@
     "difficulty": "boss",
     "enemies": [
       "mother_of_natron_and_resin"
+    ],
+    "weight": 1,
+    "tags": [
+      "licensing_labyrinth",
+      "boss"
+    ],
+    "role": "boss"
+  },
+  {
+    "id": "labyrinth_boss_vizier_of_the_kings_mouth",
+    "name": "The Vizier of the King's Mouth",
+    "act": 4,
+    "difficulty": "boss",
+    "enemies": [
+      "vizier_of_the_kings_mouth",
+      "royal_seal_bearer",
+      "keeper_of_tallies",
+      "captain_of_the_inner_stair"
+    ],
+    "weight": 1,
+    "tags": [
+      "licensing_labyrinth",
+      "boss"
+    ],
+    "role": "boss"
+  },
+  {
+    "id": "labyrinth_boss_queen_of_the_flood_reckoning",
+    "name": "The Queen of the Flood Reckoning",
+    "act": 4,
+    "difficulty": "boss",
+    "enemies": [
+      "queen_of_the_flood_reckoning"
     ],
     "weight": 1,
     "tags": [

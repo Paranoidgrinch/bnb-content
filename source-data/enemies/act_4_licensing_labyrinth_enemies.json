@@ -2940,7 +2940,7 @@
   },
   {
     "id": "rope_master_of_the_corvee",
-    "name": "Rope-Master of the Corv\u00e9e",
+    "name": "Rope-Master of the Corvée",
     "max_hp": 275,
     "intent_pattern": "cycle",
     "intents": [
@@ -5005,6 +5005,723 @@
       "boss",
       "act_4",
       "preservation"
+    ]
+  },
+  {
+    "id": "vizier_of_the_kings_mouth",
+    "name": "The Vizier of the King's Mouth",
+    "max_hp": 590,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "speak_for_the_king",
+        "name": "Speak for the King",
+        "intent_type": "debuff",
+        "actions": [
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "inscribed",
+            "amount": 2
+          }
+        ]
+      },
+      {
+        "id": "no_petition_reaches_him",
+        "name": "No Petition Reaches Him",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "paperwork",
+            "amount": 3
+          },
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 18
+          }
+        ]
+      },
+      {
+        "id": "return_to_your_place",
+        "name": "Return to Your Place",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "burdened",
+            "amount": 2
+          },
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 15
+          }
+        ]
+      },
+      {
+        "id": "the_stair_is_forbidden",
+        "name": "The Stair Is Forbidden",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 26
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "entombed",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "royal_words_mortal_bones",
+        "name": "Royal Words, Mortal Bones",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 34
+          }
+        ]
+      },
+      {
+        "id": "appoint_the_acting_office",
+        "name": "Appoint the Acting Office",
+        "intent_type": "buff",
+        "actions": []
+      },
+      {
+        "id": "the_kings_mouth_opens",
+        "name": "The King's Mouth Opens",
+        "intent_type": "buff",
+        "special": true,
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 16
+          }
+        ]
+      },
+      {
+        "id": "the_king_is_not_here",
+        "name": "The King Is Not Here",
+        "intent_type": "attack",
+        "special": true,
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 32
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "labyrinth_body"
+      },
+      {
+        "status": "the_kings_mouth"
+      },
+      {
+        "status": "the_royal_impression"
+      },
+      {
+        "status": "counted_failure"
+      },
+      {
+        "status": "armed_authority"
+      }
+    ],
+    "intent_rules": [
+      {
+        "condition": {
+          "kind": "all_of",
+          "conditions": [
+            {
+              "kind": "self_status",
+              "status": "the_king_is_not_here",
+              "min_stacks": 1
+            },
+            {
+              "kind": "self_status",
+              "status": "the_mouth_has_opened",
+              "min_stacks": 1
+            }
+          ]
+        },
+        "action": "the_king_is_not_here",
+        "priority": 40
+      },
+      {
+        "condition": {
+          "kind": "self_status",
+          "status": "the_mouth_opens_next",
+          "min_stacks": 1
+        },
+        "action": "the_kings_mouth_opens",
+        "priority": 30
+      }
+    ]
+  },
+  {
+    "id": "royal_seal_bearer",
+    "name": "Royal Seal Bearer",
+    "max_hp": 110,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "display_the_seal",
+        "name": "Display the Seal",
+        "intent_type": "debuff",
+        "actions": [
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "inscribed",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "impressed_edge",
+        "name": "Impressed Edge",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 14
+          }
+        ]
+      },
+      {
+        "id": "hold_the_royal_mark",
+        "name": "Hold the Royal Mark",
+        "intent_type": "buff",
+        "actions": []
+      },
+      {
+        "id": "stand_at_the_shoulder",
+        "name": "Stand at the Vizier's Shoulder",
+        "intent_type": "buff",
+        "special": true,
+        "actions": []
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "labyrinth_body"
+      },
+      {
+        "status": "royal_office"
+      },
+      {
+        "status": "office_of_the_royal_seal"
+      }
+    ],
+    "intent_rules": [
+      {
+        "condition": {
+          "kind": "not",
+          "conditions": [
+            {
+              "kind": "self_status",
+              "status": "the_acting_office",
+              "min_stacks": 1
+            }
+          ]
+        },
+        "action": "stand_at_the_shoulder",
+        "priority": 30
+      },
+      {
+        "condition": {
+          "kind": "self_counter",
+          "counter": "royal_office_step",
+          "op": "eq",
+          "value": 0
+        },
+        "action": "display_the_seal",
+        "priority": 20
+      },
+      {
+        "condition": {
+          "kind": "self_counter",
+          "counter": "royal_office_step",
+          "op": "eq",
+          "value": 1
+        },
+        "action": "impressed_edge",
+        "priority": 19
+      },
+      {
+        "condition": {
+          "kind": "self_counter",
+          "counter": "royal_office_step",
+          "op": "eq",
+          "value": 2
+        },
+        "action": "hold_the_royal_mark",
+        "priority": 18
+      }
+    ]
+  },
+  {
+    "id": "keeper_of_tallies",
+    "name": "Keeper of Tallies",
+    "max_hp": 116,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "count_again",
+        "name": "Count Again",
+        "intent_type": "debuff",
+        "actions": [
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "weighed",
+            "amount": 2
+          }
+        ]
+      },
+      {
+        "id": "reed_tally_strike",
+        "name": "Reed-Tally Strike",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 12
+          }
+        ]
+      },
+      {
+        "id": "enter_the_shortfall",
+        "name": "Enter the Shortfall",
+        "intent_type": "debuff",
+        "actions": [
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "paperwork",
+            "amount": 2
+          }
+        ]
+      },
+      {
+        "id": "stand_at_the_shoulder",
+        "name": "Stand at the Vizier's Shoulder",
+        "intent_type": "buff",
+        "special": true,
+        "actions": []
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "labyrinth_body"
+      },
+      {
+        "status": "royal_office"
+      },
+      {
+        "status": "office_of_the_tallies"
+      }
+    ],
+    "intent_rules": [
+      {
+        "condition": {
+          "kind": "not",
+          "conditions": [
+            {
+              "kind": "self_status",
+              "status": "the_acting_office",
+              "min_stacks": 1
+            }
+          ]
+        },
+        "action": "stand_at_the_shoulder",
+        "priority": 30
+      },
+      {
+        "condition": {
+          "kind": "self_counter",
+          "counter": "royal_office_step",
+          "op": "eq",
+          "value": 0
+        },
+        "action": "count_again",
+        "priority": 20
+      },
+      {
+        "condition": {
+          "kind": "self_counter",
+          "counter": "royal_office_step",
+          "op": "eq",
+          "value": 1
+        },
+        "action": "reed_tally_strike",
+        "priority": 19
+      },
+      {
+        "condition": {
+          "kind": "self_counter",
+          "counter": "royal_office_step",
+          "op": "eq",
+          "value": 2
+        },
+        "action": "enter_the_shortfall",
+        "priority": 18
+      }
+    ]
+  },
+  {
+    "id": "captain_of_the_inner_stair",
+    "name": "Captain of the Inner Stair",
+    "max_hp": 124,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "hold_the_stair",
+        "name": "Hold the Stair",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 18
+          }
+        ]
+      },
+      {
+        "id": "drive_them_down",
+        "name": "Drive Them Down",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 14
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "burdened",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "shield_the_mouth",
+        "name": "Shield the Mouth",
+        "intent_type": "buff",
+        "actions": []
+      },
+      {
+        "id": "stand_at_the_shoulder",
+        "name": "Stand at the Vizier's Shoulder",
+        "intent_type": "buff",
+        "special": true,
+        "actions": []
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "labyrinth_body"
+      },
+      {
+        "status": "royal_office"
+      },
+      {
+        "status": "office_of_the_inner_stair"
+      }
+    ],
+    "intent_rules": [
+      {
+        "condition": {
+          "kind": "not",
+          "conditions": [
+            {
+              "kind": "self_status",
+              "status": "the_acting_office",
+              "min_stacks": 1
+            }
+          ]
+        },
+        "action": "stand_at_the_shoulder",
+        "priority": 30
+      },
+      {
+        "condition": {
+          "kind": "self_counter",
+          "counter": "royal_office_step",
+          "op": "eq",
+          "value": 0
+        },
+        "action": "hold_the_stair",
+        "priority": 20
+      },
+      {
+        "condition": {
+          "kind": "self_counter",
+          "counter": "royal_office_step",
+          "op": "eq",
+          "value": 1
+        },
+        "action": "drive_them_down",
+        "priority": 19
+      },
+      {
+        "condition": {
+          "kind": "self_counter",
+          "counter": "royal_office_step",
+          "op": "eq",
+          "value": 2
+        },
+        "action": "shield_the_mouth",
+        "priority": 18
+      }
+    ]
+  },
+  {
+    "id": "queen_of_the_flood_reckoning",
+    "name": "The Queen of the Flood Reckoning",
+    "max_hp": 620,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "measure_the_fields_again",
+        "name": "Measure the Fields Again",
+        "intent_type": "debuff",
+        "actions": [
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "weighed",
+            "amount": 2
+          }
+        ]
+      },
+      {
+        "id": "open_the_eastern_sluice",
+        "name": "Open the Eastern Sluice (Water +1)",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 22
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "inscribed",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "close_the_western_sluice",
+        "name": "Close the Western Sluice (Water −1)",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 26
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "burdened",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "record_the_lost_acreage",
+        "name": "Record the Lost Acreage",
+        "intent_type": "debuff",
+        "actions": [
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "paperwork",
+            "amount": 3
+          }
+        ]
+      },
+      {
+        "id": "harvest_under_authority",
+        "name": "Harvest Under Authority",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 16
+          },
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 16
+          }
+        ]
+      },
+      {
+        "id": "the_banks_break",
+        "name": "The Banks Break",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 30
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "entombed",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "count_the_dry_years",
+        "name": "Count the Dry Years",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 22
+          }
+        ]
+      },
+      {
+        "id": "count_the_drowned_fields",
+        "name": "Count the Drowned Fields",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 22
+          }
+        ]
+      },
+      {
+        "id": "the_river_takes_the_boundary",
+        "name": "The River Takes the Boundary",
+        "intent_type": "attack",
+        "special": true,
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 38
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "entombed",
+            "amount": 2
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "burdened",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "the_flood_no_longer_obeys",
+        "name": "The Flood No Longer Obeys",
+        "intent_type": "buff",
+        "special": true,
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 14
+          }
+        ]
+      },
+      {
+        "id": "the_flood_is_counted_anyway",
+        "name": "The Flood Is Counted Anyway",
+        "intent_type": "attack",
+        "special": true,
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 36
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "labyrinth_body"
+      },
+      {
+        "status": "the_flood_reckoning"
+      },
+      {
+        "status": "water_ordered_flood"
+      }
+    ],
+    "intent_rules": [
+      {
+        "condition": {
+          "kind": "self_status",
+          "status": "the_flood_stirs",
+          "min_stacks": 1
+        },
+        "action": "the_flood_no_longer_obeys",
+        "priority": 50
+      },
+      {
+        "condition": {
+          "kind": "self_status",
+          "status": "water_black_flood",
+          "min_stacks": 1
+        },
+        "action": "the_river_takes_the_boundary",
+        "priority": 45
+      },
+      {
+        "condition": {
+          "kind": "all_of",
+          "conditions": [
+            {
+              "kind": "self_status",
+              "status": "the_flood_is_counted_anyway",
+              "min_stacks": 1
+            },
+            {
+              "kind": "self_status",
+              "status": "the_flood_no_longer_obeys",
+              "min_stacks": 1
+            }
+          ]
+        },
+        "action": "the_flood_is_counted_anyway",
+        "priority": 40
+      }
     ]
   }
 ]

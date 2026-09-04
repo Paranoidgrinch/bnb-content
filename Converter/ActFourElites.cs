@@ -21,15 +21,27 @@ public static partial class ActFour
         LadyEnemyId,
         ScribeEnemyId,
         MotherEnemyId,
+        VizierEnemyId,
+        QueenEnemyId,
+    };
+
+    // The Vizier's three subordinate Offices. They are boss bodies and nothing else fields them, but they
+    // are not bosses: the pool is counted by the body an encounter is NAMED for.
+    public static readonly IReadOnlySet<string> BossOffices = new HashSet<string>(StringComparer.Ordinal)
+    {
+        SealBearerEnemyId,
+        KeeperOfTalliesEnemyId,
+        CaptainOfTheStairEnemyId,
     };
 
     public static IReadOnlyList<StatusData> BossStatuses() =>
-        [.. PharaohStatuses(), .. WeigherStatuses(), .. ArchitectStatuses(), .. LadyStatuses(), .. ScribeStatuses(), .. MotherStatuses()];
+        [.. PharaohStatuses(), .. WeigherStatuses(), .. ArchitectStatuses(), .. LadyStatuses(), .. ScribeStatuses(), .. MotherStatuses(), .. VizierStatuses(), .. QueenStatuses()];
 
     // The bosses' own offers: the Architect's four blueprints and the Lady's four seals, never dealt into a
     // deck — pushed into the fight by the body that offers them.
     public static IReadOnlyList<CardData> BossCards() =>
-        [.. ArchitectCards(), .. LadySealCards(), .. ScribeScrapeCards(), .. MotherWashCards()];
+        [.. ArchitectCards(), .. LadySealCards(), .. ScribeScrapeCards(), .. MotherWashCards(),
+         .. VizierSilenceCards(), .. QueenSluiceCards()];
 
     public static EffectProgram<EnemyActionContext>? BossIntent(string enemyId, string intentId) =>
         PharaohIntent(enemyId, intentId)
@@ -37,7 +49,9 @@ public static partial class ActFour
         ?? ArchitectIntent(enemyId, intentId)
         ?? LadyIntent(enemyId, intentId)
         ?? ScribeIntent(enemyId, intentId)
-        ?? MotherIntent(enemyId, intentId);
+        ?? MotherIntent(enemyId, intentId)
+        ?? VizierIntent(enemyId, intentId)
+        ?? QueenIntent(enemyId, intentId);
 
     public static readonly IReadOnlySet<string> EliteIdentities = new HashSet<string>(StringComparer.Ordinal)
     {
