@@ -8,10 +8,10 @@ namespace BnbContent.Converter;
 
 // The authored non-combat stops of an act: its campfire (rest), its treasure room and its shop. The SHAPE is
 // shared — heal a percentage, open a container for a relic, two shelves and a reroll — while the room the
-// player is standing in is the act's own (ActRules). Referenced by the generated map's NodeRefs.
+// player is standing in is the act's own (ActRules.Rooms). Referenced by the generated map's NodeRefs.
 public static class EventTemplates
 {
-    internal static EventScript Treasure(ConversionPools pools, string where, ActRules act) => new("start",
+    internal static EventScript Treasure(ConversionPools pools, string where, ActRooms act) => new("start",
     [
         new EventSituation("start", act.TreasureText,
         [
@@ -23,7 +23,7 @@ public static class EventTemplates
         ]),
     ]);
 
-    internal static EventScript Rest(int healPercent, ActRules act) => new("start",
+    internal static EventScript Rest(int healPercent, ActRooms act) => new("start",
     [
         new EventSituation("start", act.RestText,
         [

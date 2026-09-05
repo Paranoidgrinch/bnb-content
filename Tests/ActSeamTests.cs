@@ -3,8 +3,9 @@ using RogueDeck.Run;
 
 namespace BnbContent.Tests;
 
-// The ACT SEAM: the run walks Act I, then Act II, then Act III, then Act IV, and each act draws only from its
-// own content.
+// The ACT SEAM: the run walks Act I, then Act II, then Act III, then Act IV, then Act V, and each act draws
+// only from its own content. The fifth is the odd one: a gauntlet has no rooms, so the tests about furniture
+// speak of the acts that HAVE any, and what Act V is checked for is that it has none.
 //
 // This pins the bug the audit found (ACT_I_II_COMPLETION_PLAN.md, A-2): the map rules used to group EVERY
 // encounter that carried a role, so the city's boss row could draw the Grand Cross-Reference — the last boss
@@ -23,6 +24,10 @@ public class ActSeamTests
             .For(act, ConversionPools.Build(Data, Data.Relics.Select(RelicMapper.Map).ToList(), act), new Random(1))
             .Select(e => e.Id)
             .ToList();
+
+    // The acts that have rooms at all: everything but the gauntlet, which is three bosses and no furniture.
+    private static IReadOnlyList<RunAct> Roomed =>
+        [.. Game.Acts!.Where(act => act.MapGeneration!.Rows > 0)];
 
     private static int ActOf(string encounterId) =>
         Data.Encounters.First(e => e.Id == encounterId).Act;
@@ -69,7 +74,8 @@ public class ActSeamTests
             first => Assert.Equal("act_1_city", first.Id),
             second => Assert.Equal("act_2_archives", second.Id),
             third => Assert.Equal("act_3_green_docket", third.Id),
-            fourth => Assert.Equal("act_4_licensing_labyrinth", fourth.Id));
+            fourth => Assert.Equal("act_4_licensing_labyrinth", fourth.Id),
+            fifth => Assert.Equal("act_5_divine_ledger", fifth.Id));
         Assert.All(Game.Acts!, act => Assert.NotNull(act.MapGeneration));
     }
 
@@ -98,6 +104,7 @@ public class ActSeamTests
         var archives = PoolFor(Game.Acts![1], MapNodeKind.Boss).ToList();
         var road = PoolFor(Game.Acts![2], MapNodeKind.Boss).ToList();
         var labyrinth = PoolFor(Game.Acts![3], MapNodeKind.Boss).ToList();
+        var ledger = PoolFor(Game.Acts![4], MapNodeKind.Boss).ToList();
 
         Assert.Equal(5, city.Count);
         Assert.Equal(5, archives.Count);
@@ -109,9 +116,13 @@ public class ActSeamTests
         Assert.All(archives, id => Assert.StartsWith("archives_boss_", id, StringComparison.Ordinal));
         Assert.All(road, id => Assert.StartsWith("green_docket_boss_", id, StringComparison.Ordinal));
         Assert.All(labyrinth, id => Assert.StartsWith("labyrinth_boss_", id, StringComparison.Ordinal));
+        // …and the ledger on three of SIX gods, which is the whole of Act V (boss master §Act V §5).
+        Assert.Equal(6, ledger.Count);
+        Assert.All(ledger, id => Assert.StartsWith("act_5_", id, StringComparison.Ordinal));
         Assert.Empty(city.Intersect(archives));
         Assert.Empty(archives.Intersect(road));
         Assert.Empty(road.Intersect(labyrinth));
+        Assert.Empty(labyrinth.Intersect(ledger));
     }
 
     [Theory]
@@ -138,7 +149,7 @@ public class ActSeamTests
     [Fact]
     public void Each_act_brings_its_own_shop_rest_and_treasure_rooms()
     {
-        var rooms = Game.Acts!.Select(a => a.MapGeneration!.NodeRefs).ToList();
+        var rooms = Roomed.Select(a => a.MapGeneration!.NodeRefs).ToList();
 
         // Nobody shares a counter or a chair with anybody.
         Assert.Equal(rooms.Count, rooms.Select(r => r[MapNodeKind.Shop]).Distinct().Count());
@@ -146,11 +157,15 @@ public class ActSeamTests
         Assert.All(rooms, r => Assert.True(Game.Shops.ContainsKey(r[MapNodeKind.Shop])));
         Assert.All(rooms, r => Assert.True(Game.Events.ContainsKey(r[MapNodeKind.Rest])));
 
-        var treasures = Game.Acts!
+        var treasures = Roomed
             .Select(a => a.MapGeneration!.NodeRefPools[MapNodeKind.Treasure]).ToList();
         for (var a = 0; a < treasures.Count; a++)
             for (var b = a + 1; b < treasures.Count; b++)
                 Assert.Empty(treasures[a].Intersect(treasures[b]));
+
+        // …and the act that has no rooms references none: no shop, no waiting room, no jars, nothing.
+        Assert.Empty(Game.Acts![4].MapGeneration!.NodeRefs);
+        Assert.Empty(Game.Acts![4].MapGeneration!.NodeRefPools);
     }
 
     // ── What an act OFFERS (A-3 … A-6) ─────────────────────────────────────────────
@@ -212,8 +227,10 @@ public class ActSeamTests
         Assert.Equal(10, Game.Acts![1].MapGeneration!.TreasureMimicChancePercent);
         Assert.Equal(15, Game.Acts![2].MapGeneration!.TreasureMimicChancePercent);
         Assert.Equal(20, Game.Acts![3].MapGeneration!.TreasureMimicChancePercent);
+        // The gauntlet has no treasure to bite: nothing to flip, and nothing to flip into.
+        Assert.Equal(0, Game.Acts![4].MapGeneration!.TreasureMimicChancePercent);
 
-        for (var index = 0; index < Game.Acts!.Count; index++)
+        for (var index = 0; index < Roomed.Count; index++)
         {
             var mimics = PoolFor(Game.Acts![index], MapNodeKind.Mimic).ToList();
             Assert.NotEmpty(mimics);
@@ -280,7 +297,7 @@ public class ActSeamTests
         }
 
         foreach (var kind in new[] { MapNodeKind.Rest, MapNodeKind.Treasure })
-            Assert.Equal(Game.Acts!.Count, Game.Acts!.Select(act => TextOf(act, kind)).Distinct().Count());
+            Assert.Equal(Roomed.Count, Roomed.Select(act => TextOf(act, kind)).Distinct().Count());
     }
 
     // A-6: the title is the GAME's; naming an act belongs to the act.
@@ -295,6 +312,7 @@ public class ActSeamTests
         Assert.Equal("Act II: The Endless Archives", Game.Acts![1].NameKey);
         Assert.Equal("Act III: The Green Docket", Game.Acts![2].NameKey);
         Assert.Equal("Act IV: The Licensing Labyrinth", Game.Acts![3].NameKey);
+        Assert.Equal("Act V: The Divine Ledger", Game.Acts![4].NameKey);
     }
 
     // …and it holds where it counts: in the maps an actual run walks.
@@ -305,7 +323,7 @@ public class ActSeamTests
     public void A_generated_run_meets_only_the_current_acts_encounters(int seed)
     {
         var plan = Game.BuildActPlan(seed, startingLoadout: 0);
-        Assert.Equal(4, plan.Count);
+        Assert.Equal(5, plan.Count);
 
         for (var index = 0; index < plan.Count; index++)
         {

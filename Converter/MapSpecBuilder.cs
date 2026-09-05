@@ -55,9 +55,12 @@ public static class MapSpecBuilder
     {
         var rng = new Random(seed);
         var rules = ActRules.For(act);
+        if (rules.IsGauntlet)
+            return BuildGauntlet(data, act, rules);
+
         var events = new Dictionary<string, EventScript>
         {
-            [RestEventId(act)] = EventTemplates.Rest(act.WaitingRoom?.HealPercent ?? 25, rules),
+            [RestEventId(act)] = EventTemplates.Rest(act.WaitingRoom?.HealPercent ?? 25, rules.Rooms!),
         };
 
         // One treasure event per treasure a path can hold, so the pool can hand out distinct ones.
@@ -66,7 +69,7 @@ public static class MapSpecBuilder
         {
             var id = TreasureId(act, i);
             treasureIds.Add(id);
-            events[id] = EventTemplates.Treasure(pools, id, rules);
+            events[id] = EventTemplates.Treasure(pools, id, rules.Rooms!);
         }
 
         // The act's doors, all fifteen of them authored (Events/AuthoredEvents).
@@ -74,7 +77,7 @@ public static class MapSpecBuilder
         if (actEvents.Count == 0)
             throw new ConversionException($"act '{act.Id}'", "no event belongs to this act");
 
-        var byRole = PoolsByRole(data, act);
+        var byRole = PoolsByRole(data, act, rules);
         var spec = new MapGenerationSpec
         {
             // How many FREE rows the act gets on top of its promises.
@@ -147,6 +150,44 @@ public static class MapSpecBuilder
         };
     }
 
+    // AN ACT THAT IS NOTHING BUT ITS BOSSES. Everything the method above assembles — the waiting room, the
+    // jars, the act's doors, its shop, and the spoils each fight pays — is a thing the Divine Ledger does not
+    // have (Boss Master §Act V §1: no healing, no card, relic or gold rewards between the gods), so it is
+    // built here rather than by hanging an "unless this is act five" clause off each of them.
+    //
+    // The map is the act's boss rooms and nothing else: three rows, one node each, drawn from the six-god pool
+    // without repetition. Which three, and in which order, is settled when the run's maps are laid out — which
+    // is what lets the act show all three from its first room.
+    private static ActMap BuildGauntlet(BabData data, BabActManifest act, ActRules rules)
+    {
+        var byRole = PoolsByRole(data, act, rules);
+        if (byRole[MapNodeKind.Boss].Count < rules.BossRooms)
+            throw new ConversionException(
+                $"act '{act.Id}'",
+                $"a gauntlet of {rules.BossRooms} rooms needs at least that many bosses to draw from, "
+                + $"but the act has {byRole[MapNodeKind.Boss].Count}");
+
+        return new ActMap
+        {
+            Spec = new MapGenerationSpec
+            {
+                // No backbone: the act has no rooms to branch through, so there is nothing to be free.
+                Rows = 0,
+                BossRooms = rules.BossRooms,
+                MinWidth = 1,
+                MaxWidth = 1,
+                PerPathMinimums = rules.PerPathMinimums,
+                PerPathMaximums = rules.PerPathMaximums,
+                KindWeights = rules.KindWeights,
+                Encounters = new EncounterDistribution { ByRole = byRole },
+                // No VictoryRewards and no VictoryRewardsByEncounter: a god grants nothing. The spoils of a
+                // boss are Acts I-IV's, and the act's own reward is that it ends.
+            },
+            Events = [],
+            Shops = [],
+        };
+    }
+
     // Each boss of this act: its role's gold and card offer, and then ONE of its own three relics at random,
     // taken without a choice screen — a single-offer reward the player does not pick from.
     private static Dictionary<string, MapVictoryReward> BossRewards(
@@ -193,7 +234,7 @@ public static class MapSpecBuilder
     // The curated pools: every encounter of THIS act that carries a role, weighted as authored. The act filter
     // is the whole point — without it the city's boss row drew the archives' bosses too.
     private static Dictionary<MapNodeKind, IReadOnlyList<EncounterPoolEntry>> PoolsByRole(
-        BabData data, BabActManifest act)
+        BabData data, BabActManifest act, ActRules rules)
     {
         var byRole = new Dictionary<MapNodeKind, IReadOnlyList<EncounterPoolEntry>>();
         foreach (var group in data.Encounters
@@ -205,7 +246,11 @@ public static class MapSpecBuilder
                 .ToList();
         }
 
-        foreach (var required in new[] { MapNodeKind.Combat, MapNodeKind.MultiCombat, MapNodeKind.Elite, MapNodeKind.Boss })
+        // A gauntlet act owes only its bosses; an ordinary act owes the whole ladder up to them.
+        var needed = rules.IsGauntlet
+            ? [MapNodeKind.Boss]
+            : new[] { MapNodeKind.Combat, MapNodeKind.MultiCombat, MapNodeKind.Elite, MapNodeKind.Boss };
+        foreach (var required in needed)
             if (!byRole.ContainsKey(required))
                 throw new ConversionException(
                     $"map generation for act '{act.Id}'", $"no encounter of this act carries the '{required}' role");

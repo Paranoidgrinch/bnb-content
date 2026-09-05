@@ -192,7 +192,13 @@ public sealed record BabMapSettings(
     // map rules (ActRules.EarliestDepthPercent and the lane weights), so they are read and ignored rather
     // than left to abort a strict load.
     int FirstEliteDepth = 0,
-    double EliteWeightMultiplier = 0);
+    double EliteWeightMultiplier = 0,
+    // …and Act V's manifest describes a SHAPE rather than a length: a boss gauntlet of `boss_count` rooms
+    // drawn from `boss_encounter_ids`. Both are answered here the way every other act answers them — the
+    // act's structure is its map rules (ActRules.BossRooms) and its pool is the role its encounters carry —
+    // so these too are read and ignored rather than left to abort a strict load.
+    int BossCount = 0,
+    IReadOnlyList<string>? BossEncounterIds = null);
 
 public sealed record BabTreasureSettings(double MimicChance, string? MimicEncounterId);
 

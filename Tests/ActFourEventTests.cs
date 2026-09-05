@@ -42,14 +42,15 @@ public class ActFourEventTests
     [Fact]
     public void The_fourth_acts_map_opens_these_twenty_doors_and_no_earlier_act_opens_any_of_them()
     {
-        Assert.Equal(4, Game.Acts!.Count);
-
-        var labyrinth = Game.Acts[3].MapGeneration!.NodeRefPools[MapNodeKind.Event];
+        var labyrinth = Game.Acts![3].MapGeneration!.NodeRefPools[MapNodeKind.Event];
         Assert.Equal([.. Twenty.Order()], [.. labyrinth.Order()]);
 
-        foreach (var act in Game.Acts.Take(3))
+        // No OTHER act opens any of them — and the gauntlet opens no door at all, which is why the pool is
+        // asked for rather than indexed: Act V has no Event pool to look a door up in.
+        foreach (var act in Game.Acts.Where(a => a != Game.Acts[3]))
             foreach (var id in Twenty)
-                Assert.DoesNotContain(id, act.MapGeneration!.NodeRefPools[MapNodeKind.Event]);
+                Assert.DoesNotContain(
+                    id, act.MapGeneration!.NodeRefPools.GetValueOrDefault(MapNodeKind.Event) ?? []);
     }
 
     [Fact]
