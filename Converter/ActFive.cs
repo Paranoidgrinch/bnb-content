@@ -37,8 +37,9 @@ public static partial class ActFive
                 + "revised sentence still comes true, in smaller words."),
             ["act_5_inanna_mistress_of_the_eanna_ledger"] = (
                 "The Eanna Ledger",
-                "Everything in this room is entered in the ledger as belonging to Inanna. She is not attacking "
-                + "you. She is collecting."),
+                "A card she claims is stamped PROPERTY OF EANNA. It stays yours, and its first play each turn "
+                + "costs 1 Energy less — and every use of it writes 1 Temple Due. At the Procession what is "
+                + "unpaid becomes Arrears, and Arrears do not go away."),
             ["act_5_nanshe_auditor_of_the_just_ration"] = (
                 "The Ration Tablet",
                 "Every share in this room is measured against the just ration. What is over is taken back; what "
@@ -64,10 +65,10 @@ public static partial class ActFive
             : new Dictionary<string, string>();
 
     // Everything the act's gods put into the document. One line per god as they are built.
-    public static IReadOnlyList<StatusData> All() => [.. NisabaStatuses()];
+    public static IReadOnlyList<StatusData> All() => [.. NisabaStatuses(), .. InannaStatuses()];
 
-    public static IReadOnlyList<CardData> GivenCards() => [.. NisabaReedCards()];
+    public static IReadOnlyList<CardData> GivenCards() => [.. NisabaReedCards(), .. InannaLedgerCards()];
 
     public static EffectProgram<EnemyActionContext>? Intent(string enemyId, string intentId) =>
-        NisabaIntent(enemyId, intentId);
+        NisabaIntent(enemyId, intentId) ?? InannaIntent(enemyId, intentId);
 }

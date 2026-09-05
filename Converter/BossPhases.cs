@@ -122,5 +122,15 @@ public static class BossPhases
         ActFive.LastLineAnnouncedId,
         ActFive.LastLineId,
         ActFive.IndelibleId,
+
+        // Inanna's two later phases and their announcements — and the Procession beside them, which is not a
+        // phase but the clock the whole ledger is read against: a player who cannot see how many rounds are
+        // left before collection cannot decide whether to pay at all.
+        ActFive.StorehouseAnnouncedId,
+        ActFive.StorehouseId,
+        ActFive.AllThingsAnnouncedId,
+        ActFive.AllThingsId,
+        ActFive.ProcessionCalledId,
+        ActFive.ProcessionId,
     ];
 }

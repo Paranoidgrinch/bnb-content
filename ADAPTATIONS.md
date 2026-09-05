@@ -3408,3 +3408,95 @@ death-prevention consumed itself on firing, and re-applying itself from its own 
 the SECOND HIT OF ONE ACTION (the re-application is enqueued behind the hit it survived). So
 `StatusDeathPreventionData` grew **`Repeating`** (default false, kept out of the wire format when false), the
 sandbox interceptor skips its own removal when set, and the Studio status editor carries the checkbox.
+
+## V-2 — Inanna, Mistress of the Eanna Ledger
+
+**Her HP is a choice, not a reading**, as Nisaba's was. She is **600**, putting the Open Storehouse at 420
+(70 %) and All Things Enter Eanna at 210 (35 %). Slightly under Nisaba because nothing about her fight is
+untouchable: there is no phase she cannot be killed during, so the number is the whole of her length.
+
+**NOTHING WAS BOUGHT FROM THE ENGINE.** Every piece of her already existed, which is worth writing down after
+V-1 spent one buy on exactly the risk that predicted it. The claim stamp is a **per-instance card mark**; the
+discount is `StandardCombatIds.CardCostDeltaCounter`, whose whole contract is a promise made to one copy and
+**consumed by the play that uses it** — which IS §7.1's audit rule ("the discount applies only to the first
+play of that card instance each turn; retrieval or looping does not refresh it"), for free and by
+construction. The four surplus claims are four ordinary triggers (`ResourceGained`, `CardsDrawn`,
+`BlockGained`, `DamageDealt`) worn by the player.
+
+**A claim reads the WHOLE DECK, not the hand.** §7.2's claim moves say "the card", not "a card in hand", and
+the hand is the wrong domain anyway: it is discarded when the player's turn ends, so a claim taken during
+HER turn would every single time be a claim on an empty table. Hand, draw pile and discard pile are searched
+together, and the stamp travels with the copy.
+
+**A CLAIM IS TWO PASSES, not a ladder.** "The unclaimed card with the highest base cost" and "the card played
+most often" are both a maximum, and a ladder of "is there a 3, is there a 2, is there a 1" is only exact for
+the costs somebody thought of. So the first pass reads every card and writes the best score it saw into a
+counter, and the second enters the first card that matches it. Exact for any hand, six loops in total, and
+the same shape serves both moves — Finest reads `CardInstanceBaseCostExpression`, Favored reads a mark
+counter.
+
+**"Played most often" is a margin note, not a history.** Nothing in the engine records per-definition play
+counts across a fight, and nothing needed to: the ledger writes `eanna_uses += 1` on the card instance as it
+is played. She does not search a record — she keeps one, on the card, which is also what the fiction says
+she does.
+
+**Dedicated to Eanna is the BANISHED pile.** The master wants "a unique combat-only zone; cards there are
+unavailable for the rest of the fight; they return after Inanna dies". Banished is precisely that and needs no
+new zone: it is the one pile nothing fishes cards back out of, and the run's own deck never sees the combat
+copy, so a dedicated card is returned by the fight simply ending. Values as written — a claimed card settles
+**4** Due, an ordinary one **1**, Junk **0** ("Eanna wants value. Not garbage.").
+
+**The Energy Offering is a card, and the pool is its own cap.** §7.4 wants unused Energy offered at the end of
+the player turn, "capped per turn if required for balance". `Offer the Surplus` costs 1 Energy and settles 1
+Due, and re-offers itself while anything is still owed — so the cap is the pool: what pays the temple is the
+attack that was not made. `Dedicate a Work` re-offers itself the same way, because a Procession the player may
+answer with exactly one card is a decision about *which* card, not about how much to give.
+
+**The Procession is CALLED a turn before it collects.** The master says "every few rounds, typically around
+3". The count sits on her as `the_procession` (3, 2, 1) and, instead of being decremented off 1, is replaced
+by `the_procession_is_called` — a marker her intent rules answer with `Call the Procession` on her next
+action. That gives the player one whole turn between the warning and the reading, which is the turn the paying
+is meant to happen in. It is re-entered at **4** because the collection happens inside the very window its own
+countdown is read down at the end of.
+
+**Temple Due and Arrears are NEUTRAL, not debuffs** — Nisaba's Indelible lesson applied twice over. A debt
+marked as a debuff is a debt that any ordinary cleanse settles for free, and paying is the whole of what this
+fight asks.
+
+**A surplus claim is a generous LINE plus a batch, and one at a time.** §7.9 asks for thresholds and says
+outright that she does not stop the player producing anything. Each claim keeps a running total for the
+player's turn and charges 1 Due per batch above its line: Grain **6 Energy / 1**, Hands **7 cards / 2**,
+Walls **25 Block / 5**, Victory **40 damage / 10**. Hands measures the HAND at each draw rather than the count
+drawn (the drawn count is not reachable as a serializable expression, and a hand held wide is what "additional
+draw" means anyway), so its total is a high-water mark rather than a sum. Which claim is posted **rotates in a
+fixed order** each player turn rather than being rolled: what she is watching next has to be knowable, or an
+engine deck cannot be planned against her at all.
+
+**Claimed Splendor is a turn-long buff, not a per-card Empowered.** §7.10 wants the first Temple Property card
+each turn to gain "a moderate Empowered effect". Damage is dealt by the card whose play the trigger reports,
+so the effect cannot reach that card in flight; `Splendor of Eanna` instead gives **+4 damage for the rest of
+that turn** — the same promise, paid one step later, and visible on the player's own row.
+
+**The claim cap is 2, then 4, then irrelevant.** §7.8 asks for "around 2 active Claim Seals initially". It
+rises to 4 with the storehouse. A fight where everything is hers before the third phase has nothing left to
+escalate into, and the third phase is exactly that escalation.
+
+**After the Final Procession every seal is struck.** The master does not say what becomes of the claims when
+ALL THINGS ENTER EANNA runs out. They are all removed: the temple has taken what it was owed, and her claim
+moves go on running, so the ledger fills again from a clean sheet rather than from a deck that is already
+entirely hers.
+
+**The Final Procession is collected in HP, ignoring Block.** "The accumulated economic cost can tear the
+player's deck apart or create massive Arrears" — but Arrears with nothing behind them are a number. Unpaid Due
+becomes Arrears as at any Procession, and then the whole of the Arrears is taken as HP, unblockable, because
+it is a debt being collected rather than a blow being struck. It is telegraphed for four turns before it lands.
+
+**ENGINE FIX, and it belongs to V-1's checkpoint rather than to Inanna: a restored fight kept no dictionary.**
+`CombatState.Restore(snapshot, registry)` re-linked temporary rule bodies out of the registry and then threw
+the registry away, so every resumed combat ran with `DefinitionRegistry` null. Nothing failed — it answers
+every definition question with "nothing" — and the mid-combat checkpoint made that reachable in ordinary play:
+from the second turn of every fight in the game, each status chip reverted to a humanised id
+(`Nisaba line guard counted nothing` in place of *The Guard Shall Be Counted as Nothing*). The quieter half is
+worse and had not surfaced yet: a tag-filtered card count returns 0 without a registry, so "for each Junk in
+your hand" would silently read zero in any resumed fight. Found by standing the Godot boss probe two rounds in
+front of Nisaba while checking something else entirely.

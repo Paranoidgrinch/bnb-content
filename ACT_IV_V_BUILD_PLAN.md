@@ -834,7 +834,62 @@ may still lose, and that is correct.
       46/620 after 100 turns, because two of five intents were guarding 50 a cycle — the fight was long rather
       than dangerous, and "the tablet is the real boss mechanic, normal attacks support pressure around it"
       says that is wrong. 30 → 12 and 20 → 14, budget 90.
-- [ ] **V-2 — Inanna, Mistress of the Eanna Ledger.** *She claims.*
+- [x] **V-2 — Inanna, Mistress of the Eanna Ledger. DONE 2026-09-05.** *She claims.* She does not take your
+      cards — she ENTERS them. A claimed card is stamped PROPERTY OF EANNA, stays yours, stays playable and is
+      CHEAPER (1 Energy off its first play each turn), and every use of it writes 1 TEMPLE DUE. At the
+      PROCESSION the ledger is read and everything unpaid becomes ARREARS, which never go away. You may settle
+      it with Energy (`Offer the Surplus`) or by giving Eanna a card for the rest of the fight
+      (`Dedicate a Work` → the Banished pile; a claimed card is worth four of an ordinary one). Three phases:
+      WHAT YOU HOLD (two seals), THE OPEN STOREHOUSE (a rotating SURPLUS claim on energy / hand / block /
+      damage, four seals, and SPLENDOR for the first property card each turn), and ALL THINGS ENTER EANNA —
+      three turns in which every card you own is hers, then the whole ledger collected at once, ignoring Block.
+      `Converter/ActFiveInanna.cs` + `Tests/ActFiveBossInannaTests.cs` (14), two new `ReadableBossStateTests`,
+      and she is in `BossLengthTests` (dies in **26 turns** of a 90 budget).
+      ▸ **NOTHING WAS BOUGHT FROM THE ENGINE**, which is the headline after V-1 spent a buy on exactly the
+      risk that predicted it. The claim is a per-instance card MARK; the discount is
+      `StandardCombatIds.CardCostDeltaCounter`, whose contract — a promise made to one copy, CONSUMED by the
+      play that uses it — *is* §7.1's audit rule ("only the first play of that instance each turn; retrieval
+      does not refresh it"), for free and by construction. The four surplus claims are four ordinary triggers
+      worn by the PLAYER, which is also where they are legible: the chip that charges you is on your own row.
+      ▸ **A CLAIM IS TWO PASSES, NOT A LADDER** — and this is the same lesson as Nisaba's three slots, one
+      step further. "Highest base cost" and "played most often" are both a maximum; a descending ladder of
+      "is there a 3, is there a 2" is only exact for the costs somebody thought of. One pass writes the best
+      score it saw into a counter, the next enters the first card that matches. Six loops, exact for any hand,
+      and the same shape serves both moves.
+      ▸ **"PLAYED MOST OFTEN" IS A MARGIN NOTE, NOT A HISTORY.** Nothing records per-definition play counts
+      across a fight and nothing needed to: the ledger writes `eanna_uses += 1` on the card instance as it is
+      played. She does not search a record — she keeps one, on the card, which is what the fiction says anyway.
+      ▸ **THE HAND IS THE WRONG DOMAIN, and it took writing the test to see it.** A claim taken during HER
+      turn reads a hand that was discarded when the player's turn ended — it would have been a claim on an
+      empty table every single time, silently. Claims read hand + draw + discard together.
+      ▸ **A PER-INSTANCE MARK REACHED NO SCREEN** (bnb-godot). Acts II–IV have marked cards for three acts —
+      Misfiled, Referenced, Counted — and the player has never once seen one. Inanna is the first fight that
+      asks the player to PLAN around a mark, so the card face grew a stamp row driven by a small table of
+      mark-id → label + explanation; anything not in the table stays invisible, because most marks are
+      plumbing. The other three acts' marks can be added to that table whenever they are worth reading.
+      ▸ **THE WALKER FOUND A CEILING NOBODY HAD MET**: two of three whole-game walks died in Act V on
+      "ForEachCardInZoneNode resolved 78 cards which exceeds the configured maximum of 64". That 64 is a guard
+      against a runaway program, not a statement about deck size — and every loop in this fight is over the
+      PLAYER'S OWN DECK, which after five acts is bigger than that. Named `WholeDeck = 256` at all five sites.
+      ▸ **AND THE WALKER PRICED HER**: at 600 HP she went 600 → 243 in FOUR turns, because HER OWN MECHANIC
+      MAKES THE PLAYER FASTER — every claim is a discount. A god whose third phase arrives in the round she
+      dies has two phases nobody sees. **760**, which is more than Nisaba's 620 for a reason that is hers:
+      Nisaba is long because she cannot be shortened, and Inanna's length has to be bought.
+      ▸ **★ AN ENGINE BUG FROM V-1'S CHECKPOINT, found here by accident**: `CombatState.Restore` re-linked
+      temporary rules out of the registry and then dropped the registry, so every resumed fight ran with
+      `DefinitionRegistry` null — and a null registry does not fail, it answers every definition question with
+      "nothing". From the SECOND TURN OF EVERY FIGHT IN THE GAME each status chip read as a humanised id
+      (`Nisaba line guard counted nothing`), and a tag-filtered card count would have silently returned zero.
+      One line in Core, a Scenario test beside the resume test. It surfaced only because the boss probe was
+      made to stand a few rounds in — round 1 is the least interesting screen a boss has.
+      ▸ **A PROBE THAT CAN BE AIMED**: `--smoke-boss <act> --boss <name> --rounds <n>` (Act V is three of six
+      gods in a seed-picked order, so the old probe could only ever see whichever came first), and the boss
+      report now reads the CARD STAMPS back out of the live tree the way it reads the Divine Rule Area —
+      `card stamps: 1 shown of 1 marked — PROPERTY OF EANNA` is the proof that a mark reached the screen.
+      ▸ **TWO FAULTS THE TESTS FOUND, both about a step happening inside the window it is counted in**: the
+      Procession re-entered at 3 was walked down to 2 by her own turn-end in the same breath (it is entered at
+      4, exactly as the Last Line is), and the dedication sheet exhausted itself after ONE card — a Procession
+      the player may answer with exactly one card is a decision about *which* card, not about how much to give.
 - [ ] **V-3 — Nanshe, Keeper of the Just Ration.** *She allocates.* The Ration Tablet.
 - [ ] **V-4 — Nanna-Sin, Lord of the Counted Moon.** *He counts.* The Lunar Calendar.
 - [ ] **V-5 — Utu, Witness of Every Oath.** *He witnesses.* Oaths / Witness.
