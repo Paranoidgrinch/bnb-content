@@ -2,24 +2,24 @@
   {
     "id": "nisaba_keeper_of_the_first_tablet",
     "name": "Nisaba, Keeper of the First Tablet",
-    "max_hp": 280,
+    "max_hp": 620,
     "intent_pattern": "cycle",
     "intents": [
       {
-        "id": "inscribe_the_ration",
-        "name": "Inscribe the Ration",
-        "intent_type": "debuff",
+        "id": "set_the_reed",
+        "name": "Set the Reed",
+        "intent_type": "mixed",
         "actions": [
           {
-            "type": "gain_block",
-            "target": "self",
-            "amount": 18
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 16
           },
           {
             "type": "apply_status",
             "target": "player",
             "status": "paperwork",
-            "amount": 5
+            "amount": 1
           }
         ]
       },
@@ -31,12 +31,36 @@
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 20
+            "amount": 22
           },
           {
             "type": "gain_block",
             "target": "self",
-            "amount": 22
+            "amount": 14
+          }
+        ]
+      },
+      {
+        "id": "count_the_unrevised",
+        "name": "Count the Unrevised",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 10
+          }
+        ]
+      },
+      {
+        "id": "dry_the_clay",
+        "name": "Dry the Clay",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "self",
+            "amount": 12
           },
           {
             "type": "apply_status",
@@ -47,22 +71,65 @@
         ]
       },
       {
-        "id": "close_the_register",
-        "name": "Close the Register",
+        "id": "impress_the_seal",
+        "name": "Impress the Seal",
         "intent_type": "attack",
         "actions": [
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 34
-          },
-          {
-            "type": "apply_status",
-            "target": "self",
-            "status": "strength",
-            "amount": 2
+            "amount": 18
           }
         ]
+      },
+      {
+        "id": "open_the_lapis_tablet",
+        "name": "Open the Lapis Tablet",
+        "intent_type": "attack",
+        "special": true,
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 24
+          }
+        ]
+      },
+      {
+        "id": "write_the_last_line",
+        "name": "Write the Last Line",
+        "intent_type": "attack",
+        "special": true,
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 20
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "the_first_tablet"
+      }
+    ],
+    "intent_rules": [
+      {
+        "condition": {
+          "kind": "self_status",
+          "status": "the_last_line_is_written"
+        },
+        "action": "write_the_last_line",
+        "priority": 30
+      },
+      {
+        "condition": {
+          "kind": "self_status",
+          "status": "the_lapis_tablet_is_opened"
+        },
+        "action": "open_the_lapis_tablet",
+        "priority": 20
       }
     ],
     "tags": [

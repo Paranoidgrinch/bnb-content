@@ -71,6 +71,8 @@ public static class BlueprintAssembler
                 .. ActFour.EliteCards(),
                 // …and the bosses' own: the Architect's blueprints, the Lady's four seals.
                 .. ActFour.BossCards(),
+                // …and Act V's: the reed sheets the First Tablet lays in hand.
+                .. ActFive.GivenCards(),
                 .. Relics.ActThreeBossRelicCards.All(),
                 .. Relics.ActFourBossRelicCards.All(),
                 .. ClauseCards.Cards(), NoticeCards.Acknowledge(), DeputyUndersecretary.ReviewCard(),
@@ -97,6 +99,7 @@ public static class BlueprintAssembler
                 .. ActTwo.All(),
                 .. ActThree.All(),
                 .. ActFour.All(),
+                .. ActFive.All(),
                 .. Events.ActOneEventObjects.Statuses(), .. Events.ActTwoEventObjects.Statuses(),
                 .. Events.ActThreeEventObjects.Statuses(),
             ],

@@ -51,6 +51,8 @@ public static class RawIntentPrograms
             _ when ActThree.Intent(enemyId, intentId) is { } greenDocket => greenDocket,
             // Act IV: the measure is raised, and its result answered, through the act's own vocabulary.
             _ when ActFour.Intent(enemyId, intentId) is { } labyrinth => labyrinth,
+            // Act V: a god's whole fight is its own rule, so its intents are raw programs from the first.
+            _ when ActFive.Intent(enemyId, intentId) is { } god => god,
             _ => enemyId switch
             {
                 "deputy_undersecretary" => DeputyUndersecretary.Intent(intentId),

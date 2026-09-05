@@ -802,8 +802,38 @@ may still lose, and that is correct.
       dropped by every reader.
       ▸ **Risk 1 re-measured, and the prediction from IV-24 about Act IV's boss relics did NOT come true**:
       three full five-act walks, no loop, no stall. See the risk block below for the latency numbers.
-- [ ] **V-1 — Nisaba, Keeper of the First Tablet.** *She writes.* The First Tablet: what is written becomes
-      real; the fight asks whether you can prevent what is already written.
+- [x] **V-1 — Nisaba, Keeper of the First Tablet. DONE 2026-09-05.** *She writes.* Three sentences about the
+      player's future stand on the tablet with a count beside each; when a count runs out the sentence becomes
+      true. It cannot be dispelled — only EDITED, one Reed Mark per revision, and a revised sentence comes
+      true in smaller words (36 → 24 → 12 → nothing → it turns against her). Three phases: THE CLAY REMEMBERS,
+      THE LAPIS RECORD (she seals a line against correction), and THE LAST LINE — one sentence, four dawns,
+      unrevised it ERASES the player, and while it stands unresolved she is INDELIBLE.
+      `Converter/ActFiveNisaba.cs` + `Tests/ActFiveBossNisabaTests.cs` (12), two new
+      `ReadableBossStateTests`, and she is in `BossLengthTests`.
+      ▸ **ONE ENGINE BUY, and it is exactly the one Risk 4 named**: a boss that overrides normal combat logic.
+      `StatusDeathPreventionData.Repeating` (default false, out of the wire format when false) — Core's
+      death prevention CONSUMED itself on firing, and a status that re-applies itself from its own interceptor
+      effects loses to the **second hit of one action**, because the re-application is enqueued behind the hit
+      it survived. Studio checkbox, and a Core test that swings twice in one action.
+      ▸ **THE DIRECTOR IS THREE SLOTS, NOT A SEARCH.** §6.5 wants no duplicates, no crowded deadlines and no
+      impossible board. Rather than filter six sentences every turn, the tablet has three slots, each owning a
+      PAIR and alternating between them: a duplicate is impossible by construction, the one-turn sentence
+      shares its slot with a two-turn one, and the tablet refills to three the moment a line comes off. Six
+      conditional writes in the whole program.
+      ▸ **A SENTENCE IS TWO FACES, because a status carries ONE number and the fight asks the player to watch
+      two** — the count and the revisions. Folding them into one chip is the one thing §3 forbids outright
+      ("extreme difficulty is allowed, incomprehensibility is not"). A third face, the seal, exists only in
+      the lapis phase.
+      ▸ **THE SEAL TAKES THE SMALLEST COUNT THAT SURVIVES THE TURN IT IS PLACED IN.** Sealing the most urgent
+      line literally — the one at 1 — binds nothing, because a line at 1 becomes true at the end of the very
+      window the seal is impressed in. It takes the lowest count of 2 or more: the line the player would
+      otherwise have corrected next turn.
+      ▸ **A GOD COSTS +219 KB IN THE DOCUMENT** (9.41 → 9.63 MB). Six of them is roughly +1.3 MB, which is
+      worth knowing before V-2 rather than after V-6.
+      ▸ **THE WALKER FOUND HER BLOCK BEFORE A PLAYER COULD.** First `BossLengthTests` run: still standing at
+      46/620 after 100 turns, because two of five intents were guarding 50 a cycle — the fight was long rather
+      than dangerous, and "the tablet is the real boss mechanic, normal attacks support pressure around it"
+      says that is wrong. 30 → 12 and 20 → 14, budget 90.
 - [ ] **V-2 — Inanna, Mistress of the Eanna Ledger.** *She claims.*
 - [ ] **V-3 — Nanshe, Keeper of the Just Ration.** *She allocates.* The Ration Tablet.
 - [ ] **V-4 — Nanna-Sin, Lord of the Counted Moon.** *He counts.* The Lunar Calendar.
@@ -878,4 +908,6 @@ force — these fights are "almost a separate game mode"); each god enters `Boss
       Relikte) · IV-22 (Events 1–10 + 5 Event-Relikte) · **IV-23 (Events 11–20 + 4 Event-Relikte — DIE
       ZWANZIG TÜREN STEHEN)** · **IV-24 (der Akt selbst — AKT IV IST BEGEHBAR, Victory 4/4)**
 - [x] **V-0 — the gauntlet as a structure — DONE 2026-09-05** (Victory 5/5; `BossRooms` + `Rows = 0` bought)
-- [ ] V-1 … V-6 the six gods · V-7 the whole game
+- [x] **V-1 — NISABA — DONE 2026-09-05** (the First Tablet; one engine buy: a death prevention that is not
+      spent)
+- [ ] V-2 … V-6 the five remaining gods · V-7 the whole game
