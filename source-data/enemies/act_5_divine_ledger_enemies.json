@@ -315,25 +315,32 @@
     ]
   },
   {
-    "id": "nanshe_auditor_of_the_just_ration",
-    "name": "Nan?e, Auditor of the Just Ration",
-    "max_hp": 295,
+    "id": "nanshe_keeper_of_the_just_ration",
+    "name": "Nanshe, Keeper of the Just Ration",
+    "max_hp": 600,
     "intent_pattern": "cycle",
     "intents": [
       {
-        "id": "weigh_the_ration",
-        "name": "Weigh the Ration",
-        "intent_type": "mixed",
+        "id": "the_shelter_given",
+        "name": "The Shelter Given",
+        "intent_type": "attack",
         "actions": [
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 22
-          },
+            "amount": 30
+          }
+        ]
+      },
+      {
+        "id": "the_roof_held",
+        "name": "The Roof Held",
+        "intent_type": "block",
+        "actions": [
           {
             "type": "gain_block",
             "target": "self",
-            "amount": 18
+            "amount": 30
           },
           {
             "type": "apply_status",
@@ -344,44 +351,164 @@
         ]
       },
       {
-        "id": "audit_the_imbalance",
-        "name": "Audit the Imbalance",
-        "intent_type": "debuff",
-        "actions": [
-          {
-            "type": "gain_block",
-            "target": "self",
-            "amount": 26
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "paperwork",
-            "amount": 4
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "panic",
-            "amount": 1
-          }
-        ]
-      },
-      {
-        "id": "correct_the_measure",
-        "name": "Correct the Measure",
+        "id": "the_shelter_taken",
+        "name": "The Shelter Taken",
         "intent_type": "attack",
         "actions": [
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 36
+            "amount": 30
+          }
+        ]
+      },
+      {
+        "id": "hands_at_work",
+        "name": "Hands at Work",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 9
+          },
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 9
+          },
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 9
+          }
+        ]
+      },
+      {
+        "id": "the_day_wage",
+        "name": "The Day's Wage",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 20
+          }
+        ]
+      },
+      {
+        "id": "the_full_labour",
+        "name": "The Full Labour",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 40
+          }
+        ]
+      },
+      {
+        "id": "the_great_portion",
+        "name": "The Great Portion",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 44
+          }
+        ]
+      },
+      {
+        "id": "the_quiet_measure",
+        "name": "The Quiet Measure",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "self",
+            "amount": 32
+          }
+        ]
+      },
+      {
+        "id": "the_still_water",
+        "name": "The Still Water",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "self",
+            "amount": 28
           },
           {
             "type": "apply_status",
-            "target": "self",
-            "status": "strength",
-            "amount": 1
+            "target": "player",
+            "status": "paperwork",
+            "amount": 3
+          }
+        ]
+      },
+      {
+        "id": "the_lesser_need",
+        "name": "The Lesser Need",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 20
+          }
+        ]
+      },
+      {
+        "id": "the_greater_need",
+        "name": "The Greater Need",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 22
+          }
+        ]
+      },
+      {
+        "id": "all_that_is_needed",
+        "name": "All That Is Needed",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 52
+          }
+        ]
+      },
+      {
+        "id": "three_measures_entered",
+        "name": "Three Measures Entered",
+        "intent_type": "mixed",
+        "special": true,
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 22
+          }
+        ]
+      },
+      {
+        "id": "there_will_be_four_more",
+        "name": "There Will Be Four More",
+        "intent_type": "mixed",
+        "special": true,
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 26
           }
         ]
       }
@@ -391,8 +518,31 @@
       "divine_ledger",
       "boss",
       "nanshe",
-      "audit",
-      "ration"
+      "ration",
+      "measure"
+    ],
+    "starting_statuses": [
+      {
+        "status": "the_just_ration"
+      }
+    ],
+    "intent_rules": [
+      {
+        "condition": {
+          "kind": "self_status",
+          "status": "the_final_distribution_is_called"
+        },
+        "action": "there_will_be_four_more",
+        "priority": 40
+      },
+      {
+        "condition": {
+          "kind": "self_status",
+          "status": "every_measure_is_counted_next"
+        },
+        "action": "three_measures_entered",
+        "priority": 30
+      }
     ]
   },
   {

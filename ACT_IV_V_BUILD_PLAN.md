@@ -890,7 +890,79 @@ may still lose, and that is correct.
       Procession re-entered at 3 was walked down to 2 by her own turn-end in the same breath (it is entered at
       4, exactly as the Last Line is), and the dedication sheet exhausted itself after ONE card — a Procession
       the player may answer with exactly one card is a decision about *which* card, not about how much to give.
-- [ ] **V-3 — Nanshe, Keeper of the Just Ration.** *She allocates.* The Ration Tablet.
+- [x] **V-3 — Nanshe, Keeper of the Just Ration. DONE 2026-09-05.** *She allocates.* Combat is cut into
+      DISTRIBUTIONS of three days, and before the first day of each the player can see all three portions AND
+      all three of her actions. Your natural Energy and your natural draw are your share and she takes none of
+      it; everything beyond it is written down and comes out of a later day, never below 1 and 1 (§8.7), and
+      never forgiven. `Take Ahead` / `Draw Ahead` move a portion forward, an unspent point and an unplayed
+      card move one back, and a Distribution closed owing nothing is answered — THE MEASURE HOLDS, 12 Block.
+      Three phases, and **her attacks never change** because she is transparent and never vindictive: only the
+      ration escalates. COUNT EVERY MEASURE (65 %) starts counting the Energy and the cards the player makes
+      for themselves and seals one announced day of each Distribution; THE FINAL DISTRIBUTION (30 %) closes
+      every account into one store of 16 Energy and 20 cards, switches the minimum off, and says there will be
+      four more and no fifth. `Converter/ActFiveNanshe.cs` + `Tests/ActFiveBossNansheTests.cs` (16), two new
+      `ReadableBossStateTests`, and she is in `BossLengthTests` (**down in 31 turns** of a 90 budget).
+      ▸ **THE TURN ORDER IS THE WHOLE MECHANISM.** At a player's turn start the Energy pool has just been
+      REFILLED to the build's own maximum and the day's draw has NOT happened yet — both inside the turn-start
+      trigger. So the day's Energy is a subtraction from a pool that is already exactly the natural share, and
+      the day's draw is a `TurnStartDraw` modifier written a moment before the draw obeys it. Nothing had to be
+      bought for any of it.
+      ▸ **THE SHARE IS READ, NEVER DECLARED**: `CombatantMaxResourceExpression(player, Energy)`, live, every
+      day — §8.2's build-relative fairness with no table of hero baselines anywhere. The draw half has no such
+      expression, so she LEARNS it from the first `CardsDrawn` of round 1, the one draw nothing has been taken
+      out of yet.
+      ▸ **ONE ENGINE BUY, and it is a hole in a lookup table**: `EventAmountExpression` — the engine's single
+      answer to "how big was that?" — returned **0 for a draw**, alone among the real events. A rule rationing
+      draw therefore had to read the HAND, which is a different question (a hand is the draw plus whatever was
+      already lying there) and quietly wrong; Inanna's Claim of Hands is written that way for exactly this
+      reason. One line in Core, one test beside the application-size tests.
+      ▸ **★ AND THE SIGHT WAS ALREADY THERE AND HAD NEVER REACHED A SCREEN.** §8.1 says she does not hide her
+      future intents. `DisclosureSpec.IntentLookahead` has existed since the Article of Full Disclosure and
+      **bnb-godot drew exactly one intent whatever it said** — a faculty granted to the player for three acts
+      and never once drawn. The Ration Tablet is worn by the PLAYER (a sight is a faculty of the one who
+      looks) and grants 2; the combat screen now draws the forecast under the telegraph, dimmer and numbered.
+      Proved from the live tree: `forecast: 3 shown of 3 projected — The Great Portion · then II The Quiet
+      Measure · then III The Still Water`.
+      ▸ **THE PATTERN HAS TO BE THE ROUND, and that is WHY the tablet can be read at all.** The telegraph is a
+      live projection that asks the enemy's own selector for round + n, so an intent chosen from a hidden
+      counter answers the same thing three times over. Her twelve actions are one cycle of four Distributions
+      of three days (§8.9's Shelter · Labour · Rest · Need) and day, Distribution and pattern chip are all
+      arithmetic on the round number.
+      ▸ **TWO BUGS, BOTH THE SAME SHAPE: an expression read AFTER the state it measures had been changed.**
+      Every number here is an expression over live state, evaluated where it stands — so the row that explains
+      the day (`Withheld: Energy`) was being computed against a debt the previous step had already worked off,
+      and read zero on the one day it had something to say. Same for "what is left over after her own hand-out
+      is absorbed". Fixed by ordering, not by new nodes, and it is the standing hazard of this whole authoring
+      style.
+      ▸ **A LEVER THAT RE-OFFERS ITSELF FOR EVER IS AN INFINITE TURN**, for anything that plays greedily —
+      which is every walker this game is measured with. The master's own bound fixes it: §8.3 borrows from a
+      LATER DAY, so what may be taken ahead is `(days left in the Distribution) × the share`, and Day III has
+      nothing ahead of it. Overconsumption beyond a Distribution is still reachable, which is what §8.6 says a
+      Borrowed Measure IS — it is reached by MAKING resources, not by asking her for more of hers.
+      ▸ **TAKE AHEAD IS HELD, NOT GAINED.** The master's 4/4/4 → 6/2/4 does not fit a pool with a hard
+      ceiling: six points offered to a three-point pool are three points and a silent clamp. `HeldEnergy`
+      (Act I) already solves it — the point waits and arrives the moment the pool runs dry.
+      ▸ **HER HP IS 600, the LOWEST of the three gods** (Nisaba 620, Inanna 760). Inanna had to buy her length
+      back because her mechanic makes the player faster; Nanshe's makes the player SLOWER, and a fight that
+      starves the deck attacking it does not also need hit points to be long.
+      ▸ **A NAMED GOD NEEDS A SEED SEARCH.** Act V fields three of six, so `--playtest 3` walked three whole
+      games without ever meeting her and `--smoke-boss 5 --boss nanshe` walked past all three gods of its
+      seed. `--playtest 8` reached her in four runs, and the Godot probe now searches seeds for a named boss
+      the way `--smoke-crowd` searches for a wide fight. One seed is not a search.
+      ▸ **★★ AND THE WIDER SEARCH FOUND A RUN-ENDING CRASH THAT IS NOT HERS — see V-3a below.**
+- [ ] **V-3a — the Weigher of the Unspoken Heart runs away. FOUND 2026-09-05, NOT YET FIXED.**
+      `dotnet run --project Converter -- --playtest 5` → **seed 20260721 dies in ACT IV** at r34c0,
+      `labyrinth_boss_weigher_of_the_unspoken_heart`, with
+      `InvalidOperationException: Stopped resolving pending queues after reaching the limit of 1024 cycles`.
+      Deterministic: the same seed fails the same way on a re-run. **It is pre-existing, not a V-3 regression**
+      — nothing added at V-3 can execute in Act IV (Nanshe's statuses and cards exist only in her encounter,
+      and hers is the only `CardsDrawn` trigger in the game that reads the event amount), and the four seeds
+      that overlap the old `--playtest 3` walk byte-identically before and after (114/553, 115/567, 115/579,
+      114/549). It had simply never been walked: this is the first search wide enough to reach seed 5.
+      The Weigher's OWN rules are all properly latched (`The Heart Remembers` refuses to fire twice, `Judge`
+      runs once at a turn end), so the loop is an interaction with what THAT RUN was carrying — which means
+      the first job is to make the run's inventory visible at the moment it stalls. **Do this before V-4:** a
+      crash a player can reach in an ordinary run outranks a god that does not exist yet.
 - [ ] **V-4 — Nanna-Sin, Lord of the Counted Moon.** *He counts.* The Lunar Calendar.
 - [ ] **V-5 — Utu, Witness of Every Oath.** *He witnesses.* Oaths / Witness.
 - [ ] **V-6 — Enlil, Voice of the Unalterable Decree.** *He decrees.* Decrees.
@@ -965,4 +1037,8 @@ force — these fights are "almost a separate game mode"); each god enters `Boss
 - [x] **V-0 — the gauntlet as a structure — DONE 2026-09-05** (Victory 5/5; `BossRooms` + `Rows = 0` bought)
 - [x] **V-1 — NISABA — DONE 2026-09-05** (the First Tablet; one engine buy: a death prevention that is not
       spent)
-- [ ] V-2 … V-6 the five remaining gods · V-7 the whole game
+- [x] **V-2 — INANNA — DONE 2026-09-05** (the Eanna Ledger; no engine buy; 760 HP after the walker priced her)
+- [x] **V-3 — NANSHE — DONE 2026-09-05** (the Ration Tablet; one engine buy: a draw could not say how big it
+      was; the intent forecast reached a screen for the first time) · **V-3a OPEN: the Act-IV Weigher runs away
+      on seed 20260721**
+- [ ] V-4 … V-6 the three remaining gods · V-7 the whole game

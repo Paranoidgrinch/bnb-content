@@ -40,10 +40,11 @@ public static partial class ActFive
                 "A card she claims is stamped PROPERTY OF EANNA. It stays yours, and its first play each turn "
                 + "costs 1 Energy less — and every use of it writes 1 Temple Due. At the Procession what is "
                 + "unpaid becomes Arrears, and Arrears do not go away."),
-            ["act_5_nanshe_auditor_of_the_just_ration"] = (
+            [NansheEncounterId] = (
                 "The Ration Tablet",
-                "Every share in this room is measured against the just ration. What is over is taken back; what "
-                + "is short is owed."),
+                "Three days to a Distribution, and all three portions are on the table before the first one "
+                + "begins. Your natural Energy and your natural draw are your share — anything you take "
+                + "beyond it comes out of a later day, and no day but the last falls below 1 and 1."),
             ["act_5_nanna_sin_moon_seal_of_ur"] = (
                 "The Lunar Calendar",
                 "The moon is a schedule. Whatever it is due on the day it arrives, it takes on that day and no "
@@ -65,10 +66,14 @@ public static partial class ActFive
             : new Dictionary<string, string>();
 
     // Everything the act's gods put into the document. One line per god as they are built.
-    public static IReadOnlyList<StatusData> All() => [.. NisabaStatuses(), .. InannaStatuses()];
+    public static IReadOnlyList<StatusData> All() =>
+        [.. NisabaStatuses(), .. InannaStatuses(), .. NansheStatuses()];
 
-    public static IReadOnlyList<CardData> GivenCards() => [.. NisabaReedCards(), .. InannaLedgerCards()];
+    public static IReadOnlyList<CardData> GivenCards() =>
+        [.. NisabaReedCards(), .. InannaLedgerCards(), .. NansheRationCards()];
 
     public static EffectProgram<EnemyActionContext>? Intent(string enemyId, string intentId) =>
-        NisabaIntent(enemyId, intentId) ?? InannaIntent(enemyId, intentId);
+        NisabaIntent(enemyId, intentId)
+        ?? InannaIntent(enemyId, intentId)
+        ?? NansheIntent(enemyId, intentId);
 }
