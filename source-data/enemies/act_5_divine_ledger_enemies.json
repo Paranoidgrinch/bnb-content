@@ -144,42 +144,71 @@
   {
     "id": "inanna_mistress_of_the_eanna_ledger",
     "name": "Inanna, Mistress of the Eanna Ledger",
-    "max_hp": 310,
+    "max_hp": 760,
     "intent_pattern": "cycle",
     "intents": [
       {
-        "id": "claim_the_storehouse",
-        "name": "Claim the Storehouse",
+        "id": "raise_the_standard",
+        "name": "Raise the Standard",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 20
+          },
+          {
+            "type": "gain_block",
+            "target": "self",
+            "amount": 8
+          }
+        ]
+      },
+      {
+        "id": "claim_the_finest_work",
+        "name": "Claim the Finest Work",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 14
+          }
+        ]
+      },
+      {
+        "id": "demand_the_arrears",
+        "name": "Demand the Arrears",
         "intent_type": "attack",
         "actions": [
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 28
-          },
-          {
-            "type": "apply_status",
-            "target": "self",
-            "status": "strength",
-            "amount": 2
+            "amount": 10
           }
         ]
       },
       {
-        "id": "demand_the_accounting",
-        "name": "Demand the Accounting",
+        "id": "claim_the_favored_work",
+        "name": "Claim the Favored Work",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 14
+          }
+        ]
+      },
+      {
+        "id": "adorn_eanna",
+        "name": "Adorn Eanna",
         "intent_type": "debuff",
         "actions": [
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 16
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "panic",
-            "amount": 1
+            "amount": 12
           },
           {
             "type": "apply_status",
@@ -190,14 +219,53 @@
         ]
       },
       {
-        "id": "judgment_of_eanna",
-        "name": "Judgment of Eanna",
-        "intent_type": "attack",
+        "id": "claim_the_first_gift",
+        "name": "Claim the First Gift",
+        "intent_type": "mixed",
         "actions": [
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 42
+            "amount": 12
+          }
+        ]
+      },
+      {
+        "id": "call_the_procession",
+        "name": "Call the Procession",
+        "intent_type": "mixed",
+        "special": true,
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 16
+          }
+        ]
+      },
+      {
+        "id": "open_the_storehouse",
+        "name": "Open the Storehouse",
+        "intent_type": "attack",
+        "special": true,
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 26
+          }
+        ]
+      },
+      {
+        "id": "all_things_enter_eanna",
+        "name": "All Things Enter Eanna",
+        "intent_type": "attack",
+        "special": true,
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 24
           }
         ]
       }
@@ -209,6 +277,41 @@
       "inanna",
       "eanna",
       "temple"
+    ],
+    "starting_statuses": [
+      {
+        "status": "the_eanna_ledger"
+      },
+      {
+        "status": "the_procession",
+        "stacks": 3
+      }
+    ],
+    "intent_rules": [
+      {
+        "condition": {
+          "kind": "self_status",
+          "status": "all_things_are_called"
+        },
+        "action": "all_things_enter_eanna",
+        "priority": 40
+      },
+      {
+        "condition": {
+          "kind": "self_status",
+          "status": "the_storehouse_is_opened"
+        },
+        "action": "open_the_storehouse",
+        "priority": 30
+      },
+      {
+        "condition": {
+          "kind": "self_status",
+          "status": "the_procession_is_called"
+        },
+        "action": "call_the_procession",
+        "priority": 20
+      }
     ]
   },
   {

@@ -61,6 +61,11 @@ public class BossLengthTests(ITestOutputHelper output)
     // spends its reed every turn (which the greedy one does, because a sheet costs nothing and moves the
     // table) gets there; one that does not is erased, and that is the fight working.
     [InlineData("act_5_nisaba_keeper_of_the_first_tablet", 90)]
+    // Inanna guards almost nothing — the ledger is the fight, not a wall — so what makes her long is
+    // 760 HP against a starting deck, and what could make her endless is a walker that never pays: it
+    // runs up Arrears it will not settle and takes Demand the Arrears in the face for it, which is the
+    // fight working exactly as designed rather than a fight that has stopped ending. 32 turns of the 90.
+    [InlineData("act_5_inanna_mistress_of_the_eanna_ledger", 90)]
     public void A_boss_dies_inside_the_turn_budget(string encounterId, int budget = TurnBudget)
     {
         var (play, session, _) = FightProbe.Start(FightProbe.Authored(encounterId), health: 9999);
