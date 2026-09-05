@@ -7,7 +7,12 @@
     "enemies": [
       "nisaba_keeper_of_the_first_tablet"
     ],
-    "weight": 1
+    "weight": 1,
+    "tags": [
+      "divine_ledger",
+      "boss"
+    ],
+    "role": "boss"
   },
   {
     "id": "act_5_inanna_mistress_of_the_eanna_ledger",
@@ -17,7 +22,12 @@
     "enemies": [
       "inanna_mistress_of_the_eanna_ledger"
     ],
-    "weight": 1
+    "weight": 1,
+    "tags": [
+      "divine_ledger",
+      "boss"
+    ],
+    "role": "boss"
   },
   {
     "id": "act_5_nanshe_auditor_of_the_just_ration",
@@ -27,7 +37,12 @@
     "enemies": [
       "nanshe_auditor_of_the_just_ration"
     ],
-    "weight": 1
+    "weight": 1,
+    "tags": [
+      "divine_ledger",
+      "boss"
+    ],
+    "role": "boss"
   },
   {
     "id": "act_5_nanna_sin_moon_seal_of_ur",
@@ -37,6 +52,41 @@
     "enemies": [
       "nanna_sin_moon_seal_of_ur"
     ],
-    "weight": 1
+    "weight": 1,
+    "tags": [
+      "divine_ledger",
+      "boss"
+    ],
+    "role": "boss"
+  },
+  {
+    "id": "act_5_utu_witness_of_every_oath",
+    "name": "Every Oath Ever Sworn",
+    "act": 5,
+    "difficulty": "boss",
+    "enemies": [
+      "utu_witness_of_every_oath"
+    ],
+    "weight": 1,
+    "tags": [
+      "divine_ledger",
+      "boss"
+    ],
+    "role": "boss"
+  },
+  {
+    "id": "act_5_enlil_voice_of_the_unalterable_decree",
+    "name": "The Unalterable Decree",
+    "act": 5,
+    "difficulty": "boss",
+    "enemies": [
+      "enlil_voice_of_the_unalterable_decree"
+    ],
+    "weight": 1,
+    "tags": [
+      "divine_ledger",
+      "boss"
+    ],
+    "role": "boss"
   }
 ]

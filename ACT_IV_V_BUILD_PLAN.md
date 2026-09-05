@@ -772,14 +772,33 @@ rewards, **no boss relics**. HP loss carries across all three. Boss-internal sys
 Every god gets a prominent **Divine Rule Area** in the combat UI. Act V is intentionally brutal: a strong run
 may still lose, and that is correct.
 
-- [ ] **V-0 — the gauntlet as a structure.** The engine already ends an act when its map runs out
-      (`RunRunner.WalkLinear`), so Act V is a **linear three-node map whose nodes are boss rooms** — no
-      edges, no other roles. What must be built: drawing 3 of 6 without repetition per run; showing all three
-      and their order from the first room (map screen + a run-level announcement); a boss room that grants
-      **nothing** (the spoils bundle is Act-I–IV's, not Act V's); no rest/heal seam between them; the
-      `ActRules.For(5)` shape for an act that has no per-path minimums at all. Plus the Godot side: the
-      Divine Rule Area as a real, consistently placed panel that each god fills differently.
-      **Acceptance: a run walks a placeholder Act V of three trivial divine rooms and reports Victory 5/5.**
+- [x] **V-0 — the gauntlet as a structure. DONE 2026-09-05.** Act V is a map of **three boss rows and nothing
+      else**, drawn 3-of-6 without repetition. **`--playtest 3` Victory 5/5 on all three seeds** (114/115/115
+      rooms), `--maps 2` clean, Godot `--smoke-marathon` **`Victory acts=5 rooms=111 error=none`**, export
+      clean (401 cards / 294 encounters / 1014 enemy actions / 83 events / 215 relics). Suites Core
+      1452/754/581/367, bnb-content **1274/1274**.
+      ▸ **One engine buy, and it is a number.** `MapGenerationSpec.BossRooms` (default 1) — each boss room its
+      own row, each drawing its fight from the Boss pool without replacement — plus permission for `Rows = 0`,
+      an act with no backbone at all. An act with no rows can keep no per-path promise, and saying both is now
+      a spec error in the generator AND in the export validator (which also had `Rows >= 1` hard-coded, and
+      counted Combat as a kind that always appears — a gauntlet fields none).
+      ▸ **Nothing had to be built for "3 of 6 visible in advance".** The engine lays every act's map out when
+      the run starts, so Act V's three rooms hold their three gods before the player leaves the first room of
+      Act I. The Godot side only had to READ it: a roll call in the interlude header and boss rooms drawn by
+      NAME when an act has more than one of them.
+      ▸ **`MapSpecBuilder` branches once** on `ActRules.IsGauntlet` instead of hanging "unless act five" off
+      the waiting room, the jars, the doors, the shop and the spoils; the room texts moved into a nested
+      `ActRooms`, which is null for an act that has no rooms. A god grants nothing at all — no gold, no card,
+      not even the boss relic every other act's boss hands over.
+      ▸ **The Divine Rule Area is presentation** (`Converter/ActFive.cs` → `Extra["divineRuleTitle"]` +
+      `Extra["divineRule"]` on the encounter), rendered by Godot directly under the round counter, in the same
+      place in every Act-V fight. A fight without those keys shows no panel, which is all of Acts I–IV.
+      ▸ **The six gods are PLACEHOLDERS** (the ported v2 bodies + Utu and Enlil written in the same shape).
+      To load at all they needed the map `role` and their intents normalised into the `actions` shape — the
+      ported ones carried damage AND block AND effects at once, and the top-level `block` was being silently
+      dropped by every reader.
+      ▸ **Risk 1 re-measured, and the prediction from IV-24 about Act IV's boss relics did NOT come true**:
+      three full five-act walks, no loop, no stall. See the risk block below for the latency numbers.
 - [ ] **V-1 — Nisaba, Keeper of the First Tablet.** *She writes.* The First Tablet: what is written becomes
       real; the fight asks whether you can prevent what is already written.
 - [ ] **V-2 — Inanna, Mistress of the Eanna Ledger.** *She claims.*
@@ -803,19 +822,29 @@ force — these fights are "almost a separate game mode"); each god enters `Boss
 ## Risks, named now
 
 1. **Replay latency over five acts.** Every answer replays the run from its baseline; the interlude
-   checkpoint (`InteractiveRunSession.Continue`) caps it, but the cap has never been measured past act 3.
+   checkpoint (`InteractiveRunSession.Continue`) caps it, and the cap moves only BETWEEN rooms.
    **Measured at IV-24** (Godot `--smoke-marathon`, per-act ms/answer): 155 / 163 / 229 / **291** across
-   acts I–IV. The checkpoint holds — Act IV is 35 % longer and its answers cost 27 % more — so it does not
-   have to move for Act IV. ★ But Act V is a THREE-ROOM act, so the checkpoint moves three times in the whole
-   of it while the run behind it is the longest it has ever been: **measure again at V-0**, not only at V-7,
-   and be ready to move the checkpoint inside a boss fight.
+   acts I–IV — the checkpoint held, Act IV being 35 % longer for 27 % dearer answers.
+   ★ **Re-measured at V-0** (`--playtest 3`, three whole five-act walks, headless and alone):
+   **100 / 113 / 131 / 155 / 361 ms per answer** across acts I–V — and the Godot marathon, which rebuilds the
+   whole screen per answer, says the same thing one notch dearer: **158 / 199 / 286 / 322 / 719**.
+   Act V costs **2.2–2.3× an Act-IV answer**, and
+   the worst single turn measured ~800 ms — exactly the predicted shape, because a three-room act moves the
+   checkpoint three times while the run behind it is the longest it has ever been. Nothing had to move for
+   V-0: the placeholder gods are 5-to-10-turn fights and a second per answer is never reached.
+   ★★ **But this is the number the gods will spend.** A real Act-V fight is meant to be long, multi-turn and
+   planning-heavy — three or four times the placeholder — and the cost per answer grows WITHIN a fight
+   (turn 1 of the first god measured 396 ms and turn 9 of the last one 829). **V-1 is the step that finds
+   out**, and the fix, when it is needed, is a checkpoint INSIDE a boss fight rather than only between rooms.
 2. **Act IV is bigger than any act so far and its design is looser** — the master repeatedly says
    "balance-tunable" and "conceptual bands" where Act III gave exact numbers. Every such choice goes into
    `ADAPTATIONS.md` in the step that makes it, or the act becomes unreviewable.
 3. **The five keywords are a single point of failure** (see the decision block above).
 4. **Act V has no precedent in the engine**: no act has ever been three bosses, and no boss has ever been
-   allowed to override normal combat logic as broadly as the gods are supposed to. V-0 exists to find out
-   what that costs before six fights are written against it.
+   allowed to override normal combat logic as broadly as the gods are supposed to. **Half answered at V-0**:
+   the three-boss SHAPE cost one number (`MapGenerationSpec.BossRooms` + `Rows = 0`) and one branch in
+   `MapSpecBuilder`, which is as cheap as it could have been. The other half — a boss that overrides normal
+   combat logic — is untouched, and V-1 is where it starts being paid for.
 5. **A pool nothing draws from looks like a working pool** (Act III's relic finding: 72 of 74 relics were
    unreachable and every test passed). Every new pool in this plan gets a test that proves a run can actually
    reach it.
@@ -845,4 +874,5 @@ force — these fights are "almost a separate game mode"); each god enters `Boss
 - [x] **IV-21 — die 24 Boss-Relikte — DONE 2026-09-04** (★★ 8 von 8 Bossen, Karten auditiert, 69 Boss-
       Relikte) · IV-22 (Events 1–10 + 5 Event-Relikte) · **IV-23 (Events 11–20 + 4 Event-Relikte — DIE
       ZWANZIG TÜREN STEHEN)** · **IV-24 (der Akt selbst — AKT IV IST BEGEHBAR, Victory 4/4)**
-- [ ] V-0 structure · V-1 … V-6 the six gods · V-7 the whole game
+- [x] **V-0 — the gauntlet as a structure — DONE 2026-09-05** (Victory 5/5; `BossRooms` + `Rows = 0` bought)
+- [ ] V-1 … V-6 the six gods · V-7 the whole game

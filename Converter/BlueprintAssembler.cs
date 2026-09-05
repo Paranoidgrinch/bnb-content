@@ -252,6 +252,9 @@ public static class BlueprintAssembler
                 {
                     FlavorText = e.Name,
                     Tags = [e.Difficulty, .. e.Tags ?? []],
+                    // Act V's shared rule is a UI rule: each god owns a Divine Rule Area, and this is where its
+                    // words come from (ActFive). Empty for every other fight in the game, which shows no panel.
+                    Extra = ActFive.Extra(e.Id),
                 }),
             Events = authored.ToDictionary(
                 a => a.Id,

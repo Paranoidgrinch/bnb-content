@@ -44,10 +44,12 @@ public class WholeRunTests
         Assert.Equal(Game.Acts!.Count, report.ActsWalked);
 
         // Each act keeps its promises to the route actually walked (docs/bnb-act-map-specs.md).
-        foreach (var (act, minimums) in Game.Acts!
-                     .Select((plan, index) => (index + 1, plan.MapGeneration!.PerPathMinimums)))
+        foreach (var (act, spec) in Game.Acts!
+                     .Select((plan, index) => (index + 1, plan.MapGeneration!)))
         {
-            Assert.Equal(1, report.Count(act, MapNodeTags.Boss));
+            var minimums = spec.PerPathMinimums;
+            // One boss per act, and three for the gauntlet: Act V's whole length is its bosses.
+            Assert.Equal(spec.BossRooms, report.Count(act, MapNodeTags.Boss));
             foreach (var (kind, least) in minimums)
             {
                 // A treasure may have bitten (a mimic is a fight), so treasures are counted at or above the
@@ -69,6 +71,8 @@ public class WholeRunTests
     [InlineData(1)]
     [InlineData(2)]
     [InlineData(3)]
+    // …the gauntlet included, whose promises are none and whose length is its three boss rooms.
+    [InlineData(4)]
     public void An_act_is_as_long_as_it_promises_to_be(int act)
     {
         var spec = Game.Acts![act].MapGeneration!;
@@ -79,6 +83,6 @@ public class WholeRunTests
 
         // Every row is one room on every route, so the row count IS the length of a walk through the act.
         var rows = generated.Map.Nodes.Select(n => n.Id.Value.Split('c')[0]).Distinct().Count();
-        Assert.InRange(rows, promised + 1, promised + spec.Rows + 2);
+        Assert.InRange(rows, promised + spec.BossRooms, promised + spec.Rows + spec.BossRooms + 1);
     }
 }

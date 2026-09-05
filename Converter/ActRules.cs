@@ -20,15 +20,19 @@ internal sealed record ActRules
     // the answer is the gate order — which put a shop in the opening row (where nobody has any gold) and an
     // elite in the fourth (with the starting deck). Kinds not named here may stand anywhere.
     public required IReadOnlyDictionary<MapNodeKind, int> EarliestDepthPercent { get; init; }
-    public required string RestText { get; init; }
-    public required string RestChoiceText { get; init; }
 
-    // The campfire's SECOND action (BnB_Run_Systems_Master §3: a waiting room offers Authorized Leave *or*
-    // Submit an Amendment). Upgrading a card is the same act in every act; only the room's voice changes.
-    public required string RestUpgradeChoiceText { get; init; }
-    public required string TreasureText { get; init; }
-    public required string TreasureOpenText { get; init; }
-    public required string TreasureLeaveText { get; init; }
+    // The act's own quiet rooms, in its own voice. NULL for an act that has none: Act V is three bosses back
+    // to back with no campfire, no jar and no shop between them, and an empty waiting-room text would be a
+    // room that exists and says nothing rather than a room the act does not have.
+    public ActRooms? Rooms { get; init; }
+
+    // How many BOSS rooms the act ends on. One is what a boss is; the Divine Ledger is three.
+    public int BossRooms { get; init; } = 1;
+
+    // An act with no rooms is a GAUNTLET: nothing but its bosses. Everything MapSpecBuilder normally assembles
+    // — the waiting room, the jars, the act's doors, the shop, the spoils — is a thing such an act does not
+    // have, so it is built by its own path rather than by giving each of those an "unless act five" clause.
+    public bool IsGauntlet => Rooms is null;
 
     public static ActRules For(BabActManifest act) => act.Act switch
     {
@@ -36,6 +40,7 @@ internal sealed record ActRules
         2 => Archives,
         3 => GreenDocket,
         4 => Labyrinth,
+        5 => DivineLedger,
         var other => throw new ConversionException($"act '{act.Id}'", $"no map rules are authored for act {other}"),
     };
 
@@ -112,12 +117,15 @@ internal sealed record ActRules
             [MapNodeKind.MultiCombat] = 20,
             [MapNodeKind.Elite] = 35,
         },
-        RestText = "The waiting room. The chairs are terrible, but nobody can reach you here.",
-        RestChoiceText = "Wait it out",
-        RestUpgradeChoiceText = "Submit an amendment",
-        TreasureText = "A sealed evidence crate, stamped in three colors of wax. Nobody has claimed it in decades.",
-        TreasureOpenText = "Break the seals",
-        TreasureLeaveText = "Leave it for the archivists",
+        Rooms = new ActRooms
+        {
+            RestText = "The waiting room. The chairs are terrible, but nobody can reach you here.",
+            RestChoiceText = "Wait it out",
+            RestUpgradeChoiceText = "Submit an amendment",
+            TreasureText = "A sealed evidence crate, stamped in three colors of wax. Nobody has claimed it in decades.",
+            TreasureOpenText = "Break the seals",
+            TreasureLeaveText = "Leave it for the archivists",
+        },
     };
 
     // ── Act II: The Endless Archives ───────────────────────────────────────────────
@@ -190,14 +198,17 @@ internal sealed record ActRules
             [MapNodeKind.MultiCombat] = 12,
             [MapNodeKind.Elite] = 22,
         },
-        RestText = "A reading alcove behind the returns desk. The lamp works, and the shelf above you has not "
-            + "moved once in the hour you have been watching it.",
-        RestChoiceText = "Sit until the shelf gives up",
-        RestUpgradeChoiceText = "Amend a filing while nobody is looking",
-        TreasureText = "A returns trolley nobody has emptied. The bottom shelf is still checked out to someone, "
-            + "and the card says the loan period has not started yet.",
-        TreasureOpenText = "Check the bottom shelf",
-        TreasureLeaveText = "Push it back into the dark",
+        Rooms = new ActRooms
+        {
+            RestText = "A reading alcove behind the returns desk. The lamp works, and the shelf above you has not "
+                + "moved once in the hour you have been watching it.",
+            RestChoiceText = "Sit until the shelf gives up",
+            RestUpgradeChoiceText = "Amend a filing while nobody is looking",
+            TreasureText = "A returns trolley nobody has emptied. The bottom shelf is still checked out to someone, "
+                + "and the card says the loan period has not started yet.",
+            TreasureOpenText = "Check the bottom shelf",
+            TreasureLeaveText = "Push it back into the dark",
+        },
     };
 
     // ── Act III: The Green Docket ──────────────────────────────────────────────────
@@ -272,14 +283,17 @@ internal sealed record ActRules
             [MapNodeKind.MultiCombat] = 15,
             [MapNodeKind.Elite] = 18,
         },
-        RestText = "A hollow out of the wind, with a stone somebody has sat on often enough to wear it. "
-            + "Nothing here has a right to you for as long as you stay off the road.",
-        RestChoiceText = "Sit out of the wind",
-        RestUpgradeChoiceText = "Put a filing in order by daylight",
-        TreasureText = "A boundary cairn with a hollow in it, and something in the hollow that was left for "
-            + "whoever came next. The stones around it have been counted recently.",
-        TreasureOpenText = "Take what was left",
-        TreasureLeaveText = "Add a stone and walk on",
+        Rooms = new ActRooms
+        {
+            RestText = "A hollow out of the wind, with a stone somebody has sat on often enough to wear it. "
+                + "Nothing here has a right to you for as long as you stay off the road.",
+            RestChoiceText = "Sit out of the wind",
+            RestUpgradeChoiceText = "Put a filing in order by daylight",
+            TreasureText = "A boundary cairn with a hollow in it, and something in the hollow that was left for "
+                + "whoever came next. The stones around it have been counted recently.",
+            TreasureOpenText = "Take what was left",
+            TreasureLeaveText = "Add a stone and walk on",
+        },
     };
 
     // ── Act IV: The Licensing Labyrinth ────────────────────────────────────────────
@@ -358,13 +372,49 @@ internal sealed record ActRules
             [MapNodeKind.MultiCombat] = 12,
             [MapNodeKind.Elite] = 18,
         },
-        RestText = "A niche off the ramp with a water jar in it, left for the workmen and never collected. "
-            + "Nothing here is licensed to notice you, which in this building is the same as being alone.",
-        RestChoiceText = "Sit in the niche until the shift changes",
-        RestUpgradeChoiceText = "Recut one of your own procedures while the stone is soft",
-        TreasureText = "A sealed jar in a wall-slot, with the impression of a seal that has not been valid "
-            + "for four reigns. Whatever it was licensed to hold is still inside.",
-        TreasureOpenText = "Break the old seal",
-        TreasureLeaveText = "Press the slot shut and log nothing",
+        Rooms = new ActRooms
+        {
+            RestText = "A niche off the ramp with a water jar in it, left for the workmen and never collected. "
+                + "Nothing here is licensed to notice you, which in this building is the same as being alone.",
+            RestChoiceText = "Sit in the niche until the shift changes",
+            RestUpgradeChoiceText = "Recut one of your own procedures while the stone is soft",
+            TreasureText = "A sealed jar in a wall-slot, with the impression of a seal that has not been valid "
+                + "for four reigns. Whatever it was licensed to hold is still inside.",
+            TreasureOpenText = "Break the old seal",
+            TreasureLeaveText = "Press the slot shut and log nothing",
+        },
     };
+
+    // ── Act V: The Divine Ledger ───────────────────────────────────────────────────
+    // Not an act. Three bosses, back to back, drawn from six without repetition, with nothing whatever
+    // between them: no standards, no elites, no doors, no shop, no jars, no campfire, no healing, and no
+    // spoils of any kind (BnB Boss Master §Act V, §1). The build that enters is the build that must win.
+    //
+    // So this record says almost nothing, and that is the design: no per-path promises (there is no path —
+    // there is an order), no lanes (there are no columns), no weights (nothing is drawn but bosses), no
+    // depth gates (a god may open the act as readily as close it), and no rooms at all.
+    private static readonly ActRules DivineLedger = new()
+    {
+        BossRooms = 3,
+        PerPathMinimums = new Dictionary<MapNodeKind, int>(),
+        PerPathMaximums = new Dictionary<MapNodeKind, int>(),
+        Lanes = [],
+        KindWeights = new Dictionary<MapNodeKind, int>(),
+        EarliestDepthPercent = new Dictionary<MapNodeKind, int>(),
+    };
+}
+
+// The words an act's own quiet rooms are told in. Shared shape, act-specific voice — a waiting room heals a
+// percentage and offers an amendment wherever it stands, and only the furniture differs.
+internal sealed record ActRooms
+{
+    public required string RestText { get; init; }
+    public required string RestChoiceText { get; init; }
+
+    // The campfire's SECOND action (BnB_Run_Systems_Master §3: a waiting room offers Authorized Leave *or*
+    // Submit an Amendment). Upgrading a card is the same act in every act; only the room's voice changes.
+    public required string RestUpgradeChoiceText { get; init; }
+    public required string TreasureText { get; init; }
+    public required string TreasureOpenText { get; init; }
+    public required string TreasureLeaveText { get; init; }
 }

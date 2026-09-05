@@ -3308,3 +3308,47 @@ wiped it — so the clause could not fire. The reset now belongs to the TURN (`T
 to the draw, guarded on the gift not already having been taken; the Silver Name-Tally, once per COMBAT, always
 had that shape and is why it never looped. **Why now: before Act IV was walkable, Act III's boss relics were
 handed over after the last boss of the game and there was no fight left to spend them in.**
+
+## Act V, as a structure — the gauntlet the run walks into (2026-09-05)
+
+**Act V is not an act, and the engine now has a word for that.** The design's final act is three bosses back
+to back, drawn from six without repetition, with nothing whatever between them — no standards, no elites, no
+doors, no shop, no jars, no campfire, no healing, and no card, relic or gold rewards (boss master §Act V §1).
+Every act before it is a backbone of rooms ending on one boss, so the shape had no expression at all. Core
+grew one number: **`MapGenerationSpec.BossRooms`** (default 1), each boss room its own row, each drawing its
+fight from the Boss pool without replacement — plus permission for **`Rows = 0`**, an act with no backbone,
+which is nothing but those rooms. An act with no rows can keep no per-path promise, and saying both is now a
+spec error rather than a generator that adds gates for ever.
+
+**Which three gods, and in what order, is settled when the run starts.** The engine lays every act's map out
+at run start (`RunSetup.BuildActPlan`), so Act V's three rooms already hold their three encounters before the
+player leaves the first room of Act I — which is exactly what the design's "the selected bosses and their
+order are visible from the beginning of the act" needs, with no act-start ceremony of its own. The Godot side
+reads it off the map: the interlude header prints the roll call ("Three gods, in this order: …") and the map
+draws the three rooms **by name** instead of three buttons all saying "Boss". An ordinary act's single boss
+stays unnamed — finding out who ends the act is part of walking it.
+
+**The gauntlet is built by its own path in `MapSpecBuilder`.** Everything that method assembles for an act —
+the waiting room, the treasure jars, the doors, the shop, and the spoils each role pays — is a thing Act V
+does not have, so `ActRules.IsGauntlet` branches once at the top rather than hanging an "unless this is act
+five" clause off each of them. The furniture texts moved into a nested **`ActRooms`**, which is `null` for an
+act that has no rooms: an empty waiting-room text would be a room that exists and says nothing, rather than a
+room the act does not have.
+
+**A god grants nothing.** No `VictoryRewards`, no `VictoryRewardsByEncounter` — not even the boss relic every
+other act's boss hands over (relics master: Act V has none). The act's reward is that it ends.
+
+**The Divine Rule Area is presentation, and it is authored as such.** §4 of the Act-V section is a UI rule:
+every god owns a prominent area, always in the same place, filled completely differently by each. Its words
+ride on the encounter's `EntityPresentation.Extra` (`divineRuleTitle` + `divineRule`, written in
+`Converter/ActFive.cs`), which is what that dictionary is for — the engine reads none of it, the frontend
+keys its panel off it, and a fight without those keys shows no panel, which is every fight in Acts I–IV.
+
+**The six gods are PLACEHOLDERS at V-0** — the ported v2 demo bodies, plus two written in the same shape for
+Utu and Enlil, whom the port had never carried. V-1 … V-6 replace all six. Two things had to be done to the
+ported data to make it loadable at all: the encounters gained the map `role` that puts them in a pool, and the
+intents were normalised into the `actions` shape the mapper accepts (the ported ones carried `damage` **and**
+`block` **and** `effects` at once, which is two payload shapes, and the top-level `block` was silently
+dropped by every reader anyway — as a `gain_block` action it is now real). The manifest's `layout`,
+`boss_count` and `boss_encounter_ids` join `first_elite_depth` and `rewards` as read-and-ignored: the act's
+structure is its map rules and its pool is the role its encounters carry.

@@ -9,8 +9,12 @@
         "id": "inscribe_the_ration",
         "name": "Inscribe the Ration",
         "intent_type": "debuff",
-        "block": 18,
-        "effects": [
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "self",
+            "amount": 18
+          },
           {
             "type": "apply_status",
             "target": "player",
@@ -23,9 +27,17 @@
         "id": "measure_the_boundary",
         "name": "Measure the Boundary",
         "intent_type": "mixed",
-        "damage": 20,
-        "block": 22,
-        "effects": [
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 20
+          },
+          {
+            "type": "gain_block",
+            "target": "self",
+            "amount": 22
+          },
           {
             "type": "apply_status",
             "target": "player",
@@ -38,8 +50,12 @@
         "id": "close_the_register",
         "name": "Close the Register",
         "intent_type": "attack",
-        "damage": 34,
-        "effects": [
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 34
+          },
           {
             "type": "apply_status",
             "target": "self",
@@ -68,8 +84,12 @@
         "id": "claim_the_storehouse",
         "name": "Claim the Storehouse",
         "intent_type": "attack",
-        "damage": 28,
-        "effects": [
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 28
+          },
           {
             "type": "apply_status",
             "target": "self",
@@ -82,8 +102,12 @@
         "id": "demand_the_accounting",
         "name": "Demand the Accounting",
         "intent_type": "debuff",
-        "damage": 16,
-        "effects": [
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 16
+          },
           {
             "type": "apply_status",
             "target": "player",
@@ -102,7 +126,13 @@
         "id": "judgment_of_eanna",
         "name": "Judgment of Eanna",
         "intent_type": "attack",
-        "damage": 42
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 42
+          }
+        ]
       }
     ],
     "tags": [
@@ -124,9 +154,17 @@
         "id": "weigh_the_ration",
         "name": "Weigh the Ration",
         "intent_type": "mixed",
-        "damage": 22,
-        "block": 18,
-        "effects": [
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 22
+          },
+          {
+            "type": "gain_block",
+            "target": "self",
+            "amount": 18
+          },
           {
             "type": "apply_status",
             "target": "player",
@@ -139,8 +177,12 @@
         "id": "audit_the_imbalance",
         "name": "Audit the Imbalance",
         "intent_type": "debuff",
-        "block": 26,
-        "effects": [
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "self",
+            "amount": 26
+          },
           {
             "type": "apply_status",
             "target": "player",
@@ -159,8 +201,12 @@
         "id": "correct_the_measure",
         "name": "Correct the Measure",
         "intent_type": "attack",
-        "damage": 36,
-        "effects": [
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 36
+          },
           {
             "type": "apply_status",
             "target": "self",
@@ -189,8 +235,12 @@
         "id": "waxing_seal",
         "name": "Waxing Seal",
         "intent_type": "block",
-        "block": 34,
-        "effects": [
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "self",
+            "amount": 34
+          },
           {
             "type": "apply_status",
             "target": "self",
@@ -203,8 +253,12 @@
         "id": "calendar_of_dues",
         "name": "Calendar of Dues",
         "intent_type": "debuff",
-        "damage": 18,
-        "effects": [
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 18
+          },
           {
             "type": "apply_status",
             "target": "player",
@@ -217,7 +271,13 @@
         "id": "waning_verdict",
         "name": "Waning Verdict",
         "intent_type": "attack",
-        "damage": 38
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 38
+          }
+        ]
       }
     ],
     "tags": [
@@ -228,6 +288,150 @@
       "moon",
       "ur",
       "seal"
+    ]
+  },
+  {
+    "id": "utu_witness_of_every_oath",
+    "name": "Utu, Witness of Every Oath",
+    "max_hp": 300,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "call_the_witnesses",
+        "name": "Call the Witnesses",
+        "intent_type": "debuff",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "self",
+            "amount": 20
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "doubt",
+            "amount": 2
+          }
+        ]
+      },
+      {
+        "id": "read_back_the_oath",
+        "name": "Read Back the Oath",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 22
+          },
+          {
+            "type": "gain_block",
+            "target": "self",
+            "amount": 18
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "paperwork",
+            "amount": 4
+          }
+        ]
+      },
+      {
+        "id": "the_sun_sees_it",
+        "name": "The Sun Sees It",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 36
+          },
+          {
+            "type": "apply_status",
+            "target": "self",
+            "status": "strength",
+            "amount": 2
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "act_5",
+      "divine_ledger",
+      "boss",
+      "utu",
+      "oath",
+      "witness"
+    ]
+  },
+  {
+    "id": "enlil_voice_of_the_unalterable_decree",
+    "name": "Enlil, Voice of the Unalterable Decree",
+    "max_hp": 320,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "issue_the_decree",
+        "name": "Issue the Decree",
+        "intent_type": "debuff",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "self",
+            "amount": 26
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "paperwork",
+            "amount": 6
+          }
+        ]
+      },
+      {
+        "id": "the_word_stands",
+        "name": "The Word Stands",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 24
+          },
+          {
+            "type": "gain_block",
+            "target": "self",
+            "amount": 24
+          },
+          {
+            "type": "apply_status",
+            "target": "self",
+            "status": "strength",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "let_it_be_so",
+        "name": "Let It Be So",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 40
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "act_5",
+      "divine_ledger",
+      "boss",
+      "enlil",
+      "decree",
+      "wind"
     ]
   }
 ]
