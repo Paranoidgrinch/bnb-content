@@ -3352,3 +3352,59 @@ intents were normalised into the `actions` shape the mapper accepts (the ported 
 dropped by every reader anyway — as a `gain_block` action it is now real). The manifest's `layout`,
 `boss_count` and `boss_encounter_ids` join `first_elite_depth` and `rewards` as read-and-ignored: the act's
 structure is its map rules and its pool is the role its encounters carry.
+
+## V-1 — Nisaba, Keeper of the First Tablet
+
+**Her HP is a choice, not a reading.** The Act-V section gives phase bands as percentages and no absolute
+number anywhere. She is **620**, which puts the Lapis Record at 403 and the Last Line at 186 — a step up from
+Act IV's 580 for a fight with no recovery behind it and none in front of it.
+
+**A sentence is TWO faces, because a status carries one number and this fight asks the player to watch two.**
+Each inscription stands on her as `nisaba_line_<slug>` whose stacks are the turns left, beside
+`nisaba_revised_<slug>` whose stacks are how far the wording has been walked back. Folding both into one chip
+would have made the tablet unreadable, which is the one thing §3 forbids outright ("extreme difficulty is
+allowed, incomprehensibility is not"). A third face, `nisaba_sealed_<slug>`, appears only in the lapis phase.
+
+**THE INSCRIPTION DIRECTOR is three slots, not a search.** §6.5 asks that inscriptions not be drawn at
+random, that none duplicate while active, that extreme short deadlines not crowd, and that no impossible
+board be generated. Rather than a filter over six sentences, the tablet has **three slots, each owning two
+sentences and alternating between them** — so a duplicate is impossible by construction, the one-turn sentence
+shares its slot with a two-turn one, and the tablet refills to three the moment a line comes off it. The pairs
+are (Thirty-Six ↔ Three Wounds), (Three Measures ↔ The Guard), (The Hand ↔ Two Works).
+
+**The seal takes the smallest count that SURVIVES the turn it is placed in.** The master says the Impressed
+Seal closes "one inscription" and shows the target in advance. Sealing the most urgent line literally — the
+one at count 1 — would bind nothing at all, because a line at 1 becomes true at the end of the very window the
+seal is impressed in. So it takes the lowest count of **2 or more**: the line the player would otherwise have
+corrected next turn. It lifts at the end of the turn it covered.
+
+**"+1 Energy" is Spare Hand, again.** The last revision of `Three Measures Shall Be Withheld` is written as
+"+1 Energy" and would be given into a pool the turn start has just refilled, which buys exactly nothing (the
+shared Act-IV lesson). What it means is one more card out of the turn, so it is given as **Spare Hand**, the
+grammar this game already owns for that. For the same reason the withholding itself waits on the player as a
+status and takes its Energy at the START of the turn it was written about: a pool refilled at that moment
+cannot be robbed the turn before.
+
+**"Wounds" are Red Tape, and "Works Broken" are cards off the draw pile.** B&B has no Wound card; its dead
+hand slot is `red_tape`, so `Three Wounds Shall Be Entered` files that many into the draw pile (and counts
+them as Junk Filed, which the rest of the game reads). `Two Works Shall Be Broken` exhausts that many cards
+out of the draw pile rather than the hand, because the sentence becomes true at the end of HER window, when
+the player's hand has already been discarded.
+
+**Block "counted as nothing" is additive, not a percentage.** A passive modifier's percentage is a constant
+per definition, so 100/75/50 % could not be one status. `Counted as Nothing` takes **6 off every Block gain
+per stack** and is applied with 3 stacks at revision 0, 2 at one, 1 at two, none at three — 18 off a gain is
+"nothing" for every Block card this game ships. Its mirror at the fourth revision, `The Guard Shall Stand`,
+gives 6 back.
+
+**A reed sheet re-offers itself.** The revision cards are laid in hand at the turn's start, one per
+correctable line, and playing one lays the next while a Reed Mark and something to correct both remain — so a
+turn holding several marks can walk the same line back twice. Without that the offer would have silently
+capped revisions at one per line per turn, which is not a rule the master states.
+
+**ENGINE BUY: a death prevention that is not spent.** `Indelible` is not a charm with charges — while the
+lethal wording stands unresolved she cannot be brought below 1, however many blows land. Core's status
+death-prevention consumed itself on firing, and re-applying itself from its own interceptor effects loses to
+the SECOND HIT OF ONE ACTION (the re-application is enqueued behind the hit it survived). So
+`StatusDeathPreventionData` grew **`Repeating`** (default false, kept out of the wire format when false), the
+sandbox interceptor skips its own removal when set, and the Studio status editor carries the checkbox.

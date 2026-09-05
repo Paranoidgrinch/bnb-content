@@ -1,3 +1,6 @@
+using RogueDeck.Core.Combat;
+using RogueDeck.Scenario.Authoring;
+
 namespace BnbContent.Converter;
 
 // ACT V — THE DIVINE LEDGER, so far only as a place that speaks.
@@ -15,7 +18,7 @@ namespace BnbContent.Converter;
 // At V-0 the six gods are still the ported placeholders and their lines say what each god IS. V-1 … V-6 replace
 // the fights and rewrite these lines with the live state each area actually shows (the tablet's written rows,
 // the ledger's claims, the moon's phase), which is the point at which the area stops being a caption.
-public static class ActFive
+public static partial class ActFive
 {
     public const int Act = 5;
 
@@ -29,8 +32,9 @@ public static class ActFive
         {
             ["act_5_nisaba_keeper_of_the_first_tablet"] = (
                 "The First Tablet",
-                "What is written on the first tablet has already happened. Nisaba writes, and the room agrees "
-                + "afterwards."),
+                "Three sentences about your future stand on the tablet, each with the turns left before it "
+                + "becomes true. You cannot dispel one — you edit it. A Reed Mark buys one revision, and a "
+                + "revised sentence still comes true, in smaller words."),
             ["act_5_inanna_mistress_of_the_eanna_ledger"] = (
                 "The Eanna Ledger",
                 "Everything in this room is entered in the ledger as belonging to Inanna. She is not attacking "
@@ -58,4 +62,12 @@ public static class ActFive
         RuleAreas.TryGetValue(encounterId, out var area)
             ? new Dictionary<string, string> { [RuleTitleKey] = area.Title, [RuleTextKey] = area.Rule }
             : new Dictionary<string, string>();
+
+    // Everything the act's gods put into the document. One line per god as they are built.
+    public static IReadOnlyList<StatusData> All() => [.. NisabaStatuses()];
+
+    public static IReadOnlyList<CardData> GivenCards() => [.. NisabaReedCards()];
+
+    public static EffectProgram<EnemyActionContext>? Intent(string enemyId, string intentId) =>
+        NisabaIntent(enemyId, intentId);
 }

@@ -56,6 +56,11 @@ public class BossLengthTests(ITestOutputHelper output)
     // longer, and a walker that kills them all before touching the Vizier has taken the worst road there is.
     [InlineData("labyrinth_boss_vizier_of_the_kings_mouth", 100)]
     [InlineData("labyrinth_boss_queen_of_the_flood_reckoning", 80)]
+    // Act V. A god is longer still, and Nisaba is longer than her HP says: the Last Line cannot be shot
+    // through — it has to be REWRITTEN, four turns of it, before she can be killed at all. A walker that
+    // spends its reed every turn (which the greedy one does, because a sheet costs nothing and moves the
+    // table) gets there; one that does not is erased, and that is the fight working.
+    [InlineData("act_5_nisaba_keeper_of_the_first_tablet", 90)]
     public void A_boss_dies_inside_the_turn_budget(string encounterId, int budget = TurnBudget)
     {
         var (play, session, _) = FightProbe.Start(FightProbe.Authored(encounterId), health: 9999);

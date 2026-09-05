@@ -213,4 +213,55 @@ public class ReadableBossStateTests
         WardenOfSealedVolumes.AnnouncedProcedureId,
         WardenOfSealedVolumes.AnnouncedEvidenceId,
     ];
+
+    // ── Nisaba's tablet ───────────────────────────────────────────────────────────────────────────────────
+
+    // A god may be "almost a separate game mode" (boss master §Act V §3) but it may not be a riddle, and the
+    // whole of Nisaba is state the player is asked to plan several turns against. So every face her tablet
+    // can wear — the sentences, their revisions, their seals, the reed and the margin — has to carry a name
+    // AND an explanation, because a chip that says "Sealed: Thirty-Six" and nothing else is a rule nobody
+    // was told.
+    [Fact]
+    public void Every_face_of_the_first_tablet_says_what_it_means()
+    {
+        var faces = ActFive.NisabaStatuses();
+        Assert.NotEmpty(faces);
+        Assert.All(faces, status =>
+        {
+            Assert.False(string.IsNullOrWhiteSpace(status.NameKey), status.Id);
+            Assert.False(string.IsNullOrWhiteSpace(status.DescriptionKey), status.Id);
+            Assert.NotEqual(status.NameKey?.Trim(), status.DescriptionKey?.Trim());
+        });
+    }
+
+    // …and the hand is the readout of what may still be corrected. A line that stands unsealed and unspent
+    // is offered a sheet; one that is sealed, spent or gone is not. The two must never disagree, because the
+    // ONLY way the player learns a line has been closed to them is that its sheet is missing.
+    [Fact]
+    public void The_tablet_and_the_hand_never_disagree_about_what_can_be_revised()
+    {
+        var (play, _, _) = FightProbe.Start(
+            FightProbe.Solo(ActFive.NisabaEnemyId, "impress_the_seal", 9, (ActFive.LapisRecordId, 1)),
+            deck: [.. Enumerable.Repeat("paper_cut", 30)], health: 2000);
+
+        for (var turn = 0; turn < 6; turn++)
+        {
+            var keeper = play.CombatDriver!.Current!.State.Combatants
+                .First(c => c.DefinitionId.value.Contains("nisaba", StringComparison.Ordinal));
+            var hand = play.CombatDriver.Current.Hand.Select(c => c.DefinitionId.value).ToHashSet(StringComparer.Ordinal);
+
+            foreach (var line in ActFive.LineFaces)
+            {
+                var slug = line["nisaba_line_".Length..];
+                var correctable = Has(keeper, line)
+                    && !Has(keeper, $"nisaba_sealed_{slug}")
+                    && FightProbe.StacksOf(keeper, $"nisaba_revised_{slug}") < 4;
+                Assert.Equal(correctable, hand.Contains($"revise_{slug}"));
+            }
+
+            play.CombatDriver.EndTurn();
+        }
+
+        play.Dispose();
+    }
 }

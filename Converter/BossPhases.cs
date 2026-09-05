@@ -110,5 +110,17 @@ public static class BossPhases
         ActFour.FloodCountedId,
         ActFour.WaterBlackId,
         ActFour.FloodDriftsId,
+
+        // ── Act V ─────────────────────────────────────────────────────────────────────────────────────────
+        //
+        // Nisaba's two later phases and the announcement that precedes each. The Last Line is not only a
+        // phase but the ONLY sentence left on the tablet, and the Indelible beside it is why the fight can
+        // no longer be ended by hitting her — both belong beside the telegraph rather than in the chip row,
+        // because a player reading the intent without them is reading a fight that is no longer happening.
+        ActFive.LapisAnnouncedId,
+        ActFive.LapisRecordId,
+        ActFive.LastLineAnnouncedId,
+        ActFive.LastLineId,
+        ActFive.IndelibleId,
     ];
 }
