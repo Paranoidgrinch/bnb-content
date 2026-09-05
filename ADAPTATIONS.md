@@ -3411,9 +3411,12 @@ sandbox interceptor skips its own removal when set, and the Studio status editor
 
 ## V-2 — Inanna, Mistress of the Eanna Ledger
 
-**Her HP is a choice, not a reading**, as Nisaba's was. She is **600**, putting the Open Storehouse at 420
-(70 %) and All Things Enter Eanna at 210 (35 %). Slightly under Nisaba because nothing about her fight is
-untouchable: there is no phase she cannot be killed during, so the number is the whole of her length.
+**Her HP is a choice, not a reading**, as Nisaba's was — and the walker corrected it. She began at 600 and
+went 600 → 243 in FOUR turns, because HER OWN MECHANIC MAKES THE PLAYER FASTER: every claim is a discount, so
+the deck fighting her is cheaper than the deck that fought anything else, and a god whose third phase arrives
+in the round she dies has two phases nobody sees. She is **760**, putting the Open Storehouse at 532 (70 %)
+and All Things Enter Eanna at 266 (35 %) — more than Nisaba's 620, because Nisaba is long for a reason of her
+own (the Indelible cannot be shot through) and Inanna's length has to be bought.
 
 **NOTHING WAS BOUGHT FROM THE ENGINE.** Every piece of her already existed, which is worth writing down after
 V-1 spent one buy on exactly the risk that predicted it. The claim stamp is a **per-instance card mark**; the
@@ -3500,3 +3503,107 @@ from the second turn of every fight in the game, each status chip reverted to a 
 worse and had not surfaced yet: a tag-filtered card count returns 0 without a registry, so "for each Junk in
 your hand" would silently read zero in any resumed fight. Found by standing the Godot boss probe two rounds in
 front of Nisaba while checking something else entirely.
+
+## V-3 — Nanshe, Keeper of the Just Ration
+
+**NOTHING WAS BOUGHT FROM THE ENGINE FOR THE RATION ITSELF**, and one thing was bought for a question the
+engine could not answer at all — see the last entry below. Everything the tablet does turns out to be a
+consequence of the turn order the engine already has: at a player's turn start the Energy pool has just been
+REFILLED to the build's own maximum and the day's draw has NOT happened yet, and both of those are true
+inside the turn-start trigger. So the day's Energy is a subtraction from a pool that is already exactly the
+natural share, and the day's draw is a `TurnStartDraw` modifier written a moment before the draw obeys it.
+
+**THE SHARE IS READ, NEVER DECLARED.** §8.2 wants the ration measured against the player's actual baseline —
+"she recognises what the player has legitimately acquired" — and the baseline is simply
+`CombatantMaxResourceExpression(player, Energy)`, live, every day. A build that has earned five Energy is
+rationed against five and a starting build against three, with no table of hero baselines anywhere. The draw
+half has no such expression, so she LEARNS it: the first `CardsDrawn` of round 1 is the one draw nothing has
+been taken out of yet, and that number is the build's portion for the rest of the fight.
+
+**THE RATION IS A LEDGER, NOT A 3×3 TABLE.** The master draws the tablet as nine numbers (Energy/Draw/Nanshe
+× Day I/II/III) and then describes Take Ahead, Return the Portion and Borrowed Measure as operations on it —
+all three of which are the same single quantity seen at different moments: *how much of a later day has
+already been spent*. So the tablet is two rows, `Borrowed Measure: Energy` and `Borrowed Measure: Draw`, and
+the nine numbers are what they IMPLY. §8.6's Borrowed Measure surviving into the next Distribution needs no
+second mechanism: it is the same row, still standing when Day III ends.
+
+**TAKE AHEAD IS HELD, NOT GAINED**, and this is the one place the master's own example (4/4/4 → 6/2/4) does
+not fit the engine as written: a combatant's Energy pool has a HARD ceiling, so six points offered to a
+three-point pool are three points and a silent clamp. `HeldEnergy` — built for exactly this in Act I — already
+solves it: the point waits and arrives the moment the pool runs dry, which is the moment it was taken for.
+It also makes the fight honest in a way a raw gain would not: a player who takes ahead and then does not spend
+it gets it straight back at the day's end, because §8.5's Return the Portion sees an unspent point.
+
+**RETURN THE PORTION IS AUTOMATIC, AND DRAW RETURNS AS CARDS IN HAND.** §8.5 is about Energy; §8.4 wants
+voluntarily taking LESS draw now to preserve it. Rather than a third sheet nobody would read, an unplayed card
+still in hand at the day's end pays back one borrowed card, exactly as an unspent point pays back one borrowed
+point. "Nanshe does not confiscate unused allotments" is then one rule with two units.
+
+**SHE COUNTS QUANTITY, NEVER EFFICIENCY** (§8.10, explicitly). `Count Every Measure` charges a point of Energy
+gained and a card drawn. It does not and cannot charge cost reduction, retention, or a card that was already
+in hand — none of those raise a `ResourceGained` or a `CardsDrawn` at all, so the master's exclusion list is
+satisfied by the choice of trigger rather than by a filter.
+
+**HER OWN HAND-OUTS ARE A RUNNING CREDIT.** The counting triggers cannot tell her portion from the player's
+engine, so the ration writes down what it just handed over (`nanshe_allotted_energy`, `nanshe_allotted_draw`)
+and each gain is absorbed against it before anything is charged. A credit rather than a per-turn flag, because
+Take Ahead promises a point that may only arrive several plays later.
+
+**THE MINIMUM RATION DELAYS, IT DOES NOT FORGIVE** (§8.7, §19). Outside the Final Distribution the day gives
+up at most `share − 1` of what is owed; the remainder stays on the row and waits for a day that can carry it.
+
+**THE FINAL DISTRIBUTION CLOSES EVERY ACCOUNT.** §8.13 says everything left goes into ONE store, so the
+Borrowed Measures are removed when it opens: there is no later day for a debt to come out of. The store is the
+master's own example — **Energy 16, Draw 20, four days** — the minimum protection is switched off, and the
+fifth day is written as `sign(days remaining)`, which multiplies the whole portion out to nothing. The soft
+enrage of §8.14 is therefore the absence of a rule rather than a new one, which is what "soft" means here.
+Nothing is returned in the Final Distribution: what a day did not use is gone, because there is no later day
+to move it to.
+
+**THE MEASURE HOLDS IS BLOCK, AT THE PLAYER'S TURN END.** §8.12 offers "remove 1 Borrowed Measure, or a small
+amount of Block", and the condition for the reward is that there is no Borrowed Measure to remove — so it is
+Block, **12**, granted at the end of Day III. That moment and not the next morning: Block granted at a
+combatant's turn START is cleared by the engine's own start-of-turn clear, which runs after the turn's
+triggers, so a reward paid there is a reward that never existed.
+
+**THE PATTERN IS THE ROUND, AND THAT IS WHY THE TABLET CAN BE READ AT ALL.** §8.1 says the player sees all
+three of her upcoming actions. The engine's telegraph is a live projection — `UpcomingIntentsFor` asks the
+enemy's own selector for round + n — so an intent chosen from a hidden counter would answer the same thing
+three times over, and only an intent chosen from the ROUND projects correctly. Her twelve actions are
+therefore one cycle of four Distributions of three days (§8.9's Shelter · Labour · Rest · Need), and the day,
+the Distribution and the pattern chip are all arithmetic on the round number. **Her attacks never change
+between phases**, which is not a saving but a characterisation: she is transparent, calm and never vindictive,
+and only the ration escalates.
+
+**AND THE SIGHT WAS ALREADY THERE, AND HAD NEVER REACHED A SCREEN.** `DisclosureSpec.IntentLookahead` — how
+far past the ordinary telegraph a hero may read — has existed since the Article of Full Disclosure, and
+bnb-godot drew exactly one intent whatever it said. The Ration Tablet is worn by the PLAYER (a sight is a
+faculty of the one who looks) and grants a lookahead of 2, and the combat screen now draws the forecast
+underneath the telegraph, dimmer and numbered. The boss probe reports `forecast: N shown of M projected`,
+because a faculty granted and not drawn is the same failure as a card mark the player cannot see.
+
+**WHAT MAY BE TAKEN AHEAD IS BOUNDED BY THE DAYS THAT ARE AHEAD.** §8.3 is explicit that the total across the
+Distribution does not change — you move a portion from a LATER DAY — so the whole of what Take Ahead may
+borrow is `(days left in this Distribution) × the day's share`, and on Day III there is nothing ahead to take.
+This is also what lets the sheet re-offer itself: a lever that hands itself back for ever is an infinite turn
+for anything that plays greedily, which is every walker this game is measured with. §8.6's overconsumption
+beyond a whole Distribution is still perfectly reachable — it is what a Borrowed Measure IS — but it is
+reached by MAKING resources under Count Every Measure, not by asking her for more of hers.
+
+**SEAL THE BASKET IS THE ABSENCE OF THE LEVERS.** §8.11 wants one future day fixed, announced in advance.
+From the second phase on, `The Basket Is Sealed` goes up on Day I carrying the day it names (II or III,
+alternating so it is never the same day twice running), and on that day the two sheets are simply not dealt.
+"Generated resources during that day may still draw from later portions" is satisfied by leaving the counting
+triggers alone — the seal stops the player MOVING a portion, not making one.
+
+**ENGINE BUY: a draw could not say how big it was.** `EventAmountExpression` is the engine's one answer to
+"how big was that?" and it is a lookup table over the trigger contexts — every one of which returns a number
+the event carries, except `CardsDrawn`, which returned 0. A rule rationing draw therefore had to read the HAND
+instead, which is a different question (a hand is the draw plus whatever was already lying there) and quietly
+wrong; Inanna's Claim of Hands is written against a hand for exactly this reason. One line in Core, one test
+beside the application-size tests, and it is the right shape rather than a convenience: a draw carries cards.
+
+**HER HP IS 600, and it is the LOWEST of the three gods so far** — Nisaba 620, Inanna 760. Inanna needed
+length bought back because her mechanic makes the player faster; Nanshe's makes the player SLOWER, and a fight
+that starves the deck attacking it does not also need hit points to be long. Count Every Measure at 390
+(65 %), the Final Distribution at 180 (30 %).

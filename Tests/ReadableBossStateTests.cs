@@ -310,4 +310,63 @@ public class ReadableBossStateTests
 
         play.Dispose();
     }
+
+    // ── Nanshe's tablet ───────────────────────────────────────────────────────────────────────────────────
+
+    [Fact]
+    public void Every_face_of_the_ration_tablet_says_what_it_means()
+    {
+        var faces = ActFive.NansheStatuses();
+        Assert.NotEmpty(faces);
+        Assert.All(faces, status =>
+        {
+            Assert.False(string.IsNullOrWhiteSpace(status.NameKey), status.Id);
+            Assert.False(string.IsNullOrWhiteSpace(status.DescriptionKey), status.Id);
+            Assert.NotEqual(status.NameKey?.Trim(), status.DescriptionKey?.Trim());
+        });
+    }
+
+    // THE PORTION AND THE ROW THAT EXPLAINS IT CAN NEVER DISAGREE. A pool that is short and no chip saying
+    // why is precisely the hidden gotcha the act forbids — so every point the day is short by is on the
+    // table as Withheld, on every day of the fight, whatever the player has been doing with their portions.
+    [Fact]
+    public void The_portion_and_the_row_that_explains_it_never_disagree()
+    {
+        var (play, _, enemy) = FightProbe.Start(
+            FightProbe.Solo(ActFive.NansheEnemyId, "the_quiet_measure", 3),
+            deck: [.. Enumerable.Repeat(Deed, 20)], health: 2000);
+
+        for (var day = 0; day < 9; day++)
+        {
+            var hero = Hero(play);
+            var share = hero.Resources[StandardCombatIds.EnergyResource].Max ?? 0;
+            var pool = hero.Resources[StandardCombatIds.EnergyResource].Current;
+
+            Assert.Equal(share - pool, FightProbe.StacksOf(hero, ActFive.WithheldEnergyId));
+            // …and which of her three days this is, always, because the pattern beside her is read against it.
+            Assert.InRange(FightProbe.StacksOf(hero, ActFive.DayOfDistributionId), 1, 3);
+
+            // Take from a later day now and then, so the row is proved on days that are actually short.
+            if (day % 2 == 0 &&
+                play.CombatDriver!.Current!.Hand.FirstOrDefault(
+                    c => c.DefinitionId.value == ActFive.TakeAheadCardId) is { } sheet)
+                play.CombatDriver.PlayCard(sheet.Id, null);
+
+            // Bounded by the POOL, not by the hand: she rations Energy, so a card the day can no longer pay
+            // for stays in hand, and a loop that waits for it to leave waits for ever.
+            for (var guard = 0; guard < 12; guard++)
+            {
+                if (Hero(play).Resources[StandardCombatIds.EnergyResource].Current <= 0)
+                    break;
+                if (play.CombatDriver!.Current!.Hand.FirstOrDefault(c => c.DefinitionId.value == Deed)
+                    is not { } deed)
+                    break;
+                play.CombatDriver.PlayCard(deed.Id, enemy);
+            }
+
+            play.CombatDriver!.EndTurn();
+        }
+
+        play.Dispose();
+    }
 }

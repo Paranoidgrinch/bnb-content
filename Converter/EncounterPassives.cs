@@ -191,6 +191,10 @@ public static class EncounterPassives
         ],
         "final_notice_knight" =>
             [new StartingStatusSpec(new StatusDefinitionId(PassiveStatuses.FinalNoticeId), PassiveStatuses.FinalNoticeStart)],
+        // Act V: Nanshe's tablet is worn by the PLAYER, because what it does is let them READ her whole
+        // Distribution — all three days of intents at once. A sight is a faculty of the one who looks.
+        ActFive.NansheEnemyId =>
+            [new StartingStatusSpec(new StatusDefinitionId(ActFive.RationTabletId), 1)],
         // Act IV: the Chisel Spirit sets its chisel against the player's name from the first bell — a round
         // top-up alone would miss the opening round, which starts before the bodies in it are dressed.
         ActFour.ChiselSpiritEnemyId => ActFour.CartoucheOpening(ActFour.ChiselSpiritEnemyId),

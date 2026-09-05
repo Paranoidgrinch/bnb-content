@@ -132,5 +132,18 @@ public static class BossPhases
         ActFive.AllThingsId,
         ActFive.ProcessionCalledId,
         ActFive.ProcessionId,
+
+        // Nanshe's two later phases and their announcements — and, beside them, the four DISTRIBUTION
+        // PATTERNS, which are not phases either but are read at exactly the same moment and for the same
+        // reason: the pattern is what her telegraph means, because it says what the other two days of it are.
+        ActFive.MeasureCountedNextId,
+        ActFive.CountEveryMeasureId,
+        ActFive.FinalCalledId,
+        ActFive.FinalDistributionId,
+        ActFive.DaysRemainId,
+        ActFive.ShelterId,
+        ActFive.LabourId,
+        ActFive.RestId,
+        ActFive.NeedId,
     ];
 }
