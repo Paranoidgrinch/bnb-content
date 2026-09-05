@@ -793,6 +793,9 @@ may still lose, and that is correct.
       ▸ **The Divine Rule Area is presentation** (`Converter/ActFive.cs` → `Extra["divineRuleTitle"]` +
       `Extra["divineRule"]` on the encounter), rendered by Godot directly under the round counter, in the same
       place in every Act-V fight. A fight without those keys shows no panel, which is all of Acts I–IV.
+      Verified from the live tree rather than from the document — `--smoke-boss 5` prints
+      `divine rule area: The First Tablet — What is written on the first tablet has already happened. …`,
+      because a headless probe cannot take a screenshot and "the method returned" is not "it is on screen".
       ▸ **The six gods are PLACEHOLDERS** (the ported v2 bodies + Utu and Enlil written in the same shape).
       To load at all they needed the map `role` and their intents normalised into the `actions` shape — the
       ported ones carried damage AND block AND effects at once, and the top-level `block` was being silently
