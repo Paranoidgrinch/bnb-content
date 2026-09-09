@@ -1057,13 +1057,24 @@ may still lose, and that is correct.
       isolation and a second full run of the IDENTICAL code was **1357/1357**. The extra ten fights running in
       parallel exposed an existing race; xUnit runs classes in parallel and nothing here stops it. **Left as
       a named open item — see V-4b.**
-- [ ] **V-4b — the suite is not deterministic.** Found at V-4a: two tests failed once in a full run and
-      passed in isolation and in a second full run of the identical code. The lead is the error text — an
-      Act-II boss encounter being looked up inside an Act-III probe — which is one test class's registry
-      being read by another, under xUnit's default class-level parallelism. Worth a step: every gate this
-      project has stands on this suite, and a gate that fails at random is a gate nobody trusts. Cheapest
-      first move is to run the suite with parallelism disabled and see whether the flake goes away, which
-      says whether it is a race or a leak.
+- [x] **V-4b — two runs in one process shared a map. FIXED 2026-09-09.** The flake was a **data race in the
+      host's hot path**, and the error text found it faster than the experiment would have: an Act-II boss
+      encounter looked up inside an Act-III probe means a run asked its catalog for a node belonging to a
+      DIFFERENT blueprint's map.
+      ▸ **`RunPlayback._actPlan` was one STATIC slot** caching the act plan a replay restore rebuilds against
+      (added because the baseline moves once per turn, so a long fight restores hundreds of times). Correct
+      while one run exists at a time — and two do whenever a process hosts two: xUnit runs classes in
+      parallel, and the Studio's Blazor server can hold a run per visitor.
+      ▸ **The failure is a TORN read, not a stale one.** The slot holds a four-field tuple, so a concurrent
+      reader can see one run's Blueprint beside another's Acts; `ReferenceEquals(cached.Blueprint, blueprint)`
+      then passes against a plan from a different game. A stale cache would have been caught by that check.
+      ▸ **The fix: the cache belongs to the playback.** One playback is one run against one blueprint, so per
+      instance there is nothing to tear, the hit rate is unchanged, and the half-second-an-answer win is kept.
+      No lock, no thread affinity.
+      ▸ **Proved before it was fixed**: `ParallelRunPlaybackTortureTests` (sixteen playbacks, two blueprints,
+      replayed hard) breaks the static slot in **under a second** and passed the instance field 5/5. A
+      deterministic test cannot catch this, which the test's header says.
+      ▸ Suites Core **1455/755/581/369**.
 - [ ] **V-5 — Utu, Witness of Every Oath.** *He witnesses.* Oaths / Witness.
 - [ ] **V-6 — Enlil, Voice of the Unalterable Decree.** *He decrees.* Decrees.
 
