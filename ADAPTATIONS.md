@@ -3607,3 +3607,48 @@ beside the application-size tests, and it is the right shape rather than a conve
 length bought back because her mechanic makes the player faster; Nanshe's makes the player SLOWER, and a fight
 that starves the deck attacking it does not also need hit points to be long. Count Every Measure at 390
 (65 %), the Final Distribution at 180 (30 %).
+
+## V-3a — the hand a turn opens with (2026-09-09)
+
+**A RUN DIED IN ACT IV AND IT WAS NOBODY'S BOSS.** `--playtest 5`, seed 20260721: an elite room in the
+Licensing Labyrinth, `InvalidOperationException: Stopped resolving pending queues after reaching the limit of
+1024 cycles`. The room was three Tombbreakers and the crash was in the fight's OPENING, before a single card
+was played. What the fight's own log said, once it was made to say anything at all: **nineteen draws inside
+one turn**, each one announcing itself to every rule the player was carrying.
+
+**THE DEFECT IS AN IDIOM, NOT A RELIC.** Everything in this game that happens "at the start of your turn,
+with your hand in front of you" is written on the DRAW, and has to be: a turn-start trigger runs before the
+hand exists, so a promise about the hand can only be kept once the hand is dealt. But the engine has ONE
+announcement for that and it fires for every draw — the turn's opening hand and every card any card or any
+other rule draws afterwards, all of them identical. Read literally that turns three kinds of rule into bugs:
+
+- a rule that COUNTS TURNS at the draw counts draws. The Brass Service Bell rings "every third turn"; it was
+  ringing every third DRAW, and in the dead run its counter stood at 12 on turn one;
+- a rule that PAYS at the draw and pays in CARDS feeds itself — its own card is a draw, which announces
+  itself, which pays again. Several of them (`signed_settlement`, `survey_cairn`,
+  `countersealed_ring_of_keeping`) clear their latch AFTER the payment, so the payment sees the latch still
+  set: the ordering error this file has now recorded three times;
+- and every other "at the hand" rule quietly pays once per draw. In the dead run Ward Wax struck 57 times.
+
+The engine's own re-entry guard is why no single relic ever ran away on its own: a triggered rule cannot run
+inside its own chain. It takes SEVERAL of them, each one's payment being a different rule's new turn, to get
+round that — which is why this needed a deck with twenty-six relics in it to be seen at all.
+
+**THE ENGINE BUY: A TURN CAN SAY WHICH DRAW THIS IS** (`CardDrawsThisTurn` on the per-combatant turn stats,
+read as `cardDrawsThisTurn`). It does not compose: two rules that both hang on the same announcement cannot
+agree on which of them counts first, so the count has to be taken by the engine before the announcement goes
+out. It is counted where every other turn statistic is counted, resets with them, and travels in the same
+snapshot — a rebuilt fight that forgot it would hand out every opening-hand payment a second time.
+
+**THE READING, WRITTEN ONCE** (`Converter/TheOpeningHand.cs`): a rule hung on the draw means the FIRST draw
+of the turn. It is applied by each file's own trigger helper to every `CardsDrawn` trigger it installs, so no
+site had to be edited and none can be forgotten — the relics, the inscriptions, the event objects and the
+keywords, fourteen files. The rules that really do mean every draw live in files that do not apply it and say
+so where they are written: **Nanshe's ration** (she has to see every draw — the first of round 1 is how she
+learns the build's natural portion), **Inanna's Claim of Hands** (a running total for the turn) and the
+**Causeway envoy** (which counts the hand as it changes).
+
+**WHAT WAS NOT DONE.** The same reading has not been applied to the enemy, elite and boss files (about 35
+sites, three of which draw for the player). None of them has ever run away — the re-entry guard holds a lone
+rule — but the Hill Queen's Royal Grace is offered at every draw while no card has been played, and one of
+its five gifts is two cards. It is the next place to look if a fight ever parks on a repeating prompt.

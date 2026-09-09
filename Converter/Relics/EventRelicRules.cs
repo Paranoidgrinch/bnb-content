@@ -211,5 +211,6 @@ public static class EventRelicRules
     private static StatusTriggerData Trigger<TContext>(
         EffectProgram<TContext> program, string trigger,
         StatusTriggerScope scope = StatusTriggerScope.Bearer) where TContext : class =>
-        new(trigger, JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<TContext>()), scope);
+        new(trigger, JsonSerializer.SerializeToElement(
+            TheOpeningHand.For(program, trigger), CombatJson.CreateOptions<TContext>()), scope);
 }
