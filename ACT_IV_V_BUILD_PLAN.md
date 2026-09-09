@@ -950,19 +950,29 @@ may still lose, and that is correct.
       seed. `--playtest 8` reached her in four runs, and the Godot probe now searches seeds for a named boss
       the way `--smoke-crowd` searches for a wide fight. One seed is not a search.
       ▸ **★★ AND THE WIDER SEARCH FOUND A RUN-ENDING CRASH THAT IS NOT HERS — see V-3a below.**
-- [ ] **V-3a — the Weigher of the Unspoken Heart runs away. FOUND 2026-09-05, NOT YET FIXED.**
-      `dotnet run --project Converter -- --playtest 5` → **seed 20260721 dies in ACT IV** at r34c0,
-      `labyrinth_boss_weigher_of_the_unspoken_heart`, with
-      `InvalidOperationException: Stopped resolving pending queues after reaching the limit of 1024 cycles`.
-      Deterministic: the same seed fails the same way on a re-run. **It is pre-existing, not a V-3 regression**
-      — nothing added at V-3 can execute in Act IV (Nanshe's statuses and cards exist only in her encounter,
-      and hers is the only `CardsDrawn` trigger in the game that reads the event amount), and the four seeds
-      that overlap the old `--playtest 3` walk byte-identically before and after (114/553, 115/567, 115/579,
-      114/549). It had simply never been walked: this is the first search wide enough to reach seed 5.
-      The Weigher's OWN rules are all properly latched (`The Heart Remembers` refuses to fire twice, `Judge`
-      runs once at a turn end), so the loop is an interaction with what THAT RUN was carrying — which means
-      the first job is to make the run's inventory visible at the moment it stalls. **Do this before V-4:** a
-      crash a player can reach in an ordinary run outranks a god that does not exist yet.
+- [x] **V-3a — the hand a turn opens with. FIXED 2026-09-09.** And it was not the Weigher: the room seed
+      20260721 actually dies in is **r32c0, the Tombbreakers elite**, in the fight's OPENING, before a card is
+      played. Two instruments were built to find it — the engine now says WHAT IS IN the runaway queue when it
+      stops (`CombatQueueProcessor`), and the walker prints the run's whole inventory plus the fight's whole
+      log when it gives up (`RunWalker.Inventory`, `--walk <seed>` to replay one walk of a game in 95 s
+      instead of walking five). Between them the cause was named in one run: **nineteen draws inside one
+      turn**.
+      ▸ **THE DEFECT IS AN IDIOM.** Every rule that means "at the start of your turn, with your hand in front
+      of you" hangs on `CardsDrawn`, because a turn-start trigger runs before the hand exists — and the engine
+      announces EVERY draw the same way. So a rule that counts turns counts draws (the Brass Service Bell was
+      ringing every third DRAW), a rule that pays in CARDS pays itself, and everything else pays once per
+      draw (Ward Wax struck 57 times in that turn). Three relics clear their latch AFTER the payment, so the
+      payment sees the latch still set.
+      ▸ **ENGINE BUY: `CardDrawsThisTurn`** — a turn counts its draws, taken before the announcement goes out,
+      reset and snapshotted with every other turn statistic. It does not compose: two rules on the same
+      announcement cannot agree which of them counts first.
+      ▸ **THE READING IS WRITTEN ONCE** (`Converter/TheOpeningHand.cs`) and applied by each file's own trigger
+      helper — fourteen files, no site edited, none forgettable. The three rules that really do mean every
+      draw (Nanshe's ration, Inanna's Claim of Hands, the Causeway envoy) live in files that do not apply it.
+      ▸ **Left open:** the same reading is not applied to the enemy/elite/boss files (~35 sites, 3 of which
+      draw). None has ever run away — the engine's re-entry guard holds a LONE rule, which is why this needed
+      a 26-relic deck to be seen at all — but the Hill Queen's Royal Grace is offered at every draw while no
+      card has been played and one of its gifts is two cards.
 - [ ] **V-4 — Nanna-Sin, Lord of the Counted Moon.** *He counts.* The Lunar Calendar.
 - [ ] **V-5 — Utu, Witness of Every Oath.** *He witnesses.* Oaths / Witness.
 - [ ] **V-6 — Enlil, Voice of the Unalterable Decree.** *He decrees.* Decrees.
@@ -1039,6 +1049,7 @@ force — these fights are "almost a separate game mode"); each god enters `Boss
       spent)
 - [x] **V-2 — INANNA — DONE 2026-09-05** (the Eanna Ledger; no engine buy; 760 HP after the walker priced her)
 - [x] **V-3 — NANSHE — DONE 2026-09-05** (the Ration Tablet; one engine buy: a draw could not say how big it
-      was; the intent forecast reached a screen for the first time) · **V-3a OPEN: the Act-IV Weigher runs away
-      on seed 20260721**
+      was; the intent forecast reached a screen for the first time)
+- [x] **V-3a — THE OPENING HAND — DONE 2026-09-09** (the Act-IV run-killer: a draw is not a new turn; one
+      engine buy, `CardDrawsThisTurn`; the crash was in an elite room, not the Weigher)
 - [ ] V-4 … V-6 the three remaining gods · V-7 the whole game

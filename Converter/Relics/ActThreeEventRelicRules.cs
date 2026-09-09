@@ -307,6 +307,7 @@ public static class ActThreeEventRelicRules
 
     private static StatusTriggerData Trigger<TContext>(EffectProgram<TContext> program, string trigger)
         where TContext : class =>
-        new(trigger, JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<TContext>()),
+        new(trigger, JsonSerializer.SerializeToElement(
+            TheOpeningHand.For(program, trigger), CombatJson.CreateOptions<TContext>()),
             StatusTriggerScope.Bearer);
 }

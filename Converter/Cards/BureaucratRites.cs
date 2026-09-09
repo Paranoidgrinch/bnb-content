@@ -435,7 +435,8 @@ public static class BureaucratRites
     private static StatusTriggerData Trigger<TContext>(
         EffectProgram<TContext> program, string trigger,
         StatusTriggerScope scope = StatusTriggerScope.Bearer) where TContext : class =>
-        new(trigger, JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<TContext>()), scope);
+        new(trigger, JsonSerializer.SerializeToElement(
+            TheOpeningHand.For(program, trigger), CombatJson.CreateOptions<TContext>()), scope);
 
     private static DrawCardsNode<TContext> Draw<TContext>(int cards) where TContext : class =>
         new(CombatantTargetSelectors.Source, new ConstantExpression<TContext>(cards));

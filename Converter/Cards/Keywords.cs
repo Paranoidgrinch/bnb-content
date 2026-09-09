@@ -773,7 +773,7 @@ public static class Keywords
 
     private static StatusTriggerData Trigger<TContext>(EffectProgram<TContext> program, string trigger)
         where TContext : class =>
-        new(trigger, Serialize(program));
+        new(trigger, Serialize(TheOpeningHand.For(program, trigger)));
 
     private static JsonElement Serialize<TContext>(EffectProgram<TContext> program) where TContext : class =>
         JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<TContext>());
