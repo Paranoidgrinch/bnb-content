@@ -3832,3 +3832,71 @@ test is a stress and says so in its header.
 temptation is to re-run it until it is green and move on. Twice today a full run was green over code that had
 a real race in it. The error text is the instrument: it named a room from another act, and that one word was
 worth more than a twenty-minute experiment.
+
+## V-5 — Utu, Witness of Every Oath (2026-09-09)
+
+**NOTHING WAS BOUGHT FROM THE ENGINE, FOR THE SECOND GOD RUNNING.** Utu's fight is made of five questions
+about a turn — how many cards were played, was one of them a Deed, is there Energy left, how much damage was
+dealt, was that the same kind of card as the last one — and the engine already keeps every one of them
+(`CardsPlayedThisTurn`, `CardsPlayedThisTurnWithTag`, `CombatantCurrentResource`, `DamageDealtThisTurn`, plus
+one counter for the last kind played). A god whose whole mechanic is *watching* turns out to need nothing but
+the things the fight was already counting for its own reasons.
+
+**THE ONE RULE THAT MUST NEVER BE SOFTENED (§10.2).** Nothing in `ActFiveUtu.cs` refuses a play, raises a
+cost, or takes a card out of a hand. The card that breaks the vow is played, resolves in full, and *then* he
+has seen it — there is a test that measures the damage of the fifth card under an Oath of Restraint precisely
+to prove the breach did not eat it. A god who stops you is a god who decided for you, and then there was no
+promise to keep.
+
+**THE WARNING IS A CHIP, BECAUSE THE CARD FACE IS NOT OURS TO WRITE ON.** The master asks for
+`THIS BREAKS: Oath of Restraint` on the action itself. The engine has no hook that lets a boss annotate a
+card the player is *considering*, so the warning is restated as state after every single play:
+**THE NEXT ONE BREAKS IT** stands the moment the allowance is spent, and **THE OATH IS NOT YET KEPT** stands
+whenever ending the turn where it stands would be a breach. Two chips, both rewritten on every play and every
+morning, cover all nine vows — where one chip per vow would have been twelve statuses saying the same thing.
+
+**THE PHASE BONUS IS WITNESS, AND THAT WAS A TELEGRAPH DECISION BEFORE IT WAS A DESIGN ONE.** The first draft
+gave the later skies flat damage (+10 at the Zenith, +20 at the Final Oath), computed as
+`10 × stacks(zenith) + 20 × stacks(final)` — a neat trick, since a phase marker is a one-stack status. But the
+intent LABEL is built from the authored effect list at conversion time, and it cannot say that: the player
+would have read "24 dmg +2 per own Witness" and taken 44. So the sky gives him what a sky can actually give
+him — **he sees more**: 2 Witness at the Zenith, 3 at the Final Oath. One scaling term, and the telegraph
+prints the whole sum (`Rise Between the Mountains · 24 dmg +2 per own Witness`). It is also the better
+fiction: the sun climbing IS the shadows going.
+
+**AND THE SAME RULE COST THE BEST LINE IN THE FIGHT.** *Nothing Is Hidden* stripped the player's Block —
+"nothing is hidden, and Block is where a player hides". The effect DSL the label is built from has no word
+for taking Block away, so that strip would have been damage the telegraph never mentioned, in the one act
+whose own rules (§3: *all unusual rules must be clearly telegraphed*) forbid exactly that. It is now a plainer,
+larger number the label CAN say. **A flourish the telegraph cannot print is a hidden rule with a good excuse.**
+
+**THE ORACLE DIRECTOR IS ONE CONDITION (§10.4).** "Oaths must be technically achievable" — two of the nine
+vows ask the player to DO something (play a Deed, deal damage) and a hand with no Deed can do neither. So the
+middle slot of the three offers is guarded by "is there a Deed in hand", read at the moment of the offer, and
+without one he asks for the Straight Path instead, which any hand keeps by not playing. The offer happens on
+**CardsDrawn** rather than TurnStarted for the same reason: a promise asked before the hand is dealt is a
+promise about cards nobody has seen.
+
+**A GREAT OATH IS THE SAME RECORD WITH ITS CLOCK SET TO ZERO.** The twelve vows are one table — id, name,
+turns, what it asks, its number, what it pays — and every rule in the file is written against that table
+rather than against a vow. `Turns = 1` is a morning Oath, `2` is a Zenith Oath measured on a running tally
+across both turns, and **`0` means it never ends**: no countdown chip, and it is measured again from scratch
+every turn until he falls. One `Cumulative(oath)` predicate decides whether "plays" means the vow's tally or
+the turn's, which is the entire difference between an Oath of Restraint and an Oath of Long Restraint.
+
+**§10.11's NO SHADOW IS HONOURED FOR WHAT IT IS FOR, NOT AS WRITTEN.** The master shows the top three cards of
+the draw pile. The engine can mark them; the frontend draws no draw pile, so the sight would be a sight nobody
+is given — the exact failure the phase-marker work was done to stop. It is implemented as what the master says
+it is *for* ("the increased Oath difficulty is matched by increased planning information"): one card more at
+the start of every turn from the Zenith on, which turns an unknown card into a known one, permanently.
+
+**THE BREACH ROUTINE IS WHY IT IS ONE WITNESS AND NOT FOUR.** A breach removes the vow, so a sixth and a
+seventh card under a broken Oath of Restraint are ordinary cards again. Charging for each of them would be
+charging the player for a promise that no longer exists — and it would make Witness, the one number the whole
+fight is read off, a function of how many cards happened to be left in a hand.
+
+**MEASURED**: 21 live tests; `A_boss_dies_inside_the_turn_budget` puts him down in **29 turns of 90** (the
+other gods: 31 · 31 · 34 · 80). Against the sparring ring's greedy walker — which swears the first Oath every
+morning and then breaks it, because a greedy player plays every card it can afford — he wins nothing but takes
+29–43 turns and 541–792 HP off a 900-HP fighter. That is the fight working from the wrong end on purpose:
+Witness climbing is the walker's own record being read back to it.

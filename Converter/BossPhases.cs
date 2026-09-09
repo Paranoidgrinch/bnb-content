@@ -156,5 +156,17 @@ public static class BossPhases
         ActFive.LunarCountId,
         ActFive.ReturningMoveId,
         ActFive.MoonHeldId,
+
+        // Utu's three skies — and, beside them, the four facts his telegraph cannot say by itself. The
+        // Witness is a term in every number he deals; the Oath and its clock are what the player is being
+        // asked to plan against; and What Was Witnessed is the announcement that his next move is Judgment.
+        // A player reading "Raise the Saw" without the Witness beside it is reading the wrong damage.
+        ActFive.MorningSunId,
+        ActFive.ZenithId,
+        ActFive.FinalOathId,
+        ActFive.WitnessId,
+        ActFive.OathStandsId,
+        ActFive.JudgmentId,
+        ActFive.NoShadowId,
     ];
 }

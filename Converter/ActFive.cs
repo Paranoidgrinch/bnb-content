@@ -50,10 +50,11 @@ public static partial class ActFive
                 "Eight phases, one a round, carrying the counts — · I · II · III · IV · III · II · I. The "
                 + "card you play on tonight's count is Counted, and comes back free the next time that count "
                 + "comes round. So does the move he made on it."),
-            ["act_5_utu_witness_of_every_oath"] = (
+            [UtuEncounterId] = (
                 "Oaths and Witness",
-                "Utu witnesses every oath, including the ones you did not know you were swearing. Nothing done "
-                + "here goes unrecorded."),
+                "He asks for a promise every turn and pays for it before you keep it. Nothing here is ever "
+                + "forbidden to you: the card that breaks your Oath is played, and resolves — and then he has "
+                + "seen it. What he sees he keeps, and every move he makes is read off it."),
             ["act_5_enlil_voice_of_the_unalterable_decree"] = (
                 "Decrees",
                 "Enlil says a thing, and it is so. A decree is not an attack — it is the state the world is in "
@@ -68,7 +69,8 @@ public static partial class ActFive
 
     // Everything the act's gods put into the document. One line per god as they are built.
     public static IReadOnlyList<StatusData> All() =>
-        [.. NisabaStatuses(), .. InannaStatuses(), .. NansheStatuses(), .. NannaSinStatuses()];
+        [.. NisabaStatuses(), .. InannaStatuses(), .. NansheStatuses(), .. NannaSinStatuses(),
+         .. UtuStatuses()];
 
     public static IReadOnlyList<CardData> GivenCards() =>
         [.. NisabaReedCards(), .. InannaLedgerCards(), .. NansheRationCards(), .. NannaSinCards()];
@@ -77,5 +79,6 @@ public static partial class ActFive
         NisabaIntent(enemyId, intentId)
         ?? InannaIntent(enemyId, intentId)
         ?? NansheIntent(enemyId, intentId)
-        ?? NannaSinIntent(enemyId, intentId);
+        ?? NannaSinIntent(enemyId, intentId)
+        ?? UtuIntent(enemyId, intentId);
 }

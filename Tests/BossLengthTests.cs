@@ -74,6 +74,12 @@ public class BossLengthTests(ITestOutputHelper output)
     // why he carries the second-largest pool of the four and still has to be measured: an escalation that
     // arrives in the orbit he dies in is an escalation nobody sees.
     [InlineData("act_5_nanna_sin_lord_of_the_counted_moon", 90)]
+    // Utu pays the walker to fight him — a Favor every turn, whether or not it keeps its word — so the deck
+    // in front of him is the strongest it is anywhere in the act, which is why he has less HP than the two
+    // gods either side of him. What has to be measured is the OTHER end: the greedy walker breaks nearly
+    // every Oath it swears, so this is the run in which Witness grows fastest, and a fight whose damage
+    // climbs with the player's own record is a fight that could stop ending from either direction.
+    [InlineData("act_5_utu_witness_of_every_oath", 90)]
     public void A_boss_dies_inside_the_turn_budget(string encounterId, int budget = TurnBudget)
     {
         var (play, session, _) = FightProbe.Start(FightProbe.Authored(encounterId), health: 9999);
