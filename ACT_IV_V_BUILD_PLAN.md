@@ -1136,7 +1136,13 @@ may still lose, and that is correct.
       line is meant to be read together with something else, and it works only because that something is a
       chip on the same screen. Godot now also greys a card the RULES forbid, not only one the purse cannot
       reach (`InteractiveCombat.CanPlay`).
-      ▸ 26 live tests · greedy sparring 26–37 turns for 521–695 HP off 900.
+      ▸ ⚠ **BEI IHM IST "GEHT NICHT" EINE REGEL UND KEIN MANGEL**, and that breaks the usual test loop:
+      a refused play changes nothing (same hand, same Energy), so `while (a card and a point remain)` never
+      ends. The first run of his suite took **32 minutes** looking like a slow test rather than a stuck one.
+      Every loop counts its own plays now and stops at the first refusal.
+      ▸ 25 live tests · greedy sparring 26–37 turns for 521–695 HP off 900 · `--playtest 3` Victory 3/3 with
+      him fought and beaten in one of the three gauntlets (184 answers, 23 ms) · `--maps 3` clean · Godot
+      `Victory acts=5 rooms=111 error=none` in **592.0 s** against V-5's 591.5 s — the seam costs no latency.
 
 Each god: read its section of the boss master end to end first, then author it as its own file plus a live
 test file; every unusual rule must be **telegraphed on screen** (the ReadableBossState rule applies with full
