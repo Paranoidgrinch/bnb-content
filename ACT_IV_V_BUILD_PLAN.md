@@ -1075,7 +1075,32 @@ may still lose, and that is correct.
       replayed hard) breaks the static slot in **under a second** and passed the instance field 5/5. A
       deterministic test cannot catch this, which the test's header says.
       ▸ Suites Core **1455/755/581/369**.
-- [ ] **V-5 — Utu, Witness of Every Oath.** *He witnesses.* Oaths / Witness.
+- [x] **V-5 — Utu, Witness of Every Oath. DONE 2026-09-09.** *He witnesses.* No engine purchase — the SECOND
+      god running, because his whole fight is five questions about a turn the engine was already answering
+      (`CardsPlayedThisTurn`, `…WithTag`, `CombatantCurrentResource`, `DamageDealtThisTurn`, plus one counter
+      for the last kind played).
+      ▸ **HE FORBIDS NOTHING.** Nothing in the file refuses a play, raises a cost or removes a card. The
+      card that breaks the vow resolves in full, and THEN he has seen it — there is a test that measures the
+      fifth card's damage precisely to prove the breach did not eat it.
+      ▸ **THE WARNING IS A CHIP.** §10.2 wants "THIS BREAKS" on the action; the engine has no hook for
+      annotating a card being considered, so two shared chips are restated after EVERY play — THE NEXT ONE
+      BREAKS IT (the allowance is spent) and THE OATH IS NOT YET KEPT (ending the turn now is a breach).
+      ▸ ★★ **THE SKY GIVES HIM WITNESS, NOT DAMAGE — AND THAT WAS A TELEGRAPH DECISION.** A flat phase bonus
+      would not fit the intent label (built from the authored effect list), so the player would have read
+      "24 dmg +2 per own Witness" and taken 44. The Zenith gives him 2 Witness, the Final Oath 3, so there is
+      ONE scaling term and the telegraph prints the whole sum. **The same rule cost the best line in the
+      fight**: Nothing Is Hidden used to strip Block, and the DSL has no word for that, so it would have been
+      damage the telegraph never mentioned. A flourish the telegraph cannot print is a hidden rule.
+      ▸ **The twelve vows are ONE TABLE**, and `Turns` is the whole of the phase structure: 1 = a morning
+      Oath, 2 = a Zenith Oath measured on a running tally across both turns, **0 = it never ends** (a Great
+      Oath, re-measured from scratch every turn). One `Cumulative()` predicate is the entire difference
+      between an Oath of Restraint and an Oath of Long Restraint.
+      ▸ **The Director is one condition**: "a Deed in hand", read at the moment of the offer, guarding the
+      middle of the three slots. The offer rides on **CardsDrawn**, because a promise asked before the hand is
+      dealt is a promise about cards nobody has seen.
+      ▸ **§10.11 No Shadow** cannot be shown (the frontend draws no draw pile), so it is honoured for what the
+      master says it is FOR: one card more at the start of every turn from the Zenith on.
+      ▸ 21 live tests · **29 turns of 90** in `BossLengthTests` · greedy sparring 29–43 turns.
 - [ ] **V-6 — Enlil, Voice of the Unalterable Decree.** *He decrees.* Decrees.
 
 Each god: read its section of the boss master end to end first, then author it as its own file plus a live
@@ -1157,4 +1182,9 @@ force — these fights are "almost a separate game mode"); each god enters `Boss
       subtraction, and the two hard parts were already in the engine for other reasons)
 - [x] **V-4a — THE SPARRING RING — DONE 2026-09-09** (`--fight`: one authored fight, a stated loadout,
       n seeds, the spread; no engine buy, and the relics were free)
-- [ ] V-5 Utu · V-6 Enlil — the two remaining gods · V-7 the whole game
+- [x] **V-4b — THE FLAKE — DONE 2026-09-09** (two runs in one process shared a map: `RunPlayback._actPlan`
+      was a static slot, and the failure was a TORN read of its four-field tuple)
+- [x] **V-5 — UTU — DONE 2026-09-09** (Oaths and Witness; NO engine buy — he asks five questions about a
+      turn that the engine was already answering, and the sky pays him in Witness so the telegraph can
+      print the whole sum)
+- [ ] V-6 Enlil — the last god · V-7 the whole game

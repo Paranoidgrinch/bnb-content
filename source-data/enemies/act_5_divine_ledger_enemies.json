@@ -770,18 +770,80 @@
   {
     "id": "utu_witness_of_every_oath",
     "name": "Utu, Witness of Every Oath",
-    "max_hp": 300,
+    "max_hp": 660,
     "intent_pattern": "cycle",
     "intents": [
       {
-        "id": "call_the_witnesses",
-        "name": "Call the Witnesses",
-        "intent_type": "debuff",
+        "id": "rise_between_the_mountains",
+        "name": "Rise Between the Mountains",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "damage_per_status",
+            "target": "player",
+            "status": "witness",
+            "status_on": "owner",
+            "amount": 24,
+            "amount_per_stack": 2
+          }
+        ]
+      },
+      {
+        "id": "raise_the_saw",
+        "name": "Raise the Saw",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "damage_per_status",
+            "target": "player",
+            "status": "witness",
+            "status_on": "owner",
+            "amount": 13,
+            "amount_per_stack": 1
+          },
+          {
+            "type": "damage_per_status",
+            "target": "player",
+            "status": "witness",
+            "status_on": "owner",
+            "amount": 13,
+            "amount_per_stack": 1
+          }
+        ]
+      },
+      {
+        "id": "call_the_witness",
+        "name": "Call the Witness",
+        "intent_type": "mixed",
         "actions": [
           {
             "type": "gain_block",
             "target": "self",
-            "amount": 20
+            "amount": 24
+          },
+          {
+            "type": "damage_per_status",
+            "target": "player",
+            "status": "witness",
+            "status_on": "owner",
+            "amount": 10,
+            "amount_per_stack": 5
+          }
+        ]
+      },
+      {
+        "id": "cross_the_open_land",
+        "name": "Cross the Open Land",
+        "intent_type": "mixed",
+        "special": true,
+        "actions": [
+          {
+            "type": "damage_per_status",
+            "target": "player",
+            "status": "witness",
+            "status_on": "owner",
+            "amount": 34,
+            "amount_per_stack": 3
           },
           {
             "type": "apply_status",
@@ -792,43 +854,40 @@
         ]
       },
       {
-        "id": "read_back_the_oath",
-        "name": "Read Back the Oath",
+        "id": "nothing_is_hidden",
+        "name": "Nothing Is Hidden",
         "intent_type": "mixed",
+        "special": true,
         "actions": [
           {
-            "type": "deal_damage",
+            "type": "damage_per_status",
             "target": "player",
-            "amount": 22
-          },
-          {
-            "type": "gain_block",
-            "target": "self",
-            "amount": 18
+            "status": "witness",
+            "status_on": "owner",
+            "amount": 30,
+            "amount_per_stack": 2
           },
           {
             "type": "apply_status",
             "target": "player",
             "status": "paperwork",
-            "amount": 4
+            "amount": 3
           }
         ]
       },
       {
-        "id": "the_sun_sees_it",
-        "name": "The Sun Sees It",
+        "id": "pronounce_what_was_witnessed",
+        "name": "Pronounce What Was Witnessed",
         "intent_type": "attack",
+        "special": true,
         "actions": [
           {
-            "type": "deal_damage",
+            "type": "damage_per_status",
             "target": "player",
-            "amount": 36
-          },
-          {
-            "type": "apply_status",
-            "target": "self",
-            "status": "strength",
-            "amount": 2
+            "status": "witness",
+            "status_on": "owner",
+            "amount": 25,
+            "amount_per_stack": 10
           }
         ]
       }
@@ -840,6 +899,46 @@
       "utu",
       "oath",
       "witness"
+    ],
+    "starting_statuses": [
+      {
+        "status": "oaths_beneath_the_sun"
+      },
+      {
+        "status": "beneath_the_morning_sun"
+      }
+    ],
+    "intent_rules": [
+      {
+        "condition": {
+          "kind": "self_counter",
+          "counter": "utu_judgment",
+          "op": "ge",
+          "value": 1
+        },
+        "action": "pronounce_what_was_witnessed",
+        "priority": 30
+      },
+      {
+        "condition": {
+          "kind": "self_counter",
+          "counter": "utu_noon_due",
+          "op": "ge",
+          "value": 1
+        },
+        "action": "nothing_is_hidden",
+        "priority": 22
+      },
+      {
+        "condition": {
+          "kind": "self_counter",
+          "counter": "utu_zenith_due",
+          "op": "ge",
+          "value": 1
+        },
+        "action": "cross_the_open_land",
+        "priority": 20
+      }
     ]
   },
   {
