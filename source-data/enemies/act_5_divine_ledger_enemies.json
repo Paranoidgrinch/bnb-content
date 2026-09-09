@@ -944,59 +944,112 @@
   {
     "id": "enlil_voice_of_the_unalterable_decree",
     "name": "Enlil, Voice of the Unalterable Decree",
-    "max_hp": 320,
+    "max_hp": 700,
     "intent_pattern": "cycle",
     "intents": [
       {
-        "id": "issue_the_decree",
-        "name": "Issue the Decree",
-        "intent_type": "debuff",
-        "actions": [
-          {
-            "type": "gain_block",
-            "target": "self",
-            "amount": 26
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "paperwork",
-            "amount": 6
-          }
-        ]
-      },
-      {
-        "id": "the_word_stands",
-        "name": "The Word Stands",
-        "intent_type": "mixed",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 24
-          },
-          {
-            "type": "gain_block",
-            "target": "self",
-            "amount": 24
-          },
-          {
-            "type": "apply_status",
-            "target": "self",
-            "status": "strength",
-            "amount": 1
-          }
-        ]
-      },
-      {
-        "id": "let_it_be_so",
-        "name": "Let It Be So",
+        "id": "the_command_goes_forth",
+        "name": "The Command Goes Forth",
         "intent_type": "attack",
         "actions": [
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 40
+            "amount": 30
+          }
+        ]
+      },
+      {
+        "id": "wind_over_the_plain",
+        "name": "Wind Over the Plain",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 9
+          },
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 9
+          },
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 9
+          },
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 9
+          }
+        ]
+      },
+      {
+        "id": "raise_e_kur",
+        "name": "Raise E-kur",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "self",
+            "amount": 48
+          },
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 14
+          }
+        ]
+      },
+      {
+        "id": "weight_of_kingship",
+        "name": "Weight of Kingship",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 26
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "doubt",
+            "amount": 2
+          }
+        ]
+      },
+      {
+        "id": "the_assembly_falls_silent",
+        "name": "The Assembly Falls Silent",
+        "intent_type": "mixed",
+        "special": true,
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 34
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "paperwork",
+            "amount": 3
+          }
+        ]
+      },
+      {
+        "id": "three_words_are_enough",
+        "name": "Three Words Are Enough",
+        "intent_type": "attack",
+        "special": true,
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 44
           }
         ]
       }
@@ -1007,7 +1060,40 @@
       "boss",
       "enlil",
       "decree",
-      "wind"
+      "rules"
+    ],
+    "starting_statuses": [
+      {
+        "status": "the_word_of_enlil"
+      },
+      {
+        "status": "one_word"
+      },
+      {
+        "status": "next_the_fourth_work_shall_be_the_last"
+      }
+    ],
+    "intent_rules": [
+      {
+        "condition": {
+          "kind": "self_counter",
+          "counter": "enlil_final_move",
+          "op": "ge",
+          "value": 1
+        },
+        "action": "three_words_are_enough",
+        "priority": 30
+      },
+      {
+        "condition": {
+          "kind": "self_counter",
+          "counter": "enlil_silence_move",
+          "op": "ge",
+          "value": 1
+        },
+        "action": "the_assembly_falls_silent",
+        "priority": 20
+      }
     ]
   }
 ]

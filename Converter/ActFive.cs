@@ -55,10 +55,11 @@ public static partial class ActFive
                 "He asks for a promise every turn and pays for it before you keep it. Nothing here is ever "
                 + "forbidden to you: the card that breaks your Oath is played, and resolves — and then he has "
                 + "seen it. What he sees he keeps, and every move he makes is read off it."),
-            ["act_5_enlil_voice_of_the_unalterable_decree"] = (
+            [EnlilEncounterId] = (
                 "Decrees",
-                "Enlil says a thing, and it is so. A decree is not an attack — it is the state the world is in "
-                + "from now on."),
+                "What stands here is not a threat — it is the rule the fight is being played under. A decree "
+                + "is announced a full turn before it is real, runs the count beside it, and cannot be "
+                + "removed, shortened or bargained away. Where the wording is universal it binds him too."),
         };
 
     // The presentation hints one encounter carries, empty for anything that is not a god.
@@ -70,7 +71,7 @@ public static partial class ActFive
     // Everything the act's gods put into the document. One line per god as they are built.
     public static IReadOnlyList<StatusData> All() =>
         [.. NisabaStatuses(), .. InannaStatuses(), .. NansheStatuses(), .. NannaSinStatuses(),
-         .. UtuStatuses()];
+         .. UtuStatuses(), .. EnlilStatuses()];
 
     public static IReadOnlyList<CardData> GivenCards() =>
         [.. NisabaReedCards(), .. InannaLedgerCards(), .. NansheRationCards(), .. NannaSinCards()];
@@ -80,5 +81,6 @@ public static partial class ActFive
         ?? InannaIntent(enemyId, intentId)
         ?? NansheIntent(enemyId, intentId)
         ?? NannaSinIntent(enemyId, intentId)
-        ?? UtuIntent(enemyId, intentId);
+        ?? UtuIntent(enemyId, intentId)
+        ?? EnlilIntent(enemyId, intentId);
 }
