@@ -5,11 +5,13 @@ using RogueDeck.Sandbox.Composition;
 
 // CLI: --data <dir> --out <file> --seed <int>
 //      --playtest <n>   walk n whole runs instead of writing the document, and report what they met
+//      --walk <seed>    walk exactly ONE run of that game, the one a --playtest report calls "seed <seed>"
 //      --maps <n>       lay out every act's map for n seeds and report its shape, row by row
 var dataDir = "source-data";
 var outFile = "game.roguedeck.json";
 var seed = 20260717;
 var playtest = 0;
+var walk = 0;
 var maps = 0;
 for (var i = 0; i < args.Length - 1; i++)
 {
@@ -19,6 +21,7 @@ for (var i = 0; i < args.Length - 1; i++)
         case "--out": outFile = args[i + 1]; break;
         case "--seed": seed = int.Parse(args[i + 1]); break;
         case "--playtest": playtest = int.Parse(args[i + 1]); break;
+        case "--walk": walk = int.Parse(args[i + 1]); break;
         case "--maps": maps = int.Parse(args[i + 1]); break;
     }
 }
@@ -30,6 +33,8 @@ try
 
     if (maps > 0)
         return MapStats(blueprint, seed, maps);
+    if (walk != 0)
+        return Playtest(blueprint, seed, 1, walk);
     if (playtest > 0)
         return Playtest(blueprint, seed, playtest);
 
@@ -104,7 +109,7 @@ static int MapStats(RunBlueprint blueprint, int seed, int runs)
 
 // Walk whole runs and print what each one met, act by act. A walk that errors, loops or never reaches the last
 // act is a bug in the game, not in the walker — the report says which room it happened in.
-static int Playtest(RunBlueprint blueprint, int seed, int runs)
+static int Playtest(RunBlueprint blueprint, int seed, int runs, int? onlyWalk = null)
 {
     // Through the exported document, not the in-memory one: what Godot loads is what gets walked.
     var options = RunJson.CreateOptions(indented: false);
@@ -114,12 +119,14 @@ static int Playtest(RunBlueprint blueprint, int seed, int runs)
 
     // Which GAME is being walked, said once. The walk seeds run from the same number, so a walk reported as
     // "seed 20260909" is not reproducible on its own: --seed 20260909 builds a different game and walks it
-    // once. To get that walk back, walk the same game far enough to reach it.
-    Console.WriteLine($"walking {runs} run(s) of the game built with seed {seed}");
+    // once. To get that walk back, build the same game and name the walk: --walk 20260909.
+    Console.WriteLine(onlyWalk is { } one
+        ? $"walking run {one} of the game built with seed {seed}"
+        : $"walking {runs} run(s) of the game built with seed {seed}");
 
     for (var i = 0; i < runs; i++)
     {
-        var walkSeed = seed + i;
+        var walkSeed = onlyWalk ?? seed + i;
         var report = RunWalker.Walk(tester, walkSeed, saveEvery: 5, progress: Console.WriteLine);
         var acts = shipped.Acts?.Count ?? 1;
         var reachedTheEnd = report.Result == RunResult.Victory;
