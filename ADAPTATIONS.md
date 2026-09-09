@@ -3728,3 +3728,69 @@ five-act walk PER SEED TRIED — nanna_sin is on seed 1, inanna on 5 — which i
 fight somebody already knows the way to. Proof from the live tree:
 `card stamps: 1 shown of 1 marked — LUNAR ECHO`, beside `The Lunar Phase ×8 · The Lunar Count ×1 ·
 The Move That Returns ×11` and a telegraph reading `Close the Reckoning · 18 dmg, 20 block`.
+
+## V-4a — the sparring ring (2026-09-09)
+
+**A FIGHT YOU CAN ASK A QUESTION OF.** Everything else that drives this game without a human WALKS: `--playtest`
+walks whole runs, `--walk` walks one, the Godot probes walk to a room and look at it. Walking is right for what
+only a run can find and wrong for everything else — the thirty rooms in front of the fight are noise, they cost
+minutes, and they are not the same thirty rooms twice. `--fight <snapshot>` states a fighter and an opponent and
+runs that, twenty times if asked.
+
+**ALMOST NOTHING HAD TO BE BUILT.** A fight with a stated loadout is a `RunBlueprint` whose map is one room —
+which `Tests/FightProbe.cs` has been doing since Act I — and the loadout is `RunStart`, which already carries
+deck, relics, consumables, resources and health, and which `RunSetup` and `RunRunner.GrantStartingRelics`
+already honour. **Relics were the part expected to be expensive and they were free**: a relic named in a
+snapshot is granted, enabled and has its combat rule installed, through the real host path, because that is
+what a run does with `StartingRelics`.
+
+**SO THE WORK WAS MOVING, NOT WRITING.** `Converter/Playtest/SparringRing.cs` is now the single definition of
+"a blueprint that is one fight", and `FightProbe` is a thin skin over it (146 lines, was 206). Two definitions
+would drift, and the drift shows up as the suite and the command line disagreeing about a fight. The greedy
+player moved too — `Converter/Playtest/Greedy.cs`, shared with the walk — because every correction in it was
+paid for by a walk that hung, and a second copy of those corrections is a second chance to lose them.
+
+**⚠ THE LAST SAMPLE IS NOT THE LAST STATE**, and reading it as one is the trap this instrument sets for itself.
+The table can only be read while the fight exists, and the killing blow is the moment it stops existing — so
+whatever was sampled last was taken BEFORE the blow that ended it. Read that way a clerk killed inside the
+first turn is "10 enemy HP still up", and the fight reads as lost. Worse, the first version wrote a zero for
+the enemies in the branch where the fight ended during a turn — "it is over, so they must be dead" — which
+made **every** fight that ended read as a victory, including twenty in a row the fighter did not survive. The
+run outlives the fight and knows both answers; the fight is sampled turn by turn for its SHAPE and the verdict
+is taken from the run.
+
+**AND THE FIRST HONEST NUMBERS SAID SOMETHING.** The Act-IV Tombbreakers kill a 62-HP paperwork deck with four
+relics in **twenty fights out of twenty**, on turn 4, with 238 of 312 enemy HP still standing. That is the
+greedy floor and not a verdict on the encounter — a real Act-IV deck is upgraded and runs on more Energy — but
+it is a number, where before there was an anecdote. The curve behind it reads: clerkling 4 turns for 6 HP,
+senior clerk 11 turns for 31, the Act-IV elite a loss.
+
+**THE PLAYER IS A FLOOR, AND THE SNAPSHOT SAYS SO.** A greedy player is roughly the worst competent play, so a
+fight it wins comfortably is not hard and a fight it loses may still be fine. What makes the ring answer a
+DESIGN question rather than a coverage one is `"intent"`: pinning an enemy to one of its moves turns "what
+does this boss cost on average" into "what does THIS move cost", which is the question a designer actually has.
+
+**⚠ A BOSS MAY OVERWRITE WHAT THE SNAPSHOT PINNED**, and that is the fight working rather than the ring
+failing. Every marker on Nanna-Sin's ring is struck off and written again at each turn start, so standing him
+up in the Old Moon lasts exactly until his calendar turns. A fight like his is reached by giving it the ROUNDS
+it counts, not by pinning the chip that counts them. There is a test that says so, because the next person to
+try it will otherwise file a bug.
+
+**A NEAR MISS SAYS WHAT WAS PROBABLY MEANT.** The ids here are long and the one in a designer's head is a
+fragment — `tombbreakers` for `labyrinth_elite_the_tombbreakers_three`. An instrument that answers that with
+"no" and nothing else sends its user grepping the source data, which is the errand it exists to save.
+
+**⚠ AND THE SUITE IS NOT DETERMINISTIC, WHICH THIS STEP FOUND BY ACCIDENT.** The full run that first included the
+ten new ring tests failed two unrelated ones —
+`ActThreeStageFourTests.Settling_with_the_oath_fish_is_worth_two_safe_conducts` with
+`No encounter registered with id 'archives_boss_curator_of_misplaced_hours'`, and
+`ActTwoStageFiveTests.The_husk_files_away_what_it_wrote_over` with a NullReferenceException on a fight that had
+already ended. Both pass in isolation, both pass with the ring tests beside them, and a second full run of the
+**identical code** was 1357/1357. So the delegation did not break them; the extra ten fights running in
+parallel made an existing race visible once.
+
+The shape of the first one is the lead worth keeping: an Act-II BOSS encounter turning up in an Act-III
+oath-fish probe is a registry belonging to one test class being read by another, and xUnit runs classes in
+parallel with nothing in this repo configured to stop it. Recorded rather than fixed — a flaky suite quietly
+erodes every gate that stands on it, so it is worth a step of its own rather than a guess at the end of this
+one.

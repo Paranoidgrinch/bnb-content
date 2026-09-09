@@ -247,7 +247,7 @@ public static class RunWalker
             {
                 if (driver.Current is null)
                     return true;
-                if (Answer(driver, rng))
+                if (Greedy.Answer(driver, rng))
                 {
                     meter.Answered();
                     continue;
@@ -261,35 +261,26 @@ public static class RunWalker
                 // question and always differs; this is the first point at which nothing is pending.
                 if (lastPlayed is { } finished)
                 {
-                    if (TableState(combat) == tableBeforeThePlay)
+                    if (Greedy.TableState(combat) == tableBeforeThePlay)
                         barren.Add(finished);
                     lastPlayed = null;
                 }
 
-                var hero = combat.State.GetCombatant(combat.HeroId);
-                var energy = hero.Resources.TryGetValue(StandardCombatIds.EnergyResource, out var pool)
-                    ? pool.Current : 0;
-                var candidates = combat.Hand
-                    .Where(c => !refused.Contains(c.Id) && !barren.Contains(c.DefinitionId.value)
-                        && Affordable(play, combat, c, energy))
-                    .ToList();
-                if (candidates.Count == 0)
+                if (Greedy.Choose(play, combat, rng, refused, barren) is not { } card)
                     break;
-                var card = candidates[rng.Next(candidates.Count)];
-                var enemy = combat.State.Combatants
-                    .FirstOrDefault(c => c.Id != combat.HeroId && c.TeamId == StandardCombatIds.EnemyTeam && c.IsAlive);
+                var enemy = Greedy.Enemy(combat);
                 var needsTarget = play.CardNeedsTarget.TryGetValue(card.DefinitionId.value, out var needs) && needs;
                 var stepsBefore = combat.Steps.Count;
-                tableBeforeThePlay = TableState(combat);
+                tableBeforeThePlay = Greedy.TableState(combat);
                 lastPlayed = card.DefinitionId.value;
-                driver.PlayCard(card.Id, needsTarget ? enemy?.Id : null);
+                driver.PlayCard(card.Id, needsTarget ? enemy : null);
                 meter.Answered();
                 // A turn that never runs out of affordable cards is a finding, not a slow fight — and it is
                 // invisible from outside, because a turn only reports itself when it ends. Say what is being
                 // played while it happens.
                 // The backstop behind the barren rule: two cards that undo each other would still cycle.
                 // Nothing in this game plays fifty cards in a turn, so hitting this is a finding.
-                if (++playsThisTurn >= PlaysInATurnNobodyMakes)
+                if (++playsThisTurn >= Greedy.PlaysInATurnNobodyMakes)
                 {
                     notes.Add($"{node}: a turn played {playsThisTurn} cards without ending — "
                         + $"last '{card.DefinitionId.value}'");
@@ -297,12 +288,12 @@ public static class RunWalker
                 }
                 if (session.Error is not null || play.Error is not null)
                     return true;
-                if (Refused(driver.Current, stepsBefore))
+                if (Greedy.Refused(driver.Current, stepsBefore))
                     refused.Add(card.Id);
             }
             if (driver.Current is null)
                 return true;
-            if (Answer(driver, rng))
+            if (Greedy.Answer(driver, rng))
             {
                 meter.Answered();
                 continue;
@@ -319,90 +310,12 @@ public static class RunWalker
             // of exactly this.
             if (meter.Seconds - turnSeconds > 1.0 || meter.Answers - turnAnswers > 15)
                 progress?.Invoke($"        turn {turn + 1,3}: {meter.Since(turnSeconds, turnAnswers)}"
-                    + $" — {Standing(driver.Current)}");
+                    + $" — {Greedy.Standing(driver.Current)}");
             if (session.Error is not null || play.Error is not null)
                 return true;
         }
         notes.Add($"{node}: a fight did not end in 100 turns");
         return false;
-    }
-
-    private const int PlaysInATurnNobodyMakes = 50;
-
-    // Who is left on the other side of the table, and on how much health.
-    private static string Standing(InteractiveCombat? combat) =>
-        combat is null
-            ? "the fight is over"
-            : string.Join(", ", combat.State.Combatants
-                .Where(c => c.Id != combat.HeroId && c.IsAlive)
-                .Select(c => $"{c.Id.value} {c.Health.Current}/{c.Health.Max}"));
-
-    // Everything about the table a play could visibly move. Two plays with the same reading either side of
-    // them did nothing — which is the only way to tell a card that regenerates itself apart from one that
-    // achieves something.
-    //
-    // The EXHAUST PILE is deliberately not in it. A card that burns itself and puts a fresh copy back in hand
-    // grows that pile on every play, so counting it would make every such card look busy for ever — which is
-    // exactly the loop this reading exists to find. Statuses are counted by their STACKS as well as their
-    // number, because paying a debt down usually moves the stack and not the count.
-    private static string TableState(InteractiveCombat combat)
-    {
-        var hero = combat.State.GetCombatant(combat.HeroId);
-        var energy = hero.Resources.TryGetValue(StandardCombatIds.EnergyResource, out var pool) ? pool.Current : 0;
-        var enemies = combat.State.Combatants.Where(c => c.Id != combat.HeroId).ToList();
-        var zones = combat.State.GetCardZones(combat.HeroId);
-        int Count(CardZone zone) => zones.GetCardsInZone(zone).Count;
-        static int Stacks(IEnumerable<StatusInstance> statuses) => statuses.Sum(status => status.Stacks);
-        return $"{energy}/{hero.Health.Current}/{hero.Statuses.Count}/{Stacks(hero.Statuses)}/"
-            + $"{Count(CardZone.Hand)}/{Count(CardZone.DiscardPile)}/{Count(CardZone.DrawPile)}/"
-            + $"{enemies.Sum(e => e.Health.Current)}/{enemies.Sum(e => e.Statuses.Count)}/"
-            + $"{enemies.Sum(e => Stacks(e.Statuses))}";
-    }
-
-    // Did the play the walker just made go through? The fight records every attempt as a step, and a refused
-    // one carries the reason; nothing new at all means the driver dropped it (a prompt opened, say).
-    private static bool Refused(InteractiveCombat? combat, int stepsBefore)
-    {
-        if (combat is null)
-            return false;
-        var steps = combat.Steps;
-        return steps.Count <= stepsBefore || steps.Skip(stepsBefore).Any(step => step.HasProblems);
-    }
-
-    // A card (or an enemy) asked a question mid-resolution: answer it so the fight can go on. True = answered.
-    private static bool Answer(InteractiveCombatDriver driver, Random rng)
-    {
-        if (driver.PendingCardChoice is { } cards)
-        {
-            var take = Math.Min(driver.PendingCardChoiceCount, cards.Count);
-            driver.SupplyCardChoice([.. cards.OrderBy(_ => rng.Next()).Take(take).Select(c => c.Id)]);
-            return true;
-        }
-        if (driver.PendingOptionChoice is { } options)
-        {
-            var take = Math.Min(driver.PendingOptionChoiceCount, options.Count);
-            driver.SupplyOptionChoice([.. Enumerable.Range(0, options.Count).OrderBy(_ => rng.Next()).Take(take)]);
-            return true;
-        }
-        return false;
-    }
-
-    // Whether the hero can pay for the card right now — its composed costs (shreds included), Energy only; a
-    // card wanting a resource the hero has none of is simply not playable and the greedy player skips it.
-    private static bool Affordable(RunPlayback play, InteractiveCombat combat, CardInstance card, int energy)
-    {
-        var hero = combat.State.GetCombatant(combat.HeroId);
-        var costs = play.ComposedCostsFor(card.DefinitionId.value)
-            ?? play.CardFullCosts.GetValueOrDefault(card.DefinitionId.value);
-        if (costs is null)
-            return play.CardCosts.GetValueOrDefault(card.DefinitionId.value) <= energy;
-        foreach (var cost in costs)
-        {
-            var have = hero.Resources.TryGetValue(cost.ResourceId, out var pool) ? pool.Current : 0;
-            if (have < cost.Amount)
-                return false;
-        }
-        return true;
     }
 
     // WHAT THE RUN WAS CARRYING when it broke. A crash inside a fight is almost never about the fight alone —

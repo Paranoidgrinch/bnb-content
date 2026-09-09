@@ -7,12 +7,28 @@ using RogueDeck.Sandbox.Composition;
 //      --playtest <n>   walk n whole runs instead of writing the document, and report what they met
 //      --walk <seed>    walk exactly ONE run of that game, the one a --playtest report calls "seed <seed>"
 //      --maps <n>       lay out every act's map for n seeds and report its shape, row by row
+//      --fight <file>   THE SPARRING RING: one authored fight with a stated loadout, n times over n seeds.
+//                       The file is a snapshot (see SparringRing.Snapshot); everything in it has a default,
+//                       so the smallest useful one is {"enemy": "…"} or {"encounter": "…"}.
+//      --fight-enemy <id> | --fight-encounter <id>
+//                       the same ring without a file, for a quick look. Tunable with
+//                       --fight-intent <id> --fight-hp <n> --fight-energy <n> --fights <n>
+//                       --fight-deck a,b,c --fight-relics x,y
 var dataDir = "source-data";
 var outFile = "game.roguedeck.json";
 var seed = 20260717;
 var playtest = 0;
 var walk = 0;
 var maps = 0;
+string? fightFile = null;
+string? fightEnemy = null;
+string? fightEncounter = null;
+string? fightIntent = null;
+string? fightDeck = null;
+string? fightRelics = null;
+int? fightHealth = null;
+var fightEnergy = 3;
+var fights = 1;
 for (var i = 0; i < args.Length - 1; i++)
 {
     switch (args[i])
@@ -23,6 +39,15 @@ for (var i = 0; i < args.Length - 1; i++)
         case "--playtest": playtest = int.Parse(args[i + 1]); break;
         case "--walk": walk = int.Parse(args[i + 1]); break;
         case "--maps": maps = int.Parse(args[i + 1]); break;
+        case "--fight": fightFile = args[i + 1]; break;
+        case "--fight-enemy": fightEnemy = args[i + 1]; break;
+        case "--fight-encounter": fightEncounter = args[i + 1]; break;
+        case "--fight-intent": fightIntent = args[i + 1]; break;
+        case "--fight-deck": fightDeck = args[i + 1]; break;
+        case "--fight-relics": fightRelics = args[i + 1]; break;
+        case "--fight-hp": fightHealth = int.Parse(args[i + 1]); break;
+        case "--fight-energy": fightEnergy = int.Parse(args[i + 1]); break;
+        case "--fights": fights = int.Parse(args[i + 1]); break;
     }
 }
 
@@ -31,6 +56,26 @@ try
     var data = BabData.Load(dataDir);
     var blueprint = BlueprintAssembler.Build(data, seed);
 
+    if (fightFile is not null || fightEnemy is not null || fightEncounter is not null)
+    {
+        // A named file is the durable form — check it in beside the content and it is a regression test that
+        // reads like a bug report. The flags are the ten-second form of the same thing.
+        var snapshot = fightFile is not null
+            ? SparringRing.Read(fightFile)
+            : new SparringRing.Snapshot
+            {
+                Enemy = fightEnemy,
+                Encounter = fightEncounter,
+                Intent = fightIntent,
+                Health = fightHealth,
+                MaxHealth = Math.Max(fightHealth ?? 0, 80),
+                Energy = fightEnergy,
+                Deck = Split(fightDeck),
+                Relics = Split(fightRelics),
+                Fights = fights,
+            };
+        return SparringMatch.Run(blueprint, snapshot, Console.WriteLine);
+    }
     if (maps > 0)
         return MapStats(blueprint, seed, maps);
     if (walk != 0)
@@ -72,6 +117,12 @@ catch (ConversionException ex)
     Console.Error.WriteLine($"Conversion failed: {ex.Message}");
     return 2;
 }
+
+// A comma-separated list on the command line, e.g. --fight-deck paper_cut,paper_cut,strong_binder.
+static IReadOnlyList<string> Split(string? list) =>
+    string.IsNullOrWhiteSpace(list)
+        ? []
+        : [.. list.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)];
 
 // What the generated maps of every act actually hold: their shape, the rooms on them, and whether the routes
 // through them honour the act's own rules. Cheap next to a walk, and it answers "is the act laid out as

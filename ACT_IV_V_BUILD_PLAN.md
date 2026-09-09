@@ -1024,6 +1024,46 @@ may still lose, and that is correct.
       (an unanswered prompt refuses every End Turn after it). `--seed <n>` pins the walk: finding a named god
       costs a whole five-act walk PER SEED TRIED, and that — not the fight — was the afternoon's real cost.
       **nanna_sin is on seed 1, inanna on 5.**
+- [x] **V-4a — the sparring ring. DONE 2026-09-09.** `--fight <snapshot.json>` (and `--fight-enemy` /
+      `--fight-encounter` for a ten-second look) fights ONE authored encounter with a stated loadout — health,
+      Energy, deck, relics, consumables, statuses on either side — n times over n seeds, and reports the
+      spread. Asked for by the user after V-4, for balancing and diagnostics; it also makes V-5 and V-6
+      cheaper, because a god no longer needs a bespoke probe helper per test file.
+      ▸ **NOTHING WAS BOUGHT AND ALMOST NOTHING WAS WRITTEN.** A fight with a stated loadout is a blueprint
+      whose map is one room (`FightProbe` has done that since Act I) and the loadout is `RunStart`, which
+      already carries deck, relics, consumables, resources and health and which `RunSetup` already honours.
+      **Relics were free.** The work was MOVING: `Converter/Playtest/SparringRing.cs` is now the single
+      definition of "a blueprint that is one fight" and `FightProbe` is a skin over it (206 → 146 lines);
+      `Converter/Playtest/Greedy.cs` is the one dumb player, shared with the walk.
+      ▸ **⚠ THE LAST SAMPLE IS NOT THE LAST STATE.** The table can only be read while the fight exists, and
+      the killing blow is when it stops existing. The first version also wrote a zero for the enemies in the
+      branch where a fight ended mid-turn — "it is over, so they must be dead" — which made EVERY fight that
+      ended read as a victory, including twenty in a row the fighter did not survive. The verdict comes from
+      the run, which outlives the fight; the turns are sampled for shape.
+      ▸ **THE FIRST HONEST NUMBERS**: the Act-IV Tombbreakers kill a 62-HP paperwork deck with four relics
+      20/20, on turn 4, with 238 of 312 enemy HP still up. Against clerkling_apprentice: 4 turns for 6 HP;
+      against senior_clerk: 11 turns for 31. That is the GREEDY FLOOR, not a verdict on the encounter.
+      ▸ **`"intent"` IS THE SHARP END**: pinning an enemy to one move turns "what does this boss cost on
+      average" into "what does THIS move cost". ⚠ But a boss that restates its own chips overwrites what a
+      snapshot pinned — Nanna-Sin's ring is rewritten every turn start — so a late phase is reached by giving
+      the fight its ROUNDS, not by pinning the chip. There is a test that says so.
+      ▸ `snapshots/tombbreakers.json` is the worked example, and a snapshot beside the content is a
+      regression test that reads like a bug report: `SparringRingTests` fails the day somebody renames a card
+      it names.
+      ▸ **⚠ AND IT FOUND THAT THE SUITE IS NOT DETERMINISTIC.** The first full run with the ten new tests
+      failed two unrelated ones (`Settling_with_the_oath_fish…` with *No encounter registered with id
+      'archives_boss_curator_of_misplaced_hours'* — an ACT-II BOSS in an Act-III probe — and
+      `The_husk_files_away_what_it_wrote_over` with an NRE on a fight that had already ended). Both pass in
+      isolation and a second full run of the IDENTICAL code was **1357/1357**. The extra ten fights running in
+      parallel exposed an existing race; xUnit runs classes in parallel and nothing here stops it. **Left as
+      a named open item — see V-4b.**
+- [ ] **V-4b — the suite is not deterministic.** Found at V-4a: two tests failed once in a full run and
+      passed in isolation and in a second full run of the identical code. The lead is the error text — an
+      Act-II boss encounter being looked up inside an Act-III probe — which is one test class's registry
+      being read by another, under xUnit's default class-level parallelism. Worth a step: every gate this
+      project has stands on this suite, and a gate that fails at random is a gate nobody trusts. Cheapest
+      first move is to run the suite with parallelism disabled and see whether the flake goes away, which
+      says whether it is a race or a leak.
 - [ ] **V-5 — Utu, Witness of Every Oath.** *He witnesses.* Oaths / Witness.
 - [ ] **V-6 — Enlil, Voice of the Unalterable Decree.** *He decrees.* Decrees.
 
@@ -1104,4 +1144,6 @@ force — these fights are "almost a separate game mode"); each god enters `Boss
       engine buy, `CardDrawsThisTurn`; the crash was in an elite room, not the Weigher)
 - [x] **V-4 — NANNA-SIN — DONE 2026-09-09** (the Lunar Calendar; NO engine buy — the ring is one
       subtraction, and the two hard parts were already in the engine for other reasons)
+- [x] **V-4a — THE SPARRING RING — DONE 2026-09-09** (`--fight`: one authored fight, a stated loadout,
+      n seeds, the spread; no engine buy, and the relics were free)
 - [ ] V-5 Utu · V-6 Enlil — the two remaining gods · V-7 the whole game

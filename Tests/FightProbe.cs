@@ -1,4 +1,5 @@
 using BnbContent.Converter;
+using BnbContent.Converter.Playtest;
 using RogueDeck.Core.Combat;
 using RogueDeck.Run;
 using RogueDeck.Sandbox.Composition;
@@ -11,6 +12,10 @@ namespace BnbContent.Tests;
 // walking the act: the converted game blueprint is reused whole — same statuses, cards, enemy actions — and
 // only the map is replaced by a single combat node pointing at a probe encounter. That keeps every mechanic
 // test honest about wiring (a missing status registration or executor fails here, as it would in Godot).
+// ⚠ THE BLUEPRINT SURGERY ITSELF LIVES IN `Converter/Playtest/SparringRing.cs`, and this file is a thin
+// test-facing skin over it. It used to live here, which meant the suite and the command line each had their
+// own idea of what "a blueprint that is one fight" is — and two such ideas drift, with the drift showing up
+// as the tests and `--fight` disagreeing about a fight. One definition, two callers.
 internal static class FightProbe
 {
     public static readonly RunBlueprint Game =
@@ -19,36 +24,8 @@ internal static class FightProbe
     // `deck` stacks the hero's deck with authored cards (repeated as given) when a test needs a specific card
     // in hand — e.g. one that files Paperwork onto an enemy. Empty ⇒ the character's real starting deck.
     public static RunBlueprint OneFight(
-        EncounterDefinition probe, IReadOnlyList<string>? deck = null, int? health = null)
-    {
-        var blueprint = Game with
-        {
-            Encounters = [probe],
-            Map = new RunMap([new Node(new NodeId("probe"), StandardRunIds.CombatNode, new EncounterRef(probe.Id))]),
-            // The real game GENERATES its map per run, act by act, which would replace the probe node with a
-            // whole act (drawn from encounters this blueprint no longer holds). A probe is one fight.
-            MapGeneration = null,
-            Acts = null,
-        };
-
-        if (deck is not null and not { Count: 0 })
-            blueprint = blueprint with
-            {
-                Deck = deck.Select(id => new CardDefinitionId(id)).ToList(),
-                Start = blueprint.Start with { Deck = deck.Select(id => new CardDefinitionId(id)).ToList() },
-                Characters = [],
-            };
-
-        // `health` buys a probe room to reach a late mechanic (the Knight's refused enforcement) without the
-        // fight ending first — the probe is a mechanism test, not a balance sample.
-        return health is not { } hp
-            ? blueprint
-            : blueprint with
-            {
-                Start = blueprint.Start with { MaxHealth = hp, StartingHealth = hp },
-                Characters = [],
-            };
-    }
+        EncounterDefinition probe, IReadOnlyList<string>? deck = null, int? health = null) =>
+        SparringRing.OneFight(Game, probe, deck, health);
 
     // A solo encounter with one AUTHORED enemy: its real roster entry (HP, passives carried from the first
     // bell, intent rules) is taken from the converted game and only narrowed to the intent under test, plus any
@@ -73,39 +50,13 @@ internal static class FightProbe
     }
 
     public static EncounterDefinition Solo(
-        string enemyId, string intentId, int energy, params (string Status, int Stacks)[] startingStatuses)
-    {
-        var authored = Game.Encounters
-            .SelectMany(e => e.Enemies)
-            .FirstOrDefault(e => e.Id == enemyId)
-            ?? throw new InvalidOperationException($"no authored encounter fields '{enemyId}'");
+        string enemyId, string intentId, int energy, params (string Status, int Stacks)[] startingStatuses) =>
+        SparringRing.Solo(Game, enemyId, intentId, energy,
+            [.. startingStatuses.Select(s => (s.Status, s.Stacks))]);
 
-        var probe = authored with
-        {
-            Actions = [new EnemyActionDefinitionId($"{enemyId}.{intentId}")],
-            StartingStatuses =
-            [
-                .. authored.StartingStatuses ?? [],
-                .. startingStatuses.Select(s => new StartingStatusSpec(new StatusDefinitionId(s.Status), s.Stacks)),
-            ],
-        };
-
-        return new EncounterDefinition(new EncounterId($"probe.{enemyId}"), [probe],
-            [new ResourceSpec(StandardCombatIds.EnergyResource, energy, energy)],
-            heroStartingStatuses: HeroStatuses(enemyId),
-            triggeredEffects: EncounterPassives.ForEnemy(enemyId));
-    }
-
-    // Every probe marks the hero exactly as EncounterMapper does — the applicant marker a passive needs to
-    // tell "this happened to the player".
+    // Every probe marks the hero exactly as the ring does — see SparringRing.HeroStatuses.
     private static IReadOnlyList<StartingStatusSpec> HeroStatuses(params string[] enemyIds) =>
-    [
-        new StartingStatusSpec(new StatusDefinitionId(PassiveStatuses.ApplicantId), 1),
-        // …plus whatever the roster serves ON the player at the first bell (the Knight's Final Notice) …
-        .. enemyIds.Distinct().SelectMany(EncounterPassives.HeroOpeningStatuses),
-        // … and whatever the ACT serves once per fight (Act III's customs and its opening Safe-Conduct).
-        .. EncounterPassives.ActOpeningStatuses(enemyIds),
-    ];
+        SparringRing.HeroStatuses(enemyIds);
 
     // A solo probe that keeps SEVERAL of the enemy's intents, in the order given — how a body whose identity
     // IS a cycle (the Moon-Cycle Ibis sets a rite, pecks, and returns to it) is driven without the rest of its
@@ -170,19 +121,8 @@ internal static class FightProbe
     }
 
     // The REAL authored encounter, exactly as the game fields it (roster, per-encounter HP, intents).
-    // `energy` raises only the hero's pool, for probes that must land several cards inside one turn.
-    public static EncounterDefinition Authored(string encounterId, int? energy = null)
-    {
-        var authored = Game.Encounters.FirstOrDefault(e => e.Id.Value == encounterId)
-            ?? throw new InvalidOperationException($"no encounter '{encounterId}'");
-
-        return energy is not { } pool
-            ? authored
-            : new EncounterDefinition(authored.Id, authored.Enemies,
-                [new ResourceSpec(StandardCombatIds.EnergyResource, pool, pool)],
-                authored.HeroStartingStatuses, authored.HeroDisplayName, authored.CardsDrawnPerTurn,
-                authored.TriggeredEffects);
-    }
+    public static EncounterDefinition Authored(string encounterId, int? energy = null) =>
+        SparringRing.Authored(Game, encounterId, energy);
 
     // Starts the probe fight and hands back the live playback plus the enemy's id.
     public static (RunPlayback Play, InteractiveRunSession Session, CombatantId EnemyId) Start(
