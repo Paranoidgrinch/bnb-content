@@ -973,7 +973,57 @@ may still lose, and that is correct.
       draw). None has ever run away — the engine's re-entry guard holds a LONE rule, which is why this needed
       a 26-relic deck to be seen at all — but the Hill Queen's Royal Grace is offered at every draw while no
       card has been played and one of its gifts is two cards.
-- [ ] **V-4 — Nanna-Sin, Lord of the Counted Moon.** *He counts.* The Lunar Calendar.
+- [x] **V-4 — Nanna-Sin, Lord of the Counted Moon. DONE 2026-09-09.** *He counts.* Eight lunar phases, one a
+      round, carrying `— I II III IV III II I`. At `First Quarter — II` the SECOND card played is COUNTED, and
+      it comes back — free, itself, gone at that turn's end — at the next occurrence of the same COUNT, which
+      is a different night from the same named phase and is the whole timing system (§9.3): III is two nights,
+      II four, I six, IV a whole orbit. His own move under a count returns with it at 55 % (75 % from the Old
+      Moon), and the Full Moon amplifies both sides — his return at 70 %, and an Echo the player plays that
+      night resolves a second time at half. Once an orbit the player may HOLD THE MOON: the phase does not
+      advance, both sides get the extra night, and because "the next occurrence" is now tomorrow, what was
+      counted comes straight back. Orbits II/III/IV+ are his only escalation; from the fourth each new sky
+      leaves one permanent RADIANCE on him. `Converter/ActFiveNannaSin.cs` + `Tests/ActFiveBossNannaSinTests.cs`
+      (15), two new `ReadableBossStateTests`, and he is in `BossLengthTests` (**down in 34 turns** of a 90
+      budget — four full orbits, so every escalation is reached in an ordinary fight).
+      ▸ **NOTHING WAS BOUGHT FROM THE ENGINE.** The god whose whole fight is recurrence is the first of the
+      four to need no seam, because both hard parts were already solved for other reasons: `CreateCardCopyNode`
+      copies by DEFINITION (so an upgraded card returns upgraded, for free — an upgrade here IS a different
+      definition), and `ReplayCardProgramNode` re-runs a card's own program at a rational SCALE, which is the
+      only honest way to enhance a card nobody wrote a number for.
+      ▸ **THE RING IS ONE SUBTRACTION.** The count is `4 − |phase − 5|` and the night a count came from is
+      `10 − p`. That identity does all of it: which card returns, which of HIS moves returns, and why the
+      waxing half of the first orbit is empty while the waning half already pays out — §9.9's "the calendar is
+      mostly empty" arrived at by arithmetic instead of by a rule that hides it.
+      ▸ **THE PHASE IS A COUNTER, AND NANSHE'S DAY WAS THE ROUND — THE DIFFERENCE IS WHO FORECASTS.** Her
+      tablet shows three days ahead and the engine's forecast is a live projection, so an intent chosen from
+      hidden state answers the same thing three times over. He forecasts nothing (the ring is the forecast),
+      so his phase can be a counter — which is exactly what lets one held night stop the calendar without
+      stopping the fight. It is still WRITTEN from `round − 1 − nights held` rather than stepped, so a fight
+      rebuilt from its checkpoint lands on the sky it left.
+      ▸ **⚠ THE FIGHT DEALS ITS OWN PAPER, AND PAPER IS NOT A PLAY.** Hold the Moon is laid in hand every
+      morning the seal is unspent and the engine counts it like any card — so holding the moon and then
+      playing the card you meant to count would have played "the second card" and counted nothing, silently.
+      His sheet wears its own tag and is tallied out of the index; a temporary card a RELIC made still counts,
+      because that is a play the player chose.
+      ▸ **⚠ A MARKER RE-APPLIED WHILE ITS CONDITION HOLDS READS ×8.** A status merges by adding, so "he is in
+      the Old Moon" written on each of an orbit's eight nights is a chip that lies about a thing that is
+      either true or not. Every marker on the ring is struck off and written again — Nanshe's `Restate` shape,
+      third time this project has needed it. The Intercalary Seal is granted the same way, which is also
+      §9.8's "one per orbit": an unspent seal does not carry into the next sky.
+      ▸ **A TEST THAT MEASURES THROUGH A DEBUFF MEASURES THE DEBUFF.** Reading a Returning Move off the
+      player's health reads Paperwork's turn-end tick too; reading Perfect Reflection off an Echo's damage
+      reads Doubt eating the attack. Both are measured on a probe with his intent RULES stripped, so he plays
+      one move a night while the ring turns underneath it.
+      ▸ **BOTH STAMPS REACH THE SCREEN** (bnb-godot): `COUNTED` and `LUNAR ECHO` are rows in the card-face
+      stamp table Inanna's claim opened. The whole decision his fight asks is made on the cards. Proved from
+      the live tree — `card stamps: 1 shown of 1 marked — LUNAR ECHO`, beside `The Lunar Phase ×8 · The Lunar
+      Count ×1 · The Move That Returns ×11`.
+      ▸ **AND THE PROBE HAD TO LEARN TO PLAY.** Inanna claims a card whether or not anybody moves; he counts
+      the Nth card of a TURN, so a probe that only ends turns reports an empty hand — which reads as "the
+      stamp never reaches the screen". `--plays N` plays that many cards a round AND answers what they ask
+      (an unanswered prompt refuses every End Turn after it). `--seed <n>` pins the walk: finding a named god
+      costs a whole five-act walk PER SEED TRIED, and that — not the fight — was the afternoon's real cost.
+      **nanna_sin is on seed 1, inanna on 5.**
 - [ ] **V-5 — Utu, Witness of Every Oath.** *He witnesses.* Oaths / Witness.
 - [ ] **V-6 — Enlil, Voice of the Unalterable Decree.** *He decrees.* Decrees.
 
@@ -1052,4 +1102,6 @@ force — these fights are "almost a separate game mode"); each god enters `Boss
       was; the intent forecast reached a screen for the first time)
 - [x] **V-3a — THE OPENING HAND — DONE 2026-09-09** (the Act-IV run-killer: a draw is not a new turn; one
       engine buy, `CardDrawsThisTurn`; the crash was in an elite room, not the Weigher)
-- [ ] V-4 … V-6 the three remaining gods · V-7 the whole game
+- [x] **V-4 — NANNA-SIN — DONE 2026-09-09** (the Lunar Calendar; NO engine buy — the ring is one
+      subtraction, and the two hard parts were already in the engine for other reasons)
+- [ ] V-5 Utu · V-6 Enlil — the two remaining gods · V-7 the whole game

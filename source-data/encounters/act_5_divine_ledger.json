@@ -45,12 +45,12 @@
     "role": "boss"
   },
   {
-    "id": "act_5_nanna_sin_moon_seal_of_ur",
-    "name": "The Moon Seal of Ur",
+    "id": "act_5_nanna_sin_lord_of_the_counted_moon",
+    "name": "The Counted Moon",
     "act": 5,
     "difficulty": "boss",
     "enemies": [
-      "nanna_sin_moon_seal_of_ur"
+      "nanna_sin_lord_of_the_counted_moon"
     ],
     "weight": 1,
     "tags": [

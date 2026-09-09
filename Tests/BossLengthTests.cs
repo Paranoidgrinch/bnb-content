@@ -70,6 +70,10 @@ public class BossLengthTests(ITestOutputHelper output)
     // three: the deck fighting her is rationed, and a fight that starves what is attacking it does not also
     // need hit points to be long.
     [InlineData("act_5_nanshe_keeper_of_the_just_ration", 90)]
+    // Nanna-Sin is the one god who makes the walker FASTER — most nights hand it a free card back — which is
+    // why he carries the second-largest pool of the four and still has to be measured: an escalation that
+    // arrives in the orbit he dies in is an escalation nobody sees.
+    [InlineData("act_5_nanna_sin_lord_of_the_counted_moon", 90)]
     public void A_boss_dies_inside_the_turn_budget(string encounterId, int budget = TurnBudget)
     {
         var (play, session, _) = FightProbe.Start(FightProbe.Authored(encounterId), health: 9999);

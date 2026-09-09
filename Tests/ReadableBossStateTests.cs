@@ -369,4 +369,48 @@ public class ReadableBossStateTests
 
         play.Dispose();
     }
+
+    // ── Nanna-Sin's ring ──────────────────────────────────────────────────────────────────────────────────
+
+    [Fact]
+    public void Every_face_of_the_lunar_calendar_says_what_it_means()
+    {
+        var faces = ActFive.NannaSinStatuses();
+        Assert.NotEmpty(faces);
+        Assert.All(faces, status =>
+        {
+            Assert.False(string.IsNullOrWhiteSpace(status.NameKey), status.Id);
+            Assert.False(string.IsNullOrWhiteSpace(status.DescriptionKey), status.Id);
+            Assert.NotEqual(status.NameKey?.Trim(), status.DescriptionKey?.Trim());
+        });
+    }
+
+    // THE RING IS THE RULE, SO THE RING IS ALWAYS ON THE TABLE. Where the moon stands, what that means for
+    // tonight's cards, and how many times the sky has come round are three facts every other rule of this
+    // fight is written against — and the counter his intent rules read may never disagree with the chip that
+    // speaks for it, because the move he telegraphs and the night it belongs to are the same fact.
+    [Fact]
+    public void The_ring_and_the_counter_that_drives_it_never_disagree()
+    {
+        int[] counts = [0, 1, 2, 3, 4, 3, 2, 1];
+        var (play, _, _) = FightProbe.Start(
+            FightProbe.Solo(ActFive.NannaSinEnemyId, "count_the_unseen", 3),
+            deck: [.. Enumerable.Repeat(Deed, 20)], health: 4000);
+
+        for (var night = 0; night < 18; night++)
+        {
+            var lord = play.CombatDriver!.Current!.State.Combatants
+                .First(c => c.DefinitionId.value.Contains("nanna_sin", StringComparison.Ordinal));
+            var phase = night % 8 + 1;
+
+            Assert.Equal(phase, Counter(lord, "nanna_sin_phase"));
+            Assert.Equal(phase, FightProbe.StacksOf(lord, ActFive.LunarPhaseId));
+            Assert.Equal(counts[night % 8], FightProbe.StacksOf(lord, ActFive.LunarCountId));
+            Assert.Equal(night / 8 + 1, FightProbe.StacksOf(lord, ActFive.OrbitId));
+
+            play.CombatDriver!.EndTurn();
+        }
+
+        play.Dispose();
+    }
 }

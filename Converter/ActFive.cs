@@ -45,10 +45,11 @@ public static partial class ActFive
                 "Three days to a Distribution, and all three portions are on the table before the first one "
                 + "begins. Your natural Energy and your natural draw are your share — anything you take "
                 + "beyond it comes out of a later day, and no day but the last falls below 1 and 1."),
-            ["act_5_nanna_sin_moon_seal_of_ur"] = (
+            [NannaSinEncounterId] = (
                 "The Lunar Calendar",
-                "The moon is a schedule. Whatever it is due on the day it arrives, it takes on that day and no "
-                + "other."),
+                "Eight phases, one a round, carrying the counts — · I · II · III · IV · III · II · I. The "
+                + "card you play on tonight's count is Counted, and comes back free the next time that count "
+                + "comes round. So does the move he made on it."),
             ["act_5_utu_witness_of_every_oath"] = (
                 "Oaths and Witness",
                 "Utu witnesses every oath, including the ones you did not know you were swearing. Nothing done "
@@ -67,13 +68,14 @@ public static partial class ActFive
 
     // Everything the act's gods put into the document. One line per god as they are built.
     public static IReadOnlyList<StatusData> All() =>
-        [.. NisabaStatuses(), .. InannaStatuses(), .. NansheStatuses()];
+        [.. NisabaStatuses(), .. InannaStatuses(), .. NansheStatuses(), .. NannaSinStatuses()];
 
     public static IReadOnlyList<CardData> GivenCards() =>
-        [.. NisabaReedCards(), .. InannaLedgerCards(), .. NansheRationCards()];
+        [.. NisabaReedCards(), .. InannaLedgerCards(), .. NansheRationCards(), .. NannaSinCards()];
 
     public static EffectProgram<EnemyActionContext>? Intent(string enemyId, string intentId) =>
         NisabaIntent(enemyId, intentId)
         ?? InannaIntent(enemyId, intentId)
-        ?? NansheIntent(enemyId, intentId);
+        ?? NansheIntent(enemyId, intentId)
+        ?? NannaSinIntent(enemyId, intentId);
 }
