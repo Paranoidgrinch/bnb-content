@@ -3982,7 +3982,17 @@ standing on his row beside the intent is what says 48 is no longer a real number
 game where the telegraph is meant to be read together with something else, and it works only because the
 decree is a chip on the same screen.
 
-**MEASURED**: 26 live tests; `A_boss_dies_inside_the_turn_budget` in the budget of 90. Against the sparring
+**MEASURED**: 25 live tests; `A_boss_dies_inside_the_turn_budget` in the budget of 90. Against the sparring
 ring at 900 HP: won 3/3 in 26–37 turns for 521–695 HP — the same band as Utu, from the other direction. He is
 also the only boss in the pool that can REFUSE the greedy walker's play, which makes his length test the only
-proof in the suite that a refusal ends a turn rather than looping it.
+proof in the suite that a refusal ends a turn rather than looping it. Whole-game: `--playtest 3` Victory 3/3
+(he was drawn into one of the three gauntlets and put down there, 184 answers at 23 ms), `--maps 3` clean,
+Godot `--smoke-marathon` `Victory acts=5 rooms=111 error=none` in **592.0 s** — against V-5's 591.5 s, so the
+decree seam costs nothing at all in latency (2.6 / 2.5 / 4.2 / 7.7 / 33.3 s per room across the five acts).
+
+**⚠ AND ONE LESSON THAT IS NOT ABOUT HIM BUT ABOUT TESTING HIM.** Everywhere else in this game "that card
+cannot be played" means the hand does not hold it or the Energy does not reach it — both of which a loop can
+watch. Here it means the RULES refuse it, and a refused play changes nothing at all: same hand, same Energy,
+same everything. `while (there is still a card and still a point)` therefore never ends, and the first run of
+this suite spent **32 minutes** looking like a slow test rather than a stuck one. Every loop in the file now
+counts its own plays and stops at the first refusal, and the reason is written above it.
