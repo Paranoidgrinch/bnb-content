@@ -1,0 +1,36 @@
+{
+  // A worked example, and the shape every snapshot has. Everything below has a default; the smallest
+  // useful file is {"enemy": "…"} or {"encounter": "…"}.
+  //
+  // This one asks a real question: what does the Act-IV Tombbreakers elite cost a PAPERWORK deck of about
+  // the size a run carries by then, holding the four relics such a deck would want?
+  "name": "Tombbreakers · a paperwork deck, mid Act IV",
+  "encounter": "labyrinth_elite_the_tombbreakers_three",
+
+  "maxHealth": 80,
+  "health": 62,
+  "energy": 3,
+
+  "deck": [
+    "administrative_notice", "administrative_notice",
+    "compliance_review", "compliance_review", "compliance_review",
+    "final_reminder", "final_reminder",
+    "permit_denied",
+    "compounded_penalty", "compounded_penalty",
+    "counter_signature", "counter_signature",
+    "temporary_authorization", "temporary_authorization",
+    "paper_cut", "paper_cut", "paper_cut",
+    "strong_binder", "strong_binder"
+  ],
+
+  "relics": [
+    "self_inking_stamp",
+    "suspiciously_helpful_stapler",
+    "gargoyle_chalk",
+    "red_ribbon_spool"
+  ],
+
+  "fights": 20,
+  "seed": 1,
+  "turnBudget": 60
+}
