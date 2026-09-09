@@ -145,5 +145,16 @@ public static class BossPhases
         ActFive.LabourId,
         ActFive.RestId,
         ActFive.NeedId,
+
+        // Nanna-Sin's three later orbits — and, beside them, the ring itself. The phase, the count and the
+        // move that returns are not phases either, but they are the three facts his telegraph is read
+        // AGAINST: the intent says "Pour Away the Light", and only the count says what else is coming.
+        ActFive.ReturningMoonId,
+        ActFive.OldMoonId,
+        ActFive.UnendingMonthId,
+        ActFive.LunarPhaseId,
+        ActFive.LunarCountId,
+        ActFive.ReturningMoveId,
+        ActFive.MoonHeldId,
     ];
 }

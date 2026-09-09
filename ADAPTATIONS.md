@@ -3652,3 +3652,79 @@ learns the build's natural portion), **Inanna's Claim of Hands** (a running tota
 sites, three of which draw for the player). None of them has ever run away — the re-entry guard holds a lone
 rule — but the Hill Queen's Royal Grace is offered at every draw while no card has been played, and one of
 its five gifts is two cards. It is the next place to look if a fight ever parks on a repeating prompt.
+
+## V-4 — Nanna-Sin, Lord of the Counted Moon (2026-09-09)
+
+**NOTHING WAS BOUGHT FROM THE ENGINE.** The god whose whole fight is "your own actions come back later" is
+the first of the four to need no new seam at all, and the reason is that the two hard parts were both already
+solved by something built for a different purpose: `CreateCardCopyNode` copies a card by DEFINITION (so an
+upgraded card returns upgraded, for free, because an upgrade in this game is a different definition), and
+`ReplayCardProgramNode` re-runs a card's own program at a rational SCALE, which is the only honest way to give
+"a moderate numerical enhancement" to a card nobody wrote a number for.
+
+**THE RING IS ARITHMETIC, AND THE COUNT IS ONE SUBTRACTION.** §9.2's pattern `— I II III IV III II I` is
+`4 − |phase − 5|`, and §9.3's "the same count returns" is `phase 10 − p`. That one identity does the whole of
+the timing system: it says which night a Counted card comes back on, it says which of HIS moves comes back
+with it, and it says why the waxing half of the first orbit is empty (its partner nights have not happened
+yet) while the waning half already pays out. The master describes four different time horizons; the fight
+implements none of them, and gets all four.
+
+**HIS OWN ECHO NEEDED NO RECORDING.** §9.5 says his move under a count is recorded and returns weaker. But the
+phase→move map is fixed, so the move recorded at a count is *always* the move of phase 10 − p — the record is
+a fiction the calendar makes true. Each of his eight intents therefore carries its own returning move inline,
+guarded by `orbit ≥ 2` on the waxing half. Nothing is stored, and nothing can drift out of step with the ring.
+
+**THE PHASE IS A COUNTER, AND NANSHE'S DAY WAS THE ROUND — THE DIFFERENCE IS WHO FORECASTS.** V-3 recorded
+that her calendar *had* to be pure arithmetic on the round, because the engine's intent forecast is a live
+projection and an intent chosen from hidden state answers the same thing three times over. Nanna-Sin forecasts
+nothing (the ring itself is the forecast, and it is on the wall), so his phase can be a counter — which is
+exactly what lets ONE held night stop the calendar without stopping the fight. The counter is still WRITTEN
+from arithmetic (`round − 1 − nights held`) rather than stepped, so a fight rebuilt from its checkpoint lands
+on the sky it left.
+
+**ONE MARK PLUS A NUMBER BEATS FOUR MARKS.** A Counted card is wherever the fight left it — hand, draw pile,
+discard, exhaust — so the return has to search, and searching once per count would be four times the program.
+The card carries one mark, `moon_counted`, and a per-instance mark COUNTER saying which count took it; the
+search is the same four nodes whatever tonight's count is. The mark is spent by being answered, which is also
+what frees the count to take a new card the same night.
+
+**A HELD NIGHT PAYS OUT AT ONCE, AND THAT FALLS OUT OF THE RULE RATHER THAN BEING WRITTEN.** §9.8 says the
+extra night is recorded like any other and that what was counted can return later. Because "later" means *the
+next occurrence of this count*, and a held night IS the next occurrence, holding the moon brings your Counted
+card straight back — and his returning move with it. The master's "you buy time now by creating an additional
+future recurrence" is the same sentence read from the other end, and neither half had to be authored.
+
+**⚠ THE FIGHT DEALS ITS OWN PAPER, AND PAPER IS NOT A PLAY.** Hold the Moon is laid in hand every morning the
+seal is unspent, and the engine counts it like any other card — so a player who held the moon and then played
+the card they meant to count would have played "the second card" and counted *nothing at all*, silently. His
+sheet wears a tag of its own and is tallied out of the index. Only HIS paper: a temporary card a relic made is
+a play the player chose to make, and it should take the count.
+
+**⚠ A MARKER RE-APPLIED WHILE ITS CONDITION HOLDS READS ×8.** A status merges by ADDING, so "he is in the
+Old Moon" written on every one of an orbit's eight nights is a chip that says `The Old Moon ×8` — a lie about
+a thing that is either true or not. Every marker on the ring is therefore struck off and written again, which
+is the same `Restate` shape Nanshe's day chip uses and for the same reason. The Intercalary Seal is granted
+the same way, which is also §9.8's "only one per orbit": an unspent seal does not carry into the next sky.
+
+**HIS HP IS 700, the second highest of the four gods, and for Inanna's reason rather than Nisaba's.** His
+mechanic hands the player a free card most nights, so the deck fighting him is faster than it is anywhere else
+in the game; a god whose third orbit arrives in the round he dies has an escalation nobody sees. The walker
+takes him down in **34 turns** of a 90 budget — four full orbits, so the Returning Moon, the Old Moon and the
+Unending Month are all reached in an ordinary fight.
+
+**AND A TEST THAT MEASURED THROUGH A DEBUFF MEASURED THE DEBUFF.** Reading what a Returning Move adds by
+watching the player's health across a turn reads Paperwork's tick as well (it lands at the bearer's turn end);
+reading what Perfect Reflection adds by watching an Echo's damage reads Doubt eating the attack. Both are now
+measured on a probe with his intent RULES taken off, so he plays one move every night and the ring turns
+underneath it — the fight's own arithmetic, with none of the fight's own debuffs on top of the reading.
+
+**AND THE PROBE THAT WATCHES A GOD HAD TO LEARN TWO THINGS.** Inanna claims a card whether or not anybody
+moves, so V-2's boss probe never needed to play one; Nanna-Sin counts the Nth card of a TURN, and a probe that
+only ends turns counts nothing and reports an empty hand — which reads as "the stamp never reaches the screen"
+when the truth is that the probe gave it nothing to stamp. `--plays N` plays that many cards a round, and it
+must also ANSWER what they ask: an unanswered prompt refuses every End Turn after it, so the first version
+passed one round and reported six. And `--seed <n>` pins the walk, because finding a named god costs a whole
+five-act walk PER SEED TRIED — nanna_sin is on seed 1, inanna on 5 — which is minutes of walking to reach a
+fight somebody already knows the way to. Proof from the live tree:
+`card stamps: 1 shown of 1 marked — LUNAR ECHO`, beside `The Lunar Phase ×8 · The Lunar Count ×1 ·
+The Move That Returns ×11` and a telegraph reading `Close the Reckoning · 18 dmg, 20 block`.

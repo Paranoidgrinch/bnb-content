@@ -546,33 +546,116 @@
     ]
   },
   {
-    "id": "nanna_sin_moon_seal_of_ur",
-    "name": "Nanna-S?n, Moon Seal of Ur",
-    "max_hp": 305,
+    "id": "nanna_sin_lord_of_the_counted_moon",
+    "name": "Nanna-Sin, Lord of the Counted Moon",
+    "max_hp": 700,
     "intent_pattern": "cycle",
     "intents": [
       {
-        "id": "waxing_seal",
-        "name": "Waxing Seal",
-        "intent_type": "block",
+        "id": "count_the_unseen",
+        "name": "Count the Unseen",
+        "intent_type": "debuff",
         "actions": [
           {
-            "type": "gain_block",
-            "target": "self",
-            "amount": 34
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 16
           },
           {
             "type": "apply_status",
-            "target": "self",
-            "status": "strength",
-            "amount": 1
+            "target": "player",
+            "status": "paperwork",
+            "amount": 2
           }
         ]
       },
       {
-        "id": "calendar_of_dues",
-        "name": "Calendar of Dues",
-        "intent_type": "debuff",
+        "id": "raise_the_horns",
+        "name": "Raise the Horns",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 20
+          }
+        ]
+      },
+      {
+        "id": "divide_the_night",
+        "name": "Divide the Night",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 12
+          },
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 12
+          }
+        ]
+      },
+      {
+        "id": "fill_the_measure",
+        "name": "Fill the Measure",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 26
+          }
+        ]
+      },
+      {
+        "id": "crown_of_ur",
+        "name": "Crown of Ur",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 34
+          }
+        ]
+      },
+      {
+        "id": "pour_away_the_light",
+        "name": "Pour Away the Light",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 22
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "doubt",
+            "amount": 2
+          }
+        ]
+      },
+      {
+        "id": "cut_the_month",
+        "name": "Cut the Month",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 24
+          }
+        ]
+      },
+      {
+        "id": "close_the_reckoning",
+        "name": "Close the Reckoning",
+        "intent_type": "mixed",
         "actions": [
           {
             "type": "deal_damage",
@@ -580,22 +663,9 @@
             "amount": 18
           },
           {
-            "type": "apply_status",
-            "target": "player",
-            "status": "paperwork",
-            "amount": 5
-          }
-        ]
-      },
-      {
-        "id": "waning_verdict",
-        "name": "Waning Verdict",
-        "intent_type": "attack",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 38
+            "type": "gain_block",
+            "target": "self",
+            "amount": 20
           }
         ]
       }
@@ -607,7 +677,94 @@
       "nanna_sin",
       "moon",
       "ur",
-      "seal"
+      "calendar"
+    ],
+    "starting_statuses": [
+      {
+        "status": "the_lunar_calendar"
+      }
+    ],
+    "intent_rules": [
+      {
+        "condition": {
+          "kind": "self_counter",
+          "counter": "nanna_sin_phase",
+          "op": "eq",
+          "value": 1
+        },
+        "action": "count_the_unseen",
+        "priority": 10
+      },
+      {
+        "condition": {
+          "kind": "self_counter",
+          "counter": "nanna_sin_phase",
+          "op": "eq",
+          "value": 2
+        },
+        "action": "raise_the_horns",
+        "priority": 10
+      },
+      {
+        "condition": {
+          "kind": "self_counter",
+          "counter": "nanna_sin_phase",
+          "op": "eq",
+          "value": 3
+        },
+        "action": "divide_the_night",
+        "priority": 10
+      },
+      {
+        "condition": {
+          "kind": "self_counter",
+          "counter": "nanna_sin_phase",
+          "op": "eq",
+          "value": 4
+        },
+        "action": "fill_the_measure",
+        "priority": 10
+      },
+      {
+        "condition": {
+          "kind": "self_counter",
+          "counter": "nanna_sin_phase",
+          "op": "eq",
+          "value": 5
+        },
+        "action": "crown_of_ur",
+        "priority": 10
+      },
+      {
+        "condition": {
+          "kind": "self_counter",
+          "counter": "nanna_sin_phase",
+          "op": "eq",
+          "value": 6
+        },
+        "action": "pour_away_the_light",
+        "priority": 10
+      },
+      {
+        "condition": {
+          "kind": "self_counter",
+          "counter": "nanna_sin_phase",
+          "op": "eq",
+          "value": 7
+        },
+        "action": "cut_the_month",
+        "priority": 10
+      },
+      {
+        "condition": {
+          "kind": "self_counter",
+          "counter": "nanna_sin_phase",
+          "op": "eq",
+          "value": 8
+        },
+        "action": "close_the_reckoning",
+        "priority": 10
+      }
     ]
   },
   {
