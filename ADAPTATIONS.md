@@ -3794,3 +3794,41 @@ oath-fish probe is a registry belonging to one test class being read by another,
 parallel with nothing in this repo configured to stop it. Recorded rather than fixed — a flaky suite quietly
 erodes every gate that stands on it, so it is worth a step of its own rather than a guess at the end of this
 one.
+
+## V-4b — two runs in one process shared a map (2026-09-09)
+
+**THE FLAKE WAS A DATA RACE, AND IT WAS FOUND BY READING RATHER THAN BY RUNNING.** V-4a recorded two tests that
+failed once in a full suite and passed in a second run of identical code. The first cheap move on the list was
+"run the suite without parallelism and see", which would have cost twenty minutes and answered only *race or
+leak*. The error text answered better: `No encounter registered with id
+'archives_boss_curator_of_misplaced_hours'` inside an Act-III oath-fish probe means a run asked its own catalog
+for an encounter belonging to a **different blueprint's map**, and that narrows the search to state shared
+between two runs.
+
+**IT WAS ONE STATIC SLOT IN THE HOST'S HOT PATH.** `RunPlayback._actPlan` cached the act plan a replay restore
+rebuilds against — added because the baseline moves once per TURN, so a long fight restores hundreds of times
+and regenerating five acts' maps was costing about half a second an answer. Correct exactly as long as one run
+exists at a time. Two do the moment a process hosts two: xUnit runs test classes in parallel, and the Studio's
+Blazor server can hold a run per visitor.
+
+**AND THE FAILURE IS A TORN READ, NOT A STALE ONE.** The slot holds a four-field tuple, so writing it is
+several writes; a concurrent reader can see the Blueprint and Seed of the run that wrote last beside the Acts
+of the run that wrote before. The reference check `ReferenceEquals(cached.Blueprint, blueprint)` then PASSES
+against a plan belonging to another game, and the run is restored onto that game's map — whose nodes name
+encounters this run's catalog has never heard of. A stale cache would have been caught by the check; a torn one
+walks straight through it.
+
+**THE FIX IS THAT THE CACHE BELONGS TO THE PLAYBACK.** One playback is one run against one blueprint, so per
+instance there is nothing to tear, the hit rate is what it was, and two playbacks no longer evict each other —
+no lock, no thread affinity, and the half-second-an-answer win is kept.
+
+**PROVED BEFORE IT WAS FIXED.** `ParallelRunPlaybackTortureTests` drives sixteen playbacks over two blueprints
+whose maps name different encounters, replaying hard. Against the static slot it breaks in **under a second**;
+against the instance field it passed five runs out of five. A deterministic test could not have caught this —
+with the static cache and interleaved-but-serial restores the reference check does its job — which is why the
+test is a stress and says so in its header.
+
+**THE LESSON IS ABOUT THE FLAKE, NOT THE CACHE.** A suite that fails at random is a gate nobody trusts, and the
+temptation is to re-run it until it is green and move on. Twice today a full run was green over code that had
+a real race in it. The error text is the instrument: it named a room from another act, and that one word was
+worth more than a twenty-minute experiment.
