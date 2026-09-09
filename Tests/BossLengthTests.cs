@@ -80,6 +80,11 @@ public class BossLengthTests(ITestOutputHelper output)
     // every Oath it swears, so this is the run in which Witness grows fastest, and a fight whose damage
     // climbs with the player's own record is a fight that could stop ending from either direction.
     [InlineData("act_5_utu_witness_of_every_oath", 90)]
+    // Enlil is the one fight in the game where the greedy walker can be REFUSED. Under THE FOURTH WORK it
+    // runs out of legal plays with a full hand and Energy to spare, and under NO WORK SHALL FOLLOW ITS
+    // LIKENESS a deck of one kind of card can offer nothing at all — so this budget is also the proof that
+    // a refusal ends a turn rather than looping it, which no other boss in the pool can test.
+    [InlineData("act_5_enlil_voice_of_the_unalterable_decree", 90)]
     public void A_boss_dies_inside_the_turn_budget(string encounterId, int budget = TurnBudget)
     {
         var (play, session, _) = FightProbe.Start(FightProbe.Authored(encounterId), health: 9999);

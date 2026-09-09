@@ -3900,3 +3900,89 @@ other gods: 31 · 31 · 34 · 80). Against the sparring ring's greedy walker —
 morning and then breaks it, because a greedy player plays every card it can afford — he wins nothing but takes
 29–43 turns and 541–792 HP off a 900-HP fighter. That is the fight working from the wrong end on purpose:
 Witness climbing is the walker's own record being read back to it.
+
+---
+
+## V-6 — Enlil, Voice of the Unalterable Decree (2026-09-09)
+
+**THE ONE GOD WHO HAD TO BUY SOMETHING, AND WHAT HE BOUGHT IS A SENTENCE THE ENGINE COULD NOT SAY.** Every
+status in this engine could change a NUMBER (a passive modifier), react to an EVENT (a triggered program) or
+refuse an APPLICATION (a prohibition). None of them could change a RULE. "No more than four cards may be
+played this turn", "a played card is exhausted instead of discarded", "no card may cost nothing", "a hand
+holds no more than seven" are not quantities — they are the terms the fight is being played under, and the
+engine had exactly one of each, hard-coded at its site. So Enlil is the reason `CombatDecrees.cs` exists: a
+`CombatRuleSpec` list on a status definition, seven rules, read at six sites, plus a `ClampMax` operation and
+a `OncePerTurn` claim in the passive pipeline for the three decrees that ARE arithmetic. Nisaba's step
+predicted this exactly ("a boss that overrides normal combat logic"); it took six gods to arrive.
+
+**THE RULE IS READ FROM THE COMBATANT IT IS ABOUT, AND THAT IS THE WHOLE OF §11.4 AND §11.11.** There is no
+global rule table, no "current reality" object. A decree is a status, and Enlil wears every one of them
+himself, on his own row, beside the player's copy. His 48-Block Raise E-kur really gains 30 while NO WALL
+SHALL RISE ABOVE THIRTY stands, by the same code path that caps the player — and the alternative (a rule that
+lives on the fight rather than on a body) would have been a rule with no chip on any row, which is the one
+thing `ReadableBossStateTests` exists to forbid.
+
+**THE DIRECTOR IS THE SHAPE OF THE POOL, NOT A SEARCH.** §11.6 wants no contradictions and no impossible
+states out of twelve decrees. The twelve are split into two RINGS with one slot each, and a ring is a cycle:
+every decree names its successor, so there is no list to filter and no duplicate to avoid. Two decrees can
+only ever be in force together if they are in DIFFERENT rings — so every contradictory pair goes in the SAME
+ring and is impossible by construction. THE FIRST WORD SHALL BE WITHOUT PRICE and NO WORK SHALL BE WITHOUT
+MEASURE are two steps apart in the ring of Works, and a test walks twenty-four turns asserting they never
+meet. This is Nisaba's three slots and Inanna's two passes one step further on: **the third time a Director
+was asked for, and the third time the answer was a data structure rather than a search.**
+
+**THE ANNOUNCEMENT LADDER HAD TO BE AN ELSE-CHAIN.** The obvious shape — one conditional per decree, "if the
+next-chip for X is up, enact X and put up the chip for Y" — is wrong in a way that only shows as a decree
+being skipped: the branch that fires puts up Y's chip, and the later test for Y then fires in the same
+breath. Written as a nested if/else so exactly one arm can run. The same trap as Utu's morning, one level up.
+
+**§11.7's SEVERITY IS ONE FIELD.** `Rounds`: 3 or 2 for a structural decree, 1 for a severe one. NO WORK
+SHALL RETURN empties a deck permanently and therefore runs a single turn; THE FOURTH WORK is only awkward and
+runs three. One number, and the audit rule is enforced by the table rather than by remembering it.
+
+**THE CLOCK IS A SEPARATE CHIP, AND THAT IS WHY THE LAST PHASE READS RIGHT.** The countdown lives on
+`THE WORD STANDS` (and `THE SECOND WORD STANDS`) rather than on the decree, so a decree chip carries the line
+and the rule and nothing else. In the final phase the three words are applied with no clock at all — and a
+player looking at them sees exactly what §11.2 says they are: unalterable, with no number ticking down beside
+them. Had the count lived on the decree itself, the Three Great Decrees would have read "1 round remains",
+which is a lie the fight cannot afford.
+
+**THE LAST ORDER ANSWERS THE TURN THAT BROUGHT HIM THERE.** §11.12 says the Final Orders are hand-curated and
+"not random", which leaves open what chooses between four curated triples. He reads the very play that took
+him under 35 %: four or more cards this turn → the Narrow Kingdom (few actions, each of which has to count);
+thirty or more damage → the Measured Kingdom (nothing may exceed twenty); two or more Energy still standing →
+the Kingdom of Ash (a new zone economy for a player who was hoarding); anything else → the Ordered Kingdom.
+Four reachable branches off state the fight already keeps, and every one of them reads as a reply.
+
+### Three things that did not survive contact
+
+**⚠ AN OVERFILLED POOL COULD NOT BE PUT DOWN AND PICKED UP AGAIN — AND IT KILLED THE FIGHT SILENTLY.**
+WHAT IS UNSPENT SHALL PASS INTO TOMORROW makes the turn-start refill ADD to what was left, which briefly puts
+Energy above its own ceiling. `ValuePoolState`'s constructor refuses a value above the max — correct for
+anything asking to create one, wrong for `CombatState.Restore`, which is not asking for anything: it is
+reading back a state the engine itself produced. The fight ended at the exact turn that decree enacted, with
+no error anywhere the sparring ring could see, because the replay's checkpoint threw where nothing was
+watching. `ValuePoolState.Restored(...)` now rebuilds without re-validating. **A snapshot is a fact, not a
+request** — and the general lesson is the older one in a new place: an engine that can produce a state must be
+able to read it back, or the state is a bomb with a timer set to the next checkpoint.
+
+**TWO OF THE FIFTEEN CANDIDATE DECREES ARE NOT HERE.** §11.5 lists fifteen and §11.6 asks for "around 12".
+THE MEASURE SHALL NOT EXCEED SEVEN is the master's own "optional pool candidate" and says nothing a 3-Energy
+economy can feel. THE LAST DRAWN SHALL REMAIN cannot be written at all: it has to name the LAST card of a
+hand whose size is only known at run time, and the card-in-zone reader takes a constant index. WHAT IS
+DISCARDED SHALL NOT BE RECALLED was dropped for a different reason — "discarded by player effects" and "the
+hand thrown away at turn end" are the same zone move to this engine, so the decree could not be told from a
+rule that also eats the turn's leftovers, and no Final Order needs it. Twelve, which is what was asked for.
+
+**HIS TELEGRAPH SAYS 48 AND HE GAINS 30, ON PURPOSE.** The intent label is built from what the move IS, and
+under NO WALL SHALL RISE ABOVE THIRTY it is not what will happen. Everywhere else in this project that would
+be the unforgivable failure — Utu lost the best line in his fight to exactly this rule one step earlier. Here
+it is the mechanic: §11.11 is the moment the player sees the word bind its own speaker, and the decree
+standing on his row beside the intent is what says 48 is no longer a real number. It is the one place in the
+game where the telegraph is meant to be read together with something else, and it works only because the
+decree is a chip on the same screen.
+
+**MEASURED**: 26 live tests; `A_boss_dies_inside_the_turn_budget` in the budget of 90. Against the sparring
+ring at 900 HP: won 3/3 in 26–37 turns for 521–695 HP — the same band as Utu, from the other direction. He is
+also the only boss in the pool that can REFUSE the greedy walker's play, which makes his length test the only
+proof in the suite that a refusal ends a turn rather than looping it.

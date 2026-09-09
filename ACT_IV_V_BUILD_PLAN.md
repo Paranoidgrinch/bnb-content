@@ -1101,7 +1101,42 @@ may still lose, and that is correct.
       ▸ **§10.11 No Shadow** cannot be shown (the frontend draws no draw pile), so it is honoured for what the
       master says it is FOR: one card more at the start of every turn from the Zenith on.
       ▸ 21 live tests · **29 turns of 90** in `BossLengthTests` · greedy sparring 29–43 turns.
-- [ ] **V-6 — Enlil, Voice of the Unalterable Decree.** *He decrees.* Decrees.
+- [x] **V-6 — Enlil, Voice of the Unalterable Decree. DONE 2026-09-09.** *He decrees.* Twelve DECREES, each
+      announced a full player turn ahead as NEXT DECREE, each running the count beside it, and none of them
+      removable, shortenable or bargainable. He is the exact opposite of the god in the room before him: Utu
+      never stops you and merely sees; under THE FOURTH WORK SHALL BE THE LAST the fifth card is not a choice
+      with a price, it is unavailable. Three realities — ONE WORD (one decree at a time), THE ASSEMBLY FALLS
+      SILENT (70 %, two rings turning on staggered counts), THREE WORDS ARE ENOUGH (35 %, the rotation stops
+      and one of four hand-curated Final Orders stands until somebody dies). `Converter/ActFiveEnlil.cs` +
+      `Tests/ActFiveBossEnlilTests.cs` (26), and he is in `BossLengthTests`.
+      ▸ ★★ **THE ONE ENGINE BUY OF THE WHOLE ACT'S SECOND HALF, and Risk 4 / V-1 named it**: a status could
+      change a NUMBER, react to an EVENT or refuse an APPLICATION, and could not change a RULE. `CombatRule`
+      + `CombatRuleSpec` on a status definition (`Core/Combat/CombatDecrees.cs`) — seven rules read at six
+      sites (a ceiling on the turn's cards, likeness in succession, the Nth card free, a cost floor that can
+      price a card with no price, energy that carries, a played card that exhausts, a hand ceiling) — plus
+      `PassiveModifierOperation.ClampMax` and `PassiveModifierSpec.OncePerTurn` for the three decrees that
+      are arithmetic rather than rules.
+      ▸ ★★ **A RULE IS READ FROM THE COMBATANT IT IS ABOUT, so §11.11 costs nothing.** There is no global
+      rule table; he WEARS every decree himself, and his 48-Block Raise E-kur gains 30 under his own wall by
+      the same code path that caps the player. A rule living on the fight rather than on a body would have
+      been a rule with no chip on any row.
+      ▸ **THE DIRECTOR IS THE SHAPE OF THE POOL** — twelve decrees, two RINGS, one slot each, each decree
+      naming its successor. Two decrees can only meet if they are in different rings, so every contradictory
+      pair lives in the SAME ring and is impossible by construction. Third Director in this act, third time
+      the answer was a data structure and not a search.
+      ▸ ⚠ **AN OVERFILLED POOL COULD NOT BE PUT DOWN AND PICKED UP AGAIN.** "What is unspent shall pass into
+      tomorrow" puts Energy briefly above its ceiling, and `CombatState.Restore` refused to rebuild it — so
+      the fight ENDED, silently, at the exact turn that decree enacted, because the replay checkpoint threw
+      where no instrument was looking. `ValuePoolState.Restored(…)` rebuilds without re-validating: **a
+      snapshot is a fact, not a request.**
+      ▸ **THE CLOCK IS ITS OWN CHIP** (`THE WORD STANDS`), so a decree chip carries the line and the rule and
+      nothing else — and the three final words stand with no count beside them at all, which is what §11.2
+      says they are. A count living on the decree would have printed "1 round remains" on an unalterable one.
+      ▸ **HIS TELEGRAPH SAYS 48 AND HE GAINS 30 ON PURPOSE** — the one place in the game where the intent
+      line is meant to be read together with something else, and it works only because that something is a
+      chip on the same screen. Godot now also greys a card the RULES forbid, not only one the purse cannot
+      reach (`InteractiveCombat.CanPlay`).
+      ▸ 26 live tests · greedy sparring 26–37 turns for 521–695 HP off 900.
 
 Each god: read its section of the boss master end to end first, then author it as its own file plus a live
 test file; every unusual rule must be **telegraphed on screen** (the ReadableBossState rule applies with full
@@ -1187,4 +1222,6 @@ force — these fights are "almost a separate game mode"); each god enters `Boss
 - [x] **V-5 — UTU — DONE 2026-09-09** (Oaths and Witness; NO engine buy — he asks five questions about a
       turn that the engine was already answering, and the sky pays him in Witness so the telegraph can
       print the whole sum)
-- [ ] V-6 Enlil — the last god · V-7 the whole game
+- [x] **V-6 — ENLIL — DONE 2026-09-09** (Decrees; ONE engine buy — a status that changes a RULE and not a
+      number, `CombatDecrees.cs`, and the twelve decrees are two rings whose shape IS the Director)
+- [ ] V-7 — the whole game (all six gods stand)

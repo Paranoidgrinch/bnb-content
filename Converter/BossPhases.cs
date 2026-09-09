@@ -168,5 +168,18 @@ public static class BossPhases
         ActFive.OathStandsId,
         ActFive.JudgmentId,
         ActFive.NoShadowId,
+
+        // Enlil's three realities — and, beside them, the twelve decrees, the twelve announcements, the two
+        // counts and the four Final Orders. This is the largest entry in the whole list and it has to be:
+        // for every other boss the chips explain a fight, and for this one they ARE the fight. A player who
+        // reads "Raise E-kur, 48 block" without NO WALL SHALL RISE ABOVE THIRTY beside it has read a number
+        // that is not going to happen, and a player who cannot see NEXT DECREE has lost the only thing
+        // Enlil ever gives them: a turn to prepare.
+        ActFive.OneWordId,
+        ActFive.AssemblySilentId,
+        ActFive.ThreeWordsId,
+        ActFive.WordStandsId,
+        ActFive.SecondWordStandsId,
+        .. ActFive.EnlilDecreeMarkers(),
     ];
 }
