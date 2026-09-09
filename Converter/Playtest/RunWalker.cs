@@ -123,9 +123,15 @@ public static class RunWalker
         while (steps++ < stepBudget)
         {
             if (play.Error is { } hostError)
+            {
+                Inventory(play, session, progress);
                 return new Report(seed, session.Run.Result, hostError, stops, notes, steps);
+            }
             if (session.Error is { } runError)
+            {
+                Inventory(play, session, progress);
                 return new Report(seed, session.Run.Result, runError, stops, notes, steps);
+            }
             if (session.IsComplete)
                 break;
             Note();
@@ -159,7 +165,10 @@ public static class RunWalker
             else if (play.CombatDriver?.Current is not null)
             {
                 if (!Fight(play, session, rng, notes, lastNode, meter, progress))
+                {
+                    Inventory(play, session, progress);
                     break;
+                }
             }
             else if (session.IsAwaitingInterlude)
             {
@@ -395,6 +404,57 @@ public static class RunWalker
         }
         return true;
     }
+
+    // WHAT THE RUN WAS CARRYING when it broke. A crash inside a fight is almost never about the fight alone —
+    // a boss's own rules are the same in every walk — so the first question is always what THIS walk had
+    // picked up on the way to it, and the second is where the table stood. Printed once, at the moment the
+    // walk gives up, because a walk that ends in an error string alone can only be answered by walking again.
+    private static void Inventory(
+        RunPlayback play, InteractiveRunSession session, Action<string>? progress)
+    {
+        if (progress is null)
+            return;
+
+        var run = session.Run;
+        progress($"      --- what the run was carrying at act {run.ActNumber} "
+            + $"{run.CurrentNodeId?.Value ?? "(nowhere)"} ---");
+        progress($"      relics ({run.Relics.Count}): "
+            + Tally(run.Relics.Select(r => r.Enabled ? r.Id.Value : $"{r.Id.Value}(off)")));
+        progress($"      deck ({run.Deck.Count}): "
+            + Tally(run.Deck.Select(c => c.UpgradeLevel > 0
+                ? $"{c.DefinitionId.value}+{c.UpgradeLevel}" : c.DefinitionId.value)));
+
+        if (play.CombatDriver?.Current is not { } combat)
+            return;
+
+        foreach (var combatant in combat.State.Combatants)
+        {
+            var who = combatant.Id == combat.HeroId ? "hero" : "enemy";
+            var statuses = string.Join(", ", combatant.Statuses.Select(s => $"{s.DefinitionId.value} x{s.Stacks}"));
+            var counters = string.Join(", ", combatant.Counters.Select(c => $"{c.Key.value}={c.Value}"));
+            progress($"      {who} {combatant.Id.value} {combatant.Health.Current}/{combatant.Health.Max}"
+                + $" — statuses [{statuses}] counters [{counters}]");
+        }
+        var zones = combat.State.GetCardZones(combat.HeroId);
+        progress($"      hand: {Tally(zones.GetCardsInZone(CardZone.Hand).Select(c => c.DefinitionId.value))}");
+        foreach (var step in combat.Steps.TakeLast(LastStepsShown))
+            progress($"      step {step.Index}: r{step.Round}t{step.Turn} {step.Step}"
+                + (step.HasProblems ? $" — REFUSED: {string.Join("; ", step.Problems)}" : ""));
+
+        // The fight's WHOLE log, written out beside the walk. A loop says nothing in ten lines — what tells
+        // the two apart (a program that repeats for ever and one that is merely long) is where the repetition
+        // starts, and that is hundreds of lines back.
+        var path = Path.Combine(Path.GetTempPath(), $"walk-{run.ActNumber}-{run.CurrentNodeId?.Value}-fight.log");
+        File.WriteAllLines(path, combat.State.CombatLog.Select(e => $"r{e.Round}t{e.Turn} {e.Type}: {e.Message}"));
+        progress($"      the whole fight log ({combat.State.CombatLog.Count} lines): {path}");
+    }
+
+    private const int LastStepsShown = 8;
+
+    // "a, b x3, c" — a list of ids that says how many of each without printing forty lines of deck.
+    private static string Tally(IEnumerable<string> ids) =>
+        string.Join(", ", ids.GroupBy(id => id, StringComparer.Ordinal).OrderBy(g => g.Key, StringComparer.Ordinal)
+            .Select(g => g.Count() == 1 ? g.Key : $"{g.Key} x{g.Count()}"));
 
     private static Stop Describe(RunState run, Node node)
     {
