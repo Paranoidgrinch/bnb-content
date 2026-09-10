@@ -174,7 +174,11 @@ public static class BlueprintAssembler
 
     private static PresentationManifest BuildPresentation(
         BabData data, IReadOnlyList<MappedRelic> relics, IReadOnlyList<BabEnemy> enemies,
-        IReadOnlyList<Events.BnbEvent> authored) => new()
+        IReadOnlyList<Events.BnbEvent> authored)
+    {
+        // Worked out once over all 294 encounters, not once per body.
+        var enemyRoles = EnemyRole.Of(data);
+        return new()
         {
             Cards = data.Cards
                 .Where(c => !Cards.FinalCards.Ids().Contains(CardMapper.MapCardId(c.Id)))
@@ -240,11 +244,24 @@ public static class BlueprintAssembler
                     id, new EntityPresentation { Tags = [BossPhases.PhaseTag] })))
                 .GroupBy(e => e.Key)
                 .ToDictionary(g => g.Key, g => g.Last().Value),
+            // Every body in the game is a picture too, on the same terms as a card or a relic: the id is the
+            // file name, `Art` is the path the frontend resolves, and an empty slot draws the stick figure
+            // that stands there today. Two fields beyond the path, both of them things the frontend cannot
+            // work out for itself:
+            //   • the NAME, because a body's display name lives inside the encounters that use it, and the
+            //     art table has to be able to say who it is drawing;
+            //   • WHAT KIND of body it is (`Frame`, the contract's own look slot — the same one the relic
+            //     shelf reads its pool from). A standard enemy, an elite, a boss and a mimic are drawn at
+            //     different sizes and with different frames, and NONE of that is a property of the enemy: it
+            //     is a property of the fights it appears in. So it is worked out here, once, from the
+            //     encounters — the frontend never sees an encounter while it is drawing a body.
             Enemies = enemies.ToDictionary(
                 e => e.Id,
                 e => new EntityPresentation
                 {
                     Art = $"enemies/{e.Id}.png",
+                    FlavorText = e.Name,
+                    Frame = enemyRoles.GetValueOrDefault(e.Id, EnemyRole.Standard),
                     Tags = e.Tags ?? [],
                 }),
             Encounters = data.Encounters.ToDictionary(
@@ -274,4 +291,51 @@ public static class BlueprintAssembler
                 FlavorText = GameTitle,
             },
         };
+    }
+}
+
+// WHAT KIND OF BODY THIS IS. An enemy id says nothing about whether it is a mook, an elite or a god — the
+// FIGHT says it, in its difficulty, and the same id can be met in more than one fight. The strongest room a
+// body is ever used in is what it is: a creature that guards a boss room is drawn as a boss even if it also
+// turns up as filler somewhere, because the biggest thing it has to look like is the thing it has to look
+// like. Ranked, not merged: "elite or boss" is not a look.
+public static class EnemyRole
+{
+    public const string Standard = "standard";
+    public const string Elite = "elite";
+    public const string Boss = "boss";
+    public const string Mimic = "mimic";
+
+    // Weakest first. This array is the ONLY statement of the ranking — the strongest room a body is met in
+    // wins, and "strongest" is this order and nothing else.
+    private static readonly string[] ByStrength = [Standard, Mimic, Elite, Boss];
+
+    // The difficulty an encounter declares, as a body's look. Everything the source data calls easy, normal
+    // or hard is one thing to draw: a standard body.
+    private static string Of(string? difficulty) => difficulty?.ToLowerInvariant() switch
+    {
+        "boss" => Boss,
+        "elite" => Elite,
+        "mimic" => Mimic,
+        _ => Standard,
+    };
+
+    public static IReadOnlyDictionary<string, string> Of(BabData data)
+    {
+        ArgumentNullException.ThrowIfNull(data);
+        var roles = new Dictionary<string, string>(StringComparer.Ordinal);
+        foreach (var encounter in data.Encounters)
+        {
+            var role = Of(encounter.Difficulty);
+            foreach (var id in encounter.Enemies)
+            {
+                if (!roles.TryGetValue(id, out var known)
+                    || Array.IndexOf(ByStrength, role) > Array.IndexOf(ByStrength, known))
+                {
+                    roles[id] = role;
+                }
+            }
+        }
+        return roles;
+    }
 }
