@@ -182,7 +182,9 @@ public static class BlueprintAssembler
                     c => CardMapper.MapCardId(c.Id),
                     c => new EntityPresentation
                     {
-                        Art = $"cards/{c.Id}.png",
+                        // The ported id carries its upgrade as "_plus" where an authored one carries "+";
+                        // both mean the same card improved, and an improvement does not change the picture.
+                        Art = $"cards/{CardMapper.MapCardId(c.Id).TrimEnd('+')}.png",
                         FlavorText = c.Text,
                         Rarity = c.Rarity,
                         Tags = (c.Tags ?? []).Append(c.Type).ToList(),

@@ -7,6 +7,8 @@ using RogueDeck.Sandbox.Composition;
 //      --playtest <n>   walk n whole runs instead of writing the document, and report what they met
 //      --walk <seed>    walk exactly ONE run of that game, the one a --playtest report calls "seed <seed>"
 //      --maps <n>       lay out every act's map for n seeds and report its shape, row by row
+//      --art-slots <f>  write the picture list (ART_SLOTS.md) instead of the document: one row per file the
+//                       frontend will look for, with the design canon's brief beside each relic
 //      --fight <file>   THE SPARRING RING: one authored fight with a stated loadout, n times over n seeds.
 //                       The file is a snapshot (see SparringRing.Snapshot); everything in it has a default,
 //                       so the smallest useful one is {"enemy": "…"} or {"encounter": "…"}.
@@ -20,6 +22,7 @@ var seed = 20260717;
 var playtest = 0;
 var walk = 0;
 var maps = 0;
+string? artSlots = null;
 string? fightFile = null;
 string? fightEnemy = null;
 string? fightEncounter = null;
@@ -39,6 +42,7 @@ for (var i = 0; i < args.Length - 1; i++)
         case "--playtest": playtest = int.Parse(args[i + 1]); break;
         case "--walk": walk = int.Parse(args[i + 1]); break;
         case "--maps": maps = int.Parse(args[i + 1]); break;
+        case "--art-slots": artSlots = args[i + 1]; break;
         case "--fight": fightFile = args[i + 1]; break;
         case "--fight-enemy": fightEnemy = args[i + 1]; break;
         case "--fight-encounter": fightEncounter = args[i + 1]; break;
@@ -76,6 +80,8 @@ try
             };
         return SparringMatch.Run(blueprint, snapshot, Console.WriteLine);
     }
+    if (artSlots is not null)
+        return ArtSlots.Write(blueprint, data, dataDir, artSlots);
     if (maps > 0)
         return MapStats(blueprint, seed, maps);
     if (walk != 0)
