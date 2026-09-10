@@ -55,12 +55,14 @@ public static partial class ArtSlots
         Generated: `dotnet run --project Converter -- --art-slots ART_SLOTS.md`. **Do not edit by hand.**
 
         **{cards + relics + enemies} pictures**: {cards} cards, {relics} relics and {enemies} bodies (every
-        enemy, elite and boss). None of them exists yet, and that is a normal state — a card with no file draws
-        an empty socket with its own code printed in it, a relic with no file draws its code, and a body with
-        no file draws the stick figure it draws today. Nothing breaks while a slot is empty, so the list below
-        can be worked down in any order. {remnants} of the card slots belong to the demo game's leftovers and
-        are marked "Ported v2 remnants" at the end: **{cards + relics + enemies - remnants} pictures** are the
-        real list.
+        enemy, elite and boss). Every one of them is filled today by a PLACEHOLDER — a plate with the file's own
+        name and the word placeholder on it, written by `bnb-godot/tools/make-card-art.py`,
+        `make-relic-art.py` and `make-enemy-art.py`. A painted picture replaces one by being saved over it, so
+        the list below can be worked down in any order and nothing has to be registered anywhere. A slot with no
+        file at all is a normal state as well: a card draws an empty socket with its own code in it, a relic
+        draws its code, and a body draws a stick figure. {remnants} of the card slots belong to the demo game's
+        leftovers and are marked "Ported v2 remnants" at the end: **{cards + relics + enemies - remnants}
+        pictures** are the real list.
 
         ## How a slot is filled
 
