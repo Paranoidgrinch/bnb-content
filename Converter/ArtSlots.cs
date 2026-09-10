@@ -31,26 +31,33 @@ public static partial class ArtSlots
         var cardSlots = blueprint.Cards.Select(c => c.Id).Where(id => !id.EndsWith('+')).ToHashSet(StringComparer.Ordinal);
 
         var bodies = EnemySlots(data);
-        Head(page, cardSlots.Count, relics.Count, bodies.Count);
+        // ⚠ AND THE PLAYER'S OWN BODY. The document has declared `Presentation.Characters[id].Art` since the
+        // export contract was written, and this table counted three kinds while the document names four — so
+        // the picture on the game's very first screen was the one slot no list ever asked for.
+        var characters = blueprint.Presentation.Characters
+            .Where(c => !string.IsNullOrWhiteSpace(c.Value.Art)).ToList();
+        Head(page, cardSlots.Count, relics.Count, bodies.Count, characters.Count);
         RelicTables(page, relics, canon);
         EnemyTables(page, blueprint, bodies);
+        CharacterTable(page, blueprint, characters);
         CardTables(page, blueprint, data, cardSlots);
 
         File.WriteAllText(outFile, page.ToString());
         var briefless = relics.Count(r => !canon.ContainsKey(r.Name));
         Console.WriteLine($"Wrote {outFile}: {cardSlots.Count} card slots, {relics.Count} relic slots, "
-            + $"{bodies.Count} enemy slots, {cardSlots.Count + relics.Count + bodies.Count} pictures in all"
+            + $"{bodies.Count} enemy slots, {characters.Count} character slot(s), "
+            + $"{cardSlots.Count + relics.Count + bodies.Count + characters.Count} pictures in all"
             + (briefless == 0 ? " (every relic has its canon brief)." : $" — {briefless} relic(s) WITHOUT a canon brief."));
         return 0;
     }
 
-    private static void Head(StringBuilder page, int cards, int relics, int enemies) => page.Append($"""
+    private static void Head(StringBuilder page, int cards, int relics, int enemies, int characters) => page.Append($"""
         # Art slots — every picture the game looks for
 
         Generated: `dotnet run --project Converter -- --art-slots ART_SLOTS.md`. **Do not edit by hand.**
 
-        **{cards + relics + enemies} pictures**: {cards} cards, {relics} relics and {enemies} bodies (every
-        enemy, elite and boss). Every one of them is filled today by a PLACEHOLDER — a plate with the file's own
+        **{cards + relics + enemies + characters} pictures**: {cards} cards, {relics} relics, {enemies} bodies
+        (every enemy, elite and boss) and {characters} the player can be. Every one of them is filled today by a PLACEHOLDER — a plate with the file's own
         name and the word placeholder on it, written by `bnb-godot/tools/make-card-art.py`,
         `make-relic-art.py` and `make-enemy-art.py`. A painted picture replaces one by being saved over it, so
         the list below can be worked down in any order and nothing has to be registered anywhere. A slot with no
@@ -62,7 +69,7 @@ public static partial class ArtSlots
 
         1. Name the file after the **code** in the table and drop it in:
            `bnb-godot/assets/art/cards/<code>.png` · `bnb-godot/assets/art/relics/<code>.png` ·
-           `bnb-godot/assets/art/enemies/<code>.png`
+           `bnb-godot/assets/art/enemies/<code>.png` · `bnb-godot/assets/art/characters/<code>.png`
         2. Run `bnb-godot/tools/import-art.sh` once afterwards. Godot only reads textures it has imported, so a
            file that was merely copied in is invisible to the game until that runs (the editor does it by itself
            on focus; the headless probes do not).
@@ -87,6 +94,9 @@ public static partial class ArtSlots
           silhouette has to read at half the room a duel gives it. **Draw the body facing LEFT**, towards the
           player, who stands on the left of the arena: a picture is never mirrored by the game (a flipped body
           wears its sash on the wrong side), so the direction it faces is the direction it was drawn in.
+        - **A character** is the same picture as a body and drawn the same way, on transparency, portrait — but
+          facing RIGHT, because the player stands on the left of the arena and looks across it. It is seen on the
+          title screen beside the name, and it is the first picture of the game anybody ever sees.
         - PNG, RGBA. Transparency is welcome — a card's socket is a dark recess and a relic's square carries
           its pool's frame colour, and both are meant to show through.
 
@@ -193,6 +203,28 @@ public static partial class ArtSlots
             }
             page.AppendLine();
         }
+    }
+
+    // The player's own body — one row, its own heading, because a reader looking for "where is the picture of
+    // the character" should not have to work out that it is filed under enemies.
+    private static void CharacterTable(
+        StringBuilder page, RunBlueprint blueprint,
+        IReadOnlyList<KeyValuePair<string, EntityPresentation>> characters)
+    {
+        if (characters.Count == 0)
+            return;
+        page.AppendLine($"## Characters — {characters.Count} picture{(characters.Count == 1 ? "" : "s")}");
+        page.AppendLine();
+        page.AppendLine("Drawn like a body and facing RIGHT — the player stands on the left of the arena.");
+        page.AppendLine();
+        page.AppendLine("| code | title | who they are |");
+        page.AppendLine("|---|---|---|");
+        foreach (var (id, look) in characters.OrderBy(c => c.Key, StringComparer.Ordinal))
+        {
+            var name = blueprint.Characters.FirstOrDefault(c => c.Id == id)?.Start.HeroName ?? id;
+            page.AppendLine($"| `{id}` | {Cell(name)} | {Cell(look.FlavorText ?? "")} |");
+        }
+        page.AppendLine();
     }
 
     private static void CardTables(

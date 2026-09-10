@@ -2,8 +2,8 @@
 
 Generated: `dotnet run --project Converter -- --art-slots ART_SLOTS.md`. **Do not edit by hand.**
 
-**708 pictures**: 229 cards, 210 relics and 269 bodies (every
-enemy, elite and boss). Every one of them is filled today by a PLACEHOLDER — a plate with the file's own
+**709 pictures**: 229 cards, 210 relics, 269 bodies
+(every enemy, elite and boss) and 1 the player can be. Every one of them is filled today by a PLACEHOLDER — a plate with the file's own
 name and the word placeholder on it, written by `bnb-godot/tools/make-card-art.py`,
 `make-relic-art.py` and `make-enemy-art.py`. A painted picture replaces one by being saved over it, so
 the list below can be worked down in any order and nothing has to be registered anywhere. A slot with no
@@ -15,7 +15,7 @@ actually show: the demo game's leftovers left the document on 2026-09-10.
 
 1. Name the file after the **code** in the table and drop it in:
    `bnb-godot/assets/art/cards/<code>.png` · `bnb-godot/assets/art/relics/<code>.png` ·
-   `bnb-godot/assets/art/enemies/<code>.png`
+   `bnb-godot/assets/art/enemies/<code>.png` · `bnb-godot/assets/art/characters/<code>.png`
 2. Run `bnb-godot/tools/import-art.sh` once afterwards. Godot only reads textures it has imported, so a
    file that was merely copied in is invisible to the game until that runs (the editor does it by itself
    on focus; the headless probes do not).
@@ -40,6 +40,9 @@ of any file name in this game.
   silhouette has to read at half the room a duel gives it. **Draw the body facing LEFT**, towards the
   player, who stands on the left of the arena: a picture is never mirrored by the game (a flipped body
   wears its sash on the wrong side), so the direction it faces is the direction it was drawn in.
+- **A character** is the same picture as a body and drawn the same way, on transparency, portrait — but
+  facing RIGHT, because the player stands on the left of the arena and looks across it. It is seen on the
+  title screen beside the name, and it is the first picture of the game anybody ever sees.
 - PNG, RGBA. Transparency is welcome — a card's socket is a dark recess and a relic's square carries
   its pool's frame colour, and both are meant to show through.
 
@@ -587,6 +590,14 @@ ever met in a boss room is drawn as a boss, even if it also turns up as filler.
 | `wax_notary` | Wax Notary | 48 | 2 | The Wax Is Still Warm |
 | `waxen_bailiff` | Waxen Bailiff | 42 | 1 | The Waxen Bailiff |
 | `wrong_window_scribe` | Wrong-Window Scribe | 25 | 2 | The Wrong Window |
+
+## Characters — 1 picture
+
+Drawn like a body and facing RIGHT — the player stands on the left of the arena.
+
+| code | title | who they are |
+|---|---|---|
+| `bureaucrat` | Bureaucrat | Armed with forms, stamps, and a fireproof sense of procedure. |
 
 ## Cards — 229 pictures
 
