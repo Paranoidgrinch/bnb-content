@@ -15,11 +15,10 @@ public static class BlueprintAssembler
 
     public static RunBlueprint Build(BabData data, int seed)
     {
-        var relics = data.Relics.Select(RelicMapper.Map).ToList();
         // One set of card pools and one set of map rules PER ACT, each drawing only from its own act. The run
         // is one walk across all of them: the engine lays every act out at run start (RunSetup.BuildActPlan,
         // its own seed per act) and advances by itself when an act's boss falls.
-        var pools = data.Acts.ToDictionary(a => a.Act, a => ConversionPools.Build(data, relics, a.Act));
+        var pools = data.Acts.ToDictionary(a => a.Act, a => ConversionPools.Build(a.Act));
         // The events an act AUTHORS (Act I's fifteen), built before its map so the map can draw from them.
         var authored = data.Acts.ToDictionary(
             a => a.Act, a => Events.AuthoredEvents.For(a.Act, pools[a.Act], new Random(seed + a.Act)));
@@ -50,19 +49,19 @@ public static class BlueprintAssembler
             MaxHealth = data.Bureaucrat.MaxHp,
             StartingHealth = data.Bureaucrat.MaxHp,
             Resources = new Dictionary<string, int> { [StandardRunIds.Gold.Value] = 0 },
-            Deck = data.Bureaucrat.StartingDeck
-                .Select(id => new CardDefinitionId(CardMapper.MapCardId(id))).ToList(),
+            Deck = data.Bureaucrat.StartingDeck.Select(id => new CardDefinitionId(id)).ToList(),
         };
 
         var blueprint = new RunBlueprint(
-            data.Bureaucrat.StartingDeck.Select(id => new CardDefinitionId(CardMapper.MapCardId(id))).ToList(),
+            data.Bureaucrat.StartingDeck.Select(id => new CardDefinitionId(id)).ToList(),
             events,
             data.Encounters.Select(e => EncounterMapper.Map(e, enemiesById, data.Bureaucrat.StartingEnergy)).ToList(),
-            // The final pool wins wherever the ids meet; the ported v2 cards it has not replaced yet stay,
-            // because the ported events still name some of them.
+            // The authored pool and nothing else. The ported v2 cards used to ride along here because the
+            // ported events named some of them; those events were replaced act by act, and on 2026-09-10 the
+            // document was checked for what still reached the leftovers — nothing did, in any pool, event,
+            // encounter, reward or card program. A card the game cannot deal is not content, it is noise in
+            // every list that counts cards.
             [
-                .. data.Cards.Where(c => !Cards.FinalCards.Ids().Contains(CardMapper.MapCardId(c.Id)))
-                    .Select(CardMapper.Map),
                 .. Cards.FinalCards.Compile(),
                 // The events' temporary cards: never dealt into a deck, only pushed into a fight.
                 .. Events.ActOneEventObjects.Compile(), .. Events.ActTwoEventObjects.Compile(),
@@ -122,7 +121,7 @@ public static class BlueprintAssembler
             // key off the run's result; a per-act flag would need an act-completed hook that is not data yet.)
             MetaRules = [new MetaRule([RunResult.Victory], [new SetMetaFlag("bnb.run.cleared")])],
             Presentation = BuildPresentation(
-                data, relics, enemies, [.. authored.Values.SelectMany(e => e)]),
+                data, enemies, [.. authored.Values.SelectMany(e => e)]),
         };
 
         // …and then let anything the manifest did not name explain itself from its own rules text.
@@ -173,42 +172,25 @@ public static class BlueprintAssembler
     }
 
     private static PresentationManifest BuildPresentation(
-        BabData data, IReadOnlyList<MappedRelic> relics, IReadOnlyList<BabEnemy> enemies,
-        IReadOnlyList<Events.BnbEvent> authored)
+        BabData data, IReadOnlyList<BabEnemy> enemies, IReadOnlyList<Events.BnbEvent> authored)
     {
         // Worked out once over all 294 encounters, not once per body.
         var enemyRoles = EnemyRole.Of(data);
         return new()
         {
-            Cards = data.Cards
-                .Where(c => !Cards.FinalCards.Ids().Contains(CardMapper.MapCardId(c.Id)))
-                .ToDictionary(
-                    c => CardMapper.MapCardId(c.Id),
-                    c => new EntityPresentation
-                    {
-                        // The ported id carries its upgrade as "_plus" where an authored one carries "+";
-                        // both mean the same card improved, and an improvement does not change the picture.
-                        Art = $"cards/{CardMapper.MapCardId(c.Id).TrimEnd('+')}.png",
-                        FlavorText = c.Text,
-                        Rarity = c.Rarity,
-                        Tags = (c.Tags ?? []).Append(c.Type).ToList(),
-                    })
-                .Concat(Cards.FinalCards.All().ToDictionary(
-                    c => c.Id,
-                    c => new EntityPresentation
-                    {
-                        Art = $"cards/{c.Id.TrimEnd('+')}.png",
-                        // The engine has no rules-text renderer: a card's ability text IS presentation, and
-                        // this is what both UIs show on a reward or in the hand.
-                        FlavorText = c.Text,
-                        Rarity = c.Rarity,
-                        Tags = c.AllTags.ToList(),
-                    }))
-                .ToDictionary(e => e.Key, e => e.Value),
-            // Both kinds of relic, because both are worn: the ported ones carry their text in the source data,
-            // the AUTHORED ones (the final pools — normal, shop, boss, event) carry it on the authoring record.
-            // Only the ported ones used to get an entry, so two thirds of the relics in the game showed the
-            // player a name and nothing else on hover.
+            Cards = Cards.FinalCards.All().ToDictionary(
+                c => c.Id,
+                c => new EntityPresentation
+                {
+                    // An improvement changes what a card DOES, not what it is a picture of: `levy_stamp+`
+                    // draws `levy_stamp.png`, and no file name in this game carries a `+`.
+                    Art = $"cards/{c.Id.TrimEnd('+')}.png",
+                    // The engine has no rules-text renderer: a card's ability text IS presentation, and
+                    // this is what both UIs show on a reward or in the hand.
+                    FlavorText = c.Text,
+                    Rarity = c.Rarity,
+                    Tags = c.AllTags.ToList(),
+                }),
             // One entry per relic the document actually ships, which since 2026-09-10 is the authored pools
             // and nothing else. `Art` is the file the frontend looks for and the id IS the name of it.
             Relics = Relics.FinalRelics.All().ToDictionary(

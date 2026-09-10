@@ -21,7 +21,7 @@ public class ActSeamTests
     // The ids of the events this act AUTHORS (its fifteen), built the way the assembler builds them.
     private static IReadOnlyList<string> AuthoredIds(int act) =>
         Converter.Events.AuthoredEvents
-            .For(act, ConversionPools.Build(Data, Data.Relics.Select(RelicMapper.Map).ToList(), act), new Random(1))
+            .For(act, ConversionPools.Build(act), new Random(1))
             .Select(e => e.Id)
             .ToList();
 

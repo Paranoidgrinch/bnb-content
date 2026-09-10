@@ -14,8 +14,8 @@ built and tested against.
   through the engine's real host path (`RunPlayback.BuildContent`).
 - `source-data/` — snapshot of the original game's `data/` directory.
 - `ADAPTATIONS.md` — every place the port deviates from the original, and why.
-- `ART_SLOTS.md` — **generated**: one row per picture the frontend will look for (254 cards + 210 relics +
-  269 bodies = 733), with the design canon's number and object line beside every relic. Regenerate it with
+- `ART_SLOTS.md` — **generated**: one row per picture the frontend will look for (229 cards + 210 relics +
+  269 bodies = 708), with the design canon's number and object line beside every relic. Regenerate it with
   `--art-slots`; a test fails if it has gone stale.
   ⚠ A **body** (every enemy, elite and boss) also exports the NAME the screen prints and WHAT KIND of body it
   is, as `Presentation.Enemies[id].Frame` — 35 boss · 66 elite · 4 mimic · 164 standard. Neither can be

@@ -18,9 +18,9 @@ namespace BnbContent.Tests;
 public class ActFiveBossEnlilTests
 {
     private const string Cut = "paper_cut";                  // Deed, 1 Energy: deal 6
-    private const string Notice = "administrative_notice";   // Working, 1 Energy
+    private const string Notice = "form_of_ill_intent";      // Working, 1 Energy
     private const string Ledger = "black_ledger";            // Rite, 1 Energy
-    private const string Form = "form_12_b";                 // Working, 0 Energy
+    private const string Form = "secure_misfiling";          // Working, 0 Energy
 
     private static CombatantState Hero(RunPlayback play) =>
         play.CombatDriver!.Current!.State.GetCombatant(play.CombatDriver.Current!.HeroId);

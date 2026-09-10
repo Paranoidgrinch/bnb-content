@@ -2,15 +2,14 @@
 
 Generated: `dotnet run --project Converter -- --art-slots ART_SLOTS.md`. **Do not edit by hand.**
 
-**733 pictures**: 254 cards, 210 relics and 269 bodies (every
+**708 pictures**: 229 cards, 210 relics and 269 bodies (every
 enemy, elite and boss). Every one of them is filled today by a PLACEHOLDER — a plate with the file's own
 name and the word placeholder on it, written by `bnb-godot/tools/make-card-art.py`,
 `make-relic-art.py` and `make-enemy-art.py`. A painted picture replaces one by being saved over it, so
 the list below can be worked down in any order and nothing has to be registered anywhere. A slot with no
 file at all is a normal state as well: a card draws an empty socket with its own code in it, a relic
-draws its code, and a body draws a stick figure. 25 of the card slots belong to the demo game's
-leftovers and are marked "Ported v2 remnants" at the end: **708
-pictures** are the real list.
+draws its code, and a body draws a stick figure. Every slot on this list is a picture the game can
+actually show: the demo game's leftovers left the document on 2026-09-10.
 
 ## How a slot is filled
 
@@ -589,7 +588,7 @@ ever met in a boss room is drawn as a boss, even if it also turns up as filler.
 | `waxen_bailiff` | Waxen Bailiff | 42 | 1 | The Waxen Bailiff |
 | `wrong_window_scribe` | Wrong-Window Scribe | 25 | 2 | The Wrong Window |
 
-## Cards — 254 pictures
+## Cards — 229 pictures
 
 No visual canon was ever written for the cards, so the row carries the card's own rules
 text instead of a brief. Act = the act that unlocks it; the starters, the Junk and the
@@ -875,36 +874,4 @@ Handed over by a boss, a door or an event rather than offered; never in a reward
 | `work_the_sluice` | Work the Sluice | Spend 1 Sluice Authority: at the end of this turn, after the river answers your Energy, it moves one step back toward the Ordered Flood. Once a turn. |
 | `wrong_form` | Wrong Form | Exhaust. Discard another card. |
 | `yield_your_place` | Yield Your Place | Move one place away from the Counter. Gain 6 Block. Only one administrative choice per turn. |
-
-### Ported v2 remnants — 25
-
-⚠ **Paint these last, or not at all.** They are the demo game's cards, still shipped only because ported events name them; they leave when those events are replaced.
-
-| code | title | what it does |
-|---|---|---|
-| `administrative_notice` | Administrative Notice | Apply 3 Paperwork. |
-| `approved_for_disposal` | Approved for Disposal | Deal 12 damage. Deal 2 damage for each Paperwork on the target. |
-| `archive_the_evidence` | Archive the Evidence | Exhaust 1 Junk card from your hand. Gain 8 Block. |
-| `come_back_tomorrow` | Come Back Tomorrow | Gain 18 Block. Add Red Tape to your hand. |
-| `compliance_review` | Compliance Review | Deal 5 damage. Apply 2 Paperwork. |
-| `compounded_penalty` | Compounded Penalty | Deal 4 damage for each Paperwork on the target. |
-| `counter_signature` | Counter Signature | Deal 3 damage. Draw 1. Exhaust. |
-| `cross_reference` | Cross-Reference | Draw 2. Add a Duplicate Copy to your discard pile. |
-| `expedited_stamp` | Expedited Stamp | Apply 2 Paperwork. Add a Duplicate Copy to your discard pile. Exhaust. |
-| `final_reminder` | Final Reminder | Apply 4 Paperwork. Apply 2 Doubt. |
-| `form_12_b` | Form 12-B | Apply 1 Paperwork. Exhaust. |
-| `internal_memo` | Internal Memo | Draw 1. Add a Misfiled Paper to your discard pile. Exhaust. |
-| `invalidated` | Invalidated | Deal 3 damage for each Paperwork on the target. |
-| `missing_attachment` | Missing Attachment | Apply 2 Paperwork. Draw 1. |
-| `overfilled_inbox` | Overfilled Inbox | Apply 3 Paperwork to all enemies. Add an Unsigned Form to your hand. |
-| `permit_denied` | Permit Denied | Apply 5 Paperwork. |
-| `please_take_a_number` | Please Take a Number | Apply 2 Doubt. Apply 1 Paperwork. |
-| `processing_delay` | Processing Delay | Gain 8 Block. Apply 2 Paperwork. |
-| `provisional_approval` | Provisional Approval | Gain 1 Energy. Add Red Tape to your hand. Exhaust. |
-| `queue_management` | Queue Management | Gain 6 Block. Apply 1 Doubt. |
-| `rubber_stamp` | Rubber Stamp | Deal 7 damage. Apply 1 Paperwork. |
-| `shredder_drawer` | Shredder Drawer | Exhaust all Junk cards from your hand. Deal 9 damage. |
-| `stamp_barrage` | Stamp Barrage | Deal 3 damage to all enemies. Apply 1 Paperwork to all enemies. |
-| `temporary_authorization` | Temporary Authorization | Gain 4 Block. Exhaust. |
-| `under_consideration` | Under Consideration | Apply 3 Doubt. Draw 2. |
 

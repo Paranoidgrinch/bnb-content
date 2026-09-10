@@ -14,7 +14,7 @@ namespace BnbContent.Tests;
 public class ActFiveBossInannaTests
 {
     private const string Cut = "paper_cut";              // Deed, 1 Energy: deal 6
-    private const string Penalty = "compounded_penalty"; // Attack, 2 Energy
+    private const string Penalty = "summary_judgment";       // Deed, 2 Energy
     private const string Junk = "red_tape";              // rubbish, worth nothing to Eanna
 
     // Her one turn that neither claims nor collects, so a fight about one rule is only about that rule.

@@ -109,21 +109,22 @@ public class EnemySignatureCombatTests
     }
 
     // Wax Notary, "Paper Seals Wax": the FIRST Paperwork it receives each player turn seals into 5 Block; the
-    // Paperwork stays and further filings that turn give nothing. Form 12-B (0 cost, 1 Paperwork) files them.
+    // Paperwork stays and further filings that turn give nothing. Form of Ill Intent (1 Energy, 3 Paperwork)
+    // files them — the seal is about the FIRST filing of the turn, not about how thick it was.
     [Fact]
     public void The_notary_seals_the_first_paperwork_of_each_player_turn_into_block()
     {
         var probe = FightProbe.Solo("wax_notary", "notarial_mallet");
-        var (play, session, notaryId) = FightProbe.Start(probe, Enumerable.Repeat("form_12_b", 10).ToList());
+        var (play, session, notaryId) = FightProbe.Start(probe, Enumerable.Repeat(Filing, 10).ToList());
 
         Assert.Equal(0, BlockOf(play, notaryId));
 
         File(play, session, notaryId);
-        Assert.Equal(1, FightProbe.StacksOf(Enemy(play, notaryId), "paperwork")); // the filing stays
+        Assert.Equal(3, FightProbe.StacksOf(Enemy(play, notaryId), "paperwork")); // the filing stays
         Assert.Equal(5, BlockOf(play, notaryId));
 
         File(play, session, notaryId); // same turn: the seal is already spent
-        Assert.Equal(2, FightProbe.StacksOf(Enemy(play, notaryId), "paperwork"));
+        Assert.Equal(6, FightProbe.StacksOf(Enemy(play, notaryId), "paperwork"));
         Assert.Equal(5, BlockOf(play, notaryId));
 
         play.CombatDriver!.EndTurn(); // the Notary acts; its Block clears at its own turn start
@@ -213,7 +214,7 @@ public class EnemySignatureCombatTests
     // playing nothing at all means No Route Listed (1 Doubt + 2 Paperwork).
     [Theory]
     [InlineData("paper_cut", 15, 0)]          // an attack card → the shortcut
-    [InlineData("form_12_b", 9, 9)]           // a form → the long route
+    [InlineData(FreeForm, 9, 9)]              // a Working → the long route
     public void The_signpost_takes_the_road_the_first_played_card_points_at(
         string cardId, int expectedDamage, int expectedBlock)
     {
@@ -424,7 +425,7 @@ public class EnemySignatureCombatTests
     public void The_counterclaim_imp_answers_the_first_filing_of_each_turn()
     {
         var probe = FightProbe.Solo("counterclaim_imp", "countersuit");
-        var (play, session, impId) = FightProbe.Start(probe, Enumerable.Repeat("form_12_b", 10).ToList());
+        var (play, session, impId) = FightProbe.Start(probe, Enumerable.Repeat(Filing, 10).ToList());
 
         File(play, session, impId);
         Assert.Equal(1, FightProbe.StacksOf(Hero(play), "paperwork")); // answered
@@ -470,27 +471,28 @@ public class EnemySignatureCombatTests
     [Fact]
     public void The_record_corrects_against_the_card_type_that_hurt_it()
     {
-        // Approved for Disposal: a 12-damage Working (a form), so the study threshold is crossed and the type is
-        // unambiguous.
+        // Summary Judgment: a 16-damage Deed, so the 10-damage study threshold is crossed and the type is
+        // unambiguous. It was a 12-damage ported Working until the leftovers left; the Record reads the canon
+        // taxonomy either way, which is why only the numbers and the type here moved.
         var probe = FightProbe.Solo("self_correcting_record", "correct_against_you", energy: 9);
         var (play, session, recordId) = FightProbe.Start(probe,
-            Enumerable.Repeat("approved_for_disposal", 10).ToList());
+            Enumerable.Repeat(Judgment, 10).ToList());
 
         Disposal(play, session, recordId);
-        Assert.Equal(53 - 12, Enemy(play, recordId).Health.Current); // studied, but this one lands in full
-        Assert.Equal(1, FightProbe.StacksOf(Enemy(play, recordId), "correction_working"));
+        Assert.Equal(53 - 16, Enemy(play, recordId).Health.Current); // studied, but this one lands in full
+        Assert.Equal(1, FightProbe.StacksOf(Enemy(play, recordId), "correction_deed"));
 
         Disposal(play, session, recordId);
-        Assert.Equal(53 - 12 - 8, Enemy(play, recordId).Health.Current); // corrected: 4 less
-        Assert.Equal(0, FightProbe.StacksOf(Enemy(play, recordId), "correction_working")); // and spent
+        Assert.Equal(53 - 16 - 12, Enemy(play, recordId).Health.Current); // corrected: 4 less
+        Assert.Equal(0, FightProbe.StacksOf(Enemy(play, recordId), "correction_deed")); // and spent
 
         Disposal(play, session, recordId);
-        Assert.Equal(53 - 12 - 8 - 12, Enemy(play, recordId).Health.Current); // no correction left this turn
+        Assert.Equal(53 - 16 - 12 - 16, Enemy(play, recordId).Health.Current); // no correction left this turn
     }
 
     private static void Disposal(RunPlayback play, InteractiveRunSession session, CombatantId enemyId)
     {
-        var card = play.CombatDriver!.Current!.Hand.First(c => c.DefinitionId.value == "approved_for_disposal");
+        var card = play.CombatDriver!.Current!.Hand.First(c => c.DefinitionId.value == Judgment);
         play.CombatDriver.PlayCard(card.Id, enemyId);
         Assert.Null(session.Error);
     }
@@ -533,20 +535,20 @@ public class EnemySignatureCombatTests
     public void The_ward_turns_the_first_filing_of_each_round_into_bookworm()
     {
         var probe = FightProbe.Solo("threshold_seizure_ward", "lawful_hold");
-        var (play, session, wardId) = FightProbe.Start(probe, Enumerable.Repeat("form_12_b", 10).ToList());
+        var (play, session, wardId) = FightProbe.Start(probe, Enumerable.Repeat(Filing, 10).ToList());
 
         File(play, session, wardId);
-        Assert.Equal(1, FightProbe.StacksOf(Enemy(play, wardId), "paperwork"));
+        Assert.Equal(3, FightProbe.StacksOf(Enemy(play, wardId), "paperwork"));
         Assert.Equal(1, FightProbe.StacksOf(Enemy(play, wardId), "bookworm")); // seized
 
         File(play, session, wardId); // same round: the seizure is spent
-        Assert.Equal(2, FightProbe.StacksOf(Enemy(play, wardId), "paperwork"));
+        Assert.Equal(6, FightProbe.StacksOf(Enemy(play, wardId), "paperwork"));
         Assert.Equal(1, FightProbe.StacksOf(Enemy(play, wardId), "bookworm"));
 
         play.CombatDriver!.EndTurn(); // its turn: Bookworm erases one filing, the rest ticks
         Assert.Null(session.Error);
         Assert.Equal(0, FightProbe.StacksOf(Enemy(play, wardId), "bookworm"));
-        Assert.Equal(1, FightProbe.StacksOf(Enemy(play, wardId), "paperwork"));
+        Assert.Equal(5, FightProbe.StacksOf(Enemy(play, wardId), "paperwork"));
     }
 
     // Civic Battering Ram: Momentum builds to 4, Ram the Case cashes it at 11 + 4 each, and breaking its guard
@@ -625,9 +627,16 @@ public class EnemySignatureCombatTests
         Assert.Null(session.Error);
     }
 
+    // The three cards these fights are conducted with, all canon: a 1-Energy Working that files 3 Paperwork,
+    // a Working that is printed at 0, and a 2-Energy Deed that lands 16 — enough to cross the Record's
+    // 10-damage study threshold. They replaced ported v2 cards when the leftovers left on 2026-09-10.
+    private const string Filing = "form_of_ill_intent";
+    private const string FreeForm = "secure_misfiling";
+    private const string Judgment = "summary_judgment";
+
     private static void File(RunPlayback play, InteractiveRunSession session, CombatantId enemyId)
     {
-        var form = play.CombatDriver!.Current!.Hand.First(c => c.DefinitionId.value == "form_12_b");
+        var form = play.CombatDriver!.Current!.Hand.First(c => c.DefinitionId.value == Filing);
         play.CombatDriver.PlayCard(form.Id, enemyId);
         Assert.Null(session.Error);
     }

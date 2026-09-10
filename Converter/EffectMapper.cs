@@ -3,58 +3,6 @@ using RogueDeck.Scenario.Authoring;
 
 namespace BnbContent.Converter;
 
-// Original card JSON → engine CardData. The original's card types (action/form/argument/curse) and
-// most tags have no rules semantics — they ride along as tags/presentation. Rules semantics ported:
-// the effect list (below), the played-card exhaust tags, and the "unplayable" tag (same keyword in
-// both games). "_plus" ids become "<base>+" so the engine's UpgradeSuffix deck mapper finds them.
-public static class CardMapper
-{
-    // The original engine exhausts a played card carrying any of these tags (bab/combat/deck.py).
-    private static readonly string[] ExhaustWhenPlayedTags = ["exhaust", "vanish", "single_use", "temporary"];
-
-    // v2 type → the final Deed/Working/Rite taxonomy. Offensive actions and spells are Deeds; the paper —
-    // forms, arguments, footnotes — is Working; a curse is Junk.
-    private static string PrimaryType(string babType) => babType switch
-    {
-        "action" or "spell" => Cards.CardAuthoring.DeedTag,
-        "form" or "argument" or "footnote" => Cards.CardAuthoring.WorkingTag,
-        "curse" => Cards.CardAuthoring.JunkTag,
-        var other => other,
-    };
-
-    public static string MapCardId(string babId) =>
-        babId.EndsWith("_plus", StringComparison.Ordinal)
-            ? babId[..^"_plus".Length] + "+"
-            : babId;
-
-    public static CardData Map(BabCard card)
-    {
-        var where = $"card '{card.Id}'";
-        var tags = card.Tags ?? [];
-        return new CardData
-        {
-            Id = MapCardId(card.Id),
-            NameKey = card.Name,
-            Costs = card.Cost == 0
-                ? []
-                : [new ResourceCost(StandardCombatIds.EnergyResource, card.Cost)],
-            // The card's TYPE is emitted as a combat tag alongside its own tags, so type-sequencing enemy
-            // passives (Wrong-Window Scribe, Triplicate Examiner, the Self-Correcting Record) can read it via
-            // cardsPlayedThisTurnWithTag / firstCardPlayedHasTag. The v2 vocabulary
-            // (action/spell/form/argument/curse) rides along unchanged for flavour, and the FINAL primary type
-            // it corresponds to is added beside it — so those passives read one vocabulary across both pools
-            // while the ported cards are still in the game. Distinct so a type tag isn't doubled.
-            Tags = tags.Append(card.Type).Append(PrimaryType(card.Type))
-                .Distinct().Select(tag => new TagId(tag)).ToArray(),
-            PlayedCardDestinationZone = tags.Any(ExhaustWhenPlayedTags.Contains)
-                ? CardZone.ExhaustPile
-                : CardZone.DiscardPile,
-            Program = CombatProgramModel.Build<CardPlayContext>(
-                EffectMapper.MapAll(where, card.Effects, EffectMapper.CardTargets)),
-        };
-    }
-}
-
 // The shared effect-DSL table: original effect entries → combat program nodes. Cards and enemy
 // intents use the same vocabulary with different target words, so the selector table is a parameter.
 public static class EffectMapper
@@ -175,8 +123,8 @@ public static class EffectMapper
 
             "create_card" => new CombatNodeModel("createCardInstance", "source",
                 CombatAmountSpec.FromConst(effect.Copies ?? 1),
-                ToDefinition: CardMapper.MapCardId(effect.CardId
-                    ?? throw new ConversionException(where, "create_card without card_id")),
+                ToDefinition: effect.CardId
+                    ?? throw new ConversionException(where, "create_card without card_id"),
                 ToZone: effect.Destination switch
                 {
                     "hand" => CardZone.Hand,

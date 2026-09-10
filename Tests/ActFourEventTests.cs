@@ -171,7 +171,7 @@ public class ActFourEventTests
     {
         var data = BabData.Load(TestData.Directory);
         var doors = ActFourEvents.All(
-            ConversionPools.Build(data, [.. data.Relics.Select(RelicMapper.Map)], ActFourEvents.Act),
+            ConversionPools.Build(ActFourEvents.Act),
             new Random(1))
             .ToDictionary(e => e.Id, e => e.EarliestDepthPercent);
 

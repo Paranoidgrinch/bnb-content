@@ -8,11 +8,9 @@ namespace BnbContent.Converter;
 public sealed class BabData
 {
     public required BabClass Bureaucrat { get; init; }
-    public required IReadOnlyList<BabCard> Cards { get; init; }
     public required IReadOnlyList<BabStatus> Statuses { get; init; }
     public required IReadOnlyList<BabEnemy> Enemies { get; init; }
     public required IReadOnlyList<BabEncounter> Encounters { get; init; }
-    public required IReadOnlyList<BabRelic> Relics { get; init; }
     // The acts the run walks, in order. Each manifest owns its own map settings, its treasure and its waiting
     // room; which ENCOUNTERS and EVENTS belong to it is decided by the act number the entries carry, not by the
     // file they came from (MapSpecBuilder filters on it).
@@ -42,7 +40,6 @@ public sealed class BabData
                 One<BabActManifest>("acts/act_5_divine_ledger.json"),
             ],
             Bureaucrat = One<BabClass>("classes/bureaucrat.json"),
-            Cards = Many<BabCard>("cards/bureaucrat_starter.json", "cards/bureaucrat_rewards.json"),
             Statuses = Many<BabStatus>("statuses/statuses.json"),
             // Act I's ported roster plus the acts authored since. Every act's bodies are ordinary enemy data;
             // what makes an act an act is its own map and its own vocabulary, not a separate catalogue. An act
@@ -59,7 +56,6 @@ public sealed class BabData
                 "encounters/act_3_green_docket.json",
                 "encounters/act_4_licensing_labyrinth.json",
                 "encounters/act_5_divine_ledger.json"),
-            Relics = Many<BabRelic>("relics/act_1_relics.json", "relics/bureaucrat_relics.json"),
         };
     }
 

@@ -258,14 +258,14 @@ public class EliteCombatTests
         var probe = FightProbe.Roster("remand", energy: 9,
             ("remanded_case_phantom", "uncertain_remand", 30),
             ("escalation_writ", "higher_seal", 30));
-        var (play, session, _) = FightProbe.Start(probe, Enumerable.Repeat("approved_for_disposal", 10).ToList());
+        var (play, session, _) = FightProbe.Start(probe, Enumerable.Repeat(Hammer, 10).ToList());
 
         var combat = play.CombatDriver!.Current!;
         var phantomId = combat.State.Combatants.First(c => c.Id.value.StartsWith("remanded_case_phantom")).Id;
         var writId = combat.State.Combatants.First(c => c.Id.value.StartsWith("escalation_writ")).Id;
 
-        // 30 HP of Phantom, three 12-damage forms.
-        for (var i = 0; i < 3; i++)
+        // 30 HP of Phantom, four 9-damage Deeds.
+        for (var i = 0; i < 4; i++)
             Disposal(play, session, phantomId);
 
         var phantom = Enemy(play, phantomId);
@@ -283,13 +283,13 @@ public class EliteCombatTests
         var probe = FightProbe.Roster("finality", energy: 9,
             ("remanded_case_phantom", "uncertain_remand", 60),
             ("escalation_writ", "higher_seal", 24));
-        var (play, session, _) = FightProbe.Start(probe, Enumerable.Repeat("approved_for_disposal", 10).ToList());
+        var (play, session, _) = FightProbe.Start(probe, Enumerable.Repeat(Hammer, 10).ToList());
 
         var combat = play.CombatDriver!.Current!;
         var phantomId = combat.State.Combatants.First(c => c.Id.value.StartsWith("remanded_case_phantom")).Id;
         var writId = combat.State.Combatants.First(c => c.Id.value.StartsWith("escalation_writ")).Id;
 
-        for (var i = 0; i < 2; i++)
+        for (var i = 0; i < 3; i++) // 24 HP of Writ, at 9 a swing
             Disposal(play, session, writId);
 
         var phantom = Enemy(play, phantomId);
@@ -312,7 +312,7 @@ public class EliteCombatTests
             ("lower_appellate_step", "stone_step_cut", 24),
             ("middle_appellate_step", "staircase_strike", 30),
             ("upper_appellate_step", "final_step_falls", 36));
-        var (play, session, _) = FightProbe.Start(probe, Enumerable.Repeat("approved_for_disposal", 10).ToList());
+        var (play, session, _) = FightProbe.Start(probe, Enumerable.Repeat(Hammer, 10).ToList());
 
         var combat = play.CombatDriver!.Current!;
         var lowerId = combat.State.Combatants.First(c => c.Id.value.StartsWith("lower_appellate_step")).Id;
@@ -337,7 +337,7 @@ public class EliteCombatTests
             ("lower_appellate_step", "procedural_step", 24),
             ("middle_appellate_step", "procedural_landing", 30),
             ("upper_appellate_step", "authority_above", 36));
-        var (play, session, _) = FightProbe.Start(probe, Enumerable.Repeat("approved_for_disposal", 10).ToList());
+        var (play, session, _) = FightProbe.Start(probe, Enumerable.Repeat(Hammer, 10).ToList());
 
         var combat = play.CombatDriver!.Current!;
         var lowerId = combat.State.Combatants.First(c => c.Id.value.StartsWith("lower_appellate_step")).Id;
@@ -641,9 +641,14 @@ public class EliteCombatTests
         play.CombatDriver!.Current!.State.GetCardZones(ownerId).GetCardsInZone(zone)
             .Count(c => c.HasMark(PassiveStatuses.InventoriedMark));
 
+    // The tests' hammer: a canon 1-Energy Deed that lands a flat 9. It used to be the ported v2 "Approved for
+    // Disposal" (12 damage), which left the game with the rest of the leftovers on 2026-09-10 — the numbers
+    // below are its 9, not that 12.
+    private const string Hammer = "cauldron_copy";
+
     private static void Disposal(RunPlayback play, InteractiveRunSession session, CombatantId enemyId)
     {
-        var card = play.CombatDriver!.Current!.Hand.First(c => c.DefinitionId.value == "approved_for_disposal");
+        var card = play.CombatDriver!.Current!.Hand.First(c => c.DefinitionId.value == Hammer);
         play.CombatDriver.PlayCard(card.Id, enemyId);
         Assert.Null(session.Error);
     }

@@ -12,8 +12,7 @@ namespace BnbContent.Tests;
 public class ShopRelicLiveTests
 {
     private static readonly BabData Data = BabData.Load(TestData.Directory);
-    private static readonly IReadOnlyList<MappedRelic> Relics = Data.Relics.Select(RelicMapper.Map).ToList();
-    private static readonly ConversionPools Pools = ConversionPools.Build(Data, Relics, act: 1);
+    private static readonly ConversionPools Pools = ConversionPools.Build(act: 1);
     private static readonly RunResourceId Gold = StandardRunIds.Gold;
 
     private static ShopDefinition CityShop() => ShopTemplate.Build(Pools, new Random(7));
@@ -153,7 +152,7 @@ public class ShopRelicLiveTests
     {
         var builder = new RunContentRegistryBuilder();
         var known = new HashSet<string>(StringComparer.Ordinal);
-        foreach (var relic in FinalRelics.Compile().Concat(Relics.Select(r => r.Relic)))
+        foreach (var relic in FinalRelics.Compile())
             if (known.Add(relic.Id))
                 builder.RegisterRelic(relic.ToDefinition());
         return builder.Build();
