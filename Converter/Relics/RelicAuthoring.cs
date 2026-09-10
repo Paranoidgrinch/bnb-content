@@ -13,13 +13,18 @@ namespace BnbContent.Converter.Relics;
 // exactly as a Rite card's status does. So `Combat(...)` takes the same StatusData the card pools build, and
 // the relic's run program is just "apply it at the start of every combat".
 //
-// The four pools never mix. Which pool a relic belongs to decides where it can be found, and the design is
+// The pools never mix. Which pool a relic belongs to decides where it can be found, and the design is
 // explicit that a Boss or Event relic must never turn up in a shop or a treasure chest.
+//
+// ELITE and MIMIC are ours, added after the four the master names. An Elite relic belongs to ONE elite
+// encounter and is granted for beating it — the same wall as a Boss relic, but one relic instead of a
+// forced 1-of-3, because an elite is a body with a lesson rather than an act's final examination. The Mimic
+// pool holds a single relic in four grades, one per act, and a later grade replaces the one already held.
 public static class RelicAuthoring
 {
-    public enum Pool { Normal, Shop, Event, Boss }
+    public enum Pool { Normal, Shop, Event, Boss, Elite, Mimic }
 
-    public enum Rarity { Common, Uncommon, Rare, Boss, Shop, Event }
+    public enum Rarity { Common, Uncommon, Rare, Boss, Shop, Event, Elite, Mimic }
 
     // Who may be offered it. The Bureaucrat-specific ones are only eligible while that character is played.
     public enum Eligibility { General, Bureaucrat }
@@ -109,6 +114,27 @@ public static class RelicAuthoring
         IReadOnlyList<ITriggeredRunEffectDefinition>? runPrograms = null,
         StatusData? combatRule = null) =>
         new(id, name, text, Pool.Boss, Rarity.Boss, Eligibility.General, pickup, runPrograms, combatRule,
+            Source: source);
+
+    // `source` is the ELITE ENCOUNTER ID this relic is bound to, not prose: the map reads it to build that
+    // encounter's own victory reward, so a typo is a conversion error rather than a relic nobody can win.
+    public static BnbRelic Elite(
+        string id, string name, string source, string text,
+        IReadOnlyList<IRunEffectRequest>? pickup = null,
+        IReadOnlyList<ITriggeredRunEffectDefinition>? runPrograms = null,
+        StatusData? combatRule = null,
+        IReadOnlyList<ShopService>? shopServices = null,
+        IReadOnlyList<IRewardRule>? rewardRules = null) =>
+        new(id, name, text, Pool.Elite, Rarity.Elite, Eligibility.General, pickup, runPrograms, combatRule,
+            Source: source, ShopServices: shopServices, RewardRules: rewardRules);
+
+    // `source` is the ACT NUMBER as a string ("1".."4") — which act's mimic hands this grade over.
+    public static BnbRelic Mimic(
+        string id, string name, string source, string text,
+        IReadOnlyList<IRunEffectRequest>? pickup = null,
+        IReadOnlyList<ITriggeredRunEffectDefinition>? runPrograms = null,
+        StatusData? combatRule = null) =>
+        new(id, name, text, Pool.Mimic, Rarity.Mimic, Eligibility.General, pickup, runPrograms, combatRule,
             Source: source);
 
     // ── run-program shorthands ────────────────────────────────────────────────────────────────────────────

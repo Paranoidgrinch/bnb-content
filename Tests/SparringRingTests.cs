@@ -16,7 +16,9 @@ public class SparringRingTests
     private static readonly RunBlueprint Game = FightProbe.Game;
 
     private const string Deed = "paper_cut";
-    private const string Stapler = "suspiciously_helpful_stapler";   // combat opening: gain 8 Block
+    // A canonical relic whose whole rule is Block at the opening bell. It was the ported
+    // `suspiciously_helpful_stapler` until 2026-09-10, when the 47 v2 demo relics left the game.
+    private const string Charm = "black_salt_charm";   // combat opening: gain 4 Block
 
     // A PLAIN opponent for the tests that are about the LOADOUT rather than about a fight. A boss is the
     // wrong sparring partner for those: Nanna-Sin lays a card in the fighter's hand every morning and
@@ -61,15 +63,15 @@ public class SparringRingTests
         var armed = Ring(new SparringRing.Snapshot
         {
             Enemy = ActFive.NannaSinEnemyId, Deck = [.. Enumerable.Repeat(Deed, 12)],
-            Relics = [Stapler],
+            Relics = [Charm],
         });
 
         Assert.Empty(bare.Session.Run.Relics);
         var worn = Assert.Single(armed.Session.Run.Relics);
-        Assert.Equal(Stapler, worn.Id.Value);
+        Assert.Equal(Charm, worn.Id.Value);
         Assert.True(worn.Enabled);
 
-        // …and it is not decoration: the stapler's whole rule is 8 Block at the first bell, so the fighter
+        // …and it is not decoration: the charm's whole rule is 4 Block at the first bell, so the fighter
         // who brought it starts the fight behind more of it than the one who did not.
         Assert.True(Guard(armed.Play) > Guard(bare.Play),
             $"the relic granted no Block: {Guard(armed.Play)} vs {Guard(bare.Play)}");

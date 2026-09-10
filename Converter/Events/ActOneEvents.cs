@@ -357,9 +357,9 @@ public static class ActOneEvents
         var relicPrices = new Dictionary<string, int> { ["common"] = 130, ["uncommon"] = 190, ["rare"] = 260 };
 
         var cards = pools.RewardCards.OrderBy(_ => rng.Next()).Take(5).ToList();
-        // "Relics may be eligible Normal or Shop Relics under standard Shop eligibility. Event/Boss Relics are
-        // excluded" — which is exactly what the act's own relic pool already is.
-        var relics = pools.Relics.OrderBy(_ => rng.Next()).Take(6).ToList();
+        // "Relics may be eligible Normal or Shop Relics under standard Shop eligibility. Event/Boss Relics
+        // are excluded" — which is what MarketRelicStock is.
+        var relics = pools.MarketRelicStock.OrderBy(_ => rng.Next()).Take(6).ToList();
 
         var stock = new List<EventChoice>();
         foreach (var (card, index) in cards.Select((c, i) => (c, i)))
@@ -370,9 +370,9 @@ public static class ActOneEvents
         }
         foreach (var (relic, index) in relics.Select((r, i) => (r, i)))
         {
-            var price = relicPrices.GetValueOrDefault(relic.Source.Rarity ?? "common", 190);
-            stock.Add(Stall($"relic-{index}", $"{relic.Source.Name} — {price} Gold", price,
-                ConversionPools.RelicOffer(relic).Grant));
+            var price = relicPrices.GetValueOrDefault(relic.Rarity.ToString().ToLowerInvariant(), 190);
+            stock.Add(Stall($"relic-{index}", $"{relic.Name} — {price} Gold", price,
+                [.. ConversionPools.Grant(relic)]));
         }
         stock.Add(Stall("removal", "Have a card struck from your file — 75 Gold", 75,
             [new RemoveCardsRunEffect(Choose("choose a card to have struck from your file"))]));
@@ -436,9 +436,12 @@ public static class ActOneEvents
     private static IRunEffectRequest CardReward(ConversionPools pools, string where) =>
         new OfferRewardRunEffect(new RewardId($"event:{where}"), pools.CardRewardSource(), 1);
 
+    // "A random relic." The master says which bag that is (§1): a Normal one, on the act's rarity curve.
+    // Until 2026-09-10 this drew from the PORTED v2 list, which is the last place in the game that did.
     private static IRunEffectRequest RandomRelic(ConversionPools pools, string where) =>
         new OfferRewardRunEffect(
-            new RewardId($"event:{where}:relic"), pools.RelicGrantSource(null, $"event '{where}'"), 1);
+            new RewardId($"event:{where}:relic"), pools.NormalRelicOnTheCurve($"event '{where}'"), 1)
+        { Kind = RewardKinds.Relic };
 
     // A named Event relic, plus whatever it does the moment it is taken — the engine has no per-relic pickup
     // hook, so a grant site carries them (the Crossed-Out Map's free step is one of these).

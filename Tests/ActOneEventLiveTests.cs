@@ -400,7 +400,14 @@ public class ActOneEventLiveTests
             c => c.DefinitionId.value == "fine_print");
 
         story.WinTheFight();
-        Assert.Equal(0, story.Run.GetResource(StandardRunIds.Gold));
+
+        // The FIGHT'S purse is what the garnish takes, and an ordinary fight pays 25–40. Anything left over
+        // is what the relic the vendor sold pays on top: since 2026-09-10 its shelf holds canonical Normal
+        // and Shop relics, and several of those pay Gold after a victory — which the ported v2 stock never
+        // did, so this used to be able to assert a flat zero.
+        Assert.True(
+            story.Run.GetResource(StandardRunIds.Gold) < 25,
+            $"the purse was not garnished: {story.Run.GetResource(StandardRunIds.Gold)} Gold");
     }
 
     // ── the branches nothing above walks, and a net under all of them ─────────────────────────────────────

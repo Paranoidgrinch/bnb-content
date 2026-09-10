@@ -3996,3 +3996,113 @@ watch. Here it means the RULES refuse it, and a refused play changes nothing at 
 same everything. `while (there is still a card and still a point)` therefore never ends, and the first run of
 this suite spent **32 minutes** looking like a slow test rather than a stuck one. Every loop in the file now
 counts its own plays and stops at the first refusal, and the reason is written above it.
+
+---
+
+# THE ELITE RELIC POOL, AND THE FAUCET THAT WAS NEVER RE-POINTED (2026-09-10)
+
+**The finding first, because it is the reason for everything below.** The master says a Normal relic reaches
+a player from four faucets: standard random relic rewards, Treasure, a shop's normal slots, and events that
+award a random Normal relic (§1). What the code did was:
+
+| faucet | drew from | |
+|---|---|---|
+| Elite / Boss / Mimic victory | `RelicGrantSource(null, …)` | ❌ the ported v2 list |
+| Treasure chest | `RelicGrantSource(null, …)` | ❌ the ported v2 list |
+| Act-I "a random relic" event | `RelicGrantSource(null, …)` | ❌ the ported v2 list |
+| Licensed Vendor · Conceptual Toll · Travelling Chandler | `pools.Relics` | ❌ the ported v2 list |
+| Shop, normal-relic shelf | `NormalRelicStock` | ✔ |
+| Act-IV doors, "a random Normal Relic" | `NormalRelicOfRarity` | ✔ |
+| Boss kill, forced 1-of-3 | `BossRelics` | ✔ |
+| Event branches | `EventRelics` | ✔ |
+
+**One cause.** `ConversionPools.Relics` is `data.Relics` — the ported v2 JSON relics, filtered only to "not
+boss rarity" and "class-eligible". `RelicGrantSource` reads it, and its own error message still said *"no
+event-eligible relics"*, because it was written for event awards before the final pools existed. The map
+layer and the treasure chest called it anyway. The canonical pools arrived later as `NormalRelicStock` /
+`ShopRelicStock` and were wired only into the shop shelves and, at IV-22, into `NormalRelicOfRarity`.
+
+**What it cost, measured in the shipped document:** every Elite, Boss and Mimic reward in Acts I–IV offered
+49 relics — **47 ported, 2 canonical**. The 2 were `archive_key` and `emergency_inkwell`, the only final
+relics whose ids collide with a ported one, so those two were replaced in place. The other 48 authored Normal
+relics never entered that pool at all.
+
+**A second gap, different in kind.** A shop's shelves are drawn at CONVERSION time and shipped in the
+document — `Relics(pools.ShopRelicStock, rng, depth: 5)` stored five of the twenty-four per shop, and a
+reroll only turned over inside those five. Across the four shops, **12 of the 24 Shop relics were named
+nowhere in the shipped document**. The shelf now stores the pool whole; what the player SEES is still the two
+the group shows.
+
+**⚠ THE LESSON, AND IT IS THE ACT-III ONE FROM THE OTHER SIDE.** Act III found 72 of 74 relics unreachable
+and every test passing. This is the same disease inverted: the pool that *was* drawn from held the wrong
+things, and every test still passed — because every relic test in this repo proves a relic WORKS, and not one
+asked whether a run can ever be handed it. `EliteRelicTests` now asks that of the whole document, per faucet.
+
+## What replaced it
+
+- **Boss victory pays no generic relic at all.** The kill already gives a forced 1-of-3.
+- **Every elite pays out one relic of its own** — 38 of them, `VictoryRewardsByEncounter`, fixed and not a
+  draw. A new pool, `Pool.Elite`, walled like the Boss pool.
+- **The mimic pays a tooth in the grade of its act**, `Pool.Mimic`, four grades of one relic; a later grade
+  removes the one already held through its own pickup effects.
+- **Treasure, the Act-I event and the three markets** draw from the canonical pools.
+- **The 47 ported relics and their presentations are gone from the document.** `BlueprintAssembler` ships
+  the authored pools and nothing else; the relic count went 215 → 210 (168 canonical + 42 new).
+
+## The act rarity curve, which had never existed
+
+Acts had GATES — which cards and relics may appear at all — and within a gated pool everything was equally
+likely. The card reward's own comment said so: *"3 random pool cards, pick 1 (uniform weight in Act 1)"*.
+`BnB_Run_Systems_Master` lists "card reward rarity probabilities" under the deferred balance variables, so
+the numbers were never written down either. They are now one table, `ConversionPools.RarityCurve`, ratified
+by the user on 2026-09-10 and feeding cards and relics alike:
+
+| | Act I | Act II | Act III | Act IV |
+|---|---:|---:|---:|---:|
+| Common | 65 | 45 | 30 | 20 |
+| Uncommon | 30 | 40 | 45 | 45 |
+| Rare | 5 | 15 | 25 | 35 |
+
+They are per-CLASS odds, not per-entry weights: each entry of a rarity is weighted by that rarity's share
+times the size of every other class in the draw, so the class odds hold however many cards or relics sit in
+each class. That is what keeps the curve honest as the pools grow.
+
+## Three adaptations in the new relics themselves
+
+1. **Gold cannot be paid inside a fight** — it is a run resource and no combat effect reaches it. *Coin Left
+   in the Throat* pays 2 Block per Claim in the fight and 10 Gold per victory outside it; *Weight From the
+   Lighter Pan* is a run program entirely.
+2. **A card cannot be "entered" permanently at reward time** — the reward layer marks OFFERS, not the cards a
+   run ends up holding. *Blank Line in the Black Book* shows one more card to choose from instead, which is
+   what a catalogue with a free line actually offers (`DrawMoreOffersRule`, and it asks the reward's own
+   source for the extra draw, so nothing appears that the reward could not have offered anyway).
+3. **A card cannot be re-resolved across a turn boundary** — the replay node replays a card the current play
+   is holding. *The Missing Present Hand* pays what a turn-one card is worth, one turn later.
+
+And one that is MORE than the design asked: **The Third Ending** was specified as once per RUN. A run-layer
+death prevention is a different machine from the one the engine has, which is a property of a status (bought
+at V-1 for Nisaba). So it is once per FIGHT, and it is the strongest relic in the pool by some way — the
+first balance pass should look there before it looks anywhere else.
+
+## ⚠ AN ID IS A GLOBAL NAME, AND NAMING A RELIC AFTER ITS LESSON IS HOW YOU FIND OUT
+
+Two elite relics first shipped named for the mechanic they were drawn from: `the_proper_line` and
+`the_errant_cord`. Those are the ids the Ant Queen and the Surveyor of the Errant Cord already carry **for
+their own bodies**. The status registry refused the second registration, and **37 tests across four acts
+failed with one message** — `Status definition 'the_proper_line' is already registered` — in files with
+nothing to do with relics, elites or either act. A third, *Concordance Thread*, collided with the Grand
+Cross-Reference's boss relic of that name.
+
+The rule now: **an elite relic is named after the OBJECT in its visual brief, never after its elite's rule.**
+They are *The Head of the Line*, *The Shorter Ferrule* and *The Line Between the Volumes*, which name the ant
+set in resin, the ferrule filed down and re-stamped, and the line drawn between the two books. All three are
+better names than the ones they replaced, which is not a coincidence: a relic named after a rule is a relic
+with no object in it.
+
+`EliteRelicTests.No_elite_relic_takes_a_name_the_game_already_uses` is the guard, and it checks relic ids and
+status ids separately — a relic sharing an id with the rule it installs is the house idiom, not a collision.
+
+**MEASURED**: 42 relics, one real fight each, plus the plumbing read off the shipped document — 0
+non-canonical relic ids reachable anywhere, Shop 24/24 reachable, Normal 50/50. The checked-in sparring
+snapshot `tombbreakers.json` named four of the deleted relics and is now canonical, which is exactly what a
+snapshot next to the content is for.

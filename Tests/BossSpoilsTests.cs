@@ -58,24 +58,60 @@ public class BossSpoilsTests
         });
     }
 
-    // The elite and the mimic pay a relic too, off the role table rather than a named boss's.
-    [Theory]
-    [InlineData(MapNodeKind.Elite)]
-    [InlineData(MapNodeKind.Boss)]
-    [InlineData(MapNodeKind.Mimic)]
-    public void Every_fight_that_pays_a_relic_calls_it_a_relic(MapNodeKind role)
+    // THE MIMIC IS THE ONLY ROLE THAT STILL PAYS A RELIC OFF THE ROLE TABLE. Elite and Boss each pay one of
+    // their own, per encounter, since 2026-09-10 — a boss its forced 1-of-3, an elite the single relic
+    // written for it — because the role table drew from the ported v2 list and handed out demo relics for
+    // four acts. What is asserted here is the label, as before: a reward that opens another reward is
+    // announced as a card unless it declares its kind.
+    [Fact]
+    public void The_mimic_pays_a_relic_and_calls_it_a_relic()
     {
-        var labels = (from act in Game.Acts ?? []
-                      let spec = act.MapGeneration
-                      where spec is not null && spec.VictoryRewards.ContainsKey(role)
-                      let source = spec.VictoryRewards[role].Source as FixedRewardSource
-                      where source is not null
-                      from offer in source.Offers
-                      select Labeler.Offer(offer)).ToList();
+        var labels = RoleLabels(MapNodeKind.Mimic);
 
         Assert.NotEmpty(labels);
         Assert.All(labels, label => Assert.Contains("a relic", label));
     }
+
+    [Theory]
+    [InlineData(MapNodeKind.Elite)]
+    [InlineData(MapNodeKind.Boss)]
+    public void The_role_table_promises_no_relic_where_the_encounter_pays_its_own(MapNodeKind role)
+    {
+        var labels = RoleLabels(role);
+
+        Assert.NotEmpty(labels);
+        Assert.All(labels, label => Assert.DoesNotContain("a relic", label));
+    }
+
+    [Fact]
+    public void Every_elite_pays_its_own_relic_and_says_so()
+    {
+        var elites = (from act in Game.Acts ?? []
+                      let spec = act.MapGeneration
+                      where spec is not null
+                      from entry in spec.VictoryRewardsByEncounter
+                      where entry.Key.Contains("_elite_", StringComparison.Ordinal)
+                      where entry.Value.Source is FixedRewardSource
+                      from offer in ((FixedRewardSource)entry.Value.Source).Offers
+                      select Labeler.Offer(offer)).ToList();
+
+        Assert.Equal(38, elites.Count);
+        Assert.All(elites, label =>
+        {
+            Assert.Contains("Gold", label);
+            Assert.Contains("a card reward", label);
+            Assert.Contains("a relic", label);
+        });
+    }
+
+    private List<string> RoleLabels(MapNodeKind role) =>
+        [.. from act in Game.Acts ?? []
+            let spec = act.MapGeneration
+            where spec is not null && spec.VictoryRewards.ContainsKey(role)
+            let source = spec.VictoryRewards[role].Source as FixedRewardSource
+            where source is not null
+            from offer in source.Offers
+            select Labeler.Offer(offer)];
 
     // The ordinary fights pay no relic, and must not claim one.
     [Fact]
