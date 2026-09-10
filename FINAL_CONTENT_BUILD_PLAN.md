@@ -112,10 +112,23 @@ All numbers stay at the design's deliberate placeholders — the balance pass is
 
 ## Status
 
-- [x] A — keyword substrate (Paperwork, Doubt, Seal/Ratified, Archive, Censure, Lien, Blood Ink, Ward Wax;
-      Citation waits on the engine)
-- [ ] B — cards — starters + Junk + **Act I Bureaucrat commons (15/15)** done; 65 Bureaucrat and 50 general
-      cards to go
-- [ ] C — relics
-- [ ] D — events
-- [ ] E — run systems
+- [x] A — keyword substrate (Paperwork, Doubt, Seal/Ratified, Archive, Censure, Lien, Blood Ink, Ward Wax).
+      **Citation no longer waits on the engine** — it is live in `Converter/Cards/Keywords.cs`, filed through
+      the Standing Citation the player carries (only a bearer of that Rite makes a Citation land).
+- [x] **B — cards — DONE.** 80 Bureaucrat + 50 general offerable cards, plus the 4 starters and 4 Junk.
+      Pinned live by `Tests/FinalCardPoolTests.cs` (`Assert.Equal(80 + 50, offerable.Count)`).
+- [x] **C — relics — DONE.** All 168: 50 normal (`NormalRelics`) · 24 shop (`ShopRelics`) ·
+      25 event (`EventRelics`, 6/5/5/9 over Acts I–IV) · 69 boss (`BossRelics`, 3 per boss over 23 bosses).
+      Every pool has a live test that fights one real combat per relic — a relic that does nothing installs
+      and validates cleanly, which is exactly how two Act-IV rites died at IV-20.
+- [x] **D — events — DONE.** All 65 doors: Act I 15 · II 15 · III 15 · IV 20 · V 0 (the gauntlet has no
+      doors, by design), each branch walked by a live test.
+- [x] **E — run systems — DONE.** Treasure/mimic, shop inventory, campfire (Wait it out / Submit an
+      amendment) and the Act-V restrictions all live in `Converter/ActRules.cs` per act — Act V returns null
+      for the quiet rooms, because three bosses back to back have none.
+
+**This plan is finished and superseded.** Phases B–E were not built phase-by-phase across all acts in the
+end; the ACT plans (`ACT_I_BUILD_PLAN.md`, `ACT_II_III_FINISH_PLAN.md`, `ACT_III_BUILD_PLAN.md`,
+`ACT_IV_V_BUILD_PLAN.md`) absorbed them act by act, so that every card, relic, event and rule was written
+next to the fights it had to survive. The targets in the table at the top of this file are all met; the only
+open step in the whole content arc is **V-7** in `ACT_IV_V_BUILD_PLAN.md` (the whole game, over many seeds).
