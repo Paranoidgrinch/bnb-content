@@ -3,7 +3,7 @@ using RogueDeck.Scenario.Authoring;
 
 namespace BnbContent.Converter;
 
-// ACT V — THE DIVINE LEDGER, so far only as a place that speaks.
+// ACT V — THE DIVINE LEDGER, all six gods written (V-1 … V-6, 2026-09-09).
 //
 // The design's one SHARED rule for the whole act (boss master §Act V §4) is a UI rule: every god gets a
 // prominent DIVINE RULE AREA in the combat screen, always in the same place, filled completely differently by
@@ -15,9 +15,9 @@ namespace BnbContent.Converter;
 // exactly what that dictionary is for: the frontend keys its panel off `divineRuleTitle` + `divineRule`, and an
 // encounter without them shows no panel, which is every fight in Acts I–IV.
 //
-// At V-0 the six gods are still the ported placeholders and their lines say what each god IS. V-1 … V-6 replace
-// the fights and rewrite these lines with the live state each area actually shows (the tablet's written rows,
-// the ledger's claims, the moon's phase), which is the point at which the area stops being a caption.
+// At V-0 these lines were captions on ported placeholders — they said what each god IS. V-1 … V-6 replaced the
+// fights and rewrote every line to describe the live state its area actually shows (the tablet's written rows,
+// the ledger's claims, the moon's phase, the standing decree), which is where the area stopped being a caption.
 public static partial class ActFive
 {
     public const int Act = 5;
