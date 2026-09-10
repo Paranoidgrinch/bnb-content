@@ -17,6 +17,10 @@ built and tested against.
 - `ART_SLOTS.md` — **generated**: one row per picture the frontend will look for (254 cards + 210 relics),
   with the design canon's number and object line beside every relic. Regenerate it with `--art-slots`;
   a test fails if it has gone stale.
+  ⚠ A relic also exports **which pool it was won from**, as `Presentation.Relics[id].Frame` — because the
+  visual canon fixes one frame per pool (§10.4) and the frontend draws its relic shelf by that frame before
+  a single object on it is recognised. The pool lives in the authoring record, which the frontend never
+  sees, so this is the only way out; `RelicFrameTests` counts every pool across the seam.
 
 ## Building
 Expects a sibling checkout of [RogueDeck-Core](../RogueDeck-Core) (relative `ProjectReference`).
