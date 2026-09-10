@@ -104,10 +104,12 @@ public static class MapSpecBuilder
                 + rules.PerPathMinimums[MapNodeKind.MultiCombat] + rules.PerPathMinimums[MapNodeKind.Elite],
             KindWeights = rules.KindWeights,
             Encounters = new EncounterDistribution { ByRole = byRole },
-            VictoryRewards = VictoryRewards(pools),
-            // A boss pays out what its ROLE pays plus one of its own three relics — so the payout has to be
-            // stated per boss rather than per role (docs: BnB_Final_Relics_Master_PostAudit.md §6).
-            VictoryRewardsByEncounter = BossRewards(data, pools, act),
+            VictoryRewards = VictoryRewards(pools, act.Act),
+            // A boss pays out what its ROLE pays plus one of its own three relics, and an ELITE pays out
+            // what its role pays plus the ONE relic that belongs to it — so both have to be stated per
+            // encounter rather than per role (docs: BnB_Final_Relics_Master_PostAudit.md §6, and the elite
+            // pool added 2026-09-10).
+            VictoryRewardsByEncounter = PerEncounterRewards(data, pools, act),
             // A treasure only bites where the act HAS a mimic to field (5 / 10 / 15 / 20 % across the acts,
             // from the act's own manifest); a chance without a candidate would fail generation.
             TreasureMimicChancePercent = byRole.ContainsKey(MapNodeKind.Mimic) ? MimicChance(act) : 0,
@@ -190,6 +192,63 @@ public static class MapSpecBuilder
 
     // Each boss of this act: its role's gold and card offer, and then ONE of its own three relics at random,
     // taken without a choice screen — a single-offer reward the player does not pick from.
+    // The tooth this act's mimic hands over. A later act's mimic replaces the grade already held rather than
+    // adding to it — the relic's own Pickup removes every lesser grade — so a player who opens four mimics
+    // ends the run with one tooth and not four.
+    private static IRunEffectRequest MimicReward(int act)
+    {
+        var tooth = Relics.EliteRelics.ForMimic(act);
+        return new OfferRewardRunEffect(
+            new RewardId($"relic:mimic:{act}"),
+            new FixedRewardSource([new RewardOffer($"relic-{tooth.Id}", [.. ConversionPools.Grant(tooth)])]),
+            1)
+        { Kind = RewardKinds.Relic };
+    }
+
+    // Every encounter that pays out something of its OWN: a boss its three, an elite the one written for it.
+    private static Dictionary<string, MapVictoryReward> PerEncounterRewards(
+        BabData data, ConversionPools pools, BabActManifest act)
+    {
+        var rewards = EliteRewards(data, pools, act);
+        foreach (var (id, reward) in BossRewards(data, pools, act))
+            rewards[id] = reward;
+        return rewards;
+    }
+
+    // An elite pays its role's purse and card, and then the relic that belongs to it. Fixed, not a choice:
+    // the relic IS the lesson of that fight, so there is nothing to choose between.
+    private static Dictionary<string, MapVictoryReward> EliteRewards(
+        BabData data, ConversionPools pools, BabActManifest act)
+    {
+        var rewards = new Dictionary<string, MapVictoryReward>();
+        foreach (var elite in data.Encounters.Where(e => e.Act == act.Act && e.Role == "elite"))
+        {
+            var relic = Relics.EliteRelics.For(elite.Id)
+                ?? throw new ConversionException($"elite '{elite.Id}'", "no elite relic is authored for it");
+
+            var (min, max) = Gold[MapNodeKind.Elite];
+            rewards[elite.Id] = new MapVictoryReward(new FixedRewardSource(
+            [
+                new RewardOffer("spoils",
+                [
+                    new ChangeResourceRunEffect(StandardRunIds.Gold, min, max),
+                    new OfferRewardRunEffect(new RewardId($"cards:{elite.Id}"), pools.CardRewardSource(), 1)
+                        { Kind = RewardKinds.Card },
+                    // Says what it is, for the same reason a boss's does: a reward that does not name its
+                    // kind is announced as a card, and the one thing an elite is fought for would reach the
+                    // player under the wrong heading.
+                    new OfferRewardRunEffect(
+                        new RewardId($"relic:{elite.Id}"),
+                        new FixedRewardSource(
+                            [new RewardOffer($"relic-{relic.Id}", [.. ConversionPools.Grant(relic)])]),
+                        1)
+                        { Kind = RewardKinds.Relic },
+                ]),
+            ]));
+        }
+        return rewards;
+    }
+
     private static Dictionary<string, MapVictoryReward> BossRewards(
         BabData data, ConversionPools pools, BabActManifest act)
     {
@@ -270,7 +329,7 @@ public static class MapSpecBuilder
 
     // What a generated fight pays: gold plus a card offer, and a relic on top for the elite, the boss and the
     // mimic (which is tuned like a weak elite). The engine suffixes the id with the encounter.
-    private static Dictionary<MapNodeKind, MapVictoryReward> VictoryRewards(ConversionPools pools)
+    private static Dictionary<MapNodeKind, MapVictoryReward> VictoryRewards(ConversionPools pools, int act)
     {
         var rewards = new Dictionary<MapNodeKind, MapVictoryReward>();
         foreach (var (role, (min, max)) in Gold)
@@ -283,10 +342,14 @@ public static class MapSpecBuilder
                 new OfferRewardRunEffect(new RewardId($"cards:{role}"), pools.CardRewardSource(), 1)
                     { Kind = RewardKinds.Card },
             };
-            if (role is MapNodeKind.Elite or MapNodeKind.Boss or MapNodeKind.Mimic)
-                grant.Add(new OfferRewardRunEffect(new RewardId($"relic:{role}"),
-                    pools.RelicGrantSource(null, $"{role} relic reward"), 1)
-                    { Kind = RewardKinds.Relic });
+            // NO RELIC HERE ANY MORE. Until 2026-09-10 the Elite, Boss and Mimic roles all drew one from
+            // ConversionPools.Relics — the PORTED v2 list, which is what that source has always been — so
+            // every elite, boss and mimic in Acts I-IV offered a pool of 49 relics of which 47 were demo
+            // material and 2 were canonical by id collision. Each of the three now pays from its own place:
+            // a boss from its three (PerEncounterRewards), an elite from the one that belongs to it
+            // (likewise), and a mimic from the tooth of its act (MimicReward).
+            if (role is MapNodeKind.Mimic)
+                grant.Add(MimicReward(act));
 
             rewards[role] = new MapVictoryReward(new FixedRewardSource([new RewardOffer("spoils", grant)]));
         }

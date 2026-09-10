@@ -103,13 +103,12 @@ public static class BlueprintAssembler
                 .. Events.ActOneEventObjects.Statuses(), .. Events.ActTwoEventObjects.Statuses(),
                 .. Events.ActThreeEventObjects.Statuses(),
             ],
-            // The final relic pools replace the ported v2 relics wherever the ids meet; what is left of the
-            // old pool still ships because the ported EVENTS grant some of it by name.
-            Relics =
-            [
-                .. relics.Select(r => r.Relic).Where(r => !Relics.FinalRelics.All().Any(f => f.Id == r.Id)),
-                .. Relics.FinalRelics.Compile(),
-            ],
+            // ONLY THE AUTHORED POOLS SHIP. Until 2026-09-10 every ported v2 relic whose id did not meet a
+            // final one shipped alongside them — 47 of them — because the ported events granted some by
+            // name. Nothing does any more: every faucet in the game (elite, boss, mimic, treasure, shop, the
+            // three markets and the events that award "a random relic") draws from a final pool, so the old
+            // definitions are dead weight that the relic shelf would have had to draw a frame for.
+            Relics = [.. Relics.FinalRelics.Compile()],
             Shops = maps.SelectMany(m => m.Map.Shops).ToDictionary(e => e.Key, e => e.Value),
             // What the authored events promise for AFTER a fight. The bodies live here once; the events that
             // hand them out name them (fx.installProgramById).
@@ -204,28 +203,17 @@ public static class BlueprintAssembler
             // the AUTHORED ones (the final pools — normal, shop, boss, event) carry it on the authoring record.
             // Only the ported ones used to get an entry, so two thirds of the relics in the game showed the
             // player a name and nothing else on hover.
-            Relics = relics
-                .ToDictionary(
-                    r => r.Relic.Id,
-                    r => new EntityPresentation
-                    {
-                        Art = $"relics/{r.Relic.Id}.png",
-                        FlavorText = r.Source.Description,
-                        Rarity = r.Source.Rarity,
-                        Tags = r.Source.Tags ?? [],
-                    })
-                .Concat(Relics.FinalRelics.All().ToDictionary(
-                    r => r.Id,
-                    r => new EntityPresentation
-                    {
-                        Art = $"relics/{r.Id}.png",
-                        FlavorText = r.Text,
-                        Rarity = r.Rarity.ToString().ToLowerInvariant(),
-                        Tags = [],
-                    }))
-                // An id in both places is the authored one: that is the relic the document ships.
-                .GroupBy(e => e.Key)
-                .ToDictionary(g => g.Key, g => g.Last().Value),
+            // One entry per relic the document actually ships, which since 2026-09-10 is the authored pools
+            // and nothing else. `Art` is the file the frontend looks for and the id IS the name of it.
+            Relics = Relics.FinalRelics.All().ToDictionary(
+                r => r.Id,
+                r => new EntityPresentation
+                {
+                    Art = $"relics/{r.Id}.png",
+                    FlavorText = r.Text,
+                    Rarity = r.Rarity.ToString().ToLowerInvariant(),
+                    Tags = [],
+                }),
             Statuses = data.Statuses
                 .ToDictionary(
                     s => s.Id,

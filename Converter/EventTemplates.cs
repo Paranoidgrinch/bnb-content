@@ -17,7 +17,13 @@ public static class EventTemplates
         [
             new EventChoice("open",
             [
-                new OfferRewardRunEffect(new RewardId($"{where}:relic"), pools.RelicGrantSource(null, where), 1),
+                // The canonical Normal pool on the act's own rarity curve. Until 2026-09-10 this was
+                // RelicGrantSource — the PORTED v2 list — so a chest in the finished game handed out demo
+                // relics. The master is explicit (§1): a Treasure relic reward is a Normal relic, and Shop
+                // relics stay shop-exclusive.
+                new OfferRewardRunEffect(
+                    new RewardId($"{where}:relic"), pools.NormalRelicOnTheCurve(where), 1)
+                    { Kind = RewardKinds.Relic },
             ], TextKey: act.TreasureOpenText),
             new EventChoice("leave", [], TextKey: act.TreasureLeaveText),
         ]),
@@ -77,8 +83,14 @@ public static class ShopTemplate
         // relic that adds a slot has something to put in it.
         var general = Cards(pools.GeneralCards, rng, depth: 8);
         var character = Cards(pools.CharacterCards, rng, depth: 10);
-        var shopRelics = Relics(pools.ShopRelicStock, rng, depth: 5);
-        var normalRelics = Relics(pools.NormalRelicStock, rng, depth: 5);
+        // THE WHOLE POOL, not a sample of it. A shelf's stock is drawn at CONVERSION time and shipped in the
+        // document, so a depth of 5 meant five of the twenty-four Shop relics existed in a given build of the
+        // game and the other nineteen could never be bought by anyone — twelve of them were named nowhere in
+        // the shipped document at all (found 2026-09-10). Storing the pool whole costs a few hundred entries
+        // and makes the master's "eligible in standard Shop relic inventory" true again; what the player SEES
+        // is still the two the group shows, and a reroll now turns over the real pool.
+        var shopRelics = Relics(pools.ShopRelicStock, rng, depth: pools.ShopRelicStock.Count);
+        var normalRelics = Relics(pools.NormalRelicStock, rng, depth: pools.NormalRelicStock.Count);
 
         // FOUR SHELVES rather than one bag, and every entry says what it is. A relic that makes "one Normal
         // Relic" cheaper, or adds a slot to the normal relic shelf, or replaces the unsold cards, finds

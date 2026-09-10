@@ -548,12 +548,12 @@ public static class ActThreeEvents
             stock.Add(Stall(id, $"card-{index}", $"{card.Name} — {price} Gold", price,
                 [new AddCardToDeckRunEffect(new CardDefinitionId(card.Id))]));
         }
-        foreach (var (relic, index) in pools.Relics.OrderBy(_ => rng.Next()).Take(relics)
+        foreach (var (relic, index) in pools.MarketRelicStock.OrderBy(_ => rng.Next()).Take(relics)
             .Select((r, i) => (r, i)))
         {
-            var price = Less(relicPrices.GetValueOrDefault(relic.Source.Rarity ?? "common", 190));
-            stock.Add(Stall(id, $"relic-{index}", $"{relic.Source.Name} — {price} Gold", price,
-                ConversionPools.RelicOffer(relic).Grant));
+            var price = Less(relicPrices.GetValueOrDefault(relic.Rarity.ToString().ToLowerInvariant(), 190));
+            stock.Add(Stall(id, $"relic-{index}", $"{relic.Name} — {price} Gold", price,
+                [.. ConversionPools.Grant(relic)]));
         }
         if (removal)
         {
