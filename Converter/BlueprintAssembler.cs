@@ -214,6 +214,14 @@ public static class BlueprintAssembler
                     Art = $"relics/{r.Id}.png",
                     FlavorText = r.Text,
                     Rarity = r.Rarity.ToString().ToLowerInvariant(),
+                    // WHICH POOL A RELIC CAME FROM IS A LOOK, NOT A RULE. The visual canon does not describe
+                    // relics one by one and then a border: it fixes ONE frame per pool (§10.4 "Pool frames and
+                    // color identity" — normal slate, shop copper, event pale violet, boss dark purple and
+                    // antique gold; the elite canon §2 adds the plainer boss frame the elites and the mimic
+                    // wear), so a shelf of relics is read by pool before a single object on it is recognised.
+                    // `Frame` is the contract's own slot for exactly that ("card-frame / border style"), the
+                    // engine ignores it, and the pool name is the value because the pool IS the frame here.
+                    Frame = r.Pool.ToString().ToLowerInvariant(),
                     Tags = [],
                 }),
             Statuses = data.Statuses
