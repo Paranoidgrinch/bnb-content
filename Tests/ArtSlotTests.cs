@@ -3,8 +3,8 @@ using RogueDeck.Run;
 
 namespace BnbContent.Tests;
 
-// THE PICTURES THE GAME WILL ASK FOR. Every card and every relic the document ships names a file the frontend
-// looks for, and none of those files exists yet — so nothing in the game can notice when the naming rule
+// THE PICTURES THE GAME WILL ASK FOR. Every card, every relic and every body the document ships names a file
+// the frontend looks for, and none of those files exists yet — so nothing in the game can notice when the naming rule
 // breaks. These are that notice.
 //
 // The rule they hold is the one that decides how much work there is: an upgraded card is drawn from its BASE
@@ -28,7 +28,7 @@ public class ArtSlotTests
             Assert.EndsWith(".png", art, StringComparison.Ordinal);
             // The file name is a file name on three operating systems and in a shell: no "+" (the upgrade
             // mark), no spaces, no capitals, nothing but the id.
-            Assert.Matches(@"^(cards|relics)/[a-z0-9_]+\.png$", art);
+            Assert.Matches(@"^(cards|relics|enemies)/[a-z0-9_]+\.png$", art);
         }
     }
 
@@ -51,7 +51,7 @@ public class ArtSlotTests
     {
         var wanted = Slots().Select(s => s.Art).Distinct(StringComparer.Ordinal).Count();
         var basics = Game.Cards.Count(c => !c.Id.EndsWith('+'));
-        Assert.Equal(basics + Game.Relics.Count, wanted);
+        Assert.Equal(basics + Game.Relics.Count + Game.Presentation.Enemies.Count, wanted);
     }
 
     // The table is generated, so it can go stale in one commit and mislead whoever is painting from it. This
@@ -77,5 +77,6 @@ public class ArtSlotTests
 
     private static IEnumerable<(string Id, string Art)> Slots() =>
         Game.Presentation.Cards.Select(e => (e.Key, e.Value.Art!))
-            .Concat(Game.Presentation.Relics.Select(e => (e.Key, e.Value.Art!)));
+            .Concat(Game.Presentation.Relics.Select(e => (e.Key, e.Value.Art!)))
+            .Concat(Game.Presentation.Enemies.Select(e => (e.Key, e.Value.Art!)));
 }

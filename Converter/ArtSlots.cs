@@ -34,34 +34,39 @@ public static partial class ArtSlots
         // A remnant is a ported card that no authored sheet replaced — the ones that reach the last table.
         var ported = data.Cards.Select(c => CardMapper.MapCardId(c.Id)).ToHashSet(StringComparer.Ordinal);
         var authored = FinalCards.Ids();
-        Head(page, cardSlots.Count, relics.Count,
+        var bodies = EnemySlots(data);
+        Head(page, cardSlots.Count, relics.Count, bodies.Count,
             cardSlots.Count(id => ported.Contains(id) && !authored.Contains(id)));
         RelicTables(page, relics, canon);
+        EnemyTables(page, blueprint, bodies);
         CardTables(page, blueprint, data, cardSlots);
 
         File.WriteAllText(outFile, page.ToString());
         var briefless = relics.Count(r => !canon.ContainsKey(r.Name));
         Console.WriteLine($"Wrote {outFile}: {cardSlots.Count} card slots, {relics.Count} relic slots, "
-            + $"{cardSlots.Count + relics.Count} pictures in all"
+            + $"{bodies.Count} enemy slots, {cardSlots.Count + relics.Count + bodies.Count} pictures in all"
             + (briefless == 0 ? " (every relic has its canon brief)." : $" — {briefless} relic(s) WITHOUT a canon brief."));
         return 0;
     }
 
-    private static void Head(StringBuilder page, int cards, int relics, int remnants) => page.Append($"""
+    private static void Head(StringBuilder page, int cards, int relics, int enemies, int remnants) => page.Append($"""
         # Art slots — every picture the game looks for
 
         Generated: `dotnet run --project Converter -- --art-slots ART_SLOTS.md`. **Do not edit by hand.**
 
-        **{cards + relics} pictures**: {cards} cards and {relics} relics. None of them exists yet, and that is a
-        normal state — a card with no file draws an empty socket with its own code printed in it, and a relic
-        with no file draws its code. Nothing breaks while a slot is empty, so the list below can be worked down
-        in any order. {remnants} of the card slots belong to the demo game's leftovers and are marked
-        "Ported v2 remnants" at the end: **{cards + relics - remnants} pictures** are the real list.
+        **{cards + relics + enemies} pictures**: {cards} cards, {relics} relics and {enemies} bodies (every
+        enemy, elite and boss). None of them exists yet, and that is a normal state — a card with no file draws
+        an empty socket with its own code printed in it, a relic with no file draws its code, and a body with
+        no file draws the stick figure it draws today. Nothing breaks while a slot is empty, so the list below
+        can be worked down in any order. {remnants} of the card slots belong to the demo game's leftovers and
+        are marked "Ported v2 remnants" at the end: **{cards + relics + enemies - remnants} pictures** are the
+        real list.
 
         ## How a slot is filled
 
         1. Name the file after the **code** in the table and drop it in:
-           `bnb-godot/assets/art/cards/<code>.png` · `bnb-godot/assets/art/relics/<code>.png`
+           `bnb-godot/assets/art/cards/<code>.png` · `bnb-godot/assets/art/relics/<code>.png` ·
+           `bnb-godot/assets/art/enemies/<code>.png`
         2. Run `bnb-godot/tools/import-art.sh` once afterwards. Godot only reads textures it has imported, so a
            file that was merely copied in is invisible to the game until that runs (the editor does it by itself
            on focus; the headless probes do not).
@@ -79,6 +84,13 @@ public static partial class ArtSlots
         - **Relic art** will be drawn (D4) as a **small square** in the right-hand strip, roughly 34 × 34
           points, larger on hover. It has to survive being that small: one object, a clear silhouette, no fine
           text. Square source, 512 × 512 or more.
+        - **A body** stands in its column in the arena, in a window as wide as that column and **150 points
+          tall**, its aspect KEPT (never cropped, never squashed): a portrait ends up about 110 points wide
+          with the health bar directly under its feet. Draw it portrait on transparency — 600 × 900 or more —
+          and let the mipmaps reduce it. A crowd of four narrows every column to about 110 points, so the
+          silhouette has to read at half the room a duel gives it. **Draw the body facing LEFT**, towards the
+          player, who stands on the left of the arena: a picture is never mirrored by the game (a flipped body
+          wears its sash on the wrong side), so the direction it faces is the direction it was drawn in.
         - PNG, RGBA. Transparency is welcome — a card's socket is a dark recess and a relic's square carries
           its pool's frame colour, and both are meant to show through.
 
@@ -119,6 +131,69 @@ public static partial class ArtSlots
                 page.AppendLine($"| {(entry.Number == 0 ? "—" : entry.Number.ToString())} | `{relic.Id}` | "
                     + $"{Cell(relic.Name)} | {relic.Rarity.ToString().ToLowerInvariant()} | "
                     + $"{Cell(entry.Brief.Length > 0 ? entry.Brief : relic.Text)} |");
+            }
+            page.AppendLine();
+        }
+    }
+
+    // Every body the document ships, with the kind of room it is met in. The ROLE is the thing to draw to:
+    // a mook, an elite and a god are not the same picture at three sizes. It is worked out from the fights an
+    // id appears in (BlueprintAssembler.EnemyRole) and travels in the document as `Presentation.Frame`, so
+    // this table and the game agree about it by construction rather than by being kept in step.
+    private static IReadOnlyList<(string Id, string Name, string Role, int Health, int Fights, string Example)>
+        EnemySlots(BabData data)
+    {
+        var roles = EnemyRole.Of(data);
+        var fights = new Dictionary<string, List<string>>(StringComparer.Ordinal);
+        foreach (var encounter in data.Encounters)
+        {
+            foreach (var id in encounter.Enemies.Distinct(StringComparer.Ordinal))
+            {
+                if (!fights.TryGetValue(id, out var list))
+                    fights[id] = list = [];
+                list.Add(encounter.Name);
+            }
+        }
+        return data.Enemies
+            .Where(e => fights.ContainsKey(e.Id))
+            .Select(e => (
+                e.Id,
+                e.Name,
+                Role: roles.GetValueOrDefault(e.Id, EnemyRole.Standard),
+                e.MaxHp,
+                Fights: fights[e.Id].Count,
+                Example: fights[e.Id][0]))
+            .OrderBy(e => e.Id, StringComparer.Ordinal)
+            .ToList();
+    }
+
+    private static void EnemyTables(
+        StringBuilder page, RunBlueprint blueprint,
+        IReadOnlyList<(string Id, string Name, string Role, int Health, int Fights, string Example)> bodies)
+    {
+        page.AppendLine($"## Bodies — {bodies.Count} pictures");
+        page.AppendLine();
+        page.AppendLine("Every enemy, elite and boss in the game. No visual canon was written for the bodies, so");
+        page.AppendLine("the row carries what the fight itself says: how much it can take, how many rooms use it,");
+        page.AppendLine("and one of those rooms by name. The role is what the picture has to BE — a body that is");
+        page.AppendLine("ever met in a boss room is drawn as a boss, even if it also turns up as filler.");
+        page.AppendLine();
+        foreach (var role in new[] { EnemyRole.Boss, EnemyRole.Elite, EnemyRole.Mimic, EnemyRole.Standard })
+        {
+            var members = bodies.Where(b => b.Role == role).ToList();
+            if (members.Count == 0)
+                continue;
+            page.AppendLine($"### {char.ToUpperInvariant(role[0])}{role[1..]} bodies — {members.Count}");
+            page.AppendLine();
+            page.AppendLine("| code | title | HP | rooms | met in |");
+            page.AppendLine("|---|---|---:|---:|---|");
+            foreach (var body in members)
+            {
+                // The name the FRONTEND will print over the picture, which is the document's, not the
+                // source data's — they are the same string today and this is where it would show if they
+                // ever stopped being.
+                var shown = blueprint.Presentation.Enemies.GetValueOrDefault(body.Id)?.FlavorText ?? body.Name;
+                page.AppendLine($"| `{body.Id}` | {Cell(shown)} | {body.Health} | {body.Fights} | {Cell(body.Example)} |");
             }
             page.AppendLine();
         }
