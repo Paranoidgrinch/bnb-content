@@ -30,13 +30,8 @@ public static partial class ArtSlots
         var relics = FinalRelics.All();
         var cardSlots = blueprint.Cards.Select(c => c.Id).Where(id => !id.EndsWith('+')).ToHashSet(StringComparer.Ordinal);
 
-        // The remnants are counted for the head line: they are slots, but they are not work worth doing.
-        // A remnant is a ported card that no authored sheet replaced — the ones that reach the last table.
-        var ported = data.Cards.Select(c => CardMapper.MapCardId(c.Id)).ToHashSet(StringComparer.Ordinal);
-        var authored = FinalCards.Ids();
         var bodies = EnemySlots(data);
-        Head(page, cardSlots.Count, relics.Count, bodies.Count,
-            cardSlots.Count(id => ported.Contains(id) && !authored.Contains(id)));
+        Head(page, cardSlots.Count, relics.Count, bodies.Count);
         RelicTables(page, relics, canon);
         EnemyTables(page, blueprint, bodies);
         CardTables(page, blueprint, data, cardSlots);
@@ -49,7 +44,7 @@ public static partial class ArtSlots
         return 0;
     }
 
-    private static void Head(StringBuilder page, int cards, int relics, int enemies, int remnants) => page.Append($"""
+    private static void Head(StringBuilder page, int cards, int relics, int enemies) => page.Append($"""
         # Art slots — every picture the game looks for
 
         Generated: `dotnet run --project Converter -- --art-slots ART_SLOTS.md`. **Do not edit by hand.**
@@ -60,9 +55,8 @@ public static partial class ArtSlots
         `make-relic-art.py` and `make-enemy-art.py`. A painted picture replaces one by being saved over it, so
         the list below can be worked down in any order and nothing has to be registered anywhere. A slot with no
         file at all is a normal state as well: a card draws an empty socket with its own code in it, a relic
-        draws its code, and a body draws a stick figure. {remnants} of the card slots belong to the demo game's
-        leftovers and are marked "Ported v2 remnants" at the end: **{cards + relics + enemies - remnants}
-        pictures** are the real list.
+        draws its code, and a body draws a stick figure. Every slot on this list is a picture the game can
+        actually show: the demo game's leftovers left the document on 2026-09-10.
 
         ## How a slot is filled
 
@@ -244,15 +238,11 @@ public static partial class ArtSlots
 
         // Whatever the document ships that no reward sheet wrote: the cards a boss's clause or a door's
         // consequence puts into the deck mid-run. They are seen in hand like any other card, so they need a
-        // picture like any other card — with one exception, split off below.
-        var ported = data.Cards.Select(c => CardMapper.MapCardId(c.Id)).ToHashSet(StringComparer.Ordinal);
+        // picture like any other card.
         var rest = blueprint.Cards.Where(c => slots.Contains(c.Id) && !printed.Contains(c.Id))
             .OrderBy(c => c.Id, StringComparer.Ordinal).ToList();
-        Rest(page, blueprint, "Given in play", [.. rest.Where(c => !ported.Contains(c.Id))],
+        Rest(page, blueprint, "Given in play", rest,
             "Handed over by a boss, a door or an event rather than offered; never in a reward pool.");
-        Rest(page, blueprint, "Ported v2 remnants", [.. rest.Where(c => ported.Contains(c.Id))],
-            "⚠ **Paint these last, or not at all.** They are the demo game's cards, still shipped only because "
-            + "ported events name them; they leave when those events are replaced.");
     }
 
     private static void Rest(

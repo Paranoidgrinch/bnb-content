@@ -18,8 +18,8 @@ public static class EventTemplates
             new EventChoice("open",
             [
                 // The canonical Normal pool on the act's own rarity curve. Until 2026-09-10 this was
-                // RelicGrantSource — the PORTED v2 list — so a chest in the finished game handed out demo
-                // relics. The master is explicit (§1): a Treasure relic reward is a Normal relic, and Shop
+                // RelicGrantSource, which drew from the PORTED v2 list, so a chest in the finished game handed
+                // out demo relics; that source and the list behind it have both been deleted since. The master is explicit (§1): a Treasure relic reward is a Normal relic, and Shop
                 // relics stay shop-exclusive.
                 new OfferRewardRunEffect(
                     new RewardId($"{where}:relic"), pools.NormalRelicOnTheCurve(where), 1)

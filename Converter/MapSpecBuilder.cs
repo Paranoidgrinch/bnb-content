@@ -343,7 +343,7 @@ public static class MapSpecBuilder
                     { Kind = RewardKinds.Card },
             };
             // NO RELIC HERE ANY MORE. Until 2026-09-10 the Elite, Boss and Mimic roles all drew one from
-            // ConversionPools.Relics — the PORTED v2 list, which is what that source has always been — so
+            // ConversionPools.Relics — the PORTED v2 list, since deleted with the rest of the leftovers — so
             // every elite, boss and mimic in Acts I-IV offered a pool of 49 relics of which 47 were demo
             // material and 2 were canonical by id collision. Each of the three now pays from its own place:
             // a boss from its three (PerEncounterRewards), an elite from the one that belongs to it

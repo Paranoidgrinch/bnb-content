@@ -4106,3 +4106,45 @@ status ids separately — a relic sharing an id with the rule it installs is the
 non-canonical relic ids reachable anywhere, Shop 24/24 reachable, Normal 50/50. The checked-in sparring
 snapshot `tombbreakers.json` named four of the deleted relics and is now canonical, which is exactly what a
 snapshot next to the content is for.
+
+---
+
+# THE DEMO GAME LEAVES, AND WHAT IT WAS STILL HOLDING (2026-09-10)
+
+**Twenty-five ported v2 cards, and their twenty-five `_plus` twins, had been in the shipped document since
+the port.** C-5 said why: the ported events still named them, so they had to stay until those events were
+replaced. The events WERE replaced, act by act, in B-1 and B-2 and everything after — and nobody went back to
+the sentence that depended on it. A reason with an expiry date is worth checking before it is quoted.
+
+**What was checked, because "nothing names them" is a claim and not a feeling.** The shipped document, minus
+the card list itself: no pool, shop shelf, event branch, encounter, victory reward, map rule or starting deck
+holds one of the 50 ids. ⚠ The first pass missed a whole surface — a CARD's program lives inside the `Cards`
+section, so a canon card could have named a leftover without showing up in a search that excluded it. Checked
+separately: none does. What the leftovers do name is `duplicate_copy`, `misfiled_paper`, `red_tape` and
+`unsigned_form` — all canon Junk, so the arrow only ever pointed downwards and nothing broke when they left.
+There is no catalogue-wide selector anywhere in the document either: of the 157 card ids never named outside
+the card list, 102 are `+` twins reached through the engine's upgrade suffix (their bases ARE named) and the
+rest are junk and fragments created by name from a card's own program.
+
+**The whole cost was in the tests.** Ten files had borrowed the leftovers as convenient tools — `form_12_b`
+as a 0-cost filing, `approved_for_disposal` as a 12-damage hammer, `compounded_penalty` as a 2-Energy attack.
+★ **A TEST FIXTURE IS CONTENT TOO**: those cards stayed reachable for the suite long after they were
+unreachable for a player, which is exactly why every suite stayed green while the pool was wrong. The
+replacements are canon (`form_of_ill_intent` 3 Paperwork, `secure_misfiling` printed at 0, `cauldron_copy` 9
+damage, `summary_judgment` 16), and the numbers around them moved with them — five assertions, all arithmetic.
+
+⚠ **NOT EVERY SHAPE SURVIVED THE SWAP.** `approved_for_disposal` was a 12-damage WORKING, and the canon
+taxonomy has no such thing: a Working is paper, a Deed is the attack. The Self-Correcting Record's study
+threshold is 10 damage, so the test that proved it corrects "against the card TYPE that hurt it" could only
+be re-armed with a Deed — `correction_working` became `correction_deed`. The passive was always written
+against the canon tags; it was the only card that could cross that threshold as paper, and it was a leftover.
+
+Deleted with them: `CardMapper`, `RelicMapper`, `BabCard`, `BabRelic`, `BabRelicEffect`, `BabData.Cards`,
+`BabData.Relics`, `ConversionPools.Relics` and `RelicGrantSource` — the last of the ported relic faucet that
+the elite-relic arc had already cut off, still compiling with no callers. `EffectMapper` was split out of
+`CardMapper.cs` and stays: enemy intents speak the same effect DSL. The v2 JSON stays on disk under
+`source-data/`, as the ported events' JSON did — it is a snapshot of the original game, not a part of this one.
+
+**MEASURED**: regenerated and compared leaf by leaf against the old document — **2491 leaves removed, every
+one of them under the 50 leftover cards, 0 added, 0 changed**. 363 cards ship, `ART_SLOTS.md` asks for 708
+pictures (229 cards · 210 relics · 269 bodies), and the 25 stale placeholder plates left `assets/art/cards/`.

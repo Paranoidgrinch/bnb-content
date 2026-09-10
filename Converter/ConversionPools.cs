@@ -7,8 +7,7 @@ using static BnbContent.Converter.Relics.RelicAuthoring;
 namespace BnbContent.Converter;
 
 // The shared random pools every mapper draws offers from: the card-reward pool, the transform pool (the same
-// cards), and the event-relic pool (non-boss relics allowed for the bureaucrat), each relic offer bundling
-// its pickup effects (see RelicMapper).
+// cards), and the four pools a shop asks for by name.
 //
 // The reward pool is the FINAL Bureaucrat pool, gated by Act as the design sheet gates it: reaching Act N
 // makes every card gated at N or earlier offerable. Starters and Junk are never offered. Rarity weighting is
@@ -22,8 +21,6 @@ public sealed class ConversionPools
     public required int Act { get; init; }
 
     public required IReadOnlyList<Cards.CardAuthoring.BnbCard> RewardCards { get; init; }
-    public required IReadOnlyList<MappedRelic> Relics { get; init; }
-
     // The four pools a SHOP asks for by name (BnB_Run_Systems_Master §4.2/§4.3). A shop does not draw from
     // "the cards" and "the relics" — it fills three General slots, four Character slots, two Shop-relic slots
     // and two Normal-relic slots, each from its own pool. Kept apart here because the moment they are one bag
@@ -33,7 +30,7 @@ public sealed class ConversionPools
     public required IReadOnlyList<BnbRelic> ShopRelicStock { get; init; }
     public required IReadOnlyList<BnbRelic> NormalRelicStock { get; init; }
 
-    public static ConversionPools Build(BabData data, IReadOnlyList<MappedRelic> relics, int act) => new()
+    public static ConversionPools Build(int act) => new()
     {
         Act = act,
         RewardCards = Cards.FinalCards.RewardPool(act),
@@ -44,28 +41,12 @@ public sealed class ConversionPools
         // out of a shop rather than by a filter that could be forgotten.
         ShopRelicStock = FinalRelics.Pool(Pool.Shop),
         NormalRelicStock = FinalRelics.Pool(Pool.Normal),
-        Relics = relics
-            .Where(r => EligibleForEvents(r, data.Bureaucrat.Id))
-            .ToList(),
     };
-
-    private static bool EligibleForEvents(MappedRelic mapped, string classId)
-    {
-        var source = mapped.Source;
-        return source.Rarity != "boss"
-            && (source.AllowedClasses is null || source.AllowedClasses.Contains(classId));
-    }
 
     // One final relic's grant: the relic, plus whatever it does the moment it is taken. The engine has no
     // per-relic pickup hook, so every place that hands one over carries them — a shelf included.
     public static IReadOnlyList<IRunEffectRequest> Grant(BnbRelic relic) =>
         [new AddRelicByIdRunEffect(new RelicId(relic.Id)), .. relic.Pickup ?? []];
-
-    // One relic offer: grant the relic + its bundled pickup effects.
-    public static RewardOffer RelicOffer(MappedRelic mapped) => new(
-        $"relic-{mapped.Relic.Id}",
-        new IRunEffectRequest[] { new AddRelicByIdRunEffect(new RelicId(mapped.Relic.Id)) }
-            .Concat(mapped.PickupEffects).ToArray());
 
     public static RewardOffer CardOffer(
         Cards.CardAuthoring.BnbCard card, IReadOnlyList<string>? tags = null) => new(
@@ -125,19 +106,6 @@ public sealed class ConversionPools
             new RunPool<RewardOffer>(
                 eligible.Select(c => new RunPool<RewardOffer>.Entry(CardOffer(c, tags), 1)).ToList()),
             count);
-    }
-
-    // Event relic grant: ONE random eligible relic (optionally tag-filtered), auto-taken.
-    public IRewardSource RelicGrantSource(string? tag, string where)
-    {
-        var eligible = tag is null
-            ? Relics
-            : Relics.Where(r => (r.Source.Tags ?? []).Contains(tag)).ToList();
-        if (eligible.Count == 0)
-            throw new ConversionException(where, $"no event-eligible relics{(tag is null ? "" : $" with tag '{tag}'")}");
-        return new PoolRewardSource(
-            new RunPool<RewardOffer>(eligible.Select(r => new RunPool<RewardOffer>.Entry(RelicOffer(r), 1)).ToList()),
-            1);
     }
 
     // ── the act's rarity curve ────────────────────────────────────────────────────────────────────────────

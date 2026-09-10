@@ -11,14 +11,17 @@
   "health": 62,
   "energy": 3,
 
+  // Nineteen CANONICAL cards: file the paperwork, then cash it. They were ported v2 cards until 2026-09-10,
+  // when the 25 demo leftovers left the game — the same regression this file caught for the relics below,
+  // one arc later and one entity kind over.
   "deck": [
-    "administrative_notice", "administrative_notice",
-    "compliance_review", "compliance_review", "compliance_review",
-    "final_reminder", "final_reminder",
-    "permit_denied",
-    "compounded_penalty", "compounded_penalty",
-    "counter_signature", "counter_signature",
-    "temporary_authorization", "temporary_authorization",
+    "form_of_ill_intent", "form_of_ill_intent", "form_of_ill_intent",
+    "cross_filing", "cross_filing",
+    "broom_dispatch", "broom_dispatch",
+    "permit_a38",
+    "errata_furnace", "dead_letter_office",
+    "summary_judgment", "summary_judgment",
+    "inkblot_verdict", "inkblot_verdict",
     "paper_cut", "paper_cut", "paper_cut",
     "strong_binder", "strong_binder"
   ],

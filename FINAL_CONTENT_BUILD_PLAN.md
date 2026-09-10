@@ -21,7 +21,7 @@ then II–IV, so every batch is testable in a live fight the day it is written.
 
 ## Where the content lives
 
-The v2 card DSL (`source-data/cards/*.json` → `CardMapper`) cannot express the final pool
+The v2 card DSL (`source-data/cards/*.json` → the since-deleted `CardMapper`) could not express the final pool
 ("if the target is Ratified, repeat this attack"). The final cards are therefore **hand-authored
 C#** under `Converter/Cards/`, the same way the elites and bosses are hand-authored — the DSL
 path stays only for whatever old data still feeds the demo.

@@ -13,7 +13,7 @@ design docs. Where a claim is a judgement call rather than a measurement, it say
 | | State |
 |---|---|
 | **Combat content** | Act I: 25 standard identities, 10 elites, 5 bosses ✅ · Act II: 25 standards, 9 elites, 5 bosses with full phase structure ✅ |
-| **Cards** | Final pool authored: 4 starters + 4 Junk + 80 Bureaucrat + 50 general ✅ (345 ship — the rest are ported v2 leftovers, see C-5) |
+| **Cards** | Final pool authored: 4 starters + 4 Junk + 80 Bureaucrat + 50 general ✅ (363 ship, all canon — the ported leftovers left at C-5) |
 | **Relics** | Normal 50/50 ✅ · Shop 24/24 ✅ · Event 6/25 ❌ · **Boss 0/30** ❌ |
 | **Events** | 15 shipped for Act I but they are the **ported v2 versions, not the Post-Audit canon** ❌ · Act II: 0/15 ❌ |
 | **Run structure** | **One act only.** The run ends after the Act-I boss. Act II is authored, tested — and unreachable. ❌ |
@@ -94,8 +94,12 @@ them with the events they belong to rather than as a separate pass.
 (RogueDeck-Core @48d0e12) — it can now keep exactly the one card the design names. Small, and it removes a
 documented deviation.
 
-**C-5 · Drop the ported v2 card leftovers.** 345 cards ship; only 138 are canon. The rest survive because the
-ported events still name them. Once B-1 lands, that dependency is gone and the pool can be exactly the canon.
+**C-5 · Drop the ported v2 card leftovers. ✔ DONE 2026-09-10.** The stated reason — "the ported events still
+name them" — had expired without anyone checking: the events were replaced act by act, and the shipped
+document held no reference to any of the 50 definitions (25 cards + 25 `_plus` twins), in no pool, shop,
+event, encounter, reward, starting deck or card program. They could not be dealt. The only thing still using
+them was ten TEST files that had borrowed them as convenient tools; every fixture now names a canon card.
+The document ships 363 cards, all canon, and `CardMapper`, `BabCard` and `BabData.Cards` went with them.
 
 ### D. Run systems
 
@@ -171,7 +175,7 @@ out of scope for "mechanically complete".
 4. **B-1 / B-2 / C-2** — the 30 events with their event relics. The largest single block.
 5. **D-1 / D-2 / D-3** — campfire Smith, per-act rest, shop audit.
 6. **G-1 / G-3 / G-4 / G-5 / G-6** — the Godot presentation pass.
-7. **C-4 / C-5** — the two cleanups, once nothing depends on the leftovers.
+7. **C-4 / ~~C-5~~** — the cleanups, once nothing depends on the leftovers. C-5 is done (2026-09-10).
 
 Steps 1–3 are the ones that turn "Act II exists" into "Act II is played".
 

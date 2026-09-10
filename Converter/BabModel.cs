@@ -16,18 +16,6 @@ public sealed record BabClass(
     IReadOnlyList<string> StartingDeck,
     IReadOnlyDictionary<string, int>? StartingResources);
 
-public sealed record BabCard(
-    string Id,
-    string Name,
-    [property: JsonPropertyName("class")] string? CardClass,
-    string Type,
-    int Cost,
-    string? Rarity,
-    string? Text,
-    IReadOnlyList<BabEffect>? Effects,
-    IReadOnlyList<string>? Tags,
-    string? UpgradesTo);
-
 public sealed record BabEffect(
     string Type,
     string? Target,
@@ -138,25 +126,6 @@ public sealed record BabEncounter(
 // A status served on ONE of an encounter's bodies at the first bell. `Index` is the position in the
 // encounter's own Enemies list, not an enemy id, because an encounter may field the same identity twice.
 public sealed record BabEncounterEnemyStatus(int Index, string Status, int? Stacks);
-
-public sealed record BabRelic(
-    string Id,
-    string Name,
-    string? Rarity,
-    string? Description,
-    [property: JsonPropertyName("class")] string? RelicClass,
-    IReadOnlyList<string>? AllowedClasses,
-    IReadOnlyList<BabRelicEffect>? Effects,
-    IReadOnlyList<string>? Tags);
-
-public sealed record BabRelicEffect(
-    string Type,
-    int? Amount,
-    string? Status,
-    string? CardId,
-    string? Destination,
-    int? Copies,
-    double? Factor);
 
 public sealed record BabActManifest(
     string Id,

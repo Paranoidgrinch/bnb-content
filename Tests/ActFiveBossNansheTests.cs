@@ -15,7 +15,7 @@ namespace BnbContent.Tests;
 public class ActFiveBossNansheTests
 {
     private const string Cut = "paper_cut";              // Deed, 1 Energy: deal 6
-    private const string Penalty = "compounded_penalty"; // Attack, 2 Energy
+    private const string Penalty = "summary_judgment";       // Deed, 2 Energy
 
     // A day on which she does nothing but stand there, so a test about one rule is about that rule.
     private const string Quiet = "the_quiet_measure";
