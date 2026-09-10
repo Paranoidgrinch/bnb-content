@@ -14,6 +14,9 @@ built and tested against.
   through the engine's real host path (`RunPlayback.BuildContent`).
 - `source-data/` — snapshot of the original game's `data/` directory.
 - `ADAPTATIONS.md` — every place the port deviates from the original, and why.
+- `ART_SLOTS.md` — **generated**: one row per picture the frontend will look for (254 cards + 210 relics),
+  with the design canon's number and object line beside every relic. Regenerate it with `--art-slots`;
+  a test fails if it has gone stale.
 
 ## Building
 Expects a sibling checkout of [RogueDeck-Core](../RogueDeck-Core) (relative `ProjectReference`).
@@ -30,6 +33,7 @@ dotnet test
 dotnet run --project Converter -- --playtest 8      # walk 8 whole runs and report what they met
 dotnet run --project Converter -- --walk 20260721   # walk exactly ONE run — the one a report calls "seed …"
 dotnet run --project Converter -- --maps 3          # lay out every act's map and check its shape
+dotnet run --project Converter -- --art-slots ART_SLOTS.md   # rewrite the picture list (see above)
 ```
 
 ### The sparring ring — one fight, a stated loadout
