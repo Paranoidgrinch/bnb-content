@@ -87,11 +87,14 @@ public static partial class ArtSlots
         - **Relic art** will be drawn (D4) as a **small square** in the right-hand strip, roughly 34 × 34
           points, larger on hover. It has to survive being that small: one object, a clear silhouette, no fine
           text. Square source, 512 × 512 or more.
-        - **A body** stands in its column in the arena, in a window as wide as that column and **150 points
-          tall**, its aspect KEPT (never cropped, never squashed): a portrait ends up about 110 points wide
-          with the health bar directly under its feet. Draw it portrait on transparency — 600 × 900 or more —
-          and let the mipmaps reduce it. A crowd of four narrows every column to about 110 points, so the
-          silhouette has to read at half the room a duel gives it. **Draw the body facing LEFT**, towards the
+        - **A body** stands in its column in the arena, in a window as wide as that column and **90 to 150
+          points tall**, its aspect KEPT (never cropped, never squashed): a portrait ends up about 110 points
+          wide with the health bar directly under its feet. Draw it portrait on transparency — 600 × 900 or
+          more — and let the mipmaps reduce it. A crowd of four narrows every column to about 110 points, so
+          the silhouette has to read at half the room a duel gives it. ⚠ **And it must read at 90**: the
+          figure is the part of a column that YIELDS when the arena is short (an Act V fight spends 104 points
+          on its divine rule), because what a body is about to do has to be legible without scrolling and a
+          picture of it does not. **Draw the body facing LEFT**, towards the
           player, who stands on the left of the arena: a picture is never mirrored by the game (a flipped body
           wears its sash on the wrong side), so the direction it faces is the direction it was drawn in.
         - **A character** is the same picture as a body and drawn the same way, on transparency, portrait — but
