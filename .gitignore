@@ -1,3 +1,7 @@
 bin/
 obj/
 *.user
+
+# What a FAILED golden-map run leaves behind to be diffed against the blessed file
+# (MapGoldenTests writes it beside the golden on purpose). It is evidence, not content.
+Tests/Golden/*.actual.txt
