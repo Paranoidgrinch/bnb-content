@@ -2,16 +2,37 @@ using RogueDeck.Run;
 
 namespace BnbContent.Converter;
 
-// What one act's MAP is like, as opposed to what its fights are: how much of each thing a route through it must
-// hold, how much it may hold, which flavours its columns come in, and how its own stops read. The numbers are
-// the audit's (docs/bnb-act-map-specs.md); the lanes and the room texts are this act's own voice.
+// What one act's MAP is like, as opposed to what its fights are: how long it runs, how much of each thing it
+// holds, where in its depth each of those may stand, what a single walk through it must ask of the player,
+// which flavours its columns come in, and how its own stops read. The lanes and the room texts are the act's
+// own voice; the numbers are measured (docs/strategic-map-generator-plan.md §1, §6).
+//
+// TWO GENERATORS READ THIS RECORD AND THEY READ DIFFERENT HALVES OF IT (plan §4b). v0.0.0 — the rule-based
+// generator, which every run has used so far and which still ships — reads the per-path table and the free-row
+// count, and nothing in that half moves any more. v0.0.1 — the strategic generator — reads the act's length,
+// its budgets, its depth bands, its path pressure and its fork threshold. The lanes, the weights, the depth
+// gates, the boss count and the rooms are read by BOTH, because they are facts about the act rather than about
+// a way of laying it out.
 //
 // Everything else — gold per role, rest percentage, shop prices — is deliberately NOT here: the design leaves
 // those to the balance pass (BnB_Run_Systems_Master.md), and inventing per-act numbers now would pre-empt it.
 internal sealed record ActRules
 {
+    // ── What v0.0.0 reads (frozen) ─────────────────────────────────────────────────
+    //
+    // The per-path table the audit wrote, and the ONLY thing it still configures: the rule-based generator,
+    // which ships beside the strategic one so a playtester can walk the same act both ways (plan §4b). These
+    // numbers are not the design any more — the budgets below are — but a baseline that quietly changed would
+    // be no baseline at all, so nothing here moves, and `Tests/Golden/map-v0.0.0.txt` is what says so.
     public required IReadOnlyDictionary<MapNodeKind, int> PerPathMinimums { get; init; }
     public required IReadOnlyDictionary<MapNodeKind, int> PerPathMaximums { get; init; }
+
+    // The BACKBONE v0.0.0 grows its guarantee rows onto, as opposed to the act's length. Until now this was
+    // computed (`Math.Max(5, steps_before_boss − promises.Sum())`) and the floor won for every act in the game
+    // — the subtraction has been negative since the per-path table was authored — so the formula described
+    // nothing and hid what it produced. It is five, written down, and it stays five.
+    public int RuleBasedFreeRows { get; init; } = 5;
+
     public required IReadOnlyList<MapLaneProfile> Lanes { get; init; }
     public required IReadOnlyDictionary<MapNodeKind, int> KindWeights { get; init; }
 
@@ -20,6 +41,40 @@ internal sealed record ActRules
     // the answer is the gate order — which put a shop in the opening row (where nobody has any gold) and an
     // elite in the fourth (with the starting deck). Kinds not named here may stand anywhere.
     public required IReadOnlyDictionary<MapNodeKind, int> EarliestDepthPercent { get; init; }
+
+    // ── What v0.0.1 reads ──────────────────────────────────────────────────────────
+    //
+    // The same act, said the other way round. v0.0.0 is told what EVERY ROUTE must hold and lays full rows to
+    // guarantee it; the strategic generator is told what the ACT holds, where in its depth, and how much a
+    // single walk through it must ask of the player — and then the routes are allowed to differ, which is the
+    // entire point of the rework (docs/strategic-map-generator-plan.md §1.2).
+
+    // EVERY row the act has, its boss rooms included: the number of rooms a route actually walks. The four acts
+    // are authored at the lengths they already have (23 / 24 / 25 / 35 — plan §3, "aktlänge beibehalten"), so
+    // the rework changes the SHAPE of an act and not its size, and a playtest measures one variable.
+    public int Rows { get; init; }
+
+    public StrategicTopologyRules Topology { get; init; } = new();
+
+    // HOW MUCH OF EACH THING THE WHOLE ACT HOLDS. `Target` is what the act aims at, `Min` what it may not fall
+    // below, `Max` what it may not exceed; Combat is deliberately absent, because the filler is whatever is
+    // left over once everything that was asked for has been placed.
+    public IReadOnlyDictionary<MapNodeKind, RoomBudget> RoomBudgets { get; init; } =
+        new Dictionary<MapNodeKind, RoomBudget>();
+
+    // …AND WHERE IN THE ACT. Four quarters, and what each may and must hold: the budgets alone would happily
+    // put every elite in the last third and every campfire in the first, which is an act with a shape nobody
+    // authored. A band never relaxes a depth gate — it only narrows.
+    public IReadOnlyList<DepthBandBudget> DepthBands { get; init; } = [];
+
+    // WHAT ONE ROUTE MUST ASK OF THE PLAYER, in points (Combat 10, MultiCombat 15, Elite 25 — the engine's
+    // default table is BnB's). This is what replaces the per-path minimums: not "every route holds two elites"
+    // but "every route is worth this much trouble, however it comes by it".
+    public PathPressureRules PathPressure { get; init; } = new();
+
+    // WHETHER THE ACT'S FORKS ARE CHOICES — the measurement the whole rework exists for (plan S9: 72–80 % of
+    // v0.0.0's forks lead into the same future twice).
+    public ForkQualityRules ForkQuality { get; init; } = new();
 
     // The act's own quiet rooms, in its own voice. NULL for an act that has none: Act V is three bosses back
     // to back with no campfire, no jar and no shop between them, and an empty waiting-room text would be a
@@ -33,6 +88,27 @@ internal sealed record ActRules
     // — the waiting room, the jars, the act's doors, the shop, the spoils — is a thing such an act does not
     // have, so it is built by its own path rather than by giving each of those an "unless act five" clause.
     public bool IsGauntlet => Rooms is null;
+
+    // The act's budgets, one line each: how few, how many, how many at most. Written as a helper because six
+    // `new RoomBudget { … }` literals per act would bury the only thing that differs between the acts — the
+    // numbers — under punctuation.
+    private static Dictionary<MapNodeKind, RoomBudget> Budgets(
+        params (MapNodeKind Kind, int Min, int Target, int Max)[] budgets) =>
+        budgets.ToDictionary(b => b.Kind, b => new RoomBudget { Min = b.Min, Target = b.Target, Max = b.Max });
+
+    // The act in four quarters, each said the same way: `(kind, at least, at most)`. A quarter that asks for a
+    // minimum also TARGETS it — a band aims at exactly what it promises and no further, because wanting more of
+    // a role in one quarter than the quarter promises is what the act-wide target is for.
+    private static IReadOnlyList<DepthBandBudget> Quarters(
+        params (MapNodeKind Kind, int Min, int Max)[][] quarters) =>
+        [.. quarters.Select((band, index) => new DepthBandBudget
+        {
+            StartPercent = index * 25,
+            EndPercent = (index + 1) * 25,
+            Budgets = band.ToDictionary(
+                rule => rule.Kind,
+                rule => new RoomBudget { Min = rule.Min, Target = rule.Min, Max = rule.Max }),
+        })];
 
     public static ActRules For(BabActManifest act) => act.Act switch
     {
@@ -117,6 +193,35 @@ internal sealed record ActRules
             [MapNodeKind.MultiCombat] = 20,
             [MapNodeKind.Elite] = 35,
         },
+        // The act is twenty-three rooms long and holds this much of each thing — the totals §6 of the plan
+        // derived from what v0.0.0's twenty-three rows actually contain, not from multiplying the per-path
+        // table (routes share rooms, so that multiplication means nothing). Combat is absent on purpose: it is
+        // the filler, and what it amounts to is whatever the other budgets leave.
+        Rows = 23,
+        RoomBudgets = Budgets(
+            (MapNodeKind.Elite, 3, 5, 8),
+            (MapNodeKind.MultiCombat, 2, 4, 7),
+            (MapNodeKind.Event, 8, 11, 15),
+            (MapNodeKind.Rest, 4, 6, 9),
+            (MapNodeKind.Treasure, 4, 6, 9),
+            (MapNodeKind.Shop, 4, 5, 7)),
+        // A campfire in every quarter, so no stretch of the city is unsurvivable; the elites spread out rather
+        // than queue up at the end; the crowded fight stays rare while the deck is still a handful of cards.
+        // The opening quarter budgets no elite at all because the act already gates one out of it (35 %) — a
+        // band that repeats a gate is a sentence about nothing.
+        DepthBands = Quarters(
+            [(MapNodeKind.Rest, 1, 2), (MapNodeKind.MultiCombat, 0, 1)],
+            [(MapNodeKind.Rest, 1, 3), (MapNodeKind.Elite, 0, 2), (MapNodeKind.Shop, 1, 3)],
+            [(MapNodeKind.Rest, 1, 3), (MapNodeKind.Elite, 0, 3), (MapNodeKind.Shop, 1, 3)],
+            [(MapNodeKind.Rest, 1, 3), (MapNodeKind.Elite, 0, 3), (MapNodeKind.Treasure, 1, 4)]),
+        // THE FLOOR IS v0.0.0'S OWN THINNEST ROUTE, measured over 100 seeds (plan S8: Act I 120..150). The
+        // strategic act may lay its trouble out differently, but no walk through it may ask less than the
+        // easiest walk through the old one — which is precisely what the retired per-path minimums bought.
+        // The ceiling is a remark, not a promise: v0.0.0's richest route measured 190.
+        PathPressure = new PathPressureRules { Minimum = 120, Maximum = 200 },
+        // v0.0.0's forks average a contrast of 10 and three quarters of them are hollow. Thirty is a fork whose
+        // two ways differ by an elite, or by a campfire against a shop — a question rather than a formality.
+        ForkQuality = new ForkQualityRules { MinimumContrast = 30 },
         Rooms = new ActRooms
         {
             RestText = "The waiting room. The chairs are terrible, but nobody can reach you here.",
@@ -198,6 +303,23 @@ internal sealed record ActRules
             [MapNodeKind.MultiCombat] = 12,
             [MapNodeKind.Elite] = 22,
         },
+        // Twenty-four rooms, and more of them dangerous than the city's: an elite more, a crowded fight more,
+        // one treasure fewer. v0.0.0's thinnest route through the archives measured 160.
+        Rows = 24,
+        RoomBudgets = Budgets(
+            (MapNodeKind.Elite, 4, 6, 9),
+            (MapNodeKind.MultiCombat, 3, 5, 8),
+            (MapNodeKind.Event, 8, 11, 15),
+            (MapNodeKind.Rest, 4, 6, 9),
+            (MapNodeKind.Treasure, 3, 5, 8),
+            (MapNodeKind.Shop, 4, 5, 7)),
+        DepthBands = Quarters(
+            [(MapNodeKind.Rest, 1, 2), (MapNodeKind.MultiCombat, 0, 2)],
+            [(MapNodeKind.Rest, 1, 3), (MapNodeKind.Elite, 0, 3), (MapNodeKind.Shop, 1, 3)],
+            [(MapNodeKind.Rest, 1, 3), (MapNodeKind.Elite, 0, 3), (MapNodeKind.Shop, 1, 3)],
+            [(MapNodeKind.Rest, 1, 3), (MapNodeKind.Elite, 0, 3), (MapNodeKind.Treasure, 1, 4)]),
+        PathPressure = new PathPressureRules { Minimum = 160, Maximum = 240 },
+        ForkQuality = new ForkQualityRules { MinimumContrast = 30 },
         Rooms = new ActRooms
         {
             RestText = "A reading alcove behind the returns desk. The lamp works, and the shelf above you has not "
@@ -283,6 +405,25 @@ internal sealed record ActRules
             [MapNodeKind.MultiCombat] = 15,
             [MapNodeKind.Elite] = 18,
         },
+        // Twenty-five rooms of open country, and the road's own bargain: more elites than the archives and
+        // less of everything that keeps you. v0.0.0's thinnest route measured 185.
+        Rows = 25,
+        RoomBudgets = Budgets(
+            (MapNodeKind.Elite, 5, 7, 10),
+            (MapNodeKind.MultiCombat, 3, 5, 8),
+            (MapNodeKind.Event, 9, 12, 16),
+            (MapNodeKind.Rest, 4, 6, 9),
+            (MapNodeKind.Treasure, 3, 5, 8),
+            (MapNodeKind.Shop, 4, 5, 8)),
+        // The road's elites stand from a fifth of the way in, so its opening quarter is the one quarter in the
+        // game that budgets an elite of its own — one, and only one.
+        DepthBands = Quarters(
+            [(MapNodeKind.Rest, 1, 2), (MapNodeKind.MultiCombat, 0, 2), (MapNodeKind.Elite, 0, 1)],
+            [(MapNodeKind.Rest, 1, 3), (MapNodeKind.Elite, 0, 3), (MapNodeKind.Shop, 1, 3)],
+            [(MapNodeKind.Rest, 1, 3), (MapNodeKind.Elite, 0, 3), (MapNodeKind.Shop, 1, 3)],
+            [(MapNodeKind.Rest, 1, 3), (MapNodeKind.Elite, 0, 3), (MapNodeKind.Treasure, 1, 4)]),
+        PathPressure = new PathPressureRules { Minimum = 185, Maximum = 270 },
+        ForkQuality = new ForkQualityRules { MinimumContrast = 30 },
         Rooms = new ActRooms
         {
             RestText = "A hollow out of the wind, with a stone somebody has sat on often enough to wear it. "
@@ -372,6 +513,25 @@ internal sealed record ActRules
             [MapNodeKind.MultiCombat] = 12,
             [MapNodeKind.Elite] = 18,
         },
+        // Half again as long as the acts before it — thirty-five rooms — and everything in it scales with the
+        // length, comforts included: an act of Act IV's size on Act III's supplies is not harder, only meaner
+        // (the same argument the per-path table made, now made about the act instead of about a route).
+        // v0.0.0's thinnest route measured 265.
+        Rows = 35,
+        RoomBudgets = Budgets(
+            (MapNodeKind.Elite, 7, 10, 14),
+            (MapNodeKind.MultiCombat, 5, 8, 12),
+            (MapNodeKind.Event, 12, 16, 21),
+            (MapNodeKind.Rest, 7, 9, 12),
+            (MapNodeKind.Treasure, 5, 7, 10),
+            (MapNodeKind.Shop, 5, 7, 10)),
+        DepthBands = Quarters(
+            [(MapNodeKind.Rest, 1, 3), (MapNodeKind.MultiCombat, 0, 3), (MapNodeKind.Elite, 0, 2)],
+            [(MapNodeKind.Rest, 2, 4), (MapNodeKind.Elite, 0, 4), (MapNodeKind.Shop, 1, 4)],
+            [(MapNodeKind.Rest, 2, 4), (MapNodeKind.Elite, 0, 4), (MapNodeKind.Shop, 1, 4)],
+            [(MapNodeKind.Rest, 2, 4), (MapNodeKind.Elite, 0, 4), (MapNodeKind.Treasure, 2, 5)]),
+        PathPressure = new PathPressureRules { Minimum = 265, Maximum = 360 },
+        ForkQuality = new ForkQualityRules { MinimumContrast = 30 },
         Rooms = new ActRooms
         {
             RestText = "A niche off the ramp with a water jar in it, left for the workmen and never collected. "
@@ -396,6 +556,10 @@ internal sealed record ActRules
     private static readonly ActRules DivineLedger = new()
     {
         BossRooms = 3,
+        // The act's length, and the whole of it. No budgets, no bands, no path pressure and no forks: a gauntlet
+        // has not one chosen room, so there is nothing for the strategic generator to allocate and MapSpecBuilder
+        // builds it no spec at all — a run on v0.0.1 walks THIS act on v0.0.0, because the two agree about it.
+        Rows = 3,
         PerPathMinimums = new Dictionary<MapNodeKind, int>(),
         PerPathMaximums = new Dictionary<MapNodeKind, int>(),
         Lanes = [],

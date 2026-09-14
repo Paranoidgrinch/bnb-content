@@ -60,7 +60,7 @@
     "data/relics/witch_clerk_relics.json"
   ],
   "map": {
-    "steps_before_boss": 9,
+    "steps_before_boss": 23,
     "width": 4,
     "layout": "staged_pilgrimage",
     "max_events": 3,

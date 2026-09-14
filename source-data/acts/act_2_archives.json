@@ -63,7 +63,7 @@
     "data/relics/act_2_class_relics.json"
   ],
   "map": {
-    "steps_before_boss": 12,
+    "steps_before_boss": 24,
     "width": 4
   },
   "treasure": {

@@ -69,7 +69,7 @@
     "data/relics/act_4_licensing_labyrinth_relics.json"
   ],
   "map": {
-    "steps_before_boss": 17,
+    "steps_before_boss": 35,
     "width": 5,
     "first_elite_depth": 3,
     "elite_weight_multiplier": 1.5

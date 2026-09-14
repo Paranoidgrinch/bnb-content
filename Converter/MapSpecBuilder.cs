@@ -12,6 +12,12 @@ namespace BnbContent.Converter;
 public sealed class ActMap
 {
     public required MapGenerationSpec Spec { get; init; }
+
+    // THE SAME ACT, AS v0.0.1 READS IT (plan §4b): its length, its budgets, its depth bands, its path pressure
+    // and its fork threshold. Additive — the spec above is untouched — because both generators ship and a run
+    // remembers which one laid its maps out. NULL for the gauntlet, which has no chosen room to allocate; a run
+    // on v0.0.1 therefore walks Act V on v0.0.0, and the two agree about that act to the room.
+    public StrategicActSpec? Strategic { get; init; }
     public required Dictionary<string, EventScript> Events { get; init; }
     public required Dictionary<string, ShopDefinition> Shops { get; init; }
 }
@@ -23,15 +29,6 @@ public static class MapSpecBuilder
     public static string ShopId(BabActManifest act) => $"{Slug(act)}-shop";
     public static string RestEventId(BabActManifest act) => $"rest:{Slug(act)}-waiting-room";
     public static string TreasureId(BabActManifest act, int index) => $"treasure:{Slug(act)}-{index}";
-
-    // The rows the act keeps for itself, once its per-path promises have taken theirs. The floor is not a
-    // taste: every promise is a full row EVERY route crosses, so the free rows are the only ones where two
-    // routes can hold different kinds of room, and below five the fightiest and the quietest way through the
-    // city stop differing at all (EndToEndSmokeTests.The_routes_through_the_act_differ…).
-    private const int MinimumFreeRows = 5;
-
-    private static int FreeRows(BabActManifest act, ActRules rules) =>
-        Math.Max(MinimumFreeRows, act.Map.StepsBeforeBoss - rules.PerPathMinimums.Values.Sum());
 
     private static string Slug(BabActManifest act)
     {
@@ -63,9 +60,11 @@ public static class MapSpecBuilder
             [RestEventId(act)] = EventTemplates.Rest(act.WaitingRoom?.HealPercent ?? 25, rules.Rooms!),
         };
 
-        // One treasure event per treasure a path can hold, so the pool can hand out distinct ones.
+        // One treasure event per jar the ACT can hold, so the pool can hand out distinct ones. It used to be
+        // sized off the per-path ceiling, which is a statement about a route and was only ever an act-wide
+        // number by accident; the budget says how many jars the act has, which is the question being asked.
         var treasureIds = new List<string>();
-        for (var i = 1; i <= rules.PerPathMaximums[MapNodeKind.Treasure] + 1; i++)
+        for (var i = 1; i <= rules.RoomBudgets[MapNodeKind.Treasure].Max; i++)
         {
             var id = TreasureId(act, i);
             treasureIds.Add(id);
@@ -80,16 +79,13 @@ public static class MapSpecBuilder
         var byRole = PoolsByRole(data, act, rules);
         var spec = new MapGenerationSpec
         {
-            // How many FREE rows the act gets on top of its promises.
-            //
-            // Two prescriptions disagree here and the newer one wins. The audit's per-path table
-            // (docs/bnb-act-map-specs.md) already fixes an act's length: every promise becomes a full row every
-            // route crosses, so Act I's nineteen promises ARE nineteen rooms. The manifest's `steps_before_boss`
-            // is the ported v2 number from a map model that had no such promises, and adding it on top made a
-            // nine-stage act twenty-eight rooms long. So it counts toward the promises rather than after them,
-            // and what is left over (never less than a few, or no route could differ from another) is the part
-            // of the act the player's chosen lane actually decides.
-            Rows = FreeRows(act, rules),
+            // How many FREE rows the act gets on top of its promises — v0.0.0's backbone, and not the act's
+            // length: every per-path promise becomes a full row every route crosses, so Act I's nineteen
+            // promises ARE nineteen rooms and these five are the rest. It used to be computed from the
+            // manifest's `steps_before_boss`, and the computation's floor won for every act in the game, which
+            // is why `steps_before_boss` now states the act's real length instead and this number is written
+            // down where a reader can see it (ActRules.RuleBasedFreeRows).
+            Rows = rules.RuleBasedFreeRows,
             MinWidth = 2,
             MaxWidth = 4,
             PerPathMinimums = rules.PerPathMinimums,
@@ -144,6 +140,7 @@ public static class MapSpecBuilder
         return new ActMap
         {
             Spec = spec,
+            Strategic = Strategic(rules),
             Events = events,
             Shops = new Dictionary<string, ShopDefinition>
             {
@@ -151,6 +148,33 @@ public static class MapSpecBuilder
             },
         };
     }
+
+    // THE ACT AS v0.0.1 READS IT. Everything here is a fact about the act — how long it runs, what it holds,
+    // where, and what it asks — and nothing is about content: which fight stands in a Combat room and which
+    // door in an Event one is still the business of the spec above, which the strategic generator is handed
+    // alongside this one when it realizes its rooms (StrategicMapRealizer.Realize).
+    //
+    // The three things both halves share are shared rather than copied: the lanes, the act's overall weights
+    // and its depth gates are the same authored tables v0.0.0 is given, because an elite that may not stand in
+    // the first third of the city may not stand there whichever generator laid the city out.
+    private static StrategicActSpec Strategic(ActRules rules) => new()
+    {
+        Rows = rules.Rows,
+        BossRooms = rules.BossRooms,
+        MinWidth = 2,
+        MaxWidth = 4,
+        Topology = rules.Topology,
+        LaneProfiles = [.. rules.Lanes],
+        Rooms = new StrategicRoomSpec
+        {
+            KindWeights = rules.KindWeights,
+            RoomBudgets = rules.RoomBudgets,
+            DepthBands = rules.DepthBands,
+            RoleMinimumDepthPercent = rules.EarliestDepthPercent,
+        },
+        PathPressure = rules.PathPressure,
+        ForkQuality = rules.ForkQuality,
+    };
 
     // AN ACT THAT IS NOTHING BUT ITS BOSSES. Everything the method above assembles — the waiting room, the
     // jars, the act's doors, its shop, and the spoils each fight pays — is a thing the Divine Ledger does not
