@@ -22,6 +22,7 @@ var seed = 20260717;
 var playtest = 0;
 var walk = 0;
 var maps = 0;
+string? generator = null;
 string? artSlots = null;
 string? fightFile = null;
 string? fightEnemy = null;
@@ -41,6 +42,9 @@ for (var i = 0; i < args.Length - 1; i++)
         case "--seed": seed = int.Parse(args[i + 1]); break;
         case "--playtest": playtest = int.Parse(args[i + 1]); break;
         case "--walk": walk = int.Parse(args[i + 1]); break;
+        // Which map generator the walked runs are laid out by: "v0.0.0" (rule-based, the default) or "v0.0.1"
+        // (strategic). Both ship, and a walk that does not say which one it used is a walk nobody can repeat.
+        case "--generator": generator = args[i + 1]; break;
         case "--maps": maps = int.Parse(args[i + 1]); break;
         case "--art-slots": artSlots = args[i + 1]; break;
         case "--fight": fightFile = args[i + 1]; break;
@@ -85,9 +89,9 @@ try
     if (maps > 0)
         return MapStats(blueprint, seed, maps);
     if (walk != 0)
-        return Playtest(blueprint, seed, 1, walk);
+        return Playtest(blueprint, seed, 1, generator, walk);
     if (playtest > 0)
-        return Playtest(blueprint, seed, playtest);
+        return Playtest(blueprint, seed, playtest, generator);
 
     var problems = RunDocumentValidator.ValidateForExport(blueprint).ToList();
     if (problems.Count > 0)
@@ -166,7 +170,7 @@ static int MapStats(RunBlueprint blueprint, int seed, int runs)
 
 // Walk whole runs and print what each one met, act by act. A walk that errors, loops or never reaches the last
 // act is a bug in the game, not in the walker — the report says which room it happened in.
-static int Playtest(RunBlueprint blueprint, int seed, int runs, int? onlyWalk = null)
+static int Playtest(RunBlueprint blueprint, int seed, int runs, string? generator, int? onlyWalk = null)
 {
     // Through the exported document, not the in-memory one: what Godot loads is what gets walked.
     var options = RunJson.CreateOptions(indented: false);
@@ -177,14 +181,18 @@ static int Playtest(RunBlueprint blueprint, int seed, int runs, int? onlyWalk = 
     // Which GAME is being walked, said once. The walk seeds run from the same number, so a walk reported as
     // "seed 20260909" is not reproducible on its own: --seed 20260909 builds a different game and walks it
     // once. To get that walk back, build the same game and name the walk: --walk 20260909.
+    // The generator is named on every walk, always — from the moment two of them ship, a walk that does not
+    // say which one laid its maps out is a report about an unknown act (plan §4b).
+    var laidOutBy = MapGenerators.Name(generator);
     Console.WriteLine(onlyWalk is { } one
-        ? $"walking run {one} of the game built with seed {seed}"
-        : $"walking {runs} run(s) of the game built with seed {seed}");
+        ? $"walking run {one} of the game built with seed {seed}, maps by {laidOutBy}"
+        : $"walking {runs} run(s) of the game built with seed {seed}, maps by {laidOutBy}");
 
     for (var i = 0; i < runs; i++)
     {
         var walkSeed = onlyWalk ?? seed + i;
-        var report = RunWalker.Walk(tester, walkSeed, saveEvery: 5, progress: Console.WriteLine);
+        var report = RunWalker.Walk(tester, walkSeed, saveEvery: 5, progress: Console.WriteLine,
+            mapGenerator: laidOutBy);
         var acts = shipped.Acts?.Count ?? 1;
         var reachedTheEnd = report.Result == RunResult.Victory;
         var ok = report.Error is null && report.Notes.Count == 0 && reachedTheEnd;

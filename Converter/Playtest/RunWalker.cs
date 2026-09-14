@@ -69,9 +69,12 @@ public static class RunWalker
         }
     }
 
+    // `mapGenerator` is MapGenerators.RuleBased or .Strategic, and null means the run's own default, which is
+    // the rule-based one. It is only passed at the START: a save carries the generator it was laid out with, so
+    // the resume below is already walking the right maps without being told (plan §4b).
     public static Report Walk(
         RunBlueprint blueprint, int seed, int stepBudget = 30000, int saveEvery = 0,
-        Action<string>? progress = null)
+        Action<string>? progress = null, string? mapGenerator = null)
     {
         ArgumentNullException.ThrowIfNull(blueprint);
         var rng = new Random(seed);
@@ -81,7 +84,7 @@ public static class RunWalker
         var steps = 0;
 
         var play = new RunPlayback(() => { });
-        play.Start(blueprint, seed, interactive: true);
+        play.Start(blueprint, seed, interactive: true, mapGenerator: mapGenerator);
         using var _ = play;
         if (play.Error is { } startError)
             return new Report(seed, RunResult.Ongoing, startError, stops, notes, steps);

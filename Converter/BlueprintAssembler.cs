@@ -86,8 +86,15 @@ public static class BlueprintAssembler
             // The first act's rules stay on the blueprint as well: they are the fallback for anything that asks
             // a document for "the" map (and what a one-act reader sees), while Acts below is what a run walks.
             MapGeneration = maps[0].Map.Spec,
+            // …and its strategic twin beside it, for the same reason and with the same reach: a document that
+            // carries only one of the two would offer a generator choice it cannot honour (plan §2.3 — the
+            // switch is a property of the DOCUMENT, not an argument the caller picks).
+            StrategicMapGeneration = maps[0].Map.Strategic,
             Acts = maps
-                .Select(m => new RunAct(m.Act.Id, m.Map.Spec, NameKey: m.Act.Name))
+                .Select(m => new RunAct(m.Act.Id, m.Map.Spec, NameKey: m.Act.Name)
+                {
+                    StrategicMapGeneration = m.Map.Strategic,
+                })
                 .ToList(),
             Statuses =
             [
