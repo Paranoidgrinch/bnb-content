@@ -170,12 +170,52 @@ public class ActSeamTests
 
     // ── What an act OFFERS (A-3 … A-6) ─────────────────────────────────────────────
 
-    // The audit's per-path table (docs/bnb-act-map-specs.md): the archives ask for two multi-enemy fights and
-    // two elites where the city asks for one of each, and guarantee one treasure instead of two.
+    // EACH ACT ASKS MORE THAN THE ONE BEFORE IT — said about the ACT now, not about a route.
+    //
+    // The audit's per-path table used to say this ("the archives ask for two multi-enemy fights and two elites
+    // where the city asks for one of each") and it is being retired: promising every route the same two elites
+    // is what made every route the same walk (plan §1.2). The same design intent is now three sentences about
+    // the act — it runs longer, it holds more trouble, and no walk through it is worth less than a walk through
+    // the act before — and none of the three says what any particular route must contain.
     [Fact]
-    public void Act_two_asks_more_of_a_route_than_act_one()
+    public void Each_act_asks_more_of_the_player_than_the_one_before_it()
     {
-        var city = Game.Acts![0].MapGeneration!;
+        var acts = Game.Acts!.Take(4).Select(act => act.StrategicMapGeneration!).ToList();
+        int Holds(StrategicActSpec spec, MapNodeKind kind) => spec.Rooms.RoomBudgets[kind].Target;
+
+        for (var index = 1; index < acts.Count; index++)
+        {
+            var (before, after) = (acts[index - 1], acts[index]);
+            Assert.True(after.Rows > before.Rows,
+                $"act {index + 1} runs {after.Rows} rooms against act {index}'s {before.Rows}");
+            Assert.True(after.PathPressure.Minimum > before.PathPressure.Minimum,
+                $"act {index + 1} promises {after.PathPressure.Minimum} points a route against act {index}'s "
+                + $"{before.PathPressure.Minimum}");
+            Assert.True(Holds(after, MapNodeKind.Elite) > Holds(before, MapNodeKind.Elite),
+                $"act {index + 1} holds {Holds(after, MapNodeKind.Elite)} elites against act {index}'s "
+                + $"{Holds(before, MapNodeKind.Elite)}");
+            Assert.True(Holds(after, MapNodeKind.MultiCombat) >= Holds(before, MapNodeKind.MultiCombat),
+                $"act {index + 1} holds fewer crowded fights than act {index}");
+            // …and each act is its own place: three ways across, and never the act before's three.
+            Assert.NotEqual(
+                before.LaneProfiles.Select(lane => lane.Name).ToList(),
+                after.LaneProfiles.Select(lane => lane.Name).ToList());
+        }
+
+        // …while what an act KEEPS goes the other way once you leave the city: the archives hold one jar fewer
+        // than the city and the road holds no more than the archives. Comfort is what the acts take away.
+        Assert.True(Holds(acts[1], MapNodeKind.Treasure) < Holds(acts[0], MapNodeKind.Treasure));
+        Assert.True(Holds(acts[2], MapNodeKind.Treasure) <= Holds(acts[1], MapNodeKind.Treasure));
+    }
+
+    // v0.0.0'S CONFIGURATION IS FROZEN, and this is the test that says so out loud. The rule-based generator
+    // ships beside the strategic one so a playtester can walk the same act both ways (plan §4b), and a baseline
+    // that quietly moved would be no baseline at all. The per-path table therefore still reads exactly as the
+    // audit wrote it, and the act's backbone is still the five rows the retired `FreeRows` formula produced for
+    // every act in the game. What those numbers PRODUCE is pinned in Tests/Golden/map-v0.0.0.txt.
+    [Fact]
+    public void The_old_generators_promises_are_the_ones_it_has_always_made()
+    {
         var archives = Game.Acts![1].MapGeneration!;
 
         Assert.Equal(8, archives.PerPathMinimums[MapNodeKind.Combat]);
@@ -186,37 +226,7 @@ public class ActSeamTests
         Assert.Equal(1, archives.PerPathMinimums[MapNodeKind.Treasure]);
         Assert.Equal(2, archives.PerPathMinimums[MapNodeKind.Shop]);
 
-        // The act's LENGTH is what it promises plus the rows it leaves free — every promise is a full row that
-        // every route crosses (MapSpecBuilder.FreeRows), so `Rows` alone is only the free part.
-        int Length(MapGenerationSpec spec) => spec.PerPathMinimums.Values.Sum() + spec.Rows;
-        Assert.True(Length(archives) > Length(city),
-            $"the archives should be the longer act, but they run {Length(archives)} against {Length(city)}");
-        Assert.NotEqual(
-            city.LaneProfiles.Select(l => l.Name).ToList(),
-            archives.LaneProfiles.Select(l => l.Name).ToList());
-    }
-
-    // …and the road asks more again: three elites a route, and its own three ways across.
-    [Fact]
-    public void Act_three_asks_more_of_a_route_than_act_two()
-    {
-        var archives = Game.Acts![1].MapGeneration!;
-        var road = Game.Acts![2].MapGeneration!;
-
-        Assert.Equal(8, road.PerPathMinimums[MapNodeKind.Combat]);
-        Assert.Equal(2, road.PerPathMinimums[MapNodeKind.MultiCombat]);
-        Assert.Equal(3, road.PerPathMinimums[MapNodeKind.Elite]);
-        Assert.Equal(3, road.PerPathMinimums[MapNodeKind.Event]);
-        Assert.Equal(2, road.PerPathMinimums[MapNodeKind.Rest]);
-        Assert.Equal(1, road.PerPathMinimums[MapNodeKind.Treasure]);
-        Assert.Equal(2, road.PerPathMinimums[MapNodeKind.Shop]);
-
-        int Length(MapGenerationSpec spec) => spec.PerPathMinimums.Values.Sum() + spec.Rows;
-        Assert.True(Length(road) > Length(archives),
-            $"the road should be the longer act, but it runs {Length(road)} against {Length(archives)}");
-        Assert.NotEqual(
-            archives.LaneProfiles.Select(l => l.Name).ToList(),
-            road.LaneProfiles.Select(l => l.Name).ToList());
+        Assert.All(Roomed, act => Assert.Equal(5, act.MapGeneration!.Rows));
     }
 
     // A treasure bites at the act's own rate, and what comes out of it is the act's own body.

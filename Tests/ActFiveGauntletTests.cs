@@ -34,6 +34,9 @@ public class ActFiveGauntletTests
         Assert.Equal(3, Ledger.BossRooms);
         Assert.Empty(Ledger.PerPathMinimums);
         Assert.Empty(Ledger.PerPathMaximums);
+        // …and no strategic rules whatsoever, which is why a run started on v0.0.1 walks THIS act on v0.0.0:
+        // there is not one chosen room in it for a budget to be about.
+        Assert.Null(Game.Acts![4].StrategicMapGeneration);
         Assert.Empty(Ledger.KindWeights);
         Assert.Empty(Ledger.LaneProfiles);
         Assert.Equal(0, Ledger.MinEnemiesPerPath);
