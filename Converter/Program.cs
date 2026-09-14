@@ -6,7 +6,13 @@ using RogueDeck.Sandbox.Composition;
 // CLI: --data <dir> --out <file> --seed <int>
 //      --playtest <n>   walk n whole runs instead of writing the document, and report what they met
 //      --walk <seed>    walk exactly ONE run of that game, the one a --playtest report calls "seed <seed>"
-//      --maps <n>       lay out every act's map for n seeds and report its shape, row by row
+//      --maps <n>       lay out every act's map for n seeds with v0.0.0 and report its shape, row by row.
+//                       v0.0.1's equivalent is --map-report, which asks a different question of many more seeds
+//      --map-report <n> what every act's STRATEGIC rules (v0.0.1) produce over n seeds: one line a measure,
+//                       with the outlier seed named at each end. Exits non-zero only on an act that could not
+//                       be generated clean; everything else is printed to be read.
+//      --generator <id> which map generator --walk / --playtest lay their maps out with. Default "v0.0.1"
+//                       (strategic); pass "v0.0.0" for the rule-based maps every run used until 2026-09-14.
 //      --art-slots <f>  write the picture list (ART_SLOTS.md) instead of the document: one row per file the
 //                       frontend will look for, with the design canon's brief beside each relic
 //      --fight <file>   THE SPARRING RING: one authored fight with a stated loadout, n times over n seeds.
@@ -22,6 +28,7 @@ var seed = 20260717;
 var playtest = 0;
 var walk = 0;
 var maps = 0;
+var mapReport = 0;
 string? generator = null;
 string? artSlots = null;
 string? fightFile = null;
@@ -42,10 +49,15 @@ for (var i = 0; i < args.Length - 1; i++)
         case "--seed": seed = int.Parse(args[i + 1]); break;
         case "--playtest": playtest = int.Parse(args[i + 1]); break;
         case "--walk": walk = int.Parse(args[i + 1]); break;
-        // Which map generator the walked runs are laid out by: "v0.0.0" (rule-based, the default) or "v0.0.1"
-        // (strategic). Both ship, and a walk that does not say which one it used is a walk nobody can repeat.
+        // Which map generator the walked runs are laid out by: "v0.0.1" (strategic — what a BnB act now IS,
+        // and the default here since 2026-09-14) or "v0.0.0" (rule-based, which still ships and is what a save
+        // written before the choice existed resumes on). Both ship, and a walk that does not say which one it
+        // used is a walk nobody can repeat, so every report names it.
         case "--generator": generator = args[i + 1]; break;
         case "--maps": maps = int.Parse(args[i + 1]); break;
+        // How many seeds per act the strategic generator's statistical report reads (map rework S13). The
+        // tests run a thousand; ten thousand is the number to reach for when a budget is being tuned.
+        case "--map-report": mapReport = int.Parse(args[i + 1]); break;
         case "--art-slots": artSlots = args[i + 1]; break;
         case "--fight": fightFile = args[i + 1]; break;
         case "--fight-enemy": fightEnemy = args[i + 1]; break;
@@ -88,6 +100,8 @@ try
         return ArtSlots.Write(blueprint, data, dataDir, artSlots);
     if (maps > 0)
         return MapStats(blueprint, seed, maps);
+    if (mapReport > 0)
+        return MapReport(blueprint, seed, mapReport);
     if (walk != 0)
         return Playtest(blueprint, seed, 1, generator, walk);
     if (playtest > 0)
@@ -133,6 +147,35 @@ static IReadOnlyList<string> Split(string? list) =>
     string.IsNullOrWhiteSpace(list)
         ? []
         : [.. list.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)];
+
+// WHAT EVERY ACT'S STRATEGIC RULES PRODUCE OVER MANY SEEDS (map rework S13), as opposed to over the one seed
+// somebody looked at. One line a measure, an outlier seed named at each end of it — and `MAP_DUMP_GENERATOR`
+// on the dump probe is how you open the act a seed names.
+//
+// The exit code is the HARD constraint and nothing else: an act that could not be generated clean. Everything
+// else is printed for a human to read, because a quality number that fails a build is a number nobody dares
+// tune (source document §50).
+static int MapReport(RunBlueprint blueprint, int seed, int seeds)
+{
+    var refused = 0;
+    for (var act = 0; act < (blueprint.Acts?.Count ?? 0); act++)
+    {
+        if (blueprint.Acts![act].StrategicMapGeneration is not { } spec)
+        {
+            // The gauntlet, which authors no strategic rules and is drawn by v0.0.0 whichever generator the
+            // run asked for. Said rather than skipped in silence: a report with a missing act reads as a bug.
+            Console.WriteLine($"=== ACT {act + 1} — no strategic rules; this act is always laid out by "
+                + $"{MapGenerators.RuleBased} ===\n");
+            continue;
+        }
+
+        var report = StrategicActStatistics.Measure(spec, seed, seeds);
+        Console.WriteLine($"=== ACT {act + 1} ===");
+        Console.WriteLine(report.Render());
+        refused += report.Refused.Count;
+    }
+    return refused == 0 ? 0 : 1;
+}
 
 // What the generated maps of every act actually hold: their shape, the rooms on them, and whether the routes
 // through them honour the act's own rules. Cheap next to a walk, and it answers "is the act laid out as
@@ -183,7 +226,11 @@ static int Playtest(RunBlueprint blueprint, int seed, int runs, string? generato
     // once. To get that walk back, build the same game and name the walk: --walk 20260909.
     // The generator is named on every walk, always — from the moment two of them ship, a walk that does not
     // say which one laid its maps out is a report about an unknown act (plan §4b).
-    var laidOutBy = MapGenerators.Name(generator);
+    // THE PLAYTESTER WALKS THE DESIGN, and the design is v0.0.1 (map rework S14). The engine's own default
+    // stays v0.0.0 and must — a save written before the choice existed has nothing recorded, and nothing
+    // recorded has to keep meaning the maps that save was laid out with. That is a statement about old runs.
+    // What generator a NEW run should use is a different question, and this is BnB's answer to it.
+    var laidOutBy = generator ?? MapGenerators.Strategic;
     Console.WriteLine(onlyWalk is { } one
         ? $"walking run {one} of the game built with seed {seed}, maps by {laidOutBy}"
         : $"walking {runs} run(s) of the game built with seed {seed}, maps by {laidOutBy}");
