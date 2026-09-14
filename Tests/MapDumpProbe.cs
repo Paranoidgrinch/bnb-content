@@ -35,6 +35,12 @@ public class MapDumpProbe(ITestOutputHelper output)
         var diagnostic = MapDiagnostics.Of(generated, seed);
         output.WriteLine($"=== ACT {index + 1} · seed {seed} · generator v0.0.0 (rule-based) ===");
         output.WriteLine(diagnostic.Render());
+
+        // What one walk through this act asks of a player (map rework S8). The act authors no pressure table of
+        // its own yet — S12 does that — so this is the plan's worked table, and it is here because "the routes
+        // differ" is a claim about THIS number: a spread of a few percent is a fork that decides nothing.
+        output.WriteLine(StrategicPathPressure.Measure(generated, new PathPressureRules()).Render());
+
         output.WriteLine(diagnostic.Detail());
     }
 
