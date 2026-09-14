@@ -2,10 +2,17 @@ using RogueDeck.Run;
 
 namespace BnbContent.Converter;
 
-// An act's MAP RULES instead of a baked map: one MapGenerationSpec per act, which the engine generates a fresh
-// layout from at the start of every run (RunSetup.CreateInitialRun / BuildActPlan), honouring the per-path
-// minimums from docs/bnb-act-map-specs.md. What used to be decided once at conversion time — which fight sits
-// where, which treasure is a mimic — is now decided per run, from the curated role pools (BabEncounter.role).
+// An act's MAP RULES instead of a baked map: the engine generates a fresh layout from them at the start of
+// every run (RunSetup.CreateInitialRun / BuildActPlan). What used to be decided once at conversion time — which
+// fight sits where, which treasure is a mimic — is decided per run, from the curated role pools
+// (BabEncounter.role).
+//
+// TWO SPECS PER ACT, because two generators ship and the player picks (plan §4b). The `MapGenerationSpec` is
+// what BOTH of them realize their rooms from — the pools, the rewards, the node refs, the depth gates — and it
+// additionally carries v0.0.0's own shape rules: the per-path minimums, which are frozen and are no longer
+// what a BnB act IS. What an act is now lives in the `StrategicActSpec` beside it, and is written down in
+// docs/bnb-act-map-specs.md: a length, a budget of rooms, a depth profile, a floor of challenge on every
+// route, and a threshold below which a fork is not a choice.
 //
 // Everything an act draws from is filtered to THAT act: its encounters, its events, its own shop, waiting room
 // and treasure rooms. An act that pulled from the whole catalogue would end on another act's boss.
