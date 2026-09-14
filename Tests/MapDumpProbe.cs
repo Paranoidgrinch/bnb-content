@@ -41,6 +41,10 @@ public class MapDumpProbe(ITestOutputHelper output)
         // differ" is a claim about THIS number: a spread of a few percent is a fork that decides nothing.
         output.WriteLine(StrategicPathPressure.Measure(generated, new PathPressureRules()).Render());
 
+        // And whether the act's forks are choices (map rework S9). A hollow fork is one whose two ways lead into
+        // the same expected future — the thing §1 was really counting when it found twelve forks in an Act I map.
+        output.WriteLine(ForkQualityEvaluator.Measure(generated, new ForkQualityRules()).Render());
+
         output.WriteLine(diagnostic.Detail());
     }
 
