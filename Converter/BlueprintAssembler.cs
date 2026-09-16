@@ -257,6 +257,13 @@ public static class BlueprintAssembler
                 e => e.Id,
                 e => new EntityPresentation
                 {
+                    // ★ THE ROOM A FIGHT HAPPENS IN IS A PICTURE, AND THE SLOT FOR IT WAS ALREADY HERE. Every
+                    // encounter has carried an `Art` since the manifest was written and all 294 of them were
+                    // null; nothing new is declared, the slot that exists is filled. It is filled PER ACT
+                    // because that is what the design asks for — and filling it per act buys per-encounter
+                    // for free: the day one boss deserves a room of its own, one value changes and nothing
+                    // else does. (D3's rule a third time: the path of the contract is the path on disk.)
+                    Art = $"backgrounds/{ActSlot(data, e.Act)}.png",
                     FlavorText = e.Name,
                     Tags = [e.Difficulty, .. e.Tags ?? []],
                     // Act V's shared rule is a UI rule: each god owns a Divine Rule Area, and this is where its
@@ -281,6 +288,14 @@ public static class BlueprintAssembler
             },
         };
     }
+
+    // Which picture an act's rooms are drawn on. The act NUMBER an encounter carries is the authority (the
+    // loader says so in as many words: which encounters belong to an act is decided by the number the entry
+    // carries, not by the file it came from), and the act's own id is the file name — so a sixth act brings
+    // its background with it and nothing here has to learn about it.
+    private static string ActSlot(BabData data, int act) =>
+        act >= 1 && act <= data.Acts.Count ? data.Acts[act - 1].Id : $"act_{act}";
+
 }
 
 // WHAT KIND OF BODY THIS IS. An enemy id says nothing about whether it is a mook, an elite or a god — the
