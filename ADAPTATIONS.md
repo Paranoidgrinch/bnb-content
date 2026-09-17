@@ -364,8 +364,9 @@ exactly as the FINAL_AUDIT enemy pools did. Where the keywords now differ from w
 - **Censure's "a Status paid as a COST cannot be prevented" is not implemented**, deliberately: no card in
   either final pool pays a status as a cost yet, and the engine has no notion of one. The rule is
   future-proofing for later characters and gets built with the first card that needs it.
-- **Citation is not built yet.** It needs "the action that just resolved dealt no direct damage", which the
-  engine cannot yet answer; the action scope added for Doubt is the substrate it will use.
+- ~~**Citation is not built yet.**~~ **SUPERSEDED: it is built.** `citation`, `standing_citation` and
+  `grand_citation` are all in the shipped document. (Verified against the code 2026-09-17; this entry had
+  simply never been struck through.)
 - **Seal converts to a Ratify event in the CARDS that apply it**, not in the status. A status cannot react to
   its own first application — the engine deliberately keeps a status' StatusApplied trigger from seeing
   itself — so "you now hold 3" would be invisible on the application that created the status. Every source of
@@ -652,8 +653,8 @@ missing is the *signature* of thirteen of them, listed here so nothing is quietl
 - **Errata Doppelgänger lifts the redaction AFTER the card lands**, not before. The design has the card
   resolve at full strength; here it lands halved and only the MARK moves on to another card in hand — again
   because nothing intervenes between a play and its resolution.
-- **Volume Q-Null** — Misfiled propagation by matching base cost. Now expressible (the base-cost expression
-  exists); simply not yet written.
+- ~~**Volume Q-Null** — Misfiled propagation by matching base cost.~~ **BUILT 2026-09-17**, see "Volume
+  Q-Null's signature" below.
 - **Second-Person Entry** — chaining its citations by the card type used to fulfil the last one.
 - **Expunged Name** — redacting a card whose name was already played earlier in the combat. Nothing reads
   per-definition play history beyond the current turn.
@@ -693,13 +694,10 @@ at the doc's numbers. **Four of the five bosses** ship as single bodies at their
 
 What is deliberately NOT built, so nothing is quietly assumed:
 
-- **Every elite's SIGNATURE.** The bodies fight; the mechanics that make each one a puzzle — the Bell's Return
-  Receipts and Late Fee, the Colossus's Compression, the Catalogue's Entered Names, the Silence's Echo, the
-  Oracle's Black Ink, the linked Volumes, the Drawer's depth, the Clock's Past/Future, the Obituary's three
-  endings — are not. These are per-elite systems on the scale of a standard's whole stage.
-- **Every boss's PHASE STRUCTURE.** The Act-II bosses are structural, not statline: the Catalogue adapts to
-  the tempo you set, the Warden seals instruments, the Curator schedules collapses, the Auditor reconciles
-  accounts. Shipped as their intent cycles, they fight but do not yet think.
+- ~~**Every elite's SIGNATURE.**~~ **SUPERSEDED: all nine are built** — one section each below
+  (`Converter/Elites/*.cs`), from the Bell on 2026-08-21 to the Obituary on 2026-08-22.
+- ~~**Every boss's PHASE STRUCTURE.** Shipped as their intent cycles, they fight but do not yet think.~~
+  **SUPERSEDED: all five think** — `Converter/Bosses/*.cs`, one section each below (2026-08-22).
 - **The Grand Cross-Reference is absent entirely.** ~~It is three volumes (68 / 72 / 76 HP) in a first phase
   and a central 96-HP body in a second.~~ **SUPERSEDED 2026-08-22: it is built.** See the section below.
 
@@ -1843,9 +1841,12 @@ name. Three things were wrong under that, in rising order of size.
   document with nothing able to hand any of them out. Only **2 of those 74 ids** also exist in the ported data
   (`archive_key`, `emergency_inkwell`), which is the only reason the number is not 74. So **72 authored relics
   had never once been obtainable in a run**, and no test noticed, because a shop full of valid relics looks
-  exactly like a shop full of the right ones. The shop reaches both final pools now. **Treasure and the
+  exactly like a shop full of the right ones. The shop reaches both final pools now. ~~**Treasure and the
   combat/elite relic rewards still draw the ported pool** (`pools.RelicGrantSource`) — that is §3.3, a
-  different node, and still open.
+  different node, and still open.~~ **§3.3 RESOLVED 2026-09-10**: treasure draws
+  `pools.NormalRelicOnTheCurve`, the per-role victory rewards pay no relic at all (a boss from its three, an
+  elite from its own, a mimic from its act's tooth), and `RelicGrantSource` and the list behind it are
+  deleted.
 
 Two smaller consequences of there being four shelves rather than two. A relic that names a shelf now has to
 mean it: Crooked Display Case says "one additional **Normal** Relic", so it grants on the normal shelf alone,
@@ -4148,3 +4149,134 @@ the elite-relic arc had already cut off, still compiling with no callers. `Effec
 **MEASURED**: regenerated and compared leaf by leaf against the old document — **2491 leaves removed, every
 one of them under the 50 leftover cards, 0 added, 0 changed**. 363 cards ship, `ART_SLOTS.md` asks for 708
 pictures (229 cards · 210 relics · 269 bodies), and the 25 stale placeholder plates left `assets/art/cards/`.
+
+
+## Act II — the two Necrology/Misfiled signatures that were still missing (2026-09-17)
+
+⚠ **First, a warning about reading this file.** It runs chronologically and supersedes itself: five entries
+above said "not built" about things that had been built weeks later in these same pages, and nothing had
+struck them through. They are struck now. **Before trusting a "not built" here, check the code** — the
+converter carries its own `NOT BUILT:` markers, and those proved accurate where this file did not.
+
+Counted against the authored methods rather than against this file, twelve of Act II's twenty-five standard
+identities lacked a signature at the start of this pass; three of the twelve (Errata Doppelgänger,
+Unoccurred Tuesday, Miscellany Index) turned out to have one. Two of the remaining are now built.
+
+### Volume Q-Null — Null Reference
+
+"When a card Misfiled by Q-Null is skipped, inspect the immediate replacement; if it has the same persistent
+Base Cost it also becomes Misfiled. Maximum one propagation per original skip. No recursion."
+
+**Q-Null gets a THIRD misfiling mark of its own** (`misfiled_null`, same destination as the plain one). What
+is written into an Act-II misfiling mark was already "where the card goes when it is taken back"; it now also
+carries "and whether its replacement is inspected", for the reason the destinations were put in marks in the
+first place — a program cannot ask who put a mark there.
+
+The take-back is the one place that knows all three facts at once: which card was skipped (the iterated one,
+still addressable after it has been moved — an instance reference does not care which zone it is in), which
+card came back (the draw's own result key, which the Rolling Stacks Colossus's hook next door already relies
+on), and that the skip was Q-Null's (the mark).
+
+- **BASE cost, not current.** `CardInstanceBaseCostExpression` reads the printed price, so a card made cheaper
+  for the turn still propagates and a permanently re-priced one does not. That is the design's "persistent".
+- **No recursion is expressed by WHICH MARK IS WRITTEN, not by a guard.** The propagation lands as a plain
+  misfiling, and a plain misfiling has no inspection step — so the chain cannot continue even if the next
+  replacement matched too.
+- ⚠ **The test that matters is the third one.** "It propagates" and "an ordinary shelf does not" would both
+  pass with the condition replaced by `true`. The third hands Q-Null a deck of two price tiers and requires
+  the propagation to be RARER than the misfiling that caused it, which is the only assertion that reads the
+  comparison itself.
+
+### Blank Death Certificate — Certification Required
+
+"On the first lethal damage: if the player fulfilled a Reference from this enemy during the same turn, death
+is certified and final. Otherwise it returns once at roughly 35% HP. After this return it cannot return
+again."
+
+⚠⚠ **The open question that stood in the code here was the WRONG QUESTION.** It asked whether a bearer-scoped
+Downed trigger fires for the bearer's own downing. It does — and it still does not help: the combat's outcome
+is decided by `UpdateStandardCombatResultOnLifecycleChangedHandler`, which enqueues Victory the moment no
+enemy is living and never re-checks when that request resolves. `archives_necrology_01` is the Certificate's
+**only** encounter and it is a SOLO, so a revive-after-down could never have fired in the one fight the
+Certificate exists in.
+
+**The cure is to stand BEFORE the death rather than to undo one**: the engine's data-authored
+`StatusDeathPreventionData`, which is a pre-down interceptor — the body never stops living, so no Victory is
+ever enqueued. The Obituary with Three Endings, also a solo, had been proving that shape since 2026-08-22.
+
+A prevention interceptor cannot ask a question; it fires whenever it is there. So the condition is whether
+the clause is on the Certificate at all, kept in step the way the Obituary keeps its two lives:
+
+- it starts on the body (`starting_statuses` in the act's enemy data, beside the citation that was already
+  there — the Certificate's Reference lives on the CITING ENEMY, as Act II's references do);
+- answering the citation takes it off (`BlankCertificateReference`'s `onFulfilled`, reaching the body from the
+  player's side through `AllEnemiesOfSourceWithStatus`);
+- and the Certificate puts it back at its OWN turn start, which is the first moment after the player's — so an
+  answer certifies THIS turn's death and not every later one.
+
+"Cannot return again" is the interceptor's own doing: a one-shot prevention is spent when it fires, and what
+it applies on the way out (`death_certified`) is the flag that stops the turn-start rule re-arming it.
+
+**35 of 100**, the one statline the Certificate is ever fielded with — `SurvivingHealth` is a number, not a
+percentage, and a second statline would need a second clause.
+
+⚠ **Two probe defects on the way, both mine, both worth keeping.** The first draft played the whole hand and
+so answered the citation by accident, then reported the clause as broken — it was measuring the certified
+death twice. The second kept swinging past the return and killed the body for good a few cards later, and
+reported the same thing. **The return is a one-shot, so what a probe must watch is the MOMENT** — the body
+standing alive on 35 — and not the end of the fight, which looks identical either way.
+
+### Spare-Life Jar — Spare Life (catch, not pour)
+
+"When another enemy dies, store its identity; prepare Pour Back the Life (countdown 1 enemy turn); if the Jar
+remains alive when it resolves, return the stored enemy once at 30 % Max HP. If the Jar dies before
+resolution, Stored Life is lost. Maximum one resurrection per combat."
+
+**The Jar CATCHES the ally instead of pouring it back.** The engine stands before a death and does not undo
+one, so the countdown collapses into the moment the fatal blow lands: the ally does not die, and is left on
+30 % of its own maximum. "One resurrection per combat" is the one-shot prevention, spent by firing.
+
+⚠ **30 % is a NUMBER, not a percentage.** `StatusDeathPreventionData.SurvivingHealth` is absolute and the
+Jar's two partners are 35 and 63 HP, so one clause cannot be 30 % of both. Each partner gets its own
+(11 and 19), fielded through the encounter's slot-indexed `enemy_statuses` — which is also how the design
+states these numbers, per body. A THIRD partner would need a third clause rather than working by accident.
+
+⚠⚠ **WHAT IS NOT BUILT is the half that hurts: "if the Jar dies before resolution, Stored Life is lost."**
+The natural build is a Downed rule on the Jar that takes the clause off its allies, and it does not work —
+in a Downed program the Source IS the downed body and every ally selector resolves against a LIVING source,
+so `AllAlliesOfSourceWithStatus` finds nobody. MEASURED, not assumed: written that way, breaking the jar
+first still left the body beside it catching at 11. The engine ships
+`SourceIncludingDownedCombatantTargetSelector` for reading the downed source itself; there is no "allies of a
+downed source", and nothing in the authoring surface answers "is the jar still standing" as a boolean (a
+count over a selector is an escape node and does not serialize). **The seam wanted is small and general** — a
+living-agnostic ally selector, or a whole-side status count. `ActTwoStageNineTests` PINS the current
+behaviour, so the day that seam exists the pin fails and says so.
+
+### Checkout Codex — Behind the Desk
+
+"After normal draw, place one valid non-Junk card visibly Behind the Desk; it is temporarily unavailable. Play
+another card first and it returns to hand (Wait Properly); demand immediate access with a free encounter
+action and it returns Redacted; or end the turn without retrieving it, take 1 Overdue from the Codex, and it
+returns at the start of the next turn."
+
+⚠⚠ **"IN HAND BUT UNPLAYABLE" IS NOT EXPRESSIBLE, so the card LEAVES the hand.** Every prohibition the engine
+has reads a card's DEFINITION tags (`UnplayableCardPlayValidator`) or a rule the bearer wears (`CombatDecrees`,
+a closed vocabulary of seven rules); nothing refuses one particular INSTANCE. So Behind the Desk is a place
+rather than a condition: the card goes to the TOP of the draw pile wearing the desk's mark. That one decision
+makes two of the design's three outcomes fall out of the arrangement rather than needing machinery — the first
+card played each turn draws 1, and the top of the pile IS the held card, so "play something else and it comes
+back" is literally what happens; and the Codex checks at its OWN turn start, the moment the hand is down, so
+anything still marked was provably never asked for and is filed against the player by the Codex itself.
+
+- **Demand Immediate Access is NOT BUILT.** It is a free player-ACTIVATED action and the engine has no player
+  abilities at all (the Municipal Dragon's writs record the same limit and fire themselves instead). Here
+  there is nothing to fire on the player's behalf: the whole point of the option is that the PLAYER chooses to
+  pay a Redaction for speed. Named, not approximated.
+- **"Non-Junk" is read as "the first card".** A zone iteration can require a tag but not refuse one — the same
+  reading Act I takes for the Wrong-Window Scribe, already recorded above.
+- ⚠⚠ **THE SHELVING IS LATCHED TO ONCE PER TURN, AND THAT LATCH IS LOAD-BEARING.** "After NORMAL draw" is not
+  pedantry: handing the card back is itself a draw, so an unlatched desk shelves a fresh card the instant it
+  returns the last one. The symptom was the RETRIEVAL looking broken — a card played, the hand one lighter,
+  something still marked in the pile — when the fetch had in fact worked and the desk had simply taken the
+  next card. What named the real culprit was replacing the fetch with a bare draw: the hand went 4→4 and TWO
+  cards came back marked.

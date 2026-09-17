@@ -1,5 +1,6 @@
 using System.Text.Json;
 using RogueDeck.Core.Combat;
+using RogueDeck.Sandbox.Composition;
 using RogueDeck.Scenario.Authoring;
 using BnbContent.Converter.Cards;
 
@@ -92,6 +93,11 @@ public static class ActTwo
     // card is taken back. One rule owns that moment, exactly as one place owns the Paperwork tick.
     public const string MisfiledMark = "misfiled";
     public const string MisfiledSidewaysMark = "misfiled_sideways";
+    // Volume Q-Null's own misfiling. A THIRD mark for the same destination as the plain one, because what is
+    // written into the mark is not only where the card goes but what happens when it is taken back: only a
+    // Q-Null misfiling inspects its replacement. The alternative — asking who put the mark there — is the
+    // thing a program cannot do, which is why the destinations are written into marks in the first place.
+    public const string MisfiledNullMark = "misfiled_null";
     public const string ArchiveRegulationsId = "archive_regulations";
 
     // The hero carries this in every fight where something can misfile. Idempotent by construction: two
@@ -103,6 +109,7 @@ public static class ActTwo
             [
                 TakeBack(MisfiledMark, CardZone.DiscardPile),
                 TakeBack(MisfiledSidewaysMark, CardZone.DrawPile),
+                TakeBack(MisfiledNullMark, CardZone.DiscardPile, propagate: true),
             ]));
 
         return Rule(ArchiveRegulationsId, "Archive Regulations",
@@ -122,27 +129,67 @@ public static class ActTwo
     private static readonly EffectResultKey<OrderedTargetOutcomes<DrawCardsOutcome>> Replacement =
         new("misfiled_replacement");
 
-    private static IEffectNode<CardsDrawnTriggeredEffectContext> TakeBack(string mark, CardZone destination) =>
-        new ForEachCardInZoneNode<CardsDrawnTriggeredEffectContext>(
+    private static IEffectNode<CardsDrawnTriggeredEffectContext> TakeBack(
+        string mark, CardZone destination, bool propagate = false)
+    {
+        var steps = new List<IEffectNode<CardsDrawnTriggeredEffectContext>>
+        {
+            new MarkCardInstanceNode<CardsDrawnTriggeredEffectContext>(
+                CombatantTargetSelectors.Source,
+                new IteratedCardExpression<CardsDrawnTriggeredEffectContext>(),
+                new TagId(mark), remove: true),
+            new MoveCardToZoneNode<CardsDrawnTriggeredEffectContext>(
+                CombatantTargetSelectors.Source,
+                new IteratedCardExpression<CardsDrawnTriggeredEffectContext>(),
+                destination),
+            new DrawCardsNode<CardsDrawnTriggeredEffectContext>(
+                CombatantTargetSelectors.Source,
+                new ConstantExpression<CardsDrawnTriggeredEffectContext>(1),
+                resultKey: Replacement),
+            Elites.RollingStacksColossus.OnMisfilingSkipped(
+                new DrawCardOutcomeExpression<CardsDrawnTriggeredEffectContext>(Replacement)),
+        };
+        if (propagate)
+            steps.Add(NullReference());
+        return new ForEachCardInZoneNode<CardsDrawnTriggeredEffectContext>(
             CombatantTargetSelectors.Source, CardZone.Hand,
-            new CausalSequenceEffectNode<CardsDrawnTriggeredEffectContext>(
-            [
-                new MarkCardInstanceNode<CardsDrawnTriggeredEffectContext>(
-                    CombatantTargetSelectors.Source,
-                    new IteratedCardExpression<CardsDrawnTriggeredEffectContext>(),
-                    new TagId(mark), remove: true),
-                new MoveCardToZoneNode<CardsDrawnTriggeredEffectContext>(
-                    CombatantTargetSelectors.Source,
-                    new IteratedCardExpression<CardsDrawnTriggeredEffectContext>(),
-                    destination),
-                new DrawCardsNode<CardsDrawnTriggeredEffectContext>(
-                    CombatantTargetSelectors.Source,
-                    new ConstantExpression<CardsDrawnTriggeredEffectContext>(1),
-                    resultKey: Replacement),
-                Elites.RollingStacksColossus.OnMisfilingSkipped(
-                    new DrawCardOutcomeExpression<CardsDrawnTriggeredEffectContext>(Replacement)),
-            ]),
+            new CausalSequenceEffectNode<CardsDrawnTriggeredEffectContext>(steps),
             markFilter: new TagId(mark));
+    }
+
+    // ── Stage 5 — Volume Q-Null's signature ───────────────────────────────────────────────────────────────
+    //
+    // "When a card Misfiled by Volume Q-Null is skipped, inspect the immediate replacement. If it has the
+    // same persistent Base Cost, it also becomes Misfiled. Maximum one propagation per original skip. No
+    // recursion."
+    //
+    // This is the one place in the game that knows all three facts at once: which card was skipped, which
+    // card came back in its place, and that the skip belonged to Q-Null. The skipped card is the iterated
+    // one — still addressable after it has been moved, because an instance reference does not care which
+    // zone it is in — and the replacement names itself through the draw's result key, which the Colossus's
+    // hook next door already relies on.
+    //
+    // BASE cost, not current: `CardInstanceBaseCostExpression` reads the printed price, so a card made
+    // cheaper for the turn still propagates and one permanently re-priced does not. That is the "persistent"
+    // in the design's own wording.
+    //
+    // ⚠ THE PROPAGATION LANDS AS A PLAIN MISFILING, not as another Q-Null one — that is the "no recursion"
+    // rule, and it is expressed by which mark is written rather than by a guard: a plain misfiling has no
+    // inspection step, so the chain cannot continue even if the next replacement matched too.
+    private static IEffectNode<CardsDrawnTriggeredEffectContext> NullReference() =>
+        new ConditionalEffectNode<CardsDrawnTriggeredEffectContext>(
+            new ComparisonExpression<CardsDrawnTriggeredEffectContext>(
+                new CardInstanceBaseCostExpression<CardsDrawnTriggeredEffectContext>(
+                    new IteratedCardExpression<CardsDrawnTriggeredEffectContext>(),
+                    StandardCombatIds.EnergyResource),
+                ComparisonOperator.Equal,
+                new CardInstanceBaseCostExpression<CardsDrawnTriggeredEffectContext>(
+                    new DrawCardOutcomeExpression<CardsDrawnTriggeredEffectContext>(Replacement),
+                    StandardCombatIds.EnergyResource)),
+            new MarkCardInstanceNode<CardsDrawnTriggeredEffectContext>(
+                CombatantTargetSelectors.Source,
+                new DrawCardOutcomeExpression<CardsDrawnTriggeredEffectContext>(Replacement),
+                new TagId(MisfiledMark)));
 
     // ── Stage 2 — The Misfiled Stacks ─────────────────────────────────────────────────────────────────────
 
@@ -323,6 +370,13 @@ public static class ActTwo
         LeaveOneWordUnspoken(),
         Voice(),
         BlankCertificateReference(),
+        CertificationRequired(),
+        BehindTheDesk(),
+        StoredLife(),
+        SpareLifeOuroboros(),
+        SpareLifeDoppelganger(),
+        CertificateCertified(),
+        CertificateClause(),
         OlderTextBeneath(),
         AbsenceBecomesVisible(),
         Clauses(),
@@ -338,9 +392,88 @@ public static class ActTwo
     public const string CertificateReferenceId = "blank_certificate_reference";
 
     // The Certificate cites you and then asks, when it dies, whether you answered.
+    //
+    // Answering it takes the death clause OFF for the rest of the turn — which is what "fulfilled a Reference
+    // from this enemy during the same turn" means. The hook runs on the PLAYER's play, so the Certificate is
+    // reached from the other side: the one enemy wearing the citation is the one whose clause this was.
     public static StatusData BlankCertificateReference() =>
         Reference(CertificateReferenceId, "Serve Certificate", CertificateReferenceMark,
-            "A card is cited. Answer it, or owe the Certificate for it.");
+            "A card is cited. Answer it, or owe the Certificate for it.",
+            onFulfilled: new RemoveStatusNode<CardPlayedTriggeredEffectContext>(
+                CombatantTargetSelectors.AllEnemiesOfSourceWithStatus(
+                    new StatusDefinitionId(CertificateReferenceId)),
+                new StatusDefinitionId(CertificationRequiredId)));
+
+    // ── Stage 9 — the Blank Death Certificate's death clause ──────────────────────────────────────────────
+    //
+    // "On the first lethal damage: if the player fulfilled a Reference from this enemy during the same turn,
+    // death is certified and final. Otherwise the Certificate returns once at roughly 35% HP. After this
+    // return it cannot return again."
+    //
+    // ⚠⚠ THIS STANDS BEFORE THE DEATH, IT DOES NOT UNDO ONE. The obvious build — a Downed trigger that heals
+    // the body back up — cannot work, and the reason is worth keeping: the combat's outcome is decided by
+    // `UpdateStandardCombatResultOnLifecycleChangedHandler`, which enqueues Victory the moment no enemy is
+    // living and never re-checks when that request resolves. The Certificate's ONLY encounter is a solo, so a
+    // revive-after-down would have been unreachable in the one fight it exists in. The engine's data-authored
+    // `StatusDeathPreventionData` is a PRE-down interceptor: the body never stops living, so no Victory is
+    // ever enqueued. The Obituary with Three Endings — also a solo — proves the shape.
+    //
+    // A prevention interceptor cannot ask a question; it fires whenever it is there. So the CONDITION is
+    // whether the clause is on the Certificate at all, exactly as the Obituary expresses its two lives:
+    //   · it starts there (EncounterPassives),
+    //   · answering the citation takes it off for that turn (BlankCertificateReference's onFulfilled),
+    //   · and the Certificate puts it back at its own turn start — so an answer certifies THIS turn's death
+    //     and not every later one.
+    // "Cannot return again" is the interceptor's own doing: a one-shot prevention is spent when it fires, and
+    // what it applies on the way out is the flag that stops the turn-start rule re-arming it.
+    public const string CertificationRequiredId = "certification_required";
+    public const string CertificateCertifiedId = "death_certified";
+    public const string CertificateClauseId = "certification_clause";
+
+    // 35 of the Certificate's 100 — "roughly 35% HP" at the one statline it is ever fielded with.
+    private const int CertificateReturnHealth = 35;
+
+    public static StatusData CertificationRequired() => new()
+    {
+        Id = CertificationRequiredId,
+        NameKey = "Certification Required",
+        DescriptionKey = "This death is not certified. Unanswered, it will not take.",
+        Polarity = StatusPolarity.Buff,
+        StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
+        UsesStacks = false,
+        Tags = [],
+        PassiveModifiers = [],
+        Triggers = [],
+        DeathPrevention = new StatusDeathPreventionData(CertificateReturnHealth,
+        [
+            new InterceptorEffectData(nameof(EffectKind.ApplyStatus), nameof(EffectTarget.Self), 1,
+                CertificateCertifiedId, 0, StatusPolarity.Neutral),
+        ]),
+    };
+
+    // The receipt for a return already spent. Inert — it exists to be read by the clause's turn-start rule.
+    public static StatusData CertificateCertified() =>
+        Rule(CertificateCertifiedId, "Death Certified",
+            "The return has been used. The next one is final.", []);
+
+    // The Certificate re-arms its own clause at its own turn start, unless the return is already spent. Its
+    // turn start is the right moment because it is the first one AFTER the player's: an answer given during
+    // the player's turn stands for that turn, and the clause is back for the next one.
+    public static StatusData CertificateClause() =>
+        Rule(CertificateClauseId, "Blank Until Signed",
+            "A fresh certificate is drawn up each round, until one of them is signed.",
+            [
+                Watch("TurnStarted", new EffectProgram<TurnStartedTriggeredEffectContext>(
+                    new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
+                        new NotExpression<TurnStartedTriggeredEffectContext>(
+                            new TargetHasStatusExpression<TurnStartedTriggeredEffectContext>(
+                                CombatantTargetSelectors.Source,
+                                new StatusDefinitionId(CertificateCertifiedId))),
+                        new ApplyStatusNode<TurnStartedTriggeredEffectContext>(
+                            CombatantTargetSelectors.Source,
+                            new StatusDefinitionId(CertificationRequiredId),
+                            new ConstantExpression<TurnStartedTriggeredEffectContext>(1))))),
+            ]);
 
     public const string MiscellaneousClassificationId = "miscellaneous_classification";
 
@@ -921,6 +1054,143 @@ public static class ActTwo
                     CombatJson.CreateOptions<TurnStartedTriggeredEffectContext>())),
             ]);
 
+    // ── Stage 7 — the Checkout Codex ──────────────────────────────────────────────────────────────────────
+    //
+    // "After normal draw, choose one valid non-Junk card and place it visibly Behind the Desk. It is
+    // temporarily unavailable. The player has three options: play another card first and it returns to hand;
+    // demand immediate access with a free encounter action and it returns Redacted; or end the turn without
+    // retrieving it and the Codex files 1 Overdue, the card returning at the start of the next turn."
+    //
+    // ⚠⚠ "IN HAND BUT UNPLAYABLE" IS NOT EXPRESSIBLE, so the card LEAVES the hand. Every prohibition the
+    // engine has reads a card's DEFINITION tags (`UnplayableCardPlayValidator`) or a rule the bearer wears
+    // (`CombatDecrees`, a fixed vocabulary of seven rules); nothing refuses one particular INSTANCE. So
+    // Behind the Desk is a place rather than a condition: the card goes to the TOP of the draw pile wearing
+    // the desk's mark, which is genuinely "temporarily unavailable" and puts it exactly where retrieving it
+    // is one draw away.
+    //
+    // That one detail makes all three of the design's outcomes fall out of the same arrangement:
+    //   · **Wait Properly** — the first card played each turn draws 1, and the top of the pile IS the held
+    //     card. "Play another card first and it comes back" is then literally what happens.
+    //   · **End the Turn Without Retrieval** — the Codex checks at its OWN turn start, which is the moment
+    //     the player's hand is down and anything still marked was provably not retrieved. It files 1 Overdue
+    //     — from itself, which is why this half lives on the Codex and not on the player — and releases the
+    //     card, so the next normal draw brings it back.
+    //   · **Demand Immediate Access** — NOT BUILT. It is a free player-activated action, and the engine has
+    //     no player-activated abilities at all; the Municipal Dragon's two writs record the same limit and
+    //     fire themselves instead. There is nothing here to fire: the whole point of the option is that the
+    //     PLAYER chooses to pay a Redaction for speed. Named, not approximated.
+    //
+    // ⚠ "NON-JUNK" IS READ AS "THE FIRST CARD". A zone iteration can require a tag but not refuse one, so
+    // excluding Junk is not expressible — the same reading Act I takes for the Wrong-Window Scribe's "first
+    // non-Junk card type", already recorded in ADAPTATIONS.
+    public const string BehindTheDeskMark = "behind_the_desk";
+    public const string BehindTheDeskId = "behind_the_desk_rule";
+
+    private static CounterId DeskRetrievedCounter => new("desk_retrieved");
+    private static CounterId DeskShelvedCounter => new("desk_shelved");
+
+    public static StatusData BehindTheDesk()
+    {
+        // After the draw: one card off the hand and onto the top of the pile, wearing the desk's mark.
+        //
+        // ⚠⚠ ONCE PER TURN, AND THAT LATCH IS LOAD-BEARING. The design says "after NORMAL draw", and the
+        // difference is not pedantry: handing the card back is itself a draw, so an unlatched desk shelves a
+        // fresh card the instant it returns the last one. The symptom was the retrieval looking broken —
+        // a card played, the hand one lighter, something still marked in the pile — when in fact the fetch
+        // had worked and the desk had simply taken the next card. MEASURED: with the fetch replaced by a
+        // bare draw the hand went 4→4 and TWO cards were marked, which is what named the real culprit.
+        var shelve = new EffectProgram<CardsDrawnTriggeredEffectContext>(
+            new ConditionalEffectNode<CardsDrawnTriggeredEffectContext>(
+                new AndExpression<CardsDrawnTriggeredEffectContext>(
+                    IsTheApplicant<CardsDrawnTriggeredEffectContext>(),
+                    Unspent<CardsDrawnTriggeredEffectContext>(DeskShelvedCounter)),
+                new ForEachCardInZoneNode<CardsDrawnTriggeredEffectContext>(
+                    CombatantTargetSelectors.Source, CardZone.Hand,
+                    new CausalSequenceEffectNode<CardsDrawnTriggeredEffectContext>(
+                    [
+                        new MarkCardInstanceNode<CardsDrawnTriggeredEffectContext>(
+                            CombatantTargetSelectors.Source,
+                            new IteratedCardExpression<CardsDrawnTriggeredEffectContext>(),
+                            new TagId(BehindTheDeskMark)),
+                        new MoveCardToZoneNode<CardsDrawnTriggeredEffectContext>(
+                            CombatantTargetSelectors.Source,
+                            new IteratedCardExpression<CardsDrawnTriggeredEffectContext>(),
+                            CardZone.DrawPile, placement: ZonePlacement.Top),
+                        Spend<CardsDrawnTriggeredEffectContext>(DeskShelvedCounter),
+                    ]),
+                    takeFirst: 1)));
+
+        // Waiting properly: the first card played this turn fetches it back. The latch is what makes it the
+        // FIRST — and it is cleared by the shelving above, which happens once per turn at the draw.
+        // ⚠ THE CONDITION IS THE CARD, NOT WHO PLAYED. Guarding this on `IsTheApplicant` made it never fire:
+        // the shelving above is a CardsDrawn hook, whose acting Source is the combatant who DREW, while this
+        // is a CardPlayed hook on a status the ENEMY wears — and the two do not agree about who Source is.
+        // MEASURED, not reasoned: the card sat in the pile still marked after a play (`markedInDraw=1`).
+        // The Reference machinery next door never asks either; it guards on the mark, which is the fact that
+        // actually matters. So does this, and the DRAW lives INSIDE the loop over the marked card — so it
+        // happens exactly when there is something behind the desk to hand back, and never otherwise.
+        var fetch = new EffectProgram<CardPlayedTriggeredEffectContext>(
+            new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
+                Unspent<CardPlayedTriggeredEffectContext>(DeskRetrievedCounter),
+                new ForEachCardInZoneNode<CardPlayedTriggeredEffectContext>(
+                    CombatantTargetSelectors.Source, CardZone.DrawPile,
+                    new CausalSequenceEffectNode<CardPlayedTriggeredEffectContext>(
+                    [
+                        // Released first, then drawn: a card handed back still wearing the desk's mark would
+                        // read as being behind a desk it is no longer behind.
+                        new MarkCardInstanceNode<CardPlayedTriggeredEffectContext>(
+                            CombatantTargetSelectors.Source,
+                            new IteratedCardExpression<CardPlayedTriggeredEffectContext>(),
+                            new TagId(BehindTheDeskMark), remove: true),
+                        new DrawCardsNode<CardPlayedTriggeredEffectContext>(
+                            CombatantTargetSelectors.Source,
+                            new ConstantExpression<CardPlayedTriggeredEffectContext>(1)),
+                        Spend<CardPlayedTriggeredEffectContext>(DeskRetrievedCounter),
+                    ]),
+                    markFilter: new TagId(BehindTheDeskMark))));
+
+        // My turn, and the hand is down: anything still behind the desk was never asked for.
+        var charge = new EffectProgram<TurnStartedTriggeredEffectContext>(
+            new CausalSequenceEffectNode<TurnStartedTriggeredEffectContext>(
+            [
+                new ForEachCardInZoneNode<TurnStartedTriggeredEffectContext>(
+                    Opponent, CardZone.DrawPile,
+                    new CausalSequenceEffectNode<TurnStartedTriggeredEffectContext>(
+                    [
+                        new MarkCardInstanceNode<TurnStartedTriggeredEffectContext>(
+                            Opponent, new IteratedCardExpression<TurnStartedTriggeredEffectContext>(),
+                            new TagId(BehindTheDeskMark), remove: true),
+                        // Filed by ME — the reason this half is the Codex's and not the player's.
+                        new ApplyStatusNode<TurnStartedTriggeredEffectContext>(
+                            Opponent, new StatusDefinitionId(OverdueId),
+                            new ConstantExpression<TurnStartedTriggeredEffectContext>(1)),
+                    ]),
+                    markFilter: new TagId(BehindTheDeskMark)),
+                // A fresh turn shelves again and may retrieve again. Released HERE, at the Codex's own turn
+                // start, because that is the last moment before the player's next normal draw.
+                new SetCombatantCounterNode<TurnStartedTriggeredEffectContext>(
+                    Opponent, DeskRetrievedCounter,
+                    new ConstantExpression<TurnStartedTriggeredEffectContext>(0), relative: false),
+                new SetCombatantCounterNode<TurnStartedTriggeredEffectContext>(
+                    Opponent, DeskShelvedCounter,
+                    new ConstantExpression<TurnStartedTriggeredEffectContext>(0), relative: false),
+            ]));
+
+        return Rule(BehindTheDeskId, "Behind the Desk",
+            "One of your cards is kept behind the desk. Play something else and it is handed back; leave "
+            + "without asking and the Codex files it against you.",
+            [
+                new StatusTriggerData("CardsDrawn", JsonSerializer.SerializeToElement(
+                    shelve, CombatJson.CreateOptions<CardsDrawnTriggeredEffectContext>()),
+                    StatusTriggerScope.Anywhere),
+                new StatusTriggerData("CardPlayed", JsonSerializer.SerializeToElement(
+                    fetch, CombatJson.CreateOptions<CardPlayedTriggeredEffectContext>()),
+                    StatusTriggerScope.Anywhere),
+                new StatusTriggerData("TurnStarted", JsonSerializer.SerializeToElement(
+                    charge, CombatJson.CreateOptions<TurnStartedTriggeredEffectContext>())),
+            ]);
+    }
+
     // ── Stage 8 — Archive of Misplaced Hours ──────────────────────────────────────────────────────────────
 
     public const string TuesdayDoesNotOccurId = "tuesday_does_not_occur";
@@ -951,10 +1221,75 @@ public static class ActTwo
 
     // ── Stage 9 — Necrology Vaults ────────────────────────────────────────────────────────────────────────
 
-    // NOT BUILT: the Blank Death Certificate's return at ~35% HP. The revive itself exists
-    // (SetCombatantLifecycleState + Heal), but its Downed trigger never fires — the log shows the lifecycle
-    // change to Downed and nothing after it. Open question, narrow enough for an engine test: does a
-    // bearer-scoped Downed trigger fire for the bearer's OWN downing? See ADAPTATIONS.
+    // BUILT (see the death clause under Stage 9's Reference above). The open question that stood here — does
+    // a bearer-scoped Downed trigger fire for the bearer's own downing — turned out to be the wrong question:
+    // the answer is yes, and it still does not help, because the combat is already over by then. The cure is
+    // to stand BEFORE the down rather than to undo one.
+
+    // ── Stage 9 — the Spare-Life Jar ──────────────────────────────────────────────────────────────────────
+    //
+    // "When another enemy dies, store its identity. Prepare Pour Back the Life (countdown 1 enemy turn). If
+    // the Jar remains alive when the countdown resolves, return the stored enemy once at 30% Max HP. If the
+    // Jar dies before resolution, Stored Life is lost. Maximum one resurrection per combat."
+    //
+    // ⚠⚠ THE JAR CATCHES THE ALLY INSTEAD OF POURING IT BACK. The engine can stand BEFORE a death and not
+    // undo one (the Blank Death Certificate above is the long version of why), so the countdown collapses
+    // into the moment the fatal blow lands: the ally simply does not die, and is left on 30 % of its own
+    // maximum. Everything else the design asks for survives the move intact —
+    //   · "one resurrection per combat" is the one-shot prevention, spent by firing;
+    //   · **"if the Jar dies before resolution, Stored Life is lost" is the whole point of the mechanic**,
+    //     and it still holds: the Jar's own downing takes the clause off its allies, so a player who breaks
+    //     the jar first faces bodies with no spare life. What is lost is the WINDOW — you cannot kill the
+    //     Jar in the beat between the ally's death and its return, because there is no longer a beat.
+    //
+    // ⚠ 30 % IS A NUMBER, NOT A PERCENTAGE. `StatusDeathPreventionData.SurvivingHealth` is absolute, and the
+    // Jar's two partners are 35 and 63 HP, so one clause cannot be 30 % of both. Each partner therefore gets
+    // its own, fielded through the encounter's slot-indexed scaffolding — which is also how the design states
+    // these numbers (per body), and it is why a THIRD partner would need a third clause rather than working
+    // by accident.
+    public const string StoredLifeId = "stored_life";
+    public const string SpareLifeOuroborosId = "spare_life_ouroboros";
+    public const string SpareLifeDoppelgangerId = "spare_life_doppelganger";
+
+    private const int OuroborosSpare = 11;      // 30 % of 35, rounded up
+    private const int DoppelgangerSpare = 19;   // 30 % of 63, rounded up
+
+    public static StatusData SpareLifeOuroboros() => SpareLife(SpareLifeOuroborosId, OuroborosSpare);
+
+    public static StatusData SpareLifeDoppelganger() => SpareLife(SpareLifeDoppelgangerId, DoppelgangerSpare);
+
+    private static StatusData SpareLife(string id, int survivingHealth) => new()
+    {
+        Id = id,
+        NameKey = "Stored Life",
+        DescriptionKey = "The jar holds a life for this one. Break the jar and it is lost.",
+        Polarity = StatusPolarity.Buff,
+        StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
+        UsesStacks = false,
+        Tags = [],
+        PassiveModifiers = [],
+        Triggers = [],
+        DeathPrevention = new StatusDeathPreventionData(survivingHealth, []),
+    };
+
+    // ⚠⚠ WHAT IS NOT BUILT, AND WHY IT IS THE HALF THAT HURTS: "if the Jar dies before resolution, Stored
+    // Life is lost." The natural build is a Downed rule on the Jar that takes the clause off its allies, and
+    // it does not work — in a Downed program the Source IS the downed body, and every ally selector resolves
+    // against a LIVING source, so `AllAlliesOfSourceWithStatus` finds nobody. MEASURED, not assumed: written
+    // that way, breaking the jar first still left the body beside it catching at 11.
+    //
+    // The engine ships `SourceIncludingDownedCombatantTargetSelector` for reading the downed source itself;
+    // there is no "allies of a downed source", and nothing else in the authoring surface can answer "is the
+    // jar still standing" as a BOOLEAN (a count over a selector is an escape node and does not serialize).
+    // The seam this wants is small and general — a living-agnostic ally selector, or a whole-side status
+    // count — and it is named here so it is not lost. `ActTwoStageNineTests` pins the current behaviour, so
+    // the day that seam exists the pin fails and says so.
+    //
+    // The Jar keeps this marker anyway: it is what a future rule would find it by, and it is what says on
+    // the body which enemy the spare life belongs to.
+    public static StatusData StoredLife() =>
+        Rule(StoredLifeId, "Spare Life",
+            "While the jar stands, the body beside it has a life in reserve.", []);
 
     // ── Stage 10 — Hall of Concordances ───────────────────────────────────────────────────────────────────
 
@@ -1217,6 +1552,19 @@ public static class ActTwo
         new ComparisonExpression<TContext>(
             new CombatantCounterExpression<TContext>(CombatantTargetSelectors.Source, latch),
             ComparisonOperator.Equal, new ConstantExpression<TContext>(0));
+
+    // The same latch, read and written about a NAMED combatant rather than about whoever is acting — needed
+    // wherever a rule on one side keeps a once-per-turn record about the other.
+    private static ICombatExpression<TContext, bool> UnspentOn<TContext>(
+        ICombatantTargetSelector who, CounterId latch) where TContext : class =>
+        new ComparisonExpression<TContext>(
+            new CombatantCounterExpression<TContext>(who, latch),
+            ComparisonOperator.Equal, new ConstantExpression<TContext>(0));
+
+    private static IEffectNode<TContext> SpendOn<TContext>(
+        ICombatantTargetSelector who, CounterId latch) where TContext : class =>
+        new SetCombatantCounterNode<TContext>(
+            who, latch, new ConstantExpression<TContext>(1), relative: false);
 
     private static IEffectNode<TContext> Spend<TContext>(CounterId latch) where TContext : class =>
         new SetCombatantCounterNode<TContext>(

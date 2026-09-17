@@ -545,7 +545,13 @@
       "overdue",
       "multi_enemy"
     ],
-    "role": "multi_combat"
+    "role": "multi_combat",
+    "enemy_statuses": [
+      {
+        "index": 1,
+        "status": "spare_life_ouroboros"
+      }
+    ]
   },
   {
     "id": "archives_necrology_duo_02",
@@ -567,7 +573,13 @@
       "redaction",
       "multi_enemy"
     ],
-    "role": "multi_combat"
+    "role": "multi_combat",
+    "enemy_statuses": [
+      {
+        "index": 1,
+        "status": "spare_life_doppelganger"
+      }
+    ]
   },
   {
     "id": "archives_concordance_01",

@@ -976,6 +976,11 @@
       "archives",
       "annex",
       "stage_annex"
+    ],
+    "starting_statuses": [
+      {
+        "status": "behind_the_desk_rule"
+      }
     ]
   },
   {
@@ -1178,6 +1183,12 @@
     "starting_statuses": [
       {
         "status": "blank_certificate_reference"
+      },
+      {
+        "status": "certification_required"
+      },
+      {
+        "status": "certification_clause"
       }
     ],
     "tags": [
@@ -1240,6 +1251,11 @@
       "archives",
       "necrology",
       "stage_necrology"
+    ],
+    "starting_statuses": [
+      {
+        "status": "stored_life"
+      }
     ]
   },
   {
