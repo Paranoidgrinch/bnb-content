@@ -618,7 +618,13 @@
       "referenced",
       "multi_enemy"
     ],
-    "role": "multi_combat"
+    "role": "multi_combat",
+    "enemy_statuses": [
+      {
+        "index": 0,
+        "status": "footnote_source"
+      }
+    ]
   },
   {
     "id": "archives_concordance_trio_01",
@@ -643,7 +649,13 @@
       "misfiled",
       "multi_enemy"
     ],
-    "role": "multi_combat"
+    "role": "multi_combat",
+    "enemy_statuses": [
+      {
+        "index": 0,
+        "status": "footnote_source"
+      }
+    ]
   },
   {
     "id": "archives_elite_after_hours_return_bell",

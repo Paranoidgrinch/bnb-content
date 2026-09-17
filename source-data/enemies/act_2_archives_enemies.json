@@ -725,6 +725,11 @@
       "archives",
       "redaction",
       "stage_redaction"
+    ],
+    "starting_statuses": [
+      {
+        "status": "palimpsest_body"
+      }
     ]
   },
   {
@@ -1339,6 +1344,23 @@
       "concordance",
       "support",
       "stage_concordance"
+    ],
+    "starting_statuses": [
+      {
+        "status": "marginal_note"
+      }
+    ],
+    "intent_rules": [
+      {
+        "condition": {
+          "kind": "self_counter",
+          "counter": "footnote_notes",
+          "op": "ge",
+          "value": 2
+        },
+        "action": "see_note_below",
+        "priority": 20
+      }
     ]
   },
   {

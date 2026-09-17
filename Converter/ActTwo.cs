@@ -53,6 +53,10 @@ public static class ActTwo
             new ApplyStatusNode<TurnStartedTriggeredEffectContext>(
                 Opponent, new StatusDefinitionId(Keywords.Paperwork),
                 new ConstantExpression<TurnStartedTriggeredEffectContext>(1)),
+            // A collection is the archive's own moment, and this rule runs on the body that collects — so it
+            // announces for itself, under both names: which moment it was, and that a body's rule fired.
+            AnnounceSelf<TurnStartedTriggeredEffectContext>(AnnounceDelinquency),
+            AnnounceSelf<TurnStartedTriggeredEffectContext>(AnnounceSignature),
         };
         if (lateConsequence is not null)
             steps.Add(lateConsequence);
@@ -80,6 +84,35 @@ public static class ActTwo
                 FromActingSource = true,
             },
             new ConstantExpression<TurnStartedTriggeredEffectContext>(-1));
+
+    // ── what the archive says out loud ───────────────────────────────────────────────────────────────────
+    //
+    // Three of Act II's moments are CONCLUSIONS another rule reached rather than anything the engine did — a
+    // Delinquency collecting, a Reference being fulfilled, a Misfiled card actually being skipped — and two
+    // bodies are written entirely about them: the Miscellany Index counts them, and the Detached Footnote
+    // watches its Source reach one. Neither could be built, because none of those moments announced itself.
+    // The engine now lets a rule say so (`node.announceRule`), and these are the names it says.
+    //
+    // ⚠ TWO VOCABULARIES, ON PURPOSE. `Delinquency`/`Reference`/`Misfiling` name WHICH moment it was, which
+    // is what an Index counting four different things needs. `Signature` names only that a body's own rule
+    // reached its moment, which is what the Footnote needs — it cares whose rule fired, not which. A
+    // per-body rule therefore announces BOTH; a moment with no single owner (a misfiling skip, where the mark
+    // cannot say which shelf filed it) announces only its own name, and the Footnote is deaf to it.
+    public const string AnnounceDelinquency = "delinquency";
+    public const string AnnounceReference = "reference";
+    public const string AnnounceMisfiling = "misfiling";
+    public const string AnnounceSignature = "signature";
+
+    // A rule that lives on the PLAYER — as most of Act II's do, because it is the player's hand they are
+    // about — still belongs to a BODY, and an announcement has to come from that body or every listener on
+    // the enemy side is on the wrong side of it. The body is found by a marker it wears.
+    private static IEffectNode<TContext> AnnounceFrom<TContext>(string bodyMarker, string rule)
+        where TContext : class =>
+        new AnnounceRuleNode<TContext>(
+            CombatantTargetSelectors.AllEnemiesOfSourceWithStatus(new StatusDefinitionId(bodyMarker)), rule);
+
+    private static IEffectNode<TContext> AnnounceSelf<TContext>(string rule) where TContext : class =>
+        new AnnounceRuleNode<TContext>(CombatantTargetSelectors.Source, rule);
 
     // ── Misfiled ──────────────────────────────────────────────────────────────────────────────────────────
     //
@@ -149,6 +182,12 @@ public static class ActTwo
                 resultKey: Replacement),
             Elites.RollingStacksColossus.OnMisfilingSkipped(
                 new DrawCardOutcomeExpression<CardsDrawnTriggeredEffectContext>(Replacement)),
+            // ⚠ FROM THE WHOLE ENEMY SIDE, because the mark cannot say which shelf filed it (that is why
+            // destinations are written into marks at all). The Index only asks THAT a misfiling was skipped;
+            // nothing here claims to know whose it was, which is also why this announcement is not a
+            // `signature` and the Footnote does not hear it.
+            new AnnounceRuleNode<CardsDrawnTriggeredEffectContext>(
+                CombatantTargetSelectors.AllEnemiesOfSource, AnnounceMisfiling),
         };
         if (propagate)
             steps.Add(NullReference());
@@ -276,7 +315,12 @@ public static class ActTwo
                 IsTheApplicant<CardsDrawnTriggeredEffectContext>(),
                 cite ?? CiteFirst(mark)));
 
-        // Played, so fulfilled — the mark simply goes.
+        // Played, so fulfilled — the mark simply goes, and the citer says so.
+        //
+        // ⚠ THE ANNOUNCEMENT COMES FROM THE CITER, NOT FROM THE PLAYER. In this hook the acting Source is the
+        // player (it is their play), and an announcement from the player would be heard by the player's own
+        // allies — which on this side of the fight is nobody who cares. The citing body is found by the
+        // citation it wears, the same handle `onFulfilled` uses to reach it.
         var fulfil = new EffectProgram<CardPlayedTriggeredEffectContext>(
             new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
                 new CardInstanceHasMarkExpression<CardPlayedTriggeredEffectContext>(
@@ -286,6 +330,8 @@ public static class ActTwo
                 [
                     Unmark<CardPlayedTriggeredEffectContext>(
                         new TriggerEventCardInstanceExpression<CardPlayedTriggeredEffectContext>(), mark),
+                    AnnounceFrom<CardPlayedTriggeredEffectContext>(id, AnnounceReference),
+                    AnnounceFrom<CardPlayedTriggeredEffectContext>(id, AnnounceSignature),
                     .. onFulfilled is null ? [] : new[] { onFulfilled },
                 ])));
 
@@ -374,6 +420,10 @@ public static class ActTwo
         CertificationRequired(),
         BehindTheDesk(),
         TwoFuturesAtOnce(),
+        NoLongerRecognized(),
+        PalimpsestBody(),
+        FootnoteSource(),
+        MarginalNote(),
         StoredLife(),
         SpareLifeOuroboros(),
         SpareLifeDoppelganger(),
@@ -804,6 +854,14 @@ public static class ActTwo
 
     // "The first time each turn a Redacted card is fully played, it becomes Misfiled afterwards." The Husk
     // does not stop the card — it files it away for next time.
+    // The marker the Husk wears on its BODY, so a rule that lives on the player can still announce from the
+    // body it belongs to (AnnounceFrom). Without it the Husk's signature would announce from the player, and
+    // every listener on the enemy side would be on the wrong side of it.
+    public const string PalimpsestBodyId = "palimpsest_body";
+
+    public static StatusData PalimpsestBody() =>
+        Rule(PalimpsestBodyId, "Palimpsest", "Layer over layer; the older text is always there.", []);
+
     public static StatusData OlderTextBeneath() =>
         Rule(OlderTextBeneathId, "Older Text Beneath",
             "What was written over you once is written over again.",
@@ -811,6 +869,7 @@ public static class ActTwo
                 Watch("CardPlayed", OnPlayedCard(RedactedMark, PalimpsestUsedCounter,
                     new CausalSequenceEffectNode<CardPlayedTriggeredEffectContext>(
                     [
+                        AnnounceFrom<CardPlayedTriggeredEffectContext>(PalimpsestBodyId, AnnounceSignature),
                         new MarkCardInstanceNode<CardPlayedTriggeredEffectContext>(
                             CombatantTargetSelectors.Source,
                             new TriggerEventCardInstanceExpression<CardPlayedTriggeredEffectContext>(),
@@ -1054,6 +1113,48 @@ public static class ActTwo
                             Unfulfilled(ChainReferenceMark, CardZone.Hand),
                         ])),
                     CombatJson.CreateOptions<TurnStartedTriggeredEffectContext>())),
+            ]);
+
+    // ── Stage 6 — Expunged Name's signature ───────────────────────────────────────────────────────────────
+    //
+    // "The first time each player turn the player plays a card whose name has already been played earlier in
+    // the combat: that card becomes Redacted immediately before resolution. Maximum once per player turn."
+    //
+    // This one waited on the ENGINE, not on a reading: card-play records were per TURN and were wiped before
+    // the next turn could ask, so "already played earlier in the COMBAT" had nothing to read. It does now
+    // (`cardPlaysThisCombat`), and the count includes the play being made — so "I have played this before" is
+    // strictly more than one.
+    //
+    // ⚠ A BEAT LATE, like everything else in this act that wants to act "immediately before resolution":
+    // nothing steps between a play and its resolution, so the card resolves at full strength and carries the
+    // Redaction into its NEXT outing. Invisible in this turn's numbers, visible in the log — the same
+    // concession the Palimpsest Husk and the Errata Doppelgänger already make, and named for the same reason.
+    public const string NoLongerRecognizedId = "no_longer_recognized";
+
+    private static CounterId RecognizedUsedCounter => new("no_longer_recognized_used");
+
+    public static StatusData NoLongerRecognized() =>
+        Rule(NoLongerRecognizedId, "No Longer Recognized",
+            "The register has seen that name before. Say it twice in one fight and it is struck through.",
+            [
+                Watch("CardPlayed", Guarded(
+                    new AndExpression<CardPlayedTriggeredEffectContext>(
+                        Unspent<CardPlayedTriggeredEffectContext>(RecognizedUsedCounter),
+                        new ComparisonExpression<CardPlayedTriggeredEffectContext>(
+                            new CardPlaysThisCombatExpression<CardPlayedTriggeredEffectContext>(
+                                CombatantTargetSelectors.Source,
+                                new TriggerEventCardInstanceExpression<CardPlayedTriggeredEffectContext>()),
+                            ComparisonOperator.Greater,
+                            new ConstantExpression<CardPlayedTriggeredEffectContext>(1))),
+                    new CausalSequenceEffectNode<CardPlayedTriggeredEffectContext>(
+                    [
+                        new MarkCardInstanceNode<CardPlayedTriggeredEffectContext>(
+                            CombatantTargetSelectors.Source,
+                            new TriggerEventCardInstanceExpression<CardPlayedTriggeredEffectContext>(),
+                            new TagId(RedactedMark)),
+                        Spend<CardPlayedTriggeredEffectContext>(RecognizedUsedCounter),
+                    ]))),
+                ClearEachTurn(RecognizedUsedCounter),
             ]);
 
     // ── Stage 7 — the Checkout Codex ──────────────────────────────────────────────────────────────────────
@@ -1387,24 +1488,138 @@ public static class ActTwo
         DeathPrevention = new StatusDeathPreventionData(survivingHealth, []),
     };
 
-    // ⚠⚠ WHAT IS NOT BUILT, AND WHY IT IS THE HALF THAT HURTS: "if the Jar dies before resolution, Stored
-    // Life is lost." The natural build is a Downed rule on the Jar that takes the clause off its allies, and
-    // it does not work — in a Downed program the Source IS the downed body, and every ally selector resolves
-    // against a LIVING source, so `AllAlliesOfSourceWithStatus` finds nobody. MEASURED, not assumed: written
-    // that way, breaking the jar first still left the body beside it catching at 11.
-    //
-    // The engine ships `SourceIncludingDownedCombatantTargetSelector` for reading the downed source itself;
-    // there is no "allies of a downed source", and nothing else in the authoring surface can answer "is the
-    // jar still standing" as a BOOLEAN (a count over a selector is an escape node and does not serialize).
-    // The seam this wants is small and general — a living-agnostic ally selector, or a whole-side status
-    // count — and it is named here so it is not lost. `ActTwoStageNineTests` pins the current behaviour, so
-    // the day that seam exists the pin fails and says so.
-    //
-    // The Jar keeps this marker anyway: it is what a future rule would find it by, and it is what says on
-    // the body which enemy the spare life belongs to.
+    // The marker the Jar wears: what says on the body which enemy the spare life belongs to, and what the
+    // jar-breaking rule finds it by.
     public static StatusData StoredLife() =>
         Rule(StoredLifeId, "Spare Life",
             "While the jar stands, the body beside it has a life in reserve.", []);
+
+    // ★ AND THE JAR BREAKING LOSES WHAT IT HELD — as an ENCOUNTER trigger, which is what finally worked.
+    // Written as a bearer-scoped Downed rule on the Jar's own status it did nothing (measured: breaking the
+    // jar first still left the body beside it catching), and an encounter trigger takes the status filter out
+    // of the question entirely: it fires for any downing, and the guard is the one fact that matters — the
+    // body that went down is the one holding the spare life.
+    //
+    // In a Downed program the Source IS the downed body (CombatantDownedTriggeredEffectTargetResolver), which
+    // is exactly what this needs: its allies are alive, so they resolve normally, and the clause comes off
+    // whichever of them was holding it.
+    public static EncounterTriggerData BreakTheJar()
+    {
+        IEffectNode<CombatantDownedTriggeredEffectContext> Lose(string clause) =>
+            new RemoveStatusNode<CombatantDownedTriggeredEffectContext>(
+                CombatantTargetSelectors.AllAlliesOfSourceWithStatus(new StatusDefinitionId(clause)),
+                new StatusDefinitionId(clause));
+
+        // ⚠⚠ THE GUARD READS `sourceIncludingDowned`, AND THAT IS THE WHOLE DIFFICULTY OF THIS RULE. Asked
+        // about `eventTarget` — the obvious way to say "the body that went down" — the guard was simply
+        // FALSE and the clause never came off: an ordinary target selector will not resolve to a combatant
+        // that is no longer living, which is the trap this act's notes already record for allies and which
+        // costs exactly as much when it is the downed body itself being asked about. The engine ships this
+        // selector for precisely this moment. MEASURED: with the guard dropped the clause came off, which is
+        // what named it.
+        var program = new EffectProgram<CombatantDownedTriggeredEffectContext>(
+            new ConditionalEffectNode<CombatantDownedTriggeredEffectContext>(
+                new TargetHasStatusExpression<CombatantDownedTriggeredEffectContext>(
+                    CombatantTargetSelectors.SourceIncludingDowned, new StatusDefinitionId(StoredLifeId)),
+                new CausalSequenceEffectNode<CombatantDownedTriggeredEffectContext>(
+                    [Lose(SpareLifeOuroborosId), Lose(SpareLifeDoppelgangerId)])));
+
+        return new EncounterTriggerData("Downed",
+            JsonSerializer.SerializeToElement(
+                program, CombatJson.CreateOptions<CombatantDownedTriggeredEffectContext>()));
+    }
+
+    // ── Stage 10 — the Detached Footnote ──────────────────────────────────────────────────────────────────
+    //
+    // "At combat start Footnote links visibly to one other enemy; that enemy becomes its Source. The first
+    // time each round the Source's signature mechanic actually triggers, Footnote gains 1 Note, maximum 2. At
+    // 2 Notes its next direct attack becomes See Note Below (14 damage, 1 Overdue, Notes → 0)."
+    //
+    // This is the body the announcement seam was built for. "The Source's signature mechanic ACTUALLY
+    // TRIGGERS" is not an engine event and never could be — it is a conclusion another rule reached, and
+    // until a rule could say so there was nothing to hang this on. Now the per-body rules of this act
+    // announce `signature` from the body they belong to, and the Footnote listens.
+    //
+    // ⚠ THE LINK IS AUTHORED, NOT CHOSEN. "Links to one other enemy" needs a pick the engine cannot make at
+    // combat start, so each encounter says which body is the Source through its slot-indexed scaffolding —
+    // which is also how the master states these pairings (encounter 34: "Footnote begins linked to Orphan
+    // Citation"). Source DEATH and re-linking is therefore not built: it would need the pick this substitutes
+    // for. Named, not approximated.
+    //
+    // ⚠ AND IT HEARS `signature`, NOT THE NAMED MOMENTS. A misfiling skip announces `misfiling` and nothing
+    // else, precisely because the mark cannot say whose it was — so the Footnote cannot be fed by a shelf it
+    // is not linked to.
+    public const string FootnoteSourceId = "footnote_source";
+    public const string MarginalNoteId = "marginal_note";
+
+    public static CounterId NotesCounter => new("footnote_notes");
+    private static CounterId NoteThisRoundCounter => new("footnote_note_this_round");
+    public const int NotesFull = 2;
+
+    // The marker on the SOURCE — the body the Footnote is reading.
+    public static StatusData FootnoteSource() =>
+        Rule(FootnoteSourceId, "Source",
+            "The Footnote is reading this one. What it does, the Footnote writes down.", []);
+
+    // The rule on the FOOTNOTE: one Note per round, at most two, and a fresh round may write again.
+    public static StatusData MarginalNote() =>
+        Rule(MarginalNoteId, "Marginal Note",
+            "Once a round, whatever its Source does gets written in the margin. Two notes and the Footnote "
+            + "reads them out.",
+            [
+                new StatusTriggerData("TurnStarted", JsonSerializer.SerializeToElement(
+                    new EffectProgram<TurnStartedTriggeredEffectContext>(
+                        new SetCombatantCounterNode<TurnStartedTriggeredEffectContext>(
+                            CombatantTargetSelectors.Source, NoteThisRoundCounter,
+                            new ConstantExpression<TurnStartedTriggeredEffectContext>(0), relative: false)),
+                    CombatJson.CreateOptions<TurnStartedTriggeredEffectContext>())),
+            ]);
+
+    // What the Footnote does when its Source speaks — an ENCOUNTER trigger, because the announcement is
+    // somebody else's moment and the Footnote has to be found from the announcer's side. Exactly the Oath
+    // Candle's shape: the loop over the announcer's allies IS the "is a Footnote here" gate, and inside it
+    // `iterationTarget` is the Footnote, so its own latch and its own Notes can be read and written.
+    public static EncounterTriggerData WriteInTheMargin()
+    {
+        var footnote = CombatantTargetSelectors.IterationTarget;
+
+        var body = new ConditionalEffectNode<RuleAnnouncedTriggeredEffectContext>(
+            new AndExpression<RuleAnnouncedTriggeredEffectContext>(
+                new ComparisonExpression<RuleAnnouncedTriggeredEffectContext>(
+                    new CombatantCounterExpression<RuleAnnouncedTriggeredEffectContext>(
+                        footnote, NoteThisRoundCounter),
+                    ComparisonOperator.Equal,
+                    new ConstantExpression<RuleAnnouncedTriggeredEffectContext>(0)),
+                new ComparisonExpression<RuleAnnouncedTriggeredEffectContext>(
+                    new CombatantCounterExpression<RuleAnnouncedTriggeredEffectContext>(footnote, NotesCounter),
+                    ComparisonOperator.Less,
+                    new ConstantExpression<RuleAnnouncedTriggeredEffectContext>(NotesFull))),
+            new CausalSequenceEffectNode<RuleAnnouncedTriggeredEffectContext>(
+            [
+                new SetCombatantCounterNode<RuleAnnouncedTriggeredEffectContext>(
+                    footnote, NotesCounter,
+                    new ConstantExpression<RuleAnnouncedTriggeredEffectContext>(1), relative: true),
+                new SetCombatantCounterNode<RuleAnnouncedTriggeredEffectContext>(
+                    footnote, NoteThisRoundCounter,
+                    new ConstantExpression<RuleAnnouncedTriggeredEffectContext>(1), relative: false),
+            ]));
+
+        var program = new EffectProgram<RuleAnnouncedTriggeredEffectContext>(
+            new ConditionalEffectNode<RuleAnnouncedTriggeredEffectContext>(
+                new AndExpression<RuleAnnouncedTriggeredEffectContext>(
+                    // …a body's own rule, and the body the Footnote is reading.
+                    new AnnouncedRuleIsExpression<RuleAnnouncedTriggeredEffectContext>(AnnounceSignature),
+                    new TargetHasStatusExpression<RuleAnnouncedTriggeredEffectContext>(
+                        CombatantTargetSelectors.EventTarget, new StatusDefinitionId(FootnoteSourceId))),
+                new ForEachTargetEffectNode<RuleAnnouncedTriggeredEffectContext>(
+                    CombatantTargetSelectors.AllAlliesOfSourceWithStatus(
+                        new StatusDefinitionId(MarginalNoteId)),
+                    body)));
+
+        return new EncounterTriggerData("RuleAnnounced",
+            JsonSerializer.SerializeToElement(
+                program, CombatJson.CreateOptions<RuleAnnouncedTriggeredEffectContext>()));
+    }
 
     // ── Stage 10 — Hall of Concordances ───────────────────────────────────────────────────────────────────
 
@@ -1420,40 +1635,111 @@ public static class ActTwo
     // Delinquency resolving, a Reference being fulfilled, a Misfiled card actually being skipped — and none of
     // them announces itself in a way the Index could watch. It therefore counts the one it can see for itself,
     // and a proxy for the others would be a different enemy. See ADAPTATIONS.
+    // ★ ALL FOUR SOURCES NOW, and three of them only because the archive learned to say things out loud.
+    //
+    // "The first time each round each of the following occurs — a Delinquency resolves; a Misfiled card is
+    // actually skipped; a Reference is fulfilled; a Redacted card is played — gain 1 Residue, to a maximum
+    // of 4."
+    //
+    // The three the Index could not see are the three that are CONCLUSIONS another rule reached, and none of
+    // them was an engine event. They announce themselves now (see "what the archive says out loud"), and this
+    // is the body that listens. Each source has its OWN once-a-round latch, because the design counts them
+    // separately — four sources in one round is a full Residue, and the same source four times is one.
+    //
+    // ⚠ WHO ACCUMULATES DEPENDS ON WHO IS ACTING. This rule lives on the PLAYER (it is the player's hand it
+    // settles on), but the acting Source differs by event: a card play is the player's, an announcement is
+    // the ANNOUNCER's — an enemy. So the residue's owner is passed in rather than assumed, and from an
+    // announcer's side the player is its opponent.
     public static StatusData Residue() =>
         Rule(ResidueId, "Residue",
             "Everything the archive did to you settles, and then it settles on you.",
             [
-                Watch("CardPlayed", WhenPlayedCardIs(RedactedMark, Gain())),
+                Watch("CardPlayed", WhenPlayedCardIs(RedactedMark,
+                    Once<CardPlayedTriggeredEffectContext>(
+                        CombatantTargetSelectors.Source, ResidueLatch(AnnounceRedacted),
+                        Gain<CardPlayedTriggeredEffectContext>(CombatantTargetSelectors.Source)))),
+                new StatusTriggerData("RuleAnnounced", JsonSerializer.SerializeToElement(
+                    Settles(), CombatJson.CreateOptions<RuleAnnouncedTriggeredEffectContext>()),
+                    StatusTriggerScope.Anywhere),
+                ReleaseLatchesEachRound(),
             ]);
 
-    private static IEffectNode<CardPlayedTriggeredEffectContext> Gain() =>
-        Gain<CardPlayedTriggeredEffectContext>();
+    private const string AnnounceRedacted = "redacted";
+
+    private static CounterId ResidueLatch(string source) => new($"residue_{source}");
+
+    private static readonly string[] ResidueSources =
+        [AnnounceDelinquency, AnnounceReference, AnnounceMisfiling, AnnounceRedacted];
+
+    // One announcement, matched against the three names the Index can hear from outside itself.
+    private static EffectProgram<RuleAnnouncedTriggeredEffectContext> Settles()
+    {
+        // The announcer is the acting source; the one the residue settles on is across the table from it.
+        var player = Opponent;
+
+        IEffectNode<RuleAnnouncedTriggeredEffectContext> Source(string name) =>
+            new ConditionalEffectNode<RuleAnnouncedTriggeredEffectContext>(
+                new AnnouncedRuleIsExpression<RuleAnnouncedTriggeredEffectContext>(name),
+                Once<RuleAnnouncedTriggeredEffectContext>(
+                    player, ResidueLatch(name),
+                    Gain<RuleAnnouncedTriggeredEffectContext>(player)));
+
+        return new(new CausalSequenceEffectNode<RuleAnnouncedTriggeredEffectContext>(
+            [Source(AnnounceDelinquency), Source(AnnounceReference), Source(AnnounceMisfiling)]));
+    }
+
+    // Do `then` at most once per round for this source, recorded on the one who accumulates.
+    private static IEffectNode<TContext> Once<TContext>(
+        ICombatantTargetSelector who, CounterId latch, IEffectNode<TContext> then) where TContext : class =>
+        new ConditionalEffectNode<TContext>(
+            new ComparisonExpression<TContext>(
+                new CombatantCounterExpression<TContext>(who, latch),
+                ComparisonOperator.Equal, new ConstantExpression<TContext>(0)),
+            new CausalSequenceEffectNode<TContext>(
+            [
+                then,
+                new SetCombatantCounterNode<TContext>(
+                    who, latch, new ConstantExpression<TContext>(1), relative: false),
+            ]));
+
+    // Every source may count again, released at the player's DRAW — which is this act's own idiom for "once
+    // a round" (`ClearEachTurn`) and the one moment every rule here already trusts to be the player's. A
+    // RoundEnded release was the obvious first choice and it did not fire: the latches are kept on the
+    // player, and in a round-scoped context the acting source is not who a bearer-borne rule means by "me".
+    private static StatusTriggerData ReleaseLatchesEachRound() =>
+        Watch("CardsDrawn", Guarded(
+            IsTheApplicant<CardsDrawnTriggeredEffectContext>(),
+            new CausalSequenceEffectNode<CardsDrawnTriggeredEffectContext>(
+                [.. ResidueSources.Select(source =>
+                    (IEffectNode<CardsDrawnTriggeredEffectContext>)
+                    new SetCombatantCounterNode<CardsDrawnTriggeredEffectContext>(
+                        CombatantTargetSelectors.Source, ResidueLatch(source),
+                        new ConstantExpression<CardsDrawnTriggeredEffectContext>(0), relative: false))])));
 
     // One more Residue, and at four the archive files everything else.
-    private static IEffectNode<TContext> Gain<TContext>() where TContext : class =>
+    private static IEffectNode<TContext> Gain<TContext>(ICombatantTargetSelector who) where TContext : class =>
         new CausalSequenceEffectNode<TContext>(
         [
             new ConditionalEffectNode<TContext>(
                 new ComparisonExpression<TContext>(
-                    new CombatantCounterExpression<TContext>(CombatantTargetSelectors.Source, ResidueCounter),
+                    new CombatantCounterExpression<TContext>(who, ResidueCounter),
                     ComparisonOperator.Less, new ConstantExpression<TContext>(ResidueFull)),
                 new SetCombatantCounterNode<TContext>(
-                    CombatantTargetSelectors.Source, ResidueCounter,
+                    who, ResidueCounter,
                     new ConstantExpression<TContext>(1), relative: true)),
             new ConditionalEffectNode<TContext>(
                 new ComparisonExpression<TContext>(
-                    new CombatantCounterExpression<TContext>(CombatantTargetSelectors.Source, ResidueCounter),
+                    new CombatantCounterExpression<TContext>(who, ResidueCounter),
                     ComparisonOperator.GreaterOrEqual, new ConstantExpression<TContext>(ResidueFull)),
                 new CausalSequenceEffectNode<TContext>(
                 [
                     new SetCombatantCounterNode<TContext>(
-                        CombatantTargetSelectors.Source, ResidueCounter,
+                        who, ResidueCounter,
                         new ConstantExpression<TContext>(0), relative: false),
-                    Redact<TContext>(CombatantTargetSelectors.Source,
+                    Redact<TContext>(who,
                         new CardInZoneExpression<TContext>(CardZone.Hand)),
                     new MarkCardInstanceNode<TContext>(
-                        CombatantTargetSelectors.Source,
+                        who,
                         new CardInZoneExpression<TContext>(CardZone.Hand, 1), new TagId(MisfiledMark)),
                 ])),
         ]);

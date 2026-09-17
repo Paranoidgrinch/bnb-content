@@ -123,6 +123,14 @@ public class ActTwoStageNineTests
     // ⚠ THE MOMENT, NOT THE END OF THE FIGHT — the same trap the Certificate's tests document. A caught body
     // is left on a few HP and the catch is SPENT, so a probe that keeps swinging kills it two cards later and
     // reports that nothing caught it.
+    // Hit `at` card by card and report whether a catch was ever SEEN — a hit that left the body with MORE
+    // health than it had before it.
+    //
+    // ⚠⚠ THE OBVIOUS TEST IS WRONG, and it passed for six runs before it was caught. Watching for "alive on
+    // exactly 11" says nothing: the Ouroboros has 35 HP and a Paper Cut deals 6, so four of them land on 11
+    // ANYWAY, with or without a jar. The only thing a catch can be told apart by is the direction the health
+    // moved — nothing else in a fight puts a number UP in the middle of a blow. `caughtAt` is still checked,
+    // because the design's 30 % is a specific number and a catch to the wrong value is a different bug.
     private static bool Caught(
         RunPlayback play, InteractiveRunSession session, CombatantId at, int caughtAt, int turns)
     {
@@ -130,13 +138,17 @@ public class ActTwoStageNineTests
         {
             foreach (var card in play.CombatDriver.Current?.Hand.ToList() ?? [])
             {
-                if (play.CombatDriver.Current is null)
-                    break;
+                if (play.CombatDriver.Current?.State.Combatants
+                        .FirstOrDefault(c => c.Id == at) is not { } before)
+                    return false;
                 play.CombatDriver.PlayCard(card.Id, at);
                 if (play.CombatDriver.Current?.State.Combatants
-                        .FirstOrDefault(c => c.Id == at) is { IsAlive: true } body
-                    && body.Health.Current == caughtAt)
+                        .FirstOrDefault(c => c.Id == at) is { IsAlive: true } after
+                    && after.Health.Current > before.Health.Current)
+                {
+                    Assert.Equal(caughtAt, after.Health.Current);
                     return true;
+                }
             }
             Assert.Null(session.Error);
             if (play.CombatDriver.Current is null)
@@ -181,14 +193,12 @@ public class ActTwoStageNineTests
         Assert.True(caught, "the jar should have caught it and left it on 11");
     }
 
-    // ⚠⚠ A PIN, NOT A BLESSING. "If the Jar dies before resolution, Stored Life is lost" is the half of this
-    // mechanic the engine cannot yet express: a Downed rule on the Jar cannot reach its allies, because in a
-    // Downed program the Source is the downed body and every ally selector wants a living one (see
-    // ActTwo.StoredLife). So today the spare life survives the jar, and this test says so OUT LOUD rather
-    // than leaving the gap to be discovered in a playtest. The day the engine grows a living-agnostic ally
-    // selector, this test fails — and that failure is the reminder to finish the job.
+    // "If the Jar dies before resolution, Stored Life is lost." Break the jar first and the body beside it
+    // has nothing in reserve — which is the whole mechanic, and the half that took a second look to build:
+    // the guard has to ask about the downed body with `sourceIncludingDowned`, because an ordinary selector
+    // will not resolve to something that is no longer living (ActTwo.BreakTheJar).
     [Fact]
-    public void Breaking_the_jar_first_does_not_yet_lose_what_it_was_holding()
+    public void Breaking_the_jar_first_loses_what_it_was_holding()
     {
         var (play, session, _) = FightProbe.Start(
             FightProbe.Authored("archives_necrology_duo_01", energy: 40),
@@ -205,7 +215,6 @@ public class ActTwoStageNineTests
         var caught = Caught(play, session, ouroboros, caughtAt: 11, turns: 10);
 
         play.Dispose();
-        Assert.True(caught,
-            "PIN: the spare life still outlives the jar — see ActTwo.StoredLife for the missing seam");
+        Assert.False(caught, "with the jar broken there should be no life in reserve");
     }
 }

@@ -17,6 +17,23 @@ public static class RawIntentPrograms
             ActTwo.RedactOne(),
         ]));
 
+    // "Deal 16 damage. Apply 1 Overdue from Footnote. Notes → 0."
+    private static EffectProgram<EnemyActionContext> ReadTheMargin() =>
+        new(new CausalSequenceEffectNode<EnemyActionContext>(
+        [
+            new DealDamageNode<EnemyActionContext>(
+                CombatantTargetSelectors.LowestHealthEnemyOfSource,
+                new ConstantExpression<EnemyActionContext>(16)),
+            // Filed by the Footnote itself — an Overdue remembers who it is owed to.
+            new ApplyStatusNode<EnemyActionContext>(
+                CombatantTargetSelectors.LowestHealthEnemyOfSource,
+                new StatusDefinitionId(ActTwo.OverdueId),
+                new ConstantExpression<EnemyActionContext>(1)),
+            new SetCombatantCounterNode<EnemyActionContext>(
+                CombatantTargetSelectors.Source, ActTwo.NotesCounter,
+                new ConstantExpression<EnemyActionContext>(0), relative: false),
+        ]));
+
     // One bottom of the Hourglass emptying: the damage the label promises, and its own sand turned over.
     private static EffectProgram<EnemyActionContext> Future(int damage, CounterId elapsed) =>
         new(new CausalSequenceEffectNode<EnemyActionContext>(
@@ -55,6 +72,9 @@ public static class RawIntentPrograms
             // The Hourglass's two futures: the blow, and the sand of that bottom starting over. The reset
             // lives in the ACTION because the action is the only thing that knows the future came due — an
             // intent rule reads a counter, it cannot spend one.
+            // The Footnote reading its margin out. ⚠ NOT `Future`: this one also FILES — the label promises
+            // "16 dmg, Overdue +1", and borrowing the Hourglass's shape would have quietly dropped the debt.
+            "detached_footnote.see_note_below" => ReadTheMargin(),
             "hourglass_with_two_bottoms.left_future" => Future(16, ActTwo.LeftElapsedCounter),
             "hourglass_with_two_bottoms.right_future" => Future(25, ActTwo.RightElapsedCounter),
             "minute_moth_cloud.steal_a_minute" => StealAMinute(),

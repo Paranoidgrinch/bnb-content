@@ -4332,3 +4332,85 @@ Still unbuilt, and every one of them for the same kind of reason — the engine 
 
 Four of those five want one of exactly two seams: *an event when an authored rule fires*, and *a play record
 that outlives the turn*. Neither is content work.
+
+## The two engine seams Act II was waiting on (2026-09-17)
+
+Five of Act II's standard signatures were unbuildable for the same kind of reason: the engine could not SAY the
+thing. Two small seams closed four of them, and both are general — neither is about Act II.
+
+### `node.announceRule` — a rule saying it reached its moment
+
+Everything in `CombatEvents.cs` was something the ENGINE did: damage landed, a card moved, a status expired. A
+rule written in CONTENT had no way to report that it had fired, and three mechanics were written entirely
+about that: the Detached Footnote watching its Source's signature trigger, and the Miscellany Index counting a
+Delinquency resolving, a Reference being fulfilled and a Misfiled card being skipped. None of those is an
+engine event; each is a CONCLUSION another rule reached.
+
+- **`AnnounceRuleNode`** raises `RuleAnnouncedCombatEvent(announcer, rule)`. It changes nothing, so it is the
+  one native node that is not an `INativeEffectOperationNode` — there is no effect request behind it. The
+  event still travels the ordinary queue, or a listener would run INSIDE the announcing rule's own resolution.
+- **`TriggerEvent.RuleAnnounced`** + `announcedRuleIs` read it. The announcer is both source and event target,
+  which is what lets a listener find itself from the announcer's side — the Oath Candle's shape.
+- ⚠ **IT IS OPT-IN, AND THAT IS THE DESIGN.** Raising an event whenever any triggered program ran would flood
+  a fight with hundreds a round and would still be the wrong question: a status ticking a latch is not its
+  signature reaching its moment. Content says which moments count, and names them.
+
+**Two vocabularies, deliberately.** `delinquency` / `reference` / `misfiling` name WHICH moment it was, for an
+Index counting four different things. `signature` names only that a body's own rule fired, for a Footnote that
+cares whose rule it was and not which. A per-body rule announces both; a moment with **no single owner** — a
+misfiling skip, where the mark cannot say which shelf filed it — announces only its own name, which is exactly
+why the Footnote cannot be fed by a shelf it is not linked to.
+
+⚠ **A rule that lives on the PLAYER announces from the BODY it belongs to**, found by a marker that body
+wears (`AnnounceFrom`). Most of Act II's rules are on the player because it is the player's hand they are
+about; an announcement from the player would be heard by the player's allies, which on that side is nobody
+who cares.
+
+### `cardPlaysThisCombat` — a play record that outlives the turn
+
+`CombatantCardPlayTurnStats` was entirely per-TURN and wiped by `ResetCardPlayTurnStatsOnTurnStartedHandler`,
+so Expunged Name's "a card whose name has already been played earlier in the COMBAT" had nothing to read. It
+now keeps one dictionary that `Reset()` does not clear, captured and restored with the rest.
+
+⚠ **The current play is already counted** when a CardPlayed trigger reads it, so "I have played this before"
+is `> 1`. A program asking `> 0` is asking whether the card exists.
+
+⚠⚠ **AND A PRE-EXISTING CRASH CAME OUT WITH IT.** `Restore` enumerated three defaulted snapshot arrays
+without checking `IsDefault` — and `default` on an `ImmutableArray` is not an empty array, it throws. Those
+fields were appended with `= default` *precisely* so older snapshots could still be read, and they could not:
+a fight saved before the record grew its last-card tags or its claims **crashed on the way back in**, at the
+one moment a player cannot recover from. Found by the test written for the newest field, which fell over on
+the older two.
+
+### What the seams bought
+
+- **Expunged Name — No Longer Recognized.** Built. ⚠ A beat late, like everything in this act that wants to
+  act "immediately before resolution": the card resolves at full strength and carries the Redaction into its
+  next outing.
+- **Miscellany Index — all four Residue sources.** Each source has its own once-a-round latch, because the
+  design counts them separately. ⚠ Who accumulates depends on who is ACTING: a card play is the player's, an
+  announcement is the announcer's, so the residue's owner is passed in rather than assumed. ⚠ The latches are
+  released at the player's DRAW — this act's own idiom for "once a round". A `RoundEnded` release was the
+  obvious first choice and did not fire.
+- **Detached Footnote — Source Link + Marginal Note + See Note Below.** Built. ⚠ The LINK is authored per
+  encounter through the slot-indexed scaffolding, because "links to one other enemy" needs a pick the engine
+  cannot make at combat start — which is also how the master states the pairings. **Source death and
+  re-linking is therefore not built**, and that is the one piece of this body still missing.
+- **Spare-Life Jar — the interruption, after all.** "If the Jar dies before resolution, Stored Life is lost"
+  turned out to be buildable, and what stood in the way was neither of the seams above. ⚠⚠ The guard has to
+  ask about the downed body with **`sourceIncludingDowned`**: asked about `eventTarget`, the obvious way to
+  say "the body that went down", it is simply FALSE — an ordinary target selector will not resolve to a
+  combatant that is no longer living. Measured by dropping the guard, at which point the clause came off.
+  The pin that recorded this as unbuildable is now the test that proves it works.
+
+⚠⚠ **AND A TEST THAT HAD BEEN MEASURING NOTHING.** The Jar's tests watched for the caught body standing
+"alive on exactly 11" — and the Ouroboros has 35 HP while a Paper Cut deals 6, so four of them land on 11
+ANYWAY, with or without a jar. Both tests passed for six runs on a number the fight produces by itself. The
+only thing a catch can be told apart by is the DIRECTION the health moved: nothing else in a fight puts a
+number up in the middle of a blow.
+
+### Act II's standard signatures: the closing tally
+
+All twenty-five have theirs. Still deliberately unbuilt, each named where it lives:
+the Checkout Codex's **Demand Immediate Access** (a player-ACTIVATED action; the engine has none) and the
+Detached Footnote's **re-link on Source death** (needs the pick the authored link substitutes for).

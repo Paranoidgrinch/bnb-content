@@ -27,6 +27,11 @@ public static class EncounterPassives
         // The Hourglass's two bottoms are pushed back by what the PLAYER plays, so the rule is about the
         // player's play and finds the glass by the marker it wears (ActTwo.DelayABottom).
         "hourglass_with_two_bottoms" => [ActTwo.DelayABottom()],
+        // The Footnote writes down what its SOURCE does, and the announcement is the Source's moment — so
+        // the rule is found from the announcer's side (ActTwo.WriteInTheMargin).
+        "detached_footnote" => [ActTwo.WriteInTheMargin()],
+        // Break the jar and the life it was holding is lost (ActTwo.BreakTheJar).
+        "spare_life_jar" => [ActTwo.BreakTheJar()],
         "exception_imp" => Loophole(),
         "old_statute_ghost" => StillInForce(),
         "inverted_hourglass" => StolenSand(),
@@ -307,6 +312,10 @@ public static class EncounterPassives
         ],
         "vacant_portrait" =>
             [new StartingStatusSpec(new StatusDefinitionId(ActTwo.AbsenceBecomesVisibleId), 1)],
+        // The register is about the player's own play history, so the player carries it — and it is only
+        // there when the Expunged Name is.
+        "expunged_name" =>
+            [new StartingStatusSpec(new StatusDefinitionId(ActTwo.NoLongerRecognizedId), 1)],
         "miscellany_index" =>
             [new StartingStatusSpec(new StatusDefinitionId(ActTwo.ResidueId), 1)],
         "mnemonic_chain" =>
