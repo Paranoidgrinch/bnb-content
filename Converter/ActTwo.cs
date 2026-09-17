@@ -1,5 +1,6 @@
 using System.Text.Json;
 using RogueDeck.Core.Combat;
+using RogueDeck.Run;
 using RogueDeck.Sandbox.Composition;
 using RogueDeck.Scenario.Authoring;
 using BnbContent.Converter.Cards;
@@ -372,6 +373,7 @@ public static class ActTwo
         BlankCertificateReference(),
         CertificationRequired(),
         BehindTheDesk(),
+        TwoFuturesAtOnce(),
         StoredLife(),
         SpareLifeOuroboros(),
         SpareLifeDoppelganger(),
@@ -1218,6 +1220,119 @@ public static class ActTwo
         ],
         Triggers = [],
     };
+
+    // ── Stage 8 — the Hourglass With Two Bottoms ──────────────────────────────────────────────────────────
+    //
+    // "Maintain two visible Scheduled Intents, Left Bottom and Right Bottom, with separate countdowns. The
+    // first Attack each player turn may increase Left Bottom's countdown by 1, maximum 3. The first Skill
+    // each player turn may increase Right Bottom's, maximum 3. Each side may be delayed at most once per
+    // player turn."
+    //
+    // The engine has no "scheduled intent": the two futures are the Hourglass's own two attacks, and what was
+    // missing was the CLOCK and the player's hand on it. The clock is two counters on the body, ticking up at
+    // its own turn start, and its intent rules post whichever future has come due.
+    //
+    // ⚠ THE COUNTERS COUNT UP, not down, and that is not a stylistic choice. A countdown has to be
+    // INITIALISED and a counter defaults to 0, so a down-counter would fire both futures on the first tick
+    // unless something set it first. Counting elapsed turns to a threshold starts correctly at nothing, and a
+    // DELAY is then a decrement — the same arithmetic read from the other end. The design's "maximum 3" is
+    // the threshold itself: the wait can be pushed back to three turns and no further, which is exactly
+    // "elapsed may not go below zero".
+    //
+    // ⚠ "ATTACK vs SKILL" IS "DEED vs ANYTHING ELSE". B&B has no Skill type — its non-attack cards are forms,
+    // arguments and rites — so the player's offensive type is the Deed, which is the reading the Contradictory
+    // Signpost's two roads already take (EncounterPassives.BothDirectionsMandatory).
+    //
+    // ⚠ "MAY increase" is read as DOES. The option would be a free player-activated action and the engine has
+    // none (see the Checkout Codex's third door, and the Municipal Dragon's writs). Delaying is pure upside
+    // for the player, so reading it as automatic is the generous reading rather than a silent nerf.
+    public const string TwoFuturesId = "two_futures_at_once";
+
+    public static CounterId LeftElapsedCounter => new("left_bottom_elapsed");
+    public static CounterId RightElapsedCounter => new("right_bottom_elapsed");
+    private static CounterId LeftDelayedCounter => new("left_bottom_delayed");
+    private static CounterId RightDelayedCounter => new("right_bottom_delayed");
+
+    // Three turns of sand per side — the design's own ceiling, used as the fuse so that "maximum 3" is a rule
+    // the player can actually reach rather than a number nothing tests.
+    public const int TwoFuturesFuse = 3;
+
+    // The clock, on the Hourglass: a turn of its own passes for both bottoms, and both delays are released
+    // for the player's coming turn.
+    public static StatusData TwoFuturesAtOnce()
+    {
+        IEffectNode<TurnStartedTriggeredEffectContext> Tick(CounterId counter) =>
+            new SetCombatantCounterNode<TurnStartedTriggeredEffectContext>(
+                CombatantTargetSelectors.Source, counter,
+                new ConstantExpression<TurnStartedTriggeredEffectContext>(1), relative: true);
+
+        IEffectNode<TurnStartedTriggeredEffectContext> Release(CounterId latch) =>
+            new SetCombatantCounterNode<TurnStartedTriggeredEffectContext>(
+                CombatantTargetSelectors.Source, latch,
+                new ConstantExpression<TurnStartedTriggeredEffectContext>(0), relative: false);
+
+        var sand = new EffectProgram<TurnStartedTriggeredEffectContext>(
+            new CausalSequenceEffectNode<TurnStartedTriggeredEffectContext>(
+            [
+                Tick(LeftElapsedCounter),
+                Tick(RightElapsedCounter),
+                Release(LeftDelayedCounter),
+                Release(RightDelayedCounter),
+            ]));
+
+        return Rule(TwoFuturesId, "Two Futures at Once",
+            "Two bottoms, two countdowns. A deed pushes the left one back, anything else the right — once "
+            + "each per turn.",
+            [
+                new StatusTriggerData("TurnStarted", JsonSerializer.SerializeToElement(
+                    sand, CombatJson.CreateOptions<TurnStartedTriggeredEffectContext>())),
+            ]);
+    }
+
+    // The player's hand on the clock, as an ENCOUNTER trigger — the same shape the Oath Candle and the
+    // Signpost use, and for the same reason: the rule is about what the PLAYER played, and the body it writes
+    // to is found by the marker it wears rather than named.
+    public static EncounterTriggerData DelayABottom()
+    {
+        var glass = CombatantTargetSelectors.IterationTarget;
+
+        IEffectNode<CardPlayedTriggeredEffectContext> Push(CounterId elapsed, CounterId latch) =>
+            new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
+                new AndExpression<CardPlayedTriggeredEffectContext>(
+                    // Once per turn per side…
+                    new ComparisonExpression<CardPlayedTriggeredEffectContext>(
+                        new CombatantCounterExpression<CardPlayedTriggeredEffectContext>(glass, latch),
+                        ComparisonOperator.Equal,
+                        new ConstantExpression<CardPlayedTriggeredEffectContext>(0)),
+                    // …and never past the ceiling: elapsed 0 IS a full three turns of sand.
+                    new ComparisonExpression<CardPlayedTriggeredEffectContext>(
+                        new CombatantCounterExpression<CardPlayedTriggeredEffectContext>(glass, elapsed),
+                        ComparisonOperator.Greater,
+                        new ConstantExpression<CardPlayedTriggeredEffectContext>(0))),
+                new CausalSequenceEffectNode<CardPlayedTriggeredEffectContext>(
+                [
+                    new SetCombatantCounterNode<CardPlayedTriggeredEffectContext>(
+                        glass, elapsed,
+                        new ConstantExpression<CardPlayedTriggeredEffectContext>(-1), relative: true),
+                    new SetCombatantCounterNode<CardPlayedTriggeredEffectContext>(
+                        glass, latch,
+                        new ConstantExpression<CardPlayedTriggeredEffectContext>(1), relative: false),
+                ]));
+
+        var program = new EffectProgram<CardPlayedTriggeredEffectContext>(
+            new ForEachTargetEffectNode<CardPlayedTriggeredEffectContext>(
+                CombatantTargetSelectors.AllEnemiesOfSourceWithStatus(new StatusDefinitionId(TwoFuturesId)),
+                new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
+                    new CardInstanceHasTagExpression<CardPlayedTriggeredEffectContext>(
+                        new TriggerEventCardInstanceExpression<CardPlayedTriggeredEffectContext>(),
+                        new TagId(Cards.CardAuthoring.DeedTag)),
+                    Push(LeftElapsedCounter, LeftDelayedCounter),
+                    @else: Push(RightElapsedCounter, RightDelayedCounter))));
+
+        return new EncounterTriggerData("CardPlayed",
+            JsonSerializer.SerializeToElement(
+                program, CombatJson.CreateOptions<CardPlayedTriggeredEffectContext>()));
+    }
 
     // ── Stage 9 — Necrology Vaults ────────────────────────────────────────────────────────────────────────
 

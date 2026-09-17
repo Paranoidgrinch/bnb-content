@@ -17,6 +17,18 @@ public static class RawIntentPrograms
             ActTwo.RedactOne(),
         ]));
 
+    // One bottom of the Hourglass emptying: the damage the label promises, and its own sand turned over.
+    private static EffectProgram<EnemyActionContext> Future(int damage, CounterId elapsed) =>
+        new(new CausalSequenceEffectNode<EnemyActionContext>(
+        [
+            new DealDamageNode<EnemyActionContext>(
+                CombatantTargetSelectors.LowestHealthEnemyOfSource,
+                new ConstantExpression<EnemyActionContext>(damage)),
+            new SetCombatantCounterNode<EnemyActionContext>(
+                CombatantTargetSelectors.Source, elapsed,
+                new ConstantExpression<EnemyActionContext>(0), relative: false),
+        ]));
+
     private static EffectProgram<EnemyActionContext> Misfiling(int damage, string mark) =>
         new(new CausalSequenceEffectNode<EnemyActionContext>(
         [
@@ -40,6 +52,11 @@ public static class RawIntentPrograms
             "miscellany_index.cross_list" => Redacting(12),
             "crabwise_shelf.mis_shelve" => Misfiling(11, ActTwo.MisfiledSidewaysMark),
             "volume_q_null.null_index" => Misfiling(10, ActTwo.MisfiledNullMark),
+            // The Hourglass's two futures: the blow, and the sand of that bottom starting over. The reset
+            // lives in the ACTION because the action is the only thing that knows the future came due — an
+            // intent rule reads a counter, it cannot spend one.
+            "hourglass_with_two_bottoms.left_future" => Future(16, ActTwo.LeftElapsedCounter),
+            "hourglass_with_two_bottoms.right_future" => Future(25, ActTwo.RightElapsedCounter),
             "minute_moth_cloud.steal_a_minute" => StealAMinute(),
             "living_petition_chorus.read_into_the_record" => ReadIntoTheRecord(),
             "escalation_writ.elevate_the_case" => ElevateTheCase(),

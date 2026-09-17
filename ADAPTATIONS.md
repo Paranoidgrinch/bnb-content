@@ -4280,3 +4280,55 @@ anything still marked was provably never asked for and is filed against the play
   something still marked in the pile — when the fetch had in fact worked and the desk had simply taken the
   next card. What named the real culprit was replacing the fetch with a bare draw: the hand went 4→4 and TWO
   cards came back marked.
+
+### Hourglass With Two Bottoms — Two Futures at Once
+
+"Maintain two visible Scheduled Intents, Left Bottom and Right Bottom, with separate countdowns. The first
+Attack each player turn may increase Left Bottom's countdown by 1, maximum 3; the first Skill each player turn
+Right Bottom's. Each side may be delayed at most once per player turn."
+
+The engine has no "scheduled intent". The two futures were already the Hourglass's own two attacks; what was
+missing was the CLOCK and the player's hand on it. The clock is two counters on the body, ticking at its own
+turn start, and its INTENT RULES post whichever future has come due (`self_counter >= 3`, the left at the
+higher priority). The reset lives in the ACTION, because the action is the only thing that knows the future
+came due — an intent rule reads a counter, it cannot spend one.
+
+⚠ **THE COUNTERS COUNT UP, NOT DOWN**, and that is not a stylistic choice. A countdown has to be INITIALISED
+and a counter defaults to 0, so a down-counter fires both futures on the first tick unless something sets it
+first. Counting elapsed turns to a threshold starts correctly at nothing, and a delay is then a decrement —
+the same arithmetic read from the other end. The design's **"maximum 3" is the fuse itself**: the wait can be
+pushed back to three turns and no further, which is exactly "elapsed may not go below zero", and it is a rule
+the player can actually reach rather than a number nothing tests.
+
+⚠ **"Attack vs Skill" is "Deed vs anything else."** B&B has no Skill type — its non-attack cards are forms,
+arguments and rites — so the player's offensive type is the Deed, the same reading the Contradictory
+Signpost's two roads already take. Both branches are tested; without the second one a rule that pushed the
+left bottom for EVERY card would pass every other assertion.
+
+⚠ **"MAY increase" is read as DOES.** The option would be a free player-activated action and the engine has
+none (see the Checkout Codex's third door). Delaying is pure upside for the player, so reading it as automatic
+is the generous reading rather than a silent nerf.
+
+Encounter 29's clarity rule — "Unoccurred Tuesday pauses only itself; the Hourglass's time proceeds normally"
+— holds by construction: the sand runs on the HOURGLASS's own turn start, and Tuesday's missing day is
+Tuesday's intent.
+
+### Where Act II's standard signatures now stand
+
+Built in this pass: **Volume Q-Null, Blank Death Certificate, Spare-Life Jar, Checkout Codex, Hourglass With
+Two Bottoms.** Already built before it, against this file's own claim: Errata Doppelgänger, Unoccurred
+Tuesday, Miscellany Index (one of four Residue sources).
+
+Still unbuilt, and every one of them for the same kind of reason — the engine cannot yet say the thing:
+
+- **Expunged Name** — "a card whose name has already been played earlier in the COMBAT". Card-play records are
+  per TURN only (`CardPlayTurnStats`, reset by `ResetCardPlayTurnStatsOnTurnStartedHandler`); there is no
+  per-definition play history for the fight.
+- **Detached Footnote** — "the first time each round the Source's signature mechanic actually triggers".
+  Nothing announces "another enemy's rule reached its moment", so there is no event to hang this on.
+- **Miscellany Index's other three Residue sources** — a Delinquency resolving, a Reference being fulfilled, a
+  Misfiled card actually being skipped. Same shape as the Footnote: moments only another rule knows it reached.
+- **The Spare-Life Jar's interruption** and **the Checkout Codex's Demand Immediate Access**, both named above.
+
+Four of those five want one of exactly two seams: *an event when an authored rule fires*, and *a play record
+that outlives the turn*. Neither is content work.

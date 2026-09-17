@@ -24,6 +24,9 @@ public static class EncounterPassives
         "triplicate_examiner" => [ThreeCopiesRequired()],
         "oath_candle" => [WitnessTheSeal()],
         "contradictory_signpost" => [BothDirectionsMandatory()],
+        // The Hourglass's two bottoms are pushed back by what the PLAYER plays, so the rule is about the
+        // player's play and finds the glass by the marker it wears (ActTwo.DelayABottom).
+        "hourglass_with_two_bottoms" => [ActTwo.DelayABottom()],
         "exception_imp" => Loophole(),
         "old_statute_ghost" => StillInForce(),
         "inverted_hourglass" => StolenSand(),

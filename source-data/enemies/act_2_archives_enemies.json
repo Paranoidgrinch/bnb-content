@@ -1135,6 +1135,33 @@
       "archives",
       "hours",
       "stage_hours"
+    ],
+    "starting_statuses": [
+      {
+        "status": "two_futures_at_once"
+      }
+    ],
+    "intent_rules": [
+      {
+        "condition": {
+          "kind": "self_counter",
+          "counter": "left_bottom_elapsed",
+          "op": "ge",
+          "value": 3
+        },
+        "action": "left_future",
+        "priority": 20
+      },
+      {
+        "condition": {
+          "kind": "self_counter",
+          "counter": "right_bottom_elapsed",
+          "op": "ge",
+          "value": 3
+        },
+        "action": "right_future",
+        "priority": 10
+      }
     ]
   },
   {
