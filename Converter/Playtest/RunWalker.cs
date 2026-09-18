@@ -20,19 +20,26 @@ public static class RunWalker
     // tag) and what it held (the encounter/event/shop id).
     public sealed record Stop(int Act, string NodeId, string Role, string Content);
 
+    // `Maps` is the generator the walk was ACTUALLY laid out with, read back off the run rather than echoed
+    // from the argument: two walks of the same seed on two generators are two different games, and a report
+    // that cannot name its own is a report about an unknown act.
     public sealed record Report(
         int Seed,
         RunResult Result,
         string? Error,
         IReadOnlyList<Stop> Stops,
         IReadOnlyList<string> Notes,
-        int Steps)
+        int Steps,
+        string Maps)
     {
         public bool Finished => Error is null && Result != RunResult.Ongoing;
         public int ActsWalked => Stops.Count == 0 ? 0 : Stops.Max(s => s.Act);
         public IEnumerable<Stop> InAct(int act) => Stops.Where(s => s.Act == act);
         public int Count(int act, string role) => InAct(act).Count(s => s.Role == role);
     }
+
+    private static string Maps(InteractiveRunSession session) =>
+        MapGenerators.Name(session.Run.GeneratedMapGenerator);
 
     // Give the walking tester a body that survives the whole run, so the walk reaches the last act. Both the
     // blueprint's own Start and every character's are raised — RunSetup reads whichever the pick names.
@@ -87,7 +94,8 @@ public static class RunWalker
         play.Start(blueprint, seed, interactive: true, mapGenerator: mapGenerator);
         using var _ = play;
         if (play.Error is { } startError)
-            return new Report(seed, RunResult.Ongoing, startError, stops, notes, steps);
+            return new Report(seed, RunResult.Ongoing, startError, stops, notes, steps,
+                MapGenerators.Name(play.Session?.Run.GeneratedMapGenerator ?? mapGenerator));
 
         var session = play.Session!;
         var interludes = 0;
@@ -128,12 +136,12 @@ public static class RunWalker
             if (play.Error is { } hostError)
             {
                 Inventory(play, session, progress);
-                return new Report(seed, session.Run.Result, hostError, stops, notes, steps);
+                return new Report(seed, session.Run.Result, hostError, stops, notes, steps, Maps(session));
             }
             if (session.Error is { } runError)
             {
                 Inventory(play, session, progress);
-                return new Report(seed, session.Run.Result, runError, stops, notes, steps);
+                return new Report(seed, session.Run.Result, runError, stops, notes, steps, Maps(session));
             }
             if (session.IsComplete)
                 break;
@@ -190,7 +198,8 @@ public static class RunWalker
 
         if (steps >= stepBudget)
             notes.Add($"the walk ran out of steps after {stepBudget} — something is looping");
-        return new Report(seed, session.Run.Result, session.Error ?? play.Error, stops, notes, steps);
+        return new Report(seed, session.Run.Result, session.Error ?? play.Error, stops, notes, steps,
+            Maps(session));
     }
 
     // Save the live run at its interlude and resume it from that save — the exact round trip the player makes

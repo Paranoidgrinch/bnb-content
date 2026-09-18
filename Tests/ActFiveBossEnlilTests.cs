@@ -301,6 +301,31 @@ public class ActFiveBossEnlilTests
         Assert.Equal(left + refill, Energy(play));
     }
 
+    // ⚠⚠ THE HALF OF THE DECREE THE TEST ABOVE DOES NOT REACH. It plays its card BEFORE the carry has piled
+    // anything up, so it proves the pool may be filled past its ceiling and never asks whether it may then be
+    // SPENT. It may not, until this was fixed: paying a cost wrote the pool back through the ordinary setter,
+    // which refused any value still above the ceiling — so the first card played on a carried turn threw,
+    // was lost, and said nothing the player could read. The run simulator found it here, in this fight,
+    // wearing this decree, and it read as a fault in whichever card came up first.
+    [Fact]
+    public void And_what_passed_into_tomorrow_can_be_spent_tomorrow()
+    {
+        var (play, enemy) = Under(ActFive.UnspentTomorrowId, energy: 3);
+
+        // Let a turn go by without spending, so the next one opens well above the ceiling.
+        play.CombatDriver!.EndTurn();
+        var carried = Energy(play);
+        var ceiling = Hero(play).Resources[StandardCombatIds.EnergyResource].Max!.Value;
+        Assert.True(carried > ceiling,
+            $"the decree should have carried energy above its ceiling, but held {carried} of {ceiling}");
+
+        Play(play, enemy, Cut);
+
+        // Landed, and paid for: one energy gone and the card actually resolved.
+        Assert.Equal(carried - 1, Energy(play));
+        Assert.DoesNotContain(play.CombatDriver!.Current!.Steps, step => step.HasProblems);
+    }
+
     [Fact]
     public void Without_the_decree_the_refill_replaces_what_was_left()
     {

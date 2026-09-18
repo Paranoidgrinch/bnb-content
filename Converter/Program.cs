@@ -245,7 +245,9 @@ static int Playtest(RunBlueprint blueprint, int seed, int runs, string? generato
         var ok = report.Error is null && report.Notes.Count == 0 && reachedTheEnd;
         if (!ok)
             failures++;
-        Console.WriteLine($"{(ok ? "ok  " : "FAIL")} seed {walkSeed}: {report.Result}, "
+        // The generator on the RESULT line too, not only in the header above: a single line lifted out of a
+        // long report (into a note, a commit message, a bug report) has to carry which act it is about.
+        Console.WriteLine($"{(ok ? "ok  " : "FAIL")} seed {walkSeed} maps {report.Maps}: {report.Result}, "
             + $"{report.Stops.Count} rooms over {report.ActsWalked}/{acts} acts, {report.Steps} steps");
         for (var act = 1; act <= report.ActsWalked; act++)
         {
