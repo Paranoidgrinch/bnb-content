@@ -12,6 +12,8 @@ using RogueDeck.Sandbox.Composition;
 //                       with the outlier seed named at each end. Exits non-zero only on an act that could not
 //                       be generated clean; everything else is printed to be read.
 //      --generator <id> which map generator --walk / --playtest lay their maps out with. Default "v0.0.1"
+//      --jobs <n>       how many --playtest walks run at once (default: cores). One walk is single-threaded
+//                       and the walks share nothing but the immutable blueprint.
 //                       (strategic); pass "v0.0.0" for the rule-based maps every run used until 2026-09-14.
 //      --art-slots <f>  write the picture list (ART_SLOTS.md) instead of the document: one row per file the
 //                       frontend will look for, with the design canon's brief beside each relic
@@ -26,6 +28,7 @@ var dataDir = "source-data";
 var outFile = "game.roguedeck.json";
 var seed = 20260717;
 var playtest = 0;
+var jobs = Environment.ProcessorCount;
 var walk = 0;
 var maps = 0;
 var mapReport = 0;
@@ -48,6 +51,7 @@ for (var i = 0; i < args.Length - 1; i++)
         case "--out": outFile = args[i + 1]; break;
         case "--seed": seed = int.Parse(args[i + 1]); break;
         case "--playtest": playtest = int.Parse(args[i + 1]); break;
+        case "--jobs": jobs = int.Parse(args[i + 1]); break;
         case "--walk": walk = int.Parse(args[i + 1]); break;
         // Which map generator the walked runs are laid out by: "v0.0.1" (strategic — what a BnB act now IS,
         // and the default here since 2026-09-14) or "v0.0.0" (rule-based, which still ships and is what a save
@@ -103,9 +107,9 @@ try
     if (mapReport > 0)
         return MapReport(blueprint, seed, mapReport);
     if (walk != 0)
-        return Playtest(blueprint, seed, 1, generator, walk);
+        return Playtest(blueprint, seed, 1, generator, jobs, walk);
     if (playtest > 0)
-        return Playtest(blueprint, seed, playtest, generator);
+        return Playtest(blueprint, seed, playtest, generator, jobs);
 
     var problems = RunDocumentValidator.ValidateForExport(blueprint).ToList();
     if (problems.Count > 0)
@@ -213,7 +217,7 @@ static int MapStats(RunBlueprint blueprint, int seed, int runs)
 
 // Walk whole runs and print what each one met, act by act. A walk that errors, loops or never reaches the last
 // act is a bug in the game, not in the walker — the report says which room it happened in.
-static int Playtest(RunBlueprint blueprint, int seed, int runs, string? generator, int? onlyWalk = null)
+static int Playtest(RunBlueprint blueprint, int seed, int runs, string? generator, int jobs, int? onlyWalk = null)
 {
     // Through the exported document, not the in-memory one: what Godot loads is what gets walked.
     var options = RunJson.CreateOptions(indented: false);
@@ -235,34 +239,45 @@ static int Playtest(RunBlueprint blueprint, int seed, int runs, string? generato
         ? $"walking run {one} of the game built with seed {seed}, maps by {laidOutBy}"
         : $"walking {runs} run(s) of the game built with seed {seed}, maps by {laidOutBy}");
 
-    for (var i = 0; i < runs; i++)
+    // ⚠ THE WALKS RUN AT ONCE, AND EACH ONE STILL READS AS ITS OWN (S6). A walk is single-threaded, takes
+    // minutes, and shares nothing with its neighbours but the immutable blueprint — so a `for` loop over
+    // twelve of them was eleven idle cores. Each walk writes into its OWN buffer and the buffers are printed
+    // in seed order afterwards: interleaved progress from a dozen walks would be a report nobody can read,
+    // and a report that cannot be read is not one.
+    var pages = new string[runs];
+    var failed = new bool[runs];
+    Parallel.For(0, runs, new ParallelOptions { MaxDegreeOfParallelism = Math.Max(1, jobs) }, i =>
     {
+        var page = new System.Text.StringBuilder();
         var walkSeed = onlyWalk ?? seed + i;
-        var report = RunWalker.Walk(tester, walkSeed, saveEvery: 5, progress: Console.WriteLine,
+        var report = RunWalker.Walk(tester, walkSeed, saveEvery: 5, progress: line => page.AppendLine(line),
             mapGenerator: laidOutBy);
         var acts = shipped.Acts?.Count ?? 1;
         var reachedTheEnd = report.Result == RunResult.Victory;
         var ok = report.Error is null && report.Notes.Count == 0 && reachedTheEnd;
-        if (!ok)
-            failures++;
+        failed[i] = !ok;
         // The generator on the RESULT line too, not only in the header above: a single line lifted out of a
         // long report (into a note, a commit message, a bug report) has to carry which act it is about.
-        Console.WriteLine($"{(ok ? "ok  " : "FAIL")} seed {walkSeed} maps {report.Maps}: {report.Result}, "
+        page.AppendLine($"{(ok ? "ok  " : "FAIL")} seed {walkSeed} maps {report.Maps}: {report.Result}, "
             + $"{report.Stops.Count} rooms over {report.ActsWalked}/{acts} acts, {report.Steps} steps");
         for (var act = 1; act <= report.ActsWalked; act++)
         {
             var rooms = report.InAct(act).ToList();
             var byRole = rooms.GroupBy(r => r.Role).OrderBy(g => g.Key)
                 .Select(g => $"{g.Key} {g.Count()}");
-            Console.WriteLine($"     act {act}: {rooms.Count} rooms — {string.Join(", ", byRole)}");
-            Console.WriteLine($"       boss: {string.Join(", ", rooms.Where(r => r.Role == "boss").Select(r => r.Content))}");
-            Console.WriteLine($"       doors: {string.Join(", ", rooms.Where(r => r.Role == "event").Select(r => r.Content))}");
+            page.AppendLine($"     act {act}: {rooms.Count} rooms — {string.Join(", ", byRole)}");
+            page.AppendLine($"       boss: {string.Join(", ", rooms.Where(r => r.Role == "boss").Select(r => r.Content))}");
+            page.AppendLine($"       doors: {string.Join(", ", rooms.Where(r => r.Role == "event").Select(r => r.Content))}");
         }
         if (report.Error is { } error)
-            Console.WriteLine($"     ERROR: {error}");
+            page.AppendLine($"     ERROR: {error}");
         foreach (var note in report.Notes)
-            Console.WriteLine($"     NOTE: {note}");
-    }
+            page.AppendLine($"     NOTE: {note}");
+        pages[i] = page.ToString();
+    });
+    foreach (var page in pages)
+        Console.Write(page);
+    failures = failed.Count(f => f);
 
     Console.WriteLine(failures == 0 ? $"all {runs} walk(s) finished" : $"{failures}/{runs} walk(s) had problems");
     return failures == 0 ? 0 : 1;

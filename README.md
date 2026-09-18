@@ -37,10 +37,33 @@ dotnet run --project Converter -- --data source-data --out game.roguedeck.json -
 dotnet test
 ```
 
+### ⚠⚠ A long walk wants Release — and `-c Release` on the SOLUTION does not give it to you
+
+The engine is a `ProjectReference` from a sibling checkout, and it is **not** a member of `BnbContent.slnx`.
+A solution assigns configurations only to its own projects, so `dotnet build -c Release` here builds the
+Converter in Release and the engine in **Debug**, then copies that Debug engine into `Converter/bin/Release`,
+where it reads as a Release build to anyone who checks the folder name instead of the file size. Measured
+2026-09-18 on `--playtest 1`: **110.9 s** that way and **88.1 s** built properly — the same 110 rooms, the
+same answers, the same report once the clock is stripped out.
+
+Build the **project**, not the solution:
+
+```
+dotnet build Converter/BnbContent.Converter.csproj -c Release
+dotnet run --project Converter -c Release --no-build -- --playtest 8
+```
+
+(`Optimize` is the whole of Release here — neither repo holds a single `#if DEBUG` or `Debug.Assert` — and
+`RogueDeck-Core/Directory.Build.props` is what makes the engine admit to having configurations other than
+Debug at all. Before it existed, even the exported game shipped an unoptimized engine.)
+
 ## Driving it without a human
 
 ```
 dotnet run --project Converter -- --playtest 8      # walk 8 whole runs and report what they met
+                                                   #   (all at once — --jobs N, default: cores. Each walk
+                                                   #   buffers its own progress and they print in seed
+                                                   #   order, so the report stays readable.)
 dotnet run --project Converter -- --walk 20260721   # walk exactly ONE run — the one a report calls "seed …"
 dotnet run --project Converter -- --maps 3          # lay out every act's map and check its shape
 dotnet run --project Converter -- --art-slots ART_SLOTS.md   # rewrite the picture list (see above)
