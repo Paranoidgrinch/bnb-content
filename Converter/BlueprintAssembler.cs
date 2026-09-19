@@ -94,6 +94,30 @@ public static class BlueprintAssembler
                 .Select(m => new RunAct(m.Act.Id, m.Map.Spec, NameKey: m.Act.Name)
                 {
                     StrategicMapGeneration = m.Map.Strategic,
+                    // ── THE GATES OF AN ACT PUT THE BODY BACK TOGETHER ───────────────────────────────────
+                    // Whatever the last act cost, the next one begins whole. It is a design decision and it
+                    // is worth naming both halves of what it buys:
+                    //
+                    //   FOR THE PLAYER — an act is a chapter with its own arc rather than a tax on the one
+                    //   before it. A boss fought at four health stops being a fight and starts being a
+                    //   verdict passed three rooms earlier, and a run that limps into act three at nine
+                    //   health was decided in act two by nothing the player can still answer.
+                    //
+                    //   FOR EVERY MEASUREMENT WE TAKE — it makes the run DECOMPOSABLE. Health is the one
+                    //   number that ties act four's difficulty to act one's luck; cut it at the gates and
+                    //   each act can be asked about on its own, and what crosses the boundary is only the
+                    //   deck, the relics and the purse. That is the difference between a search that
+                    //   multiplies across five acts and one that adds.
+                    //
+                    // ⚠ ACT I RECEIVES IT TOO, and receives nothing: a run starts at full health, so healing
+                    // the missing none is a no-op. The rule is stated for every act rather than for "every
+                    // act but the first", because the second phrasing is the kind nobody remembers.
+                    //
+                    // ⚠ ACT V TOO — the gauntlet of three bosses. Its design says no healing BETWEEN them
+                    // (BnB Boss Master §Act V), which this does not touch: it opens the doors at full and
+                    // then hands out nothing until the end. "The build that enters is the build that must
+                    // win" reads better when the build enters whole.
+                    Opening = [new ComputedHealRunEffect(RunExpr.MissingHealth)],
                 })
                 .ToList(),
             Statuses =
