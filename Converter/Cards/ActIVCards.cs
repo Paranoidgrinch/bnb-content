@@ -167,8 +167,8 @@ public static class ActIVCards
             "Paperwork and repeat this attack.", Reckoning(21)),
 
         MonumentalWrit, MonumentalWrit.Upgraded(
-            "Queue: Deal 30 damage, plus 12 for each other card still in your Queue when this resolves. " +
-            "Count at most 3.", Writ(30)),
+            "Queue: Deal 26 damage, plus 15 for each other card still in your Queue when this resolves. " +
+            "Count at most 3.", Writ(26, perQueued: 15)),
 
         StoneLevy, StoneLevy.Upgraded(
             "Remove up to 25 of your Block. Deal 10 damage plus 2 damage for each Block removed.",
@@ -243,9 +243,9 @@ public static class ActIVCards
                     Seq(again, If(HasStacks(Keywords.Paperwork, 10), again))))));
     }
 
-    private static CombatNodeModel Writ(int damage) =>
+    private static CombatNodeModel Writ(int damage, int perQueued = 12) =>
         Damage(Plus(CombatAmountSpec.FromConst(damage),
-            Times(AtMost(CardsInZone(CardZone.QueuePile), 3), 12)));
+            Times(AtMost(CardsInZone(CardZone.QueuePile), 3), perQueued)));
 
     // "Remove up to N of your Block. Deal M damage plus 2 per Block removed." What is there is read before it
     // is spent.

@@ -69,26 +69,23 @@ public sealed class ConversionPools
     public IRewardSource CardRewardSource(int count = 3)
     {
         var (common, uncommon, rare) = RarityCurve[Math.Clamp(Act, 1, 5)];
-        var classes = new[] { ("common", common), ("uncommon", uncommon), ("rare", rare) }
-            .Select(c => (c.Item2, Cards: RewardCards.Where(card => card.Rarity == c.Item1).ToList()))
-            .Where(c => c.Cards.Count > 0)
-            .ToList();
+        var shares = new Dictionary<string, int> { ["common"] = common, ["uncommon"] = uncommon, ["rare"] = rare };
+        // Anything the pool holds that carries an unknown rarity still has to be offerable, or a card would fall
+        // out of the game by being labelled wrongly. It draws in the Common class.
+        string ClassOf(Cards.CardAuthoring.BnbCard card) => shares.ContainsKey(card.Rarity) ? card.Rarity : "common";
+        var classes = RewardCards.GroupBy(ClassOf).Where(g => shares[g.Key] > 0).ToList();
         if (classes.Count == 0)
             throw new ConversionException($"act {Act} card pool", "holds no card of any known rarity");
 
+        // TWO CURVES, BOTH EXACT. P(card) = P(its rarity) × P(its act | that rarity) / (cards in that cell): the
+        // rarity odds are the act's rarity curve whatever the pool holds, and within a rarity the act odds are
+        // ActShare's — so a pool that grows by one card changes nobody else's class odds.
+        var total = classes.Sum(g => shares[g.Key]);
         var entries = new List<RunPool<RewardOffer>.Entry>();
-        foreach (var (share, cards) in classes)
-        {
-            var others = classes.Where(c => !ReferenceEquals(c.Cards, cards))
-                .Aggregate(1, (product, c) => product * c.Cards.Count);
-            foreach (var card in cards)
-                entries.Add(new RunPool<RewardOffer>.Entry(CardOffer(card), share * others));
-        }
-        // Anything the pool holds that carries an unknown rarity still has to be offerable, or a card would
-        // fall out of the game by being labelled wrongly. It draws at the Common share.
-        foreach (var card in RewardCards.Where(c => c.Rarity is not ("common" or "uncommon" or "rare")))
-            entries.Add(new RunPool<RewardOffer>.Entry(CardOffer(card), common));
-
+        foreach (var rarityClass in classes)
+            foreach (var (card, chance) in WithinClass(rarityClass.ToList()))
+                entries.Add(new RunPool<RewardOffer>.Entry(
+                    CardOffer(card), Weight((double)shares[rarityClass.Key] / total * chance)));
         return new PoolRewardSource(new RunPool<RewardOffer>(entries), count);
     }
 
@@ -96,7 +93,7 @@ public sealed class ConversionPools
     // ask for these by name, and a uniform draw from the whole act pool would quietly hand out commons instead.
     // `tags` are run card tags written on whatever the player takes, so an offer can BE the thing the event
     // promised ("choose one of three, and it starts the next fight in a Reservation") without a second prompt
-    // that could land on the wrong card if the reward is declined.
+    // that could land on the wrong card if the reward is declined. The act curve holds here too.
     public IRewardSource CardRewardSource(string rarity, int count = 3, IReadOnlyList<string>? tags = null)
     {
         var eligible = RewardCards.Where(c => c.Rarity == rarity).ToList();
@@ -104,8 +101,66 @@ public sealed class ConversionPools
             throw new ConversionException($"act {Act} card pool", $"holds no '{rarity}' card to offer");
         return new PoolRewardSource(
             new RunPool<RewardOffer>(
-                eligible.Select(c => new RunPool<RewardOffer>.Entry(CardOffer(c, tags), 1)).ToList()),
+                WithinClass(eligible).Select(p => new RunPool<RewardOffer>.Entry(CardOffer(p.Card, tags), Weight(p.Chance)))
+                    .ToList()),
             count);
+    }
+
+    // ── the act curve: older cards, rarer the further you go ─────────────────────────────────────────────────
+    //
+    // The pool is cumulative by design — reaching Act N makes every card gated at N or earlier offerable — and the
+    // design adds (the user, 2026-09-26): an earlier act's cards "can still come, but the chance keeps shrinking
+    // the further you get". So the act a card was gated at is a CLASS, like its rarity: the current act's cards
+    // take a fixed share of every draw, and what is left goes to the older acts, each one half of the act after
+    // it. Both readings of "shrinking" hold: all older cards together 50 % → 40 % → 30 % from Act II to IV, and
+    // Act I's own 50 % → ~13 % → ~4 %. These are balance numbers, the kind a balance pass is expected to move.
+    public static readonly IReadOnlyDictionary<int, int> CurrentActShare = new Dictionary<int, int>
+    {
+        [1] = 100,
+        [2] = 50,
+        [3] = 60,
+        [4] = 70,
+        [5] = 70,
+    };
+
+    // The share of a draw that goes to cards gated `age` acts back, among the ages actually present.
+    public static double ActShare(int act, int age, IReadOnlyCollection<int> agesPresent)
+    {
+        var current = CurrentActShare[Math.Clamp(act, 1, 5)] / 100.0;
+        var older = agesPresent.Where(a => a > 0).ToList();
+        if (!agesPresent.Contains(0))
+            current = 0;
+        var olderTotal = older.Sum(a => Math.Pow(0.5, a - 1));
+        var remainder = older.Count == 0 ? 0 : 1 - current;
+        return age == 0
+            ? (older.Count == 0 ? 1 : current)
+            : remainder * Math.Pow(0.5, age - 1) / olderTotal;
+    }
+
+    // Each card of a class with the chance it is drawn within that class: its act's share, split evenly over
+    // the cards of that act.
+    private IEnumerable<(Cards.CardAuthoring.BnbCard Card, double Chance)> WithinClass(
+        IReadOnlyList<Cards.CardAuthoring.BnbCard> cards)
+    {
+        var byAge = cards.GroupBy(c => Math.Max(0, Act - c.Act)).ToList();
+        var ages = byAge.Select(g => g.Key).ToList();
+        foreach (var group in byAge)
+        {
+            var share = ActShare(Act, group.Key, ages);
+            foreach (var card in group)
+                yield return (card, share / group.Count());
+        }
+    }
+
+    // A pool weight is an integer; a chance is a fraction. A million steps keeps every card above zero.
+    private static int Weight(double chance) => Math.Max(1, (int)Math.Round(chance * 1_000_000));
+
+    // The same curve for a shelf that is dealt rather than drawn (a shop's stock): each card's weight.
+    public double ShelfWeight(Cards.CardAuthoring.BnbCard card, IReadOnlyList<Cards.CardAuthoring.BnbCard> shelf)
+    {
+        var ages = shelf.Select(c => Math.Max(0, Act - c.Act)).Distinct().ToList();
+        var age = Math.Max(0, Act - card.Act);
+        return ActShare(Act, age, ages) / shelf.Count(c => Math.Max(0, Act - c.Act) == age);
     }
 
     // ── the act's rarity curve ────────────────────────────────────────────────────────────────────────────

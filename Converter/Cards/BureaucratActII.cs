@@ -137,18 +137,20 @@ public static class BureaucratActII
             "Remove up to 5 Paperwork from an enemy. Gain 3 Block for each Paperwork removed.",
             RedactPaperwork(5, 3)),
 
-        SmudgedIndex, SmudgedIndex.Upgraded("Archive a card from your draw pile. Gain 6 Block.",
+        SmudgedIndex, SmudgedIndex.Upgraded("Archive a card from your draw pile. Gain 5 Block. Draw 1 card.",
             Seq(Archive(new CombatCardSpec("chosen", CardZone.DrawPile, Purpose: "choose a card to Archive")),
-                Block(6))),
+                Block(5), Draw(1))),
 
         ClutterConcordance, ClutterConcordance.Upgraded(
             "Deal 7 damage, plus 2 damage for each different Junk type currently present across your discard " +
             "and Exhaust piles.",
             Damage(Plus(CombatAmountSpec.FromConst(7), Times(JunkTypesLyingAround(), 2)))),
 
+        // ⚠ The design's "+" removes the copy's extra Energy cost, a surcharge the port never built — so the "+"
+        // was the base card word for word. It costs 0 instead: the same saving, paid where it can be.
         Marginalia, Marginalia.Upgraded(
             "Choose a card from your Exhaust pile. Create a Temporary copy in your hand; it Exhausts when " +
-            "played. Marginalia Exhausts."),
+            "played. Marginalia Exhausts.", cost: 0),
 
         BindingFee, BindingFee.Upgraded(
             "Archive a non-Junk card from your hand. Apply Paperwork equal to 4 plus its base Energy cost.",
@@ -165,8 +167,8 @@ public static class BureaucratActII
             "copy of it is added to your hand; it costs 0 and Exhausts when played.", cost: 1),
 
         ArchivePyre, ArchivePyre.Upgraded(
-            "Archive all Junk cards in your hand. Deal 12 damage to ALL enemies, plus 5 damage for each Junk " +
-            "Archived this way.", PyreStrike(12, 5)),
+            "Archive all Junk cards in your hand. Deal 10 damage to ALL enemies, plus 7 damage for each Junk " +
+            "Archived this way.", PyreStrike(10, 7)),
 
         FuneralIndex, FuneralIndex.Upgraded(
             "Deal 6 damage for each card you have Archived this combat. Count at most 8 cards. Exhaust.",

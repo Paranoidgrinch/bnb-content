@@ -93,8 +93,8 @@ public static class ShopTemplate
     {
         // Each shelf's POOL is deeper than what it shows, so a reroll can actually turn the stock over and a
         // relic that adds a slot has something to put in it.
-        var general = Cards(pools.GeneralCards, rng, depth: 8);
-        var character = Cards(pools.CharacterCards, rng, depth: 10);
+        var general = Cards(pools, pools.GeneralCards, rng, depth: 8);
+        var character = Cards(pools, pools.CharacterCards, rng, depth: 10);
         // THE WHOLE POOL, not a sample of it. A shelf's stock is drawn at CONVERSION time and shipped in the
         // document, so a depth of 5 meant five of the twenty-four Shop relics existed in a given build of the
         // game and the other nineteen could never be bought by anyone — twelve of them were named nowhere in
@@ -120,9 +120,13 @@ public static class ShopTemplate
             ]);
     }
 
+    // The shelf's stock is dealt on the act curve (ConversionPools.ActShare): a weighted shuffle — each card's key
+    // is -ln(u)/weight, and the smallest keys are dealt — so an older act's card still turns up, less often.
     private static IReadOnlyList<ShopEntry> Cards(
-        IReadOnlyList<Cards.CardAuthoring.BnbCard> pool, Random rng, int depth) =>
-        pool.OrderBy(_ => rng.Next()).Take(depth).Select(card => new ShopEntry(
+        ConversionPools pools, IReadOnlyList<Cards.CardAuthoring.BnbCard> pool, Random rng, int depth) =>
+        pool.Select(card => (Card: card, Key: -Math.Log(1 - rng.NextDouble()) / pools.ShelfWeight(card, pool)))
+            .OrderBy(k => k.Key).Select(k => k.Card)
+            .Take(depth).Select(card => new ShopEntry(
             $"buy-{card.Id}", StandardRunIds.Gold,
             CardPrices.GetValueOrDefault(card.Rarity, 85),
             [new AddCardToDeckRunEffect(new CardDefinitionId(card.Id))], card.Name,

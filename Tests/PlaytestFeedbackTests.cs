@@ -86,4 +86,52 @@ public class PlaytestFeedbackTests
                 Assert.True(statuses.Contains(entry.Id), $"the compendium explains '{entry.Id}', which is no status");
         }
     }
+
+    // P5-3 — "later acts can still offer earlier cards, but less and less the further you get". Read off the
+    // real card reward's pool weights: the current act takes its share, Act I's share shrinks act by act, and
+    // the rarity curve still holds exactly.
+    [Fact]
+    public void Older_acts_cards_come_less_often_the_further_the_run_goes()
+    {
+        double? lastActOneShare = null;
+        foreach (var act in new[] { 2, 3, 4 })
+        {
+            var pools = ConversionPools.Build(act);
+            var source = Assert.IsType<PoolRewardSource>(pools.CardRewardSource());
+            var byId = pools.RewardCards.ToDictionary(c => c.Id);
+            double total = source.Pool.Entries.Sum(e => e.Weight);
+            double Share(Func<CardAuthoring.BnbCard, bool> which) => source.Pool.Entries
+                .Where(e => which(byId[e.Value.Id["card-".Length..]])).Sum(e => e.Weight) / total;
+
+            Assert.Equal(ConversionPools.CurrentActShare[act] / 100.0, Share(c => c.Act == act), 2);
+            var actOne = Share(c => c.Act == 1);
+            if (lastActOneShare is { } before)
+                Assert.True(actOne < before, $"Act I cards take {actOne:P1} in act {act}, not less than {before:P1}");
+            lastActOneShare = actOne;
+
+            var (common, uncommon, rare) = ConversionPools.RarityCurve[act];
+            Assert.Equal(rare / 100.0, Share(c => c.Rarity == "rare"), 2);
+            Assert.Equal(common / 100.0, Share(c => c.Rarity == "common" || c.Rarity is not ("uncommon" or "rare")), 2);
+            _ = uncommon;
+        }
+    }
+
+    // P5-1 — an upgrade improves what the card is about, not only its damage.
+    [Fact]
+    public void Upgrades_grow_the_thing_the_card_is_about()
+    {
+        var text = FinalCards.All().ToDictionary(c => c.Id, c => c.RulesText);
+        Assert.Equal("Deal 7 damage. Apply 3 Paperwork.", text["cursed_addendum+"]);
+        Assert.Equal("Deal 6 damage. Apply 2 Seal.", text["waxing_authority+"]);
+        Assert.Equal("Gain 6 Block. Apply 2 Doubt.", text["petty_objection+"]);
+        // The "+" of Skeleton Staff used to be the base card word for word.
+        var staff = FinalCards.All().Single(c => c.Id == "skeleton_staff");
+        var staffPlus = FinalCards.All().Single(c => c.Id == "skeleton_staff+");
+        Assert.True(staffPlus.Cost < staff.Cost);
+        // No card's "+" is its base card again.
+        foreach (var card in FinalCards.All().Where(c => !c.Id.EndsWith('+')))
+            if (FinalCards.All().FirstOrDefault(c => c.Id == card.Id + "+") is { } plus)
+                Assert.False(plus.RulesText == card.RulesText && plus.Cost == card.Cost,
+                    $"{card.Id}+ is {card.Id} again");
+    }
 }
