@@ -184,6 +184,9 @@ public class BureaucratCardTests
             "ash_register", "certified_kindling", "certified_kindling", "paper_cut", "paper_cut");
 
         Play(play, session, "ash_register", enemyId);
+        // A Rite exhausts (playtest 2026-09-26), so the Register is no longer lying in the discard pile to be
+        // reshuffled into the draw it pays for. One Paper Cut played first puts a card there for it to draw.
+        Play(play, session, "paper_cut", enemyId);
 
         // First Archiving of the turn: the Kindling leaves the hand, the archived card leaves the hand, and
         // the Register hands one back — so the hand is one down, not two.

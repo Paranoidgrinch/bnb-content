@@ -218,7 +218,7 @@ public static class BlueprintAssembler
                     Art = $"cards/{c.Id.TrimEnd('+')}.png",
                     // The engine has no rules-text renderer: a card's ability text IS presentation, and
                     // this is what both UIs show on a reward or in the hand.
-                    FlavorText = c.Text,
+                    FlavorText = c.RulesText,
                     Rarity = c.Rarity,
                     Tags = c.AllTags.ToList(),
                 }),

@@ -23,12 +23,14 @@ public class WholeRunTests
         BlueprintAssembler.Build(BabData.Load(TestData.Directory), seed: 20260827);
 
     // Through the exported document, with a body that survives to the end: the walk is a COVERAGE
-    // instrument, and a tester who dies in the city never sees the archives.
+    // instrument, and a tester who dies in the city never sees the archives. ⚠ 99 999, not 9 999: once the
+    // Rites exhaust (playtest 2026-09-26) this greedy walker grinds the First Scribe for ~270 answers, and the
+    // Paperwork his tablet writes — which ignores Block and never decays — adds up past 9 999 on the way.
     private static RunBlueprint Shipped()
     {
         var options = RunJson.CreateOptions(indented: false);
         var shipped = RunJson.BlueprintFromJson(RunJson.ToJson(Game, options), options);
-        return RunWalker.WithHealth(shipped, 9999);
+        return RunWalker.WithHealth(shipped, 99999);
     }
 
     [Fact]

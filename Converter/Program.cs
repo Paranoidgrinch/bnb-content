@@ -222,7 +222,7 @@ static int Playtest(RunBlueprint blueprint, int seed, int runs, string? generato
     // Through the exported document, not the in-memory one: what Godot loads is what gets walked.
     var options = RunJson.CreateOptions(indented: false);
     var shipped = RunJson.BlueprintFromJson(RunJson.ToJson(blueprint, options), options);
-    var tester = RunWalker.WithHealth(shipped, 9999);
+    var tester = RunWalker.WithHealth(shipped, 99999); // see WholeRunTests.Shipped
     var failures = 0;
 
     // Which GAME is being walked, said once. The walk seeds run from the same number, so a walk reported as

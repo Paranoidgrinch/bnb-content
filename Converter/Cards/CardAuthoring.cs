@@ -53,7 +53,16 @@ public static class CardAuthoring
         bool RetainInHand = false,
         bool Queued = false)
     {
-        public IReadOnlyList<string> AllTags => [Type, .. Tags ?? []];
+        // A Rite exhausts (playtest 2026-09-26): its effect stays for the whole fight, so a second copy played
+        // from the same deck — or the same copy drawn again — stacked the rule, which is not what a persistent
+        // effect is. It carries the ordinary exhaust tag rather than a special case, so everything that reads
+        // "an exhausted card" (relics, enemy passives, the pile views) sees a Rite exactly as it sees any other.
+        public IReadOnlyList<string> AllTags =>
+            Type == RiteTag ? [Type, .. Tags ?? [], ExhaustTag] : [Type, .. Tags ?? []];
+
+        // The words on the card. A Rite's "Exhaust." is added here, not written into forty sheets by hand.
+        public string RulesText =>
+            Type == RiteTag && !Text.Contains("Exhaust", StringComparison.Ordinal) ? $"{Text} Exhaust." : Text;
 
         public CardData Compile() => new()
         {
@@ -62,7 +71,7 @@ public static class CardAuthoring
             // The rules text travels WITH the card. It used to live only in the presentation manifest, which
             // the event-given cards (the Junk a door leaves you, a boss's clause, a Fragment) never reached —
             // so the cards a player has never seen before were the ones that explained themselves least.
-            DescriptionKey = Text,
+            DescriptionKey = RulesText,
             Costs = Cost == 0 ? [] : [new ResourceCost(Energy, Cost)],
             Tags = AllTags.Distinct().Select(t => new TagId(t)).ToArray(),
             PlayedCardDestinationZone = AllTags.Contains(ExhaustTag) ? CardZone.ExhaustPile : Destination,
