@@ -40,15 +40,20 @@ public static class EventTemplates
                     RunExpr.Const(100))),
             ], TextKey: $"{act.RestChoiceText} (heal {healPercent}% of max HP)"),
             // The campfire's other half: the design gives a waiting room two actions (BnB_Run_Systems_Master
-            // §3 — Authorized Leave *or* Submit an Amendment) and only the heal was ever built. Offered
-            // unconditionally: a "how many cards could be improved" guard is not expressible as DATA (a count
-            // over a selector is an escape node and would not serialize), and it is not needed — a choice with
-            // nothing to improve picks nothing and does nothing.
+            // §3 — Authorized Leave *or* Submit an Amendment) and only the heal was ever built.
+            //
+            // ⚠ It used to be offered unconditionally, on the theory that a choice with nothing to improve
+            // "picks nothing and does nothing". To a player it did something: the rest was spent and the run
+            // went straight back to the map (playtest 2026-09-26). It now requires an improvable card, and
+            // while there is none it stays on screen greyed, saying why, instead of vanishing.
             new EventChoice("amend",
             [
                 new UpgradeCardsRunEffect(
                     RunSelectors.DeckCards.Upgradable().ChooseByPlayer(1, "improve one card, permanently")),
-            ], TextKey: $"{act.RestUpgradeChoiceText} (improve a card)"),
+            ], TextKey: $"{act.RestUpgradeChoiceText} (improve a card)",
+                Requirement: RunExpr.GreaterThan(
+                    RunExpr.Count(RunSelectors.DeckCards.Upgradable()), RunExpr.Const(0)),
+                DisabledText: "There's nothing to improve."),
             new EventChoice("leave", [], TextKey: "Move on"),
         ]),
     ]);
@@ -67,15 +72,22 @@ public static class ShopTemplate
     // §4.5 declares prices balance variables, not content, so these are exactly what they were. A Shop relic
     // has no Common/Uncommon/Rare — its pool is its rarity — so it is priced at what an unlabelled relic
     // already cost on this shelf.
-    private const int DefaultRelicPrice = 190;
+    //
+    // Playtest 2026-09-26: "shop relics sind zu teuer bzw haben zu schlechte effekte — im zweifel einfach 20%
+    // billiger". Every relic on the shelf came down by a fifth (130/190/260 → 104/152/208); the cards did not.
+    private const int DefaultRelicPrice = 152;
 
     private static readonly Dictionary<Rarity, int> RelicPrices = new()
     {
-        [Rarity.Common] = 130,
-        [Rarity.Uncommon] = 190,
-        [Rarity.Rare] = 260,
+        [Rarity.Common] = 104,
+        [Rarity.Uncommon] = 152,
+        [Rarity.Rare] = 208,
         [Rarity.Shop] = DefaultRelicPrice,
     };
+
+    // What a relic costs on ANY shelf — the shop node's and the markets an event builds (the Licensed Vendor,
+    // the Act-III fairs). They used to keep a copy of the table each, so a price change reached only one.
+    public static int RelicPrice(BnbRelic relic) => RelicPrices.GetValueOrDefault(relic.Rarity, DefaultRelicPrice);
 
     public static ShopDefinition Build(ConversionPools pools, Random rng)
     {
@@ -123,7 +135,7 @@ public static class ShopTemplate
         IReadOnlyList<BnbRelic> pool, Random rng, int depth) =>
         pool.OrderBy(_ => rng.Next()).Take(depth).Select(relic => new ShopEntry(
             $"buy-{relic.Id}", StandardRunIds.Gold,
-            RelicPrices.GetValueOrDefault(relic.Rarity, DefaultRelicPrice),
+            RelicPrice(relic),
             ConversionPools.Grant(relic), relic.Name,
             Kind: ShopEntryKinds.Relic)).ToList();
 }

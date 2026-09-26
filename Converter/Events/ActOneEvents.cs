@@ -354,7 +354,6 @@ public static class ActOneEvents
     private static BnbEvent LicensedVendor(ConversionPools pools, Random rng)
     {
         var cardPrices = new Dictionary<string, int> { ["common"] = 55, ["uncommon"] = 85, ["rare"] = 130 };
-        var relicPrices = new Dictionary<string, int> { ["common"] = 130, ["uncommon"] = 190, ["rare"] = 260 };
 
         var cards = pools.RewardCards.OrderBy(_ => rng.Next()).Take(5).ToList();
         // "Relics may be eligible Normal or Shop Relics under standard Shop eligibility. Event/Boss Relics
@@ -370,7 +369,7 @@ public static class ActOneEvents
         }
         foreach (var (relic, index) in relics.Select((r, i) => (r, i)))
         {
-            var price = relicPrices.GetValueOrDefault(relic.Rarity.ToString().ToLowerInvariant(), 190);
+            var price = ShopTemplate.RelicPrice(relic);
             stock.Add(Stall($"relic-{index}", $"{relic.Name} — {price} Gold", price,
                 [.. ConversionPools.Grant(relic)]));
         }

@@ -538,7 +538,6 @@ public static class ActThreeEvents
         int Less(int price) => price * (100 - discount) / 100;
 
         var cardPrices = new Dictionary<string, int> { ["common"] = 55, ["uncommon"] = 85, ["rare"] = 130 };
-        var relicPrices = new Dictionary<string, int> { ["common"] = 130, ["uncommon"] = 190, ["rare"] = 260 };
 
         var stock = new List<EventChoice>();
         foreach (var (card, index) in pools.RewardCards.OrderBy(_ => rng.Next()).Take(cards)
@@ -551,7 +550,7 @@ public static class ActThreeEvents
         foreach (var (relic, index) in pools.MarketRelicStock.OrderBy(_ => rng.Next()).Take(relics)
             .Select((r, i) => (r, i)))
         {
-            var price = Less(relicPrices.GetValueOrDefault(relic.Rarity.ToString().ToLowerInvariant(), 190));
+            var price = Less(ShopTemplate.RelicPrice(relic));
             stock.Add(Stall(id, $"relic-{index}", $"{relic.Name} — {price} Gold", price,
                 [.. ConversionPools.Grant(relic)]));
         }
