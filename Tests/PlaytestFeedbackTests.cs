@@ -134,4 +134,26 @@ public class PlaytestFeedbackTests
                 Assert.False(plus.RulesText == card.RulesText && plus.Cost == card.Cost,
                     $"{card.Id}+ is {card.Id} again");
     }
+
+    // The tutorial: six city rooms in a fixed order on the real content, through the exported document, walked
+    // to its end by a player who answers every question — and every moment the coach names has words.
+    [Fact]
+    public void The_tutorial_is_six_city_rooms_and_can_be_walked_to_the_end()
+    {
+        var options = RunJson.CreateOptions(indented: false);
+        var shipped = RunJson.BlueprintFromJson(RunJson.ToJson(Game, options), options);
+        Assert.NotNull(shipped.Tutorial);
+        var tutorial = shipped.ForTutorial();
+        Assert.Equal(["combat", "event", "multi-combat", "shop", "rest", "elite"],
+            tutorial.Map.Nodes.Select(n => n.Tags.Single()));
+
+        var report = BnbContent.Converter.Playtest.RunWalker.Walk(tutorial, seed: 1);
+        Assert.Null(report.Error);
+        Assert.Equal(RunResult.Victory, report.Result);
+        Assert.True(report.Steps > 6, "the tutorial ended before its rooms were played");
+
+        var extra = Game.Presentation.Game.Extra;
+        foreach (var (moment, _, _) in Tutorial.Steps)
+            Assert.False(string.IsNullOrWhiteSpace(extra[$"tutorial.text:{moment}"]), moment);
+    }
 }

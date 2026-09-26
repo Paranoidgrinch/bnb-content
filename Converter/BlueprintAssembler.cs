@@ -148,6 +148,8 @@ public static class BlueprintAssembler
             Programs = AuthoredPrograms(pools),
             Start = start,
             Characters = [new RunCharacter(data.Bureaucrat.Id, start)],
+            // The tutorial: six city rooms in a fixed order, realised from the city's own rules (Tutorial.cs).
+            Tutorial = Tutorial.Build(maps[0].Map.Spec, start),
             // Victory now means the WHOLE run — the city and the archives behind it. (The engine's meta rules
             // key off the run's result; a per-act flag would need an act-completed hook that is not data yet.)
             MetaRules = [new MetaRule([RunResult.Victory], [new SetMetaFlag("bnb.run.cleared")])],
@@ -311,7 +313,7 @@ public static class BlueprintAssembler
                 FlavorText = GameTitle,
                 // The compendium's plain words and examples (Compendium.cs): a wiki is about the GAME, so its
                 // words hang off the game's own entry.
-                Extra = Compendium.Extra(),
+                Extra = Compendium.Extra().Concat(Tutorial.Extra()).ToDictionary(p => p.Key, p => p.Value),
             },
         };
     }
