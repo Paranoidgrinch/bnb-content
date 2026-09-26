@@ -69,4 +69,21 @@ public class PlaytestFeedbackTests
 
     private static RunState NewRun() =>
         new(new RunId("run"), new HealthState(30, 40), new RunMap(Array.Empty<Node>()));
+
+    // P2-4 — the compendium's words reach the document, and every status it explains is a status the game has.
+    [Fact]
+    public void The_compendium_explains_real_statuses_in_plain_words()
+    {
+        var extra = Game.Presentation.Game.Extra;
+        var statuses = Game.Statuses.Select(s => s.Id).ToHashSet(StringComparer.Ordinal);
+        Assert.NotEmpty(Compendium.Entries);
+        foreach (var entry in Compendium.Entries)
+        {
+            Assert.Equal(entry.Name, extra[$"compendium:{entry.Id}"]);
+            Assert.False(string.IsNullOrWhiteSpace(extra[$"compendium.plain:{entry.Id}"]));
+            Assert.False(string.IsNullOrWhiteSpace(extra[$"compendium.example:{entry.Id}"]));
+            if (!entry.Concept)
+                Assert.True(statuses.Contains(entry.Id), $"the compendium explains '{entry.Id}', which is no status");
+        }
+    }
 }

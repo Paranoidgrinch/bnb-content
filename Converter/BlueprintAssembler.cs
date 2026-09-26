@@ -309,6 +309,9 @@ public static class BlueprintAssembler
             {
                 Art = "title.png",
                 FlavorText = GameTitle,
+                // The compendium's plain words and examples (Compendium.cs): a wiki is about the GAME, so its
+                // words hang off the game's own entry.
+                Extra = Compendium.Extra(),
             },
         };
     }
