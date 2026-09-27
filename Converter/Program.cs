@@ -43,6 +43,17 @@ string? fightRelics = null;
 int? fightHealth = null;
 var fightEnergy = 3;
 var fights = 1;
+// THE ACT-I BENCH (Act1Bench): --act1-bench [--bench-shuffles n] [--bench-horizon n] [--bench-beam n]
+//      [--bench-stages queue,counter] [--bench-extra card,card] [--bench-cards] [--bench-hp n]
+var act1Bench = args.Contains("--act1-bench");
+var benchCards = args.Contains("--bench-cards");
+var benchShuffles = 20;
+var benchHorizon = 5;
+var benchBeam = 16;
+var benchPerTurn = 300;
+var benchHealth = 70;
+string? benchStages = null;
+string? benchExtra = null;
 for (var i = 0; i < args.Length - 1; i++)
 {
     switch (args[i])
@@ -72,6 +83,13 @@ for (var i = 0; i < args.Length - 1; i++)
         case "--fight-hp": fightHealth = int.Parse(args[i + 1]); break;
         case "--fight-energy": fightEnergy = int.Parse(args[i + 1]); break;
         case "--fights": fights = int.Parse(args[i + 1]); break;
+        case "--bench-shuffles": benchShuffles = int.Parse(args[i + 1]); break;
+        case "--bench-horizon": benchHorizon = int.Parse(args[i + 1]); break;
+        case "--bench-beam": benchBeam = int.Parse(args[i + 1]); break;
+        case "--bench-perturn": benchPerTurn = int.Parse(args[i + 1]); break;
+        case "--bench-hp": benchHealth = int.Parse(args[i + 1]); break;
+        case "--bench-stages": benchStages = args[i + 1]; break;
+        case "--bench-extra": benchExtra = args[i + 1]; break;
     }
 }
 
@@ -100,6 +118,10 @@ try
             };
         return SparringMatch.Run(blueprint, snapshot, Console.WriteLine);
     }
+    if (act1Bench)
+        return Act1Bench.Run(blueprint, new Act1Bench.Options(
+            benchShuffles, benchHorizon, benchBeam, benchPerTurn, Jobs: jobs, StagesWanted: Split(benchStages),
+            Extra: Split(benchExtra), Cards: benchCards, Health: benchHealth), Console.WriteLine);
     if (artSlots is not null)
         return ArtSlots.Write(blueprint, data, dataDir, artSlots);
     if (maps > 0)
