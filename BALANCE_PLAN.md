@@ -187,6 +187,22 @@ Erst ganz einfach: **Geringe Kosten und hohe Schadens-, Block- und Statuszahlen 
 **Tor:** alle Karten in unter 10 s. Die Liste der unlesbaren Karten ist vollständig und wird von Hand
 durchgesehen, und die Top und der Boden jedes Pools ergeben beim Lesen Sinn.
 
+**✔ Gebaut 2026-09-27:** `--card-rating` (`Converter/Playtest/CardRating.cs`, Tests in `CardRatingTests`).
+138 Karten in ~4 s, jeder Knotentyp wird gelesen. Ergebnis in
+`~/Desktop/bnb-balance/20260927-card-rating.txt`. Umgesetzt wie geplant, mit drei Präzisierungen:
+- **Zwei Werte statt einem:** `safe` (skalierende Teile = 0, das ist der Rang) und `max` (Skalierung
+  gefüttert, läuft meist in den Deckel der Karte). Black Tribunal: 7 gegen 27 pro Energie.
+- **Die Schlüsselwort-Maschinerie wird erkannt und nicht gezählt:** die Seal-Umwandlung (genau
+  „≥ 3 Seal“), die Riten-Synergie (`rite_in_force`) und die Buchhaltungs-Status (archived, junk_filed,
+  queue_resolved, ratified). Gezählt werden die acht Schlüsselwörter Paperwork, Doubt, Seal, Censure,
+  Lien, Citation, Blood Ink und Ward Wax.
+- **44 Karten tragen ihre Wirkung (ganz oder teilweise) in einer Status-Regel** (alle Riten und einige
+  Working-Karten). Sie sind mit `rule:<id>` markiert und statisch nicht bewertet. Das ist die größte
+  Lücke von K1, und K2 muss sie füllen.
+
+Erste Auffälligkeit für K3: Permit A38 (5 Paperwork für 2 Energie) kommt nur auf 2,5 pro Energie, weil ein
+Paperwork-Stapel jede Runde wirkt und mit 1 Punkt zu billig angesetzt ist.
+
 #### K2 — Gemessen: was die Karte im Kampf spart
 
 Die Tausch-Methode ist gebaut: Die Karte ersetzt Paper Cut bzw. Cower an derselben Stelle, und jedes Paar

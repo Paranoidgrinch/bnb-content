@@ -45,7 +45,10 @@ var fightEnergy = 3;
 var fights = 1;
 // THE ACT-I BENCH (Act1Bench): --act1-bench [--bench-shuffles n] [--bench-horizon n] [--bench-beam n]
 //      [--bench-stages queue,counter] [--bench-extra card,card] [--bench-cards] [--bench-hp n]
+// THE CARD RATING (CardRating, BALANCE_PLAN K1): --card-rating — every final card's effect per energy, read
+// statically off its program. Seconds; no fight is played.
 var act1Bench = args.Contains("--act1-bench");
+var cardRating = args.Contains("--card-rating");
 var benchCards = args.Contains("--bench-cards");
 var benchShuffles = 20;
 var benchHorizon = 5;
@@ -118,6 +121,8 @@ try
             };
         return SparringMatch.Run(blueprint, snapshot, Console.WriteLine);
     }
+    if (cardRating)
+        return CardRating.Run(blueprint, Console.WriteLine);
     if (act1Bench)
         return Act1Bench.Run(blueprint, new Act1Bench.Options(
             benchShuffles, benchHorizon, benchBeam, benchPerTurn, Jobs: jobs, StagesWanted: Split(benchStages),
