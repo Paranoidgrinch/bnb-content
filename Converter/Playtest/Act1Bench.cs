@@ -29,7 +29,7 @@ public static class Act1Bench
         IReadOnlyList<string>? StagesWanted = null, IReadOnlyList<string>? Extra = null, bool Cards = false,
         int Health = 70);
 
-    public sealed record Fight(string Stage, string Encounter, int Shuffle, PlannedFight Result);
+    public sealed record Fight(string Stage, string Encounter, int Shuffle, PlannedFight Result, string Order);
 
     public static int Run(RunBlueprint game, Options options, Action<string> say)
     {
@@ -51,23 +51,51 @@ public static class Act1Bench
         if (!options.Cards)
             return 0;
 
-        // WHAT EACH CARD IS WORTH HERE: the same fights, the same shuffles, the deck with one Act-I card added.
-        // Paired by (encounter, shuffle), so the difference is the card's and not the dice's.
+        // WHAT EACH CARD IS WORTH HERE, AS A PLAYER JUDGES IT: better than the basic card it would push out?
+        //
+        // ⚠⚠ ADDING A CARD MEASURED NOTHING (2026-09-27, discarded): one more card shuffles into a different
+        // order, so "the same shuffle" was a different fight and the pairs were not pairs — and every card came
+        // out a little negative, the deck diluted. So the card TAKES A SLOT: a Deed replaces a Paper Cut, anything
+        // else a Cower Behind a Desk, at the same place in the deck list. The shuffle is a function of the seed
+        // and the number of cards, not of which cards they are, so the new card is drawn exactly when the one it
+        // replaced would have been — every pair is the same fight but for that card. The bench checks that
+        // (`coupled`), fight by fight, rather than trusting it.
+        var bnb = Cards.FinalCards.All().ToDictionary(c => c.Id);
         var candidates = Cards.FinalCards.RewardPool(1).Select(c => c.Id).ToList();
-        say($"\ncard values over stages {string.Join(", ", stages)} — {candidates.Count} Act-I cards, each added once to the base deck");
-        var baseKey = baseline.ToDictionary(f => (f.Encounter, f.Shuffle), f => f.Result);
-        var rows = new List<(string Card, double Delta, int WinsDelta)>();
-        foreach (var card in candidates)
+        say($"\ncard values over stages {string.Join(", ", stages)} — {candidates.Count} Act-I cards, each in place of a basic card");
+        var baseKey = baseline.ToDictionary(f => (f.Encounter, f.Shuffle), f => f);
+        var rows = new List<(string Card, string Replaced, double Saved, double Error, int Wins, int Coupled, int Pairs)>();
+        // Every card's deck, all fought in ONE parallel pass: a pass per card left most cores idle behind its
+        // slowest fight.
+        var decks = candidates
+            .Select(card => (Card: card, Replaced: bnb[card].Type == Cards.CardAuthoring.DeedTag ? "paper_cut" : "cower_behind_a_desk"))
+            .Where(c => baseDeck.Contains(c.Replaced))
+            .Select(c =>
+            {
+                var swapped = baseDeck.ToList();
+                swapped[swapped.IndexOf(c.Replaced)] = c.Card;
+                return (c.Card, c.Replaced, Deck: (IReadOnlyList<string>)swapped);
+            })
+            .ToList();
+        var fought = BenchMany(game, byStage, [.. decks.Select(d => (d.Card, d.Deck))], options);
+        foreach (var (card, replaced, _) in decks)
         {
-            var with = Bench(game, byStage, [.. baseDeck, card], options with { Jobs = options.Jobs });
-            var delta = with.Average(f => (double)(baseKey[(f.Encounter, f.Shuffle)].HealthLost - f.Result.HealthLost));
+            var with = fought[card];
+            var diffs = with.Select(f => (double)(baseKey[(f.Encounter, f.Shuffle)].Result.HealthLost - f.Result.HealthLost)).ToList();
+            var mean = diffs.Average();
+            var error = diffs.Count > 1
+                ? Math.Sqrt(diffs.Sum(d => (d - mean) * (d - mean)) / (diffs.Count - 1) / diffs.Count)
+                : 0;
             var wins = with.Count(f => f.Result.Won) - baseline.Count(f => f.Result.Won);
-            rows.Add((card, delta, wins));
-            say($"  {card,-28} health saved per fight {delta,6:+0.0;-0.0}   wins {wins,+3:+0;-0;0}");
+            // Coupled: the same card INSTANCES in the same order at the first draw. A card instance is numbered by
+            // its place in the deck list, so the swapped card carries the replaced card's number.
+            var coupled = with.Count(f => f.Order == baseKey[(f.Encounter, f.Shuffle)].Order);
+            rows.Add((card, replaced, mean, error, wins, coupled, with.Count));
+            say($"  {card,-28} for {replaced,-20} saves {mean,6:+0.0;-0.0} ±{error:0.0} HP/fight   wins {wins,3:+0;-0;0}   coupled {coupled}/{with.Count}");
         }
-        say("\nranked:");
-        foreach (var (card, delta, wins) in rows.OrderByDescending(r => r.WinsDelta).ThenByDescending(r => r.Delta))
-            say($"  {delta,6:+0.0;-0.0}  {wins,+3:+0;-0;0}  {card}");
+        say("\nranked (health saved per fight against the basic card it replaces; ± is one standard error):");
+        foreach (var r in rows.OrderByDescending(r => r.Wins).ThenByDescending(r => r.Saved))
+            say($"  {r.Saved,6:+0.0;-0.0} ±{r.Error:0.0}  {r.Wins,3:+0;-0;0}  {r.Card} (for {r.Replaced})");
         return 0;
     }
 
@@ -75,28 +103,37 @@ public static class Act1Bench
     // but the immutable blueprint.
     private static List<Fight> Bench(
         RunBlueprint game, IReadOnlyList<(string Stage, List<string> Encounters)> byStage,
-        IReadOnlyList<string> deck, Options options)
+        IReadOnlyList<string> deck, Options options) =>
+        BenchMany(game, byStage, [("base", deck)], options)["base"];
+
+    // …and for several decks at once, every (deck, encounter, shuffle) in one parallel pass.
+    private static Dictionary<string, List<Fight>> BenchMany(
+        RunBlueprint game, IReadOnlyList<(string Stage, List<string> Encounters)> byStage,
+        IReadOnlyList<(string Key, IReadOnlyList<string> Deck)> decks, Options options)
     {
-        var jobs = byStage
-            .SelectMany(s => s.Encounters.SelectMany(e => Enumerable.Range(1, options.Shuffles).Select(k => (s.Stage, e, k))))
+        var jobs = decks
+            .SelectMany(d => byStage.SelectMany(s => s.Encounters.SelectMany(e =>
+                Enumerable.Range(1, options.Shuffles).Select(k => (d.Key, d.Deck, s.Stage, e, k)))))
             .ToList();
-        var results = new ConcurrentBag<Fight>();
+        var results = new ConcurrentBag<(string Key, Fight Fight)>();
         Parallel.ForEach(jobs,
             new ParallelOptions { MaxDegreeOfParallelism = options.Jobs > 0 ? options.Jobs : Environment.ProcessorCount },
             job =>
             {
                 var encounter = game.Encounters.First(e => e.Id.Value == job.e);
-                var ring = SparringRing.OneFight(game, encounter, deck, maxHealth: options.Health);
+                var ring = SparringRing.OneFight(game, encounter, job.Deck, maxHealth: options.Health);
                 using var play = new RunPlayback(() => { });
                 play.Start(ring, job.k, interactive: true);
                 while (play.Session is { IsAwaitingInterlude: true } session)
                     session.Continue();
                 if (play.CombatDriver?.Current is not { } combat)
                     return;
+                var zones = combat.State.GetCardZones(combat.HeroId);
+                var order = string.Join(",", zones.Hand.Concat(zones.DrawPile).Select(c => c.Id.value));
                 var planner = new FightPlanner(options.Horizon, options.Beam, options.PerTurn);
-                results.Add(new Fight(job.Stage, job.e, job.k, planner.Play(combat)));
+                results.Add((job.Key, new Fight(job.Stage, job.e, job.k, planner.Play(combat), order)));
             });
-        return [.. results];
+        return results.GroupBy(r => r.Key).ToDictionary(g => g.Key, g => g.Select(r => r.Fight).ToList());
     }
 
     private static void Report(IReadOnlyList<Fight> fights, Action<string> say)
