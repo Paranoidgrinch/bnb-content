@@ -210,6 +210,29 @@ public class EliteRelicTests
         play.Dispose();
     }
 
+    // ⚠⚠ NO ELITE RELIC FILES AGAINST ITS OWN BEARER (playtest 2026-09-27). Remittitur Seal sent the hero's own
+    // opening statuses back to the hero as Paperwork — 2 at the start of every fight, never decaying. Whatever a
+    // relic does at the opening hand, the hero must not carry more Paperwork than without it.
+    [Theory]
+    [MemberData(nameof(EveryEliteRelic))]
+    public void No_elite_relic_files_paperwork_on_its_own_bearer_at_the_opening_hand(string relicId)
+    {
+        // A REAL encounter: its opening puts the hero's own marker on the hero, which is the status the broken
+        // seal sent back. A bare probe fight opens with nothing of the hero's own and cannot show the fault.
+        //
+        // ⚠ AND ANOTHER RELIC: the seal's own opening status is not what it answered — the NEXT status the hero
+        // was given was (in the playtest, Petitioner's Token's rule). A relic tested alone cannot show it.
+        const string Real = "city_normal_ordinance_04";
+        string[] alongside = ["petitioners_token"];
+        var (bare, _, _) = WithRelic(null, authored: Real, alsoCarried: alongside);
+        var without = FightProbe.StacksOf(Hero(bare), Converter.Cards.Keywords.Paperwork);
+        bare.Dispose();
+
+        var (play, _, _) = WithRelic(relicId, authored: Real, alsoCarried: alongside);
+        Assert.Equal(without, FightProbe.StacksOf(Hero(play), Converter.Cards.Keywords.Paperwork));
+        play.Dispose();
+    }
+
     // ══ what the ones that speak at the opening hand actually say ═════════════════════════════════════════
 
     [Fact]
@@ -286,17 +309,17 @@ public class EliteRelicTests
     private const string Deed = "paper_cut";
 
     private static (RunPlayback Play, InteractiveRunSession Session, CombatantId EnemyId) WithRelic(
-        string? relicId, int energy = 5)
+        string? relicId, int energy = 5, string? authored = null, IReadOnlyList<string>? alsoCarried = null)
     {
-        var probe = FightProbe.Solo(Quiet, QuietIntent, energy);
+        var probe = authored is null ? FightProbe.Solo(Quiet, QuietIntent, energy) : FightProbe.Authored(authored, energy);
         var blueprint = FightProbe.OneFight(probe, [Deed, Deed, Deed, Deed, Deed, Deed, Deed, Deed]);
         blueprint = blueprint with
         {
             Start = blueprint.Start with
             {
                 StartingRelics = relicId is null
-                    ? blueprint.Start.StartingRelics
-                    : [.. blueprint.Start.StartingRelics, relicId],
+                    ? [.. blueprint.Start.StartingRelics, .. alsoCarried ?? []]
+                    : [.. blueprint.Start.StartingRelics, .. alsoCarried ?? [], relicId],
                 MaxHealth = 400,
                 StartingHealth = 400,
             },

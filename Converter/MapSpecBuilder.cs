@@ -141,7 +141,13 @@ public static class MapSpecBuilder
             // this says which elite the act opens with and which one it keeps for the last quarter.
             EncounterMinimumDepthPercent = data.Encounters
                 .Where(e => e.Act == act.Act && e.Role is not null && e.EarliestDepthPercent > 0)
-                .ToDictionary(e => e.Id, e => e.EarliestDepthPercent!.Value),
+                .ToDictionary(e => e.Id, e => e.EarliestDepthPercent!.Value)
+                .Concat(StageBands(data, act.Act).Select(b => KeyValuePair.Create(b.Id, b.From)))
+                .GroupBy(kv => kv.Key)
+                .ToDictionary(g => g.Key, g => g.Max(kv => kv.Value)),
+            // ⚠ AND WHERE IT MAY LAST STAND: a standard fight belongs to its STAGE (ActStages). Elites keep the
+            // elite master's own earliest-depth table above and have no ceiling here.
+            EncounterMaximumDepthPercent = StageBands(data, act.Act).ToDictionary(b => b.Id, b => b.To),
         };
 
         return new ActMap
@@ -386,4 +392,12 @@ public static class MapSpecBuilder
         }
         return rewards;
     }
+
+    // Every standard or multi-enemy fight of this act that names its stage, with the stage's slice of the act.
+    private static IEnumerable<(string Id, int From, int To)> StageBands(BabData data, int act) =>
+        data.Encounters
+            .Where(e => e.Act == act && e.Role is "combat" or "multi_combat")
+            .Select(e => (e.Id, Band: ActStages.Band(act, e.Tags)))
+            .Where(x => x.Band is not null)
+            .Select(x => (x.Id, x.Band!.Value.From, x.Band!.Value.To));
 }

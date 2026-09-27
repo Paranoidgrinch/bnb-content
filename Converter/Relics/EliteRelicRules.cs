@@ -108,9 +108,22 @@ public static class EliteRelicRules
         [
             // In a status-APPLICATION event the Source is whoever APPLIED it — which is precisely who the
             // seal wants. The bearer is reached through the rule it carries, not through Source.
+            //
+            // ⚠⚠ ONLY WHAT AN ENEMY FILES (playtest 2026-09-27). The first status that lands on the hero in every
+            // fight is the hero's OWN — the encounter's Applicant marker, a Rite, "gain 3 Censure" — and the
+            // seal sent each of those back to its filer: 2 Paperwork on the hero at the start of every fight,
+            // which never decays. The filer is the bearer exactly when it wears THIS rule: the rule exists only
+            // on the one who carries the relic, and the test holds whatever order the opening statuses land in
+            // (the Applicant marker would not — the relic's rule may arrive before it).
             Trigger(new EffectProgram<StatusAppliedTriggeredEffectContext>(
                 new ConditionalEffectNode<StatusAppliedTriggeredEffectContext>(
-                    Unspent<StatusAppliedTriggeredEffectContext>(RemittiturUsed),
+                    new AndExpression<StatusAppliedTriggeredEffectContext>(
+                        Unspent<StatusAppliedTriggeredEffectContext>(RemittiturUsed),
+                        new ComparisonExpression<StatusAppliedTriggeredEffectContext>(
+                            new CombatantStatusStacksExpression<StatusAppliedTriggeredEffectContext>(
+                                CombatantTargetSelectors.Source, new StatusDefinitionId(RemittiturId)),
+                            ComparisonOperator.Equal,
+                            new ConstantExpression<StatusAppliedTriggeredEffectContext>(0))),
                     new CausalSequenceEffectNode<StatusAppliedTriggeredEffectContext>(
                     [
                         Spend<StatusAppliedTriggeredEffectContext>(RemittiturUsed),
