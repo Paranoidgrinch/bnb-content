@@ -5,7 +5,9 @@ dahinter. Jeder Punkt hat eine belegte Ursache und ein Tor; er gilt erst als fer
 
 Reihenfolge: F1 → F2 → F3 → F5, F4 parallel als Design-Frage.
 
-## F1 — Relikte nur einmal
+## F1 — Relikte nur einmal  ✔ ERLEDIGT (Core f7d533f)
+
+Vorher bekamen 5 der 15 Golden-Läufe ein Relikt doppelt, danach 0. Tests messen die Richtung (4/4 rot ohne Fix).
 
 **Befund:** Relikt-Belohnungen ziehen aus einem Pool (`PoolRewardSource` → `RunPool.DrawMany`, Core), der nicht
 weiß, was der Spieler schon trägt (`ConversionPools.NormalRelicOfRarity`, bnb-content). Doppelte Relikte sind
@@ -18,7 +20,12 @@ wird aus den noch nicht besessenen Einträgen gezogen (das Angebot bleibt gleich
 mit einem Relikt bekommt es aus einer Quelle mit nur diesem Relikt nicht. Golden-Set neu aufgenommen, mit
 Begründung im Commit.
 
-## F2 — Gegner nur in ihrer Stufe
+## F2 — Gegner nur in ihrer Stufe  ✔ ERLEDIGT (Core e2b1734, bnb-content 0ce12fb)
+
+Über 300 Seeds je Akt außerhalb der eigenen Stufe: Akt I 1 %, Akt II 0 %, Akt III 24 %, Akt IV 5 % — immer höchstens
+die Nachbarstufe. **Offen (Design):** Akt III testimony/quorum/appeals und Akt I form haben für eine Rolle keinen
+Kampf (nur Duos bzw. keine Duos) — sollen solche Räume den Kampf der eigenen Stufe in der anderen Rolle ziehen?
+**Offen:** Elites haben noch kein Stufen-Band (nur Akt IV eine Mindesttiefe aus dem Elite-Master).
 
 **Befund:** In Akt I–III gibt es **keine** Tiefen-Regel für Kämpfe (`EncounterMinimumDepthPercent` ist leer; nur
 Akt IV hat 10 Einträge für Elites). Die Stufen stehen nur als `stage_<name>`-Tags an den Encountern und werden
@@ -34,7 +41,11 @@ eine Karte darf nicht an einem leeren Pool scheitern.
 **Tor:** `--lanes` bzw. eine neue Messung über 300 Seeds je Akt: jeder platzierte Kampf steht in seinem Band
 (oder der Nachbarstufe, gezählt und ausgewiesen). Test im Core für das Band.
 
-## F3 — Remittitur Seal und alle Status-Auslöser der Relikte
+## F3 — Remittitur Seal und alle Status-Auslöser der Relikte  ✔ Remittitur ERLEDIGT (bnb-content 0ce12fb)
+
+Tatsächlicher Auslöser: die Regel eines ZWEITEN Relikts, die zu Kampfbeginn auf den Helden kommt. Die übrigen
+16 StatusApplied-Auslöser filtern auf einen bestimmten Status und feuern nur für den Träger (Scope Bearer); sie
+gehen ins große Audit (F5). Auffällig dort: Contempt Ledger Nail zahlt auch für selbst gewonnene Censure.
 
 **Befund (bewiesen per Zweig, Seed 7, Antwort 142):** Remittitur Seal legt dem **Helden** zu Beginn jedes Kampfes
 2 Paperwork auf. Der Auslöser (`Relics/EliteRelicRules.cs`) reagiert auf das erste `StatusApplied` im Kampf ohne
