@@ -132,7 +132,7 @@ public static class MapSpecBuilder
             // aisle is filtered out of the shallow rows. An act whose events name no stage gates nothing.
             // Where each KIND of room may first stand (ActRules.EarliestDepthPercent) — the act's difficulty
             // curve, as opposed to its contents.
-            RoleMinimumDepthPercent = rules.EarliestDepthPercent,
+            RoleMinimumDepthPercent = EliteRoomsFromTheirStages(rules.EarliestDepthPercent, data, act.Act),
             NodeRefMinimumDepthPercent = authoredEvents
                 .Where(e => e.EarliestDepthPercent > 0)
                 .ToDictionary(e => e.Id, e => e.EarliestDepthPercent),
@@ -148,12 +148,19 @@ public static class MapSpecBuilder
             // ⚠ AND WHERE IT MAY LAST STAND: a standard fight belongs to its STAGE (ActStages). Elites keep the
             // elite master's own earliest-depth table above and have no ceiling here.
             EncounterMaximumDepthPercent = StageBands(data, act.Act).ToDictionary(b => b.Id, b => b.To),
+            // A stage written only as duos puts its duo in a solo room, and the other way round, instead of
+            // borrowing a fight from the neighbouring stage (user, 2026-09-28).
+            EncounterRoleStandIns = new Dictionary<MapNodeKind, IReadOnlyList<MapNodeKind>>
+            {
+                [MapNodeKind.Combat] = [MapNodeKind.MultiCombat],
+                [MapNodeKind.MultiCombat] = [MapNodeKind.Combat],
+            },
         };
 
         return new ActMap
         {
             Spec = spec,
-            Strategic = Strategic(rules),
+            Strategic = Strategic(rules, data, act.Act),
             Events = events,
             Shops = new Dictionary<string, ShopDefinition>
             {
@@ -170,7 +177,7 @@ public static class MapSpecBuilder
     // The three things both halves share are shared rather than copied: the lanes, the act's overall weights
     // and its depth gates are the same authored tables v0.0.0 is given, because an elite that may not stand in
     // the first third of the city may not stand there whichever generator laid the city out.
-    private static StrategicActSpec Strategic(ActRules rules) => new()
+    private static StrategicActSpec Strategic(ActRules rules, BabData data, int act) => new()
     {
         Rows = rules.Rows,
         BossRooms = rules.BossRooms,
@@ -183,7 +190,10 @@ public static class MapSpecBuilder
             KindWeights = rules.KindWeights,
             RoomBudgets = rules.RoomBudgets,
             DepthBands = rules.DepthBands,
-            RoleMinimumDepthPercent = rules.EarliestDepthPercent,
+            // Elite ROOMS stand only where the act's elites belong: from the first elite stage to the last
+            // (user, 2026-09-28: an elite belongs to the stage of its core mechanic).
+            RoleMinimumDepthPercent = EliteRoomsFromTheirStages(rules.EarliestDepthPercent, data, act),
+            RoleMaximumDepthPercent = EliteRoomsLatest(data, act),
         },
         PathPressure = rules.PathPressure,
         ForkQuality = rules.ForkQuality,
@@ -394,10 +404,59 @@ public static class MapSpecBuilder
     }
 
     // Every standard or multi-enemy fight of this act that names its stage, with the stage's slice of the act.
+    // …and every elite, in the stage its core mechanic belongs to (ActStages.EliteStage).
     private static IEnumerable<(string Id, int From, int To)> StageBands(BabData data, int act) =>
         data.Encounters
             .Where(e => e.Act == act && e.Role is "combat" or "multi_combat")
             .Select(e => (e.Id, Band: ActStages.Band(act, e.Tags)))
             .Where(x => x.Band is not null)
-            .Select(x => (x.Id, x.Band!.Value.From, x.Band!.Value.To));
+            .Select(x => (x.Id, x.Band!.Value.From, x.Band!.Value.To))
+            .Concat(EliteBands(data, act));
+
+    // An elite's band starts at its stage — or at the design's earliest depth, where that lies deeper — and runs
+    // on to where the NEXT elite's band starts. Most acts give every stage from the first elite on an elite of its
+    // own; Act IV gives seven of its seventeen, and an elite room in a stage without one takes the elite whose
+    // lesson came last rather than borrowing one from further on.
+    private static IEnumerable<(string Id, int From, int To)> EliteBands(BabData data, int act)
+    {
+        var own = data.Encounters
+            .Where(e => e.Act == act && e.Role == "elite")
+            .Select(e => (e.Id, Stage: ActStages.EliteStage(act, e.Id, e.Tags, e.EarliestDepthPercent),
+                Earliest: e.EarliestDepthPercent ?? 0))
+            .Where(x => x.Stage is not null)
+            .Select(x => (x.Id, Band: ActStages.Band(act, x.Stage!.Value)!.Value, x.Earliest))
+            .Select(x => (x.Id, From: Math.Max(x.Band.From, x.Earliest), x.Band.To))
+            .ToList();
+        var starts = own.Select(b => b.From).Distinct().Order().ToList();
+        return own.Select(b =>
+        {
+            var next = starts.FirstOrDefault(s => s > b.From, int.MaxValue);
+            return (b.Id, b.From, To: next == int.MaxValue ? b.To : Math.Max(b.To, next));
+        });
+    }
+
+    private static IReadOnlyDictionary<MapNodeKind, int> EliteRoomsLatest(BabData data, int act)
+    {
+        var ceiling = StageBands(data, act)
+            .Where(b => data.Encounters.Any(e => e.Id == b.Id && e.Role == "elite"))
+            .Select(b => (int?)b.To).Max();
+        return ceiling is { } latest
+            ? new Dictionary<MapNodeKind, int> { [MapNodeKind.Elite] = latest }
+            : new Dictionary<MapNodeKind, int>();
+    }
+
+    // An elite ROOM may not stand before the act's earliest elite band opens — otherwise the generator lays an
+    // elite room where no elite belongs and fills it with the nearest one, which is the fault the bands remove.
+    private static IReadOnlyDictionary<MapNodeKind, int> EliteRoomsFromTheirStages(
+        IReadOnlyDictionary<MapNodeKind, int> earliest, BabData data, int act)
+    {
+        var eliteFloor = StageBands(data, act)
+            .Where(b => data.Encounters.Any(e => e.Id == b.Id && e.Role == "elite"))
+            .Select(b => (int?)b.From).Min();
+        if (eliteFloor is not { } floor)
+            return earliest;
+        var merged = earliest.ToDictionary(kv => kv.Key, kv => kv.Value);
+        merged[MapNodeKind.Elite] = Math.Max(merged.GetValueOrDefault(MapNodeKind.Elite), floor);
+        return merged;
+    }
 }

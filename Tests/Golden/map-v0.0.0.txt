@@ -33,8 +33,8 @@ r09 w2  C C         0>0 1>0,1
 r10 w2  C C         0>0,1 1>1
 r11 w2  M M         0>0 1>1
 r12 w2  C ?         0>0 1>1
-r13 w2  E E         0>0,1 1>1
-r14 w2  ? ?         0>0 1>1
+r13 w2  ? ?         0>0,1 1>1
+r14 w2  E E         0>0 1>1
 r15 w2  C C         0>0 1>1
 r16 w2  $ $         0>0 1>1
 r17 w2  C C         0>0 1>1
@@ -70,9 +70,9 @@ r08 w4  T T T T     0>0 1>1 2>1,2 3>3
 r09 w4  C C C C     0>0 1>1 2>2,3 3>3
 r10 w4  M M M M     0>0 1>0,1 2>2 3>3
 r11 w4  C C C C     0>0,1 1>0 2>1 3>1
-r12 w2  E E         0>0 1>0,1
-r13 w2  ? ?         0>0 1>1
-r14 w2  C C         0>0 1>1
+r12 w2  ? ?         0>0 1>0,1
+r13 w2  C C         0>0 1>1
+r14 w2  E E         0>0 1>1
 r15 w2  C C         0>0 1>1
 r16 w2  C $         0>0 1>1
 r17 w2  $ $         0>0 1>1
@@ -86,8 +86,8 @@ r22 w1  B
 rows 23 · nodes 78 · edges 97 · entries 4 · forks 20 · merges 19 · crossings 3
 widths 43222224444444444444441
 uniform rows 19 · varied rows 3 · width-1 rows 1
-  Combat      total  32   per route 8..11
-  Elite       total   5   per route 1..2
+  Combat      total  33   per route 8..11
+  Elite       total   4   per route 1
   Event       total  12   per route 3..5
   Shop        total   6   per route 2
   Rest        total   8   per route 2
@@ -106,10 +106,10 @@ r07 w4  R R R R     0>0,1 1>0,1 2>2 3>3
 r08 w4  T T T T     0>0 1>1 2>2 3>3
 r09 w4  C C C C     0>0 1>1 2>2 3>3
 r10 w4  M M M M     0>0 1>1 2>1,2 3>2,3
-r11 w4  E ? C C     0>0 1>1,2 2>1,2 3>3
-r12 w4  E E E E     0>0 1>1 2>2 3>3
-r13 w4  ? ? ? ?     0>0 1>1 2>2,3 3>3
-r14 w4  C C C C     0>0 1>1 2>2 3>3
+r11 w4  C ? C C     0>0 1>1,2 2>1,2 3>3
+r12 w4  ? ? ? ?     0>0 1>1 2>2 3>3
+r13 w4  C C C C     0>0 1>1 2>2,3 3>3
+r14 w4  E E E E     0>0 1>1 2>2 3>3
 r15 w4  C C C C     0>0 1>1,2 2>2 3>3
 r16 w4  C C C M     0>0 1>0,1 2>1,2 3>3
 r17 w4  $ $ $ $     0>0 1>1 2>2 3>3
@@ -291,8 +291,7 @@ uniform rows 22 · varied rows 4 · width-1 rows 1
   Shop        total   7   per route 2..3
   Rest        total   7   per route 2..3
   Boss        total   1   per route 1
-  Treasure    total   2   per route 1
-  Mimic       total   1   per route 0..1
+  Treasure    total   3   per route 1..2
   MultiCombat total   5   per route 2
 
 r00 w3  C ? C       0>0 1>1,2,3 2>3
@@ -308,7 +307,7 @@ r09 w4  R R R R     0>0 1>0,1 2>2 3>3
 r10 w4  C C C C     0>0 1>1 2>1,2 3>3
 r11 w4  C C C C     0>0 1>1,2 2>2 3>3
 r12 w4  E E E E     0>0,1 1>1 2>1,2 3>3
-r13 w4  C $ ! C     0>0 1>0 2>1 3>1
+r13 w4  C $ T C     0>0 1>0 2>1 3>1
 r14 w2  ? ?         0>0 1>1
 r15 w2  T T         0>0 1>1
 r16 w2  C C         0>0 1>1
