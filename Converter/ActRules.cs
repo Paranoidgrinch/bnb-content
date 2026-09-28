@@ -222,6 +222,12 @@ internal sealed record ActRules
         // v0.0.0's forks average a contrast of 10 and three quarters of them are hollow. Thirty is a fork whose
         // two ways differ by an elite, or by a campfire against a shop — a question rather than a formality.
         ForkQuality = new ForkQualityRules { MinimumContrast = 30 },
+        // TWO MORE DECISIONS AN ACT (user, 2026-09-28). With the engine's 6/2/2 an act forked about three times and
+        // its lanes then ran side by side to the boss, so a door in the first rows decided the act. Splitting and
+        // merging as often as continuing lets the width breathe, and every merge makes room for another split.
+        // Measured over 150 seeds (roguedeck-bot --lanes, rooms with 2+ ways on): 2.7 → 4.9. Branches still live
+        // three rows (MinBranchLifeRows), so every choice remains a commitment.
+        Topology = new StrategicTopologyRules { ContinueWeight = 3, SplitWeight = 3, MergeWeight = 3 },
         Rooms = new ActRooms
         {
             RestText = "The waiting room. The chairs are terrible, but nobody can reach you here.",
@@ -320,6 +326,12 @@ internal sealed record ActRules
             [(MapNodeKind.Rest, 1, 3), (MapNodeKind.Elite, 0, 3), (MapNodeKind.Treasure, 1, 4)]),
         PathPressure = new PathPressureRules { Minimum = 160, Maximum = 240 },
         ForkQuality = new ForkQualityRules { MinimumContrast = 30 },
+        // TWO MORE DECISIONS AN ACT (user, 2026-09-28). With the engine's 6/2/2 an act forked about three times and
+        // its lanes then ran side by side to the boss, so a door in the first rows decided the act. Splitting and
+        // merging as often as continuing lets the width breathe, and every merge makes room for another split.
+        // Measured over 150 seeds (roguedeck-bot --lanes, rooms with 2+ ways on): 2.7 → 5.0. Branches still live
+        // three rows (MinBranchLifeRows), so every choice remains a commitment.
+        Topology = new StrategicTopologyRules { ContinueWeight = 3, SplitWeight = 3, MergeWeight = 3 },
         Rooms = new ActRooms
         {
             RestText = "A reading alcove behind the returns desk. The lamp works, and the shelf above you has not "
@@ -424,6 +436,12 @@ internal sealed record ActRules
             [(MapNodeKind.Rest, 1, 3), (MapNodeKind.Elite, 0, 3), (MapNodeKind.Treasure, 1, 4)]),
         PathPressure = new PathPressureRules { Minimum = 185, Maximum = 270 },
         ForkQuality = new ForkQualityRules { MinimumContrast = 30 },
+        // TWO MORE DECISIONS AN ACT (user, 2026-09-28). With the engine's 6/2/2 an act forked about three times and
+        // its lanes then ran side by side to the boss, so a door in the first rows decided the act. Splitting and
+        // merging as often as continuing lets the width breathe, and every merge makes room for another split.
+        // Measured over 150 seeds (roguedeck-bot --lanes, rooms with 2+ ways on): 3.0 → 5.5. Branches still live
+        // three rows (MinBranchLifeRows), so every choice remains a commitment.
+        Topology = new StrategicTopologyRules { ContinueWeight = 3, SplitWeight = 3, MergeWeight = 3 },
         Rooms = new ActRooms
         {
             RestText = "A hollow out of the wind, with a stone somebody has sat on often enough to wear it. "
@@ -532,6 +550,12 @@ internal sealed record ActRules
             [(MapNodeKind.Rest, 2, 4), (MapNodeKind.Elite, 0, 4), (MapNodeKind.Treasure, 2, 5)]),
         PathPressure = new PathPressureRules { Minimum = 265, Maximum = 360 },
         ForkQuality = new ForkQualityRules { MinimumContrast = 30 },
+        // TWO MORE DECISIONS AN ACT (user, 2026-09-28). With the engine's 6/2/2 an act forked about three times and
+        // its lanes then ran side by side to the boss, so a door in the first rows decided the act. Splitting and
+        // merging as often as continuing lets the width breathe, and every merge makes room for another split.
+        // Measured over 150 seeds (roguedeck-bot --lanes, rooms with 2+ ways on): 4.5 → 7.1. Branches still live
+        // three rows (MinBranchLifeRows), so every choice remains a commitment.
+        Topology = new StrategicTopologyRules { ContinueWeight = 4, SplitWeight = 3, MergeWeight = 3 },
         Rooms = new ActRooms
         {
             RestText = "A niche off the ramp with a water jar in it, left for the workmen and never collected. "
