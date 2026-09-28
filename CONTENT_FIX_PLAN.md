@@ -75,7 +75,14 @@ den Akt fest.
 Gabelung alle 2–3 Reihen) und ob die Topologie der Strategic-Generierung (`StrategicMapGeneration.Topology`,
 `LaneProfiles`, `ForkQuality`) das hergibt. Messgröße ist `--lanes` („forks per map by row“).
 
-## F5 — Großes Audit aller Karten und Relikte
+## F5 — Großes Audit aller Karten und Relikte  ◐ WERKZEUG GEBAUT, ERSTE FIXES (bnb-content e708152, 08e7a6d · Core 7649f18)
+
+Erster Lauf 2026-09-28 (268 Karten, 172 Relikte, 9 Paare, je 4 Runden, 28 min), jeder Befund einzeln nachgestellt
+(`~/Desktop/bnb-balance/audit/20260928-triage.md`). Behoben: Energie darf über das Maximum gewonnen werden;
+Dubious Authority und Presumption of Error reagieren auf geblockte Angriffe (Engine: `hitsThisTurn`); Sanguine
+Errata verschont das eigene Blood Ink (Engine: `StatusSelectionSpec.Except`). Offen: Riddle's Third Answer (Seal
+auf dem Helden — Design), Synergie-Paare mit Spielfolge, zweiter Lauf mit den korrigierten Maßstäben.
+
 
 **Ziel:** Jede Karte und jedes Relikt tut, was sein Text sagt. Automatisch, wiederholbar, mit einer Liste der
 Abweichungen zur Durchsicht — nicht 363 Karten von Hand.
