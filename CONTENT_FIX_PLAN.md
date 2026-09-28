@@ -23,9 +23,10 @@ Begründung im Commit.
 ## F2 — Gegner nur in ihrer Stufe  ✔ ERLEDIGT (Core e2b1734, bnb-content 0ce12fb)
 
 Über 300 Seeds je Akt außerhalb der eigenen Stufe: Akt I 1 %, Akt II 0 %, Akt III 24 %, Akt IV 5 % — immer höchstens
-die Nachbarstufe. **Offen (Design):** Akt III testimony/quorum/appeals und Akt I form haben für eine Rolle keinen
-Kampf (nur Duos bzw. keine Duos) — sollen solche Räume den Kampf der eigenen Stufe in der anderen Rolle ziehen?
-**Offen:** Elites haben noch kein Stufen-Band (nur Akt IV eine Mindesttiefe aus dem Elite-Master).
+die Nachbarstufe. **Entschieden und umgesetzt (Core 6318729, bnb-content b688031):** eine Stufe ohne Einzelkampf setzt ihren
+Duo-Kampf in den Einzelraum (und umgekehrt). Elites stehen in der Stufe ihrer Kernmechanik (Akt I Tag, Akt II/III
+eine Stufe nach der Lektion, Akt IV aus der Design-Tiefe, bis zur nächsten Elite-Stufe). Ergebnis: 0 % außerhalb,
+alle Akte, Normal- wie Elite-Kämpfe. Akt I hat seine Elites damit im letzten Drittel.
 
 **Befund:** In Akt I–III gibt es **keine** Tiefen-Regel für Kämpfe (`EncounterMinimumDepthPercent` ist leer; nur
 Akt IV hat 10 Einträge für Elites). Die Stufen stehen nur als `stage_<name>`-Tags an den Encountern und werden
@@ -58,7 +59,11 @@ Start-Status des Helden.
 **Tor:** Test je korrigiertem Relikt: der eigene Start-Status löst nichts aus; ein Gegner-Status löst genau
 einmal aus.
 
-## F4 — Karten-Design: zu wenige Gabelungen (Design-Frage, keine Reparatur)
+## F4 — Karten-Design: zu wenige Gabelungen  ✔ ERLEDIGT (bnb-content 89eab90)
+
+Spieler-Vorgabe: zwei Entscheidungen mehr pro Akt. Topologie 3/3/3 (Akt IV 4/3/3). Entscheidungen je Karte: Akt I
+2,7 → 4,9 · II 2,7 → 5,1 · III 3,0 → 5,5 · IV 4,5 → 7,1. Nebenwirkung: Akt III Wege mit 3+ Elites und ohne Rast 6 % → 10 %.
+
 
 **Befund (`roguedeck-bot --lanes`, 300 Seeds):** Wege ohne Rast sind **nicht** die Hälfte — in Akt I haben 13 %
 aller Wege keine Rast, 2 % haben 3+ Elites und keine Rast. Das eigentliche Problem: **im Schnitt nur 0,1–0,2
