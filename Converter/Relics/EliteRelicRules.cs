@@ -851,11 +851,15 @@ public static class EliteRelicRules
         ]);
 
     // The Sphinx shows two of its three answers. This is the one it never showed.
+    //
+    // ⚠ THE SEAL GOES ON AN ENEMY (user, 2026-09-28). It was laid on the hero, where it did nothing at all: the
+    // Ratify at three rides on the card keyword, not on the status, and Ratified only helps Deeds, which enemies
+    // never play. It is laid the way a card lays it, conversion included (RelicRules.SealWeakest).
     public static string RiddleId => "riddles_third_answer";
 
     public static StatusData RiddlesThirdAnswer => Rule(
         RiddleId, "The Riddle's Third Answer",
-        "Every fight opens with 1 Ward Wax and 1 Seal.",
+        "Every fight opens with 1 Ward Wax on you and 1 Seal on the enemy with the least health.",
         [
             Trigger(new EffectProgram<CardsDrawnTriggeredEffectContext>(
                 new ConditionalEffectNode<CardsDrawnTriggeredEffectContext>(
@@ -865,9 +869,7 @@ public static class EliteRelicRules
                         new ApplyStatusNode<CardsDrawnTriggeredEffectContext>(
                             You, new StatusDefinitionId(Cards.Keywords.WardWax),
                             new ConstantExpression<CardsDrawnTriggeredEffectContext>(1)),
-                        new ApplyStatusNode<CardsDrawnTriggeredEffectContext>(
-                            You, new StatusDefinitionId(Cards.Keywords.Seal),
-                            new ConstantExpression<CardsDrawnTriggeredEffectContext>(1)),
+                        RelicRules.SealWeakest<CardsDrawnTriggeredEffectContext>(1),
                     ]))),
                 nameof(TriggerEvent.CardsDrawn)),
         ]);

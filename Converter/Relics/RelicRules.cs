@@ -360,7 +360,7 @@ public static class RelicRules
     // status — it rides on CardAuthoring.ApplySeal, the way every card lays Seal. A relic that applied the bare
     // status left an enemy sitting at 3 or more Seal, never Ratified, until some card laid Seal again (audit,
     // 2026-09-28). Every relic that seals builds the card's own node for its trigger's context.
-    private static IEffectNode<TContext> SealWeakest<TContext>(int stacks) where TContext : class =>
+    internal static IEffectNode<TContext> SealWeakest<TContext>(int stacks) where TContext : class =>
         CombatProgramModel.Build<TContext>(CardAuthoring.ApplySeal(stacks, "lowestHealthEnemy")).Root;
 
     public static readonly StatusData DeferredSignet = Rule("deferred_signet", "Deferred Signet",

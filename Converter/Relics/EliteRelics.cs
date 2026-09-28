@@ -207,7 +207,7 @@ public static class EliteRelics
 
         Elite(EliteRelicRules.RiddleId, "The Riddle's Third Answer",
             "labyrinth_elite_sphinx_of_the_processional_measure",
-            "Every fight opens with 1 Ward Wax and 1 Seal.",
+            "Every fight opens with 1 Ward Wax on you and 1 Seal on the enemy with the least health.",
             combatRule: EliteRelicRules.RiddlesThirdAnswer),
 
         Elite(EliteRelicRules.WickId, "The Lamp Thief's Wick", "labyrinth_elite_the_tombbreakers_three",
