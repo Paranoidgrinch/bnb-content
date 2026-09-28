@@ -404,7 +404,7 @@ public static class Audit
             {
                 var t = Fight(game, Dummy(game, strikes, 6), deck, null, Plays(cards));
                 yield return $"{(strikes ? "striker" : "quiet  ")} {(cards.Length == 0 ? "(nothing)" : string.Join("+", cards)),-44} "
-                    + string.Join("  →  ", t.Snaps.Select(x => $"hero {x.HeroHp}/b{x.HeroBlock} enemy {x.EnemyHp} "
+                    + string.Join("  →  ", t.Snaps.Select(x => $"hero {x.HeroHp}/b{x.HeroBlock} hand {x.Hand} draw {x.Draw} exh {x.Exhaust} enemy {x.EnemyHp} "
                         + $"[{string.Join(",", x.EnemyStatuses.Select(kv => $"{kv.Key}={kv.Value}"))}]"))
                     + (t.Error is { } e ? $"  BROKE {e}" : "");
             }
@@ -438,10 +438,11 @@ public static class Audit
     public static int Run(RunBlueprint game, IReadOnlyList<string>? only, int jobs, Action<string> say)
     {
         ArgumentNullException.ThrowIfNull(game);
-        // `--audit-only a+b` traces that pair round by round instead of auditing.
-        if (only is { Count: 1 } one && one[0].Contains('+', StringComparison.Ordinal))
+        // `--audit-only a&b` traces that pair round by round instead of auditing. ⚠ Not '+': an upgraded card's
+        // id ends in '+', and `--audit-only smudged_index+` was read as a pair with an empty second card.
+        if (only is { Count: 1 } one && one[0].Contains('&', StringComparison.Ordinal))
         {
-            var parts = one[0].Split('+');
+            var parts = one[0].Split('&');
             foreach (var line in TracePair(game, parts[0], parts[1]))
                 say(line);
             return 0;
@@ -530,7 +531,7 @@ public static class Audit
             if (r.Error is null && r.Both <= r.OnlyA + r.OnlyB)
                 findings.Add(new Finding("SYNERGY-MISSING", $"{p.A} + {p.B}",
                     $"{p.Why}: together {r.Both}, apart {r.OnlyA} + {r.OnlyB} — the payoff did not happen in four rounds",
-                    $"--audit --audit-only {p.A}+{p.B}"));
+                    $"--audit --audit-only '{p.A}&{p.B}'"));
             Write(string.Join(",", "pair", $"{p.A}+{p.B}", "", r.Both, "", "", "",
                 r.Error is null ? "SYNERGY" : "BUG", Q(r.Error ?? $"together {r.Both} vs {r.OnlyA} + {r.OnlyB} apart")));
         });
