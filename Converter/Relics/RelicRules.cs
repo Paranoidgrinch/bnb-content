@@ -353,21 +353,25 @@ public static class RelicRules
             nameof(TriggerEvent.StatusApplied), StatusTriggerScope.Anywhere),
          ClearLatch("concordance")]);
 
-    // "The first card you Queue each turn applies 1 Seal to its target when it resolves." Read as: the first
-    // queued card to RESOLVE each turn seals what it was aimed at.
+    // The first queued card to RESOLVE each turn seals the weakest enemy. ⚠ The design wrote "its target", and the
+    // rule cannot see the resolving card's target from the queue tally it listens to — so the text now says what
+    // the relic does (2026-09-28). The Seal goes through the card keyword's own conversion (SealWeakest).
+    // ⚠ SEAL GOES THROUGH THE KEYWORD, NOT AROUND IT. The "at 3 Seal, Ratify" conversion is not a rule of the Seal
+    // status — it rides on CardAuthoring.ApplySeal, the way every card lays Seal. A relic that applied the bare
+    // status left an enemy sitting at 3 or more Seal, never Ratified, until some card laid Seal again (audit,
+    // 2026-09-28). Every relic that seals builds the card's own node for its trigger's context.
+    private static IEffectNode<TContext> SealWeakest<TContext>(int stacks) where TContext : class =>
+        CombatProgramModel.Build<TContext>(CardAuthoring.ApplySeal(stacks, "lowestHealthEnemy")).Root;
+
     public static readonly StatusData DeferredSignet = Rule("deferred_signet", "Deferred Signet",
         "A queued matter comes back sealed.",
         [Trigger(new EffectProgram<StatusAppliedTriggeredEffectContext>(
             OnCountRising<StatusAppliedTriggeredEffectContext>("deferred_signet", Keywords.QueueResolved,
-                new ApplyStatusNode<StatusAppliedTriggeredEffectContext>(
-                    CombatantTargetSelectors.LowestHealthEnemyOfSource, new StatusDefinitionId(Keywords.Seal),
-                    new ConstantExpression<StatusAppliedTriggeredEffectContext>(1)))),
+                SealWeakest<StatusAppliedTriggeredEffectContext>(1))),
             nameof(TriggerEvent.StatusApplied)),
          Trigger(new EffectProgram<StatusMergedTriggeredEffectContext>(
             OnCountRising<StatusMergedTriggeredEffectContext>("deferred_signet", Keywords.QueueResolved,
-                new ApplyStatusNode<StatusMergedTriggeredEffectContext>(
-                    CombatantTargetSelectors.LowestHealthEnemyOfSource, new StatusDefinitionId(Keywords.Seal),
-                    new ConstantExpression<StatusMergedTriggeredEffectContext>(1)))),
+                SealWeakest<StatusMergedTriggeredEffectContext>(1))),
             nameof(TriggerEvent.StatusMerged)),
          ClearLatch("deferred_signet")]);
 
@@ -388,10 +392,7 @@ public static class RelicRules
                         new ApplyStatusNode<CardsDrawnTriggeredEffectContext>(
                             CombatantTargetSelectors.Source, new StatusDefinitionId(Keywords.Archived),
                             new ConstantExpression<CardsDrawnTriggeredEffectContext>(1)),
-                        new ApplyStatusNode<CardsDrawnTriggeredEffectContext>(
-                            CombatantTargetSelectors.LowestHealthEnemyOfSource,
-                            new StatusDefinitionId(Keywords.Seal),
-                            new ConstantExpression<CardsDrawnTriggeredEffectContext>(1)),
+                        SealWeakest<CardsDrawnTriggeredEffectContext>(1),
                     ]),
                     tagFilter: new TagId(CardAuthoring.JunkTag), takeFirst: 1))),
             nameof(TriggerEvent.CardsDrawn)),

@@ -221,7 +221,7 @@ public static class NormalRelics
             combatRule: RelicRules.RebindingSpindle),
 
         Normal("deferred_signet", "Deferred Signet", Rarity.Rare,
-            "The first card you Queue each turn applies 1 Seal to its target when it resolves.",
+            "When the first card you Queue each turn resolves, the enemy with the least health gains 1 Seal.",
             eligibility: Eligibility.Bureaucrat,
             combatRule: RelicRules.DeferredSignet),
 
