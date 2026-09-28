@@ -49,6 +49,10 @@ var fights = 1;
 // statically off its program. Seconds; no fight is played.
 var act1Bench = args.Contains("--act1-bench");
 var cardRating = args.Contains("--card-rating");
+// THE AUDIT (Audit, CONTENT_FIX_PLAN F5): --audit [--audit-only id,id] — every card and combat relic over four
+// rounds against a quiet dummy and a striker, paired with the same fight without it; report to ~/Desktop/bnb-balance/audit.
+var audit = args.Contains("--audit");
+string? auditOnly = null;
 var benchCards = args.Contains("--bench-cards");
 var benchShuffles = 20;
 var benchHorizon = 5;
@@ -93,6 +97,7 @@ for (var i = 0; i < args.Length - 1; i++)
         case "--bench-hp": benchHealth = int.Parse(args[i + 1]); break;
         case "--bench-stages": benchStages = args[i + 1]; break;
         case "--bench-extra": benchExtra = args[i + 1]; break;
+        case "--audit-only": auditOnly = args[i + 1]; break;
     }
 }
 
@@ -121,6 +126,8 @@ try
             };
         return SparringMatch.Run(blueprint, snapshot, Console.WriteLine);
     }
+    if (audit)
+        return Audit.Run(blueprint, Split(auditOnly) is { Count: > 0 } picked ? picked : null, jobs, Console.WriteLine);
     if (cardRating)
         return CardRating.Run(blueprint, Console.WriteLine);
     if (act1Bench)
