@@ -171,9 +171,11 @@ public static class BureaucratRites
     // ── Dubious Authority ─────────────────────────────────────────────────────────────────────────────────
     // "Whenever Doubt is consumed after an enemy attacks, apply 2 Paperwork to that enemy."
     //
-    // Watching the whole fight for Doubt leaving an enemy. The "after an enemy attacks" half is asked as
-    // "did that enemy deal damage this turn?" — which is what spending Doubt means here, and what keeps the
-    // rule out of the way of a card that simply removes Doubt (Formal Dissent). See ADAPTATIONS.
+    // Watching the whole fight for Doubt leaving an enemy. The "after an enemy attacks" half is asked as "did
+    // that enemy land a hit this turn?" — which keeps the rule out of the way of a card that simply removes Doubt
+    // (Formal Dissent). ⚠ A HIT, NOT DAMAGE: it was "did it deal damage", and a blow the hero blocked entirely
+    // dealt none — so the rule never fired beside Strong Binder or Petty Objection, the cards that give Block AND
+    // Doubt (audit, 2026-09-28).
     private static StatusData Doubtful(string id, string name, int paperwork)
     {
         IEffectNode<TContext> Body<TContext>() where TContext : class =>
@@ -181,7 +183,7 @@ public static class BureaucratRites
                 new AndExpression<TContext>(
                     new TriggerEventStatusIsExpression<TContext>(new StatusDefinitionId(Keywords.Doubt)),
                     new ComparisonExpression<TContext>(
-                        new DamageDealtThisTurnExpression<TContext>(CombatantTargetSelectors.Source),
+                        new HitsThisTurnExpression<TContext>(CombatantTargetSelectors.Source),
                         ComparisonOperator.Greater, new ConstantExpression<TContext>(0))),
                 new ApplyStatusNode<TContext>(
                     CombatantTargetSelectors.Source, new StatusDefinitionId(Keywords.Paperwork),
@@ -204,7 +206,7 @@ public static class BureaucratRites
             new AndExpression<TContext>(
                 new TriggerEventStatusIsExpression<TContext>(new StatusDefinitionId(Keywords.Doubt)),
                 new ComparisonExpression<TContext>(
-                    new DamageDealtThisTurnExpression<TContext>(CombatantTargetSelectors.EventTarget),
+                    new HitsThisTurnExpression<TContext>(CombatantTargetSelectors.EventTarget),
                     ComparisonOperator.Greater, new ConstantExpression<TContext>(0))),
             new ApplyStatusNode<TContext>(
                 CombatantTargetSelectors.EventTarget, new StatusDefinitionId(Keywords.Paperwork),
@@ -324,7 +326,8 @@ public static class BureaucratRites
 
     // ── Presumption of Error ──────────────────────────────────────────────────────────────────────────────
     // "The next time that enemy consumes Doubt by attacking, apply 1 Doubt to it after the Attack resolves."
-    // A mark ON THE ENEMY, so it is per-enemy, and spent the first time it answers.
+    // A mark ON THE ENEMY, so it is per-enemy, and spent the first time it answers. "By attacking" is asked as a
+    // HIT, not as damage — a blocked attack spends Doubt too (see Dubious Authority, 2026-09-28).
     private static StatusData Presumption() => new()
     {
         Id = PresumptionOfError,
@@ -349,7 +352,7 @@ public static class BureaucratRites
             new AndExpression<TContext>(
                 new TriggerEventStatusIsExpression<TContext>(new StatusDefinitionId(Keywords.Doubt)),
                 new ComparisonExpression<TContext>(
-                    new DamageDealtThisTurnExpression<TContext>(CombatantTargetSelectors.Source),
+                    new HitsThisTurnExpression<TContext>(CombatantTargetSelectors.Source),
                     ComparisonOperator.Greater, new ConstantExpression<TContext>(0))),
             new CausalSequenceEffectNode<TContext>(
             [
@@ -367,7 +370,7 @@ public static class BureaucratRites
                     new TargetHasStatusExpression<TContext>(
                         CombatantTargetSelectors.EventTarget, new StatusDefinitionId(PresumptionOfError))),
                 new ComparisonExpression<TContext>(
-                    new DamageDealtThisTurnExpression<TContext>(CombatantTargetSelectors.EventTarget),
+                    new HitsThisTurnExpression<TContext>(CombatantTargetSelectors.EventTarget),
                     ComparisonOperator.Greater, new ConstantExpression<TContext>(0))),
             new CausalSequenceEffectNode<TContext>(
             [

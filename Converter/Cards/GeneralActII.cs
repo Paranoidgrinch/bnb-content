@@ -139,14 +139,14 @@ public static class GeneralActII
             Plus(CombatAmountSpec.FromConst(baseCensure),
                 AtMost(DistinctStatuses(PositiveStatuses), 3)));
 
-    // "Then choose and remove 1 stack of another Status." One stack off a negative status the engine picks by
-    // rule rather than by prompt — the selection is polarity-filtered, so Blood Ink itself can be the one
-    // chosen. See ADAPTATIONS.
+    // "Then choose and remove 1 stack of ANOTHER negative Status." One stack off a negative status the engine
+    // picks by rule rather than by prompt — and never the Blood Ink this card just put down (the audit found it
+    // taking exactly that whenever the target carried nothing else, 2026-09-28). No other debuff, no removal.
     private static CombatNodeModel SanguineErrataBody(int bloodInk) =>
         Seq(
             Apply(Keywords.BloodInk, bloodInk),
             new CombatNodeModel("modifySelectedStatusStacks", Target, CombatAmountSpec.FromConst(-1),
-                Selection: new StatusSelectionSpec(StatusPolarityFilter.Debuff)));
+                Selection: new StatusSelectionSpec(StatusPolarityFilter.Debuff) { Except = new StatusDefinitionId(Keywords.BloodInk) }));
 
     // "Remove up to N stacks of a negative Status; turn each removed stack into something else." How much can
     // be taken has to be known before it is taken, so it goes through a scratch counter.

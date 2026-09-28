@@ -46,4 +46,40 @@ public class AuditTests
         Assert.Equal(4, audit.Quiet.Start.HeroBlock - audit.QuietBase.Start.HeroBlock);
         Assert.DoesNotContain(Audit.JudgeRelic(Game, audit), f => f.Severity == "UNUSED");
     }
+
+    // ── the three findings the audit made and 2026-09-28 fixed — each pinned so it stays fixed ──────────────
+
+    // "Gain 1 Energy" on a full pool gave nothing: energy was capped at its max. A gain may pass it now.
+    [Fact]
+    public void Gain_one_energy_on_a_full_pool_is_one_more_energy()
+    {
+        var audit = Audit.AuditCard(Game, "formal_dissent");
+        Assert.Null(audit.Quiet.Error);
+        Assert.Equal(1, audit.Quiet.AfterPlay.Energy - audit.QuietBase.AfterPlay.Energy + audit.Cost);
+    }
+
+    // "Then remove 1 stack of ANOTHER negative Status": with nothing else on the target, its own Blood Ink stays.
+    [Fact]
+    public void Sanguine_errata_keeps_its_own_blood_ink_when_the_target_has_nothing_else()
+    {
+        var audit = Audit.AuditCard(Game, "sanguine_errata");
+        Assert.Null(audit.Quiet.Error);
+        Assert.Equal(2, audit.Quiet.AfterPlay.EnemyStatuses.GetValueOrDefault(Converter.Cards.Keywords.BloodInk));
+    }
+
+    // Dubious Authority beside Strong Binder: the attack is blocked entirely and the Doubt is still spent by it —
+    // so the Paperwork must come. It did not while the rule asked for damage dealt.
+    [Fact]
+    public void Dubious_authority_answers_an_attack_the_hero_blocked_entirely()
+    {
+        var striker = Audit.Dummy(Game, strikes: true, energy: 6);
+        string[] deck = ["strong_binder", "dubious_authority", "paper_cut", "paper_cut", "paper_cut"];
+        var trace = Audit.Fight(Game, striker, deck, null, Audit.Plays("strong_binder", "dubious_authority"));
+        Assert.Null(trace.Error);
+
+        var afterTheBlow = trace.Snaps[2];
+        Assert.Equal(trace.Snaps[0].HeroHp, afterTheBlow.HeroHp); // blocked: no health lost
+        Assert.True(afterTheBlow.EnemyStatuses.GetValueOrDefault(Converter.Cards.Keywords.Paperwork) >= 2,
+            "the Doubt was spent on a blocked attack and Dubious Authority filed nothing");
+    }
 }

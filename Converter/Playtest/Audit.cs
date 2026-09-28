@@ -81,7 +81,7 @@ public static class Audit
             IntentRules = null,
         };
         return new EncounterDefinition(new EncounterId(strikes ? "audit.striker" : "audit.quiet"), [body],
-            [new ResourceSpec(StandardCombatIds.EnergyResource, energy, energy)],
+            [new ResourceSpec(StandardCombatIds.EnergyResource, energy, energy, CanExceedMax: true)],
             heroStartingStatuses: SparringRing.HeroStatuses(body.Id));
     }
 
@@ -210,9 +210,14 @@ public static class Audit
         public double PerEnergy => Value / (Cost <= 0 ? 0.5 : Cost);
     }
 
+    // A card the audit never plays: it only fills the draw pile.
+    private const string Filler = "cower_behind_a_desk";
+
     public static CardAudit AuditCard(RunBlueprint game, string id, int energy = 6)
     {
-        var deck = Enumerable.Repeat(id, 6).ToList();
+        // Eight copies and four fillers: five dealt, so at least one copy is always in hand, and seven left to draw
+        // — the first audit dealt five of six, and a card that archives from the draw pile then drew from nothing.
+        var deck = Enumerable.Repeat(id, 8).Concat(Enumerable.Repeat(Filler, 4)).ToList();
         var text = game.Cards.FirstOrDefault(c => c.Id == id)?.DescriptionKey ?? "";
         var cost = game.Cards.FirstOrDefault(c => c.Id == id)?.Costs.Sum(c => c.Amount) ?? 0;
         var quiet = Dummy(game, strikes: false, energy);
@@ -223,7 +228,8 @@ public static class Audit
             Fight(game, strike, deck, null, Plays(id)), Fight(game, strike, deck, null, none));
     }
 
-    private static readonly Regex Deal = new(@"Deal (\d+) damage", RegexOptions.Compiled);
+    // "Deal 4 damage 3 times" is 12: the count after it multiplies (the first audit read it as 4).
+    private static readonly Regex Deal = new(@"Deal (\d+) damage(?: (\d+) times)?", RegexOptions.Compiled);
     private static readonly Regex Block = new(@"Gain (\d+) Block", RegexOptions.Compiled);
     private static readonly Regex Apply = new(@"(Apply|Gain) (\d+) ([A-Z][A-Za-z' ]+?)(?= to|[.,]| and|$)", RegexOptions.Compiled);
     private static readonly Regex DrawN = new(@"Draw (\d+) card", RegexOptions.Compiled);
@@ -260,7 +266,8 @@ public static class Audit
 
         string Tag(string severity) => conditional && severity == "BUG" ? "CONDITION" : severity;
 
-        var dealt = Deal.Matches(text).Select(m => int.Parse(m.Groups[1].Value, CultureInfo.InvariantCulture)).ToList();
+        var dealt = Deal.Matches(text).Select(m => int.Parse(m.Groups[1].Value, CultureInfo.InvariantCulture)
+            * (m.Groups[2].Success ? int.Parse(m.Groups[2].Value, CultureInfo.InvariantCulture) : 1)).ToList();
         if (dealt.Count > 0)
         {
             var seen = (baseAfter.EnemyHp - after.EnemyHp) + Math.Max(0, baseAfter.EnemyBlock - after.EnemyBlock);
@@ -322,14 +329,34 @@ public static class Audit
         if (selfHarm > 0 && !mentionsCost)
             yield return new Finding("SIDE", a.Id, $"the hero lost {selfHarm} HP to its own card against a dummy that never attacks", repro);
         var debuffs = HeroDebuffs(game, a.Quiet.End) - HeroDebuffs(game, a.QuietBase.End);
-        if (debuffs > 0 && !mentionsCost && !Regex.IsMatch(text, @"\b(Paperwork|Doubt|Lien|Citation|Blood Ink|Fatigue|Panic)\b.*\byou\b"))
+        // A debuff the text NAMES is not a hidden cost ("…, gain 8 Lien" — Mortgaged Aegis, flagged by the first run).
+        var named = GainedHeroDebuffs(game, a.Quiet.End, a.QuietBase.End)
+            .Any(id => game.Statuses.FirstOrDefault(d => d.Id == id)?.NameKey is { } name
+                && text.Contains(name, StringComparison.OrdinalIgnoreCase));
+        if (debuffs > 0 && !mentionsCost && !named && !Regex.IsMatch(text, @"\b(Paperwork|Doubt|Lien|Citation|Blood Ink|Fatigue|Panic)\b.*\byou\b"))
             yield return new Finding("SIDE", a.Id, $"the hero ends four rounds carrying {debuffs} more debuff stacks, which the text does not mention", repro);
 
-        if (a.PerEnergy < starterFloor && a.Value >= 0)
+        // ⚠ WEAK ONLY WHERE THE WORTH IS MEASURED. Value here is damage + health kept over four rounds, and nothing
+        // else: energy gained, cards drawn, a Rite's rule, a trigger waiting for other cards — all read as zero. The
+        // first run called 141 cards weak, most of them for exactly that. Those are listed as UNMEASURED instead.
+        var rite = (game.Cards.FirstOrDefault(c => c.Id == a.Id)?.Tags ?? []).Any(t => t.value == "rite");
+        var unmeasured = rite || conditional
+            || Regex.IsMatch(text, @"\b(Energy|Draw|draw|Retain|Archive|Queue|Queued|card|cards|Whenever|whenever|first time|next|cost|Junk|Ward Wax)\b");
+        if (a.PerEnergy < starterFloor && a.Value >= 0 && unmeasured)
+            yield return new Finding("UNMEASURED", a.Id,
+                $"worth {a.Value} over four rounds on damage + health alone — its value is in what this cannot count "
+                + (rite ? "(a Rite's rule)" : "(energy, draw, a condition or a trigger)"), repro);
+        else if (a.PerEnergy < starterFloor && a.Value >= 0)
             yield return new Finding("WEAK", a.Id,
                 $"four rounds were worth {a.Value} (damage {a.DamageDone} + health kept {a.HealthKept}) for {a.Cost} energy — "
                 + $"{a.PerEnergy:0.0}/energy, below every starter card ({starterFloor:0.0})", repro);
     }
+
+    private static IEnumerable<string> GainedHeroDebuffs(RunBlueprint game, Snap with, Snap without) =>
+        with.HeroStatuses
+            .Where(s => s.Value > without.HeroStatuses.GetValueOrDefault(s.Key)
+                && game.Statuses.FirstOrDefault(d => d.Id == s.Key)?.Polarity == StatusPolarity.Debuff)
+            .Select(s => s.Key);
 
     private static int HeroDebuffs(RunBlueprint game, Snap snap) =>
         snap.HeroStatuses.Where(s => game.Statuses.FirstOrDefault(d => d.Id == s.Key)?.Polarity == StatusPolarity.Debuff)
@@ -537,18 +564,20 @@ public static class Audit
         });
 
         // ── the report, most severe first ──
-        var order = new[] { "BUG", "SYNERGY-MISSING", "SIDE", "UNUSED", "CONDITION", "WEAK" };
+        var order = new[] { "BUG", "SYNERGY-MISSING", "SIDE", "UNUSED", "CONDITION", "WEAK", "UNMEASURED" };
         var md = new StringBuilder();
         md.AppendLine(CultureInfo.InvariantCulture, $"# Audit {stamp} — {cards.Count} cards, {relics.Count} combat relics, {pairs.Count} pairs, {Rounds} rounds");
         md.AppendLine();
         md.AppendLine(CultureInfo.InvariantCulture, $"Wall clock {clock.Elapsed.TotalMinutes:0.0} min. Reproduce one line: `dotnet run --project Converter -- <repro>`. CSV: `{Path.GetFileName(csvPath)}`.");
         md.AppendLine();
-        md.AppendLine("Method: each card played once on turn 1, then four rounds, against the same fight without it (seed 11), "
+        md.AppendLine("Method: each card played once on turn 1 (deck: eight copies and four fillers), then four rounds, against the same fight without it (seed 11), "
             + "against a quiet dummy (does nothing, 999 HP) and a striker (10 damage a turn). Relics: a plain greedy player with "
             + "the starter deck for four rounds, with and without the relic, alone and beside Petitioner's Token. "
             + "BUG = text and effect disagree; SIDE = the card costs the hero something its text does not say; UNUSED = no "
             + "difference at all in four rounds; CONDITION = a conditional number that did not show (the dummy may not meet "
-            + "the condition — read, don't fix); WEAK = worth less per energy over four rounds than every starter card.");
+            + "the condition — read, don't fix); WEAK = worth less per energy over four rounds than every starter card, for a "
+            + "card whose whole worth is damage, block or a status; UNMEASURED = below the starters on damage + health alone, "
+            + "but its worth is energy, draw, a Rite's rule or a trigger this audit does not count — judge it by hand.");
         md.AppendLine();
         md.AppendLine(CultureInfo.InvariantCulture, $"Relics that act only between rooms ({outOfCombat}) are not judged in a fight.");
         md.AppendLine(CultureInfo.InvariantCulture, $"Starter floor: {string.Join(", ", starterAudits.Select(s => $"{s.Id} {s.PerEnergy:0.0}/E"))}.");

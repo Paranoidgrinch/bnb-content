@@ -176,7 +176,9 @@ public static class EncounterMapper
         return new EncounterDefinition(
             new EncounterId(encounter.Id),
             roster,
-            [new ResourceSpec(StandardCombatIds.EnergyResource, startingEnergy, startingEnergy)],
+            // A GAIN may take energy past its max for the rest of the turn (user, 2026-09-28): "Gain 1 Energy" on a
+            // full pool gave nothing. The turn-start refill still sets it back, so nothing carries over.
+            [new ResourceSpec(StandardCombatIds.EnergyResource, startingEnergy, startingEnergy, CanExceedMax: true)],
             // Every fight marks the hero as "the applicant". Selectors are structural — they can say "allies of
             // the source" but never "the player" — so a cross-combatant passive that must know whether something
             // happened TO THE PLAYER (Old Statute Ghost) has no other handle. One inert marker, every encounter.

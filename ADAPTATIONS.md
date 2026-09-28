@@ -409,8 +409,10 @@ exactly as the FINAL_AUDIT enemy pools did. Where the keywords now differ from w
 - **Counter Ward**'s rider is "your next card this turn costs 1 less", not "the next card you QUEUE". A cost
   modifier can be narrowed to a card TAG, so this could be tightened later by tagging Queue cards; as written
   the player simply spends the discount on what they meant to.
-- **Dubious Authority** answers Doubt leaving an enemy that has already dealt damage this turn, which is how
-  "consumed after an enemy attacks" is told apart from a card that merely removes Doubt (Formal Dissent).
+- **Dubious Authority** (and Presumption of Error) answers Doubt leaving an enemy that has already landed a HIT
+  this turn, which is how "consumed after an enemy attacks" is told apart from a card that merely removes Doubt
+  (Formal Dissent). Until 2026-09-28 this asked for damage dealt, and a blow the hero blocked entirely dealt none —
+  the rule never fired beside the cards that give Block AND Doubt (engine: `hitsThisTurn`).
 - **Licensed Disposal** Archives the first Junk in HAND after the draw, not strictly the first Junk DRAWN —
   a distinction only visible when Junk was already being held.
 - **Privy Seal**'s "Requires at least 1 Seal" is a condition, not a play restriction: the engine has no
@@ -462,7 +464,8 @@ exactly as the FINAL_AUDIT enemy pools did. Where the keywords now differ from w
 - **Moonlit Counterfeit** asks twice — once for the card to copy, once for the original to Exhaust — and its
   upgrade simply spares the original. The copy is free through one free play.
 - **Sanguine Errata** removes a stack the engine picks by rule (a polarity-filtered selection) rather than by
-  prompt, so Blood Ink itself can be the one chosen.
+  prompt. Since 2026-09-28 the pick leaves Blood Ink out (`StatusSelectionSpec.Except`), as "another" asks; a
+  target with no other debuff loses nothing.
 - **"Different statuses" is counted by naming them.** Stacks are countable; distinct statuses are not, so
   CardAuthoring keeps the list of negative and positive statuses the game files and asks each whether it is
   present. A new status of either kind has to be added there.
