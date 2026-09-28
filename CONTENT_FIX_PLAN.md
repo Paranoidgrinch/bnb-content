@@ -80,8 +80,10 @@ Gabelung alle 2–3 Reihen) und ob die Topologie der Strategic-Generierung (`Str
 Erster Lauf 2026-09-28 (268 Karten, 172 Relikte, 9 Paare, je 4 Runden, 28 min), jeder Befund einzeln nachgestellt
 (`~/Desktop/bnb-balance/audit/20260928-triage.md`). Behoben: Energie darf über das Maximum gewonnen werden;
 Dubious Authority und Presumption of Error reagieren auf geblockte Angriffe (Engine: `hitsThisTurn`); Sanguine
-Errata verschont das eigene Blood Ink (Engine: `StatusSelectionSpec.Except`). Offen: Riddle's Third Answer (Seal
-auf dem Helden — Design), Synergie-Paare mit Spielfolge, zweiter Lauf mit den korrigierten Maßstäben.
+Errata verschont das eigene Blood Ink (Engine: `StatusSelectionSpec.Except`). Riddle's Third Answer legt sein
+Seal jetzt auf den schwächsten Gegner (Entscheidung des Spielers 2026-09-28, 1a). Zweiter Lauf (20260928-1351):
+BUG 4 / SIDE 0 / WEAK 6 / UNMEASURED 133. **Nächste Session:** die 133 UNMEASURED-Karten (Energie/Ziehen/Setup)
+durchsehen — gezielt spielen oder den Audit Energie und Ziehen bewerten lassen; dazu die 6 schwachen Situationskarten.
 
 
 **Ziel:** Jede Karte und jedes Relikt tut, was sein Text sagt. Automatisch, wiederholbar, mit einer Liste der
