@@ -82,12 +82,6 @@ public static class ActFourEventPrograms
             // adds seventy to it.
             [TithePrize] = VictoryBody(TithePrize,
                 new ChangeResourceRunEffect(StandardRunIds.Gold, 70)),
-            [CountRefused] = FightWaitsBody(CountRefused, CountPrize,
-                // The Gate Tally Scribe, the Uncounted Pilgrim and the Ancestral Witness: three ways of being
-                // counted, and every one of them has your name half-written already.
-                EveryEnemyGains("strength", 3), Applies(ActFour.InscribedId, 1)),
-            // Struck out BEFORE entered correctly, deliberately: nobody improves a card they are about to
-            // have struck from the file, and asking in that order would let them.
             [CountPrize] = VictoryBody(CountPrize,
                 new ChangeResourceRunEffect(StandardRunIds.Gold, 90),
                 new RemoveCardsRunEffect(RunSelectors.DeckCards

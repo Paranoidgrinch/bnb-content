@@ -187,6 +187,9 @@ public static class SparringRing
             Actions = intentId is null
                 ? authored.Actions
                 : [new EnemyActionDefinitionId($"{enemyId}.{intentId}")],
+            // …except the early-round paperwork grace, which is a rule about the CYCLE (EncounterMapper): a body
+            // pinned to one move is asked about that move, from the first round on.
+            IntentRules = intentId is null ? authored.IntentRules : WithoutGrace(authored.IntentRules),
             StartingStatuses =
             [
                 .. authored.StartingStatuses ?? [],
@@ -199,6 +202,9 @@ public static class SparringRing
             heroStartingStatuses: HeroStatuses(enemyId),
             triggeredEffects: EncounterPassives.ForEnemy(enemyId));
     }
+
+    public static IReadOnlyList<EnemyIntentRule>? WithoutGrace(IReadOnlyList<EnemyIntentRule>? rules) =>
+        rules?.Where(rule => rule.Priority != EncounterMapper.GracePriority).ToList() is { Count: > 0 } kept ? kept : null;
 
     // The REAL authored encounter, exactly as the game fields it (roster, per-encounter health, intents), with
     // the hero's pool raised when the question needs several cards inside one turn.

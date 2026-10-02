@@ -74,33 +74,6 @@ public class ActThreeEventLiveTests
 
     // ── 2. The Noticebound Hedge ──────────────────────────────────────────────────────────────────────────
 
-    [Fact]
-    public void A_lawful_gap_is_bought_and_paid_for()
-    {
-        using var story = OnTheRoad("the_noticebound_hedge", "lawful_gap", gold: 40);
-
-        Assert.Equal(5, story.Run.Resources[StandardRunIds.Gold]);
-        Assert.Equal(3, story.Run.Deck.Count);
-    }
-
-    [Fact]
-    public void Crossing_first_pays_well_and_leaves_a_demand_on_the_road()
-    {
-        using var story = OnTheRoad("the_noticebound_hedge", "cross_first");
-
-        Assert.Equal(90, story.Run.Resources[StandardRunIds.Gold]);
-        Assert.Equal(2, HeroStacks(story, ActThreeEventObjects.EnvironmentalWergildId));
-    }
-
-    [Fact]
-    public void The_hedge_knots_the_way()
-    {
-        using var story = OnTheRoad("the_noticebound_hedge", "mark_the_path");
-
-        Assert.Equal(1, InDeck(story, ActThreeEventObjects.WayKnotted));
-        Assert.Equal(1, HeroStacks(story, ActThreeEventObjects.WayKnotted));
-    }
-
     // ── 3. The Witch at the Milestone ─────────────────────────────────────────────────────────────────────
 
     [Fact]

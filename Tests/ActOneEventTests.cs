@@ -19,9 +19,9 @@ public class ActOneEventTests
     internal static readonly string[] Fifteen =
     [
         "misfiling_cabinet", "certified_copy_drawer", "self_amending_fee_table", "lost_and_found_desk",
-        "licensed_vendor", "complaint_ledger", "waiting_token_exchange", "almost_helpful_clerk",
+        "licensed_vendor", "complaint_ledger", "waiting_token_exchange", "form_lottery",
         "witness_queue", "sealed_back_door", "clerks_tea_break", "friendly_filing_cabinet",
-        "receipt_of_prior_effort", "contradictory_map", "archive_window",
+        "stamp_wheel", "contradictory_map", "archive_window",
     ];
 
     // ── the shape of the set ──────────────────────────────────────────────────────────────────────────────

@@ -22,6 +22,10 @@ public static class EnemyMapper
             throw new ConversionException($"enemy '{enemy.Id}'", $"unmapped intent_pattern '{enemy.IntentPattern}'");
         foreach (var intent in enemy.Intents)
             yield return MapIntent(enemy, intent);
+        // The early-round stand-ins of an enemy whose every cycled move files Paperwork (EncounterMapper's
+        // paperwork grace): the same move without the Paperwork, defined so a rule can name it.
+        foreach (var intent in EncounterMapper.GraceVariants(enemy))
+            yield return MapIntent(enemy, intent);
     }
 
     private static EnemyActionData MapIntent(BabEnemy enemy, BabIntent intent)
@@ -165,7 +169,11 @@ public static class EncounterMapper
                     .Select(i => new EnemyActionDefinitionId(EnemyMapper.ActionId(enemyId, i.Id))).ToList(),
                 StartingStatuses: MapStartingStatuses(enemy, encounter, slot),
                 DisplayName: enemy.Name,
-                IntentRules: MapIntentRules(where, enemyId, enemy)));
+                // Not for a boss: its Paperwork is scripted mechanics, and a boss is not a fight meant to be won
+                // unhurt (playtest feedback 2, E1).
+                IntentRules: encounter.Role == "boss"
+                    ? MapIntentRules(where, enemyId, enemy, grace: false)
+                    : WithPaperworkGrace(enemyId, enemy, MapIntentRules(where, enemyId, enemy, grace: true))));
         }
         // Cross-combatant enemy passives (reactions to player actions) become per-encounter triggered effects,
         // one set per distinct enemy present.
@@ -212,15 +220,87 @@ public static class EncounterMapper
         ];
     }
 
+    // NO PAPERWORK BEFORE ROUND THREE (user, playtest feedback 2, E1: "da es sonst unmoeglich ist manche kaempfe
+    // ohne hp verlust zu spielen"). Paperwork never decays, so a stack filed on the first turn costs HP every turn of
+    // the fight however well the player answers it. Where the plain cycle would file Paperwork on the player in
+    // round 1 or 2, a LOWEST-priority rule plays the next intent of the cycle that does not instead — so every
+    // rule the enemy already has still wins, the cycle from round 3 on is untouched, and the telegraph shows the
+    // move that will really be made. An enemy whose every cycled intent files Paperwork keeps its cycle; the
+    // measurement in the tests names it.
+    public const int PaperworkGraceRounds = 2;
+    public const int GracePriority = -1000;
+
+    private static IReadOnlyList<EnemyIntentRule>? WithPaperworkGrace(
+        string enemyId, BabEnemy enemy, IReadOnlyList<EnemyIntentRule>? rules)
+    {
+        var cycle = enemy.Intents.Where(i => i.Special != true).ToList();
+        if (cycle.Count == 0)
+            return rules;
+        var grace = new List<EnemyIntentRule>();
+        for (var round = 1; round <= PaperworkGraceRounds; round++)
+        {
+            var at = (round - 1) % cycle.Count;
+            if (!FilesPaperworkOnThePlayer(cycle[at]))
+                continue;
+            var instead = Enumerable.Range(1, cycle.Count - 1)
+                .Select(step => cycle[(at + step) % cycle.Count])
+                .FirstOrDefault(intent => !FilesPaperworkOnThePlayer(intent))
+                // Every move files Paperwork: the same move without it (GraceVariants).
+                ?? GraceVariants(enemy).FirstOrDefault(variant => variant.Id == GraceId(cycle[at].Id));
+            if (instead is null)
+                continue;
+            grace.Add(new EnemyIntentRule(
+                new RoundCondition(ComparisonOperator.Equal, round),
+                new EnemyActionDefinitionId(EnemyMapper.ActionId(enemyId, instead.Id)),
+                GracePriority));
+        }
+        return grace.Count == 0 ? rules : [.. rules ?? [], .. grace];
+    }
+
+    // For an enemy whose every cycled move files Paperwork on the player, each such move once more, without the
+    // Paperwork — Special, so only the grace rule ever plays it. A move that is nothing but Paperwork has no
+    // stand-in and keeps its cycle.
+    public static IEnumerable<BabIntent> GraceVariants(BabEnemy enemy)
+    {
+        var cycle = enemy.Intents.Where(i => i.Special != true).ToList();
+        if (cycle.Count == 0 || !cycle.All(FilesPaperworkOnThePlayer))
+            yield break;
+        foreach (var intent in cycle.Take(PaperworkGraceRounds))
+        {
+            if (intent.Damage is not null || RawIntentPrograms.For(enemy.Id, intent.Id) is not null)
+                continue;
+            static List<BabEffect>? Without(IReadOnlyList<BabEffect>? effects) =>
+                effects?.Where(e => !(e.Status == Cards.Keywords.Paperwork && e.Target == "player")).ToList();
+            var effects = Without(intent.Effects);
+            var actions = Without(intent.Actions);
+            if ((effects ?? actions ?? []).Count == 0)
+                continue;
+            yield return intent with { Id = GraceId(intent.Id), Effects = effects, Actions = actions, Special = true };
+        }
+    }
+
+    private static string GraceId(string intentId) => $"{intentId}__early";
+
+    public static bool FilesPaperworkOnThePlayer(BabIntent intent) =>
+        (intent.Effects ?? []).Concat(intent.Actions ?? []).Any(effect =>
+            effect.Status == Cards.Keywords.Paperwork && effect.Target is "player" or "target" or "enemy");
+
     // State-conditional intents → engine EnemyIntentRule. Action names an intent on this enemy.
-    private static IReadOnlyList<EnemyIntentRule>? MapIntentRules(string where, string enemyId, BabEnemy enemy) =>
+    // A rule whose move files Paperwork on the player waits for round three like the cycle does (playtest
+    // feedback 2, E1): its condition gains "from round 3 on", and until then the enemy does what it otherwise would.
+    private static IReadOnlyList<EnemyIntentRule>? MapIntentRules(string where, string enemyId, BabEnemy enemy, bool grace) =>
         enemy.IntentRules is null || enemy.IntentRules.Count == 0
             ? null
             : enemy.IntentRules
-                .Select(r => new EnemyIntentRule(
-                    MapCondition($"{where} intent rule", r.Condition),
-                    new EnemyActionDefinitionId(EnemyMapper.ActionId(enemyId, r.Action)),
-                    r.Priority ?? 0))
+                .Select(r =>
+                {
+                    var condition = MapCondition($"{where} intent rule", r.Condition);
+                    if (grace && enemy.Intents.FirstOrDefault(i => i.Id == r.Action) is { } move && FilesPaperworkOnThePlayer(move))
+                        condition = new AllOfCondition(
+                            [condition, new RoundCondition(ComparisonOperator.GreaterOrEqual, PaperworkGraceRounds + 1)]);
+                    return new EnemyIntentRule(
+                        condition, new EnemyActionDefinitionId(EnemyMapper.ActionId(enemyId, r.Action)), r.Priority ?? 0);
+                })
                 .ToList();
 
     private static EnemyIntentCondition MapCondition(string where, BabIntentCondition c)

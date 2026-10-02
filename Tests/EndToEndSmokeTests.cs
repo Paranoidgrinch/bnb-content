@@ -187,12 +187,10 @@ public class EndToEndSmokeTests
             }
             Assert.Null(play.CombatDriver.Current); // the fight ended
 
-            // Victory spoils: the single "spoils" entity pick (gold + nested card offer), then the card.
+            // Victory spoils: the gold is paid on the spot and the card reward is the first thing asked
+            // (playtest feedback 2, C1 — the "spoils" bundle was a pick of its own).
             while (session.IsAwaitingInterlude)
                 session.Continue();
-            Assert.True(session.IsAwaitingEntities, "expected the victory spoils to park an entity pick");
-            session.PickEntities([0]);
-            Assert.Null(session.Error);
             Assert.True(session.Run.GetResource(StandardRunIds.Gold) > goldBefore); // easy-tier gold landed
 
             Assert.True(session.IsAwaitingEntities); // the pick-1-of-3 card reward

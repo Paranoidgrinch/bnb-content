@@ -217,8 +217,11 @@ public class ActFourMonumentTests
     [Fact]
     public void The_accusation_carries_the_complaints()
     {
+        // Pinned to its first two moves: in the authored room the accusation files Paperwork, so it waits for the
+        // wall's third turn and beyond (playtest feedback 2, E1) — this is about what it carries, not when.
         var (play, _, _) = FightProbe.Start(
-            FightProbe.Authored("labyrinth_hall_02"), health: 900);
+            FightProbe.SoloCycle("hieroglyphic_complaint_wall", "preserve_the_complaint", "carved_accusation"),
+            health: 900);
 
         play.CombatDriver!.EndTurn();  // Preserve the Complaint
         var before = Hero(play).Health.Current;

@@ -163,4 +163,35 @@ public class PlaytestFeedback2Tests
             Assert.Equal(act * 10, rate);
         Assert.Contains(byAct, r => r.Act == 4);
     }
+
+    // E1 — no fight but a boss files Paperwork on the player before round three. Every authored encounter, the player doing
+    // nothing for two rounds: at the start of round three there is none on them.
+    [Fact]
+    public void No_encounter_files_paperwork_on_the_player_in_its_first_two_rounds()
+    {
+        var offenders = new List<string>();
+        // BOSSES ARE LEFT OUT on purpose: their Paperwork is scripted mechanics (Nanna-Sin's fixed ring, the Flood
+        // Queen's lost acreage, the Granary Lady's failed rations), and a boss is not a fight meant to be won unhurt.
+        foreach (var encounter in FightProbe.Game.Encounters
+            .Where(e => !e.Id.Value.StartsWith("tutorial", StringComparison.Ordinal)
+                && !e.Id.Value.Contains("_boss_", StringComparison.Ordinal)
+                && !e.Id.Value.StartsWith("act_5_", StringComparison.Ordinal)))
+        {
+            var (play, session, _) = FightProbe.Start(
+                FightProbe.Authored(encounter.Id.Value), [.. Enumerable.Repeat("paper_cut", 12)], health: 999);
+            for (var round = 0; round < 2 && play.CombatDriver!.Current is not null; round++)
+            {
+                if (play.CombatDriver.PendingCardChoice is { } cards)
+                    play.CombatDriver.SupplyCardChoice([.. cards.Take(play.CombatDriver.PendingCardChoiceCount).Select(c => c.Id)]);
+                if (play.CombatDriver.PendingOptionChoice is not null)
+                    play.CombatDriver.SupplyOptionChoice([0]);
+                play.CombatDriver.EndTurn();
+            }
+            if (play.CombatDriver!.Current is not null && session.Error is null
+                && FightProbe.StacksOf(Hero(play), Keywords.Paperwork) is var stacks and > 0)
+                offenders.Add($"{encounter.Id.Value} ({stacks})");
+            play.Dispose();
+        }
+        Assert.True(offenders.Count == 0, $"{offenders.Count} encounters: {string.Join(", ", offenders)}");
+    }
 }

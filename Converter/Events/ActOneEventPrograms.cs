@@ -35,7 +35,6 @@ public static class ActOneEventPrograms
             [GarnishedReward] = GarnishedRewardBody(),
             [GarnishThePurse] = GarnishThePurseBody(),
             [ExtraCardReward] = ExtraCardRewardBody(pools),
-            [ReceiptOfPriorEffort] = ReceiptOfPriorEffortBody(),
             [WrongFormAgain] = WrongFormAgainBody(),
         };
 
@@ -105,21 +104,6 @@ public static class ActOneEventPrograms
             Literal(new OfferRewardRunEffect(
                 new RewardId("event:sealed-back-door"), pools.CardRewardSource(), 1)),
             Done(ExtraCardReward),
-        ]);
-
-    // "125 Gold if won by end of round 3, otherwise 25." The fight wrote down how long it took
-    // (ReceiptOfPriorEffortRule); this reads it off the result. There is no if-expression for a number, so the
-    // lateness is arithmetic: min(1, max(0, rounds − 3)) is 1 exactly when the third round has passed.
-    private static ITriggeredRunEffectDefinition ReceiptOfPriorEffortBody() =>
-        RunPrograms.When<CombatResolvedRunEvent>(RunEventValues.CombatWasVictory,
-        [
-            RunEffectTemplates.GainResource(StandardRunIds.Gold,
-                RunExpr.Subtract(RunExpr.Const(125), RunExpr.Multiply(RunExpr.Const(100),
-                    RunExpr.Min(RunExpr.Const(1), RunExpr.Max(RunExpr.Const(0),
-                        RunExpr.Subtract(
-                            RunEventValues.CombatCounter(ActOneEventObjects.RoundsTaken.ToString()),
-                            RunExpr.Const(3))))))),
-            Done(ReceiptOfPriorEffort),
         ]);
 
     // "Shuffle Wrong Form into each of the next 2 combats." A combat opening is consumed by one fight, so the

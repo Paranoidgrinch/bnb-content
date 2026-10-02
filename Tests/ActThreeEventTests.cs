@@ -14,7 +14,7 @@ public class ActThreeEventTests
 
     internal static readonly string[] Fifteen =
     [
-        "a_clear_stream", "the_noticebound_hedge", "the_witch_at_the_milestone",
+        "a_clear_stream", "notarys_dice", "the_witch_at_the_milestone",
         "the_public_footpath_dispute", "moonlit_mushrooms", "a_spiders_clause", "the_ant_queue",
         "the_conceptual_toll", "rain_beneath_the_rowan", "the_buried_waystone",
         "the_travelling_chandler", "stargazing", "the_quiet_meadow", "the_ombudsmans_warning",
@@ -159,7 +159,6 @@ public class ActThreeEventTests
         Assert.Equal(77, gates["the_kindly_procession"]);      // earliest stage 8 of 10
         Assert.Equal(66, gates["the_ombudsmans_warning"]);     // earliest stage 7
         Assert.Equal(55, gates["the_buried_waystone"]);        // earliest stage 6
-        Assert.Equal(11, gates["the_noticebound_hedge"]);      // earliest stage 2
         // Stage 1 is the doorstep and is not a gate at all — the stream and the meadow may open anywhere.
         Assert.DoesNotContain("a_clear_stream", gates.Keys);
         Assert.DoesNotContain("the_quiet_meadow", gates.Keys);

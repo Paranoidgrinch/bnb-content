@@ -87,33 +87,7 @@ public class ActOneEventLiveTests
 
     // ── 8. The Almost-Helpful Clerk ───────────────────────────────────────────────────────────────────────
 
-    [Fact]
-    public void The_helpful_stamp_puts_the_stamped_card_in_hand_and_makes_that_play_free()
-    {
-        using var story = EventStory.Enter("almost_helpful_clerk", "stamp", Starter);
-
-        var stamped = story.Zone(CardZone.Hand)
-            .Single(c => c.Marks.Contains(new TagId(ActOneEventObjects.Stamped)));
-        Assert.True(EventStory.CostOf(stamped.DefinitionId) + EventStory.CostDeltaOf(stamped) <= 0,
-            "the stamped card should cost nothing the first time it is played");
-        Assert.Contains(story.Zone(CardZone.Hand), c => c.DefinitionId.value == "missing_signature");
-    }
-
     // ── 8b / 14a. The Expedited Route ─────────────────────────────────────────────────────────────────────
-
-    [Fact]
-    public void The_corrected_route_meets_a_diminished_enemy_and_is_never_paid_for_it()
-    {
-        using var story = EventStory.Enter("almost_helpful_clerk", "route", Starter, paying: true);
-
-        var rat = story.Fight.State.Combatants.Single(c => c.Id != story.Fight.HeroId);
-        Assert.Equal(11, rat.Health.Max);
-        Assert.Equal(8, rat.Health.Current);           // 30% of its own maximum, taken at the bell
-        Assert.Equal(1, HeroStacks(story, ActOneEventObjects.ExpeditedRoute));
-
-        story.WinTheFight();
-        Assert.Equal(0, story.Run.GetResource(StandardRunIds.Gold)); // the purse was garnished on arrival
-    }
 
     // ── 4 / 15. Under Review, and what the archive stamps on the way back ─────────────────────────────────
 
@@ -218,16 +192,6 @@ public class ActOneEventLiveTests
     }
 
     // ── 13. Receipt of Prior Effort ───────────────────────────────────────────────────────────────────────
-
-    [Fact]
-    public void A_performance_claim_pays_the_full_rate_for_a_fight_finished_early()
-    {
-        using var story = EventStory.Enter("receipt_of_prior_effort", "claim", Starter);
-
-        Assert.Equal(1, HeroStacks(story, ActOneEventObjects.ReceiptOfPriorEffort));
-        story.WinTheFight();
-        Assert.Equal(125, story.Run.GetResource(StandardRunIds.Gold));
-    }
 
     // ── 14. The Contradictory Map ─────────────────────────────────────────────────────────────────────────
 
@@ -424,14 +388,6 @@ public class ActOneEventLiveTests
     }
 
     [Fact]
-    public void The_receipt_can_simply_be_redeemed()
-    {
-        using var story = EventStory.Enter("receipt_of_prior_effort", "redeem", Starter);
-
-        Assert.Equal(75, story.Run.GetResource(StandardRunIds.Gold));
-    }
-
-    [Fact]
     public void The_annotated_corridor_pays_a_card_opens_one_counter_a_round_and_costs_a_wrong_form()
     {
         using var story = EventStory.Enter("contradictory_map", "annotated", Starter);
@@ -463,17 +419,6 @@ public class ActOneEventLiveTests
             foreach (var choice in FightProbe.Game.Events[id].Situations["start"].Choices)
                 data.Add(id, choice.Id);
         return data;
-    }
-
-    [Fact]
-    public void A_claim_submitted_and_then_dragged_out_pays_the_lower_rate()
-    {
-        using var story = EventStory.Enter("receipt_of_prior_effort", "claim",
-            ["paper_cut", "cower_behind_a_desk"], intent: "many_small_bites");
-
-        story.PassTurns(3);   // the third round goes by unfinished
-        story.WinTheFight();
-        Assert.Equal(25, story.Run.GetResource(StandardRunIds.Gold));
     }
 
     // A promise made at an event is part of the run, so it has to survive being written to disk and read back

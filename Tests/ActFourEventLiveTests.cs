@@ -593,42 +593,6 @@ public class ActFourEventLiveTests
 
     // ── 17. The Survey of the Dead ────────────────────────────────────────────────────────────────────────
 
-    [Fact]
-    public void Being_counted_among_the_living_is_a_whole_body_with_a_lower_ceiling()
-    {
-        using var story = Door("the_survey_of_the_dead", "be_counted_among_the_living", health: 20);
-
-        Assert.Equal(62, story.Run.Health.Max);
-        Assert.Equal(62, story.Run.Health.Current);
-    }
-
-    [Fact]
-    public void Being_counted_among_the_dead_is_wrapped_properly_for_three_rooms()
-    {
-        using var story = Door("the_survey_of_the_dead", "be_counted_among_the_dead", fights: 3);
-
-        Assert.Equal(82, story.Run.Health.Max);
-        Assert.Equal(1, Hero(story, ActFour.EmbalmedId));
-        story.WinTheFight();
-        Assert.Equal(1, Hero(story, ActFour.EmbalmedId));
-        story.WinTheFight();
-        Assert.Equal(1, Hero(story, ActFour.EmbalmedId));
-    }
-
-    [Fact]
-    public void Refusing_the_count_puts_three_clerks_on_the_next_corridor_and_pays_for_beating_them()
-    {
-        using var story = Door("the_survey_of_the_dead", "refuse_the_count");
-
-        Assert.Equal(3, Enemies(story, "strength"));
-        Assert.Equal(1, Hero(story, ActFour.InscribedId));
-
-        story.WinTheFight();
-        Assert.Equal(90, Gold(story));
-        Assert.Equal(Papers.Length - 1, story.Run.Deck.Count);
-        Assert.Equal(1, story.Run.Deck.Count(c => c.UpgradeLevel > 0));
-    }
-
     // ── 18. The House of Life at Night ────────────────────────────────────────────────────────────────────
 
     [Fact]

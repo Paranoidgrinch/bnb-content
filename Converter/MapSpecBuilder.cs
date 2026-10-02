@@ -183,13 +183,30 @@ public static class MapSpecBuilder
         BossRooms = rules.BossRooms,
         MinWidth = 2,
         MaxWidth = 4,
-        Topology = rules.Topology,
+        // EVERY ROUTE IS ASKED WHICH WAY AT LEAST FIVE TIMES (playtest feedback 2, D3: "pro route mindestens 4 echte
+        // entscheidungen"): one more than the player asked for, because a fork whose two doors happen to hold the
+        // same kind of room is no real decision. The fork into the campfire row does not count.
+        Topology = rules.Topology with { MinForksPerRoute = 5, ForkFreeTailRows = 1 },
+        MinRealDecisionsPerRoute = 4,
+        // More whole-act retries than the engine's 8: an act that misses the decisions above is re-rolled, and
+        // only the rare hard seed pays for it.
+        MaxGenerationAttempts = 48,
         LaneProfiles = [.. rules.Lanes],
         Rooms = new StrategicRoomSpec
         {
             KindWeights = rules.KindWeights,
-            RoomBudgets = rules.RoomBudgets,
-            DepthBands = rules.DepthBands,
+            // A CAMPFIRE RIGHT BEFORE EVERY BOSS, on every route (D2): the last row is all campfire. It is counted
+            // in the act's and the last quarter's campfire budgets, so their ceilings make room for a whole row.
+            PreBossKind = MapNodeKind.Rest,
+            // …and a fork's two doors should not both be a fight: that is no decision (D3).
+            Rules = new StrategicRoomRules { ForkPenaltyForRepeatFreely = true, SameAtForkPercent = 15 },
+            RoomBudgets = rules.RoomBudgets.ToDictionary(pair => pair.Key,
+                pair => pair.Key == MapNodeKind.Rest ? pair.Value with { Max = pair.Value.Max + 4 } : pair.Value),
+            DepthBands = [.. rules.DepthBands.Select(band => band.EndPercent < 100 ? band : band with
+            {
+                Budgets = band.Budgets.ToDictionary(pair => pair.Key,
+                    pair => pair.Key == MapNodeKind.Rest ? pair.Value with { Max = pair.Value.Max + 4 } : pair.Value),
+            })],
             // Elite ROOMS stand only where the act's elites belong: from the first elite stage to the last
             // (user, 2026-09-28: an elite belongs to the stage of its core mechanic).
             RoleMinimumDepthPercent = EliteRoomsFromTheirStages(rules.EarliestDepthPercent, data, act),

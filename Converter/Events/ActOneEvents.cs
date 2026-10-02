@@ -33,14 +33,15 @@ public static class ActOneEvents
         LicensedVendor(pools, rng),
         ComplaintLedger(pools),
         WaitingTokenExchange(),
-        AlmostHelpfulClerk(),
         WitnessQueue(pools),
         SealedBackDoor(),
         ClerksTeaBreak(),
         FriendlyFilingCabinet(pools),
-        ReceiptOfPriorEffort(),
         ContradictoryMap(pools),
         ArchiveWindow(),
+        // Playtest feedback 2, G2: two gambles in place of the Almost-Helpful Clerk and the Receipt of Prior Effort.
+        GambleEvents.FormLottery(pools),
+        GambleEvents.StampWheel(pools),
     ];
 
     // ── 1 ─────────────────────────────────────────────────────────────────────────────────────────────────
@@ -62,7 +63,7 @@ public static class ActOneEvents
             "One obsolete procedure tears loose. Two of the cabinet's own forms come away with it.",
             [
                 new RemoveCardsRunEffect(Choose("choose a card to pull out of the file")),
-                Openings.NextCombat(
+                Openings.ForFights(Openings.EventFights, 
                     AddCard(ActOneEventObjects.MissingSignature.Id, CardZone.DrawPile),
                     AddCard(ActOneEventObjects.WrongForm.Id, CardZone.DrawPile)),
             ]));
@@ -123,7 +124,7 @@ public static class ActOneEvents
             "The tag is yours, and so is the unsigned form somebody left inside the parcel.",
             [
                 .. Grant(EventRelics.ActI, "unclaimed_property_tag"),
-                Openings.NextCombat(AddCard(ActOneEventObjects.MissingSignature.Id, CardZone.DrawPile)),
+                Openings.ForFights(Openings.EventFights, AddCard(ActOneEventObjects.MissingSignature.Id, CardZone.DrawPile)),
             ]));
 
     // ── 6 ─────────────────────────────────────────────────────────────────────────────────────────────────
@@ -163,28 +164,10 @@ public static class ActOneEvents
             [
                 new UpgradeCardsRunEffect(
                     RunSelectors.DeckCards.Upgradable().ChooseByPlayer(1, "improve a card")),
-                Openings.NextCombat(
+                Openings.ForFights(Openings.EventFights, 
                     Applies(ActOneEventObjects.PriorityNumber),
                     AddCard(ActOneEventObjects.NoticeOfDelay.Id, CardZone.Hand)),
             ]));
-
-    // ── 8 ─────────────────────────────────────────────────────────────────────────────────────────────────
-
-    private static BnbEvent AlmostHelpfulClerk() => Event(
-        "almost_helpful_clerk", "The Almost-Helpful Clerk",
-        "A clerk looks up, understands almost everything, and reaches for a stamp. This is either a miracle or "
-        + "a trap.",
-        Branch("stamp", "Accept the helpful stamp.",
-            "The stamp lands slightly off-centre, which is apparently what makes it free. The clerk files a "
-            + "form that was never signed.",
-            [
-                .. MarkForNextFight(ActOneEventObjects.Stamped, "choose the card to have stamped"),
-                Openings.NextCombat(AddCard(ActOneEventObjects.MissingSignature.Id, CardZone.Hand)),
-            ]),
-        Branch("route", "Accept the corrected route.",
-            "You arrive by the short corridor. Whoever was waiting for you had to run, and nobody is paying "
-            + "for the paperwork.",
-            ExpeditedRoute()));
 
     // ── 9 ─────────────────────────────────────────────────────────────────────────────────────────────────
 
@@ -203,14 +186,14 @@ public static class ActOneEvents
             "One false statement leaves your file. A summons arrives to replace it.",
             [
                 new RemoveCardsRunEffect(Choose("choose the statement to withdraw")),
-                Openings.NextCombat(AddCard(ActOneEventObjects.SummonsToAppear.Id, CardZone.Hand)),
+                Openings.ForFights(Openings.EventFights, AddCard(ActOneEventObjects.SummonsToAppear.Id, CardZone.Hand)),
             ]),
         Branch("cross_examine", "Cross-examine all three.",
             "The contradictions are useful. So is the protection they buy you — and so, unfortunately, is the "
             + "witness now attached to your filing.",
             [
                 CardReward(pools, "witness_queue"),
-                Openings.NextCombat(
+                Openings.ForFights(Openings.EventFights, 
                     Applies(ActOneEventObjects.WitnessProtection),
                     Applies(ActOneEventObjects.WitnessedProcedure)),
             ]));
@@ -226,13 +209,13 @@ public static class ActOneEvents
             + "of the door.",
             [
                 Install(ActOneEventPrograms.ExtraCardReward),
-                Openings.NextCombat(AddCard(ActOneEventObjects.SummonsToAppear.Id, CardZone.DrawPile)),
+                Openings.ForFights(Openings.EventFights, AddCard(ActOneEventObjects.SummonsToAppear.Id, CardZone.DrawPile)),
             ]),
         Branch("respect", "Respect the seal.",
             "The ward is yours. Word travels: whatever is waiting has been told to take you seriously.",
             [
                 .. Grant(EventRelics.ActI, "threshold_ward"),
-                Openings.NextCombat(new CombatNodeModel("applyStatus", "allEnemies",
+                Openings.ForFights(Openings.EventFights, new CombatNodeModel("applyStatus", "allEnemies",
                     CombatAmountSpec.FromConst(4), StatusId: "strength")),
             ]));
 
@@ -276,25 +259,8 @@ public static class ActOneEvents
                 // a new one, so "the transformed card" is whatever the deck just gained.
                 new TagCardsRunEffect(
                     RunSelectors.LastAddedCard, new RunCardTagId(ActOneEventObjects.FastTrack), true),
-                Applies(ActOneEventObjects.MarkingsRule.Id).AsOpening(),
+                Openings.NextCombat(Applies(ActOneEventObjects.MarkingsRule.Id)), // a marking is spent in ONE fight
                 Install(ActOneEventPrograms.MarkingsExpire),
-            ]));
-
-    // ── 13 ────────────────────────────────────────────────────────────────────────────────────────────────
-
-    private static BnbEvent ReceiptOfPriorEffort() => Event(
-        "receipt_of_prior_effort", "Receipt of Prior Effort",
-        "An old receipt proves that you once nearly did everything correctly. The ink is faded, but the "
-        + "implication is useful.",
-        Branch("redeem", "Redeem the receipt.",
-            "A clerk grudgingly pays out an administrative refund of seventy-five Gold.",
-            [Gold(75)]),
-        Branch("claim", "Submit a performance claim.",
-            "The claim is accepted, at a rate that depends entirely on how quickly you finish the next piece "
-            + "of work.",
-            [
-                NextFightRule(ActOneEventObjects.ReceiptOfPriorEffort),
-                Install(ActOneEventPrograms.ReceiptOfPriorEffort),
             ]));
 
     // ── 14 ────────────────────────────────────────────────────────────────────────────────────────────────
@@ -311,7 +277,7 @@ public static class ActOneEvents
             + "wrong form entirely.",
             [
                 CardReward(pools, "contradictory_map"),
-                Openings.NextCombat(
+                Openings.ForFights(Openings.EventFights, 
                     Applies(ActOneEventObjects.CorrectWindow),
                     AddCard(ActOneEventObjects.WrongForm.Id, CardZone.DrawPile)),
             ]),
@@ -320,7 +286,7 @@ public static class ActOneEvents
             + "you the wrong form.",
             [
                 .. Grant(EventRelics.ActI, "crossed_out_map"),
-                Openings.NextCombat(AddCard(ActOneEventObjects.WrongForm.Id, CardZone.DrawPile)),
+                Openings.ForFights(Openings.EventFights, AddCard(ActOneEventObjects.WrongForm.Id, CardZone.DrawPile)),
                 Install(ActOneEventPrograms.WrongFormAgain),
             ]));
 
@@ -335,7 +301,7 @@ public static class ActOneEvents
             + "small.",
             [
                 .. Grant(EventRelics.ActI, "inherited_bone_folder"),
-                Openings.NextCombat(
+                Openings.ForFights(Openings.EventFights, 
                     AddCard(ActOneEventObjects.FinePrint.Id, CardZone.DrawPile),
                     Applies(ActOneEventObjects.FinePrintTax.Id)),
             ]),
@@ -391,7 +357,7 @@ public static class ActOneEvents
                                 RandomRelic(pools, "licensed_vendor"),
                                 NextFightRule(ActOneEventObjects.GarnishedReward),
                                 Install(ActOneEventPrograms.GarnishedReward),
-                                Openings.NextCombat(
+                                Openings.ForFights(Openings.EventFights, 
                                     AddCard(ActOneEventObjects.FinePrint.Id, CardZone.DrawPile),
                                     Applies(ActOneEventObjects.FinePrintTax.Id)),
                             ],
@@ -460,13 +426,13 @@ public static class ActOneEvents
     private static CombatNodeModel Applies(string statusId) =>
         new("applyStatus", "source", CombatAmountSpec.FromConst(1), StatusId: statusId);
 
-    private static IRunEffectRequest AsOpening(this CombatNodeModel node) => Openings.NextCombat(node);
+    private static IRunEffectRequest AsOpening(this CombatNodeModel node) => Openings.ForFights(Openings.EventFights, node);
 
     // A marking: written on one card the player picks, honoured by the next fight, and spent there.
     private static IReadOnlyList<IRunEffectRequest> MarkForNextFight(string marking, string purpose) =>
     [
         new TagCardsRunEffect(Choose(purpose), new RunCardTagId(marking), true),
-        Applies(ActOneEventObjects.MarkingsRule.Id).AsOpening(),
+        Openings.NextCombat(Applies(ActOneEventObjects.MarkingsRule.Id)), // a marking is spent in ONE fight
         Install(ActOneEventPrograms.MarkingsExpire),
     ];
 
@@ -475,7 +441,7 @@ public static class ActOneEvents
     private static IReadOnlyList<IRunEffectRequest> SendUnderReview(string purpose) =>
     [
         new TagCardsRunEffect(Choose(purpose), new RunCardTagId(ActOneEventObjects.UnderReview), true),
-        Applies(ActOneEventObjects.MarkingsRule.Id).AsOpening(),
+        Openings.NextCombat(Applies(ActOneEventObjects.MarkingsRule.Id)), // a marking is spent in ONE fight
         Install(ActOneEventPrograms.UnderReviewReturns),
     ];
 
@@ -488,7 +454,7 @@ public static class ActOneEvents
             RunEffectTemplates.TagThisCard(new RunCardTagId(ActOneEventObjects.UnderReview)),
             RunEffectTemplates.TagThisCard(new RunCardTagId(ActOneEventObjects.CertifiedOriginal)),
         ]),
-        Applies(ActOneEventObjects.MarkingsRule.Id).AsOpening(),
+        Openings.NextCombat(Applies(ActOneEventObjects.MarkingsRule.Id)), // a marking is spent in ONE fight
         Install(ActOneEventPrograms.UnderReviewReturns),
         Install(ActOneEventPrograms.CertifiedOriginal),
     ];
@@ -500,7 +466,7 @@ public static class ActOneEvents
     // number. A body that would have started at 70% of its HP starts there.
     private static IReadOnlyList<IRunEffectRequest> ExpeditedRoute() =>
     [
-        Openings.NextCombat(
+        Openings.ForFights(Openings.EventFights, 
             Applies(ActOneEventObjects.ExpeditedRoute),
             CombatNodeModel.ForEach("allEnemies",
                 new CombatNodeModel("dealDamage", "iterationTarget",

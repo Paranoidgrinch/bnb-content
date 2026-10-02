@@ -33,7 +33,6 @@ public static class ActThreeEvents
         return
         [
             AClearStream(pools),
-            TheNoticeboundHedge(pools),
             TheWitchAtTheMilestone(pools),
             ThePublicFootpathDispute(pools),
             MoonlitMushrooms(pools),
@@ -47,6 +46,8 @@ public static class ActThreeEvents
             TheQuietMeadow(pools),
             TheOmbudsmansWarning(pools),
             TheKindlyProcession(pools),
+            // Playtest feedback 2, G2: in place of the Noticebound Hedge.
+            GambleEvents.NotarysDice(),
         ];
     }
 
@@ -65,25 +66,7 @@ public static class ActThreeEvents
         Branch("bottle", "Bottle the water.",
             "It keeps. The first demand you settle in full on the next ordinary road will grant one more "
             + "leave to pass than it would have.",
-            [Openings.NextCombat(Applies(ActThreeEventObjects.BottledWaterId))]));
-
-    // ── 2 · Earliest Stage 2 ──────────────────────────────────────────────────────────────────────────────
-
-    private static BnbEvent TheNoticeboundHedge(ConversionPools pools) => Event(
-        "the_noticebound_hedge", "The Noticebound Hedge", stage: 2,
-        "The hedge is grown through with notices — some nailed, some written straight onto the bark. Every "
-        + "one of them says the same thing in a different hand: not this way.",
-        Branch("lawful_gap", "Cut a lawful gap.",
-            "Thirty-five Gold buys the paperwork, and the hedge opens exactly wide enough for one thing to "
-            + "be left behind.",
-            [Remove("choose what to leave in the gap")], costs: [Price(35)]),
-        Branch("cross_first", "Cross first, explain later.",
-            "Ninety Gold's worth of shortcut, and a hedge's demand waiting at the next ordinary fight. "
-            + "Nobody will hold it against you afterwards; they will only take it out of you.",
-            [Gold(90), Install(ActThreeEventPrograms.HedgeDemandWaits)]),
-        Branch("mark_the_path", "Ask the hedge to mark the path.",
-            "A knot is tied where the way changes. One of your procedures carries it now.",
-            [.. Inscribe(ActThreeEventObjects.WayKnotted, "choose what the hedge will knot")]));
+            [Openings.ForFights(Openings.EventFights, Applies(ActThreeEventObjects.BottledWaterId))]));
 
     // ── 3 · Earliest Stage 2 ──────────────────────────────────────────────────────────────────────────────
 
@@ -115,7 +98,7 @@ public static class ActThreeEvents
             "You are covered — twice over — and everyone on the road afterwards has standing to object. "
             + "There is a purse in it if you get through them.",
             [
-                Openings.NextCombat(
+                Openings.ForFights(Openings.EventFights, 
                     Applies(ActThree.SafeConductId), Applies(ActThree.SafeConductId),
                     EveryEnemyGainsAClaim()),
                 Install(ActThreeEventPrograms.VictoryPurse80),
@@ -127,7 +110,7 @@ public static class ActThreeEvents
             "Two procedures come out of it better. Your own leave to pass went into the settlement.",
             [
                 Upgrade(2, "choose two to improve in the mediation"),
-                Openings.NextCombat(TakesALicence()),
+                Openings.ForFights(Openings.EventFights, TakesALicence()),
             ]));
 
     // ── 5 · Earliest Stage 4 ──────────────────────────────────────────────────────────────────────────────
@@ -147,7 +130,7 @@ public static class ActThreeEvents
             "You will be counted at the end of every turn of the next ordinary fight: one real card, or "
             + "three. Get through it without failing the count and the ring will give you a voice.",
             [
-                Openings.NextCombat(Applies(ActThreeEventObjects.QuorumVowId)),
+                Openings.ForFights(Openings.EventFights, Applies(ActThreeEventObjects.QuorumVowId)),
                 Install(ActThreeEventPrograms.QuorumKept),
                 Install(ActThreeEventPrograms.QuorumLapsed),
             ]));
@@ -167,11 +150,11 @@ public static class ActThreeEvents
             ]),
         Branch("cut_through", "Cut through the clause.",
             "One procedure goes with it, and something on the next road will remember that you cut.",
-            [Remove("choose what the cut costs you"), Openings.NextCombat(Applies("doubt"))]),
+            [Remove("choose what the cut costs you"), Openings.ForFights(Openings.EventFights, Applies("doubt"))]),
         Branch("sign", "Sign beneath the web.",
             "A hundred Gold for a signature nobody read. Somebody on the next road will have standing "
             + "because of it.",
-            [Gold(100), Openings.NextCombat(OneEnemyGainsAClaim())]));
+            [Gold(100), Openings.ForFights(Openings.EventFights, OneEnemyGainsAClaim())]));
 
     // ── 7 · Earliest Stage 5 ──────────────────────────────────────────────────────────────────────────────
 
@@ -190,7 +173,7 @@ public static class ActThreeEvents
             "You are in the procession now, and it has an order: nothing cheaper after something dear, "
             + "within a turn. Win an ordinary fight without stepping out of it and they will mark you.",
             [
-                Openings.NextCombat(Applies(ActThreeEventObjects.AntLineVowId)),
+                Openings.ForFights(Openings.EventFights, Applies(ActThreeEventObjects.AntLineVowId)),
                 Install(ActThreeEventPrograms.AntLineKept),
                 Install(ActThreeEventPrograms.AntLineLapsed),
             ]));
@@ -212,7 +195,7 @@ public static class ActThreeEvents
             Branch("use_anyway", "Use the bridge anyway.",
                 "Twice covered, unpaid, and something worth having at the end of the next ordinary fight.",
                 [
-                    Openings.NextCombat(
+                    Openings.ForFights(Openings.EventFights, 
                         Applies(ActThree.SafeConductId), Applies(ActThree.SafeConductId)),
                     Install(ActThreeEventPrograms.GarnishedReward),
                     Install(ActThreeEventPrograms.ExtraCardReward),
@@ -236,7 +219,7 @@ public static class ActThreeEvents
             + "hand than you would have.",
             [
                 new ApplyRunDamageRunEffect(6),
-                Openings.NextCombat(new CombatNodeModel("drawCards", "source", CombatAmountSpec.FromConst(1))),
+                Openings.ForFights(Openings.EventFights, new CombatNodeModel("drawCards", "source", CombatAmountSpec.FromConst(1))),
                 Install(ActThreeEventPrograms.ShelterAgain),
             ]));
 
@@ -275,7 +258,7 @@ public static class ActThreeEvents
                 [
                     // HELD, not gained: the opening bell arrives on a full pool, and a clamped gain is
                     // silently nothing (HeldEnergy). The point waits and lands the moment you run dry.
-                    Openings.NextCombat(
+                    Openings.ForFights(Openings.EventFights, 
                         Applies(HeldEnergy.Id),
                         Applies(ActThree.SafeConductId)),
                 ],
@@ -296,7 +279,7 @@ public static class ActThreeEvents
             + "pass.",
             [
                 new ChangeMaxHealthRunEffect(-4),
-                Openings.NextCombat(Applies(ActThree.SafeConductId)),
+                Openings.ForFights(Openings.EventFights, Applies(ActThree.SafeConductId)),
                 Install(ActThreeEventPrograms.RoadStarAgain),
             ]),
         Branch("root_star", "Read the Root Star.",
@@ -309,7 +292,7 @@ public static class ActThreeEvents
             "There is something rare in it, and something under the hill now knows your face.",
             [
                 RareCardReward(pools, "stargazing"),
-                Openings.NextCombat(BiggestEnemyGainsAClaim()),
+                Openings.ForFights(Openings.EventFights, BiggestEnemyGainsAClaim()),
             ]));
 
     // ── 13 · Earliest Stage 1 ─────────────────────────────────────────────────────────────────────────────
@@ -345,7 +328,7 @@ public static class ActThreeEvents
             "It is filed. Everybody on the next ordinary road is answering paperwork instead of you, and "
             + "the largest of them has standing to be annoyed about it.",
             [
-                Openings.NextCombat(
+                Openings.ForFights(Openings.EventFights, 
                     EveryEnemyGains("paperwork"), EveryEnemyGains("doubt"), BiggestEnemyGainsAClaim()),
                 Install(ActThreeEventPrograms.VictoryPurse60),
             ]),
@@ -369,7 +352,7 @@ public static class ActThreeEvents
             [
                 new ChangeMaxHealthRunEffect(-7),
                 .. Grant(EventRelics.ActIII, "guest_right_brooch"),
-                Openings.NextCombat(
+                Openings.ForFights(Openings.EventFights, 
                     Applies(ActThree.SafeConductId), Applies(ActThree.SafeConductId)),
             ]),
         Branch("give", "Give the procession something of yours.",
@@ -384,7 +367,7 @@ public static class ActThreeEvents
                 .. Grant(EventRelics.ActIII, "guest_right_brooch"),
                 RareCardReward(pools, "kindly_procession"),
                 Heal(100),
-                Openings.NextCombat(EveryEnemyGainsAClaim()),
+                Openings.ForFights(Openings.EventFights, EveryEnemyGainsAClaim()),
             ]));
 
     // ── the shared shapes ─────────────────────────────────────────────────────────────────────────────────

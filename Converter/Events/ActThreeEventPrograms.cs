@@ -45,7 +45,6 @@ public static class ActThreeEventPrograms
             [GarnishThePurse] = GarnishThePurseBody(),
             [ShortestRoadWaits] = ShortestRoadWaitsBody(),
             [ForgottenNameWaits] = ForgottenNameWaitsBody(),
-            [HedgeDemandWaits] = DemandWaitsBody(HedgeDemandWaits),
             [ConceptualDemandWaits] = DemandWaitsBody(ConceptualDemandWaits),
             [QuorumKept] = QuorumKeptBody(),
             [QuorumLapsed] = QuorumLapsedBody(),

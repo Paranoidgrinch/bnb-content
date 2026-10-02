@@ -43,10 +43,11 @@ public static class ActFourEvents
             TheFixedDayFestival(),
             TheBrokenSluice(),
             TheUnfinishedBurial(pools),
-            TheSurveyOfTheDead(),
             TheHouseOfLifeAtNight(pools),
             TheMercifulBalance(),
             TheCartoucheRepairBench(pools),
+            // Playtest feedback 2, G2: in place of the Survey of the Dead.
+            GambleEvents.SealedOffer(pools),
         ];
     }
 
@@ -67,7 +68,7 @@ public static class ActFourEvents
         Branch("leave_unmeasured", "Leave Unmeasured.",
             "Nothing is written down at all, which is restful. The next office you meet has to start from "
             + "the beginning, and starts with you.",
-            [Heal(25), Openings.NextCombat(Applies("paperwork", 2), Applies(ActFour.WeighedId, 3))]));
+            [Heal(25), Openings.ForFights(Openings.EventFights, Applies("paperwork", 2), Applies(ActFour.WeighedId, 3))]));
 
     // ── 2 · Early–Mid ─────────────────────────────────────────────────────────────────────────────────────
 
@@ -106,14 +107,14 @@ public static class ActFourEvents
             [
                 Remove("choose what goes into the wrapping"),
                 Heal(15),
-                Openings.NextCombat(Applies(ActFour.EmbalmedId, 2)),
+                Openings.ForFights(Openings.EventFights, Applies(ActFour.EmbalmedId, 2)),
             ]),
         Branch("cut_the_linen", "Cut the Linen.",
             "It parts, and what is inside is a filing you can improve twice. The corridor closes behind you "
             + "for having done it.",
             [
                 Upgrade(2, "choose two to correct from the wrapping"),
-                Openings.NextCombat(Applies(ActFour.EntombedId, 2)),
+                Openings.ForFights(Openings.EventFights, Applies(ActFour.EntombedId, 2)),
             ]),
         Branch("follow_to_the_last_gate", "Follow Until the Last Gate.",
             "It is much farther than it looked and it costs twelve of you to arrive. At the gate they cut "
@@ -180,7 +181,7 @@ public static class ActFourEvents
             + "where you got it.",
             [
                 NormalRelic(pools, "the_tomb_robbers_fire", RelicAuthoring.Rarity.Uncommon),
-                Openings.NextCombat(Applies(ActThree.TrespassId, 1)),
+                Openings.ForFights(Openings.EventFights, Applies(ActThree.TrespassId, 1)),
             ],
             costs: [Price(70)]),
         Branch("join_the_opening", "Join the Opening.",
@@ -202,7 +203,7 @@ public static class ActFourEvents
         Branch("honor_the_first_tally", "Honor the First Tally.",
             "The oldest count wins, which is the tidiest answer and pays seventy-five Gold. You carry the "
             + "other two tokens out with you.",
-            [Gold(75), Openings.NextCombat(Applies(ActFour.BurdenedId, 1))]),
+            [Gold(75), Openings.ForFights(Openings.EventFights, Applies(ActFour.BurdenedId, 1))]),
         Branch("break_all_three", "Break All Three Tokens.",
             "There is no donkey now, officially. It costs you a little blood and one of your own procedures, "
             + "and you come out of it more solid than you went in.",
@@ -230,7 +231,7 @@ public static class ActFourEvents
             [.. Grant(ActFourEventRelicRules.JarId)]),
         Branch("jar_of_blood", "Jar of Blood.",
             "Twelve more of you, all at once, and a great deal of it in your mouth for the next room.",
-            [new ChangeMaxHealthRunEffect(12), Openings.NextCombat(Applies("poison", 5))]),
+            [new ChangeMaxHealthRunEffect(12), Openings.ForFights(Openings.EventFights, Applies("poison", 5))]),
         Branch("jar_of_hunger", "Jar of Hunger.",
             "A hundred and fifty Gold in old coin, and every bit of it wants carrying.",
             [Gold(150), .. Stretch(ActFourEventPrograms.Burdened2, 1)]),
@@ -239,7 +240,7 @@ public static class ActFourEvents
             + "office finds you very thoroughly on the register.",
             [
                 Upgrade(3, "choose three to enter under the name"),
-                Openings.NextCombat(Applies(ActFour.InscribedId, 2)),
+                Openings.ForFights(Openings.EventFights, Applies(ActFour.InscribedId, 2)),
             ]));
 
     // ── 9 · Mid ───────────────────────────────────────────────────────────────────────────────────────────
@@ -277,7 +278,7 @@ public static class ActFourEvents
             + "and the corridor has the entry before you do.",
             [
                 NormalRelic(pools, "the_crocodile", RelicAuthoring.Rarity.Uncommon),
-                Openings.NextCombat(Applies(ActFour.WeighedId, 3), Applies(ActFour.EntombedId, 1)),
+                Openings.ForFights(Openings.EventFights, Applies(ActFour.WeighedId, 3), Applies(ActFour.EntombedId, 1)),
             ]),
         Branch("take_the_offerings", "Take the Offerings.",
             "A hundred and twenty Gold that was meant for somebody who is not coming. It is noted. It is "
@@ -405,34 +406,15 @@ public static class ActFourEvents
             [Remove("choose what goes into the last turn"), .. Grant(ActFourEventRelicRules.CoilId)]),
         Branch("take_the_amulet", "Take the Amulet.",
             "It is under the third layer, where they always are. Taking it costs the wrapping, and the "
-            + "wrapping notices: the next fight begins preserved and half buried.",
+            + "wrapping notices: the next three fights begin preserved and half buried.",
             [
                 NormalRelic(pools, "the_unfinished_burial", RelicAuthoring.Rarity.Uncommon),
-                Openings.NextCombat(Applies(ActFour.EmbalmedId, 3), Applies(ActFour.EntombedId, 1)),
+                Openings.ForFights(Openings.EventFights, Applies(ActFour.EmbalmedId, 3), Applies(ActFour.EntombedId, 1)),
             ]),
         Branch("unwrap_the_name", "Unwrap the Name.",
             "You go back to the collar for the name, and two of your own procedures come away as something "
             + "else entirely. Two rooms of the register have you now.",
             [Transform(2, pools, "choose two to unwrap"), .. Stretch(ActFourEventPrograms.Inscribed1, 2)]));
-
-    // ── 17 · Late ─────────────────────────────────────────────────────────────────────────────────────────
-
-    private static BnbEvent TheSurveyOfTheDead() => Event(
-        "the_survey_of_the_dead", "The Survey of the Dead", Band.Late,
-        "A table, three clerks and a queue that does not move, because the survey counts the dead and the "
-        + "living in one column and settles which you are at the table.",
-        Branch("be_counted_among_the_living", "Be Counted Among the Living.",
-            "You are entered as living, and the entry is worth everything: you come away whole. It costs "
-            + "eight off the ceiling, because a living body is a body that can be counted again.",
-            [Heal(100), new ChangeMaxHealthRunEffect(-8)]),
-        Branch("be_counted_among_the_dead", "Be Counted Among the Dead.",
-            "Entered as dead, which nobody argues with. The dead are wrapped properly, and the wrapping is "
-            + "on you for three rooms.",
-            [new ChangeMaxHealthRunEffect(12), .. Stretch(ActFourEventPrograms.Embalmed1, 3)]),
-        Branch("refuse_the_count", "Refuse the Count.",
-            "You will be one or the other and not on their say-so. Three clerks leave the table at once, and "
-            + "they are not going to catch up with you until the next ordinary road.",
-            [Install(ActFourEventPrograms.CountRefused)]));
 
     // ── 18 · Late · Rare ──────────────────────────────────────────────────────────────────────────────────
 
@@ -479,7 +461,7 @@ public static class ActFourEvents
             + "back the counterweight. It is heavy, and the next room is heavier.",
             [
                 .. Grant(ActFourEventRelicRules.MercyId),
-                Openings.NextCombat(Applies(ActFour.BurdenedId, 2), Applies(ActFour.EntombedId, 1)),
+                Openings.ForFights(Openings.EventFights, Applies(ActFour.BurdenedId, 2), Applies(ActFour.EntombedId, 1)),
             ]));
 
     // ── 20 · All ──────────────────────────────────────────────────────────────────────────────────────────

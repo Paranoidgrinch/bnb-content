@@ -192,28 +192,6 @@ public class ActTwoEventLiveTests
 
     // ── 6. The Margin Notes ───────────────────────────────────────────────────────────────────────────────
 
-    [Fact]
-    public void Following_both_arguments_binds_two_cards_into_a_pair()
-    {
-        using var story = EventStory.Enter("margin_notes", "both", Starter);
-
-        Assert.Equal(2, InDeck(story, ActTwoEventObjects.ConcordantPair));
-        Assert.Equal(1, HeroStacks(story, ActTwoEventObjects.ConcordantPair));
-    }
-
-    [Fact]
-    public void Scraping_the_margin_improves_a_card_and_sends_a_leaf_of_ink_after_you()
-    {
-        using var story = EventStory.Enter("margin_notes", "scrape", Starter);
-
-        Assert.Contains(story.Run.Deck, c => c.UpgradeLevel > 0);
-        Assert.Equal(1, HeroStacks(story, "redacted_leaf_rule"));
-        // The leaf is read as it is HELD, so a deck small enough to be dealt whole reads it at the opening
-        // bell: one card in hand comes out half-erased and the leaf itself is spent.
-        Assert.Contains(story.Zone(CardZone.ExhaustPile), c => c.DefinitionId.value == "redacted_leaf");
-        Assert.Contains(story.Zone(CardZone.Hand), c => c.Marks.Contains(new TagId(ActTwo.RedactedMark)));
-    }
-
     // ── 7. Unclaimed Reservation ──────────────────────────────────────────────────────────────────────────
 
     [Fact]
@@ -298,30 +276,6 @@ public class ActTwoEventLiveTests
     }
 
     // ── 10. The Lost-Hour Bottle ──────────────────────────────────────────────────────────────────────────
-
-    [Fact]
-    public void Drinking_the_lost_hour_holds_an_energy_now_and_takes_two_back_later()
-    {
-        using var story = EventStory.Enter("lost_hour_bottle", "drink", Starter);
-
-        Assert.Equal(1, HeroStacks(story, "held_energy"));
-        story.PassTurns(1);
-        Assert.Equal(2, HeroStacks(story, "held_energy"));
-        story.PassTurns(1);
-        // The third round is when the hour is noticed missing, and the rule is done.
-        Assert.Equal(0, HeroStacks(story, ActTwoEventObjects.LostHour));
-    }
-
-    [Fact]
-    public void Binding_the_hour_makes_a_card_late_bound()
-    {
-        using var story = EventStory.Enter("lost_hour_bottle", "bind", Starter);
-
-        Assert.Equal(1, InDeck(story, ActTwoEventObjects.LateBound));
-        var bound = story.Zone(CardZone.Hand).Concat(story.Zone(CardZone.DrawPile))
-            .Single(c => c.Marks.Contains(new TagId(ActTwoEventObjects.LateBound)));
-        Assert.Contains(StandardCombatIds.RetainedCardMark, bound.Marks);
-    }
 
     // ── 11. The Necrology Window ──────────────────────────────────────────────────────────────────────────
 

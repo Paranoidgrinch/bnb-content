@@ -15,8 +15,8 @@ public class ActTwoEventTests
     internal static readonly string[] Fifteen =
     [
         "misfiled_prophecy", "self_correcting_index", "locked_reading_room", "perpetual_borrower",
-        "reciprocal_shelf", "margin_notes", "unclaimed_reservation", "infinite_return_slot",
-        "redacted_portrait", "lost_hour_bottle", "necrology_window", "almost_helpful_clerk_reassigned",
+        "reciprocal_shelf", "double_or_nothing", "appeal_to_chance", "unclaimed_reservation", "infinite_return_slot",
+        "redacted_portrait", "necrology_window", "almost_helpful_clerk_reassigned",
         "last_quiet_table", "inward_seal", "librarian_at_the_end_of_the_aisle",
     ];
 

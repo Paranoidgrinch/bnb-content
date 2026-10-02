@@ -39,16 +39,17 @@ public static class ActTwoEvents
             LockedReadingRoom(pools),
             PerpetualBorrower(pools),
             ReciprocalShelf(pools),
-            MarginNotes(),
             UnclaimedReservation(pools),
             InfiniteReturnSlot(),
             RedactedPortrait(),
-            LostHourBottle(),
             NecrologyWindow(),
             AlmostHelpfulClerkReassigned(),
             LastQuietTable(pools),
             InwardSeal(),
             LibrarianAtTheEndOfTheAisle(pools),
+            // Playtest feedback 2, G2: in place of Margin Notes and the Lost Hour Bottle.
+            GambleEvents.DoubleOrNothing(),
+            GambleEvents.AppealToChance(pools),
         ];
     }
 
@@ -72,7 +73,7 @@ public static class ActTwoEvents
             [
                 .. Inscribe(ActTwoEventObjects.AuthorizedRevision,
                     "choose the card the revision is authorized for"),
-                Openings.NextCombat(
+                Openings.ForFights(Openings.EventFights, 
                     AddCard(ActTwoEventObjects.UnfinishedCitation.Id, CardZone.DiscardPile)),
             ]));
 
@@ -138,7 +139,7 @@ public static class ActTwoEvents
             "The notes are somebody else's, and good. The claim slip that comes stapled to them is yours now.",
             [
                 UncommonChoice(pools, "perpetual_borrower"),
-                Openings.NextCombat(AddCard(ActTwoEventObjects.BorrowersClaim.Id, CardZone.DrawPile)),
+                Openings.ForFights(Openings.EventFights, AddCard(ActTwoEventObjects.BorrowersClaim.Id, CardZone.DrawPile)),
             ]),
         Branch("settle", "Settle the account. (60 Gold)",
             "The account is closed, courteously. You are given tea, an hour's rest, and one correction you "
@@ -151,7 +152,7 @@ public static class ActTwoEvents
             [
                 .. Grant(EventRelics.ActII, "unreturned_library_card"),
                 new ChangeMaxHealthRunEffect(-6),
-                Openings.NextCombat(AddCard(ActTwoEventObjects.BorrowersClaim.Id, CardZone.DrawPile)),
+                Openings.ForFights(Openings.EventFights, AddCard(ActTwoEventObjects.BorrowersClaim.Id, CardZone.DrawPile)),
             ]));
 
     // ── 5 · Earliest Stage 2 ──────────────────────────────────────────────────────────────────────────────
@@ -185,35 +186,6 @@ public static class ActTwoEvents
                     RunSelectors.DeckCards.Random(1), new RunCardTagId(ActTwo.MisfiledMark), true),
                 ArchiveOpening(),
                 Install(ActTwoEventPrograms.ShelfLabelAgain),
-            ]));
-
-    // ── 6 · Earliest Stage 3 ──────────────────────────────────────────────────────────────────────────────
-
-    private static BnbEvent MarginNotes() => Event(
-        "margin_notes", "The Margin Notes", stage: 3,
-        "Two hands have been arguing in the margins of this volume for four hundred years. Both are right. "
-        + "Neither has noticed the other is dead.",
-        Branch("both", "Follow both arguments.",
-            "You copy the pair of them onto two of your own procedures. From now on, playing either fetches "
-            + "the other.",
-            [
-                new ForEachCardRunEffect(
-                    RunSelectors.DeckCards.ChooseByPlayer(2, "choose two cards to bind into a pair"),
-                    [RunEffectTemplates.TagThisCard(new RunCardTagId(ActTwoEventObjects.ConcordantPair))]),
-                Install(ActTwoEventPrograms.Inscriptions),
-            ]),
-        Branch("reply", "Add an illuminated reply.",
-            "You settle the argument in gold leaf. Whichever of your procedures carries the reply opens "
-            + "every fight worth a card and a little cover.",
-            [.. Inscribe(ActTwoEventObjects.IlluminatedInitial, "choose the card to carry the reply")]),
-        Branch("scrape", "Scrape the margin clean.",
-            "The vellum comes up beautifully. One of your own procedures is improved by the practice, and a "
-            + "leaf of the scraped ink follows you into the next room.",
-            [
-                Upgrade(1, "choose a card the practice improves"),
-                Openings.NextCombat(
-                    AddCard(ActTwoEventObjects.RedactedLeaf.Id, CardZone.DrawPile),
-                    Applies(ActTwoEventObjects.RedactedLeafRule.Id)),
             ]));
 
     // ── 7 · Earliest Stage 7 ──────────────────────────────────────────────────────────────────────────────
@@ -253,7 +225,7 @@ public static class ActTwoEvents
             + "exactly as you gave it up — along with somebody else's claim slip.",
             [
                 new RestoreRemovedCardRunEffect(Purpose: "choose a card to reach back for"),
-                Openings.NextCombat(AddCard(ActTwoEventObjects.BorrowersClaim.Id, CardZone.DrawPile)),
+                Openings.ForFights(Openings.EventFights, AddCard(ActTwoEventObjects.BorrowersClaim.Id, CardZone.DrawPile)),
             ]));
 
     // ── 9 · Earliest Stage 5 ──────────────────────────────────────────────────────────────────────────────
@@ -275,21 +247,6 @@ public static class ActTwoEvents
             "Some faces were removed for a reason. Walking away is worth a little of what the archives have "
             + "cost you.",
             [Heal(15)]));
-
-    // ── 10 · Earliest Stage 8 ─────────────────────────────────────────────────────────────────────────────
-
-    private static BnbEvent LostHourBottle() => Event(
-        "lost_hour_bottle", "The Lost-Hour Bottle", stage: 8,
-        "A stoppered bottle labelled with a date, a place, and one hour that nobody accounted for. It is warm "
-        + "and it is faintly ticking.",
-        Branch("drink", "Drink the lost hour.",
-            "Two rounds of somebody else's afternoon. It is glorious. The third round is when the hour is "
-            + "noticed missing, and the archives take it back out of yours.",
-            [NextFightRule(ActTwoEventObjects.LostHour)]),
-        Branch("bind", "Bind the hour into a card.",
-            "The hour goes into the paper. Whatever you write on it is never discarded, and the second turn "
-            + "you are still holding it, it is worth more.",
-            [.. Inscribe(ActTwoEventObjects.LateBound, "choose the card to bind the hour into")]));
 
     // ── 11 · Earliest Stage 9 ─────────────────────────────────────────────────────────────────────────────
 
@@ -329,7 +286,7 @@ public static class ActTwoEvents
                         new RunCardTagId(ActTwoEventObjects.WhisperedAmendment)),
                     RunEffectTemplates.TagThisCard(new RunCardTagId(ActTwo.RedactedMark)),
                 ]),
-                Openings.NextCombat(
+                Openings.ForFights(Openings.EventFights, 
                     Applies(ActTwoEventObjects.ArchiveMarkings),
                     Applies(ActTwo.ArchiveRegulationsId),
                     Applies(ActTwoEventObjects.AmendmentWatch)),
@@ -364,7 +321,7 @@ public static class ActTwoEvents
             + "fourth thing you file there is read over your shoulder.",
             [
                 RareCardReward(pools, "last_quiet_table"),
-                Openings.NextCombat(
+                Openings.ForFights(Openings.EventFights, 
                     AddCard(ActTwoEventObjects.RedactedLeaf.Id, CardZone.Hand),
                     Applies(ActTwoEventObjects.RedactedLeafRule.Id),
                     Applies(ActTwoEventObjects.FourthCard)),
@@ -413,7 +370,7 @@ public static class ActTwoEvents
             + "and the archives have already started filing you.",
             [
                 new ChangeMaxHealthRunEffect(8),
-                Openings.NextCombat(
+                Openings.ForFights(Openings.EventFights, 
                     new CombatNodeModel("applyStatus", You,
                         CombatAmountSpec.FromConst(2), StatusId: Keywords.Paperwork),
                     new CombatNodeModel("applyStatus", You,
@@ -499,11 +456,12 @@ public static class ActTwoEvents
     private static CombatNodeModel Applies(string statusId) =>
         new("applyStatus", You, CombatAmountSpec.FromConst(1), StatusId: statusId);
 
-    private static IRunEffectRequest AsOpening(this CombatNodeModel node) => Openings.NextCombat(node);
+    private static IRunEffectRequest AsOpening(this CombatNodeModel node) => Openings.ForFights(Openings.EventFights, node);
 
     // What a fight has to be carrying to honour anything the archives wrote between fights. The regulations are
     // idempotent by construction, so installing them beside the markings costs nothing when nothing is
     // misfiled — and leaving them out when something IS would make the misfiling silently mean nothing.
+    // ONE fight: the markings it honours are spent there (MarkingsExpire).
     private static IRunEffectRequest ArchiveOpening() =>
         Openings.NextCombat(
             Applies(ActTwoEventObjects.ArchiveMarkings), Applies(ActTwo.ArchiveRegulationsId));

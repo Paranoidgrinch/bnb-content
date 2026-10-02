@@ -258,7 +258,7 @@ public class EliteCombatTests
         var probe = FightProbe.Roster("remand", energy: 9,
             ("remanded_case_phantom", "uncertain_remand", 30),
             ("escalation_writ", "higher_seal", 30));
-        var (play, session, _) = FightProbe.Start(probe, Enumerable.Repeat(Hammer, 10).ToList());
+        var (play, session, _) = FightProbe.Start(probe, Enumerable.Repeat(Hammer, 10).ToList(), health: 400);
 
         var combat = play.CombatDriver!.Current!;
         var phantomId = combat.State.Combatants.First(c => c.Id.value.StartsWith("remanded_case_phantom")).Id;
@@ -283,7 +283,7 @@ public class EliteCombatTests
         var probe = FightProbe.Roster("finality", energy: 9,
             ("remanded_case_phantom", "uncertain_remand", 60),
             ("escalation_writ", "higher_seal", 24));
-        var (play, session, _) = FightProbe.Start(probe, Enumerable.Repeat(Hammer, 10).ToList());
+        var (play, session, _) = FightProbe.Start(probe, Enumerable.Repeat(Hammer, 10).ToList(), health: 400);
 
         var combat = play.CombatDriver!.Current!;
         var phantomId = combat.State.Combatants.First(c => c.Id.value.StartsWith("remanded_case_phantom")).Id;
@@ -296,8 +296,13 @@ public class EliteCombatTests
         Assert.Equal(2, FightProbe.StacksOf(phantom, "strength"));
         Assert.Equal(1, phantom.GetCounter(PassiveStatuses.FinalityCounter));
 
+        // The Final Judgment files Paperwork, so it waits for round three (playtest feedback 2, E1): the Finality
+        // is held through the first two rounds…
+        play.CombatDriver!.EndTurn();
+        play.CombatDriver.EndTurn();
+        Assert.Equal(1, Enemy(play, phantomId).GetCounter(PassiveStatuses.FinalityCounter));
         var before = Hero(play).Health.Current;
-        play.CombatDriver!.EndTurn(); // Final Judgment: 17 damage + 1 Paperwork (and +2 Strength on top)
+        play.CombatDriver!.EndTurn(); // …and then: Final Judgment, 17 damage + 1 Paperwork (and +2 Strength on top)
         Assert.Null(session.Error);
         Assert.True(Hero(play).Health.Current <= before - 17, "the Final Judgment should land at least 17");
         Assert.Equal(0, Enemy(play, phantomId).GetCounter(PassiveStatuses.FinalityCounter)); // spent

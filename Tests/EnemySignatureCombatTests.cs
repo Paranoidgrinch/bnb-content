@@ -242,6 +242,11 @@ public class EnemySignatureCombatTests
         var probe = FightProbe.Solo("contradictory_signpost", "turn_in_place");
         var (play, session, signpostId) = FightProbe.Start(probe);
 
+        // No Paperwork before round three (playtest feedback 2, E1): the signpost's answer to a player who plays
+        // nothing waits for its third turn, and turns in place until then.
+        play.CombatDriver!.EndTurn();
+        play.CombatDriver.EndTurn();
+        Assert.Equal(0, FightProbe.StacksOf(Hero(play), "paperwork"));
         var heroBefore = play.CombatDriver!.Current!.State.GetCombatant(play.CombatDriver.Current!.HeroId).Health.Current;
         play.CombatDriver.EndTurn();
         Assert.Null(session.Error);

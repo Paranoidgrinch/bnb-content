@@ -19,7 +19,7 @@ public class ActFourEventTests
         "the_forewritten_tablet", "the_tomb_robbers_fire", "the_triple_counted_donkey",
         "the_four_canopic_jars", "the_chamber_of_false_measures", "the_crocodile_at_the_weighing_place",
         "the_wall_of_old_complaints", "the_copper_tithe", "the_unnamed_throne", "the_fixed_day_festival",
-        "the_broken_sluice", "the_unfinished_burial", "the_survey_of_the_dead",
+        "the_broken_sluice", "the_unfinished_burial", "sealed_offer",
         "the_house_of_life_at_night", "the_merciful_balance", "the_cartouche_repair_bench",
     ];
 
@@ -181,7 +181,6 @@ public class ActFourEventTests
         Assert.Equal(0, doors["the_dry_nilometer"]);                    // Early–Mid
         Assert.Equal(0, doors["the_red_linen_procession"]);             // All
         Assert.Equal(75, doors["the_unnamed_throne"]);                  // Late · Rare
-        Assert.Equal(75, doors["the_survey_of_the_dead"]);              // Late
         Assert.Equal(55, doors["the_unfinished_burial"]);               // Mid–Late
         Assert.Equal(40, doors["the_fixed_day_festival"]);              // Mid
         Assert.Equal(0, doors["the_broken_sluice"]);                    // Early–Mid

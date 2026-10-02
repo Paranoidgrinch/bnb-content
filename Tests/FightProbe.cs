@@ -71,6 +71,7 @@ internal static class FightProbe
         var body = probe.Enemies[0] with
         {
             Actions = [.. intentIds.Select(i => new EnemyActionDefinitionId($"{enemyId}.{i}"))],
+            IntentRules = SparringRing.WithoutGrace(probe.Enemies[0].IntentRules),
         };
 
         return new EncounterDefinition(probe.Id, [body], probe.HeroResources,
@@ -107,6 +108,7 @@ internal static class FightProbe
             return authored with
             {
                 Actions = [new EnemyActionDefinitionId($"{m.EnemyId}.{m.IntentId}")],
+                IntentRules = SparringRing.WithoutGrace(authored.IntentRules),
                 MaxHealth = m.MaxHealth ?? authored.MaxHealth,
             };
         }).ToList();
