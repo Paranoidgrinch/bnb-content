@@ -244,10 +244,15 @@ public static class Keywords
     // Wax Indemnity: "whenever you would take unblocked Attack damage, you may consume up to 4 Ward Wax;
     // reduce that damage by 3 per Wax consumed." Nothing can soften a hit that is already landing, so the Wax
     // buys it back afterwards — the player ends the exchange where the card says they should, at the cost of
-    // the healing being visible as healing. Recorded in ADAPTATIONS.
-    private const int IndemnityPerWax = 3;
+    // the healing being visible as healing. Recorded in ADAPTATIONS. The upgrade buys back 4 per Wax; until
+    // 2026-10-02 it laid the same marker as the base card and so healed 3.
+    private static IEffectNode<TContext> WaxIndemnity<TContext>() where TContext : class =>
+        new ConditionalEffectNode<TContext>(
+            Present<TContext>(GeneralWax.WaxIndemnity + "+"),
+            WaxIndemnity<TContext>(perWax: 4),
+            new ConditionalEffectNode<TContext>(Present<TContext>(GeneralWax.WaxIndemnity), WaxIndemnity<TContext>(perWax: 3)));
 
-    private static IEffectNode<TContext> WaxIndemnity<TContext>() where TContext : class
+    private static IEffectNode<TContext> WaxIndemnity<TContext>(int perWax) where TContext : class
     {
         var guest = CombatantTargetSelectors.EventTarget;
         // As much Wax as the hit is worth, never more than four and never more than is worn.
@@ -258,15 +263,13 @@ public static class Keywords
             new DivideExpression<TContext>(
                 new AddExpression<TContext>(
                     new EventAmountExpression<TContext>(),
-                    new ConstantExpression<TContext>(IndemnityPerWax - 1)),
-                new ConstantExpression<TContext>(IndemnityPerWax)));
+                    new ConstantExpression<TContext>(perWax - 1)),
+                new ConstantExpression<TContext>(perWax)));
 
         return new ConditionalEffectNode<TContext>(
-            new AndExpression<TContext>(
-                Present<TContext>(GeneralWax.WaxIndemnity),
-                new ComparisonExpression<TContext>(
-                    new CombatantStatusStacksExpression<TContext>(guest, new StatusDefinitionId(WardWax)),
-                    ComparisonOperator.Greater, new ConstantExpression<TContext>(0))),
+            new ComparisonExpression<TContext>(
+                new CombatantStatusStacksExpression<TContext>(guest, new StatusDefinitionId(WardWax)),
+                ComparisonOperator.Greater, new ConstantExpression<TContext>(0)),
             new CausalSequenceEffectNode<TContext>(
             [
                 new SetCombatantCounterNode<TContext>(guest, IndemnitySpent, spend, relative: false),
@@ -278,7 +281,7 @@ public static class Keywords
                         new EventAmountExpression<TContext>(),
                         new MultiplyExpression<TContext>(
                             new CombatantCounterExpression<TContext>(guest, IndemnitySpent),
-                            new ConstantExpression<TContext>(IndemnityPerWax)))),
+                            new ConstantExpression<TContext>(perWax)))),
             ]));
     }
 
@@ -549,6 +552,10 @@ public static class Keywords
     // HP, and the ordinary-hit kind is what separates an attack from a Paperwork tick. The count is read and
     // cleared at the END OF THE ROUND, which is the first moment after the enemy turn that every combatant has
     // acted; the accelerated loss therefore happens once per enemy turn however many hits landed.
+    private static ICombatExpression<TContext, bool> Votive<TContext>() where TContext : class =>
+        new OrExpression<TContext>(
+            Present<TContext>(GeneralWax.VotiveCovenant), Present<TContext>(GeneralWax.VotiveCovenant + "+"));
+
     private static StatusData WardWaxStatus()
     {
         // The wax paying for the enemy turn is a fade like any other, so it asks Act IV's one fading point:
@@ -598,20 +605,30 @@ public static class Keywords
                                 CombatantTargetSelectors.AllCombatants, new StatusDefinitionId(WardWax)),
                             new SequenceEffectNode<RoundEndedTriggeredEffectContext>(
                             [
+                                // Struck: 2, or 3 under Votive Covenant — unless the accelerated loss is
+                                // suspended, when it is the ordinary 1. Not struck: 1, or none under Votive
+                                // Covenant. (Until 2026-10-02 the Covenant was never read here: the card did
+                                // nothing at all.)
                                 new ConditionalEffectNode<RoundEndedTriggeredEffectContext>(
-                                    new AndExpression<RoundEndedTriggeredEffectContext>(
-                                        new ComparisonExpression<RoundEndedTriggeredEffectContext>(
-                                            struck, ComparisonOperator.Greater,
-                                            new ConstantExpression<RoundEndedTriggeredEffectContext>(0)),
+                                    new ComparisonExpression<RoundEndedTriggeredEffectContext>(
+                                        struck, ComparisonOperator.Greater,
+                                        new ConstantExpression<RoundEndedTriggeredEffectContext>(0)),
+                                    new ConditionalEffectNode<RoundEndedTriggeredEffectContext>(
                                         // Candle Cathedral and Wax Reliquary suspend the accelerated loss.
-                                        new NotExpression<RoundEndedTriggeredEffectContext>(
+                                        new OrExpression<RoundEndedTriggeredEffectContext>(
                                             new OrExpression<RoundEndedTriggeredEffectContext>(
-                                                new OrExpression<RoundEndedTriggeredEffectContext>(
-                                                    Present<RoundEndedTriggeredEffectContext>(ActIVRites.CandleCathedral),
-                                                    Present<RoundEndedTriggeredEffectContext>(ActIVRites.CandleCathedral + "+")),
-                                                Present<RoundEndedTriggeredEffectContext>(GeneralWax.WaxReliquary)))),
-                                    Decay<RoundEndedTriggeredEffectContext>(2),
-                                    Decay<RoundEndedTriggeredEffectContext>(1)),
+                                                Present<RoundEndedTriggeredEffectContext>(ActIVRites.CandleCathedral),
+                                                Present<RoundEndedTriggeredEffectContext>(ActIVRites.CandleCathedral + "+")),
+                                            Present<RoundEndedTriggeredEffectContext>(GeneralWax.WaxReliquary)),
+                                        Decay<RoundEndedTriggeredEffectContext>(1),
+                                        new ConditionalEffectNode<RoundEndedTriggeredEffectContext>(
+                                            Votive<RoundEndedTriggeredEffectContext>(),
+                                            Decay<RoundEndedTriggeredEffectContext>(3),
+                                            Decay<RoundEndedTriggeredEffectContext>(2))),
+                                    new ConditionalEffectNode<RoundEndedTriggeredEffectContext>(
+                                        new NotExpression<RoundEndedTriggeredEffectContext>(
+                                            Votive<RoundEndedTriggeredEffectContext>()),
+                                        Decay<RoundEndedTriggeredEffectContext>(1))),
                             ])))),
                     StatusTriggerScope.Anywhere),
             ]);

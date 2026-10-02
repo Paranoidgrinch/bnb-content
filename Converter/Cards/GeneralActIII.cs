@@ -110,7 +110,7 @@ public static class GeneralActIII
 
         WaxIndemnity, WaxIndemnity.Upgraded(
             "Until your next turn, damage that gets through is answered by your Ward Wax: up to 4 Wax is " +
-            "spent, healing 4 HP each.", Apply(GeneralWax.WaxIndemnity, 1, You)),
+            "spent, healing 4 HP each.", Apply(GeneralWax.WaxIndemnity + "+", 1, You)),
 
         OathOfRefusal, OathOfRefusal.UpgradedRite(GeneralWax.OathOfRefusal,
             "The first 2 times each turn Censure prevents one or more Status stacks, record 1 Refusal. At " +

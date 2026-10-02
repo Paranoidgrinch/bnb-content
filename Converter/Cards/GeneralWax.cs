@@ -23,12 +23,16 @@ public static class GeneralWax
 
     public static IReadOnlyList<StatusData> All() =>
     [
-        Marker(WaxReliquary, "Wax Reliquary"),
+        // "Until your next turn": both lapse when the bearer's next turn starts. Until 2026-10-02 they were
+        // plain markers and held for the rest of the fight — one Wax Reliquary switched the accelerated decay
+        // off for good, one Wax Indemnity bought back every hit to the end.
+        UntilNextTurn(WaxReliquary, "Wax Reliquary"),
         Marker(VotiveCovenant, "Votive Covenant"),
         Marker(VotiveCovenant + "+", "Votive Covenant+"),
         Marker(DebtOuroboros, "Debt Ouroboros"),
         Marker(DebtOuroboros + "+", "Debt Ouroboros+"),
-        Marker(WaxIndemnity, "Wax Indemnity"),
+        UntilNextTurn(WaxIndemnity, "Wax Indemnity"),
+        UntilNextTurn(WaxIndemnity + "+", "Wax Indemnity+"),
 
         Testament(ConsecratedTestament, "Consecrated Testament", 3),
         Testament(ConsecratedTestament + "+", "Consecrated Testament+", 4),
@@ -162,6 +166,18 @@ public static class GeneralWax
         Polarity = StatusPolarity.Neutral,
         StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
         UsesStacks = true,
+    };
+
+    private static StatusData UntilNextTurn(string id, string name) => Marker(id, name) with
+    {
+        DescriptionKey = "Holds until your next turn.",
+        Triggers =
+        [
+            Trigger(new EffectProgram<TurnStartedTriggeredEffectContext>(
+                new RemoveStatusNode<TurnStartedTriggeredEffectContext>(
+                    CombatantTargetSelectors.Source, new StatusDefinitionId(id))),
+                nameof(TriggerEvent.TurnStarted)),
+        ],
     };
 
     private static StatusData Rite(
