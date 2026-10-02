@@ -12,7 +12,7 @@ public class ActFourEliteReadingTests
 {
     private const string OneCost = "paper_cut";   // Deed, 1: deal 6
     private const string TwoCost = "permit_a38";  // 2
-    private const string Wax = "waxen_surety";    // Working, 1: gain 4 Ward Wax
+    private const string Wax = "waxen_surety";    // Working, 1: gain 5 Ward Wax
 
     private static CombatantState Hero(RunPlayback play) =>
         play.CombatDriver!.Current!.State.GetCombatant(play.CombatDriver.Current!.HeroId);
@@ -69,12 +69,12 @@ public class ActFourEliteReadingTests
             deck: [.. Enumerable.Repeat(Wax, 10)], health: 900);
 
         play.CombatDriver!.EndTurn();  // Inscribed 2
-        Play(play, session, Wax, null);  // 4 Ward Wax, made 5 by the register
+        Play(play, session, Wax, null);  // 5 Ward Wax, made 6 by the register
 
         var keeper = Body(play, "keeper_of_the_living_cartouche");
         Assert.Equal(1, FightProbe.StacksOf(keeper, ActFour.GoldenGlyphId));
         Assert.Equal(0, FightProbe.StacksOf(keeper, ActFour.BlackGlyphId));
-        Assert.Equal(5, FightProbe.StacksOf(Hero(play), Keywords.WardWax));
+        Assert.Equal(6, FightProbe.StacksOf(Hero(play), Keywords.WardWax));
         play.Dispose();
     }
 

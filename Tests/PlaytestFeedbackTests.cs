@@ -121,9 +121,9 @@ public class PlaytestFeedbackTests
     public void Upgrades_grow_the_thing_the_card_is_about()
     {
         var text = FinalCards.All().ToDictionary(c => c.Id, c => c.RulesText);
-        Assert.Equal("Deal 7 damage. Apply 3 Paperwork.", text["cursed_addendum+"]);
-        Assert.Equal("Deal 6 damage. Apply 2 Seal.", text["waxing_authority+"]);
-        Assert.Equal("Gain 6 Block. Apply 2 Doubt.", text["petty_objection+"]);
+        Assert.Equal("Deal 8 damage. Apply 3 Paperwork. If the target is Ratified, apply 2 more.", text["cursed_addendum+"]);
+        Assert.Equal("Deal 5 damage twice. Each hit applies 1 Seal.", text["waxing_authority+"]);
+        Assert.Equal("Gain 7 Block. If the target intends to Attack, apply 3 Doubt and gain 3 more Block.", text["petty_objection+"]);
         // The "+" of Skeleton Staff used to be the base card word for word.
         var staff = FinalCards.All().Single(c => c.Id == "skeleton_staff");
         var staffPlus = FinalCards.All().Single(c => c.Id == "skeleton_staff+");

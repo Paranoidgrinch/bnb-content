@@ -16,7 +16,7 @@ public class ActFourStelaeTests
 {
     private const string OneCost = "paper_cut";   // Deed, 1
     private const string TwoCost = "permit_a38";  // 2
-    private const string Wax = "waxen_surety";    // Working, 1: gain 4 Ward Wax
+    private const string Wax = "waxen_surety";    // Working, 1: gain 5 Ward Wax
 
     // A bearer buried the moment the fight opens, so the very first turn is the lost one.
     private const int EntombedAtStart = ActFour.EntombedThreshold;
@@ -178,10 +178,10 @@ public class ActFourStelaeTests
                 (ActFour.InscribedId, 1)),
             deck: [.. Enumerable.Repeat(Wax, 5)]);
 
-        // A blessing of the player's own reaches the register first: four wax become five.
+        // A blessing of the player's own reaches the register first: five wax become six.
         Play(play, session, Wax, surveyor);
 
-        Assert.Equal(5, FightProbe.StacksOf(Hero(play), Keywords.WardWax));
+        Assert.Equal(6, FightProbe.StacksOf(Hero(play), Keywords.WardWax));
         Assert.Equal(0, FightProbe.StacksOf(Hero(play), ActFour.InscribedId));
 
         play.CombatDriver!.EndTurn();

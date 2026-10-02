@@ -34,18 +34,18 @@ public class BureaucratCardTests
         FightProbe.Start(FightProbe.Solo(Quiet, QuietIntent, energy: 9), deck.ToList());
 
     // "Whenever an enemy reaches 3 Seal, remove exactly 3 Seal and trigger a Ratify event. Excess Seal
-    // remains." Three applications of Seal of Concern get there; the third converts.
+    // remains." Three Waxing Authorities (1 Seal each) get there; the third converts.
     [Fact]
     public void Three_seals_ratify_the_enemy_and_leave_the_excess()
     {
-        var (play, session, enemyId) = Fight(Enumerable.Repeat("seal_of_concern", 10).ToArray());
+        var (play, session, enemyId) = Fight(Enumerable.Repeat("waxing_authority", 10).ToArray());
 
-        Play(play, session, "seal_of_concern", enemyId);
-        Play(play, session, "seal_of_concern", enemyId);
+        Play(play, session, "waxing_authority", enemyId);
+        Play(play, session, "waxing_authority", enemyId);
         Assert.Equal(2, FightProbe.StacksOf(Enemy(play, enemyId), Keywords.Seal));
         Assert.Equal(0, FightProbe.StacksOf(Enemy(play, enemyId), Keywords.Ratified));
 
-        Play(play, session, "seal_of_concern", enemyId);
+        Play(play, session, "waxing_authority", enemyId);
         Assert.Equal(0, FightProbe.StacksOf(Enemy(play, enemyId), Keywords.Seal));
         Assert.Equal(1, FightProbe.StacksOf(Enemy(play, enemyId), Keywords.Ratified));
         play.Dispose();
@@ -65,21 +65,21 @@ public class BureaucratCardTests
         play.Dispose();
     }
 
-    // "Ratified: each Deed aimed at this enemy deals +3 total direct damage, until the end of your turn."
+    // "Ratified: each Deed aimed at this enemy deals +5 total direct damage, until the end of your turn."
     [Fact]
-    public void A_ratified_enemy_takes_three_more_from_every_deed_until_the_turn_ends()
+    public void A_ratified_enemy_takes_five_more_from_every_deed_until_the_turn_ends()
     {
         var (play, session, enemyId) = FightProbe.Start(
             FightProbe.Solo(Quiet, QuietIntent, energy: 9),
-            ["seal_of_concern", "seal_of_concern", "seal_of_concern", "paper_cut", "paper_cut"]);
+            ["waxing_authority", "waxing_authority", "waxing_authority", "paper_cut", "paper_cut"]);
 
         for (var i = 0; i < 3; i++)
-            Play(play, session, "seal_of_concern", enemyId);
+            Play(play, session, "waxing_authority", enemyId);
         Assert.Equal(1, FightProbe.StacksOf(Enemy(play, enemyId), Keywords.Ratified));
 
         var before = Enemy(play, enemyId).Health.Current;
         Play(play, session, "paper_cut", enemyId);
-        Assert.Equal(before - 9, Enemy(play, enemyId).Health.Current); // 6 + 3
+        Assert.Equal(before - 11, Enemy(play, enemyId).Health.Current); // 6 + 5
 
         // The window closes when the player's turn does.
         play.CombatDriver!.EndTurn();
@@ -136,11 +136,11 @@ public class BureaucratCardTests
         var (play, session, enemyId) = Fight("occult_precedent", "permit_a38", "occult_precedent");
 
         Play(play, session, "occult_precedent", enemyId);
-        Assert.Equal(7, Block(Hero(play)));
+        Assert.Equal(8, Block(Hero(play)));
 
         Play(play, session, "permit_a38", enemyId); // 5 Paperwork onto the Tablet
         Play(play, session, "occult_precedent", enemyId);
-        Assert.Equal(7 + 9, Block(Hero(play)));
+        Assert.Equal(8 + 10, Block(Hero(play)));
         play.Dispose();
     }
 
@@ -157,7 +157,7 @@ public class BureaucratCardTests
         // No Junk in HAND (the Red Tape went to the discard pile), so the Kindling pays only its base and
         // asks the player which card to Archive.
         Play(play, session, "certified_kindling", enemyId);
-        Assert.Equal(afterDeskward + 4, Block(Hero(play)));
+        Assert.Equal(afterDeskward + 6, Block(Hero(play)));
 
         var offered = play.CombatDriver!.PendingCardChoice;
         Assert.NotNull(offered);
@@ -263,8 +263,8 @@ public class BureaucratCardTests
         play.CombatDriver!.EndTurn();
         Assert.Null(session.Error);
 
-        // 16 guarded, 8 kept — and the Ordinance Tablet's quiet turn took none of it.
-        Assert.Equal(8, Block(Hero(play)));
+        // 16 guarded, 12 kept — and the Ordinance Tablet's quiet turn took none of it.
+        Assert.Equal(12, Block(Hero(play)));
         play.Dispose();
     }
 
@@ -333,8 +333,8 @@ public class BureaucratCardTests
         var before = Enemy(play, enemyId).Health.Current;
         Play(play, session, "summary_judgment", enemyId);
 
-        // 16 struck, then 7 tolled, and 3 Paperwork spent doing it.
-        Assert.Equal(before - 16 - 7, Enemy(play, enemyId).Health.Current);
+        // 20 struck, then 7 tolled, and 3 Paperwork spent doing it.
+        Assert.Equal(before - 20 - 7, Enemy(play, enemyId).Health.Current);
         Assert.Equal(4, FightProbe.StacksOf(Enemy(play, enemyId), Keywords.Paperwork));
         play.Dispose();
     }
@@ -380,7 +380,7 @@ public class BureaucratCardTests
         play.Dispose();
     }
 
-    // "Deal 7 damage. Archive a Junk card from your hand; if you do, repeat this attack."
+    // "Deal 8 damage. Archive a Junk card from your hand; if you do, repeat this attack."
     [Fact]
     public void Cinder_warrant_strikes_twice_only_when_there_is_junk_to_burn()
     {
@@ -389,14 +389,14 @@ public class BureaucratCardTests
         // No Junk in hand: one strike.
         var before = Enemy(play, enemyId).Health.Current;
         Play(play, session, "cinder_warrant", enemyId);
-        Assert.Equal(before - 7, Enemy(play, enemyId).Health.Current);
+        Assert.Equal(before - 8, Enemy(play, enemyId).Health.Current);
         Assert.Equal(0, FightProbe.StacksOf(Hero(play), Keywords.Archived));
 
         // Tallow Budget puts a Red Tape IN HAND; now there is something to burn.
         Play(play, session, "tallow_budget", enemyId);
         before = Enemy(play, enemyId).Health.Current;
         Play(play, session, "cinder_warrant", enemyId);
-        Assert.Equal(before - 14, Enemy(play, enemyId).Health.Current);
+        Assert.Equal(before - 16, Enemy(play, enemyId).Health.Current);
         Assert.Equal(1, FightProbe.StacksOf(Hero(play), Keywords.Archived));
         play.Dispose();
     }

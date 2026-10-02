@@ -21,8 +21,8 @@ public static class GeneralActII
 
     private static readonly BnbCard SanguineErrata = new(
         "sanguine_errata", "Sanguine Errata", WorkingTag, 1,
-        "Apply 2 Blood Ink. Then remove 1 stack of another negative Status from the target.",
-        SanguineErrataBody(2),
+        "Apply 3 Blood Ink. Then remove 1 stack of another negative Status from the target.",
+        SanguineErrataBody(3),
         Rarity: "uncommon", Act: Act);
 
     private static readonly BnbCard CountermandedGrace = Rite(
@@ -68,9 +68,9 @@ public static class GeneralActII
 
     private static readonly BnbCard SeizureWrit = new(
         "seizure_writ", "Seizure Writ", DeedTag, 2,
-        "Deal 12 damage. Then remove all remaining Block from the target. For every 3 Block removed, apply 1 " +
+        "Deal 14 damage. Then remove all remaining Block from the target. For every 3 Block removed, apply 1 " +
         "Lien, maximum 6 Lien.",
-        Seize(12, per: 3),
+        Seize(14, per: 3),
         Rarity: "rare", Act: Act);
 
     private static readonly BnbCard StandingCitation = Rite(
@@ -85,11 +85,12 @@ public static class GeneralActII
     [
         Blacklisted, Blacklisted.Upgraded(
             "Apply 3 Censure. For each different positive Status already on the target, apply 1 additional " +
-            "Censure, maximum +3.", Blacklist(3)),
+            "Censure, maximum +3. Gain 1 Censure.", Seq(Blacklist(3), Apply(Keywords.Censure, 1, You))),
 
         SanguineErrata, SanguineErrata.Upgraded(
-            "Apply 3 Blood Ink. Then remove 1 stack of another negative Status from the target.",
-            SanguineErrataBody(3)),
+            "Apply 4 Blood Ink. Then remove 1 stack of another negative Status from the target; it becomes 1 more " +
+            "Blood Ink.",
+            Seq(SanguineErrataBody(4), Apply(Keywords.BloodInk, 1))),
 
         CountermandedGrace, CountermandedGrace.UpgradedRite(GeneralPrevention.CountermandedGrace,
             "The first time each turn Censure prevents any Status stack, gain 3 Ward Wax."),
@@ -99,8 +100,12 @@ public static class GeneralActII
             cost: 0),
 
         CrossedSigil, CrossedSigil.Upgraded(
-            "Remove 1 stack of a negative Status from yourself. Then apply 2 Censure to an enemy. If you had " +
-            "no negative Status to remove, gain 2 Censure instead.", CrossSigil(2)),
+            "Remove 1 stack of a negative Status from yourself. Apply 1 Censure to an enemy and gain 1 Censure.",
+            Seq(
+                new CombatNodeModel("modifySelectedStatusStacks", You, CombatAmountSpec.FromConst(-1),
+                    Selection: new StatusSelectionSpec(StatusPolarityFilter.Debuff)),
+                Apply(Keywords.Censure, 1),
+                Apply(Keywords.Censure, 1, You))),
 
         ProxyCurse, ProxyCurse.Upgraded(
             "Remove up to 4 stacks of a negative Status from yourself. Apply 1 Blood Ink to an enemy per " +
@@ -115,8 +120,8 @@ public static class GeneralActII
             "Counterfeit Exhausts.", Counterfeit()),
 
         SeizureWrit, SeizureWrit.Upgraded(
-            "Deal 15 damage. Then remove all remaining Block from the target. For every 2 Block removed, " +
-            "apply 1 Lien, maximum 6 Lien.", Seize(15, per: 2)),
+            "Deal 21 damage. Then remove all remaining Block from the target. For every 2 Block removed, " +
+            "apply 1 Lien, maximum 6 Lien.", Seize(21, per: 2)),
 
         StandingCitation, StandingCitation.UpgradedRite(GeneralPrevention.StandingCitation,
             "The first time each turn Citation triggers on each enemy, that trigger does not remove a " +

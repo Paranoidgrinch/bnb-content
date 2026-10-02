@@ -38,10 +38,13 @@ public static class GeneralRites
         Edict(ReciprocalEdict, "Reciprocal Edict"),
         Edict(ReciprocalEdict + "+", "Reciprocal Edict+"),
         Sigil(MortgageSigil, "Mortgage Sigil", 3),
-        Sigil(MortgageSigil + "+", "Mortgage Sigil+", 4),
-        Hearing(SilentHearing, "Silent Hearing", 7),
-        HearingOwedStatus(7),
-        Mantle(),
+        Sigil(MortgageSigil + "+", "Mortgage Sigil+", 5),
+        Hearing(SilentHearing, "Silent Hearing", 7, HearingOwed),
+        HearingOwedStatus(7, HearingOwed),
+        Hearing(SilentHearing + "+", "Silent Hearing+", 10, HearingOwed + "+"),
+        HearingOwedStatus(10, HearingOwed + "+"),
+        Mantle(SealedMantle, 2),
+        Mantle(SealedMantle + "+", 3),
         Charm(),
     ];
 
@@ -191,7 +194,7 @@ public static class GeneralRites
     // "Until your next turn, if the target performs a damaging action, gain N Block." The mark sits on the
     // ENEMY and watches its own actions; the Block goes to whoever is wearing the applicant marker, which is
     // how a rule on the other side of the fight reaches the player.
-    private static StatusData Hearing(string id, string name, int block) => new()
+    private static StatusData Hearing(string id, string name, int block, string owed) => new()
     {
         Id = id,
         NameKey = name,
@@ -211,7 +214,7 @@ public static class GeneralRites
                                 CombatantTargetSelectors.AllCombatants,
                                 new StatusDefinitionId(Keywords.ApplicantMarker)),
                             new ApplyStatusNode<ActionResolvedTriggeredEffectContext>(
-                                CombatantTargetSelectors.IterationTarget, new StatusDefinitionId(HearingOwed),
+                                CombatantTargetSelectors.IterationTarget, new StatusDefinitionId(owed),
                                 new ConstantExpression<ActionResolvedTriggeredEffectContext>(1))),
                         new RemoveStatusNode<ActionResolvedTriggeredEffectContext>(
                             CombatantTargetSelectors.Source, new StatusDefinitionId(id)),
@@ -221,9 +224,9 @@ public static class GeneralRites
 
     // The debt, paid after the holder's next draw so the Block is there when they act rather than swept
     // away by their own turn start.
-    private static StatusData HearingOwedStatus(int block) => new()
+    private static StatusData HearingOwedStatus(int block, string owed) => new()
     {
-        Id = HearingOwed,
+        Id = owed,
         NameKey = "Heard",
         DescriptionKey = $"You gain {block} Block at the start of your next turn.",
         Polarity = StatusPolarity.Neutral,
@@ -238,7 +241,7 @@ public static class GeneralRites
                         CombatantTargetSelectors.Source,
                         new ConstantExpression<CardsDrawnTriggeredEffectContext>(block)),
                     new RemoveStatusNode<CardsDrawnTriggeredEffectContext>(
-                        CombatantTargetSelectors.Source, new StatusDefinitionId(HearingOwed)),
+                        CombatantTargetSelectors.Source, new StatusDefinitionId(owed)),
                 ])), nameof(TriggerEvent.CardsDrawn)),
         ],
     };
@@ -252,7 +255,7 @@ public static class GeneralRites
     // round to end and reads both.
     public const string MantleAttacked = "sealed_mantle_attacked";
 
-    private static StatusData Mantle()
+    private static StatusData Mantle(string id, int wax)
     {
         var wearer = CombatantTargetSelectors.IterationTarget;
 
@@ -263,7 +266,7 @@ public static class GeneralRites
                     Applicant<ActionResolvedTriggeredEffectContext>(CombatantTargetSelectors.Source, shouldBe: false)),
                 new ForEachTargetEffectNode<ActionResolvedTriggeredEffectContext>(
                     CombatantTargetSelectors.WithStatus(
-                        CombatantTargetSelectors.AllCombatants, new StatusDefinitionId(SealedMantle)),
+                        CombatantTargetSelectors.AllCombatants, new StatusDefinitionId(id)),
                     new SetCombatantCounterNode<ActionResolvedTriggeredEffectContext>(
                         wearer, new CounterId(MantleAttacked),
                         new ConstantExpression<ActionResolvedTriggeredEffectContext>(1), relative: false))));
@@ -271,7 +274,7 @@ public static class GeneralRites
         var settle = new EffectProgram<RoundEndedTriggeredEffectContext>(
             new ForEachTargetEffectNode<RoundEndedTriggeredEffectContext>(
                 CombatantTargetSelectors.WithStatus(
-                    CombatantTargetSelectors.AllCombatants, new StatusDefinitionId(SealedMantle)),
+                    CombatantTargetSelectors.AllCombatants, new StatusDefinitionId(id)),
                 new CausalSequenceEffectNode<RoundEndedTriggeredEffectContext>(
                 [
                     new ConditionalEffectNode<RoundEndedTriggeredEffectContext>(
@@ -286,15 +289,15 @@ public static class GeneralRites
                                 ComparisonOperator.Equal, new ConstantExpression<RoundEndedTriggeredEffectContext>(0))),
                         new ApplyStatusNode<RoundEndedTriggeredEffectContext>(
                             wearer, new StatusDefinitionId(Keywords.WardWax),
-                            new ConstantExpression<RoundEndedTriggeredEffectContext>(2))),
+                            new ConstantExpression<RoundEndedTriggeredEffectContext>(wax))),
                     new SetCombatantCounterNode<RoundEndedTriggeredEffectContext>(
                         wearer, new CounterId(MantleAttacked),
                         new ConstantExpression<RoundEndedTriggeredEffectContext>(0), relative: false),
-                    new RemoveStatusNode<RoundEndedTriggeredEffectContext>(wearer, new StatusDefinitionId(SealedMantle)),
+                    new RemoveStatusNode<RoundEndedTriggeredEffectContext>(wearer, new StatusDefinitionId(id)),
                 ])));
 
-        return Rite(SealedMantle, "Sealed Mantle",
-            "If an enemy attacks this turn and nothing gets through, gain 2 Ward Wax.",
+        return Rite(id, id.EndsWith('+') ? "Sealed Mantle+" : "Sealed Mantle",
+            $"If an enemy attacks this turn and nothing gets through, gain {wax} Ward Wax.",
             [
                 Trigger(watch, nameof(TriggerEvent.ActionResolved), StatusTriggerScope.Anywhere),
                 Trigger(settle, nameof(TriggerEvent.RoundEnded), StatusTriggerScope.Anywhere),

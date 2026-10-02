@@ -21,10 +21,10 @@ public class ActFourEventRelicTests
     private const string NameOffice = "name_office";        // 11 damage and an Inscribed
     private const string Deed = "paper_cut";                // Deed, 1 Energy, 6 damage
     private const string Marking = "etched_subsection";     // 7 damage and a Doubt: an action that MARKS you
-    private const string Wax = "waxen_surety";              // Working, 1 Energy, "gain 4 Ward Wax"
+    private const string Wax = "waxen_surety";              // Working, 1 Energy, "gain 5 Ward Wax"
     private const string Index = "smudged_index";           // Working, 1 Energy, archives off the draw pile
     private const string Docket = "night_docket";           // Working, 0 Energy, exhausts itself on play
-    private const int WaxStacks = 4;
+    private const int WaxStacks = 5;
 
     // ── Cup of the Lowest Mark ────────────────────────────────────────────────────────────────────────────
 

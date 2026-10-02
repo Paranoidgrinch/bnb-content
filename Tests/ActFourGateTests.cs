@@ -15,7 +15,7 @@ namespace BnbContent.Tests;
 public class ActFourGateTests
 {
     private const string OneCost = "paper_cut";   // Deed, 1
-    private const string Wax = "waxen_surety";    // Working, 1: gain 4 Ward Wax
+    private const string Wax = "waxen_surety";    // Working, 1: gain 5 Ward Wax
 
     private static CombatantState Hero(RunPlayback play) =>
         play.CombatDriver!.Current!.State.GetCombatant(play.CombatDriver.Current!.HeroId);
@@ -66,7 +66,7 @@ public class ActFourGateTests
 
         Play(play, session, Wax, null); // …and the register is spent enlarging the player's own wax
 
-        Assert.Equal(5, FightProbe.StacksOf(Hero(play), Keywords.WardWax));
+        Assert.Equal(6, FightProbe.StacksOf(Hero(play), Keywords.WardWax));
         Assert.Equal(0, FightProbe.StacksOf(Hero(play), ActFour.InscribedId));
         Assert.Equal(1, FightProbe.StacksOf(Enemies(play)[0], ActFour.UncountedId));
         play.Dispose();
@@ -179,7 +179,7 @@ public class ActFourGateTests
 
         Play(play, session, Wax, null); // the register is spent enlarging the player's own wax
 
-        Assert.Equal(5, FightProbe.StacksOf(Hero(play), Keywords.WardWax));
+        Assert.Equal(6, FightProbe.StacksOf(Hero(play), Keywords.WardWax));
         Assert.Equal(0, FightProbe.StacksOf(Body(play, "name_eating_baboon"), ActFour.StolenNameId));
         play.Dispose();
     }

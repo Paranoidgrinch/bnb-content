@@ -630,56 +630,56 @@ cards a boss or a door hands over are never offered and have no act.
 | `black_ledger` | Black Ledger | rite | uncommon | At the start of your turn, if any enemy has at least 8 Paperwork, draw 1 card. |
 | `blank_warrant` | Blank Warrant | deed | rare | Deal 18 damage. If the target has no Paperwork, Doubt, or Seal, deal 5 additional damage. |
 | `candle_allowance` | Candle Allowance | working | uncommon | Queue: Gain 1 Energy and draw 1 card. Exhaust. |
-| `candle_tribunal` | Candle Tribunal | deed | rare | Deal 5 damage 3 times. If the target is Ratified, repeat this attack. |
-| `cauldron_copy` | Cauldron Copy | deed | common | Deal 9 damage. Add 1 Duplicate Copy to your discard pile. |
-| `certified_kindling` | Certified Kindling | working | common | Archive a card from your hand. Gain 4 Block. If it was Junk, gain 4 additional Block. |
-| `cinder_warrant` | Cinder Warrant | deed | uncommon | Deal 7 damage. Archive a Junk card from your hand; if you do, repeat this attack. |
+| `candle_tribunal` | Candle Tribunal | deed | rare | Deal 6 damage 3 times. If the target is Ratified, repeat this attack. |
+| `cauldron_copy` | Cauldron Copy | deed | common | Deal 10 damage. Add 1 Duplicate Copy to your discard pile. |
+| `certified_kindling` | Certified Kindling | working | common | Archive a card from your hand. Gain 6 Block. If it was Junk, gain 5 additional Block. |
+| `cinder_warrant` | Cinder Warrant | deed | uncommon | Deal 8 damage. Archive a Junk card from your hand; if you do, repeat this attack. |
 | `clerical_discretion` | Clerical Discretion | working | uncommon | Gain 5 Block. Choose one: apply 1 Doubt; or apply 1 Seal. |
 | `clerks_familiar` | Clerk's Familiar | rite | uncommon | The first time each turn you create a Junk card, gain 4 Block. |
 | `conditional_approval` | Conditional Approval | deed | uncommon | Deal 6 damage. If the target does not intend to Attack, apply 2 Seal; otherwise apply 1 Seal. |
-| `continuance` | Continuance | rite | rare | At the end of your turn, retain up to 8 Block. |
+| `continuance` | Continuance | rite | rare | At the end of your turn, retain up to 12 Block. |
 | `counter_ward` | Counter Ward | working | uncommon | Gain 6 Block. Your next card this turn costs 1 less Energy. |
 | `cursed_addendum` | Cursed Addendum | deed | common | Deal 6 damage. Apply 2 Paperwork. |
 | `deferred_hex` | Deferred Hex | deed | common | Queue: Deal 13 damage. |
 | `deskward` | Deskward | working | common | Gain 8 Block. Add 1 Red Tape to your discard pile. |
 | `dubious_authority` | Dubious Authority | rite | uncommon | Whenever Doubt is consumed after an enemy attacks, apply 2 Paperwork to that enemy. |
 | `fine_print_hex` | Fine-Print Hex | deed | common | Deal 7 damage. If the target has Doubt, apply 1 Seal. |
-| `form_of_ill_intent` | Form of Ill Intent | working | common | Apply 3 Paperwork. If the target intends to Attack, also apply 1 Doubt. |
+| `form_of_ill_intent` | Form of Ill Intent | working | common | Apply 6 Paperwork. If the target intends to Attack, also apply 2 Doubt. |
 | `formal_dissent` | Formal Dissent | working | uncommon | Remove 1 Doubt from an enemy. Gain 1 Energy. Exhaust. |
-| `hex_circular` | Hex Circular | deed | uncommon | Deal 7 damage to ALL enemies. Apply 1 Doubt to ALL enemies. |
-| `inkblot_verdict` | Inkblot Verdict | deed | common | Deal 8 damage. If the target has Paperwork, deal 2 additional damage. |
+| `hex_circular` | Hex Circular | deed | uncommon | Deal 9 damage to ALL enemies. Apply 1 Doubt to ALL enemies. |
+| `inkblot_verdict` | Inkblot Verdict | deed | common | Deal 8 damage, plus damage equal to the target's Paperwork, maximum 8. |
 | `licensed_disposal` | Licensed Disposal | rite | rare | The first Junk card you draw each turn is automatically Archived; then draw 1 card. |
 | `night_docket` | Night Docket | working | uncommon | Resolve your oldest Queued card immediately. Add 1 Red Tape to your discard pile. Exhaust. |
 | `notarial_press` | Notarial Press | working | common | Apply 2 Seal. If this Ratifies the target, gain 5 Block. |
 | `notarys_tithe` | Notary's Tithe | working | uncommon | Remove 1 Seal from an enemy. Draw 2 cards. Exhaust. |
-| `occult_precedent` | Occult Precedent | working | common | Gain 7 Block. If any enemy has Paperwork, gain 2 additional Block. |
+| `occult_precedent` | Occult Precedent | working | common | Gain 8 Block. If any enemy has Paperwork, gain 2 additional Block. |
 | `pending_matters` | Pending Matters | rite | uncommon | The first time each turn a Queued card resolves, gain 3 Block. |
-| `petty_objection` | Petty Objection | working | common | Gain 5 Block. Apply 1 Doubt. |
+| `petty_objection` | Petty Objection | working | common | Gain 5 Block. If the target intends to Attack, apply 2 Doubt. |
 | `presumption_of_error` | Presumption of Error | working | uncommon | Apply 1 Doubt. The next time that enemy consumes Doubt by attacking, apply 1 Doubt to it after the Attack resolves. Exhaust. |
 | `privy_seal` | Privy Seal | working | rare | Requires at least 1 Seal. Remove all Seals from an enemy and Ratify it immediately. Draw 1 card. Exhaust. |
 | `protective_adjournment` | Protective Adjournment | working | common | Queue: Gain 11 Block. |
 | `rebuttal` | Rebuttal | deed | rare | Deal 9 damage. Gain 4 Block per Doubt already on the target, maximum 12 Block. Then apply 1 Doubt. |
 | `red_ink_doctrine` | Red Ink Doctrine | rite | rare | After an enemy takes HP loss from its Paperwork, if it survives, apply 2 Paperwork to it. |
 | `seal_dividend` | Seal Dividend | rite | uncommon | The first time each turn you Ratify an enemy, draw 1 card. |
-| `seal_of_concern` | Seal of Concern | working | common | Apply 1 Seal and 1 Doubt. |
+| `seal_of_concern` | Seal of Concern | working | common | Apply 2 Seal and 1 Doubt. |
 | `secure_misfiling` | Secure Misfiling | working | common | Add 1 Misfiled Paper to your discard pile. Draw 1 card. |
 | `skeleton_staff` | Skeleton Staff | working | rare | Queue a card from your hand for free. Add 1 Red Tape to your discard pile. |
 | `stay_of_execution` | Stay of Execution | working | rare | Choose an enemy with Paperwork. Its Paperwork does not trigger at the end of its next turn. Gain 2 Block per current Paperwork on that enemy, maximum 20 Block. |
-| `summary_judgment` | Summary Judgment | deed | rare | Deal 16 damage. If the target has at least 6 Paperwork, trigger its Paperwork immediately, then remove 3 Paperwork. |
+| `summary_judgment` | Summary Judgment | deed | rare | Deal 20 damage. If the target has at least 6 Paperwork, trigger its Paperwork immediately, then remove 3 Paperwork. |
 | `tallow_budget` | Tallow Budget | working | uncommon | Gain 1 Energy. Add 1 Red Tape to your hand. Exhaust. |
 | `threefold_injunction` | Threefold Injunction | deed | uncommon | Deal 3 damage 3 times. If the target is Ratified, each hit also applies 1 Paperwork. |
 | `violence_allowance` | Violence Allowance | rite | rare | The first Deed you play each turn costs 1 less Energy. |
-| `wastepaper_bastion` | Wastepaper Bastion | working | uncommon | Gain 4 Block, plus 2 Block for each Junk card in your hand. |
-| `waxing_authority` | Waxing Authority | deed | common | Deal 5 damage. Apply 1 Seal. |
+| `wastepaper_bastion` | Wastepaper Bastion | working | uncommon | Gain 5 Block, plus 3 Block for each Junk card in your hand. |
+| `waxing_authority` | Waxing Authority | deed | common | Deal 6 damage. Apply 1 Seal. |
 
 ### Bureaucrat — Act II — 14
 
 | code | title | type | rarity | what it does |
 |---|---|---|---|---|
-| `archive_pyre` | Archive Pyre | deed | rare | Archive all Junk cards in your hand. Deal 9 damage to ALL enemies, plus 5 damage for each Junk Archived this way. |
+| `archive_pyre` | Archive Pyre | deed | rare | Archive all Junk cards in your hand. Deal 12 damage to ALL enemies, plus 5 damage for each Junk Archived this way. |
 | `binding_fee` | Binding Fee | working | uncommon | Archive a non-Junk card from your hand. Apply Paperwork equal to 3 plus its base Energy cost. |
 | `broom_dispatch` | Broom Dispatch | working | common | Apply 2 Paperwork to ALL enemies. |
-| `clutter_concordance` | Clutter Concordance | deed | uncommon | Deal 5 damage, plus 2 damage for each different Junk type currently present across your discard and Exhaust piles. |
+| `clutter_concordance` | Clutter Concordance | deed | uncommon | Deal 6 damage, plus 3 damage for each different Junk type currently present across your discard and Exhaust piles. |
 | `cross_filing` | Cross-Filing | working | common | Apply 4 Paperwork to an enemy. If another enemy is present, move 2 of it to them. |
 | `dead_letter_office` | Dead Letter Office | working | uncommon | For each different Junk type in your Exhaust pile, apply 1 Paperwork to ALL enemies. Exhaust. |
 | `errata_furnace` | Errata Furnace | working | common | Archive a Junk card from your hand. Apply 4 Paperwork to a random enemy. |
@@ -689,24 +689,24 @@ cards a boss or a door hands over are never offered and have no act.
 | `null_catalogue` | Null Catalogue | working | rare | Choose up to 2 cards in your discard pile. Archive them. Draw 1 card for each card Archived this way. Exhaust. |
 | `palimpsest_order` | Palimpsest Order | working | uncommon | Archive a card from your hand. Return a non-Junk card from your discard pile to your hand. Exhaust. |
 | `redaction_veil` | Redaction Veil | working | uncommon | Remove up to 4 Paperwork from an enemy. Gain 3 Block for each Paperwork removed. |
-| `smudged_index` | Smudged Index | working | uncommon | Archive a card from your draw pile. Gain 4 Block. |
+| `smudged_index` | Smudged Index | working | uncommon | Archive a card from your draw pile. Gain 6 Block. |
 
 ### Bureaucrat — Act III — 12
 
 | code | title | type | rarity | what it does |
 |---|---|---|---|---|
-| `blood_testimony` | Blood Testimony | deed | rare | Deal 9 damage to ALL enemies. Enemies that attacked during the previous enemy turn take 9 additional damage. |
+| `blood_testimony` | Blood Testimony | deed | rare | Deal 12 damage to ALL enemies. Enemies that attacked during the previous enemy turn take 9 additional damage. |
 | `customary_due` | Customary Due | working | uncommon | Create a Temporary copy of a card in your discard pile and Queue it. The copy Exhausts after resolving. Customary Due Exhausts. |
 | `due_recompense` | Due Recompense | deed | rare | Deal 14 damage, plus 5 damage for each Doubt on the target. Count at most 6 Doubt. Then remove all Doubt from the target. |
-| `grievance_ledger` | Grievance Ledger | deed | rare | Deal 10 damage, plus 6 damage for each time this enemy has attacked during this combat. Count at most 4 attacks. |
+| `grievance_ledger` | Grievance Ledger | deed | rare | Deal 12 damage, plus 7 damage for each time this enemy has attacked during this combat. Count at most 4 attacks. |
 | `guest_right` | Guest Right | rite | rare | Once per turn, when an enemy with at least 3 Doubt would deal unblocked damage, remove 3 Doubt and reduce that remaining damage to 0. |
 | `guestbook_oath` | Guestbook Oath | rite | uncommon | At the end of your turn, if you have any Block, apply 1 Doubt to every enemy that intends to Attack. |
 | `hearth_compact` | Hearth Compact | rite | rare | Whenever an enemy with Doubt attacks and deals no unblocked damage, the Doubt stack that would normally be consumed is retained. |
 | `hedge_covenant` | Hedge Covenant | rite | rare | Whenever Doubt reduces Attack damage, after that Attack has fully resolved, gain Block equal to half the prevented damage, rounded up. |
-| `hedge_hospitality` | Hedge Hospitality | working | uncommon | Gain 7 Block. Until your next turn, the first enemy that deals unblocked damage to you gains 4 Paperwork. |
+| `hedge_hospitality` | Hedge Hospitality | working | uncommon | Gain 12 Block. Until your next turn, the first enemy that deals unblocked damage to you gains 7 Paperwork. |
 | `priority_docket` | Priority Docket | working | common | Choose another card in your hand and Queue it, paying 1 less Energy (minimum 0). |
 | `restitution_writ` | Restitution Writ | working | uncommon | Apply Paperwork equal to half the unblocked damage you took during the previous enemy turn, rounded down. Maximum 6 Paperwork. Exhaust. |
-| `witness_knot` | Witness Knot | working | uncommon | Apply 1 Doubt to an enemy. If it attacks before your next turn, apply 2 Paperwork to all other enemies. |
+| `witness_knot` | Witness Knot | working | uncommon | Apply 2 Doubt to an enemy. If it attacks before your next turn, apply 3 Paperwork to all other enemies. |
 
 ### Bureaucrat — Act IV — 8
 
@@ -714,7 +714,7 @@ cards a boss or a door hands over are never offered and have no act.
 |---|---|---|---|---|
 | `cartouche_reckoning` | Cartouche Reckoning | deed | rare | Deal 18 damage. Then, up to 3 times: if the target has at least 10 Paperwork, remove 10 Paperwork and repeat this attack. |
 | `final_attestation` | Final Attestation | deed | common | Deal 8 damage. If the target is Ratified, gain 1 Energy. |
-| `fivefold_compliance` | Fivefold Compliance | deed | rare | Deal 12 damage, then repeat once for each fulfilled clause: the target has at least 10 Paperwork; at least 3 Doubt; is Ratified; you hold 2 different Junk types in your Exhaust pile; you have a Queued card. |
+| `fivefold_compliance` | Fivefold Compliance | deed | rare | Deal 15 damage, then repeat once for each fulfilled clause: the target has at least 10 Paperwork; at least 3 Doubt; is Ratified; you hold 2 different Junk types in your Exhaust pile; you have a Queued card. |
 | `hieratic_measure` | Hieratic Measure | rite | uncommon | Whenever you Ratify an enemy, immediately trigger its current Paperwork once, then remove 3 Paperwork from it. |
 | `monumental_writ` | Monumental Writ | deed | rare | Queue: Deal 24 damage, plus 12 for each other card still in your Queue when this resolves. Count at most 3. |
 | `processional_calendar` | Processional Calendar | rite | uncommon | At the end of your turn, if you have at least 2 Queued cards, resolve your oldest Queued card. |
@@ -732,17 +732,17 @@ cards a boss or a door hands over are never offered and have no act.
 | `false_signature` | False Signature | working | uncommon | Your next card this turn costs 1 less Energy. After it is played, the next card you play this combat costs 1 more. Exhaust. |
 | `foreclosure` | Foreclosure | deed | uncommon | Deal 6 damage. Then immediately resolve up to 5 Lien on the target. |
 | `forfeit_seal` | Forfeit Seal | deed | uncommon | Deal 7 damage. If the target still has Block after this attack, apply 4 Lien. |
-| `grave_lien` | Grave Lien | deed | uncommon | Deal 7 damage. Apply 5 Lien. |
+| `grave_lien` | Grave Lien | deed | uncommon | Deal 13 damage. Apply 9 Lien. |
 | `malediction_review` | Malediction Review | working | uncommon | Gain 6 Block. Choose one: gain 2 Censure; or apply 2 Censure to an enemy. |
 | `mortgage_sigil` | Mortgage Sigil | working | uncommon | Apply 3 Lien. The next time the target gains Block before the end of its next turn, apply 3 additional Lien. |
 | `notary_beetle` | Notary Beetle | rite | uncommon | The first time each turn you apply a negative Status to an enemy that does not already have that Status, apply 1 additional stack of it. |
 | `reciprocal_edict` | Reciprocal Edict | rite | rare | The first time each turn your Censure prevents a negative Status applied by an enemy, apply 2 Censure to that enemy. The first time each turn Censure prevents a positive Status on an enemy, gain 1 Censure. |
-| `sanctioned_charm` | Sanctioned Charm | working | uncommon | Gain 5 Block. Until your next turn, the first time your Censure prevents a negative Status, the Censure used to prevent it is not consumed. |
+| `sanctioned_charm` | Sanctioned Charm | working | uncommon | Gain 6 Block. Until your next turn, the first time your Censure prevents a negative Status, the Censure used to prevent it is not consumed. |
 | `sealed_mantle` | Sealed Mantle | working | uncommon | Gain 8 Block. If at least one enemy attacks during this enemy turn and you take no unblocked Attack damage, gain 2 Ward Wax. |
 | `silent_hearing` | Silent Hearing | working | uncommon | Apply 2 Citation. Until your next turn, if the target performs a damaging action, gain 7 Block. |
 | `tallow_reserve` | Tallow Reserve | working | uncommon | Requires at least 6 Block. Lose 6 Block. Gain 3 Ward Wax. Exhaust. |
 | `usurers_moon` | Usurer's Moon | rite | rare | Whenever Lien removes Block from an enemy, apply 1 Citation for every 3 Block removed, maximum 3 Citation per Lien resolution. |
-| `waxen_surety` | Waxen Surety | working | uncommon | Gain 4 Ward Wax. |
+| `waxen_surety` | Waxen Surety | working | uncommon | Gain 5 Ward Wax. |
 | `witchmark_citation` | Witchmark Citation | working | uncommon | Apply 3 Citation. If the target currently intends a non-damaging action, draw 1 card. |
 
 ### General — Act II — 10
@@ -755,8 +755,8 @@ cards a boss or a door hands over are never offered and have no act.
 | `crossed_sigil` | Crossed Sigil | working | uncommon | Remove 1 stack of a negative Status from yourself. Then apply 1 Censure to an enemy. If you had no negative Status to remove, gain 1 Censure instead. |
 | `moonlit_counterfeit` | Moonlit Counterfeit | working | rare | Create a Temporary copy of a card in your hand; your next card this turn is free. Exhaust the original. Moonlit Counterfeit Exhausts. |
 | `proxy_curse` | Proxy Curse | working | uncommon | Remove up to 3 stacks of a negative Status from yourself. Apply 1 Blood Ink to an enemy per stack removed. |
-| `sanguine_errata` | Sanguine Errata | working | uncommon | Apply 2 Blood Ink. Then remove 1 stack of another negative Status from the target. |
-| `seizure_writ` | Seizure Writ | deed | rare | Deal 12 damage. Then remove all remaining Block from the target. For every 3 Block removed, apply 1 Lien, maximum 6 Lien. |
+| `sanguine_errata` | Sanguine Errata | working | uncommon | Apply 3 Blood Ink. Then remove 1 stack of another negative Status from the target. |
+| `seizure_writ` | Seizure Writ | deed | rare | Deal 14 damage. Then remove all remaining Block from the target. For every 3 Block removed, apply 1 Lien, maximum 6 Lien. |
 | `standing_citation` | Standing Citation | rite | rare | The first time each turn Citation triggers on each enemy, that trigger does not remove a Citation stack. |
 | `vein_register` | Vein Register | rite | uncommon | The first time each turn another Status on an enemy loses a stack, apply 1 Blood Ink to it. |
 
@@ -770,7 +770,7 @@ cards a boss or a door hands over are never offered and have no act.
 | `exemplary_sentence` | Exemplary Sentence | deed | rare | Remove up to 5 Citation from an enemy. For each removed, ALL enemies lose 4 HP. Then deal 12 damage to it. |
 | `mortgaged_aegis` | Mortgaged Aegis | working | uncommon | Gain 18 Block. At the start of your next turn, gain 8 Lien. |
 | `oath_of_refusal` | Oath of Refusal | rite | rare | The first 2 times each turn Censure prevents one or more Status stacks, record 1 Refusal. At the start of your next turn, draw 1 card per Refusal, maximum 2, and gain 1 Energy. Then clear them. |
-| `vital_census` | Vital Census | deed | uncommon | Deal 8 damage to ALL enemies. Every enemy with Blood Ink loses HP equal to its Blood Ink, then loses 1. |
+| `vital_census` | Vital Census | deed | uncommon | Deal 11 damage to ALL enemies. Every enemy with Blood Ink loses HP equal to its Blood Ink, then loses 1. |
 | `votive_covenant` | Votive Covenant | rite | rare | If you take no unblocked Attack damage during an enemy turn, Ward Wax does not decay. If you do, it loses 3 stacks instead of 2. |
 | `wax_indemnity` | Wax Indemnity | working | rare | Until your next turn, damage that gets through is answered by your Ward Wax: up to 4 Wax is spent, healing 3 HP each. |
 | `wax_reliquary` | Wax Reliquary | working | uncommon | Gain 4 Ward Wax. Until your next turn, Ward Wax cannot suffer its additional decay. |
@@ -788,7 +788,7 @@ cards a boss or a door hands over are never offered and have no act.
 | `grand_dispensation` | Grand Dispensation | working | rare | Choose 2 different options: deal 24 damage to an enemy; gain 24 Block; draw 3 cards; gain 2 Energy. Exhaust. |
 | `hemal_audit` | Hemal Audit | deed | rare | Deal 18 damage. Then trigger Blood Ink repeatedly, up to 6 times or until no Blood Ink remains. |
 | `last_office` | Last Office | working | rare | For each of Paperwork, Doubt, Seal, Lien and Citation the chosen enemy does not carry, deal 8 damage to it and gain 3 Block. Exhaust. |
-| `sovereign_prohibition` | Sovereign Prohibition | working | uncommon | Gain 3 Censure. Apply 3 Censure to ALL enemies. |
+| `sovereign_prohibition` | Sovereign Prohibition | working | uncommon | Gain 3 Censure and 6 Block. Apply 3 Censure to ALL enemies. |
 | `tallow_judgment` | Tallow Judgment | deed | rare | Consume up to 8 Ward Wax. Deal 10 damage plus 7 damage per Ward Wax consumed. |
 
 ### Given in play — 91

@@ -37,8 +37,8 @@ public static class GeneralActIII
 
     private static readonly BnbCard VitalCensus = new(
         "vital_census", "Vital Census", DeedTag, 2,
-        "Deal 8 damage to ALL enemies. Every enemy with Blood Ink loses HP equal to its Blood Ink, then loses 1.",
-        Census(8),
+        "Deal 11 damage to ALL enemies. Every enemy with Blood Ink loses HP equal to its Blood Ink, then loses 1.",
+        Census(11),
         Rarity: "uncommon", Act: Act);
 
     // ── Rare ──────────────────────────────────────────────────────────────────────────────────────────────
@@ -82,31 +82,31 @@ public static class GeneralActIII
     public static IEnumerable<BnbCard> All() =>
     [
         BloodTithe, BloodTithe.Upgraded(
-            "Deal 11 damage. If the target has Blood Ink, it loses HP equal to twice its Blood Ink, then " +
-            "loses 1 Blood Ink.", Tithe(11)),
+            "Deal 12 damage. If the target has Blood Ink, it loses HP equal to three times its Blood Ink, then " +
+            "loses 1 Blood Ink.", Tithe(12, times: 3)),
 
         WaxReliquary, WaxReliquary.Upgraded(
-            "Gain 5 Ward Wax. Until your next turn, Ward Wax cannot suffer its additional decay.",
-            Seq(Apply(Keywords.WardWax, 5, You), Apply(GeneralWax.WaxReliquary, 1, You))),
+            "Gain 7 Ward Wax. Until your next turn, Ward Wax cannot suffer its additional decay.",
+            Seq(Apply(Keywords.WardWax, 7, You), Apply(GeneralWax.WaxReliquary, 1, You))),
 
         ConsecratedTestament, ConsecratedTestament.UpgradedRite(GeneralWax.ConsecratedTestament,
             "The first 4 times each turn an enemy loses HP because of a Status effect, gain 1 Ward Wax."),
 
         MortgagedAegis, MortgagedAegis.Upgraded(
-            "Gain 22 Block. At the start of your next turn, gain 8 Lien.",
-            Seq(Block(22), Apply(GeneralWax.MortgagedAegis, 1, You))),
+            "Gain 27 Block. At the start of your next turn, gain 6 Lien.",
+            Seq(Block(27), Apply(GeneralWax.MortgagedAegis + "+", 1, You))),
 
         VitalCensus, VitalCensus.Upgraded(
-            "Deal 11 damage to ALL enemies. Every enemy with Blood Ink loses HP equal to its Blood Ink, then " +
-            "loses 1.", Census(11)),
+            "Deal 17 damage to ALL enemies. Every enemy with Blood Ink loses HP equal to its Blood Ink twice, then " +
+            "loses 1.", Census(17, ticks: 2)),
 
         VotiveCovenant, VotiveCovenant.UpgradedRite(GeneralWax.VotiveCovenant,
             "If you take no unblocked Attack damage during an enemy turn, Ward Wax does not decay. If you " +
             "do, it loses 3 stacks instead of 2.", cost: 1),
 
         ExemplarySentence, ExemplarySentence.Upgraded(
-            "Remove up to 5 Citation from an enemy. For each removed, ALL enemies lose 5 HP. Then deal 15 " +
-            "damage to it.", Sentence(15, 5)),
+            "Remove up to 5 Citation from an enemy. For each removed, ALL enemies lose 5 HP. Then deal 18 " +
+            "damage to it.", Sentence(18, 5)),
 
         WaxIndemnity, WaxIndemnity.Upgraded(
             "Until your next turn, damage that gets through is answered by your Ward Wax: up to 4 Wax is " +
@@ -131,16 +131,16 @@ public static class GeneralActIII
         card.Upgraded(text, InstallRite(riteStatusId + "+"), cost);
 
     // Blood Ink's own bite, called in early and doubled.
-    private static CombatNodeModel Tithe(int damage) =>
+    private static CombatNodeModel Tithe(int damage, int times = 2) =>
         Seq(
             Damage(damage),
             If(HasStacks(Keywords.BloodInk),
                 Seq(
-                    new CombatNodeModel("dealDamage", Target, Times(Stacks(Keywords.BloodInk), 2),
+                    new CombatNodeModel("dealDamage", Target, Times(Stacks(Keywords.BloodInk), times),
                         IgnoresBlock: true, DamageKind: DamageKind.DamageOverTime),
                     Remove(Keywords.BloodInk, 1))));
 
-    private static CombatNodeModel Census(int damage) =>
+    private static CombatNodeModel Census(int damage, int ticks = 1) =>
         Seq(
             Damage(damage, AllEnemies),
             new CombatNodeModel("forEachTarget",
@@ -148,9 +148,9 @@ public static class GeneralActIII
                 Children:
                 [
                     Seq(
-                        new CombatNodeModel("dealDamage", "iterationTarget",
+                        Repeat(ticks, new CombatNodeModel("dealDamage", "iterationTarget",
                             Stacks(Keywords.BloodInk, "iterationTarget"),
-                            IgnoresBlock: true, DamageKind: DamageKind.DamageOverTime),
+                            IgnoresBlock: true, DamageKind: DamageKind.DamageOverTime)),
                         Remove(Keywords.BloodInk, 1, "iterationTarget")),
                 ]));
 

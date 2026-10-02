@@ -57,10 +57,10 @@ public static class ActIVCards
 
     private static readonly BnbCard FivefoldCompliance = new(
         "fivefold_compliance", "Fivefold Compliance", DeedTag, 3,
-        "Deal 12 damage, then repeat once for each fulfilled clause: the target has at least 10 Paperwork; " +
+        "Deal 15 damage, then repeat once for each fulfilled clause: the target has at least 10 Paperwork; " +
         "at least 3 Doubt; is Ratified; you hold 2 different Junk types in your Exhaust pile; you have a " +
         "Queued card.",
-        Fivefold(12),
+        Fivefold(15),
         Rarity: "rare", Act: Act);
 
     // ── General ───────────────────────────────────────────────────────────────────────────────────────────
@@ -73,8 +73,8 @@ public static class ActIVCards
 
     private static readonly BnbCard SovereignProhibition = new(
         "sovereign_prohibition", "Sovereign Prohibition", WorkingTag, 2,
-        "Gain 3 Censure. Apply 3 Censure to ALL enemies.",
-        Seq(Apply(Keywords.Censure, 3, You), Apply(Keywords.Censure, 3, AllEnemies)),
+        "Gain 3 Censure and 6 Block. Apply 3 Censure to ALL enemies.",
+        Seq(Apply(Keywords.Censure, 3, You), Block(6), Apply(Keywords.Censure, 3, AllEnemies)),
         Rarity: "uncommon", Act: Act);
 
     private static readonly BnbCard CandleCathedral = Rite(
@@ -147,8 +147,8 @@ public static class ActIVCards
     // both together, which is what All() is.
     public static IReadOnlyList<BnbCard> Bureaucrat() =>
     [
-        FinalAttestation, FinalAttestation.Upgraded("Deal 11 damage. If the target is Ratified, gain 1 Energy.",
-            Seq(Damage(11), If(HasStacks(Keywords.Ratified), Energy_(1)))),
+        FinalAttestation, FinalAttestation.Upgraded("Deal 12 damage. If the target is Ratified, gain 2 Energy.",
+            Seq(Damage(12), If(HasStacks(Keywords.Ratified), Energy_(2)))),
 
         TempleTally, TempleTally.UpgradedRite(ActIVRites.TempleTally,
             "Whenever an enemy reaches a new multiple of 5 Paperwork for the first time this combat, apply 1 " +
@@ -163,29 +163,29 @@ public static class ActIVCards
             "Paperwork from it.", cost: 1),
 
         CartoucheReckoning, CartoucheReckoning.Upgraded(
-            "Deal 21 damage. Then, up to 3 times: if the target has at least 10 Paperwork, remove 10 " +
-            "Paperwork and repeat this attack.", Reckoning(21)),
+            "Deal 27 damage. Then, up to 3 times: if the target has at least 8 Paperwork, remove 8 " +
+            "Paperwork and repeat this attack.", Reckoning(27, threshold: 8)),
 
         MonumentalWrit, MonumentalWrit.Upgraded(
-            "Queue: Deal 26 damage, plus 15 for each other card still in your Queue when this resolves. " +
-            "Count at most 3.", Writ(26, perQueued: 15)),
+            "Queue: Deal 36 damage, plus 15 for each other card still in your Queue when this resolves. " +
+            "Count at most 3.", Writ(36, perQueued: 15)),
 
         StoneLevy, StoneLevy.Upgraded(
-            "Remove up to 25 of your Block. Deal 10 damage plus 2 damage for each Block removed.",
-            Levy(25, 10)),
+            "Remove up to 25 of your Block. Deal 15 damage plus 2 damage for each Block removed. Keep half of " +
+            "the removed Block.", Levy(25, 15, keepHalf: true)),
 
         FivefoldCompliance, FivefoldCompliance.Upgraded(
-            "Deal 15 damage, then repeat once for each fulfilled clause.", Fivefold(15)),
+            "Deal 15 damage, then repeat once for each fulfilled clause.", cost: 2),
     ];
 
     public static IReadOnlyList<BnbCard> General() =>
     [
         BlackTribunal, BlackTribunal.Upgraded(
-            "Deal 18 damage, plus 8 damage for each different negative Status on the target. Count at most 5.",
-            Tribunal(18)),
+            "Deal 21 damage, plus 8 damage for each different negative Status on the target. Count at most 5.",
+            Tribunal(21)),
 
         SovereignProhibition, SovereignProhibition.Upgraded(
-            "Gain 3 Censure. Apply 3 Censure to ALL enemies.", cost: 1),
+            "Gain 3 Censure and 6 Block. Apply 3 Censure to ALL enemies.", cost: 1),
 
         CandleCathedral, CandleCathedral.UpgradedRite(ActIVRites.CandleCathedral,
             "Whenever Ward Wax grants Block, gain additional Block equal to half your Ward Wax, rounded up. " +
@@ -196,19 +196,19 @@ public static class ActIVCards
             "its Citation, then loses 1 Citation.", GrandCitationBody(18)),
 
         CrownRepossession, CrownRepossession.Upgraded(
-            "Deal 27 damage. Remove all remaining Block from the target; it loses HP equal to the Block " +
-            "removed, maximum 50. Apply 6 Lien.", Repossess(27, 50)),
+            "Deal 33 damage. Remove all remaining Block from the target; it loses HP equal to the Block " +
+            "removed, maximum 50. Apply 6 Lien.", Repossess(33, 50)),
 
         AbsoluteInterdict, AbsoluteInterdict.UpgradedRite(ActIVRites.AbsoluteInterdict,
             "The first time each turn Censure on a combatant would prevent Status stacks, 1 Censure prevents " +
             "the entire application instead, however many stacks it carried.", cost: 1),
 
         TallowJudgment, TallowJudgment.Upgraded(
-            "Consume up to 8 Ward Wax. Deal 14 damage plus 8 damage per Ward Wax consumed.", Judgment(8, 14, 8)),
+            "Consume up to 8 Ward Wax. Deal 15 damage plus 9 damage per Ward Wax consumed.", Judgment(8, 15, 9)),
 
         HemalAudit, HemalAudit.Upgraded(
-            "Deal 22 damage. Then trigger Blood Ink repeatedly, up to 8 times or until no Blood Ink remains.",
-            Audit(22, 8)),
+            "Deal 27 damage. Then trigger Blood Ink repeatedly, up to 8 times or until no Blood Ink remains.",
+            Audit(27, 8)),
 
         CompoundIndictment, CompoundIndictment.Upgraded(
             "Requires at least 3 different negative Statuses on the target. Add 3 stacks to each negative " +
@@ -219,8 +219,8 @@ public static class ActIVCards
             "Energy. Exhaust.", Dispensation(3)),
 
         LastOffice, LastOffice.Upgraded(
-            "For each of Paperwork, Doubt, Seal, Lien and Citation the chosen enemy does not carry, deal 10 " +
-            "damage to it and gain 4 Block. Exhaust.", LastOfficeBody(10, 4)),
+            "For each of Paperwork, Doubt, Seal, Lien and Citation the chosen enemy does not carry, deal 12 " +
+            "damage to it and gain 4 Block. Exhaust.", LastOfficeBody(12, 4)),
     ];
 
     // ── shapes ────────────────────────────────────────────────────────────────────────────────────────────
@@ -234,13 +234,13 @@ public static class ActIVCards
 
     // "Up to 3 times: if the target has at least 10 Paperwork, remove 10 and strike again." Written out
     // rather than looped, because the engine's repeat-until asks its question only AFTER running the body.
-    private static CombatNodeModel Reckoning(int damage)
+    private static CombatNodeModel Reckoning(int damage, int threshold = 10)
     {
-        var again = Seq(Remove(Keywords.Paperwork, 10), Damage(damage));
+        var again = Seq(Remove(Keywords.Paperwork, threshold), Damage(damage));
         return Seq(Damage(damage),
-            If(HasStacks(Keywords.Paperwork, 10),
-                Seq(again, If(HasStacks(Keywords.Paperwork, 10),
-                    Seq(again, If(HasStacks(Keywords.Paperwork, 10), again))))));
+            If(HasStacks(Keywords.Paperwork, threshold),
+                Seq(again, If(HasStacks(Keywords.Paperwork, threshold),
+                    Seq(again, If(HasStacks(Keywords.Paperwork, threshold), again))))));
     }
 
     private static CombatNodeModel Writ(int damage, int perQueued = 12) =>
@@ -251,14 +251,18 @@ public static class ActIVCards
     // is spent.
     private static CounterId Levied => new("stone_levy_taken");
 
-    private static CombatNodeModel Levy(int cap, int damage) =>
+    private static CombatNodeModel Levy(int cap, int damage, bool keepHalf = false) =>
         Seq(
             new CombatNodeModel("setCombatantCounter", You,
                 AtMost(new CombatAmountSpec("defensivePool", SelectorKey: You,
                     ReadId: StandardCombatIds.BlockDefensivePool.value), cap),
                 CounterId: Levied.value, Relative: false),
+            // With keepHalf only the larger half is spent (rounded up); the rest stays standing.
             new CombatNodeModel("modifyDefensivePool", You,
-                CombatAmountSpec.Binary("sub", CombatAmountSpec.FromConst(0), Taken(Levied)),
+                CombatAmountSpec.Binary("sub", CombatAmountSpec.FromConst(0),
+                    keepHalf
+                        ? CombatAmountSpec.Binary("div", Plus(Taken(Levied), CombatAmountSpec.FromConst(1)), CombatAmountSpec.FromConst(2))
+                        : Taken(Levied)),
                 PoolId: StandardCombatIds.BlockDefensivePool.value),
             Damage(Plus(CombatAmountSpec.FromConst(damage), Times(Taken(Levied), 2))));
 

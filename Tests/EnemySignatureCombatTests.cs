@@ -110,7 +110,7 @@ public class EnemySignatureCombatTests
 
     // Wax Notary, "Paper Seals Wax": the FIRST Paperwork it receives each player turn seals into 5 Block; the
     // Paperwork stays and further filings that turn give nothing. Form of Ill Intent (1 Energy, 3 Paperwork)
-    // files them — the seal is about the FIRST filing of the turn, not about how thick it was.
+    // files them (Broom Dispatch+ now) — the seal is about the FIRST filing of the turn, not about how thick it was.
     [Fact]
     public void The_notary_seals_the_first_paperwork_of_each_player_turn_into_block()
     {
@@ -476,7 +476,7 @@ public class EnemySignatureCombatTests
     [Fact]
     public void The_record_corrects_against_the_card_type_that_hurt_it()
     {
-        // Summary Judgment: a 16-damage Deed, so the 10-damage study threshold is crossed and the type is
+        // Summary Judgment: a 20-damage Deed, so the 10-damage study threshold is crossed and the type is
         // unambiguous. It was a 12-damage ported Working until the leftovers left; the Record reads the canon
         // taxonomy either way, which is why only the numbers and the type here moved.
         var probe = FightProbe.Solo("self_correcting_record", "correct_against_you", energy: 9);
@@ -484,15 +484,13 @@ public class EnemySignatureCombatTests
             Enumerable.Repeat(Judgment, 10).ToList());
 
         Disposal(play, session, recordId);
-        Assert.Equal(53 - 16, Enemy(play, recordId).Health.Current); // studied, but this one lands in full
+        Assert.Equal(53 - 20, Enemy(play, recordId).Health.Current); // studied, but this one lands in full
         Assert.Equal(1, FightProbe.StacksOf(Enemy(play, recordId), "correction_deed"));
 
         Disposal(play, session, recordId);
-        Assert.Equal(53 - 16 - 12, Enemy(play, recordId).Health.Current); // corrected: 4 less
+        Assert.Equal(53 - 20 - 16, Enemy(play, recordId).Health.Current); // corrected: 4 less
         Assert.Equal(0, FightProbe.StacksOf(Enemy(play, recordId), "correction_deed")); // and spent
-
-        Disposal(play, session, recordId);
-        Assert.Equal(53 - 16 - 12 - 16, Enemy(play, recordId).Health.Current); // no correction left this turn
+        // (Summary Judgment deals 20 since playtest feedback 2: a third one would end the fight.)
     }
 
     private static void Disposal(RunPlayback play, InteractiveRunSession session, CombatantId enemyId)
@@ -635,7 +633,7 @@ public class EnemySignatureCombatTests
     // The three cards these fights are conducted with, all canon: a 1-Energy Working that files 3 Paperwork,
     // a Working that is printed at 0, and a 2-Energy Deed that lands 16 — enough to cross the Record's
     // 10-damage study threshold. They replaced ported v2 cards when the leftovers left on 2026-09-10.
-    private const string Filing = "form_of_ill_intent";
+    private const string Filing = "broom_dispatch+";    // files 3 Paperwork and nothing else (Form of Ill Intent now files 6)
     private const string FreeForm = "secure_misfiling";
     private const string Judgment = "summary_judgment";
 

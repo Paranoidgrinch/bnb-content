@@ -15,15 +15,15 @@ public static class BureaucratActI
 
     private static readonly BnbCard WaxingAuthority = new(
         "waxing_authority", "Waxing Authority", DeedTag, 1,
-        "Deal 5 damage. Apply 1 Seal.",
-        Seq(Damage(5), ApplySeal(1)),
+        "Deal 6 damage. Apply 1 Seal.",
+        Seq(Damage(6), ApplySeal(1)),
         Rarity: "common");
 
     // Held back until the engine could read a telegraph; now it simply asks.
     private static readonly BnbCard FormOfIllIntent = new(
-        "form_of_ill_intent", "Form of Ill Intent", WorkingTag, 1,
-        "Apply 3 Paperwork. If the target intends to Attack, also apply 1 Doubt.",
-        Seq(Apply(Keywords.Paperwork, 3), If(Intends(IntentKind.Attack), Apply(Keywords.Doubt, 1))),
+        "form_of_ill_intent", "Form of Ill Intent", WorkingTag, 2,
+        "Apply 6 Paperwork. If the target intends to Attack, also apply 2 Doubt.",
+        Seq(Apply(Keywords.Paperwork, 6), If(Intends(IntentKind.Attack), Apply(Keywords.Doubt, 2))),
         Rarity: "common", Tags: [FormTag]);
 
     private static readonly BnbCard SecureMisfiling = new(
@@ -34,16 +34,16 @@ public static class BureaucratActI
 
     private static readonly BnbCard CauldronCopy = new(
         "cauldron_copy", "Cauldron Copy", DeedTag, 1,
-        "Deal 9 damage. Add 1 Duplicate Copy to your discard pile.",
-        Seq(Damage(9), AddCard(BureaucratStarter.DuplicateCopy.Id, CardZone.DiscardPile)),
+        "Deal 10 damage. Add 1 Duplicate Copy to your discard pile.",
+        Seq(Damage(10), AddCard(BureaucratStarter.DuplicateCopy.Id, CardZone.DiscardPile)),
         Rarity: "common");
 
     // "If any enemy has Paperwork" reads across the whole enemy side, not just the card's target — the one
     // place a Common looks past what it is aimed at.
     private static readonly BnbCard OccultPrecedent = new(
         "occult_precedent", "Occult Precedent", WorkingTag, 1,
-        "Gain 7 Block. If any enemy has Paperwork, gain 2 additional Block.",
-        Block(BlockPlusIfAnyEnemyHas(7, Keywords.Paperwork, 2)),
+        "Gain 8 Block. If any enemy has Paperwork, gain 2 additional Block.",
+        Block(BlockPlusIfAnyEnemyHas(8, Keywords.Paperwork, 2)),
         Rarity: "common", Tags: [ArgumentTag]);
 
     private static readonly BnbCard FinePrintHex = new(
@@ -63,8 +63,8 @@ public static class BureaucratActI
 
     private static readonly BnbCard InkblotVerdict = new(
         "inkblot_verdict", "Inkblot Verdict", DeedTag, 1,
-        "Deal 8 damage. If the target has Paperwork, deal 2 additional damage.",
-        Seq(Damage(8), If(HasStacks(Keywords.Paperwork), Damage(2))),
+        "Deal 8 damage, plus damage equal to the target's Paperwork, maximum 8.",
+        Damage(Plus(CombatAmountSpec.FromConst(8), AtMost(Stacks(Keywords.Paperwork), 8))),
         Rarity: "common");
 
     private static readonly BnbCard Deskward = new(
@@ -75,14 +75,14 @@ public static class BureaucratActI
 
     private static readonly BnbCard SealOfConcern = new(
         "seal_of_concern", "Seal of Concern", WorkingTag, 1,
-        "Apply 1 Seal and 1 Doubt.",
-        Seq(ApplySeal(1), Apply(Keywords.Doubt, 1)),
+        "Apply 2 Seal and 1 Doubt.",
+        Seq(ApplySeal(2), Apply(Keywords.Doubt, 1)),
         Rarity: "common", Tags: [FormTag]);
 
     private static readonly BnbCard PettyObjection = new(
         "petty_objection", "Petty Objection", WorkingTag, 1,
-        "Gain 5 Block. Apply 1 Doubt.",
-        Seq(Block(5), Apply(Keywords.Doubt, 1)),
+        "Gain 5 Block. If the target intends to Attack, apply 2 Doubt.",
+        Seq(Block(5), If(Intends(IntentKind.Attack), Apply(Keywords.Doubt, 2))),
         Rarity: "common", Tags: [ArgumentTag]);
 
     private static readonly BnbCard CursedAddendum = new(
@@ -109,8 +109,8 @@ public static class BureaucratActI
     // "Archive a card from your hand. Gain 4 Block. If it was Junk, gain 4 additional Block."
     private static readonly BnbCard CertifiedKindling = new(
         "certified_kindling", "Certified Kindling", WorkingTag, 1,
-        "Archive a card from your hand. Gain 4 Block. If it was Junk, gain 4 additional Block.",
-        Seq(Block(4), ArchiveJunkFirst()),
+        "Archive a card from your hand. Gain 6 Block. If it was Junk, gain 5 additional Block.",
+        Seq(Block(6), ArchiveJunkFirst(junkBonus: 5)),
         Rarity: "common");
 
     // ── Uncommon ──────────────────────────────────────────────────────────────────────────────────────────
@@ -170,8 +170,8 @@ public static class BureaucratActI
     // there is Junk to take: Archiving Junk and striking twice is never the worse choice. See ADAPTATIONS.
     private static readonly BnbCard CinderWarrant = new(
         "cinder_warrant", "Cinder Warrant", DeedTag, 1,
-        "Deal 7 damage. Archive a Junk card from your hand; if you do, repeat this attack.",
-        CinderStrike(7),
+        "Deal 8 damage. Archive a Junk card from your hand; if you do, repeat this attack.",
+        CinderStrike(8),
         Rarity: "uncommon");
 
     private static readonly BnbCard PresumptionOfError = new(
@@ -197,8 +197,8 @@ public static class BureaucratActI
 
     private static readonly BnbCard WastepaperBastion = new(
         "wastepaper_bastion", "Wastepaper Bastion", WorkingTag, 1,
-        "Gain 4 Block, plus 2 Block for each Junk card in your hand.",
-        Block(Plus(CombatAmountSpec.FromConst(4), Times(CardsTagged(JunkTag), 2))),
+        "Gain 5 Block, plus 3 Block for each Junk card in your hand.",
+        Block(Plus(CombatAmountSpec.FromConst(5), Times(CardsTagged(JunkTag), 3))),
         Rarity: "uncommon");
 
     private static readonly BnbCard FormalDissent = new(
@@ -209,8 +209,8 @@ public static class BureaucratActI
 
     private static readonly BnbCard HexCircular = new(
         "hex_circular", "Hex Circular", DeedTag, 2,
-        "Deal 7 damage to ALL enemies. Apply 1 Doubt to ALL enemies.",
-        Seq(Damage(7, AllEnemies), Apply(Keywords.Doubt, 1, AllEnemies)),
+        "Deal 9 damage to ALL enemies. Apply 1 Doubt to ALL enemies.",
+        Seq(Damage(9, AllEnemies), Apply(Keywords.Doubt, 1, AllEnemies)),
         Rarity: "uncommon");
 
     private static readonly BnbCard NotarysTithe = new(
@@ -245,7 +245,7 @@ public static class BureaucratActI
 
     private static readonly BnbCard Continuance = Rite(
         "continuance", "Continuance", BureaucratRites.Continuance, 2,
-        "At the end of your turn, retain up to 8 Block.",
+        "At the end of your turn, retain up to 12 Block.",
         rarity: "rare");
 
     // The allowance is in force from the moment the Rite is played, so the card hands out the first one
@@ -271,9 +271,9 @@ public static class BureaucratActI
 
     private static readonly BnbCard SummaryJudgment = new(
         "summary_judgment", "Summary Judgment", DeedTag, 2,
-        "Deal 16 damage. If the target has at least 6 Paperwork, trigger its Paperwork immediately, then " +
+        "Deal 20 damage. If the target has at least 6 Paperwork, trigger its Paperwork immediately, then " +
         "remove 3 Paperwork.",
-        Seq(Damage(16),
+        Seq(Damage(20),
             If(HasStacks(Keywords.Paperwork, 6), Seq(TriggerPaperwork(), Remove(Keywords.Paperwork, 3)))),
         Rarity: "rare");
 
@@ -281,8 +281,8 @@ public static class BureaucratActI
     // the whole card, however many of these hits land — that is what once-per-action means.
     private static readonly BnbCard CandleTribunal = new(
         "candle_tribunal", "Candle Tribunal", DeedTag, 2,
-        "Deal 5 damage 3 times. If the target is Ratified, repeat this attack.",
-        TribunalStrike(5),
+        "Deal 6 damage 3 times. If the target is Ratified, repeat this attack.",
+        TribunalStrike(6),
         Rarity: "rare");
 
     private static readonly BnbCard Rebuttal = new(
@@ -326,63 +326,67 @@ public static class BureaucratActI
 
     public static IEnumerable<BnbCard> All() =>
     [
-        WaxingAuthority, WaxingAuthority.Upgraded("Deal 6 damage. Apply 2 Seal.",
-            Seq(Damage(6), ApplySeal(2))),
+        WaxingAuthority, WaxingAuthority.Upgraded("Deal 5 damage twice. Each hit applies 1 Seal.",
+            Repeat(2, Seq(Damage(5), ApplySeal(1)))),
 
         FormOfIllIntent, FormOfIllIntent.Upgraded(
-            "Apply 4 Paperwork. If the target intends to Attack, also apply 1 Doubt.",
-            Seq(Apply(Keywords.Paperwork, 4), If(Intends(IntentKind.Attack), Apply(Keywords.Doubt, 1)))),
+            "Apply 9 Paperwork. If the target intends to Attack, also apply 3 Doubt.",
+            Seq(Apply(Keywords.Paperwork, 9), If(Intends(IntentKind.Attack), Apply(Keywords.Doubt, 3)))),
 
         SecureMisfiling, SecureMisfiling.Upgraded(
             "Add 1 Misfiled Paper to your discard pile. Draw 2 cards.",
             Seq(AddCard(BureaucratStarter.MisfiledPaper.Id, CardZone.DiscardPile), Draw(2))),
 
-        CauldronCopy, CauldronCopy.Upgraded("Deal 12 damage. Add 1 Duplicate Copy to your discard pile.",
-            Seq(Damage(12), AddCard(BureaucratStarter.DuplicateCopy.Id, CardZone.DiscardPile))),
+        CauldronCopy, CauldronCopy.Upgraded("Deal 15 damage. Add 1 Duplicate Copy to your discard pile.",
+            Seq(Damage(15), AddCard(BureaucratStarter.DuplicateCopy.Id, CardZone.DiscardPile))),
 
         OccultPrecedent, OccultPrecedent.Upgraded(
-            "Gain 9 Block. If any enemy has Paperwork, gain 2 additional Block.",
-            Block(BlockPlusIfAnyEnemyHas(9, Keywords.Paperwork, 2))),
+            "Gain 12 Block and 1 Ward Wax. If any enemy has Paperwork, gain 4 additional Block.",
+            Seq(Block(BlockPlusIfAnyEnemyHas(12, Keywords.Paperwork, 4)), Apply(Keywords.WardWax, 1, You))),
 
-        FinePrintHex, FinePrintHex.Upgraded("Deal 9 damage. If the target has Doubt, apply 1 Seal.",
-            Seq(Damage(9), If(HasStacks(Keywords.Doubt), ApplySeal(1)))),
+        FinePrintHex, FinePrintHex.Upgraded("Deal 7 damage twice. Each hit applies 1 Seal if the target has Doubt.",
+            Repeat(2, Seq(Damage(7), If(HasStacks(Keywords.Doubt), ApplySeal(1))))),
 
-        NotarialPress, NotarialPress.Upgraded("Apply 2 Seal. If this Ratifies the target, gain 7 Block.",
-            SealAndRatifyWithBonus(2, Block(7))),
+        NotarialPress, NotarialPress.Upgraded("Apply 3 Seal. If this Ratifies the target, gain 7 Block.",
+            SealAndRatifyWithBonus(3, Block(7))),
 
         InkblotVerdict, InkblotVerdict.Upgraded(
-            "Deal 10 damage. If the target has Paperwork, deal 2 additional damage.",
-            Seq(Damage(10), If(HasStacks(Keywords.Paperwork), Damage(2)))),
+            "Deal 8 damage, plus damage equal to the target's Paperwork, maximum 10. Then its Paperwork " +
+            "triggers once.",
+            Seq(Damage(Plus(CombatAmountSpec.FromConst(8), AtMost(Stacks(Keywords.Paperwork), 10))),
+                TriggerPaperwork())),
 
         // The Red Tape is still filed — it still counts as Junk made — but straight into the exhaust pile, where
         // it can no longer clog a hand.
-        Deskward, Deskward.Upgraded("Gain 10 Block. Add 1 Red Tape to your Exhaust pile.",
-            Seq(Block(10), AddCard(BureaucratStarter.RedTape.Id, CardZone.ExhaustPile))),
+        Deskward, Deskward.Upgraded("Gain 12 Block. Add 1 Red Tape to your Exhaust pile.",
+            Seq(Block(12), AddCard(BureaucratStarter.RedTape.Id, CardZone.ExhaustPile))),
 
-        SealOfConcern, SealOfConcern.Upgraded("Apply 2 Seal and 1 Doubt.",
-            Seq(ApplySeal(2), Apply(Keywords.Doubt, 1))),
+        SealOfConcern, SealOfConcern.Upgraded("Apply 2 Seal and 2 Doubt to ALL enemies.",
+            CombatNodeModel.ForEach(AllEnemies,
+                Seq(ApplySeal(2, "iterationTarget"), Apply(Keywords.Doubt, 2, "iterationTarget")))),
 
-        PettyObjection, PettyObjection.Upgraded("Gain 6 Block. Apply 2 Doubt.",
-            Seq(Block(6), Apply(Keywords.Doubt, 2))),
+        PettyObjection, PettyObjection.Upgraded("Gain 7 Block. If the target intends to Attack, apply 3 Doubt and gain 3 more Block.",
+            Seq(Block(7), If(Intends(IntentKind.Attack), Seq(Apply(Keywords.Doubt, 3), Block(3))))),
 
         // An upgrade improves what the card is ABOUT, not only its damage (playtest 2026-09-26): a card that
         // deals damage AND applies a keyword grows in the keyword.
-        CursedAddendum, CursedAddendum.Upgraded("Deal 7 damage. Apply 3 Paperwork.",
-            Seq(Damage(7), Apply(Keywords.Paperwork, 3))),
+        CursedAddendum, CursedAddendum.Upgraded("Deal 8 damage. Apply 3 Paperwork. If the target is Ratified, apply 2 more.",
+            Seq(Damage(8), Apply(Keywords.Paperwork, 3), If(HasStacks(Keywords.Ratified), Apply(Keywords.Paperwork, 2)))),
 
-        ProtectiveAdjournment, ProtectiveAdjournment.Upgraded("Queue: Gain 14 Block.", Block(14)),
+        ProtectiveAdjournment, ProtectiveAdjournment.Upgraded("Queue: Gain 15 Block and 2 Ward Wax.",
+            Seq(Block(15), Apply(Keywords.WardWax, 2, You))),
 
-        DeferredHex, DeferredHex.Upgraded("Queue: Deal 16 damage.", Damage(16)),
+        DeferredHex, DeferredHex.Upgraded("Queue: Deal 14 damage to ALL enemies.", Damage(14, AllEnemies)),
 
         CertifiedKindling, CertifiedKindling.Upgraded(
-            "Archive a card from your hand. Gain 5 Block. If it was Junk, gain 6 additional Block.",
-            Seq(Block(5), ArchiveJunkFirst(junkBonus: 6))),
+            "Archive a card from your hand. Gain 9 Block. If it was Junk, deal 6 damage to ALL enemies.",
+            Seq(Block(9), ArchiveJunkFirst(junkBonus: 0, onJunk: Damage(6, AllEnemies)))),
 
         // ── Uncommon ──────────────────────────────────────────────────────────────────────────────────────
         // A Rite's upgrade is a DIFFERENT status ("<id>+"), because the rule itself changes, not a number in
         // the card's own program.
         BlackLedger, BlackLedger.UpgradedRite(BureaucratRites.BlackLedger,
-            "At the start of your turn, if any enemy has at least 6 Paperwork, draw 1 card."),
+            "At the start of your turn, if any enemy has at least 5 Paperwork, draw 1 card."),
         AshRegister, AshRegister.UpgradedRite(BureaucratRites.AshRegister,
             "The first time each turn you Archive a card, draw 1 card.", cost: 0),
         SealDividend, SealDividend.UpgradedRite(BureaucratRites.SealDividend,
@@ -390,55 +394,56 @@ public static class BureaucratActI
         DubiousAuthority, DubiousAuthority.UpgradedRite(BureaucratRites.DubiousAuthority,
             "Whenever Doubt is consumed after an enemy attacks, apply 3 Paperwork to that enemy."),
         ClerksFamiliar, ClerksFamiliar.UpgradedRite(BureaucratRites.ClerksFamiliar,
-            "The first time each turn you create a Junk card, gain 5 Block."),
+            "The first time each turn you create a Junk card, gain 6 Block."),
         PendingMatters, PendingMatters.UpgradedRite(BureaucratRites.PendingMatters,
-            "The first time each turn a Queued card resolves, gain 4 Block."),
+            "The first time each turn a Queued card resolves, gain 5 Block."),
 
         NightDocket, NightDocket.Upgraded("Resolve your oldest Queued card immediately. Exhaust.",
             ResolveQueued(1)),
 
-        CounterWard, CounterWard.Upgraded("Gain 8 Block. Your next card this turn costs 1 less Energy.",
-            Seq(Block(8), Apply(BureaucratRites.CounterWard, 1, You))),
+        CounterWard, CounterWard.Upgraded("Gain 9 Block. Your next card this turn costs 1 less Energy. Retain.",
+            Seq(Block(9), Apply(BureaucratRites.CounterWard, 1, You)), retainInHand: true),
 
-        ThreefoldInjunction, ThreefoldInjunction.Upgraded("Deal 4 damage 3 times.", Repeat(3, Damage(4))),
+        ThreefoldInjunction, ThreefoldInjunction.Upgraded(
+            "Deal 4 damage 4 times. If the target is Ratified, each hit also applies 1 Paperwork.",
+            Repeat(4, Seq(Damage(4), If(HasStacks(Keywords.Ratified), Apply(Keywords.Paperwork, 1))))),
 
-        CandleAllowance, CandleAllowance.Upgraded("Queue: Gain 1 Energy and draw 2 cards. Exhaust.",
-            Seq(Energy_(1), Draw(2))),
+        CandleAllowance, CandleAllowance.Upgraded("Queue: Gain 2 Energy. Exhaust.", Energy_(2)),
 
         CinderWarrant, CinderWarrant.Upgraded(
-            "Deal 8 damage. Archive a Junk card from your hand; if you do, repeat this attack.",
-            CinderStrike(8)),
+            "Deal 8 damage. Archive up to 2 Junk cards from your hand; repeat this attack once for each.",
+            CinderStrike(8, junk: 2)),
 
         PresumptionOfError, PresumptionOfError.Upgraded(
             "Apply 1 Doubt. The next time that enemy consumes Doubt by attacking, apply 1 Doubt to it after " +
             "the Attack resolves. Exhaust.", cost: 0),
 
-        TallowBudget, TallowBudget.Upgraded("Gain 1 Energy. Add 1 Red Tape to your discard pile. Exhaust.",
-            Seq(Energy_(1), AddJunk(BureaucratStarter.RedTape.Id, CardZone.DiscardPile))),
+        TallowBudget, TallowBudget.Upgraded("Gain 2 Energy. Add 1 Red Tape to your hand. Exhaust.",
+            Seq(Energy_(2), AddJunk(BureaucratStarter.RedTape.Id, CardZone.Hand))),
 
         ConditionalApproval, ConditionalApproval.Upgraded(
-            "Deal 8 damage. If the target does not intend to Attack, apply 2 Seal; otherwise apply 1 Seal.",
-            Seq(Damage(8), If(Intends(IntentKind.Attack), ApplySeal(1), ApplySeal(2)))),
+            "Deal 9 damage. If the target does not intend to Attack, apply 3 Seal; otherwise apply 2 Seal.",
+            Seq(Damage(9), If(Intends(IntentKind.Attack), ApplySeal(2), ApplySeal(3)))),
 
         WastepaperBastion, WastepaperBastion.Upgraded(
-            "Gain 5 Block, plus 3 Block for each Junk card in your hand.",
-            Block(Plus(CombatAmountSpec.FromConst(5), Times(CardsTagged(JunkTag), 3)))),
+            "Gain 8 Block, plus 4 Block for each Junk card in your hand.",
+            Block(Plus(CombatAmountSpec.FromConst(8), Times(CardsTagged(JunkTag), 4)))),
 
-        FormalDissent, FormalDissent.Upgraded("Remove 1 Doubt from an enemy. Gain 1 Energy. Draw 1 card. Exhaust.",
-            Seq(Remove(Keywords.Doubt, 1), Energy_(1), Draw(1))),
+        FormalDissent, FormalDissent.Upgraded("Remove 1 Doubt from an enemy. Gain 1 Energy. Retain. Exhaust.",
+            Seq(Remove(Keywords.Doubt, 1), Energy_(1)), retainInHand: true),
 
-        HexCircular, HexCircular.Upgraded("Deal 8 damage to ALL enemies. Apply 2 Doubt to ALL enemies.",
-            Seq(Damage(8, AllEnemies), Apply(Keywords.Doubt, 2, AllEnemies))),
+        HexCircular, HexCircular.Upgraded("Deal 12 damage to ALL enemies. Apply 2 Doubt to ALL enemies.",
+            Seq(Damage(12, AllEnemies), Apply(Keywords.Doubt, 2, AllEnemies))),
 
         NotarysTithe, NotarysTithe.Upgraded("Remove 1 Seal from an enemy. Draw 3 cards. Exhaust.",
             Seq(Remove(Keywords.Seal, 1), Draw(3))),
 
         BacklogCharge, BacklogCharge.Upgraded(
-            "Deal 7 damage, plus 4 damage for each card currently in your Queue. Count at most 3 Queued cards.",
-            Damage(Plus(CombatAmountSpec.FromConst(7), Times(AtMost(CardsInZone(CardZone.QueuePile), 3), 4)))),
+            "Deal 9 damage, plus 5 damage for each card currently in your Queue. Count at most 3 Queued cards.",
+            Damage(Plus(CombatAmountSpec.FromConst(9), Times(AtMost(CardsInZone(CardZone.QueuePile), 3), 5)))),
 
         ClericalDiscretion, ClericalDiscretion.Upgraded(
-            "Gain 7 Block. Choose one: apply 1 Doubt; or apply 1 Seal.", Seq(Block(7), DoubtOrSeal())),
+            "Gain 7 Block. Apply 1 Doubt and 1 Seal.", Seq(Block(7), Apply(Keywords.Doubt, 1), ApplySeal(1))),
 
         // ── Rare ──────────────────────────────────────────────────────────────────────────────────────────
         RedInkDoctrine, RedInkDoctrine.Upgraded(
@@ -446,8 +451,8 @@ public static class BureaucratActI
             cost: 1),
         LicensedDisposal, LicensedDisposal.UpgradedRite(BureaucratRites.LicensedDisposal,
             "The first Junk card you draw each turn is automatically Archived; then draw 1 card.", cost: 1),
-        Continuance, Continuance.UpgradedRite(BureaucratRites.Continuance,
-            "At the end of your turn, retain up to 12 Block."),
+        // The rule is the base card's now (12); the upgrade is the price.
+        Continuance, Continuance.Upgraded("At the end of your turn, retain up to 12 Block.", cost: 1),
         ViolenceAllowance, ViolenceAllowance.Upgraded(
             "The first Deed you play each turn costs 1 less Energy.",
             Seq(InstallRite(BureaucratRites.ViolenceAllowance + "+"), Apply(BureaucratRites.AllowanceReady, 1, You)),
@@ -458,25 +463,24 @@ public static class BureaucratActI
             "Queue a card from your hand for free. Add 1 Red Tape to your discard pile.", cost: 1),
 
         SummaryJudgment, SummaryJudgment.Upgraded(
-            "Deal 19 damage. If the target has at least 6 Paperwork, trigger its Paperwork immediately, then " +
-            "remove 3 Paperwork.",
-            Seq(Damage(19),
-                If(HasStacks(Keywords.Paperwork, 6), Seq(TriggerPaperwork(), Remove(Keywords.Paperwork, 3))))),
+            "Deal 20 damage. If the target has at least 6 Paperwork, trigger its Paperwork immediately, then " +
+            "remove 3 Paperwork.", cost: 1),
 
         CandleTribunal, CandleTribunal.Upgraded(
-            "Deal 6 damage 3 times. If the target is Ratified, repeat this attack.", TribunalStrike(6)),
+            "Deal 9 damage 3 times. If the target is Ratified, repeat this attack.", TribunalStrike(9)),
 
         Rebuttal, Rebuttal.Upgraded(
-            "Deal 10 damage. Gain 5 Block per Doubt already on the target, maximum 15 Block. Then apply 1 Doubt.",
-            Seq(Block(AtMost(Times(Stacks(Keywords.Doubt), 5), 15)), Damage(10), Apply(Keywords.Doubt, 1))),
+            "Deal 14 damage. Gain 5 Block per Doubt already on the target, maximum 15 Block. Then apply 1 Doubt " +
+            "to ALL enemies.",
+            Seq(Block(AtMost(Times(Stacks(Keywords.Doubt), 5), 15)), Damage(14), Apply(Keywords.Doubt, 1, AllEnemies))),
 
         PrivySeal, PrivySeal.Upgraded(
             "Requires at least 1 Seal. Remove all Seals from an enemy and Ratify it immediately. Draw 1 card.",
             tags: []),
 
         BlankWarrant, BlankWarrant.Upgraded(
-            "Deal 22 damage. If the target has no Paperwork, Doubt, or Seal, deal 5 additional damage.",
-            Seq(Damage(22), If(Unmarked(), Damage(5)))),
+            "Deal 27 damage. If the target has no Paperwork, Doubt, or Seal, deal 7 additional damage.",
+            Seq(Damage(27), If(Unmarked(), Damage(7)))),
 
         StayOfExecution, StayOfExecution.Upgraded(
             "Choose an enemy with Paperwork. Its Paperwork does not trigger at the end of its next turn. " +
@@ -515,15 +519,20 @@ public static class BureaucratActI
     // status losing stacks is something the general pool's Blood Ink answers.
     private static CounterId CinderFed => new("cinder_warrant_fed");
 
-    private static CombatNodeModel CinderStrike(int damage) =>
+    private static CombatNodeModel CinderStrike(int damage, int junk = 1) =>
         Seq(
             Damage(damage),
             SetCounter(CinderFed, 0),
             CombatNodeModel.ForEachCard(You, CardZone.Hand,
-                Seq(Archive(new CombatCardSpec("iterated")), SetCounter(CinderFed, 1)),
-                tag: JunkTag, takeFirst: 1),
+                Seq(Archive(new CombatCardSpec("iterated")),
+                    new CombatNodeModel("setCombatantCounter", You, CombatAmountSpec.FromConst(1),
+                        CounterId: CinderFed.value, Relative: true)),
+                tag: JunkTag, takeFirst: junk),
             If(new CombatConditionSpec("compare", You, ValueKind: "counter",
-                    Op: ComparisonOperator.Equal, Right: 1, Id: CinderFed.value),
+                    Op: ComparisonOperator.GreaterOrEqual, Right: 1, Id: CinderFed.value),
+                Damage(damage)),
+            If(new CombatConditionSpec("compare", You, ValueKind: "counter",
+                    Op: ComparisonOperator.GreaterOrEqual, Right: 2, Id: CinderFed.value),
                 Damage(damage)));
 
     // "Deal N damage 3 times. If the target is Ratified, repeat this attack." The question is asked once,
@@ -570,13 +579,14 @@ public static class BureaucratActI
     // ADAPTATIONS; it is the choice a player after the bonus would make anyway.
     private static CounterId TookJunk => new("certified_kindling_took_junk");
 
-    private static CombatNodeModel ArchiveJunkFirst(int junkBonus = 4) =>
+    private static CombatNodeModel ArchiveJunkFirst(int junkBonus = 4, CombatNodeModel? onJunk = null) =>
         Seq(
             SetCounter(TookJunk, 0),
             CombatNodeModel.ForEachCard(You, CardZone.Hand,
                 Seq(
                     Archive(new CombatCardSpec("iterated")),
-                    Block(junkBonus),
+                    junkBonus > 0 ? Block(junkBonus) : Seq(),
+                    onJunk ?? Seq(),
                     SetCounter(TookJunk, 1)),
                 tag: JunkTag, takeFirst: 1),
             If(new CombatConditionSpec("compare", You, ValueKind: "counter",

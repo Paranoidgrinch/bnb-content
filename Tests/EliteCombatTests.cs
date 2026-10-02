@@ -264,8 +264,8 @@ public class EliteCombatTests
         var phantomId = combat.State.Combatants.First(c => c.Id.value.StartsWith("remanded_case_phantom")).Id;
         var writId = combat.State.Combatants.First(c => c.Id.value.StartsWith("escalation_writ")).Id;
 
-        // 30 HP of Phantom, four 9-damage Deeds.
-        for (var i = 0; i < 4; i++)
+        // 30 HP of Phantom, three 10-damage Deeds (Cauldron Copy deals 10 since playtest feedback 2).
+        for (var i = 0; i < 3; i++)
             Disposal(play, session, phantomId);
 
         var phantom = Enemy(play, phantomId);

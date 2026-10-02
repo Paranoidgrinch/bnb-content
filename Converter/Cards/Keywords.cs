@@ -103,6 +103,7 @@ public static class Keywords
         Tally(UsurersMoon, "Usurer's Moon", "Lien that takes Block also files Citation."),
         Tally(UsurersMoonPlus, "Usurer's Moon+", "Lien that takes Block also files Citation."),
         CensureStatus(),
+        PromisedBlockStatus(),
         LienStatus(),
         CitationStatus(),
         BloodInkStatus(),
@@ -319,13 +320,16 @@ public static class Keywords
     //
     // The window closes when the PLAYER's turn ends, which no bearer-scoped trigger on an enemy could see.
     // The trigger is therefore scoped to the whole fight and gated on the ending combatant being the applicant.
+    // +5, not +3 (user, playtest feedback 2, F/R2: Seal measured 7 per Energy against Paperwork's 10).
+    public const int RatifyBonus = 5;
+
     private static StatusData RatifiedStatus() => Status(
         Ratified, "Ratified", StatusPolarity.Debuff,
-        "Until the end of your turn, each Deed aimed at this character deals 3 more damage.",
+        $"Until the end of your turn, each Deed aimed at this character deals {RatifyBonus} more damage.",
         passives:
         [
             new PassiveModifierData(PassiveModifierPipeline.DamageReceived,
-                PassiveModifierOperation.AddFlat, 3, RestrictDamageKind: DamageKind.Direct,
+                PassiveModifierOperation.AddFlat, RatifyBonus, RestrictDamageKind: DamageKind.Direct,
                 RestrictSourceCardTag: CardAuthoring.DeedTag, OncePerAction: true),
         ],
         triggers:
@@ -359,10 +363,36 @@ public static class Keywords
     //
     // Neutral polarity on purpose: Censure must not read as a positive Status, or an enemy's Censure would be
     // counted by the cards that pay attention to buffs (Blacklisted) and eaten by a second Censure.
+    //
+    // …and every refusal on the PLAYER pays 2 Block (user, playtest feedback 2, F/R2: Censure measured 6 per
+    // Energy against Paperwork's 10). Only the player: an enemy's Censure refusing a buff pays it nothing.
+    public const int CensureBlock = 2;
+
     private static StatusData CensureStatus() => Status(
         Censure, "Censure", StatusPolarity.Neutral,
-        "Prevents statuses this character would not want, one stack per prevented stack.",
+        $"Prevents statuses this character would not want, one stack per prevented stack. Each time your Censure " +
+        $"prevents a status, gain {CensureBlock} Block at the start of your next turn.",
         prevention: new StatusPreventionData(StatusPreventionScope.UnwantedByBearer));
+
+    // "Next turn, gain N Block" — the Promised Block an upgrade can leave behind (facet E). Paid AFTER the draw,
+    // as Ward Wax is, because Block granted at the turn start is swept away before it can be used; then it goes.
+    public const string PromisedBlock = "promised_block";
+
+    private static StatusData PromisedBlockStatus() => Status(
+        PromisedBlock, "Promised Block", StatusPolarity.Buff,
+        "At the start of your next turn, gain this much Block.",
+        triggers:
+        [
+            Trigger(new EffectProgram<CardsDrawnTriggeredEffectContext>(
+                new CausalSequenceEffectNode<CardsDrawnTriggeredEffectContext>(
+                [
+                    new GainBlockNode<CardsDrawnTriggeredEffectContext>(
+                        CombatantTargetSelectors.Source, Stacks<CardsDrawnTriggeredEffectContext>(PromisedBlock)),
+                    new RemoveStatusNode<CardsDrawnTriggeredEffectContext>(
+                        CombatantTargetSelectors.Source, new StatusDefinitionId(PromisedBlock)),
+                ])),
+                nameof(TriggerEvent.CardsDrawn)),
+        ]);
 
     // "Lien X: at the end of the holder's turn, remove up to X remaining Block. The holder loses the same
     // amount of HP. Reduce Lien by the amount resolved. If the holder has no remaining Block, Lien does not
@@ -668,6 +698,23 @@ public static class Keywords
                         WaxIndemnity<DamageReceivedTriggeredEffectContext>(),
                     ]))),
                 nameof(TriggerEvent.DamageTaken)),
+
+            // Censure's pay (playtest feedback 2, F): each refusal by the player's Censure promises 2 Block for
+            // the next turn. Kept HERE, on the one status only the player wears, rather than on Censure: a
+            // Censure on an enemy would hear the same refusal and pay it twice.
+            new StatusTriggerData(
+                nameof(TriggerEvent.StatusApplicationPrevented),
+                Serialize(new EffectProgram<StatusApplicationBlockedTriggeredEffectContext>(
+                    new ConditionalEffectNode<StatusApplicationBlockedTriggeredEffectContext>(
+                        new AndExpression<StatusApplicationBlockedTriggeredEffectContext>(
+                            // In a refusal, "source" is the one who refused — the wearer of the Censure.
+                            Wears<StatusApplicationBlockedTriggeredEffectContext>(CombatantTargetSelectors.Source, ApplicantMarker),
+                            new TriggerEventPreventerIsExpression<StatusApplicationBlockedTriggeredEffectContext>(
+                                new StatusDefinitionId(Censure))),
+                        new ApplyStatusNode<StatusApplicationBlockedTriggeredEffectContext>(
+                            CombatantTargetSelectors.Source, new StatusDefinitionId(PromisedBlock),
+                            new ConstantExpression<StatusApplicationBlockedTriggeredEffectContext>(CensureBlock))))),
+                StatusTriggerScope.Anywhere),
 
             // Guest Right's once-per-turn licence.
             Trigger(new EffectProgram<TurnStartedTriggeredEffectContext>(

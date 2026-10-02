@@ -127,11 +127,11 @@ public class RelicCombatTests
     {
         var (play, session, enemyId) = WithRelic("archive_key", Enumerable.Repeat("smudged_index", 12).ToArray());
 
-        ArchiveOne(play, session, enemyId);          // 4 Block from the card + 5 from the relic
-        Assert.Equal(9, Block(Hero(play)));
+        ArchiveOne(play, session, enemyId);          // 6 Block from the card + 5 from the relic
+        Assert.Equal(11, Block(Hero(play)));
 
-        ArchiveOne(play, session, enemyId);          // the same turn: the card's 4 Block alone
-        Assert.Equal(13, Block(Hero(play)));
+        ArchiveOne(play, session, enemyId);          // the same turn: the card's 6 Block alone
+        Assert.Equal(17, Block(Hero(play)));
         play.Dispose();
     }
 

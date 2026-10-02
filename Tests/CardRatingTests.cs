@@ -22,8 +22,8 @@ public class CardRatingTests
     [Fact]
     public void The_seal_conversion_is_the_keyword_not_the_card()
     {
-        var wax = Rows["waxing_authority"];   // Deal 5 damage. Apply 1 Seal.
-        Assert.Equal(5, wax.Read.Damage);
+        var wax = Rows["waxing_authority"];   // Deal 6 damage. Apply 1 Seal.
+        Assert.Equal(6, wax.Read.Damage);
         Assert.Equal(1, wax.Read.Statuses["seal"]);
         Assert.DoesNotContain("ratified", wax.Read.Statuses.Keys);
         Assert.DoesNotContain("if", wax.Read.Flags);

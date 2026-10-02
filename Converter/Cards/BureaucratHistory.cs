@@ -31,10 +31,10 @@ public static class BureaucratHistory
         Marker(AttackedThisRound, "Struck This Round"),
         Marker(AttackedLastRound, "Struck Last Round"),
 
-        Hospitality(HedgeHospitality, "Hedge Hospitality", 4),
-        Hospitality(HedgeHospitality + "+", "Hedge Hospitality+", 5),
-        Knot(WitnessKnot, "Witness Knot", 2),
-        Knot(WitnessKnot + "+", "Witness Knot+", 3),
+        Hospitality(HedgeHospitality, "Hedge Hospitality", 7, once: true),
+        Hospitality(HedgeHospitality + "+", "Hedge Hospitality+", 7, once: false),
+        Knot(WitnessKnot, "Witness Knot", 3, includeSelf: false),
+        Knot(WitnessKnot + "+", "Witness Knot+", 3, includeSelf: true),
         Oath(GuestbookOath, "Guestbook Oath"),
         Oath(GuestbookOath + "+", "Guestbook Oath+"),
 
@@ -50,8 +50,9 @@ public static class BureaucratHistory
     // ── Hedge Hospitality ─────────────────────────────────────────────────────────────────────────────────
     // "Until your next turn, the first enemy that deals unblocked damage to you gains N Paperwork." A mark on
     // the PLAYER, answered by whoever got through, and spent by the answering.
-    private static StatusData Hospitality(string id, string name, int paperwork) => Marked(id, name,
-        $"The next enemy to get through you takes {paperwork} Paperwork.",
+    private static StatusData Hospitality(string id, string name, int paperwork, bool once) => Marked(id, name,
+        once ? $"The next enemy to get through you takes {paperwork} Paperwork."
+            : $"Every enemy that gets through you takes {paperwork} Paperwork.",
         [
             Trigger(new EffectProgram<DamageReceivedTriggeredEffectContext>(
                 new ConditionalEffectNode<DamageReceivedTriggeredEffectContext>(
@@ -65,8 +66,10 @@ public static class BureaucratHistory
                         new ApplyStatusNode<DamageReceivedTriggeredEffectContext>(
                             CombatantTargetSelectors.Source, new StatusDefinitionId(Keywords.Paperwork),
                             new ConstantExpression<DamageReceivedTriggeredEffectContext>(paperwork)),
-                        new RemoveStatusNode<DamageReceivedTriggeredEffectContext>(
-                            CombatantTargetSelectors.EventTarget, new StatusDefinitionId(id)),
+                        once
+                            ? new RemoveStatusNode<DamageReceivedTriggeredEffectContext>(
+                                CombatantTargetSelectors.EventTarget, new StatusDefinitionId(id))
+                            : new SequenceEffectNode<DamageReceivedTriggeredEffectContext>([]),
                     ]))), nameof(TriggerEvent.DamageTaken)),
             ExpireAtTurnStart(id),
         ]);
@@ -75,8 +78,9 @@ public static class BureaucratHistory
     // "If it attacks before your next turn, apply N Paperwork to all OTHER enemies." A mark on the enemy,
     // answered by its own action. "All other" is its whole side minus itself, which is a spread and a
     // subtraction rather than a selector.
-    private static StatusData Knot(string id, string name, int paperwork) => Marked(id, name,
-        $"If this character attacks, every other enemy takes {paperwork} Paperwork.",
+    private static StatusData Knot(string id, string name, int paperwork, bool includeSelf) => Marked(id, name,
+        includeSelf ? $"If this character attacks, every enemy takes {paperwork} Paperwork."
+            : $"If this character attacks, every other enemy takes {paperwork} Paperwork.",
         [
             Trigger(new EffectProgram<ActionResolvedTriggeredEffectContext>(
                 new ConditionalEffectNode<ActionResolvedTriggeredEffectContext>(
@@ -88,7 +92,7 @@ public static class BureaucratHistory
                             new ConstantExpression<ActionResolvedTriggeredEffectContext>(paperwork)),
                         new ModifyStatusStacksNode<ActionResolvedTriggeredEffectContext>(
                             CombatantTargetSelectors.Source, new StatusDefinitionId(Keywords.Paperwork),
-                            new ConstantExpression<ActionResolvedTriggeredEffectContext>(-paperwork)),
+                            new ConstantExpression<ActionResolvedTriggeredEffectContext>(includeSelf ? 0 : -paperwork)),
                         new RemoveStatusNode<ActionResolvedTriggeredEffectContext>(
                             CombatantTargetSelectors.Source, new StatusDefinitionId(id)),
                     ]))), nameof(TriggerEvent.ActionResolved)),

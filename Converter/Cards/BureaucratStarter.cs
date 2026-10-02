@@ -86,10 +86,12 @@ public static class BureaucratStarter
     // Starters have upgrades (a campfire can amend one); Junk never does.
     public static IEnumerable<BnbCard> All() =>
     [
-        PaperCut, PaperCut.Upgraded("Deal 8 damage.", Damage(8)),
-        CowerBehindADesk, CowerBehindADesk.Upgraded("Gain 7 Block.", Block(7)),
-        StrongBinder, StrongBinder.Upgraded("Gain 9 Block. Apply 2 Doubt.",
-            Seq(Block(9), Apply(Keywords.Doubt, 2))),
+        // Upgrades worth half again, each with a turn of its own (user, playtest feedback 2, F).
+        PaperCut, PaperCut.Upgraded("Deal 5 damage twice.", Repeat(2, Damage(5))),
+        CowerBehindADesk, CowerBehindADesk.Upgraded("Gain 6 Block. Next turn, gain 3 Block.",
+            Seq(Block(6), Apply(Keywords.PromisedBlock, 3, You))),
+        StrongBinder, StrongBinder.Upgraded("Gain 10 Block. Apply 1 Doubt to ALL enemies.",
+            Seq(Block(10), Apply(Keywords.Doubt, 1, AllEnemies))),
         PermitA38, PermitA38.Upgraded("Apply 5 Paperwork.", cost: 1),
         .. Junk,
     ];

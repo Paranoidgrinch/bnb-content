@@ -64,7 +64,7 @@ public class AuditTests
     {
         var audit = Audit.AuditCard(Game, "sanguine_errata");
         Assert.Null(audit.Quiet.Error);
-        Assert.Equal(2, audit.Quiet.AfterPlay.EnemyStatuses.GetValueOrDefault(Converter.Cards.Keywords.BloodInk));
+        Assert.Equal(3, audit.Quiet.AfterPlay.EnemyStatuses.GetValueOrDefault(Converter.Cards.Keywords.BloodInk));
     }
 
     // Dubious Authority beside Strong Binder: the attack is blocked entirely and the Doubt is still spent by it —

@@ -55,15 +55,15 @@ public static class BureaucratActII
     // pile instead, which is the part that matters. See ADAPTATIONS.
     private static readonly BnbCard SmudgedIndex = new(
         "smudged_index", "Smudged Index", WorkingTag, 1,
-        "Archive a card from your draw pile. Gain 4 Block.",
-        Seq(Archive(new CombatCardSpec("chosen", CardZone.DrawPile, Purpose: "choose a card to Archive")), Block(4)),
+        "Archive a card from your draw pile. Gain 6 Block.",
+        Seq(Archive(new CombatCardSpec("chosen", CardZone.DrawPile, Purpose: "choose a card to Archive")), Block(6)),
         Rarity: "uncommon", Act: Act);
 
     private static readonly BnbCard ClutterConcordance = new(
         "clutter_concordance", "Clutter Concordance", DeedTag, 1,
-        "Deal 5 damage, plus 2 damage for each different Junk type currently present across your discard and " +
+        "Deal 6 damage, plus 3 damage for each different Junk type currently present across your discard and " +
         "Exhaust piles.",
-        Damage(Plus(CombatAmountSpec.FromConst(5), Times(JunkTypesLyingAround(), 2))),
+        Damage(Plus(CombatAmountSpec.FromConst(6), Times(JunkTypesLyingAround(), 3))),
         Rarity: "uncommon", Act: Act);
 
     private static readonly BnbCard Marginalia = new(
@@ -97,9 +97,9 @@ public static class BureaucratActII
 
     private static readonly BnbCard ArchivePyre = new(
         "archive_pyre", "Archive Pyre", DeedTag, 2,
-        "Archive all Junk cards in your hand. Deal 9 damage to ALL enemies, plus 5 damage for each Junk " +
+        "Archive all Junk cards in your hand. Deal 12 damage to ALL enemies, plus 5 damage for each Junk " +
         "Archived this way.",
-        PyreStrike(9, 5),
+        PyreStrike(12, 5),
         Rarity: "rare", Act: Act);
 
     private static readonly BnbCard FuneralIndex = new(
@@ -123,28 +123,28 @@ public static class BureaucratActII
             Apply(Keywords.Paperwork, 3, AllEnemies)),
 
         ErrataFurnace, ErrataFurnace.Upgraded(
-            "Archive a Junk card from your hand. Apply 5 Paperwork to a random enemy.", BurnJunkFor(5)),
+            "Archive a Junk card from your hand. Apply 5 Paperwork to an enemy of your choice.", BurnJunkFor(5, aimed: true)),
 
         CrossFiling, CrossFiling.Upgraded(
-            "Apply 5 Paperwork to an enemy. If another enemy is present, move 3 of it to them.",
-            CrossFile(5, 3)),
+            "Apply 6 Paperwork to an enemy. If another enemy is present, move 3 of it to them.",
+            CrossFile(6, 3)),
 
         PalimpsestOrder, PalimpsestOrder.Upgraded(
             "Archive a card from your hand. Return a non-Junk card from your discard pile to your hand. Exhaust.",
             cost: 0),
 
         RedactionVeil, RedactionVeil.Upgraded(
-            "Remove up to 5 Paperwork from an enemy. Gain 3 Block for each Paperwork removed.",
-            RedactPaperwork(5, 3)),
+            "Remove up to 5 Paperwork from an enemy. Gain 4 Block for each Paperwork removed.",
+            RedactPaperwork(5, 4)),
 
-        SmudgedIndex, SmudgedIndex.Upgraded("Archive a card from your draw pile. Gain 5 Block. Draw 1 card.",
+        SmudgedIndex, SmudgedIndex.Upgraded("Archive a card from your draw pile. Gain 9 Block and 1 Ward Wax.",
             Seq(Archive(new CombatCardSpec("chosen", CardZone.DrawPile, Purpose: "choose a card to Archive")),
-                Block(5), Draw(1))),
+                Block(9), Apply(Keywords.WardWax, 1, You))),
 
         ClutterConcordance, ClutterConcordance.Upgraded(
-            "Deal 7 damage, plus 2 damage for each different Junk type currently present across your discard " +
+            "Deal 9 damage, plus 3 damage for each different Junk type currently present across your discard " +
             "and Exhaust piles.",
-            Damage(Plus(CombatAmountSpec.FromConst(7), Times(JunkTypesLyingAround(), 2)))),
+            Damage(Plus(CombatAmountSpec.FromConst(9), Times(JunkTypesLyingAround(), 3)))),
 
         // ⚠ The design's "+" removes the copy's extra Energy cost, a surcharge the port never built — so the "+"
         // was the base card word for word. It costs 0 instead: the same saving, paid where it can be.
@@ -153,8 +153,8 @@ public static class BureaucratActII
             "played. Marginalia Exhausts.", cost: 0),
 
         BindingFee, BindingFee.Upgraded(
-            "Archive a non-Junk card from your hand. Apply Paperwork equal to 4 plus its base Energy cost.",
-            BindingFeePaperwork(4)),
+            "Archive a non-Junk card from your hand. Apply Paperwork equal to 5 plus its base Energy cost.",
+            BindingFeePaperwork(5)),
 
         DeadLetterOffice, DeadLetterOffice.Upgraded(
             "For each different Junk type in your Exhaust pile, apply 1 Paperwork to ALL enemies, plus 1 " +
@@ -167,12 +167,12 @@ public static class BureaucratActII
             "copy of it is added to your hand; it costs 0 and Exhausts when played.", cost: 1),
 
         ArchivePyre, ArchivePyre.Upgraded(
-            "Archive all Junk cards in your hand. Deal 10 damage to ALL enemies, plus 7 damage for each Junk " +
-            "Archived this way.", PyreStrike(10, 7)),
+            "Archive all Junk cards in your hand and discard pile. Deal 18 damage to ALL enemies, plus 7 damage " +
+            "for each Junk Archived this way.", PyreStrike(18, 7, discardToo: true)),
 
         FuneralIndex, FuneralIndex.Upgraded(
-            "Deal 6 damage for each card you have Archived this combat. Count at most 8 cards. Exhaust.",
-            Damage(Times(AtMost(ArchivedCount, 8), 6))),
+            "Deal 7 damage for each card you have Archived this combat. Count at most 8 cards.",
+            Damage(Times(AtMost(ArchivedCount, 8), 7)), tags: []),
 
         NullCatalogue, NullCatalogue.Upgraded(
             "Choose up to 2 cards in your discard pile. Archive them. Draw 1 card for each card Archived this " +
@@ -190,12 +190,14 @@ public static class BureaucratActII
 
     // "Archive a Junk card from your hand. Apply N Paperwork to a random enemy." No Junk, no filing: the loop
     // over the hand's Junk IS the condition, and its body is the whole card.
-    private static CombatNodeModel BurnJunkFor(int paperwork) =>
+    private static CombatNodeModel BurnJunkFor(int paperwork, bool aimed = false) =>
         CombatNodeModel.ForEachCard(You, CardZone.Hand,
             Seq(
                 Archive(new CombatCardSpec("iterated")),
-                CombatNodeModel.RandomTargets(AllEnemies, CombatAmountSpec.FromConst(1),
-                    Apply(Keywords.Paperwork, paperwork, "iterationTarget"))),
+                aimed
+                    ? Apply(Keywords.Paperwork, paperwork)
+                    : CombatNodeModel.RandomTargets(AllEnemies, CombatAmountSpec.FromConst(1),
+                        Apply(Keywords.Paperwork, paperwork, "iterationTarget"))),
             tag: JunkTag, takeFirst: 1);
 
     // "Apply N Paperwork to an enemy. If another enemy is present, you may move M of it to them."
@@ -253,11 +255,15 @@ public static class BureaucratActII
     // The tally is taken before the burning, because afterwards there is nothing left to count.
     private static CounterId PyreFuel => new("archive_pyre_fuel");
 
-    private static CombatNodeModel PyreStrike(int damage, int perJunk) =>
+    private static CombatNodeModel PyreStrike(int damage, int perJunk, bool discardToo = false) =>
         Seq(
-            new CombatNodeModel("setCombatantCounter", You, CardsTagged(JunkTag),
+            new CombatNodeModel("setCombatantCounter", You,
+                discardToo ? Plus(CardsTagged(JunkTag), CardsTagged(JunkTag, CardZone.DiscardPile)) : CardsTagged(JunkTag),
                 CounterId: PyreFuel.value, Relative: false),
             CombatNodeModel.ForEachCard(You, CardZone.Hand, Archive(new CombatCardSpec("iterated")), tag: JunkTag),
+            discardToo
+                ? CombatNodeModel.ForEachCard(You, CardZone.DiscardPile, Archive(new CombatCardSpec("iterated")), tag: JunkTag)
+                : Seq(),
             Damage(Plus(CombatAmountSpec.FromConst(damage),
                 Times(new CombatAmountSpec("counter", SelectorKey: You, CounterId: PyreFuel.value), perJunk)),
                 AllEnemies));

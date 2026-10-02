@@ -16,10 +16,10 @@ public class ActFourCardTests
     private const string Quiet = "ordinance_tablet";
     private const string QuietIntent = "stone_precedent";
 
-    private const string Form = "form_of_ill_intent";      // Working, 1: apply 3 Paperwork
-    private const string Seal = "seal_of_concern";         // Working, 1: apply 1 Seal
+    private const string Form = "cursed_addendum+";        // Deed, 1: deal 7, apply 3 Paperwork
+    private const string Seal = "seal_of_concern";         // Working, 1: apply 2 Seal and 1 Doubt
     private const string Hex = "deferred_hex";             // Deed, 1, Queue: deal 13
-    private const string Wax = "waxen_surety";             // Working, 1: gain 4 Ward Wax
+    private const string Wax = "waxen_surety";             // Working, 1: gain 5 Ward Wax
 
     private static CombatantState Hero(RunPlayback play) =>
         play.CombatDriver!.Current!.State.GetCombatant(play.CombatDriver.Current!.HeroId);
@@ -153,18 +153,20 @@ public class ActFourCardTests
     [Fact]
     public void A_ratify_under_the_hieratic_measure_calls_in_the_paperwork_at_once()
     {
-        var (play, session, enemy) = Fight(Deck(("hieratic_measure", 2), (Form, 6), (Seal, 8)));
+        // Five cards: the whole deck is the opening hand, so nothing waits for a draw (and no turn ends while
+        // the Paperwork is standing). The Tablet opens with its six sheets already filed.
+        var (play, session, enemy) = FightProbe.Start(
+            FightProbe.Solo(Quiet, QuietIntent, energy: 9, (Keywords.Paperwork, 6)),
+            ["hieratic_measure", Seal, Seal, Seal, Seal], health: 400);
 
-        Install(play, session, "hieratic_measure");
-
-        PlayTimes(play, session, Form, enemy, 2);          // 6 sheets standing
-        PlayTimes(play, session, Seal, enemy, 2);          // two Seals: no conversion yet
+        Play(play, session, "hieratic_measure", null);
+        Play(play, session, Seal, enemy);                 // two Seals: no conversion yet
         Assert.Equal(0, FightProbe.StacksOf(Enemy(play, enemy), Keywords.Ratified));
 
         var sheets = FightProbe.StacksOf(Enemy(play, enemy), Keywords.Paperwork);
         var before = Enemy(play, enemy).Health.Current;
 
-        PlayTimes(play, session, Seal, enemy, 1);          // the third Seal Ratifies
+        Play(play, session, Seal, enemy);                 // four Seals: the third Ratifies
 
         Assert.Equal(1, FightProbe.StacksOf(Enemy(play, enemy), Keywords.Ratified));
         Assert.Equal(sheets, before - Enemy(play, enemy).Health.Current);
@@ -182,14 +184,14 @@ public class ActFourCardTests
         var (play, session, enemy) = Fight(Deck(("candle_cathedral", 2), (Wax, 8)));
 
         Install(play, session, "candle_cathedral");
-        Play(play, session, Wax, enemy);                   // 4 Ward Wax
-        Assert.Equal(4, FightProbe.StacksOf(Hero(play), Keywords.WardWax));
+        Play(play, session, Wax, enemy);                   // 5 Ward Wax
+        Assert.Equal(5, FightProbe.StacksOf(Hero(play), Keywords.WardWax));
 
         play.CombatDriver!.EndTurn();                      // the enemy hits: ordinarily 2 wax, here 1
 
-        Assert.Equal(3, FightProbe.StacksOf(Hero(play), Keywords.WardWax));
-        // …and the wax pays 3 + ceil(3 / 2) = 5 at the top of the turn.
-        Assert.Equal(5, Block(Hero(play)));
+        Assert.Equal(4, FightProbe.StacksOf(Hero(play), Keywords.WardWax));
+        // …and the wax pays 4 + ceil(4 / 2) = 6 at the top of the turn.
+        Assert.Equal(6, Block(Hero(play)));
         play.Dispose();
     }
 

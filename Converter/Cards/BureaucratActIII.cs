@@ -29,16 +29,16 @@ public static class BureaucratActIII
         Rarity: "uncommon", Act: Act, Tags: [ExhaustTag]);
 
     private static readonly BnbCard HedgeHospitality = new(
-        "hedge_hospitality", "Hedge Hospitality", WorkingTag, 1,
-        "Gain 7 Block. Until your next turn, the first enemy that deals unblocked damage to you gains 4 " +
+        "hedge_hospitality", "Hedge Hospitality", WorkingTag, 2,
+        "Gain 12 Block. Until your next turn, the first enemy that deals unblocked damage to you gains 7 " +
         "Paperwork.",
-        Seq(Block(7), Apply(BureaucratHistory.HedgeHospitality, 1, You)),
+        Seq(Block(12), Apply(BureaucratHistory.HedgeHospitality, 1, You)),
         Rarity: "uncommon", Act: Act);
 
     private static readonly BnbCard WitnessKnot = new(
         "witness_knot", "Witness Knot", WorkingTag, 1,
-        "Apply 1 Doubt to an enemy. If it attacks before your next turn, apply 2 Paperwork to all other enemies.",
-        Seq(Apply(Keywords.Doubt, 1), Apply(BureaucratHistory.WitnessKnot, 1)),
+        "Apply 2 Doubt to an enemy. If it attacks before your next turn, apply 3 Paperwork to all other enemies.",
+        Seq(Apply(Keywords.Doubt, 2), Apply(BureaucratHistory.WitnessKnot, 1)),
         Rarity: "uncommon", Act: Act, Tags: [ArgumentTag]);
 
     private static readonly BnbCard GuestbookOath = Rite(
@@ -71,9 +71,9 @@ public static class BureaucratActIII
 
     private static readonly BnbCard BloodTestimony = new(
         "blood_testimony", "Blood Testimony", DeedTag, 2,
-        "Deal 9 damage to ALL enemies. Enemies that attacked during the previous enemy turn take 9 " +
+        "Deal 12 damage to ALL enemies. Enemies that attacked during the previous enemy turn take 9 " +
         "additional damage.",
-        Testimony(9, 9),
+        Testimony(12, 9),
         Rarity: "rare", Act: Act);
 
     private static readonly BnbCard HedgeCovenant = Rite(
@@ -90,9 +90,9 @@ public static class BureaucratActIII
 
     private static readonly BnbCard GrievanceLedger = new(
         "grievance_ledger", "Grievance Ledger", DeedTag, 2,
-        "Deal 10 damage, plus 6 damage for each time this enemy has attacked during this combat. Count at " +
+        "Deal 12 damage, plus 7 damage for each time this enemy has attacked during this combat. Count at " +
         "most 4 attacks.",
-        Grievance(10, 6),
+        Grievance(12, 7),
         Rarity: "rare", Act: Act);
 
     // ── the pool ──────────────────────────────────────────────────────────────────────────────────────────
@@ -110,14 +110,13 @@ public static class BureaucratActIII
                 CombatAmountSpec.FromConst(2)), 9))),
 
         HedgeHospitality, HedgeHospitality.Upgraded(
-            "Gain 9 Block. Until your next turn, the first enemy that deals unblocked damage to you gains 5 " +
+            "Gain 16 Block. Until your next turn, every enemy that deals unblocked damage to you gains 7 " +
             "Paperwork.",
-            Seq(Block(9), Apply(BureaucratHistory.HedgeHospitality + "+", 1, You))),
+            Seq(Block(16), Apply(BureaucratHistory.HedgeHospitality + "+", 1, You))),
 
         WitnessKnot, WitnessKnot.Upgraded(
-            "Apply 1 Doubt to an enemy. If it attacks before your next turn, apply 3 Paperwork to all other " +
-            "enemies.",
-            Seq(Apply(Keywords.Doubt, 1), Apply(BureaucratHistory.WitnessKnot + "+", 1))),
+            "Apply 2 Doubt to an enemy. If it attacks before your next turn, apply 3 Paperwork to ALL enemies.",
+            Seq(Apply(Keywords.Doubt, 2), Apply(BureaucratHistory.WitnessKnot + "+", 1))),
 
         GuestbookOath, GuestbookOath.UpgradedRite(BureaucratHistory.GuestbookOath,
             "At the end of your turn, if you have any Block, apply 1 Doubt to every enemy that intends to " +
@@ -133,12 +132,12 @@ public static class BureaucratActIII
             "normally be consumed is retained.", cost: 1),
 
         DueRecompense, DueRecompense.Upgraded(
-            "Deal 18 damage, plus 5 damage for each Doubt on the target. Count at most 6 Doubt. Then remove " +
-            "all Doubt from the target.", Recompense(18, 5)),
+            "Deal 21 damage, plus 5 damage for each Doubt on the target. Count at most 6 Doubt. Then remove " +
+            "half of its Doubt, rounded up.", Recompense(21, 5, keepHalf: true)),
 
         BloodTestimony, BloodTestimony.Upgraded(
-            "Deal 12 damage to ALL enemies. Enemies that attacked during the previous enemy turn take 10 " +
-            "additional damage.", Testimony(12, 10)),
+            "Deal 18 damage to ALL enemies. Enemies that attacked during the previous enemy turn take 12 " +
+            "additional damage.", Testimony(18, 12)),
 
         HedgeCovenant, HedgeCovenant.UpgradedRite(BureaucratHistory.HedgeCovenant,
             "Whenever Doubt reduces Attack damage, after that Attack has fully resolved, gain Block equal to " +
@@ -149,8 +148,8 @@ public static class BureaucratActIII
             "and reduce that remaining damage to 0.", cost: 1),
 
         GrievanceLedger, GrievanceLedger.Upgraded(
-            "Deal 10 damage, plus 8 damage for each time this enemy has attacked during this combat. Count " +
-            "at most 4 attacks.", Grievance(10, 8)),
+            "Deal 12 damage, plus 7 damage for each time this enemy has attacked during this combat. Count " +
+            "at most 4 attacks.", cost: 1),
     ];
 
     // ── shapes ────────────────────────────────────────────────────────────────────────────────────────────
@@ -199,13 +198,20 @@ public static class BureaucratActIII
     // "Deal N damage, plus M per Doubt (max 6). Then remove all Doubt." Counted before it is cleared.
     private static CounterId DoubtCashed => new("due_recompense_doubt");
 
-    private static CombatNodeModel Recompense(int damage, int per) =>
+    private static CombatNodeModel Recompense(int damage, int per, bool keepHalf = false) =>
         Seq(
             new CombatNodeModel("setCombatantCounter", Target, AtMost(Stacks(Keywords.Doubt), 6),
                 CounterId: DoubtCashed.value, Relative: false),
             Damage(Plus(CombatAmountSpec.FromConst(damage),
                 Times(new CombatAmountSpec("counter", SelectorKey: Target, CounterId: DoubtCashed.value), per))),
-            new CombatNodeModel("removeStatus", Target, StatusId: Keywords.Doubt));
+            keepHalf
+                // Half of it goes, rounded up: (n + 1) / 2 stacks come off and the rest stays.
+                ? new CombatNodeModel("modifyStatusStacks", Target,
+                    CombatAmountSpec.Binary("sub", CombatAmountSpec.FromConst(0),
+                        CombatAmountSpec.Binary("div",
+                            Plus(Stacks(Keywords.Doubt), CombatAmountSpec.FromConst(1)), CombatAmountSpec.FromConst(2))),
+                    StatusId: Keywords.Doubt)
+                : new CombatNodeModel("removeStatus", Target, StatusId: Keywords.Doubt));
 
     // "Enemies that attacked during the previous enemy turn take N additional damage." Who attacked is
     // remembered on each enemy by the marker every encounter carries (BureaucratHistory.Attacked).

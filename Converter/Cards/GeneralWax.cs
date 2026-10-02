@@ -36,7 +36,8 @@ public static class GeneralWax
 
         Testament(ConsecratedTestament, "Consecrated Testament", 3),
         Testament(ConsecratedTestament + "+", "Consecrated Testament+", 4),
-        Aegis(),
+        Aegis(MortgagedAegis, "Mortgaged Aegis", 8),
+        Aegis(MortgagedAegis + "+", "Mortgaged Aegis+", 6),
         Refusal(OathOfRefusal, "Oath of Refusal"),
         Refusal(OathOfRefusal + "+", "Oath of Refusal+"),
     ];
@@ -90,17 +91,17 @@ public static class GeneralWax
     // ── Mortgaged Aegis ───────────────────────────────────────────────────────────────────────────────────
     // "Gain N Block. At the start of your next turn, gain 8 Lien." The debt is the mark; it falls due once
     // and then goes.
-    private static StatusData Aegis() => Rite(MortgagedAegis, "Mortgaged Aegis",
-        "At the start of your next turn you take on 8 Lien.",
+    private static StatusData Aegis(string id, string name, int lien) => Rite(id, name,
+        $"At the start of your next turn you take on {lien} Lien.",
         [
             Trigger(new EffectProgram<TurnStartedTriggeredEffectContext>(
                 new CausalSequenceEffectNode<TurnStartedTriggeredEffectContext>(
                 [
                     new ApplyStatusNode<TurnStartedTriggeredEffectContext>(
                         CombatantTargetSelectors.Source, new StatusDefinitionId(Keywords.Lien),
-                        new ConstantExpression<TurnStartedTriggeredEffectContext>(8)),
+                        new ConstantExpression<TurnStartedTriggeredEffectContext>(lien)),
                     new RemoveStatusNode<TurnStartedTriggeredEffectContext>(
-                        CombatantTargetSelectors.Source, new StatusDefinitionId(MortgagedAegis)),
+                        CombatantTargetSelectors.Source, new StatusDefinitionId(id)),
                 ])), nameof(TriggerEvent.TurnStarted)),
         ]);
 

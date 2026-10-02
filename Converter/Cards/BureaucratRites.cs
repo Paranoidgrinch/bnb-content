@@ -32,7 +32,7 @@ public static class BureaucratRites
     public static IReadOnlyList<StatusData> All() =>
     [
         Ledger(BlackLedger, "Black Ledger", 8),
-        Ledger(BlackLedger + "+", "Black Ledger+", 6),
+        Ledger(BlackLedger + "+", "Black Ledger+", 5),
 
         OnceEachTurn(AshRegister, "Ash Register",
             "The first time each turn you Archive a card, draw 1 card.",
@@ -53,15 +53,15 @@ public static class BureaucratRites
             "The first time each turn you create a Junk card, gain 4 Block.",
             watches: Keywords.JunkFiled, scope: StatusTriggerScope.Bearer, block: 4),
         OnceEachTurn(ClerksFamiliar + "+", "Clerk's Familiar+",
-            "The first time each turn you create a Junk card, gain 5 Block.",
-            watches: Keywords.JunkFiled, scope: StatusTriggerScope.Bearer, block: 5),
+            "The first time each turn you create a Junk card, gain 6 Block.",
+            watches: Keywords.JunkFiled, scope: StatusTriggerScope.Bearer, block: 6),
 
         OnceEachTurn(PendingMatters, "Pending Matters",
             "The first time each turn a Queued card resolves, gain 3 Block.",
             watches: Keywords.QueueResolved, scope: StatusTriggerScope.Bearer, block: 3),
         OnceEachTurn(PendingMatters + "+", "Pending Matters+",
-            "The first time each turn a Queued card resolves, gain 4 Block.",
-            watches: Keywords.QueueResolved, scope: StatusTriggerScope.Bearer, block: 4),
+            "The first time each turn a Queued card resolves, gain 5 Block.",
+            watches: Keywords.QueueResolved, scope: StatusTriggerScope.Bearer, block: 5),
 
         Doubtful(DubiousAuthority, "Dubious Authority", 2),
         Doubtful(DubiousAuthority + "+", "Dubious Authority+", 3),
@@ -69,7 +69,7 @@ public static class BureaucratRites
         Disposal(LicensedDisposal, "Licensed Disposal"),
         Disposal(LicensedDisposal + "+", "Licensed Disposal+"),
 
-        Retention(Continuance, "Continuance", 8),
+        Retention(Continuance, "Continuance", 12),
         Retention(Continuance + "+", "Continuance+", 12),
 
         Allowance(ViolenceAllowance, "Violence Allowance"),
