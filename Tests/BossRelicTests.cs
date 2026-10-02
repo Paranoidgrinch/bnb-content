@@ -86,16 +86,17 @@ public class BossRelicTests
         }
     }
 
-    // …and one of them, not a pick of three: the design says no choice screen.
+    // …and a pick of all three, one or none (playtest feedback 2, 2026-10-02: "der spieler sollte sein relikt genau
+    // wie seine belohnungskarte auswaehlen koennen"). It was one drawn at random, without a choice screen.
     [Fact]
-    public void The_relic_is_drawn_and_not_chosen()
+    public void The_relic_is_chosen_from_all_three()
     {
         var spec = Game.Acts![0].MapGeneration!;
         var source = OfferedRelicSource(spec.VictoryRewardsByEncounter["city_boss_01"]);
 
         var pool = Assert.IsType<PoolRewardSource>(source);
         Assert.Equal(3, pool.Pool.Entries.Count);
-        Assert.Equal(1, pool.Count); // one drawn from the three
+        Assert.Equal(3, pool.Count); // all three on the table
     }
 
     // A boss still pays what a boss pays: the relic is on top of the gold and the card.

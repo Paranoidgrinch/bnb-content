@@ -237,8 +237,8 @@ public static class MapSpecBuilder
         };
     }
 
-    // Each boss of this act: its role's gold and card offer, and then ONE of its own three relics at random,
-    // taken without a choice screen — a single-offer reward the player does not pick from.
+    // Each boss of this act: its role's gold and card offer, and then its own three relics, of which the player
+    // takes one or none.
     // The tooth this act's mimic hands over. A later act's mimic replaces the grade already held rather than
     // adding to it — the relic's own Pickup removes every lesser grade — so a player who opens four mimics
     // ends the run with one tooth and not four.
@@ -291,7 +291,7 @@ public static class MapSpecBuilder
                         1)
                         { Kind = RewardKinds.Relic },
                 ]),
-            ]));
+            ]), Granted: true);
         }
         return rewards;
     }
@@ -325,11 +325,13 @@ public static class MapSpecBuilder
                                     new RewardOffer($"relic-{relic.Id}",
                                         [new AddRelicByIdRunEffect(new RelicId(relic.Id))]), 1))
                                 .ToList()),
-                            1),
+                            // ALL THREE, and the player picks one or none (playtest feedback 2, C2) — it was
+                            // one of them at random, handed over without a choice.
+                            three.Count),
                         1)
                         { Kind = RewardKinds.Relic },
                 ]),
-            ]));
+            ]), Granted: true);
         }
         return rewards;
     }
@@ -398,7 +400,9 @@ public static class MapSpecBuilder
             if (role is MapNodeKind.Mimic)
                 grant.Add(MimicReward(act));
 
-            rewards[role] = new MapVictoryReward(new FixedRewardSource([new RewardOffer("spoils", grant)]));
+            // GRANTED (playtest feedback 2, C1): the purse is paid on the spot and the card pick is the first
+            // thing asked — the "spoils" bundle was a screen of its own after every fight.
+            rewards[role] = new MapVictoryReward(new FixedRewardSource([new RewardOffer("spoils", grant)]), Granted: true);
         }
         return rewards;
     }

@@ -1,4 +1,6 @@
+using BnbContent.Converter;
 using BnbContent.Converter.Cards;
+using RogueDeck.Run;
 using RogueDeck.Core.Combat;
 using RogueDeck.Sandbox.Composition;
 using RogueDeck.Sandbox.Run;
@@ -103,5 +105,33 @@ public class PlaytestFeedback2Tests
         Assert.Null(session.Error);
         Assert.Equal(0, FightProbe.StacksOf(Hero(play), rule));
         play.Dispose();
+    }
+
+    // C1 — no fight asks "take the spoils?": every victory reward of every act, by role and by encounter, is granted.
+    [Fact]
+    public void Every_victory_reward_is_granted_not_offered()
+    {
+        var specs = (FightProbe.Game.Acts ?? []).Select(a => a.MapGeneration).OfType<MapGenerationSpec>().ToList();
+        Assert.NotEmpty(specs);
+        Assert.All(specs.SelectMany(s => s.VictoryRewards.Values.Concat(s.VictoryRewardsByEncounter.Values)),
+            reward => Assert.True(reward.Granted));
+    }
+
+    // C2 — a boss's relic is a pick of all three, and a pick may be declined like any reward.
+    [Fact]
+    public void A_boss_offers_all_three_of_its_relics()
+    {
+        var bossRelics =
+            from act in FightProbe.Game.Acts ?? []
+            where act.MapGeneration is not null
+            from entry in act.MapGeneration!.VictoryRewardsByEncounter
+            from offer in ((FixedRewardSource)entry.Value.Source).Offers
+            from grant in offer.Grant.OfType<OfferRewardRunEffect>()
+            where grant.Kind == RewardKinds.Relic && grant.Source is PoolRewardSource
+            select (PoolRewardSource)grant.Source;
+        var pools = bossRelics.ToList();
+        Assert.NotEmpty(pools);
+        Assert.All(pools, pool => Assert.Equal(pool.Pool.Entries.Count, pool.Count));
+        Assert.All(pools, pool => Assert.Equal(3, pool.Count));
     }
 }
