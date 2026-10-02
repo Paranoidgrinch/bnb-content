@@ -46,14 +46,18 @@ public static class EventTemplates
             // "picks nothing and does nothing". To a player it did something: the rest was spent and the run
             // went straight back to the map (playtest 2026-09-26). It now requires an improvable card, and
             // while there is none it stays on screen greyed, saying why, instead of vanishing.
+            //
+            // ⚠ It may be CALLED OFF (playtest feedback 2, B4): a player who opens the list and finds nothing worth
+            // improving goes back to the fire with the rest still theirs — "Back" on the pick, the choice unspent.
             new EventChoice("amend",
             [
                 new UpgradeCardsRunEffect(
-                    RunSelectors.DeckCards.Upgradable().ChooseByPlayer(1, "improve one card, permanently")),
+                    RunSelectors.DeckCards.Upgradable().ChooseByPlayer(1, "improve one card, permanently", allowSkip: true)),
             ], TextKey: $"{act.RestUpgradeChoiceText} (improve a card)",
                 Requirement: RunExpr.GreaterThan(
                     RunExpr.Count(RunSelectors.DeckCards.Upgradable()), RunExpr.Const(0)),
-                DisabledText: "There's nothing to improve."),
+                DisabledText: "There's nothing to improve.",
+                Declinable: true),
             new EventChoice("leave", [], TextKey: "Move on"),
         ]),
     ]);
