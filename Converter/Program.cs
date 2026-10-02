@@ -52,6 +52,9 @@ var cardRating = args.Contains("--card-rating");
 // THE AUDIT (Audit, CONTENT_FIX_PLAN F5): --audit [--audit-only id,id] — every card and combat relic over four
 // rounds against a quiet dummy and a striker, paired with the same fight without it; report to ~/Desktop/bnb-balance/audit.
 var audit = args.Contains("--audit");
+// THE CALCULATOR CHECK (CalcCheck, PLAYTEST_FEEDBACK_2 A3): --calc-check N — N real fights; every card preview,
+// turn forecast and intent chip compared with what then happened; report to ~/Desktop/bnb-balance/calc.
+var calcCheck = 0;
 string? auditOnly = null;
 var benchCards = args.Contains("--bench-cards");
 var benchShuffles = 20;
@@ -90,6 +93,7 @@ for (var i = 0; i < args.Length - 1; i++)
         case "--fight-hp": fightHealth = int.Parse(args[i + 1]); break;
         case "--fight-energy": fightEnergy = int.Parse(args[i + 1]); break;
         case "--fights": fights = int.Parse(args[i + 1]); break;
+        case "--calc-check": calcCheck = int.Parse(args[i + 1]); break;
         case "--bench-shuffles": benchShuffles = int.Parse(args[i + 1]); break;
         case "--bench-horizon": benchHorizon = int.Parse(args[i + 1]); break;
         case "--bench-beam": benchBeam = int.Parse(args[i + 1]); break;
@@ -126,6 +130,8 @@ try
             };
         return SparringMatch.Run(blueprint, snapshot, Console.WriteLine);
     }
+    if (calcCheck > 0)
+        return CalcCheck.Run(blueprint, calcCheck, seed, Console.WriteLine);
     if (audit)
         return Audit.Run(blueprint, Split(auditOnly) is { Count: > 0 } picked ? picked : null, jobs, Console.WriteLine);
     if (cardRating)
