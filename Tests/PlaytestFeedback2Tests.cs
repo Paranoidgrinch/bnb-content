@@ -134,4 +134,33 @@ public class PlaytestFeedback2Tests
         Assert.All(pools, pool => Assert.Equal(pool.Pool.Entries.Count, pool.Count));
         Assert.All(pools, pool => Assert.Equal(3, pool.Count));
     }
+
+    // C3 — every act's shop strikes a card for 75 and 25 more after each use, run-wide.
+    [Fact]
+    public void The_card_strike_grows_dearer_with_every_use()
+    {
+        var shops = FightProbe.Game.Shops.Values.ToList();
+        Assert.NotEmpty(shops);
+        var strikes = shops.SelectMany(shop => shop.Services ?? []).Where(service => service.Id == "remove-card").ToList();
+        Assert.Equal(shops.Count, strikes.Count);
+        Assert.All(strikes, service => Assert.Equal((75, 25), (service.Price, service.PriceStep)));
+    }
+
+    // C4 — a card reward turns up improved at 10 / 20 / 30 / 40 % in Acts I–IV.
+    [Fact]
+    public void Reward_cards_come_improved_at_the_acts_rate()
+    {
+        var rates =
+            from act in FightProbe.Game.Acts ?? []
+            where act.MapGeneration is not null
+            from reward in act.MapGeneration!.VictoryRewards.Values
+            from offer in ((FixedRewardSource)reward.Source).Offers
+            from grant in offer.Grant.OfType<OfferRewardRunEffect>()
+            where grant.Kind == RewardKinds.Card
+            select (Act: (FightProbe.Game.Acts!.ToList().IndexOf(act) + 1), ((PoolRewardSource)grant.Source).UpgradeChancePercent);
+        var byAct = rates.Distinct().ToList();
+        foreach (var (act, rate) in byAct.Where(r => r.Act <= 4))
+            Assert.Equal(act * 10, rate);
+        Assert.Contains(byAct, r => r.Act == 4);
+    }
 }

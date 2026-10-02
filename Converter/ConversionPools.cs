@@ -86,8 +86,12 @@ public sealed class ConversionPools
             foreach (var (card, chance) in WithinClass(rarityClass.ToList()))
                 entries.Add(new RunPool<RewardOffer>.Entry(
                     CardOffer(card), Weight((double)shares[rarityClass.Key] / total * chance)));
-        return new PoolRewardSource(new RunPool<RewardOffer>(entries), count);
+        return new PoolRewardSource(new RunPool<RewardOffer>(entries), count) { UpgradeChancePercent = UpgradedShare };
     }
+
+    // How often a reward card turns up already improved (playtest feedback 2, C4): Act I 10 %, II 20 %, III 30 %,
+    // IV 40 % — and Act V, which pays no card rewards of its own, as IV.
+    public int UpgradedShare => Math.Clamp(Act, 1, 4) * 10;
 
     // A reward drawn from ONE rarity — "a Rare Card Reward", "choose 1 of 3 Uncommon cards". The archives' doors
     // ask for these by name, and a uniform draw from the whole act pool would quietly hand out commons instead.
@@ -103,7 +107,7 @@ public sealed class ConversionPools
             new RunPool<RewardOffer>(
                 WithinClass(eligible).Select(p => new RunPool<RewardOffer>.Entry(CardOffer(p.Card, tags), Weight(p.Chance)))
                     .ToList()),
-            count);
+            count) { UpgradeChancePercent = UpgradedShare };
     }
 
     // ── the act curve: older cards, rarer the further you go ─────────────────────────────────────────────────

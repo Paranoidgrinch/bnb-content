@@ -114,7 +114,8 @@ public static class ShopTemplate
         // what the whole shelf is (ShopStockGroup.Tags); the entry says what the thing itself is.
         return new ShopDefinition([], OfferCount: 0,
             Reroll: new ShopReroll(StandardRunIds.Gold, 25),
-            Services: [ShopService.RemoveCard(StandardRunIds.Gold, 75)],
+            // 75 Gold, and 25 more after every card struck — in every later shop too (playtest feedback 2, C3).
+            Services: [ShopService.RemoveCard(StandardRunIds.Gold, 75, priceStep: 25)],
             Stock:
             [
                 new ShopStockGroup(ShopRelics.GeneralCardShelf, general, 3),
