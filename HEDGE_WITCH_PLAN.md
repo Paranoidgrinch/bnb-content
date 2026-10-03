@@ -149,3 +149,62 @@ Jeder Schritt einzeln committet; gepusht wird pro fertiger Phase.
 | G3 Hexed/Misfortune-Anzeige | ✔ `Hexed 7 ••○`, Misfortune in % |
 | Tests | ✔ `HedgeWitchTests` (9), Core-Tests je Baustein; Bureaucrat-Golden unverändert |
 | Offen | W4 Karten (E7-Vorlage!), W5 Relikte, W6 General-Familien (E4-Tabelle!), Hidden Recipes + Rezeptbuch (G4), Archiv-Rubrik Relikte, Balance |
+
+---
+
+## Vorlage E4 — Familien der 50 General-Pool-Karten (zur Durchsicht)
+
+Nach Master §16.2: direkter Schaden → **Fang** · Flüche, feindliche Status-Motoren, verzögerter Schaden → **Hex** ·
+Block, Ward Wax, Schutz → **Husk** · Erholung, Reinigung, Ziehen, praktischer Nutzen → **Hearth** · Verweigerung,
+Censure, seltsame Kausalität → **Fortune**. Gilt nur für die Hexe; für den Bureaucrat ohne Wirkung.
+
+| Familie | Karten |
+|---|---|
+| **Fang** (14) | grave_lien¹ · foreclosure · forfeit_seal · dawn_summons · seizure_writ · blood_tithe · vital_census · exemplary_sentence · black_tribunal · grand_citation · crown_repossession · tallow_judgment · hemal_audit · last_office² |
+| **Hex** (12) | witchmark_citation · blood_marginalia · mortgage_sigil · silent_hearing · notary_beetle · usurers_moon · sanguine_errata · vein_register · blood_redaction · standing_citation · debt_ouroboros · compound_indictment |
+| **Husk** (10) | waxen_surety · contempt_finding · tallow_reserve · sealed_mantle · wax_reliquary · consecrated_testament · mortgaged_aegis · votive_covenant · candle_cathedral · wax_indemnity³ |
+| **Hearth** (5) | borrowed_candle · false_signature · proxy_curse · moonlit_counterfeit · grand_dispensation |
+| **Fortune** (9) | malediction_review · sanctioned_charm · reciprocal_edict · blacklisted · countermanded_grace · crossed_sigil · oath_of_refusal · sovereign_prohibition · absolute_interdict |
+
+¹ 13 Schaden + 9 Lien: Schaden zuerst, darum Fang (Alternative: Hex). ² „Je fehlendem Status 8 Schaden“: Schaden,
+darum Fang (Alternative: Fortune, „seltsame Kausalität“). ³ heilt über Wachs, aber Wachs ist Schutz: Husk
+(Alternative: Hearth). Hearth bleibt mit 5 die kleinste Familie — die Hexe bringt ihre eigenen Hearth-Karten mit.
+
+---
+
+## Vorlage E7 — Zahlen für die Hexenkarten (Regeln + Beispiele, zur Durchsicht)
+
+Der Kanon gibt Zahlen nur für die vier Starter; Commons, Uncommons und Rares sind Konzepte. Vorschlag, wie beim
+Bureaucrat-Kartenpass: erst diese Regeln und 14 Beispielkarten, nach deiner Freigabe der Rest.
+
+**Regeln (Wert pro Energie, angelehnt an die Bureaucrat-Pools nach dem Keyword-Pass):**
+- R1 Fang: 1 E ≈ 7–8 Schaden (Starter 6), Mehrfachtreffer etwas weniger in Summe, AoE ≈ 60 % pro Ziel.
+- R2 Hex: 1 E ≈ 4–5 Hexed (= 12–15 HP alle drei Gegnerzüge, bleibt liegen). Timing-Karten (Schritt vorziehen,
+  sofort auslösen) zahlen ihren Effekt mit weniger Stapeln.
+- R3 Husk: 1 E ≈ 7–8 Block; Ward Wax 1 E ≈ 5 (×1,25 wie der General-Pool jetzt).
+- R4 Hearth: 1 E ≈ 3 HP Kampf-Heilung + kleiner Zusatz (Block oder Ziehen); Heilung bleibt unter der
+  Kampfbeginn-Grenze, darum großzügiger als reine Heilung beim Bureaucrat.
+- R5 Fortune: 1 E ≈ 25–30 % Misfortune (5–6 Stapel); ein Wurf, der scheitert, ist verloren — darum gibt
+  Fortune oft einen kleinen sicheren Teil (Block, Schaden) dazu.
+- R6 Sheltering-Bonus ≈ +40 % auf den Grundwert, solange der Kessel leer ist.
+- R7 Upgrades ≈ ×1,5 Gesamtwert, gern als neue Facette (wie beim Bureaucrat-Pass).
+- R8 Spezial-Zutaten (Knotted Cord, Horn Spoon …) zahlen ihre Kesselwirkung mit einem schwächeren Kartentext.
+
+**Beispiele:**
+
+| Karte | Seltenheit | Vorschlag | Upgrade |
+|---|---|---|---|
+| Bramble Switch (Fang) | Common 1 E | 7 Schaden, +3 wenn das Ziel Hexed ist | 9 Schaden, +5 |
+| Two Teeth (Fang) | Common 1 E | 4 Schaden ×2 | 6 Schaden ×2 |
+| Crow's Peck (Fang) | Common 0 E | 3 Schaden, 6 wenn Ziel ≤ 50 % HP | 4 / 9 |
+| Evil Eye (Hex) | Common 1 E | 3 Schaden, 3 Hexed | 4 Schaden, 5 Hexed |
+| Old Grudge (Hex) | Common 2 E | 10 Hexed | 15 Hexed |
+| Birch-Bark Wrap (Husk) | Common 1 E | 8 Block | 12 Block |
+| Snail Shell (Husk) | Common 1 E | 6 Block; kein ungeblockter Treffer → 3 Ward Wax | 8 Block, 4 Ward Wax |
+| Mugwort Poultice (Hearth) | Common 1 E, Exhaust | 6 HP Kampf-Heilung | 9 HP |
+| Black Cat (Fortune) | Common 1 E | 4 Schaden, 25 % Misfortune | 6 Schaden, 35 % |
+| Hawthorn Switch (Fang) | Uncommon 1 E | 8 Schaden; ist das Ziel Hexed: Threefold-Schritt +1 | 11 Schaden |
+| Knotted Cord (Hex) | Uncommon 1 E | 2 Hexed; **im Kessel: zählt als zwei Hex** | 3 Hexed, zieh 1 |
+| Clamp the Lid (Husk) | Uncommon 1 E | 7 Block; Sheltering: 4 davon bleiben als Ward Wax | 10 Block, 5 Ward Wax |
+| Call the Third Night (Hex) | Rare 2 E | Threefold des Ziels sofort auslösen, danach neuer Zyklus | kostet 1 |
+| Loaded Knucklebones (Fortune) | Rare 1 E | der nächste Misfortune-Wurf wird zweimal geworfen, einer reicht; 15 % Misfortune | 30 % |
