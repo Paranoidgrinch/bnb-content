@@ -78,6 +78,10 @@ public static class BlueprintAssembler
                 .. QueueCommissioner.Cards(), .. LordSealkeeper.Cards(), .. MunicipalDragon.Cards(),
                 .. LivingCharter.Cards(), .. Elites.ReturnBell.Cards(),
                 .. Bosses.CuratorOfMisplacedHours.Cards(),
+                // The Hedge Witch's cards and her two actions (Witch/, plan W1). Appended LAST, so nothing the
+                // Bureaucrat's game reads moves.
+                .. Witch.WitchCards.Compile(),
+                .. Witch.WitchActions.All(),
             ],
             EnemyMapper.MapActions(enemies).ToList(),
             // The act's map is GENERATED per run from MapGeneration below; the authored map stays empty.
@@ -132,6 +136,7 @@ public static class BlueprintAssembler
                 .. ActFive.All(),
                 .. Events.ActOneEventObjects.Statuses(), .. Events.ActTwoEventObjects.Statuses(),
                 .. Events.ActThreeEventObjects.Statuses(),
+                .. Witch.WitchKeywords.All(),
             ],
             // ONLY THE AUTHORED POOLS SHIP. Until 2026-09-10 every ported v2 relic whose id did not meet a
             // final one shipped alongside them — 47 of them — because the ported events granted some by
@@ -147,7 +152,13 @@ public static class BlueprintAssembler
             // that say which act made the promise.
             Programs = AuthoredPrograms(pools),
             Start = start,
-            Characters = [new RunCharacter(data.Bureaucrat.Id, start)],
+            // The roster: the Bureaucrat first (the default every older save is read as), each with what is
+            // offered to it alone — the Bureaucrat's own reward cards and relics, the Witch's cards (plan C1/W1).
+            Characters =
+            [
+                new RunCharacter(data.Bureaucrat.Id, start, Exclusive: BureaucratExclusive()),
+                Witch.WitchCharacter.Roster(),
+            ],
             // The tutorial: six city rooms in a fixed order, realised from the city's own rules (Tutorial.cs).
             Tutorial = Tutorial.Build(maps[0].Map.Spec, start),
             // Victory now means the WHOLE run — the city and the archives behind it. (The engine's meta rules
@@ -159,9 +170,45 @@ public static class BlueprintAssembler
 
         // …and then let anything the manifest did not name explain itself from its own rules text.
         blueprint = blueprint with { Presentation = WithEveryCard(blueprint.Presentation, blueprint.Cards) };
+        // The Witch's actions say what they are; BREW also carries every family recipe's name and effect, so the
+        // cauldron can say what it is about to make (Witch/WitchRecipes).
+        blueprint = blueprint with
+        {
+            Presentation = blueprint.Presentation with
+            {
+                Cards = new Dictionary<string, EntityPresentation>(blueprint.Presentation.Cards, StringComparer.Ordinal)
+                {
+                    [Witch.WitchActions.AddIngredient] = new()
+                    {
+                        FlavorText = blueprint.Cards.First(c => c.Id == Witch.WitchActions.AddIngredient).DescriptionKey,
+                        Tags = ["action"],
+                    },
+                    [Witch.WitchActions.Brew] = new()
+                    {
+                        FlavorText = blueprint.Cards.First(c => c.Id == Witch.WitchActions.Brew).DescriptionKey,
+                        Tags = ["action"],
+                        Extra = new Dictionary<string, string>(Witch.WitchRecipes.Presentation(), StringComparer.Ordinal),
+                    },
+                },
+            },
+        };
         // …and where the archive shelves each card and relic (ArchiveSections).
-        return blueprint with { Presentation = ArchiveSections.Annotate(blueprint) };
+        var annotated = ArchiveSections.Annotate(blueprint);
+        return blueprint with
+        {
+            Presentation = annotated,
+            Cards = ArchiveSections.MarkUncookable(blueprint, annotated),
+        };
     }
+
+    // What only the Bureaucrat may be offered: the Bureaucrat's own reward cards (every act, upgrades included) and the
+    // relics written for him.
+    private static IReadOnlyList<string> BureaucratExclusive() =>
+    [
+        .. Cards.FinalCards.CharacterPool(5).SelectMany(c => new[] { c.Id, c.Id + "+" }),
+        .. Relics.FinalRelics.All().Where(r => r.Eligibility == Relics.RelicAuthoring.Eligibility.Bureaucrat)
+            .Select(r => r.Id),
+    ];
 
     // Every authored run program the document ships: the bodies an event installs by name.
     private static IReadOnlyDictionary<string, ITriggeredRunEffectDefinition>? AuthoredPrograms(
@@ -213,7 +260,7 @@ public static class BlueprintAssembler
         var enemyRoles = EnemyRole.Of(data);
         return new()
         {
-            Cards = Cards.FinalCards.All().ToDictionary(
+            Cards = Cards.FinalCards.All().Concat(Witch.WitchCards.All()).ToDictionary(
                 c => c.Id,
                 c => new EntityPresentation
                 {
@@ -307,6 +354,11 @@ public static class BlueprintAssembler
                 {
                     Art = $"characters/{data.Bureaucrat.Id}.png",
                     FlavorText = "Armed with forms, stamps, and a fireproof sense of procedure.",
+                },
+                [Witch.WitchCharacter.Id] = new()
+                {
+                    Art = $"characters/{Witch.WitchCharacter.Id}.png",
+                    FlavorText = "Turns cards into ingredients and hides behind the pot when she is not cooking.",
                 },
             },
             Game = new EntityPresentation

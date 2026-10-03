@@ -2,8 +2,8 @@
 
 Generated: `dotnet run --project Converter -- --art-slots ART_SLOTS.md`. **Do not edit by hand.**
 
-**709 pictures**: 229 cards, 210 relics, 269 bodies
-(every enemy, elite and boss) and 1 the player can be. Every one of them is filled today by a PLACEHOLDER — a plate with the file's own
+**716 pictures**: 235 cards, 210 relics, 269 bodies
+(every enemy, elite and boss) and 2 the player can be. Every one of them is filled today by a PLACEHOLDER — a plate with the file's own
 name and the word placeholder on it, written by `bnb-godot/tools/make-card-art.py`,
 `make-relic-art.py` and `make-enemy-art.py`. A painted picture replaces one by being saved over it, so
 the list below can be worked down in any order and nothing has to be registered anywhere. A slot with no
@@ -594,15 +594,16 @@ ever met in a boss room is drawn as a boss, even if it also turns up as filler.
 | `waxen_bailiff` | Waxen Bailiff | 42 | 1 | The Waxen Bailiff |
 | `wrong_window_scribe` | Wrong-Window Scribe | 25 | 2 | The Wrong Window |
 
-## Characters — 1 picture
+## Characters — 2 pictures
 
 Drawn like a body and facing RIGHT — the player stands on the left of the arena.
 
 | code | title | who they are |
 |---|---|---|
 | `bureaucrat` | Bureaucrat | Armed with forms, stamps, and a fireproof sense of procedure. |
+| `hedge_witch` | The Hedge Witch | Turns cards into ingredients and hides behind the pot when she is not cooking. |
 
-## Cards — 229 pictures
+## Cards — 235 pictures
 
 No visual canon was ever written for the cards, so the row carries the card's own rules
 text instead of a brief. Act = the act that unlocks it; the starters, the Junk and the
@@ -791,13 +792,14 @@ cards a boss or a door hands over are never offered and have no act.
 | `sovereign_prohibition` | Sovereign Prohibition | working | uncommon | Gain 5 Censure and 6 Block. Apply 5 Censure to ALL enemies. |
 | `tallow_judgment` | Tallow Judgment | deed | rare | Consume up to 8 Ward Wax. Deal 10 damage plus 7 damage per Ward Wax consumed. |
 
-### Given in play — 91
+### Given in play — 97
 
 Handed over by a boss, a door or an event rather than offered; never in a reward pool.
 
 | code | title | what it does |
 |---|---|---|
 | `acknowledge_service` | Acknowledge Service | Sign for the notice: gain 2 Paperwork. The Knight's enforcement deals 10 instead of 19 and 1 Paperwork. Leave it in hand to refuse. |
+| `adders_nip` | Adder's Nip | Deal 6 damage. |
 | `ask_for_expedited_service` | Ask for Expedited Service | This Service Window opens the Commissioner by 15 % instead of 25 %, but afterwards you stand at Position 1 instead of going back into the queue. |
 | `authorized_entry` | Authorized Entry | Remove up to 12 Block from the Municipal Dragon. Costs 1 Authorization; one authority per turn. |
 | `authorized_expedition` | Authorized Expedition | Gain 1 Energy. Costs 1 Authorization; one authority per turn. |
@@ -815,6 +817,8 @@ Handed over by a boss, a door or an event rather than offered; never in a reward
 | `break_the_seal_of_access` | Break the Great Seal of Access | Shatter the Great Seal of Access and take its Fragment. |
 | `break_the_seal_of_execution` | Break the Great Seal of Execution | Shatter the Great Seal of Execution and take its Fragment. |
 | `break_the_seal_of_testimony` | Break the Great Seal of Testimony | Shatter the Great Seal of Testimony and take its Fragment. |
+| `cauldron_add` | Into the Pot | Put a card from your hand into the cauldron instead of playing it. The first each turn is free. |
+| `cauldron_brew` | Brew | With three ingredients in the cauldron: brew them. Three of one family make a concentrated brew; any other mix gives what each ingredient gives. The ingredients then go to your discard pile. |
 | `cite_the_old_survey` | Cite the Old Survey | Spend 1 Old Right, once a turn. OLD BOUNDARY — Current and Former Survey are swapped for the rest of this turn. OLD RIGHT OF PASSAGE — the Surveyor's next attempt to cash a Claim comes to nothing, and the Claim remains. OLD MEASURE — remove up to 8 of the Surveyor's Block. |
 | `claim_an_exception` | Claim an Exception | The Articles do not touch you for the rest of this turn. |
 | `clause_evidentiary` | Evidentiary Clause | Sign: draw 2 cards. Liability: 1 Doubt and 1 Paperwork when the record is read. Refuse: the Petition gains 1 Strength. |
@@ -823,6 +827,7 @@ Handed over by a boss, a door or an event rather than offered; never in a reward
 | `correction_reed_action` | A Small Correction | Send a card away and take one back out of your discard pile; it costs 1 less this turn. With nothing to take back, draw 1. Once a turn. |
 | `counter_petition` | Counter-Petition | Once a turn, spend 1 Safe-Conduct to argue one of the Ombudsman's complaints under the other Ground — Road becomes Root, or Root becomes Road. It creates nothing, moves nothing, and nobody's standing changes hands. |
 | `counter_petition_twine_action` | Counter-Petition | Discard a card, draw a card, and gain 1 Energy. Once a turn. |
+| `crooked_finger` | Crooked Finger | Apply 4 Hexed. |
 | `dedicate_a_work` | Dedicate a Work | Give Eanna a card from your hand for the rest of this fight. A card she has claimed settles 4 Temple Due, an ordinary one 1, and rubbish nothing — Eanna wants value. Dedicated cards come back when she is dead. |
 | `draw_against_the_treasury` | Draw Against the Treasury | Spend a Treasury Credit: take up to 12 Block off the treasury. Once a turn. |
 | `draw_ahead` | Draw Ahead | Draw 1 card out of a later day. The quantity moves; the cards are still yours. |
@@ -842,9 +847,11 @@ Handed over by a boss, a door or an event rather than offered; never in a reward
 | `make_amends` | Make Amends | Choose one: PAY IN COIN — spend 1 Energy. OFFER A CARD — discard a card from your hand. Either settles 1 Wergild, oldest demand first. |
 | `missing_signature` | Missing Signature | Exhaust. If it is still in your hand at the end of your turn, file 1 Paperwork. |
 | `near_boundary` | Near Boundary | Accept the surveyor's nearer figure as this turn's exact measure. Meeting it lets it brace. |
+| `nettle_tea` | Nettle Tea | Gain 4 Block. Heal 1 HP lost this combat. |
 | `notice_of_delay` | Notice of Delay | Retain. Exhaust. If it is still in your hand at the end of your turn, gain 1 Fatigue. |
 | `offer_the_surplus` | Offer the Surplus | Spend 1 Energy to settle 1 Temple Due. |
 | `petition_for_priority` | Petition for Priority | Move one place toward the Counter. Gain 1 Paperwork. Only one administrative choice per turn. |
+| `pot_lid` | Pot-Lid | Gain 5 Block. If the cauldron is Sheltering, gain 3 more. |
 | `redacted_leaf` | Redacted Leaf | Unplayable. Retain. At the start of your turn one card in your hand is Redacted, and the Leaf is spent. |
 | `return_receipt` | Return Receipt | Choose one: FILE THE RECEIPT — remove 1 Overdue; the Bell loses 5 HP. CONTEST THE FEE — remove 1 Late Fee; mark 1 draw-pile card Misfiled. |
 | `revise_body_shall_bear` | Revise: Thirty-Six | Spend a Reed Mark to edit this sentence one step. 36 HP, ignoring Block. Revised: 24 · 12 · nothing · and at four, Nisaba bears 18 herself. |

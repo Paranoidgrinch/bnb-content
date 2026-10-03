@@ -101,7 +101,8 @@ public static class SparringRing
         RunBlueprint game, EncounterDefinition fight,
         IReadOnlyList<string>? deck = null, int? health = null,
         int? maxHealth = null, int? energy = null,
-        IReadOnlyList<string>? relics = null, IReadOnlyList<string>? consumables = null)
+        IReadOnlyList<string>? relics = null, IReadOnlyList<string>? consumables = null,
+        string? character = null)
     {
         ArgumentNullException.ThrowIfNull(game);
         ArgumentNullException.ThrowIfNull(fight);
@@ -116,8 +117,10 @@ public static class SparringRing
             Acts = null,
         };
 
-        var start = blueprint.Start;
-        var touched = false;
+        // A named character fights with ITS start — its deck, its actions, the statuses it brings into every
+        // fight — and the rest of what is stated here is laid over that.
+        var start = character is null ? blueprint.Start : game.ResolveStart(character);
+        var touched = character is not null;
 
         if (deck is not null and not { Count: 0 })
         {

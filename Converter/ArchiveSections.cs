@@ -1,5 +1,7 @@
 using System.Text.Json;
+using RogueDeck.Core.Combat;
 using RogueDeck.Run;
+using RogueDeck.Scenario.Authoring;
 
 namespace BnbContent.Converter;
 
@@ -18,6 +20,8 @@ public static class ArchiveSections
     public const string GeneralPool = "General pool";
     public const string Junk = "Junk & curses";
     public const string RelicCards = "Relic cards";
+    public const string HedgeWitch = "Hedge Witch";
+    public const string Actions = "Actions"; // a character's own moves — not cards anybody holds
     public const string Fight = "Fight cards";
 
     private const string EventPrefix = "event: ";
@@ -33,9 +37,14 @@ public static class ArchiveSections
         var bnb = Cards.FinalCards.All().Where(c => !c.Id.EndsWith('+')).ToDictionary(c => c.Id, StringComparer.Ordinal);
         var character = Cards.FinalCards.CharacterPool(5).Select(c => c.Id).ToHashSet(StringComparer.Ordinal);
         var general = Cards.FinalCards.GeneralPool(5).Select(c => c.Id).ToHashSet(StringComparer.Ordinal);
+        var witch = Witch.WitchCards.All().Select(c => c.Id.TrimEnd('+')).ToHashSet(StringComparer.Ordinal);
         string CardSection(string id)
         {
             var key = id.TrimEnd('+');
+            if (witch.Contains(key))
+                return HedgeWitch;
+            if (key is Witch.WitchActions.AddIngredient or Witch.WitchActions.Brew)
+                return Actions;
             if (character.Contains(key) || bnb.GetValueOrDefault(key)?.Rarity == "starter")
                 return Bureaucrat;
             if (general.Contains(key))
@@ -81,6 +90,19 @@ public static class ArchiveSections
         }, StringComparer.Ordinal);
 
         return manifest with { Cards = cards, Relics = relics };
+    }
+
+    // WHAT THE CAULDRON WILL NOT TAKE (hedge_witch_master.md §16.3): a fight's own cards and a relic's are not
+    // ingredients. Written onto those cards as a tag, read by the Witch's "into the pot" action.
+    public static IReadOnlyList<CardData> MarkUncookable(RunBlueprint blueprint, PresentationManifest annotated)
+    {
+        ArgumentNullException.ThrowIfNull(blueprint);
+        ArgumentNullException.ThrowIfNull(annotated);
+        return [.. blueprint.Cards.Select(card =>
+            annotated.Cards.GetValueOrDefault(card.Id)?.Extra.GetValueOrDefault(SectionKey) is Fight or RelicCards or Actions
+                && card.Tags.All(t => t.value != Witch.WitchActions.Uncookable)
+                ? card with { Tags = [.. card.Tags, new TagId(Witch.WitchActions.Uncookable)] }
+                : card)];
     }
 
     // Who puts each card into a fight, by name: an enemy whose move or opening status writes it, a fight whose
