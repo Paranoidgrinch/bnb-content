@@ -14,7 +14,7 @@ namespace BnbContent.Tests;
 // and what the wall takes is the fact of a blessing, never its stacks.
 public class ActFourCartoucheTests
 {
-    private const string Wax = "waxen_surety";  // Working, 1: gain 5 Ward Wax
+    private const string Wax = "waxen_surety";  // Working, 1: gain 7 Ward Wax
 
     private static readonly BabData Data = BabData.Load(TestData.Directory);
 
@@ -71,7 +71,7 @@ public class ActFourCartoucheTests
         Assert.Equal(0, FightProbe.StacksOf(Hero(play), ActFour.ChiselSetId));
 
         Play(play, session, Wax);
-        Assert.Equal(5, FightProbe.StacksOf(Hero(play), Keywords.WardWax));
+        Assert.Equal(7, FightProbe.StacksOf(Hero(play), Keywords.WardWax));
         Assert.Equal(1, FightProbe.StacksOf(Hero(play), Keywords.Doubt));
         play.Dispose();
     }
@@ -104,7 +104,7 @@ public class ActFourCartoucheTests
             FightProbe.Solo("royal_genealogy_wall", "dynastic_rebuke"), deck: WaxDeck, health: 800);
 
         Play(play, session, Wax);
-        Assert.Equal(5, FightProbe.StacksOf(Hero(play), Keywords.WardWax));
+        Assert.Equal(7, FightProbe.StacksOf(Hero(play), Keywords.WardWax));
         Assert.Equal(ActFour.RoyalFavorCap,
             FightProbe.StacksOf(Body(play, "royal_genealogy_wall"), ActFour.RoyalFavorId));
 
@@ -187,7 +187,7 @@ public class ActFourCartoucheTests
         Assert.Equal(0, FightProbe.StacksOf(Body(play, "royal_genealogy_wall"), ActFour.RoyalFavorId));
 
         Play(play, session, Wax);  // …and the one that survives is still the first the wall hears
-        Assert.Equal(5, FightProbe.StacksOf(Hero(play), Keywords.WardWax));
+        Assert.Equal(7, FightProbe.StacksOf(Hero(play), Keywords.WardWax));
         Assert.Equal(ActFour.RoyalFavorCap,
             FightProbe.StacksOf(Body(play, "royal_genealogy_wall"), ActFour.RoyalFavorId));
         play.Dispose();

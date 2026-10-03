@@ -859,7 +859,7 @@ public static class EliteRelicRules
 
     public static StatusData RiddlesThirdAnswer => Rule(
         RiddleId, "The Riddle's Third Answer",
-        "Every fight opens with 1 Ward Wax on you and 1 Seal on the enemy with the least health.",
+        "Every fight opens with 2 Ward Wax on you and 1 Seal on the enemy with the least health.",
         [
             Trigger(new EffectProgram<CardsDrawnTriggeredEffectContext>(
                 new ConditionalEffectNode<CardsDrawnTriggeredEffectContext>(
@@ -868,7 +868,7 @@ public static class EliteRelicRules
                     [
                         new ApplyStatusNode<CardsDrawnTriggeredEffectContext>(
                             You, new StatusDefinitionId(Cards.Keywords.WardWax),
-                            new ConstantExpression<CardsDrawnTriggeredEffectContext>(1)),
+                            new ConstantExpression<CardsDrawnTriggeredEffectContext>(2)),
                         RelicRules.SealWeakest<CardsDrawnTriggeredEffectContext>(1),
                     ]))),
                 nameof(TriggerEvent.CardsDrawn)),

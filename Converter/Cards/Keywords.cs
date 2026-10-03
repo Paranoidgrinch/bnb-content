@@ -312,25 +312,25 @@ public static class Keywords
         Seal, "Seal", StatusPolarity.Debuff,
         "At 3 Seal, 3 are spent and this character is Ratified. Excess Seal remains.");
 
-    // "Until the end of the current player turn, each Deed targeting that enemy deals +3 total direct damage."
+    // "Until the end of the current player turn, each Deed targeting that enemy deals double damage."
     //
-    // Once per Deed PLAYED — not per hit, and not per internal repeat — which is what the engine's
-    // OncePerCardPlay modifier means. A second Ratify in the same turn is still its own event for anything
-    // watching, but it adds no second +3: the modifier is flat, so extra stacks change nothing.
+    // Per HIT: a multi-hit Deed doubles every blow (user, 2026-10-02 — Ratified was +3, then +5 flat once per
+    // Deed, and Seal still trailed Paperwork in the family bench; doubling puts it in the same band). A second
+    // Ratify in the same turn is its own event for anything watching, but doubles nothing twice: the modifier
+    // scales once while the status is present.
     //
     // The window closes when the PLAYER's turn ends, which no bearer-scoped trigger on an enemy could see.
     // The trigger is therefore scoped to the whole fight and gated on the ending combatant being the applicant.
-    // +5, not +3 (user, playtest feedback 2, F/R2: Seal measured 7 per Energy against Paperwork's 10).
-    public const int RatifyBonus = 5;
+    public const int RatifyPercent = 200;
 
     private static StatusData RatifiedStatus() => Status(
         Ratified, "Ratified", StatusPolarity.Debuff,
-        $"Until the end of your turn, each Deed aimed at this character deals {RatifyBonus} more damage.",
+        "Until the end of your turn, each hit of a Deed aimed at this character deals double damage.",
         passives:
         [
             new PassiveModifierData(PassiveModifierPipeline.DamageReceived,
-                PassiveModifierOperation.AddFlat, RatifyBonus, RestrictDamageKind: DamageKind.Direct,
-                RestrictSourceCardTag: CardAuthoring.DeedTag, OncePerAction: true),
+                PassiveModifierOperation.ScalePercent, RatifyPercent, RestrictDamageKind: DamageKind.Direct,
+                RestrictSourceCardTag: CardAuthoring.DeedTag),
         ],
         triggers:
         [
@@ -395,8 +395,10 @@ public static class Keywords
         ]);
 
     // "Lien X: at the end of the holder's turn, remove up to X remaining Block. The holder loses the same
-    // amount of HP. Reduce Lien by the amount resolved. If the holder has no remaining Block, Lien does not
-    // decay."
+    // amount of HP." Lien built up on an ENEMY stays — it punishes every Block that enemy raises for the rest
+    // of the fight (user, 2026-10-02: it used to be reduced by what it took, and Lien came last in the family
+    // bench). Lien the player takes on THEMSELVES (Mortgaged Aegis) still pays down: a permanent debt on the
+    // player would turn a defensive card into a curse.
     //
     // min(Block, Lien) without a scratch value is the Bookworm problem again: whichever side is removed first
     // changes what the second read sees. Branching on which is smaller keeps every read on a value that has
@@ -404,12 +406,12 @@ public static class Keywords
     private static StatusData LienStatus() => Status(
         Lien, "Lien", StatusPolarity.Debuff,
         "At the end of its turn, this character loses up to X remaining Block and the same amount of HP. " +
-        "Lien is reduced by what it took. No Block, no decay.",
+        "Lien on an enemy never decays; on you it is reduced by what it took.",
         triggers: [Trigger(TurnEnded(ResolveLien<TurnEndedTriggeredEffectContext>(
             CombatantTargetSelectors.Source, cap: null)))]);
 
     // One complete Lien resolution on a holder: take up to `cap` (or all of it) of what the Lien can claim,
-    // in Block and the same in HP, and reduce the Lien by what it took.
+    // in Block and the same in HP. Only the player's own Lien is reduced by what it took.
     //
     // The claim is worked out first and written to a counter, because each of the three steps changes a value
     // the next would otherwise read — remove the Block and the claim shrinks under you. The counter is the
@@ -431,9 +433,13 @@ public static class Keywords
             new SetCombatantCounterNode<TContext>(holder, LienResolvedCounter, claim, relative: false),
             new ModifyDefensivePoolNode<TContext>(holder, StandardCombatIds.BlockDefensivePool, Negate(taken)),
             HpLoss<TContext>(holder, taken),
-            new ModifyStatusStacksNode<TContext>(holder, new StatusDefinitionId(Lien), Negate(taken)),
-            UsurersMoonCitation<TContext>(holder, taken, perCitation: 3, moon: UsurersMoon),
-            UsurersMoonCitation<TContext>(holder, taken, perCitation: 2, moon: UsurersMoonPlus),
+            new ConditionalEffectNode<TContext>(
+                Wears<TContext>(holder, ApplicantMarker),
+                new ModifyStatusStacksNode<TContext>(holder, new StatusDefinitionId(Lien), Negate(taken))),
+            // Citation half again (user, 2026-10-02): 1 per 3 Block became 1 per 2; the upgrade's 1 per 2 became
+            // 3 per 4.
+            UsurersMoonCitation<TContext>(holder, taken, citations: 1, perBlock: 2, moon: UsurersMoon),
+            UsurersMoonCitation<TContext>(holder, taken, citations: 3, perBlock: 4, moon: UsurersMoonPlus),
 
             // Debt Ouroboros: a resolved claim renews itself at half, rounded down, at most 4.
             new ConditionalEffectNode<TContext>(
@@ -450,7 +456,7 @@ public static class Keywords
     // "Whenever Lien removes Block from an enemy, apply 1 Citation for every N Block removed, maximum 3 per
     // resolution." Asked inside the resolution, because only the resolution knows how much it took.
     private static IEffectNode<TContext> UsurersMoonCitation<TContext>(
-        ICombatantTargetSelector holder, ICombatExpression<TContext, int> taken, int perCitation, string moon)
+        ICombatantTargetSelector holder, ICombatExpression<TContext, int> taken, int citations, int perBlock, string moon)
         where TContext : class =>
         new ConditionalEffectNode<TContext>(
             new AndExpression<TContext>(
@@ -464,8 +470,12 @@ public static class Keywords
                     new TargetHasStatusExpression<TContext>(holder, new StatusDefinitionId(ApplicantMarker)))),
             new ApplyStatusNode<TContext>(holder, new StatusDefinitionId(Citation),
                 new MinExpression<TContext>(
-                    new DivideExpression<TContext>(taken, new ConstantExpression<TContext>(perCitation)),
-                    new ConstantExpression<TContext>(3))));
+                    new DivideExpression<TContext>(
+                        new MultiplyExpression<TContext>(taken, new ConstantExpression<TContext>(citations)),
+                        new ConstantExpression<TContext>(perBlock)),
+                    new ConstantExpression<TContext>(UsurersMoonMax))));
+
+    public const int UsurersMoonMax = 5;
 
     // "Citation X: after the holder resolves a NON-DAMAGING action, it loses X HP. Then remove 1 Citation."
     //

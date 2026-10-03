@@ -40,7 +40,7 @@ public class WholeRunTests
         // picked up again at any point along it.
         var report = RunWalker.Walk(Shipped(), seed: 4711, saveEvery: 5);
 
-        Assert.Null(report.Error);
+        Assert.True(report.Error is null, report.Error);
         Assert.Empty(report.Notes);
         Assert.Equal(RunResult.Victory, report.Result);
         Assert.Equal(Game.Acts!.Count, report.ActsWalked);

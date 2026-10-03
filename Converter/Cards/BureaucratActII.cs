@@ -137,9 +137,9 @@ public static class BureaucratActII
             "Remove up to 5 Paperwork from an enemy. Gain 4 Block for each Paperwork removed.",
             RedactPaperwork(5, 4)),
 
-        SmudgedIndex, SmudgedIndex.Upgraded("Archive a card from your draw pile. Gain 9 Block and 1 Ward Wax.",
+        SmudgedIndex, SmudgedIndex.Upgraded("Archive a card from your draw pile. Gain 9 Block and 2 Ward Wax.",
             Seq(Archive(new CombatCardSpec("chosen", CardZone.DrawPile, Purpose: "choose a card to Archive")),
-                Block(9), Apply(Keywords.WardWax, 1, You))),
+                Block(9), Apply(Keywords.WardWax, 2, You))),
 
         ClutterConcordance, ClutterConcordance.Upgraded(
             "Deal 9 damage, plus 3 damage for each different Junk type currently present across your discard " +

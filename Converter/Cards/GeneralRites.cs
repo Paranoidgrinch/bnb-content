@@ -43,8 +43,8 @@ public static class GeneralRites
         HearingOwedStatus(7, HearingOwed),
         Hearing(SilentHearing + "+", "Silent Hearing+", 10, HearingOwed + "+"),
         HearingOwedStatus(10, HearingOwed + "+"),
-        Mantle(SealedMantle, 2),
-        Mantle(SealedMantle + "+", 3),
+        Mantle(SealedMantle, 3),
+        Mantle(SealedMantle + "+", 4),
         Charm(),
     ];
 
@@ -98,8 +98,9 @@ public static class GeneralRites
     }
 
     // ── Reciprocal Edict ──────────────────────────────────────────────────────────────────────────────────
-    // "The first time each turn your Censure prevents a negative Status applied by an enemy, apply 2 Censure
-    // to that enemy. The first time each turn Censure prevents a positive Status on an enemy, gain 1 Censure."
+    // "The first time each turn your Censure prevents a negative Status applied by an enemy, apply 3 Censure
+    // to that enemy. The first time each turn Censure prevents a positive Status on an enemy, gain 2 Censure."
+    // (2 and 1 until the Censure numbers grew by half, user 2026-10-02.)
     //
     // Both halves are the same event seen from either side of the fight: a refusal reports who refused
     // (source) and who was refused (eventTarget). Which half is which is decided by whether the refuser is
@@ -138,14 +139,14 @@ public static class GeneralRites
                 new SequenceEffectNode<StatusApplicationBlockedTriggeredEffectContext>(
                 [
                     // YOUR Censure refused something an enemy filed: that enemy is Censured back.
-                    Half(EdictOnYou, refuserIsApplicant: true, applier, 2),
+                    Half(EdictOnYou, refuserIsApplicant: true, applier, 3),
                     // An ENEMY's Censure refused a buff: you gain a Censure of your own.
-                    Half(EdictOnThem, refuserIsApplicant: false, wearer, 1),
+                    Half(EdictOnThem, refuserIsApplicant: false, wearer, 2),
                 ])));
 
         return Rite(id, name,
-            "The first time each turn your Censure prevents a status an enemy filed, apply 2 Censure to that " +
-            "enemy. The first time each turn Censure prevents a status on an enemy, gain 1 Censure.",
+            "The first time each turn your Censure prevents a status an enemy filed, apply 3 Censure to that " +
+            "enemy. The first time each turn Censure prevents a status on an enemy, gain 2 Censure.",
             [
                 Trigger(program, nameof(TriggerEvent.StatusApplicationPrevented), StatusTriggerScope.Anywhere),
                 ClearLatch(EdictOnYou),
@@ -247,7 +248,7 @@ public static class GeneralRites
     };
 
     // ── Sealed Mantle ─────────────────────────────────────────────────────────────────────────────────────
-    // "If at least one enemy attacks during this enemy turn and you take no unblocked Attack damage, gain 2
+    // "If at least one enemy attacks during this enemy turn and you take no unblocked Attack damage, gain 3
     // Ward Wax."
     //
     // Both halves are already counted for us: an enemy action that struck announces itself when it closes

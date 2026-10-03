@@ -73,8 +73,8 @@ public static class ActIVCards
 
     private static readonly BnbCard SovereignProhibition = new(
         "sovereign_prohibition", "Sovereign Prohibition", WorkingTag, 2,
-        "Gain 3 Censure and 6 Block. Apply 3 Censure to ALL enemies.",
-        Seq(Apply(Keywords.Censure, 3, You), Block(6), Apply(Keywords.Censure, 3, AllEnemies)),
+        "Gain 5 Censure and 6 Block. Apply 5 Censure to ALL enemies.",
+        Seq(Apply(Keywords.Censure, 5, You), Block(6), Apply(Keywords.Censure, 5, AllEnemies)),
         Rarity: "uncommon", Act: Act);
 
     private static readonly BnbCard CandleCathedral = Rite(
@@ -185,7 +185,7 @@ public static class ActIVCards
             Tribunal(21)),
 
         SovereignProhibition, SovereignProhibition.Upgraded(
-            "Gain 3 Censure and 6 Block. Apply 3 Censure to ALL enemies.", cost: 1),
+            "Gain 5 Censure and 6 Block. Apply 5 Censure to ALL enemies.", cost: 1),
 
         CandleCathedral, CandleCathedral.UpgradedRite(ActIVRites.CandleCathedral,
             "Whenever Ward Wax grants Block, gain additional Block equal to half your Ward Wax, rounded up. " +

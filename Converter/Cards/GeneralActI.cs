@@ -15,7 +15,7 @@ public static class GeneralActI
 
     private static readonly BnbCard MaledictionReview = new(
         "malediction_review", "Malediction Review", WorkingTag, 1,
-        "Gain 6 Block. Choose one: gain 2 Censure; or apply 2 Censure to an enemy.",
+        "Gain 6 Block. Choose one: gain 3 Censure; or apply 3 Censure to an enemy.",
         Seq(Block(6), CensureChoice()),
         Rarity: "uncommon");
 
@@ -29,20 +29,20 @@ public static class GeneralActI
     // Attack. Asked as the ELSE of "intends to Attack", which is the same question the other way round.
     private static readonly BnbCard WitchmarkCitation = new(
         "witchmark_citation", "Witchmark Citation", WorkingTag, 1,
-        "Apply 3 Citation. If the target currently intends a non-damaging action, draw 1 card.",
-        Seq(Apply(Keywords.Citation, 3), IfIntendsHarm(then: Seq(), otherwise: Draw(1))),
+        "Apply 5 Citation. If the target currently intends a non-damaging action, draw 1 card.",
+        Seq(Apply(Keywords.Citation, 5), IfIntendsHarm(then: Seq(), otherwise: Draw(1))),
         Rarity: "uncommon");
 
     private static readonly BnbCard BloodMarginalia = new(
         "blood_marginalia", "Blood Marginalia", WorkingTag, 1,
-        "Apply 3 Citation and 2 Blood Ink.",
-        Seq(Apply(Keywords.Citation, 3), Apply(Keywords.BloodInk, 2)),
+        "Apply 5 Citation and 3 Blood Ink.",
+        Seq(Apply(Keywords.Citation, 5), Apply(Keywords.BloodInk, 3)),
         Rarity: "uncommon");
 
     private static readonly BnbCard WaxenSurety = new(
         "waxen_surety", "Waxen Surety", WorkingTag, 1,
-        "Gain 5 Ward Wax.",
-        Apply(Keywords.WardWax, 5, You),
+        "Gain 7 Ward Wax.",
+        Apply(Keywords.WardWax, 7, You),
         Rarity: "uncommon");
 
     private static readonly BnbCard Foreclosure = new(
@@ -59,8 +59,8 @@ public static class GeneralActI
 
     private static readonly BnbCard TallowReserve = new(
         "tallow_reserve", "Tallow Reserve", WorkingTag, 0,
-        "Requires at least 6 Block. Lose 6 Block. Gain 3 Ward Wax. Exhaust.",
-        SpendBlockForWax(6, 3),
+        "Requires at least 6 Block. Lose 6 Block. Gain 4 Ward Wax. Exhaust.",
+        SpendBlockForWax(6, 4),
         Rarity: "uncommon", Tags: [ExhaustTag]);
 
     private static readonly BnbCard MortgageSigil = new(
@@ -72,14 +72,14 @@ public static class GeneralActI
 
     private static readonly BnbCard SilentHearing = new(
         "silent_hearing", "Silent Hearing", WorkingTag, 1,
-        "Apply 2 Citation. Until your next turn, if the target performs a damaging action, gain 7 Block.",
-        Seq(Apply(Keywords.Citation, 2), Apply(GeneralRites.SilentHearing, 1)),
+        "Apply 3 Citation. Until your next turn, if the target performs a damaging action, gain 7 Block.",
+        Seq(Apply(Keywords.Citation, 3), Apply(GeneralRites.SilentHearing, 1)),
         Rarity: "uncommon");
 
     private static readonly BnbCard SealedMantle = new(
         "sealed_mantle", "Sealed Mantle", WorkingTag, 1,
         "Gain 8 Block. If at least one enemy attacks during this enemy turn and you take no unblocked Attack " +
-        "damage, gain 2 Ward Wax.",
+        "damage, gain 3 Ward Wax.",
         Seq(Block(8), Apply(GeneralRites.SealedMantle, 1, You)),
         Rarity: "uncommon");
 
@@ -126,14 +126,14 @@ public static class GeneralActI
 
     private static readonly BnbCard ReciprocalEdict = Rite(
         "reciprocal_edict", "Reciprocal Edict", GeneralRites.ReciprocalEdict, 2,
-        "The first time each turn your Censure prevents a negative Status applied by an enemy, apply 2 " +
+        "The first time each turn your Censure prevents a negative Status applied by an enemy, apply 3 " +
         "Censure to that enemy. The first time each turn Censure prevents a positive Status on an enemy, " +
-        "gain 1 Censure.",
+        "gain 2 Censure.",
         rarity: "rare");
 
     private static readonly BnbCard UsurersMoon = Rite(
         "usurers_moon", "Usurer's Moon", Keywords.UsurersMoon, 1,
-        "Whenever Lien removes Block from an enemy, apply 1 Citation for every 3 Block removed, maximum 3 " +
+        "Whenever Lien removes Block from an enemy, apply 1 Citation for every 2 Block removed, maximum 5 " +
         "Citation per Lien resolution.",
         rarity: "rare");
 
@@ -142,21 +142,21 @@ public static class GeneralActI
     public static IEnumerable<BnbCard> All() =>
     [
         MaledictionReview, MaledictionReview.Upgraded(
-            "Gain 9 Block. Gain 2 Censure and apply 2 Censure to an enemy.",
-            Seq(Block(9), Apply(Keywords.Censure, 2, You), Apply(Keywords.Censure, 2))),
+            "Gain 9 Block. Gain 3 Censure and apply 3 Censure to an enemy.",
+            Seq(Block(9), Apply(Keywords.Censure, 3, You), Apply(Keywords.Censure, 3))),
 
         GraveLien, GraveLien.Upgraded("Deal 15 damage and apply 9 Lien to ALL enemies.",
             Seq(Damage(15, AllEnemies), Apply(Keywords.Lien, 9, AllEnemies))),
 
         WitchmarkCitation, WitchmarkCitation.Upgraded(
-            "Apply 5 Citation. If the target currently intends a non-damaging action, apply 2 more.",
-            Seq(Apply(Keywords.Citation, 5), IfIntendsHarm(then: Seq(), otherwise: Apply(Keywords.Citation, 2)))),
+            "Apply 8 Citation. If the target currently intends a non-damaging action, apply 3 more.",
+            Seq(Apply(Keywords.Citation, 8), IfIntendsHarm(then: Seq(), otherwise: Apply(Keywords.Citation, 3)))),
 
-        BloodMarginalia, BloodMarginalia.Upgraded("Apply 4 Citation and 3 Blood Ink.",
-            Seq(Apply(Keywords.Citation, 4), Apply(Keywords.BloodInk, 3))),
+        BloodMarginalia, BloodMarginalia.Upgraded("Apply 6 Citation and 5 Blood Ink.",
+            Seq(Apply(Keywords.Citation, 6), Apply(Keywords.BloodInk, 5))),
 
-        WaxenSurety, WaxenSurety.Upgraded("Gain 5 Ward Wax. Gain Block equal to your Ward Wax.",
-            Seq(Apply(Keywords.WardWax, 5, You), Block(Stacks(Keywords.WardWax, You)))),
+        WaxenSurety, WaxenSurety.Upgraded("Gain 7 Ward Wax. Gain Block equal to your Ward Wax.",
+            Seq(Apply(Keywords.WardWax, 7, You), Block(Stacks(Keywords.WardWax, You)))),
 
         Foreclosure, Foreclosure.Upgraded("Deal 9 damage. Then immediately resolve up to 8 Lien on the target.",
             Seq(Damage(9), ResolveLienNow(8))),
@@ -166,7 +166,7 @@ public static class GeneralActI
             "removed.", CashOutCitation(3, damageEach: 2)),
 
         TallowReserve, TallowReserve.Upgraded(
-            "Requires at least 6 Block. Lose 6 Block. Gain 5 Ward Wax. Exhaust.", SpendBlockForWax(6, 5)),
+            "Requires at least 6 Block. Lose 6 Block. Gain 7 Ward Wax. Exhaust.", SpendBlockForWax(6, 7)),
 
         MortgageSigil, MortgageSigil.Upgraded(
             "Apply 5 Lien. The next time the target gains Block before the end of its next turn, apply 5 " +
@@ -174,12 +174,12 @@ public static class GeneralActI
             Seq(Apply(Keywords.Lien, 5), Apply(GeneralRites.MortgageSigil + "+", 1))),
 
         SilentHearing, SilentHearing.Upgraded(
-            "Apply 3 Citation. Until your next turn, if the target performs a damaging action, gain 10 Block.",
-            Seq(Apply(Keywords.Citation, 3), Apply(GeneralRites.SilentHearing + "+", 1))),
+            "Apply 5 Citation. Until your next turn, if the target performs a damaging action, gain 10 Block.",
+            Seq(Apply(Keywords.Citation, 5), Apply(GeneralRites.SilentHearing + "+", 1))),
 
         SealedMantle, SealedMantle.Upgraded(
             "Gain 12 Block. If at least one enemy attacks during this enemy turn and you take no unblocked " +
-            "Attack damage, gain 3 Ward Wax.",
+            "Attack damage, gain 4 Ward Wax.",
             Seq(Block(12), Apply(GeneralRites.SealedMantle + "+", 1, You))),
 
         BorrowedCandle, BorrowedCandle.Upgraded(
@@ -191,9 +191,9 @@ public static class GeneralActI
             "that Status, apply 1 additional stack of it.", cost: 0),
 
         SanctionedCharm, SanctionedCharm.Upgraded(
-            "Gain 9 Block and 1 Censure. Until your next turn, the first time your Censure prevents a negative " +
+            "Gain 9 Block and 2 Censure. Until your next turn, the first time your Censure prevents a negative " +
             "Status, the Censure used to prevent it is not consumed.",
-            Seq(Block(9), Apply(Keywords.Censure, 1, You), Apply(GeneralRites.SanctionedCharm, 1, You))),
+            Seq(Block(9), Apply(Keywords.Censure, 2, You), Apply(GeneralRites.SanctionedCharm, 1, You))),
 
         ForfeitSeal, ForfeitSeal.Upgraded(
             "Deal 11 damage. Apply 4 Lien; 8 if the target still has Block after this attack.",
@@ -209,13 +209,13 @@ public static class GeneralActI
             DawnStrike(27, bonus: 12)),
 
         ReciprocalEdict, ReciprocalEdict.UpgradedRite(GeneralRites.ReciprocalEdict,
-            "The first time each turn your Censure prevents a negative Status applied by an enemy, apply 2 " +
+            "The first time each turn your Censure prevents a negative Status applied by an enemy, apply 3 " +
             "Censure to that enemy. The first time each turn Censure prevents a positive Status on an enemy, " +
-            "gain 1 Censure.", cost: 1),
+            "gain 2 Censure.", cost: 1),
 
         UsurersMoon, UsurersMoon.UpgradedRite(Keywords.UsurersMoon,
-            "Whenever Lien removes Block from an enemy, apply 1 Citation for every 2 Block removed, maximum " +
-            "3 Citation per Lien resolution."),
+            "Whenever Lien removes Block from an enemy, apply 3 Citation for every 4 Block removed, maximum " +
+            "5 Citation per Lien resolution."),
     ];
 
     // ── shapes ────────────────────────────────────────────────────────────────────────────────────────────
@@ -227,12 +227,12 @@ public static class GeneralActI
     private static BnbCard UpgradedRite(this BnbCard card, string riteStatusId, string text, int? cost = null) =>
         card.Upgraded(text, InstallRite(riteStatusId + "+"), cost);
 
-    // "Choose one: gain 2 Censure; or apply 2 Censure to an enemy." Both halves of Censure on one card, which
+    // "Choose one: gain 3 Censure; or apply 3 Censure to an enemy." Both halves of Censure on one card, which
     // is how the general pool introduces a status that reads differently on each side of the fight.
     private static CombatNodeModel CensureChoice() =>
         CombatNodeModel.ChooseOptions(
-            1, ["gain 2 Censure", "apply 2 Censure to an enemy"],
-            [Apply(Keywords.Censure, 2, You), Apply(Keywords.Censure, 2)],
+            1, ["gain 3 Censure", "apply 3 Censure to an enemy"],
+            [Apply(Keywords.Censure, 3, You), Apply(Keywords.Censure, 3)],
             "choose one");
 
     // "If the target intends a damaging action" as a branch with both arms, so the ELSE is the non-damaging
@@ -242,6 +242,7 @@ public static class GeneralActI
 
     // "Resolve up to N Lien on the target immediately" — the same resolution the status runs at a turn's end,
     // capped, and paid out of the scratch counter that makes it possible at all (see Keywords.ResolveLien).
+    // Like that resolution, it no longer spends the Lien: on an enemy, Lien stays (user, 2026-10-02).
     private static CombatNodeModel ResolveLienNow(int cap) =>
         Seq(
             SetCounterOn(Target, Keywords.LienResolvedCounter,
@@ -255,10 +256,7 @@ public static class GeneralActI
                 CombatAmountSpec.Binary("sub", CombatAmountSpec.FromConst(0), Taken()),
                 PoolId: StandardCombatIds.BlockDefensivePool.value),
             new CombatNodeModel("dealDamage", Target, Taken(),
-                IgnoresBlock: true, DamageKind: DamageKind.DamageOverTime),
-            new CombatNodeModel("modifyStatusStacks", Target,
-                CombatAmountSpec.Binary("sub", CombatAmountSpec.FromConst(0), Taken()),
-                StatusId: Keywords.Lien));
+                IgnoresBlock: true, DamageKind: DamageKind.DamageOverTime));
 
     private static CombatAmountSpec Taken() =>
         new("counter", SelectorKey: Target, CounterId: Keywords.LienResolvedCounter.value);

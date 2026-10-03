@@ -41,19 +41,19 @@ public class GeneralCardTests
         var (play, session, enemyId) = Fight("malediction_review", "paper_cut", "paper_cut");
 
         Play(play, session, "malediction_review", enemyId);
-        Assert.Equal(["gain 2 Censure", "apply 2 Censure to an enemy"], play.CombatDriver!.PendingOptionChoice);
+        Assert.Equal(["gain 3 Censure", "apply 3 Censure to an enemy"], play.CombatDriver!.PendingOptionChoice);
 
         play.CombatDriver.SupplyOptionChoice([1]);
         Assert.Null(session.Error);
 
         Assert.Equal(6, Block(Hero(play)));
-        Assert.Equal(2, FightProbe.StacksOf(Enemy(play, enemyId), Keywords.Censure));
+        Assert.Equal(3, FightProbe.StacksOf(Enemy(play, enemyId), Keywords.Censure));
         Assert.Equal(0, FightProbe.StacksOf(Hero(play), Keywords.Censure));
         play.Dispose();
     }
 
     // "Deal 6 damage. Then immediately resolve up to 5 Lien on the target." The resolution takes Block and
-    // the same in HP, and reduces the Lien by exactly what it took — capped at 5 however deep the Lien is.
+    // the same in HP — capped at 5 however deep the Lien is — and the Lien on an enemy STAYS (user, 2026-10-03).
     [Fact]
     public void Foreclosure_calls_in_the_lien_it_can_reach_and_no_more()
     {
@@ -69,10 +69,10 @@ public class GeneralCardTests
         var health = Enemy(play, enemyId).Health.Current;
         Play(play, session, "foreclosure", enemyId);
 
-        // 6 struck at the guard (10 → 4), then the claim takes what it can: 3 Block, 3 HP, and the Lien clears.
+        // 6 struck at the guard (10 → 4), then the claim takes what it can: 3 Block, 3 HP — and the Lien stays.
         Assert.Equal(1, Block(Enemy(play, enemyId)));
         Assert.Equal(health - 3, Enemy(play, enemyId).Health.Current);
-        Assert.Equal(0, FightProbe.StacksOf(Enemy(play, enemyId), Keywords.Lien));
+        Assert.Equal(3, FightProbe.StacksOf(Enemy(play, enemyId), Keywords.Lien));
         play.Dispose();
     }
 
@@ -105,7 +105,7 @@ public class GeneralCardTests
         Play(play, session, "deskward", enemyId); // 8 Block
         Play(play, session, "tallow_reserve", enemyId);
         Assert.Equal(2, Block(Hero(play)));
-        Assert.Equal(3, FightProbe.StacksOf(Hero(play), Keywords.WardWax));
+        Assert.Equal(4, FightProbe.StacksOf(Hero(play), Keywords.WardWax));
         play.Dispose();
     }
 
@@ -127,7 +127,7 @@ public class GeneralCardTests
         play.Dispose();
     }
 
-    // "Apply 3 Citation. If the target currently intends a non-damaging action, draw 1 card."
+    // "Apply 5 Citation. If the target currently intends a non-damaging action, draw 1 card."
     [Fact]
     public void Witchmark_citation_reads_what_the_enemy_means_to_do()
     {
@@ -138,7 +138,7 @@ public class GeneralCardTests
         var (play, session, enemyId) = Fight(deck);
         var hand = play.CombatDriver!.Current!.Hand.Count;
         Play(play, session, "witchmark_citation", enemyId);
-        Assert.Equal(3, FightProbe.StacksOf(Enemy(play, enemyId), Keywords.Citation));
+        Assert.Equal(5, FightProbe.StacksOf(Enemy(play, enemyId), Keywords.Citation));
         Assert.Equal(hand, play.CombatDriver.Current!.Hand.Count);
         play.Dispose();
 
@@ -161,7 +161,7 @@ public class GeneralCardTests
             ["silent_hearing", "paper_cut", "paper_cut"]);
 
         Play(play, session, "silent_hearing", enemyId);
-        Assert.Equal(2, FightProbe.StacksOf(Enemy(play, enemyId), Keywords.Citation));
+        Assert.Equal(3, FightProbe.StacksOf(Enemy(play, enemyId), Keywords.Citation));
 
         play.CombatDriver!.EndTurn();
         Assert.Null(session.Error);
@@ -185,10 +185,11 @@ public class GeneralCardTests
         play.CombatDriver!.EndTurn(); // the Tablet guards itself — and pays for it
         Assert.Null(session.Error);
 
-        // 3 more Lien filed, then the Lien resolved against the very Block that triggered it.
+        // 3 more Lien filed, then the Lien resolved against the very Block that triggered it: the Tablet's 10
+        // Block lost 6, and the same in HP. The Lien itself stays — on an enemy it never runs out.
         Assert.Equal(0, FightProbe.StacksOf(Enemy(play, enemyId), GeneralRites.MortgageSigil));
-        Assert.True(FightProbe.StacksOf(Enemy(play, enemyId), Keywords.Lien) < 6,
-            "the claim resolved against the Block it charged for");
+        Assert.Equal(6, FightProbe.StacksOf(Enemy(play, enemyId), Keywords.Lien));
+        Assert.Equal(4, Block(Enemy(play, enemyId)));
         play.Dispose();
     }
 
@@ -212,7 +213,7 @@ public class GeneralCardTests
         play.Dispose();
     }
 
-    // "Whenever Lien removes Block from an enemy, apply 1 Citation for every 3 Block removed, maximum 3."
+    // "Whenever Lien removes Block from an enemy, apply 1 Citation for every 2 Block removed, maximum 5."
     [Fact]
     public void Usurers_moon_files_citation_for_the_block_a_lien_takes()
     {
@@ -223,8 +224,8 @@ public class GeneralCardTests
         play.CombatDriver!.EndTurn(); // the Tablet guards for 10, then its Lien takes 9 of it
         Assert.Null(session.Error);
 
-        // 9 Block taken → 3 Citation, which is also the ceiling.
-        Assert.Equal(3, FightProbe.StacksOf(Enemy(play, enemyId), Keywords.Citation));
+        // 9 Block taken → 4 Citation (one per 2, rounded down), under the ceiling of 5.
+        Assert.Equal(4, FightProbe.StacksOf(Enemy(play, enemyId), Keywords.Citation));
         play.Dispose();
     }
 
@@ -266,6 +267,44 @@ public class GeneralCardTests
         energy = Hero(play).Resources[StandardCombatIds.EnergyResource].Current;
         Play(play, session, "paper_cut", enemyId);
         Assert.Equal(energy - 1, Hero(play).Resources[StandardCombatIds.EnergyResource].Current); // back to normal
+        play.Dispose();
+    }
+
+    // Lien on an ENEMY never runs out (user, 2026-10-03) — but the Lien the player takes on themselves still
+    // pays down, or Mortgaged Aegis would be a curse for the rest of the fight: its 8 Lien takes the 8 Block
+    // standing at the end of the turn, 8 HP with it, and is gone.
+    [Fact]
+    public void The_players_own_lien_still_pays_down_what_it_took()
+    {
+        var (play, session, enemyId) = Fight("mortgaged_aegis", "deskward", "deskward", "paper_cut", "paper_cut");
+
+        Play(play, session, "mortgaged_aegis", enemyId);
+        play.CombatDriver!.EndTurn();
+        Assert.Null(session.Error);
+        Assert.Equal(8, FightProbe.StacksOf(Hero(play), Keywords.Lien));
+
+        Play(play, session, "deskward", enemyId); // 8 Block
+        var health = Hero(play).Health.Current;
+        play.CombatDriver.EndTurn();
+        Assert.Null(session.Error);
+
+        Assert.Equal(health - 8, Hero(play).Health.Current);
+        Assert.Equal(0, FightProbe.StacksOf(Hero(play), Keywords.Lien));
+        play.Dispose();
+    }
+
+    // "Remove up to 6 stacks of a negative Status from an enemy. Apply 2 Blood Ink per stack removed." Two
+    // a stack, not one — the Blood Ink numbers grew by half and the player wants no 1.5 on a card.
+    [Fact]
+    public void Blood_redaction_turns_each_stack_it_takes_into_two_blood_ink()
+    {
+        var (play, session, enemyId) = Fight("cursed_addendum", "blood_redaction", "paper_cut");
+
+        Play(play, session, "cursed_addendum", enemyId); // 2 Paperwork
+        Play(play, session, "blood_redaction", enemyId);
+
+        Assert.Equal(0, FightProbe.StacksOf(Enemy(play, enemyId), Keywords.Paperwork));
+        Assert.Equal(4, FightProbe.StacksOf(Enemy(play, enemyId), Keywords.BloodInk));
         play.Dispose();
     }
 }

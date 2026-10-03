@@ -21,13 +21,13 @@ public static class GeneralActIII
 
     private static readonly BnbCard WaxReliquary = new(
         "wax_reliquary", "Wax Reliquary", WorkingTag, 1,
-        "Gain 4 Ward Wax. Until your next turn, Ward Wax cannot suffer its additional decay.",
-        Seq(Apply(Keywords.WardWax, 4, You), Apply(GeneralWax.WaxReliquary, 1, You)),
+        "Gain 5 Ward Wax. Until your next turn, Ward Wax cannot suffer its additional decay.",
+        Seq(Apply(Keywords.WardWax, 5, You), Apply(GeneralWax.WaxReliquary, 1, You)),
         Rarity: "uncommon", Act: Act);
 
     private static readonly BnbCard ConsecratedTestament = Rite(
         "consecrated_testament", "Consecrated Testament", GeneralWax.ConsecratedTestament, 1,
-        "The first 3 times each turn an enemy loses HP because of a Status effect, gain 1 Ward Wax.");
+        "The first 3 times each turn an enemy loses HP because of a Status effect, gain 2 Ward Wax.");
 
     private static readonly BnbCard MortgagedAegis = new(
         "mortgaged_aegis", "Mortgaged Aegis", WorkingTag, 1,
@@ -74,7 +74,7 @@ public static class GeneralActIII
 
     private static readonly BnbCard DebtOuroboros = Rite(
         "debt_ouroboros", "Debt Ouroboros", GeneralWax.DebtOuroboros, 2,
-        "Whenever Lien resolves, apply Lien equal to half the amount consumed, rounded down, maximum 4.",
+        "Whenever Lien takes Block, apply Lien equal to half of what it took, rounded down, maximum 4.",
         rarity: "rare");
 
     // ── the pool ──────────────────────────────────────────────────────────────────────────────────────────
@@ -86,11 +86,11 @@ public static class GeneralActIII
             "loses 1 Blood Ink.", Tithe(12, times: 3)),
 
         WaxReliquary, WaxReliquary.Upgraded(
-            "Gain 7 Ward Wax. Until your next turn, Ward Wax cannot suffer its additional decay.",
-            Seq(Apply(Keywords.WardWax, 7, You), Apply(GeneralWax.WaxReliquary, 1, You))),
+            "Gain 9 Ward Wax. Until your next turn, Ward Wax cannot suffer its additional decay.",
+            Seq(Apply(Keywords.WardWax, 9, You), Apply(GeneralWax.WaxReliquary, 1, You))),
 
         ConsecratedTestament, ConsecratedTestament.UpgradedRite(GeneralWax.ConsecratedTestament,
-            "The first 4 times each turn an enemy loses HP because of a Status effect, gain 1 Ward Wax."),
+            "The first 4 times each turn an enemy loses HP because of a Status effect, gain 2 Ward Wax."),
 
         MortgagedAegis, MortgagedAegis.Upgraded(
             "Gain 27 Block. At the start of your next turn, gain 6 Lien.",
@@ -117,7 +117,7 @@ public static class GeneralActIII
             "the start of your next turn, draw 1 card per Refusal, maximum 2, and gain 1 Energy.", cost: 1),
 
         DebtOuroboros, DebtOuroboros.UpgradedRite(GeneralWax.DebtOuroboros,
-            "Whenever Lien resolves, apply Lien equal to half the amount consumed, rounded down, maximum 4.",
+            "Whenever Lien takes Block, apply Lien equal to half of what it took, rounded down, maximum 4.",
             cost: 1),
     ];
 

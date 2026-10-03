@@ -65,9 +65,9 @@ public class BureaucratCardTests
         play.Dispose();
     }
 
-    // "Ratified: each Deed aimed at this enemy deals +5 total direct damage, until the end of your turn."
+    // "Ratified: each hit of a Deed aimed at this enemy deals double damage, until the end of your turn."
     [Fact]
-    public void A_ratified_enemy_takes_five_more_from_every_deed_until_the_turn_ends()
+    public void A_ratified_enemy_takes_double_from_every_deed_until_the_turn_ends()
     {
         var (play, session, enemyId) = FightProbe.Start(
             FightProbe.Solo(Quiet, QuietIntent, energy: 9),
@@ -79,7 +79,7 @@ public class BureaucratCardTests
 
         var before = Enemy(play, enemyId).Health.Current;
         Play(play, session, "paper_cut", enemyId);
-        Assert.Equal(before - 11, Enemy(play, enemyId).Health.Current); // 6 + 5
+        Assert.Equal(before - 12, Enemy(play, enemyId).Health.Current); // 6 × 2
 
         // The window closes when the player's turn does.
         play.CombatDriver!.EndTurn();

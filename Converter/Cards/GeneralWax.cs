@@ -47,6 +47,9 @@ public static class GeneralWax
     //
     // A status effect's HP loss is the DamageOverTime kind — the one every keyword in this game uses for its
     // tick, and the one no ordinary attack carries. The count is kept on the wearer and reset each turn.
+    // 1 until the Ward Wax numbers grew by a quarter, rounded up (user, 2026-10-02).
+    private const int TestamentWax = 2;
+
     private static StatusData Testament(string id, string name, int times)
     {
         var wearer = CombatantTargetSelectors.IterationTarget;
@@ -75,13 +78,13 @@ public static class GeneralWax
                         [
                             new ApplyStatusNode<DamageReceivedTriggeredEffectContext>(
                                 wearer, new StatusDefinitionId(Keywords.WardWax),
-                                new ConstantExpression<DamageReceivedTriggeredEffectContext>(1)),
+                                new ConstantExpression<DamageReceivedTriggeredEffectContext>(TestamentWax)),
                             new SetCombatantCounterNode<DamageReceivedTriggeredEffectContext>(
                                 wearer, TestamentPaid,
                                 new ConstantExpression<DamageReceivedTriggeredEffectContext>(1), relative: true),
                         ])))));
 
-        return Rite(id, name, $"The first {times} times each turn a status costs an enemy HP, gain 1 Ward Wax.",
+        return Rite(id, name, $"The first {times} times each turn a status costs an enemy HP, gain {TestamentWax} Ward Wax.",
         [
             Trigger(program, nameof(TriggerEvent.DamageTaken), StatusTriggerScope.Anywhere),
             ClearLatch(TestamentPaid),

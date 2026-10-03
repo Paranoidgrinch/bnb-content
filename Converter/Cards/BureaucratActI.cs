@@ -341,8 +341,8 @@ public static class BureaucratActI
             Seq(Damage(15), AddCard(BureaucratStarter.DuplicateCopy.Id, CardZone.DiscardPile))),
 
         OccultPrecedent, OccultPrecedent.Upgraded(
-            "Gain 12 Block and 1 Ward Wax. If any enemy has Paperwork, gain 4 additional Block.",
-            Seq(Block(BlockPlusIfAnyEnemyHas(12, Keywords.Paperwork, 4)), Apply(Keywords.WardWax, 1, You))),
+            "Gain 12 Block and 2 Ward Wax. If any enemy has Paperwork, gain 4 additional Block.",
+            Seq(Block(BlockPlusIfAnyEnemyHas(12, Keywords.Paperwork, 4)), Apply(Keywords.WardWax, 2, You))),
 
         FinePrintHex, FinePrintHex.Upgraded("Deal 7 damage twice. Each hit applies 1 Seal if the target has Doubt.",
             Repeat(2, Seq(Damage(7), If(HasStacks(Keywords.Doubt), ApplySeal(1))))),
@@ -373,8 +373,8 @@ public static class BureaucratActI
         CursedAddendum, CursedAddendum.Upgraded("Deal 8 damage. Apply 3 Paperwork. If the target is Ratified, apply 2 more.",
             Seq(Damage(8), Apply(Keywords.Paperwork, 3), If(HasStacks(Keywords.Ratified), Apply(Keywords.Paperwork, 2)))),
 
-        ProtectiveAdjournment, ProtectiveAdjournment.Upgraded("Queue: Gain 15 Block and 2 Ward Wax.",
-            Seq(Block(15), Apply(Keywords.WardWax, 2, You))),
+        ProtectiveAdjournment, ProtectiveAdjournment.Upgraded("Queue: Gain 15 Block and 3 Ward Wax.",
+            Seq(Block(15), Apply(Keywords.WardWax, 3, You))),
 
         DeferredHex, DeferredHex.Upgraded("Queue: Deal 14 damage to ALL enemies.", Damage(14, AllEnemies)),
 

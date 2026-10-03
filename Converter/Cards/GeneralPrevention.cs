@@ -14,10 +14,10 @@ public static class GeneralPrevention
 
     public static IReadOnlyList<StatusData> All() =>
     [
-        Grace(CountermandedGrace, "Countermanded Grace", 2),
-        Grace(CountermandedGrace + "+", "Countermanded Grace+", 3),
-        Vein(VeinRegister, "Vein Register"),
-        Vein(VeinRegister + "+", "Vein Register+"),
+        Grace(CountermandedGrace, "Countermanded Grace", 3),
+        Grace(CountermandedGrace + "+", "Countermanded Grace+", 4),
+        Vein(VeinRegister, "Vein Register", VeinInk),
+        Vein(VeinRegister + "+", "Vein Register+", VeinInk),
         // Standing Citation has no rules of its own: the Citation status looks for it, because only the
         // Citation trigger knows it is about to spend a stack.
         Marker(StandingCitation, "Standing Citation"),
@@ -59,9 +59,12 @@ public static class GeneralPrevention
     }
 
     // ── Vein Register ─────────────────────────────────────────────────────────────────────────────────────
-    // "The first time each turn another Status on an enemy loses a stack, apply 1 Blood Ink to it." Both the
-    // stack change and the last stack going (which is an expiry, not a change) count.
-    private static StatusData Vein(string id, string name)
+    // "The first time each turn another Status on an enemy loses a stack, apply 2 Blood Ink to it." Both the
+    // stack change and the last stack going (which is an expiry, not a change) count. 1 until the Blood Ink
+    // numbers grew by half, rounded up (user, 2026-10-02).
+    private const int VeinInk = 2;
+
+    private static StatusData Vein(string id, string name, int ink)
     {
         var latch = new CounterId($"{id}_paid");
         var wearer = CombatantTargetSelectors.IterationTarget;
@@ -92,7 +95,7 @@ public static class GeneralPrevention
                     new CausalSequenceEffectNode<TContext>(
                     [
                         new ApplyStatusNode<TContext>(loser, new StatusDefinitionId(Keywords.BloodInk),
-                            new ConstantExpression<TContext>(1)),
+                            new ConstantExpression<TContext>(ink)),
                         new SetCombatantCounterNode<TContext>(
                             wearer, latch, new ConstantExpression<TContext>(1), relative: false),
                     ])));

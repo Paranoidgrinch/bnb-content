@@ -249,7 +249,7 @@ public class EliteRelicTests
         // Ward Wax on the hero, the Seal on the enemy — on the hero it did nothing (user, 2026-09-28).
         var (play, _, enemyId) = WithRelic(EliteRelicRules.RiddleId);
         var combat = play.CombatDriver!.Current!;
-        Assert.Equal(1, FightProbe.StacksOf(Hero(play), Converter.Cards.Keywords.WardWax));
+        Assert.Equal(2, FightProbe.StacksOf(Hero(play), Converter.Cards.Keywords.WardWax));
         Assert.Equal(0, FightProbe.StacksOf(Hero(play), Converter.Cards.Keywords.Seal));
         Assert.Equal(1, FightProbe.StacksOf(combat.State.GetCombatant(enemyId), Converter.Cards.Keywords.Seal));
         play.Dispose();

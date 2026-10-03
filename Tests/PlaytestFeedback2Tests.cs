@@ -27,8 +27,8 @@ public class PlaytestFeedback2Tests
         Assert.Null(session.Error);
     }
 
-    // A1 — "Ward Wax X: at the start of your turn, gain X Block." Two Waxen Sureties in one turn are 10 Wax, and
-    // the next turn opens behind what is left of them — not behind the first card's 5, and not counted twice.
+    // A1 — "Ward Wax X: at the start of your turn, gain X Block." Two Waxen Sureties in one turn are 14 Wax, and
+    // the next turn opens behind what is left of them — not behind the first card's 7, and not counted twice.
     [Fact]
     public void Ward_wax_from_two_cards_pays_its_whole_stack_next_turn()
     {
@@ -37,22 +37,22 @@ public class PlaytestFeedback2Tests
 
         Play(play, session, "waxen_surety", enemyId);
         Play(play, session, "waxen_surety", enemyId);
-        Assert.Equal(10, FightProbe.StacksOf(Hero(play), Keywords.WardWax));
+        Assert.Equal(14, FightProbe.StacksOf(Hero(play), Keywords.WardWax));
 
         play.CombatDriver!.EndTurn();
         Assert.Null(session.Error);
         // The quiet enemy struck nothing: one stack paid for the enemy turn, the opening Block is what was worn
         // when the turn began.
         var hero = Hero(play);
-        Assert.Equal(9, FightProbe.StacksOf(hero, Keywords.WardWax));
-        Assert.Equal(9, Block(hero));
+        Assert.Equal(13, FightProbe.StacksOf(hero, Keywords.WardWax));
+        Assert.Equal(13, Block(hero));
 
-        // A third card on top of what is left: 9 + 5, and the next turn pays all of it.
+        // A third card on top of what is left: 13 + 7, and the next turn pays all of it.
         Play(play, session, "waxen_surety", enemyId);
         play.CombatDriver.EndTurn();
         hero = Hero(play);
-        Assert.Equal(13, FightProbe.StacksOf(hero, Keywords.WardWax));
-        Assert.Equal(13, Block(hero));
+        Assert.Equal(19, FightProbe.StacksOf(hero, Keywords.WardWax));
+        Assert.Equal(19, Block(hero));
         play.Dispose();
     }
 
@@ -225,17 +225,18 @@ public class PlaytestFeedback2Tests
         play.Dispose();
     }
 
-    // F — Ratify is worth 5 per Deed now, and the upgrades carry their own shape: Paper Cut+ strikes twice.
+    // Ratified doubles every HIT of a Deed (user, 2026-10-03 — it was +5 once per Deed), and the upgrades carry
+    // their own shape: Paper Cut+ strikes twice, so both hits are doubled.
     [Fact]
-    public void Ratify_adds_five_and_paper_cut_plus_strikes_twice_into_it()
+    public void Ratify_doubles_each_hit_and_paper_cut_plus_strikes_twice_into_it()
     {
         var (play, session, enemyId) = FightProbe.Start(
             FightProbe.Solo(Quiet, QuietIntent, energy: 9, (Keywords.Ratified, 1)),
             [.. Enumerable.Repeat("paper_cut+", 12)]);
         var before = play.CombatDriver!.Current!.State.GetCombatant(enemyId).Health.Current;
         Play(play, session, "paper_cut+", enemyId);
-        // Two hits of 5, and Ratified's +5 is once per Deed: 15.
-        Assert.Equal(before - 15, play.CombatDriver.Current!.State.GetCombatant(enemyId).Health.Current);
+        // Two hits of 5, each doubled: 20.
+        Assert.Equal(before - 20, play.CombatDriver.Current!.State.GetCombatant(enemyId).Health.Current);
         play.Dispose();
     }
 }

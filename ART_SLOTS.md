@@ -725,7 +725,7 @@ cards a boss or a door hands over are never offered and have no act.
 
 | code | title | type | rarity | what it does |
 |---|---|---|---|---|
-| `blood_marginalia` | Blood Marginalia | working | uncommon | Apply 3 Citation and 2 Blood Ink. |
+| `blood_marginalia` | Blood Marginalia | working | uncommon | Apply 5 Citation and 3 Blood Ink. |
 | `borrowed_candle` | Borrowed Candle | working | uncommon | Draw 2 cards. Put one card from your hand on top of your draw pile. Exhaust. |
 | `contempt_finding` | Contempt Finding | working | uncommon | Remove all Citation from an enemy. Gain 2 Block per Citation removed. |
 | `dawn_summons` | Dawn Summons | deed | rare | Deal 16 damage. If this is the first card you play this turn, deal 10 additional damage. |
@@ -733,47 +733,47 @@ cards a boss or a door hands over are never offered and have no act.
 | `foreclosure` | Foreclosure | deed | uncommon | Deal 6 damage. Then immediately resolve up to 5 Lien on the target. |
 | `forfeit_seal` | Forfeit Seal | deed | uncommon | Deal 7 damage. If the target still has Block after this attack, apply 4 Lien. |
 | `grave_lien` | Grave Lien | deed | uncommon | Deal 13 damage. Apply 9 Lien. |
-| `malediction_review` | Malediction Review | working | uncommon | Gain 6 Block. Choose one: gain 2 Censure; or apply 2 Censure to an enemy. |
+| `malediction_review` | Malediction Review | working | uncommon | Gain 6 Block. Choose one: gain 3 Censure; or apply 3 Censure to an enemy. |
 | `mortgage_sigil` | Mortgage Sigil | working | uncommon | Apply 3 Lien. The next time the target gains Block before the end of its next turn, apply 3 additional Lien. |
 | `notary_beetle` | Notary Beetle | rite | uncommon | The first time each turn you apply a negative Status to an enemy that does not already have that Status, apply 1 additional stack of it. |
-| `reciprocal_edict` | Reciprocal Edict | rite | rare | The first time each turn your Censure prevents a negative Status applied by an enemy, apply 2 Censure to that enemy. The first time each turn Censure prevents a positive Status on an enemy, gain 1 Censure. |
+| `reciprocal_edict` | Reciprocal Edict | rite | rare | The first time each turn your Censure prevents a negative Status applied by an enemy, apply 3 Censure to that enemy. The first time each turn Censure prevents a positive Status on an enemy, gain 2 Censure. |
 | `sanctioned_charm` | Sanctioned Charm | working | uncommon | Gain 6 Block. Until your next turn, the first time your Censure prevents a negative Status, the Censure used to prevent it is not consumed. |
-| `sealed_mantle` | Sealed Mantle | working | uncommon | Gain 8 Block. If at least one enemy attacks during this enemy turn and you take no unblocked Attack damage, gain 2 Ward Wax. |
-| `silent_hearing` | Silent Hearing | working | uncommon | Apply 2 Citation. Until your next turn, if the target performs a damaging action, gain 7 Block. |
-| `tallow_reserve` | Tallow Reserve | working | uncommon | Requires at least 6 Block. Lose 6 Block. Gain 3 Ward Wax. Exhaust. |
-| `usurers_moon` | Usurer's Moon | rite | rare | Whenever Lien removes Block from an enemy, apply 1 Citation for every 3 Block removed, maximum 3 Citation per Lien resolution. |
-| `waxen_surety` | Waxen Surety | working | uncommon | Gain 5 Ward Wax. |
-| `witchmark_citation` | Witchmark Citation | working | uncommon | Apply 3 Citation. If the target currently intends a non-damaging action, draw 1 card. |
+| `sealed_mantle` | Sealed Mantle | working | uncommon | Gain 8 Block. If at least one enemy attacks during this enemy turn and you take no unblocked Attack damage, gain 3 Ward Wax. |
+| `silent_hearing` | Silent Hearing | working | uncommon | Apply 3 Citation. Until your next turn, if the target performs a damaging action, gain 7 Block. |
+| `tallow_reserve` | Tallow Reserve | working | uncommon | Requires at least 6 Block. Lose 6 Block. Gain 4 Ward Wax. Exhaust. |
+| `usurers_moon` | Usurer's Moon | rite | rare | Whenever Lien removes Block from an enemy, apply 1 Citation for every 2 Block removed, maximum 5 Citation per Lien resolution. |
+| `waxen_surety` | Waxen Surety | working | uncommon | Gain 7 Ward Wax. |
+| `witchmark_citation` | Witchmark Citation | working | uncommon | Apply 5 Citation. If the target currently intends a non-damaging action, draw 1 card. |
 
 ### General — Act II — 10
 
 | code | title | type | rarity | what it does |
 |---|---|---|---|---|
-| `blacklisted` | Blacklisted | working | uncommon | Apply 2 Censure. For each different positive Status already on the target, apply 1 additional Censure, maximum +3. |
-| `blood_redaction` | Blood Redaction | working | rare | Remove up to 6 stacks of a negative Status from an enemy. Apply the same number of Blood Ink. Exhaust. |
-| `countermanded_grace` | Countermanded Grace | rite | uncommon | The first time each turn Censure prevents any Status stack, gain 2 Ward Wax. This may trigger from Censure on you or on an enemy. |
-| `crossed_sigil` | Crossed Sigil | working | uncommon | Remove 1 stack of a negative Status from yourself. Then apply 1 Censure to an enemy. If you had no negative Status to remove, gain 1 Censure instead. |
+| `blacklisted` | Blacklisted | working | uncommon | Apply 3 Censure. For each different positive Status already on the target, apply 2 additional Censure, maximum +5. |
+| `blood_redaction` | Blood Redaction | working | rare | Remove up to 6 stacks of a negative Status from an enemy. Apply 2 Blood Ink per stack removed. Exhaust. |
+| `countermanded_grace` | Countermanded Grace | rite | uncommon | The first time each turn Censure prevents any Status stack, gain 3 Ward Wax. This may trigger from Censure on you or on an enemy. |
+| `crossed_sigil` | Crossed Sigil | working | uncommon | Remove 1 stack of a negative Status from yourself. Then apply 2 Censure to an enemy. If you had no negative Status to remove, gain 2 Censure instead. |
 | `moonlit_counterfeit` | Moonlit Counterfeit | working | rare | Create a Temporary copy of a card in your hand; your next card this turn is free. Exhaust the original. Moonlit Counterfeit Exhausts. |
-| `proxy_curse` | Proxy Curse | working | uncommon | Remove up to 3 stacks of a negative Status from yourself. Apply 1 Blood Ink to an enemy per stack removed. |
-| `sanguine_errata` | Sanguine Errata | working | uncommon | Apply 3 Blood Ink. Then remove 1 stack of another negative Status from the target. |
+| `proxy_curse` | Proxy Curse | working | uncommon | Remove up to 3 stacks of a negative Status from yourself. Apply 2 Blood Ink to an enemy per stack removed. |
+| `sanguine_errata` | Sanguine Errata | working | uncommon | Apply 5 Blood Ink. Then remove 1 stack of another negative Status from the target. |
 | `seizure_writ` | Seizure Writ | deed | rare | Deal 14 damage. Then remove all remaining Block from the target. For every 3 Block removed, apply 1 Lien, maximum 6 Lien. |
 | `standing_citation` | Standing Citation | rite | rare | The first time each turn Citation triggers on each enemy, that trigger does not remove a Citation stack. |
-| `vein_register` | Vein Register | rite | uncommon | The first time each turn another Status on an enemy loses a stack, apply 1 Blood Ink to it. |
+| `vein_register` | Vein Register | rite | uncommon | The first time each turn another Status on an enemy loses a stack, apply 2 Blood Ink to it. |
 
 ### General — Act III — 10
 
 | code | title | type | rarity | what it does |
 |---|---|---|---|---|
 | `blood_tithe` | Blood Tithe | deed | uncommon | Deal 8 damage. If the target has Blood Ink, it loses HP equal to twice its Blood Ink, then loses 1 Blood Ink. |
-| `consecrated_testament` | Consecrated Testament | rite | uncommon | The first 3 times each turn an enemy loses HP because of a Status effect, gain 1 Ward Wax. |
-| `debt_ouroboros` | Debt Ouroboros | rite | rare | Whenever Lien resolves, apply Lien equal to half the amount consumed, rounded down, maximum 4. |
+| `consecrated_testament` | Consecrated Testament | rite | uncommon | The first 3 times each turn an enemy loses HP because of a Status effect, gain 2 Ward Wax. |
+| `debt_ouroboros` | Debt Ouroboros | rite | rare | Whenever Lien takes Block, apply Lien equal to half of what it took, rounded down, maximum 4. |
 | `exemplary_sentence` | Exemplary Sentence | deed | rare | Remove up to 5 Citation from an enemy. For each removed, ALL enemies lose 4 HP. Then deal 12 damage to it. |
 | `mortgaged_aegis` | Mortgaged Aegis | working | uncommon | Gain 18 Block. At the start of your next turn, gain 8 Lien. |
 | `oath_of_refusal` | Oath of Refusal | rite | rare | The first 2 times each turn Censure prevents one or more Status stacks, record 1 Refusal. At the start of your next turn, draw 1 card per Refusal, maximum 2, and gain 1 Energy. Then clear them. |
 | `vital_census` | Vital Census | deed | uncommon | Deal 11 damage to ALL enemies. Every enemy with Blood Ink loses HP equal to its Blood Ink, then loses 1. |
 | `votive_covenant` | Votive Covenant | rite | rare | If you take no unblocked Attack damage during an enemy turn, Ward Wax does not decay. If you do, it loses 3 stacks instead of 2. |
 | `wax_indemnity` | Wax Indemnity | working | rare | Until your next turn, damage that gets through is answered by your Ward Wax: up to 4 Wax is spent, healing 3 HP each. |
-| `wax_reliquary` | Wax Reliquary | working | uncommon | Gain 4 Ward Wax. Until your next turn, Ward Wax cannot suffer its additional decay. |
+| `wax_reliquary` | Wax Reliquary | working | uncommon | Gain 5 Ward Wax. Until your next turn, Ward Wax cannot suffer its additional decay. |
 
 ### General — Act IV — 11
 
@@ -788,7 +788,7 @@ cards a boss or a door hands over are never offered and have no act.
 | `grand_dispensation` | Grand Dispensation | working | rare | Choose 2 different options: deal 24 damage to an enemy; gain 24 Block; draw 3 cards; gain 2 Energy. Exhaust. |
 | `hemal_audit` | Hemal Audit | deed | rare | Deal 18 damage. Then trigger Blood Ink repeatedly, up to 6 times or until no Blood Ink remains. |
 | `last_office` | Last Office | working | rare | For each of Paperwork, Doubt, Seal, Lien and Citation the chosen enemy does not carry, deal 8 damage to it and gain 3 Block. Exhaust. |
-| `sovereign_prohibition` | Sovereign Prohibition | working | uncommon | Gain 3 Censure and 6 Block. Apply 3 Censure to ALL enemies. |
+| `sovereign_prohibition` | Sovereign Prohibition | working | uncommon | Gain 5 Censure and 6 Block. Apply 5 Censure to ALL enemies. |
 | `tallow_judgment` | Tallow Judgment | deed | rare | Consume up to 8 Ward Wax. Deal 10 damage plus 7 damage per Ward Wax consumed. |
 
 ### Given in play — 91

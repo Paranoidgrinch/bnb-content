@@ -24,7 +24,7 @@ public class ActFourEventRelicTests
     private const string Wax = "waxen_surety";              // Working, 1 Energy, "gain 5 Ward Wax"
     private const string Index = "smudged_index";           // Working, 1 Energy, archives off the draw pile
     private const string Docket = "night_docket";           // Working, 0 Energy, exhausts itself on play
-    private const int WaxStacks = 5;
+    private const int WaxStacks = 7;
 
     // ── Cup of the Lowest Mark ────────────────────────────────────────────────────────────────────────────
 

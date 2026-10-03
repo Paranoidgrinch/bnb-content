@@ -184,14 +184,14 @@ public class ActFourCardTests
         var (play, session, enemy) = Fight(Deck(("candle_cathedral", 2), (Wax, 8)));
 
         Install(play, session, "candle_cathedral");
-        Play(play, session, Wax, enemy);                   // 5 Ward Wax
-        Assert.Equal(5, FightProbe.StacksOf(Hero(play), Keywords.WardWax));
+        Play(play, session, Wax, enemy);                   // 7 Ward Wax
+        Assert.Equal(7, FightProbe.StacksOf(Hero(play), Keywords.WardWax));
 
         play.CombatDriver!.EndTurn();                      // the enemy hits: ordinarily 2 wax, here 1
 
-        Assert.Equal(4, FightProbe.StacksOf(Hero(play), Keywords.WardWax));
-        // …and the wax pays 4 + ceil(4 / 2) = 6 at the top of the turn.
-        Assert.Equal(6, Block(Hero(play)));
+        Assert.Equal(6, FightProbe.StacksOf(Hero(play), Keywords.WardWax));
+        // …and the wax pays 6 + ceil(6 / 2) = 9 at the top of the turn.
+        Assert.Equal(9, Block(Hero(play)));
         play.Dispose();
     }
 

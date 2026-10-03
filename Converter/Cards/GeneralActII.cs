@@ -14,36 +14,36 @@ public static class GeneralActII
 
     private static readonly BnbCard Blacklisted = new(
         "blacklisted", "Blacklisted", WorkingTag, 1,
-        "Apply 2 Censure. For each different positive Status already on the target, apply 1 additional " +
-        "Censure, maximum +3.",
-        Blacklist(2),
+        "Apply 3 Censure. For each different positive Status already on the target, apply 2 additional " +
+        "Censure, maximum +5.",
+        Blacklist(3),
         Rarity: "uncommon", Act: Act);
 
     private static readonly BnbCard SanguineErrata = new(
         "sanguine_errata", "Sanguine Errata", WorkingTag, 1,
-        "Apply 3 Blood Ink. Then remove 1 stack of another negative Status from the target.",
-        SanguineErrataBody(3),
+        "Apply 5 Blood Ink. Then remove 1 stack of another negative Status from the target.",
+        SanguineErrataBody(5),
         Rarity: "uncommon", Act: Act);
 
     private static readonly BnbCard CountermandedGrace = Rite(
         "countermanded_grace", "Countermanded Grace", GeneralPrevention.CountermandedGrace, 1,
-        "The first time each turn Censure prevents any Status stack, gain 2 Ward Wax. This may trigger from " +
+        "The first time each turn Censure prevents any Status stack, gain 3 Ward Wax. This may trigger from " +
         "Censure on you or on an enemy.");
 
     private static readonly BnbCard VeinRegister = Rite(
         "vein_register", "Vein Register", GeneralPrevention.VeinRegister, 1,
-        "The first time each turn another Status on an enemy loses a stack, apply 1 Blood Ink to it.");
+        "The first time each turn another Status on an enemy loses a stack, apply 2 Blood Ink to it.");
 
     private static readonly BnbCard CrossedSigil = new(
         "crossed_sigil", "Crossed Sigil", WorkingTag, 1,
-        "Remove 1 stack of a negative Status from yourself. Then apply 1 Censure to an enemy. If you had no " +
-        "negative Status to remove, gain 1 Censure instead.",
-        CrossSigil(1),
+        "Remove 1 stack of a negative Status from yourself. Then apply 2 Censure to an enemy. If you had no " +
+        "negative Status to remove, gain 2 Censure instead.",
+        CrossSigil(2),
         Rarity: "uncommon", Act: Act);
 
     private static readonly BnbCard ProxyCurse = new(
         "proxy_curse", "Proxy Curse", WorkingTag, 1,
-        "Remove up to 3 stacks of a negative Status from yourself. Apply 1 Blood Ink to an enemy per stack " +
+        "Remove up to 3 stacks of a negative Status from yourself. Apply 2 Blood Ink to an enemy per stack " +
         "removed.",
         Convert(from: You, to: Target, cap: 3, into: Keywords.BloodInk),
         Rarity: "uncommon", Act: Act);
@@ -52,7 +52,7 @@ public static class GeneralActII
 
     private static readonly BnbCard BloodRedaction = new(
         "blood_redaction", "Blood Redaction", WorkingTag, 1,
-        "Remove up to 6 stacks of a negative Status from an enemy. Apply the same number of Blood Ink. Exhaust.",
+        "Remove up to 6 stacks of a negative Status from an enemy. Apply 2 Blood Ink per stack removed. Exhaust.",
         Convert(from: Target, to: Target, cap: 6, into: Keywords.BloodInk),
         Rarity: "rare", Act: Act, Tags: [ExhaustTag]);
 
@@ -84,36 +84,36 @@ public static class GeneralActII
     public static IEnumerable<BnbCard> All() =>
     [
         Blacklisted, Blacklisted.Upgraded(
-            "Apply 3 Censure. For each different positive Status already on the target, apply 1 additional " +
-            "Censure, maximum +3. Gain 1 Censure.", Seq(Blacklist(3), Apply(Keywords.Censure, 1, You))),
+            "Apply 5 Censure. For each different positive Status already on the target, apply 2 additional " +
+            "Censure, maximum +5. Gain 2 Censure.", Seq(Blacklist(5), Apply(Keywords.Censure, 2, You))),
 
         SanguineErrata, SanguineErrata.Upgraded(
-            "Apply 4 Blood Ink. Then remove 1 stack of another negative Status from the target; it becomes 1 more " +
+            "Apply 6 Blood Ink. Then remove 1 stack of another negative Status from the target; it becomes 2 more " +
             "Blood Ink.",
-            Seq(SanguineErrataBody(4), Apply(Keywords.BloodInk, 1))),
+            Seq(SanguineErrataBody(6), Apply(Keywords.BloodInk, 2))),
 
         CountermandedGrace, CountermandedGrace.UpgradedRite(GeneralPrevention.CountermandedGrace,
-            "The first time each turn Censure prevents any Status stack, gain 3 Ward Wax."),
+            "The first time each turn Censure prevents any Status stack, gain 4 Ward Wax."),
 
         VeinRegister, VeinRegister.UpgradedRite(GeneralPrevention.VeinRegister,
-            "The first time each turn another Status on an enemy loses a stack, apply 1 Blood Ink to it.",
+            "The first time each turn another Status on an enemy loses a stack, apply 2 Blood Ink to it.",
             cost: 0),
 
         CrossedSigil, CrossedSigil.Upgraded(
-            "Remove 1 stack of a negative Status from yourself. Apply 1 Censure to an enemy and gain 1 Censure.",
+            "Remove 1 stack of a negative Status from yourself. Apply 2 Censure to an enemy and gain 2 Censure.",
             Seq(
                 new CombatNodeModel("modifySelectedStatusStacks", You, CombatAmountSpec.FromConst(-1),
                     Selection: new StatusSelectionSpec(StatusPolarityFilter.Debuff)),
-                Apply(Keywords.Censure, 1),
-                Apply(Keywords.Censure, 1, You))),
+                Apply(Keywords.Censure, 2),
+                Apply(Keywords.Censure, 2, You))),
 
         ProxyCurse, ProxyCurse.Upgraded(
-            "Remove up to 4 stacks of a negative Status from yourself. Apply 1 Blood Ink to an enemy per " +
+            "Remove up to 4 stacks of a negative Status from yourself. Apply 2 Blood Ink to an enemy per " +
             "stack removed.", Convert(from: You, to: Target, cap: 4, into: Keywords.BloodInk)),
 
         BloodRedaction, BloodRedaction.Upgraded(
-            "Remove up to 8 stacks of a negative Status from an enemy. Apply the same number of Blood Ink. " +
-            "Exhaust.", Convert(from: Target, to: Target, cap: 8, into: Keywords.BloodInk)),
+            "Remove up to 8 stacks of a negative Status from an enemy. Apply 2 Blood Ink per " +
+            "stack removed. Exhaust.", Convert(from: Target, to: Target, cap: 8, into: Keywords.BloodInk)),
 
         MoonlitCounterfeit, MoonlitCounterfeit.Upgraded(
             "Create a Temporary copy of a card in your hand; your next card this turn is free. Moonlit " +
@@ -137,12 +137,13 @@ public static class GeneralActII
     private static BnbCard UpgradedRite(this BnbCard card, string riteStatusId, string text, int? cost = null) =>
         card.Upgraded(text, InstallRite(riteStatusId + "+"), cost);
 
-    // "For each DIFFERENT positive Status already on the target, +1 Censure, maximum +3." Distinct statuses
-    // are counted by naming the ones the game files and asking each whether it is there.
+    // "For each DIFFERENT positive Status already on the target, +2 Censure, maximum +5." Distinct statuses
+    // are counted by naming the ones the game files and asking each whether it is there. (+1, max +3 until the
+    // Censure numbers grew by half, rounded up — user, 2026-10-02.)
     private static CombatNodeModel Blacklist(int baseCensure) =>
         Apply(Keywords.Censure,
             Plus(CombatAmountSpec.FromConst(baseCensure),
-                AtMost(DistinctStatuses(PositiveStatuses), 3)));
+                AtMost(Times(DistinctStatuses(PositiveStatuses), 2), 5)));
 
     // "Then choose and remove 1 stack of ANOTHER negative Status." One stack off a negative status the engine
     // picks by rule rather than by prompt — and never the Blood Ink this card just put down (the audit found it
@@ -154,7 +155,9 @@ public static class GeneralActII
                 Selection: new StatusSelectionSpec(StatusPolarityFilter.Debuff) { Except = new StatusDefinitionId(Keywords.BloodInk) }));
 
     // "Remove up to N stacks of a negative Status; turn each removed stack into something else." How much can
-    // be taken has to be known before it is taken, so it goes through a scratch counter.
+    // be taken has to be known before it is taken, so it goes through a scratch counter. Each stack taken
+    // becomes 2 of the new one — one for one until the Blood Ink numbers grew by half; the player wants whole
+    // numbers on a card, not 1.5 (user, 2026-10-02).
     private static CounterId Converted => new("status_conversion");
 
     private static CombatNodeModel Convert(string from, string to, int cap, string into) =>
@@ -166,7 +169,7 @@ public static class GeneralActII
             new CombatNodeModel("modifySelectedStatusStacks", from,
                 CombatAmountSpec.Binary("sub", CombatAmountSpec.FromConst(0), Taken(from)),
                 Selection: new StatusSelectionSpec(StatusPolarityFilter.Debuff)),
-            Apply(into, Taken(from), to));
+            Apply(into, Times(Taken(from), 2), to));
 
     private static CombatAmountSpec Taken(string on) =>
         new("counter", SelectorKey: on, CounterId: Converted.value);
