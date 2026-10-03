@@ -158,7 +158,9 @@ public static class BlueprintAssembler
         };
 
         // …and then let anything the manifest did not name explain itself from its own rules text.
-        return blueprint with { Presentation = WithEveryCard(blueprint.Presentation, blueprint.Cards) };
+        blueprint = blueprint with { Presentation = WithEveryCard(blueprint.Presentation, blueprint.Cards) };
+        // …and where the archive shelves each card and relic (ArchiveSections).
+        return blueprint with { Presentation = ArchiveSections.Annotate(blueprint) };
     }
 
     // Every authored run program the document ships: the bodies an event installs by name.
