@@ -27,7 +27,7 @@ public static class Act1Bench
     public sealed record Options(
         int Shuffles = 20, int Horizon = 5, int Beam = 16, int PerTurn = 300, int Jobs = 0,
         IReadOnlyList<string>? StagesWanted = null, IReadOnlyList<string>? Extra = null, bool Cards = false,
-        int Health = 70);
+        int Health = 70, IReadOnlyList<string>? Only = null);
 
     public sealed record Fight(string Stage, string Encounter, int Shuffle, PlannedFight Result, string Order);
 
@@ -61,7 +61,8 @@ public static class Act1Bench
         // replaced would have been — every pair is the same fight but for that card. The bench checks that
         // (`coupled`), fight by fight, rather than trusting it.
         var bnb = Cards.FinalCards.All().ToDictionary(c => c.Id);
-        var candidates = Cards.FinalCards.RewardPool(1).Select(c => c.Id).ToList();
+        var candidates = Cards.FinalCards.RewardPool(1).Select(c => c.Id)
+            .Where(id => options.Only is not { Count: > 0 } only || only.Contains(id)).ToList();
         say($"\ncard values over stages {string.Join(", ", stages)} — {candidates.Count} Act-I cards, each in place of a basic card");
         var baseKey = baseline.ToDictionary(f => (f.Encounter, f.Shuffle), f => f);
         var rows = new List<(string Card, string Replaced, double Saved, double Error, int Wins, int Coupled, int Pairs)>();
@@ -77,25 +78,40 @@ public static class Act1Bench
                 return (c.Card, c.Replaced, Deck: (IReadOnlyList<string>)swapped);
             })
             .ToList();
-        var fought = BenchMany(game, byStage, [.. decks.Select(d => (d.Card, d.Deck))], options);
-        foreach (var (card, replaced, _) in decks)
+        // In batches, each reported as it lands: one pass over all 65 cards ran four hours and printed nothing
+        // before the clock stopped it (2026-09-27). A batch of a dozen decks still keeps every core busy.
+        foreach (var batch in decks.Chunk(12))
         {
-            var with = fought[card];
-            var diffs = with.Select(f => (double)(baseKey[(f.Encounter, f.Shuffle)].Result.HealthLost - f.Result.HealthLost)).ToList();
-            var mean = diffs.Average();
-            var error = diffs.Count > 1
-                ? Math.Sqrt(diffs.Sum(d => (d - mean) * (d - mean)) / (diffs.Count - 1) / diffs.Count)
-                : 0;
-            var wins = with.Count(f => f.Result.Won) - baseline.Count(f => f.Result.Won);
-            // Coupled: the same card INSTANCES in the same order at the first draw. A card instance is numbered by
-            // its place in the deck list, so the swapped card carries the replaced card's number.
-            var coupled = with.Count(f => f.Order == baseKey[(f.Encounter, f.Shuffle)].Order);
-            rows.Add((card, replaced, mean, error, wins, coupled, with.Count));
-            say($"  {card,-28} for {replaced,-20} saves {mean,6:+0.0;-0.0} ±{error:0.0} HP/fight   wins {wins,3:+0;-0;0}   coupled {coupled}/{with.Count}");
+            var fought = BenchMany(game, byStage, [.. batch.Select(d => (d.Card, d.Deck))], options);
+            foreach (var (card, replaced, _) in batch)
+            {
+                var with = fought[card];
+                var diffs = with.Select(f => (double)(baseKey[(f.Encounter, f.Shuffle)].Result.HealthLost - f.Result.HealthLost)).ToList();
+                var mean = diffs.Average();
+                var error = diffs.Count > 1
+                    ? Math.Sqrt(diffs.Sum(d => (d - mean) * (d - mean)) / (diffs.Count - 1) / diffs.Count)
+                    : 0;
+                var wins = with.Count(f => f.Result.Won) - baseline.Count(f => f.Result.Won);
+                // Coupled: the same card INSTANCES in the same order at the first draw. A card instance is numbered by
+                // its place in the deck list, so the swapped card carries the replaced card's number.
+                var coupled = with.Count(f => f.Order == baseKey[(f.Encounter, f.Shuffle)].Order);
+                rows.Add((card, replaced, mean, error, wins, coupled, with.Count));
+                say($"  {card,-28} {Family(bnb[card]),-12} {bnb[card].Cost}E  for {replaced,-20} saves {mean,6:+0.0;-0.0} ±{error:0.0} HP/fight   wins {wins,3:+0;-0;0}   coupled {coupled}/{with.Count}");
+            }
         }
         say("\nranked (health saved per fight against the basic card it replaces; ± is one standard error):");
         foreach (var r in rows.OrderByDescending(r => r.Wins).ThenByDescending(r => r.Saved))
             say($"  {r.Saved,6:+0.0;-0.0} ±{r.Error:0.0}  {r.Wins,3:+0;-0;0}  {r.Card} (for {r.Replaced})");
+
+        // THE FAMILIES (PLAYTEST_FEEDBACK_2 F2): each family's median health saved, and that median against
+        // Paperwork's — the gate is every family within 15 % of it.
+        var families = rows.GroupBy(r => Family(bnb[r.Card]))
+            .Select(g => (Family: g.Key, Median: Median([.. g.Select(r => r.Saved)]), Cards: g.Count()))
+            .OrderByDescending(f => f.Median).ToList();
+        var paperwork = families.FirstOrDefault(f => f.Family == "Paperwork").Median;
+        say("\nfamilies (median health saved per fight; share of Paperwork's median):");
+        foreach (var f in families)
+            say($"  {f.Family,-14} {f.Median,6:+0.0;-0.0}   {(paperwork > 0 ? $"{f.Median / paperwork,5:0%}" : "    –")}   ({f.Cards} cards)");
         return 0;
     }
 
@@ -116,6 +132,9 @@ public static class Act1Bench
                 Enumerable.Range(1, options.Shuffles).Select(k => (d.Key, d.Deck, s.Stage, e, k)))))
             .ToList();
         var results = new ConcurrentBag<(string Key, Fight Fight)>();
+        // Progress on stderr: a pass can run for an hour, and a slow fight should name itself rather than hide.
+        var done = 0;
+        var clock = System.Diagnostics.Stopwatch.StartNew();
         Parallel.ForEach(jobs,
             new ParallelOptions { MaxDegreeOfParallelism = options.Jobs > 0 ? options.Jobs : Environment.ProcessorCount },
             job =>
@@ -131,7 +150,12 @@ public static class Act1Bench
                 var zones = combat.State.GetCardZones(combat.HeroId);
                 var order = string.Join(",", zones.Hand.Concat(zones.DrawPile).Select(c => c.Id.value));
                 var planner = new FightPlanner(options.Horizon, options.Beam, options.PerTurn);
-                results.Add((job.Key, new Fight(job.Stage, job.e, job.k, planner.Play(combat), order)));
+                var fight = new Fight(job.Stage, job.e, job.k, planner.Play(combat), order);
+                results.Add((job.Key, fight));
+                if (fight.Result.Seconds > 120)
+                    Console.Error.WriteLine($"  slow: {job.Key} {job.e} #{job.k} {fight.Result.Seconds:0}s {fight.Result.Turns} turns");
+                if (Interlocked.Increment(ref done) % 200 == 0)
+                    Console.Error.WriteLine($"  {done}/{jobs.Count} fights, {clock.Elapsed.TotalMinutes:0.0} min");
             });
         return results.GroupBy(r => r.Key).ToDictionary(g => g.Key, g => g.Select(r => r.Fight).ToList());
     }
@@ -166,6 +190,41 @@ public static class Act1Bench
             .Where(e => pool.Contains(e.Id.Value)
                 && (game.Presentation.Encounters.GetValueOrDefault(e.Id.Value)?.Tags ?? []).Contains($"stage_{stage}"))
             .Select(e => e.Id.Value).OrderBy(id => id, StringComparer.Ordinal).ToList()))];
+    }
+
+    // A card's family: the first keyword its rules text names — the one it is built around. A card naming none
+    // is plain damage / Block.
+    private static readonly (string Family, string[] Words)[] FamilyWords =
+    [
+        ("Paperwork", ["Paperwork"]), ("Doubt", ["Doubt"]), ("Queue", ["Queue"]), ("Lien", ["Lien"]),
+        ("Citation", ["Citation"]), ("Blood Ink", ["Blood Ink"]), ("Seal", ["Seal", "Ratif"]),
+        ("Ward Wax", ["Ward Wax"]), ("Censure", ["Censure"]), ("Archive/Junk", ["Archive", "Junk", "Misfiled Paper", "Duplicate Copy"]),
+    ];
+
+    public static string Family(Cards.CardAuthoring.BnbCard card)
+    {
+        var text = card.RulesText;
+        var found = FamilyWords
+            .Select(f => (f.Family, At: f.Words.Select(w => text.IndexOf(w, StringComparison.Ordinal)).Where(i => i >= 0).DefaultIfEmpty(int.MaxValue).Min()))
+            .Where(f => f.At != int.MaxValue).OrderBy(f => f.At).FirstOrDefault();
+        return found.Family ?? "plain";
+    }
+
+    public static int Pool(Action<string> say)
+    {
+        foreach (var family in Cards.FinalCards.RewardPool(5).GroupBy(Family).OrderBy(g => g.Key, StringComparer.Ordinal))
+        {
+            say($"\n== {family.Key} ({family.Count()})");
+            foreach (var c in family.OrderBy(c => c.Act).ThenBy(c => c.Cost))
+                say($"  A{c.Act} {c.Cost}E {c.Rarity,-8} {c.Type,-8} {c.Id,-26} {c.RulesText}");
+        }
+        return 0;
+    }
+
+    private static double Median(IReadOnlyList<double> xs)
+    {
+        var s = xs.OrderBy(x => x).ToList();
+        return s.Count % 2 == 1 ? s[s.Count / 2] : (s[s.Count / 2 - 1] + s[s.Count / 2]) / 2;
     }
 
     private static IEnumerable<string> Tally(IEnumerable<string> ids) =>

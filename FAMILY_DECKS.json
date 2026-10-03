@@ -1,0 +1,564 @@
+[
+ {
+  "name": "paperwork_a2",
+  "family": "Paperwork",
+  "act": 2,
+  "cards": {
+   "paper_cut": 2,
+   "cower_behind_a_desk": 3,
+   "strong_binder": 1,
+   "permit_a38": 1,
+   "counter_ward": 1,
+   "deskward": 1,
+   "cursed_addendum": 2,
+   "inkblot_verdict": 1,
+   "occult_precedent": 2,
+   "red_ink_doctrine+": 1,
+   "summary_judgment+": 1,
+   "form_of_ill_intent+": 2,
+   "inkblot_verdict+": 1
+  },
+  "relics": [
+   "formkeepers_signet",
+   "chancery_scale"
+  ]
+ },
+ {
+  "name": "paperwork_a3",
+  "family": "Paperwork",
+  "act": 3,
+  "cards": {
+   "paper_cut": 2,
+   "cower_behind_a_desk": 2,
+   "strong_binder": 1,
+   "permit_a38": 1,
+   "counter_ward": 1,
+   "deskward": 1,
+   "borrowed_candle": 1,
+   "black_ledger": 1,
+   "occult_precedent": 2,
+   "broom_dispatch": 1,
+   "red_ink_doctrine+": 1,
+   "summary_judgment+": 1,
+   "form_of_ill_intent+": 2,
+   "inkblot_verdict+": 2,
+   "cursed_addendum+": 2,
+   "hedge_hospitality+": 1
+  },
+  "relics": [
+   "formkeepers_signet",
+   "chancery_scale",
+   "concordance_medallion"
+  ]
+ },
+ {
+  "name": "doubt_a2",
+  "family": "Doubt",
+  "act": 2,
+  "cards": {
+   "paper_cut": 2,
+   "cower_behind_a_desk": 3,
+   "strong_binder": 1,
+   "permit_a38": 1,
+   "counter_ward": 1,
+   "deskward": 1,
+   "petty_objection": 1,
+   "fine_print_hex": 1,
+   "presumption_of_error": 1,
+   "clerical_discretion": 2,
+   "petty_objection+": 2,
+   "rebuttal+": 1,
+   "hex_circular+": 1,
+   "fine_print_hex+": 1
+  },
+  "relics": [
+   "concordance_medallion",
+   "tarnished_bell"
+  ]
+ },
+ {
+  "name": "doubt_a3",
+  "family": "Doubt",
+  "act": 3,
+  "cards": {
+   "paper_cut": 2,
+   "cower_behind_a_desk": 2,
+   "strong_binder": 1,
+   "permit_a38": 1,
+   "counter_ward": 1,
+   "deskward": 1,
+   "borrowed_candle": 1,
+   "clerical_discretion": 1,
+   "hedge_covenant": 1,
+   "presumption_of_error": 1,
+   "formal_dissent": 1,
+   "petty_objection+": 3,
+   "fine_print_hex+": 2,
+   "rebuttal+": 1,
+   "due_recompense+": 1,
+   "hex_circular+": 1,
+   "guestbook_oath+": 1
+  },
+  "relics": [
+   "concordance_medallion",
+   "tarnished_bell",
+   "sootglass_lens"
+  ]
+ },
+ {
+  "name": "queue_a2",
+  "family": "Queue",
+  "act": 2,
+  "cards": {
+   "paper_cut": 2,
+   "cower_behind_a_desk": 3,
+   "strong_binder": 1,
+   "permit_a38": 1,
+   "counter_ward": 1,
+   "deskward": 1,
+   "deferred_hex": 1,
+   "backlog_charge": 1,
+   "pending_matters": 1,
+   "candle_allowance": 1,
+   "skeleton_staff": 1,
+   "deferred_hex+": 2,
+   "protective_adjournment+": 2,
+   "backlog_charge+": 1
+  },
+  "relics": [
+   "petitioners_token",
+   "deferred_signet"
+  ]
+ },
+ {
+  "name": "queue_a3",
+  "family": "Queue",
+  "act": 3,
+  "cards": {
+   "paper_cut": 2,
+   "cower_behind_a_desk": 2,
+   "strong_binder": 1,
+   "permit_a38": 1,
+   "counter_ward": 1,
+   "deskward": 1,
+   "borrowed_candle": 1,
+   "candle_allowance": 1,
+   "skeleton_staff": 1,
+   "priority_docket": 2,
+   "deferred_hex+": 3,
+   "protective_adjournment+": 3,
+   "backlog_charge+": 2,
+   "pending_matters+": 1
+  },
+  "relics": [
+   "petitioners_token",
+   "deferred_signet",
+   "index_bone"
+  ]
+ },
+ {
+  "name": "seal_a2",
+  "family": "Seal",
+  "act": 2,
+  "cards": {
+   "paper_cut": 2,
+   "cower_behind_a_desk": 3,
+   "strong_binder": 1,
+   "permit_a38": 1,
+   "counter_ward": 1,
+   "deskward": 1,
+   "conditional_approval": 2,
+   "threefold_injunction": 1,
+   "seal_dividend": 1,
+   "privy_seal": 1,
+   "candle_tribunal+": 1,
+   "notarial_press+": 2,
+   "waxing_authority+": 2
+  },
+  "relics": [
+   "seal_makers_die",
+   "tarnished_bell"
+  ]
+ },
+ {
+  "name": "seal_a3",
+  "family": "Seal",
+  "act": 3,
+  "cards": {
+   "paper_cut": 2,
+   "cower_behind_a_desk": 2,
+   "strong_binder": 1,
+   "permit_a38": 1,
+   "counter_ward": 1,
+   "deskward": 1,
+   "borrowed_candle": 1,
+   "seal_dividend": 1,
+   "privy_seal": 1,
+   "seal_of_concern": 1,
+   "notarys_tithe": 1,
+   "candle_tribunal+": 1,
+   "notarial_press+": 2,
+   "waxing_authority+": 3,
+   "conditional_approval+": 2,
+   "threefold_injunction+": 1
+  },
+  "relics": [
+   "seal_makers_die",
+   "tarnished_bell",
+   "sootglass_lens"
+  ]
+ },
+ {
+  "name": "archive_junk_a2",
+  "family": "Archive/Junk",
+  "act": 2,
+  "cards": {
+   "paper_cut": 2,
+   "cower_behind_a_desk": 3,
+   "strong_binder": 1,
+   "permit_a38": 1,
+   "counter_ward": 1,
+   "deskward": 1,
+   "secure_misfiling": 1,
+   "certified_kindling": 2,
+   "funeral_index": 1,
+   "clerks_familiar": 1,
+   "cauldron_copy+": 2,
+   "cinder_warrant+": 2,
+   "archive_pyre+": 1
+  },
+  "relics": [
+   "archive_key",
+   "archive_censer"
+  ]
+ },
+ {
+  "name": "archive_junk_a3",
+  "family": "Archive/Junk",
+  "act": 3,
+  "cards": {
+   "paper_cut": 2,
+   "cower_behind_a_desk": 2,
+   "strong_binder": 1,
+   "permit_a38": 1,
+   "counter_ward": 1,
+   "deskward": 1,
+   "borrowed_candle": 1,
+   "secure_misfiling": 2,
+   "clerks_familiar": 1,
+   "wastepaper_bastion": 1,
+   "cauldron_copy+": 2,
+   "cinder_warrant+": 2,
+   "certified_kindling+": 2,
+   "archive_pyre+": 1,
+   "funeral_index+": 1,
+   "clutter_concordance+": 1
+  },
+  "relics": [
+   "archive_key",
+   "archive_censer",
+   "ashen_wax_knife"
+  ]
+ },
+ {
+  "name": "ward_wax_a2",
+  "family": "Ward Wax",
+  "act": 2,
+  "cards": {
+   "paper_cut": 4,
+   "cower_behind_a_desk": 3,
+   "strong_binder": 1,
+   "permit_a38": 1,
+   "counter_ward": 1,
+   "deskward": 1,
+   "waxen_surety": 1,
+   "sealed_mantle": 1,
+   "tallow_reserve": 1,
+   "waxen_surety+": 2,
+   "sealed_mantle+": 2,
+   "tallow_reserve+": 1
+  },
+  "relics": [
+   "riddles_third_answer",
+   "bruise_cup"
+  ]
+ },
+ {
+  "name": "ward_wax_a3",
+  "family": "Ward Wax",
+  "act": 3,
+  "cards": {
+   "paper_cut": 4,
+   "strong_binder": 1,
+   "permit_a38": 1,
+   "counter_ward": 1,
+   "deskward": 1,
+   "borrowed_candle": 1,
+   "tallow_reserve": 2,
+   "consecrated_testament": 1,
+   "votive_covenant": 1,
+   "waxen_surety+": 3,
+   "sealed_mantle+": 3,
+   "wax_reliquary+": 2,
+   "wax_indemnity+": 1
+  },
+  "relics": [
+   "riddles_third_answer",
+   "bruise_cup",
+   "blackthorn_brooch"
+  ]
+ },
+ {
+  "name": "censure_a2",
+  "family": "Censure",
+  "act": 2,
+  "cards": {
+   "paper_cut": 4,
+   "cower_behind_a_desk": 1,
+   "strong_binder": 1,
+   "permit_a38": 1,
+   "counter_ward": 1,
+   "deskward": 1,
+   "malediction_review": 1,
+   "sanctioned_charm": 1,
+   "crossed_sigil": 1,
+   "reciprocal_edict": 1,
+   "countermanded_grace": 1,
+   "malediction_review+": 2,
+   "sanctioned_charm+": 1,
+   "blacklisted+": 2
+  },
+  "relics": [
+   "contempt_ledger_nail",
+   "threshold_ward"
+  ]
+ },
+ {
+  "name": "censure_a3",
+  "family": "Censure",
+  "act": 3,
+  "cards": {
+   "paper_cut": 4,
+   "strong_binder": 1,
+   "permit_a38": 1,
+   "counter_ward": 1,
+   "deskward": 1,
+   "borrowed_candle": 1,
+   "crossed_sigil": 2,
+   "countermanded_grace": 1,
+   "oath_of_refusal": 1,
+   "malediction_review+": 3,
+   "sanctioned_charm+": 2,
+   "blacklisted+": 3,
+   "reciprocal_edict+": 1
+  },
+  "relics": [
+   "contempt_ledger_nail",
+   "threshold_ward",
+   "sootglass_lens"
+  ]
+ },
+ {
+  "name": "lien_a2",
+  "family": "Lien",
+  "act": 2,
+  "cards": {
+   "paper_cut": 2,
+   "cower_behind_a_desk": 3,
+   "strong_binder": 1,
+   "permit_a38": 1,
+   "counter_ward": 1,
+   "deskward": 1,
+   "foreclosure": 1,
+   "mortgage_sigil": 2,
+   "forfeit_seal": 2,
+   "grave_lien+": 2,
+   "foreclosure+": 2,
+   "seizure_writ+": 1
+  },
+  "relics": [
+   "tarnished_bell",
+   "broken_granary_seal"
+  ]
+ },
+ {
+  "name": "lien_a3",
+  "family": "Lien",
+  "act": 3,
+  "cards": {
+   "paper_cut": 2,
+   "cower_behind_a_desk": 2,
+   "strong_binder": 1,
+   "permit_a38": 1,
+   "counter_ward": 1,
+   "deskward": 1,
+   "borrowed_candle": 1,
+   "mortgage_sigil": 1,
+   "forfeit_seal": 2,
+   "debt_ouroboros": 1,
+   "grave_lien+": 3,
+   "foreclosure+": 3,
+   "seizure_writ+": 1,
+   "mortgaged_aegis+": 1,
+   "mortgage_sigil+": 1
+  },
+  "relics": [
+   "tarnished_bell",
+   "broken_granary_seal",
+   "sootglass_lens"
+  ]
+ },
+ {
+  "name": "citation_a2",
+  "family": "Citation",
+  "act": 2,
+  "cards": {
+   "paper_cut": 4,
+   "cower_behind_a_desk": 1,
+   "strong_binder": 1,
+   "permit_a38": 1,
+   "counter_ward": 1,
+   "deskward": 1,
+   "witchmark_citation": 1,
+   "silent_hearing": 1,
+   "blood_marginalia": 2,
+   "contempt_finding": 1,
+   "witchmark_citation+": 2,
+   "silent_hearing+": 2,
+   "standing_citation+": 1
+  },
+  "relics": [
+   "tarnished_bell",
+   "sootglass_lens"
+  ]
+ },
+ {
+  "name": "citation_a3",
+  "family": "Citation",
+  "act": 3,
+  "cards": {
+   "paper_cut": 4,
+   "strong_binder": 1,
+   "permit_a38": 1,
+   "counter_ward": 1,
+   "deskward": 1,
+   "borrowed_candle": 1,
+   "blood_marginalia": 3,
+   "contempt_finding": 1,
+   "witchmark_citation+": 3,
+   "silent_hearing+": 3,
+   "standing_citation+": 1,
+   "exemplary_sentence+": 1,
+   "contempt_finding+": 1
+  },
+  "relics": [
+   "tarnished_bell",
+   "sootglass_lens",
+   "index_bone"
+  ]
+ },
+ {
+  "name": "blood_ink_a2",
+  "family": "Blood Ink",
+  "act": 2,
+  "cards": {
+   "paper_cut": 2,
+   "cower_behind_a_desk": 3,
+   "strong_binder": 1,
+   "permit_a38": 1,
+   "counter_ward": 1,
+   "deskward": 1,
+   "sanguine_errata": 1,
+   "proxy_curse": 2,
+   "vein_register": 1,
+   "blood_marginalia": 1,
+   "sanguine_errata+": 2,
+   "blood_redaction+": 1,
+   "blood_marginalia+": 2
+  },
+  "relics": [
+   "tarnished_bell",
+   "sootglass_lens"
+  ]
+ },
+ {
+  "name": "blood_ink_a3",
+  "family": "Blood Ink",
+  "act": 3,
+  "cards": {
+   "paper_cut": 2,
+   "cower_behind_a_desk": 2,
+   "strong_binder": 1,
+   "permit_a38": 1,
+   "counter_ward": 1,
+   "deskward": 1,
+   "borrowed_candle": 1,
+   "blood_marginalia": 2,
+   "vein_register": 1,
+   "proxy_curse": 1,
+   "sanguine_errata+": 3,
+   "blood_tithe+": 3,
+   "vital_census+": 2,
+   "blood_redaction+": 1
+  },
+  "relics": [
+   "tarnished_bell",
+   "sootglass_lens",
+   "index_bone"
+  ]
+ },
+ {
+  "name": "plain_a2",
+  "family": "plain",
+  "act": 2,
+  "cards": {
+   "paper_cut": 2,
+   "cower_behind_a_desk": 3,
+   "strong_binder": 1,
+   "permit_a38": 1,
+   "violence_allowance": 1,
+   "tallow_budget": 2,
+   "false_signature": 1,
+   "notary_beetle": 1,
+   "marginalia": 1,
+   "borrowed_candle": 1,
+   "dawn_summons+": 1,
+   "counter_ward+": 2,
+   "deskward+": 2
+  },
+  "relics": [
+   "iron_prayer_bead",
+   "lead_counterweight"
+  ]
+ },
+ {
+  "name": "plain_a3",
+  "family": "plain",
+  "act": 3,
+  "cards": {
+   "paper_cut": 2,
+   "cower_behind_a_desk": 2,
+   "strong_binder": 1,
+   "permit_a38": 1,
+   "counter_ward": 1,
+   "deskward": 1,
+   "borrowed_candle": 1,
+   "tallow_budget": 1,
+   "false_signature": 1,
+   "marginalia": 1,
+   "notary_beetle": 1,
+   "dawn_summons+": 1,
+   "blood_testimony+": 1,
+   "grievance_ledger+": 1,
+   "counter_ward+": 2,
+   "deskward+": 2,
+   "tallow_budget+": 1,
+   "borrowed_candle+": 1
+  },
+  "relics": [
+   "iron_prayer_bead",
+   "lead_counterweight",
+   "index_bone"
+  ]
+ }
+]

@@ -44,11 +44,20 @@ int? fightHealth = null;
 var fightEnergy = 3;
 var fights = 1;
 // THE ACT-I BENCH (Act1Bench): --act1-bench [--bench-shuffles n] [--bench-horizon n] [--bench-beam n]
-//      [--bench-stages queue,counter] [--bench-extra card,card] [--bench-cards] [--bench-hp n]
+//      [--bench-stages queue,counter] [--bench-extra card,card] [--bench-cards [--bench-only card,card]] [--bench-hp n]
 // THE CARD RATING (CardRating, BALANCE_PLAN K1): --card-rating — every final card's effect per energy, read
 // statically off its program. Seconds; no fight is played.
 var act1Bench = args.Contains("--act1-bench");
 var cardRating = args.Contains("--card-rating");
+// THE FAMILY POOL: --family-pool — every reward card, by keyword family and act (the shelf the family decks are built from).
+var familyPool = args.Contains("--family-pool");
+// THE FAMILY BENCH (FamilyBench, PLAYTEST_FEEDBACK_2 F2): --family-decks FAMILY_DECKS.json [--family-acts 2,3]
+//      [--family-relics none|only|both] [--family-normals n] [--bench-only deck,deck] + the --bench-* knobs —
+//      one built deck per keyword family, fought through a later act's normals, elites and bosses.
+string? familyDecks = null;
+string? familyActs = null;
+var familyRelics = "both";
+var familyNormals = 10;
 // THE AUDIT (Audit, CONTENT_FIX_PLAN F5): --audit [--audit-only id,id] — every card and combat relic over four
 // rounds against a quiet dummy and a striker, paired with the same fight without it; report to ~/Desktop/bnb-balance/audit.
 var audit = args.Contains("--audit");
@@ -64,6 +73,7 @@ var benchPerTurn = 300;
 var benchHealth = 70;
 string? benchStages = null;
 string? benchExtra = null;
+string? benchOnly = null;
 for (var i = 0; i < args.Length - 1; i++)
 {
     switch (args[i])
@@ -101,6 +111,11 @@ for (var i = 0; i < args.Length - 1; i++)
         case "--bench-hp": benchHealth = int.Parse(args[i + 1]); break;
         case "--bench-stages": benchStages = args[i + 1]; break;
         case "--bench-extra": benchExtra = args[i + 1]; break;
+        case "--bench-only": benchOnly = args[i + 1]; break;
+        case "--family-decks": familyDecks = args[i + 1]; break;
+        case "--family-acts": familyActs = args[i + 1]; break;
+        case "--family-relics": familyRelics = args[i + 1]; break;
+        case "--family-normals": familyNormals = int.Parse(args[i + 1]); break;
         case "--audit-only": auditOnly = args[i + 1]; break;
     }
 }
@@ -134,12 +149,20 @@ try
         return CalcCheck.Run(blueprint, calcCheck, seed, Console.WriteLine);
     if (audit)
         return Audit.Run(blueprint, Split(auditOnly) is { Count: > 0 } picked ? picked : null, jobs, Console.WriteLine);
+    if (familyDecks is not null)
+        return FamilyBench.Run(blueprint, new FamilyBench.Options(
+            familyDecks, args.Contains("--bench-shuffles") ? benchShuffles : 4, benchHorizon,
+            args.Contains("--bench-beam") ? benchBeam : 6, args.Contains("--bench-perturn") ? benchPerTurn : 100, jobs,
+            familyNormals, benchHealth, familyRelics, Split(benchOnly),
+            [.. Split(familyActs).Select(int.Parse)]), Console.WriteLine);
+    if (familyPool)
+        return Act1Bench.Pool(Console.WriteLine);
     if (cardRating)
         return CardRating.Run(blueprint, Console.WriteLine);
     if (act1Bench)
         return Act1Bench.Run(blueprint, new Act1Bench.Options(
             benchShuffles, benchHorizon, benchBeam, benchPerTurn, Jobs: jobs, StagesWanted: Split(benchStages),
-            Extra: Split(benchExtra), Cards: benchCards, Health: benchHealth), Console.WriteLine);
+            Extra: Split(benchExtra), Cards: benchCards, Health: benchHealth, Only: Split(benchOnly)), Console.WriteLine);
     if (artSlots is not null)
         return ArtSlots.Write(blueprint, data, dataDir, artSlots);
     if (maps > 0)
