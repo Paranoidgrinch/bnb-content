@@ -2,7 +2,7 @@
 
 Generated: `dotnet run --project Converter -- --art-slots ART_SLOTS.md`. **Do not edit by hand.**
 
-**716 pictures**: 235 cards, 210 relics, 269 bodies
+**802 pictures**: 321 cards, 210 relics, 269 bodies
 (every enemy, elite and boss) and 2 the player can be. Every one of them is filled today by a PLACEHOLDER — a plate with the file's own
 name and the word placeholder on it, written by `bnb-godot/tools/make-card-art.py`,
 `make-relic-art.py` and `make-enemy-art.py`. A painted picture replaces one by being saved over it, so
@@ -603,7 +603,7 @@ Drawn like a body and facing RIGHT — the player stands on the left of the aren
 | `bureaucrat` | Bureaucrat | Armed with forms, stamps, and a fireproof sense of procedure. |
 | `hedge_witch` | The Hedge Witch | Turns cards into ingredients and hides behind the pot when she is not cooking. |
 
-## Cards — 235 pictures
+## Cards — 321 pictures
 
 No visual canon was ever written for the cards, so the row carries the card's own rules
 text instead of a brief. Act = the act that unlocks it; the starters, the Junk and the
@@ -792,14 +792,108 @@ cards a boss or a door hands over are never offered and have no act.
 | `sovereign_prohibition` | Sovereign Prohibition | working | uncommon | Gain 5 Censure and 6 Block. Apply 5 Censure to ALL enemies. |
 | `tallow_judgment` | Tallow Judgment | deed | rare | Consume up to 8 Ward Wax. Deal 10 damage plus 7 damage per Ward Wax consumed. |
 
-### Given in play — 97
+### Hedge Witch — 90
+
+| code | title | type | rarity | what it does |
+|---|---|---|---|---|
+| `adder_in_the_sleeve` | Adder in the Sleeve | deed | uncommon | Retain. Deal 5 damage, and 3 more for each turn it has waited in your hand (at most 9 more). |
+| `adders_nip` | Adder's Nip | deed | starter | Deal 6 damage. |
+| `bad_penny` | Bad Penny | working | uncommon | Apply 5 Misfortune. If its roll fails, 3 Misfortune stays for its next action. |
+| `badgers_temper` | Badger's Temper | deed | uncommon | Deal 7 damage. If the target intends to Attack, deal 4 more. |
+| `bane_root` | Bane-Root | rite | rare | After a Hex bursts, that enemy gains 2 Hexed. |
+| `birch_bark_wrap` | Birch-Bark Wrap | working | common | Gain 8 Block. |
+| `bite_the_hand` | Bite the Hand | deed | uncommon | Deal 6 damage. If the target has any positive Status, deal 6 more. |
+| `bitter_tea` | Bitter Tea | working | common | Draw 1 card. Heal 1 HP lost this combat. |
+| `black_cat` | Black Cat | deed | common | Deal 4 damage. Apply 5 Misfortune. |
+| `borrowed_luck` | Borrowed Luck | working | rare | Remove all Misfortune from an enemy. Gain 2 Block for each, and draw 1 card for every 4. |
+| `bramble_switch` | Bramble Switch | deed | common | Deal 7 damage. If the target is Hexed, deal 3 more. |
+| `briar_sweep` | Briar Sweep | deed | common | Deal 9 damage to ALL enemies. |
+| `broken_mirror` | Broken Mirror | working | uncommon | Apply 10 Misfortune. Shuffle a Mirror Shard into your draw pile. |
+| `call_the_third_night` | Call the Third Night | working | rare | The target's Hex bursts now: it loses 3 HP for each Hexed. Its Threefold count starts again. |
+| `carrion_flight` | Carrion Flight | deed | rare | Deal 3 damage 6 times. Once the target has fallen, the rest strike a random enemy. |
+| `cast_the_knucklebones` | Cast the Knucklebones | working | uncommon | Choose one: apply 5 Misfortune; or apply 0 to 12 Misfortune, at random. |
+| `charm_backwards` | Charm Backwards | working | uncommon | Apply 8 Hexed. Its Threefold count goes back by 1. |
+| `clamp_the_lid` | Clamp the Lid | working | uncommon | Gain 7 Block. If the cauldron is Sheltering, gain 4 Ward Wax. |
+| `comfrey_poultice` | Comfrey Poultice | working | uncommon | Heal 3 HP lost this combat. If you are at or below half your HP, heal 7 instead. |
+| `crooked_finger` | Crooked Finger | working | starter | Apply 4 Hexed. |
+| `crooked_horseshoe` | Crooked Horseshoe | working | common | Apply 6 Misfortune. |
+| `cross_your_fingers` | Cross Your Fingers | working | uncommon | Apply 5 Misfortune. If its roll fails, you gain 6 Block before its action. |
+| `crows_peck` | Crow's Peck | deed | common | Deal 3 damage. If the target is at or below half its HP, deal 6 instead. |
+| `dead_mans_hex` | Dead Man's Hex | working | uncommon | Apply 5 Hexed. When the target dies, the healthiest other enemy takes on half its Hexed. |
+| `evil_eye` | Evil Eye | working | common | Deal 3 damage. Apply 3 Hexed. |
+| `familiars_supper` | Familiar's Supper | deed | uncommon | Deal 8 damage. If this kills, your next card into the cauldron is free. |
+| `for_what_ails_you` | For What Ails You | working | rare | Choose one: heal 4 HP lost this combat; remove 2 stacks of negative Statuses from yourself; draw 2 cards; or your next card into the cauldron is free. |
+| `full_pot` | Full Pot | working | rare | Gain 4 Block, and 3 more for each card in the cauldron. If it is Ready, gain 6 more. |
+| `grannys_physic` | Granny's Physic | working | rare | Remove every negative Status from yourself. Heal 3 HP lost this combat, and 2 more for each stack removed (at most 10 more). Exhaust. |
+| `hawthorn_switch` | Hawthorn Switch | deed | uncommon | Deal 8 damage. If the target is Hexed, its Threefold count moves on by 1. |
+| `hawthorn_wall` | Hawthorn Wall | working | uncommon | Gain 12 Block. Every enemy that attacks you this turn gains 2 Hexed. |
+| `hedge_thing` | Hedge-Thing | deed | uncommon | Deal 7 damage. If the cauldron is Sheltering, deal 4 more. |
+| `hedgehog_curl` | Hedgehog Curl | working | uncommon | Gain 5 Block. Every enemy attack on you this turn costs the attacker 2 damage. |
+| `hex_in_the_rafters` | Hex in the Rafters | rite | rare | The first Hex burst each enemy turn gives every other enemy 3 Hexed. |
+| `honey_and_onion` | Honey and Onion | working | uncommon | Heal 2 HP lost this combat. Remove 2 stacks of negative Statuses from yourself. |
+| `horn_spoon` | Horn Spoon | working | uncommon | Gain 6 Block. In the cauldron, whatever is brewed also gives 3 Ward Wax. |
+| `horseshoe_over_the_door` | Horseshoe Over the Door | rite | uncommon | The first time each turn you apply Misfortune to an enemy, it gains 2 more. |
+| `hot_broth` | Hot Broth | working | common | Gain 6 Block. Heal 1 HP lost this combat. |
+| `ironwood` | Ironwood | rite | rare | The first time each turn an attack gets through your Block, gain 4 Ward Wax. |
+| `keep_the_drippings` | Keep the Drippings | rite | rare | Hearth healing that the combat-heal cap would waste becomes Ward Wax instead. |
+| `knock_on_wood` | Knock on Wood | working | common | Gain 3 Block. If any enemy has Misfortune, gain 3 more. |
+| `knotted_cord` | Knotted Cord | working | uncommon | Apply 2 Hexed. In the cauldron, it counts as two Hex. |
+| `last_breath_hex` | Last-Breath Hex | working | rare | Apply 6 Hexed. When the target dies, the healthiest other enemy takes on all its Hexed and its Threefold count. |
+| `loaded_knucklebones` | Loaded Knucklebones | working | rare | Apply 3 Misfortune. Its next roll is rolled twice; either may land. |
+| `magpies_luck` | Magpie's Luck | working | uncommon | Apply 5 Misfortune. If it makes the target's action fail, draw 2 more cards next turn. |
+| `midwifes_hands` | Midwife's Hands | rite | uncommon | The first time you fall to a third of your HP or below this combat, heal 8 HP lost this combat. |
+| `mirror_shard` | Mirror Shard | junk | junk | Unplayable. Seven years, it says. |
+| `mugwort_poultice` | Mugwort Poultice | working | common | Heal 6 HP lost this combat. Exhaust. |
+| `murder_of_crows` | Murder of Crows | deed | uncommon | Deal 2 damage to a random enemy 4 times. |
+| `muttered_name` | Muttered Name | working | common | Apply 3 Hexed to ALL enemies. |
+| `nail_in_the_doorpost` | Nail in the Doorpost | rite | uncommon | The first time each turn you apply Hexed to an enemy, the healthiest other enemy gains 2 Hexed. |
+| `name_written_backwards` | Name Written Backwards | working | rare | Double the target's Hexed. Its Threefold count starts again. |
+| `nettle_tea` | Nettle Tea | working | starter | Gain 4 Block. Heal 1 HP lost this combat. |
+| `never_wash_the_pot` | Never Wash the Pot | rite | rare | After each Brew, keep one of its ingredients in the cauldron. |
+| `ninth_life` | Ninth Life | rite | rare | After the first Misfortune that lands this combat, that enemy is left 4 Misfortune. |
+| `oakskin` | Oakskin | working | uncommon | Gain 6 Block. If the cauldron is Brewing, gain 4 more. |
+| `old_grudge` | Old Grudge | working | common | Apply 10 Hexed. |
+| `pot_lid` | Pot-Lid | working | starter | Gain 5 Block. If the cauldron is Sheltering, gain 3 more. |
+| `proper_supper` | Proper Supper | working | uncommon | Gain 5 Block. At the start of your next turn, heal 3 HP lost this combat. |
+| `put_the_kettle_on` | Put the Kettle On | working | uncommon | Gain 4 Block. Heal 1 HP lost this combat. Your next card into the cauldron is free. |
+| `scar_bark` | Scar-Bark | working | rare | Gain 5 Block, and 1 more for each HP attacks took from you last enemy turn (at most 15 more). |
+| `set_the_bone` | Set the Bone | working | common | Gain 11 Block. Heal 3 HP lost this combat. |
+| `seven_magpies` | Seven Magpies | working | uncommon | Apply 3 Misfortune to ALL enemies. If only one enemy stands, it gains 3 more. |
+| `seven_years_bad_luck` | Seven Years' Bad Luck | working | rare | Apply 8 Misfortune. Until it lands, every roll the target wins leaves half the Misfortune behind. |
+| `shed_skin` | Shed Skin | working | common | Gain 5 Block. Remove 1 stack of a negative Status from yourself. |
+| `shut_the_lid` | Shut the Lid | working | rare | Gain 8 Block. Until your next turn the cauldron shelters you however full it is, and nothing goes in or out. |
+| `slough_off` | Slough Off | working | uncommon | Gain 6 Block. Remove 1 stack of a negative Status from yourself; if you did, draw 1 card. |
+| `snail_shell` | Snail Shell | working | common | Gain 6 Block. If no Attack gets through this enemy turn, gain 3 Ward Wax. |
+| `snails_patience` | Snail's Patience | working | uncommon | Gain 6 Block. If this is your first or second card this turn, gain 6 Block next turn. |
+| `soup_stone_fang` | Soup Stone (Fang) | junk | junk | Unplayable. In the cauldron, it is Fang. |
+| `soup_stone_fortune` | Soup Stone (Fortune) | junk | junk | Unplayable. In the cauldron, it is Fortune. |
+| `soup_stone_hearth` | Soup Stone (Hearth) | junk | junk | Unplayable. In the cauldron, it is Hearth. |
+| `soup_stone_hex` | Soup Stone (Hex) | junk | junk | Unplayable. In the cauldron, it is Hex. |
+| `soup_stone_husk` | Soup Stone (Husk) | junk | junk | Unplayable. In the cauldron, it is Husk. |
+| `sour_the_milk` | Sour the Milk | working | uncommon | Apply 4 Hexed. Another negative Status on the target gains 1 stack. |
+| `spilled_salt` | Spilled Salt | working | common | Gain 4 Block. Apply 4 Misfortune. |
+| `stone_soup` | Stone Soup | working | rare | Name a family: the first Junk card in your hand becomes a Soup Stone of it and goes into the cauldron. Draw 1 card. |
+| `taste_the_broth` | Taste the Broth | working | uncommon | Take a card from the cauldron back into your hand. Heal 2 HP lost this combat. |
+| `teeth_in_the_dark` | Teeth in the Dark | deed | rare | Deal 6 damage, and 4 more for each card in the cauldron. |
+| `tell_the_bees` | Tell the Bees | rite | uncommon | Once each turn, when an enemy dies, heal 3 HP lost this combat. |
+| `the_black_cat_sat_down` | The Black Cat Sat Down | working | rare | The target's next action fails. Lose 4 HP. Shuffle 2 Mirror Shards into your draw pile. Exhaust. |
+| `the_hare_runs_last` | The Hare Runs Last | deed | rare | Deal 8 damage. If its Hex bursts at the end of its next turn, it takes 8 damage again after the burst. |
+| `third_bell` | Third Bell | working | uncommon | Apply 3 Hexed. If its Hex bursts at the end of its next turn, every other enemy gains 3 Hexed. |
+| `third_knock` | Third Knock | working | common | Apply 3 Hexed. If its Hex bursts at the end of its next turn, apply 3 more. |
+| `thorn_hedge` | Thorn Hedge | working | common | Gain 6 Block. The first enemy to attack you this turn takes 4 damage. |
+| `thrice_spoken_name` | Thrice-Spoken Name | working | uncommon | Apply 4 Hexed. If its Hex bursts at the end of its next turn, apply 6 more. |
+| `turnskin` | Turnskin | deed | rare | A Husk card in the cauldron turns into an Adder's Nip. Deal 9 damage. |
+| `two_teeth` | Two Teeth | deed | common | Deal 4 damage twice. |
+| `winter_bark` | Winter Bark | working | rare | Gain 16 Block. After the enemy turn, up to 6 of your unused Block becomes Ward Wax. |
+| `wolf_at_the_door` | Wolf at the Door | deed | rare | Retain. Deal 20 damage. Each turn it waits in your hand, it costs 1 less. |
+
+### Given in play — 93
 
 Handed over by a boss, a door or an event rather than offered; never in a reward pool.
 
 | code | title | what it does |
 |---|---|---|
 | `acknowledge_service` | Acknowledge Service | Sign for the notice: gain 2 Paperwork. The Knight's enforcement deals 10 instead of 19 and 1 Paperwork. Leave it in hand to refuse. |
-| `adders_nip` | Adder's Nip | Deal 6 damage. |
 | `ask_for_expedited_service` | Ask for Expedited Service | This Service Window opens the Commissioner by 15 % instead of 25 %, but afterwards you stand at Position 1 instead of going back into the queue. |
 | `authorized_entry` | Authorized Entry | Remove up to 12 Block from the Municipal Dragon. Costs 1 Authorization; one authority per turn. |
 | `authorized_expedition` | Authorized Expedition | Gain 1 Energy. Costs 1 Authorization; one authority per turn. |
@@ -827,7 +921,6 @@ Handed over by a boss, a door or an event rather than offered; never in a reward
 | `correction_reed_action` | A Small Correction | Send a card away and take one back out of your discard pile; it costs 1 less this turn. With nothing to take back, draw 1. Once a turn. |
 | `counter_petition` | Counter-Petition | Once a turn, spend 1 Safe-Conduct to argue one of the Ombudsman's complaints under the other Ground — Road becomes Root, or Root becomes Road. It creates nothing, moves nothing, and nobody's standing changes hands. |
 | `counter_petition_twine_action` | Counter-Petition | Discard a card, draw a card, and gain 1 Energy. Once a turn. |
-| `crooked_finger` | Crooked Finger | Apply 4 Hexed. |
 | `dedicate_a_work` | Dedicate a Work | Give Eanna a card from your hand for the rest of this fight. A card she has claimed settles 4 Temple Due, an ordinary one 1, and rubbish nothing — Eanna wants value. Dedicated cards come back when she is dead. |
 | `draw_against_the_treasury` | Draw Against the Treasury | Spend a Treasury Credit: take up to 12 Block off the treasury. Once a turn. |
 | `draw_ahead` | Draw Ahead | Draw 1 card out of a later day. The quantity moves; the cards are still yours. |
@@ -847,11 +940,9 @@ Handed over by a boss, a door or an event rather than offered; never in a reward
 | `make_amends` | Make Amends | Choose one: PAY IN COIN — spend 1 Energy. OFFER A CARD — discard a card from your hand. Either settles 1 Wergild, oldest demand first. |
 | `missing_signature` | Missing Signature | Exhaust. If it is still in your hand at the end of your turn, file 1 Paperwork. |
 | `near_boundary` | Near Boundary | Accept the surveyor's nearer figure as this turn's exact measure. Meeting it lets it brace. |
-| `nettle_tea` | Nettle Tea | Gain 4 Block. Heal 1 HP lost this combat. |
 | `notice_of_delay` | Notice of Delay | Retain. Exhaust. If it is still in your hand at the end of your turn, gain 1 Fatigue. |
 | `offer_the_surplus` | Offer the Surplus | Spend 1 Energy to settle 1 Temple Due. |
 | `petition_for_priority` | Petition for Priority | Move one place toward the Counter. Gain 1 Paperwork. Only one administrative choice per turn. |
-| `pot_lid` | Pot-Lid | Gain 5 Block. If the cauldron is Sheltering, gain 3 more. |
 | `redacted_leaf` | Redacted Leaf | Unplayable. Retain. At the start of your turn one card in your hand is Redacted, and the Leaf is spent. |
 | `return_receipt` | Return Receipt | Choose one: FILE THE RECEIPT — remove 1 Overdue; the Bell loses 5 HP. CONTEST THE FEE — remove 1 Late Fee; mark 1 draw-pile card Misfiled. |
 | `revise_body_shall_bear` | Revise: Thirty-Six | Spend a Reed Mark to edit this sentence one step. 36 HP, ignoring Block. Revised: 24 · 12 · nothing · and at four, Nisaba bears 18 herself. |

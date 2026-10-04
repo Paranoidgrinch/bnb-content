@@ -20,7 +20,11 @@ public static class WitchCharacter
         Resources = new Dictionary<string, int> { [StandardRunIds.Gold.Value] = 0 },
         Deck = [.. WitchCards.StarterDeck.Select(id => new CardDefinitionId(id))],
         CombatActions = [new CardDefinitionId(WitchActions.AddIngredient), new CardDefinitionId(WitchActions.Brew)],
-        CombatStatuses = [new StartingStatusSpec(new StatusDefinitionId(WitchKeywords.Cauldron), 1)],
+        CombatStatuses =
+        [
+            new StartingStatusSpec(new StatusDefinitionId(WitchKeywords.Cauldron), 1),
+            new StartingStatusSpec(new StatusDefinitionId(WitchRules.Habits), 1),
+        ],
     };
 
     // Her cards (and their upgrades) and, later, her relics: offered to her alone.

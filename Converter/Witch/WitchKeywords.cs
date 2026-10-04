@@ -54,7 +54,7 @@ public static class WitchKeywords
                 new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
                     new ComparisonExpression<TurnEndedTriggeredEffectContext>(
                         step, ComparisonOperator.GreaterOrEqual, new ConstantExpression<TurnEndedTriggeredEffectContext>(3)),
-                    new SequenceEffectNode<TurnEndedTriggeredEffectContext>(
+                    new CausalSequenceEffectNode<TurnEndedTriggeredEffectContext>(
                     [
                         new DealDamageNode<TurnEndedTriggeredEffectContext>(
                             self,
@@ -66,7 +66,9 @@ public static class WitchKeywords
                         new SetCombatantCounterNode<TurnEndedTriggeredEffectContext>(
                             self, ThreefoldStep, new ConstantExpression<TurnEndedTriggeredEffectContext>(0),
                             relative: false),
+                        WitchRules.OnBurst(),
                     ])),
+                WitchRules.AfterTurn(),
             ]));
 
         return Status(Hexed, "Hexed", StatusPolarity.Debuff,
@@ -83,10 +85,12 @@ public static class WitchKeywords
     {
         var self = CombatantTargetSelectors.Source;
         var program = new EffectProgram<ActionStartingTriggeredEffectContext>(
-            new SequenceEffectNode<ActionStartingTriggeredEffectContext>(
+            new CausalSequenceEffectNode<ActionStartingTriggeredEffectContext>(
             [
+                WitchRules.NoteRolled(),
                 new ConditionalEffectNode<ActionStartingTriggeredEffectContext>(
-                    new ComparisonExpression<ActionStartingTriggeredEffectContext>(
+                    // A sat-down black cat lands it outright; loaded knucklebones roll twice (WitchRules).
+                    WitchRules.Lands(() => new ComparisonExpression<ActionStartingTriggeredEffectContext>(
                         new RandomBelowExpression<ActionStartingTriggeredEffectContext>(100),
                         ComparisonOperator.Less,
                         new MultiplyExpression<ActionStartingTriggeredEffectContext>(
@@ -94,11 +98,18 @@ public static class WitchKeywords
                                 new CombatantStatusStacksExpression<ActionStartingTriggeredEffectContext>(
                                     self, new StatusDefinitionId(Misfortune)),
                                 new ConstantExpression<ActionStartingTriggeredEffectContext>(MisfortuneCapStacks)),
-                            new ConstantExpression<ActionStartingTriggeredEffectContext>(MisfortunePercentPerStack))),
-                    new ApplyStatusNode<ActionStartingTriggeredEffectContext>(
-                        self, StandardCombatIds.ActionFailsStatus,
-                        new ConstantExpression<ActionStartingTriggeredEffectContext>(1))),
+                            new ConstantExpression<ActionStartingTriggeredEffectContext>(MisfortunePercentPerStack)))),
+                    new SequenceEffectNode<ActionStartingTriggeredEffectContext>(
+                    [
+                        new ApplyStatusNode<ActionStartingTriggeredEffectContext>(
+                            self, StandardCombatIds.ActionFailsStatus,
+                            new ConstantExpression<ActionStartingTriggeredEffectContext>(1)),
+                        WitchRules.RollLanded(true),
+                    ]),
+                    @else: WitchRules.RollLanded(false)),
                 new RemoveStatusNode<ActionStartingTriggeredEffectContext>(self, new StatusDefinitionId(Misfortune)),
+                // …and what the cards riding on the roll make of it (WitchRules).
+                WitchRules.AfterRoll(),
             ]));
 
         return Status(Misfortune, "Misfortune", StatusPolarity.Debuff,

@@ -180,11 +180,13 @@ public static class BlueprintAssembler
                 {
                     [Witch.WitchActions.AddIngredient] = new()
                     {
+                        Art = $"cards/{Witch.WitchActions.AddIngredient}.png",
                         FlavorText = blueprint.Cards.First(c => c.Id == Witch.WitchActions.AddIngredient).DescriptionKey,
                         Tags = ["action"],
                     },
                     [Witch.WitchActions.Brew] = new()
                     {
+                        Art = $"cards/{Witch.WitchActions.Brew}.png",
                         FlavorText = blueprint.Cards.First(c => c.Id == Witch.WitchActions.Brew).DescriptionKey,
                         Tags = ["action"],
                         Extra = new Dictionary<string, string>(Witch.WitchRecipes.Presentation(), StringComparer.Ordinal),

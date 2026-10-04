@@ -8,7 +8,7 @@ namespace BnbContent.Tests;
 
 // The Hedge Witch's reward cards (hedge_witch_master.md §11–§13; plan W4): the shape of the pools, and every card
 // whose words carry a RULE beyond a plain number — each test is red without that rule. Numbers are the E7 drafts.
-public class WitchCardTests
+public partial class WitchCardTests
 {
     private const string Quiet = "ordinance_tablet";
     private const string QuietIntent = "stone_precedent";   // guards itself, does nothing to the hero

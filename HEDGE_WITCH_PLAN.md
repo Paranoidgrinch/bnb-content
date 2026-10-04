@@ -148,7 +148,11 @@ Jeder Schritt einzeln committet; gepusht wird pro fertiger Phase.
 | G2 Kessel im Kampf | ✔ `SessionCauldron.cs`: Kessel-Leiste (Plätze, Zustand, Rezeptvorschau), Knöpfe mit aktuellem Preis; `--smoke-cauldron --character=hedge_witch` |
 | G3 Hexed/Misfortune-Anzeige | ✔ `Hexed 7 ••○`, Misfortune in % |
 | Tests | ✔ `HedgeWitchTests` (9), Core-Tests je Baustein; Bureaucrat-Golden unverändert |
-| Offen | W4 Karten (E7-Vorlage!), W5 Relikte, W6 General-Familien (E4-Tabelle!), Hidden Recipes + Rezeptbuch (G4), Archiv-Rubrik Relikte, Balance |
+| W6 General-Familien | ✔ `WitchFamilies.cs` (Tabelle E4), beim Zusammenbau auf Karte + Upgrade geschrieben; Test: 50 Karten, je genau eine Familie, Grave Lien kocht als Fang |
+| W4 Karten | ✔ 20 Commons (`WitchCards.cs`), 35 Uncommons (`WitchCards.Uncommon.cs`, 23 × Akt I / 12 × Akt II), 25 Rares (`WitchCards.Rare.cs`, 8/6/6/5 über Akt I–IV), jede mit Upgrade; Regeln, die die Karte überdauern, als Status in `WitchRules*.cs`; Hexed-Burst und Misfortune-Wurf rufen Haken (`OnBurst`, `AfterRoll`), der Kessel kennt Knotted Cord (zählt doppelt), Horn Spoon (Ward Wax), Shut the Lid, Never Wash the Pot; Hearth-Heilung kennt Keep the Drippings. Junk: Mirror Shard, 5 Soup Stones. `WitchCardTests*` (63 Tests, je Regel rot ohne sie) |
+| + Core-Fix | ✔ Core 49f2e6d: eine angekündigte Gegneraktion wartet, bis jedes von der Ankündigung gestartete Programm fertig ist (vorher kam ein zweistufiger Effekt — Crossed Fingers' Block — erst nach dem Schlag) |
+| W4-Abweichungen (bewusst) | Murder of Crows/Carrion Flight treffen zufällige Gegner statt verteilter Wahl · Tell the Bees und Midwife's Hands sind Rites · Stone Soup: „Familie nennen → erste Junk-Karte der Hand wird Soup Stone dieser Familie und kommt in den Kessel“ · Familiar's Supper gibt die freie Zutat als Status (bleibt bis zur nächsten Zutat, nicht nur diesen Zug) · Call the Third Night löst die Burst-Haken (Third Bell, Bane-Root …) nicht aus · Adder in the Sleeve zählt Warten pro Hexe, nicht pro Kopie |
+| Offen | **Belohnungs-/Shop-Pools der Hexe** (ihre Karten werden noch nirgends angeboten — `for:hedge_witch`-Einträge neben den Bureaucrat-Einträgen), W5 Relikte, Hidden Recipes + Rezeptbuch (G4), Archiv-Rubrik Relikte, Golden-Läufe Hexe (G6), Balance |
 
 ---
 

@@ -7,7 +7,7 @@ namespace BnbContent.Converter.Witch;
 // The Hedge Witch's own cards (hedge_witch_master.md §10–§13). Every one carries exactly one ingredient family
 // (§3) and a tag naming the card itself, which is how a Hidden Recipe (§9) asks for "these three cards" whatever
 // their upgrade. Numbers are the canon's BALANCE DRAFTS.
-public static class WitchCards
+public static partial class WitchCards
 {
     public const string CharacterTag = "hedge_witch";
     public static string Ingredient(string cardId) => "ing_" + cardId.TrimEnd('+');
@@ -161,7 +161,8 @@ public static class WitchCards
         "crooked_finger", "nettle_tea",
     ];
 
-    public static IReadOnlyList<BnbCard> All() => [.. Starter(), .. Commons()];
+    public static IReadOnlyList<BnbCard> All() =>
+        [.. Starter(), .. Commons(), .. Uncommons(), .. Rares(), .. Junk(), .. SoupStones()];
 
     public static IReadOnlyList<CardData> Compile() => All().Select(c => c.Compile()).ToList();
 
@@ -202,19 +203,30 @@ public static class WitchCards
             ReadSelector: new CombatSelectorSpec("withStatus", WitchKeywords.Misfortune,
                 [new CombatSelectorSpec("allCombatants")]))), bonus));
 
-    // "+bonus while the cauldron is Sheltering" — empty — as arithmetic, base + bonus × (1 − min(1, cards in pot)).
+    // "+bonus while the cauldron is Sheltering" — empty, or its lid shut (Shut the Lid) — as arithmetic:
+    // base + bonus × max(1 − min(1, cards in pot), [lid shut]).
     private static CombatAmountSpec Sheltered(int baseAmount, int bonus) =>
         Plus(CombatAmountSpec.FromConst(baseAmount),
             CombatAmountSpec.Binary("mul", CombatAmountSpec.FromConst(bonus),
-                CombatAmountSpec.Binary("sub", CombatAmountSpec.FromConst(1),
-                    CombatAmountSpec.Binary("min", CombatAmountSpec.FromConst(1), CardsInZone(CardZone.SetAsidePile)))));
+                CombatAmountSpec.Binary("max",
+                    CombatAmountSpec.Binary("sub", CombatAmountSpec.FromConst(1),
+                        CombatAmountSpec.Binary("min", CombatAmountSpec.FromConst(1), CardsInZone(CardZone.SetAsidePile))),
+                    Once(Stacks(WitchRules.ShutTheLid, You)))));
 
-    // Hearth: "heal N HP lost during this combat" — never above the HP the fight began on (§3.4).
-    public static CombatNodeModel Heal(int amount) =>
-        new("heal", You,
-            CombatAmountSpec.Binary("min", CombatAmountSpec.FromConst(amount),
-                CombatAmountSpec.Binary("max", CombatAmountSpec.FromConst(0),
-                    CombatAmountSpec.Binary("sub",
-                        new CombatAmountSpec("counter", SelectorKey: You, CounterId: WitchKeywords.CombatStartHp.value),
-                        new CombatAmountSpec("currentHealth", SelectorKey: You)))));
+    // Hearth: "heal N HP lost during this combat" — never above the HP the fight began on (§3.4). What the cap
+    // would waste may become Ward Wax first (Keep the Drippings), asked before the heal moves the numbers.
+    public static CombatNodeModel Heal(int amount) => Heal(CombatAmountSpec.FromConst(amount));
+
+    public static CombatNodeModel Heal(CombatAmountSpec amount) =>
+        Seq(
+            If(new CombatConditionSpec("hasStatus", You, Id: WitchRules.KeepTheDrippings),
+                Apply(Cards.Keywords.WardWax, CombatAmountSpec.Binary("max", CombatAmountSpec.FromConst(0),
+                    CombatAmountSpec.Binary("sub", amount, LostThisFight)), You)),
+            new CombatNodeModel("heal", You, CombatAmountSpec.Binary("min", amount, LostThisFight)));
+
+    private static CombatAmountSpec LostThisFight =>
+        CombatAmountSpec.Binary("max", CombatAmountSpec.FromConst(0),
+            CombatAmountSpec.Binary("sub",
+                new CombatAmountSpec("counter", SelectorKey: You, CounterId: WitchKeywords.CombatStartHp.value),
+                new CombatAmountSpec("currentHealth", SelectorKey: You)));
 }

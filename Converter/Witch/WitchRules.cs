@@ -9,7 +9,7 @@ namespace BnbContent.Converter.Witch;
 // outlives the card that played it lives on a status, as the Bureaucrat's and the general pool's do. Each
 // status's stacks ARE its amount, so a second copy — or the upgrade — adds to the first rather than needing a
 // status of its own.
-public static class WitchRules
+public static partial class WitchRules
 {
     // Snail Shell: "if you take no unblocked Attack damage during the enemy turn, gain Ward Wax".
     public const string SnailShell = "snail_shell";
@@ -17,7 +17,7 @@ public static class WitchRules
     // Thorn Hedge: "the first time you are attacked this enemy turn, damage the attacker".
     public const string ThornHedge = "thorn_hedge";
 
-    public static IReadOnlyList<StatusData> All() => [SnailShellMark(), ThornHedgeMark()];
+    public static IReadOnlyList<StatusData> All() => [SnailShellMark(), ThornHedgeMark(), .. UncommonRules(), .. RareRules()];
 
     private static ICombatantTargetSelector Self => CombatantTargetSelectors.Source;
 

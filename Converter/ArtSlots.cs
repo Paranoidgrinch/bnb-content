@@ -252,6 +252,7 @@ public static partial class ArtSlots
             ("General — Act II", [.. GeneralActII.All()]),
             ("General — Act III", [.. GeneralActIII.All()]),
             ("General — Act IV", ActIVCards.General()),
+            ("Hedge Witch", [.. Witch.WitchCards.All()]),
         };
 
         foreach (var (heading, cards) in groups)
