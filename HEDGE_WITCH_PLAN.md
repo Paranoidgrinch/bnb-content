@@ -220,3 +220,52 @@ Bureaucrat-Kartenpass: erst diese Regeln und 14 Beispielkarten, nach deiner Frei
 | Clamp the Lid (Husk) | Uncommon 1 E | 7 Block; Sheltering: 4 davon bleiben als Ward Wax | 10 Block, 5 Ward Wax |
 | Call the Third Night (Hex) | Rare 2 E | Threefold des Ziels sofort auslösen, danach neuer Zyklus | kostet 1 |
 | Loaded Knucklebones (Fortune) | Rare 1 E | der nächste Misfortune-Wurf wird zweimal geworfen, einer reicht; 15 % Misfortune | 30 % |
+
+## Vorlage W8 — Upgrades nach dem Bürokraten-Prinzip (ZUR DURCHSICHT, 2026-10-04)
+
+Auftrag (Spieler, 2026-10-04): die Hexen-Upgrades folgen demselben Prinzip wie die Bürokraten-Upgrades aus F
+(bnb-godot `PLAYTEST_FEEDBACK_2_PLAN.md`, F1/F freigegeben 2026-10-02).
+
+**Befund heute:** 84 Hexenkarten (4 Starter, 20 common, 35 uncommon, 25 rare). Nur **13 von 84 (15 %)** Upgrades
+ändern mehr als eine Zahl (bitter_tea, dead_mans_hex, knotted_cord, sour_the_milk, call_the_third_night,
+for_what_ails_you, grannys_physic, keep_the_drippings, name_written_backwards, never_wash_the_pot, stone_soup,
+the_black_cat_sat_down, turnskin). Der Rest ist „Hauptzahl +25 bis +40 %“ — genau der Stand der Bürokraten-Karten vor F.
+
+**Regeln (wie F, auf die Hexe übertragen)**
+- R1 Upgrade = Gesamtwert ×1,5. Mindestens 40 % der Upgrades bekommen eine Facette aus dem F-Katalog
+  (A Breite · B Mehrfach · C Bedingung · D Querverbindung · E Nachwirkung · F Umwandlung · G Sofort · H Kosten −1 ·
+  I Retain · K Beides statt Wahl · N Nachteil weg · S Schwelle · T Zielwahl).
+- Neu, nur für die Hexe — **P Topf-Facette**: was die Karte als ZUTAT tut, wird besser. P1 „zählt im Kessel als zwei
+  ihrer Familie“ (wie Knotted Cord), P2 „was gebraut wird, gibt zusätzlich 3 Ward Wax“ (wie Horn Spoon). Beides
+  kann die Engine schon (Tags `fam_*_double`, `rider_ward_wax`), es ist nur Inhalt. Sparsam: P1 höchstens auf
+  einer Handvoll Karten, sonst wird jede Mischung konzentriert.
+- Starter: nur die Upgrades werden stärker, die Basis bleibt.
+- Ziehen nur bei Karten, deren Identität Ziehen ist.
+- Riten: Upgrade = kostet 1 weniger (H), wie beim Bürokraten („Riten H wie heute“).
+- Die festen „Heal 1 HP lost this combat“-Anhängsel der Hearth-Karten zählen beim ×1,5 mit — eine Karte, deren
+  Upgrade nur den Block hebt, liegt sonst unter 1,5.
+
+**Stichprobe** (heute Basis / heute + → neu +; die Basis bleibt überall, wo nichts anderes steht)
+
+| Karte | heute (Basis / +) | neu + | Facette |
+|---|---|---|---|
+| Adder's Nip (Starter) | 6 / 9 Schaden | 5 Schaden zweimal | B |
+| Crooked Finger (Starter) | 4 / 5 Hexed | 6 Hexed | — (×1,5) |
+| Nettle Tea (Starter) | 4 Block, Heal 1 / 6, 1 | 6 Block, Heal 2 | — (×1,5) |
+| Pot-Lid (Starter) | 5 (+3 Sheltering) / 7 (+3) | 7 Block (+5 Sheltering), +1 Ward Wax bei Sheltering | D |
+| Knock on Wood (0 E) | 3 (+3 Misfortune) / 4 (+4) | 5 Block, +4 bei Misfortune, Retain | I |
+| Hot Broth | 6 Block, Heal 1 / 9, 1 | 8 Block, Heal 1, nächster Zug Heal 2 | E |
+| Spilled Salt | 4 Block, 4 Misf. / 6, 5 | 6 Block, 6 Misfortune, zählt im Kessel als zwei Fortune | P1 |
+| Black Cat | 4 Schaden, 5 Misf. / 6, 7 | 6 Schaden, 6 Misfortune an ALLE | A |
+| Horn Spoon | 6 Block, Rider 3 Wax / 9, 3 | 8 Block, Rider 5 Ward Wax | P2 |
+| Magpie's Luck | 5 Misf., misslingt → zieh 2 / 7, 2 | 7 Misfortune, misslingt → zieh 2 und 1 Energie | D |
+| Horseshoe over the Door (Rite) | 1 E, +2 / +3 | 0 E, +2 | H |
+| Seven Years' Bad Luck (2 E) | 8 / 11 Misfortune | 12 Misfortune, Schwelle: auch ohne Treffer bleibt die Hälfte | — (×1,5) |
+| The Hare Runs Last | 8 / 11 + 8 / 11 nach dem Ausbruch | 12, nach dem Ausbruch 12 | — (×1,5) |
+| Shut the Lid | 8 / 12 Block | 10 Block, sofort 3 Ward Wax | G |
+
+**Was nicht angefasst wird:** die 13 Upgrades, die schon eine Facette haben, außer sie liegen unter ×1,4; die
+Kosten-Upgrades (H) der Riten und der 2-E-Karten, die schon ×2 wert sind.
+
+**Danach:** die übrigen ~70 Karten nach denselben Regeln als Tabelle zur Durchsicht, dann bauen (Texte über die
+Compendium-Zeilen, Tests pro Facette), dann `ART_SLOTS.md`/Golden prüfen.
