@@ -32,10 +32,11 @@ public static partial class WitchCards
 
     public static IReadOnlyList<BnbCard> Starter() =>
     [
-        AddersNip, AddersNip.Upgraded("Deal 9 damage.", Damage(9)),
-        PotLid, PotLid.Upgraded("Gain 7 Block. If the cauldron is Sheltering, gain 3 more.", Block(Sheltered(7, 3))),
-        CrookedFinger, CrookedFinger.Upgraded("Apply 5 Hexed.", Apply(WitchKeywords.Hexed, 5)),
-        NettleTea, NettleTea.Upgraded("Gain 6 Block. Heal 1 HP lost this combat.", Seq(Block(6), Heal(1))),
+        AddersNip, AddersNip.Upgraded("Deal 5 damage twice.", Repeat(2, Damage(5))),
+        PotLid, PotLid.Upgraded("Gain 7 Block. If the cauldron is Sheltering, gain 5 more and 1 Ward Wax.",
+            Seq(Block(Sheltered(7, 5)), Apply(Cards.Keywords.WardWax, Sheltered(0, 1), You))),
+        CrookedFinger, CrookedFinger.Upgraded("Apply 6 Hexed.", Apply(WitchKeywords.Hexed, 6)),
+        NettleTea, NettleTea.Upgraded("Gain 6 Block. Heal 2 HP lost this combat.", Seq(Block(6), Heal(2))),
     ];
 
     // ── commons (§11): twenty, four a family — the Witch's plain language. Numbers by the E7 rules ─────────
@@ -124,34 +125,39 @@ public static partial class WitchCards
 
     public static IReadOnlyList<BnbCard> Commons() =>
     [
-        BrambleSwitch, BrambleSwitch.Upgraded("Deal 9 damage. If the target is Hexed, deal 5 more.", HexedBonus(9, 5)),
-        TwoTeeth, TwoTeeth.Upgraded("Deal 6 damage twice.", Repeat(2, Damage(6))),
+        BrambleSwitch, BrambleSwitch.Upgraded("Deal 10 damage. If the target is Hexed, deal 5 more.", HexedBonus(10, 5)),
+        TwoTeeth, TwoTeeth.Upgraded("Deal 4 damage 3 times.", Repeat(3, Damage(4))),
         CrowsPeck, CrowsPeck.Upgraded(
-            "Deal 4 damage. If the target is at or below half its HP, deal 9 instead.", Peck(4, 9)),
-        BriarSweep, BriarSweep.Upgraded("Deal 13 damage to ALL enemies.", Damage(13, AllEnemies)),
-        EvilEye, EvilEye.Upgraded("Deal 4 damage. Apply 5 Hexed.", Seq(Damage(4), Apply(WitchKeywords.Hexed, 5))),
+            "Retain. Deal 4 damage. If the target is at or below half its HP, deal 9 instead.", Peck(4, 9),
+            retainInHand: true),
+        BriarSweep, BriarSweep.Upgraded("Deal 14 damage to ALL enemies.", Damage(14, AllEnemies)),
+        EvilEye, EvilEye.Upgraded("Deal 5 damage. Apply 4 Hexed.", Seq(Damage(5), Apply(WitchKeywords.Hexed, 4))),
         MutteredName, MutteredName.Upgraded("Apply 5 Hexed to ALL enemies.", Apply(WitchKeywords.Hexed, 5, AllEnemies)),
         ThirdKnock, ThirdKnock.Upgraded(
             "Apply 4 Hexed. If its Hex bursts at the end of its next turn, apply 5 more.", Knock(4, 5)),
         OldGrudge, OldGrudge.Upgraded("Apply 15 Hexed.", Apply(WitchKeywords.Hexed, 15)),
-        BirchBarkWrap, BirchBarkWrap.Upgraded("Gain 12 Block.", Block(12)),
-        SnailShell, SnailShell.Upgraded("Gain 8 Block. If no Attack gets through this enemy turn, gain 4 Ward Wax.",
-            Seq(Block(8), Apply(WitchRules.SnailShell, 4, You))),
-        ThornHedge, ThornHedge.Upgraded("Gain 8 Block. The first enemy to attack you this turn takes 6 damage.",
-            Seq(Block(8), Apply(WitchRules.ThornHedge, 6, You))),
-        ShedSkin, ShedSkin.Upgraded("Gain 8 Block. Remove 1 stack of a negative Status from yourself.",
-            Seq(Block(8), Cleanse(1))),
+        BirchBarkWrap, BirchBarkWrap.Upgraded("Gain 11 Block." + PinchOf(WitchActions.Hearth), Block(11),
+            tags: WithPinch(BirchBarkWrap, WitchActions.Hearth)),
+        SnailShell, SnailShell.Upgraded("Gain 9 Block. If no Attack gets through this enemy turn, gain 4 Ward Wax.",
+            Seq(Block(9), Apply(WitchRules.SnailShell, 4, You))),
+        ThornHedge, ThornHedge.Upgraded("Gain 8 Block. The first enemy to attack you this turn takes 6 damage." + PinchOf(WitchActions.Fang),
+            Seq(Block(8), Apply(WitchRules.ThornHedge, 6, You)), tags: WithPinch(ThornHedge, WitchActions.Fang)),
+        ShedSkin, ShedSkin.Upgraded("Gain 7 Block. Remove 2 stacks of negative Statuses from yourself.",
+            Seq(Block(7), Cleanse(2))),
         MugwortPoultice, MugwortPoultice.Upgraded("Heal 9 HP lost this combat. Exhaust.", Heal(9)),
-        HotBroth, HotBroth.Upgraded("Gain 9 Block. Heal 1 HP lost this combat.", Seq(Block(9), Heal(1))),
+        HotBroth, HotBroth.Upgraded(
+            "Gain 8 Block. Heal 1 HP lost this combat. At the start of your next turn, heal 2 HP lost this combat.",
+            Seq(Block(8), Heal(1), Apply(WitchRules.ProperSupper, 2, You))),
         BitterTea, BitterTea.Upgraded("Draw 2 cards. Heal 1 HP lost this combat.", Seq(Draw(2), Heal(1))),
-        SetTheBone, SetTheBone.Upgraded("Gain 15 Block. Heal 3 HP lost this combat.", Seq(Block(15), Heal(3))),
-        BlackCat, BlackCat.Upgraded("Deal 6 damage. Apply 7 Misfortune.",
-            Seq(Damage(6), Apply(WitchKeywords.Misfortune, 7))),
-        SpilledSalt, SpilledSalt.Upgraded("Gain 6 Block. Apply 5 Misfortune.",
-            Seq(Block(6), Apply(WitchKeywords.Misfortune, 5))),
-        CrookedHorseshoe, CrookedHorseshoe.Upgraded("Apply 8 Misfortune.", Apply(WitchKeywords.Misfortune, 8)),
-        KnockOnWood, KnockOnWood.Upgraded("Gain 4 Block. If any enemy has Misfortune, gain 4 more.",
-            Block(IfAnyMisfortune(4, 4))),
+        SetTheBone, SetTheBone.Upgraded("Gain 16 Block. Heal 4 HP lost this combat.", Seq(Block(16), Heal(4))),
+        BlackCat, BlackCat.Upgraded("Deal 6 damage. Apply 6 Misfortune to ALL enemies.",
+            Seq(Damage(6), Apply(WitchKeywords.Misfortune, 6, AllEnemies))),
+        SpilledSalt, SpilledSalt.Upgraded("Gain 6 Block. Apply 6 Misfortune." + PinchOf(WitchActions.Husk),
+            Seq(Block(6), Apply(WitchKeywords.Misfortune, 6)), tags: WithPinch(SpilledSalt, WitchActions.Husk)),
+        CrookedHorseshoe, CrookedHorseshoe.Upgraded("Apply 8 Misfortune." + PinchOf(WitchActions.Hex), Apply(WitchKeywords.Misfortune, 8),
+            tags: WithPinch(CrookedHorseshoe, WitchActions.Hex)),
+        KnockOnWood, KnockOnWood.Upgraded("Retain. Gain 5 Block. If any enemy has Misfortune, gain 4 more.",
+            Block(IfAnyMisfortune(5, 4)), retainInHand: true),
     ];
 
     public static IReadOnlyList<string> StarterDeck =>
@@ -172,6 +178,13 @@ public static partial class WitchCards
     public static IReadOnlyList<CardData> Compile() => All().Select(c => c.Compile()).ToList();
 
     // ── shapes ────────────────────────────────────────────────────────────────────────────────────────────
+
+    // A pinch of another family (W8): the words on the card, and the tag the Brew reads.
+    private static string PinchOf(string family) =>
+        $" A pinch of {char.ToUpperInvariant(family[4])}{family[5..]}: in the cauldron, it also {WitchActions.PinchText(family)}.";
+
+    private static IReadOnlyList<string> WithPinch(BnbCard card, string family) =>
+        [.. card.Tags ?? [], WitchActions.Pinch(family)];
 
     private static BnbCard Witch(
         string id, string name, string type, int cost, string family, string text, CombatNodeModel program,

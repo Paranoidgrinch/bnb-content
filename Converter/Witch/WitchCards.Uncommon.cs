@@ -186,85 +186,84 @@ public static partial class WitchCards
 
     public static IReadOnlyList<BnbCard> Uncommons() =>
     [
-        BadgersTemper, BadgersTemper.Upgraded("Deal 9 damage. If the target intends to Attack, deal 6 more.", Temper(9, 6)),
+        BadgersTemper, BadgersTemper.Upgraded("Deal 10 damage. If the target intends to Attack, deal 6 more.", Temper(10, 6)),
         AdderInTheSleeve, AdderInTheSleeve.Upgraded(
             "Retain. Deal 7 damage, and 4 more for each turn it has waited in your hand (at most 12 more).", Sleeve(7, 4)),
-        MurderOfCrows, MurderOfCrows.Upgraded("Deal 3 damage to a random enemy 4 times.", Crows(4, 3)),
+        MurderOfCrows, MurderOfCrows.Upgraded("Deal 2 damage to a random enemy 6 times.", Crows(6, 2)),
         HawthornSwitch, HawthornSwitch.Upgraded(
-            "Deal 11 damage. If the target is Hexed, its Threefold count moves on by 1.",
-            Seq(Damage(11), If(IsHexed, Step(1)))),
-        BiteTheHand, BiteTheHand.Upgraded("Deal 8 damage. If the target has any positive Status, deal 9 more.", Bite(8, 9)),
+            "Deal 12 damage. If the target is Hexed, its Threefold count moves on by 1.",
+            Seq(Damage(12), If(IsHexed, Step(1)))),
+        BiteTheHand, BiteTheHand.Upgraded("Deal 9 damage. If the target has any positive Status, deal 9 more.", Bite(9, 9)),
         FamiliarsSupper, FamiliarsSupper.Upgraded(
-            "Deal 11 damage. If this kills, your next card into the cauldron is free.", Supper(11)),
+            "Deal 12 damage. If this kills, your next card into the cauldron is free.", Supper(12)),
         HedgeThing, HedgeThing.Upgraded("Deal 10 damage. If the cauldron is Sheltering, deal 5 more.",
             Damage(Sheltered(10, 5))),
 
         ThriceSpokenName, ThriceSpokenName.Upgraded(
-            "Apply 5 Hexed. If its Hex bursts at the end of its next turn, apply 9 more.", Knock(5, 9)),
-        CharmBackwards, CharmBackwards.Upgraded("Apply 12 Hexed. Its Threefold count goes back by 1.",
-            Seq(Apply(WitchKeywords.Hexed, 12), Step(-1))),
+            "Apply 6 Hexed. If its Hex bursts at the end of its next turn, apply 9 more.", Knock(6, 9)),
+        CharmBackwards, CharmBackwards.Upgraded("Apply 11 Hexed. Its Threefold count goes back by 1." + PinchOf(WitchActions.Fortune),
+            Seq(Apply(WitchKeywords.Hexed, 11), Step(-1)), tags: WithPinch(CharmBackwards, WitchActions.Fortune)),
         DeadMansHex, DeadMansHex.Upgraded(
             "Apply 7 Hexed. When the target dies, the healthiest other enemy takes on all its Hexed.",
             Seq(Apply(WitchKeywords.Hexed, 7), Apply(WitchRules.DeadMansHex, 2))),
         SourTheMilk, SourTheMilk.Upgraded("Apply 6 Hexed. Another negative Status on the target gains 2 stacks.",
             Sour(6, 2)),
         NailInTheDoorpost, NailInTheDoorpost.Upgraded(
-            "The first time each turn you apply Hexed to an enemy, the healthiest other enemy gains 3 Hexed.",
-            Apply(WitchRules.NailInTheDoorpost, 3, You)),
+            "The first time each turn you apply Hexed to an enemy, the healthiest other enemy gains 2 Hexed.",
+            cost: 0),
         ThirdBell, ThirdBell.Upgraded(
             "Apply 5 Hexed. If its Hex bursts at the end of its next turn, every other enemy gains 5 Hexed.",
             Seq(Apply(WitchKeywords.Hexed, 5), Apply(WitchRules.ThirdBell, 5))),
         KnottedCord, KnottedCord.Upgraded("Apply 3 Hexed. Draw 1 card. In the cauldron, it counts as two Hex.",
             Seq(Apply(WitchKeywords.Hexed, 3), Draw(1))),
 
-        Oakskin, Oakskin.Upgraded("Gain 8 Block. If the cauldron is Brewing, gain 6 more.", Block(Brewing(8, 6))),
+        Oakskin, Oakskin.Upgraded("Gain 9 Block. If the cauldron is Brewing, gain 6 more.", Block(Brewing(9, 6))),
         ClampTheLid, ClampTheLid.Upgraded("Gain 10 Block. If the cauldron is Sheltering, gain 5 Ward Wax.",
             Seq(Block(10), Apply(Cards.Keywords.WardWax, Sheltered(0, 5), You))),
         HedgehogCurl, HedgehogCurl.Upgraded(
-            "Gain 7 Block. Every enemy attack on you this turn costs the attacker 3 damage.",
-            Seq(Block(7), Apply(WitchRules.HedgehogCurl, 3, You))),
+            "Gain 8 Block. Every enemy attack on you this turn costs the attacker 3 damage.",
+            Seq(Block(8), Apply(WitchRules.HedgehogCurl, 3, You))),
         SloughOff, SloughOff.Upgraded(
             "Gain 9 Block. Remove 1 stack of a negative Status from yourself; if you did, draw 1 card.", Slough(9)),
         SnailsPatience, SnailsPatience.Upgraded(
-            "Gain 8 Block. If this is your first or second card this turn, gain 8 Block next turn.", Patience(8, 8)),
-        HawthornWall, HawthornWall.Upgraded("Gain 16 Block. Every enemy that attacks you this turn gains 3 Hexed.",
-            Seq(Block(16), Apply(WitchRules.HawthornWall, 3, You))),
+            "Gain 8 Block. If this is one of your first three cards this turn, gain 8 Block next turn.", Patience(8, 8, upTo: 3)),
+        HawthornWall, HawthornWall.Upgraded("Gain 17 Block. Every enemy that attacks you this turn gains 3 Hexed.",
+            Seq(Block(17), Apply(WitchRules.HawthornWall, 3, You))),
         HornSpoon, HornSpoon.Upgraded(
-            $"Gain 9 Block. In the cauldron, whatever is brewed also gives {WitchActions.WaxRiderStacks} Ward Wax.",
-            Block(9)),
+            $"Gain 8 Block. In the cauldron, whatever is brewed also gives {WitchActions.WaxRiderStacks + WitchActions.WaxRiderMoreStacks} Ward Wax.",
+            Block(8), tags: [.. HornSpoon.Tags ?? [], WitchActions.WaxRiderMore]),
 
         ComfreyPoultice, ComfreyPoultice.Upgraded(
             "Heal 4 HP lost this combat. If you are at or below half your HP, heal 10 instead.", Comfrey(4, 10)),
         HoneyAndOnion, HoneyAndOnion.Upgraded(
-            "Heal 3 HP lost this combat. Remove 3 stacks of negative Statuses from yourself.", Seq(Heal(3), Cleanse(3))),
-        ProperSupper, ProperSupper.Upgraded("Gain 7 Block. At the start of your next turn, heal 4 HP lost this combat.",
-            Seq(Block(7), Apply(WitchRules.ProperSupper, 4, You))),
+            "Heal 3 HP lost this combat. Remove 3 stacks of negative Statuses from yourself." + PinchOf(WitchActions.Husk),
+            Seq(Heal(3), Cleanse(3)), tags: WithPinch(HoneyAndOnion, WitchActions.Husk)),
+        ProperSupper, ProperSupper.Upgraded(
+            "Gain 8 Block. At the start of your next turn, heal 4 HP lost this combat and gain 3 Block.",
+            Seq(Block(8), Apply(WitchRules.ProperSupper, 4, You), Apply(Cards.Keywords.PromisedBlock, 3, You))),
         MidwifesHands, MidwifesHands.Upgraded(
-            "The first time you fall to a third of your HP or below this combat, heal 12 HP lost this combat.",
-            Apply(WitchRules.MidwifesHands, 12, You)),
-        TellTheBees, TellTheBees.Upgraded("Once each turn, when an enemy dies, heal 5 HP lost this combat.",
-            Apply(WitchRules.TellTheBees, 5, You)),
+            "The first time you fall to a third of your HP or below this combat, heal 8 HP lost this combat.", cost: 0),
+        TellTheBees, TellTheBees.Upgraded("Once each turn, when an enemy dies, heal 3 HP lost this combat.", cost: 0),
         TasteTheBroth, TasteTheBroth.Upgraded(
             "Take a card from the cauldron back into your hand. Heal 4 HP lost this combat.", Seq(TakeBack(), Heal(4))),
         PutTheKettleOn, PutTheKettleOn.Upgraded(
-            "Gain 7 Block. Heal 1 HP lost this combat. Your next card into the cauldron is free.",
-            Seq(Block(7), Heal(1), FreeIngredient())),
+            "Gain 6 Block. Heal 2 HP lost this combat. Your next card into the cauldron is free.",
+            Seq(Block(6), Heal(2), FreeIngredient())),
 
-        CrossYourFingers, CrossYourFingers.Upgraded("Apply 6 Misfortune. If its roll fails, you gain 9 Block before its action.",
-            Seq(Apply(WitchKeywords.Misfortune, 6), Apply(WitchRules.CrossedFingers, 9))),
-        BadPenny, BadPenny.Upgraded("Apply 6 Misfortune. If its roll fails, 5 Misfortune stays for its next action.",
-            Seq(Apply(WitchKeywords.Misfortune, 6), Apply(WitchRules.BadPenny, 5))),
+        CrossYourFingers, CrossYourFingers.Upgraded("Gain 3 Block. Apply 7 Misfortune. If its roll fails, you gain 6 Block before its action.",
+            Seq(Block(3), Apply(WitchKeywords.Misfortune, 7), Apply(WitchRules.CrossedFingers, 6))),
+        BadPenny, BadPenny.Upgraded("Apply 7 Misfortune. If its roll fails, 4 Misfortune stays for its next action.",
+            Seq(Apply(WitchKeywords.Misfortune, 7), Apply(WitchRules.BadPenny, 4))),
         CastTheKnucklebones, CastTheKnucklebones.Upgraded(
-            "Choose one: apply 7 Misfortune; or apply 0 to 16 Misfortune, at random.", Knucklebones(7, 16)),
+            "Apply 5 Misfortune, then 0 to 12 more at random.",
+            Seq(Apply(WitchKeywords.Misfortune, 5), Apply(WitchKeywords.Misfortune, new CombatAmountSpec("randomBelow", 13)))),
         HorseshoeOverTheDoor, HorseshoeOverTheDoor.Upgraded(
-            "The first time each turn you apply Misfortune to an enemy, it gains 3 more.",
-            Apply(WitchRules.HorseshoeOverTheDoor, 3, You)),
-        MagpiesLuck, MagpiesLuck.Upgraded("Apply 7 Misfortune. If it makes the target's action fail, draw 2 more cards next turn.",
-            Seq(Apply(WitchKeywords.Misfortune, 7), Apply(WitchRules.MagpiesLuck, 2))),
-        BrokenMirror, BrokenMirror.Upgraded("Apply 13 Misfortune. Shuffle a Mirror Shard into your draw pile.",
-            Seq(Apply(WitchKeywords.Misfortune, 13), AddJunk(MirrorShardId, CardZone.DrawPile))),
+            "The first time each turn you apply Misfortune to an enemy, it gains 2 more.", cost: 0),
+        MagpiesLuck, MagpiesLuck.Upgraded("Apply 7 Misfortune. If it makes the target's action fail, draw 3 more cards next turn.",
+            Seq(Apply(WitchKeywords.Misfortune, 7), Apply(WitchRules.MagpiesLuck, 3))),
+        BrokenMirror, BrokenMirror.Upgraded("Apply 12 Misfortune.", Apply(WitchKeywords.Misfortune, 12)),
         SevenMagpies, SevenMagpies.Upgraded(
-            "Apply 4 Misfortune to ALL enemies. If only one enemy stands, it gains 4 more.", Magpies(4, 4)),
+            "Apply 5 Misfortune to ALL enemies. If only one enemy stands, it gains 3 more.", Magpies(5, 3)),
     ];
 
     // ── the Witch's own Junk ──────────────────────────────────────────────────────────────────────────────
@@ -345,13 +344,13 @@ public static partial class WitchCards
 
     private static CounterId PlayedSoFar => new("snails_patience_played");
 
-    private static CombatNodeModel Patience(int block, int later) =>
+    private static CombatNodeModel Patience(int block, int later, int upTo = 2) =>
         Seq(
             Block(block),
             new CombatNodeModel("setCombatantCounter", You, new CombatAmountSpec("cardsPlayedThisTurn", SelectorKey: You),
                 CounterId: PlayedSoFar.value, Relative: false),
             If(new CombatConditionSpec("compare", You, ValueKind: "counter",
-                    Op: ComparisonOperator.LessOrEqual, Right: 2, Id: PlayedSoFar.value),
+                    Op: ComparisonOperator.LessOrEqual, Right: upTo, Id: PlayedSoFar.value),
                 Apply(Cards.Keywords.PromisedBlock, later, You)));
 
     private static CombatNodeModel Comfrey(int heal, int low) =>

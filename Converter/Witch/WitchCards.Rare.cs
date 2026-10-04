@@ -140,7 +140,7 @@ public static partial class WitchCards
 
     public static IReadOnlyList<BnbCard> Rares() =>
     [
-        WolfAtTheDoor, WolfAtTheDoor.Upgraded("Retain. Deal 26 damage. Each turn it waits in your hand, it costs 1 less.", Wolf(26)),
+        WolfAtTheDoor, WolfAtTheDoor.Upgraded("Retain. Deal 30 damage. Each turn it waits in your hand, it costs 1 less.", Wolf(30)),
         CarrionFlight, CarrionFlight.Upgraded(
             "Deal 3 damage 8 times. Once the target has fallen, the rest strike a random enemy.", Carrion(8, 3)),
         TeethInTheDark, TeethInTheDark.Upgraded("Deal 8 damage, and 5 more for each card in the cauldron.",
@@ -148,32 +148,31 @@ public static partial class WitchCards
         Turnskin, Turnskin.Upgraded("Every Husk card in the cauldron turns into an Adder's Nip. Deal 12 damage.",
             Seq(Turn(null), Damage(12))),
         TheHareRunsLast, TheHareRunsLast.Upgraded(
-            "Deal 11 damage. If its Hex bursts at the end of its next turn, it takes 11 damage again after the burst.",
-            Seq(Damage(11), Apply(WitchRules.HareRunsLast, 11))),
+            "Deal 12 damage. If its Hex bursts at the end of its next turn, it takes 12 damage again after the burst.",
+            Seq(Damage(12), Apply(WitchRules.HareRunsLast, 12))),
 
         CallTheThirdNight, CallTheThirdNight.Upgraded(
             "The target's Hex bursts now: it loses 3 HP for each Hexed. Its Threefold count starts again.", cost: 1),
         NameWrittenBackwards, NameWrittenBackwards.Upgraded(
             "Double the target's Hexed, then apply 3 more. Its Threefold count starts again.", Backwards(3)),
         HexInTheRafters, HexInTheRafters.Upgraded(
-            "The first Hex burst each enemy turn gives every other enemy 5 Hexed.", Apply(WitchRules.HexInTheRafters, 5, You)),
+            "The first Hex burst each enemy turn gives every other enemy 3 Hexed.", cost: 1),
         LastBreathHex, LastBreathHex.Upgraded(
             "Apply 9 Hexed. When the target dies, the healthiest other enemy takes on all its Hexed and its Threefold count.",
             Seq(Apply(WitchKeywords.Hexed, 9), Apply(WitchRules.LastBreathHex, 1))),
-        BaneRoot, BaneRoot.Upgraded("After a Hex bursts, that enemy gains 3 Hexed.", Apply(WitchRules.BaneRoot, 3, You)),
+        BaneRoot, BaneRoot.Upgraded("After a Hex bursts, that enemy gains 2 Hexed.", cost: 0),
 
         ShutTheLid, ShutTheLid.Upgraded(
-            "Gain 12 Block. Until your next turn the cauldron shelters you however full it is, and nothing goes in or out.",
-            Seq(Block(12), Apply(WitchRules.ShutTheLid, 1, You))),
+            "Gain 10 Block and 3 Ward Wax. Until your next turn the cauldron shelters you however full it is, and nothing goes in or out.",
+            Seq(Block(10), Apply(Cards.Keywords.WardWax, 3, You), Apply(WitchRules.ShutTheLid, 1, You))),
         ScarBark, ScarBark.Upgraded(
             "Gain 8 Block, and 1 more for each HP attacks took from you last enemy turn (at most 25 more).",
             Block(Scarred(8, 25))),
         FullPot, FullPot.Upgraded("Gain 6 Block, and 4 more for each card in the cauldron. If it is Ready, gain 8 more.",
             Block(Plus(PerInPot(6, 4), Times(PotReady, 8)))),
-        WinterBark, WinterBark.Upgraded("Gain 20 Block. After the enemy turn, up to 8 of your unused Block becomes Ward Wax.",
-            Seq(Block(20), Apply(WitchRules.WinterBark, 8, You))),
-        Ironwood, Ironwood.Upgraded("The first time each turn an attack gets through your Block, gain 6 Ward Wax.",
-            Apply(WitchRules.Ironwood, 6, You)),
+        WinterBark, WinterBark.Upgraded("Gain 22 Block. After the enemy turn, up to 9 of your unused Block becomes Ward Wax.",
+            Seq(Block(22), Apply(WitchRules.WinterBark, 9, You))),
+        Ironwood, Ironwood.Upgraded("The first time each turn an attack gets through your Block, gain 4 Ward Wax.", cost: 1),
 
         GrannysPhysic, GrannysPhysic.Upgraded(
             "Remove every negative Status from yourself. Heal 3 HP lost this combat, and 2 more for each stack removed " +
@@ -191,10 +190,9 @@ public static partial class WitchCards
         LoadedKnucklebones, LoadedKnucklebones.Upgraded("Apply 6 Misfortune. Its next roll is rolled twice; either may land.",
             Seq(Apply(WitchKeywords.Misfortune, 6), Apply(WitchRules.Loaded, 1))),
         SevenYearsBadLuck, SevenYearsBadLuck.Upgraded(
-            "Apply 11 Misfortune. Until it lands, every roll the target wins leaves half the Misfortune behind.",
-            Seq(Apply(WitchKeywords.Misfortune, 11), Apply(WitchRules.SevenYears, 1))),
-        NinthLife, NinthLife.Upgraded("After the first Misfortune that lands this combat, that enemy is left 7 Misfortune.",
-            Apply(WitchRules.NinthLife, 7, You)),
+            "Apply 12 Misfortune. Until it lands, every roll the target wins leaves half the Misfortune behind.",
+            Seq(Apply(WitchKeywords.Misfortune, 12), Apply(WitchRules.SevenYears, 1))),
+        NinthLife, NinthLife.Upgraded("After the first Misfortune that lands this combat, that enemy is left 4 Misfortune.", cost: 0),
         BorrowedLuck, BorrowedLuck.Upgraded(
             "Remove all Misfortune from an enemy. Gain 3 Block for each, and draw 1 card for every 4.", Borrow(3)),
         TheBlackCatSatDown, TheBlackCatSatDown.Upgraded(

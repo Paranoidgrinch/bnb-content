@@ -34,6 +34,14 @@ public static class WitchActions
     public static string Double(string family) => family + "_double";
     public const string WaxRider = "rider_ward_wax";
     public const int WaxRiderStacks = 3;
+    // Horn Spoon+: its rider gives this much more.
+    public const string WaxRiderMore = "rider_ward_wax_more";
+    public const int WaxRiderMoreStacks = 2;
+
+    // A PINCH (W8, the upgrades' ingredient facet — user 2026-10-04: "eine Zutatenvariation"): an upgraded card that,
+    // in the cauldron, also gives what one ingredient of ANOTHER family gives — on top of whatever is brewed. It is
+    // not a second ingredient: it never counts towards three of a family, so no concentrated brew comes of it.
+    public static string Pinch(string family) => "pinch_" + family;
 
     // §7 Concentrated and §3 per-ingredient drafts.
     private const int FangDamage = 5, HexHexed = 2, HuskBlock = 4, HearthHeal = 1, FortuneMisfortune = 3;
@@ -159,7 +167,10 @@ public static class WitchActions
                 ])),
             new ConditionalEffectNode<CardPlayContext>(Compare(InRecipe(WaxRider), ComparisonOperator.Greater, Const(0)),
                 Apply(Cards.Keywords.WardWax,
-                    new MultiplyExpression<CardPlayContext>(InRecipe(WaxRider), Const(WaxRiderStacks)), You)),
+                    new AddExpression<CardPlayContext>(
+                        new MultiplyExpression<CardPlayContext>(InRecipe(WaxRider), Const(WaxRiderStacks)),
+                        new MultiplyExpression<CardPlayContext>(InRecipe(WaxRiderMore), Const(WaxRiderMoreStacks))), You)),
+            Pinches(),
             // Herb-Wife's Rack: the first Brew this combat with a Hearth ingredient heals more.
             new ConditionalEffectNode<CardPlayContext>(
                 All(Wears(WitchRules.HerbWifesRack), Unspent(WitchRules.RackLatch),
@@ -262,6 +273,35 @@ public static class WitchActions
         Each(Hearth, Heal(Times(Hearth, HearthHeal))),
         Each(Fortune, Apply(WitchKeywords.Misfortune, Times(Fortune, FortuneMisfortune), Target)),
     ]);
+
+    // Each pinch in the recipe gives one ingredient's worth of its family, in the canon's order (§2.6).
+    private static IEffectNode<CardPlayContext> Pinches()
+    {
+        ICombatExpression<CardPlayContext, int> Of(string family, int each) =>
+            new MultiplyExpression<CardPlayContext>(InRecipe(Pinch(family)), Const(each));
+        IEffectNode<CardPlayContext> When(string family, IEffectNode<CardPlayContext> effect) =>
+            new ConditionalEffectNode<CardPlayContext>(
+                Compare(InRecipe(Pinch(family)), ComparisonOperator.Greater, Const(0)), effect);
+        return new SequenceEffectNode<CardPlayContext>(
+        [
+            When(Hex, Apply(WitchKeywords.Hexed, Of(Hex, HexHexed), Target)),
+            When(Fang, Damage(Of(Fang, FangDamage))),
+            When(Husk, new GainBlockNode<CardPlayContext>(You, Of(Husk, HuskBlock))),
+            When(Hearth, Heal(Of(Hearth, HearthHeal))),
+            When(Fortune, Apply(WitchKeywords.Misfortune, Of(Fortune, FortuneMisfortune), Target)),
+        ]);
+    }
+
+    // What one pinch of a family gives, in words — for the card text.
+    public static string PinchText(string family) => family switch
+    {
+        Fang => $"deals {FangDamage} damage",
+        Hex => $"applies {HexHexed} Hexed",
+        Husk => $"gives {HuskBlock} Block",
+        Hearth => $"heals {HearthHeal} HP lost this combat",
+        Fortune => $"applies {FortuneMisfortune} Misfortune",
+        _ => throw new ArgumentOutOfRangeException(nameof(family)),
+    };
 
     // Only when that family is in the brew: a 0-damage hit is still a hit to everything that counts hits.
     private static IEffectNode<CardPlayContext> Each(string family, IEffectNode<CardPlayContext> effect) =>

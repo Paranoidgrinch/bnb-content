@@ -269,3 +269,15 @@ Kosten-Upgrades (H) der Riten und der 2-E-Karten, die schon ×2 wert sind.
 
 **Danach:** die übrigen ~70 Karten nach denselben Regeln als Tabelle zur Durchsicht, dann bauen (Texte über die
 Compendium-Zeilen, Tests pro Facette), dann `ART_SLOTS.md`/Golden prüfen.
+
+### W8 — FREIGEGEBEN und GEBAUT (Spieler, 2026-10-04)
+„finde ich gut, aber als 2 karten zählen ist schon sehr stark. ich finde aber eine zutatenvariation oder so
+spannend. sonst analog zum bureaucrat die upgrades genau.“ → P1 („zählt als zwei“) gestrichen; stattdessen
+**Prise (Pinch)**: Tag `pinch_<familie>` — das Upgrade gibt im Kessel zusätzlich, was EINE Zutat einer anderen Familie
+gibt (5 Schaden / 2 Hexed / 4 Block / 1 Heilung / 3 Misfortune), auf jeden Trank obendrauf, auch auf Hidden Recipes.
+Zählt nie zu „drei einer Familie“. Prise auf: Birch-Bark Wrap+ (Hearth), Thorn Hedge+ (Fang), Spilled Salt+ (Husk),
+Crooked Horseshoe+ (Hex), Charm Backwards+ (Fortune), Honey and Onion+ (Husk). Horn Spoon+: Rider 5 Ward Wax.
+
+Ergebnis: 42 von 84 Upgrades mit Facette (50 %, vorher 15 %). Riten: alle „kostet 1 weniger“ mit Basiszahlen.
+Starter nur im Upgrade stärker. Tests: `WitchUpgradeTests` (Prise wirkt / macht nichts konzentriert / Horn Spoon /
+Riten-Regel + Facettenanteil ≥ 40 % aus den Karten gelesen). Godot-Vorschau zitiert den Prisen-Satz der Karte.
