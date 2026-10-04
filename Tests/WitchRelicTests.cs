@@ -55,15 +55,15 @@ public class WitchRelicTests
     }
 
     [Fact]
-    public void Seventeen_relics_hers_alone()
+    public void Eighteen_relics_hers_alone()
     {
         var relics = WitchRelics.All();
-        Assert.Equal(17, relics.Count);   // Black Spoon comes with the Hidden Recipes
+        Assert.Equal(18, relics.Count);
         Assert.All(relics, r => Assert.Equal(RelicAuthoring.Eligibility.HedgeWitch, r.Eligibility));
         Assert.Equal(3, relics.Count(r => r.Rarity == RelicAuthoring.Rarity.Common));
         Assert.Equal(5, relics.Count(r => r.Rarity == RelicAuthoring.Rarity.Uncommon));
         Assert.Equal(4, relics.Count(r => r.Rarity == RelicAuthoring.Rarity.Rare));
-        Assert.Equal(5, relics.Count(r => r.Pool == RelicAuthoring.Pool.Shop));
+        Assert.Equal(6, relics.Count(r => r.Pool == RelicAuthoring.Pool.Shop));
         Assert.All(relics, r => Assert.Contains(r.Id, WitchCharacter.Exclusive));
         Assert.DoesNotContain(FinalRelics.Pool(RelicAuthoring.Pool.Normal), r => relics.Contains(r));
         Assert.All(relics, r => Assert.Contains(FightProbe.Game.Relics, shipped => shipped.Id == r.Id));

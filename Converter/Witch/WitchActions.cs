@@ -144,7 +144,19 @@ public static class WitchActions
                     [.. Families.Select((_, i) => new CombatNodeModel("setCombatantCounter", "source",
                         CombatAmountSpec.FromConst(i + 1), CounterId: StrainerChoice.value, Relative: false))],
                     "the Dregs count as")).Root),
-            Concentrated(),
+            new SetCombatantCounterNode<CardPlayContext>(You, WitchHiddenRecipes.Brewed, Const(0), relative: false),
+            Hidden(Concentrated()),
+            // Black Spoon: the first Hidden Recipe she brews each combat pays a little more.
+            new ConditionalEffectNode<CardPlayContext>(
+                All(Wears(WitchRules.BlackSpoon), Unspent(WitchRules.BlackSpoonLatch),
+                    Compare(new CombatantCounterExpression<CardPlayContext>(You, WitchHiddenRecipes.Brewed),
+                        ComparisonOperator.Greater, Const(0))),
+                new CausalSequenceEffectNode<CardPlayContext>(
+                [
+                    Spend(WitchRules.BlackSpoonLatch),
+                    new GainResourceNode<CardPlayContext>(You, StandardCombatIds.EnergyResource, Const(1)),
+                    new DrawCardsNode<CardPlayContext>(You, Const(1)),
+                ])),
             new ConditionalEffectNode<CardPlayContext>(Compare(InRecipe(WaxRider), ComparisonOperator.Greater, Const(0)),
                 Apply(Cards.Keywords.WardWax,
                     new MultiplyExpression<CardPlayContext>(InRecipe(WaxRider), Const(WaxRiderStacks)), You)),
@@ -196,6 +208,29 @@ public static class WitchActions
     private static ICombatExpression<CardPlayContext, int> DistinctFamilies =>
         Families.Select(f => (ICombatExpression<CardPlayContext, int>)new MinExpression<CardPlayContext>(Const(1), InRecipe(f)))
             .Aggregate((a, b) => new AddExpression<CardPlayContext>(a, b));
+
+    // A Hidden Recipe REPLACES the ordinary brew (§9): the first whose three cards are in the pot, and her note of
+    // which it was, for the Recipe Book.
+    //
+    // Written FLAT — each recipe asks "none brewed yet?", in order, and the ordinary brew asks it last — because a
+    // chain of twenty nested else-branches is deeper than the document format will write.
+    private static IEffectNode<CardPlayContext> Hidden(IEffectNode<CardPlayContext> ordinary)
+    {
+        var noneYet = Compare(new CombatantCounterExpression<CardPlayContext>(You, WitchHiddenRecipes.Brewed),
+            ComparisonOperator.Equal, Const(0));
+        return new CausalSequenceEffectNode<CardPlayContext>(
+        [
+            .. WitchHiddenRecipes.All.Select(recipe => (IEffectNode<CardPlayContext>)new ConditionalEffectNode<CardPlayContext>(
+                new AndExpression<CardPlayContext>(noneYet, WitchHiddenRecipes.Holds(recipe, InRecipe, Dregs)),
+                new CausalSequenceEffectNode<CardPlayContext>(
+                [
+                    new SetCombatantCounterNode<CardPlayContext>(You, WitchHiddenRecipes.Brewed, Const(recipe.Number),
+                        relative: false),
+                    recipe.Effect(),
+                ]))),
+            new ConditionalEffectNode<CardPlayContext>(noneYet, ordinary),
+        ]);
+    }
 
     // Three of one family: that family's named brew (§7). Otherwise the Mixed brew: the sum of what each
     // ingredient gives, in the canon's fixed order Hex → Fang → Husk → Hearth → Fortune (§2.6).
@@ -258,7 +293,7 @@ public static class WitchActions
     // carries its mark. Everything else goes to the discard pile, and both marks are wiped.
     private static CounterId Kept => new("kept_in_the_pot");
 
-    private static IEffectNode<CardPlayContext> PickOneToKeep() =>
+    public static IEffectNode<CardPlayContext> PickOneToKeep() =>
         CombatProgramModel.Build<CardPlayContext>(new CombatNodeModel("setCardInstanceMarkCounter", "source",
             CombatAmountSpec.FromConst(1),
             Card: new CombatCardSpec("chosen", CardZone.SetAsidePile, Purpose: "keep one in the cauldron"),

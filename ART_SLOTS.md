@@ -2,7 +2,7 @@
 
 Generated: `dotnet run --project Converter -- --art-slots ART_SLOTS.md`. **Do not edit by hand.**
 
-**819 pictures**: 321 cards, 227 relics, 269 bodies
+**820 pictures**: 321 cards, 228 relics, 269 bodies
 (every enemy, elite and boss) and 2 the player can be. Every one of them is filled today by a PLACEHOLDER — a plate with the file's own
 name and the word placeholder on it, written by `bnb-godot/tools/make-card-art.py`,
 `make-relic-art.py` and `make-enemy-art.py`. A painted picture replaces one by being saved over it, so
@@ -54,7 +54,7 @@ The relic briefs below are the design canon's own words
 `BnB_Elite_Relics_MASTER_AND_VISUAL_CANON.md` for #169–210). Frames, palettes and the label rule live
 there in full; only the object line is repeated here, because that is the line that differs per relic.
 
-## Relics — 227 pictures
+## Relics — 228 pictures
 
 The catalogue number is the design canon's, and it is not part of the file name: the id is.
 
@@ -125,7 +125,7 @@ The catalogue number is the design canon's, and it is not part of the file name:
 | — | `black_cats_collar` | Black Cat's Collar | rare | The first Misfortune roll that fails each combat is rolled again. |
 | — | `grandams_ember` | Grandam's Ember | rare | Once each combat, Hearth healing may restore HP you lost before the fight. |
 
-### Shop relics — 29
+### Shop relics — 30
 
 | # | code | title | rarity | the object |
 |---:|---|---|---|---|
@@ -157,6 +157,7 @@ The catalogue number is the design canon's, and it is not part of the file name:
 | — | `apothecarys_scale` | Apothecary's Scale | shop | Your first Brew each combat of three different families costs no Energy. |
 | — | `yesterdays_jar` | Yesterday's Jar | shop | After your first Brew each combat, the last ingredient stays in the cauldron. |
 | — | `cats_eye_coin` | Cat's-Eye Coin | shop | After winning a combat, gain 5 Gold for each Misfortune that landed in it, at most 15. |
+| — | `black_spoon` | Black Spoon | shop | The first time each combat you brew a Hidden Recipe, gain 1 Energy and draw 1 card. |
 | — | `herb_wifes_rack` | Herb-Wife's Rack | shop | Your first Brew each combat with a Hearth ingredient also heals 3 HP lost this combat. |
 
 ### Event relics — 25

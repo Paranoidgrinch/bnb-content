@@ -15,6 +15,7 @@ public static partial class WitchRules
     public const string Loaded = "loaded_knucklebones";        // its next roll is rolled twice
     public const string SevenYears = "seven_years_bad_luck";   // until a roll lands, each lost one leaves half
     public const string BlackCatSatDown = "black_cat_sat_down"; // its next roll cannot fail
+    public const string NineLivesLeft = "nine_lives_left";     // after its roll lands, it is left this much Misfortune
 
     // ── her own marks and Rites ───────────────────────────────────────────────────────────────────────────
     public const string HexInTheRafters = "hex_in_the_rafters";
@@ -40,6 +41,7 @@ public static partial class WitchRules
         EnemyMark(Loaded, "Loaded Knucklebones", "This character's next Misfortune roll is rolled twice; either may land."),
         EnemyMark(SevenYears, "Seven Years' Bad Luck", "Until its Misfortune lands, every roll it wins leaves half the Misfortune behind."),
         EnemyMark(BlackCatSatDown, "The Black Cat Sat Down", "This character's next Misfortune roll cannot fail."),
+        EnemyMark(NineLivesLeft, "Nine Lives", "When this character's Misfortune lands, it is left this much Misfortune."),
         Rite(HexInTheRafters, "Hex in the Rafters",
             "The first Hex burst each enemy turn gives every other enemy this much Hexed.",
             [ClearLatchAtHerTurn(RaftersLatch)]),
@@ -110,6 +112,13 @@ public static partial class WitchRules
         new SequenceEffectNode<ActionStartingTriggeredEffectContext>(
         [
             new RemoveStatusNode<ActionStartingTriggeredEffectContext>(Self, new StatusDefinitionId(SevenYears)),
+            IfWears<ActionStartingTriggeredEffectContext>(Self, NineLivesLeft,
+                new CausalSequenceEffectNode<ActionStartingTriggeredEffectContext>(
+                [
+                    new ApplyStatusNode<ActionStartingTriggeredEffectContext>(Self, new StatusDefinitionId(WitchKeywords.Misfortune),
+                        StacksOf<ActionStartingTriggeredEffectContext>(Self, NineLivesLeft)),
+                    new RemoveStatusNode<ActionStartingTriggeredEffectContext>(Self, new StatusDefinitionId(NineLivesLeft)),
+                ])),
             ForTheWitch<ActionStartingTriggeredEffectContext>(her =>
                 new ConditionalEffectNode<ActionStartingTriggeredEffectContext>(
                     new AndExpression<ActionStartingTriggeredEffectContext>(

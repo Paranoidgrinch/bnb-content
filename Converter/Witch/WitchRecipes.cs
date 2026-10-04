@@ -68,6 +68,13 @@ public static class WitchRecipes
                     var name = Names[string.Join("+", mix.Select(f => Short[f]))];
                     result[$"recipe:{string.Join("+", mix)}"] = $"{name}|{Effect(mix)}";
                 }
+        // The Hidden Recipes, for the Recipe Book (never for the preview — an undiscovered one is not shown):
+        // "hidden:<n>" = "Name|ingredient ids, '+'-joined|effect". A Dregs slot is written "dregs".
+        foreach (var recipe in WitchHiddenRecipes.All)
+        {
+            result[$"hidden:{recipe.Number}"] = $"{recipe.Name}|{string.Join("+", recipe.Ingredients)}|{recipe.Text}";
+            result[$"clue:{recipe.Number}"] = WitchHiddenRecipes.Clues[recipe.Number];
+        }
         return result;
     }
 

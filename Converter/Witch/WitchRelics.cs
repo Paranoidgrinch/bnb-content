@@ -78,6 +78,12 @@ public static class WitchRelics
                                 RunExpr.Const(WitchRules.CatsEyeGold)),
                             RunExpr.Const(WitchRules.CatsEyeCap)))),
             ]),
+        // ADAPTATION: the canon rewards an ALREADY-DISCOVERED recipe; discovery is the player's knowledge, kept in
+        // the frontend's profile and never in the run, so the spoon rewards the first Hidden Recipe brewed each
+        // combat — which reveals nothing either: the pot only knows a recipe once its three cards are in it.
+        Shop("black_spoon", "Black Spoon",
+            "The first time each combat you brew a Hidden Recipe, gain 1 Energy and draw 1 card.",
+            eligibility: Eligibility.HedgeWitch, combatRule: Rule(WitchRules.BlackSpoon)),
         Shop("herb_wifes_rack", "Herb-Wife's Rack",
             $"Your first Brew each combat with a Hearth ingredient also heals {WitchRules.HerbWifeHeal} HP lost this combat.",
             eligibility: Eligibility.HedgeWitch, combatRule: Rule(WitchRules.HerbWifesRack)),

@@ -28,6 +28,7 @@ public static partial class WitchRules
     public const string YesterdaysJar = "yesterdays_jar_rule";
     public const string CatsEyeCoin = "cats_eye_coin_rule";
     public const string HerbWifesRack = "herb_wifes_rack_rule";
+    public const string BlackSpoon = "black_spoon_rule";
 
     public const int RowanPinBlock = 3, ThreeKnotHexed = 3, FoundButtonBlock = 5, IronTrivetBlock = 6,
         CrowsToeDamage = 5, BeeswaxWax = 2, KnucklebonePairStacks = 2, FirstBellSteps = 1, CatsEyeGold = 5,
@@ -46,6 +47,7 @@ public static partial class WitchRules
     public static CounterId ScaleLatch => new("apothecarys_scale_used");
     public static CounterId JarLatch => new("yesterdays_jar_used");
     public static CounterId RackLatch => new("herb_wifes_rack_used");
+    public static CounterId BlackSpoonLatch => new("black_spoon_used");
 
     // What the fight leaves for the run to collect (Cat's-Eye Coin): read after a victory as event.combatCounter.
     public static CounterId CatsEyeTally => new("cats_eye_coin_tally");
@@ -76,6 +78,8 @@ public static partial class WitchRules
             "After the first Brew this combat, the last ingredient stays in the cauldron."),
         RelicRule(CatsEyeCoin, "Cat's-Eye Coin",
             $"Every Misfortune that lands is worth {CatsEyeGold} Gold after the fight, at most {CatsEyeCap}."),
+        RelicRule(BlackSpoon, "Black Spoon",
+            "The first Hidden Recipe you brew each combat gives 1 Energy and draws a card."),
         RelicRule(HerbWifesRack, "Herb-Wife's Rack",
             $"The first Brew this combat with a Hearth ingredient heals {HerbWifeHeal} more HP lost this combat."),
     ];
