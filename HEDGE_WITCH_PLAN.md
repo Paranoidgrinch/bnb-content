@@ -152,7 +152,7 @@ Jeder Schritt einzeln committet; gepusht wird pro fertiger Phase.
 
 ---
 
-## Vorlage E4 — Familien der 50 General-Pool-Karten (zur Durchsicht)
+## Vorlage E4 — Familien der 50 General-Pool-Karten (FREIGEGEBEN 2026-10-04)
 
 Nach Master §16.2: direkter Schaden → **Fang** · Flüche, feindliche Status-Motoren, verzögerter Schaden → **Hex** ·
 Block, Ward Wax, Schutz → **Husk** · Erholung, Reinigung, Ziehen, praktischer Nutzen → **Hearth** · Verweigerung,
@@ -172,7 +172,7 @@ darum Fang (Alternative: Fortune, „seltsame Kausalität“). ³ heilt über Wa
 
 ---
 
-## Vorlage E7 — Zahlen für die Hexenkarten (Regeln + Beispiele, zur Durchsicht)
+## Vorlage E7 — Zahlen für die Hexenkarten (FREIGEGEBEN 2026-10-04)
 
 Der Kanon gibt Zahlen nur für die vier Starter; Commons, Uncommons und Rares sind Konzepte. Vorschlag, wie beim
 Bureaucrat-Kartenpass: erst diese Regeln und 14 Beispielkarten, nach deiner Freigabe der Rest.
