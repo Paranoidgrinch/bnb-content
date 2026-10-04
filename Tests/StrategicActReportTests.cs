@@ -18,33 +18,61 @@ namespace BnbContent.Tests;
 //
 // The deeper look is the converter's own: `dotnet run --project Converter -- --map-report 10000`.
 //
-// ONE CLASS PER ACT, and that is about wall time, not taste: xUnit runs a class's tests one after another, and the
-// four acts as rows of one Theory were a nine-minute strand the rest of the suite had long finished waiting on
-// (act four alone is five). As four classes they run side by side.
-public abstract class StrategicActReportTests(int index, ITestOutputHelper output)
+// ONE CLASS PER QUARTER OF AN ACT, and that is about wall time, not taste: xUnit runs a class's tests one after
+// another, and the four acts as rows of one Theory were a nine-minute strand the rest of the suite had long
+// finished waiting on; as one class per act, act four alone was still eight. The thousand seeds are the same, split
+// into four runs of 250 — the build-failing promise (no seed leaves a defect) holds per seed, so it is kept whole;
+// only the printed spread is per quarter. `dotnet run --project Converter -- --map-report 1000` prints it whole.
+public abstract class StrategicActReportTests(int index, int quarter, ITestOutputHelper output)
 {
     internal static readonly RunBlueprint Game =
         BlueprintAssembler.Build(BabData.Load(TestData.Directory), seed: 20260826);
+
+    private const int Seeds = 1000, Quarter = Seeds / 4;
 
     [Fact]
     public void A_thousand_acts_come_out_clean()
     {
         var report = StrategicActStatistics.Measure(
-            Game.Acts![index].StrategicMapGeneration!, firstSeed: 1, seeds: 1000);
-        output.WriteLine($"=== ACT {index + 1} ===");
+            Game.Acts![index].StrategicMapGeneration!, firstSeed: 1 + quarter * Quarter, seeds: Quarter, parallelism: 1);
+        output.WriteLine($"=== ACT {index + 1}, seeds {1 + quarter * Quarter}..{(quarter + 1) * Quarter} ===");
         output.WriteLine(report.Render());
 
         Assert.True(report.Sound, report.Render());
     }
 }
 
-public class ActOneStrategicReportTests(ITestOutputHelper output) : StrategicActReportTests(0, output);
+public class ActOneStrategicReportQ1Tests(ITestOutputHelper output) : StrategicActReportTests(0, 0, output);
 
-public class ActTwoStrategicReportTests(ITestOutputHelper output) : StrategicActReportTests(1, output);
+public class ActOneStrategicReportQ2Tests(ITestOutputHelper output) : StrategicActReportTests(0, 1, output);
 
-public class ActThreeStrategicReportTests(ITestOutputHelper output) : StrategicActReportTests(2, output);
+public class ActOneStrategicReportQ3Tests(ITestOutputHelper output) : StrategicActReportTests(0, 2, output);
 
-public class ActFourStrategicReportTests(ITestOutputHelper output) : StrategicActReportTests(3, output)
+public class ActOneStrategicReportQ4Tests(ITestOutputHelper output) : StrategicActReportTests(0, 3, output);
+
+public class ActTwoStrategicReportQ1Tests(ITestOutputHelper output) : StrategicActReportTests(1, 0, output);
+
+public class ActTwoStrategicReportQ2Tests(ITestOutputHelper output) : StrategicActReportTests(1, 1, output);
+
+public class ActTwoStrategicReportQ3Tests(ITestOutputHelper output) : StrategicActReportTests(1, 2, output);
+
+public class ActTwoStrategicReportQ4Tests(ITestOutputHelper output) : StrategicActReportTests(1, 3, output);
+
+public class ActThreeStrategicReportQ1Tests(ITestOutputHelper output) : StrategicActReportTests(2, 0, output);
+
+public class ActThreeStrategicReportQ2Tests(ITestOutputHelper output) : StrategicActReportTests(2, 1, output);
+
+public class ActThreeStrategicReportQ3Tests(ITestOutputHelper output) : StrategicActReportTests(2, 2, output);
+
+public class ActThreeStrategicReportQ4Tests(ITestOutputHelper output) : StrategicActReportTests(2, 3, output);
+
+public class ActFourStrategicReportQ1Tests(ITestOutputHelper output) : StrategicActReportTests(3, 0, output);
+
+public class ActFourStrategicReportQ2Tests(ITestOutputHelper output) : StrategicActReportTests(3, 1, output);
+
+public class ActFourStrategicReportQ3Tests(ITestOutputHelper output) : StrategicActReportTests(3, 2, output);
+
+public class ActFourStrategicReportQ4Tests(ITestOutputHelper output) : StrategicActReportTests(3, 3, output)
 {
     // …and the gauntlet has no rules to report on, which is a fact worth a test rather than a silence: an act
     // missing from a report reads as a bug in the report.

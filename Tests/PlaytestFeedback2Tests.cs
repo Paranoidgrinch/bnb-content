@@ -172,10 +172,11 @@ public class PlaytestFeedback2Tests
         var offenders = new List<string>();
         // BOSSES ARE LEFT OUT on purpose: their Paperwork is scripted mechanics (Nanna-Sin's fixed ring, the Flood
         // Queen's lost acreage, the Granary Lady's failed rations), and a boss is not a fight meant to be won unhurt.
-        foreach (var encounter in FightProbe.Game.Encounters
+        var encounters = FightProbe.Game.Encounters
             .Where(e => !e.Id.Value.StartsWith("tutorial", StringComparison.Ordinal)
                 && !e.Id.Value.Contains("_boss_", StringComparison.Ordinal)
-                && !e.Id.Value.StartsWith("act_5_", StringComparison.Ordinal)))
+                && !e.Id.Value.StartsWith("act_5_", StringComparison.Ordinal));
+        foreach (var encounter in encounters)
         {
             var (play, session, _) = FightProbe.Start(
                 FightProbe.Authored(encounter.Id.Value), [.. Enumerable.Repeat("paper_cut", 12)], health: 999);

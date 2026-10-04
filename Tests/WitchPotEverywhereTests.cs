@@ -21,9 +21,9 @@ public class WitchPotEverywhereTests
     [Fact]
     public void After_the_energy_is_spent_the_first_ingredient_still_goes_in_for_nothing_in_every_fight()
     {
-        var offenders = new System.Collections.Concurrent.ConcurrentBag<string>();
+        var offenders = new List<string>();
         var encounters = FightProbe.Game.Encounters.Where(e => !e.Id.Value.StartsWith("tutorial", StringComparison.Ordinal));
-        Parallel.ForEach(encounters, new ParallelOptions { MaxDegreeOfParallelism = 4 }, encounter =>
+        foreach (var encounter in encounters)
         {
             var (play, session, _) = FightProbe.Start(
                 FightProbe.Authored(encounter.Id.Value), health: 999, character: WitchCharacter.Id);
@@ -47,8 +47,8 @@ public class WitchPotEverywhereTests
                 driver.EndTurn();
             }
             play.Dispose();
-        });
-        Assert.True(offenders.IsEmpty, string.Join("\n", offenders.Order()));
+        }
+        Assert.True(offenders.Count == 0, string.Join("\n", offenders));
     }
 
     private static CombatantId? FirstEnemy(RogueDeck.Scenario.Scripting.InteractiveCombat combat) =>

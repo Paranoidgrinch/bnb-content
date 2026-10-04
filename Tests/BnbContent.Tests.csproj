@@ -5,6 +5,10 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
+    <!-- SERVER GC (measured 2026-10-04: the suite 8:16 → 2:11 wall). The tests run twelve allocation-heavy fights and
+         map generations side by side, and the workstation collector stops every thread for each collection —
+         the tests spent most of their time waiting on each other's garbage. -->
+    <ServerGarbageCollection>true</ServerGarbageCollection>
   </PropertyGroup>
 
   <ItemGroup>
