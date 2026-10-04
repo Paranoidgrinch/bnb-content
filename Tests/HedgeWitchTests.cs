@@ -38,10 +38,11 @@ public class HedgeWitchTests
     }
 
     // "Into the pot": the card in hand of this kind.
-    private static void Cook(RunPlayback play, InteractiveRunSession session, string card)
+    // `at` is the target the action is used against — the fight screen passes the first living enemy.
+    private static void Cook(RunPlayback play, InteractiveRunSession session, string card, CombatantId? at = null)
     {
         var driver = play.CombatDriver!;
-        driver.UseAction(Add, null);
+        driver.UseAction(Add, at);
         Assert.Null(session.Error);
         var offered = Assert.IsAssignableFrom<IReadOnlyList<CardInstance>>(driver.PendingCardChoice);
         driver.SupplyCardChoice([offered.First(c => c.DefinitionId.value == card).Id]);
@@ -79,6 +80,46 @@ public class HedgeWitchTests
         Assert.Equal(["adders_nip", "pot_lid"], Pot(play).Select(c => c.DefinitionId.value));
         Assert.Equal(3, Now(play).Hand.Count);
         Assert.Equal(0, Now(play).State.GetCardPlayTurnStats(Now(play).HeroId).CardsPlayedThisTurn);
+        play.Dispose();
+    }
+
+    // Player report 2026-10-04: with no Energy left the pot refused a card, though the first each turn is free.
+    // The screen asks CanUse/ActionCost with the first living enemy as target, so this asks the same way.
+    [Fact]
+    public void The_free_ingredient_goes_in_with_no_energy_left()
+    {
+        var (play, session, enemy) = Fight(["pot_lid", "adders_nip", "adders_nip", "crooked_finger", "nettle_tea"], energy: 1);
+        Play(play, session, "pot_lid", enemy);
+        Assert.Equal(0, Now(play).HeroEnergy);
+
+        Assert.Equal(0, Now(play).ActionCost(Add, enemy).Sum(c => c.Amount));
+        Assert.True(Now(play).CanUse(Add, enemy));
+        Cook(play, session, "adders_nip", enemy);
+        Assert.Equal(["adders_nip"], Pot(play).Select(c => c.DefinitionId.value));
+        play.Dispose();
+    }
+
+    // Player report 2026-10-04: a SECOND card into the pot in one turn sometimes failed. On a later turn too —
+    // after the replay baseline has moved to the turn boundary — and with a card played in between.
+    [Fact]
+    public void A_second_ingredient_goes_in_on_a_later_turn_too()
+    {
+        var (play, session, enemy) = Fight(
+            ["adders_nip", "adders_nip", "adders_nip", "pot_lid", "pot_lid", "pot_lid", "nettle_tea", "nettle_tea",
+             "crooked_finger", "crooked_finger"]);
+        Cook(play, session, Now(play).Hand.First(c => c.DefinitionId.value != "nettle_tea").DefinitionId.value, enemy);
+        play.CombatDriver!.EndTurn();
+        Assert.Null(session.Error);
+
+        var energy = Now(play).HeroEnergy;
+        Assert.True(Now(play).CanUse(Add, enemy));
+        Cook(play, session, Now(play).Hand.First().DefinitionId.value, enemy);
+        Assert.Equal(energy, Now(play).HeroEnergy);
+        Assert.Equal(1, Now(play).ActionCost(Add, enemy).Sum(c => c.Amount));
+        Assert.True(Now(play).CanUse(Add, enemy));
+        Cook(play, session, Now(play).Hand.First().DefinitionId.value, enemy);
+        Assert.Equal(energy - 1, Now(play).HeroEnergy);
+        Assert.Equal(3, Pot(play).Count);
         play.Dispose();
     }
 

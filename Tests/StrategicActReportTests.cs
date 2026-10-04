@@ -17,16 +17,17 @@ namespace BnbContent.Tests;
 // output for a human to read, because a quality number that fails a build is a number nobody dares tune.
 //
 // The deeper look is the converter's own: `dotnet run --project Converter -- --map-report 10000`.
-public class StrategicActReportTests(ITestOutputHelper output)
+//
+// ONE CLASS PER ACT, and that is about wall time, not taste: xUnit runs a class's tests one after another, and the
+// four acts as rows of one Theory were a nine-minute strand the rest of the suite had long finished waiting on
+// (act four alone is five). As four classes they run side by side.
+public abstract class StrategicActReportTests(int index, ITestOutputHelper output)
 {
-    private static readonly RunBlueprint Game =
+    internal static readonly RunBlueprint Game =
         BlueprintAssembler.Build(BabData.Load(TestData.Directory), seed: 20260826);
 
-    public static TheoryData<int> Roomed => [0, 1, 2, 3];
-
-    [Theory]
-    [MemberData(nameof(Roomed))]
-    public void A_thousand_acts_come_out_clean(int index)
+    [Fact]
+    public void A_thousand_acts_come_out_clean()
     {
         var report = StrategicActStatistics.Measure(
             Game.Acts![index].StrategicMapGeneration!, firstSeed: 1, seeds: 1000);
@@ -35,7 +36,16 @@ public class StrategicActReportTests(ITestOutputHelper output)
 
         Assert.True(report.Sound, report.Render());
     }
+}
 
+public class ActOneStrategicReportTests(ITestOutputHelper output) : StrategicActReportTests(0, output);
+
+public class ActTwoStrategicReportTests(ITestOutputHelper output) : StrategicActReportTests(1, output);
+
+public class ActThreeStrategicReportTests(ITestOutputHelper output) : StrategicActReportTests(2, output);
+
+public class ActFourStrategicReportTests(ITestOutputHelper output) : StrategicActReportTests(3, output)
+{
     // …and the gauntlet has no rules to report on, which is a fact worth a test rather than a silence: an act
     // missing from a report reads as a bug in the report.
     [Fact]
