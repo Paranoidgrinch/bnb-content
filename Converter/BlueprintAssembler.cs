@@ -136,7 +136,7 @@ public static class BlueprintAssembler
                 .. ActFive.All(),
                 .. Events.ActOneEventObjects.Statuses(), .. Events.ActTwoEventObjects.Statuses(),
                 .. Events.ActThreeEventObjects.Statuses(),
-                .. Witch.WitchKeywords.All(),
+                .. Witch.WitchKeywords.All(), .. Witch.WitchRules.All(),
             ],
             // ONLY THE AUTHORED POOLS SHIP. Until 2026-09-10 every ported v2 relic whose id did not meet a
             // final one shipped alongside them — 47 of them — because the ported events granted some by
