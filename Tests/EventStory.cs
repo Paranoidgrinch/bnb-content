@@ -237,20 +237,19 @@ internal sealed class EventStory : IDisposable
         var cards = (deck ?? ["paper_cut", "paper_cut", "paper_cut", "paper_cut"])
             .Select(id => new CardDefinitionId(id)).ToList();
 
-        return FightProbe.Game with
+        // The Bureaucrat, carrying this loadout: a story keeps who is playing (RunBlueprint.AsLoneFighter).
+        return (FightProbe.Game with
         {
             Encounters = [probe],
             Map = new RunMap(nodes) { Edges = edges },
             MapGeneration = null,
             Acts = null,
             Deck = cards,
-            Characters = [],
-            Start = FightProbe.Game.Start with
-            {
-                Deck = cards,
-                StartingHealth = health ?? FightProbe.Game.Start.StartingHealth,
-                Resources = new Dictionary<string, int> { [StandardRunIds.Gold.Value] = gold },
-            },
-        };
+        }).AsLoneFighter(FightProbe.Game.Start with
+        {
+            Deck = cards,
+            StartingHealth = health ?? FightProbe.Game.Start.StartingHealth,
+            Resources = new Dictionary<string, int> { [StandardRunIds.Gold.Value] = gold },
+        });
     }
 }

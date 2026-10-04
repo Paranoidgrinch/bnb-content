@@ -58,7 +58,7 @@ public static class FinalCards
 
     // Starters and Junk are never rewards, and neither is an upgraded twin — the "+" version is what an
     // improvement makes, not what a shelf sells.
-    private static IReadOnlyList<BnbCard> Offerable(IEnumerable<BnbCard> cards, int act) => cards
+    public static IReadOnlyList<BnbCard> Offerable(IEnumerable<BnbCard> cards, int act) => cards
         .Where(c => c.Rarity is "common" or "uncommon" or "rare" && c.Act <= act && !c.Id.EndsWith('+'))
         .ToList();
 }

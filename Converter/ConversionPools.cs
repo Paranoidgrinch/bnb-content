@@ -27,6 +27,27 @@ public sealed class ConversionPools
     // the shelf can no longer be the shape the design fixed.
     public required IReadOnlyList<Cards.CardAuthoring.BnbCard> GeneralCards { get; init; }
     public required IReadOnlyList<Cards.CardAuthoring.BnbCard> CharacterCards { get; init; }
+
+    // THE HEDGE WITCH'S POOLS, beside the Bureaucrat's (plan W4): her own cards and the general ones, and her
+    // character shelf. Every offer this class builds is written FOR one character ("for:<id>", Core 13c0696), so
+    // each draws only from its own entries, weighted for itself — and the Bureaucrat's entries, their weights and
+    // their order are exactly what they were before she existed, which keeps his draws byte-identical.
+    public required IReadOnlyList<Cards.CardAuthoring.BnbCard> WitchRewardCards { get; init; }
+    public required IReadOnlyList<Cards.CardAuthoring.BnbCard> WitchCharacterCards { get; init; }
+
+    public const string BureaucratId = "bureaucrat";
+
+    // Dice of her own for anything dealt at CONVERSION time (a shelf, a market's stalls): the build's shared dice
+    // stay exactly where the Bureaucrat's content left them. Seeded from the place's name with a fixed hash —
+    // string.GetHashCode differs from process to process, and the document must not.
+    public static Random WitchDice(string where)
+    {
+        var hash = 2166136261u;
+        foreach (var c in where)
+            hash = (hash ^ c) * 16777619u;
+        return new Random((int)(hash & 0x7FFFFFFF));
+    }
+    public static string For(string characterId) => CharacterContent.ForPrefix + characterId;
     public required IReadOnlyList<BnbRelic> ShopRelicStock { get; init; }
     public required IReadOnlyList<BnbRelic> NormalRelicStock { get; init; }
 
@@ -36,6 +57,8 @@ public sealed class ConversionPools
         RewardCards = Cards.FinalCards.RewardPool(act),
         GeneralCards = Cards.FinalCards.GeneralPool(act),
         CharacterCards = Cards.FinalCards.CharacterPool(act),
+        WitchRewardCards = [.. Witch.WitchCards.RewardPool(act), .. Cards.FinalCards.GeneralPool(act)],
+        WitchCharacterCards = Witch.WitchCards.RewardPool(act),
         // The final relic pools, gated by who is being played. Neither can hold an Event or a Boss relic —
         // those are separate pools by construction (RelicAuthoring.Pool), which is how §2.5/§2.6 keeps them
         // out of a shop rather than by a filter that could be forgotten.
@@ -49,7 +72,7 @@ public sealed class ConversionPools
         [new AddRelicByIdRunEffect(new RelicId(relic.Id)), .. relic.Pickup ?? []];
 
     public static RewardOffer CardOffer(
-        Cards.CardAuthoring.BnbCard card, IReadOnlyList<string>? tags = null) => new(
+        Cards.CardAuthoring.BnbCard card, IReadOnlyList<string>? tags = null, string? forCharacter = null) => new(
         $"card-{card.Id}",
         [
             new AddCardToDeckRunEffect(new CardDefinitionId(card.Id)),
@@ -57,7 +80,8 @@ public sealed class ConversionPools
             // so a declined offer writes nothing.
             .. (tags ?? []).Select(tag => (IRunEffectRequest)new TagCardsRunEffect(
                 RunSelectors.LastAddedCard, new RunCardTagId(tag), true)),
-        ]);
+        ],
+        Tags: forCharacter is null ? null : [For(forCharacter)]);
 
     // Post-fight card reward: 3 pool cards on the ACT'S rarity curve, pick 1.
     //
@@ -66,14 +90,20 @@ public sealed class ConversionPools
     // (which cards enter the pool at all); what they did not have was a CURVE. Same table as the relics use,
     // and the same trick for applying it: each entry of a rarity is weighted by that rarity's share times the
     // size of every other class in the draw, so the class odds hold however many cards sit in each class.
-    public IRewardSource CardRewardSource(int count = 3)
+    public IRewardSource CardRewardSource(int count = 3) =>
+        new PoolRewardSource(new RunPool<RewardOffer>(
+            [.. CurveEntries(RewardCards, BureaucratId), .. CurveEntries(WitchRewardCards, Witch.WitchCharacter.Id)]),
+            count) { UpgradeChancePercent = UpgradedShare };
+
+    private List<RunPool<RewardOffer>.Entry> CurveEntries(
+        IReadOnlyList<Cards.CardAuthoring.BnbCard> pool, string forCharacter)
     {
         var (common, uncommon, rare) = RarityCurve[Math.Clamp(Act, 1, 5)];
         var shares = new Dictionary<string, int> { ["common"] = common, ["uncommon"] = uncommon, ["rare"] = rare };
         // Anything the pool holds that carries an unknown rarity still has to be offerable, or a card would fall
         // out of the game by being labelled wrongly. It draws in the Common class.
         string ClassOf(Cards.CardAuthoring.BnbCard card) => shares.ContainsKey(card.Rarity) ? card.Rarity : "common";
-        var classes = RewardCards.GroupBy(ClassOf).Where(g => shares[g.Key] > 0).ToList();
+        var classes = pool.GroupBy(ClassOf).Where(g => shares[g.Key] > 0).ToList();
         if (classes.Count == 0)
             throw new ConversionException($"act {Act} card pool", "holds no card of any known rarity");
 
@@ -85,8 +115,8 @@ public sealed class ConversionPools
         foreach (var rarityClass in classes)
             foreach (var (card, chance) in WithinClass(rarityClass.ToList()))
                 entries.Add(new RunPool<RewardOffer>.Entry(
-                    CardOffer(card), Weight((double)shares[rarityClass.Key] / total * chance)));
-        return new PoolRewardSource(new RunPool<RewardOffer>(entries), count) { UpgradeChancePercent = UpgradedShare };
+                    CardOffer(card, forCharacter: forCharacter), Weight((double)shares[rarityClass.Key] / total * chance)));
+        return entries;
     }
 
     // How often a reward card turns up already improved (playtest feedback 2, C4): Act I 10 %, II 20 %, III 30 %,
@@ -100,13 +130,16 @@ public sealed class ConversionPools
     // that could land on the wrong card if the reward is declined. The act curve holds here too.
     public IRewardSource CardRewardSource(string rarity, int count = 3, IReadOnlyList<string>? tags = null)
     {
-        var eligible = RewardCards.Where(c => c.Rarity == rarity).ToList();
-        if (eligible.Count == 0)
-            throw new ConversionException($"act {Act} card pool", $"holds no '{rarity}' card to offer");
+        List<RunPool<RewardOffer>.Entry> Of(IReadOnlyList<Cards.CardAuthoring.BnbCard> pool, string forCharacter)
+        {
+            var eligible = pool.Where(c => c.Rarity == rarity).ToList();
+            if (eligible.Count == 0)
+                throw new ConversionException($"act {Act} card pool", $"holds no '{rarity}' card to offer");
+            return [.. WithinClass(eligible).Select(p =>
+                new RunPool<RewardOffer>.Entry(CardOffer(p.Card, tags, forCharacter), Weight(p.Chance)))];
+        }
         return new PoolRewardSource(
-            new RunPool<RewardOffer>(
-                WithinClass(eligible).Select(p => new RunPool<RewardOffer>.Entry(CardOffer(p.Card, tags), Weight(p.Chance)))
-                    .ToList()),
+            new RunPool<RewardOffer>([.. Of(RewardCards, BureaucratId), .. Of(WitchRewardCards, Witch.WitchCharacter.Id)]),
             count) { UpgradeChancePercent = UpgradedShare };
     }
 
@@ -243,6 +276,9 @@ public sealed class ConversionPools
 
     // Transform target pool: any reward-pool card (uniform), as the original draws its replacement
     // from the card-reward chooser.
+    // Her cards come after his: what is not a character's own is filtered out before the draw (CharacterContent),
+    // so each draws from the general cards and its own.
     public RunPool<CardDefinitionId> TransformPool() => new(
-        RewardCards.Select(c => new RunPool<CardDefinitionId>.Entry(new CardDefinitionId(c.Id), 1)).ToList());
+        [.. RewardCards.Concat(WitchCharacterCards)
+            .Select(c => new RunPool<CardDefinitionId>.Entry(new CardDefinitionId(c.Id), 1))]);
 }

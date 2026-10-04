@@ -164,6 +164,11 @@ public static partial class WitchCards
     public static IReadOnlyList<BnbCard> All() =>
         [.. Starter(), .. Commons(), .. Uncommons(), .. Rares(), .. Junk(), .. SoupStones()];
 
+    // Her reward cards gated to an act, as the Bureaucrat's are (FinalCards.Offerable): starters, Junk and the
+    // upgraded twins are never offered.
+    public static IReadOnlyList<BnbCard> RewardPool(int act) =>
+        Cards.FinalCards.Offerable([.. Commons(), .. Uncommons(), .. Rares()], act);
+
     public static IReadOnlyList<CardData> Compile() => All().Select(c => c.Compile()).ToList();
 
     // ── shapes ────────────────────────────────────────────────────────────────────────────────────────────

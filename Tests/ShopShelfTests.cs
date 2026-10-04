@@ -58,7 +58,9 @@ public class ShopShelfTests
     public void A_card_shelf_draws_only_from_its_own_pool(int act)
     {
         var general = FinalCards.GeneralPool(act).Select(c => c.Id).ToHashSet();
-        var character = FinalCards.CharacterPool(act).Select(c => c.Id).ToHashSet();
+        // The character shelf holds each character's own (the Witch's written for her, WitchPoolTests).
+        var character = FinalCards.CharacterPool(act).Concat(Converter.Witch.WitchCards.RewardPool(act))
+            .Select(c => c.Id).ToHashSet();
 
         Assert.NotEmpty(Offered(act, ShopRelics.GeneralCardShelf));
         Assert.All(Offered(act, ShopRelics.GeneralCardShelf), id => Assert.Contains(id, general));

@@ -107,6 +107,10 @@ public static class ShopTemplate
         // is still the two the group shows, and a reroll now turns over the real pool.
         var shopRelics = Relics(pools.ShopRelicStock, rng, depth: pools.ShopRelicStock.Count);
         var normalRelics = Relics(pools.NormalRelicStock, rng, depth: pools.NormalRelicStock.Count);
+        // Her character shelf, dealt with dice of its own: the build's shared dice are left exactly where the
+        // Bureaucrat's shelves left them, so nothing dealt after this shop changes because she exists.
+        var witch = Cards(pools, pools.WitchCharacterCards, ConversionPools.WitchDice($"shop:act{pools.Act}"), depth: 10,
+            forCharacter: Witch.WitchCharacter.Id);
 
         // FOUR SHELVES rather than one bag, and every entry says what it is. A relic that makes "one Normal
         // Relic" cheaper, or adds a slot to the normal relic shelf, or replaces the unsold cards, finds
@@ -119,7 +123,7 @@ public static class ShopTemplate
             Stock:
             [
                 new ShopStockGroup(ShopRelics.GeneralCardShelf, general, 3),
-                new ShopStockGroup(ShopRelics.CharacterCardShelf, character, 4),
+                new ShopStockGroup(ShopRelics.CharacterCardShelf, [.. character, .. witch], 4),
                 new ShopStockGroup(ShopRelics.ShopRelicShelf, shopRelics, 2, [ShopRelics.ShopRelic]),
                 new ShopStockGroup(ShopRelics.NormalRelicShelf, normalRelics, 2, [ShopRelics.NormalRelic]),
             ]);
@@ -128,7 +132,8 @@ public static class ShopTemplate
     // The shelf's stock is dealt on the act curve (ConversionPools.ActShare): a weighted shuffle — each card's key
     // is -ln(u)/weight, and the smallest keys are dealt — so an older act's card still turns up, less often.
     private static IReadOnlyList<ShopEntry> Cards(
-        ConversionPools pools, IReadOnlyList<Cards.CardAuthoring.BnbCard> pool, Random rng, int depth) =>
+        ConversionPools pools, IReadOnlyList<Cards.CardAuthoring.BnbCard> pool, Random rng, int depth,
+        string? forCharacter = null) =>
         pool.Select(card => (Card: card, Key: -Math.Log(1 - rng.NextDouble()) / pools.ShelfWeight(card, pool)))
             .OrderBy(k => k.Key).Select(k => k.Card)
             .Take(depth).Select(card => new ShopEntry(
@@ -138,7 +143,8 @@ public static class ShopTemplate
             Kind: ShopEntryKinds.Card,
             // The card's own vocabulary — its type (Deed/Working/Rite) and whatever else it carries — plus its
             // rarity, so a rule that discounts "the first Form or Queue card" can find one.
-            Tags: [card.Rarity, .. card.AllTags])).ToList();
+            Tags: [card.Rarity, .. card.AllTags, .. forCharacter is null ? [] : new[] { ConversionPools.For(forCharacter) }]))
+            .ToList();
 
     private static IReadOnlyList<ShopEntry> Relics(
         IReadOnlyList<BnbRelic> pool, Random rng, int depth) =>

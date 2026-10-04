@@ -239,8 +239,11 @@ public class ActThreeEventLiveTests
 
         // Four cards, three relics, one removal and a way out — and nothing may be bought twice.
         var stock = FightProbe.Game.Events["the_conceptual_toll"].Situations["stock"].Choices;
-        Assert.Equal(9, stock.Count);
-        Assert.Equal(8, stock.Count(c => c.Requirement is not null));
+        // (His four card stalls, and beside them her four, each shown to its own character.)
+        var his = stock.Where(c => !c.Id.StartsWith("witch-", StringComparison.Ordinal)).ToList();
+        Assert.Equal(9, his.Count);
+        Assert.Equal(8, his.Count(c => c.Requirement is not null));
+        Assert.Equal(4, stock.Count(c => c.Id.StartsWith("witch-card-", StringComparison.Ordinal)));
     }
 
     [Fact]
@@ -311,7 +314,9 @@ public class ActThreeEventLiveTests
     {
         var stock = FightProbe.Game.Events["the_travelling_chandler"].Situations["stock"].Choices;
 
-        Assert.Equal(6, stock.Count); // three cards, two relics, and a way out
+        // three cards, two relics, and a way out — for each character: his three stalls and her three
+        Assert.Equal(6, stock.Count(c => !c.Id.StartsWith("witch-", StringComparison.Ordinal)));
+        Assert.Equal(3, stock.Count(c => c.Id.StartsWith("witch-card-", StringComparison.Ordinal)));
         var browse = FightProbe.Game.Events["the_travelling_chandler"].Situations["start"].Choices
             .Single(c => c.Id == "browse");
         Assert.Null(browse.Costs);

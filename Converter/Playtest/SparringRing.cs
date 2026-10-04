@@ -162,9 +162,10 @@ public static class SparringRing
             touched = true;
         }
 
-        // ⚠ THE CHARACTER ROSTER OVERRIDES Start, so a loadout stated here is silently ignored while a roster
-        // stands: RunSetup reads whichever the pick names. A ring is one stated fighter, so the roster goes.
-        return touched ? blueprint with { Start = start, Characters = [] } : blueprint;
+        // ⚠ THE CHARACTER ROSTER OVERRIDES Start, so a loadout stated here would be silently ignored while a roster
+        // stands. A ring is one stated fighter: the named character (or the roster's first) carrying this loadout
+        // — kept, not dropped, because who is playing is what an offer written for one character asks.
+        return touched ? blueprint.AsLoneFighter(start, character) : blueprint;
     }
 
     // A solo encounter with one AUTHORED enemy: its real roster entry (health, passives carried from the first

@@ -331,7 +331,17 @@ public static class ActOneEvents
         {
             var price = cardPrices.GetValueOrDefault(card.Rarity, 85);
             stock.Add(Stall($"card-{index}", $"{card.Name} — {price} Gold", price,
-                [new AddCardToDeckRunEffect(new CardDefinitionId(card.Id))]));
+                [new AddCardToDeckRunEffect(new CardDefinitionId(card.Id))],
+                only: RunExpr.CharacterIs(ConversionPools.BureaucratId)));
+        }
+        // The Hedge Witch's five, from her pool and her own dice — his stall list is untouched.
+        var witchDice = ConversionPools.WitchDice("licensed_vendor");
+        foreach (var (card, index) in pools.WitchRewardCards.OrderBy(_ => witchDice.Next()).Take(5).Select((c, i) => (c, i)))
+        {
+            var price = cardPrices.GetValueOrDefault(card.Rarity, 85);
+            stock.Add(Stall($"witch-card-{index}", $"{card.Name} — {price} Gold", price,
+                [new AddCardToDeckRunEffect(new CardDefinitionId(card.Id))],
+                only: RunExpr.CharacterIs(Witch.WitchCharacter.Id)));
         }
         foreach (var (relic, index) in relics.Select((r, i) => (r, i)))
         {
@@ -374,14 +384,16 @@ public static class ActOneEvents
     }
 
     // One shelf entry: paid for once, then it is sold out for the rest of the visit, and the counter stays open.
+    // `only`: a stall that stands for one character alone (a character's own cards).
     private static EventChoice Stall(
-        string id, string text, int price, IReadOnlyList<IRunEffectRequest> payload)
+        string id, string text, int price, IReadOnlyList<IRunEffectRequest> payload,
+        IRunExpression<bool>? only = null)
     {
         var sold = new RunFlagId($"licensed_vendor.{id}");
         return new EventChoice(id,
             [.. payload, new SetFlagRunEffect(sold)],
             NextSituationId: "stock",
-            Requirement: RunExpr.Not(RunExpr.Flag(sold)),
+            Requirement: only is null ? RunExpr.Not(RunExpr.Flag(sold)) : RunExpr.And(only, RunExpr.Not(RunExpr.Flag(sold))),
             TextKey: text,
             Costs: [Price(price)]);
     }

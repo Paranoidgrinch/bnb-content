@@ -99,8 +99,11 @@ public class PlaytestFeedbackTests
             var pools = ConversionPools.Build(act);
             var source = Assert.IsType<PoolRewardSource>(pools.CardRewardSource());
             var byId = pools.RewardCards.ToDictionary(c => c.Id);
-            double total = source.Pool.Entries.Sum(e => e.Weight);
-            double Share(Func<CardAuthoring.BnbCard, bool> which) => source.Pool.Entries
+            // The Bureaucrat's own entries — the Witch's stand beside them, written for her (WitchPoolTests).
+            var his = source.Pool.Entries
+                .Where(e => e.Value.Tags?.Contains(ConversionPools.For(ConversionPools.BureaucratId)) == true).ToList();
+            double total = his.Sum(e => e.Weight);
+            double Share(Func<CardAuthoring.BnbCard, bool> which) => his
                 .Where(e => which(byId[e.Value.Id["card-".Length..]])).Sum(e => e.Weight) / total;
 
             Assert.Equal(ConversionPools.CurrentActShare[act] / 100.0, Share(c => c.Act == act), 2);
