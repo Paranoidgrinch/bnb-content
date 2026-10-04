@@ -72,6 +72,7 @@ public static partial class WitchRules
                         CombatantTargetSelectors.IterationTarget, new StatusDefinitionId(WitchKeywords.Hexed),
                         StacksOf<TurnEndedTriggeredEffectContext>(Self, ThirdBell)))),
             OnBurstRare(),
+            OnBurstRelics(),
         ]);
 
     // Every turn's end, burst or not: the marks that last "this turn" are gone.
@@ -107,6 +108,7 @@ public static partial class WitchRules
                                 her, new StatusDefinitionId(MagpieDraw),
                                 StacksOf<ActionStartingTriggeredEffectContext>(Self, MagpiesLuck)))),
                     LandedRare(),
+                    LandedRelics(),
                 ]),
                 @else: new CausalSequenceEffectNode<ActionStartingTriggeredEffectContext>(
                 [
@@ -120,6 +122,7 @@ public static partial class WitchRules
                             Self, new StatusDefinitionId(WitchKeywords.Misfortune),
                             StacksOf<ActionStartingTriggeredEffectContext>(Self, BadPenny))),
                     LostRare(),
+                    LostRelics(),
                 ])),
             new RemoveStatusNode<ActionStartingTriggeredEffectContext>(Self, new StatusDefinitionId(CrossedFingers)),
             new RemoveStatusNode<ActionStartingTriggeredEffectContext>(Self, new StatusDefinitionId(BadPenny)),
@@ -355,19 +358,35 @@ public static partial class WitchRules
         new ConditionalEffectNode<TContext>(
             new TargetHasStatusExpression<TContext>(who, new StatusDefinitionId(status)), then);
 
-    // Hearth healing from a rule: HP lost this combat only (§3.4).
-    private static IEffectNode<TContext> Heal<TContext>(ICombatantTargetSelector who, ICombatExpression<TContext, int> amount)
+    // Hearth healing — from a card, a brew or a rule: HP lost this combat only (§3.4). Once a fight, Grandam's
+    // Ember lets a heal that would be capped reach the HP lost before the fight; otherwise what the cap would waste
+    // may become Ward Wax first (Keep the Drippings).
+    public static IEffectNode<TContext> Heal<TContext>(ICombatantTargetSelector who, ICombatExpression<TContext, int> amount)
         where TContext : class =>
-        new CausalSequenceEffectNode<TContext>([Drippings(who, amount), CappedHeal(who, amount)]);
+        new ConditionalEffectNode<TContext>(
+            new AndExpression<TContext>(
+                new AndExpression<TContext>(
+                    new TargetHasStatusExpression<TContext>(who, new StatusDefinitionId(GrandamsEmber)),
+                    new ComparisonExpression<TContext>(new CombatantCounterExpression<TContext>(who, EmberLatch),
+                        ComparisonOperator.Equal, new ConstantExpression<TContext>(0))),
+                new ComparisonExpression<TContext>(amount, ComparisonOperator.Greater, LostThisFight<TContext>(who))),
+            new CausalSequenceEffectNode<TContext>(
+            [
+                new SetCombatantCounterNode<TContext>(who, EmberLatch, new ConstantExpression<TContext>(1), relative: false),
+                new HealNode<TContext>(who, amount),
+            ]),
+            @else: new CausalSequenceEffectNode<TContext>([Drippings(who, amount), CappedHeal(who, amount)]));
 
     private static IEffectNode<TContext> CappedHeal<TContext>(ICombatantTargetSelector who, ICombatExpression<TContext, int> amount)
         where TContext : class =>
-        new HealNode<TContext>(who,
-            new MinExpression<TContext>(amount,
-                new MaxExpression<TContext>(new ConstantExpression<TContext>(0),
-                    new SubtractExpression<TContext>(
-                        new CombatantCounterExpression<TContext>(who, WitchKeywords.CombatStartHp),
-                        new CombatantCurrentHealthExpression<TContext>(who)))));
+        new HealNode<TContext>(who, new MinExpression<TContext>(amount, LostThisFight<TContext>(who)));
+
+    private static ICombatExpression<TContext, int> LostThisFight<TContext>(ICombatantTargetSelector who)
+        where TContext : class =>
+        new MaxExpression<TContext>(new ConstantExpression<TContext>(0),
+            new SubtractExpression<TContext>(
+                new CombatantCounterExpression<TContext>(who, WitchKeywords.CombatStartHp),
+                new CombatantCurrentHealthExpression<TContext>(who)));
 
     private static StatusData EnemyMark(
         string id, string name, string description, IReadOnlyList<StatusTriggerData>? triggers = null) =>

@@ -17,7 +17,7 @@ public static partial class WitchRules
     // Thorn Hedge: "the first time you are attacked this enemy turn, damage the attacker".
     public const string ThornHedge = "thorn_hedge";
 
-    public static IReadOnlyList<StatusData> All() => [SnailShellMark(), ThornHedgeMark(), .. UncommonRules(), .. RareRules()];
+    public static IReadOnlyList<StatusData> All() => [SnailShellMark(), ThornHedgeMark(), .. UncommonRules(), .. RareRules(), .. RelicRules()];
 
     private static ICombatantTargetSelector Self => CombatantTargetSelectors.Source;
 

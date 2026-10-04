@@ -28,7 +28,8 @@ public static class WitchCharacter
     };
 
     // Her cards (and their upgrades) and, later, her relics: offered to her alone.
-    public static IReadOnlyList<string> Exclusive => [.. WitchCards.All().Select(c => c.Id)];
+    public static IReadOnlyList<string> Exclusive =>
+        [.. WitchCards.All().Select(c => c.Id), .. WitchRelics.All().Select(r => r.Id)];
 
     public static RunCharacter Roster() => new(Id, Start, Exclusive: Exclusive);
 }

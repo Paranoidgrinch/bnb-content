@@ -546,7 +546,7 @@ public static class ActThreeEvents
         {
             var price = Less(ShopTemplate.RelicPrice(relic));
             stock.Add(Stall(id, $"relic-{index}", $"{relic.Name} — {price} Gold", price,
-                [.. ConversionPools.Grant(relic)]));
+                [.. ConversionPools.Grant(relic)], only: ConversionPools.OnlyFor(relic)));
         }
         if (removal)
         {

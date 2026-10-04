@@ -79,9 +79,12 @@ public static class ArchiveSections
         var relics = manifest.Relics.ToDictionary(p => p.Key, p =>
         {
             var section = relicPool.GetValueOrDefault(p.Key) is { } relic
-                ? relic.Eligibility == Relics.RelicAuthoring.Eligibility.Bureaucrat
-                    ? Bureaucrat
-                    : relic.Pool.ToString()
+                ? relic.Eligibility switch
+                {
+                    Relics.RelicAuthoring.Eligibility.Bureaucrat => Bureaucrat,
+                    Relics.RelicAuthoring.Eligibility.HedgeWitch => HedgeWitch,
+                    _ => relic.Pool.ToString(),
+                }
                 : "Other";
             return p.Value with
             {

@@ -50,6 +50,32 @@ public static class WitchActions
         new CombatantZoneCardCountExpression<CardPlayContext>(
             You, CardZone.SetAsidePile, tag is null ? null : new TagId(tag));
 
+    // False-Bottom Pot's fourth card waits in RESERVE (a mark on it): in the pot, but not in the recipe.
+    public const string ReserveMark = "reserve_ingredient";
+
+    private static ICombatExpression<CardPlayContext, int> InRecipe(string? tag = null) =>
+        new SubtractExpression<CardPlayContext>(InPot(tag),
+            new CombatantZoneCardCountExpression<CardPlayContext>(
+                You, CardZone.SetAsidePile, tag is null ? null : new TagId(tag), new TagId(ReserveMark)));
+
+    private static ICombatExpression<CardPlayContext, bool> Wears(string rule) =>
+        new TargetHasStatusExpression<CardPlayContext>(You, new StatusDefinitionId(rule));
+
+    private static ICombatExpression<CardPlayContext, bool> Unspent(CounterId latch) =>
+        Compare(new CombatantCounterExpression<CardPlayContext>(You, latch), ComparisonOperator.Equal, Const(0));
+
+    private static ICombatExpression<CardPlayContext, bool> All(params ICombatExpression<CardPlayContext, bool>[] terms) =>
+        terms.Skip(1).Aggregate(terms[0], (all, term) => new AndExpression<CardPlayContext>(all, term));
+
+    private static IEffectNode<CardPlayContext> Spend(CounterId latch) =>
+        new SetCombatantCounterNode<CardPlayContext>(You, latch, Const(1), relative: false);
+
+    // How many slots the pot has: three, and a reserve with False-Bottom Pot.
+    private static ICombatExpression<CardPlayContext, int> Capacity =>
+        new AddExpression<CardPlayContext>(Const(Slots),
+            new MinExpression<CardPlayContext>(Const(1),
+                new CombatantStatusStacksExpression<CardPlayContext>(You, new StatusDefinitionId(WitchRules.FalseBottomPot))));
+
     private static ICombatExpression<CardPlayContext, int> InHand(string? tag = null) =>
         new CombatantZoneCardCountExpression<CardPlayContext>(You, CardZone.Hand, tag is null ? null : new TagId(tag));
 
@@ -70,16 +96,28 @@ public static class WitchActions
         // A free slot, and something in hand the pot will take — and the lid not shut.
         PlayCondition = new AndExpression<CardPlayContext>(LidOpen,
             new AndExpression<CardPlayContext>(
-                Compare(InPot(), ComparisonOperator.Less, Const(Slots)),
+                Compare(InPot(), ComparisonOperator.Less, Capacity),
                 Compare(new SubtractExpression<CardPlayContext>(InHand(), InHand(Uncookable)),
                     ComparisonOperator.Greater, Const(0)))),
-        Program = new EffectProgram<CardPlayContext>(new SequenceEffectNode<CardPlayContext>(
+        // Causal: what follows asks about the pot AFTER the chosen card is in it.
+        Program = new EffectProgram<CardPlayContext>(new CausalSequenceEffectNode<CardPlayContext>(
         [
             CombatProgramModel.Build<CardPlayContext>(new CombatNodeModel("moveCardToZone", "source",
                 Card: new CombatCardSpec("chosen", CardZone.Hand, Purpose: "choose a card for the pot",
                     ExcludeTag: Uncookable),
                 ToZone: CardZone.SetAsidePile)).Root,
             new RemoveStatusNode<CardPlayContext>(You, new StatusDefinitionId(WitchKeywords.FreeIngredient)),
+            // A fourth card is the reserve (False-Bottom Pot).
+            new ConditionalEffectNode<CardPlayContext>(Compare(InPot(), ComparisonOperator.Greater, Const(Slots)),
+                CombatProgramModel.Build<CardPlayContext>(new CombatNodeModel("markCardInstance", "source",
+                    Card: new CombatCardSpec("inZone", CardZone.SetAsidePile, Index: Slots), ToTag: ReserveMark)).Root),
+            // Rowan Pin: the first card in each turn gives Block.
+            new ConditionalEffectNode<CardPlayContext>(All(Wears(WitchRules.RowanPin), Unspent(WitchRules.RowanPinLatch)),
+                new CausalSequenceEffectNode<CardPlayContext>(
+                [
+                    Spend(WitchRules.RowanPinLatch),
+                    new GainBlockNode<CardPlayContext>(You, Const(WitchRules.RowanPinBlock)),
+                ])),
         ])),
     };
 
@@ -95,23 +133,69 @@ public static class WitchActions
         Costs = [new ResourceCost(StandardCombatIds.EnergyResource, 1)],
         Tags = [new TagId(BrewActionTag)],
         PlayCondition = new AndExpression<CardPlayContext>(LidOpen,
-            Compare(InPot(), ComparisonOperator.GreaterOrEqual, Const(Slots))),
-        Program = new EffectProgram<CardPlayContext>(new SequenceEffectNode<CardPlayContext>(
+            Compare(InRecipe(), ComparisonOperator.GreaterOrEqual, Const(Slots))),
+        Program = new EffectProgram<CardPlayContext>(new CausalSequenceEffectNode<CardPlayContext>(
         [
-            Concentrated(),
-            new ConditionalEffectNode<CardPlayContext>(Compare(InPot(WaxRider), ComparisonOperator.Greater, Const(0)),
-                Apply(Cards.Keywords.WardWax,
-                    new MultiplyExpression<CardPlayContext>(InPot(WaxRider), Const(WaxRiderStacks)), You)),
-            // Into the discard pile, every one (§2.4) — then the pot is empty and she shelters again. Unless she
-            // never washes the pot: then she keeps one back (WitchRules).
+            // Bone Strainer: with Dregs in the pot, she names the family they count as.
             new ConditionalEffectNode<CardPlayContext>(
-                new TargetHasStatusExpression<CardPlayContext>(You, new StatusDefinitionId(WitchRules.NeverWashThePot)),
-                KeepOneBack(),
-                @else: CombatProgramModel.Build<CardPlayContext>(new CombatNodeModel("moveCards", "source",
-                    FromZone: CardZone.SetAsidePile, ToZone: CardZone.DiscardPile)).Root),
+                All(Wears(WitchRules.BoneStrainer), Compare(Dregs, ComparisonOperator.Greater, Const(0))),
+                CombatProgramModel.Build<CardPlayContext>(CombatNodeModel.ChooseOptions(1,
+                    [.. FamilyNames],
+                    [.. Families.Select((_, i) => new CombatNodeModel("setCombatantCounter", "source",
+                        CombatAmountSpec.FromConst(i + 1), CounterId: StrainerChoice.value, Relative: false))],
+                    "the Dregs count as")).Root),
+            Concentrated(),
+            new ConditionalEffectNode<CardPlayContext>(Compare(InRecipe(WaxRider), ComparisonOperator.Greater, Const(0)),
+                Apply(Cards.Keywords.WardWax,
+                    new MultiplyExpression<CardPlayContext>(InRecipe(WaxRider), Const(WaxRiderStacks)), You)),
+            // Herb-Wife's Rack: the first Brew this combat with a Hearth ingredient heals more.
+            new ConditionalEffectNode<CardPlayContext>(
+                All(Wears(WitchRules.HerbWifesRack), Unspent(WitchRules.RackLatch),
+                    Compare(InRecipe(Hearth), ComparisonOperator.Greater, Const(0))),
+                new CausalSequenceEffectNode<CardPlayContext>(
+                    [Spend(WitchRules.RackLatch), Heal(Const(WitchRules.HerbWifeHeal))])),
+            // Apothecary's Scale: the first Brew this combat of three different families gives its Energy back.
+            new ConditionalEffectNode<CardPlayContext>(
+                All(Wears(WitchRules.ApothecarysScale), Unspent(WitchRules.ScaleLatch),
+                    Compare(DistinctFamilies, ComparisonOperator.GreaterOrEqual, Const(Slots))),
+                new CausalSequenceEffectNode<CardPlayContext>(
+                [
+                    Spend(WitchRules.ScaleLatch),
+                    new GainResourceNode<CardPlayContext>(You, StandardCombatIds.EnergyResource, Const(1)),
+                ])),
+            // Greasy Ladle: the first Brew each turn draws a card.
+            new ConditionalEffectNode<CardPlayContext>(
+                All(Wears(WitchRules.GreasyLadle), Unspent(WitchKeywords.BrewsThisTurn)),
+                new DrawCardsNode<CardPlayContext>(You, Const(1))),
+            // Into the discard pile, every one (§2.4) — then the pot is empty and she shelters again. Unless she
+            // never washes the pot, or Yesterday's Jar keeps the last one, or one waits in reserve.
+            new ConditionalEffectNode<CardPlayContext>(Wears(WitchRules.NeverWashThePot), PickOneToKeep()),
+            new ConditionalEffectNode<CardPlayContext>(All(Wears(WitchRules.YesterdaysJar), Unspent(WitchRules.JarLatch)),
+                new CausalSequenceEffectNode<CardPlayContext>(
+                [
+                    Spend(WitchRules.JarLatch),
+                    CombatProgramModel.Build<CardPlayContext>(new CombatNodeModel("setCardInstanceMarkCounter", "source",
+                        CombatAmountSpec.FromConst(1), Card: new CombatCardSpec("inZone", CardZone.SetAsidePile, Index: Slots - 1),
+                        CounterId: Kept.value, Relative: false)).Root,
+                ])),
+            EmptyThePot(),
             new SetCombatantCounterNode<CardPlayContext>(You, WitchKeywords.BrewsThisTurn, Const(1), relative: true),
+            new SetCombatantCounterNode<CardPlayContext>(You, StrainerChoice, Const(0), relative: false),
         ])),
     };
+
+    private static readonly string[] FamilyNames = ["Fang", "Hex", "Husk", "Hearth", "Fortune"];
+
+    // Bone Strainer's choice: 1..5 for the family the Dregs count as, 0 for none.
+    private static CounterId StrainerChoice => new("bone_strainer_choice");
+
+    // What in the recipe has no family at all — Junk and anything else the pot was given.
+    private static ICombatExpression<CardPlayContext, int> Dregs =>
+        Families.Aggregate(InRecipe(), (left, family) => new SubtractExpression<CardPlayContext>(left, InRecipe(family)));
+
+    private static ICombatExpression<CardPlayContext, int> DistinctFamilies =>
+        Families.Select(f => (ICombatExpression<CardPlayContext, int>)new MinExpression<CardPlayContext>(Const(1), InRecipe(f)))
+            .Aggregate((a, b) => new AddExpression<CardPlayContext>(a, b));
 
     // Three of one family: that family's named brew (§7). Otherwise the Mixed brew: the sum of what each
     // ingredient gives, in the canon's fixed order Hex → Fang → Husk → Hearth → Fortune (§2.6).
@@ -128,7 +212,7 @@ public static class WitchActions
         };
         foreach (var (family, effect) in named.Reverse())
             brew = new ConditionalEffectNode<CardPlayContext>(
-                Compare(InPot(family), ComparisonOperator.GreaterOrEqual, Const(Slots)), effect, @else: brew);
+                Compare(InRecipe(family), ComparisonOperator.GreaterOrEqual, Const(Slots)), effect, @else: brew);
         return brew;
     }
 
@@ -141,14 +225,27 @@ public static class WitchActions
         Each(Fortune, Apply(WitchKeywords.Misfortune, Times(Fortune, FortuneMisfortune), Target)),
     ]);
 
-    // Only when that family is in the pot: a 0-damage hit is still a hit to everything that counts hits.
+    // Only when that family is in the brew: a 0-damage hit is still a hit to everything that counts hits.
     private static IEffectNode<CardPlayContext> Each(string family, IEffectNode<CardPlayContext> effect) =>
-        new ConditionalEffectNode<CardPlayContext>(Compare(InPot(family), ComparisonOperator.Greater, Const(0)), effect);
+        new ConditionalEffectNode<CardPlayContext>(Compare(Weight(family), ComparisonOperator.Greater, Const(0)), effect);
 
-    // What a family is worth in a mixed brew: its cards, and one more for each that counts double.
+    // What a family is worth in a mixed brew: its cards, one more for each that counts double, and the Dregs if
+    // Bone Strainer named this family.
+    private static ICombatExpression<CardPlayContext, int> Weight(string family) =>
+        new AddExpression<CardPlayContext>(
+            new AddExpression<CardPlayContext>(InRecipe(family), InRecipe(Double(family))),
+            new MultiplyExpression<CardPlayContext>(Dregs, Named(family)));
+
+    // 1 when the strainer's choice is this family, 0 otherwise.
+    private static ICombatExpression<CardPlayContext, int> Named(string family) =>
+        new SubtractExpression<CardPlayContext>(Const(1),
+            new MinExpression<CardPlayContext>(Const(1),
+                new AbsExpression<CardPlayContext>(new SubtractExpression<CardPlayContext>(
+                    new CombatantCounterExpression<CardPlayContext>(You, StrainerChoice),
+                    Const(Array.IndexOf(Families, family) + 1)))));
+
     private static ICombatExpression<CardPlayContext, int> Times(string family, int each) =>
-        new MultiplyExpression<CardPlayContext>(
-            new AddExpression<CardPlayContext>(InPot(family), InPot(Double(family))), Const(each));
+        new MultiplyExpression<CardPlayContext>(Weight(family), Const(each));
 
     private static IEffectNode<CardPlayContext> Damage(ICombatExpression<CardPlayContext, int> amount) =>
         new DealDamageNode<CardPlayContext>(Target, amount);
@@ -157,23 +254,33 @@ public static class WitchActions
         string status, ICombatExpression<CardPlayContext, int> stacks, ICombatantTargetSelector to) =>
         new ApplyStatusNode<CardPlayContext>(to, new StatusDefinitionId(status), stacks);
 
-    // Never Wash the Pot: she picks the one to keep (a mark on the card), the rest go, and the mark is wiped.
+    // A card kept in the pot after a Brew carries a mark counter (Never Wash the Pot, Yesterday's Jar); the reserve
+    // carries its mark. Everything else goes to the discard pile, and both marks are wiped.
     private static CounterId Kept => new("kept_in_the_pot");
 
-    private static IEffectNode<CardPlayContext> KeepOneBack() => new CausalSequenceEffectNode<CardPlayContext>(
-    [
+    private static IEffectNode<CardPlayContext> PickOneToKeep() =>
         CombatProgramModel.Build<CardPlayContext>(new CombatNodeModel("setCardInstanceMarkCounter", "source",
             CombatAmountSpec.FromConst(1),
             Card: new CombatCardSpec("chosen", CardZone.SetAsidePile, Purpose: "keep one in the cauldron"),
-            CounterId: Kept.value, Relative: false)).Root,
-        new ForEachCardInZoneNode<CardPlayContext>(You, CardZone.SetAsidePile,
-            new ConditionalEffectNode<CardPlayContext>(
-                Compare(new CardInstanceMarkCounterExpression<CardPlayContext>(new IteratedCardExpression<CardPlayContext>(), Kept),
-                    ComparisonOperator.Equal, Const(0)),
-                new MoveCardToZoneNode<CardPlayContext>(You, new IteratedCardExpression<CardPlayContext>(), CardZone.DiscardPile),
-                @else: new SetCardInstanceMarkCounterNode<CardPlayContext>(
-                    You, new IteratedCardExpression<CardPlayContext>(), Kept, Const(0)))),
-    ]);
+            CounterId: Kept.value, Relative: false)).Root;
+
+    private static IEffectNode<CardPlayContext> EmptyThePot()
+    {
+        var card = new IteratedCardExpression<CardPlayContext>();
+        return new CausalSequenceEffectNode<CardPlayContext>(
+        [
+            new ForEachCardInZoneNode<CardPlayContext>(You, CardZone.SetAsidePile,
+                new ConditionalEffectNode<CardPlayContext>(
+                    new AndExpression<CardPlayContext>(
+                        Compare(new CardInstanceMarkCounterExpression<CardPlayContext>(card, Kept), ComparisonOperator.Equal, Const(0)),
+                        new NotExpression<CardPlayContext>(new CardInstanceHasMarkExpression<CardPlayContext>(card, new TagId(ReserveMark)))),
+                    new MoveCardToZoneNode<CardPlayContext>(You, card, CardZone.DiscardPile),
+                    @else: new SetCardInstanceMarkCounterNode<CardPlayContext>(You, card, Kept, Const(0)))),
+            // The reserve is a plain ingredient of the new pot now.
+            new ForEachCardInZoneNode<CardPlayContext>(You, CardZone.SetAsidePile,
+                new MarkCardInstanceNode<CardPlayContext>(You, card, new TagId(ReserveMark), remove: true)),
+        ]);
+    }
 
     // Shut the Lid: nothing goes in or comes out until her next turn.
     private static ICombatExpression<CardPlayContext, bool> LidOpen =>
@@ -183,13 +290,5 @@ public static class WitchActions
     // Hearth: heal HP lost during THIS combat only — never above the HP she began the fight on (§3.4). What the cap
     // would waste may become Ward Wax first (Keep the Drippings).
     public static IEffectNode<CardPlayContext> Heal(ICombatExpression<CardPlayContext, int> amount) =>
-        new CausalSequenceEffectNode<CardPlayContext>([WitchRules.Drippings(You, amount), CappedHeal(amount)]);
-
-    private static IEffectNode<CardPlayContext> CappedHeal(ICombatExpression<CardPlayContext, int> amount) =>
-        new HealNode<CardPlayContext>(You,
-            new MinExpression<CardPlayContext>(amount,
-                new MaxExpression<CardPlayContext>(Const(0),
-                    new SubtractExpression<CardPlayContext>(
-                        new CombatantCounterExpression<CardPlayContext>(You, WitchKeywords.CombatStartHp),
-                        new CombatantCurrentHealthExpression<CardPlayContext>(You)))));
+        WitchRules.Heal(You, amount);
 }

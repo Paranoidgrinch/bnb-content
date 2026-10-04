@@ -2,7 +2,7 @@
 
 Generated: `dotnet run --project Converter -- --art-slots ART_SLOTS.md`. **Do not edit by hand.**
 
-**802 pictures**: 321 cards, 210 relics, 269 bodies
+**819 pictures**: 321 cards, 227 relics, 269 bodies
 (every enemy, elite and boss) and 2 the player can be. Every one of them is filled today by a PLACEHOLDER — a plate with the file's own
 name and the word placeholder on it, written by `bnb-godot/tools/make-card-art.py`,
 `make-relic-art.py` and `make-enemy-art.py`. A painted picture replaces one by being saved over it, so
@@ -54,11 +54,11 @@ The relic briefs below are the design canon's own words
 `BnB_Elite_Relics_MASTER_AND_VISUAL_CANON.md` for #169–210). Frames, palettes and the label rule live
 there in full; only the object line is repeated here, because that is the line that differs per relic.
 
-## Relics — 210 pictures
+## Relics — 227 pictures
 
 The catalogue number is the design canon's, and it is not part of the file name: the id is.
 
-### Normal relics — 50
+### Normal relics — 62
 
 | # | code | title | rarity | the object |
 |---:|---|---|---|---|
@@ -112,8 +112,20 @@ The catalogue number is the design canon's, and it is not part of the file name:
 | 48 | `thorn_crowned_reliquary` | Thorn-Crowned Reliquary | rare | A small domed reliquary surrounded at its roofline by a literal crown of black thorns. The reliquary body is simple enough that the thorn ring dominates. |
 | 49 | `blank_folio` | Blank Folio | rare | A thick closed folio with absolutely no title, crest, clasp, or writing on the cover. One pale page corner protrudes where something was removed. |
 | 50 | `chancery_scale` | Chancery Scale | rare | A narrow two-pan chancery balance with a quill-shaped central pointer and shallow document-sized pans. The beam is elegant but not ornate. |
+| — | `rowan_pin` | Rowan Pin | common | The first time each turn a card goes into the cauldron, gain 3 Block. |
+| — | `three_knot_cord` | Three-Knot Cord | common | The first time each combat a Hex bursts, that enemy gains 3 Hexed. |
+| — | `found_button` | Found Button | common | The first time each combat a Misfortune roll fails, gain 5 Block. |
+| — | `greasy_ladle` | Greasy Ladle | uncommon | Your first Brew each turn draws 1 card. |
+| — | `iron_trivet` | Iron Trivet | uncommon | If you end your turn with the cauldron Ready, gain 6 Block. |
+| — | `crows_toe` | Crow's Toe | uncommon | The first time each turn you hit an enemy whose Hex bursts at the end of its next turn, deal 5 more damage. |
+| — | `beeswax_cup` | Beeswax Cup | uncommon | The first time each turn you are healed, gain 2 Ward Wax. |
+| — | `knucklebone_pair` | Knucklebone Pair | uncommon | The first time each turn a Misfortune roll fails, 2 Misfortune stays on that enemy. |
+| — | `false_bottom_pot` | False-Bottom Pot | rare | The cauldron takes a fourth card in reserve. It is not part of the Brew, and stays for the next one. |
+| — | `first_bell` | First Bell | rare | The first enemy you Hex each combat starts its Threefold count a step ahead. |
+| — | `black_cats_collar` | Black Cat's Collar | rare | The first Misfortune roll that fails each combat is rolled again. |
+| — | `grandams_ember` | Grandam's Ember | rare | Once each combat, Hearth healing may restore HP you lost before the fight. |
 
-### Shop relics — 24
+### Shop relics — 29
 
 | # | code | title | rarity | the object |
 |---:|---|---|---|---|
@@ -141,6 +153,11 @@ The catalogue number is the design canon's, and it is not part of the file name:
 | 72 | `indemnity_stamp` | Indemnity Stamp | shop | A round copper-bound hand stamp whose seal face shows a split coin with one half arcing back toward the other. The motion is expressed with an old engraved curve, not a modern arrow icon. |
 | 73 | `archive_voucher_roll` | Archive Voucher Roll | shop | A narrow roll of small hand-written archive vouchers on a copper spindle, each exposed voucher separated by a deep tear notch. A short string keeps the roll from unwinding. |
 | 74 | `departmental_purchase_order` | Departmental Purchase Order | shop | A bound handwritten purchase order with three broad ruled sections for Deed, Working, and Rite, plus a single wax seal at the bottom. Use hand-drawn columns, never spreadsheet-like cells. |
+| — | `bone_strainer` | Bone Strainer | shop | Dregs in a mixed Brew count as a family you name. They never make a concentrated one. |
+| — | `apothecarys_scale` | Apothecary's Scale | shop | Your first Brew each combat of three different families costs no Energy. |
+| — | `yesterdays_jar` | Yesterday's Jar | shop | After your first Brew each combat, the last ingredient stays in the cauldron. |
+| — | `cats_eye_coin` | Cat's-Eye Coin | shop | After winning a combat, gain 5 Gold for each Misfortune that landed in it, at most 15. |
+| — | `herb_wifes_rack` | Herb-Wife's Rack | shop | Your first Brew each combat with a Hearth ingredient also heals 3 HP lost this combat. |
 
 ### Event relics — 25
 

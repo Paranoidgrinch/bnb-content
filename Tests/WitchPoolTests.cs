@@ -99,4 +99,26 @@ public class WitchPoolTests
                 Assert.False(Shown(choice, WitchCharacter.Id), $"{choice.Id} shows her {card}");
         }
     }
+
+    // Relic rewards the same way: she draws the general ones and her own; he draws exactly as before.
+    [Fact]
+    public void Relic_rewards_are_written_for_each_character()
+    {
+        var pools = ConversionPools.Build(2);
+        var source = (PoolRewardSource)pools.NormalRelicOnTheCurve("test");
+        var hers = WitchRelics.All().Select(r => "relic-" + r.Id).ToHashSet();
+        var drawn = Enumerable.Range(1, 120).SelectMany(seed => source.Generate(Run(WitchCharacter.Id, seed)))
+            .Select(o => o.Id).ToList();
+        Assert.Contains(drawn, hers.Contains);
+        Assert.All(Enumerable.Range(1, 120).SelectMany(seed => source.Generate(Run(ConversionPools.BureaucratId, seed))),
+            o => Assert.DoesNotContain(o.Id, hers));
+
+        var before = new PoolRewardSource(new RunPool<RewardOffer>(
+            [.. source.Pool.Entries
+                .Where(e => e.Value.Tags?.Contains(ConversionPools.For(ConversionPools.BureaucratId)) == true)
+                .Select(e => e with { Value = e.Value with { Tags = null } })]), source.Count);
+        for (var seed = 1; seed <= 40; seed++)
+            Assert.Equal(before.Generate(Run(ConversionPools.BureaucratId, seed)).Select(o => o.Id),
+                source.Generate(Run(ConversionPools.BureaucratId, seed)).Select(o => o.Id));
+    }
 }

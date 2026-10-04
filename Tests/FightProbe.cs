@@ -24,8 +24,9 @@ internal static class FightProbe
     // `deck` stacks the hero's deck with authored cards (repeated as given) when a test needs a specific card
     // in hand — e.g. one that files Paperwork onto an enemy. Empty ⇒ the character's real starting deck.
     public static RunBlueprint OneFight(
-        EncounterDefinition probe, IReadOnlyList<string>? deck = null, int? health = null, string? character = null) =>
-        SparringRing.OneFight(Game, probe, deck, health, character: character);
+        EncounterDefinition probe, IReadOnlyList<string>? deck = null, int? health = null, string? character = null,
+        IReadOnlyList<string>? relics = null) =>
+        SparringRing.OneFight(Game, probe, deck, health, relics: relics, character: character);
 
     // A solo encounter with one AUTHORED enemy: its real roster entry (HP, passives carried from the first
     // bell, intent rules) is taken from the converted game and only narrowed to the intent under test, plus any
@@ -128,10 +129,11 @@ internal static class FightProbe
 
     // Starts the probe fight and hands back the live playback plus the enemy's id.
     public static (RunPlayback Play, InteractiveRunSession Session, CombatantId EnemyId) Start(
-        EncounterDefinition probe, IReadOnlyList<string>? deck = null, int? health = null, string? character = null)
+        EncounterDefinition probe, IReadOnlyList<string>? deck = null, int? health = null, string? character = null,
+        IReadOnlyList<string>? relics = null)
     {
         var play = new RunPlayback(() => { });
-        play.Start(OneFight(probe, deck, health, character), seed: 1, interactive: true);
+        play.Start(OneFight(probe, deck, health, character, relics), seed: 1, interactive: true);
         var session = play.Session!;
         Assert.True(play.Error is null, play.Error);
         while (session.IsAwaitingInterlude)

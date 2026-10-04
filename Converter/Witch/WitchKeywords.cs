@@ -84,29 +84,42 @@ public static class WitchKeywords
     private static StatusData MisfortuneStatus()
     {
         var self = CombatantTargetSelectors.Source;
+        ICombatExpression<ActionStartingTriggeredEffectContext, bool> Roll() =>
+            new ComparisonExpression<ActionStartingTriggeredEffectContext>(
+                new RandomBelowExpression<ActionStartingTriggeredEffectContext>(100),
+                ComparisonOperator.Less,
+                new MultiplyExpression<ActionStartingTriggeredEffectContext>(
+                    new MinExpression<ActionStartingTriggeredEffectContext>(
+                        new CombatantStatusStacksExpression<ActionStartingTriggeredEffectContext>(
+                            self, new StatusDefinitionId(Misfortune)),
+                        new ConstantExpression<ActionStartingTriggeredEffectContext>(MisfortuneCapStacks)),
+                    new ConstantExpression<ActionStartingTriggeredEffectContext>(MisfortunePercentPerStack)));
+        IEffectNode<ActionStartingTriggeredEffectContext> Lands() =>
+            new SequenceEffectNode<ActionStartingTriggeredEffectContext>(
+            [
+                new ApplyStatusNode<ActionStartingTriggeredEffectContext>(
+                    self, StandardCombatIds.ActionFailsStatus,
+                    new ConstantExpression<ActionStartingTriggeredEffectContext>(1)),
+                WitchRules.RollLanded(true),
+            ]);
+
         var program = new EffectProgram<ActionStartingTriggeredEffectContext>(
             new CausalSequenceEffectNode<ActionStartingTriggeredEffectContext>(
             [
                 WitchRules.NoteRolled(),
                 new ConditionalEffectNode<ActionStartingTriggeredEffectContext>(
                     // A sat-down black cat lands it outright; loaded knucklebones roll twice (WitchRules).
-                    WitchRules.Lands(() => new ComparisonExpression<ActionStartingTriggeredEffectContext>(
-                        new RandomBelowExpression<ActionStartingTriggeredEffectContext>(100),
-                        ComparisonOperator.Less,
-                        new MultiplyExpression<ActionStartingTriggeredEffectContext>(
-                            new MinExpression<ActionStartingTriggeredEffectContext>(
-                                new CombatantStatusStacksExpression<ActionStartingTriggeredEffectContext>(
-                                    self, new StatusDefinitionId(Misfortune)),
-                                new ConstantExpression<ActionStartingTriggeredEffectContext>(MisfortuneCapStacks)),
-                            new ConstantExpression<ActionStartingTriggeredEffectContext>(MisfortunePercentPerStack)))),
-                    new SequenceEffectNode<ActionStartingTriggeredEffectContext>(
-                    [
-                        new ApplyStatusNode<ActionStartingTriggeredEffectContext>(
-                            self, StandardCombatIds.ActionFailsStatus,
-                            new ConstantExpression<ActionStartingTriggeredEffectContext>(1)),
-                        WitchRules.RollLanded(true),
-                    ]),
-                    @else: WitchRules.RollLanded(false)),
+                    WitchRules.Lands(Roll),
+                    Lands(),
+                    // Lost — unless Black Cat's Collar throws the first lost roll of the fight again.
+                    @else: new ConditionalEffectNode<ActionStartingTriggeredEffectContext>(WitchRules.CollarUnused,
+                        new CausalSequenceEffectNode<ActionStartingTriggeredEffectContext>(
+                        [
+                            WitchRules.SpendCollar(),
+                            new ConditionalEffectNode<ActionStartingTriggeredEffectContext>(Roll(), Lands(),
+                                @else: WitchRules.RollLanded(false)),
+                        ]),
+                        @else: WitchRules.RollLanded(false))),
                 new RemoveStatusNode<ActionStartingTriggeredEffectContext>(self, new StatusDefinitionId(Misfortune)),
                 // …and what the cards riding on the roll make of it (WitchRules).
                 WitchRules.AfterRoll(),

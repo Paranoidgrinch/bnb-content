@@ -109,8 +109,11 @@ public static class ShopTemplate
         var normalRelics = Relics(pools.NormalRelicStock, rng, depth: pools.NormalRelicStock.Count);
         // Her character shelf, dealt with dice of its own: the build's shared dice are left exactly where the
         // Bureaucrat's shelves left them, so nothing dealt after this shop changes because she exists.
-        var witch = Cards(pools, pools.WitchCharacterCards, ConversionPools.WitchDice($"shop:act{pools.Act}"), depth: 10,
-            forCharacter: Witch.WitchCharacter.Id);
+        var witchDice = ConversionPools.WitchDice($"shop:act{pools.Act}");
+        var witch = Cards(pools, pools.WitchCharacterCards, witchDice, depth: 10, forCharacter: Witch.WitchCharacter.Id);
+        // Her own relics on the relic shelves, beside the general ones they share.
+        var witchShopRelics = Relics(Own(pools.WitchShopRelicStock), witchDice, depth: int.MaxValue, Witch.WitchCharacter.Id);
+        var witchNormalRelics = Relics(Own(pools.WitchNormalRelicStock), witchDice, depth: int.MaxValue, Witch.WitchCharacter.Id);
 
         // FOUR SHELVES rather than one bag, and every entry says what it is. A relic that makes "one Normal
         // Relic" cheaper, or adds a slot to the normal relic shelf, or replaces the unsold cards, finds
@@ -124,8 +127,9 @@ public static class ShopTemplate
             [
                 new ShopStockGroup(ShopRelics.GeneralCardShelf, general, 3),
                 new ShopStockGroup(ShopRelics.CharacterCardShelf, [.. character, .. witch], 4),
-                new ShopStockGroup(ShopRelics.ShopRelicShelf, shopRelics, 2, [ShopRelics.ShopRelic]),
-                new ShopStockGroup(ShopRelics.NormalRelicShelf, normalRelics, 2, [ShopRelics.NormalRelic]),
+                new ShopStockGroup(ShopRelics.ShopRelicShelf, [.. shopRelics, .. witchShopRelics], 2, [ShopRelics.ShopRelic]),
+                new ShopStockGroup(ShopRelics.NormalRelicShelf, [.. normalRelics, .. witchNormalRelics], 2,
+                    [ShopRelics.NormalRelic]),
             ]);
     }
 
@@ -147,10 +151,15 @@ public static class ShopTemplate
             .ToList();
 
     private static IReadOnlyList<ShopEntry> Relics(
-        IReadOnlyList<BnbRelic> pool, Random rng, int depth) =>
+        IReadOnlyList<BnbRelic> pool, Random rng, int depth, string? forCharacter = null) =>
         pool.OrderBy(_ => rng.Next()).Take(depth).Select(relic => new ShopEntry(
             $"buy-{relic.Id}", StandardRunIds.Gold,
             RelicPrice(relic),
             ConversionPools.Grant(relic), relic.Name,
-            Kind: ShopEntryKinds.Relic)).ToList();
+            Kind: ShopEntryKinds.Relic,
+            Tags: forCharacter is null ? null : [ConversionPools.For(forCharacter)])).ToList();
+
+    // A character's own relics out of its stock — the general ones are on the shelf already.
+    private static IReadOnlyList<BnbRelic> Own(IReadOnlyList<BnbRelic> stock) =>
+        [.. stock.Where(r => r.Eligibility != Eligibility.General)];
 }

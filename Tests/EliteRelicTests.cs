@@ -126,13 +126,16 @@ public class EliteRelicTests
         var chests = Game.Events!.Where(e => e.Key.StartsWith("treasure:", StringComparison.Ordinal)).ToList();
         Assert.NotEmpty(chests);
 
-        var shopOnly = FinalRelics.Pool(Pool.Shop).Select(r => r.Id).ToHashSet();
+        var shopOnly = FinalRelics.Pool(Pool.Shop).Concat(FinalRelics.Pool(Pool.Shop, Eligibility.HedgeWitch))
+            .Select(r => r.Id).ToHashSet();
+        var normal = FinalRelics.Pool(Pool.Normal).Concat(FinalRelics.Pool(Pool.Normal, Eligibility.HedgeWitch))
+            .Select(r => r.Id).ToHashSet();
         foreach (var (id, chest) in chests)
         {
             var offered = RelicsIn(chest).ToList();
             Assert.True(offered.Count > 0, $"chest '{id}' offers no relic at all");
             Assert.Empty(offered.Intersect(shopOnly));
-            Assert.Empty(offered.Except(FinalRelics.Pool(Pool.Normal).Select(r => r.Id)));
+            Assert.Empty(offered.Except(normal));
         }
     }
 

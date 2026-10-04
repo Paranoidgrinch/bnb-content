@@ -37,6 +37,14 @@ public sealed class ConversionPools
 
     public const string BureaucratId = "bureaucrat";
 
+    // A stall's requirement for a relic that is one character's own; null for one everybody may have.
+    public static IRunExpression<bool>? OnlyFor(BnbRelic relic) => relic.Eligibility switch
+    {
+        Eligibility.Bureaucrat => RunExpr.CharacterIs(BureaucratId),
+        Eligibility.HedgeWitch => RunExpr.CharacterIs(Witch.WitchCharacter.Id),
+        _ => null,
+    };
+
     // Dice of her own for anything dealt at CONVERSION time (a shelf, a market's stalls): the build's shared dice
     // stay exactly where the Bureaucrat's content left them. Seeded from the place's name with a fixed hash —
     // string.GetHashCode differs from process to process, and the document must not.
@@ -51,6 +59,10 @@ public sealed class ConversionPools
     public required IReadOnlyList<BnbRelic> ShopRelicStock { get; init; }
     public required IReadOnlyList<BnbRelic> NormalRelicStock { get; init; }
 
+    // Her relic stocks: the general ones and her own (Eligibility.HedgeWitch).
+    public required IReadOnlyList<BnbRelic> WitchShopRelicStock { get; init; }
+    public required IReadOnlyList<BnbRelic> WitchNormalRelicStock { get; init; }
+
     public static ConversionPools Build(int act) => new()
     {
         Act = act,
@@ -64,6 +76,8 @@ public sealed class ConversionPools
         // out of a shop rather than by a filter that could be forgotten.
         ShopRelicStock = FinalRelics.Pool(Pool.Shop),
         NormalRelicStock = FinalRelics.Pool(Pool.Normal),
+        WitchShopRelicStock = FinalRelics.Pool(Pool.Shop, Eligibility.HedgeWitch),
+        WitchNormalRelicStock = FinalRelics.Pool(Pool.Normal, Eligibility.HedgeWitch),
     };
 
     // One final relic's grant: the relic, plus whatever it does the moment it is taken. The engine has no
@@ -255,8 +269,20 @@ public sealed class ConversionPools
     public IRewardSource NormalRelicOfRarity(string where, params (Relics.RelicAuthoring.Rarity Rarity, int Share)[] mix)
     {
         ArgumentNullException.ThrowIfNull(mix);
+        // Each character's entries, written for it — his exactly as they were before she existed.
+        return new PoolRewardSource(new RunPool<RewardOffer>(
+        [
+            .. RelicEntries(where, mix, NormalRelicStock, BureaucratId),
+            .. RelicEntries(where, mix, WitchNormalRelicStock, Witch.WitchCharacter.Id),
+        ]), 1);
+    }
+
+    private static List<RunPool<RewardOffer>.Entry> RelicEntries(
+        string where, (Relics.RelicAuthoring.Rarity Rarity, int Share)[] mix,
+        IReadOnlyList<BnbRelic> stock, string forCharacter)
+    {
         var classes = mix
-            .Select(m => (m.Share, Relics: NormalRelicStock.Where(r => r.Rarity == m.Rarity).ToList()))
+            .Select(m => (m.Share, Relics: stock.Where(r => r.Rarity == m.Rarity).ToList()))
             .ToList();
         foreach (var (_, relics) in classes)
             if (relics.Count == 0)
@@ -269,9 +295,9 @@ public sealed class ConversionPools
                 .Aggregate(1, (product, c) => product * c.Relics.Count);
             foreach (var relic in relics)
                 entries.Add(new RunPool<RewardOffer>.Entry(
-                    new RewardOffer($"relic-{relic.Id}", [.. Grant(relic)]), share * others));
+                    new RewardOffer($"relic-{relic.Id}", [.. Grant(relic)], Tags: [For(forCharacter)]), share * others));
         }
-        return new PoolRewardSource(new RunPool<RewardOffer>(entries), 1);
+        return entries;
     }
 
     // Transform target pool: any reward-pool card (uniform), as the original draws its replacement

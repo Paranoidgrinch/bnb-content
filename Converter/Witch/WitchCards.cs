@@ -222,12 +222,34 @@ public static partial class WitchCards
     // would waste may become Ward Wax first (Keep the Drippings), asked before the heal moves the numbers.
     public static CombatNodeModel Heal(int amount) => Heal(CombatAmountSpec.FromConst(amount));
 
-    public static CombatNodeModel Heal(CombatAmountSpec amount) =>
-        Seq(
+    // Once a fight, Grandam's Ember lets a heal the cap would cut reach the HP lost before the fight — the same rule
+    // WitchRules.Heal writes for brews and marks, here in the card's own vocabulary.
+    public static CombatNodeModel Heal(CombatAmountSpec amount)
+    {
+        var capped = Seq(
             If(new CombatConditionSpec("hasStatus", You, Id: WitchRules.KeepTheDrippings),
                 Apply(Cards.Keywords.WardWax, CombatAmountSpec.Binary("max", CombatAmountSpec.FromConst(0),
                     CombatAmountSpec.Binary("sub", amount, LostThisFight)), You)),
             new CombatNodeModel("heal", You, CombatAmountSpec.Binary("min", amount, LostThisFight)));
+        var ember = Seq(
+            new CombatNodeModel("setCombatantCounter", You, CombatAmountSpec.FromConst(1),
+                CounterId: WitchRules.EmberLatch.value, Relative: false),
+            new CombatNodeModel("heal", You, amount));
+        return Seq(
+            new CombatNodeModel("setCombatantCounter", You, CombatAmountSpec.Binary("sub", amount, LostThisFight),
+                CounterId: HealReach.value, Relative: false),
+            If(new CombatConditionSpec("hasStatus", You, Id: WitchRules.GrandamsEmber),
+                If(new CombatConditionSpec("compare", You, ValueKind: "counter", Op: ComparisonOperator.Equal, Right: 0,
+                        Id: WitchRules.EmberLatch.value),
+                    If(new CombatConditionSpec("compare", You, ValueKind: "counter", Op: ComparisonOperator.Greater, Right: 0,
+                            Id: HealReach.value),
+                        ember, capped),
+                    capped),
+                capped));
+    }
+
+    // How far a heal reaches past the fight's cap — scratch, read at once.
+    private static CounterId HealReach => new("hearth_heal_reach");
 
     private static CombatAmountSpec LostThisFight =>
         CombatAmountSpec.Binary("max", CombatAmountSpec.FromConst(0),

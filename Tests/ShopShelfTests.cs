@@ -73,8 +73,11 @@ public class ShopShelfTests
     [MemberData(nameof(Acts))]
     public void A_relic_shelf_draws_only_from_its_own_pool(int act)
     {
-        var shop = FinalRelics.Pool(Pool.Shop).Select(r => r.Id).ToHashSet();
-        var normal = FinalRelics.Pool(Pool.Normal).Select(r => r.Id).ToHashSet();
+        // Each character's own stock (the Witch's written for her, WitchPoolTests).
+        var shop = FinalRelics.Pool(Pool.Shop).Concat(FinalRelics.Pool(Pool.Shop, Eligibility.HedgeWitch))
+            .Select(r => r.Id).ToHashSet();
+        var normal = FinalRelics.Pool(Pool.Normal).Concat(FinalRelics.Pool(Pool.Normal, Eligibility.HedgeWitch))
+            .Select(r => r.Id).ToHashSet();
 
         Assert.NotEmpty(Offered(act, ShopRelics.ShopRelicShelf));
         Assert.All(Offered(act, ShopRelics.ShopRelicShelf), id => Assert.Contains(id, shop));

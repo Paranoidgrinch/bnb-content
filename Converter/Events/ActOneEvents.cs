@@ -347,7 +347,7 @@ public static class ActOneEvents
         {
             var price = ShopTemplate.RelicPrice(relic);
             stock.Add(Stall($"relic-{index}", $"{relic.Name} — {price} Gold", price,
-                [.. ConversionPools.Grant(relic)]));
+                [.. ConversionPools.Grant(relic)], only: ConversionPools.OnlyFor(relic)));
         }
         stock.Add(Stall("removal", "Have a card struck from your file — 75 Gold", 75,
             [new RemoveCardsRunEffect(Choose("choose a card to have struck from your file"))]));
