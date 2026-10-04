@@ -13,7 +13,9 @@ public static class BlueprintAssembler
     // the title cannot name one of them.
     public const string GameTitle = "Bureaucrats & Broomsticks";
 
-    public static RunBlueprint Build(BabData data, int seed)
+    // `witchHot`: the Hedge Witch's Hot-cauldron switch (plan E6), off in the shipped game; the converter's
+    // `--witch-hot` builds a document with it on, for a bench to compare.
+    public static RunBlueprint Build(BabData data, int seed, bool witchHot = false)
     {
         // One set of card pools and one set of map rules PER ACT, each drawing only from its own act. The run
         // is one walk across all of them: the engine lays every act out at run start (RunSetup.BuildActPlan,
@@ -157,7 +159,7 @@ public static class BlueprintAssembler
             Characters =
             [
                 new RunCharacter(data.Bureaucrat.Id, start, Exclusive: BureaucratExclusive()),
-                Witch.WitchCharacter.Roster(),
+                Witch.WitchCharacter.Roster(hotAfterBrew: witchHot),
             ],
             // The tutorial: six city rooms in a fixed order, realised from the city's own rules (Tutorial.cs).
             Tutorial = Tutorial.Build(maps[0].Map.Spec, start),

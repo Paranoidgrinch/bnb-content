@@ -225,4 +225,28 @@ public class HedgeWitchTests
         Assert.Equal(before - 18, Body(play, enemy).Health.Current + Block(Body(play, enemy)));
         play.Dispose();
     }
+
+    // E6, the Hot cauldron (off in the shipped game): with the switch's rule on her, an empty pot right after a
+    // Brew shelters nobody — until her next turn. Without it, the empty pot shelters at once.
+    [Theory]
+    [InlineData(false, 8)]
+    [InlineData(true, 5)]
+    public void A_hot_cauldron_gives_no_shelter_until_her_next_turn(bool hot, int lidBlock)
+    {
+        (string, int)[] rule = hot ? [(WitchRules.HotRule, 1)] : [];
+        var (play, session, enemy) = FightProbe.Start(
+            FightProbe.SoloAgainstHero(Quiet, QuietIntent, 9, rule),
+            ["adders_nip", "adders_nip", "adders_nip", "pot_lid", "pot_lid"], character: WitchCharacter.Id);
+        Cook(play, session, "adders_nip");
+        Cook(play, session, "adders_nip");
+        Cook(play, session, "adders_nip");
+        play.CombatDriver!.UseAction(Brew, enemy);
+        Assert.Null(session.Error);
+        Assert.Empty(Pot(play));
+        Play(play, session, "pot_lid", enemy);
+        Assert.Equal(lidBlock, Block(Hero(play)));
+        play.CombatDriver.EndTurn();
+        Assert.Equal(0, FightProbe.StacksOf(Hero(play), WitchRules.CauldronHot));
+        play.Dispose();
+    }
 }

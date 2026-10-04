@@ -27,6 +27,13 @@ public static partial class WitchRules
     public const string NeverWashThePot = "never_wash_the_pot";
     public const string NinthLife = "ninth_life";
     public const string WolfWaits = "wolf_waits";
+
+    // THE HOT CAULDRON (§2.2, plan E6 — an open decision, built behind a switch and OFF): after a Brew the pot stays
+    // hot until her next turn, and an empty hot pot gives no shelter — so she cannot brew and shelter again in one
+    // turn. The switch is a standing rule in her start (WitchCharacter.Roster(hotAfterBrew: true), the converter's
+    // `--witch-hot`), so a bench can measure both without a second build of anything else.
+    public const string HotRule = "cauldron_hot_rule";
+    public const string CauldronHot = "cauldron_hot";
     public const string WolfTag = "ing_wolf_at_the_door";
 
     public static CounterId Rolled => new("misfortune_rolled");
@@ -59,6 +66,11 @@ public static partial class WitchRules
         Rite(NinthLife, "Ninth Life",
             "After the first Misfortune that lands this combat, that enemy is left this much Misfortune.", []),
         WolfWaitsStatus(),
+        Mark(HotRule, "Hot Cauldron", "After a Brew the cauldron stays hot until your next turn: it shelters nobody.", []),
+        Mark(CauldronHot, "Hot", "The cauldron is still hot from the last Brew: no Sheltering until your next turn.",
+            [Trigger(new EffectProgram<TurnStartedTriggeredEffectContext>(
+                new RemoveStatusNode<TurnStartedTriggeredEffectContext>(Self, new StatusDefinitionId(CauldronHot))),
+                nameof(TriggerEvent.TurnStarted))]),
     ];
 
     // ── what her keywords call ────────────────────────────────────────────────────────────────────────────

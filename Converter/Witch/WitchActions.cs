@@ -193,6 +193,9 @@ public static class WitchActions
             EmptyThePot(),
             new SetCombatantCounterNode<CardPlayContext>(You, WitchKeywords.BrewsThisTurn, Const(1), relative: true),
             new SetCombatantCounterNode<CardPlayContext>(You, StrainerChoice, Const(0), relative: false),
+            // E6, when switched on: the pot stays hot until her next turn.
+            new ConditionalEffectNode<CardPlayContext>(Wears(WitchRules.HotRule),
+                Apply(WitchRules.CauldronHot, Const(1), You)),
         ])),
     };
 

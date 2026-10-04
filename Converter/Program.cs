@@ -64,6 +64,8 @@ var audit = args.Contains("--audit");
 // THE CALCULATOR CHECK (CalcCheck, PLAYTEST_FEEDBACK_2 A3): --calc-check N — N real fights; every card preview,
 // turn forecast and intent chip compared with what then happened; report to ~/Desktop/bnb-balance/calc.
 var calcCheck = 0;
+// THE HOT CAULDRON (Hedge Witch plan E6): --witch-hot builds the document with her post-Brew Hot state switched on.
+var witchHot = args.Contains("--witch-hot");
 string? auditOnly = null;
 var benchCards = args.Contains("--bench-cards");
 var benchShuffles = 20;
@@ -123,7 +125,7 @@ for (var i = 0; i < args.Length - 1; i++)
 try
 {
     var data = BabData.Load(dataDir);
-    var blueprint = BlueprintAssembler.Build(data, seed);
+    var blueprint = BlueprintAssembler.Build(data, seed, witchHot);
 
     if (fightFile is not null || fightEnemy is not null || fightEncounter is not null)
     {

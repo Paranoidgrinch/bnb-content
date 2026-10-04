@@ -12,7 +12,9 @@ public static class WitchCharacter
     public const string Name = "The Hedge Witch";
     public const int MaxHp = 70; // plan E1 — the Bureaucrat's, until the bench says otherwise
 
-    public static RunStart Start => new()
+    public static RunStart Start => StartWith(hotAfterBrew: false);
+
+    public static RunStart StartWith(bool hotAfterBrew) => new()
     {
         HeroName = Name,
         MaxHealth = MaxHp,
@@ -24,6 +26,7 @@ public static class WitchCharacter
         [
             new StartingStatusSpec(new StatusDefinitionId(WitchKeywords.Cauldron), 1),
             new StartingStatusSpec(new StatusDefinitionId(WitchRules.Habits), 1),
+            .. hotAfterBrew ? [new StartingStatusSpec(new StatusDefinitionId(WitchRules.HotRule), 1)] : Array.Empty<StartingStatusSpec>(),
         ],
     };
 
@@ -31,5 +34,6 @@ public static class WitchCharacter
     public static IReadOnlyList<string> Exclusive =>
         [.. WitchCards.All().Select(c => c.Id), .. WitchRelics.All().Select(r => r.Id)];
 
-    public static RunCharacter Roster() => new(Id, Start, Exclusive: Exclusive);
+    // `hotAfterBrew`: the E6 switch (WitchRules.HotRule), OFF in the shipped game.
+    public static RunCharacter Roster(bool hotAfterBrew = false) => new(Id, StartWith(hotAfterBrew), Exclusive: Exclusive);
 }

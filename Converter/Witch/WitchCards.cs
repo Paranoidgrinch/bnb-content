@@ -208,15 +208,17 @@ public static partial class WitchCards
             ReadSelector: new CombatSelectorSpec("withStatus", WitchKeywords.Misfortune,
                 [new CombatSelectorSpec("allCombatants")]))), bonus));
 
-    // "+bonus while the cauldron is Sheltering" — empty, or its lid shut (Shut the Lid) — as arithmetic:
-    // base + bonus × max(1 − min(1, cards in pot), [lid shut]).
+    // "+bonus while the cauldron is Sheltering" — empty, or its lid shut (Shut the Lid), and not hot from a Brew
+    // (E6, off unless switched on) — as arithmetic: base + bonus × max(1 − min(1, cards in pot), [lid shut]) × (1 − [hot]).
     private static CombatAmountSpec Sheltered(int baseAmount, int bonus) =>
         Plus(CombatAmountSpec.FromConst(baseAmount),
             CombatAmountSpec.Binary("mul", CombatAmountSpec.FromConst(bonus),
-                CombatAmountSpec.Binary("max",
-                    CombatAmountSpec.Binary("sub", CombatAmountSpec.FromConst(1),
-                        CombatAmountSpec.Binary("min", CombatAmountSpec.FromConst(1), CardsInZone(CardZone.SetAsidePile))),
-                    Once(Stacks(WitchRules.ShutTheLid, You)))));
+                CombatAmountSpec.Binary("mul",
+                    CombatAmountSpec.Binary("max",
+                        CombatAmountSpec.Binary("sub", CombatAmountSpec.FromConst(1),
+                            CombatAmountSpec.Binary("min", CombatAmountSpec.FromConst(1), CardsInZone(CardZone.SetAsidePile))),
+                        Once(Stacks(WitchRules.ShutTheLid, You))),
+                    CombatAmountSpec.Binary("sub", CombatAmountSpec.FromConst(1), Once(Stacks(WitchRules.CauldronHot, You))))));
 
     // Hearth: "heal N HP lost during this combat" — never above the HP the fight began on (§3.4). What the cap
     // would waste may become Ward Wax first (Keep the Drippings), asked before the heal moves the numbers.
