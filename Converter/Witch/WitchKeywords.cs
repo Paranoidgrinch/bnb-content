@@ -168,8 +168,11 @@ public static class WitchKeywords
     // "The first ingredient each turn costs 0 Energy" (§2.3, BALANCE DRAFT): a token worn until the first card
     // goes in. A price read off a STATUS rather than a once-per-turn claim, so asking what an ingredient costs —
     // which the screen does all the time — never spends the free one.
+    //
+    // NEUTRAL, NOT A BUFF: it is the cauldron's rule, not a blessing. As a buff it was eaten by whatever stops
+    // buffs — the Cartouche's wall turned it into Doubt — and the free ingredient was simply gone that turn.
     private static StatusData FreeIngredientStatus() =>
-        Status(FreeIngredient, "Free Ingredient", StatusPolarity.Buff,
+        Status(FreeIngredient, "Free Ingredient", StatusPolarity.Neutral,
             "The next card you put into the cauldron this turn costs no Energy.",
             passives:
             [
