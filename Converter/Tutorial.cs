@@ -51,6 +51,10 @@ public static class Tutorial
         return new RunTutorial(new RunMap(nodes), learner);
     }
 
+    // Her learner's deck carries one Fortune card: her starter has none, and Misfortune is a third of her lesson.
+    public static RunStart WitchLearner(RunStart her) =>
+        her with { Deck = [.. her.Deck, new RogueDeck.Core.Combat.CardDefinitionId("black_cat")] };
+
     // The coach's script, moment by moment, in the order a player meets them.
     public static readonly IReadOnlyList<(string Moment, string Title, string Text)> Steps =
     [
@@ -103,8 +107,42 @@ public static class Tutorial
             "luck with the paperwork."),
     ];
 
+    // THE HEDGE WITCH'S LESSON (user 2026-10-04, plan E9). The same six rooms, walked as her: everything above is
+    // still true and is still told, and these are told beside it — the moments the frontend detects only while the
+    // hero has a cauldron. What she does that he does not: cook instead of play, brew, shelter, and the three
+    // things her families do to an enemy and to herself.
+    public static readonly IReadOnlyList<(string Moment, string Title, string Text)> WitchSteps =
+    [
+        ("witch.cauldron", "The Cauldron",
+            "Beside your cards you have two actions. Into the Pot puts a card from your hand into the cauldron " +
+            "instead of playing it — the first each turn is free, every further one costs 1 Energy. A card in the " +
+            "pot is not played."),
+        ("witch.shelter", "Sheltering",
+            "While the cauldron is empty, you shelter behind its lid: cards like Pot-Lid give more Block then. The " +
+            "pot's label says its state — Sheltering, Brewing or Ready."),
+        ("witch.families", "Ingredients",
+            "Every one of your cards is an ingredient of one family: Fang (damage), Hex (Hexed), Husk (Block), " +
+            "Hearth (healing) or Fortune (Misfortune). Its chip in the pot wears its family's colour."),
+        ("witch.brew", "Brew",
+            "With three in the pot, Brew (1 Energy). Three of one family make a strong concentrated brew; any other " +
+            "mix gives what each ingredient gives. The pot shows what it is about to make. Then the ingredients go " +
+            "to your discard pile and the pot is empty again."),
+        ("witch.hexed", "Hexed",
+            "Hexed does not fade. Every third enemy turn it bursts: the enemy loses 3 HP for each Hexed. Pile it on " +
+            "before the third night."),
+        ("witch.misfortune", "Misfortune",
+            "Misfortune is a chance that the enemy's next action fails: 5 % per stack, at most 60 %. It is rolled " +
+            "once, before that action, and then it is gone."),
+        ("witch.hearth", "Hearth healing",
+            "Your healing only gives back HP lost in THIS fight — never more than you began it with. Heal when it " +
+            "hurts, not before."),
+        ("witch.recipes", "The Recipe Book",
+            "Some exact mixes of three cards are Hidden Recipes with effects of their own. Brew one and it is " +
+            "written into your Recipe Book — the Recipes button beside the pot."),
+    ];
+
     public static IReadOnlyDictionary<string, string> Extra() =>
-        Steps.SelectMany((step, index) => new[]
+        Steps.Concat(WitchSteps).SelectMany((step, index) => new[]
         {
             KeyValuePair.Create($"tutorial:{step.Moment}", step.Title),
             KeyValuePair.Create($"tutorial.text:{step.Moment}", step.Text),

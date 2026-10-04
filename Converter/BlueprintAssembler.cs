@@ -159,7 +159,11 @@ public static class BlueprintAssembler
             Characters =
             [
                 new RunCharacter(data.Bureaucrat.Id, start, Exclusive: BureaucratExclusive()),
-                Witch.WitchCharacter.Roster(hotAfterBrew: witchHot),
+                // Her own tutorial: the same six rooms, walked as her (Tutorial.WitchSteps tell her side of it).
+                Witch.WitchCharacter.Roster(hotAfterBrew: witchHot) with
+                {
+                    Tutorial = Tutorial.Build(maps[0].Map.Spec, Tutorial.WitchLearner(Witch.WitchCharacter.StartWith(witchHot))),
+                },
             ],
             // The tutorial: six city rooms in a fixed order, realised from the city's own rules (Tutorial.cs).
             Tutorial = Tutorial.Build(maps[0].Map.Spec, start),
