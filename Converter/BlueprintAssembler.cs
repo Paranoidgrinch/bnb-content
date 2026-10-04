@@ -197,7 +197,7 @@ public static class BlueprintAssembler
         return blueprint with
         {
             Presentation = annotated,
-            Cards = ArchiveSections.MarkUncookable(blueprint, annotated),
+            Cards = Witch.WitchFamilies.Mark(ArchiveSections.MarkUncookable(blueprint, annotated)),
         };
     }
 

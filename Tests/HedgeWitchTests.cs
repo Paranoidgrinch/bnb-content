@@ -200,4 +200,29 @@ public class HedgeWitchTests
         Assert.Equal(0, FightProbe.StacksOf(Body(play, enemy), WitchKeywords.Misfortune));
         play.Dispose();
     }
+    // W6 (table E4): every general reward card is exactly one ingredient, its upgrade the same one — and the pot
+    // cooks it as that family. Without the tag two Grave Liens and an Adder's Nip would be a Mixed brew (5
+    // damage); with it they are three Fang, Red Teeth.
+    [Fact]
+    public void Every_general_card_is_one_ingredient_family_and_cooks_as_it()
+    {
+        var general = Converter.Cards.FinalCards.GeneralPool(5).Select(c => c.Id).ToHashSet();
+        Assert.Equal(50, general.Count);
+        Assert.Equal(general.Order(), WitchFamilies.General.Keys.Order());
+
+        foreach (var card in FightProbe.Game.Cards.Where(c => general.Contains(c.Id.TrimEnd('+'))))
+            Assert.Equal([WitchFamilies.General[card.Id.TrimEnd('+')]],
+                card.Tags.Select(t => t.value).Where(WitchActions.Families.Contains));
+
+        var (play, session, enemy) = Fight(["grave_lien", "grave_lien", "adders_nip", "pot_lid", "pot_lid"],
+            health: 70);
+        Cook(play, session, "grave_lien");
+        Cook(play, session, "grave_lien");
+        Cook(play, session, "adders_nip");
+        var before = Body(play, enemy).Health.Current + Block(Body(play, enemy));
+        play.CombatDriver!.UseAction(Brew, enemy);
+        Assert.Null(session.Error);
+        Assert.Equal(before - 18, Body(play, enemy).Health.Current + Block(Body(play, enemy)));
+        play.Dispose();
+    }
 }
