@@ -13,7 +13,7 @@ namespace BnbContent.Converter;
 // tablet is read back at you, in order:
 //
 //   a DEED      6 damage.
-//   a WORKING   6 Block for him, and a sheet of Paperwork for you.
+//   a WORKING   6 Block for him, and a sheet of Paperwork for you — once per tablet.
 //   ANYTHING    1 Strength for him — once per tablet — and Inscribed for you.
 //   EMPTY       1 Doubt: nothing recorded is its own kind of wrong.
 //
@@ -63,6 +63,7 @@ public static partial class ActFour
     public static CounterId ScrapeSpent => new("scrape_spent");
     public static CounterId ScrapeBanned => new("scrape_banned");
     public static CounterId StrengthFromTablet => new("strength_from_tablet");
+    public static CounterId PaperworkFromTablet => new("paperwork_from_tablet");
     public static CounterId EntryKind => new("entry_kind");
     public static CounterId LastEntry => new("last_entry_kind");
     public static CounterId LastCompleteFinal => new("last_complete_final_entry");
@@ -120,7 +121,7 @@ public static partial class ActFour
         NameKey = name,
         DescriptionKey =
             "What the scroll says you did: 1 a Deed (6 damage), 2 a Working (6 Block for him, a sheet for "
-            + "you), 3 anything else (Strength for him, Inscribed for you). Nothing written is 1 Doubt.",
+            + "you once a tablet), 3 anything else (Strength for him, Inscribed for you). Nothing written is 1 Doubt.",
         Polarity = StatusPolarity.Neutral,
         StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
         UsesStacks = true,
@@ -428,6 +429,23 @@ public static partial class ActFour
             Give(InscribedId, 1),
         ]);
 
+        // …and a recorded Working is worth a sheet ONCE per tablet; every one of them still Blocks him. Paperwork
+        // never decays, so a sheet per Working grew with the square of the fight: a deck of Workings (the
+        // Witch's, 112 of 174) lost 3/10 planner fights at authored numbers (2026-10-09).
+        var recordedWorking = new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
+            new ComparisonExpression<TurnEndedTriggeredEffectContext>(
+                new CombatantCounterExpression<TurnEndedTriggeredEffectContext>(
+                    scribe, PaperworkFromTablet),
+                ComparisonOperator.Equal,
+                new ConstantExpression<TurnEndedTriggeredEffectContext>(0)),
+            new CausalSequenceEffectNode<TurnEndedTriggeredEffectContext>(
+            [
+                Give(Cards.Keywords.Paperwork, 1),
+                new SetCombatantCounterNode<TurnEndedTriggeredEffectContext>(
+                    scribe, PaperworkFromTablet,
+                    new ConstantExpression<TurnEndedTriggeredEffectContext>(1), relative: false),
+            ]));
+
         // `emptyReads` says whether a blank slot is an Empty entry (the three current ones) or simply a slot
         // that is not there at all (the inherited one, in a phase that has no inheritance).
         IEffectNode<TurnEndedTriggeredEffectContext> Resolve(string slotId, bool emptyReads) =>
@@ -443,7 +461,7 @@ public static partial class ActFour
                         new GainBlockNode<TurnEndedTriggeredEffectContext>(
                             scribe,
                             new ConstantExpression<TurnEndedTriggeredEffectContext>(RecordedBlock)),
-                        Give(Cards.Keywords.Paperwork, 1),
+                        recordedWorking,
                     ]),
                     new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
                         new ComparisonExpression<TurnEndedTriggeredEffectContext>(
@@ -533,6 +551,9 @@ public static partial class ActFour
                         new ConstantExpression<TurnEndedTriggeredEffectContext>(0), relative: false),
                     new SetCombatantCounterNode<TurnEndedTriggeredEffectContext>(
                         scribe, StrengthFromTablet,
+                        new ConstantExpression<TurnEndedTriggeredEffectContext>(0), relative: false),
+                    new SetCombatantCounterNode<TurnEndedTriggeredEffectContext>(
+                        scribe, PaperworkFromTablet,
                         new ConstantExpression<TurnEndedTriggeredEffectContext>(0), relative: false),
                 ])));
     }

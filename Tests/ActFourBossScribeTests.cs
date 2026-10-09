@@ -68,8 +68,9 @@ public class ActFourBossScribeTests
         play.Dispose();
     }
 
-    // A recorded Working is his Block and your Paperwork; a recorded anything-else is one Strength for him —
-    // once per tablet, however many are written — and Inscribed for you every time.
+    // A recorded Working is his Block every time and your Paperwork once per tablet (Paperwork never decays: a
+    // sheet per Working outgrew a Working deck); a recorded anything-else is one Strength for him — once per
+    // tablet, however many are written — and Inscribed for you every time.
     [Fact]
     public void A_recorded_working_arms_him_and_files_you()
     {
@@ -85,10 +86,16 @@ public class ActFourBossScribeTests
         var whole = Hero(play).Health.Current;
         play.CombatDriver!.EndTurn();
 
-        // Nothing recorded struck, and the seal's own 24 stands on top of three Workings' 6.
+        // Nothing recorded struck, and the seal's own 24 stands on top of three Workings' 6 — but one sheet.
         Assert.Equal(whole, Hero(play).Health.Current);
         Assert.Equal(24 + (3 * 6), Block(Scribe(play)));
-        Assert.Equal(3, FightProbe.StacksOf(Hero(play), BnbContent.Converter.Cards.Keywords.Paperwork));
+        Assert.Equal(1, FightProbe.StacksOf(Hero(play), BnbContent.Converter.Cards.Keywords.Paperwork));
+
+        // The next tablet files you again: once per tablet, not once per fight.
+        for (var i = 0; i < 3; i++)
+            Play(play, session, Wax, null);
+        play.CombatDriver!.EndTurn();
+        Assert.Equal(2, FightProbe.StacksOf(Hero(play), BnbContent.Converter.Cards.Keywords.Paperwork));
         play.Dispose();
     }
 
@@ -150,8 +157,7 @@ public class ActFourBossScribeTests
         Play(play, session, Cut, scribe);
         play.CombatDriver.EndTurn();
 
-        Assert.True(Scribe(play).Statuses.Any(
-            s => s.DefinitionId == new StatusDefinitionId(ActFour.PalimpsestId)));
+        Assert.Contains(Scribe(play).Statuses, s => s.DefinitionId == new StatusDefinitionId(ActFour.PalimpsestId));
         Assert.Equal(1, Entry(play, ActFour.InheritedEntryId));
 
         // Four cards now, and only the last three are kept: the leading Deed falls off the end and the
@@ -181,13 +187,11 @@ public class ActFourBossScribeTests
                 (ActFour.ScribeEnemyId, Quiet, 292)),
             deck: [.. Enumerable.Repeat(Cut, 10)], health: 900);
 
-        Assert.False(Scribe(play).Statuses.Any(
-            s => s.DefinitionId == new StatusDefinitionId(ActFour.PalimpsestId)));
+        Assert.DoesNotContain(Scribe(play).Statuses, s => s.DefinitionId == new StatusDefinitionId(ActFour.PalimpsestId));
 
         Play(play, session, Cut, scribe);   // 292 → 286
 
-        Assert.True(Scribe(play).Statuses.Any(
-            s => s.DefinitionId == new StatusDefinitionId(ActFour.PalimpsestId)));
+        Assert.Contains(Scribe(play).Statuses, s => s.DefinitionId == new StatusDefinitionId(ActFour.PalimpsestId));
         Assert.Equal(16, Block(Scribe(play)));
 
         // Nothing whole was ever read, so there is nothing to inherit.
@@ -211,8 +215,7 @@ public class ActFourBossScribeTests
         play.CombatDriver!.EndTurn();
 
         // The turn after is the bound one, and it says so on him.
-        Assert.True(Scribe(play).Statuses.Any(
-            s => s.DefinitionId == new StatusDefinitionId(ActFour.TextIsCanonId)));
+        Assert.Contains(Scribe(play).Statuses, s => s.DefinitionId == new StatusDefinitionId(ActFour.TextIsCanonId));
         Play(play, session, Cut, scribe);
         Assert.DoesNotContain(ActFour.ScrapeFirstCardId, InHand(play));
 
@@ -222,8 +225,7 @@ public class ActFourBossScribeTests
         // His answer is the canon read out — 24 — and the record under it. At 102 he is long past 290, so
         // this is a palimpsest: the entry just written AND the Deed inherited from the turn before.
         Assert.Equal(24 + 6 + 6, whole - Hero(play).Health.Current);
-        Assert.False(Scribe(play).Statuses.Any(
-            s => s.DefinitionId == new StatusDefinitionId(ActFour.TextIsCanonId)));
+        Assert.DoesNotContain(Scribe(play).Statuses, s => s.DefinitionId == new StatusDefinitionId(ActFour.TextIsCanonId));
 
         // …and with the announcement spent, the sheets are back.
         Play(play, session, Cut, scribe);
@@ -246,10 +248,10 @@ public class ActFourBossScribeTests
         var whole = Hero(play).Health.Current;
         play.CombatDriver!.EndTurn();
 
-        // The first entry was corrected into a Working before it was read: no blow at all, and his Block and
-        // your Paperwork twice over.
+        // The first entry was corrected into a Working before it was read: no blow at all, his Block twice
+        // over, and your one sheet for the tablet.
         Assert.Equal(whole, Hero(play).Health.Current);
-        Assert.Equal(2, FightProbe.StacksOf(Hero(play), BnbContent.Converter.Cards.Keywords.Paperwork));
+        Assert.Equal(1, FightProbe.StacksOf(Hero(play), BnbContent.Converter.Cards.Keywords.Paperwork));
         Assert.Equal(2 * 6, Block(Scribe(play)));
         play.Dispose();
     }

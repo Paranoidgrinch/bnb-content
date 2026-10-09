@@ -36,11 +36,13 @@ public class BossLengthTests(ITestOutputHelper output)
     [InlineData("archives_boss_curator_of_misplaced_hours")]
     [InlineData("archives_boss_auditor_of_returned_lives")]
     [InlineData("archives_boss_grand_cross_reference")]
-    [InlineData("green_docket_boss_ombudsman_of_root_and_road")]
-    [InlineData("green_docket_boss_notary_of_old_growth")]
-    [InlineData("green_docket_boss_grandmother_clause")]
-    [InlineData("green_docket_boss_the_answering_hill")]
-    [InlineData("green_docket_boss_queen_under_the_hill")]
+    // Act III's bosses carry 2.2× their authored health since the tuning of 2026-10-08 (ActTuning): priced, like
+    // Act IV's below, against a deck two acts of upgrades deep, so the starting deck gets the same longer rope.
+    [InlineData("green_docket_boss_ombudsman_of_root_and_road", 80)]
+    [InlineData("green_docket_boss_notary_of_old_growth", 80)]
+    [InlineData("green_docket_boss_grandmother_clause", 80)]
+    [InlineData("green_docket_boss_the_answering_hill", 80)]
+    [InlineData("green_docket_boss_queen_under_the_hill", 80)]
     // Act IV's bosses are priced against a deck three acts of upgrades deep, and this walker brings the
     // starting one — AND never engages: it refuses every Royal Command, so the Pharaoh's Cartouche Ward
     // stands at a fifth reduction for the whole fight and never once opens into an exposure window. That is
@@ -87,7 +89,9 @@ public class BossLengthTests(ITestOutputHelper output)
     [InlineData("act_5_enlil_voice_of_the_unalterable_decree", 90)]
     public void A_boss_dies_inside_the_turn_budget(string encounterId, int budget = TurnBudget)
     {
-        var (play, session, _) = FightProbe.Start(FightProbe.Authored(encounterId), health: 9999);
+        // The SHIPPED game: how long a fight takes is a property of its tuned numbers, not its authored ones.
+        var (play, session, _) = FightProbe.Start(
+            FightProbe.Authored(encounterId, game: FightProbe.Shipped), health: 9999, game: FightProbe.Shipped);
         using (play)
         {
             var driver = play.CombatDriver!;

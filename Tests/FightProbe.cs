@@ -18,15 +18,23 @@ namespace BnbContent.Tests;
 // as the tests and `--fight` disagreeing about a fight. One definition, two callers.
 internal static class FightProbe
 {
+    // THE GAME AS AUTHORED, before ActTuning scales Acts III and IV: a mechanics test pins the numbers its enemy
+    // was written with ("Memory Crush hits for 18 + 3 a memory"), and a tuning pass must not have to rewrite
+    // fifty of them. What the tuning does to those numbers is pinned once, in ActTuningTests; what the player
+    // meets is `Shipped`.
     public static readonly RunBlueprint Game =
+        BlueprintAssembler.Build(BabData.Load(TestData.Directory), seed: 20260717, tuned: false);
+
+    // …and the game as it ships, tuned.
+    public static readonly RunBlueprint Shipped =
         BlueprintAssembler.Build(BabData.Load(TestData.Directory), seed: 20260717);
 
     // `deck` stacks the hero's deck with authored cards (repeated as given) when a test needs a specific card
     // in hand — e.g. one that files Paperwork onto an enemy. Empty ⇒ the character's real starting deck.
     public static RunBlueprint OneFight(
         EncounterDefinition probe, IReadOnlyList<string>? deck = null, int? health = null, string? character = null,
-        IReadOnlyList<string>? relics = null) =>
-        SparringRing.OneFight(Game, probe, deck, health, relics: relics, character: character);
+        IReadOnlyList<string>? relics = null, RunBlueprint? game = null) =>
+        SparringRing.OneFight(game ?? Game, probe, deck, health, relics: relics, character: character);
 
     // A solo encounter with one AUTHORED enemy: its real roster entry (HP, passives carried from the first
     // bell, intent rules) is taken from the converted game and only narrowed to the intent under test, plus any
@@ -124,16 +132,16 @@ internal static class FightProbe
     }
 
     // The REAL authored encounter, exactly as the game fields it (roster, per-encounter HP, intents).
-    public static EncounterDefinition Authored(string encounterId, int? energy = null) =>
-        SparringRing.Authored(Game, encounterId, energy);
+    public static EncounterDefinition Authored(string encounterId, int? energy = null, RunBlueprint? game = null) =>
+        SparringRing.Authored(game ?? Game, encounterId, energy);
 
     // Starts the probe fight and hands back the live playback plus the enemy's id.
     public static (RunPlayback Play, InteractiveRunSession Session, CombatantId EnemyId) Start(
         EncounterDefinition probe, IReadOnlyList<string>? deck = null, int? health = null, string? character = null,
-        IReadOnlyList<string>? relics = null)
+        IReadOnlyList<string>? relics = null, RunBlueprint? game = null)
     {
         var play = new RunPlayback(() => { });
-        play.Start(OneFight(probe, deck, health, character, relics), seed: 1, interactive: true);
+        play.Start(OneFight(probe, deck, health, character, relics, game), seed: 1, interactive: true);
         var session = play.Session!;
         Assert.True(play.Error is null, play.Error);
         while (session.IsAwaitingInterlude)

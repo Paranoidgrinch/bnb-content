@@ -15,7 +15,7 @@ public static class BlueprintAssembler
 
     // `witchHot`: the Hedge Witch's Hot-cauldron switch (plan E6), off in the shipped game; the converter's
     // `--witch-hot` builds a document with it on, for a bench to compare.
-    public static RunBlueprint Build(BabData data, int seed, bool witchHot = false)
+    public static RunBlueprint Build(BabData data, int seed, bool witchHot = false, bool tuned = true)
     {
         // One set of card pools and one set of map rules PER ACT, each drawing only from its own act. The run
         // is one walk across all of them: the engine lays every act out at run start (RunSetup.BuildActPlan,
@@ -202,11 +202,14 @@ public static class BlueprintAssembler
         };
         // …and where the archive shelves each card and relic (ArchiveSections).
         var annotated = ArchiveSections.Annotate(blueprint);
-        return blueprint with
+        var finished = blueprint with
         {
             Presentation = annotated,
             Cards = Witch.WitchFamilies.Mark(ArchiveSections.MarkUncookable(blueprint, annotated)),
         };
+        // …and, last, how hard each act hits (ActTuning). `tuned: false` is the document as AUTHORED — what the
+        // mechanics tests pin, number for number; the shipped game is tuned.
+        return tuned ? ActTuning.Apply(finished, data) : finished;
     }
 
     // What only the Bureaucrat may be offered: the Bureaucrat's own reward cards (every act, upgrades included) and the

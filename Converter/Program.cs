@@ -58,6 +58,11 @@ string? familyDecks = null;
 string? familyActs = null;
 var familyRelics = "both";
 var familyNormals = 10;
+// THE ACT BENCH (ActBench, act III/IV tuning 2026-10-08): --act-bench <snapshots.json> --bench-acts 3,4 [--yes]
+//      + the --bench-* knobs — every encounter of an act against the decks real runs brought there.
+string? actBench = null;
+string? benchActs = null;
+string? benchRuns = null;
 // THE AUDIT (Audit, CONTENT_FIX_PLAN F5): --audit [--audit-only id,id] — every card and combat relic over four
 // rounds against a quiet dummy and a striker, paired with the same fight without it; report to ~/Desktop/bnb-balance/audit.
 var audit = args.Contains("--audit");
@@ -118,6 +123,10 @@ for (var i = 0; i < args.Length - 1; i++)
         case "--family-acts": familyActs = args[i + 1]; break;
         case "--family-relics": familyRelics = args[i + 1]; break;
         case "--family-normals": familyNormals = int.Parse(args[i + 1]); break;
+        case "--act-bench": actBench = args[i + 1]; break;
+        case "--bench-acts": benchActs = args[i + 1]; break;
+        case "--bench-runs": benchRuns = args[i + 1]; break;
+        case "--tuning": ActTuning.Override(args[i + 1]); break;
         case "--audit-only": auditOnly = args[i + 1]; break;
     }
 }
@@ -151,6 +160,11 @@ try
         return CalcCheck.Run(blueprint, calcCheck, seed, Console.WriteLine);
     if (audit)
         return Audit.Run(blueprint, Split(auditOnly) is { Count: > 0 } picked ? picked : null, jobs, Console.WriteLine);
+    if (actBench is not null)
+        return ActBench.Run(blueprint, new ActBench.Options(
+            actBench, [.. Split(benchActs).Select(int.Parse)], args.Contains("--bench-shuffles") ? benchShuffles : 1, benchHorizon,
+            args.Contains("--bench-beam") ? benchBeam : 6, args.Contains("--bench-perturn") ? benchPerTurn : 100, jobs,
+            Split(benchOnly), args.Contains("--yes"), Runs: Split(benchRuns)), Console.WriteLine);
     if (familyDecks is not null)
         return FamilyBench.Run(blueprint, new FamilyBench.Options(
             familyDecks, args.Contains("--bench-shuffles") ? benchShuffles : 4, benchHorizon,
