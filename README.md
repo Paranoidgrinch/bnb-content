@@ -1,11 +1,23 @@
 # bnb-content
 
-Bureaucrats & Broomsticks, remade as RogueDeck content: a C# converter that reads the original
-game's data files (`source-data/`, from Paranoidgrinch/bureaucrats-and-broomsticks-v2) and emits
+**The content of Bureaucrats & Broomsticks** — the whole game as data. A C# converter reads the game's
+authoring data (`source-data/`, originally from the
+[Python prototype](https://github.com/Paranoidgrinch/bureaucrats-and-broomsticks-v2)) and emits
 `game.roguedeck.json` — a complete RunBlueprint per the RogueDeck Godot export contract.
 
-Scope: **Act I "The Old City Offices", Bureaucrat only** — the demo run the Godot frontend is
-built and tested against.
+Bureaucrats & Broomsticks is built from four repositories:
+
+| Repository | Role |
+| --- | --- |
+| [RogueDeck-Core](https://github.com/Paranoidgrinch/RogueDeck-Core) | the rules: combat and run engine, bot, replay |
+| **bnb-content** (this one) | the game as data: cards, characters, enemies, encounters, relics, events, acts |
+| [bnb-godot](https://github.com/Paranoidgrinch/bnb-godot) | the Godot 4 (.NET) frontend that renders it |
+| [bnb-runs](https://github.com/Paranoidgrinch/bnb-runs) | recorded playtest runs |
+
+Scope today: **five acts** — The Old City Offices → The Archives → The Green Docket → The Licensing
+Labyrinth → The Divine Ledger — with the **Bureaucrat** and the **Hedge Witch** as playable characters
+(539 card definitions, 228 relics, 294 encounters, 104 events in the current export). The `*_PLAN.md` files
+are the design and build plans per act and topic.
 
 ## Layout
 - `Converter/` — the converter CLI (`--data source-data --out game.roguedeck.json --seed N`).
@@ -96,3 +108,8 @@ Two things to know before reading the numbers:
   comfortably is not hard, and one it loses may still be fine.
 - **A boss may overwrite what you pinned.** Statuses a fight restates every turn (Nanna-Sin's whole lunar
   ring) cannot be set from a snapshot; reach a late phase by giving the fight the rounds it counts.
+
+## License
+
+[PolyForm Noncommercial 1.0.0](LICENSE) — free for noncommercial use with credit; commercial use needs
+permission.
