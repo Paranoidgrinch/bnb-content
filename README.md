@@ -1,115 +1,109 @@
 # bnb-content
 
-**The content of Bureaucrats & Broomsticks** — the whole game as data. A C# converter reads the game's
-authoring data (`source-data/`, originally from the
-[Python prototype](https://github.com/Paranoidgrinch/bureaucrats-and-broomsticks-v2)) and emits
-`game.roguedeck.json` — a complete RunBlueprint per the RogueDeck Godot export contract.
+The content of Bureaucrats & Broomsticks. A C# converter reads the game's authoring data (`source-data/`,
+originally from the [Python prototype](https://github.com/Paranoidgrinch/bureaucrats-and-broomsticks-v2)) and
+writes `game.roguedeck.json`, a complete RunBlueprint as defined by the RogueDeck Godot export contract.
 
-Bureaucrats & Broomsticks is built from four repositories:
-
-| Repository | Role |
+| Repository | Content |
 | --- | --- |
-| [RogueDeck-Core](https://github.com/Paranoidgrinch/RogueDeck-Core) | the rules: combat and run engine, bot, replay |
-| **bnb-content** (this one) | the game as data: cards, characters, enemies, encounters, relics, events, acts |
-| [bnb-godot](https://github.com/Paranoidgrinch/bnb-godot) | the Godot 4 (.NET) frontend that renders it |
+| [RogueDeck-Core](https://github.com/Paranoidgrinch/RogueDeck-Core) | combat and run engine, bot, replay |
+| bnb-content (this repository) | cards, characters, enemies, encounters, relics, events, acts |
+| [bnb-godot](https://github.com/Paranoidgrinch/bnb-godot) | Godot 4 (.NET) frontend |
 | [bnb-runs](https://github.com/Paranoidgrinch/bnb-runs) | recorded playtest runs |
 
-Scope today: **five acts** — The Old City Offices → The Archives → The Green Docket → The Licensing
-Labyrinth → The Divine Ledger — with the **Bureaucrat** and the **Hedge Witch** as playable characters
-(539 card definitions, 228 relics, 294 encounters, 104 events in the current export). The `*_PLAN.md` files
-are the design and build plans per act and topic.
+The current export has five acts (The Old City Offices, The Archives, The Green Docket, The Licensing
+Labyrinth, The Divine Ledger) and two playable characters, the Bureaucrat and the Hedge Witch: 539 card
+definitions, 228 relics, 294 encounters and 104 events. The `*_PLAN.md` files are the design and build plans
+per act and topic.
 
 ## Layout
-- `Converter/` — the converter CLI (`--data source-data --out game.roguedeck.json --seed N`).
-  Explicit mapping tables, fail-loud: any unmapped construct aborts with its source location.
-- `Tests/` — conversion gates: export validation, JSON roundtrip, and a scripted end-to-end run
-  through the engine's real host path (`RunPlayback.BuildContent`).
-- `source-data/` — snapshot of the original game's `data/` directory.
-- `ADAPTATIONS.md` — every place the port deviates from the original, and why.
-- `ART_SLOTS.md` — **generated**: one row per picture the frontend will look for (229 cards + 210 relics +
-  269 bodies = 708), with the design canon's number and object line beside every relic. Regenerate it with
-  `--art-slots`; a test fails if it has gone stale.
-  ⚠ A **body** (every enemy, elite and boss) also exports the NAME the screen prints and WHAT KIND of body it
-  is, as `Presentation.Enemies[id].Frame` — 35 boss · 66 elite · 4 mimic · 164 standard. Neither can be
-  worked out downstream: a body's display name lives inside the encounters that use it, and its kind is a
-  property of the FIGHTS it is met in, not of the enemy (the strongest room a body ever stands in is what it
-  is). A boss exported as "standard" would still ship, still fight and still get a picture — it would simply
-  be drawn as filler, and nothing in the game would say so. `EnemyArtTests` holds the line.
-  ⚠ A relic also exports **which pool it was won from**, as `Presentation.Relics[id].Frame` — because the
-  visual canon fixes one frame per pool (§10.4) and the frontend draws its relic shelf by that frame before
-  a single object on it is recognised. The pool lives in the authoring record, which the frontend never
-  sees, so this is the only way out; `RelicFrameTests` counts every pool across the seam.
+
+- `Converter/`: the converter CLI (`--data source-data --out game.roguedeck.json --seed N`). Mappings are
+  explicit; any construct without a mapping stops the conversion with its source location.
+- `Tests/`: export validation, JSON round trip, and a scripted run through the engine's real host path
+  (`RunPlayback.BuildContent`).
+- `source-data/`: the authoring data.
+- `ADAPTATIONS.md`: every deviation from the original game, with the reason.
+- `ART_SLOTS.md`: generated list of every picture the frontend looks for (229 cards, 210 relics, 269 bodies,
+  708 in total), with the design canon's number and description next to each relic. Regenerate it with
+  `--art-slots`; a test fails if it is out of date.
+
+Two presentation fields are only known here and are exported for the frontend:
+
+- `Presentation.Enemies[id].Frame`: the display name of each body (enemy, elite or boss) and its kind,
+  35 boss, 66 elite, 4 mimic, 164 standard. The name is defined inside the encounters that use the body, and
+  the kind depends on the strongest fight the body appears in, not on the enemy itself. A boss exported as
+  standard would still work but would be drawn as an ordinary enemy. `EnemyArtTests` checks this.
+- `Presentation.Relics[id].Frame`: the pool a relic comes from. The visual canon assigns one frame per pool
+  (§10.4), and the pool is only stored in the authoring data. `RelicFrameTests` checks every pool.
 
 ## Building
-Expects a sibling checkout of [RogueDeck-Core](../RogueDeck-Core) (relative `ProjectReference`).
 
-```
+Requires RogueDeck-Core checked out next to this repository (relative `ProjectReference`).
+
+```bash
 dotnet build
 dotnet run --project Converter -- --data source-data --out game.roguedeck.json --seed 20260717
 dotnet test
 ```
 
-### ⚠⚠ A long walk wants Release — and `-c Release` on the SOLUTION does not give it to you
+### Release builds
 
-The engine is a `ProjectReference` from a sibling checkout, and it is **not** a member of `BnbContent.slnx`.
-A solution assigns configurations only to its own projects, so `dotnet build -c Release` here builds the
-Converter in Release and the engine in **Debug**, then copies that Debug engine into `Converter/bin/Release`,
-where it reads as a Release build to anyone who checks the folder name instead of the file size. Measured
-2026-09-18 on `--playtest 1`: **110.9 s** that way and **88.1 s** built properly — the same 110 rooms, the
-same answers, the same report once the clock is stripped out.
+The engine is referenced from the sibling checkout and is not part of `BnbContent.slnx`. A solution only
+assigns configurations to its own projects, so `dotnet build -c Release` on the solution builds the converter
+in Release but the engine in Debug, and copies the Debug engine into `Converter/bin/Release`. On
+`--playtest 1` (2026-09-18) that took 110.9 s instead of 88.1 s for the identical run. Build the project
+instead:
 
-Build the **project**, not the solution:
-
-```
+```bash
 dotnet build Converter/BnbContent.Converter.csproj -c Release
 dotnet run --project Converter -c Release --no-build -- --playtest 8
 ```
 
-(`Optimize` is the whole of Release here — neither repo holds a single `#if DEBUG` or `Debug.Assert` — and
-`RogueDeck-Core/Directory.Build.props` is what makes the engine admit to having configurations other than
-Debug at all. Before it existed, even the exported game shipped an unoptimized engine.)
+Release only switches on `Optimize`; neither repository uses `#if DEBUG` or `Debug.Assert`.
+`RogueDeck-Core/Directory.Build.props` provides the engine's non-Debug configurations; before it existed, even
+the exported game shipped an unoptimized engine.
 
-## Driving it without a human
+## Automated runs
 
-```
-dotnet run --project Converter -- --playtest 8      # walk 8 whole runs and report what they met
-                                                   #   (all at once — --jobs N, default: cores. Each walk
-                                                   #   buffers its own progress and they print in seed
-                                                   #   order, so the report stays readable.)
-dotnet run --project Converter -- --walk 20260721   # walk exactly ONE run — the one a report calls "seed …"
-dotnet run --project Converter -- --maps 3          # lay out every act's map and check its shape
-dotnet run --project Converter -- --art-slots ART_SLOTS.md   # rewrite the picture list (see above)
+```bash
+dotnet run --project Converter -- --playtest 8                    # play 8 whole runs and report what they met
+dotnet run --project Converter -- --walk 20260721                 # play exactly the run with this seed
+dotnet run --project Converter -- --maps 3                        # generate every act's map and check its shape
+dotnet run --project Converter -- --art-slots ART_SLOTS.md        # regenerate the art list
 ```
 
-### The sparring ring — one fight, a stated loadout
+`--playtest` runs in parallel (`--jobs N`, default: number of cores). Each run buffers its output, and the
+results are printed in seed order.
 
-Walking is right for what only a run can find and wrong for everything else: the thirty rooms in front of a
-fight are noise, they cost minutes, and they are not the same thirty rooms twice. `--fight` states a fighter
-and an opponent and runs that.
+### Single fights
 
-```
-# a ten-second look: one authored enemy, the character's own deck
+Whole runs are needed for problems that only a run can show, but for a single fight the rooms before it are
+noise and change between runs. `--fight` runs a defined fighter against a defined opponent:
+
+```bash
+# one enemy against the character's own deck
 dotnet run --project Converter -- --fight-enemy senior_clerk --fights 10 --fight-hp 60
 
-# one of its moves on its own — "what does THIS cost", not "what does the fight average"
+# a single enemy move on its own
 dotnet run --project Converter -- --fight-enemy nanna_sin_lord_of_the_counted_moon --fight-intent crown_of_ur
 
-# the durable form: a snapshot beside the content, which is a regression test that reads like a bug report
+# a snapshot file next to the content, usable as a regression test
 dotnet run --project Converter -- --fight snapshots/tombbreakers.json
 ```
 
-A snapshot names an `encounter` **or** an `enemy` and everything else has a default —
-`maxHealth`, `health`, `energy`, `deck`, `relics`, `consumables`, `statuses` (on the fighter),
-`enemyStatuses`, `intent`, `fights`, `seed`, `turnBudget`. See `snapshots/tombbreakers.json`.
+A snapshot names an `encounter` or an `enemy`; everything else has defaults: `maxHealth`, `health`,
+`energy`, `deck`, `relics`, `consumables`, `statuses` (on the fighter), `enemyStatuses`, `intent`, `fights`,
+`seed`, `turnBudget`. See `snapshots/tombbreakers.json`.
 
-Two things to know before reading the numbers:
+When reading the results:
 
-- **The player is a floor.** It plays greedily, which is roughly the worst competent play — a fight it wins
-  comfortably is not hard, and one it loses may still be fine.
-- **A boss may overwrite what you pinned.** Statuses a fight restates every turn (Nanna-Sin's whole lunar
-  ring) cannot be set from a snapshot; reach a late phase by giving the fight the rounds it counts.
+- The simulated player plays greedily, roughly the weakest competent play. A fight it wins comfortably is not
+  hard; a fight it loses may still be fine.
+- Bosses can overwrite pinned values. Statuses that a fight sets every turn (such as Nanna-Sin's lunar ring)
+  cannot be set from a snapshot; to reach a late phase, give the fight enough rounds.
 
 ## License
 
-[PolyForm Noncommercial 1.0.0](LICENSE) — free for noncommercial use with credit; commercial use needs
-permission.
+[PolyForm Noncommercial 1.0.0](LICENSE). Noncommercial use with attribution is permitted; commercial use
+requires permission.
