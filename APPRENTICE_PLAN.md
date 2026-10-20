@@ -54,5 +54,5 @@ Aktionsknöpfe, Karten mit PLAY/WAND-Text, Smoke.
 | Plan | ✔ |
 | Engine: Stab-Zustand, Imprint, Regeln, Compiler, Cast, Aktionen, Singe/Grit/Flow/Gust, Haken, temporäre Kopien, Bot | ✔ (RogueDeck-Core, 23 Stab-Tests) |
 | Inhalt: Charakter, 42 Karten, 9 Relikte, 50 Proxys, Pools, Archiv, Kompendium | ✔ (Karten-, Relikt-, Proxy-, Pool- und Ganzlauf-Tests) |
-| Godot: Stab-Leiste, Aktionsknöpfe mit Fokus-Kosten, Cast mit Zielwahl und Vorschau, PLAY/WAND-Kartentext, Smoke, Golden | offen |
+| Godot: Stab-Leiste, Aktionsknöpfe mit Fokus-Kosten, Cast mit Zielwahl und Vorschau, PLAY/WAND-Kartentext, Smoke, Golden | ✔ (bnb-godot: `--smoke-wand`; `--smoke-screens --character=sorcerers_apprentice` Akt I–V, 57 Bildschirme, 0 Fehler; Golden mit 6 Apprentice-Läufen; Multiplayer-Smoke mit ihm am dritten Platz, Stab im Einsatz) |
 | Balance-Bench (Master §16 Stufe 6) | offen |
