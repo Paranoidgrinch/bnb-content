@@ -225,7 +225,7 @@ public static class BlueprintAssembler
         var annotated = ArchiveSections.Annotate(blueprint);
         var finished = blueprint with
         {
-            Presentation = annotated,
+            Presentation = Apprentice.ApprenticeProxies.Describe(annotated),
             Cards = Apprentice.ApprenticeProxies.Mark(Witch.WitchFamilies.Mark(ArchiveSections.MarkUncookable(blueprint, annotated))),
         };
         // …and, last, how hard each act hits (ActTuning). `tuned: false` is the document as AUTHORED — what the

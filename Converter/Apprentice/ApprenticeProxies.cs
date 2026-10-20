@@ -1,4 +1,5 @@
 using RogueDeck.Core.Combat;
+using RogueDeck.Run;
 using RogueDeck.Scenario.Authoring;
 using static BnbContent.Converter.Apprentice.Imprints;
 using static BnbContent.Converter.Cards.CardAuthoring;
@@ -82,6 +83,73 @@ public static class ApprenticeProxies
         ["witchmark_citation"] = Speak(Put(K.Citation, 3),
             Do(Draw(1), afterCast: true).When(new NotExpression<CardPlayContext>(Condition(TargetIntendsAttack)))),
     };
+
+    // The words for each proxy, as a card's "Wand:" line — shown on the card when the Apprentice holds it.
+    public static readonly IReadOnlyDictionary<string, string> Text = new Dictionary<string, string>(StringComparer.Ordinal)
+    {
+        ["absolute_interdict"] = "Speak: if you carry Censure, this cast's Exhaustion is 2 lower; otherwise gain 2 Block.",
+        ["black_tribunal"] = "Speak: deal 7 damage, +2 for each different negative status on the target (5 at most).",
+        ["blacklisted"] = "Speak: apply 2 Censure, 3 if the target carries a positive status.",
+        ["blood_marginalia"] = "Speak: apply 2 Citation and 1 Blood Ink.",
+        ["blood_redaction"] = "Shape: the next Speak's negative status turns up to 2 of its stacks into 2 Blood Ink each.",
+        ["blood_tithe"] = "Speak: deal 6 damage, +3 if the target has Blood Ink.",
+        ["borrowed_candle"] = "Speak: after the cast, draw 1 card.",
+        ["candle_cathedral"] = "Speak: gain 3 Ward Wax.",
+        ["compound_indictment"] = "Speak: if the target carries 3 or more kinds of negative status, add 1 stack to each.",
+        ["consecrated_testament"] = "Speak: gain 3 Ward Wax if an enemy carries Paperwork or Blood Ink; otherwise gain 2 Block.",
+        ["contempt_finding"] = "Speak: remove up to 2 Citation from the target; gain 3 Block for each.",
+        ["countermanded_grace"] = "Speak: gain 2 Censure.",
+        ["crossed_sigil"] = "Speak: remove 1 negative stack from yourself; apply 1 Censure to the target.",
+        ["crown_repossession"] = "Speak: deal 10 damage; remove up to 8 of its Block; apply 2 Lien.",
+        ["dawn_summons"] = "Speak: deal 8 damage, +4 if it is the cast's first Speak.",
+        ["debt_ouroboros"] = "Speak: apply 3 Lien.",
+        ["exemplary_sentence"] = "Speak: remove up to 2 Citation from the target; ALL enemies lose 3 HP for each.",
+        ["false_signature"] = "Heighten: the next damaging or defensive Speak gives 25% more; adds 1 Exhaustion.",
+        ["foreclosure"] = "Speak: deal 5 damage; resolve up to 2 Lien on the target.",
+        ["forfeit_seal"] = "Speak: deal 5 damage; if the target has Block, apply 2 Lien.",
+        ["grand_citation"] = "Speak: deal 7 damage to ALL enemies; those with Citation take 2 more.",
+        ["grand_dispensation"] = "Speak: choose: deal 10 damage, or gain 10 Block.",
+        ["grave_lien"] = "Speak: deal 6 damage and apply 4 Lien.",
+        ["hemal_audit"] = "Speak: deal 8 damage, then trigger its Blood Ink up to 2 times.",
+        ["last_office"] = "Speak: deal 4 damage for each of Paperwork, Doubt, Seal, Lien and Citation the target lacks (3 at most).",
+        ["malediction_review"] = "Speak: gain 5 Block; choose: gain 1 Censure, or apply 1 Censure to the target.",
+        ["moonlit_counterfeit"] = "Echo: repeat the last damaging or defensive Speak at 50%.",
+        ["mortgage_sigil"] = "Speak: apply 2 Lien.",
+        ["mortgaged_aegis"] = "Speak: gain 9 Block and 2 Lien.",
+        ["notary_beetle"] = "Heighten: the next Speak's first negative status gets 1 more stack.",
+        ["oath_of_refusal"] = "Speak: gain 2 Censure and 3 Block.",
+        ["proxy_curse"] = "Speak: remove 1 negative stack from yourself; if you did, apply 2 Blood Ink to the target.",
+        ["reciprocal_edict"] = "Speak: apply 2 Censure; gain 2 Block.",
+        ["sanctioned_charm"] = "Speak: gain 5 Block and 1 Censure.",
+        ["sanguine_errata"] = "Speak: apply 3 Blood Ink; remove 1 other negative stack from the target.",
+        ["sealed_mantle"] = "Speak: gain 5 Block; if an enemy attacks and nothing gets through, gain Ward Wax.",
+        ["seizure_writ"] = "Speak: deal 7 damage; remove up to 8 of its Block and apply 1 Lien for every 4 removed (2 at most).",
+        ["silent_hearing"] = "Speak: apply 2 Citation; if the target intends to attack, gain 4 Block.",
+        ["sovereign_prohibition"] = "Speak: gain 2 Censure; apply 1 Censure to ALL enemies.",
+        ["standing_citation"] = "Speak: apply 3 Citation.",
+        ["tallow_judgment"] = "Speak: spend up to 3 Ward Wax; deal 5 damage, +3 for each.",
+        ["tallow_reserve"] = "Speak: lose up to 4 Block; if you lost 4, gain 2 Ward Wax.",
+        ["usurers_moon"] = "Speak: apply 2 Lien and 1 Citation.",
+        ["vein_register"] = "Speak: apply 1 Blood Ink.",
+        ["vital_census"] = "Speak: deal 6 damage to ALL enemies; those with Blood Ink lose 2 more HP.",
+        ["votive_covenant"] = "Speak: gain 4 Ward Wax.",
+        ["wax_indemnity"] = "Speak: gain 3 Ward Wax and heal 1 HP.",
+        ["wax_reliquary"] = "Speak: gain 3 Ward Wax.",
+        ["waxen_surety"] = "Speak: gain 4 Ward Wax.",
+        ["witchmark_citation"] = "Speak: apply 3 Citation; if the target does not intend to attack, draw 1 card after the cast.",
+    };
+
+    public const string WandTextKey = "wand";
+
+    // The presentation of every general card (and its upgrade) carries its proxy's words under Extra["wand"].
+    public static PresentationManifest Describe(PresentationManifest manifest)
+    {
+        var cards = new Dictionary<string, EntityPresentation>(manifest.Cards, StringComparer.Ordinal);
+        foreach (var (id, look) in manifest.Cards)
+            if (Text.TryGetValue(id.TrimEnd('+'), out var words))
+                cards[id] = look with { Extra = new Dictionary<string, string>(look.Extra, StringComparer.Ordinal) { [WandTextKey] = words } };
+        return manifest with { Cards = cards };
+    }
 
     // Each general card and its upgrade gets its proxy (master §11.2: the upgrade's wand part is the same).
     public static IReadOnlyList<CardData> Mark(IReadOnlyList<CardData> cards)

@@ -21,6 +21,8 @@ public class ApprenticeProxyTests
             Assert.True(cards.ContainsKey(id), id);
             Assert.NotNull(cards[id].Wand);
             Assert.Same(cards[id].Wand, cards[id + "+"].Wand);
+            Assert.StartsWith(cards[id].Wand!.Operation.ToString(),
+                FightProbe.Shipped.Presentation.Cards[id].Extra[ApprenticeProxies.WandTextKey]);
         }
     }
 
