@@ -30,6 +30,8 @@ public static class ApprenticeWand
         Flow = new StatusDefinitionId(ApprenticeKeywords.Flow),
         Grit = new StatusDefinitionId(ApprenticeKeywords.Grit),
         Gust = new StatusDefinitionId(ApprenticeKeywords.Gust),
+        Rote = new StatusDefinitionId(ApprenticeKeywords.Rote),
+        Poise = new StatusDefinitionId(ApprenticeKeywords.Poise),
         WardWax = new StatusDefinitionId(Cards.Keywords.WardWax),
         Hooks = ApprenticeRules.Hooks,
         CastBoosts = ApprenticeRules.CastBoosts,

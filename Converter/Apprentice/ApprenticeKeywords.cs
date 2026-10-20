@@ -17,6 +17,10 @@ public static class ApprenticeKeywords
     public const string Grit = "grit";
     public const string Gust = "gust";
 
+    // What the wand learns over a fight (expansion v0.5 §2): the wand's own Strength and Dexterity.
+    public const string Rote = "rote";
+    public const string Poise = "poise";
+
     public static IReadOnlyList<StatusData> All() =>
     [
         Status(Wand, "The Wand", StatusPolarity.Neutral,
@@ -33,6 +37,10 @@ public static class ApprenticeKeywords
             "Each enemy Attack hit spends 1 Grit and deals 2 less, before Block and Ward Wax."),
         Status(Gust, "Gust", StatusPolarity.Buff,
             "At the start of your next turn, after the draw: draw this many cards, then discard as many."),
+        Status(Rote, "Rote", StatusPolarity.Buff,
+            "Every damage hit your wand's Speaks deal is 1 larger for each Rote. Played cards are not affected."),
+        Status(Poise, "Poise", StatusPolarity.Buff,
+            "Every Block your wand's Speaks give is 1 larger for each Poise. Played cards are not affected."),
         .. ApprenticeRules.All(),
     ];
 

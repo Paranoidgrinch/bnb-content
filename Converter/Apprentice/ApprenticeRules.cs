@@ -57,6 +57,7 @@ public static partial class ApprenticeRules
         Status(GlassRodPrimedPlus, "Glass Rod+", StatusPolarity.Buff,
             "Your next cast deals and gives 65% more, and adds 3 Exhaustion."),
         .. RelicMarks.Select(m => Status(m.Status, m.Name, StatusPolarity.Neutral, $"{m.Name}'s rule for the wand.")),
+        .. Growth(),
     ];
 
     // Cold Ash: "its next attack deals N less" — once, on the first hit of its next action, and gone at the end of
