@@ -13,7 +13,9 @@ namespace BnbContent.Converter.Playtest;
 // FAMILY_DECKS.md), each fought through a sample of the act's normal fights, all its elites and all its bosses,
 // with and without the relics a player of that family would have picked.
 //
-//   decks        a JSON list (`--family-decks <file>`): name, family, act, cards {id: copies}, relics [ids]
+//   decks        a JSON list (`--family-decks <file>`): name, family, act, cards {id: copies}, relics [ids], and
+//                optionally the character who plays it (the roster's first otherwise) — APPRENTICE_DECKS.json is the
+//                Sorcerer's Apprentice's build families on the same budget, with the Bureaucrat's for reference
 //   the number   per fight: won?, health lost by the clairvoyant planner's line (a death loses everything).
 //                Per deck: win rate and mean health KEPT per kind (normal / elite / boss), the kinds weighted
 //                equally; per act and relic setting: each family's health kept as a share of Paperwork's.
@@ -27,7 +29,8 @@ public static class FamilyBench
         int Normals = 10, int Health = 70, string Relics = "both", IReadOnlyList<string>? Only = null,
         IReadOnlyList<int>? Acts = null);
 
-    public sealed record Deck(string Name, string Family, int Act, Dictionary<string, int> Cards, List<string>? Relics);
+    public sealed record Deck(string Name, string Family, int Act, Dictionary<string, int> Cards, List<string>? Relics,
+        string? Character = null);
 
     private sealed record Fight(string Deck, bool WithRelics, string Kind, string Encounter, int Shuffle, PlannedFight Result);
 
@@ -86,7 +89,7 @@ public static class FamilyBench
                 var deckList = job.deck.Cards.SelectMany(kv => Enumerable.Repeat(kv.Key, kv.Value)).ToList();
                 var encounter = game.Encounters.First(e => e.Id.Value == job.encounter.Id);
                 var ring = SparringRing.OneFight(game, encounter, deckList, maxHealth: options.Health,
-                    relics: job.withRelics ? job.deck.Relics : null);
+                    relics: job.withRelics ? job.deck.Relics : null, character: job.deck.Character);
                 using var play = new RunPlayback(() => { });
                 play.Start(ring, job.shuffle, interactive: true);
                 while (play.Session is { IsAwaitingInterlude: true } session)
@@ -137,6 +140,19 @@ public static class FamilyBench
                     var share = reference.Kept > 0 ? $"{kept / reference.Kept,6:0%}" : "     –";
                     var lost = reference.Kept < health ? $"{(health - kept) / (health - reference.Kept),6:0.00}" : "     –";
                     say($"  {deck.Name,-20} {string.Join(" ", cells.Select(c => $"{c,-18}"))}  {kept,5:0.0} {share} {lost}");
+                }
+                // What the planner did with a wand, per turn it played, over every fight of the deck (master §16).
+                foreach (var (deck, own, _) in rows)
+                {
+                    var turns = own.SelectMany(f => f.Result.Lines).ToList();
+                    if (!turns.Any(t => t.Contains("!wand_", StringComparison.Ordinal)))
+                        continue;
+                    double PerTurn(string action) => (double)turns.Sum(t => t.Split(" + ")
+                        .Count(m => m.StartsWith($"!{action}", StringComparison.Ordinal))) / Math.Max(1, turns.Count);
+                    var idle = (double)turns.Count(t => !t.Contains("!wand_cast", StringComparison.Ordinal)) / Math.Max(1, turns.Count);
+                    say($"    wand {deck.Name,-15} casts/turn {PerTurn("wand_cast"):0.00} · inscribes/turn {PerTurn("wand_inscribe"):0.00} "
+                        + $"· swaps {PerTurn("wand_swap"):0.00} · withdraws {PerTurn("wand_withdraw"):0.00} "
+                        + $"· burn outs {PerTurn("wand_burn_out"):0.00} · turns without a cast {idle:0%}");
                 }
             }
     }

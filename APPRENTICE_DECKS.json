@@ -1,0 +1,515 @@
+[
+ {
+  "name": "ap_short_hand_a2",
+  "family": "Short Hand",
+  "act": 2,
+  "character": "sorcerers_apprentice",
+  "cards": {
+   "ap_candle_stub": 1,
+   "ap_candle_stub+": 2,
+   "ap_chalk_line": 3,
+   "ap_dust_mote": 2,
+   "ap_flyleaf": 2,
+   "ap_footnote": 1,
+   "ap_ink_dish": 1,
+   "ap_penny_whistle": 1,
+   "ap_penny_whistle+": 1,
+   "ap_pinprick": 1,
+   "ap_pinprick+": 1,
+   "ap_split_wick+": 1,
+   "ap_torn_flyleaf": 1,
+   "ap_wax_drop": 1
+  },
+  "relics": [
+   "ar_sooty_ferrule",
+   "ar_knotted_wristcord"
+  ]
+ },
+ {
+  "name": "ap_short_hand_a3",
+  "family": "Short Hand",
+  "act": 3,
+  "character": "sorcerers_apprentice",
+  "cards": {
+   "ap_candle_stub": 1,
+   "ap_candle_stub+": 2,
+   "ap_chalk_line": 2,
+   "ap_cracked_slate+": 1,
+   "ap_dust_mote": 1,
+   "ap_dust_mote+": 1,
+   "ap_flyleaf": 2,
+   "ap_footnote": 1,
+   "ap_glass_rod": 1,
+   "ap_ink_dish": 1,
+   "ap_last_word": 1,
+   "ap_penny_whistle+": 2,
+   "ap_pinprick": 1,
+   "ap_pinprick+": 1,
+   "ap_split_wick+": 2,
+   "ap_torn_flyleaf": 1,
+   "ap_wax_drop": 1
+  },
+  "relics": [
+   "ar_sooty_ferrule",
+   "ar_knotted_wristcord",
+   "ar_feather_catcher"
+  ]
+ },
+ {
+  "name": "ap_long_lesson_a2",
+  "family": "Long Lesson",
+  "act": 2,
+  "character": "sorcerers_apprentice",
+  "cards": {
+   "ap_candle_stub": 2,
+   "ap_candle_stub+": 1,
+   "ap_chalk_circle": 2,
+   "ap_chalk_line": 2,
+   "ap_clay_weight": 1,
+   "ap_clay_weight+": 1,
+   "ap_dust_mote": 2,
+   "ap_flyleaf": 1,
+   "ap_glass_rod": 1,
+   "ap_ink_blot": 1,
+   "ap_ink_blot+": 1,
+   "ap_kiln_shelf+": 1,
+   "ap_spare_notch": 1,
+   "ap_spare_notch+": 1,
+   "ap_split_wick": 1
+  },
+  "relics": [
+   "ar_blue_inkstone",
+   "ar_chalked_thumbstall"
+  ]
+ },
+ {
+  "name": "ap_long_lesson_a3",
+  "family": "Long Lesson",
+  "act": 3,
+  "character": "sorcerers_apprentice",
+  "cards": {
+   "ap_candle_stub": 1,
+   "ap_candle_stub+": 2,
+   "ap_chalk_circle": 2,
+   "ap_chalk_line": 1,
+   "ap_clay_weight+": 2,
+   "ap_cracked_slate+": 1,
+   "ap_dust_mote": 2,
+   "ap_final_examination": 1,
+   "ap_flyleaf": 1,
+   "ap_glass_rod": 1,
+   "ap_ink_blot": 2,
+   "ap_ink_blot+": 1,
+   "ap_ink_dish": 1,
+   "ap_kiln_shelf+": 1,
+   "ap_spare_notch+": 2,
+   "ap_split_wick": 1
+  },
+  "relics": [
+   "ar_blue_inkstone",
+   "ar_chalked_thumbstall",
+   "ar_bone_spacer"
+  ]
+ },
+ {
+  "name": "ap_ash_wand_a2",
+  "family": "Ash Wand",
+  "act": 2,
+  "character": "sorcerers_apprentice",
+  "cards": {
+   "ap_borrowed_stone": 1,
+   "ap_borrowed_stone+": 1,
+   "ap_candle_both_ends": 1,
+   "ap_candle_both_ends+": 1,
+   "ap_candle_stub": 1,
+   "ap_candle_stub+": 2,
+   "ap_chalk_line": 3,
+   "ap_dust_mote": 1,
+   "ap_flyleaf": 1,
+   "ap_footnote": 1,
+   "ap_lessons_ash": 1,
+   "ap_pinprick": 1,
+   "ap_rubbing": 1,
+   "ap_second_hand": 1,
+   "ap_wick_trimmer": 1,
+   "ap_wick_trimmer+": 1
+  },
+  "relics": [
+   "ar_ash_bookcord",
+   "ar_sooty_ferrule"
+  ]
+ },
+ {
+  "name": "ap_ash_wand_a3",
+  "family": "Ash Wand",
+  "act": 3,
+  "character": "sorcerers_apprentice",
+  "cards": {
+   "ap_borrowed_stone": 1,
+   "ap_borrowed_stone+": 1,
+   "ap_candle_both_ends+": 2,
+   "ap_candle_stub": 1,
+   "ap_candle_stub+": 2,
+   "ap_chalk_line": 2,
+   "ap_cracked_slate+": 1,
+   "ap_dust_mote": 1,
+   "ap_flyleaf": 1,
+   "ap_footnote": 2,
+   "ap_last_word": 1,
+   "ap_lessons_ash": 1,
+   "ap_pinprick": 1,
+   "ap_pinprick+": 1,
+   "ap_rubbing": 1,
+   "ap_second_hand": 1,
+   "ap_wick_trimmer+": 2
+  },
+  "relics": [
+   "ar_ash_bookcord",
+   "ar_sooty_ferrule",
+   "ar_chalked_thumbstall"
+  ]
+ },
+ {
+  "name": "ap_elemental_tempo_a2",
+  "family": "Elemental Tempo",
+  "act": 2,
+  "character": "sorcerers_apprentice",
+  "cards": {
+   "ap_candle_stub": 3,
+   "ap_candle_stub+": 1,
+   "ap_chalk_line": 2,
+   "ap_cold_ash": 1,
+   "ap_crosswind": 1,
+   "ap_cup_of_water": 1,
+   "ap_firebreak": 1,
+   "ap_flyleaf": 1,
+   "ap_fourfold_lesson": 1,
+   "ap_masons_dust": 1,
+   "ap_snuffer+": 2,
+   "ap_split_wick+": 1,
+   "ap_watermark": 1,
+   "ap_wax_drop": 1,
+   "ap_wax_drop+": 1
+  },
+  "relics": [
+   "ar_sooty_ferrule",
+   "ar_feather_catcher"
+  ]
+ },
+ {
+  "name": "ap_elemental_tempo_a3",
+  "family": "Elemental Tempo",
+  "act": 3,
+  "character": "sorcerers_apprentice",
+  "cards": {
+   "ap_candle_stub": 2,
+   "ap_candle_stub+": 2,
+   "ap_chalk_line": 1,
+   "ap_cold_ash": 1,
+   "ap_crosswind": 1,
+   "ap_cup_of_water": 2,
+   "ap_firebreak": 1,
+   "ap_flyleaf": 1,
+   "ap_fourfold_lesson+": 1,
+   "ap_glass_rod": 1,
+   "ap_masons_dust": 1,
+   "ap_seal_press": 1,
+   "ap_snuffer+": 2,
+   "ap_split_wick+": 2,
+   "ap_watermark": 1,
+   "ap_wax_drop+": 2
+  },
+  "relics": [
+   "ar_sooty_ferrule",
+   "ar_feather_catcher",
+   "ar_chalked_thumbstall"
+  ]
+ },
+ {
+  "name": "ap_modular_wand_a2",
+  "family": "Modular Wand",
+  "act": 2,
+  "character": "sorcerers_apprentice",
+  "cards": {
+   "ap_candle_stub": 2,
+   "ap_candle_stub+": 1,
+   "ap_chalk_circle": 1,
+   "ap_chalk_line": 3,
+   "ap_cracked_slate": 1,
+   "ap_dust_mote": 1,
+   "ap_flyleaf": 1,
+   "ap_folded_leaf": 1,
+   "ap_footnote": 1,
+   "ap_masters_correction": 1,
+   "ap_penny_whistle": 1,
+   "ap_penny_whistle+": 1,
+   "ap_pinprick": 1,
+   "ap_pinprick+": 1,
+   "ap_seal_press+": 1,
+   "ap_split_wick+": 1
+  },
+  "relics": [
+   "ar_brass_dividers",
+   "ar_bone_spacer"
+  ]
+ },
+ {
+  "name": "ap_modular_wand_a3",
+  "family": "Modular Wand",
+  "act": 3,
+  "character": "sorcerers_apprentice",
+  "cards": {
+   "ap_candle_stub": 2,
+   "ap_candle_stub+": 1,
+   "ap_chalk_circle": 1,
+   "ap_chalk_line": 2,
+   "ap_cracked_slate+": 1,
+   "ap_dust_mote": 1,
+   "ap_final_examination": 1,
+   "ap_flyleaf": 1,
+   "ap_folded_leaf": 1,
+   "ap_footnote": 1,
+   "ap_masters_correction": 1,
+   "ap_penny_whistle+": 2,
+   "ap_pinprick+": 2,
+   "ap_seal_press": 1,
+   "ap_seal_press+": 1,
+   "ap_spare_notch": 1,
+   "ap_split_wick+": 2
+  },
+  "relics": [
+   "ar_brass_dividers",
+   "ar_bone_spacer",
+   "ar_sooty_ferrule"
+  ]
+ },
+ {
+  "name": "ap_moving_text_a2",
+  "family": "Moving Text",
+  "act": 2,
+  "character": "sorcerers_apprentice",
+  "cards": {
+   "ap_candle_stub": 2,
+   "ap_candle_stub+": 2,
+   "ap_chalk_line": 2,
+   "ap_dust_mote": 1,
+   "ap_flyleaf": 1,
+   "ap_folded_leaf": 1,
+   "ap_ink_dish": 1,
+   "ap_open_casement": 1,
+   "ap_open_casement+": 1,
+   "ap_perfect_copy": 1,
+   "ap_split_wick": 1,
+   "ap_torn_flyleaf": 1,
+   "ap_torn_flyleaf+": 1,
+   "ap_windblown_leaf": 1,
+   "ap_wrong_way_round": 1,
+   "ap_wrong_way_round+": 1
+  },
+  "relics": [
+   "ar_bent_nib",
+   "ar_knotted_wristcord"
+  ]
+ },
+ {
+  "name": "ap_moving_text_a3",
+  "family": "Moving Text",
+  "act": 3,
+  "character": "sorcerers_apprentice",
+  "cards": {
+   "ap_candle_stub": 2,
+   "ap_candle_stub+": 2,
+   "ap_chalk_line": 1,
+   "ap_cracked_slate+": 1,
+   "ap_dust_mote": 2,
+   "ap_flyleaf": 1,
+   "ap_folded_leaf": 1,
+   "ap_ink_dish": 1,
+   "ap_masters_correction": 1,
+   "ap_open_casement+": 2,
+   "ap_perfect_copy": 1,
+   "ap_split_wick+": 2,
+   "ap_torn_flyleaf": 1,
+   "ap_torn_flyleaf+": 1,
+   "ap_windblown_leaf": 1,
+   "ap_wrong_way_round": 1,
+   "ap_wrong_way_round+": 1
+  },
+  "relics": [
+   "ar_bent_nib",
+   "ar_knotted_wristcord",
+   "ar_sooty_ferrule"
+  ]
+ },
+ {
+  "name": "ap_common_heavy_a2",
+  "family": "Common-heavy",
+  "act": 2,
+  "character": "sorcerers_apprentice",
+  "cards": {
+   "ap_blotting_sand": 1,
+   "ap_candle_stub": 1,
+   "ap_candle_stub+": 2,
+   "ap_chalk_circle": 1,
+   "ap_chalk_line": 1,
+   "ap_chalk_line+": 2,
+   "ap_clay_weight": 1,
+   "ap_flyleaf+": 1,
+   "ap_folded_leaf": 1,
+   "ap_ink_dish": 1,
+   "ap_masons_dust": 1,
+   "ap_open_casement": 1,
+   "ap_penny_whistle": 1,
+   "ap_snuffer": 1,
+   "ap_wax_drop": 1,
+   "ap_wick_trimmer": 1,
+   "ap_windblown_leaf": 1
+  },
+  "relics": [
+   "ar_feather_catcher",
+   "ar_chalked_thumbstall"
+  ]
+ },
+ {
+  "name": "ap_common_heavy_a3",
+  "family": "Common-heavy",
+  "act": 3,
+  "character": "sorcerers_apprentice",
+  "cards": {
+   "ap_blotting_sand": 1,
+   "ap_candle_stub+": 3,
+   "ap_chalk_circle": 1,
+   "ap_chalk_line+": 2,
+   "ap_clay_weight": 1,
+   "ap_cup_of_water": 1,
+   "ap_dust_mote": 1,
+   "ap_flyleaf+": 1,
+   "ap_folded_leaf": 1,
+   "ap_ink_dish": 1,
+   "ap_masons_dust": 1,
+   "ap_open_casement": 1,
+   "ap_penny_whistle": 1,
+   "ap_pinprick+": 1,
+   "ap_snuffer+": 1,
+   "ap_spare_notch": 1,
+   "ap_wax_drop+": 1,
+   "ap_wick_trimmer": 1,
+   "ap_windblown_leaf": 1
+  },
+  "relics": [
+   "ar_feather_catcher",
+   "ar_chalked_thumbstall",
+   "ar_sooty_ferrule"
+  ]
+ },
+ {
+  "name": "paperwork_a2",
+  "family": "Paperwork",
+  "act": 2,
+  "cards": {
+   "paper_cut": 2,
+   "cower_behind_a_desk": 3,
+   "strong_binder": 1,
+   "permit_a38": 1,
+   "counter_ward": 1,
+   "deskward": 1,
+   "cursed_addendum": 2,
+   "inkblot_verdict": 1,
+   "occult_precedent": 2,
+   "red_ink_doctrine+": 1,
+   "summary_judgment+": 1,
+   "form_of_ill_intent+": 2,
+   "inkblot_verdict+": 1
+  },
+  "relics": [
+   "formkeepers_signet",
+   "chancery_scale"
+  ],
+  "character": "bureaucrat"
+ },
+ {
+  "name": "paperwork_a3",
+  "family": "Paperwork",
+  "act": 3,
+  "cards": {
+   "paper_cut": 2,
+   "cower_behind_a_desk": 2,
+   "strong_binder": 1,
+   "permit_a38": 1,
+   "counter_ward": 1,
+   "deskward": 1,
+   "borrowed_candle": 1,
+   "black_ledger": 1,
+   "occult_precedent": 2,
+   "broom_dispatch": 1,
+   "red_ink_doctrine+": 1,
+   "summary_judgment+": 1,
+   "form_of_ill_intent+": 2,
+   "inkblot_verdict+": 2,
+   "cursed_addendum+": 2,
+   "hedge_hospitality+": 1
+  },
+  "relics": [
+   "formkeepers_signet",
+   "chancery_scale",
+   "concordance_medallion"
+  ],
+  "character": "bureaucrat"
+ },
+ {
+  "name": "plain_a2",
+  "family": "plain",
+  "act": 2,
+  "cards": {
+   "paper_cut": 2,
+   "cower_behind_a_desk": 3,
+   "strong_binder": 1,
+   "permit_a38": 1,
+   "violence_allowance": 1,
+   "tallow_budget": 2,
+   "false_signature": 1,
+   "notary_beetle": 1,
+   "marginalia": 1,
+   "borrowed_candle": 1,
+   "dawn_summons+": 1,
+   "counter_ward+": 2,
+   "deskward+": 2
+  },
+  "relics": [
+   "iron_prayer_bead",
+   "lead_counterweight"
+  ],
+  "character": "bureaucrat"
+ },
+ {
+  "name": "plain_a3",
+  "family": "plain",
+  "act": 3,
+  "cards": {
+   "paper_cut": 2,
+   "cower_behind_a_desk": 2,
+   "strong_binder": 1,
+   "permit_a38": 1,
+   "counter_ward": 1,
+   "deskward": 1,
+   "borrowed_candle": 1,
+   "tallow_budget": 1,
+   "false_signature": 1,
+   "marginalia": 1,
+   "notary_beetle": 1,
+   "dawn_summons+": 1,
+   "blood_testimony+": 1,
+   "grievance_ledger+": 1,
+   "counter_ward+": 2,
+   "deskward+": 2,
+   "tallow_budget+": 1,
+   "borrowed_candle+": 1
+  },
+  "relics": [
+   "iron_prayer_bead",
+   "lead_counterweight",
+   "index_bone"
+  ],
+  "character": "bureaucrat"
+ }
+]
