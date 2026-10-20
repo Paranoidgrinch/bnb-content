@@ -336,15 +336,24 @@ public static class AuditorOfReturnedLives
 
     // Kept in step by the player's own record: while the two Documentation a final receipt costs are on the
     // table, the clause comes off and the Auditor's death is final. Below that it goes back on.
+    //
+    // ⚠ ONLY UNTIL IT HAS FIRED. A Closing Audit on the Auditor is the clause spent; this used to put it back on
+    // the moment the player's Documentation was short again, so the Auditor came back at 72 every time it fell
+    // (the bench's Apprentice, seed 14: four Closing Audits and a fight a hundred turns long). Nothing ever set the
+    // spent counter this read, so the Closing Audit itself is what says so now.
     private static IEffectNode<TContext> SyncTheClause<TContext>() where TContext : class
     {
         var auditor = typeof(TContext) == typeof(EnemyActionContext) ? Self : Across;
         var player = typeof(TContext) == typeof(EnemyActionContext) ? Across : Self;
 
         return new ConditionalEffectNode<TContext>(
-            new ComparisonExpression<TContext>(
-                new CombatantCounterExpression<TContext>(auditor, LifeUnreconciledCounter),
-                ComparisonOperator.Greater, new ConstantExpression<TContext>(0)),
+            new AndExpression<TContext>(
+                new ComparisonExpression<TContext>(
+                    new CombatantCounterExpression<TContext>(auditor, LifeUnreconciledCounter),
+                    ComparisonOperator.Greater, new ConstantExpression<TContext>(0)),
+                new ComparisonExpression<TContext>(
+                    new CombatantStatusStacksExpression<TContext>(auditor, new StatusDefinitionId(ClosingAuditId)),
+                    ComparisonOperator.Equal, new ConstantExpression<TContext>(0))),
             new ConditionalEffectNode<TContext>(
                 new AndExpression<TContext>(
                     new ComparisonExpression<TContext>(

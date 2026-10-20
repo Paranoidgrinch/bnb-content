@@ -34,7 +34,10 @@ public class AuditorOfReturnedLivesTests
     private static IReadOnlyList<CardInstance> Hand(RunPlayback play) => play.CombatDriver!.Current!.Hand;
 
     private static (RunPlayback Play, InteractiveRunSession Session, CombatantId Id) Fight(
-        int? bossHealth, params string[] intents)
+        int? bossHealth, params string[] intents) => Fight(bossHealth, [.. Enumerable.Repeat(Deed, 20)], intents);
+
+    private static (RunPlayback Play, InteractiveRunSession Session, CombatantId Id) Fight(
+        int? bossHealth, IReadOnlyList<string> deck, params string[] intents)
     {
         var probe = FightProbe.Solo(AuditorOfReturnedLives.EnemyId, intents[0], 9);
         var body = probe.Enemies.Single() with
@@ -47,7 +50,7 @@ public class AuditorOfReturnedLivesTests
         return FightProbe.Start(
             new EncounterDefinition(probe.Id, [body], probe.HeroResources, probe.HeroStartingStatuses,
                 probe.HeroDisplayName, probe.CardsDrawnPerTurn, probe.TriggeredEffects),
-            deck: [.. Enumerable.Repeat(Deed, 20)],
+            deck: [.. deck],
             health: 900);
     }
 
@@ -252,5 +255,46 @@ public class AuditorOfReturnedLivesTests
 
         Assert.True(play.CombatDriver?.Current is null,
             "the Auditor came back even though the death was documented");
+    }
+
+    // §8.13 "it returns ONCE": after the Closing Audit the clause is spent, however short the Documentation is.
+    // It used to go back on at the next sync — any status of the player's moving, here a Ward Wax — and the
+    // Auditor came back at 72 every time it fell (the bench's Apprentice, seed 14: four Closing Audits).
+    [Fact]
+    public void The_closing_audit_comes_once_and_the_second_death_is_final()
+    {
+        var (play, _, auditor) = Fight(AuditorOfReturnedLives.LifeHealth,
+            [.. Enumerable.Repeat(Deed, 14), .. Enumerable.Repeat("waxen_surety", 6)], "final_reconciliation");
+
+        WalkToTheLastAccount(play, auditor, answerCitations: false);
+        for (var turn = 0; turn < 10 && play.CombatDriver?.Current is not null
+             && !Has(play, auditor, AuditorOfReturnedLives.ClosingAuditId); turn++)
+        {
+            while (play.CombatDriver.Current is { } c && c.Hand.Count > 0
+                   && !Has(play, auditor, AuditorOfReturnedLives.ClosingAuditId))
+                play.CombatDriver.PlayCard(c.Hand[0].Id, auditor);
+            if (!Has(play, auditor, AuditorOfReturnedLives.ClosingAuditId))
+                EndTurn(play, option: 1);
+        }
+        Assert.True(Has(play, auditor, AuditorOfReturnedLives.ClosingAuditId), "the Auditor never came back at all");
+
+        for (var turn = 0; turn < 30 && play.CombatDriver?.Current is not null; turn++)
+        {
+            AnswerCitations(play, auditor);
+            if (play.CombatDriver?.Current is null)
+                break;
+            // A status of the player's moves first, so the clause is synced while the book is short.
+            if (Hand(play).FirstOrDefault(c => c.DefinitionId.value == "waxen_surety") is { } wax)
+                play.CombatDriver.PlayCard(wax.Id, null);
+            Assert.False(Has(play, auditor, AuditorOfReturnedLives.DeathClauseId),
+                $"the spent clause is back on (Documentation {Documentation(play)})");
+            while (play.CombatDriver.Current is { } c && c.Hand.Count > 0)
+                play.CombatDriver.PlayCard(c.Hand[0].Id, auditor);
+            if (play.CombatDriver.Current is null)
+                break;
+            EndTurn(play, option: 1);
+        }
+
+        Assert.True(play.CombatDriver?.Current is null, "the Auditor never stayed down");
     }
 }
