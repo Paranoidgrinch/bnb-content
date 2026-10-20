@@ -89,6 +89,10 @@ public static class BlueprintAssembler
             // The act's map is GENERATED per run from MapGeneration below; the authored map stays empty.
             new RunMap([]))
         {
+            // A PARTY'S FIGHTS (multiplayer): each hero beyond the first adds three quarters of every enemy's
+            // health, and an enemy picks its hero at random each round — shown on its intent before it acts — so
+            // no seat is always the one standing in front.
+            Balance = new BalanceManifest { PartyEnemyHealthPerExtraMember = 0.75, PartyEnemyTargeting = "Random" },
             // The first act's rules stay on the blueprint as well: they are the fallback for anything that asks
             // a document for "the" map (and what a one-act reader sees), while Acts below is what a run walks.
             MapGeneration = maps[0].Map.Spec,
