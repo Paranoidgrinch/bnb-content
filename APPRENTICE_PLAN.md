@@ -55,4 +55,31 @@ Aktionsknöpfe, Karten mit PLAY/WAND-Text, Smoke.
 | Engine: Stab-Zustand, Imprint, Regeln, Compiler, Cast, Aktionen, Singe/Grit/Flow/Gust, Haken, temporäre Kopien, Bot | ✔ (RogueDeck-Core, 23 Stab-Tests) |
 | Inhalt: Charakter, 42 Karten, 9 Relikte, 50 Proxys, Pools, Archiv, Kompendium | ✔ (Karten-, Relikt-, Proxy-, Pool- und Ganzlauf-Tests) |
 | Godot: Stab-Leiste, Aktionsknöpfe mit Fokus-Kosten, Cast mit Zielwahl und Vorschau, PLAY/WAND-Kartentext, Smoke, Golden | ✔ (bnb-godot: `--smoke-wand`; `--smoke-screens --character=sorcerers_apprentice` Akt I–V, 57 Bildschirme, 0 Fehler; Golden mit 6 Apprentice-Läufen; Multiplayer-Smoke mit ihm am dritten Platz, Stab im Einsatz) |
-| Balance-Bench (Master §16 Stufe 6) | offen |
+| Balance-Bench (Master §16 Stufe 6) | begonnen: `bnb-godot/tools/bench.sh` (alle Charaktere, gleiche Seeds, `sim-bench`-Zeile aus `roguedeck-bot`); erste Messung siehe §3 |
+
+## 3 Bench, erste Messung (2026-10-20)
+
+`tools/bench.sh --runs 100 --immortal 20`, Würfel-Bot (zufällige Karten, Stab nach `WandBotPolicy`) — eine Untergrenze,
+kein Mensch. Gleiche Seeds für alle drei.
+
+| | Bürokrat | Hexe | Apprentice |
+|---|---|---|---|
+| sterblich: Kämpfe bis zum Tod (Ø) | 5,8 | 8,6 | 8,7 |
+| sterblich: Akte geschafft (Ø) | 0,00 | 0,03 | 0,04 |
+| Züge pro Kampf (sterblich / unsterblich) | 6,4 / 13,1 | 6,2 / 11,0 | 5,6 / 15,0 |
+| Karten pro Zug (unsterblich) | 2,98 | 3,83 | 3,69 |
+| eigene Aktionen pro Zug | 0 | 1,0 | 2,0 |
+
+Stab (unsterblich, alle fünf Akte): 1,67 Casts pro Zug, 18 % Züge mit gefülltem, ungecastetem Stab, 0,58 Fokus
+am Zugende übrig, 44 % der Plätze belegt (41 % bei 5–6 Plätzen), 7 % der genutzten Karten eingeschrieben statt
+gespielt, 0,91 Erschöpfung pro Cast, 36,5 Burn Outs pro Lauf.
+
+Lesart: Beim Würfel-Bot schneidet der Apprentice in Akt I wie die Hexe ab und klar besser als der Bürokrat; in
+späten Akten braucht er die meisten Züge pro Kampf. Die Stab-Zahlen beschreiben vor allem die simple Bot-Regel
+(einschreiben nur bei leerem Stab, casten wann immer möglich, Burn Out nahe am Limit) — für die Fragen aus §16
+(kurz gegen lang, Burn-Ketten, 5–6 Plätze) braucht es als Nächstes einen planenden Spieler (FightPlanner/ActBench
+mit Apprentice-Decks) statt des Würfel-Bots.
+
+Gefunden und behoben durch den Bench: Auditor of Returned Lives kam nach dem Closing Audit beliebig oft zurück
+(bnb-content 1677f31); verbrauchtes „Cite the Old Survey“ war endlos spielbar (6962eb9).
+
