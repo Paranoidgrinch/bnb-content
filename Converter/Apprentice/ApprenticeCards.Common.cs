@@ -205,7 +205,7 @@ public static partial class ApprenticeCards
 
     // ── the shapes the commons share ───────────────────────────────────────────────────────────────────────
 
-    private static readonly CounterId Scratch = new("apprentice_scratch");
+    private static CounterId Scratch => new("apprentice_scratch");
 
     private static CombatAmountSpec ScratchValue => CombatAmountSpec.Counter(You, Scratch.value);
 
@@ -235,7 +235,7 @@ public static partial class ApprenticeCards
             If(ScratchAtLeast(1), Damage(Times(ScratchValue, perStack))));
 
     // "Look at the top N of your draw pile and put M into your hand. If it costs 2 or more, gain 1 Flow."
-    private static readonly string Picked = "ink_dish_pick";
+    private const string Picked = "ink_dish_pick";
 
     private static CombatNodeModel TakeFromTop(int top, int take) =>
         Repeat(take, Seq(

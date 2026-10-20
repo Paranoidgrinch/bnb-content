@@ -98,7 +98,7 @@ public static class ApprenticeProxies
     private static ICombatExpression<CardPlayContext, bool> Lacks(string status) =>
         new NotExpression<CardPlayContext>(Condition(HasStacks(status, 1, You)));
 
-    private static readonly CounterId Scratch = new("apprentice_proxy_scratch");
+    private static CounterId Scratch => new("apprentice_proxy_scratch");
     private static CombatAmountSpec ScratchValue(string on = Target) => CombatAmountSpec.Counter(on, Scratch.value);
     private static CombatNodeModel SetScratch(CombatAmountSpec amount, string on = Target) =>
         new("setCombatantCounter", on, amount, CounterId: Scratch.value, Relative: false);
