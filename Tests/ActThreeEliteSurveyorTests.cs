@@ -238,6 +238,11 @@ public class ActThreeEliteSurveyorTests
         Cite(play, session, option: 2, at: surveyor);
         Assert.Equal(1, FightProbe.StacksOf(Hero(play), ActThree.OldRightId));
 
+        // …and the copy that came back cannot be played at all this turn: free, and doing nothing but putting
+        // the next copy back, a player who could play it would play it for ever (bench, Hedge Witch seed 15).
+        var again = play.CombatDriver.Current!.Hand.First(c => c.DefinitionId.value == ActThree.CiteTheOldSurveyCardId);
+        Assert.False(play.CombatDriver.Current.CanPlay(again.Id));
+
         Cite(play, session, option: 2, at: surveyor); // …and the second citation is refused
         Assert.Equal(1, FightProbe.StacksOf(Hero(play), ActThree.OldRightId));
         play.Dispose();

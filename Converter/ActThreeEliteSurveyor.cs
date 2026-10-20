@@ -328,16 +328,15 @@ public static partial class ActThree
             + "to nothing, and the Claim remains. OLD MEASURE — remove up to 8 of the Surveyor's Block.",
         Costs = [],
         Tags = [CiteTag, new TagId("form")],
+        // ⚠ ONLY PLAYABLE WHEN IT WOULD CITE. Once this turn's citation is spent the copy in hand does nothing but
+        // put the next copy back — free, and offered again for ever (the bench's Hedge Witch, seed 15, played it
+        // fifty times in one turn; the Notary's Counterseal had the same hole).
+        PlayCondition = CanCite(),
         Program = new EffectProgram<CardPlayContext>(
             new CausalSequenceEffectNode<CardPlayContext>(
             [
             new ConditionalEffectNode<CardPlayContext>(
-                new AndExpression<CardPlayContext>(
-                    new NotExpression<CardPlayContext>(Wearing<CardPlayContext>(Applicant, SurveyCitedId)),
-                    new ComparisonExpression<CardPlayContext>(
-                        new CombatantStatusStacksExpression<CardPlayContext>(
-                            Applicant, new StatusDefinitionId(OldRightId)),
-                        ComparisonOperator.GreaterOrEqual, new ConstantExpression<CardPlayContext>(1))),
+                CanCite(),
                 new CausalSequenceEffectNode<CardPlayContext>(
                 [
                     new ModifyStatusStacksNode<CardPlayContext>(
@@ -368,6 +367,15 @@ public static partial class ActThree
         PlayedCardDestinationZone = CardZone.ExhaustPile,
         TurnEndHandDestinationZone = CardZone.Hand,
     };
+
+    // Not yet cited this turn, and an Old Right to cite with.
+    private static ICombatExpression<CardPlayContext, bool> CanCite() =>
+        new AndExpression<CardPlayContext>(
+            new NotExpression<CardPlayContext>(Wearing<CardPlayContext>(Applicant, SurveyCitedId)),
+            new ComparisonExpression<CardPlayContext>(
+                new CombatantStatusStacksExpression<CardPlayContext>(
+                    Applicant, new StatusDefinitionId(OldRightId)),
+                ComparisonOperator.GreaterOrEqual, new ConstantExpression<CardPlayContext>(1)));
 
     private static IEffectNode<CardPlayContext> AnotherCitation() =>
         new ConditionalEffectNode<CardPlayContext>(
