@@ -81,10 +81,10 @@ public static partial class ApprenticeCards
         "ap_ink_blot", "ap_flyleaf",
     ];
 
-    public static IReadOnlyList<BnbCard> All() => [.. Starter(), .. Commons()];
+    public static IReadOnlyList<BnbCard> All() => [.. Starter(), .. Commons(), .. Uncommons()];
 
     // His reward cards gated to an act, as the others' are: starters and the upgraded twins are never offered.
-    public static IReadOnlyList<BnbCard> RewardPool(int act) => Cards.FinalCards.Offerable([.. Commons()], act);
+    public static IReadOnlyList<BnbCard> RewardPool(int act) => Cards.FinalCards.Offerable([.. Commons(), .. Uncommons()], act);
 
     public static IReadOnlyList<CardData> Compile() => All().Select(c => c.Compile()).ToList();
 

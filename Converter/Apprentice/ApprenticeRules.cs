@@ -16,7 +16,20 @@ public static partial class ApprenticeRules
 
     public static IReadOnlyList<WandCastBoost> CastBoosts => [];
 
-    public static IReadOnlyList<StatusData> All() => [QuietCircleStatus()];
+    public static IReadOnlyList<StatusData> All() => [QuietCircleStatus(), ChilledStatus()];
+
+    // Cold Ash: "its next attack deals N less" — once, on the first hit of its next action, and gone at the end of
+    // its turn whether it attacked or not.
+    private static StatusData ChilledStatus()
+    {
+        var self = CombatantTargetSelectors.Source;
+        var program = new EffectProgram<TurnEndedTriggeredEffectContext>(
+            new RemoveStatusNode<TurnEndedTriggeredEffectContext>(self, new StatusDefinitionId(ApprenticeCards.Chilled)));
+        return Status(ApprenticeCards.Chilled, "Cold Ash", StatusPolarity.Debuff,
+            "Its next attack deals this much less. Fades at the end of its turn.",
+            [Trigger(program, nameof(TriggerEvent.TurnEnded))],
+            [new PassiveModifierData(PassiveModifierPipeline.DamageDealt, PassiveModifierOperation.AddPerStack, -1, OncePerAction: true)]);
+    }
 
     private static StatusData QuietCircleStatus()
     {

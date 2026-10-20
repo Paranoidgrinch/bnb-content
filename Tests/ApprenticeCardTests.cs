@@ -253,4 +253,220 @@ public class ApprenticeCardTests
         Assert.Equal(before - 13, Standing(Body(play, enemy)));
         play.Dispose();
     }
+
+    // ── uncommons ──────────────────────────────────────────────────────────────────────────────────────────
+
+    private static (RunPlayback, RogueDeck.Sandbox.Run.InteractiveRunSession, CombatantId) Bitten(string[] deck) =>
+        Fight(deck, enemy: Biter, intent: BiteIntent, health: 70);
+
+    [Fact]
+    public void Split_wick_hits_twice_and_forks_the_next_speak()
+    {
+        var (play, session, enemy) = Fight(["ap_split_wick", "ap_wax_drop", "ap_candle_stub", "ap_chalk_line", "ap_chalk_line"]);
+        Play(play, session, "ap_wax_drop", enemy);
+        var before = Standing(Body(play, enemy));
+        Play(play, session, "ap_split_wick", enemy);
+        Assert.Equal(before - (4 + 2) * 2, Standing(Body(play, enemy)));   // each hit met a Singe
+        play.Dispose();
+
+        (play, session, enemy) = Fight(["ap_split_wick", "ap_candle_stub", "ap_chalk_line", "ap_chalk_line", "ap_chalk_line"]);
+        Play(play, session, "ap_chalk_line", enemy);
+        Inscribe(play, session, "ap_split_wick", 0);
+        Inscribe(play, session, "ap_candle_stub", 1);
+        Play(play, session, "ap_chalk_line", enemy);
+        before = Standing(Body(play, enemy));
+        Cast(play, session, enemy);
+        Assert.Equal(before - 3 * 2, Standing(Body(play, enemy)));         // 4 → 3 + 3
+        play.Dispose();
+    }
+
+    [Fact]
+    public void Cracked_slate_may_spend_grit_for_a_heavier_blow()
+    {
+        var (play, session, enemy) = Fight(["ap_cracked_slate", "ap_chalk_line", "ap_candle_stub", "ap_candle_stub", "ap_candle_stub"]);
+        Play(play, session, "ap_chalk_line", enemy);                         // 1 Grit
+        var before = Standing(Body(play, enemy));
+        var driver = play.CombatDriver!;
+        driver.PlayCard(Now(play).Hand.First(c => c.DefinitionId.value == "ap_cracked_slate").Id, enemy);
+        driver.SupplyOptionChoice([0]);
+        Assert.Null(session.Error);
+        Assert.Equal(before - 16, Standing(Body(play, enemy)));
+        Assert.Equal(0, Stacks(Hero(play), ApprenticeKeywords.Grit));
+        play.Dispose();
+    }
+
+    [Fact]
+    public void Crosswind_moves_singe_to_another_enemy_or_becomes_gust_alone()
+    {
+        var (play, session, enemy) = FightProbe.Start(
+            FightProbe.Roster("crosswind", 9, (Quiet, QuietIntent, null), (Biter, BiteIntent, null)),
+            ["ap_crosswind", "ap_wax_drop", "ap_candle_stub", "ap_candle_stub", "ap_candle_stub"],
+            character: ApprenticeCharacter.Id);
+        var other = Now(play).State.Combatants.First(c => c.Id != Now(play).HeroId && c.Id != enemy).Id;
+        Play(play, session, "ap_wax_drop", enemy);                          // 2 on each
+        Play(play, session, "ap_crosswind", enemy);
+        Assert.Equal(0, Stacks(Body(play, enemy), ApprenticeKeywords.Singe));
+        Assert.Equal(4, Stacks(Body(play, other), ApprenticeKeywords.Singe));
+        play.Dispose();
+
+        (play, session, enemy) = Fight(["ap_crosswind", "ap_candle_stub", "ap_candle_stub", "ap_candle_stub", "ap_candle_stub"]);
+        Play(play, session, "ap_crosswind", enemy);
+        Assert.Equal(2, Stacks(Hero(play), ApprenticeKeywords.Gust));
+        play.Dispose();
+    }
+
+    [Fact]
+    public void Rubbing_copies_a_discarded_card_for_one_play()
+    {
+        var (play, session, enemy) = Fight(["ap_rubbing", "ap_candle_stub", "ap_chalk_line", "ap_chalk_line", "ap_chalk_line"]);
+        Play(play, session, "ap_candle_stub", enemy);
+        var driver = play.CombatDriver!;
+        driver.PlayCard(Now(play).Hand.First(c => c.DefinitionId.value == "ap_rubbing").Id, enemy);
+        if (driver.PendingCardChoice is { } discard)
+            driver.SupplyCardChoice([discard.First(c => c.DefinitionId.value == "ap_candle_stub").Id]);
+        Assert.Null(session.Error);
+        var copy = Now(play).Hand.Single(c => c.DefinitionId.value == "ap_candle_stub");
+        Play(play, session, "ap_candle_stub", enemy);
+        Assert.Equal(CardZone.ExhaustPile, Now(play).State.GetCardZones(Now(play).HeroId).GetCard(copy.Id).Zone);
+        play.Dispose();
+    }
+
+    [Fact]
+    public void Watermark_and_footnote_trade_in_flow_and_exhaustion()
+    {
+        var (play, session, enemy) = Fight(["ap_watermark", "ap_footnote", "ap_candle_stub", "ap_chalk_line", "ap_chalk_line"]);
+        Play(play, session, "ap_watermark", enemy);                         // no Flow yet: just the Flow
+        Assert.Equal(2, Stacks(Hero(play), ApprenticeKeywords.Flow));
+        var driver = play.CombatDriver!;
+        driver.PlayCard(Now(play).Hand.First(c => c.DefinitionId.value == "ap_footnote").Id, enemy);
+        var options = Assert.IsAssignableFrom<IReadOnlyList<string>>(driver.PendingOptionChoice);
+        Assert.Equal(2, options.Count);
+        driver.SupplyOptionChoice([1]);
+        Assert.Null(session.Error);
+        Assert.Equal(0, Wand(play).Exhaustion);                              // never below zero
+        play.Dispose();
+    }
+
+    [Fact]
+    public void Torn_flyleaf_takes_a_card_back_and_slips_along_after_a_cast()
+    {
+        var (play, session, enemy) = Fight(["ap_torn_flyleaf", "ap_torn_flyleaf", "ap_candle_stub", "ap_chalk_line", "ap_chalk_line"]);
+        Play(play, session, "ap_chalk_line", enemy);
+        Inscribe(play, session, "ap_candle_stub", 0);
+        Inscribe(play, session, "ap_torn_flyleaf", 1);
+        Play(play, session, "ap_chalk_line", enemy);
+        Play(play, session, "ap_torn_flyleaf", enemy);   // two Chalk Lines and a Torn Flyleaf: Focus 4
+        var driver = play.CombatDriver!;
+        if (driver.PendingCardChoice is { } installed)
+            driver.SupplyCardChoice([installed.First(c => c.DefinitionId.value == "ap_candle_stub").Id]);
+        Assert.Null(session.Error);
+        Assert.Contains(Now(play).Hand, c => c.DefinitionId.value == "ap_candle_stub");
+        Inscribe(play, session, "ap_candle_stub", 0);
+        var focus = Wand(play).Focus;
+        Cast(play, session, enemy);
+        var zones = Now(play).State.GetCardZones(Now(play).HeroId);
+        Assert.Equal("ap_torn_flyleaf", zones.GetCard(Wand(play).Slots[2]!.Value).DefinitionId.value);
+        Assert.Equal(focus - 2 + 1, Wand(play).Focus);
+        play.Dispose();
+    }
+
+    [Fact]
+    public void Candle_at_both_ends_burns_after_repeating_the_last_blow()
+    {
+        var (play, session, enemy) = Fight(["ap_candle_both_ends", "ap_candle_stub", "ap_chalk_line", "ap_chalk_line", "ap_chalk_line"]);
+        Play(play, session, "ap_chalk_line", enemy);
+        Play(play, session, "ap_chalk_line", enemy);
+        Inscribe(play, session, "ap_candle_stub", 0);
+        Inscribe(play, session, "ap_candle_both_ends", 1);
+        var before = Standing(Body(play, enemy));
+        Cast(play, session, enemy);
+        // 4 and its Singe (first slot), then 6 that spends the Singe: 4 + 6 + 2.
+        Assert.Equal(before - 12, Standing(Body(play, enemy)));
+        Assert.Contains(Now(play).State.GetCardZones(Now(play).HeroId).ExhaustPile, c => c.DefinitionId.value == "ap_candle_both_ends");
+        Assert.Equal(1, Wand(play).Occupied);
+        play.Dispose();
+    }
+
+    [Fact]
+    public void Firebreak_turns_singe_into_grit()
+    {
+        var (play, session, enemy) = Fight(["ap_firebreak", "ap_wax_drop", "ap_candle_stub", "ap_chalk_line", "ap_chalk_line"]);
+        Play(play, session, "ap_wax_drop", enemy);
+        Play(play, session, "ap_firebreak", enemy);
+        Assert.Equal(0, Stacks(Body(play, enemy), ApprenticeKeywords.Singe));
+        Assert.Equal(2, Stacks(Hero(play), ApprenticeKeywords.Grit));
+        play.Dispose();
+    }
+
+    [Fact]
+    public void Kiln_shelf_raises_the_cap()
+    {
+        var (play, session, enemy) = Fight(["ap_kiln_shelf", "ap_candle_stub", "ap_chalk_line", "ap_chalk_line", "ap_chalk_line"]);
+        Play(play, session, "ap_kiln_shelf", enemy);
+        Assert.Equal(10, Wand(play).ExhaustionCap);
+        play.Dispose();
+    }
+
+    [Fact]
+    public void Borrowed_stone_spends_grit_for_energy_and_focus()
+    {
+        var (play, session, enemy) = Fight(["ap_borrowed_stone", "ap_chalk_line", "ap_candle_stub", "ap_candle_stub", "ap_candle_stub"]);
+        Play(play, session, "ap_chalk_line", enemy);
+        var energy = Now(play).HeroEnergy;
+        var focus = Wand(play).Focus;
+        Play(play, session, "ap_borrowed_stone", enemy);
+        Assert.Equal(energy - 1 + 1, Now(play).HeroEnergy);
+        Assert.Equal(focus + 1 + 2, Wand(play).Focus);
+        play.Dispose();
+    }
+
+    [Fact]
+    public void Cold_ash_softens_the_next_attack()
+    {
+        var (play, session, enemy) = Bitten(["ap_cold_ash", "ap_wax_drop", "ap_candle_stub", "ap_candle_stub", "ap_candle_stub"]);
+        var hp = Hero(play).Health.Current;
+        Play(play, session, "ap_wax_drop", enemy);
+        Play(play, session, "ap_cold_ash", enemy);
+        Assert.Equal(4, Stacks(Body(play, enemy), ApprenticeCards.Chilled));
+        play.CombatDriver!.EndTurn();
+        var softened = hp - Hero(play).Health.Current;
+        Assert.Equal(0, Stacks(Body(play, enemy), ApprenticeCards.Chilled));
+        play.Dispose();
+
+        (play, session, enemy) = Bitten(["ap_candle_stub", "ap_candle_stub", "ap_candle_stub", "ap_candle_stub", "ap_candle_stub"]);
+        hp = Hero(play).Health.Current;
+        play.CombatDriver!.EndTurn();
+        Assert.Equal(hp - Hero(play).Health.Current - 4, softened);
+        play.Dispose();
+    }
+
+    [Fact]
+    public void Seal_press_keeps_a_ward_for_the_first_attack()
+    {
+        // Focus from Candle Stubs, so there is no other Block or Grit in the way of the bite.
+        int Bite(bool cast)
+        {
+            var (play, session, enemy) = Bitten(["ap_seal_press", "ap_chalk_line", "ap_candle_stub", "ap_candle_stub", "ap_candle_stub"]);
+            Play(play, session, "ap_candle_stub", enemy);
+            Inscribe(play, session, "ap_seal_press", 0);
+            Inscribe(play, session, "ap_chalk_line", 1);
+            Play(play, session, "ap_candle_stub", enemy);
+            if (cast)
+            {
+                Cast(play, session, enemy);
+                Assert.Equal(WandStoreTrigger.NextEnemyAttack, Wand(play).StoredSpell!.Trigger);
+                Assert.Equal(0, Block(Hero(play)));                    // kept, not spoken
+            }
+            var hp = Hero(play).Health.Current;
+            play.CombatDriver!.EndTurn();
+            Assert.Null(Wand(play).StoredSpell);
+            var taken = hp - Hero(play).Health.Current;
+            play.Dispose();
+            return taken;
+        }
+
+        var unsealed = Bite(cast: false);
+        Assert.True(unsealed >= 3, $"the bite must be at least the seal for this to say anything ({unsealed})");
+        Assert.Equal(unsealed - 3, Bite(cast: true));                   // 75% of the Chalk Line's 4
+    }
 }
