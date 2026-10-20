@@ -6,7 +6,7 @@ using static BnbContent.Tests.ApprenticeTests;
 
 namespace BnbContent.Tests;
 
-// The Apprentice's nine relics (master §10), each in a live fight of the real document: the mark it puts on him and
+// The Apprentice's eighteen relics (master §10, expansion §4), each in a live fight of the real document: the mark it puts on him and
 // the wand rule the mark switches on.
 public class ApprenticeRelicTests
 {
@@ -21,7 +21,12 @@ public class ApprenticeRelicTests
     [Fact]
     public void Every_relic_is_his_alone_and_puts_its_mark_on_him()
     {
-        Assert.Equal(9, ApprenticeRelics.All().Count);
+        Assert.Equal(18, ApprenticeRelics.All().Count);
+        // The others' shape: 3 Common, 5 Uncommon, 4 Rare in his own pool, 6 from the shop.
+        var shape = ApprenticeRelics.All().GroupBy(r => r.Rarity).ToDictionary(g => g.Key, g => g.Count());
+        Assert.Equal((3, 5, 4, 6), (shape[BnbContent.Converter.Relics.RelicAuthoring.Rarity.Common],
+            shape[BnbContent.Converter.Relics.RelicAuthoring.Rarity.Uncommon], shape[BnbContent.Converter.Relics.RelicAuthoring.Rarity.Rare],
+            shape[BnbContent.Converter.Relics.RelicAuthoring.Rarity.Shop]));
         Assert.All(ApprenticeRelics.All(), r => Assert.Equal(BnbContent.Converter.Relics.RelicAuthoring.Eligibility.Apprentice, r.Eligibility));
         foreach (var relic in ApprenticeRelics.All())
         {
@@ -186,6 +191,81 @@ public class ApprenticeRelicTests
         Assert.Null(session.Error);
         Assert.Equal(1, Wand(play).CastsThisTurn);
         Assert.Equal(before - 4, Standing(Body(play, enemy)));              // the Candle Stub alone, unheightened
+        play.Dispose();
+    }
+
+    // ── the expansion's nine ─────────────────────────────────────────────────────────────────────────────────
+
+    private static int Stacks(CombatantState c, string status) => FightProbe.StacksOf(c, status);
+
+    [Fact]
+    public void The_opening_relics_give_rote_poise_focus_singe_and_a_slot_as_the_fight_opens()
+    {
+        var (play, _, enemy) = With("ar_pencil_box", ["ap_candle_stub"]);
+        Assert.Equal(1, Stacks(Hero(play), ApprenticeKeywords.Rote));
+        play.Dispose();
+
+        (play, _, _) = With("ar_wire_spectacles", ["ap_candle_stub"]);
+        Assert.Equal((1, 2), (Stacks(Hero(play), ApprenticeKeywords.Poise), Wand(play).Focus));
+        play.Dispose();
+
+        (play, _, enemy) = With("ar_spare_wicks", ["ap_candle_stub"]);
+        Assert.Equal(2, Stacks(Body(play, enemy), ApprenticeKeywords.Singe));
+        play.Dispose();
+
+        (play, _, _) = With("ar_tutors_cane", ["ap_candle_stub"]);
+        Assert.Equal(5, Wand(play).Capacity);
+        play.Dispose();
+    }
+
+    [Fact]
+    public void Pewter_inkwell_guards_every_cast_and_star_chart_teaches_the_first_of_each_turn()
+    {
+        var deck = new[] { "ap_candle_stub", "ap_chalk_line", "ap_chalk_line", "ap_chalk_line", "ap_chalk_line" };
+        var (play, session, enemy) = With("ar_pewter_inkwell", deck);
+        Play(play, session, "ap_chalk_line", enemy);
+        Inscribe(play, session, "ap_candle_stub", 0);
+        var block = Block(Hero(play));
+        Cast(play, session, enemy);
+        Assert.Equal(block + 2, Block(Hero(play)));
+        play.Dispose();
+
+        (play, session, enemy) = With("ar_star_chart", deck);
+        Play(play, session, "ap_chalk_line", enemy);
+        Inscribe(play, session, "ap_candle_stub", 0);
+        Cast(play, session, enemy);
+        Play(play, session, "ap_chalk_line", enemy);
+        Play(play, session, "ap_chalk_line", enemy);
+        Cast(play, session, enemy);
+        Assert.Equal(1, Stacks(Hero(play), ApprenticeKeywords.Rote));   // once a turn
+        play.Dispose();
+    }
+
+    [Fact]
+    public void Slate_board_guards_an_inscription_oil_lamp_pays_a_quiet_turn_and_sand_glass_a_kept_wand()
+    {
+        var deck = new[] { "ap_candle_stub", "ap_chalk_line", "ap_chalk_line", "ap_ink_blot", "ap_flyleaf" };
+        var (play, session, _) = With("ar_slate_board", deck);
+        var block = Block(Hero(play));
+        Inscribe(play, session, "ap_candle_stub", 0);
+        Assert.Equal(block + 2, Block(Hero(play)));
+        play.Dispose();
+
+        (play, _, _) = With("ar_oil_lamp", deck);
+        var focus = Wand(play).Focus;
+        play.CombatDriver!.EndTurn();
+        Assert.Equal(focus + 1, Wand(play).Focus);
+        play.Dispose();
+
+        (play, session, var enemy) = With("ar_sand_glass", deck);
+        Play(play, session, "ap_chalk_line", enemy);
+        Play(play, session, "ap_chalk_line", enemy);
+        Inscribe(play, session, "ap_candle_stub", 0);
+        Inscribe(play, session, "ap_ink_blot", 1);
+        Inscribe(play, session, "ap_flyleaf", 2);
+        focus = Wand(play).Focus;
+        play.CombatDriver!.EndTurn();
+        Assert.Equal(focus + 1, Wand(play).Focus);
         play.Dispose();
     }
 }

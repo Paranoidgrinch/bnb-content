@@ -2,7 +2,7 @@
 
 Generated: `dotnet run --project Converter -- --art-slots ART_SLOTS.md`. **Do not edit by hand.**
 
-**919 pictures**: 410 cards, 237 relics, 269 bodies
+**928 pictures**: 410 cards, 246 relics, 269 bodies
 (every enemy, elite and boss) and 3 the player can be. Every one of them is filled today by a PLACEHOLDER — a plate with the file's own
 name and the word placeholder on it, written by `bnb-godot/tools/make-card-art.py`,
 `make-relic-art.py` and `make-enemy-art.py`. A painted picture replaces one by being saved over it, so
@@ -54,11 +54,11 @@ The relic briefs below are the design canon's own words
 `BnB_Elite_Relics_MASTER_AND_VISUAL_CANON.md` for #169–210). Frames, palettes and the label rule live
 there in full; only the object line is repeated here, because that is the line that differs per relic.
 
-## Relics — 237 pictures
+## Relics — 246 pictures
 
 The catalogue number is the design canon's, and it is not part of the file name: the id is.
 
-### Normal relics — 68
+### Normal relics — 74
 
 | # | code | title | rarity | the object |
 |---:|---|---|---|---|
@@ -126,12 +126,18 @@ The catalogue number is the design canon's, and it is not part of the file name:
 | — | `grandams_ember` | Grandam's Ember | rare | Once each combat, Hearth healing may restore HP you lost before the fight. |
 | — | `ar_sooty_ferrule` | Sooty Ferrule | common | Once per turn, after a cast in which a direct wand hit spent Singe, gain 1 Focus. |
 | — | `ar_knotted_wristcord` | Knotted Wristcord | common | After your first cast each turn that ran 1 or 2 wand cards, you may take one of them back into your hand for free. |
+| — | `ar_pencil_box` | Pencil Box | common | At the start of each combat, gain 1 Rote. |
 | — | `ar_blue_inkstone` | Blue Inkstone | uncommon | Once per turn, when Flow would return Focus after a cast, up to 2 of it may lower Exhaustion by 1 each instead. |
 | — | `ar_bent_nib` | Bent Nib | uncommon | Once per turn, right after you inscribe a card, it may trade places with a neighbouring wand card for free — with any wand card, if a Gust resolved this turn. |
+| — | `ar_wire_spectacles` | Wire Spectacles | uncommon | At the start of each combat, gain 1 Poise and 1 Focus. |
+| — | `ar_sand_glass` | Sand Glass | uncommon | At the start of your turn, if the wand holds 3 or more cards, gain 1 Focus. |
+| — | `ar_pewter_inkwell` | Pewter Inkwell | uncommon | Whenever you cast, gain 2 Block. |
 | — | `ar_brass_dividers` | Brass Dividers | rare | Once per turn, you may cast any run of neighbouring slots instead of the whole wand. It costs Focus for what it runs. |
 | — | `ar_ash_bookcord` | Ash Bookcord | rare | Once per turn, after a wand card is exhausted by Burn or Burn Out, you may inscribe a card from your hand into its slot for free. |
+| — | `ar_star_chart` | Star Chart | rare | The first time you cast each turn, gain 1 Rote. |
+| — | `ar_tutors_cane` | Tutor's Cane | rare | The wand starts each combat with one more slot. |
 
-### Shop relics — 33
+### Shop relics — 36
 
 | # | code | title | rarity | the object |
 |---:|---|---|---|---|
@@ -168,6 +174,9 @@ The catalogue number is the design canon's, and it is not part of the file name:
 | — | `ar_feather_catcher` | Feather Catcher | shop | Once per turn, one of the cards your Gust would discard may be inscribed into a free slot instead, for free. |
 | — | `ar_chalked_thumbstall` | Chalked Thumbstall | shop | The first time each enemy turn Grit softens an attack, your next cast's Exhaustion is 2 lower. |
 | — | `ar_bone_spacer` | Bone Spacer | shop | Once per turn, the first cast that crosses an empty slot between two cards gives its next Speak 25% more, and 1 more Exhaustion. |
+| — | `ar_spare_wicks` | Spare Wicks | shop | At the start of each combat, apply 2 Singe to ALL enemies. |
+| — | `ar_slate_board` | Slate Board | shop | Whenever you inscribe a card, gain 2 Block. |
+| — | `ar_oil_lamp` | Oil Lamp | shop | At the end of your turn, if you did not cast, gain 1 Focus. |
 
 ### Event relics — 25
 
