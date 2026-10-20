@@ -12,7 +12,32 @@ public static partial class ApprenticeRules
     // Chalk Circle: "if you do not cast this turn, gain 1 Grit at the end of it" — one Grit per circle drawn.
     public const string QuietCircle = "chalk_circle_quiet";
 
-    public static IReadOnlyDictionary<WandHook, StatusDefinitionId> Hooks => new Dictionary<WandHook, StatusDefinitionId>();
+    // ── his relics' marks, and the wand rule each switches on ────────────────────────────────────────────
+    public const string SootyFerrule = "sooty_ferrule_rule";
+    public const string KnottedWristcord = "knotted_wristcord_rule";
+    public const string BlueInkstone = "blue_inkstone_rule";
+    public const string BentNib = "bent_nib_rule";
+    public const string BrassDividers = "brass_dividers_rule";
+    public const string AshBookcord = "ash_bookcord_rule";
+    public const string FeatherCatcher = "feather_catcher_rule";
+    public const string ChalkedThumbstall = "chalked_thumbstall_rule";
+    public const string BoneSpacer = "bone_spacer_rule";
+
+    private static readonly (WandHook Hook, string Status, string Name)[] RelicMarks =
+    [
+        (WandHook.SootyFerrule, SootyFerrule, "Sooty Ferrule"),
+        (WandHook.KnottedWristcord, KnottedWristcord, "Knotted Wristcord"),
+        (WandHook.BlueInkstone, BlueInkstone, "Blue Inkstone"),
+        (WandHook.BentNib, BentNib, "Bent Nib"),
+        (WandHook.BrassDividers, BrassDividers, "Brass Dividers"),
+        (WandHook.AshBookcord, AshBookcord, "Ash Bookcord"),
+        (WandHook.FeatherCatcher, FeatherCatcher, "Feather Catcher"),
+        (WandHook.ChalkedThumbstall, ChalkedThumbstall, "Chalked Thumbstall"),
+        (WandHook.BoneSpacer, BoneSpacer, "Bone Spacer"),
+    ];
+
+    public static IReadOnlyDictionary<WandHook, StatusDefinitionId> Hooks =>
+        RelicMarks.ToDictionary(m => m.Hook, m => new StatusDefinitionId(m.Status));
 
     // Glass Rod: the next cast deals and gives more, and strains the wand (the master's +3 Exhaustion).
     public const string GlassRodPrimed = "glass_rod_primed";
@@ -31,6 +56,7 @@ public static partial class ApprenticeRules
             "Your next cast deals and gives 50% more, and adds 3 Exhaustion."),
         Status(GlassRodPrimedPlus, "Glass Rod+", StatusPolarity.Buff,
             "Your next cast deals and gives 65% more, and adds 3 Exhaustion."),
+        .. RelicMarks.Select(m => Status(m.Status, m.Name, StatusPolarity.Neutral, $"{m.Name}'s rule for the wand.")),
     ];
 
     // Cold Ash: "its next attack deals N less" — once, on the first hit of its next action, and gone at the end of
