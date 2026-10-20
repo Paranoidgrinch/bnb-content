@@ -2,8 +2,8 @@
 
 Generated: `dotnet run --project Converter -- --art-slots ART_SLOTS.md`. **Do not edit by hand.**
 
-**820 pictures**: 321 cards, 228 relics, 269 bodies
-(every enemy, elite and boss) and 2 the player can be. Every one of them is filled today by a PLACEHOLDER — a plate with the file's own
+**830 pictures**: 330 cards, 228 relics, 269 bodies
+(every enemy, elite and boss) and 3 the player can be. Every one of them is filled today by a PLACEHOLDER — a plate with the file's own
 name and the word placeholder on it, written by `bnb-godot/tools/make-card-art.py`,
 `make-relic-art.py` and `make-enemy-art.py`. A painted picture replaces one by being saved over it, so
 the list below can be worked down in any order and nothing has to be registered anywhere. A slot with no
@@ -612,7 +612,7 @@ ever met in a boss room is drawn as a boss, even if it also turns up as filler.
 | `waxen_bailiff` | Waxen Bailiff | 42 | 1 | The Waxen Bailiff |
 | `wrong_window_scribe` | Wrong-Window Scribe | 25 | 2 | The Wrong Window |
 
-## Characters — 2 pictures
+## Characters — 3 pictures
 
 Drawn like a body and facing RIGHT — the player stands on the left of the arena.
 
@@ -620,8 +620,9 @@ Drawn like a body and facing RIGHT — the player stands on the left of the aren
 |---|---|---|
 | `bureaucrat` | Bureaucrat | Armed with forms, stamps, and a fireproof sense of procedure. |
 | `hedge_witch` | The Hedge Witch | Turns cards into ingredients and hides behind the pot when she is not cooking. |
+| `sorcerers_apprentice` | The Sorcerer's Apprentice | Knows every incantation, and not quite what happens when one is put after another. |
 
-## Cards — 321 pictures
+## Cards — 330 pictures
 
 No visual canon was ever written for the cards, so the row carries the card's own rules
 text instead of a brief. Act = the act that unlocks it; the starters, the Junk and the
@@ -905,7 +906,16 @@ cards a boss or a door hands over are never offered and have no act.
 | `winter_bark` | Winter Bark | working | rare | Gain 16 Block. After the enemy turn, up to 6 of your unused Block becomes Ward Wax. |
 | `wolf_at_the_door` | Wolf at the Door | deed | rare | Retain. Deal 20 damage. Each turn it waits in your hand, it costs 1 less. |
 
-### Given in play — 93
+### Sorcerer's Apprentice — 4
+
+| code | title | type | rarity | what it does |
+|---|---|---|---|---|
+| `ap_candle_stub` | Candle Stub | deed | starter | Deal 6 damage. Apply 1 Singe. Wand: Speak: deal 4 damage; in the first slot cast, also apply 1 Singe. |
+| `ap_chalk_line` | Chalk Line | working | starter | Gain 5 Block and 1 Grit. Wand: Speak: gain 4 Block; if another Speak follows, this cast's Exhaustion is 1 lower. |
+| `ap_flyleaf` | Flyleaf | working | starter | Draw 1 card, then discard 1. Gain 1 Gust. Wand: Echo: repeat the last Speak at 50%, rounded up. |
+| `ap_ink_blot` | Ink Blot | working | starter | Draw 2 cards, then discard 1. Gain 1 Flow. Wand: Heighten: the next Speak deals or gives 50% more (a status-only Speak: 1 more stack). |
+
+### Given in play — 98
 
 Handed over by a boss, a door or an event rather than offered; never in a reward pool.
 
@@ -995,6 +1005,11 @@ Handed over by a boss, a door or an event rather than offered; never in a reward
 | `unfinished_citation` | Unfinished Citation | Retain. Exhaust. Clear a Reference from a card in your hand. If it is still in your hand at the end of your turn, file 1 Paperwork. |
 | `uphold_the_article` | Uphold the Article | The Article stands. Gain 6 Block. |
 | `vacant_throne_decree_action` | The Throne Stands Empty | Gain 3 Energy, draw 3, and gain 20 Block. Once a combat. |
+| `wand_burn_out` | Burn Out | Once per turn, while the wand has Exhaustion: Exhaust a wand card and lower Exhaustion by 3. |
+| `wand_cast` | Cast | Read the wand from its first slot to its last, each card doing its wand part. Costs 2 Focus for 1–2 cards, 3 for 3–4, 4 for 5–6, and adds Exhaustion. |
+| `wand_inscribe` | Inscribe | Put a card from your hand into a free wand slot instead of playing it. The first each combat is free, then 1 Focus. |
+| `wand_swap` | Swap | Two wand cards trade places. 1 Focus. |
+| `wand_withdraw` | Withdraw | A wand card goes to your discard pile. 1 Focus. |
 | `wash_the_burdened_vessel` | Wash the Burdened Vessel | Pay 1 Energy: the jar holding Burdened is emptied and cannot come back. You are Embalmed 1 for handling it. One jar a turn. |
 | `wash_the_doubt_vessel` | Wash the Doubt Vessel | Pay 1 Energy: the jar holding Doubt is emptied and cannot come back. You are Embalmed 1 for handling it. One jar a turn. |
 | `wash_the_entombed_vessel` | Wash the Entombed Vessel | Pay 1 Energy: the jar holding Entombed is emptied and cannot come back. You are Embalmed 1 for handling it. One jar a turn. |

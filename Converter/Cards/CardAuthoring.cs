@@ -51,7 +51,10 @@ public static class CardAuthoring
         IReadOnlyList<string>? Tags = null,
         CardZone Destination = CardZone.DiscardPile,
         bool RetainInHand = false,
-        bool Queued = false)
+        bool Queued = false,
+        // What the card does when it is inscribed into a wand (the Sorcerer's Apprentice) instead of played. Null:
+        // it cannot be inscribed.
+        WandImprint? Wand = null)
     {
         // A Rite exhausts (playtest 2026-09-26): its effect stays for the whole fight, so a second copy played
         // from the same deck — or the same copy drawn again — stacked the rule, which is not what a persistent
@@ -82,6 +85,7 @@ public static class CardAuthoring
             // relics that wait for that are listening to.
             Program = CombatProgramModel.Build<CardPlayContext>(
                 Queued ? Seq(Program, Apply(Keywords.QueueResolved, 1, You)) : Program),
+            Wand = Wand,
         };
     }
 
@@ -90,9 +94,10 @@ public static class CardAuthoring
     public static BnbCard Upgraded(
         this BnbCard card, string text, CombatNodeModel? program = null, int? cost = null,
         IReadOnlyList<string>? tags = null, CardZone? destination = null, bool? retainInHand = null,
-        bool? queued = null) =>
+        bool? queued = null, WandImprint? wand = null) =>
         card with
         {
+            Wand = wand ?? card.Wand,
             Id = card.Id + "+",
             Name = card.Name + "+",
             Text = text,

@@ -27,7 +27,7 @@ public static class RelicAuthoring
     public enum Rarity { Common, Uncommon, Rare, Boss, Shop, Event, Elite, Mimic }
 
     // Who may be offered it. A character's own are only eligible while that character is played.
-    public enum Eligibility { General, Bureaucrat, HedgeWitch }
+    public enum Eligibility { General, Bureaucrat, HedgeWitch, Apprentice }
 
     public sealed record BnbRelic(
         string Id,

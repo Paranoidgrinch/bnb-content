@@ -21,6 +21,7 @@ public static class FinalRelics
         .. BossRelics.All(),
         .. EliteRelics.All(),
         .. Witch.WitchRelics.All(),
+        .. Apprentice.ApprenticeRelics.All(),
     ];
 
     public static IReadOnlyList<RelicData> Compile() => All().Select(r => r.Compile()).ToList();

@@ -84,6 +84,9 @@ public static class BlueprintAssembler
                 // Bureaucrat's game reads moves.
                 .. Witch.WitchCards.Compile(),
                 .. Witch.WitchActions.All(),
+                // The Sorcerer's Apprentice's cards and his five wand actions (Apprentice/), after hers.
+                .. Apprentice.ApprenticeCards.Compile(),
+                .. Apprentice.ApprenticeWand.All(),
             ],
             EnemyMapper.MapActions(enemies).ToList(),
             // The act's map is GENERATED per run from MapGeneration below; the authored map stays empty.
@@ -143,7 +146,10 @@ public static class BlueprintAssembler
                 .. Events.ActOneEventObjects.Statuses(), .. Events.ActTwoEventObjects.Statuses(),
                 .. Events.ActThreeEventObjects.Statuses(),
                 .. Witch.WitchKeywords.All(), .. Witch.WitchRules.All(),
+                .. Apprentice.ApprenticeKeywords.All(),
             ],
+            // The Apprentice's wand: who carries one, and every number it works with (Apprentice/ApprenticeWand).
+            Wand = Apprentice.ApprenticeWand.Rules,
             // ONLY THE AUTHORED POOLS SHIP. Until 2026-09-10 every ported v2 relic whose id did not meet a
             // final one shipped alongside them — 47 of them — because the ported events granted some by
             // name. Nothing does any more: every faucet in the game (elite, boss, mimic, treasure, shop, the
@@ -168,6 +174,7 @@ public static class BlueprintAssembler
                 {
                     Tutorial = Tutorial.Build(maps[0].Map.Spec, Tutorial.WitchLearner(Witch.WitchCharacter.StartWith(witchHot))),
                 },
+                Apprentice.ApprenticeCharacter.Roster(),
             ],
             // The tutorial: six city rooms in a fixed order, realised from the city's own rules (Tutorial.cs).
             Tutorial = Tutorial.Build(maps[0].Map.Spec, start),
@@ -204,6 +211,16 @@ public static class BlueprintAssembler
                 },
             },
         };
+        // …and so do the Apprentice's five wand actions.
+        var withWand = new Dictionary<string, EntityPresentation>(blueprint.Presentation.Cards, StringComparer.Ordinal);
+        foreach (var id in Apprentice.ApprenticeWand.Actions)
+            withWand[id] = new EntityPresentation
+            {
+                Art = $"cards/{id}.png",
+                FlavorText = blueprint.Cards.First(c => c.Id == id).DescriptionKey,
+                Tags = ["action"],
+            };
+        blueprint = blueprint with { Presentation = blueprint.Presentation with { Cards = withWand } };
         // …and where the archive shelves each card and relic (ArchiveSections).
         var annotated = ArchiveSections.Annotate(blueprint);
         var finished = blueprint with
@@ -275,7 +292,7 @@ public static class BlueprintAssembler
         var enemyRoles = EnemyRole.Of(data);
         return new()
         {
-            Cards = Cards.FinalCards.All().Concat(Witch.WitchCards.All()).ToDictionary(
+            Cards = Cards.FinalCards.All().Concat(Witch.WitchCards.All()).Concat(Apprentice.ApprenticeCards.All()).ToDictionary(
                 c => c.Id,
                 c => new EntityPresentation
                 {
@@ -374,6 +391,11 @@ public static class BlueprintAssembler
                 {
                     Art = $"characters/{Witch.WitchCharacter.Id}.png",
                     FlavorText = "Turns cards into ingredients and hides behind the pot when she is not cooking.",
+                },
+                [Apprentice.ApprenticeCharacter.Id] = new()
+                {
+                    Art = $"characters/{Apprentice.ApprenticeCharacter.Id}.png",
+                    FlavorText = "Knows every incantation, and not quite what happens when one is put after another.",
                 },
             },
             Game = new EntityPresentation
