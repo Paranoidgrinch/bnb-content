@@ -12,8 +12,10 @@ writes `game.roguedeck.json`, a complete RunBlueprint as defined by the RogueDec
 | [bnb-runs](https://github.com/Paranoidgrinch/bnb-runs) | recorded playtest runs |
 
 The current export has five acts (The Old City Offices, The Archives, The Green Docket, The Licensing
-Labyrinth, The Divine Ledger) and two playable characters, the Bureaucrat and the Hedge Witch: 539 card
-definitions, 228 relics, 294 encounters and 104 events. The `*_PLAN.md` files are the design and build plans
+Labyrinth, The Divine Ledger) and three playable characters, the Bureaucrat, the Hedge Witch and the
+Sorcerer's Apprentice: 628 card definitions, 237 relics, 294 encounters and 104 events. The Apprentice's cards
+have a second mode, a wand imprint, read when the card is inscribed into his wand (`Converter/Apprentice/`,
+`APPRENTICE_PLAN.md`); the fifty general cards carry one as well. The `*_PLAN.md` files are the design and build plans
 per act and topic.
 
 ## Layout
