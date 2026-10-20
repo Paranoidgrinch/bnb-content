@@ -2,7 +2,7 @@
 
 Generated: `dotnet run --project Converter -- --art-slots ART_SLOTS.md`. **Do not edit by hand.**
 
-**830 pictures**: 330 cards, 228 relics, 269 bodies
+**846 pictures**: 346 cards, 228 relics, 269 bodies
 (every enemy, elite and boss) and 3 the player can be. Every one of them is filled today by a PLACEHOLDER — a plate with the file's own
 name and the word placeholder on it, written by `bnb-godot/tools/make-card-art.py`,
 `make-relic-art.py` and `make-enemy-art.py`. A painted picture replaces one by being saved over it, so
@@ -622,7 +622,7 @@ Drawn like a body and facing RIGHT — the player stands on the left of the aren
 | `hedge_witch` | The Hedge Witch | Turns cards into ingredients and hides behind the pot when she is not cooking. |
 | `sorcerers_apprentice` | The Sorcerer's Apprentice | Knows every incantation, and not quite what happens when one is put after another. |
 
-## Cards — 330 pictures
+## Cards — 346 pictures
 
 No visual canon was ever written for the cards, so the row carries the card's own rules
 text instead of a brief. Act = the act that unlocks it; the starters, the Junk and the
@@ -906,14 +906,30 @@ cards a boss or a door hands over are never offered and have no act.
 | `winter_bark` | Winter Bark | working | rare | Gain 16 Block. After the enemy turn, up to 6 of your unused Block becomes Ward Wax. |
 | `wolf_at_the_door` | Wolf at the Door | deed | rare | Retain. Deal 20 damage. Each turn it waits in your hand, it costs 1 less. |
 
-### Sorcerer's Apprentice — 4
+### Sorcerer's Apprentice — 20
 
 | code | title | type | rarity | what it does |
 |---|---|---|---|---|
+| `ap_blotting_sand` | Blotting Sand | working | common | Remove 1 stack of a negative status from yourself. Gain 5 Block. Wand: Shape — Remedy: the next Speak that would put a negative status on an enemy puts none; instead remove up to 2 negative stacks from yourself and gain 3 Block for each. |
 | `ap_candle_stub` | Candle Stub | deed | starter | Deal 6 damage. Apply 1 Singe. Wand: Speak: deal 4 damage; in the first slot cast, also apply 1 Singe. |
+| `ap_chalk_circle` | Chalk Circle | working | common | Gain 7 Block. If you do not cast this turn, gain 1 Grit at the end of it. Wand: Ground: this cast's Exhaustion is 2 lower. |
 | `ap_chalk_line` | Chalk Line | working | starter | Gain 5 Block and 1 Grit. Wand: Speak: gain 4 Block; if another Speak follows, this cast's Exhaustion is 1 lower. |
+| `ap_clay_weight` | Clay Weight | working | common | Spend up to 2 Focus: gain 5 Block for each. If you spend none, gain 4 Block. Wand: Ground: this cast's Exhaustion is 1 lower for each heavy instruction before this one (3 at most). |
+| `ap_cup_of_water` | Cup of Water | working | common | Spend up to 2 Flow: draw 1 card and gain 3 Block for each. With no Flow, gain 2 Flow instead. Wand: Shape — Soak: the next damage-only Speak gives Block equal to 80% of its damage instead of dealing it. |
+| `ap_dust_mote` | Dust Mote | working | common | Gain 5 Block. If you inscribed a card this turn, draw 1 card. Wand: Speak: deal 3 damage, +3 for each card inscribed since your last cast (+6 at most). |
 | `ap_flyleaf` | Flyleaf | working | starter | Draw 1 card, then discard 1. Gain 1 Gust. Wand: Echo: repeat the last Speak at 50%, rounded up. |
+| `ap_folded_leaf` | Folded Leaf | working | common | Put a card from your discard pile on top of your draw pile. Gain 1 Gust. Wand: Keep: the next Speak is stored instead of spoken, and goes first in your next successful cast. |
 | `ap_ink_blot` | Ink Blot | working | starter | Draw 2 cards, then discard 1. Gain 1 Flow. Wand: Heighten: the next Speak deals or gives 50% more (a status-only Speak: 1 more stack). |
+| `ap_ink_dish` | Ink Dish | working | common | Look at the top 3 cards of your draw pile and put 1 into your hand. If it costs 2 or more, gain 1 Flow. Wand: Speak — Reservoir: after the cast, gain 1 Flow. |
+| `ap_masons_dust` | Mason's Dust | working | common | Spend 1 Grit to gain 5 Ward Wax. If you cannot, gain 1 Grit instead. Wand: Speak: spend up to 2 Grit and gain 3 Ward Wax for each; with no Grit, gain 4 Block. |
+| `ap_open_casement` | Open Casement | working | common | Two wand cards trade places for free, then draw 1 card. With fewer than two in the wand, gain 1 Gust instead. Wand: Order: the next two instructions trade places before they run. |
+| `ap_penny_whistle` | Penny Whistle | deed | common | Deal 5 damage. If you have played another card this turn, gain 1 more Focus. Wand: Stop — Cut: the cast ends after the Speak before this one; if a Speak resolved, its Exhaustion is 2 lower. |
+| `ap_pinprick` | Pinprick | deed | common | Deal 5 damage. If the target intends to attack, gain 5 Block. Wand: Clause: if the target intends to attack, the next damaging Speak hits once more for 3. |
+| `ap_snuffer` | Snuffer | deed | common | Spend up to 3 Singe on the target; deal 4 damage for each. Wand: Ground — Quench: spend up to 2 Singe on the target; this cast's Exhaustion is 2 lower for each. |
+| `ap_spare_notch` | Spare Notch | working | common | The wand has one more slot this combat (6 at most). At 6, gain 8 Block instead. Exhaust. Wand: Ground: this cast's Exhaustion is 1 lower, or 3 lower when 5 or more instructions run. |
+| `ap_wax_drop` | Wax Drop | working | common | Apply 2 Singe to ALL enemies. Wand: Heighten — Brand: the next damaging Speak applies 1 Singe to each enemy it hits (3 in all at most). |
+| `ap_wick_trimmer` | Wick Trimmer | working | common | Choose: Exhaust another card from your hand and draw 2 cards; or gain 5 Block. Wand: Burn: gain 7 Block; this cast's Exhaustion is 2 lower; this card is exhausted after the cast. |
+| `ap_windblown_leaf` | Windblown Leaf | working | common | Put a card from your hand at the bottom of your draw pile, then draw 2 cards. Gain 1 Gust. Wand: Shape — Scatter: the next single-target damaging Speak hits ALL enemies at 60%. |
 
 ### Given in play — 98
 
