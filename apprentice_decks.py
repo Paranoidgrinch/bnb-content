@@ -9,114 +9,118 @@ import json, collections
 
 STARTER = {'ap_candle_stub': 4, 'ap_chalk_line': 4, 'ap_ink_blot': 1, 'ap_flyleaf': 1}
 STARTERS = set(STARTER)
-COMMONS = {'ap_wax_drop', 'ap_snuffer', 'ap_ink_dish', 'ap_folded_leaf', 'ap_blotting_sand', 'ap_chalk_circle',
-           'ap_clay_weight', 'ap_masons_dust', 'ap_open_casement', 'ap_windblown_leaf', 'ap_penny_whistle',
-           'ap_wick_trimmer', 'ap_spare_notch', 'ap_pinprick', 'ap_cup_of_water', 'ap_dust_mote'}
-UNCOMMONS = {'ap_split_wick', 'ap_cracked_slate', 'ap_crosswind', 'ap_wrong_way_round', 'ap_rubbing', 'ap_watermark',
-             'ap_torn_flyleaf', 'ap_footnote', 'ap_candle_both_ends', 'ap_firebreak', 'ap_kiln_shelf',
-             'ap_borrowed_stone', 'ap_cold_ash', 'ap_seal_press'}
-RARES = {'ap_masters_correction', 'ap_final_examination', 'ap_lessons_ash', 'ap_glass_rod', 'ap_second_hand',
-         'ap_fourfold_lesson', 'ap_perfect_copy', 'ap_last_word'}
+# card -> (rarity, act gate)
+POOL = {}
+for c in ['wax_drop', 'snuffer', 'ink_dish', 'folded_leaf', 'blotting_sand', 'chalk_circle', 'clay_weight', 'masons_dust',
+          'open_casement', 'windblown_leaf', 'penny_whistle', 'wick_trimmer', 'spare_notch', 'pinprick', 'cup_of_water',
+          'dust_mote', 'slate_pencil', 'blotter']:
+    POOL['ap_' + c] = ('common', 1)
+for c in ['split_wick', 'cracked_slate', 'crosswind', 'wrong_way_round', 'rubbing', 'watermark', 'torn_flyleaf', 'footnote',
+          'candle_both_ends', 'firebreak', 'kiln_shelf', 'borrowed_stone', 'cold_ash', 'seal_press', 'recitation',
+          'steady_hand', 'kindling', 'ember_tongs', 'tracing_paper', 'quill_knife', 'inkhorn']:
+    POOL['ap_' + c] = ('uncommon', 1)
+for c in ['masters_correction', 'final_examination', 'lessons_ash', 'glass_rod', 'second_hand', 'fourfold_lesson',
+          'perfect_copy', 'last_word', 'copybook']:
+    POOL['ap_' + c] = ('rare', 1)
+for c, r, act in [('sealing_wax', 'common', 2), ('drill_book', 'common', 2), ('red_pencil', 'uncommon', 2),
+                  ('bookend', 'uncommon', 2), ('pressed_flower', 'uncommon', 2), ('soot_mark', 'uncommon', 2),
+                  ('stone_tablet', 'uncommon', 2), ('weathervane', 'uncommon', 2), ('lectern', 'uncommon', 2),
+                  ('lead_type', 'uncommon', 2), ('scorch_mark', 'uncommon', 2), ('borrowed_grimoire', 'rare', 2),
+                  ('bell_book', 'rare', 2), ('long_recitation', 'rare', 2), ('warding_primer', 'rare', 2),
+                  ('examiners_bell', 'rare', 2), ('moss_poultice', 'common', 3), ('wildfire', 'uncommon', 3),
+                  ('rain_barrel', 'uncommon', 3), ('standing_stone', 'uncommon', 3), ('burning_glass', 'rare', 3),
+                  ('masters_hat', 'rare', 3), ('thunderclap', 'rare', 3), ('millstone', 'rare', 3),
+                  ('spring_tide', 'rare', 3), ('slide_rule', 'common', 4), ('compendium', 'uncommon', 4),
+                  ('final_draft', 'uncommon', 4), ('magnum_opus', 'rare', 4), ('sorcerers_staff', 'rare', 4),
+                  ('unfinished_spell', 'rare', 4), ('apprentices_oath', 'rare', 4)]:
+    POOL['ap_' + c] = (r, act)
 RELICS = {'ar_sooty_ferrule', 'ar_knotted_wristcord', 'ar_blue_inkstone', 'ar_bent_nib', 'ar_brass_dividers',
-          'ar_ash_bookcord', 'ar_feather_catcher', 'ar_chalked_thumbstall', 'ar_bone_spacer'}
+          'ar_ash_bookcord', 'ar_feather_catcher', 'ar_chalked_thumbstall', 'ar_bone_spacer', 'ar_pencil_box',
+          'ar_wire_spectacles', 'ar_sand_glass', 'ar_pewter_inkwell', 'ar_star_chart', 'ar_tutors_cane', 'ar_spare_wicks',
+          'ar_slate_board', 'ar_oil_lamp'}
 
 # The Bureaucrat's budget (FAMILY_DECKS.md), with his glue places given to the build.
 BUDGET = {2: dict(adds=12, removes=3, ups=5, rares=2, relics=2),
           3: dict(adds=16, removes=4, ups=9, rares=3, relics=3)}
 
-# build: {act: (removed starters, build cards {id: n}, upgraded ids [repeats = copies], relics)}
+def n(**cards): return {'ap_' + k: v for k, v in cards.items()}
+def u(*ids): return ['ap_' + i for i in ids]
+def r(*ids): return ['ar_' + i for i in ids]
+
+# build: {act: (removed starters, build cards {id: n}, upgraded ids [repeats = copies], relics)}  — on the v0.5 pool
 D = {
  'Short Hand': {
-  2: ({'ap_chalk_line': 1, 'ap_ink_blot': 1, 'ap_candle_stub': 1},
-      {'ap_penny_whistle': 2, 'ap_pinprick': 2, 'ap_dust_mote': 2, 'ap_split_wick': 1, 'ap_torn_flyleaf': 1,
-       'ap_footnote': 1, 'ap_wax_drop': 1, 'ap_ink_dish': 1, 'ap_flyleaf': 1},
-      ['ap_candle_stub', 'ap_candle_stub', 'ap_penny_whistle', 'ap_split_wick', 'ap_pinprick'],
-      ['ar_sooty_ferrule', 'ar_knotted_wristcord']),
-  3: ({'ap_chalk_line': 2, 'ap_ink_blot': 1, 'ap_candle_stub': 1},
-      {'ap_penny_whistle': 2, 'ap_pinprick': 2, 'ap_dust_mote': 2, 'ap_split_wick': 2, 'ap_torn_flyleaf': 1,
-       'ap_footnote': 1, 'ap_wax_drop': 1, 'ap_ink_dish': 1, 'ap_flyleaf': 1, 'ap_cracked_slate': 1,
-       'ap_glass_rod': 1, 'ap_last_word': 1},
-      ['ap_candle_stub', 'ap_candle_stub', 'ap_penny_whistle', 'ap_penny_whistle', 'ap_split_wick', 'ap_split_wick',
-       'ap_pinprick', 'ap_cracked_slate', 'ap_dust_mote'],
-      ['ar_sooty_ferrule', 'ar_knotted_wristcord', 'ar_feather_catcher'])},
+  2: (n(chalk_line=1, ink_blot=1, candle_stub=1),
+      n(penny_whistle=2, pinprick=2, slate_pencil=2, red_pencil=1, tracing_paper=1, recitation=1, kindling=1,
+        dust_mote=1, examiners_bell=1),
+      u('candle_stub', 'candle_stub', 'slate_pencil', 'penny_whistle', 'red_pencil'), r('knotted_wristcord', 'star_chart')),
+  3: (n(chalk_line=2, ink_blot=1, candle_stub=1),
+      n(penny_whistle=2, pinprick=2, slate_pencil=2, red_pencil=1, tracing_paper=1, recitation=1, kindling=1,
+        dust_mote=1, examiners_bell=1, thunderclap=1, borrowed_grimoire=1, quill_knife=1, soot_mark=1),
+      u('candle_stub', 'candle_stub', 'slate_pencil', 'slate_pencil', 'penny_whistle', 'penny_whistle', 'red_pencil',
+        'pinprick', 'examiners_bell'), r('knotted_wristcord', 'star_chart', 'pencil_box'))},
  'Long Lesson': {
-  2: ({'ap_candle_stub': 1, 'ap_chalk_line': 2},
-      {'ap_spare_notch': 2, 'ap_chalk_circle': 2, 'ap_clay_weight': 2, 'ap_kiln_shelf': 1, 'ap_ink_blot': 1,
-       'ap_dust_mote': 2, 'ap_glass_rod': 1, 'ap_split_wick': 1},
-      ['ap_spare_notch', 'ap_kiln_shelf', 'ap_clay_weight', 'ap_ink_blot', 'ap_candle_stub'],
-      ['ar_blue_inkstone', 'ar_chalked_thumbstall']),
-  3: ({'ap_candle_stub': 1, 'ap_chalk_line': 3},
-      {'ap_spare_notch': 2, 'ap_chalk_circle': 2, 'ap_clay_weight': 2, 'ap_kiln_shelf': 1, 'ap_ink_blot': 2,
-       'ap_dust_mote': 2, 'ap_glass_rod': 1, 'ap_split_wick': 1, 'ap_cracked_slate': 1, 'ap_final_examination': 1,
-       'ap_ink_dish': 1},
-      ['ap_spare_notch', 'ap_spare_notch', 'ap_kiln_shelf', 'ap_clay_weight', 'ap_clay_weight', 'ap_ink_blot',
-       'ap_candle_stub', 'ap_candle_stub', 'ap_cracked_slate'],
-      ['ar_blue_inkstone', 'ar_chalked_thumbstall', 'ar_bone_spacer'])},
+  2: (n(candle_stub=1, chalk_line=2),
+      n(spare_notch=2, chalk_circle=1, clay_weight=1, kiln_shelf=1, ink_blot=1, red_pencil=1, bookend=1, dust_mote=1,
+        lead_type=1, steady_hand=1, long_recitation=1),
+      u('spare_notch', 'kiln_shelf', 'red_pencil', 'bookend', 'candle_stub'), r('blue_inkstone', 'tutors_cane')),
+  3: (n(candle_stub=1, chalk_line=3),
+      n(spare_notch=2, chalk_circle=1, clay_weight=1, kiln_shelf=1, ink_blot=1, red_pencil=2, bookend=1, lead_type=1,
+        steady_hand=1, long_recitation=1, standing_stone=1, copybook=1, millstone=1, dust_mote=1),
+      u('spare_notch', 'spare_notch', 'kiln_shelf', 'red_pencil', 'red_pencil', 'bookend', 'candle_stub', 'candle_stub',
+        'standing_stone'), r('blue_inkstone', 'tutors_cane', 'sand_glass'))},
  'Ash Wand': {
-  2: ({'ap_chalk_line': 1, 'ap_candle_stub': 1, 'ap_ink_blot': 1},
-      {'ap_wick_trimmer': 2, 'ap_candle_both_ends': 2, 'ap_rubbing': 1, 'ap_borrowed_stone': 2, 'ap_lessons_ash': 1,
-       'ap_second_hand': 1, 'ap_footnote': 1, 'ap_dust_mote': 1, 'ap_pinprick': 1},
-      ['ap_wick_trimmer', 'ap_candle_both_ends', 'ap_borrowed_stone', 'ap_candle_stub', 'ap_candle_stub'],
-      ['ar_ash_bookcord', 'ar_sooty_ferrule']),
-  3: ({'ap_chalk_line': 2, 'ap_candle_stub': 1, 'ap_ink_blot': 1},
-      {'ap_wick_trimmer': 2, 'ap_candle_both_ends': 2, 'ap_rubbing': 1, 'ap_borrowed_stone': 2, 'ap_lessons_ash': 1,
-       'ap_second_hand': 1, 'ap_footnote': 2, 'ap_dust_mote': 1, 'ap_pinprick': 2, 'ap_cracked_slate': 1,
-       'ap_last_word': 1},
-      ['ap_wick_trimmer', 'ap_wick_trimmer', 'ap_candle_both_ends', 'ap_candle_both_ends', 'ap_borrowed_stone',
-       'ap_candle_stub', 'ap_candle_stub', 'ap_pinprick', 'ap_cracked_slate'],
-      ['ar_ash_bookcord', 'ar_sooty_ferrule', 'ar_chalked_thumbstall'])},
+  2: (n(chalk_line=1, candle_stub=1, ink_blot=1),
+      n(wick_trimmer=2, candle_both_ends=2, rubbing=1, borrowed_stone=1, lessons_ash=1, second_hand=1, lectern=1,
+        footnote=1, slate_pencil=1, pinprick=1),
+      u('wick_trimmer', 'candle_both_ends', 'borrowed_stone', 'candle_stub', 'lectern'), r('ash_bookcord', 'sooty_ferrule')),
+  3: (n(chalk_line=2, candle_stub=1, ink_blot=1),
+      n(wick_trimmer=2, candle_both_ends=2, rubbing=1, borrowed_stone=2, lessons_ash=1, second_hand=1, masters_hat=1,
+        lectern=1, footnote=1, slate_pencil=1, pinprick=1, red_pencil=1, moss_poultice=1),
+      u('wick_trimmer', 'wick_trimmer', 'candle_both_ends', 'candle_both_ends', 'borrowed_stone', 'candle_stub',
+        'candle_stub', 'lectern', 'red_pencil'), r('ash_bookcord', 'sooty_ferrule', 'pewter_inkwell'))},
  'Elemental Tempo': {
-  2: ({'ap_chalk_line': 2, 'ap_ink_blot': 1},
-      {'ap_wax_drop': 2, 'ap_snuffer': 2, 'ap_cup_of_water': 1, 'ap_masons_dust': 1, 'ap_firebreak': 1,
-       'ap_cold_ash': 1, 'ap_crosswind': 1, 'ap_watermark': 1, 'ap_fourfold_lesson': 1, 'ap_split_wick': 1},
-      ['ap_wax_drop', 'ap_snuffer', 'ap_snuffer', 'ap_candle_stub', 'ap_split_wick'],
-      ['ar_sooty_ferrule', 'ar_feather_catcher']),
-  3: ({'ap_chalk_line': 3, 'ap_ink_blot': 1},
-      {'ap_wax_drop': 2, 'ap_snuffer': 2, 'ap_cup_of_water': 2, 'ap_masons_dust': 1, 'ap_firebreak': 1,
-       'ap_cold_ash': 1, 'ap_crosswind': 1, 'ap_watermark': 1, 'ap_fourfold_lesson': 1, 'ap_split_wick': 2,
-       'ap_seal_press': 1, 'ap_glass_rod': 1},
-      ['ap_wax_drop', 'ap_wax_drop', 'ap_snuffer', 'ap_snuffer', 'ap_candle_stub', 'ap_candle_stub', 'ap_split_wick',
-       'ap_split_wick', 'ap_fourfold_lesson'],
-      ['ar_sooty_ferrule', 'ar_feather_catcher', 'ar_chalked_thumbstall'])},
+  2: (n(chalk_line=2, ink_blot=1),
+      n(wax_drop=1, snuffer=2, kindling=1, ember_tongs=2, soot_mark=1, cup_of_water=1, stone_tablet=1,
+        fourfold_lesson=1, bell_book=1, split_wick=1),
+      u('ember_tongs', 'ember_tongs', 'snuffer', 'kindling', 'candle_stub'), r('sooty_ferrule', 'spare_wicks')),
+  3: (n(chalk_line=3, ink_blot=1),
+      n(wax_drop=1, snuffer=2, kindling=1, ember_tongs=2, soot_mark=1, cup_of_water=1, stone_tablet=1, wildfire=1,
+        rain_barrel=1, fourfold_lesson=1, bell_book=1, burning_glass=1, split_wick=1, firebreak=1),
+      u('ember_tongs', 'ember_tongs', 'snuffer', 'snuffer', 'kindling', 'candle_stub', 'candle_stub', 'bell_book',
+        'soot_mark'), r('sooty_ferrule', 'spare_wicks', 'feather_catcher'))},
  'Modular Wand': {
-  2: ({'ap_candle_stub': 1, 'ap_chalk_line': 1, 'ap_ink_blot': 1},
-      {'ap_penny_whistle': 2, 'ap_split_wick': 1, 'ap_pinprick': 2, 'ap_chalk_circle': 1, 'ap_seal_press': 1,
-       'ap_folded_leaf': 1, 'ap_dust_mote': 1, 'ap_cracked_slate': 1, 'ap_masters_correction': 1, 'ap_footnote': 1},
-      ['ap_penny_whistle', 'ap_split_wick', 'ap_seal_press', 'ap_candle_stub', 'ap_pinprick'],
-      ['ar_brass_dividers', 'ar_bone_spacer']),
-  3: ({'ap_candle_stub': 1, 'ap_chalk_line': 2, 'ap_ink_blot': 1},
-      {'ap_penny_whistle': 2, 'ap_split_wick': 2, 'ap_pinprick': 2, 'ap_chalk_circle': 1, 'ap_seal_press': 2,
-       'ap_folded_leaf': 1, 'ap_dust_mote': 1, 'ap_cracked_slate': 1, 'ap_masters_correction': 1, 'ap_footnote': 1,
-       'ap_final_examination': 1, 'ap_spare_notch': 1},
-      ['ap_penny_whistle', 'ap_penny_whistle', 'ap_split_wick', 'ap_split_wick', 'ap_seal_press', 'ap_candle_stub',
-       'ap_pinprick', 'ap_pinprick', 'ap_cracked_slate'],
-      ['ar_brass_dividers', 'ar_bone_spacer', 'ar_sooty_ferrule'])},
+  2: (n(candle_stub=1, chalk_line=1, ink_blot=1),
+      n(penny_whistle=2, split_wick=1, pinprick=2, chalk_circle=1, seal_press=1, folded_leaf=1, dust_mote=1,
+        cracked_slate=1, masters_correction=1, red_pencil=1),
+      u('penny_whistle', 'split_wick', 'seal_press', 'candle_stub', 'red_pencil'), r('brass_dividers', 'bone_spacer')),
+  3: (n(candle_stub=1, chalk_line=2, ink_blot=1),
+      n(penny_whistle=2, split_wick=2, pinprick=2, chalk_circle=1, seal_press=1, folded_leaf=1, cracked_slate=1,
+        masters_correction=1, red_pencil=1, warding_primer=1, slate_pencil=1, examiners_bell=1, moss_poultice=1),
+      u('penny_whistle', 'penny_whistle', 'split_wick', 'split_wick', 'seal_press', 'candle_stub', 'pinprick',
+        'red_pencil', 'cracked_slate'), r('brass_dividers', 'bone_spacer', 'pewter_inkwell'))},
  'Moving Text': {
-  2: ({'ap_chalk_line': 2, 'ap_ink_blot': 1},
-      {'ap_open_casement': 2, 'ap_torn_flyleaf': 2, 'ap_wrong_way_round': 2, 'ap_perfect_copy': 1,
-       'ap_windblown_leaf': 1, 'ap_ink_dish': 1, 'ap_dust_mote': 1, 'ap_split_wick': 1, 'ap_folded_leaf': 1},
-      ['ap_open_casement', 'ap_torn_flyleaf', 'ap_wrong_way_round', 'ap_candle_stub', 'ap_candle_stub'],
-      ['ar_bent_nib', 'ar_knotted_wristcord']),
-  3: ({'ap_chalk_line': 3, 'ap_ink_blot': 1},
-      {'ap_open_casement': 2, 'ap_torn_flyleaf': 2, 'ap_wrong_way_round': 2, 'ap_perfect_copy': 1,
-       'ap_windblown_leaf': 1, 'ap_ink_dish': 1, 'ap_dust_mote': 2, 'ap_split_wick': 2, 'ap_folded_leaf': 1,
-       'ap_cracked_slate': 1, 'ap_masters_correction': 1},
-      ['ap_open_casement', 'ap_open_casement', 'ap_torn_flyleaf', 'ap_wrong_way_round', 'ap_candle_stub',
-       'ap_candle_stub', 'ap_split_wick', 'ap_split_wick', 'ap_cracked_slate'],
-      ['ar_bent_nib', 'ar_knotted_wristcord', 'ar_sooty_ferrule'])},
- # Unoptimised: one of each common in list order, the starter upgraded — what a player who takes whatever comes gets.
+  2: (n(chalk_line=2, ink_blot=1),
+      n(open_casement=2, torn_flyleaf=2, wrong_way_round=2, perfect_copy=1, windblown_leaf=1, weathervane=1,
+        ink_dish=1, slate_pencil=1, red_pencil=1),
+      u('open_casement', 'torn_flyleaf', 'wrong_way_round', 'candle_stub', 'red_pencil'), r('bent_nib', 'knotted_wristcord')),
+  3: (n(chalk_line=3, ink_blot=1),
+      n(open_casement=2, torn_flyleaf=2, wrong_way_round=2, perfect_copy=1, windblown_leaf=1, weathervane=1,
+        ink_dish=1, slate_pencil=2, red_pencil=1, masters_correction=1, copybook=1, dust_mote=1),
+      u('open_casement', 'open_casement', 'torn_flyleaf', 'wrong_way_round', 'candle_stub', 'candle_stub',
+        'slate_pencil', 'slate_pencil', 'red_pencil'), r('bent_nib', 'knotted_wristcord', 'star_chart'))},
+ # Unoptimised: one of each of twelve (sixteen) commons, the starter upgraded — whatever comes.
  'Common-heavy': {
-  2: ({'ap_candle_stub': 1, 'ap_chalk_line': 1, 'ap_ink_blot': 1},
-      {c: 1 for c in ['ap_wax_drop', 'ap_snuffer', 'ap_ink_dish', 'ap_folded_leaf', 'ap_blotting_sand',
-                      'ap_chalk_circle', 'ap_clay_weight', 'ap_masons_dust', 'ap_open_casement', 'ap_windblown_leaf',
-                      'ap_penny_whistle', 'ap_wick_trimmer']},
-      ['ap_candle_stub', 'ap_candle_stub', 'ap_chalk_line', 'ap_chalk_line', 'ap_flyleaf'],
-      ['ar_feather_catcher', 'ar_chalked_thumbstall']),
-  3: ({'ap_candle_stub': 1, 'ap_chalk_line': 2, 'ap_ink_blot': 1},
-      {c: 1 for c in sorted(COMMONS)},
-      ['ap_candle_stub', 'ap_candle_stub', 'ap_candle_stub', 'ap_chalk_line', 'ap_chalk_line', 'ap_flyleaf',
-       'ap_wax_drop', 'ap_snuffer', 'ap_pinprick'],
-      ['ar_feather_catcher', 'ar_chalked_thumbstall', 'ar_sooty_ferrule'])},
+  2: (n(candle_stub=1, chalk_line=1, ink_blot=1),
+      {c: 1 for c in u('slate_pencil', 'blotter', 'sealing_wax', 'drill_book', 'wax_drop', 'snuffer', 'pinprick',
+                       'dust_mote', 'penny_whistle', 'clay_weight', 'chalk_circle', 'wick_trimmer')},
+      u('candle_stub', 'candle_stub', 'chalk_line', 'chalk_line', 'flyleaf'), r('feather_catcher', 'pencil_box')),
+  3: (n(candle_stub=1, chalk_line=2, ink_blot=1),
+      {c: 1 for c in u('slate_pencil', 'blotter', 'sealing_wax', 'drill_book', 'wax_drop', 'snuffer', 'pinprick',
+                       'dust_mote', 'penny_whistle', 'clay_weight', 'chalk_circle', 'wick_trimmer', 'moss_poultice',
+                       'masons_dust', 'windblown_leaf', 'ink_dish')},
+      u('candle_stub', 'candle_stub', 'candle_stub', 'chalk_line', 'chalk_line', 'flyleaf', 'slate_pencil', 'blotter',
+        'drill_book'), r('feather_catcher', 'pencil_box', 'spare_wicks'))},
 }
 
 out = []; errors = []
@@ -127,12 +131,14 @@ for build, acts in D.items():
         if sum(removed.values()) != b['removes']: errors.append(f"{name}: {sum(removed.values())} removed")
         if len(ups) != b['ups']: errors.append(f"{name}: {len(ups)} upgrades")
         if len(relics) != b['relics'] or any(r not in RELICS for r in relics): errors.append(f"{name}: relics {relics}")
-        for c, n in cards.items():
-            if c not in STARTERS | COMMONS | UNCOMMONS | RARES: errors.append(f"{name}: {c} unknown"); continue
-            if n > (1 if c in RARES else 3): errors.append(f"{name}: {c} x{n}")
-        if sum(n for c, n in cards.items() if c in RARES) > b['rares']: errors.append(f"{name}: too many rares")
+        for c, k in cards.items():
+            if c in STARTERS: continue
+            if c not in POOL: errors.append(f"{name}: {c} unknown"); continue
+            if POOL[c][1] > act: errors.append(f"{name}: {c} is gated at act {POOL[c][1]}")
+            if k > (1 if POOL[c][0] == 'rare' else 3): errors.append(f"{name}: {c} x{k}")
+        if sum(k for c, k in cards.items() if POOL.get(c, ('',))[0] == 'rare') > b['rares']: errors.append(f"{name}: too many rares")
         deck = collections.Counter(STARTER); deck.subtract(removed)
-        for c, n in cards.items(): deck[c] += n
+        for c, k in cards.items(): deck[c] += k
         for u in ups:
             if deck[u] <= 0: errors.append(f"{name}: upgrade {u} not in deck"); continue
             deck[u] -= 1; deck[u + '+'] += 1
