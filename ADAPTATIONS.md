@@ -4417,3 +4417,32 @@ number up in the middle of a blow.
 All twenty-five have theirs. Still deliberately unbuilt, each named where it lives:
 the Checkout Codex's **Demand Immediate Access** (a player-ACTIVATED action; the engine has none) and the
 Detached Footnote's **re-link on Source death** (needs the pick the authored link substitutes for).
+
+## The Sorcerer's Apprentice (2026-10-20)
+
+Canon: `source-data/design/sorcerers_apprentice_master.md` (v0.4). Its mechanics are built as written in the engine
+(RogueDeck-Core `Combat/Wand/`) and in `Converter/Apprentice/`; these are the places the port says something else.
+
+- **Split Wick's play** deals 4 damage twice instead of splitting the largest hit of the next damage card: the
+  engine has no hook between the hits of another card. Its wand part (Fork) is the master's.
+- **Windblown Leaf** puts its card at the bottom of the draw pile instead of shuffling it in: there is no
+  shuffle among the program nodes.
+- **Crosswind's Crossfire** alternates between the cast's target and the living enemy with the least HP: a cast
+  has one target, so the second enemy is not chosen. Its play moves the Singe to a random other enemy.
+- **Rubbing** offers any non-Temporary card of the discard pile (a choice can leave out one tag, not "Workings
+  other than Rubbing"); its upgrade draws a card instead of making the copy cheaper (a created copy has no price
+  mark).
+- **Master's Correction**'s discount waits for the card's next play rather than expiring at the end of the turn.
+- **Temporary copies** (Rubbing, Second Hand) are copies marked `temporary_copy`: they Exhaust when played and
+  when they leave the wand.
+- **Firebreak's Ground** is planned at its smaller relief and settled to the larger one when a hit really spent
+  Singe; a cast that ends above the Exhaustion cap through a plan the fight then changed is capped, never refused
+  afterwards.
+- **General proxies** (§11): Absolute Interdict asks whether you carry Censure, Consecrated Testament whether an
+  enemy carries Paperwork or Blood Ink, Vein Register always applies 1 — the engine keeps no record of what a
+  Censure prevented, or what lost HP or stacks, earlier in a cast. Compound Indictment tops up every negative
+  status the target carries (not the first three). Mortgage Sigil's later Lien and Wax Reliquary's decay guard
+  stay with their plays.
+- **Shield Seal** (Seal Press) puts its Block straight onto the Block pool the moment the first enemy hit arrives,
+  so it takes that hit; a Ward Wax part is applied as a status and so comes after that hit.
+- **Max HP 70**, Focus 1 at the start of every fight: the master leaves both to the character's configuration.
