@@ -119,6 +119,34 @@ public static class ActTuning
         ["labyrinth_elite_surveyor_of_the_errant_cord"] = new(180, 180),
     };
 
+    // ── A QUESTION, NOT A TUNING: `--apprentice-damage N` ─────────────────────────────────────────────────────
+    // Every damage constant on the Sorcerer's Apprentice's own cards — what they deal when played and what their
+    // wand Speaks deal — scaled to N percent for one build, so a bench can ask how much damage he is short of the
+    // others (APPRENTICE_PLAN.md §3). 100 is the document as authored; nothing ships with anything else.
+    public static int ApprenticeDamagePercent { get; set; } = 100;
+
+    public static RunBlueprint ApplyApprenticeDamage(RunBlueprint blueprint)
+    {
+        ArgumentNullException.ThrowIfNull(blueprint);
+        if (ApprenticeDamagePercent == 100)
+            return blueprint;
+        var options = RunJson.CreateOptions();
+        var cards = blueprint.Cards.Select(card =>
+        {
+            if (!card.Id.StartsWith("ap_", StringComparison.Ordinal))
+                return card;
+            var node = JsonSerializer.SerializeToNode(card, options)!;
+            ScaleDamage(node["Program"], ApprenticeDamagePercent);
+            if (node["Wand"] is JsonObject wand)
+                foreach (var list in new[] { wand["Atoms"], wand["Fallback"] })
+                    foreach (var atom in (list as JsonArray ?? []).OfType<JsonObject>())
+                        if (atom["Kind"] is JsonValue kind && kind.GetValue<string>() == "Damage")
+                            ScaleConstants(atom["Amount"], ApprenticeDamagePercent);
+            return node.Deserialize(card.GetType(), options) as CardData ?? card;
+        }).ToList();
+        return blueprint with { Cards = cards };
+    }
+
     public static Factor For(int act, string role) =>
         Table.TryGetValue(act, out var roles) && roles.TryGetValue(role, out var factor) ? factor : new Factor();
 

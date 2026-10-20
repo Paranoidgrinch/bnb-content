@@ -52,7 +52,7 @@ var cardRating = args.Contains("--card-rating");
 // THE FAMILY POOL: --family-pool — every reward card, by keyword family and act (the shelf the family decks are built from).
 var familyPool = args.Contains("--family-pool");
 // THE FAMILY BENCH (FamilyBench, PLAYTEST_FEEDBACK_2 F2): --family-decks FAMILY_DECKS.json [--family-acts 2,3]
-//      [--family-relics none|only|both] [--family-normals n] [--bench-only deck,deck] + the --bench-* knobs —
+//      [--family-relics none|only|both] [--family-normals n] [--bench-only deck,deck] [--family-lines] + the --bench-* knobs —
 //      one built deck per keyword family, fought through a later act's normals, elites and bosses.
 string? familyDecks = null;
 string? familyActs = null;
@@ -127,6 +127,7 @@ for (var i = 0; i < args.Length - 1; i++)
         case "--bench-acts": benchActs = args[i + 1]; break;
         case "--bench-runs": benchRuns = args[i + 1]; break;
         case "--tuning": ActTuning.Override(args[i + 1]); break;
+        case "--apprentice-damage": ActTuning.ApprenticeDamagePercent = int.Parse(args[i + 1]); break;
         case "--audit-only": auditOnly = args[i + 1]; break;
     }
 }
@@ -170,7 +171,7 @@ try
             familyDecks, args.Contains("--bench-shuffles") ? benchShuffles : 4, benchHorizon,
             args.Contains("--bench-beam") ? benchBeam : 6, args.Contains("--bench-perturn") ? benchPerTurn : 100, jobs,
             familyNormals, benchHealth, familyRelics, Split(benchOnly),
-            [.. Split(familyActs).Select(int.Parse)]), Console.WriteLine);
+            [.. Split(familyActs).Select(int.Parse)], args.Contains("--family-lines")), Console.WriteLine);
     if (familyPool)
         return Act1Bench.Pool(Console.WriteLine);
     if (cardRating)

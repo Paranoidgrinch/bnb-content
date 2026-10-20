@@ -27,7 +27,7 @@ public static class FamilyBench
     public sealed record Options(
         string DecksFile, int Shuffles = 4, int Horizon = 5, int Beam = 6, int PerTurn = 100, int Jobs = 0,
         int Normals = 10, int Health = 70, string Relics = "both", IReadOnlyList<string>? Only = null,
-        IReadOnlyList<int>? Acts = null);
+        IReadOnlyList<int>? Acts = null, bool Lines = false);
 
     public sealed record Deck(string Name, string Family, int Act, Dictionary<string, int> Cards, List<string>? Relics,
         string? Character = null);
@@ -101,6 +101,12 @@ public static class FamilyBench
                 }
                 var planned = new FightPlanner(options.Horizon, options.Beam, options.PerTurn).Play(combat);
                 results.Add(new Fight(job.deck.Name, job.withRelics, job.encounter.Kind, job.encounter.Id, job.shuffle, planned));
+                // `--family-lines`: every fight's line of play, for reading why a deck lost.
+                if (options.Lines)
+                    Console.Error.WriteLine($"  FIGHT {job.deck.Name} {job.encounter.Id} #{job.shuffle}: won={planned.Won} "
+                        + $"hp {planned.HeroHealthAtEnd}/{planned.HeroHealthAtStart} in {planned.Turns} turns\n"
+                        + string.Join("\n", planned.Lines.Select((l, i) => $"      t{i + 1}: {l}"
+                            + (i < planned.AfterEachTurn.Count ? $"   => hp {planned.AfterEachTurn[i].Health} block {planned.AfterEachTurn[i].Block}" : ""))));
                 if (planned.Seconds > 300)
                     Console.Error.WriteLine($"  slow: {job.deck.Name} {job.encounter.Id} #{job.shuffle} {planned.Seconds:0}s {planned.Turns} turns");
                 if (Interlocked.Increment(ref done) % 100 == 0)

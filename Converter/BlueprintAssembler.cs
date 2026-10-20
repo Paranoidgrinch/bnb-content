@@ -230,7 +230,7 @@ public static class BlueprintAssembler
         };
         // …and, last, how hard each act hits (ActTuning). `tuned: false` is the document as AUTHORED — what the
         // mechanics tests pin, number for number; the shipped game is tuned.
-        return tuned ? ActTuning.Apply(finished, data) : finished;
+        return tuned ? ActTuning.ApplyApprenticeDamage(ActTuning.Apply(finished, data)) : finished;
     }
 
     // What only the Bureaucrat may be offered: the Bureaucrat's own reward cards (every act, upgrades included) and the
