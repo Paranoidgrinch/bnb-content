@@ -17,9 +17,12 @@ public static class ApprenticeWand
 
     public static IReadOnlyList<string> Actions => [Inscribe, Cast, Swap, Withdraw, BurnOut];
 
+    public const int MaxFocus = 6;
+
     public static WandRules Rules => new()
     {
         Bearer = new StatusDefinitionId(ApprenticeKeywords.Wand),
+        MaxFocus = MaxFocus,
         NoFocusTags = [new TagId(Cards.CardAuthoring.JunkTag), new TagId(Cards.CardAuthoring.UnplayableTag)],
         UninscribableTags = [new TagId(Cards.CardAuthoring.JunkTag)],
         TemporaryTag = new TagId(Cards.CardAuthoring.TemporaryTag),

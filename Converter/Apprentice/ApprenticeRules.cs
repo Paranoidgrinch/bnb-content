@@ -14,9 +14,24 @@ public static partial class ApprenticeRules
 
     public static IReadOnlyDictionary<WandHook, StatusDefinitionId> Hooks => new Dictionary<WandHook, StatusDefinitionId>();
 
-    public static IReadOnlyList<WandCastBoost> CastBoosts => [];
+    // Glass Rod: the next cast deals and gives more, and strains the wand (the master's +3 Exhaustion).
+    public const string GlassRodPrimed = "glass_rod_primed";
+    public const string GlassRodPrimedPlus = "glass_rod_primed_plus";
 
-    public static IReadOnlyList<StatusData> All() => [QuietCircleStatus(), ChilledStatus()];
+    public static IReadOnlyList<WandCastBoost> CastBoosts =>
+    [
+        new(new StatusDefinitionId(GlassRodPrimed), 50, 3),
+        new(new StatusDefinitionId(GlassRodPrimedPlus), 65, 3),
+    ];
+
+    public static IReadOnlyList<StatusData> All() =>
+    [
+        QuietCircleStatus(), ChilledStatus(),
+        Status(GlassRodPrimed, "Glass Rod", StatusPolarity.Buff,
+            "Your next cast deals and gives 50% more, and adds 3 Exhaustion."),
+        Status(GlassRodPrimedPlus, "Glass Rod+", StatusPolarity.Buff,
+            "Your next cast deals and gives 65% more, and adds 3 Exhaustion."),
+    ];
 
     // Cold Ash: "its next attack deals N less" — once, on the first hit of its next action, and gone at the end of
     // its turn whether it attacked or not.

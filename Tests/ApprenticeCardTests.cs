@@ -469,4 +469,147 @@ public class ApprenticeCardTests
         Assert.True(unsealed >= 3, $"the bite must be at least the seal for this to say anything ({unsealed})");
         Assert.Equal(unsealed - 3, Bite(cast: true));                   // 75% of the Chalk Line's 4
     }
+
+    // ── rares ──────────────────────────────────────────────────────────────────────────────────────────────
+
+    [Fact]
+    public void Masters_correction_cheapens_a_card_or_inscribes_one_for_free()
+    {
+        var (play, session, enemy) = Fight(["ap_masters_correction", "ap_final_examination", "ap_candle_stub", "ap_chalk_line",
+            "ap_chalk_line", "ap_flyleaf"]);
+        var driver = play.CombatDriver!;
+        driver.PlayCard(Now(play).Hand.First(c => c.DefinitionId.value == "ap_masters_correction").Id, enemy);
+        driver.SupplyOptionChoice([0]);
+        var hand = Assert.IsAssignableFrom<IReadOnlyList<CardInstance>>(driver.PendingCardChoice);
+        var exam = hand.First(c => c.DefinitionId.value == "ap_final_examination");
+        driver.SupplyCardChoice([exam.Id]);
+        Assert.Null(session.Error);
+        var energy = Now(play).HeroEnergy;
+        driver.PlayCard(exam.Id, enemy);
+        if (driver.PendingOptionChoice is { } spend)
+            driver.SupplyOptionChoice([0]);
+        Assert.Equal(energy - 1, Now(play).HeroEnergy);                     // 2 less 1
+        play.Dispose();
+
+        (play, session, enemy) = Fight(["ap_masters_correction", "ap_candle_stub", "ap_candle_stub", "ap_chalk_line", "ap_chalk_line"]);
+        Inscribe(play, session, "ap_candle_stub", 0);                        // the combat's free one
+        driver = play.CombatDriver!;
+        var focus = Wand(play).Focus;
+        driver.PlayCard(Now(play).Hand.First(c => c.DefinitionId.value == "ap_masters_correction").Id, enemy);
+        driver.SupplyOptionChoice([1]);
+        if (driver.PendingCardChoice is { } inscribable)
+            driver.SupplyCardChoice([inscribable.First(c => c.DefinitionId.value == "ap_candle_stub").Id]);
+        if (driver.PendingOptionChoice is { } slots)
+            driver.SupplyOptionChoice([0]);
+        Assert.Null(session.Error);
+        Assert.Equal(2, Wand(play).Occupied);
+        Assert.Equal(focus + 1, Wand(play).Focus);                          // free, and the play gave 1
+        play.Dispose();
+    }
+
+    [Fact]
+    public void Final_examination_and_the_last_word_spend_focus_for_their_blows()
+    {
+        var (play, session, enemy) = Fight(["ap_final_examination", "ap_last_word", "ap_chalk_line", "ap_chalk_line", "ap_chalk_line"]);
+        Play(play, session, "ap_chalk_line", enemy);
+        Play(play, session, "ap_chalk_line", enemy);                         // Focus 3
+        var before = Standing(Body(play, enemy));
+        var block = Block(Hero(play));
+        var driver = play.CombatDriver!;
+        driver.PlayCard(Now(play).Hand.First(c => c.DefinitionId.value == "ap_final_examination").Id, enemy);
+        var options = Assert.IsAssignableFrom<IReadOnlyList<string>>(driver.PendingOptionChoice);
+        driver.SupplyOptionChoice([options.ToList().IndexOf("Spend 3 Focus")]);
+        Assert.Null(session.Error);
+        Assert.Equal(before - (6 + 12), Standing(Body(play, enemy)));
+        Assert.Equal(block + 4 + 9, Block(Hero(play)));
+        Assert.Equal(1, Wand(play).Focus);                                   // 3 − 3 + the play's own 1
+        play.Dispose();
+    }
+
+    [Fact]
+    public void Lessons_in_ash_trades_cards_for_draws_and_focus()
+    {
+        var (play, session, enemy) = Fight(["ap_lessons_ash", "ap_candle_stub", "ap_candle_stub", "ap_chalk_line", "ap_chalk_line",
+            "ap_flyleaf", "ap_flyleaf"]);
+        var driver = play.CombatDriver!;
+        driver.PlayCard(Now(play).Hand.First(c => c.DefinitionId.value == "ap_lessons_ash").Id, enemy);
+        driver.SupplyOptionChoice([2]);
+        for (var i = 0; i < 2; i++)
+            if (driver.PendingCardChoice is { } hand)
+                driver.SupplyCardChoice([hand.First(c => c.DefinitionId.value == "ap_candle_stub").Id]);
+        Assert.Null(session.Error);
+        Assert.Equal(2, Now(play).State.GetCardZones(Now(play).HeroId).ExhaustPile.Count);
+        Assert.Equal(1 + 1 + 2, Wand(play).Focus);
+        play.Dispose();
+    }
+
+    [Fact]
+    public void Glass_rod_strengthens_and_strains_the_next_cast()
+    {
+        var (play, session, enemy) = Fight(["ap_glass_rod", "ap_candle_stub", "ap_chalk_line", "ap_chalk_line", "ap_chalk_line"]);
+        Play(play, session, "ap_glass_rod", enemy);
+        Inscribe(play, session, "ap_candle_stub", 0);
+        var before = Standing(Body(play, enemy));
+        Cast(play, session, enemy);
+        Assert.Equal(before - 6, Standing(Body(play, enemy)));             // 4 × 1.5 (and the Singe it applies comes after)
+        Assert.Equal(4, Wand(play).Exhaustion);
+        Assert.Equal(0, Stacks(Hero(play), ApprenticeRules.GlassRodPrimed));
+        play.Dispose();
+    }
+
+    [Fact]
+    public void Second_hand_brings_back_an_exhausted_card_for_one_play()
+    {
+        var (play, session, enemy) = Fight(["ap_second_hand", "ap_spare_notch", "ap_chalk_line", "ap_chalk_line", "ap_chalk_line"]);
+        Play(play, session, "ap_spare_notch", enemy);                        // exhausts itself
+        var driver = play.CombatDriver!;
+        driver.PlayCard(Now(play).Hand.First(c => c.DefinitionId.value == "ap_second_hand").Id, enemy);
+        if (driver.PendingCardChoice is { } exhausted)
+            driver.SupplyCardChoice([exhausted.First(c => c.DefinitionId.value == "ap_spare_notch").Id]);
+        Assert.Null(session.Error);
+        var copy = Now(play).Hand.Single(c => c.DefinitionId.value == "ap_spare_notch");
+        Assert.Contains(StandardCombatIds.TemporaryCopyMark, copy.Marks);
+        Play(play, session, "ap_spare_notch", enemy);
+        Assert.Equal(6, Wand(play).Capacity);
+        play.Dispose();
+    }
+
+    [Fact]
+    public void The_fourfold_lesson_gives_every_element_and_rewards_a_turn_that_had_them()
+    {
+        var (play, session, enemy) = Fight(["ap_fourfold_lesson", "ap_fourfold_lesson", "ap_candle_stub", "ap_chalk_line", "ap_chalk_line"]);
+        Play(play, session, "ap_fourfold_lesson", enemy);
+        Assert.Equal((1, 1, 1), (Stacks(Hero(play), ApprenticeKeywords.Flow), Stacks(Hero(play), ApprenticeKeywords.Grit),
+            Stacks(Hero(play), ApprenticeKeywords.Gust)));
+        Assert.Equal(4, System.Numerics.BitOperations.PopCount((uint)Wand(play).ElementsThisTurn));
+        Inscribe(play, session, "ap_candle_stub", 0);
+        Inscribe(play, session, "ap_fourfold_lesson", 1);
+        Play(play, session, "ap_chalk_line", enemy);
+        var focus = Wand(play).Focus;
+        var block = Block(Hero(play));
+        Cast(play, session, enemy);
+        Assert.Equal(block + 5, Block(Hero(play)));
+        // 2 for the cast, 1 back for all four elements; and Flow from before refunds 1 of the cost.
+        Assert.Equal(focus - 2 + 1 + 1, Wand(play).Focus);
+        play.Dispose();
+    }
+
+    [Fact]
+    public void A_perfect_copy_lays_the_wand_out_again()
+    {
+        var (play, session, enemy) = Fight(["ap_perfect_copy", "ap_candle_stub", "ap_chalk_line", "ap_chalk_line", "ap_chalk_line",
+            "ap_flyleaf", "ap_flyleaf"]);
+        Play(play, session, "ap_chalk_line", enemy);
+        Inscribe(play, session, "ap_candle_stub", 0);
+        Inscribe(play, session, "ap_chalk_line", 2);
+        var driver = play.CombatDriver!;
+        driver.PlayCard(Now(play).Hand.First(c => c.DefinitionId.value == "ap_perfect_copy").Id, enemy);
+        var installed = Assert.IsAssignableFrom<IReadOnlyList<CardInstance>>(driver.PendingCardChoice);
+        driver.SupplyCardChoice([.. installed.Select(c => c.Id).Reverse()]);
+        Assert.Null(session.Error);
+        var zones = Now(play).State.GetCardZones(Now(play).HeroId);
+        Assert.Equal("ap_chalk_line", zones.GetCard(Wand(play).Slots[0]!.Value).DefinitionId.value);
+        Assert.Null(Wand(play).Slots[1]);
+        play.Dispose();
+    }
 }
