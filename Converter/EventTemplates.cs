@@ -114,6 +114,11 @@ public static class ShopTemplate
         // Her own relics on the relic shelves, beside the general ones they share.
         var witchShopRelics = Relics(Own(pools.WitchShopRelicStock), witchDice, depth: int.MaxValue, Witch.WitchCharacter.Id);
         var witchNormalRelics = Relics(Own(pools.WitchNormalRelicStock), witchDice, depth: int.MaxValue, Witch.WitchCharacter.Id);
+        // …and his, with dice of his own.
+        var apprenticeDice = ConversionPools.ApprenticeDice($"shop:act{pools.Act}");
+        var apprentice = Cards(pools, pools.ApprenticeCharacterCards, apprenticeDice, depth: 10, forCharacter: Apprentice.ApprenticeCharacter.Id);
+        var apprenticeShopRelics = Relics(Own(pools.ApprenticeShopRelicStock), apprenticeDice, depth: int.MaxValue, Apprentice.ApprenticeCharacter.Id);
+        var apprenticeNormalRelics = Relics(Own(pools.ApprenticeNormalRelicStock), apprenticeDice, depth: int.MaxValue, Apprentice.ApprenticeCharacter.Id);
 
         // FOUR SHELVES rather than one bag, and every entry says what it is. A relic that makes "one Normal
         // Relic" cheaper, or adds a slot to the normal relic shelf, or replaces the unsold cards, finds
@@ -126,9 +131,9 @@ public static class ShopTemplate
             Stock:
             [
                 new ShopStockGroup(ShopRelics.GeneralCardShelf, general, 3),
-                new ShopStockGroup(ShopRelics.CharacterCardShelf, [.. character, .. witch], 4),
-                new ShopStockGroup(ShopRelics.ShopRelicShelf, [.. shopRelics, .. witchShopRelics], 2, [ShopRelics.ShopRelic]),
-                new ShopStockGroup(ShopRelics.NormalRelicShelf, [.. normalRelics, .. witchNormalRelics], 2,
+                new ShopStockGroup(ShopRelics.CharacterCardShelf, [.. character, .. witch, .. apprentice], 4),
+                new ShopStockGroup(ShopRelics.ShopRelicShelf, [.. shopRelics, .. witchShopRelics, .. apprenticeShopRelics], 2, [ShopRelics.ShopRelic]),
+                new ShopStockGroup(ShopRelics.NormalRelicShelf, [.. normalRelics, .. witchNormalRelics, .. apprenticeNormalRelics], 2,
                     [ShopRelics.NormalRelic]),
             ]);
     }

@@ -63,8 +63,9 @@ public class WitchPoolTests
         var shop = ShopTemplate.Build(ConversionPools.Build(1), new Random(1));
         var shelf = shop.Stock!.Single(g => g.Id == Converter.Relics.ShopRelics.CharacterCardShelf);
         var hers = shelf.Offers.Where(e => e.Tags!.Contains(ConversionPools.For(WitchCharacter.Id))).ToList();
+        var apprentice = shelf.Offers.Count(e => e.Tags?.Contains(ConversionPools.For(Converter.Apprentice.ApprenticeCharacter.Id)) == true);
         Assert.Equal(10, hers.Count);
-        Assert.Equal(10, shelf.Offers.Count - hers.Count);
+        Assert.Equal(10, shelf.Offers.Count - hers.Count - apprentice);
         Assert.All(hers, e => Assert.StartsWith("buy-", e.Id));
     }
 

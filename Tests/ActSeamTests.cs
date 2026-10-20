@@ -33,7 +33,8 @@ public class ActSeamTests
         Data.Encounters.First(e => e.Id == encounterId).Act;
 
     private static int CardAct(string cardId) =>
-        Converter.Cards.FinalCards.All().Concat(Converter.Witch.WitchCards.All()).First(c => c.Id == cardId).Act;
+        Converter.Cards.FinalCards.All().Concat(Converter.Witch.WitchCards.All()).Concat(Converter.Apprentice.ApprenticeCards.All())
+            .First(c => c.Id == cardId).Act;
 
     // The card ids a role's victory reward can hand out in this act.
     private static IReadOnlyList<string> RewardCards(RunAct act, MapNodeKind role) =>
