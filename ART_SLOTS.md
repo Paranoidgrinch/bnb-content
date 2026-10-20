@@ -2,7 +2,7 @@
 
 Generated: `dotnet run --project Converter -- --art-slots ART_SLOTS.md`. **Do not edit by hand.**
 
-**877 pictures**: 368 cards, 237 relics, 269 bodies
+**919 pictures**: 410 cards, 237 relics, 269 bodies
 (every enemy, elite and boss) and 3 the player can be. Every one of them is filled today by a PLACEHOLDER — a plate with the file's own
 name and the word placeholder on it, written by `bnb-godot/tools/make-card-art.py`,
 `make-relic-art.py` and `make-enemy-art.py`. A painted picture replaces one by being saved over it, so
@@ -631,7 +631,7 @@ Drawn like a body and facing RIGHT — the player stands on the left of the aren
 | `hedge_witch` | The Hedge Witch | Turns cards into ingredients and hides behind the pot when she is not cooking. |
 | `sorcerers_apprentice` | The Sorcerer's Apprentice | Knows every incantation, and not quite what happens when one is put after another. |
 
-## Cards — 368 pictures
+## Cards — 410 pictures
 
 No visual canon was ever written for the cards, so the row carries the card's own rules
 text instead of a brief. Act = the act that unlocks it; the starters, the Junk and the
@@ -915,22 +915,34 @@ cards a boss or a door hands over are never offered and have no act.
 | `winter_bark` | Winter Bark | working | rare | Gain 16 Block. After the enemy turn, up to 6 of your unused Block becomes Ward Wax. |
 | `wolf_at_the_door` | Wolf at the Door | deed | rare | Retain. Deal 20 damage. Each turn it waits in your hand, it costs 1 less. |
 
-### Sorcerer's Apprentice — 42
+### Sorcerer's Apprentice — 84
 
 | code | title | type | rarity | what it does |
 |---|---|---|---|---|
+| `ap_apprentices_oath` | The Apprentice's Oath | working | rare | Whenever you cast this combat, deal 3 damage to ALL enemies and gain 3 Block. Exhaust. Wand: Speak: deal 3 damage to ALL enemies and gain 3 Block. |
+| `ap_bell_book` | Bell, Book and Candle | deed | rare | Deal 6 damage 3 times; each hit then applies 1 Singe. Wand: Speak: deal 4 damage 3 times. |
+| `ap_blotter` | Blotter | working | common | Gain 8 Block. Wand: Speak: gain 6 Block; in the first slot cast, also gain 1 Grit. |
 | `ap_blotting_sand` | Blotting Sand | working | common | Remove 1 stack of a negative status from yourself. Gain 5 Block. Wand: Shape — Remedy: the next Speak that would put a negative status on an enemy puts none; instead remove up to 2 negative stacks from yourself and gain 3 Block for each. |
+| `ap_bookend` | Bookend | working | uncommon | Gain 8 Block, 4 more if the wand is full. Wand: Speak: gain 4 Block, 2 more for each card in the wand. |
+| `ap_borrowed_grimoire` | The Borrowed Grimoire | working | rare | Whenever you cast this combat, gain 1 Rote. Exhaust. Wand: Burn: after the cast, gain 3 Rote; then this card is exhausted. |
 | `ap_borrowed_stone` | Borrowed Stone | working | uncommon | Spend 1 Grit to gain 1 Energy and 2 Focus. With no Grit, gain 8 Block. Wand: Speak: gain 4 Block, +2 for each wand card exhausted this combat (+8 at most); with two or more, this cast's Exhaustion is 1 lower. |
+| `ap_burning_glass` | Burning Glass | working | rare | Whenever you cast this combat, apply 1 Singe to ALL enemies. Exhaust. Wand: Burn: apply 3 Singe; then this card is exhausted. |
 | `ap_candle_both_ends` | Candle at Both Ends | deed | uncommon | Exhaust another card from your hand: draw 3 cards and gain 1 Focus. With no other card, deal 9 damage instead. Wand: Burn: repeat the last damaging Speak at 150%, then this card is exhausted. With none before it, deal 9 damage. |
 | `ap_candle_stub` | Candle Stub | deed | starter | Deal 6 damage. Apply 1 Singe. Wand: Speak: deal 4 damage; in the first slot cast, also apply 1 Singe. |
 | `ap_chalk_circle` | Chalk Circle | working | common | Gain 7 Block. If you do not cast this turn, gain 1 Grit at the end of it. Wand: Ground: this cast's Exhaustion is 2 lower. |
 | `ap_chalk_line` | Chalk Line | working | starter | Gain 5 Block and 1 Grit. Wand: Speak: gain 4 Block; if another Speak follows, this cast's Exhaustion is 1 lower. |
 | `ap_clay_weight` | Clay Weight | working | common | Spend up to 2 Focus: gain 5 Block for each. If you spend none, gain 4 Block. Wand: Ground: this cast's Exhaustion is 1 lower for each heavy instruction before this one (3 at most). |
 | `ap_cold_ash` | Cold Ash | working | uncommon | Spend up to 3 Singe on the target: its next attack deals 2 less for each. Wand: Speak: gain 1 Grit for every 2 Singe direct wand hits spent earlier in this cast (2 at most); if none was spent, gain 5 Block. |
+| `ap_compendium` | Compendium | working | uncommon | Gain 1 Rote and 1 Poise. Draw 2 cards. Wand: Echo: repeat the last Speak at 75%. |
+| `ap_copybook` | Copybook | working | rare | At the start of each of your turns, gain 1 Rote and 1 Poise. Exhaust. Wand: Burn: after the cast, gain 2 Rote; then this card is exhausted. |
 | `ap_cracked_slate` | Cracked Slate | deed | uncommon | Deal 9 damage. You may spend 1 Grit to deal 7 more. Wand: Shape — Join: the next two damaging Speaks become one hit of both together, +3. |
 | `ap_crosswind` | Crosswind | working | uncommon | Move up to 3 Singe from the target to another enemy. With no other enemy, gain 2 Gust instead. Wand: Shape — Crossfire: the next multi-hit damaging Speak alternates its hits between the target and another enemy. |
 | `ap_cup_of_water` | Cup of Water | working | common | Spend up to 2 Flow: draw 1 card and gain 3 Block for each. With no Flow, gain 2 Flow instead. Wand: Shape — Soak: the next damage-only Speak gives Block equal to 80% of its damage instead of dealing it. |
+| `ap_drill_book` | Drill Book | deed | common | Deal 6 damage, 2 more for each cast this combat (at most 10 more). Wand: Speak: deal 3 damage, 1 more for each cast this combat (at most 8 more). |
 | `ap_dust_mote` | Dust Mote | working | common | Gain 5 Block. If you inscribed a card this turn, draw 1 card. Wand: Speak: deal 3 damage, +3 for each card inscribed since your last cast (+6 at most). |
+| `ap_ember_tongs` | Ember Tongs | deed | uncommon | Deal 4 damage, 3 more for each Singe on the target (at most 15 more). Wand: Speak: deal 2 damage, 2 more for each Singe on the target (at most 10 more). |
+| `ap_examiners_bell` | The Examiner's Bell | working | rare | At the end of each of your turns in which you cast twice or more, gain 2 Rote. Exhaust. Wand: Speak: deal 6 damage, 6 more if you have already cast this turn. |
+| `ap_final_draft` | Final Draft | deed | uncommon | Deal 14 damage, 1 more for each Rote and each Poise you have. Wand: Speak: deal 8 damage. |
 | `ap_final_examination` | Final Examination | deed | rare | Spend any amount of your Focus: deal 6 damage, +4 for each, and gain 4 Block, +3 for each. Wand: Order — Oral Exam: when casting, choose whether this section reads forward or backward; backward adds 1 Exhaustion. |
 | `ap_firebreak` | Firebreak | working | uncommon | Remove up to 3 Singe from the target and gain 1 Grit for each. If none was removed, gain 6 Block. Wand: Ground: if a direct hit spent Singe earlier in this cast, its Exhaustion is 3 lower and you gain 1 Grit; otherwise 1 lower. |
 | `ap_flyleaf` | Flyleaf | working | starter | Draw 1 card, then discard 1. Gain 1 Gust. Wand: Echo: repeat the last Speak at 50%, rounded up. |
@@ -940,25 +952,55 @@ cards a boss or a door hands over are never offered and have no act.
 | `ap_glass_rod` | Glass Rod | deed | rare | Your next cast this combat deals and gives 50% more, and adds 3 Exhaustion. Draw 1 card. Exhaust. Wand: Shape — Prism: the next damaging or defensive Speak resolves as 70% of itself and 70% of the same number in the other form; then this card is exhausted. With nothing to shape, gain 8 Block and it still burns. |
 | `ap_ink_blot` | Ink Blot | working | starter | Draw 2 cards, then discard 1. Gain 1 Flow. Wand: Heighten: the next Speak deals or gives 50% more (a status-only Speak: 1 more stack). |
 | `ap_ink_dish` | Ink Dish | working | common | Look at the top 3 cards of your draw pile and put 1 into your hand. If it costs 2 or more, gain 1 Flow. Wand: Speak — Reservoir: after the cast, gain 1 Flow. |
+| `ap_inkhorn` | Inkhorn | working | uncommon | Gain 2 Focus. Draw 1 card. Wand: Speak: after the cast, gain 1 Focus. |
 | `ap_kiln_shelf` | Kiln Shelf | working | uncommon | Raise the wand's Exhaustion cap by 2 this combat (12 at most). At 12, gain 12 Block instead. Exhaust. Wand: Ground — Cap: the heavy part of this cast's Exhaustion is at most 2; if it would have been more, the cast costs 1 more Focus. |
+| `ap_kindling` | Kindling | deed | uncommon | Deal 4 damage twice; each hit then applies 1 Singe. Wand: Speak: deal 3 damage twice. |
 | `ap_last_word` | The Master's Last Word | deed | rare | Spend any amount of your Focus: deal 10 damage, +5 for each. With 4 or more spent, gain 3 Grit. Exhaust. Wand: Stop — Final Word: must run last. For each different kind of instruction before it (5 at most), a hit of 6; every hit after the first costs 1 Focus left over from the cast. Adds 2 Exhaustion. |
+| `ap_lead_type` | Lead Type | working | uncommon | Gain 7 Block. Draw 1 card. Wand: Shape — Join: the next two damaging Speaks become one hit of both together, +6. |
+| `ap_lectern` | Lectern | working | uncommon | Gain 3 Rote. Exhaust. Wand: Burn: after the cast, gain 2 Rote; then this card is exhausted. |
 | `ap_lessons_ash` | Lessons in Ash | working | rare | Exhaust up to 2 other cards from your hand: draw 1 card and gain 1 Focus for each. Wand: Keep — Ash Trace: your next Burn Out this combat also deals 8 damage. |
+| `ap_long_recitation` | The Long Recitation | working | rare | Deal 4 damage and gain 3 Block for each card in the wand. Wand: Speak: deal 2 damage for each cast this combat (at most 20). |
+| `ap_magnum_opus` | The Magnum Opus | working | rare | Double your Rote and Poise. Exhaust. Wand: Burn: after the cast, gain 1 Rote for each card in the wand; then this card is exhausted. |
 | `ap_masons_dust` | Mason's Dust | working | common | Spend 1 Grit to gain 5 Ward Wax. If you cannot, gain 1 Grit instead. Wand: Speak: spend up to 2 Grit and gain 3 Ward Wax for each; with no Grit, gain 4 Block. |
 | `ap_masters_correction` | Master's Correction | working | rare | Choose: another card in your hand costs 1 less the next time you play it; or inscribe a card from your hand for free. Then draw 1 card. Wand: Order — Errata: the next Speak may speak as another installed card's Speak instead (you choose when casting). |
+| `ap_masters_hat` | The Master's Hat | working | rare | At the start of each of your turns, gain 1 Focus and 1 Rote. Exhaust. Wand: Burn: after the cast, gain 2 Focus; then this card is exhausted. |
+| `ap_millstone` | The Millstone | working | rare | Gain 6 Block for each Grit you have (at least 6), then lose all Grit. Wand: Speak: gain 3 Block for each cast this combat (at most 30). |
+| `ap_moss_poultice` | Moss Poultice | working | common | Gain 9 Block. Remove 1 stack of a negative status from yourself. Wand: Speak: gain 6 Block; in the first slot cast, also remove 1 negative stack from yourself. |
 | `ap_open_casement` | Open Casement | working | common | Two wand cards trade places for free, then draw 1 card. With fewer than two in the wand, gain 1 Gust instead. Wand: Order: the next two instructions trade places before they run. |
 | `ap_penny_whistle` | Penny Whistle | deed | common | Deal 5 damage. If you have played another card this turn, gain 1 more Focus. Wand: Stop — Cut: the cast ends after the Speak before this one; if a Speak resolved, its Exhaustion is 2 lower. |
 | `ap_perfect_copy` | A Perfect Copy | working | rare | Put the wand's cards in any order you like, for free, then draw 2 cards. Wand: Order — Palimpsest: after a full-wand cast, the installed cards move one occupied place to the right. |
 | `ap_pinprick` | Pinprick | deed | common | Deal 5 damage. If the target intends to attack, gain 5 Block. Wand: Clause: if the target intends to attack, the next damaging Speak hits once more for 3. |
+| `ap_pressed_flower` | Pressed Flower | working | uncommon | Gain 2 Flow. Draw 1 card. Wand: Keep: the next defensive Speak is stored at 125% and goes first in your next cast. |
+| `ap_quill_knife` | Quill Knife | deed | uncommon | Deal 4 damage, 4 more if you inscribed a card this turn. Wand: Speak: deal 3 damage, 3 more for each empty slot (at most 9 more). |
+| `ap_rain_barrel` | Rain Barrel | working | uncommon | Gain 4 Block, 3 more for each Flow you have. Wand: Speak: gain 4 Block; after the cast, gain 2 Flow. |
+| `ap_recitation` | Recitation | working | uncommon | Gain 2 Rote. Draw 1 card. Exhaust. Wand: Speak: after the cast, gain 1 Rote. |
+| `ap_red_pencil` | Red Pencil | deed | uncommon | Deal 9 damage. Wand: Heighten: the next damaging Speak deals 100% more; 1 more Exhaustion. |
 | `ap_rubbing` | Rubbing | working | uncommon | Choose a card in your discard pile. Put a Temporary copy of it into your hand; it Exhausts when played. Wand: Keep: the last Speak is stored at 50% and strikes at your next Burn Out. If a spell is already kept, gain 4 Block. |
+| `ap_scorch_mark` | Scorch Mark | deed | uncommon | Deal 8 damage to ALL enemies. Wand: Speak: deal 4 damage to ALL enemies. |
 | `ap_seal_press` | Seal Press | working | uncommon | Spend up to 2 Grit: gain 4 Ward Wax for each, and 4 Block. If you spend none, gain 7 Block. Wand: Keep — Shield Seal: the next defensive Speak is stored at 75% and raised just before the first enemy attack reaches you this enemy turn. It fades at the start of your next turn. |
+| `ap_sealing_wax` | Sealing Wax | working | common | Gain 6 Block and 3 Ward Wax. Wand: Speak: gain 3 Ward Wax, 1 more for each Grit you have (at most 3 more). |
 | `ap_second_hand` | Second Hand | working | rare | Put a Temporary copy of a card from your Exhaust pile into your hand. Exhaust. Wand: Burn — Recall: while installed, the first Burn Out each combat may put an exhausted card into the slot it freed. |
+| `ap_slate_pencil` | Slate Pencil | deed | common | Deal 8 damage. Wand: Speak: deal 5 damage, 4 more if you have already cast this turn. |
+| `ap_slide_rule` | Slide Rule | working | common | Gain 8 Block. If the wand holds 4 or more cards, draw 1 card. Wand: Ground: 2 less Exhaustion, or 4 less when 4 or more instructions run. |
 | `ap_snuffer` | Snuffer | deed | common | Spend up to 3 Singe on the target; deal 4 damage for each. Wand: Ground — Quench: spend up to 2 Singe on the target; this cast's Exhaustion is 2 lower for each. |
+| `ap_soot_mark` | Soot Mark | deed | uncommon | Apply 4 Singe. Wand: Speak: apply 2 Singe to ALL enemies. |
+| `ap_sorcerers_staff` | The Sorcerer's Staff | working | rare | The wand has one more slot (6 at most) and a 2 higher Exhaustion cap this combat. Gain 2 Focus. Exhaust. Wand: Speak: deal 10 damage. |
 | `ap_spare_notch` | Spare Notch | working | common | The wand has one more slot this combat (6 at most). At 6, gain 8 Block instead. Exhaust. Wand: Ground: this cast's Exhaustion is 1 lower, or 3 lower when 5 or more instructions run. |
 | `ap_split_wick` | Split Wick | deed | uncommon | Deal 4 damage twice. Wand: Shape — Fork: the next damaging Speak becomes two hits of 60% each, each its own hit for Singe. |
+| `ap_spring_tide` | Spring Tide | working | rare | Gain 4 Flow and 2 Poise. Exhaust. Wand: Speak: after the cast, gain 2 Flow and 1 Poise. |
+| `ap_standing_stone` | Standing Stone | working | uncommon | Gain 14 Block and 2 Grit. Wand: Speak: gain 8 Block, 2 more for each Grit you have. |
+| `ap_steady_hand` | Steady Hand | working | uncommon | Gain 2 Poise and 5 Block. Exhaust. Wand: Speak: gain 4 Block; after the cast, gain 1 Poise. |
+| `ap_stone_tablet` | Stone Tablet | working | uncommon | Gain 2 Grit and 5 Block. Wand: Speak: gain 2 Grit. |
+| `ap_thunderclap` | Thunderclap | deed | rare | Deal 5 damage to ALL enemies, 5 more for each cast you made this turn. Wand: Speak: deal 5 damage to ALL enemies, 5 more for each earlier cast this turn. |
 | `ap_torn_flyleaf` | Torn Flyleaf | working | uncommon | Take a wand card back into your hand for free, then draw 1 card. Wand: Order — Slip: after the cast, this card moves into the nearest free slot to its right; if it moved, gain 1 Focus. |
+| `ap_tracing_paper` | Tracing Paper | working | uncommon | Gain 6 Block. Draw 1 card. Wand: Echo: repeat the last damaging Speak at full strength; then this card burns. |
+| `ap_unfinished_spell` | The Unfinished Spell | deed | rare | Deal 6 damage, 6 more for each card in the wand. Wand: Speak: deal 3 damage for each Speak resolved this combat (at most 24). |
+| `ap_warding_primer` | Warding Primer | working | rare | Gain 3 Poise and 8 Block. Exhaust. Wand: Keep — Shield Seal: the next defensive Speak is stored at 150% and raised just before the first enemy attack this enemy turn. |
 | `ap_watermark` | Watermark | working | uncommon | Choose: gain 2 Flow; or spend 1 Flow to lower the wand's Exhaustion by 3 and gain 1 Gust. Wand: Heighten — Contrast: if the Speak before was of another kind (damage, defence, status) than the next, the next gets 50% more; otherwise gain 1 Flow after the cast. |
 | `ap_wax_drop` | Wax Drop | working | common | Apply 2 Singe to ALL enemies. Wand: Heighten — Brand: the next damaging Speak applies 1 Singe to each enemy it hits (3 in all at most). |
+| `ap_weathervane` | Weathervane | working | uncommon | Gain 2 Gust. Draw 1 card. Wand: Order: the next two instructions trade places before they run; if that changes which Speak a Heighten reaches, 2 less Exhaustion. |
 | `ap_wick_trimmer` | Wick Trimmer | working | common | Choose: Exhaust another card from your hand and draw 2 cards; or gain 5 Block. Wand: Burn: gain 7 Block; this cast's Exhaustion is 2 lower; this card is exhausted after the cast. |
+| `ap_wildfire` | Wildfire | deed | uncommon | The target gains as much Singe again as it has (at most 8). Wand: Speak: the target gains as much Singe again as it has (at most 4). |
 | `ap_windblown_leaf` | Windblown Leaf | working | common | Put a card from your hand at the bottom of your draw pile, then draw 2 cards. Gain 1 Gust. Wand: Shape — Scatter: the next single-target damaging Speak hits ALL enemies at 60%. |
 | `ap_wrong_way_round` | The Wrong Way Round | working | uncommon | Draw 2 cards, then two wand cards trade places for free; if they did, gain 1 Gust. Wand: Order: the rest of the cast runs backwards, once; with 2 or more left to turn, its Exhaustion is 1 lower. |
 
