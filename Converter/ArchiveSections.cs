@@ -21,6 +21,7 @@ public static class ArchiveSections
     public const string Junk = "Junk & curses";
     public const string RelicCards = "Relic cards";
     public const string HedgeWitch = "Hedge Witch";
+    public const string Apprentice = "Sorcerer's Apprentice";
     public const string Actions = "Actions"; // a character's own moves — not cards anybody holds
     public const string Fight = "Fight cards";
 
@@ -38,12 +39,16 @@ public static class ArchiveSections
         var character = Cards.FinalCards.CharacterPool(5).Select(c => c.Id).ToHashSet(StringComparer.Ordinal);
         var general = Cards.FinalCards.GeneralPool(5).Select(c => c.Id).ToHashSet(StringComparer.Ordinal);
         var witch = Witch.WitchCards.All().Select(c => c.Id.TrimEnd('+')).ToHashSet(StringComparer.Ordinal);
+        var apprentice = global::BnbContent.Converter.Apprentice.ApprenticeCards.All().Select(c => c.Id.TrimEnd('+')).ToHashSet(StringComparer.Ordinal);
         string CardSection(string id)
         {
             var key = id.TrimEnd('+');
             if (witch.Contains(key))
                 return HedgeWitch;
-            if (key is Witch.WitchActions.AddIngredient or Witch.WitchActions.Brew)
+            if (apprentice.Contains(key))
+                return Apprentice;
+            if (key is Witch.WitchActions.AddIngredient or Witch.WitchActions.Brew
+                || global::BnbContent.Converter.Apprentice.ApprenticeWand.Actions.Contains(key))
                 return Actions;
             if (character.Contains(key) || bnb.GetValueOrDefault(key)?.Rarity == "starter")
                 return Bureaucrat;
@@ -83,6 +88,7 @@ public static class ArchiveSections
                 {
                     Relics.RelicAuthoring.Eligibility.Bureaucrat => Bureaucrat,
                     Relics.RelicAuthoring.Eligibility.HedgeWitch => HedgeWitch,
+                    Relics.RelicAuthoring.Eligibility.Apprentice => Apprentice,
                     _ => relic.Pool.ToString(),
                 }
                 : "Other";

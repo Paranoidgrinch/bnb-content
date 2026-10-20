@@ -43,4 +43,18 @@ public class ArchiveSectionTests
         Assert.Equal("Normal", Game.Presentation.Relics["levy_stamp"].Extra[ArchiveSections.SectionKey]);
         Assert.Equal("Bureaucrat", Game.Presentation.Relics["formkeepers_signet"].Extra[ArchiveSections.SectionKey]);
     }
+
+    // The Apprentice's cards and relics on a shelf of their own; his five wand actions with the other actions; and
+    // every word of his in the Compendium.
+    [Fact]
+    public void The_apprentice_has_a_shelf_of_his_own()
+    {
+        Assert.Equal(ArchiveSections.Apprentice, CardShelf("ap_candle_stub"));
+        Assert.Equal(ArchiveSections.Apprentice, CardShelf("ap_last_word+"));
+        Assert.Equal(ArchiveSections.Actions, CardShelf(Converter.Apprentice.ApprenticeWand.Cast));
+        Assert.Equal(ArchiveSections.Apprentice, Game.Presentation.Relics["ar_brass_dividers"].Extra[ArchiveSections.SectionKey]);
+        var words = Game.Presentation.Game!.Extra;
+        foreach (var entry in Compendium.ApprenticeEntries)
+            Assert.Equal(entry.Name, words[$"compendium:{entry.Id}"]);
+    }
 }
