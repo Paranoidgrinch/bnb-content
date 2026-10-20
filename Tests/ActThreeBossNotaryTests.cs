@@ -211,6 +211,23 @@ public class ActThreeBossNotaryTests
         Assert.True(session is not null);
     }
 
+    // With a Counterseal in hand and no seal standing, there is nothing to spend it on: it cannot be played
+    // (it used to replace itself for free, a turn without end).
+    [Fact]
+    public void A_counterseal_with_no_seal_standing_cannot_be_played()
+    {
+        var probe = FightProbe.Solo(ActThree.NotaryEnemyId, "demand_the_countermark", 9);
+        var withCounterseal = new EncounterDefinition(probe.Id, probe.Enemies, probe.HeroResources,
+            [.. probe.HeroStartingStatuses ?? [],
+             new StartingStatusSpec(new StatusDefinitionId(ActThree.CounterSealId), 1)],
+            probe.HeroDisplayName, probe.CardsDrawnPerTurn, probe.TriggeredEffects);
+        var (play, _, _) = FightProbe.Start(withCounterseal, deck: [.. Enumerable.Repeat(TwoCost, 5)], health: 900);
+        var card = play.CombatDriver!.Current!.Hand.FirstOrDefault(c => c.DefinitionId.value == ActThree.CounterSealCardId);
+        if (card is not null)
+            Assert.False(play.CombatDriver.Current.CanPlay(card.Id));
+        play.Dispose();
+    }
+
     // ── the heartwood ─────────────────────────────────────────────────────────────────────────────────────
 
     // The tree's own testimony replaces the Notary's next action, and it is not a blow.

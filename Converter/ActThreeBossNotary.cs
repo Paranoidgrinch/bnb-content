@@ -323,18 +323,15 @@ public static partial class ActThree
             + "ordinary rotation; the Weight of Precedent already earned stays where it is.",
         Costs = [],
         Tags = [CounterSealTag, new TagId("form")],
+        // ⚠ ONLY WHILE THERE IS SOMETHING TO PRISE OUT. Free, and making another of itself, a Counterseal
+        // played with no seal standing did nothing but replace itself — a turn the bot could play for ever (found
+        // 2026-10-20 by the Apprentice's golden seed 1, 50 plays in one turn).
+        PlayCondition = CanPrise(),
         Program = new EffectProgram<CardPlayContext>(
             new CausalSequenceEffectNode<CardPlayContext>(
             [
                 new ConditionalEffectNode<CardPlayContext>(
-                    new AndExpression<CardPlayContext>(
-                        new ComparisonExpression<CardPlayContext>(
-                            new CombatantStatusStacksExpression<CardPlayContext>(
-                                Applicant, new StatusDefinitionId(CounterSealId)),
-                            ComparisonOperator.GreaterOrEqual, new ConstantExpression<CardPlayContext>(1)),
-                        Rings.Select(r => (ICombatExpression<CardPlayContext, bool>)
-                                Sealed<CardPlayContext>(r.Key))
-                            .Aggregate((a, b) => new OrExpression<CardPlayContext>(a, b))),
+                    CanPrise(),
                     new CausalSequenceEffectNode<CardPlayContext>(
                     [
                         new ModifyStatusStacksNode<CardPlayContext>(
@@ -361,6 +358,17 @@ public static partial class ActThree
         PlayedCardDestinationZone = CardZone.ExhaustPile,
         TurnEndHandDestinationZone = CardZone.Hand,
     };
+
+    // A Counterseal to spend, and a seal standing to spend it on.
+    private static ICombatExpression<CardPlayContext, bool> CanPrise() =>
+        new AndExpression<CardPlayContext>(
+            new ComparisonExpression<CardPlayContext>(
+                new CombatantStatusStacksExpression<CardPlayContext>(
+                    Applicant, new StatusDefinitionId(CounterSealId)),
+                ComparisonOperator.GreaterOrEqual, new ConstantExpression<CardPlayContext>(1)),
+            Rings.Select(r => (ICombatExpression<CardPlayContext, bool>)
+                    Sealed<CardPlayContext>(r.Key))
+                .Aggregate((a, b) => new OrExpression<CardPlayContext>(a, b)));
 
     private static IEffectNode<CardPlayContext> PriseOut(string key) =>
         new ConditionalEffectNode<CardPlayContext>(
