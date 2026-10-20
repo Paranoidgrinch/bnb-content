@@ -226,7 +226,7 @@ public static class BlueprintAssembler
         var finished = blueprint with
         {
             Presentation = annotated,
-            Cards = Witch.WitchFamilies.Mark(ArchiveSections.MarkUncookable(blueprint, annotated)),
+            Cards = Apprentice.ApprenticeProxies.Mark(Witch.WitchFamilies.Mark(ArchiveSections.MarkUncookable(blueprint, annotated))),
         };
         // …and, last, how hard each act hits (ActTuning). `tuned: false` is the document as AUTHORED — what the
         // mechanics tests pin, number for number; the shipped game is tuned.

@@ -243,7 +243,7 @@ public static class GeneralActI
     // "Resolve up to N Lien on the target immediately" — the same resolution the status runs at a turn's end,
     // capped, and paid out of the scratch counter that makes it possible at all (see Keywords.ResolveLien).
     // Like that resolution, it no longer spends the Lien: on an enemy, Lien stays (user, 2026-10-02).
-    private static CombatNodeModel ResolveLienNow(int cap) =>
+    internal static CombatNodeModel ResolveLienNow(int cap) =>
         Seq(
             SetCounterOn(Target, Keywords.LienResolvedCounter,
                 CombatAmountSpec.Binary("min",
