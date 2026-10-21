@@ -119,16 +119,17 @@ public static class ActTuning
         ["labyrinth_elite_surveyor_of_the_errant_cord"] = new(180, 180),
     };
 
-    // ── A QUESTION, NOT A TUNING: `--apprentice-damage N` ─────────────────────────────────────────────────────
-    // Every damage constant on the Sorcerer's Apprentice's own cards — what they deal when played and what their
-    // wand Speaks deal — scaled to N percent for one build, so a bench can ask how much damage he is short of the
-    // others (APPRENTICE_PLAN.md §3). 100 is the document as authored; nothing ships with anything else.
+    // ── A QUESTION, NOT A TUNING: `--apprentice-damage N`, `--apprentice-block N` ──────────────────────────────
+    // Every damage (Block) constant on the Sorcerer's Apprentice's own cards — what they deal (give) when played and
+    // what their wand Speaks deal (give) — scaled to N percent for one build, so a bench can ask how much he is short
+    // of the others (APPRENTICE_PLAN.md §3). 100 is the document as authored; nothing ships with anything else.
     public static int ApprenticeDamagePercent { get; set; } = 100;
+    public static int ApprenticeBlockPercent { get; set; } = 100;
 
     public static RunBlueprint ApplyApprenticeDamage(RunBlueprint blueprint)
     {
         ArgumentNullException.ThrowIfNull(blueprint);
-        if (ApprenticeDamagePercent == 100)
+        if (ApprenticeDamagePercent == 100 && ApprenticeBlockPercent == 100)
             return blueprint;
         var options = RunJson.CreateOptions();
         var cards = blueprint.Cards.Select(card =>
@@ -137,11 +138,15 @@ public static class ActTuning
                 return card;
             var node = JsonSerializer.SerializeToNode(card, options)!;
             ScaleDamage(node["Program"], ApprenticeDamagePercent);
+            ScaleDamage(node["Program"], ApprenticeBlockPercent, "node.gainBlock");
             if (node["Wand"] is JsonObject wand)
                 foreach (var list in new[] { wand["Atoms"], wand["Fallback"] })
                     foreach (var atom in (list as JsonArray ?? []).OfType<JsonObject>())
-                        if (atom["Kind"] is JsonValue kind && kind.GetValue<string>() == "Damage")
-                            ScaleConstants(atom["Amount"], ApprenticeDamagePercent);
+                        switch (atom["Kind"] is JsonValue kind ? kind.GetValue<string>() : null)
+                        {
+                            case "Damage": ScaleConstants(atom["Amount"], ApprenticeDamagePercent); break;
+                            case "Block": ScaleConstants(atom["Amount"], ApprenticeBlockPercent); break;
+                        }
             return node.Deserialize(card.GetType(), options) as CardData ?? card;
         }).ToList();
         return blueprint with { Cards = cards };
@@ -236,21 +241,23 @@ public static class ActTuning
     private static int Scale(int value, int percent) =>
         value <= 0 ? value : Math.Max(1, (int)Math.Round(value * percent / 100.0, MidpointRounding.AwayFromZero));
 
-    // Every constant under a dealDamage's Amount; nothing else in the program.
-    private static void ScaleDamage(JsonNode? node, int percent)
+    // Every constant under a dealDamage's (or the named node's) Amount; nothing else in the program.
+    private static void ScaleDamage(JsonNode? node, int percent, string nodeKind = "node.dealDamage")
     {
+        if (percent == 100)
+            return;
         switch (node)
         {
-            case JsonObject o when Kind(o) == "node.dealDamage":
+            case JsonObject o when Kind(o) == nodeKind:
                 ScaleConstants((o["value"] as JsonObject)?["Amount"], percent);
                 break;
             case JsonObject o:
                 foreach (var (_, child) in o.ToList())
-                    ScaleDamage(child, percent);
+                    ScaleDamage(child, percent, nodeKind);
                 break;
             case JsonArray a:
                 foreach (var child in a.ToList())
-                    ScaleDamage(child, percent);
+                    ScaleDamage(child, percent, nodeKind);
                 break;
         }
     }

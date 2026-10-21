@@ -128,6 +128,7 @@ for (var i = 0; i < args.Length - 1; i++)
         case "--bench-runs": benchRuns = args[i + 1]; break;
         case "--tuning": ActTuning.Override(args[i + 1]); break;
         case "--apprentice-damage": ActTuning.ApprenticeDamagePercent = int.Parse(args[i + 1]); break;
+        case "--apprentice-block": ActTuning.ApprenticeBlockPercent = int.Parse(args[i + 1]); break;
         case "--audit-only": auditOnly = args[i + 1]; break;
     }
 }
