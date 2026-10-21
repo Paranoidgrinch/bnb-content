@@ -18,7 +18,11 @@
 | Bureaucrat (reference) | 46 | 14 | 12 | 8 | 80 |
 | Hedge Witch (reference) | 51 | 18 | 6 | 5 | 80 |
 | **Apprentice v0.4** | 38 | 0 | 0 | 0 | 38 |
-| **Apprentice v0.5** | 48 (18 C · 21 U · 9 R) | 16 (2 C · 9 U · 5 R) | 9 (1 C · 3 U · 5 R) | 7 (1 C · 2 U · 4 R) | **80** |
+| **Apprentice v0.5** | 48 (16 C · 21 U · 11 R) | 16 (2 C · 9 U · 5 R) | 9 (1 C · 3 U · 5 R) | 7 (1 C · 2 U · 4 R) | **80** |
+
+By rarity the shelf is the others' too: **20 Common · 35 Uncommon · 25 Rare**. Like theirs, it is gated by act
+*and* drawn on the act's rarity curve (`ConversionPools.RarityCurve`, 5 % Rare in Act I up to 35 % in Act IV), so a
+rare is offerable from the first fight but rarely offered there.
 
 Relics: 9 → **18**, the others' shape: 3 Common · 5 Uncommon · 4 Rare in his own pool, 6 Shop.
 
@@ -40,12 +44,10 @@ spell?") with a payoff that finally compounds.
 Columns as in master §6–§9. `after the cast` = an after-cast program atom (never copied). `burns` = the card exhausts
 when its instruction runs.
 
-### 3.1 Act I — 2 Common, 7 Uncommon, 1 Rare
+### 3.1 Act I — 7 Uncommon, 3 Rare
 
 | ID | Name · type · E · rarity | PLAY | WAND | UPGRADE (PLAY / WAND) |
 |---|---|---|---|---|
-| `ap_slate_pencil` | **Slate Pencil** · Deed · 1 · C | Deal **8** damage. | `SPEAK`: deal **5** damage, **4** more if you have already cast this turn. | **11** / **7**, 4 more |
-| `ap_blotter` | **Blotter** · Working · 1 · C | Gain **8** Block. | `SPEAK`: gain **6** Block; in the first slot cast, also gain **1 Grit**. | **11** / **8** |
 | `ap_recitation` | **Recitation** · Working, Exhaust · 1 · U | Gain **2 Rote**. Draw 1 card. | `SPEAK`: after the cast, gain **1 Rote**. | **3 Rote** / also gain **4** Block |
 | `ap_steady_hand` | **Steady Hand** · Working, Exhaust · 1 · U | Gain **2 Poise** and **5** Block. | `SPEAK`: gain **4** Block; after the cast, gain **1 Poise**. | **3 Poise**, **7** Block / **6** Block |
 | `ap_kindling` | **Kindling** · Deed · 1 · U | Deal **4** damage twice; each hit then applies **1 Singe**. | `SPEAK`: deal **3** damage twice. | **5** twice / **4** twice |
@@ -54,6 +56,8 @@ when its instruction runs.
 | `ap_quill_knife` | **Quill Knife** · Deed · 0 · U | Deal **4** damage, **4** more if you inscribed a card this turn. | `SPEAK`: deal **3** damage, **+3** for each empty slot (at most +9). | **6**, 6 more / **4**, +3 each (at most +12) |
 | `ap_inkhorn` | **Inkhorn** · Working · 1 · U | Gain **2 Focus**. Draw 1 card. | `SPEAK`: after the cast, gain **1 Focus**. | **3 Focus** / same |
 | `ap_copybook` | **Copybook** · Working, Exhaust · 2 · R | At the start of each of your turns, gain **1 Rote** and **1 Poise**. | `SPEAK`: after the cast, gain **2 Rote**; then this card burns. | cost **1** / **3 Rote** |
+| `ap_banked_fire` | **Banked Fire** · Deed · 1 · R | Deal **5** damage to ALL enemies, **+3** for each Exhaustion the wand has. Then the wand's Exhaustion drops to **0**. | `HEIGHTEN`: the next damaging Speak deals **150%** more; **2** more Exhaustion. | **6**, +4 each / **200%** |
+| `ap_tuning_fork` | **Tuning Fork** · Working · 1 · R | Gain **2 Focus**. Draw 2 cards. | `ECHO`: repeat the last Speak at **150%**. | **3 Focus** / **175%** |
 
 ### 3.2 Act II — 2 Common, 9 Uncommon, 5 Rare
 
@@ -107,7 +111,8 @@ when its instruction runs.
 - **Growth over a fight (new):** Rote — Recitation, Copybook, Lectern, Borrowed Grimoire, Examiner's Bell, Master's
   Hat, Magnum Opus; Poise — Steady Hand, Warding Primer, Spring Tide; casts/Speaks this combat — Drill Book, Long
   Recitation, Millstone, Unfinished Spell; "whenever you cast" — Borrowed Grimoire, Burning Glass, Apprentice's Oath.
-- **Several casts a turn (new decision):** Slate Pencil, Examiner's Bell, Thunderclap.
+- **Several casts a turn (new decision):** Tuning Fork, Examiner's Bell, Thunderclap.
+- **Exhaustion as a payoff (new):** Banked Fire spends the wand's heat on every enemy and cools it for the next cast.
 - **Singe, still ammunition:** Kindling, Ember Tongs (reads it), Soot Mark, Wildfire (doubles it), Burning Glass,
   Bell, Book and Candle.
 - **Area damage (thin before):** Scorch Mark, Thunderclap, Apprentice's Oath, Burning Glass (Singe on all).

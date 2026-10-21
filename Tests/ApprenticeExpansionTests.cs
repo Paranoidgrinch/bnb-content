@@ -38,7 +38,7 @@ public class ApprenticeExpansionTests
         Assert.Equal(Converter.Witch.WitchCards.RewardPool(5).Count, Count(5));
 
         var byRarity = ApprenticeCards.RewardPool(5).GroupBy(c => c.Rarity).ToDictionary(g => g.Key, g => g.Count());
-        Assert.Equal((22, 35, 23), (byRarity["common"], byRarity["uncommon"], byRarity["rare"]));
+        Assert.Equal((20, 35, 25), (byRarity["common"], byRarity["uncommon"], byRarity["rare"]));
         // Every new card has an upgrade, and every id is his own.
         var expansion = ApprenticeCards.Expansion();
         Assert.Equal(84, expansion.Count);
@@ -128,22 +128,50 @@ public class ApprenticeExpansionTests
     // ── what reads the fight ───────────────────────────────────────────────────────────────────────────────
 
     [Fact]
-    public void Slate_pencil_and_thunderclap_reward_a_second_cast_in_the_turn()
+    public void Thunderclap_rewards_a_second_cast_in_the_turn()
     {
-        var (play, session, enemy) = Fight(["ap_slate_pencil", "ap_thunderclap", "ap_chalk_line", "ap_chalk_line", "ap_chalk_line"]);
+        var (play, session, enemy) = Fight(["ap_candle_stub", "ap_thunderclap", "ap_chalk_line", "ap_chalk_line", "ap_chalk_line"]);
         Play(play, session, "ap_chalk_line", enemy);
-        Inscribe(play, session, "ap_slate_pencil", 0);
+        Inscribe(play, session, "ap_candle_stub", 0);
+        Cast(play, session, enemy);
+        Play(play, session, "ap_chalk_line", enemy);
+        Play(play, session, "ap_chalk_line", enemy);
+        Cast(play, session, enemy);
         var before = Standing(Body(play, enemy));
-        Cast(play, session, enemy);
-        Assert.Equal(before - 5, Standing(Body(play, enemy)));
-        Play(play, session, "ap_chalk_line", enemy);
-        Play(play, session, "ap_chalk_line", enemy);
-        before = Standing(Body(play, enemy));
-        Cast(play, session, enemy);
-        Assert.Equal(before - 9, Standing(Body(play, enemy)));   // 5 + 4: a cast already made this turn
-        before = Standing(Body(play, enemy));
         Play(play, session, "ap_thunderclap", enemy);
-        Assert.Equal(before - 15, Standing(Body(play, enemy)));  // 5 + 5 × 2 casts
+        Assert.Equal(before - 15 - 3, Standing(Body(play, enemy)));  // 5 + 5 × 2 casts, and the Candle Stub's Singe
+        play.Dispose();
+    }
+
+    [Fact]
+    public void Banked_fire_spends_the_wands_heat_on_every_enemy_and_cools_it()
+    {
+        var (play, session, enemy) = Fight(["ap_candle_stub", "ap_banked_fire", "ap_chalk_line", "ap_chalk_line", "ap_chalk_line"]);
+        Inscribe(play, session, "ap_candle_stub", 0);
+        Cast(play, session, enemy);
+        Play(play, session, "ap_chalk_line", enemy);
+        Play(play, session, "ap_chalk_line", enemy);
+        Cast(play, session, enemy);
+        var heat = Wand(play).Exhaustion;
+        Assert.True(heat > 0);
+        var before = Standing(Body(play, enemy));
+        Play(play, session, "ap_banked_fire", enemy);
+        Assert.Equal(before - (5 + 3 * heat) - 3, Standing(Body(play, enemy)));  // and the Candle Stub's Singe
+        Assert.Equal(0, Wand(play).Exhaustion);
+        play.Dispose();
+    }
+
+    [Fact]
+    public void The_tuning_fork_echoes_the_last_speak_louder_than_it_was()
+    {
+        var (play, session, enemy) = Fight(["ap_chalk_line", "ap_tuning_fork", "ap_candle_stub", "ap_candle_stub", "ap_candle_stub"]);
+        Play(play, session, "ap_candle_stub", enemy);
+        Play(play, session, "ap_candle_stub", enemy);
+        Inscribe(play, session, "ap_chalk_line", 0);
+        Inscribe(play, session, "ap_tuning_fork", 1);
+        var block = Block(Hero(play));
+        Cast(play, session, enemy);
+        Assert.Equal(block + 6 + 9, Block(Hero(play)));            // the Chalk Line's 6, and again at 150%
         play.Dispose();
     }
 

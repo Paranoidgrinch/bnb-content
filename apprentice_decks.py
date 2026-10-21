@@ -13,14 +13,14 @@ STARTERS = set(STARTER)
 POOL = {}
 for c in ['wax_drop', 'snuffer', 'ink_dish', 'folded_leaf', 'blotting_sand', 'chalk_circle', 'clay_weight', 'masons_dust',
           'open_casement', 'windblown_leaf', 'penny_whistle', 'wick_trimmer', 'spare_notch', 'pinprick', 'cup_of_water',
-          'dust_mote', 'slate_pencil', 'blotter']:
+          'dust_mote']:
     POOL['ap_' + c] = ('common', 1)
 for c in ['split_wick', 'cracked_slate', 'crosswind', 'wrong_way_round', 'rubbing', 'watermark', 'torn_flyleaf', 'footnote',
           'candle_both_ends', 'firebreak', 'kiln_shelf', 'borrowed_stone', 'cold_ash', 'seal_press', 'recitation',
           'steady_hand', 'kindling', 'ember_tongs', 'tracing_paper', 'quill_knife', 'inkhorn']:
     POOL['ap_' + c] = ('uncommon', 1)
 for c in ['masters_correction', 'final_examination', 'lessons_ash', 'glass_rod', 'second_hand', 'fourfold_lesson',
-          'perfect_copy', 'last_word', 'copybook']:
+          'perfect_copy', 'last_word', 'copybook', 'banked_fire', 'tuning_fork']:
     POOL['ap_' + c] = ('rare', 1)
 for c, r, act in [('sealing_wax', 'common', 2), ('drill_book', 'common', 2), ('red_pencil', 'uncommon', 2),
                   ('bookend', 'uncommon', 2), ('pressed_flower', 'uncommon', 2), ('soot_mark', 'uncommon', 2),
@@ -51,13 +51,13 @@ def r(*ids): return ['ar_' + i for i in ids]
 D = {
  'Short Hand': {
   2: (n(chalk_line=1, ink_blot=1, candle_stub=1),
-      n(penny_whistle=2, pinprick=2, slate_pencil=2, red_pencil=1, tracing_paper=1, recitation=1, kindling=1,
+      n(penny_whistle=2, pinprick=2, drill_book=2, red_pencil=1, tracing_paper=1, recitation=1, kindling=1,
         dust_mote=1, examiners_bell=1),
-      u('candle_stub', 'candle_stub', 'slate_pencil', 'penny_whistle', 'red_pencil'), r('knotted_wristcord', 'star_chart')),
+      u('candle_stub', 'candle_stub', 'drill_book', 'penny_whistle', 'red_pencil'), r('knotted_wristcord', 'star_chart')),
   3: (n(chalk_line=2, ink_blot=1, candle_stub=1),
-      n(penny_whistle=2, pinprick=2, slate_pencil=2, red_pencil=1, tracing_paper=1, recitation=1, kindling=1,
+      n(penny_whistle=2, pinprick=2, drill_book=2, red_pencil=1, tracing_paper=1, recitation=1, kindling=1,
         dust_mote=1, examiners_bell=1, thunderclap=1, borrowed_grimoire=1, quill_knife=1, soot_mark=1),
-      u('candle_stub', 'candle_stub', 'slate_pencil', 'slate_pencil', 'penny_whistle', 'penny_whistle', 'red_pencil',
+      u('candle_stub', 'candle_stub', 'drill_book', 'drill_book', 'penny_whistle', 'penny_whistle', 'red_pencil',
         'pinprick', 'examiners_bell'), r('knotted_wristcord', 'star_chart', 'pencil_box'))},
  'Long Lesson': {
   2: (n(candle_stub=1, chalk_line=2),
@@ -72,11 +72,11 @@ D = {
  'Ash Wand': {
   2: (n(chalk_line=1, candle_stub=1, ink_blot=1),
       n(wick_trimmer=2, candle_both_ends=2, rubbing=1, borrowed_stone=1, lessons_ash=1, second_hand=1, lectern=1,
-        footnote=1, slate_pencil=1, pinprick=1),
+        footnote=1, drill_book=1, pinprick=1),
       u('wick_trimmer', 'candle_both_ends', 'borrowed_stone', 'candle_stub', 'lectern'), r('ash_bookcord', 'sooty_ferrule')),
   3: (n(chalk_line=2, candle_stub=1, ink_blot=1),
       n(wick_trimmer=2, candle_both_ends=2, rubbing=1, borrowed_stone=2, lessons_ash=1, second_hand=1, masters_hat=1,
-        lectern=1, footnote=1, slate_pencil=1, pinprick=1, red_pencil=1, moss_poultice=1),
+        lectern=1, footnote=1, drill_book=1, pinprick=1, red_pencil=1, moss_poultice=1),
       u('wick_trimmer', 'wick_trimmer', 'candle_both_ends', 'candle_both_ends', 'borrowed_stone', 'candle_stub',
         'candle_stub', 'lectern', 'red_pencil'), r('ash_bookcord', 'sooty_ferrule', 'pewter_inkwell'))},
  'Elemental Tempo': {
@@ -96,30 +96,30 @@ D = {
       u('penny_whistle', 'split_wick', 'seal_press', 'candle_stub', 'red_pencil'), r('brass_dividers', 'bone_spacer')),
   3: (n(candle_stub=1, chalk_line=2, ink_blot=1),
       n(penny_whistle=2, split_wick=2, pinprick=2, chalk_circle=1, seal_press=1, folded_leaf=1, cracked_slate=1,
-        masters_correction=1, red_pencil=1, warding_primer=1, slate_pencil=1, examiners_bell=1, moss_poultice=1),
+        masters_correction=1, red_pencil=1, warding_primer=1, drill_book=1, examiners_bell=1, moss_poultice=1),
       u('penny_whistle', 'penny_whistle', 'split_wick', 'split_wick', 'seal_press', 'candle_stub', 'pinprick',
         'red_pencil', 'cracked_slate'), r('brass_dividers', 'bone_spacer', 'pewter_inkwell'))},
  'Moving Text': {
   2: (n(chalk_line=2, ink_blot=1),
       n(open_casement=2, torn_flyleaf=2, wrong_way_round=2, perfect_copy=1, windblown_leaf=1, weathervane=1,
-        ink_dish=1, slate_pencil=1, red_pencil=1),
+        ink_dish=1, drill_book=1, red_pencil=1),
       u('open_casement', 'torn_flyleaf', 'wrong_way_round', 'candle_stub', 'red_pencil'), r('bent_nib', 'knotted_wristcord')),
   3: (n(chalk_line=3, ink_blot=1),
       n(open_casement=2, torn_flyleaf=2, wrong_way_round=2, perfect_copy=1, windblown_leaf=1, weathervane=1,
-        ink_dish=1, slate_pencil=2, red_pencil=1, masters_correction=1, copybook=1, dust_mote=1),
+        ink_dish=1, drill_book=2, red_pencil=1, masters_correction=1, copybook=1, dust_mote=1),
       u('open_casement', 'open_casement', 'torn_flyleaf', 'wrong_way_round', 'candle_stub', 'candle_stub',
-        'slate_pencil', 'slate_pencil', 'red_pencil'), r('bent_nib', 'knotted_wristcord', 'star_chart'))},
+        'drill_book', 'drill_book', 'red_pencil'), r('bent_nib', 'knotted_wristcord', 'star_chart'))},
  # Unoptimised: one of each of twelve (sixteen) commons, the starter upgraded — whatever comes.
  'Common-heavy': {
   2: (n(candle_stub=1, chalk_line=1, ink_blot=1),
-      {c: 1 for c in u('slate_pencil', 'blotter', 'sealing_wax', 'drill_book', 'wax_drop', 'snuffer', 'pinprick',
+      {c: 1 for c in u('masons_dust', 'windblown_leaf', 'sealing_wax', 'drill_book', 'wax_drop', 'snuffer', 'pinprick',
                        'dust_mote', 'penny_whistle', 'clay_weight', 'chalk_circle', 'wick_trimmer')},
       u('candle_stub', 'candle_stub', 'chalk_line', 'chalk_line', 'flyleaf'), r('feather_catcher', 'pencil_box')),
   3: (n(candle_stub=1, chalk_line=2, ink_blot=1),
-      {c: 1 for c in u('slate_pencil', 'blotter', 'sealing_wax', 'drill_book', 'wax_drop', 'snuffer', 'pinprick',
+      {c: 1 for c in u('open_casement', 'cup_of_water', 'sealing_wax', 'drill_book', 'wax_drop', 'snuffer', 'pinprick',
                        'dust_mote', 'penny_whistle', 'clay_weight', 'chalk_circle', 'wick_trimmer', 'moss_poultice',
                        'masons_dust', 'windblown_leaf', 'ink_dish')},
-      u('candle_stub', 'candle_stub', 'candle_stub', 'chalk_line', 'chalk_line', 'flyleaf', 'slate_pencil', 'blotter',
+      u('candle_stub', 'candle_stub', 'candle_stub', 'chalk_line', 'chalk_line', 'flyleaf', 'open_casement', 'cup_of_water',
         'drill_book'), r('feather_catcher', 'pencil_box', 'spare_wicks'))},
 }
 

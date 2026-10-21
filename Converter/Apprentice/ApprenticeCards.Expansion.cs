@@ -38,19 +38,7 @@ public static partial class ApprenticeCards
 
     private static WandImprint Lesson(params WandAtom[] atoms) => Burn(0, atoms);
 
-    // ── Act I: two commons, seven uncommons, a rare ──────────────────────────────────────────────────────────
-
-    private static readonly BnbCard SlatePencil = Card(
-        "ap_slate_pencil", "Slate Pencil", DeedTag, 1,
-        "Deal 8 damage.", Damage(8),
-        "Speak: deal 5 damage, 4 more if you have already cast this turn.",
-        Speak(Hit(Amount(Plus(Const(5), IfCastBefore(4, inWand: true))))), "common");
-
-    private static readonly BnbCard Blotter = Card(
-        "ap_blotter", "Blotter", WorkingTag, 1,
-        "Gain 8 Block.", Block(8),
-        "Speak: gain 6 Block; in the first slot cast, also gain 1 Grit.",
-        Speak(Guard(6), Gain(Grit, 1).Only(WandPosition.FirstExecuted)), "common");
+    // ── Act I: seven uncommons, three rares ──────────────────────────────────────────────────────────────────
 
     private static readonly BnbCard Recitation = Card(
         "ap_recitation", "Recitation", WorkingTag, 1,
@@ -101,6 +89,21 @@ public static partial class ApprenticeCards
         "At the start of each of your turns, gain 1 Rote and 1 Poise. Exhaust.", Apply(ApprenticeRules.CopybookRule, 1, You),
         "Burn: after the cast, gain 2 Rote; then this card is exhausted.",
         Lesson(Later(Apply(Rote, 2, You))), "rare", [ExhaustTag]);
+
+    // The wand's heat as a payoff: what Exhaustion has built up is spent at once, and the wand is cool for the next
+    // cast. Its Speak strains the wand in turn.
+    private static readonly BnbCard BankedFire = Card(
+        "ap_banked_fire", "Banked Fire", DeedTag, 1,
+        "Deal 5 damage to ALL enemies, 3 more for each Exhaustion the wand has. Then the wand's Exhaustion drops to 0.",
+        Seq(Damage(Plus(Const(5), Times(WandValue(WandField.Exhaustion), 3)), AllEnemies), WandMove(WandAction.Exhaustion, -12)),
+        "Heighten: the next damaging Speak deals 150% more; 2 more Exhaustion.",
+        Heighten(150, filter: WandFilter.Damage, strain: 2), "rare");
+
+    private static readonly BnbCard TuningFork = Card(
+        "ap_tuning_fork", "Tuning Fork", WorkingTag, 1,
+        "Gain 2 Focus. Draw 2 cards.", Seq(GainFocus(2), Draw(2)),
+        "Echo: repeat the last Speak at 150%.",
+        Echo(150), "rare");
 
     // ── Act II: two commons, nine uncommons, five rares ──────────────────────────────────────────────────────
 
@@ -316,12 +319,6 @@ public static partial class ApprenticeCards
 
     public static IReadOnlyList<BnbCard> Expansion() =>
     [
-        SlatePencil, SlatePencil.Up("Deal 11 damage.", Damage(11),
-            "Speak: deal 7 damage, 4 more if you have already cast this turn.",
-            Speak(Hit(Amount(Plus(Const(7), IfCastBefore(4, inWand: true)))))),
-        Blotter, Blotter.Up("Gain 11 Block.", Block(11),
-            "Speak: gain 8 Block; in the first slot cast, also gain 1 Grit.",
-            Speak(Guard(8), Gain(Grit, 1).Only(WandPosition.FirstExecuted))),
         Recitation, Recitation.Up("Gain 3 Rote. Draw 1 card. Exhaust.", Seq(Apply(Rote, 3, You), Draw(1)),
             "Speak: gain 4 Block; after the cast, gain 1 Rote.",
             Speak(Guard(4), Later(Apply(Rote, 1, You)))),
@@ -347,6 +344,13 @@ public static partial class ApprenticeCards
             Apply(ApprenticeRules.CopybookRule, 1, You),
             "Burn: after the cast, gain 3 Rote; then this card is exhausted.",
             Lesson(Later(Apply(Rote, 3, You))), cost: 1),
+        BankedFire, BankedFire.Up(
+            "Deal 6 damage to ALL enemies, 4 more for each Exhaustion the wand has. Then the wand's Exhaustion drops to 0.",
+            Seq(Damage(Plus(Const(6), Times(WandValue(WandField.Exhaustion), 4)), AllEnemies), WandMove(WandAction.Exhaustion, -12)),
+            "Heighten: the next damaging Speak deals 200% more; 2 more Exhaustion.",
+            Heighten(200, filter: WandFilter.Damage, strain: 2)),
+        TuningFork, TuningFork.Up("Gain 3 Focus. Draw 2 cards.", Seq(GainFocus(3), Draw(2)),
+            "Echo: repeat the last Speak at 175%.", Echo(175)),
 
         SealingWax, SealingWax.Up("Gain 8 Block and 4 Ward Wax.", Seq(Block(8), Apply(Cards.Keywords.WardWax, 4, You)),
             "Speak: gain 4 Ward Wax, 1 more for each Grit you have (at most 3 more).",

@@ -929,8 +929,8 @@ cards a boss or a door hands over are never offered and have no act.
 | code | title | type | rarity | what it does |
 |---|---|---|---|---|
 | `ap_apprentices_oath` | The Apprentice's Oath | working | rare | Whenever you cast this combat, deal 3 damage to ALL enemies and gain 3 Block. Exhaust. Wand: Speak: deal 3 damage to ALL enemies and gain 3 Block. |
+| `ap_banked_fire` | Banked Fire | deed | rare | Deal 5 damage to ALL enemies, 3 more for each Exhaustion the wand has. Then the wand's Exhaustion drops to 0. Wand: Heighten: the next damaging Speak deals 150% more; 2 more Exhaustion. |
 | `ap_bell_book` | Bell, Book and Candle | deed | rare | Deal 6 damage 3 times; each hit then applies 1 Singe. Wand: Speak: deal 4 damage 3 times. |
-| `ap_blotter` | Blotter | working | common | Gain 8 Block. Wand: Speak: gain 6 Block; in the first slot cast, also gain 1 Grit. |
 | `ap_blotting_sand` | Blotting Sand | working | common | Remove 1 stack of a negative status from yourself. Gain 5 Block. Wand: Shape — Remedy: the next Speak that would put a negative status on an enemy puts none; instead remove up to 2 negative stacks from yourself and gain 3 Block for each. |
 | `ap_bookend` | Bookend | working | uncommon | Gain 8 Block, 4 more if the wand is full. Wand: Speak: gain 4 Block, 2 more for each card in the wand. |
 | `ap_borrowed_grimoire` | The Borrowed Grimoire | working | rare | Whenever you cast this combat, gain 1 Rote. Exhaust. Wand: Burn: after the cast, gain 3 Rote; then this card is exhausted. |
@@ -989,7 +989,6 @@ cards a boss or a door hands over are never offered and have no act.
 | `ap_seal_press` | Seal Press | working | uncommon | Spend up to 2 Grit: gain 4 Ward Wax for each, and 4 Block. If you spend none, gain 7 Block. Wand: Keep — Shield Seal: the next defensive Speak is stored at 75% and raised just before the first enemy attack reaches you this enemy turn. It fades at the start of your next turn. |
 | `ap_sealing_wax` | Sealing Wax | working | common | Gain 6 Block and 3 Ward Wax. Wand: Speak: gain 3 Ward Wax, 1 more for each Grit you have (at most 3 more). |
 | `ap_second_hand` | Second Hand | working | rare | Put a Temporary copy of a card from your Exhaust pile into your hand. Exhaust. Wand: Burn — Recall: while installed, the first Burn Out each combat may put an exhausted card into the slot it freed. |
-| `ap_slate_pencil` | Slate Pencil | deed | common | Deal 8 damage. Wand: Speak: deal 5 damage, 4 more if you have already cast this turn. |
 | `ap_slide_rule` | Slide Rule | working | common | Gain 8 Block. If the wand holds 4 or more cards, draw 1 card. Wand: Ground: 2 less Exhaustion, or 4 less when 4 or more instructions run. |
 | `ap_snuffer` | Snuffer | deed | common | Spend up to 3 Singe on the target; deal 4 damage for each. Wand: Ground — Quench: spend up to 2 Singe on the target; this cast's Exhaustion is 2 lower for each. |
 | `ap_soot_mark` | Soot Mark | deed | uncommon | Apply 4 Singe. Wand: Speak: apply 2 Singe to ALL enemies. |
@@ -1003,6 +1002,7 @@ cards a boss or a door hands over are never offered and have no act.
 | `ap_thunderclap` | Thunderclap | deed | rare | Deal 5 damage to ALL enemies, 5 more for each cast you made this turn. Wand: Speak: deal 5 damage to ALL enemies, 5 more for each earlier cast this turn. |
 | `ap_torn_flyleaf` | Torn Flyleaf | working | uncommon | Take a wand card back into your hand for free, then draw 1 card. Wand: Order — Slip: after the cast, this card moves into the nearest free slot to its right; if it moved, gain 1 Focus. |
 | `ap_tracing_paper` | Tracing Paper | working | uncommon | Gain 6 Block. Draw 1 card. Wand: Echo: repeat the last damaging Speak at full strength; then this card burns. |
+| `ap_tuning_fork` | Tuning Fork | working | rare | Gain 2 Focus. Draw 2 cards. Wand: Echo: repeat the last Speak at 150%. |
 | `ap_unfinished_spell` | The Unfinished Spell | deed | rare | Deal 6 damage, 6 more for each card in the wand. Wand: Speak: deal 3 damage for each Speak resolved this combat (at most 24). |
 | `ap_warding_primer` | Warding Primer | working | rare | Gain 3 Poise and 8 Block. Exhaust. Wand: Keep — Shield Seal: the next defensive Speak is stored at 150% and raised just before the first enemy attack this enemy turn. |
 | `ap_watermark` | Watermark | working | uncommon | Choose: gain 2 Flow; or spend 1 Flow to lower the wand's Exhaustion by 3 and gain 1 Gust. Wand: Heighten — Contrast: if the Speak before was of another kind (damage, defence, status) than the next, the next gets 50% more; otherwise gain 1 Flow after the cast. |

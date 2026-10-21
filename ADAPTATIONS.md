@@ -4454,7 +4454,10 @@ the master's §0 constraint 1 (42 cards, "intentionally approximately half") and
 is written down in `source-data/design/sorcerers_apprentice_expansion.md`; the deviations from the master that came
 with it:
 
-- **80 reward cards and 18 relics** instead of 38 and 9; his first cards gated at Acts II–IV.
+- **80 reward cards and 18 relics** instead of 38 and 9; his first cards gated at Acts II–IV. By rarity the 80
+  are the others' 20 Common · 35 Uncommon · 25 Rare: the expansion's two plain Act-I commons (Slate Pencil, Blotter)
+  were replaced by two rares, Banked Fire and Tuning Fork (the user, 2026-10-21: "der apprentice sollte das muster
+  nicht brechen").
 - **Rote and Poise**, two new statuses, and a "whenever you cast" rule — the master asks for few new baseline
   rules; these three are the growth his shelf lacked from Act II on.
 - **Numbers:** Singe spends for +3 and Grit softens a hit by 3 (master: 2); Candle Stub's Speak, Chalk Line,
