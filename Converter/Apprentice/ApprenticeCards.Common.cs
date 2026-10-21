@@ -43,8 +43,8 @@ public static partial class ApprenticeCards
     private static readonly BnbCard BlottingSand = Card(
         "ap_blotting_sand", "Blotting Sand", WorkingTag, 1,
         "Remove 1 stack of a negative status from yourself. Gain 5 Block.", Seq(Cleanse(1), Block(5)),
-        "Shape — Remedy: the next Speak that would put a negative status on an enemy puts none; instead remove up " +
-        "to 2 negative stacks from yourself and gain 3 Block for each.",
+        "Shape — Remedy: the next Speak that would debuff an enemy does not; instead remove up to 2 negative " +
+        "stacks from yourself, gaining 3 Block for each.",
         Shape(WandRule.Remedy, amount: 2, cap: 3), "common");
 
     private static readonly BnbCard ChalkCircle = Card(
@@ -144,8 +144,8 @@ public static partial class ApprenticeCards
             Keep(125)),
         BlottingSand, BlottingSand.Up(
             "Remove 2 stacks of negative statuses from yourself. Gain 5 Block.", Seq(Cleanse(2), Block(5)),
-            "Shape — Remedy: the next Speak that would put a negative status on an enemy puts none; instead remove up " +
-            "to 3 negative stacks from yourself and gain 3 Block for each.",
+            "Shape — Remedy: the next Speak that would debuff an enemy does not; instead remove up to 3 negative " +
+            "stacks from yourself, gaining 3 Block for each.",
             Shape(WandRule.Remedy, amount: 3, cap: 3)),
         ChalkCircle, ChalkCircle.Up(
             "Gain 12 Block. If you do not cast this turn, gain 1 Grit at the end of it.",

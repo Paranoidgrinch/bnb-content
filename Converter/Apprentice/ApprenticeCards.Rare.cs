@@ -33,8 +33,8 @@ public static partial class ApprenticeCards
         "ap_glass_rod", "Glass Rod", DeedTag, 2,
         "Your next cast this combat deals and gives 50% more, and adds 3 Exhaustion. Draw 1 card. Exhaust.",
         Seq(Apply(ApprenticeRules.GlassRodPrimed, 1, You), Draw(1)),
-        "Shape — Prism: the next damaging or defensive Speak resolves as 70% of itself and 70% of the same number in " +
-        "the other form; then this card is exhausted. With nothing to shape, gain 8 Block and it still burns.",
+        "Shape — Prism: the next damaging or defensive Speak lands as both damage and Block, each at 70%. Then " +
+        "this card burns. With nothing to shape, gain 8 Block; it still burns.",
         Shape(WandRule.Prism, percent: 70, burns: true, fallback: Guard(8)), "rare", [ExhaustTag]);
 
     private static readonly BnbCard SecondHand = Card(
@@ -47,8 +47,8 @@ public static partial class ApprenticeCards
     private static readonly BnbCard FourfoldLesson = Card(
         "ap_fourfold_lesson", "The Fourfold Lesson", WorkingTag, 2,
         "Deal 7 damage and apply 1 Singe. Gain 1 Flow, 1 Grit and 1 Gust.", Fourfold(7, 1),
-        "Clause — Fourfold: at the end of the section, if 2 of Singe applied, Flow, Grit and Gust gained have happened " +
-        "this turn, gain 5 Block; with 3, also Exhaustion 2 lower; with all 4, also gain 1 Focus after the cast.",
+        "Clause — Fourfold: at the end of the section, count this turn's elements (Singe applied; Flow, Grit, Gust " +
+        "gained). 2: gain 5 Block. 3: also 2 less Exhaustion. 4: also 1 Focus after the cast.",
         Clause(WandRule.Fourfold, amount: 5, amount2: 2, cap: 1), "rare");
 
     private static readonly BnbCard PerfectCopy = Card(
@@ -62,8 +62,8 @@ public static partial class ApprenticeCards
         "ap_last_word", "The Master's Last Word", DeedTag, 2,
         "Spend any amount of your Focus: deal 10 damage, +5 for each. With 4 or more spent, gain 3 Grit. Exhaust.",
         LastWordPlay(5),
-        "Stop — Final Word: must run last. For each different kind of instruction before it (5 at most), a hit of 6; " +
-        "every hit after the first costs 1 Focus left over from the cast. Adds 2 Exhaustion.",
+        "Stop — Final Word: runs last. One hit of 6 for each kind of instruction before it (5 at most); each hit " +
+        "after the first costs 1 leftover Focus. 2 more Exhaustion.",
         FinalWord(6, 5, 2), "rare", [ExhaustTag]);
 
     public static IReadOnlyList<BnbCard> Rares() =>
@@ -88,8 +88,8 @@ public static partial class ApprenticeCards
         GlassRod, GlassRod.Up(
             "Your next cast this combat deals and gives 65% more, and adds 3 Exhaustion. Draw 1 card. Exhaust.",
             Seq(Apply(ApprenticeRules.GlassRodPrimedPlus, 1, You), Draw(1)),
-            "Shape — Prism: the next damaging or defensive Speak resolves as 85% of itself and 85% of the same number in " +
-            "the other form; then this card is exhausted. With nothing to shape, gain 8 Block and it still burns.",
+            "Shape — Prism: the next damaging or defensive Speak lands as both damage and Block, each at 85%. Then " +
+            "this card burns. With nothing to shape, gain 8 Block; it still burns.",
             Shape(WandRule.Prism, percent: 85, burns: true, fallback: Guard(8))),
         SecondHand, SecondHand.Up(
             "Put a Temporary copy of a card from your Exhaust pile into your hand. Exhaust.",
@@ -99,8 +99,8 @@ public static partial class ApprenticeCards
             Recall(2), cost: 1),
         FourfoldLesson, FourfoldLesson.Up(
             "Deal 10 damage and apply 1 Singe. Gain 1 Flow, 1 Grit and 2 Gust.", Fourfold(10, 2),
-            "Clause — Fourfold: at the end of the section, if 2 of Singe applied, Flow, Grit and Gust gained have " +
-            "happened this turn, gain 8 Block; with 3, also Exhaustion 2 lower; with all 4, also gain 1 Focus after the cast.",
+            "Clause — Fourfold: at the end of the section, count this turn's elements (Singe applied; Flow, Grit, Gust " +
+            "gained). 2: gain 8 Block. 3: also 2 less Exhaustion. 4: also 1 Focus after the cast.",
             Clause(WandRule.Fourfold, amount: 8, amount2: 2, cap: 1)),
         PerfectCopy, PerfectCopy.Up(
             "Put the wand's cards in any order you like, for free, then draw 3 cards.",
@@ -111,8 +111,8 @@ public static partial class ApprenticeCards
         LastWord, LastWord.Up(
             "Spend any amount of your Focus: deal 10 damage, +7 for each. With 4 or more spent, gain 3 Grit. Exhaust.",
             LastWordPlay(7),
-            "Stop — Final Word: must run last. For each different kind of instruction before it (5 at most), a hit of " +
-            "8; every hit after the first costs 1 Focus left over from the cast. Adds 2 Exhaustion.",
+            "Stop — Final Word: runs last. One hit of 8 for each kind of instruction before it (5 at most); each hit " +
+            "after the first costs 1 leftover Focus. 2 more Exhaustion.",
             FinalWord(8, 5, 2)),
     ];
 

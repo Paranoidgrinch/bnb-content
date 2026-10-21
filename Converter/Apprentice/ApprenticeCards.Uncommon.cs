@@ -102,10 +102,10 @@ public static partial class ApprenticeCards
         AshSpeak(roundUp: false), "uncommon");
 
     private static readonly BnbCard SealPress = Card(
-        "ap_seal_press", "Seal Press", WorkingTag, 1,
+        "ap_seal_press", "Book Press", WorkingTag, 1,
         "Spend up to 2 Grit: gain 4 Ward Wax for each, and 4 Block. If you spend none, gain 7 Block.", PressGrit(2, 4),
-        "Keep — Shield Seal: the next defensive Speak is stored at 75% and raised just before the first enemy attack " +
-        "reaches you this enemy turn. It fades at the start of your next turn.",
+        "Keep — Shield Seal: store the next defensive Speak at 75%. It rises before the first enemy attack this " +
+        "enemy turn and fades at your next turn.",
         Keep(75, WandFilter.Defense, WandStoreTrigger.NextEnemyAttack), "uncommon");
 
     public static IReadOnlyList<BnbCard> Uncommons() =>
@@ -181,8 +181,8 @@ public static partial class ApprenticeCards
             AshSpeak(roundUp: true)),
         SealPress, SealPress.Up(
             "Spend up to 2 Grit: gain 5 Ward Wax for each, and 4 Block. If you spend none, gain 7 Block.", PressGrit(2, 5),
-            "Keep — Shield Seal: the next defensive Speak is stored whole and raised just before the first enemy attack " +
-            "reaches you this enemy turn. It fades at the start of your next turn.",
+            "Keep — Shield Seal: store the next defensive Speak whole. It rises before the first enemy attack this " +
+            "enemy turn and fades at your next turn.",
             Keep(100, WandFilter.Defense, WandStoreTrigger.NextEnemyAttack)),
     ];
 
@@ -297,6 +297,6 @@ public static partial class ApprenticeCards
                     new CombatNodeModel("modifyStatusStacks", You, CombatAmountSpec.Unary("neg", ScratchValue), StatusId: Grit),
                     Apply(Cards.Keywords.WardWax, Times(ScratchValue, waxPer), You),
                     Block(4)))],
-                "Seal Press"),
+                "Book Press"),
             Block(7));
 }

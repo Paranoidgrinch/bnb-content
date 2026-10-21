@@ -53,7 +53,7 @@ public static partial class ApprenticeCards
         Speak(Guard(4), Later(Apply(Poise, 1, You))), "uncommon", [ExhaustTag]);
 
     private static readonly BnbCard Kindling = Card(
-        "ap_kindling", "Kindling", DeedTag, 1,
+        "ap_kindling", "Paper Spill", DeedTag, 1,
         "Deal 4 damage twice; each hit then applies 1 Singe.", Repeat(2, Seq(Damage(4), Apply(Singe, 1))),
         "Speak: deal 3 damage twice.",
         Speak(Hit(3, 2)), "uncommon");
@@ -85,7 +85,7 @@ public static partial class ApprenticeCards
         Speak(Later(GainFocus(1))), "uncommon");
 
     private static readonly BnbCard Copybook = Card(
-        "ap_copybook", "Copybook", WorkingTag, 2,
+        "ap_copybook", "Copybook", RiteTag, 2,
         "At the start of each of your turns, gain 1 Rote and 1 Poise. Exhaust.", Apply(ApprenticeRules.CopybookRule, 1, You),
         "Burn: after the cast, gain 2 Rote; then this card is exhausted.",
         Lesson(Later(Apply(Rote, 2, You))), "rare", [ExhaustTag]);
@@ -108,7 +108,7 @@ public static partial class ApprenticeCards
     // ── Act II: two commons, nine uncommons, five rares ──────────────────────────────────────────────────────
 
     private static readonly BnbCard SealingWax = Card(
-        "ap_sealing_wax", "Sealing Wax", WorkingTag, 1,
+        "ap_sealing_wax", "Candle Grease", WorkingTag, 1,
         "Gain 6 Block and 3 Ward Wax.", Seq(Block(6), Apply(Cards.Keywords.WardWax, 3, You)),
         "Speak: gain 3 Ward Wax, 1 more for each Grit you have (at most 3 more).",
         Speak(WaxOf(Plus(Const(3), AtMost(Stacks(Grit, You), 3)))), "common", act: 2);
@@ -159,7 +159,7 @@ public static partial class ApprenticeCards
 
     private static readonly BnbCard Lectern = Card(
         "ap_lectern", "Lectern", WorkingTag, 2,
-        "Gain 3 Rote. Exhaust.", Apply(Rote, 3, You),
+        "Gain 3 Rote and 3 Poise. Exhaust.", Seq(Apply(Rote, 3, You), Apply(Poise, 3, You)),
         "Burn: after the cast, gain 2 Rote; then this card is exhausted.",
         Lesson(Later(Apply(Rote, 2, You))), "uncommon", [ExhaustTag], act: 2);
 
@@ -176,7 +176,7 @@ public static partial class ApprenticeCards
         Speak(Hit(4, to: WandTargeting.AllEnemies)), "uncommon", act: 2);
 
     private static readonly BnbCard BorrowedGrimoire = Card(
-        "ap_borrowed_grimoire", "The Borrowed Grimoire", WorkingTag, 2,
+        "ap_borrowed_grimoire", "The Borrowed Grimoire", RiteTag, 2,
         "Whenever you cast this combat, gain 1 Rote. Exhaust.", Apply(ApprenticeRules.GrimoireRule, 1, You),
         "Burn: after the cast, gain 3 Rote; then this card is exhausted.",
         Lesson(Later(Apply(Rote, 3, You))), "rare", [ExhaustTag], act: 2);
@@ -197,12 +197,12 @@ public static partial class ApprenticeCards
     private static readonly BnbCard WardingPrimer = Card(
         "ap_warding_primer", "Warding Primer", WorkingTag, 2,
         "Gain 3 Poise and 8 Block. Exhaust.", Seq(Apply(Poise, 3, You), Block(8)),
-        "Keep — Shield Seal: the next defensive Speak is stored at 150% and raised just before the first enemy attack " +
-        "this enemy turn.",
+        "Keep — Shield Seal: store the next defensive Speak at 150%. It rises before the first enemy attack this " +
+        "enemy turn.",
         Keep(150, WandFilter.Defense, WandStoreTrigger.NextEnemyAttack), "rare", [ExhaustTag], act: 2);
 
     private static readonly BnbCard ExaminersBell = Card(
-        "ap_examiners_bell", "The Examiner's Bell", WorkingTag, 1,
+        "ap_examiners_bell", "The Examiner's Bell", RiteTag, 1,
         "At the end of each of your turns in which you cast twice or more, gain 2 Rote. Exhaust.",
         Apply(ApprenticeRules.ExaminersBellRule, 1, You),
         "Speak: deal 6 damage, 6 more if you have already cast this turn.",
@@ -211,7 +211,7 @@ public static partial class ApprenticeCards
     // ── Act III: a common, three uncommons, five rares ───────────────────────────────────────────────────────
 
     private static readonly BnbCard MossPoultice = Card(
-        "ap_moss_poultice", "Moss Poultice", WorkingTag, 1,
+        "ap_moss_poultice", "Slate Sponge", WorkingTag, 1,
         "Gain 9 Block. Remove 1 stack of a negative status from yourself.", Seq(Block(9), Cleanse(1)),
         "Speak: gain 6 Block; in the first slot cast, also remove 1 negative stack from yourself.",
         Speak(Guard(6), Do(Cleanse(1)).Only(WandPosition.FirstExecuted)), "common", act: 3);
@@ -235,13 +235,13 @@ public static partial class ApprenticeCards
         Speak(Guard(Amount(Plus(Const(8), Times(Stacks(Grit, You), 2))))), "uncommon", act: 3);
 
     private static readonly BnbCard BurningGlass = Card(
-        "ap_burning_glass", "Burning Glass", WorkingTag, 2,
+        "ap_burning_glass", "Burning Glass", RiteTag, 2,
         "Whenever you cast this combat, apply 1 Singe to ALL enemies. Exhaust.", Apply(ApprenticeRules.BurningGlassRule, 1, You),
         "Burn: apply 3 Singe; then this card is exhausted.",
         Lesson(Put(Singe, 3)), "rare", [ExhaustTag], act: 3);
 
     private static readonly BnbCard MastersHat = Card(
-        "ap_masters_hat", "The Master's Hat", WorkingTag, 2,
+        "ap_masters_hat", "The Master's Hat", RiteTag, 2,
         "At the start of each of your turns, gain 1 Focus and 1 Rote. Exhaust.", Apply(ApprenticeRules.MastersHatRule, 1, You),
         "Burn: after the cast, gain 2 Focus; then this card is exhausted.",
         Lesson(Later(GainFocus(2))), "rare", [ExhaustTag], act: 3);
@@ -283,8 +283,8 @@ public static partial class ApprenticeCards
 
     private static readonly BnbCard FinalDraft = Card(
         "ap_final_draft", "Final Draft", DeedTag, 2,
-        "Deal 14 damage, 1 more for each Rote and each Poise you have.",
-        Damage(Plus(Const(14), Plus(Stacks(Rote, You), Stacks(Poise, You)))),
+        "Deal 14 damage, 2 more for each Rote and each Poise you have.",
+        Damage(Plus(Const(14), Plus(Plus(Stacks(Rote, You), Stacks(Poise, You)), Plus(Stacks(Rote, You), Stacks(Poise, You))))),
         "Speak: deal 8 damage.",
         Speak(Hit(8)), "uncommon", act: 4);
 
@@ -309,7 +309,7 @@ public static partial class ApprenticeCards
         Speak(Hit(Amount(AtMost(Times(WandValue(WandField.SpeaksThisCombat), 3), 24)))), "rare", act: 4);
 
     private static readonly BnbCard ApprenticesOath = Card(
-        "ap_apprentices_oath", "The Apprentice's Oath", WorkingTag, 1,
+        "ap_apprentices_oath", "The Apprentice's Oath", RiteTag, 1,
         "Whenever you cast this combat, deal 3 damage to ALL enemies and gain 3 Block. Exhaust.",
         Apply(ApprenticeRules.OathRule, 1, You),
         "Speak: deal 3 damage to ALL enemies and gain 3 Block.",
@@ -373,7 +373,7 @@ public static partial class ApprenticeCards
         Weathervane, Weathervane.Up("Gain 3 Gust. Draw 1 card.", Seq(Apply(Gust, 3, You), Draw(1)),
             "Order: the next two instructions trade places before they run; if that changes which Speak a Heighten " +
             "reaches, 3 less Exhaustion.", Order(WandRule.SwapNext, amount: 3)),
-        Lectern, Lectern.Up("Gain 3 Rote. Exhaust.", Apply(Rote, 3, You),
+        Lectern, Lectern.Up("Gain 3 Rote and 3 Poise. Exhaust.", Seq(Apply(Rote, 3, You), Apply(Poise, 3, You)),
             "Burn: after the cast, gain 3 Rote; then this card is exhausted.", Lesson(Later(Apply(Rote, 3, You))), cost: 1),
         LeadType, LeadType.Up("Gain 10 Block. Draw 1 card.", Seq(Block(10), Draw(1)),
             "Shape — Join: the next two damaging Speaks become one hit of both together, +9.", Shape(WandRule.Join, amount: 9)),
@@ -389,8 +389,8 @@ public static partial class ApprenticeCards
             "Speak: deal 3 damage for each cast this combat (at most 30).",
             Speak(Hit(Amount(AtMost(Times(WandValue(WandField.CastsThisCombat), 3), 30))))),
         WardingPrimer, WardingPrimer.Up("Gain 3 Poise and 8 Block. Exhaust.", Seq(Apply(Poise, 3, You), Block(8)),
-            "Keep — Shield Seal: the next defensive Speak is stored at 200% and raised just before the first enemy " +
-            "attack this enemy turn.",
+            "Keep — Shield Seal: store the next defensive Speak at 200%. It rises before the first enemy attack " +
+            "this enemy turn.",
             Keep(200, WandFilter.Defense, WandStoreTrigger.NextEnemyAttack), cost: 1),
         ExaminersBell, ExaminersBell.Up("At the end of each of your turns in which you cast twice or more, gain 2 Rote. Exhaust.",
             Apply(ApprenticeRules.ExaminersBellRule, 1, You),
@@ -431,8 +431,8 @@ public static partial class ApprenticeCards
             Ground(WandRule.ByLength, amount: 3, amount2: 5, cap: 4)),
         Compendium, Compendium.Up("Gain 1 Rote and 1 Poise. Draw 3 cards.", Seq(Apply(Rote, 1, You), Apply(Poise, 1, You), Draw(3)),
             "Echo: repeat the last Speak at full strength.", Echo(100)),
-        FinalDraft, FinalDraft.Up("Deal 18 damage, 1 more for each Rote and each Poise you have.",
-            Damage(Plus(Const(18), Plus(Stacks(Rote, You), Stacks(Poise, You)))),
+        FinalDraft, FinalDraft.Up("Deal 18 damage, 2 more for each Rote and each Poise you have.",
+            Damage(Plus(Const(18), Plus(Plus(Stacks(Rote, You), Stacks(Poise, You)), Plus(Stacks(Rote, You), Stacks(Poise, You))))),
             "Speak: deal 11 damage.", Speak(Hit(11))),
         MagnumOpus, MagnumOpus.Up("Double your Rote and Poise. Exhaust.",
             Seq(Apply(Rote, Stacks(Rote, You), You), Apply(Poise, Stacks(Poise, You), You)),
