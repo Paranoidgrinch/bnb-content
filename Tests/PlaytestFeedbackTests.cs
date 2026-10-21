@@ -112,9 +112,16 @@ public class PlaytestFeedbackTests
                 Assert.True(actOne < before, $"Act I cards take {actOne:P1} in act {act}, not less than {before:P1}");
             lastActOneShare = actOne;
 
+            // The general cards take their own share of the draw (sharpening pass 2026-10-21) and have no Commons:
+            // the Rares still hold the act's curve, the Commons hold it on the character's side.
+            var generalIds = pools.GeneralCards.Select(c => c.Id).ToHashSet();
+            var generalShare = ConversionPools.GeneralSlotShare(
+                pools.RewardCards.Count(c => generalIds.Contains(c.Id)), pools.RewardCards.Count(c => !generalIds.Contains(c.Id)));
+            Assert.Equal(generalShare, Share(c => generalIds.Contains(c.Id)), 2);
             var (common, uncommon, rare) = ConversionPools.RarityCurve[act];
             Assert.Equal(rare / 100.0, Share(c => c.Rarity == "rare"), 2);
-            Assert.Equal(common / 100.0, Share(c => c.Rarity == "common" || c.Rarity is not ("uncommon" or "rare")), 2);
+            Assert.Equal((1 - generalShare) * common / 100.0,
+                Share(c => c.Rarity == "common" || c.Rarity is not ("uncommon" or "rare")), 2);
             _ = uncommon;
         }
     }

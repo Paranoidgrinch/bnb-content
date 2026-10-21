@@ -128,11 +128,49 @@ public sealed class ConversionPools
             ]),
             count) { UpgradeChancePercent = UpgradedShare };
 
+    // THE GENERAL CARDS' SHARE OF A REWARD (sharpening pass 2026-10-21). They used to sit in the same rarity
+    // classes as a character's own cards, and since there are no general Commons and the late acts' character
+    // shelves are short, they made up 45–60 % of what an Act-IV reward offered (the Witch's 60 %). The user's
+    // rule: a slot is general with the chance p = general / (general + own) of the act's pool, and every general
+    // slot halves the chance for the next one. A pool draws its three offers at once and knows nothing of
+    // slots, so the rule is kept as its average: the general cards together take the share of each draw that
+    // the halving rule hands out over three slots — about a quarter in Act I, a third in Act IV, for everyone.
+    // Within each side the act's rarity curve and the act curve hold as before.
+    public static double GeneralSlotShare(int general, int own)
+    {
+        if (general == 0) return 0;
+        if (own == 0) return 1;
+        var p = (double)general / (general + own);
+        double Expected(int slot, double chance) =>
+            slot == 3 ? 0 : chance * (1 + Expected(slot + 1, chance / 2)) + (1 - chance) * Expected(slot + 1, chance);
+        return Expected(0, p) / 3;
+    }
+
     private List<RunPool<RewardOffer>.Entry> CurveEntries(
         IReadOnlyList<Cards.CardAuthoring.BnbCard> pool, string forCharacter)
     {
+        var generalIds = GeneralCards.Select(c => c.Id).ToHashSet();
+        var general = pool.Where(c => generalIds.Contains(c.Id)).ToList();
+        var own = pool.Where(c => !generalIds.Contains(c.Id)).ToList();
+        var share = GeneralSlotShare(general.Count, own.Count);
+        return
+        [
+            .. CurveEntries(own, forCharacter, 1 - share, generalSide: false),
+            .. CurveEntries(general, forCharacter, share, generalSide: true),
+        ];
+    }
+
+    private List<RunPool<RewardOffer>.Entry> CurveEntries(
+        IReadOnlyList<Cards.CardAuthoring.BnbCard> pool, string forCharacter, double sideShare, bool generalSide)
+    {
+        if (pool.Count == 0 || sideShare <= 0)
+            return [];
         var (common, uncommon, rare) = RarityCurve[Math.Clamp(Act, 1, 5)];
-        var shares = new Dictionary<string, int> { ["common"] = common, ["uncommon"] = uncommon, ["rare"] = rare };
+        // There are no general Commons: their share goes to the Uncommons, so a general slot is no likelier to be
+        // Rare than any other slot of the act.
+        var shares = generalSide
+            ? new Dictionary<string, int> { ["common"] = 0, ["uncommon"] = common + uncommon, ["rare"] = rare }
+            : new Dictionary<string, int> { ["common"] = common, ["uncommon"] = uncommon, ["rare"] = rare };
         // Anything the pool holds that carries an unknown rarity still has to be offerable, or a card would fall
         // out of the game by being labelled wrongly. It draws in the Common class.
         string ClassOf(Cards.CardAuthoring.BnbCard card) => shares.ContainsKey(card.Rarity) ? card.Rarity : "common";
@@ -148,7 +186,8 @@ public sealed class ConversionPools
         foreach (var rarityClass in classes)
             foreach (var (card, chance) in WithinClass(rarityClass.ToList()))
                 entries.Add(new RunPool<RewardOffer>.Entry(
-                    CardOffer(card, forCharacter: forCharacter), Weight((double)shares[rarityClass.Key] / total * chance)));
+                    CardOffer(card, forCharacter: forCharacter),
+                    Weight(sideShare * shares[rarityClass.Key] / total * chance)));
         return entries;
     }
 
