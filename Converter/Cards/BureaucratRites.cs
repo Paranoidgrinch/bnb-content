@@ -38,16 +38,16 @@ public static class BureaucratRites
             "The first time each turn you Archive a card, draw 1 card.",
             watches: Keywords.Archived, scope: StatusTriggerScope.Bearer, draw: 1),
         OnceEachTurn(AshRegister + "+", "Ash Register+",
-            "The first time each turn you Archive a card, draw 1 card.",
-            watches: Keywords.Archived, scope: StatusTriggerScope.Bearer, draw: 1),
+            "The first time each turn you Archive a card, draw 2 cards.",
+            watches: Keywords.Archived, scope: StatusTriggerScope.Bearer, draw: 2),
 
         // A Ratify happens on an ENEMY, so the rule watches the whole fight and rewards its wearer.
         OnceEachTurn(SealDividend, "Seal Dividend",
             "The first time each turn you Ratify an enemy, draw 1 card.",
             watches: Keywords.Ratified, scope: StatusTriggerScope.Anywhere, draw: 1),
         OnceEachTurn(SealDividend + "+", "Seal Dividend+",
-            "The first time each turn you Ratify an enemy, draw 1 card.",
-            watches: Keywords.Ratified, scope: StatusTriggerScope.Anywhere, draw: 1),
+            "The first time each turn you Ratify an enemy, draw 2 cards.",
+            watches: Keywords.Ratified, scope: StatusTriggerScope.Anywhere, draw: 2),
 
         OnceEachTurn(ClerksFamiliar, "Clerk's Familiar",
             "The first time each turn you create a Junk card, gain 4 Block.",
@@ -57,20 +57,20 @@ public static class BureaucratRites
             watches: Keywords.JunkFiled, scope: StatusTriggerScope.Bearer, block: 6),
 
         OnceEachTurn(PendingMatters, "Pending Matters",
-            "The first time each turn a Queued card resolves, gain 3 Block.",
-            watches: Keywords.QueueResolved, scope: StatusTriggerScope.Bearer, block: 3),
+            "The first time each turn a Queued card resolves, gain 4 Block.",
+            watches: Keywords.QueueResolved, scope: StatusTriggerScope.Bearer, block: 4),
         OnceEachTurn(PendingMatters + "+", "Pending Matters+",
-            "The first time each turn a Queued card resolves, gain 5 Block.",
-            watches: Keywords.QueueResolved, scope: StatusTriggerScope.Bearer, block: 5),
+            "The first time each turn a Queued card resolves, gain 6 Block.",
+            watches: Keywords.QueueResolved, scope: StatusTriggerScope.Bearer, block: 6),
 
         Doubtful(DubiousAuthority, "Dubious Authority", 2),
         Doubtful(DubiousAuthority + "+", "Dubious Authority+", 3),
 
-        Disposal(LicensedDisposal, "Licensed Disposal"),
-        Disposal(LicensedDisposal + "+", "Licensed Disposal+"),
+        Disposal(LicensedDisposal, "Licensed Disposal", 1),
+        Disposal(LicensedDisposal + "+", "Licensed Disposal+", 2),
 
         Retention(Continuance, "Continuance", 12),
-        Retention(Continuance + "+", "Continuance+", 12),
+        Retention(Continuance + "+", "Continuance+", 20),
 
         Allowance(ViolenceAllowance, "Violence Allowance"),
         Allowance(ViolenceAllowance + "+", "Violence Allowance+"),
@@ -220,7 +220,7 @@ public static class BureaucratRites
     // ADAPTATIONS. Archiving is recorded, so the Archive Rites answer it exactly as they would a card's own.
     private static CounterId DisposalUsed => new("licensed_disposal_used");
 
-    private static StatusData Disposal(string id, string name)
+    private static StatusData Disposal(string id, string name, int draw)
     {
         var program = new EffectProgram<CardsDrawnTriggeredEffectContext>(
             new ConditionalEffectNode<CardsDrawnTriggeredEffectContext>(
@@ -239,13 +239,14 @@ public static class BureaucratRites
                         new ApplyStatusNode<CardsDrawnTriggeredEffectContext>(
                             CombatantTargetSelectors.Source, new StatusDefinitionId(Keywords.Archived),
                             new ConstantExpression<CardsDrawnTriggeredEffectContext>(1)),
-                        Draw<CardsDrawnTriggeredEffectContext>(1),
+                        Draw<CardsDrawnTriggeredEffectContext>(draw),
                         Set<CardsDrawnTriggeredEffectContext>(DisposalUsed, 1),
                     ]),
                     tagFilter: new TagId(CardAuthoring.JunkTag), takeFirst: 1)));
 
         return Rite(id, name,
-            "The first Junk card you draw each turn is Archived; then draw 1 card.",
+            draw == 1 ? "The first Junk card you draw each turn is Archived; then draw 1 card."
+                : $"The first Junk card you draw each turn is Archived; then draw {draw} cards.",
             [Trigger(program, nameof(TriggerEvent.CardsDrawn)), ClearLatch(DisposalUsed)]);
     }
 

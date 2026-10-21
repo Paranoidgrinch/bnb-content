@@ -57,7 +57,7 @@ public static class BureaucratActIII
     // ── Rare ──────────────────────────────────────────────────────────────────────────────────────────────
 
     private static readonly BnbCard HearthCompact = Rite(
-        "hearth_compact", "Hearth Compact", BureaucratHistory.HearthCompact, 2,
+        "hearth_compact", "Host's Compact", BureaucratHistory.HearthCompact, 2,
         "Whenever an enemy with Doubt attacks and deals no unblocked damage, the Doubt stack that would " +
         "normally be consumed is retained.",
         rarity: "rare");
@@ -78,8 +78,8 @@ public static class BureaucratActIII
 
     private static readonly BnbCard HedgeCovenant = Rite(
         "hedge_covenant", "Hedge Covenant", BureaucratHistory.HedgeCovenant, 2,
-        "Whenever Doubt reduces Attack damage, after that Attack has fully resolved, gain Block equal to half " +
-        "the prevented damage, rounded up.",
+        "Whenever Doubt reduces Attack damage, after that Attack has fully resolved, gain Block equal to twice " +
+        "the prevented damage.",
         rarity: "rare");
 
     private static readonly BnbCard GuestRight = Rite(
@@ -141,7 +141,7 @@ public static class BureaucratActIII
 
         HedgeCovenant, HedgeCovenant.UpgradedRite(BureaucratHistory.HedgeCovenant,
             "Whenever Doubt reduces Attack damage, after that Attack has fully resolved, gain Block equal to " +
-            "half the prevented damage, rounded up.", cost: 1),
+            "three times the prevented damage."),
 
         GuestRight, GuestRight.UpgradedRite(BureaucratHistory.GuestRight,
             "Once per turn, when an enemy with at least 3 Doubt would deal unblocked damage, remove 3 Doubt " +

@@ -163,6 +163,19 @@ public static class Keywords
     // Doubt. One stack is now claimed for the first hit of each ACTION and no more, which reads the same from
     // both sides of the fight: one enemy attack, or one card the player plays. Deliberately kept from the
     // design: a blocked attack still spends its Doubt, because the hit happened.
+    // Hedge Covenant's Block: the prevented quarter of an attack, worked back from what landed (a third of it,
+    // rounded up), times the rite's factor.
+    private static IEffectNode<DamageDealtTriggeredEffectContext> CovenantBlock(int factor) =>
+        new GainBlockNode<DamageDealtTriggeredEffectContext>(
+            CombatantTargetSelectors.IterationTarget,
+            new MultiplyExpression<DamageDealtTriggeredEffectContext>(
+                new DivideExpression<DamageDealtTriggeredEffectContext>(
+                    new AddExpression<DamageDealtTriggeredEffectContext>(
+                        new EventAmountExpression<DamageDealtTriggeredEffectContext>(),
+                        new ConstantExpression<DamageDealtTriggeredEffectContext>(2)),
+                    new ConstantExpression<DamageDealtTriggeredEffectContext>(3)),
+                new ConstantExpression<DamageDealtTriggeredEffectContext>(factor)));
+
     private static StatusData DoubtStatus() => Status(
         Doubt, "Doubt", StatusPolarity.Debuff,
         "The next attacks this character makes deal 25% less damage. One stack is spent per attack.",
@@ -178,7 +191,8 @@ public static class Keywords
                     new ClaimOnceThisActionExpression<DamageDealtTriggeredEffectContext>("doubt.spent"),
                     new CausalSequenceEffectNode<DamageDealtTriggeredEffectContext>(
                     [
-                        // Hedge Covenant: the doubted attack's softening is paid to the player as Block. The
+                        // Hedge Covenant: the doubted attack's softening is paid to the player as Block, twice
+                        // over (sharpening pass 2026-10-21; the text said half and the rule paid it whole). The
                         // hit that landed is three quarters of what was aimed, so a quarter was prevented —
                         // which is a third of what landed, rounded up. The engine reports what landed, not
                         // what was averted, so that is how the figure is worked back.
@@ -186,15 +200,12 @@ public static class Keywords
                             new ForEachTargetEffectNode<DamageDealtTriggeredEffectContext>(
                                 CombatantTargetSelectors.WithStatus(CombatantTargetSelectors.AllCombatants,
                                     new StatusDefinitionId(ApplicantMarker)),
-                                new GainBlockNode<DamageDealtTriggeredEffectContext>(
-                                    CombatantTargetSelectors.IterationTarget,
-                                    new DivideExpression<DamageDealtTriggeredEffectContext>(
-                                        new AddExpression<DamageDealtTriggeredEffectContext>(
-                                            new EventAmountExpression<DamageDealtTriggeredEffectContext>(),
-                                            new ConstantExpression<DamageDealtTriggeredEffectContext>(2)),
-                                        new ConstantExpression<DamageDealtTriggeredEffectContext>(3))))),
+                                // Twice the prevented damage, three times with the upgraded rite.
+                                new ConditionalEffectNode<DamageDealtTriggeredEffectContext>(
+                                    Present<DamageDealtTriggeredEffectContext>(BureaucratHistory.HedgeCovenant + "+"),
+                                    CovenantBlock(3), @else: CovenantBlock(2)))),
 
-                        // Hearth Compact: an attack that got nothing through costs no Doubt.
+                        // Host's Compact (hearth_compact): an attack that got nothing through costs no Doubt.
                         new ConditionalEffectNode<DamageDealtTriggeredEffectContext>(
                             new AndExpression<DamageDealtTriggeredEffectContext>(
                                 new OrExpression<DamageDealtTriggeredEffectContext>(

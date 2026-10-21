@@ -79,12 +79,12 @@ public static class BureaucratActII
         BindingFeePaperwork(3),
         Rarity: "uncommon", Act: Act);
 
-    // "For each different Junk type you have ARCHIVED this combat" — read off the Exhaust pile, which is
-    // where Archived cards go. Junk that exhausted itself counts too; see ADAPTATIONS.
+    // "For each different Junk type you have ARCHIVED this combat" — read off the discard and Exhaust piles since
+    // the sharpening pass (2026-10-21), at 2 a type: off the Exhaust pile alone it was 1–2 Paperwork for a card.
     private static readonly BnbCard DeadLetterOffice = new(
         "dead_letter_office", "Dead Letter Office", WorkingTag, 1,
-        "For each different Junk type in your Exhaust pile, apply 1 Paperwork to ALL enemies. Exhaust.",
-        Apply(Keywords.Paperwork, JunkTypesIn(CardZone.ExhaustPile), AllEnemies),
+        "For each different Junk type in your discard and Exhaust piles, apply 2 Paperwork to ALL enemies. Exhaust.",
+        Apply(Keywords.Paperwork, Times(JunkTypesLyingAround(), 2), AllEnemies),
         Rarity: "uncommon", Act: Act, Tags: [ExhaustTag]);
 
     // ── Rare ──────────────────────────────────────────────────────────────────────────────────────────────
@@ -157,9 +157,9 @@ public static class BureaucratActII
             BindingFeePaperwork(5)),
 
         DeadLetterOffice, DeadLetterOffice.Upgraded(
-            "For each different Junk type in your Exhaust pile, apply 1 Paperwork to ALL enemies, plus 1 " +
-            "more. Exhaust.",
-            Apply(Keywords.Paperwork, Plus(JunkTypesIn(CardZone.ExhaustPile), CombatAmountSpec.FromConst(1)),
+            "For each different Junk type in your discard and Exhaust piles, apply 2 Paperwork to ALL enemies, " +
+            "plus 2 more. Exhaust.",
+            Apply(Keywords.Paperwork, Plus(Times(JunkTypesLyingAround(), 2), CombatAmountSpec.FromConst(2)),
                 AllEnemies)),
 
         GhostRegister, GhostRegister.UpgradedRite(BureaucratArchive.GhostRegister,
@@ -288,17 +288,6 @@ public static class BureaucratActII
             var present = Once(Plus(
                 new CombatAmountSpec("zoneCards", SelectorKey: You, ReadId: type, Zone: CardZone.DiscardPile),
                 new CombatAmountSpec("zoneCards", SelectorKey: You, ReadId: type, Zone: CardZone.ExhaustPile)));
-            total = total is null ? present : Plus(total, present);
-        }
-        return total!;
-    }
-
-    private static CombatAmountSpec JunkTypesIn(CardZone zone)
-    {
-        CombatAmountSpec? total = null;
-        foreach (var type in BureaucratStarter.JunkTypes)
-        {
-            var present = Once(new CombatAmountSpec("zoneCards", SelectorKey: You, ReadId: type, Zone: zone));
             total = total is null ? present : Plus(total, present);
         }
         return total!;

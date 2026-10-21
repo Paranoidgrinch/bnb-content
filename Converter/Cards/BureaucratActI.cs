@@ -138,7 +138,7 @@ public static class BureaucratActI
 
     private static readonly BnbCard PendingMatters = Rite(
         "pending_matters", "Pending Matters", BureaucratRites.PendingMatters, 1,
-        "The first time each turn a Queued card resolves, gain 3 Block.");
+        "The first time each turn a Queued card resolves, gain 4 Block.");
 
     private static readonly BnbCard NightDocket = new(
         "night_docket", "Night Docket", WorkingTag, 0,
@@ -155,7 +155,7 @@ public static class BureaucratActI
     // "Deal 3 damage 3 times. If the target is Ratified, each hit also applies 1 Paperwork." Asked per hit,
     // because Ratified can end mid-card only if something else removes it — and per-hit is what the text says.
     private static readonly BnbCard ThreefoldInjunction = new(
-        "threefold_injunction", "Threefold Injunction", DeedTag, 1,
+        "threefold_injunction", "Triplicate Injunction", DeedTag, 1,
         "Deal 3 damage 3 times. If the target is Ratified, each hit also applies 1 Paperwork.",
         Repeat(3, Seq(Damage(3), If(HasStacks(Keywords.Ratified), Apply(Keywords.Paperwork, 1)))),
         Rarity: "uncommon");
@@ -175,7 +175,7 @@ public static class BureaucratActI
         Rarity: "uncommon");
 
     private static readonly BnbCard PresumptionOfError = new(
-        "presumption_of_error", "Presumption of Error", WorkingTag, 1,
+        "presumption_of_error", "Presumption of Error", WorkingTag, 0,
         "Apply 1 Doubt. The next time that enemy consumes Doubt by attacking, apply 1 Doubt to it after the " +
         "Attack resolves. Exhaust.",
         Seq(Apply(Keywords.Doubt, 1), Apply(BureaucratRites.PresumptionOfError, 1)),
@@ -197,8 +197,9 @@ public static class BureaucratActI
 
     private static readonly BnbCard WastepaperBastion = new(
         "wastepaper_bastion", "Wastepaper Bastion", WorkingTag, 1,
-        "Gain 5 Block, plus 3 Block for each Junk card in your hand.",
-        Block(Plus(CombatAmountSpec.FromConst(5), Times(CardsTagged(JunkTag), 3))),
+        "Gain 5 Block, plus 2 Block for each Junk card in your hand and discard pile.",
+        Block(Plus(CombatAmountSpec.FromConst(5),
+            Times(Plus(CardsTagged(JunkTag), CardsTagged(JunkTag, CardZone.DiscardPile)), 2))),
         Rarity: "uncommon");
 
     private static readonly BnbCard FormalDissent = new(
@@ -388,15 +389,15 @@ public static class BureaucratActI
         BlackLedger, BlackLedger.UpgradedRite(BureaucratRites.BlackLedger,
             "At the start of your turn, if any enemy has at least 5 Paperwork, draw 1 card."),
         AshRegister, AshRegister.UpgradedRite(BureaucratRites.AshRegister,
-            "The first time each turn you Archive a card, draw 1 card.", cost: 0),
+            "The first time each turn you Archive a card, draw 2 cards."),
         SealDividend, SealDividend.UpgradedRite(BureaucratRites.SealDividend,
-            "The first time each turn you Ratify an enemy, draw 1 card.", cost: 0),
+            "The first time each turn you Ratify an enemy, draw 2 cards."),
         DubiousAuthority, DubiousAuthority.UpgradedRite(BureaucratRites.DubiousAuthority,
             "Whenever Doubt is consumed after an enemy attacks, apply 3 Paperwork to that enemy."),
         ClerksFamiliar, ClerksFamiliar.UpgradedRite(BureaucratRites.ClerksFamiliar,
             "The first time each turn you create a Junk card, gain 6 Block."),
         PendingMatters, PendingMatters.UpgradedRite(BureaucratRites.PendingMatters,
-            "The first time each turn a Queued card resolves, gain 5 Block."),
+            "The first time each turn a Queued card resolves, gain 6 Block."),
 
         NightDocket, NightDocket.Upgraded("Resolve your oldest Queued card immediately. Exhaust.",
             ResolveQueued(1)),
@@ -415,8 +416,9 @@ public static class BureaucratActI
             CinderStrike(8, junk: 2)),
 
         PresumptionOfError, PresumptionOfError.Upgraded(
-            "Apply 1 Doubt. The next time that enemy consumes Doubt by attacking, apply 1 Doubt to it after " +
-            "the Attack resolves. Exhaust.", cost: 0),
+            "Apply 2 Doubt. The next time that enemy consumes Doubt by attacking, apply 1 Doubt to it after " +
+            "the Attack resolves. Exhaust.",
+            Seq(Apply(Keywords.Doubt, 2), Apply(BureaucratRites.PresumptionOfError, 1))),
 
         TallowBudget, TallowBudget.Upgraded("Gain 2 Energy. Add 1 Red Tape to your hand. Exhaust.",
             Seq(Energy_(2), AddJunk(BureaucratStarter.RedTape.Id, CardZone.Hand))),
@@ -426,8 +428,9 @@ public static class BureaucratActI
             Seq(Damage(9), If(Intends(IntentKind.Attack), ApplySeal(2), ApplySeal(3)))),
 
         WastepaperBastion, WastepaperBastion.Upgraded(
-            "Gain 8 Block, plus 4 Block for each Junk card in your hand.",
-            Block(Plus(CombatAmountSpec.FromConst(8), Times(CardsTagged(JunkTag), 4)))),
+            "Gain 8 Block, plus 3 Block for each Junk card in your hand and discard pile.",
+            Block(Plus(CombatAmountSpec.FromConst(8),
+                Times(Plus(CardsTagged(JunkTag), CardsTagged(JunkTag, CardZone.DiscardPile)), 3)))),
 
         FormalDissent, FormalDissent.Upgraded("Remove 1 Doubt from an enemy. Gain 1 Energy. Retain. Exhaust.",
             Seq(Remove(Keywords.Doubt, 1), Energy_(1)), retainInHand: true),
@@ -450,9 +453,9 @@ public static class BureaucratActI
             "After an enemy takes HP loss from its Paperwork, if it survives, apply 2 Paperwork to it.",
             cost: 1),
         LicensedDisposal, LicensedDisposal.UpgradedRite(BureaucratRites.LicensedDisposal,
-            "The first Junk card you draw each turn is automatically Archived; then draw 1 card.", cost: 1),
-        // The rule is the base card's now (12); the upgrade is the price.
-        Continuance, Continuance.Upgraded("At the end of your turn, retain up to 12 Block.", cost: 1),
+            "The first Junk card you draw each turn is automatically Archived; then draw 2 cards."),
+        // The upgrade keeps more instead of costing less (sharpening pass 2026-10-21).
+        Continuance, Continuance.UpgradedRite(BureaucratRites.Continuance, "At the end of your turn, retain up to 20 Block."),
         ViolenceAllowance, ViolenceAllowance.Upgraded(
             "The first Deed you play each turn costs 1 less Energy.",
             Seq(InstallRite(BureaucratRites.ViolenceAllowance + "+"), Apply(BureaucratRites.AllowanceReady, 1, You)),
@@ -467,7 +470,7 @@ public static class BureaucratActI
             "remove 3 Paperwork.", cost: 1),
 
         CandleTribunal, CandleTribunal.Upgraded(
-            "Deal 9 damage 3 times. If the target is Ratified, repeat this attack.", TribunalStrike(9)),
+            "Deal 7 damage 3 times. If the target is Ratified, repeat this attack.", TribunalStrike(7)),
 
         Rebuttal, Rebuttal.Upgraded(
             "Deal 14 damage. Gain 5 Block per Doubt already on the target, maximum 15 Block. Then apply 1 Doubt " +

@@ -39,8 +39,8 @@ public static class BureaucratHistory
         Oath(GuestbookOath + "+", "Guestbook Oath+"),
 
         // These three change what DOUBT does, so the Doubt status looks for them (see Keywords.DoubtStatus).
-        Marker(HearthCompact, "Hearth Compact"),
-        Marker(HearthCompact + "+", "Hearth Compact+"),
+        Marker(HearthCompact, "Host's Compact"),
+        Marker(HearthCompact + "+", "Host's Compact+"),
         Marker(HedgeCovenant, "Hedge Covenant"),
         Marker(HedgeCovenant + "+", "Hedge Covenant+"),
         Marker(GuestRight, "Guest Right"),
