@@ -163,24 +163,30 @@ public static partial class WitchRules
 
     // ── the statuses ──────────────────────────────────────────────────────────────────────────────────────
 
-    // Dying, it hands ALL its Hexed and where its count stood to the healthiest enemy left.
+    // Dying, it hands half its Hexed (rounded up) and where its count stood to EVERY enemy left (sharpening pass
+    // 2026-10-21: it gave all of it to the healthiest one, which made the Rare little more than Dead Man's Hex+).
     private static StatusData LastBreathHexMark()
     {
         var dead = CombatantTargetSelectors.SourceIncludingDowned;
-        var heir = CombatantTargetSelectors.HighestHealth(OtherEnemies(dead));
-        // A plain sequence: both steps read the dead at once, before it leaves the field.
+        var heir = CombatantTargetSelectors.IterationTarget;
+        // Each heir reads the dead at once, before it leaves the field.
         var program = new EffectProgram<CombatantDownedTriggeredEffectContext>(
-            new SequenceEffectNode<CombatantDownedTriggeredEffectContext>(
-            [
-                new SetCombatantCounterNode<CombatantDownedTriggeredEffectContext>(heir, WitchKeywords.ThreefoldStep,
-                    new CombatantCounterExpression<CombatantDownedTriggeredEffectContext>(dead, WitchKeywords.ThreefoldStep),
-                    relative: false),
-                new ApplyStatusNode<CombatantDownedTriggeredEffectContext>(heir, new StatusDefinitionId(WitchKeywords.Hexed),
-                    StacksOf<CombatantDownedTriggeredEffectContext>(dead, WitchKeywords.Hexed)),
-            ]));
+            new ForEachTargetEffectNode<CombatantDownedTriggeredEffectContext>(OtherEnemies(dead),
+                new SequenceEffectNode<CombatantDownedTriggeredEffectContext>(
+                [
+                    new SetCombatantCounterNode<CombatantDownedTriggeredEffectContext>(heir, WitchKeywords.ThreefoldStep,
+                        new CombatantCounterExpression<CombatantDownedTriggeredEffectContext>(dead, WitchKeywords.ThreefoldStep),
+                        relative: false),
+                    new ApplyStatusNode<CombatantDownedTriggeredEffectContext>(heir, new StatusDefinitionId(WitchKeywords.Hexed),
+                        new DivideExpression<CombatantDownedTriggeredEffectContext>(
+                            new AddExpression<CombatantDownedTriggeredEffectContext>(
+                                StacksOf<CombatantDownedTriggeredEffectContext>(dead, WitchKeywords.Hexed),
+                                new ConstantExpression<CombatantDownedTriggeredEffectContext>(1)),
+                            new ConstantExpression<CombatantDownedTriggeredEffectContext>(2))),
+                ])));
 
         return EnemyMark(LastBreathHex, "Last-Breath Hex",
-            "When this character dies, the healthiest other enemy takes on all its Hexed and its Threefold count.",
+            "When this character dies, every other enemy takes on half its Hexed, rounded up, and its Threefold count.",
             [Trigger(program, nameof(TriggerEvent.Downed))]);
     }
 

@@ -130,19 +130,25 @@ public partial class WitchCardTests
     }
 
     [Fact]
-    public void Last_breath_hex_passes_on_all_its_hexed_and_the_count()
+    public void Last_breath_hex_passes_half_its_hexed_and_the_count_to_every_other_enemy()
     {
-        // The dying one guards nothing, so the second turn's nip still kills it.
+        // The dying one guards nothing, so the second turn's nip still kills it. Two heirs, and both inherit
+        // (sharpening pass 2026-10-21; it used to be all of it to the healthiest one alone).
         var (play, session, enemy) = FightProbe.Start(
-            FightProbe.Roster("last_breath", 9, (Biter, BiteIntent, 5), ("municipal_gargoyle", "stonewall_ordinance", 40)),
+            FightProbe.Roster("last_breath", 9, (Biter, BiteIntent, 5), ("municipal_gargoyle", "stonewall_ordinance", 40),
+                ("ordinance_tablet", "stone_precedent", 40)),
             ["last_breath_hex", "adders_nip", "pot_lid", "pot_lid", "pot_lid",
              "adders_nip", "adders_nip", "adders_nip", "adders_nip", "adders_nip"], character: WitchCharacter.Id);
         Play(play, session, "last_breath_hex", enemy);
         EndTurn(play, session);                          // its count: 1
         Play(play, session, "adders_nip", enemy);
-        var heir = Other(play, enemy);
-        Assert.Equal(6, FightProbe.StacksOf(heir, WitchKeywords.Hexed));
-        Assert.Equal(1, heir.GetCounter(WitchKeywords.ThreefoldStep));
+        var heirs = Now(play).State.Combatants.Where(c => c.Id != enemy && c.Id != Now(play).HeroId).ToList();
+        Assert.Equal(2, heirs.Count);
+        Assert.All(heirs, heir =>
+        {
+            Assert.Equal(3, FightProbe.StacksOf(heir, WitchKeywords.Hexed));
+            Assert.Equal(1, heir.GetCounter(WitchKeywords.ThreefoldStep));
+        });
         play.Dispose();
     }
 

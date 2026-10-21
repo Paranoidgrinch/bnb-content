@@ -85,13 +85,13 @@ public static class WitchRecipes
         if (count[WitchActions.Fang] == 3) return "Deal 18 damage.";
         if (count[WitchActions.Hex] == 3) return "Apply 7 Hexed.";
         if (count[WitchActions.Husk] == 3) return "Gain 8 Ward Wax.";
-        if (count[WitchActions.Hearth] == 3) return "Heal 4 HP lost this combat.";
+        if (count[WitchActions.Hearth] == 3) return "Heal 8 HP lost this combat. Remove 2 stacks of negative Statuses from yourself.";
         if (count[WitchActions.Fortune] == 3) return "Apply 50% Misfortune.";
         var parts = new List<string>();
         if (count[WitchActions.Hex] > 0) parts.Add($"apply {2 * count[WitchActions.Hex]} Hexed");
         if (count[WitchActions.Fang] > 0) parts.Add($"deal {5 * count[WitchActions.Fang]} damage");
         if (count[WitchActions.Husk] > 0) parts.Add($"gain {4 * count[WitchActions.Husk]} Block");
-        if (count[WitchActions.Hearth] > 0) parts.Add($"heal {count[WitchActions.Hearth]} HP lost this combat");
+        if (count[WitchActions.Hearth] > 0) parts.Add($"heal {2 * count[WitchActions.Hearth]} HP lost this combat");
         if (count[WitchActions.Fortune] > 0) parts.Add($"apply {15 * count[WitchActions.Fortune]}% Misfortune");
         var text = string.Join(", ", parts);
         return text.Length == 0 ? "Nothing — only dregs." : char.ToUpperInvariant(text[0]) + text[1..] + ".";

@@ -82,7 +82,7 @@ public static class WitchHiddenRecipes
             "Gain 10 Block and 6 Ward Wax. Gain 8 Block next turn.",
             () => Seq(Block(10), Status(Cards.Keywords.WardWax, 6, You), Status(Cards.Keywords.PromisedBlock, 8, You))),
         new(19, "Grave Hex", ["old_grudge", "last_breath_hex", "bane_root"],
-            "Apply 10 Hexed. When the target dies, the healthiest other enemy takes on all its Hexed and its Threefold count.",
+            "Apply 10 Hexed. When the target dies, every other enemy takes on half its Hexed, rounded up, and its Threefold count.",
             () => Seq(Status(WitchKeywords.Hexed, 10, Target), Status(WitchRules.LastBreathHex, 1, Target))),
         new(20, "Beggar's Pot", ["stone_soup", Dregs, Dregs],
             "Gain 10 Block. Heal 4 HP lost this combat. (The Dregs go back to your discard pile as ever.)",

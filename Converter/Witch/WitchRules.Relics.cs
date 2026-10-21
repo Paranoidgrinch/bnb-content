@@ -30,23 +30,21 @@ public static partial class WitchRules
     public const string HerbWifesRack = "herb_wifes_rack_rule";
     public const string BlackSpoon = "black_spoon_rule";
 
-    public const int RowanPinBlock = 3, ThreeKnotHexed = 3, FoundButtonBlock = 5, IronTrivetBlock = 6,
+    public const int RowanPinBlock = 3, ThreeKnotHexed = 1, FoundButtonBlock = 4, IronTrivetBlock = 6,
         CrowsToeDamage = 5, BeeswaxWax = 2, KnucklebonePairStacks = 2, FirstBellSteps = 1, CatsEyeGold = 5,
-        CatsEyeCap = 15, HerbWifeHeal = 3;
+        CatsEyeCap = 15, HerbWifeHeal = 2;
 
     // Latches: per turn ones are cleared at her turn's start, per combat ones never.
     public static CounterId RowanPinLatch => new("rowan_pin_used");
-    private static CounterId ThreeKnotLatch => new("three_knot_cord_used");
-    private static CounterId FoundButtonLatch => new("found_button_used");
     private static CounterId CrowsToeLatch => new("crows_toe_used");
     private static CounterId BeeswaxLatch => new("beeswax_cup_used");
     private static CounterId PairLatch => new("knucklebone_pair_used");
-    private static CounterId FirstBellLatch => new("first_bell_used");
+    // First Bell's mark is on each ENEMY: the bell rings once for every enemy, the first time it is hexed.
+    private static CounterId FirstBellRung => new("first_bell_rung");
     public static CounterId CollarLatch => new("black_cats_collar_used");
     public static CounterId EmberLatch => new("grandams_ember_used");
     public static CounterId ScaleLatch => new("apothecarys_scale_used");
     public static CounterId JarLatch => new("yesterdays_jar_used");
-    public static CounterId RackLatch => new("herb_wifes_rack_used");
     public static CounterId BlackSpoonLatch => new("black_spoon_used");
 
     // What the fight leaves for the run to collect (Cat's-Eye Coin): read after a victory as event.combatCounter.
@@ -56,8 +54,11 @@ public static partial class WitchRules
     [
         RelicRule(RowanPin, "Rowan Pin", $"The first card into the cauldron each turn gives {RowanPinBlock} Block.",
             [ClearLatchAtHerTurn(RowanPinLatch)]),
-        RelicRule(ThreeKnotCord, "Three-Knot Cord", $"The first Hex burst this combat leaves {ThreeKnotHexed} Hexed behind."),
-        RelicRule(FoundButton, "Found Button", $"The first Misfortune roll lost this combat gives you {FoundButtonBlock} Block."),
+        // Three-Knot Cord, Found Button, First Bell, Black Cat's Collar and Herb-Wife's Rack were once a combat
+        // until the sharpening pass (2026-10-21): one small thing a fight was barely felt. They answer every
+        // time now, or once each turn, with smaller numbers where that was needed.
+        RelicRule(ThreeKnotCord, "Three-Knot Cord", $"Every Hex burst leaves {ThreeKnotHexed} more Hexed behind."),
+        RelicRule(FoundButton, "Found Button", $"Every Misfortune roll lost gives you {FoundButtonBlock} Block."),
         RelicRule(GreasyLadle, "Greasy Ladle", "The first Brew each turn draws a card."),
         IronTrivetRule(),
         CrowsToeRule(),
@@ -68,7 +69,8 @@ public static partial class WitchRules
         RelicRule(FalseBottomPot, "False-Bottom Pot",
             "The cauldron takes a fourth card in reserve: it is not brewed, and it stays for the next pot."),
         FirstBellRule(),
-        RelicRule(BlackCatsCollar, "Black Cat's Collar", "The first Misfortune roll lost this combat is rolled again."),
+        RelicRule(BlackCatsCollar, "Black Cat's Collar", "The first Misfortune roll lost each turn is rolled again.",
+            [ClearLatchAtHerTurn(CollarLatch)]),
         RelicRule(GrandamsEmber, "Grandam's Ember",
             "Once this combat, Hearth healing may restore HP lost before the fight."),
         RelicRule(BoneStrainer, "Bone Strainer", "Dregs in a mixed Brew count as a family you name."),
@@ -81,14 +83,14 @@ public static partial class WitchRules
         RelicRule(BlackSpoon, "Black Spoon",
             "The first Hidden Recipe you brew each combat gives 1 Energy and draws a card."),
         RelicRule(HerbWifesRack, "Herb-Wife's Rack",
-            $"The first Brew this combat with a Hearth ingredient heals {HerbWifeHeal} more HP lost this combat."),
+            $"Every Brew with a Hearth ingredient heals {HerbWifeHeal} more HP lost this combat."),
     ];
 
     // ── what her keywords call ────────────────────────────────────────────────────────────────────────────
 
     // After a burst (OnBurst): Three-Knot Cord.
     private static IEffectNode<TurnEndedTriggeredEffectContext> OnBurstRelics() =>
-        OnceFor<TurnEndedTriggeredEffectContext>(ThreeKnotCord, ThreeKnotLatch,
+        IfSheWears<TurnEndedTriggeredEffectContext>(ThreeKnotCord,
             new ApplyStatusNode<TurnEndedTriggeredEffectContext>(Self, new StatusDefinitionId(WitchKeywords.Hexed),
                 new ConstantExpression<TurnEndedTriggeredEffectContext>(ThreeKnotHexed)));
 
@@ -103,7 +105,7 @@ public static partial class WitchRules
     private static IEffectNode<ActionStartingTriggeredEffectContext> LostRelics() =>
         new SequenceEffectNode<ActionStartingTriggeredEffectContext>(
         [
-            OnceFor<ActionStartingTriggeredEffectContext>(FoundButton, FoundButtonLatch,
+            IfSheWears<ActionStartingTriggeredEffectContext>(FoundButton,
                 new GainBlockNode<ActionStartingTriggeredEffectContext>(TheWitch,
                     new ConstantExpression<ActionStartingTriggeredEffectContext>(FoundButtonBlock))),
             OnceFor<ActionStartingTriggeredEffectContext>(KnucklebonePair, PairLatch,
@@ -122,6 +124,12 @@ public static partial class WitchRules
     public static IEffectNode<ActionStartingTriggeredEffectContext> SpendCollar() =>
         new SetCombatantCounterNode<ActionStartingTriggeredEffectContext>(TheWitch, CollarLatch,
             new ConstantExpression<ActionStartingTriggeredEffectContext>(1), relative: false);
+
+    // "Whenever, if she wears <rule>".
+    private static IEffectNode<TContext> IfSheWears<TContext>(string rule, IEffectNode<TContext> effect)
+        where TContext : class =>
+        new ConditionalEffectNode<TContext>(
+            new TargetHasStatusExpression<TContext>(TheWitch, new StatusDefinitionId(rule)), effect);
 
     // "Once this <span>, if she wears <rule>": the latch is hers, set before the effect.
     private static IEffectNode<TContext> OnceFor<TContext>(string rule, CounterId latch, IEffectNode<TContext> effect)
@@ -204,10 +212,9 @@ public static partial class WitchRules
             ClearLatchAtHerTurn(BeeswaxLatch),
         ]);
 
-    // First Bell: the first enemy she hexes this combat starts its count a step ahead — heard on the Hexed arriving.
+    // First Bell: every enemy she hexes starts its count a step ahead, the first time — heard on the Hexed arriving.
     private static StatusData FirstBellRule()
     {
-        var wearer = CombatantTargetSelectors.IterationTarget;
         var enemy = CombatantTargetSelectors.EventTarget;
         var program = new EffectProgram<StatusAppliedTriggeredEffectContext>(
             new ForEachTargetEffectNode<StatusAppliedTriggeredEffectContext>(
@@ -216,17 +223,17 @@ public static partial class WitchRules
                     new AndExpression<StatusAppliedTriggeredEffectContext>(
                         new TriggerEventStatusIsExpression<StatusAppliedTriggeredEffectContext>(new StatusDefinitionId(WitchKeywords.Hexed)),
                         new ComparisonExpression<StatusAppliedTriggeredEffectContext>(
-                            new CombatantCounterExpression<StatusAppliedTriggeredEffectContext>(wearer, FirstBellLatch),
+                            new CombatantCounterExpression<StatusAppliedTriggeredEffectContext>(enemy, FirstBellRung),
                             ComparisonOperator.Equal, new ConstantExpression<StatusAppliedTriggeredEffectContext>(0))),
                     new CausalSequenceEffectNode<StatusAppliedTriggeredEffectContext>(
                     [
-                        new SetCombatantCounterNode<StatusAppliedTriggeredEffectContext>(wearer, FirstBellLatch,
+                        new SetCombatantCounterNode<StatusAppliedTriggeredEffectContext>(enemy, FirstBellRung,
                             new ConstantExpression<StatusAppliedTriggeredEffectContext>(1), relative: false),
                         new SetCombatantCounterNode<StatusAppliedTriggeredEffectContext>(enemy, WitchKeywords.ThreefoldStep,
                             new ConstantExpression<StatusAppliedTriggeredEffectContext>(FirstBellSteps), relative: true),
                     ]))));
 
-        return RelicRule(FirstBell, "First Bell", "The first enemy you Hex this combat starts its Threefold count a step ahead.",
+        return RelicRule(FirstBell, "First Bell", "Every enemy you Hex starts its Threefold count a step ahead.",
             [Trigger(program, nameof(TriggerEvent.StatusApplied), StatusTriggerScope.Anywhere)]);
     }
 

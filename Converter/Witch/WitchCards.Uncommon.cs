@@ -45,7 +45,8 @@ public static partial class WitchCards
 
     private static readonly BnbCard ThriceSpokenName = Witch(
         "thrice_spoken_name", "Thrice-Spoken Name", WorkingTag, 1, WitchActions.Hex,
-        "Apply 4 Hexed. If its Hex bursts at the end of its next turn, apply 6 more.", Knock(4, 6), "uncommon");
+        "Apply 4 Hexed. If its Hex bursts at the end of its next turn, it loses HP equal to its Hexed once more.",
+        Seq(Apply(WitchKeywords.Hexed, 4), Apply(WitchRules.ThriceSpoken, 1)), "uncommon");
 
     private static readonly BnbCard CharmBackwards = Witch(
         "charm_backwards", "Charm Backwards", WorkingTag, 1, WitchActions.Hex,
@@ -200,7 +201,8 @@ public static partial class WitchCards
             Damage(Sheltered(10, 5))),
 
         ThriceSpokenName, ThriceSpokenName.Upgraded(
-            "Apply 6 Hexed. If its Hex bursts at the end of its next turn, apply 9 more.", Knock(6, 9)),
+            "Apply 7 Hexed. If its Hex bursts at the end of its next turn, it loses HP equal to its Hexed once more.",
+            Seq(Apply(WitchKeywords.Hexed, 7), Apply(WitchRules.ThriceSpoken, 1))),
         CharmBackwards, CharmBackwards.Upgraded("Apply 11 Hexed. Its Threefold count goes back by 1." + PinchOf(WitchActions.Fortune),
             Seq(Apply(WitchKeywords.Hexed, 11), Step(-1)), tags: WithPinch(CharmBackwards, WitchActions.Fortune)),
         DeadMansHex, DeadMansHex.Upgraded(

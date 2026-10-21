@@ -12,6 +12,7 @@ public static partial class WitchRules
 {
     // ── enemy marks: read by Hexed's burst and by Misfortune's roll ───────────────────────────────────────
     public const string ThirdBell = "third_bell";             // Third Bell: its burst spreads this much Hexed
+    public const string ThriceSpoken = "thrice_spoken";       // Thrice-Spoken Name: its burst echoes once more
     public const string DeadMansHex = "dead_mans_hex";        // Dead Man's Hex: dying, it passes its Hexed on
     public const string CrossedFingers = "crossed_fingers";   // Cross Your Fingers: a failed roll pays her Block
     public const string BadPenny = "bad_penny";               // Bad Penny: a failed roll leaves this behind
@@ -40,6 +41,7 @@ public static partial class WitchRules
     private static IReadOnlyList<StatusData> UncommonRules() =>
     [
         EnemyMark(ThirdBell, "Third Bell", "When this character's Hex bursts this turn, every other enemy gains this much Hexed."),
+        EnemyMark(ThriceSpoken, "Thrice-Spoken Name", "When this character's Hex bursts this turn, it loses HP equal to its Hexed once more."),
         DeadMansHexMark(),
         EnemyMark(CrossedFingers, "Crossed Fingers", "If this character's Misfortune roll fails, the Witch gains this much Block."),
         EnemyMark(BadPenny, "Bad Penny", "If this character's Misfortune roll fails, this much Misfortune stays for its next action."),
@@ -71,6 +73,12 @@ public static partial class WitchRules
                     new ApplyStatusNode<TurnEndedTriggeredEffectContext>(
                         CombatantTargetSelectors.IterationTarget, new StatusDefinitionId(WitchKeywords.Hexed),
                         StacksOf<TurnEndedTriggeredEffectContext>(Self, ThirdBell)))),
+            // Thrice-Spoken Name (sharpening pass 2026-10-21; it was Third Knock's text with bigger numbers): the
+            // name said a third time is one more loss of its Hexed, as status HP loss like the burst itself.
+            IfWears<TurnEndedTriggeredEffectContext>(Self, ThriceSpoken,
+                new DealDamageNode<TurnEndedTriggeredEffectContext>(Self,
+                    StacksOf<TurnEndedTriggeredEffectContext>(Self, WitchKeywords.Hexed),
+                    ignoresBlock: true, kind: DamageKind.DamageOverTime)),
             OnBurstRare(),
             OnBurstRelics(),
         ]);
@@ -80,6 +88,7 @@ public static partial class WitchRules
         new SequenceEffectNode<TurnEndedTriggeredEffectContext>(
         [
             new RemoveStatusNode<TurnEndedTriggeredEffectContext>(Self, new StatusDefinitionId(ThirdBell)),
+            new RemoveStatusNode<TurnEndedTriggeredEffectContext>(Self, new StatusDefinitionId(ThriceSpoken)),
             new RemoveStatusNode<TurnEndedTriggeredEffectContext>(Self, new StatusDefinitionId(HareRunsLast)),
         ]);
 

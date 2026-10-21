@@ -153,7 +153,7 @@ public class WitchRelicTests
     {
         var (play, session, enemy) = Fight("beeswax_cup", Enumerable.Repeat("nettle_tea", 10).ToArray(), Biter, BiteIntent);
         EndTurn(play, session);                               // bitten for 6
-        Play(play, session, "nettle_tea", enemy);             // heals 1
+        Play(play, session, "nettle_tea", enemy);             // heals 1 (Nettle Tea itself, not the pot)
         Assert.Equal(WitchRules.BeeswaxWax, FightProbe.StacksOf(Hero(play), Keywords.WardWax));
         play.Dispose();
 
@@ -166,7 +166,7 @@ public class WitchRelicTests
         Cook(play, session, "adders_nip");
         play.CombatDriver!.UseAction(Brew, enemy);
         Assert.Null(session.Error);
-        Assert.Equal(bitten + 1 + WitchRules.HerbWifeHeal, Hero(play).Health.Current);
+        Assert.Equal(bitten + 2 + WitchRules.HerbWifeHeal, Hero(play).Health.Current);
         play.Dispose();
     }
 
@@ -198,12 +198,14 @@ public class WitchRelicTests
     }
 
     [Fact]
-    public void Black_cats_collar_rolls_the_first_lost_roll_again()
+    public void Black_cats_collar_rolls_the_first_lost_roll_of_each_turn_again()
     {
         var (play, session, _) = Fight("black_cats_collar", Enumerable.Repeat("pot_lid", 10).ToArray(), Biter, BiteIntent,
             enemyStatuses: (WitchKeywords.Misfortune, 1));
+        // The lost roll spends the collar during the enemy turn (the roll is thrown again: 5 % twice)…
         EndTurn(play, session);
-        Assert.Equal(1, Hero(play).GetCounter(WitchRules.CollarLatch));
+        // …and it is ready again at her next turn (sharpening pass 2026-10-21; it was once a combat).
+        Assert.Equal(0, Hero(play).GetCounter(WitchRules.CollarLatch));
         play.Dispose();
     }
 

@@ -8,7 +8,9 @@ namespace BnbContent.Converter.Witch;
 // a card played. The cauldron is the engine's set-aside pile; its three slots are this file's rule.
 //
 // Every number here is the canon's BALANCE DRAFT (§23): ingredient 0/1 Energy, BREW 1, Fang 5 damage, Hex 2
-// Hexed, Husk 4 Block, Hearth heal 1 lost HP, Fortune 15 % Misfortune; the five concentrated brews below.
+// Hexed, Husk 4 Block, Hearth heal 2 lost HP, Fortune 15 % Misfortune; the five concentrated brews below.
+// Hearth gave 1 and Hearth Physic 4 until the sharpening pass (2026-10-21): a fifth of what every other family
+// gives, so a Hearth card was weak in the pot as well as in the hand.
 public static class WitchActions
 {
     public const string AddIngredient = "cauldron_add";
@@ -44,8 +46,9 @@ public static class WitchActions
     public static string Pinch(string family) => "pinch_" + family;
 
     // §7 Concentrated and §3 per-ingredient drafts.
-    private const int FangDamage = 5, HexHexed = 2, HuskBlock = 4, HearthHeal = 1, FortuneMisfortune = 3;
-    private const int RedTeeth = 18, ThirdNight = 7, ShellWax = 8, HearthPhysic = 4, BlackCatsLuck = 10;
+    private const int FangDamage = 5, HexHexed = 2, HuskBlock = 4, HearthHeal = 2, FortuneMisfortune = 3;
+    private const int RedTeeth = 18, ThirdNight = 7, ShellWax = 8, HearthPhysic = 8, BlackCatsLuck = 10;
+    public const int HearthPhysicCleanse = 2;
 
     public static IReadOnlyList<CardData> All() => [AddIngredientAction(), BrewAction()];
 
@@ -171,12 +174,11 @@ public static class WitchActions
                         new MultiplyExpression<CardPlayContext>(InRecipe(WaxRider), Const(WaxRiderStacks)),
                         new MultiplyExpression<CardPlayContext>(InRecipe(WaxRiderMore), Const(WaxRiderMoreStacks))), You)),
             Pinches(),
-            // Herb-Wife's Rack: the first Brew this combat with a Hearth ingredient heals more.
+            // Herb-Wife's Rack: every Brew with a Hearth ingredient heals more (the first one each combat, until
+            // the sharpening pass).
             new ConditionalEffectNode<CardPlayContext>(
-                All(Wears(WitchRules.HerbWifesRack), Unspent(WitchRules.RackLatch),
-                    Compare(InRecipe(Hearth), ComparisonOperator.Greater, Const(0))),
-                new CausalSequenceEffectNode<CardPlayContext>(
-                    [Spend(WitchRules.RackLatch), Heal(Const(WitchRules.HerbWifeHeal))])),
+                All(Wears(WitchRules.HerbWifesRack), Compare(InRecipe(Hearth), ComparisonOperator.Greater, Const(0))),
+                Heal(Const(WitchRules.HerbWifeHeal))),
             // Apothecary's Scale: the first Brew this combat of three different families gives its Energy back.
             new ConditionalEffectNode<CardPlayContext>(
                 All(Wears(WitchRules.ApothecarysScale), Unspent(WitchRules.ScaleLatch),
@@ -256,7 +258,7 @@ public static class WitchActions
             (Fang, Damage(Const(RedTeeth))),
             (Hex, Apply(WitchKeywords.Hexed, Const(ThirdNight), Target)),
             (Husk, Apply(Cards.Keywords.WardWax, Const(ShellWax), You)),
-            (Hearth, Heal(Const(HearthPhysic))),
+            (Hearth, new SequenceEffectNode<CardPlayContext>([Heal(Const(HearthPhysic)), Cleanse(HearthPhysicCleanse)])),
             (Fortune, Apply(WitchKeywords.Misfortune, Const(BlackCatsLuck), Target)),
         };
         foreach (var (family, effect) in named.Reverse())
@@ -302,6 +304,10 @@ public static class WitchActions
         Fortune => $"applies {FortuneMisfortune} Misfortune",
         _ => throw new ArgumentOutOfRangeException(nameof(family)),
     };
+
+    private static IEffectNode<CardPlayContext> Cleanse(int stacks) =>
+        CombatProgramModel.Build<CardPlayContext>(new CombatNodeModel("modifySelectedStatusStacks", "source",
+            CombatAmountSpec.FromConst(-stacks), Selection: new StatusSelectionSpec(StatusPolarityFilter.Debuff))).Root;
 
     // Only when that family is in the brew: a 0-damage hit is still a hit to everything that counts hits.
     private static IEffectNode<CardPlayContext> Each(string family, IEffectNode<CardPlayContext> effect) =>

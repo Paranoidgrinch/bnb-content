@@ -216,6 +216,37 @@ public class HedgeWitchTests
         play.Dispose();
     }
 
+    // Hearth gives 2 in a mixed brew and Hearth Physic 8 (sharpening pass 2026-10-21; it was 1 and 4) — still
+    // only what this fight took.
+    [Fact]
+    public void A_hearth_ingredient_heals_two_and_hearth_physic_eight()
+    {
+        var (play, session, enemy) = Fight(Enumerable.Repeat("nettle_tea", 10).ToArray(), Biter, BiteIntent);
+        var start = Hero(play).Health.Current;
+        play.CombatDriver!.EndTurn();
+        var bitten = Hero(play).Health.Current;
+        Assert.True(bitten < start, "the seal struck");
+        Cook(play, session, "nettle_tea");
+        Cook(play, session, "nettle_tea");
+        Cook(play, session, "nettle_tea");
+        play.CombatDriver.UseAction(Brew, null);
+        Assert.Null(session.Error);
+        Assert.Equal(Math.Min(start, bitten + 8), Hero(play).Health.Current);
+        play.Dispose();
+
+        (play, session, enemy) = Fight(["adders_nip", "pot_lid", "nettle_tea", "pot_lid", "pot_lid"], Biter, BiteIntent);
+        start = Hero(play).Health.Current;
+        play.CombatDriver!.EndTurn();
+        bitten = Hero(play).Health.Current;
+        Cook(play, session, "adders_nip", enemy);
+        Cook(play, session, "pot_lid", enemy);
+        Cook(play, session, "nettle_tea", enemy);
+        play.CombatDriver.UseAction(Brew, enemy);
+        Assert.Null(session.Error);
+        Assert.Equal(Math.Min(start, bitten + 2), Hero(play).Health.Current);
+        play.Dispose();
+    }
+
     // §16.3: a fight's own cards do not go in the pot — the choice never offers them.
     [Fact]
     public void The_pot_will_not_take_a_fights_own_card()

@@ -51,7 +51,7 @@ public static partial class WitchCards
 
     private static readonly BnbCard LastBreathHex = Witch(
         "last_breath_hex", "Last-Breath Hex", WorkingTag, 1, WitchActions.Hex,
-        "Apply 6 Hexed. When the target dies, the healthiest other enemy takes on all its Hexed and its Threefold count.",
+        "Apply 6 Hexed. When the target dies, every other enemy takes on half its Hexed, rounded up, and its Threefold count.",
         Seq(Apply(WitchKeywords.Hexed, 6), Apply(WitchRules.LastBreathHex, 1)), "rare", act: 2);
 
     private static readonly BnbCard BaneRoot = Witch(
@@ -158,7 +158,7 @@ public static partial class WitchCards
         HexInTheRafters, HexInTheRafters.Upgraded(
             "The first Hex burst each enemy turn gives every other enemy 3 Hexed.", cost: 1),
         LastBreathHex, LastBreathHex.Upgraded(
-            "Apply 9 Hexed. When the target dies, the healthiest other enemy takes on all its Hexed and its Threefold count.",
+            "Apply 9 Hexed. When the target dies, every other enemy takes on half its Hexed, rounded up, and its Threefold count.",
             Seq(Apply(WitchKeywords.Hexed, 9), Apply(WitchRules.LastBreathHex, 1))),
         BaneRoot, BaneRoot.Upgraded("After a Hex bursts, that enemy gains 2 Hexed.", cost: 0),
 
