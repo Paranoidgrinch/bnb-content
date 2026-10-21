@@ -190,7 +190,7 @@ public class ApprenticeRelicTests
         driver.SupplyOptionChoice([options.ToList().IndexOf("Only slot 2")]);
         Assert.Null(session.Error);
         Assert.Equal(1, Wand(play).CastsThisTurn);
-        Assert.Equal(before - 4, Standing(Body(play, enemy)));              // the Candle Stub alone, unheightened
+        Assert.Equal(before - 5, Standing(Body(play, enemy)));              // the Candle Stub alone, unheightened
         play.Dispose();
     }
 

@@ -89,7 +89,8 @@ public class ApprenticeTests
         // The tablet guards itself, so what the cast took is its HP and its Block together.
         var before = Standing(Body(play, enemy));
         Cast(play, session, enemy);
-        Assert.Equal(before - 9, Standing(Body(play, enemy)));
+        // Ink Blot lifts the Candle Stub's 5 to 7; Flyleaf echoes half of it, rounded up: 4.
+        Assert.Equal(before - 11, Standing(Body(play, enemy)));
         Assert.Equal(3, Wand(play).Exhaustion);
         play.Dispose();
     }

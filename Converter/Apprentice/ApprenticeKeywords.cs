@@ -29,12 +29,12 @@ public static class ApprenticeKeywords
             "2 Focus for 1–2 cards, 3 for 3–4, 4 for 5–6, and adds Exhaustion (at most 8). Exhaustion falls by 3 at " +
             "the start of your turn."),
         Status(Singe, "Singe", StatusPolarity.Debuff,
-            "When this enemy takes a direct hit, 1 Singe is spent and the hit deals 2 more damage, before Block. " +
+            "When this enemy takes a direct hit, 1 Singe is spent and the hit deals 3 more damage, before Block. " +
             "Damage from statuses does not spend it."),
         Status(Flow, "Flow", StatusPolarity.Buff,
             "After a cast, the Flow you had when it began returns that much of its Focus cost (up to the cost) and is spent."),
         Status(Grit, "Grit", StatusPolarity.Buff,
-            "Each enemy Attack hit spends 1 Grit and deals 2 less, before Block and Ward Wax."),
+            "Each enemy Attack hit spends 1 Grit and deals 3 less, before Block and Ward Wax."),
         Status(Gust, "Gust", StatusPolarity.Buff,
             "At the start of your next turn, after the draw: draw this many cards, then discard as many."),
         Status(Rote, "Rote", StatusPolarity.Buff,

@@ -108,7 +108,7 @@ public class ApprenticeCardTests
     {
         var (play, session, enemy) = Fight(["ap_chalk_circle", "ap_chalk_circle", "ap_candle_stub", "ap_chalk_line", "ap_chalk_line"]);
         Play(play, session, "ap_chalk_circle", enemy);
-        Assert.Equal(7, Block(Hero(play)));
+        Assert.Equal(9, Block(Hero(play)));
         play.CombatDriver!.EndTurn();
         Assert.Equal(1, Stacks(Hero(play), ApprenticeKeywords.Grit));
         Assert.Equal(0, Stacks(Hero(play), ApprenticeRules.QuietCircle));
@@ -216,7 +216,7 @@ public class ApprenticeCardTests
         var (play, session, enemy) = Fight(["ap_pinprick", "ap_candle_stub", "ap_candle_stub", "ap_candle_stub", "ap_candle_stub"],
             enemy: Biter, intent: BiteIntent);
         Play(play, session, "ap_pinprick", enemy);
-        Assert.Equal(5, Block(Hero(play)));
+        Assert.Equal(6, Block(Hero(play)));
         play.Dispose();
     }
 
@@ -249,8 +249,8 @@ public class ApprenticeCardTests
         Play(play, session, "ap_chalk_line", enemy);
         var before = Standing(Body(play, enemy));
         Cast(play, session, enemy);
-        // Dust Mote: 3 + 3 × 2 inscriptions; Candle Stub 4.
-        Assert.Equal(before - 13, Standing(Body(play, enemy)));
+        // Dust Mote: 4 + 3 × 2 inscriptions; Candle Stub 5.
+        Assert.Equal(before - 15, Standing(Body(play, enemy)));
         play.Dispose();
     }
 
@@ -266,7 +266,7 @@ public class ApprenticeCardTests
         Play(play, session, "ap_wax_drop", enemy);
         var before = Standing(Body(play, enemy));
         Play(play, session, "ap_split_wick", enemy);
-        Assert.Equal(before - (4 + 2) * 2, Standing(Body(play, enemy)));   // each hit met a Singe
+        Assert.Equal(before - (4 + 3) * 2, Standing(Body(play, enemy)));   // each hit met a Singe
         play.Dispose();
 
         (play, session, enemy) = Fight(["ap_split_wick", "ap_candle_stub", "ap_chalk_line", "ap_chalk_line", "ap_chalk_line"]);
@@ -380,8 +380,8 @@ public class ApprenticeCardTests
         Inscribe(play, session, "ap_candle_both_ends", 1);
         var before = Standing(Body(play, enemy));
         Cast(play, session, enemy);
-        // 4 and its Singe (first slot), then 6 that spends the Singe: 4 + 6 + 2.
-        Assert.Equal(before - 12, Standing(Body(play, enemy)));
+        // 5 and its Singe (first slot), then 150% of 5 rounded up that spends the Singe: 5 + 8 + 3.
+        Assert.Equal(before - 16, Standing(Body(play, enemy)));
         Assert.Contains(Now(play).State.GetCardZones(Now(play).HeroId).ExhaustPile, c => c.DefinitionId.value == "ap_candle_both_ends");
         Assert.Equal(1, Wand(play).Occupied);
         play.Dispose();
@@ -467,7 +467,7 @@ public class ApprenticeCardTests
 
         var unsealed = Bite(cast: false);
         Assert.True(unsealed >= 3, $"the bite must be at least the seal for this to say anything ({unsealed})");
-        Assert.Equal(unsealed - 3, Bite(cast: true));                   // 75% of the Chalk Line's 4
+        Assert.Equal(unsealed - 4, Bite(cast: true));                   // 75% of the Chalk Line's 6, rounded down
     }
 
     // ── rares ──────────────────────────────────────────────────────────────────────────────────────────────
@@ -551,7 +551,7 @@ public class ApprenticeCardTests
         Inscribe(play, session, "ap_candle_stub", 0);
         var before = Standing(Body(play, enemy));
         Cast(play, session, enemy);
-        Assert.Equal(before - 6, Standing(Body(play, enemy)));             // 4 × 1.5 (and the Singe it applies comes after)
+        Assert.Equal(before - 7, Standing(Body(play, enemy)));             // 5 × 1.5, rounded down (its Singe comes after)
         Assert.Equal(4, Wand(play).Exhaustion);
         Assert.Equal(0, Stacks(Hero(play), ApprenticeRules.GlassRodPrimed));
         play.Dispose();

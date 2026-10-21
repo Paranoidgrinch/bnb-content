@@ -136,3 +136,27 @@ when its instruction runs.
    Play values. Target: his best archetype within ~10 % of Paperwork's health kept, his median archetype within ~25 %,
    and no act where his bosses fall below half the reference's wins.
 4. The dice-bot character bench (`tools/bench.sh`) must not show him far ahead in Act I either.
+
+## 6. Tuning result (21 October 2026)
+
+Family bench, planner 5 turns ahead, 2 shuffles, with relics; health kept as a share of the Bureaucrat's Paperwork
+deck. The reference is every Bureaucrat family on the same budget, measured on the same day.
+
+| | best | median | weakest | boss wins (median) |
+|---|---:|---:|---:|---:|
+| Act II — Bureaucrat (11 families) | 101 % | 92 % | 75 % | 10/10 |
+| Act II — Apprentice (7 builds) | 97 % | 89 % | 55 % (Moving Text) | 9/10 |
+| Act III — Bureaucrat (11 families) | 105 % | 51 % | 22 % | 3/10 |
+| Act III — Apprentice (7 builds) | 82 % | 46 % | 12 % (Moving Text) | 4/10 |
+
+Before the expansion his Act III builds kept 5–38 % (median ~20 %). What moved the numbers, besides the 42 cards:
+
+- **Singe** spends for **+3** (was 2) and **Grit** softens a hit by **3** (was 2) — `ApprenticeWand.Rules`.
+- **Starter:** Candle Stub's Speak 4 → **5** (upgrade 6 → 7); Chalk Line plays for **6** Block (was 5; upgrade 8) and
+  speaks for **6** (was 4; upgrade 8).
+- **Commons:** Chalk Circle **9** Block (upgrade 12); Mason's Dust without Grit speaks for **6** Block (upgrade 8);
+  Penny Whistle **7** damage (upgrade 10); Wick Trimmer's guard **7** (upgrade 9); Pinprick **7** damage and **6**
+  Block (upgrade 9 / 8); Dust Mote **7** Block (upgrade 9) and speaks from **4** (upgrade 6).
+
+Moving Text stays the weak build, as Lien does for the Bureaucrat: its cards rearrange the wand and bring little of
+their own, and the planner gets less out of order than a player who plans the wand turn by turn.

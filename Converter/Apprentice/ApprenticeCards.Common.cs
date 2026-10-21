@@ -49,8 +49,8 @@ public static partial class ApprenticeCards
 
     private static readonly BnbCard ChalkCircle = Card(
         "ap_chalk_circle", "Chalk Circle", WorkingTag, 1,
-        "Gain 7 Block. If you do not cast this turn, gain 1 Grit at the end of it.",
-        Seq(Block(7), Apply(ApprenticeRules.QuietCircle, 1, You)),
+        "Gain 9 Block. If you do not cast this turn, gain 1 Grit at the end of it.",
+        Seq(Block(9), Apply(ApprenticeRules.QuietCircle, 1, You)),
         "Ground: this cast's Exhaustion is 2 lower.",
         Ground(2), "common");
 
@@ -63,8 +63,8 @@ public static partial class ApprenticeCards
     private static readonly BnbCard MasonsDust = Card(
         "ap_masons_dust", "Mason's Dust", WorkingTag, 1,
         "Spend 1 Grit to gain 5 Ward Wax. If you cannot, gain 1 Grit instead.", GritIntoWax(5),
-        "Speak: spend up to 2 Grit and gain 3 Ward Wax for each; with no Grit, gain 4 Block.",
-        Speak(Guard(4).When(NoGrit), Do(SpendGritForWax(2, 3))), "common");
+        "Speak: spend up to 2 Grit and gain 3 Ward Wax for each; with no Grit, gain 6 Block.",
+        Speak(Guard(6).When(NoGrit), Do(SpendGritForWax(2, 3))), "common");
 
     private static readonly BnbCard OpenCasement = Card(
         "ap_open_casement", "Open Casement", WorkingTag, 1,
@@ -82,15 +82,15 @@ public static partial class ApprenticeCards
 
     private static readonly BnbCard PennyWhistle = Card(
         "ap_penny_whistle", "Penny Whistle", DeedTag, 1,
-        "Deal 5 damage. If you have played another card this turn, gain 1 more Focus.",
-        Seq(Damage(5), IfAtLeast(PlayedThisTurn, 2, WandMove(WandAction.Focus, 1))),
+        "Deal 7 damage. If you have played another card this turn, gain 1 more Focus.",
+        Seq(Damage(7), IfAtLeast(PlayedThisTurn, 2, WandMove(WandAction.Focus, 1))),
         "Stop — Cut: the cast ends after the Speak before this one; if a Speak resolved, its Exhaustion is 2 lower.",
         Stop(2), "common");
 
     private static readonly BnbCard WickTrimmer = Card(
         "ap_wick_trimmer", "Wick Trimmer", WorkingTag, 1,
-        "Choose: Exhaust another card from your hand and draw 2 cards; or gain 5 Block.",
-        TrimOrGuard("ap_wick_trimmer", 2, 5),
+        "Choose: Exhaust another card from your hand and draw 2 cards; or gain 7 Block.",
+        TrimOrGuard("ap_wick_trimmer", 2, 7),
         "Burn: gain 7 Block; this cast's Exhaustion is 2 lower; this card is exhausted after the cast.",
         Burn(2, Guard(7)), "common");
 
@@ -103,8 +103,8 @@ public static partial class ApprenticeCards
 
     private static readonly BnbCard Pinprick = Card(
         "ap_pinprick", "Pinprick", DeedTag, 1,
-        "Deal 5 damage. If the target intends to attack, gain 5 Block.",
-        Seq(Damage(5), If(Intends, Block(5))),
+        "Deal 7 damage. If the target intends to attack, gain 6 Block.",
+        Seq(Damage(7), If(Intends, Block(6))),
         "Clause: if the target intends to attack, the next damaging Speak hits once more for 3.",
         Clause(WandRule.BonusHit, amount: 3), "common");
 
@@ -117,10 +117,10 @@ public static partial class ApprenticeCards
 
     private static readonly BnbCard DustMote = Card(
         "ap_dust_mote", "Dust Mote", WorkingTag, 1,
-        "Gain 5 Block. If you inscribed a card this turn, draw 1 card.",
-        Seq(Block(5), IfAtLeast(WandValue(WandField.InscribedThisTurn), 1, Draw(1))),
-        "Speak: deal 3 damage, +3 for each card inscribed since your last cast (+6 at most).",
-        Speak(Hit(DustMoteDamage(3))), "common");
+        "Gain 7 Block. If you inscribed a card this turn, draw 1 card.",
+        Seq(Block(7), IfAtLeast(WandValue(WandField.InscribedThisTurn), 1, Draw(1))),
+        "Speak: deal 4 damage, +3 for each card inscribed since your last cast (+6 at most).",
+        Speak(Hit(DustMoteDamage(4))), "common");
 
     public static IReadOnlyList<BnbCard> Commons() =>
     [
@@ -148,8 +148,8 @@ public static partial class ApprenticeCards
             "to 3 negative stacks from yourself and gain 3 Block for each.",
             Shape(WandRule.Remedy, amount: 3, cap: 3)),
         ChalkCircle, ChalkCircle.Up(
-            "Gain 10 Block. If you do not cast this turn, gain 1 Grit at the end of it.",
-            Seq(Block(10), Apply(ApprenticeRules.QuietCircle, 1, You)),
+            "Gain 12 Block. If you do not cast this turn, gain 1 Grit at the end of it.",
+            Seq(Block(12), Apply(ApprenticeRules.QuietCircle, 1, You)),
             "Ground: this cast's Exhaustion is 3 lower.",
             Ground(3)),
         ClayWeight, ClayWeight.Up(
@@ -158,8 +158,8 @@ public static partial class ApprenticeCards
             Ground(WandRule.PerHeavy, cap: 4)),
         MasonsDust, MasonsDust.Up(
             "Spend 1 Grit to gain 7 Ward Wax. If you cannot, gain 1 Grit instead.", GritIntoWax(7),
-            "Speak: spend up to 2 Grit and gain 4 Ward Wax for each; with no Grit, gain 4 Block.",
-            Speak(Guard(4).When(NoGrit), Do(SpendGritForWax(2, 4)))),
+            "Speak: spend up to 2 Grit and gain 4 Ward Wax for each; with no Grit, gain 8 Block.",
+            Speak(Guard(8).When(NoGrit), Do(SpendGritForWax(2, 4)))),
         OpenCasement, OpenCasement.Up(
             "Two wand cards trade places for free, then draw 2 cards. With fewer than two in the wand, gain 1 Gust instead.",
             FreeSwapOr(draw: 2),
@@ -172,13 +172,13 @@ public static partial class ApprenticeCards
             "Shape — Scatter: the next single-target damaging Speak hits ALL enemies at 75%.",
             Shape(WandRule.Scatter, percent: 75)),
         PennyWhistle, PennyWhistle.Up(
-            "Deal 8 damage. If you have played another card this turn, gain 1 more Focus.",
-            Seq(Damage(8), IfAtLeast(PlayedThisTurn, 2, WandMove(WandAction.Focus, 1))),
+            "Deal 10 damage. If you have played another card this turn, gain 1 more Focus.",
+            Seq(Damage(10), IfAtLeast(PlayedThisTurn, 2, WandMove(WandAction.Focus, 1))),
             "Stop — Cut: the cast ends after the Speak before this one; if a Speak resolved, its Exhaustion is 3 lower.",
             Stop(3)),
         WickTrimmer, WickTrimmer.Up(
-            "Choose: Exhaust another card from your hand and draw 3 cards; or gain 5 Block.",
-            TrimOrGuard("ap_wick_trimmer", 3, 5),
+            "Choose: Exhaust another card from your hand and draw 3 cards; or gain 9 Block.",
+            TrimOrGuard("ap_wick_trimmer", 3, 9),
             "Burn: gain 10 Block; this cast's Exhaustion is 2 lower; this card is exhausted after the cast.",
             Burn(2, Guard(10))),
         SpareNotch, SpareNotch.Up(
@@ -187,8 +187,8 @@ public static partial class ApprenticeCards
             "Ground: this cast's Exhaustion is 2 lower, or 4 lower when 5 or more instructions run.",
             Ground(WandRule.ByLength, amount: 2, amount2: 4, cap: 5), cost: 0),
         Pinprick, Pinprick.Up(
-            "Deal 7 damage. If the target intends to attack, gain 5 Block.",
-            Seq(Damage(7), If(Intends, Block(5))),
+            "Deal 9 damage. If the target intends to attack, gain 8 Block.",
+            Seq(Damage(9), If(Intends, Block(8))),
             "Clause: if the target intends to attack, the next damaging Speak hits once more for 5.",
             Clause(WandRule.BonusHit, amount: 5)),
         CupOfWater, CupOfWater.Up(
@@ -197,10 +197,10 @@ public static partial class ApprenticeCards
             "Shape — Soak: the next damage-only Speak gives Block equal to its damage instead of dealing it.",
             Shape(WandRule.Soak, percent: 100)),
         DustMote, DustMote.Up(
-            "Gain 7 Block. If you inscribed a card this turn, draw 1 card.",
-            Seq(Block(7), IfAtLeast(WandValue(WandField.InscribedThisTurn), 1, Draw(1))),
-            "Speak: deal 5 damage, +3 for each card inscribed since your last cast (+6 at most).",
-            Speak(Hit(DustMoteDamage(5)))),
+            "Gain 9 Block. If you inscribed a card this turn, draw 1 card.",
+            Seq(Block(9), IfAtLeast(WandValue(WandField.InscribedThisTurn), 1, Draw(1))),
+            "Speak: deal 6 damage, +3 for each card inscribed since your last cast (+6 at most).",
+            Speak(Hit(DustMoteDamage(6)))),
     ];
 
     // ── the shapes the commons share ───────────────────────────────────────────────────────────────────────

@@ -30,6 +30,10 @@ public static class ApprenticeWand
         Flow = new StatusDefinitionId(ApprenticeKeywords.Flow),
         Grit = new StatusDefinitionId(ApprenticeKeywords.Grit),
         Gust = new StatusDefinitionId(ApprenticeKeywords.Gust),
+        // Balance (expansion v0.5 §5, family bench 2026-10-21): 3, not the master's 2 — his offence and his
+        // protection both fell short of the others' from Act II on.
+        SingeBonus = 3,
+        GritReduction = 3,
         Rote = new StatusDefinitionId(ApprenticeKeywords.Rote),
         Poise = new StatusDefinitionId(ApprenticeKeywords.Poise),
         WardWax = new StatusDefinitionId(Cards.Keywords.WardWax),

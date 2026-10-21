@@ -33,14 +33,14 @@ public static partial class ApprenticeCards
     private static readonly BnbCard CandleStub = Card(
         "ap_candle_stub", "Candle Stub", DeedTag, 1,
         "Deal 6 damage. Apply 1 Singe.", Seq(Damage(6), Apply(ApprenticeKeywords.Singe, 1)),
-        "Speak: deal 4 damage; in the first slot cast, also apply 1 Singe.",
-        Speak(Hit(4), Put(ApprenticeKeywords.Singe, 1).Only(WandPosition.FirstExecuted)));
+        "Speak: deal 5 damage; in the first slot cast, also apply 1 Singe.",
+        Speak(Hit(5), Put(ApprenticeKeywords.Singe, 1).Only(WandPosition.FirstExecuted)));
 
     private static readonly BnbCard ChalkLine = Card(
         "ap_chalk_line", "Chalk Line", WorkingTag, 1,
-        "Gain 5 Block and 1 Grit.", Seq(Block(5), Apply(ApprenticeKeywords.Grit, 1, You)),
-        "Speak: gain 4 Block; if another Speak follows, this cast's Exhaustion is 1 lower.",
-        Speak(Guard(4)).GroundingIfFollowed(1));
+        "Gain 6 Block and 1 Grit.", Seq(Block(6), Apply(ApprenticeKeywords.Grit, 1, You)),
+        "Speak: gain 6 Block; if another Speak follows, this cast's Exhaustion is 1 lower.",
+        Speak(Guard(6)).GroundingIfFollowed(1));
 
     private static readonly BnbCard InkBlot = Card(
         "ap_ink_blot", "Ink Blot", WorkingTag, 1,
@@ -58,12 +58,12 @@ public static partial class ApprenticeCards
     [
         CandleStub, CandleStub.Up(
             "Deal 8 damage. Apply 1 Singe.", Seq(Damage(8), Apply(ApprenticeKeywords.Singe, 1)),
-            "Speak: deal 6 damage; in the first slot cast, also apply 1 Singe.",
-            Speak(Hit(6), Put(ApprenticeKeywords.Singe, 1).Only(WandPosition.FirstExecuted))),
+            "Speak: deal 7 damage; in the first slot cast, also apply 1 Singe.",
+            Speak(Hit(7), Put(ApprenticeKeywords.Singe, 1).Only(WandPosition.FirstExecuted))),
         ChalkLine, ChalkLine.Up(
-            "Gain 7 Block and 1 Grit.", Seq(Block(7), Apply(ApprenticeKeywords.Grit, 1, You)),
-            "Speak: gain 6 Block; if another Speak follows, this cast's Exhaustion is 1 lower.",
-            Speak(Guard(6)).GroundingIfFollowed(1)),
+            "Gain 8 Block and 1 Grit.", Seq(Block(8), Apply(ApprenticeKeywords.Grit, 1, You)),
+            "Speak: gain 8 Block; if another Speak follows, this cast's Exhaustion is 1 lower.",
+            Speak(Guard(8)).GroundingIfFollowed(1)),
         InkBlot, InkBlot.Up(
             "Draw 3 cards, then discard 1. Gain 1 Flow.", Seq(DrawDiscard("ap_ink_blot", 3, 1), Apply(ApprenticeKeywords.Flow, 1, You)),
             "Heighten: the next Speak deals or gives 75% more (a status-only Speak: 1 more stack).",

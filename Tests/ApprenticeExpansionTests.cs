@@ -56,18 +56,18 @@ public class ApprenticeExpansionTests
         Play(play, session, "ap_steady_hand", enemy);
         Assert.Equal((2, 2), (Stacks(Hero(play), Rote), Stacks(Hero(play), Poise)));
 
-        // A played Chalk Line is still 5 Block.
+        // A played Chalk Line is still 6 Block.
         var block = Block(Hero(play));
         Play(play, session, "ap_chalk_line", enemy);
-        Assert.Equal(block + 5, Block(Hero(play)));
+        Assert.Equal(block + 6, Block(Hero(play)));
 
         Inscribe(play, session, "ap_candle_stub", 0);
         Inscribe(play, session, "ap_chalk_line", 1);
         var before = Standing(Body(play, enemy));
         block = Block(Hero(play));
         Cast(play, session, enemy);
-        Assert.Equal(before - 6, Standing(Body(play, enemy)));   // 4 + 2 Rote
-        Assert.Equal(block + 6, Block(Hero(play)));                // 4 + 2 Poise
+        Assert.Equal(before - 7, Standing(Body(play, enemy)));   // 5 + 2 Rote
+        Assert.Equal(block + 8, Block(Hero(play)));                // 6 + 2 Poise
         play.Dispose();
     }
 
@@ -83,8 +83,8 @@ public class ApprenticeExpansionTests
         Play(play, session, "ap_chalk_line", enemy);
         var before = Standing(Body(play, enemy));
         Cast(play, session, enemy);
-        // 4 + the Rote the first cast taught + the Singe the first slot put on it last time.
-        Assert.Equal(before - 7, Standing(Body(play, enemy)));
+        // 5 + the Rote the first cast taught + 3 for the Singe the first slot put on it last time.
+        Assert.Equal(before - 9, Standing(Body(play, enemy)));
         Assert.Equal(2, Stacks(Hero(play), Rote));
         Assert.Equal(2, Wand(play).CastsThisCombat);
         play.Dispose();
@@ -120,7 +120,7 @@ public class ApprenticeExpansionTests
         var block = Block(Hero(play));
         Cast(play, session, enemy);
         Assert.Equal(before - 3, Standing(Body(play, enemy)));
-        Assert.Equal(block + 4 + 3, Block(Hero(play)));            // the Chalk Line's Speak, and the Oath's
+        Assert.Equal(block + 6 + 3, Block(Hero(play)));            // the Chalk Line's Speak, and the Oath's
         Assert.Equal(1, Stacks(Body(play, enemy), Singe));
         play.Dispose();
     }
@@ -160,7 +160,7 @@ public class ApprenticeExpansionTests
         var block = Block(Hero(play));
         Cast(play, session, enemy);
         Assert.Equal(1, Wand(play).CastsThisCombat);
-        Assert.Equal(block + 8 + 4, Block(Hero(play)));            // Bookend 4 + 2 × 2 cards, Chalk Line 4
+        Assert.Equal(block + 8 + 6, Block(Hero(play)));            // Bookend 4 + 2 × 2 cards, Chalk Line 6
         before = Standing(Body(play, enemy));
         Play(play, session, "ap_unfinished_spell", enemy);
         Assert.Equal(before - 18, Standing(Body(play, enemy)));  // 6 + 6 × 2 cards in the wand
@@ -173,15 +173,15 @@ public class ApprenticeExpansionTests
         var (play, session, enemy) = Fight(["ap_kindling", "ap_ember_tongs", "ap_wildfire", "ap_chalk_line", "ap_chalk_line"]);
         var before = Standing(Body(play, enemy));
         Play(play, session, "ap_kindling", enemy);
-        // 4, then a Singe; 4 + 2 spending it, then another.
-        Assert.Equal(before - 10, Standing(Body(play, enemy)));
+        // 4, then a Singe; 4 + 3 spending it, then another.
+        Assert.Equal(before - 11, Standing(Body(play, enemy)));
         Assert.Equal(1, Stacks(Body(play, enemy), Singe));
         Play(play, session, "ap_wildfire", enemy);
         Assert.Equal(2, Stacks(Body(play, enemy), Singe));
         before = Standing(Body(play, enemy));
         Play(play, session, "ap_ember_tongs", enemy);
-        // 4 + 3 × 2, and the hit itself spends one for 2 more.
-        Assert.Equal(before - 12, Standing(Body(play, enemy)));
+        // 4 + 3 × 2, and the hit itself spends one for 3 more.
+        Assert.Equal(before - 13, Standing(Body(play, enemy)));
         Assert.Equal(1, Stacks(Body(play, enemy), Singe));
         play.Dispose();
     }
