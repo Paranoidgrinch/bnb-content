@@ -4446,3 +4446,17 @@ Canon: `source-data/design/sorcerers_apprentice_master.md` (v0.4). Its mechanics
 - **Shield Seal** (Seal Press) puts its Block straight onto the Block pool the moment the first enemy hit arrives,
   so it takes that hit; a Ward Wax part is applied as a status and so comes after that hit.
 - **Max HP 70**, Focus 1 at the start of every fight: the master leaves both to the character's configuration.
+
+### The expansion (v0.5, 2026-10-21)
+
+The user decided that his shelf matches the Bureaucrat's and the Hedge Witch's in size and power, which overrides
+the master's §0 constraint 1 (42 cards, "intentionally approximately half") and §1's nine relics. What that changed
+is written down in `source-data/design/sorcerers_apprentice_expansion.md`; the deviations from the master that came
+with it:
+
+- **80 reward cards and 18 relics** instead of 38 and 9; his first cards gated at Acts II–IV.
+- **Rote and Poise**, two new statuses, and a "whenever you cast" rule — the master asks for few new baseline
+  rules; these three are the growth his shelf lacked from Act II on.
+- **Numbers:** Singe spends for +3 and Grit softens a hit by 3 (master: 2); Candle Stub's Speak, Chalk Line,
+  Chalk Circle, Mason's Dust, Penny Whistle, Wick Trimmer, Pinprick and Dust Mote above the master's drafts
+  (expansion §6 lists each). Balance drafts, set by the family bench against the Bureaucrat's families.

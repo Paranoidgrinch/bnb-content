@@ -55,6 +55,7 @@ Aktionsknöpfe, Karten mit PLAY/WAND-Text, Smoke.
 | Engine: Stab-Zustand, Imprint, Regeln, Compiler, Cast, Aktionen, Singe/Grit/Flow/Gust, Haken, temporäre Kopien, Bot | ✔ (RogueDeck-Core, 23 Stab-Tests) |
 | Inhalt: Charakter, 42 Karten, 9 Relikte, 50 Proxys, Pools, Archiv, Kompendium | ✔ (Karten-, Relikt-, Proxy-, Pool- und Ganzlauf-Tests) |
 | Godot: Stab-Leiste, Aktionsknöpfe mit Fokus-Kosten, Cast mit Zielwahl und Vorschau, PLAY/WAND-Kartentext, Smoke, Golden | ✔ (bnb-godot: `--smoke-wand`; `--smoke-screens --character=sorcerers_apprentice` Akt I–V, 57 Bildschirme, 0 Fehler; Golden mit 6 Apprentice-Läufen; Multiplayer-Smoke mit ihm am dritten Platz, Stab im Einsatz) |
+| Pool-Erweiterung auf Bürokrat/Hexe-Größe (v0.5) | ✔ (2026-10-21): 80 Karten über Akt I–IV, 18 Relikte, Rote/Poise, „wann immer du castest“; Zahlen am Family-Bench gegen alle Bürokraten-Familien angeglichen (`source-data/design/sorcerers_apprentice_expansion.md` §6) |
 | Balance-Bench (Master §16 Stufe 6) | begonnen: `bnb-godot/tools/bench.sh` (alle Charaktere, gleiche Seeds, `sim-bench`-Zeile aus `roguedeck-bot`); erste Messung siehe §3 |
 
 ## 3 Bench, erste Messung (2026-10-20)
@@ -83,3 +84,11 @@ mit Apprentice-Decks) statt des Würfel-Bots.
 Gefunden und behoben durch den Bench: Auditor of Returned Lives kam nach dem Closing Audit beliebig oft zurück
 (bnb-content 1677f31); verbrauchtes „Cite the Old Survey“ war endlos spielbar (6962eb9).
 
+
+## 4 Pool-Erweiterung (2026-10-21)
+
+Auftrag: „Sorge dafür, dass sein Power-Level und die Menge an Karten dem von Bureaucrat und Witch gleicht, jedoch
+weiterhin eine eigene Identität hat. Das Gleiche gilt für Relikte.“ Umgesetzt nach
+`source-data/design/sorcerers_apprentice_expansion.md`: 42 neue Karten (Akt I +10, II 16, III 9, IV 7), 9 neue
+Relikte, Rote/Poise und der Auslöser nach einem Cast in der Engine. Family-Bench (Anteil an Paperworks erhaltener
+Gesundheit, Median): Akt II 89 % (Bürokrat 92 %), Akt III 46 % (Bürokrat 51 %).
