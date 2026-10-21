@@ -100,33 +100,19 @@ public class ShopRelicLiveTests
         Assert.Equal(card.Price - 10, run.GetCounter(ShopRelics.Debt));
     }
 
-    // Archive Voucher Roll: vouchers settle part of a price without any Gold being spent.
+    // Long-Form Ledger (sharpening pass 2026-10-21, on the old Indemnity Stamp's id): everything costs 10 % more.
     [Fact]
-    public void Vouchers_pay_at_the_till_and_are_not_gold()
+    public void The_ledger_marks_up_the_whole_shop()
     {
         var shop = CityShop();
-        var card = OnOffer(shop, ShopRelics.GeneralCardShelf, "archive_voucher_roll")[0];
         var run = NewRun(1000);
-        run.SetResource(ShopRelics.ArchiveVoucher, 3);
+        run.AddRelic(Wearing("indemnity_stamp"));
+        var shelf = new ShopShelf(run, shop);
 
-        Resolve(run, "archive_voucher_roll", shop, card.Entry.Id, "leave");
-
-        // Whole vouchers only, never overpaying: as many 10s as fit under the price.
-        var spent = Math.Min(3, card.Price / 10);
-        Assert.Equal(3 - spent, run.GetResource(ShopRelics.ArchiveVoucher));
-        Assert.Equal(1000 - (card.Price - spent * 10), run.GetResource(Gold));
-    }
-
-    // Copper Receipt Roll: the third purchase pays, and the tally survives to start again.
-    [Fact]
-    public void Every_third_purchase_pays()
-    {
-        var shop = CityShop();
-        var ids = OnOffer(shop, ShopRelics.CharacterCardShelf, "copper_receipt_roll").Take(3).ToList();
-        var run = Visit("copper_receipt_roll", shop, gold: 1000, [.. ids.Select(s => s.Entry.Id), "leave"]);
-
-        Assert.Equal(1000 - ids.Sum(s => s.Price) + 35, run.GetResource(Gold));
-        Assert.Equal(0, run.GetCounter(ShopRelics.Receipts));
+        var cards = shelf.Slots.Where(slot => slot.GroupId == ShopRelics.CharacterCardShelf).ToList();
+        Assert.NotEmpty(cards);
+        Assert.All(cards, slot =>
+            Assert.Equal((int)Math.Round(slot.Entry.Price * 1.1, MidpointRounding.AwayFromZero), slot.Price));
     }
 
     // ── harness ────────────────────────────────────────────────────────────────

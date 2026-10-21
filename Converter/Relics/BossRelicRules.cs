@@ -492,10 +492,12 @@ public static partial class BossRelicRules
 
     // ── The Queue Commissioner — the queue ─────────────────────────────────────────────────────────────────
 
-    // "At start of every third player turn: gain 1 Energy and draw 1."
+    // "At start of every second player turn: gain 1 Energy and draw 1." Every third until the sharpening pass
+    // (2026-10-21), which put the Iron Astrolabe, a Rare from the normal pool, on every second turn; a boss
+    // relic should not ring less often than that.
     public static readonly StatusData BrassServiceBell = Rule(
         "brass_service_bell", "Brass Service Bell",
-        "Every third turn the bell rings: 1 Energy and a card.",
+        "Every second turn the bell rings: 1 Energy and a card.",
         [
             Trigger(new EffectProgram<CardsDrawnTriggeredEffectContext>(
                 new CausalSequenceEffectNode<CardsDrawnTriggeredEffectContext>(
@@ -505,7 +507,7 @@ public static partial class BossRelicRules
                         new ComparisonExpression<CardsDrawnTriggeredEffectContext>(
                             new RemainderExpression<CardsDrawnTriggeredEffectContext>(
                                 new CombatantCounterExpression<CardsDrawnTriggeredEffectContext>(Self, BellTurn),
-                                new ConstantExpression<CardsDrawnTriggeredEffectContext>(3)),
+                                new ConstantExpression<CardsDrawnTriggeredEffectContext>(2)),
                             ComparisonOperator.Equal,
                             new ConstantExpression<CardsDrawnTriggeredEffectContext>(0)),
                         new CausalSequenceEffectNode<CardsDrawnTriggeredEffectContext>(

@@ -27,6 +27,9 @@ public static class RelicRules
         BloodPriceToken, BlackthornBrooch, SootglassLens, RubricTablet, RefuseDocket, IndexVolvelle,
         WithheldHourglass, ConcordanceMedallion, ChanceryRibbon, IronAstrolabe, RebindingSpindle,
         DeferredSignet, BloodStampedBond, ThornCrownedReliquary, ChanceryScale,
+        // The shop relics of the sharpening pass (2026-10-21).
+        WastebrokersFire, PriorityWindowFiling, SecondOpinion, AssentRibbon,
+        GlassInkwell, IronThimble, StaleLoaf, PawnedWeddingRing,
         // The cheap discounts these relics hand out are statuses of their own, for the same reason a Rite's
         // allowance is: a passive modifier's PRESENCE is its condition, so the discount has to be a thing
         // that can be taken away.
@@ -459,12 +462,26 @@ public static class RelicRules
         [Trigger(new EffectProgram<CardsDrawnTriggeredEffectContext>(
             Cheapen<CardsDrawnTriggeredEffectContext>(2, 1)), nameof(TriggerEvent.CardsDrawn))]);
 
+    // Every SECOND turn (sharpening pass 2026-10-21): "the first time each turn you draw" was every turn, since
+    // the turn's own draw is the first — the Act-IV boss relic's whole effect on a Rare from the normal pool.
+    // Counted per turn the way the Brass Service Bell counts: CardsDrawn is the turn's draw, once a turn.
     public static readonly StatusData IronAstrolabe = Rule("iron_astrolabe", "Iron Astrolabe",
-        "The first draw of each turn pays an Energy.",
+        "Every second turn pays an Energy.",
         [Trigger(new EffectProgram<CardsDrawnTriggeredEffectContext>(
-            OnceEachTurn<CardsDrawnTriggeredEffectContext>("iron_astrolabe",
-                HeldEnergy.Hold<CardsDrawnTriggeredEffectContext>(1))), nameof(TriggerEvent.CardsDrawn)),
-         ClearLatch("iron_astrolabe")]);
+            new CausalSequenceEffectNode<CardsDrawnTriggeredEffectContext>(
+            [
+                new SetCombatantCounterNode<CardsDrawnTriggeredEffectContext>(CombatantTargetSelectors.Source,
+                    new CounterId("iron_astrolabe_turn"), new ConstantExpression<CardsDrawnTriggeredEffectContext>(1),
+                    relative: true),
+                new ConditionalEffectNode<CardsDrawnTriggeredEffectContext>(
+                    new ComparisonExpression<CardsDrawnTriggeredEffectContext>(
+                        new RemainderExpression<CardsDrawnTriggeredEffectContext>(
+                            new CombatantCounterExpression<CardsDrawnTriggeredEffectContext>(
+                                CombatantTargetSelectors.Source, new CounterId("iron_astrolabe_turn")),
+                            new ConstantExpression<CardsDrawnTriggeredEffectContext>(2)),
+                        ComparisonOperator.Equal, new ConstantExpression<CardsDrawnTriggeredEffectContext>(0)),
+                    HeldEnergy.Hold<CardsDrawnTriggeredEffectContext>(1)),
+            ])), nameof(TriggerEvent.CardsDrawn))]);
 
     // "At the start of your turn, lose 3 HP; your next card that turn costs 1 less." Taken every turn rather
     // than offered, since a relic cannot ask. See ADAPTATIONS.
@@ -830,4 +847,134 @@ public static class RelicRules
         StatusTriggerScope scope = StatusTriggerScope.Bearer) where TContext : class =>
         new(trigger, JsonSerializer.SerializeToElement(
             TheOpeningHand.For(program, trigger), CombatJson.CreateOptions<TContext>()), scope);
+
+    // ── the shop relics of the sharpening pass (2026-10-21) ─────────────────────────────────────────────
+    //
+    // Thirteen of the eighteen general shop relics and all six of the Bureaucrat's were Gold arithmetic. Slay the
+    // Spire 2 sells rules instead: a relic that bends a fight, often for a price. The Bureaucrat's four bend one
+    // of his weaker strands each (Archive, Queue, Doubt, Seal); the general four are a rule with a price.
+
+    // "Whenever you Archive a card, deal 3 damage to ALL enemies." The Archive tally rising is the moment.
+    public static readonly StatusData WastebrokersFire = Rule("wastebrokers_fire", "Wastebroker's Permit",
+        "Everything you Archive feeds the furnace.",
+        [
+            Trigger(new EffectProgram<StatusAppliedTriggeredEffectContext>(
+                WhenTallyRises<StatusAppliedTriggeredEffectContext>(Keywords.Archived, HitAll<StatusAppliedTriggeredEffectContext>(3))),
+                nameof(TriggerEvent.StatusApplied)),
+            Trigger(new EffectProgram<StatusMergedTriggeredEffectContext>(
+                WhenTallyRises<StatusMergedTriggeredEffectContext>(Keywords.Archived, HitAll<StatusMergedTriggeredEffectContext>(3))),
+                nameof(TriggerEvent.StatusMerged)),
+        ]);
+
+    // "Whenever a Queued card resolves, apply 2 Paperwork to ALL enemies."
+    public static readonly StatusData PriorityWindowFiling = Rule("priority_window_filing", "Priority Window Pass",
+        "Every queued card that comes up is filed against everyone.",
+        [
+            Trigger(new EffectProgram<StatusAppliedTriggeredEffectContext>(
+                WhenTallyRises<StatusAppliedTriggeredEffectContext>(Keywords.QueueResolved,
+                    FileOnAll<StatusAppliedTriggeredEffectContext>(Keywords.Paperwork, 2))),
+                nameof(TriggerEvent.StatusApplied)),
+            Trigger(new EffectProgram<StatusMergedTriggeredEffectContext>(
+                WhenTallyRises<StatusMergedTriggeredEffectContext>(Keywords.QueueResolved,
+                    FileOnAll<StatusMergedTriggeredEffectContext>(Keywords.Paperwork, 2))),
+                nameof(TriggerEvent.StatusMerged)),
+        ]);
+
+    // "Doubt you apply is 1 larger."
+    public static readonly StatusData SecondOpinion = Rule("second_opinion", "Second Opinion",
+        "Every Doubt you file carries one more.", [],
+        passives:
+        [
+            new PassiveModifierData(PassiveModifierPipeline.OutgoingStatusApplicationStacks,
+                PassiveModifierOperation.AddFlat, 1, RestrictDamageKind: null, AppliesToStatusId: Keywords.Doubt),
+        ]);
+
+    // "Whenever you Ratify an enemy, apply 1 Doubt and 2 Paperwork to it." Ratified lands on the ENEMY, so the
+    // rule listens to the whole fight and answers on the enemy the event names.
+    public static readonly StatusData AssentRibbon = Rule("assent_ribbon", "Assent Ribbon",
+        "A ratified enemy is also doubted and filed against.",
+        [
+            Trigger(new EffectProgram<StatusAppliedTriggeredEffectContext>(
+                WhenStatusLands<StatusAppliedTriggeredEffectContext>(Keywords.Ratified)),
+                nameof(TriggerEvent.StatusApplied), StatusTriggerScope.Anywhere),
+            Trigger(new EffectProgram<StatusMergedTriggeredEffectContext>(
+                WhenStatusLands<StatusMergedTriggeredEffectContext>(Keywords.Ratified)),
+                nameof(TriggerEvent.StatusMerged), StatusTriggerScope.Anywhere),
+        ]);
+
+    // "Your attacks deal 25% more damage. Attacks against you deal 25% more damage."
+    public static readonly StatusData GlassInkwell = Rule("glass_inkwell", "Glass Inkwell",
+        "Sharper on both sides.", [],
+        passives:
+        [
+            new PassiveModifierData(PassiveModifierPipeline.DamageDealt, PassiveModifierOperation.ScalePercent, 125),
+            new PassiveModifierData(PassiveModifierPipeline.DamageReceived, PassiveModifierOperation.ScalePercent, 125),
+        ]);
+
+    // "Every attack hit against you deals 1 less damage. Every Block you gain is 1 less."
+    public static readonly StatusData IronThimble = Rule("iron_thimble", "Iron Thimble",
+        "Every blow and every guard is one smaller.", [],
+        passives:
+        [
+            new PassiveModifierData(PassiveModifierPipeline.DamageReceived, PassiveModifierOperation.AddFlat, -1),
+            new PassiveModifierData(PassiveModifierPipeline.BlockGain, PassiveModifierOperation.AddFlat, -1,
+                RestrictDamageKind: null),
+        ]);
+
+    // "Your first turn has 2 less Energy. Every later turn has 1 more." The later turns' point is HELD, like
+    // every turn-start Energy in this game (HeldEnergy).
+    public static readonly StatusData StaleLoaf = Rule("stale_loaf", "Stale Loaf",
+        "A hard first bite, and bread for every day after.",
+        [
+            Trigger(new EffectProgram<CardsDrawnTriggeredEffectContext>(
+                new ConditionalEffectNode<CardsDrawnTriggeredEffectContext>(
+                    new ComparisonExpression<CardsDrawnTriggeredEffectContext>(
+                        new RoundNumberExpression<CardsDrawnTriggeredEffectContext>(),
+                        ComparisonOperator.Equal, new ConstantExpression<CardsDrawnTriggeredEffectContext>(1)),
+                    new LoseResourceNode<CardsDrawnTriggeredEffectContext>(CombatantTargetSelectors.Source,
+                        StandardCombatIds.EnergyResource, new ConstantExpression<CardsDrawnTriggeredEffectContext>(2)),
+                    @else: HeldEnergy.Hold<CardsDrawnTriggeredEffectContext>(1))),
+                nameof(TriggerEvent.CardsDrawn)),
+        ]);
+
+    // "Start each combat with 2 Strength." Its price is paid at pickup (7 Max HP).
+    public static readonly StatusData PawnedWeddingRing = Rule("pawned_wedding_ring", "Pawned Wedding Ring",
+        "What was promised, spent on a harder hand.",
+        [
+            Trigger(new EffectProgram<CardsDrawnTriggeredEffectContext>(
+                new ConditionalEffectNode<CardsDrawnTriggeredEffectContext>(
+                    new ComparisonExpression<CardsDrawnTriggeredEffectContext>(
+                        new RoundNumberExpression<CardsDrawnTriggeredEffectContext>(),
+                        ComparisonOperator.Equal, new ConstantExpression<CardsDrawnTriggeredEffectContext>(1)),
+                    new ApplyStatusNode<CardsDrawnTriggeredEffectContext>(CombatantTargetSelectors.Source,
+                        new StatusDefinitionId("strength"), new ConstantExpression<CardsDrawnTriggeredEffectContext>(2)))),
+                nameof(TriggerEvent.CardsDrawn)),
+        ]);
+
+    // A tally on the wearer going up — every time, not once a turn.
+    private static IEffectNode<TContext> WhenTallyRises<TContext>(string counted, IEffectNode<TContext> body)
+        where TContext : class =>
+        new ConditionalEffectNode<TContext>(
+            new TriggerEventStatusIsExpression<TContext>(new StatusDefinitionId(counted)), body);
+
+    // A status landing on an enemy: 1 Doubt and 2 Paperwork on it (Assent Ribbon).
+    private static IEffectNode<TContext> WhenStatusLands<TContext>(string status) where TContext : class =>
+        new ConditionalEffectNode<TContext>(
+            new TriggerEventStatusIsExpression<TContext>(new StatusDefinitionId(status)),
+            new CausalSequenceEffectNode<TContext>(
+            [
+                new ApplyStatusNode<TContext>(CombatantTargetSelectors.EventTarget,
+                    new StatusDefinitionId(Keywords.Doubt), new ConstantExpression<TContext>(1)),
+                new ApplyStatusNode<TContext>(CombatantTargetSelectors.EventTarget,
+                    new StatusDefinitionId(Keywords.Paperwork), new ConstantExpression<TContext>(2)),
+            ]));
+
+    private static IEffectNode<TContext> HitAll<TContext>(int damage) where TContext : class =>
+        new ForEachTargetEffectNode<TContext>(CombatantTargetSelectors.AllEnemiesOfSource,
+            new DealDamageNode<TContext>(CombatantTargetSelectors.IterationTarget, new ConstantExpression<TContext>(damage)));
+
+    private static IEffectNode<TContext> FileOnAll<TContext>(string status, int stacks) where TContext : class =>
+        new ForEachTargetEffectNode<TContext>(CombatantTargetSelectors.AllEnemiesOfSource,
+            new ApplyStatusNode<TContext>(CombatantTargetSelectors.IterationTarget, new StatusDefinitionId(status),
+                new ConstantExpression<TContext>(stacks)));
 }

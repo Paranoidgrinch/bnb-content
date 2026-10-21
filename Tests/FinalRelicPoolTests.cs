@@ -47,7 +47,7 @@ public class FinalRelicPoolTests
         Assert.NotNull(compiled["secondhand_reliquary"].ShopPriceRules);
         Assert.NotNull(compiled["crooked_display_case"].ShopStockGrants);
         Assert.NotNull(compiled["backroom_kettle"].ShopServices);
-        Assert.NotNull(compiled["archive_voucher_roll"].ShopCreditSources);
+        Assert.NotNull(compiled["indemnity_stamp"].ShopPriceRules);   // Long-Form Ledger since 2026-10-21
         Assert.NotNull(compiled["debtors_signet"].ShopDebtTerms);
         Assert.NotNull(compiled["bent_auction_gavel"].RewardRules);
     }

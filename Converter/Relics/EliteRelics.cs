@@ -241,9 +241,19 @@ public static class EliteRelics
 
     public static string ToothId(int grade) => EliteRelicRules.ToothId(grade);
 
+    private static string ToothGuard(int grade) => grade switch
+    {
+        1 => "4 Block",
+        2 => "8 Block",
+        3 => "12 Block and heal 2",
+        _ => "16 Block and heal 4",
+    };
+
     private static BnbRelic Tooth(int grade, string what) =>
         Mimic(ToothId(grade), $"Tooth From the False Lid {Roman(grade)}", grade.ToString(),
-            $"The first blow of every fight glances off the tooth. It comes with {what}.",
+            // The grade's numbers are on the relic since the sharpening pass (2026-10-21): the relic list showed
+            // only the story, and four grades read as four identical relics.
+            $"The first blow of every fight glances off the tooth: {ToothGuard(grade)}. It comes with {what}.",
             pickup: [.. Enumerable.Range(1, grade - 1).Select(lesser =>
                 (IRunEffectRequest)new RemoveRelicRunEffect(new RelicId(ToothId(lesser))))],
             combatRule: grade switch

@@ -7,32 +7,19 @@ using static BnbContent.Converter.Relics.RelicAuthoring;
 
 namespace BnbContent.Converter.Relics;
 
-// The in-combat halves of the Shop relics. All four are the same shape and it is worth naming: the relic pays
+// The in-combat halves of the Shop relics that still pay in Gold (two since the sharpening pass, 2026-10-21; the
+// Wastebroker's Permit and the Archive Voucher Roll became combat rules in RelicRules). Both are the same shape: the relic pays
 // out AFTER the fight, in Gold or in something banked, but what it pays for happens INSIDE the fight — cards
 // Archived, enemies Ratified, enemies buried under Paperwork. A keyword tally is a status whose stacks only
 // grow, and the run cannot read a status; it can read a COUNTER the fight left behind (`event.combatCounter`).
 // So each of these rules is a mirror: it watches the tally and writes the number where the run will find it.
 public static class ShopRelicRules
 {
-    public static CounterId Salvage => new("salvage");
-    public static CounterId ArchiveTally => new("archive_tally");
     public static CounterId RatifyTally => new("ratify_tally");
     public static CounterId FilingFee => new("filing_fee");
 
     public static IReadOnlyList<StatusData> All() =>
-        [WastebrokersPermit, ArchiveVoucherRoll, NotarysWaiver, FilingFeeStamp];
-
-    // "Whenever you Archive a Junk card, record 1 Salvage, max 3 per combat." The Archive mark does not say
-    // WHAT was archived, so every Archive counts — see ADAPTATIONS.
-    public static readonly StatusData WastebrokersPermit =
-        MirrorsOwnTally("wastebrokers_permit_rule", "Wastebroker's Permit",
-            "Every card you Archive is worth something to a scrap dealer.", Keywords.Archived, Salvage, cap: 3);
-
-    // "After winning a combat in which you Archived at least 2 cards…" — the same tally, uncapped, because the
-    // relic asks a question about the whole fight rather than paying per card.
-    public static readonly StatusData ArchiveVoucherRoll =
-        MirrorsOwnTally("archive_voucher_roll_rule", "Archive Voucher Roll",
-            "The archive counts what you filed away.", Keywords.Archived, ArchiveTally);
+        [NotarysWaiver, FilingFeeStamp];
 
     // "Whenever you Ratify, gain 1 Waiver." Ratified lands on the ENEMY, so this rule cannot be bearer-scoped:
     // it watches the whole fight and writes on whoever is wearing it.
@@ -63,36 +50,6 @@ public static class ShopRelicRules
         ]);
 
     // ── shapes ────────────────────────────────────────────────────────────────────────────────────────────
-
-    // A tally that grows on the WEARER — Archive is marked on the archivist — copied into a counter, optionally
-    // capped. Written as "set to the tally" rather than "add one", so a rule installed mid-fight catches up and
-    // a doubled trigger cannot double-count.
-    private static StatusData MirrorsOwnTally(
-        string id, string name, string description, string tally, CounterId counter, int? cap = null)
-    {
-        IEffectNode<TContext> Body<TContext>() where TContext : class
-        {
-            ICombatExpression<TContext, int> stacks = new CombatantStatusStacksExpression<TContext>(
-                CombatantTargetSelectors.Source, new StatusDefinitionId(tally));
-            if (cap is { } limit)
-                stacks = new MinExpression<TContext>(stacks, new ConstantExpression<TContext>(limit));
-
-            return new ConditionalEffectNode<TContext>(
-                new TriggerEventStatusIsExpression<TContext>(new StatusDefinitionId(tally)),
-                new SetCombatantCounterNode<TContext>(
-                    CombatantTargetSelectors.Source, counter, stacks, relative: false));
-        }
-
-        return Rule(id, name, description,
-        [
-            Trigger(new EffectProgram<StatusAppliedTriggeredEffectContext>(
-                    Body<StatusAppliedTriggeredEffectContext>()),
-                nameof(TriggerEvent.StatusApplied)),
-            Trigger(new EffectProgram<StatusMergedTriggeredEffectContext>(
-                    Body<StatusMergedTriggeredEffectContext>()),
-                nameof(TriggerEvent.StatusMerged)),
-        ]);
-    }
 
     // A status landing on SOMEONE ELSE, counted by whoever wears the rule. Ratifying is something you do to an
     // enemy, so the rule has to watch the fight rather than its own bearer.

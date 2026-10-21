@@ -27,7 +27,6 @@ public class HeldEnergyTests
     [Theory]
     [InlineData("blood_stamped_bond")]
     [InlineData("rootbound_walking_staff")]
-    [InlineData("iron_astrolabe")]
     public void A_relic_that_promises_energy_up_front_holds_it_instead(string relicId)
     {
         var (play, _, _) = WithRelic(relicId);
@@ -41,7 +40,7 @@ public class HeldEnergyTests
     [Fact]
     public void Held_energy_arrives_the_moment_the_pool_runs_dry()
     {
-        var (play, session, target) = WithRelic("iron_astrolabe");
+        var (play, session, target) = WithRelic("blood_stamped_bond");
 
         for (var i = 0; i < 3; i++)                                           // spend the pool
             Play(play, session, "paper_cut", target);
@@ -51,6 +50,18 @@ public class HeldEnergyTests
 
         Play(play, session, "paper_cut", target);                             // the fourth card, paid for
         Assert.Equal(0, Energy(Hero(play)));
+        play.Dispose();
+    }
+
+    // The Iron Astrolabe pays every SECOND turn (sharpening pass 2026-10-21) — not the first, since the turn's
+    // own draw was "the first time each turn you draw", which made it the Act-IV boss relic's whole effect.
+    [Fact]
+    public void The_iron_astrolabe_pays_on_every_second_turn_only()
+    {
+        var (play, _, _) = WithRelic("iron_astrolabe");
+        Assert.Equal(0, FightProbe.StacksOf(Hero(play), HeldEnergy.Id));      // turn 1: nothing
+        play.CombatDriver!.EndTurn();
+        Assert.Equal(1, FightProbe.StacksOf(Hero(play), HeldEnergy.Id));      // turn 2: the point waits
         play.Dispose();
     }
 

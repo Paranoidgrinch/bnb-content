@@ -23,12 +23,8 @@ public static class ShopRelics
     // Banked things that are NOT Gold: they cannot be lost, they are not Gold spent, and they buy only what
     // they say. Modelling them as their own resources keeps all of that true by construction.
     public static readonly RunResourceId Waiver = new("waiver");
-    public static readonly RunResourceId ArchiveVoucher = new("archive_voucher");
-    public static readonly RunResourceId Punch = new("punch");
 
     public static readonly RunCounterId Debt = new("debt");
-    public static readonly RunCounterId Receipts = new("receipts");
-    public static readonly RunCounterId WarrantyValue = new("warranty_value");
 
     // What the shop's shelves are called and how its stock is labelled. A price rule finds nothing unless the
     // shelf says what it is holding — see ShopTemplate, which stamps these.
@@ -65,19 +61,11 @@ public static class ShopRelics
             runPrograms: [WhenSkipping(CardReward, Gold(6))]),
 
         // ── 2 ─────────────────────────────────────────────────────────────────────────────────────────────
-        // Every third purchase pays. The tally is bumped and then READ by the same reaction: effects resolve in
-        // the order they were enqueued, so the conditional sees the purchase it was enqueued alongside.
-        Shop("copper_receipt_roll", "Copper Receipt Roll",
-            "After every third purchase made in Shops, gain 35 Gold. Card removal counts as a purchase.",
-            runPrograms:
-            [
-                RunPrograms.On<ShopItemPurchasedRunEvent>(
-                    new IncrementCounterRunEffect(Receipts, 1),
-                    new ConditionalRunEffect(
-                        new RunComparisonExpression(
-                            RunExpr.Counter(Receipts), RunComparisonOperator.GreaterOrEqual, RunExpr.Const(3)),
-                        Gold(35), new SetCounterRunEffect(Receipts, 0))),
-            ]),
+        // Sharpening pass (2026-10-21): Copper Receipt Roll (Gold after every third purchase) became a rule
+        // with a price. The id stays, so a run that carried the old relic carries this one.
+        Shop("copper_receipt_roll", "Glass Inkwell",
+            "Your attacks deal 25% more damage. Attacks against you deal 25% more damage.",
+            combatRule: RelicRules.GlassInkwell),
 
         // ── 3 ─────────────────────────────────────────────────────────────────────────────────────────────
         // The mark and the blood price are the same flag, so the relic can only ever cost you once per Act and
@@ -125,19 +113,10 @@ public static class ShopRelics
             ]),
 
         // ── 5 ─────────────────────────────────────────────────────────────────────────────────────────────
-        // "At the end of each Act" is a real moment now, so the purse simply waits for it.
-        Shop("witchmarket_purse", "Witchmarket Purse",
-            "At the end of each Act, gain 20 Gold for every full 100 Gold you own, up to 60 Gold.",
-            runPrograms:
-            [
-                RunPrograms.On<ActCompletedRunEvent>(
-                    new ComputedResourceRunEffect(StandardRunIds.Gold,
-                        RunExpr.Min(
-                            RunExpr.Multiply(
-                                RunExpr.Divide(RunExpr.Resource(StandardRunIds.Gold), RunExpr.Const(100)),
-                                RunExpr.Const(20)),
-                            RunExpr.Const(60)))),
-            ]),
+        // Sharpening pass (2026-10-21): was Witchmarket Purse (interest on Gold). The id stays.
+        Shop("witchmarket_purse", "Iron Thimble",
+            "Every attack hit against you deals 1 less damage. Every Block you gain is 1 less.",
+            combatRule: RelicRules.IronThimble),
 
         // ── 6 ─────────────────────────────────────────────────────────────────────────────────────────────
         // Rejecting a relic is not a refusal the engine has to model — it is simply another offer on the table.
@@ -152,16 +131,11 @@ public static class ShopRelics
             ]),
 
         // ── 7 ─────────────────────────────────────────────────────────────────────────────────────────────
+        // Sharpening pass (2026-10-21): Archived cards paid Gold; now they feed a fire.
         Shop("wastebrokers_permit", "Wastebroker's Permit",
-            "Whenever you Archive a card, record 1 Salvage, up to 3 per combat. After a victory, gain 5 Gold "
-            + "per Salvage.",
+            "Whenever you Archive a card, deal 3 damage to ALL enemies.",
             eligibility: Eligibility.Bureaucrat,
-            combatRule: ShopRelicRules.WastebrokersPermit,
-            runPrograms:
-            [
-                AfterVictory(RunEffectTemplates.GainResource(StandardRunIds.Gold,
-                    RunExpr.Multiply(Tallied(ShopRelicRules.Salvage), RunExpr.Const(5)))),
-            ]),
+            combatRule: RelicRules.WastebrokersFire),
 
         // ── 8 ─────────────────────────────────────────────────────────────────────────────────────────────
         // The fight adds up what each corpse was worth; the cap is applied here, where the whole fight's total
@@ -304,28 +278,11 @@ public static class ShopRelics
             ]),
 
         // ── 16 ────────────────────────────────────────────────────────────────────────────────────────────
+        // Sharpening pass (2026-10-21): was a discount on Form and Queue cards.
         Shop("priority_window_pass", "Priority Window Pass",
-            "The first Form or Queue card in each Shop is 10% cheaper, and buying one refunds up to 15 of the "
-            + "Gold you actually paid.",
+            "Whenever a Queued card resolves, apply 2 Paperwork to ALL enemies.",
             eligibility: Eligibility.Bureaucrat,
-            shopPrices:
-            [
-                new ShopPriceRule(
-                    new ShopPriceMatch(ShopEntryKinds.Card, ["form", "queue"]),
-                    PercentDelta: -10,
-                    Limit: ShopPriceRuleLimit.FirstMatchPerVisit),
-            ],
-            runPrograms:
-            [
-                RunPrograms.When<ShopItemPurchasedRunEvent>(
-                    RunExpr.And(
-                        RunEventValues.ShopItemIsKind(ShopEntryKinds.Card),
-                        RunExpr.Or(
-                            RunEventValues.ShopItemHasTag("form"),
-                            RunEventValues.ShopItemHasTag("queue"))),
-                    RunEffectTemplates.GainResource(StandardRunIds.Gold,
-                        RunExpr.Min(RunEventValues.ShopCurrencyPaid, RunExpr.Const(15)))),
-            ]),
+            combatRule: RelicRules.PriorityWindowFiling),
 
         // ── 17 ────────────────────────────────────────────────────────────────────────────────────────────
         // The reward's own source is asked for the second relic, so what is revealed is whatever that chest
@@ -377,101 +334,38 @@ public static class ShopRelics
             ]),
 
         // ── 20 ────────────────────────────────────────────────────────────────────────────────────────────
-        // A Punch is credit: it settles part of a price without any Gold leaving the purse, and it is spent in
-        // whole units that never overpay. The design lets the player choose how many to redeem; here they are
-        // simply used as far as they help — see ADAPTATIONS.
-        Shop("merchant_punchcard", "Merchant Punchcard",
-            "Entering a Shop earns 1 Punch, up to 3. Each Punch takes 20 Gold off a purchase.",
-            shopCredit: [new ShopCreditSource(Punch, 20, StandardRunIds.Gold)],
-            runPrograms:
-            [
-                RunPrograms.When<NodeEnteredRunEvent>(
-                    RunExpr.And(
-                        RunEventValues.NodeHasTag(MapNodeTags.Shop),
-                        new RunComparisonExpression(
-                            RunExpr.Resource(Punch), RunComparisonOperator.LessThan, RunExpr.Const(3))),
-                    new ChangeResourceRunEffect(Punch, 1)),
-            ]),
+        // Sharpening pass (2026-10-21): was Merchant Punchcard (a discount per visit). The id stays.
+        Shop("merchant_punchcard", "Stale Loaf",
+            "Your first turn each combat has 2 less Energy. Every later turn, gain 1 Energy.",
+            combatRule: RelicRules.StaleLoaf),
 
         // ── 21 ────────────────────────────────────────────────────────────────────────────────────────────
-        // The warranty pays out on your next visit rather than letting you hand the relic back — returning a
-        // specific relic is not something a rule can name. See ADAPTATIONS.
-        Shop("warranty_tag", "Warranty Tag",
-            "The first Relic you buy each Act is under warranty: the next Shop you enter refunds half the Gold "
-            + "you actually paid for it.",
-            runPrograms:
-            [
-                RunPrograms.When<ShopItemPurchasedRunEvent>(
-                    RunExpr.And(
-                        RunEventValues.ShopItemIsKind(ShopEntryKinds.Relic),
-                        Unspent("warranty")),
-                    RunEffectTemplates.ChangeCounter(WarrantyValue,
-                        RunExpr.Divide(RunEventValues.ShopCurrencyPaid, RunExpr.Const(2))),
-                    RunEffectTemplates.Literal(Spend("warranty"))),
-                RunPrograms.When<NodeEnteredRunEvent>(
-                    RunExpr.And(
-                        RunEventValues.NodeHasTag(MapNodeTags.Shop),
-                        new RunComparisonExpression(
-                            RunExpr.Counter(WarrantyValue), RunComparisonOperator.GreaterThan, RunExpr.Const(0))),
-                    new ComputedResourceRunEffect(StandardRunIds.Gold, RunExpr.Counter(WarrantyValue)),
-                    new SetCounterRunEffect(WarrantyValue, 0)),
-            ]),
+        // Sharpening pass (2026-10-21): was Warranty Tag (half a relic's price back). The id stays.
+        Shop("warranty_tag", "Pawned Wedding Ring",
+            "When picked up, lose 7 Max HP. Start each combat with 2 Strength.",
+            pickup: [MaxHealth(-7)],
+            combatRule: RelicRules.PawnedWeddingRing),
 
         // ── 22 ────────────────────────────────────────────────────────────────────────────────────────────
-        // A purchase and a mugging are both just Gold leaving; only where it happened tells them apart.
-        Shop("indemnity_stamp", "Indemnity Stamp",
-            "When picked up, gain 20 Gold. Whenever you lose Gold outside a Shop, recover half of it, up to 50.",
-            pickup: [Gold(20)],
-            runPrograms:
-            [
-                RunPrograms.When<ResourceChangedRunEvent>(
-                    RunExpr.And(
-                        RunExpr.And(
-                            RunEventValues.ResourceIs(StandardRunIds.Gold),
-                            new RunComparisonExpression(
-                                RunEventValues.ResourceDelta, RunComparisonOperator.LessThan, RunExpr.Const(0))),
-                        RunExpr.Not(RunExpr.InShop)),
-                    RunEffectTemplates.GainResource(StandardRunIds.Gold,
-                        RunExpr.Min(
-                            RunExpr.Divide(RunExpr.Negate(RunEventValues.ResourceDelta), RunExpr.Const(2)),
-                            RunExpr.Const(50)))),
-            ]),
+        // Sharpening pass (2026-10-21): was Indemnity Stamp (Gold insurance). The id stays.
+        Shop("indemnity_stamp", "Long-Form Ledger",
+            "Every card reward shows one more card to choose from. Everything in a Shop costs 10% more.",
+            rewardRules: [new DrawMoreOffersRule(new RewardMatch(Kind: RewardKinds.Card), 1)],
+            shopPrices: [new ShopPriceRule(new ShopPriceMatch(), PercentDelta: 10)]),
 
         // ── 23 ────────────────────────────────────────────────────────────────────────────────────────────
-        // A Voucher is not Gold — it persists, it cannot be lost, and spending it is not spending Gold — so it
-        // is its own resource that the till accepts.
-        Shop("archive_voucher_roll", "Archive Voucher Roll",
-            "After winning a combat in which you Archived at least 2 cards, gain 1 Archive Voucher, up to 5. "
-            + "Each Voucher is 10 Gold of Shop credit.",
+        // Sharpening pass (2026-10-21): was Archive Voucher Roll (shop credit for archiving). The id stays.
+        Shop("archive_voucher_roll", "Assent Ribbon",
+            "Whenever you Ratify an enemy, apply 1 Doubt and 2 Paperwork to it.",
             eligibility: Eligibility.Bureaucrat,
-            combatRule: ShopRelicRules.ArchiveVoucherRoll,
-            shopCredit: [new ShopCreditSource(ArchiveVoucher, 10, StandardRunIds.Gold)],
-            runPrograms:
-            [
-                RunPrograms.When<CombatResolvedRunEvent>(
-                    RunExpr.And(
-                        RunEventValues.CombatWasVictory,
-                        RunExpr.And(
-                            new RunComparisonExpression(
-                                Tallied(ShopRelicRules.ArchiveTally),
-                                RunComparisonOperator.GreaterOrEqual, RunExpr.Const(2)),
-                            new RunComparisonExpression(
-                                RunExpr.Resource(ArchiveVoucher), RunComparisonOperator.LessThan, RunExpr.Const(5)))),
-                    new ChangeResourceRunEffect(ArchiveVoucher, 1)),
-            ]),
+            combatRule: RelicRules.AssentRibbon),
 
         // ── 24 ────────────────────────────────────────────────────────────────────────────────────────────
-        // Three separate first-purchases, one per card type, each with its own flag.
-        Shop("departmental_purchase_order", "Departmental Purchase Order",
-            "Each Act, the first Deed, the first Working and the first Rite you buy each refund up to 15 of the "
-            + "Gold you actually paid.",
+        // Sharpening pass (2026-10-21): was Departmental Purchase Order (refunds per card type). The id stays.
+        Shop("departmental_purchase_order", "Second Opinion",
+            "Whenever you apply Doubt, apply 1 more.",
             eligibility: Eligibility.Bureaucrat,
-            runPrograms:
-            [
-                FirstOfTypeRefunds("deed"),
-                FirstOfTypeRefunds("working"),
-                FirstOfTypeRefunds("rite"),
-            ]),
+            combatRule: RelicRules.SecondOpinion),
     ];
 
     // ── shared pieces ─────────────────────────────────────────────────────────────────────────────────────
@@ -514,15 +408,6 @@ public static class ShopRelics
                 RunEventValues.RewardIsKind(match.Kind!),
                 RunEventValues.RewardHasTag(match.AnyTag![0])),
             effects);
-
-    private static ITriggeredRunEffectDefinition FirstOfTypeRefunds(string type) =>
-        RunPrograms.When<ShopItemPurchasedRunEvent>(
-            RunExpr.And(
-                RunEventValues.ShopItemHasTag(type),
-                Unspent($"dpo_{type}")),
-            RunEffectTemplates.GainResource(StandardRunIds.Gold,
-                RunExpr.Min(RunEventValues.ShopCurrencyPaid, RunExpr.Const(15))),
-            RunEffectTemplates.Literal(Spend($"dpo_{type}")));
 
     // "The first time each Act" — an ACT flag, which the act boundary forgets. A run flag would make every one
     // of these relics a once-per-RUN relic the moment a second act existed.

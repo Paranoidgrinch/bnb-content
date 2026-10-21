@@ -95,15 +95,29 @@ public static partial class BossRelicRules
 
     // ── The Pharaoh of the Sealed Name — the three names ──────────────────────────────────────────────────
 
-    // "At start of each turn gain 1 Energy."
+    // "At start of each turn gain 1 Energy." With a price since the sharpening pass (2026-10-21): the three
+    // names are spoken for the court as well, and every enemy opens the fight with 1 Strength. An Energy a turn
+    // with no catch was the one boss relic that asked nothing of its holder.
     public static readonly StatusData CrownOfTheThreeNames = Rule(
         "crown_of_the_three_names", "Crown of the Three Names",
-        "Every turn is worth one more Energy.",
+        "Every turn is worth one more Energy, and every enemy opens the fight with 1 Strength.",
         [
             Trigger(new EffectProgram<CardsDrawnTriggeredEffectContext>(
-                Hold<CardsDrawnTriggeredEffectContext>(1)),
+                new CausalSequenceEffectNode<CardsDrawnTriggeredEffectContext>(
+                [
+                    Hold<CardsDrawnTriggeredEffectContext>(1),
+                    new ConditionalEffectNode<CardsDrawnTriggeredEffectContext>(
+                        new ComparisonExpression<CardsDrawnTriggeredEffectContext>(
+                            new RoundNumberExpression<CardsDrawnTriggeredEffectContext>(),
+                            ComparisonOperator.Equal, new ConstantExpression<CardsDrawnTriggeredEffectContext>(1)),
+                        new ApplyStatusNode<CardsDrawnTriggeredEffectContext>(
+                            CombatantTargetSelectors.AllEnemiesOfSource, new StatusDefinitionId(CrownStrength),
+                            new ConstantExpression<CardsDrawnTriggeredEffectContext>(1))),
+                ])),
                 nameof(TriggerEvent.CardsDrawn)),
         ]);
+
+    public const string CrownStrength = "strength";
 
     // "Once/combat after drawing hand: all cards currently in hand cost 0 for the rest of that turn."
     //

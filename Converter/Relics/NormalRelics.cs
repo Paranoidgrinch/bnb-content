@@ -57,7 +57,7 @@ public static class NormalRelics
             combatRule: RelicRules.HollowWaxBead),
 
         Normal("binders_awl", "Binder's Awl", Rarity.Common,
-            "The first time your draw pile is shuffled each combat, gain 1 Energy and draw 1 card.",
+            "Your first draw each combat also gives you 1 Energy and 1 more card.",
             combatRule: RelicRules.BindersAwl),
 
         Normal("carved_bone_buckle", "Carved Bone Buckle", Rarity.Common,
@@ -204,7 +204,7 @@ public static class NormalRelics
             combatRule: RelicRules.ChanceryRibbon),
 
         Normal("iron_astrolabe", "Iron Astrolabe", Rarity.Rare,
-            "The first time each turn you draw cards, gain 1 Energy.",
+            "At the start of every second turn, gain 1 Energy.",
             combatRule: RelicRules.IronAstrolabe),
 
         Normal("twin_ember_brazier", "Twin-Ember Brazier", Rarity.Rare,

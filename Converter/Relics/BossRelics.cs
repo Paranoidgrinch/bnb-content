@@ -55,7 +55,7 @@ public static class BossRelics
             combatRule: BossRelicRules.BacklogCounterseal),
 
         Boss("brass_service_bell", "Brass Service Bell", QueueCommissioner,
-            "At the start of every third turn, gain 1 Energy and draw 1 card.",
+            "At the start of every second turn, gain 1 Energy and draw 1 card.",
             combatRule: BossRelicRules.BrassServiceBell),
         Boss("priority_sash", "Priority Sash", QueueCommissioner,
             "The first time each turn you deal 15 or more damage, gain 8 Block.",
@@ -205,7 +205,7 @@ public static class BossRelics
 
         // ── Act IV ────────────────────────────────────────────────────────────────────────────────────────
         Boss("crown_of_the_three_names", "Crown of the Three Names", PharaohOfTheSealedName,
-            "Every turn is worth one more Energy.",
+            "Gain 1 Energy at the start of each turn. Every enemy starts each combat with 1 Strength.",
             combatRule: BossRelicRules.CrownOfTheThreeNames),
         Boss("edict_of_the_open_audience", "Edict of the Open Audience", PharaohOfTheSealedName,
             "Once a combat, every card in your hand is heard for nothing.",

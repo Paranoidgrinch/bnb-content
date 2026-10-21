@@ -24,11 +24,15 @@ public class ActFourBossRelicTests
     [Fact]
     public void The_crown_holds_an_energy_for_every_turn()
     {
-        var (play, _, _) = WithRelic("crown_of_the_three_names");
+        var (play, _, target) = WithRelic("crown_of_the_three_names");
 
         // The pool is already full when a turn's triggers run, so the extra point waits and arrives the
         // moment the holder runs dry — which is the same card, one moment later.
         Assert.Equal(1, FightProbe.StacksOf(Hero(play), "held_energy"));
+        // Its price since the sharpening pass: the court hears the names too.
+        Assert.Equal(1, FightProbe.StacksOf(play.CombatDriver!.Current!.State.GetCombatant(target), "strength"));
+        play.CombatDriver.EndTurn();
+        Assert.Equal(1, FightProbe.StacksOf(play.CombatDriver.Current!.State.GetCombatant(target), "strength"));
         play.Dispose();
     }
 
