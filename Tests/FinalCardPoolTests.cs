@@ -113,7 +113,7 @@ public class FinalCardPoolTests
         [
             "Blood Testimony", "Blood Tithe", "Consecrated Testament", "Customary Due", "Debt Ouroboros",
             "Due Recompense", "Exemplary Sentence", "Grievance Ledger", "Guest Right", "Guestbook Oath",
-            "Hearth Compact", "Hedge Covenant", "Hedge Hospitality", "Mortgaged Aegis", "Oath of Refusal",
+            "Host's Compact", "Hedge Covenant", "Hedge Hospitality", "Mortgaged Aegis", "Oath of Refusal",
             "Priority Docket", "Restitution Writ", "Vital Census", "Votive Covenant", "Wax Indemnity",
             "Wax Reliquary", "Witness Knot",
         ];

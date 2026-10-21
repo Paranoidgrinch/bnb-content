@@ -5,7 +5,8 @@ using RogueDeck.Scenario.Authoring;
 
 namespace BnbContent.Converter.Cards;
 
-// The general pool's Act-II Rites: three rules about refusals, status decay and Citation.
+// The general pool's Act-II Rites: Steady Routine (on Countermanded Grace's id since the sharpening pass,
+// 2026-10-21), status decay and Citation.
 public static class GeneralPrevention
 {
     public const string CountermandedGrace = "countermanded_grace";
@@ -14,8 +15,8 @@ public static class GeneralPrevention
 
     public static IReadOnlyList<StatusData> All() =>
     [
-        Grace(CountermandedGrace, "Countermanded Grace", 3),
-        Grace(CountermandedGrace + "+", "Countermanded Grace+", 4),
+        Routine(CountermandedGrace, "Steady Routine", 3),
+        Routine(CountermandedGrace + "+", "Steady Routine+", 4),
         Vein(VeinRegister, "Vein Register", VeinInk),
         Vein(VeinRegister + "+", "Vein Register+", VeinInk),
         // Standing Citation has no rules of its own: the Citation status looks for it, because only the
@@ -24,39 +25,17 @@ public static class GeneralPrevention
         Marker(StandingCitation + "+", "Standing Citation+"),
     ];
 
-    // ── Countermanded Grace ───────────────────────────────────────────────────────────────────────────────
-    // "The first time each turn Censure prevents any Status stack, gain N Ward Wax. This may trigger from
-    // Censure on you or on an enemy." Either side of the fight, so the rule watches the whole of it.
-    private static StatusData Grace(string id, string name, int wax)
-    {
-        var latch = new CounterId($"{id}_paid");
-        var wearer = CombatantTargetSelectors.IterationTarget;
-
-        var program = new EffectProgram<StatusApplicationBlockedTriggeredEffectContext>(
-            new ForEachTargetEffectNode<StatusApplicationBlockedTriggeredEffectContext>(
-                CombatantTargetSelectors.WithStatus(CombatantTargetSelectors.AllCombatants, new StatusDefinitionId(id)),
-                new ConditionalEffectNode<StatusApplicationBlockedTriggeredEffectContext>(
-                    new ComparisonExpression<StatusApplicationBlockedTriggeredEffectContext>(
-                        new CombatantCounterExpression<StatusApplicationBlockedTriggeredEffectContext>(wearer, latch),
-                        ComparisonOperator.Equal,
-                        new ConstantExpression<StatusApplicationBlockedTriggeredEffectContext>(0)),
-                    new CausalSequenceEffectNode<StatusApplicationBlockedTriggeredEffectContext>(
-                    [
-                        new ApplyStatusNode<StatusApplicationBlockedTriggeredEffectContext>(
-                            wearer, new StatusDefinitionId(Keywords.WardWax),
-                            new ConstantExpression<StatusApplicationBlockedTriggeredEffectContext>(wax)),
-                        new SetCombatantCounterNode<StatusApplicationBlockedTriggeredEffectContext>(
-                            wearer, latch,
-                            new ConstantExpression<StatusApplicationBlockedTriggeredEffectContext>(1),
-                            relative: false),
-                    ]))));
-
-        return Rite(id, name, $"The first refusal each turn, wherever it happens, gains you {wax} Ward Wax.",
+    // ── Steady Routine ────────────────────────────────────────────────────────────────────────────────────
+    // "At the start of each of your turns, gain N Block." A plain, neutral Rite for every character (sharpening
+    // pass 2026-10-21): it replaced Countermanded Grace, a Censure payoff that almost never paid.
+    private static StatusData Routine(string id, string name, int block) =>
+        Rite(id, name, $"Every turn of yours opens with {block} Block.",
         [
-            Trigger(program, nameof(TriggerEvent.StatusApplicationPrevented), StatusTriggerScope.Anywhere),
-            ClearLatch(latch),
+            Trigger(new EffectProgram<TurnStartedTriggeredEffectContext>(
+                new GainBlockNode<TurnStartedTriggeredEffectContext>(CombatantTargetSelectors.Source,
+                    new ConstantExpression<TurnStartedTriggeredEffectContext>(block))),
+                nameof(TriggerEvent.TurnStarted)),
         ]);
-    }
 
     // ── Vein Register ─────────────────────────────────────────────────────────────────────────────────────
     // "The first time each turn another Status on an enemy loses a stack, apply 2 Blood Ink to it." Both the

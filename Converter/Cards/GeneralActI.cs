@@ -94,15 +94,15 @@ public static class GeneralActI
         "The first time each turn you apply a negative Status to an enemy that does not already have that " +
         "Status, apply 1 additional stack of it.");
 
+    // Sharpening pass (2026-10-21): was Sanctioned Charm, a Censure saving that seldom mattered.
     private static readonly BnbCard SanctionedCharm = new(
-        "sanctioned_charm", "Sanctioned Charm", WorkingTag, 1,
-        "Gain 6 Block. Until your next turn, the first time your Censure prevents a negative Status, the " +
-        "Censure used to prevent it is not consumed.",
-        Seq(Block(6), Apply(GeneralRites.SanctionedCharm, 1, You)),
-        Rarity: "uncommon");
+        "sanctioned_charm", "Second Wind", WorkingTag, 0,
+        "Gain 1 Energy. Draw 1 card. Exhaust.",
+        Seq(Energy_(1), Draw(1)),
+        Rarity: "uncommon", Tags: [ExhaustTag]);
 
     private static readonly BnbCard ForfeitSeal = new(
-        "forfeit_seal", "Forfeit Seal", DeedTag, 1,
+        "forfeit_seal", "Forfeit Bond", DeedTag, 1,
         "Deal 7 damage. If the target still has Block after this attack, apply 4 Lien.",
         Seq(Damage(7), IfStillGuarded(Apply(Keywords.Lien, 4))),
         Rarity: "uncommon");
@@ -190,10 +190,7 @@ public static class GeneralActI
             "The first time each turn you apply a negative Status to an enemy that does not already have " +
             "that Status, apply 1 additional stack of it.", cost: 0),
 
-        SanctionedCharm, SanctionedCharm.Upgraded(
-            "Gain 9 Block and 2 Censure. Until your next turn, the first time your Censure prevents a negative " +
-            "Status, the Censure used to prevent it is not consumed.",
-            Seq(Block(9), Apply(Keywords.Censure, 2, You), Apply(GeneralRites.SanctionedCharm, 1, You))),
+        SanctionedCharm, SanctionedCharm.Upgraded("Gain 1 Energy. Draw 2 cards. Exhaust.", Seq(Energy_(1), Draw(2))),
 
         ForfeitSeal, ForfeitSeal.Upgraded(
             "Deal 11 damage. Apply 4 Lien; 8 if the target still has Block after this attack.",

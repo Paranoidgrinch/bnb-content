@@ -63,9 +63,13 @@ public static class CardAuthoring
         public IReadOnlyList<string> AllTags =>
             Type == RiteTag ? [Type, .. Tags ?? [], ExhaustTag] : [Type, .. Tags ?? []];
 
-        // The words on the card. A Rite's "Exhaust." is added here, not written into forty sheets by hand.
-        public string RulesText =>
-            Type == RiteTag && !Text.Contains("Exhaust", StringComparison.Ordinal) ? $"{Text} Exhaust." : Text;
+        // The words on the card. A Rite's "Exhaust." is added here, not written into forty sheets by hand — and so
+        // is a Form's "Form." (sharpening pass 2026-10-21): three relics reward Forms, and the tag was on no card.
+        public string RulesText => FormText(
+            Type == RiteTag && !Text.Contains("Exhaust", StringComparison.Ordinal) ? $"{Text} Exhaust." : Text);
+
+        private string FormText(string text) =>
+            (Tags ?? []).Contains(FormTag) && !text.StartsWith("Form.", StringComparison.Ordinal) ? $"Form. {text}" : text;
 
         public CardData Compile() => new()
         {
@@ -240,9 +244,13 @@ public static class CardAuthoring
     // How many DIFFERENT statuses of a kind a combatant carries. Stacks are countable; distinct statuses are
     // not, so the ones the game actually files are named and each is counted as present-or-not. A new status
     // of either kind has to be added here, which is the price of being able to ask the question at all.
+    //
+    // The Witch's Hexed and Misfortune and the Apprentice's Singe were missing until the sharpening pass
+    // (2026-10-21), so Black Tribunal and Compound Indictment counted only the Bureaucrat's and the general ones.
     public static readonly string[] NegativeStatuses =
     [
         Keywords.Paperwork, Keywords.Doubt, Keywords.Seal, Keywords.Lien, Keywords.Citation, Keywords.BloodInk,
+        Witch.WitchKeywords.Hexed, Witch.WitchKeywords.Misfortune, Apprentice.ApprenticeKeywords.Singe,
         "panic", "fatigue", "poison",
     ];
 

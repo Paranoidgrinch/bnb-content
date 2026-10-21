@@ -117,7 +117,7 @@ public static class ActIVCards
     private static readonly BnbCard CompoundIndictment = new(
         "compound_indictment", "Compound Indictment", WorkingTag, 1,
         "Requires at least 3 different negative Statuses on the target. Add 2 stacks to each negative Status " +
-        "it carries, up to 5 of them. Exhaust.",
+        "it carries. Exhaust.",
         Compound(2),
         Rarity: "rare", Act: Act, Tags: [ExhaustTag]);
 
@@ -133,8 +133,8 @@ public static class ActIVCards
     // statuses, absent rather than spent. See ADAPTATIONS.
     private static readonly BnbCard LastOffice = new(
         "last_office", "Last Office", WorkingTag, 2,
-        "For each of Paperwork, Doubt, Seal, Lien and Citation the chosen enemy does not carry, deal 8 damage " +
-        "to it and gain 3 Block. Exhaust.",
+        "Deal 40 damage and gain 15 Block, 8 damage and 3 Block less for each different negative Status the " +
+        "chosen enemy carries. Exhaust.",
         LastOfficeBody(8, 3),
         Rarity: "rare", Act: Act, Tags: [ExhaustTag]);
 
@@ -212,15 +212,15 @@ public static class ActIVCards
 
         CompoundIndictment, CompoundIndictment.Upgraded(
             "Requires at least 3 different negative Statuses on the target. Add 3 stacks to each negative " +
-            "Status it carries, up to 5 of them. Exhaust.", Compound(3)),
+            "Status it carries. Exhaust.", Compound(3)),
 
         GrandDispensation, GrandDispensation.Upgraded(
             "Choose 3 different options: deal 24 damage to an enemy; gain 24 Block; draw 3 cards; gain 2 " +
             "Energy. Exhaust.", Dispensation(3)),
 
         LastOffice, LastOffice.Upgraded(
-            "For each of Paperwork, Doubt, Seal, Lien and Citation the chosen enemy does not carry, deal 12 " +
-            "damage to it and gain 4 Block. Exhaust.", LastOfficeBody(12, 4)),
+            "Deal 60 damage and gain 20 Block, 12 damage and 4 Block less for each different negative Status " +
+            "the chosen enemy carries. Exhaust.", LastOfficeBody(12, 4)),
     ];
 
     // ── shapes ────────────────────────────────────────────────────────────────────────────────────────────
@@ -370,7 +370,7 @@ public static class ActIVCards
                 CounterId: Compounded.value, Relative: false),
             If(new CombatConditionSpec("compare", Target, ValueKind: "counter",
                     Op: ComparisonOperator.GreaterOrEqual, Right: 3, Id: Compounded.value),
-                Seq(NegativeStatuses.Take(5)
+                Seq(NegativeStatuses
                     .Select(status => If(HasStacks(status), Apply(status, stacks)))
                     .ToArray())));
 
@@ -382,14 +382,15 @@ public static class ActIVCards
             [Damage(24), Block(24), Draw(3), Energy_(2)],
             $"choose {picks}");
 
+    // A last office for a clean body (sharpening pass 2026-10-21): it used to count five named statuses — the
+    // Bureaucrat's three and two general ones — that the target did NOT carry, so for the Witch and the
+    // Apprentice it was nearly always the full 40. Now every negative status counts against it, whoever put it
+    // there: five shares, one fewer for each kind the target carries.
     private static CombatNodeModel LastOfficeBody(int damage, int block)
     {
-        string[] counted =
-            [Keywords.Paperwork, Keywords.Doubt, Keywords.Seal, Keywords.Lien, Keywords.Citation];
-
-        return Seq(counted
-            .Select(status => If(HasStacks(status), Seq(), Seq(Damage(damage), Block(block))))
-            .ToArray());
+        var clean = CombatAmountSpec.Binary("max", CombatAmountSpec.FromConst(0),
+            CombatAmountSpec.Binary("sub", CombatAmountSpec.FromConst(5), DistinctStatuses(NegativeStatuses)));
+        return Seq(Damage(Times(clean, damage)), Block(Times(clean, block)));
     }
 
     private static CombatAmountSpec Taken(CounterId counter) =>

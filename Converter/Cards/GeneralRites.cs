@@ -18,7 +18,6 @@ public static class GeneralRites
     public const string MortgageSigil = "mortgage_sigil";
     public const string SilentHearing = "silent_hearing";
     public const string SealedMantle = "sealed_mantle";
-    public const string SanctionedCharm = "sanctioned_charm";
 
     // What the hearing owes the player. Block granted while the ENEMY is acting would be swept away at the
     // player's own turn start, so the debt is remembered and paid after their next draw — the same shape
@@ -45,7 +44,6 @@ public static class GeneralRites
         HearingOwedStatus(10, HearingOwed + "+"),
         Mantle(SealedMantle, 3),
         Mantle(SealedMantle + "+", 4),
-        Charm(),
     ];
 
     // ── Notary Beetle ─────────────────────────────────────────────────────────────────────────────────────
@@ -304,38 +302,6 @@ public static class GeneralRites
                 Trigger(settle, nameof(TriggerEvent.RoundEnded), StatusTriggerScope.Anywhere),
             ]);
     }
-
-    // ── Sanctioned Charm ──────────────────────────────────────────────────────────────────────────────────
-    // "The first time your Censure prevents a negative Status, the Censure used to prevent it is not consumed."
-    //
-    // Handed back rather than held: the refusal has already been paid for by the time anything can answer it,
-    // so the Charm refunds a Censure and spends itself. It refunds ONE — the event does not say how many
-    // stacks the refusal cost. See ADAPTATIONS.
-    private static StatusData Charm() => new()
-    {
-        Id = SanctionedCharm,
-        NameKey = "Sanctioned Charm",
-        DescriptionKey = "The next Censure you spend refusing a status is handed back.",
-        Polarity = StatusPolarity.Neutral,
-        StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
-        UsesStacks = true,
-        Triggers =
-        [
-            Trigger(new EffectProgram<StatusApplicationBlockedTriggeredEffectContext>(
-                new CausalSequenceEffectNode<StatusApplicationBlockedTriggeredEffectContext>(
-                [
-                    new ApplyStatusNode<StatusApplicationBlockedTriggeredEffectContext>(
-                        CombatantTargetSelectors.Source, new StatusDefinitionId(Keywords.Censure),
-                        new ConstantExpression<StatusApplicationBlockedTriggeredEffectContext>(1)),
-                    new RemoveStatusNode<StatusApplicationBlockedTriggeredEffectContext>(
-                        CombatantTargetSelectors.Source, new StatusDefinitionId(SanctionedCharm)),
-                ])), nameof(TriggerEvent.StatusApplicationPrevented)),
-            Trigger(new EffectProgram<TurnStartedTriggeredEffectContext>(
-                new RemoveStatusNode<TurnStartedTriggeredEffectContext>(
-                    CombatantTargetSelectors.Source, new StatusDefinitionId(SanctionedCharm))),
-                nameof(TriggerEvent.TurnStarted)),
-        ],
-    };
 
     // ── shared ────────────────────────────────────────────────────────────────────────────────────────────
 

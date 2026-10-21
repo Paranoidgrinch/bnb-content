@@ -12,11 +12,13 @@ public static class GeneralActII
 
     // ── Uncommon ──────────────────────────────────────────────────────────────────────────────────────────
 
+    // Sharpening pass (2026-10-21): four Censure cards that rarely paid became neutral tools every character can
+    // use, on their old ids — Blunt Instrument (was Blacklisted), Steady Routine (Countermanded Grace), Fresh
+    // Ledger (Crossed Sigil) and Second Wind (Sanctioned Charm, GeneralActI).
     private static readonly BnbCard Blacklisted = new(
-        "blacklisted", "Blacklisted", WorkingTag, 1,
-        "Apply 3 Censure. For each different positive Status already on the target, apply 2 additional " +
-        "Censure, maximum +5.",
-        Blacklist(3),
+        "blacklisted", "Blunt Instrument", DeedTag, 1,
+        "Deal 14 damage.",
+        Damage(14),
         Rarity: "uncommon", Act: Act);
 
     private static readonly BnbCard SanguineErrata = new(
@@ -26,20 +28,18 @@ public static class GeneralActII
         Rarity: "uncommon", Act: Act);
 
     private static readonly BnbCard CountermandedGrace = Rite(
-        "countermanded_grace", "Countermanded Grace", GeneralPrevention.CountermandedGrace, 1,
-        "The first time each turn Censure prevents any Status stack, gain 3 Ward Wax. This may trigger from " +
-        "Censure on you or on an enemy.");
+        "countermanded_grace", "Steady Routine", GeneralPrevention.CountermandedGrace, 1,
+        "At the start of each of your turns, gain 3 Block.");
 
     private static readonly BnbCard VeinRegister = Rite(
         "vein_register", "Vein Register", GeneralPrevention.VeinRegister, 1,
         "The first time each turn another Status on an enemy loses a stack, apply 2 Blood Ink to it.");
 
     private static readonly BnbCard CrossedSigil = new(
-        "crossed_sigil", "Crossed Sigil", WorkingTag, 1,
-        "Remove 1 stack of a negative Status from yourself. Then apply 2 Censure to an enemy. If you had no " +
-        "negative Status to remove, gain 2 Censure instead.",
-        CrossSigil(2),
-        Rarity: "uncommon", Act: Act);
+        "crossed_sigil", "Fresh Ledger", WorkingTag, 1,
+        "Exhaust another card from your hand. Draw 2 cards.",
+        FreshLedger(2),
+        Rarity: "uncommon", Act: Act, Tags: [FreshLedgerTag]);
 
     private static readonly BnbCard ProxyCurse = new(
         "proxy_curse", "Proxy Curse", WorkingTag, 1,
@@ -83,9 +83,7 @@ public static class GeneralActII
 
     public static IEnumerable<BnbCard> All() =>
     [
-        Blacklisted, Blacklisted.Upgraded(
-            "Apply 5 Censure. For each different positive Status already on the target, apply 2 additional " +
-            "Censure, maximum +5. Gain 2 Censure.", Seq(Blacklist(5), Apply(Keywords.Censure, 2, You))),
+        Blacklisted, Blacklisted.Upgraded("Deal 20 damage.", Damage(20)),
 
         SanguineErrata, SanguineErrata.Upgraded(
             "Apply 6 Blood Ink. Then remove 1 stack of another negative Status from the target; it becomes 2 more " +
@@ -93,19 +91,13 @@ public static class GeneralActII
             Seq(SanguineErrataBody(6), Apply(Keywords.BloodInk, 2))),
 
         CountermandedGrace, CountermandedGrace.UpgradedRite(GeneralPrevention.CountermandedGrace,
-            "The first time each turn Censure prevents any Status stack, gain 4 Ward Wax."),
+            "At the start of each of your turns, gain 4 Block."),
 
         VeinRegister, VeinRegister.UpgradedRite(GeneralPrevention.VeinRegister,
             "The first time each turn another Status on an enemy loses a stack, apply 2 Blood Ink to it.",
             cost: 0),
 
-        CrossedSigil, CrossedSigil.Upgraded(
-            "Remove 1 stack of a negative Status from yourself. Apply 2 Censure to an enemy and gain 2 Censure.",
-            Seq(
-                new CombatNodeModel("modifySelectedStatusStacks", You, CombatAmountSpec.FromConst(-1),
-                    Selection: new StatusSelectionSpec(StatusPolarityFilter.Debuff)),
-                Apply(Keywords.Censure, 2),
-                Apply(Keywords.Censure, 2, You))),
+        CrossedSigil, CrossedSigil.Upgraded("Exhaust another card from your hand. Draw 3 cards.", FreshLedger(3)),
 
         ProxyCurse, ProxyCurse.Upgraded(
             "Remove up to 4 stacks of a negative Status from yourself. Apply 2 Blood Ink to an enemy per " +
@@ -137,14 +129,6 @@ public static class GeneralActII
     private static BnbCard UpgradedRite(this BnbCard card, string riteStatusId, string text, int? cost = null) =>
         card.Upgraded(text, InstallRite(riteStatusId + "+"), cost);
 
-    // "For each DIFFERENT positive Status already on the target, +2 Censure, maximum +5." Distinct statuses
-    // are counted by naming the ones the game files and asking each whether it is there. (+1, max +3 until the
-    // Censure numbers grew by half, rounded up — user, 2026-10-02.)
-    private static CombatNodeModel Blacklist(int baseCensure) =>
-        Apply(Keywords.Censure,
-            Plus(CombatAmountSpec.FromConst(baseCensure),
-                AtMost(Times(DistinctStatuses(PositiveStatuses), 2), 5)));
-
     // "Then choose and remove 1 stack of ANOTHER negative Status." One stack off a negative status the engine
     // picks by rule rather than by prompt — and never the Blood Ink this card just put down (the audit found it
     // taking exactly that whenever the target carried nothing else, 2026-09-28). No other debuff, no removal.
@@ -173,23 +157,6 @@ public static class GeneralActII
 
     private static CombatAmountSpec Taken(string on) =>
         new("counter", SelectorKey: on, CounterId: Converted.value);
-
-    // "Remove 1 stack of a negative Status from yourself. Then apply N Censure to an enemy. If you had none
-    // to remove, gain N Censure instead." What you were carrying is read before anything is taken.
-    private static CounterId Carried => new("crossed_sigil_carried");
-
-    private static CombatNodeModel CrossSigil(int censure) =>
-        Seq(
-            new CombatNodeModel("setCombatantCounter", You,
-                new CombatAmountSpec("stacksByPolarity", SelectorKey: You, Polarity: StatusPolarity.Debuff),
-                CounterId: Carried.value, Relative: false),
-            If(new CombatConditionSpec("compare", You, ValueKind: "counter",
-                    Op: ComparisonOperator.Greater, Right: 0, Id: Carried.value),
-                Seq(
-                    new CombatNodeModel("modifySelectedStatusStacks", You, CombatAmountSpec.FromConst(-1),
-                        Selection: new StatusSelectionSpec(StatusPolarityFilter.Debuff)),
-                    Apply(Keywords.Censure, censure)),
-                Apply(Keywords.Censure, censure, You)));
 
     // "Remove all remaining Block. For every N removed, apply 1 Lien, max 6." What was there is read before
     // it is taken.
@@ -222,4 +189,14 @@ public static class GeneralActII
         new("moveCardToZone", You,
             Card: new CombatCardSpec("chosen", CardZone.Hand, Purpose: "choose the original to Exhaust"),
             ToZone: CardZone.ExhaustPile);
+
+    // "Exhaust another card from your hand. Draw N." The card itself is kept out of the choice by its own tag.
+    private const string FreshLedgerTag = "fresh_ledger";
+
+    private static CombatNodeModel FreshLedger(int draw) =>
+        Seq(new CombatNodeModel("moveCardToZone", You,
+                Card: new CombatCardSpec("chosen", CardZone.Hand, Purpose: "choose a card to exhaust",
+                    ExcludeTag: FreshLedgerTag),
+                ToZone: CardZone.ExhaustPile),
+            Draw(draw));
 }

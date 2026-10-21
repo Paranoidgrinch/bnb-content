@@ -14,7 +14,7 @@ public static class WitchFamilies
         [
             "grave_lien", "foreclosure", "forfeit_seal", "dawn_summons", "seizure_writ", "blood_tithe",
             "vital_census", "exemplary_sentence", "black_tribunal", "grand_citation", "crown_repossession",
-            "tallow_judgment", "hemal_audit", "last_office",
+            "tallow_judgment", "hemal_audit", "last_office", "blacklisted",
         ]),
         (WitchActions.Hex,
         [
@@ -26,15 +26,16 @@ public static class WitchFamilies
         [
             "waxen_surety", "contempt_finding", "tallow_reserve", "sealed_mantle", "wax_reliquary",
             "consecrated_testament", "mortgaged_aegis", "votive_covenant", "candle_cathedral", "wax_indemnity",
+            "countermanded_grace",
         ]),
         (WitchActions.Hearth,
         [
             "borrowed_candle", "false_signature", "proxy_curse", "moonlit_counterfeit", "grand_dispensation",
+            "sanctioned_charm", "crossed_sigil",
         ]),
         (WitchActions.Fortune,
         [
-            "malediction_review", "sanctioned_charm", "reciprocal_edict", "blacklisted", "countermanded_grace",
-            "crossed_sigil", "oath_of_refusal", "sovereign_prohibition", "absolute_interdict",
+            "malediction_review", "reciprocal_edict", "oath_of_refusal", "sovereign_prohibition", "absolute_interdict",
         ]));
 
     public static IReadOnlyList<CardData> Mark(IReadOnlyList<CardData> cards)
