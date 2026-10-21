@@ -361,6 +361,11 @@ public static partial class ActThree
             + "Either settles 1 Wergild, oldest demand first.",
         Costs = [],
         Tags = [MakeAmendsTag, new TagId("form")],
+        // ⚠ ONLY PLAYABLE WHEN ONE OF THE TWO WAYS CAN PAY. With no Energy and no other card in hand, it settled
+        // nothing and put the next copy back — free, and offered again for ever (the bench's Apprentice, seed 10,
+        // played it fifty times in a turn, each play worth a Focus to him). Counterseal and Cite the Old Survey had
+        // the same hole.
+        PlayCondition = new OrExpression<CardPlayContext>(CanPayInCoin(), CanOfferACard()),
         Program = new EffectProgram<CardPlayContext>(
             new CausalSequenceEffectNode<CardPlayContext>(
             [
@@ -383,16 +388,31 @@ public static partial class ActThree
     // The Juniper's injunction against coin closes this route while it stands. With the hedge on the field
     // its demand is the only one there is, so "the Juniper's Wergild cannot be paid with Energy" and "coin
     // pays nothing" are the same sentence — and the offering route is guaranteed open beside it.
+    private static ICombatExpression<CardPlayContext, bool> CanPayInCoin() =>
+        new AndExpression<CardPlayContext>(
+            new NotExpression<CardPlayContext>(
+                PaymentEnjoined<CardPlayContext>(InjunctionCoinId)),
+            new ComparisonExpression<CardPlayContext>(
+                new CombatantCurrentResourceExpression<CardPlayContext>(
+                    CombatantTargetSelectors.Source, StandardCombatIds.EnergyResource),
+                ComparisonOperator.GreaterOrEqual,
+                new ConstantExpression<CardPlayContext>(1)));
+
+    // Another card in hand to offer (the copy being played is in hand too) and no injunction against offering.
+    private static ICombatExpression<CardPlayContext, bool> CanOfferACard() =>
+        new AndExpression<CardPlayContext>(
+            new NotExpression<CardPlayContext>(
+                PaymentEnjoined<CardPlayContext>(InjunctionOfferingId)),
+            new ComparisonExpression<CardPlayContext>(
+                new SubtractExpression<CardPlayContext>(
+                    new CombatantZoneCardCountExpression<CardPlayContext>(CombatantTargetSelectors.Source, CardZone.Hand),
+                    new CombatantZoneCardCountExpression<CardPlayContext>(CombatantTargetSelectors.Source, CardZone.Hand, MakeAmendsTag)),
+                ComparisonOperator.GreaterOrEqual,
+                new ConstantExpression<CardPlayContext>(1)));
+
     private static IEffectNode<CardPlayContext> PayInCoin() =>
         new ConditionalEffectNode<CardPlayContext>(
-            new AndExpression<CardPlayContext>(
-                new NotExpression<CardPlayContext>(
-                    PaymentEnjoined<CardPlayContext>(InjunctionCoinId)),
-                new ComparisonExpression<CardPlayContext>(
-                    new CombatantCurrentResourceExpression<CardPlayContext>(
-                        CombatantTargetSelectors.Source, StandardCombatIds.EnergyResource),
-                    ComparisonOperator.GreaterOrEqual,
-                    new ConstantExpression<CardPlayContext>(1))),
+            CanPayInCoin(),
             new CausalSequenceEffectNode<CardPlayContext>(
             [
                 new LoseResourceNode<CardPlayContext>(

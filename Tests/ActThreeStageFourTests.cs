@@ -162,6 +162,28 @@ public class ActThreeStageFourTests
         play.Dispose();
     }
 
+    // Make Amends is playable only while one of its two ways can pay: with no Energy and nothing else in hand it
+    // used to settle nothing and come back, free, for ever (the bench's Apprentice played it fifty times a turn).
+    [Fact]
+    public void Make_amends_cannot_be_played_with_nothing_to_pay_with()
+    {
+        var (play, _, _) = FightProbe.Start(
+            FightProbe.Solo("charter_shell_snail", "charter_toll", energy: 0),
+            deck: ["paper_cut"], health: 200);
+
+        play.CombatDriver!.EndTurn();
+        var combat = play.CombatDriver.Current!;
+        var amends = combat.Hand.First(c => c.DefinitionId.value == ActThree.MakeAmendsCardId);
+        // A Paper Cut in hand can be offered: playable.
+        Assert.True(combat.CanPlay(amends.Id));
+
+        // Without it, and without Energy, there is nothing to pay with.
+        var cut = combat.Hand.First(c => c.DefinitionId.value == "paper_cut");
+        combat.State.GetCardZones(combat.HeroId).MoveCardToZone(cut.Id, CardZone.ExhaustPile);
+        Assert.False(combat.CanPlay(amends.Id));
+        play.Dispose();
+    }
+
     // The offering is never Make Amends itself: it is still in hand while its own program runs, and being a
     // free card the charter would refuse it — a trap rather than a decision.
     [Fact]
