@@ -243,6 +243,16 @@ Abweichungen beim Bauen:
 
 ## 7 Offen
 
+- **U2 noch nicht erfüllt (wichtig, als Nächstes):** nur ~16 von 84 Upgrades (19 %) haben eine Facette, Regel
+  verlangt ≥ 40 %. Vorschlag für weitere 24 (dann 40/84 = 48 %): Commons Clear the Square+ (N: 1 Open Guard),
+  Gatehouse+ (O), Scabbard+ (I), Marked Man+ (O: +1 Strength), Arrest+ (O), Witness+ (B: zwei Treffer), Split Lip+
+  (C: Kill auch 1 Energie) · Uncommons Against the Wall+ (O), Mind the Gap+ (S: 6 Block), No Excuses+ (O), No
+  Surrender+ (N: ohne Open Guard), Gauntlet+ (S: 10), Second Blade+ (B: 5 × 3), Testimony+ (O), Make an Example+
+  (N: ohne Authority), Flank+ (N), Ultimatum+ (S: 1 Authority), Overhand+ (S: 2 Strength), Heave+ (S: 1 Strength),
+  Broken Pike+ (S: 1 Strength) · Rares Parade Ground+ (S: bis 3 Energie), Drum Major+ (D), Service Record+ (C: Kill
+  1 Authority), Brevet+ (I).
+- **Golden-Set** für bnb-godot noch nicht aufgenommen (nach U2 aufnehmen; Skripte sind vorbereitet, nicht committet).
+
 - **Family-Bench / Balance**: nicht gemessen. Die Zahlen sind Entwurf (Kanon §9). Kein Family-Deck-File für sie.
 - **Bilder**: keine Platzhalter für ihre Karten, Relikte und Figur (wie beim Apprentice); ART_SLOTS listet sie.
 - **Tutorial**: keins für sie (wie beim Apprentice).
