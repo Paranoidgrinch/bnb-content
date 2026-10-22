@@ -551,6 +551,16 @@ public static class ActThreeEvents
                 [new AddCardToDeckRunEffect(new CardDefinitionId(card.Id))],
                 only: RunExpr.CharacterIs(Apprentice.ApprenticeCharacter.Id)));
         }
+        // …and the Lieutenant's, from her pool and her own dice.
+        var lieutenantDice = ConversionPools.LieutenantDice(id);
+        foreach (var (card, index) in pools.LieutenantRewardCards.OrderBy(_ => lieutenantDice.Next()).Take(cards)
+            .Select((c, i) => (c, i)))
+        {
+            var price = Less(cardPrices.GetValueOrDefault(card.Rarity, 85));
+            stock.Add(Stall(id, $"lieutenant-card-{index}", $"{card.Name} — {price} Gold", price,
+                [new AddCardToDeckRunEffect(new CardDefinitionId(card.Id))],
+                only: RunExpr.CharacterIs(Lieutenant.LieutenantCharacter.Id)));
+        }
         foreach (var (relic, index) in pools.MarketRelicStock.OrderBy(_ => rng.Next()).Take(relics)
             .Select((r, i) => (r, i)))
         {

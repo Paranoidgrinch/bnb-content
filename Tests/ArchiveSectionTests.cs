@@ -57,4 +57,16 @@ public class ArchiveSectionTests
         foreach (var entry in Compendium.ApprenticeEntries)
             Assert.Equal(entry.Name, words[$"compendium:{entry.Id}"]);
     }
+
+    // Her cards and relics on a shelf of their own, and her words in the Compendium.
+    [Fact]
+    public void The_lieutenant_has_a_shelf_of_her_own()
+    {
+        Assert.Equal(ArchiveSections.Lieutenant, CardShelf("lt_watch_cut"));
+        Assert.Equal(ArchiveSections.Lieutenant, CardShelf("lt_field_pardon+"));
+        Assert.Equal(ArchiveSections.Lieutenant, Game.Presentation.Relics["lt_relic_commission"].Extra[ArchiveSections.SectionKey]);
+        var words = Game.Presentation.Game!.Extra;
+        foreach (var entry in Compendium.LieutenantEntries)
+            Assert.Equal(entry.Name, words[$"compendium:{entry.Id}"]);
+    }
 }

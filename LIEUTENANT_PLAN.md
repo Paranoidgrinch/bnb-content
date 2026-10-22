@@ -225,3 +225,4 @@ Abweichungen beim Bauen:
 | S5 Uncommons | ✔ `LieutenantUncommonTests` (24) |
 | S6 Rares | ✔ `LieutenantRareTests` (27); Core: `eventBlockedAmount` (RogueDeck-Core a703df1) |
 | S7 Relikte | ✔ `LieutenantRelicTests` (19) |
+| S8 Pools, Shop, Märkte, Archiv, Kompendium, ART_SLOTS | ✔ `LieutenantPoolTests` (7), Archiv-Test, `LieutenantRunTests` (Bot, 2 Läufe) |

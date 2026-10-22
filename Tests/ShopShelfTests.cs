@@ -61,6 +61,7 @@ public class ShopShelfTests
         // The character shelf holds each character's own (the Witch's written for her, WitchPoolTests).
         var character = FinalCards.CharacterPool(act).Concat(Converter.Witch.WitchCards.RewardPool(act))
             .Concat(Converter.Apprentice.ApprenticeCards.RewardPool(act))
+            .Concat(Converter.Lieutenant.LieutenantCards.RewardPool(act))
             .Select(c => c.Id).ToHashSet();
 
         Assert.NotEmpty(Offered(act, ShopRelics.GeneralCardShelf));
@@ -77,9 +78,11 @@ public class ShopShelfTests
         // Each character's own stock (the Witch's written for her, WitchPoolTests).
         var shop = FinalRelics.Pool(Pool.Shop).Concat(FinalRelics.Pool(Pool.Shop, Eligibility.HedgeWitch))
             .Concat(FinalRelics.Pool(Pool.Shop, Eligibility.Apprentice))
+            .Concat(FinalRelics.Pool(Pool.Shop, Eligibility.Lieutenant))
             .Select(r => r.Id).ToHashSet();
         var normal = FinalRelics.Pool(Pool.Normal).Concat(FinalRelics.Pool(Pool.Normal, Eligibility.HedgeWitch))
             .Concat(FinalRelics.Pool(Pool.Normal, Eligibility.Apprentice))
+            .Concat(FinalRelics.Pool(Pool.Normal, Eligibility.Lieutenant))
             .Select(r => r.Id).ToHashSet();
 
         Assert.NotEmpty(Offered(act, ShopRelics.ShopRelicShelf));

@@ -119,6 +119,11 @@ public static class ShopTemplate
         var apprentice = Cards(pools, pools.ApprenticeCharacterCards, apprenticeDice, depth: 10, forCharacter: Apprentice.ApprenticeCharacter.Id);
         var apprenticeShopRelics = Relics(Own(pools.ApprenticeShopRelicStock), apprenticeDice, depth: int.MaxValue, Apprentice.ApprenticeCharacter.Id);
         var apprenticeNormalRelics = Relics(Own(pools.ApprenticeNormalRelicStock), apprenticeDice, depth: int.MaxValue, Apprentice.ApprenticeCharacter.Id);
+        // …and hers.
+        var lieutenantDice = ConversionPools.LieutenantDice($"shop:act{pools.Act}");
+        var lieutenant = Cards(pools, pools.LieutenantCharacterCards, lieutenantDice, depth: 10, forCharacter: Lieutenant.LieutenantCharacter.Id);
+        var lieutenantShopRelics = Relics(Own(pools.LieutenantShopRelicStock), lieutenantDice, depth: int.MaxValue, Lieutenant.LieutenantCharacter.Id);
+        var lieutenantNormalRelics = Relics(Own(pools.LieutenantNormalRelicStock), lieutenantDice, depth: int.MaxValue, Lieutenant.LieutenantCharacter.Id);
 
         // FOUR SHELVES rather than one bag, and every entry says what it is. A relic that makes "one Normal
         // Relic" cheaper, or adds a slot to the normal relic shelf, or replaces the unsold cards, finds
@@ -131,9 +136,11 @@ public static class ShopTemplate
             Stock:
             [
                 new ShopStockGroup(ShopRelics.GeneralCardShelf, general, 3),
-                new ShopStockGroup(ShopRelics.CharacterCardShelf, [.. character, .. witch, .. apprentice], 4),
-                new ShopStockGroup(ShopRelics.ShopRelicShelf, [.. shopRelics, .. witchShopRelics, .. apprenticeShopRelics], 2, [ShopRelics.ShopRelic]),
-                new ShopStockGroup(ShopRelics.NormalRelicShelf, [.. normalRelics, .. witchNormalRelics, .. apprenticeNormalRelics], 2,
+                new ShopStockGroup(ShopRelics.CharacterCardShelf, [.. character, .. witch, .. apprentice, .. lieutenant], 4),
+                new ShopStockGroup(ShopRelics.ShopRelicShelf,
+                    [.. shopRelics, .. witchShopRelics, .. apprenticeShopRelics, .. lieutenantShopRelics], 2, [ShopRelics.ShopRelic]),
+                new ShopStockGroup(ShopRelics.NormalRelicShelf,
+                    [.. normalRelics, .. witchNormalRelics, .. apprenticeNormalRelics, .. lieutenantNormalRelics], 2,
                     [ShopRelics.NormalRelic]),
             ]);
     }

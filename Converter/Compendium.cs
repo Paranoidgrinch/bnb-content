@@ -250,8 +250,32 @@ public static class Compendium
             "With 1 Gust he draws six, keeps the best five and discards one."),
     ];
 
+    // ── the Lieutenant (lieutenant_master.md §2) ───────────────────────────────────────────────────────────
+    public static readonly IReadOnlyList<Entry> LieutenantEntries =
+    [
+        new("authority", "Authority",
+            "What the Lieutenant earns by keeping her word: each kept Order or Challenge gives 1 (some give 2). Cards spend it. She holds at most 6, it does not fade, and it is gone when the fight ends.",
+            "She keeps First Orders: 1 Authority. Signal spends it for 1 Energy.",
+            Concept: true),
+        new("order", "Order",
+            "A promise about her own actions, shown on her as a chip: what it asks, by when, and what it pays. She holds one at a time (two with Chain of Command); a new one replaces the old without failing it. The card that issues it never counts toward it.",
+            "First Orders: play a Deed later this turn. First Orders and then Watch Cut keeps it; ending the turn without a Deed fails it.",
+            Concept: true),
+        new("challenge", "Challenge",
+            "A promise about one enemy, shown on that enemy. Most must be kept before it acts. She has one Challenge at a time; a new one withdraws the old. If the enemy falls first, the target is lost — not a failure.",
+            "Marked Man: hit it with Deeds twice more before it acts. Pike Butt's two hits keep it.",
+            Concept: true),
+        new("open_guard", "Open Guard",
+            "Exposure she takes on purpose. The next enemy Attack hit on her deals 2 more per stack, before Block, and spends all of it. Unused, it lapses at the start of her turn. It is not a debuff: nothing cleanses it.",
+            "With 2 Open Guard, an attack of 6 hits her for 10; behind 10 Block it costs her nothing."),
+        new("spend_strength", "Spending Strength",
+            "Some of her cards spend Strength — only Strength she really has. What is spent is gone, and hits after it in the same card are weaker.",
+            "Heave at 3 Strength: 8 + 3, then spend 2 for 8 + 1.",
+            Concept: true),
+    ];
+
     public static IReadOnlyDictionary<string, string> Extra() =>
-        Entries.Concat(ApprenticeEntries).SelectMany(e => new[]
+        Entries.Concat(ApprenticeEntries).Concat(LieutenantEntries).SelectMany(e => new[]
             {
                 KeyValuePair.Create($"compendium:{e.Id}", e.Name),
                 KeyValuePair.Create($"compendium.plain:{e.Id}", e.Plain),

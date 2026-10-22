@@ -128,9 +128,11 @@ public class EliteRelicTests
 
         var shopOnly = FinalRelics.Pool(Pool.Shop).Concat(FinalRelics.Pool(Pool.Shop, Eligibility.HedgeWitch))
             .Concat(FinalRelics.Pool(Pool.Shop, Eligibility.Apprentice))
+            .Concat(FinalRelics.Pool(Pool.Shop, Eligibility.Lieutenant))
             .Select(r => r.Id).ToHashSet();
         var normal = FinalRelics.Pool(Pool.Normal).Concat(FinalRelics.Pool(Pool.Normal, Eligibility.HedgeWitch))
             .Concat(FinalRelics.Pool(Pool.Normal, Eligibility.Apprentice))
+            .Concat(FinalRelics.Pool(Pool.Normal, Eligibility.Lieutenant))
             .Select(r => r.Id).ToHashSet();
         foreach (var (id, chest) in chests)
         {

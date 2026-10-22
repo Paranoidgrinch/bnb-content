@@ -39,6 +39,10 @@ public sealed class ConversionPools
     public required IReadOnlyList<Cards.CardAuthoring.BnbCard> ApprenticeRewardCards { get; init; }
     public required IReadOnlyList<Cards.CardAuthoring.BnbCard> ApprenticeCharacterCards { get; init; }
 
+    // …and THE LIEUTENANT'S, after his.
+    public required IReadOnlyList<Cards.CardAuthoring.BnbCard> LieutenantRewardCards { get; init; }
+    public required IReadOnlyList<Cards.CardAuthoring.BnbCard> LieutenantCharacterCards { get; init; }
+
     public const string BureaucratId = "bureaucrat";
 
     // A stall's requirement for a relic that is one character's own; null for one everybody may have.
@@ -63,6 +67,8 @@ public sealed class ConversionPools
     }
     // His own dice, apart from hers and the build's: nothing either of them is dealt moves because he exists.
     public static Random ApprenticeDice(string where) => WitchDice("apprentice:" + where);
+    // Hers, apart from all three.
+    public static Random LieutenantDice(string where) => WitchDice("lieutenant:" + where);
 
     public static string For(string characterId) => CharacterContent.ForPrefix + characterId;
     public required IReadOnlyList<BnbRelic> ShopRelicStock { get; init; }
@@ -76,6 +82,10 @@ public sealed class ConversionPools
     public required IReadOnlyList<BnbRelic> ApprenticeShopRelicStock { get; init; }
     public required IReadOnlyList<BnbRelic> ApprenticeNormalRelicStock { get; init; }
 
+    // Her relic stocks: the general ones and her own (Eligibility.Lieutenant).
+    public required IReadOnlyList<BnbRelic> LieutenantShopRelicStock { get; init; }
+    public required IReadOnlyList<BnbRelic> LieutenantNormalRelicStock { get; init; }
+
     public static ConversionPools Build(int act) => new()
     {
         Act = act,
@@ -86,6 +96,8 @@ public sealed class ConversionPools
         WitchCharacterCards = Witch.WitchCards.RewardPool(act),
         ApprenticeRewardCards = [.. Apprentice.ApprenticeCards.RewardPool(act), .. Cards.FinalCards.GeneralPool(act)],
         ApprenticeCharacterCards = Apprentice.ApprenticeCards.RewardPool(act),
+        LieutenantRewardCards = [.. Lieutenant.LieutenantCards.RewardPool(act), .. Cards.FinalCards.GeneralPool(act)],
+        LieutenantCharacterCards = Lieutenant.LieutenantCards.RewardPool(act),
         // The final relic pools, gated by who is being played. Neither can hold an Event or a Boss relic —
         // those are separate pools by construction (RelicAuthoring.Pool), which is how §2.5/§2.6 keeps them
         // out of a shop rather than by a filter that could be forgotten.
@@ -95,6 +107,8 @@ public sealed class ConversionPools
         WitchNormalRelicStock = FinalRelics.Pool(Pool.Normal, Eligibility.HedgeWitch),
         ApprenticeShopRelicStock = FinalRelics.Pool(Pool.Shop, Eligibility.Apprentice),
         ApprenticeNormalRelicStock = FinalRelics.Pool(Pool.Normal, Eligibility.Apprentice),
+        LieutenantShopRelicStock = FinalRelics.Pool(Pool.Shop, Eligibility.Lieutenant),
+        LieutenantNormalRelicStock = FinalRelics.Pool(Pool.Normal, Eligibility.Lieutenant),
     };
 
     // One final relic's grant: the relic, plus whatever it does the moment it is taken. The engine has no
@@ -126,6 +140,7 @@ public sealed class ConversionPools
             [
                 .. CurveEntries(RewardCards, BureaucratId), .. CurveEntries(WitchRewardCards, Witch.WitchCharacter.Id),
                 .. CurveEntries(ApprenticeRewardCards, Apprentice.ApprenticeCharacter.Id),
+                .. CurveEntries(LieutenantRewardCards, Lieutenant.LieutenantCharacter.Id),
             ]),
             count) { UpgradeChancePercent = UpgradedShare };
 
@@ -216,6 +231,7 @@ public sealed class ConversionPools
             [
                 .. Of(RewardCards, BureaucratId), .. Of(WitchRewardCards, Witch.WitchCharacter.Id),
                 .. Of(ApprenticeRewardCards, Apprentice.ApprenticeCharacter.Id),
+                .. Of(LieutenantRewardCards, Lieutenant.LieutenantCharacter.Id),
             ]),
             count) { UpgradeChancePercent = UpgradedShare };
     }
@@ -338,6 +354,7 @@ public sealed class ConversionPools
             .. RelicEntries(where, mix, NormalRelicStock, BureaucratId),
             .. RelicEntries(where, mix, WitchNormalRelicStock, Witch.WitchCharacter.Id),
             .. RelicEntries(where, mix, ApprenticeNormalRelicStock, Apprentice.ApprenticeCharacter.Id),
+            .. RelicEntries(where, mix, LieutenantNormalRelicStock, Lieutenant.LieutenantCharacter.Id),
         ]), 1);
     }
 
@@ -369,6 +386,6 @@ public sealed class ConversionPools
     // Her cards come after his: what is not a character's own is filtered out before the draw (CharacterContent),
     // so each draws from the general cards and its own.
     public RunPool<CardDefinitionId> TransformPool() => new(
-        [.. RewardCards.Concat(WitchCharacterCards).Concat(ApprenticeCharacterCards)
+        [.. RewardCards.Concat(WitchCharacterCards).Concat(ApprenticeCharacterCards).Concat(LieutenantCharacterCards)
             .Select(c => new RunPool<CardDefinitionId>.Entry(new CardDefinitionId(c.Id), 1))]);
 }

@@ -239,13 +239,16 @@ public class ActThreeEventLiveTests
 
         // Four cards, three relics, one removal and a way out — and nothing may be bought twice.
         var stock = FightProbe.Game.Events["the_conceptual_toll"].Situations["stock"].Choices;
-        // (His four card stalls, and beside them hers and the Apprentice's, each shown to its own character.)
+        // (His four card stalls, and beside them the Witch's, the Apprentice's and the Lieutenant's, each shown to its
+        // own character.)
         var his = stock.Where(c => !c.Id.StartsWith("witch-", StringComparison.Ordinal)
-            && !c.Id.StartsWith("apprentice-", StringComparison.Ordinal)).ToList();
+            && !c.Id.StartsWith("apprentice-", StringComparison.Ordinal)
+            && !c.Id.StartsWith("lieutenant-", StringComparison.Ordinal)).ToList();
         Assert.Equal(9, his.Count);
         Assert.Equal(8, his.Count(c => c.Requirement is not null));
         Assert.Equal(4, stock.Count(c => c.Id.StartsWith("witch-card-", StringComparison.Ordinal)));
         Assert.Equal(4, stock.Count(c => c.Id.StartsWith("apprentice-card-", StringComparison.Ordinal)));
+        Assert.Equal(4, stock.Count(c => c.Id.StartsWith("lieutenant-card-", StringComparison.Ordinal)));
     }
 
     [Fact]
@@ -316,11 +319,14 @@ public class ActThreeEventLiveTests
     {
         var stock = FightProbe.Game.Events["the_travelling_chandler"].Situations["stock"].Choices;
 
-        // three cards, two relics, and a way out — for each character: his three stalls, hers and the Apprentice's
+        // three cards, two relics, and a way out — for each character: his three stalls, the Witch's, the
+        // Apprentice's and the Lieutenant's
         Assert.Equal(6, stock.Count(c => !c.Id.StartsWith("witch-", StringComparison.Ordinal)
-            && !c.Id.StartsWith("apprentice-", StringComparison.Ordinal)));
+            && !c.Id.StartsWith("apprentice-", StringComparison.Ordinal)
+            && !c.Id.StartsWith("lieutenant-", StringComparison.Ordinal)));
         Assert.Equal(3, stock.Count(c => c.Id.StartsWith("witch-card-", StringComparison.Ordinal)));
         Assert.Equal(3, stock.Count(c => c.Id.StartsWith("apprentice-card-", StringComparison.Ordinal)));
+        Assert.Equal(3, stock.Count(c => c.Id.StartsWith("lieutenant-card-", StringComparison.Ordinal)));
         var browse = FightProbe.Game.Events["the_travelling_chandler"].Situations["start"].Choices
             .Single(c => c.Id == "browse");
         Assert.Null(browse.Costs);

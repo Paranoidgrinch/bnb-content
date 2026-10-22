@@ -352,6 +352,15 @@ public static class ActOneEvents
                 [new AddCardToDeckRunEffect(new CardDefinitionId(card.Id))],
                 only: RunExpr.CharacterIs(Apprentice.ApprenticeCharacter.Id)));
         }
+        // …and the Lieutenant's five, from her pool and her own dice.
+        var lieutenantDice = ConversionPools.LieutenantDice("licensed_vendor");
+        foreach (var (card, index) in pools.LieutenantRewardCards.OrderBy(_ => lieutenantDice.Next()).Take(5).Select((c, i) => (c, i)))
+        {
+            var price = cardPrices.GetValueOrDefault(card.Rarity, 85);
+            stock.Add(Stall($"lieutenant-card-{index}", $"{card.Name} — {price} Gold", price,
+                [new AddCardToDeckRunEffect(new CardDefinitionId(card.Id))],
+                only: RunExpr.CharacterIs(Lieutenant.LieutenantCharacter.Id)));
+        }
         foreach (var (relic, index) in relics.Select((r, i) => (r, i)))
         {
             var price = ShopTemplate.RelicPrice(relic);

@@ -34,6 +34,7 @@ public class ActSeamTests
 
     private static int CardAct(string cardId) =>
         Converter.Cards.FinalCards.All().Concat(Converter.Witch.WitchCards.All()).Concat(Converter.Apprentice.ApprenticeCards.All())
+            .Concat(Converter.Lieutenant.LieutenantCards.All())
             .First(c => c.Id == cardId).Act;
 
     // The card ids a role's victory reward can hand out in this act.
