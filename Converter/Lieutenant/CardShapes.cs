@@ -58,6 +58,14 @@ internal static class CardShapes
     public static CombatNodeModel PayStrength(int cost) =>
         Seq(Remove(Strength, cost, You), Apply(LieutenantKeywords.StrengthPulse, cost, You));
 
+    // "Your next N Deeds this turn cost … less": the status keeps count, and the hand is priced at once.
+    public static CombatNodeModel Discount(string status, string tag, int off, int uses) => Seq(
+        Apply(status, uses, You),
+        CombatNodeModel.ForEachCard(You, CardZone.Hand,
+            new CombatNodeModel("setCardInstanceMarkCounter", You, CombatAmountSpec.FromConst(-off),
+                Card: new CombatCardSpec("iterated"), CounterId: StandardCombatIds.CardCostDeltaCounter.value),
+            tag: tag));
+
     // "If the target is Challenged" — it carries any of the Challenges.
     public static CombatConditionSpec Challenged(string on = Target) =>
         new("compare", You, ValueKind: "counter", Op: ComparisonOperator.Greater, Right: 0, Id: Scratch);

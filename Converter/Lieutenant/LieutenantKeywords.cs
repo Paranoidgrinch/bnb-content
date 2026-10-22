@@ -61,6 +61,7 @@ public static class LieutenantKeywords
         Status(StrengthPulse, "Strength spent", StatusPolarity.Neutral, "You have just spent this much Strength."),
         Status(AuthorityPulse, "Authority spent", StatusPolarity.Neutral, "You have just spent this much Authority."),
         .. Obligations.All(),
+        .. LieutenantRules.All(),
     ];
 
     // +2 a stack to the first enemy Attack hit of an enemy action, before Block (once per action is the engine's

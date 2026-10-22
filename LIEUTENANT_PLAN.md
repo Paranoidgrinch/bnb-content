@@ -77,10 +77,46 @@ Status-Chips mit Text. Golden-Set bekommt Lieutenant-Läufe, `golden.sh` und `be
 
 ## 4 Upgrade-Tabelle
 
-(wird je Block nachgetragen)
+Kanon-Upgrade → gebautes Upgrade; Facette nach §1 (— = nur ×1,5).
+
+**Starter** (Basis wie Kanon)
+
+| Karte | Kanon + | gebaut + | Facette |
+|---|---|---|---|
+| Watch Cut | 8 Schaden, +2 Challenge | 9 Schaden, +3 Challenge | — |
+| Buckler Up | 7 Block, +2 Open Guard | 8 Block, +3 Open Guard | — |
+| First Orders | 7 Block | 6 Block; Erfolg auch 3 Block | O |
+| New Stripes | +4 Block | +4 Block | G |
+
+**Commons**
+
+| Karte | Kanon + | gebaut + | Facette |
+|---|---|---|---|
+| Pike Butt | 5 × 2 | 4 × 3 | B |
+| Cut the Strap | 10 Block weg, 8 Schaden | 12 Block weg, 9 Schaden | — |
+| Heel Turn | 4 / 4 × 2 | Retain, 4 / 4 × 2 | I |
+| Clear the Square | 11 an alle | 12 an alle | — |
+| Clenched Jaw | 9 Block | 9 Block | — |
+| Buckle | 5 Block | 6 Block | — |
+| Roll Call | zieh 2, wirf 1 ab | zieh 2, wirf 1 ab | (Ziehen ist ihre Identität) |
+| Gatehouse | 11 Block | 12 Block | — |
+| Last Bell | 10 Schaden | 10 Schaden; Erfolg auch 4 Block | O |
+| Scabbard | 6 Block | 6 Block | — |
+| Marked Man | 7 Schaden | 8 Schaden | — |
+| Braced Pike | 10 Block | 11 Block | — |
+| Arrest | 9 Schaden | 9 Schaden | — |
+| Witness | 6 Block | 6 Block | — |
+| Signal | + zieh 1 beim Zahlen | Retain, 3 Block | I (U4: kein Ziehen) |
+| Second Rank | 9 Block | 9 Block | — |
+| Whetstone | 2 Strength | 1 Strength; nach einer Strength-Zahlung +1 und zieh 1 | C (2 Strength wäre ×2) |
+| Armguard | 10 Block, 5 Ward Wax | 12 Block, 4 Ward Wax | — |
+| Headlong | nur 1 Open Guard | nur 1 Open Guard | N |
+| Split Lip | 10 Schaden | 11 Schaden | — |
 
 ## 5 Stand
 
 | Schritt | Stand |
 |---|---|
 | S1 Plan | ✔ |
+| S2/S3 Start, Authority, Open Guard, Orders, Challenges | ✔ `LieutenantTests` (11) |
+| S4 Commons | ✔ `LieutenantCardTests` (15) |

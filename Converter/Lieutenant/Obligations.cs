@@ -64,6 +64,8 @@ public sealed record OrderSpec(string Id, string Name, OrderKind Kind, string Co
 public enum ChallengeKind
 {
     Hits,              // hit it with Deeds N times before it acts
+    WithstandAttack,   // its next Attack action, within its next two actions, takes no HP from her
+    Kill,              // down it by the end of her next turn
 }
 
 public sealed record ChallengeSpec(string Id, string Name, ChallengeKind Kind, string Condition, Reward Reward, int N = 1)
@@ -110,6 +112,9 @@ public static class Obligations
     // Chain of Command (rare): a second Order place. The id is the Rite's; the Rite lives with the rares.
     public const string ChainOfCommand = "lt_chain_of_command";
 
+    // Witness (common): the next Deed hit on a Challenged enemy this turn counts twice.
+    public const string Witness = "lt_witness";
+
     // A promise's own counters. The issuing CARD clears them before it lays the promise down (CardShapes.Issue):
     // the events of one action are heard together, so a status trigger clearing them on issue would race the
     // arming that the same action's close sets off.
@@ -144,7 +149,7 @@ public static class Obligations
         // An enemy phase is counted from the end of her turn to the start of the next one.
         var turnEnded = TE.Seq(TE.Set(TE.Self, PhaseHits, 0), TE.Set(TE.Self, PhaseHp, 0));
         var struck = D.If(ByAnEnemy<DamageReceivedTriggeredEffectContext>(),
-            D.Seq(D.Add(D.Event, PhaseHits, D.C(1)), D.Add(D.Event, PhaseHp, D.Amount)));
+            D.All(D.Add(D.Event, PhaseHits, D.C(1)), D.Add(D.Event, PhaseHp, D.Amount)));
 
         // Anything applied anywhere: is it a promise being issued?
         var issued = SA.All(
@@ -334,42 +339,112 @@ public static class Obligations
 
     private static StatusData ChallengeStatus(ChallengeSpec challenge)
     {
-        var bearer = BearerOf(challenge.Id);
-        var fallen = BearerOf(challenge.Id, fallen: true);
+        var id = challenge.Id;
+        var bearer = BearerOf(id);
+        var fallen = BearerOf(id, fallen: true);
 
-        // Armed once the issuing action has closed — any action closing after the Challenge was laid.
+        // ⚠ ONE ACTION'S EVENTS ARE HEARD TOGETHER, their programs stepping side by side: two hits of one card
+        // both see the count reached, and a judgement made beside the hit that feeds it reads the count before it
+        // grew. So a hit only COUNTS (as the first step of its program), and the promise is judged once, when an
+        // action closes — the single moment no other part of that action is still being heard. The same close
+        // arms a promise laid during the action.
+        var armed = AR.Is(AR.Counter(fallen, Armed(id)), 1);
         var arm = AR.If(AR.Is(AR.Count(CombatantTargetSelectors.WithStatus(CombatantTargetSelectors.AllCombatants,
-                new StatusDefinitionId(challenge.Id))), 1),
-            AR.If(AR.Is(AR.Counter(bearer, Armed(challenge.Id)), 0), AR.Set(bearer, Armed(challenge.Id), 1)));
+                new StatusDefinitionId(id), includeFallen: true)), 1),
+            AR.If(armed,
+                challenge.Kind == ChallengeKind.Hits ? JudgeHits(challenge) : AR.Nothing,
+                AR.Seq(AR.Set(fallen, Armed(id), 1), AR.Set(fallen, ArmedRound(id), AR.Round))));
 
-        var armed = D.Is(D.Counter(D.Event, Armed(challenge.Id)), 1);
-        var deedHit = D.And(armed, D.And(D.CardTagged(Cards.CardAuthoring.DeedTag), D.Wears(D.Self, Command)));
-        var hit = challenge.Kind switch
+        var triggers = new List<StatusTriggerData> { On(TriggerEvent.ActionResolved, arm, StatusTriggerScope.Anywhere) };
+
+        switch (challenge.Kind)
         {
-            ChallengeKind.Hits => D.If(deedHit, D.Seq(
-                D.Add(D.Event, Progress(challenge.Id), D.C(1)),
-                D.If(D.AtLeast(D.Counter(D.Event, Progress(challenge.Id)), challenge.N),
-                    Won<DamageReceivedTriggeredEffectContext>(challenge, D.Event)))),
-            _ => D.Nothing,
-        };
+            case ChallengeKind.Hits:
+                triggers.Add(On(TriggerEvent.DamageTaken, CountHits(challenge)));
+                triggers.Add(On(TriggerEvent.ActionStarting, BeforeItActs(challenge)));
+                break;
+            case ChallengeKind.WithstandAttack:
+                triggers.AddRange(AttackResponse(challenge));
+                break;
+            case ChallengeKind.Kill:
+                // By the end of her NEXT turn: a turn of hers that ends in a later round than the arming.
+                triggers.Add(On(TriggerEvent.TurnEnded, TE.If(
+                    TE.And(TE.Wears(TE.Self, Command), TE.And(
+                        TE.Is(TE.Counter(bearer, Armed(id)), 1),
+                        TE.Above(TE.Round, TE.Counter(bearer, ArmedRound(id))))),
+                    Ended<TurnEndedTriggeredEffectContext>(challenge, bearer, ChallengeFailed)), StatusTriggerScope.Anywhere));
+                break;
+        }
 
-        // Before it acts: the deadline (§2.4).
-        var deadline = AS.If(AS.Is(AS.Counter(bearer, Armed(challenge.Id)), 1),
-            Ended<ActionStartingTriggeredEffectContext>(challenge, bearer, ChallengeFailed));
+        // Down: a Kill Challenge is kept; any other has lost its target (§2.4), which is not a failure — except a
+        // count reached by the very hit that downed it, which the close of that action judges (JudgeHits).
+        if (challenge.Kind != ChallengeKind.Hits)
+            triggers.Add(On(TriggerEvent.Downed, challenge.Kind == ChallengeKind.Kill
+                ? DN.If(DN.Is(DN.Counter(fallen, Armed(id)), 1),
+                    Won<CombatantDownedTriggeredEffectContext>(challenge, fallen),
+                    Ended<CombatantDownedTriggeredEffectContext>(challenge, fallen, ChallengeLost))
+                : Ended<CombatantDownedTriggeredEffectContext>(challenge, fallen, ChallengeLost)));
 
-        // Down before the promise was kept: the target is lost (§2.4), which is not a failure.
-        var lost = Ended<CombatantDownedTriggeredEffectContext>(challenge, fallen, ChallengeLost);
-
-        return Status(challenge.Id, "Challenge: " + challenge.Name, StatusPolarity.Neutral,
+        return Status(id, "Challenge: " + challenge.Name, StatusPolarity.Neutral,
             $"The Lieutenant's Challenge: {challenge.Condition}. Success: {challenge.Reward.Text}.",
-            triggers:
-            [
-                On(TriggerEvent.ActionResolved, arm, StatusTriggerScope.Anywhere),
-                On(TriggerEvent.DamageTaken, hit),
-                On(TriggerEvent.ActionStarting, deadline),
-                On(TriggerEvent.Downed, lost),
-            ],
-            tags: [ChallengeTag]);
+            triggers, tags: [ChallengeTag]);
+    }
+
+    // A Deed hit of hers on the bearer counts — two with Witness (which it then spends). Counting only; the close
+    // of the action judges.
+    private static IEffectNode<DamageReceivedTriggeredEffectContext> CountHits(ChallengeSpec challenge)
+    {
+        var id = challenge.Id;
+        var deedHit = D.And(D.Is(D.Counter(D.Event, Armed(id)), 1),
+            D.And(D.CardTagged(Cards.CardAuthoring.DeedTag), D.Wears(D.Self, Command)));
+        return D.If(deedHit, D.All(
+            D.Add(D.Event, Progress(id), D.Plus(D.C(1), D.Min(D.C(1), D.Stacks(D.Self, Witness)))),
+            D.Remove(D.Self, Witness)));
+    }
+
+    private static IEffectNode<ActionResolvedTriggeredEffectContext> JudgeHits(ChallengeSpec challenge)
+    {
+        var fallen = BearerOf(challenge.Id, fallen: true);
+        return AR.If(AR.AtLeast(AR.Counter(fallen, Progress(challenge.Id)), challenge.N),
+            Won<ActionResolvedTriggeredEffectContext>(challenge, fallen),
+            AR.If(AR.Not(AR.Alive(fallen)), Ended<ActionResolvedTriggeredEffectContext>(challenge, fallen, ChallengeLost)));
+    }
+
+    // "Before its next action" (§2.4): the bearer about to act, the promise unkept.
+    private static IEffectNode<ActionStartingTriggeredEffectContext> BeforeItActs(ChallengeSpec challenge)
+    {
+        var bearer = BearerOf(challenge.Id);
+        return AS.If(AS.Is(AS.Counter(bearer, Armed(challenge.Id)), 1),
+            Ended<ActionStartingTriggeredEffectContext>(challenge, bearer, ChallengeFailed));
+    }
+
+    // A promise about how the bearer's next Attack goes (§2.4): its next action that strikes her, within its next
+    // two actions. Before each of its actions her HP lost this phase is written on it; when the action closes, an
+    // action that struck her is judged, and two that did not are a failure.
+    private static IEnumerable<StatusTriggerData> AttackResponse(ChallengeSpec challenge)
+    {
+        var id = challenge.Id;
+        var bearer = BearerOf(id);
+        var armed = AR.Is(AR.Counter(bearer, Armed(id)), 1);
+        // Her health itself, not a count kept by another rule: that count is written beside this judgement.
+        var before = AS.If(AS.Is(AS.Counter(bearer, Armed(id)), 1),
+            AS.Set(bearer, Mark(id, "hp"), new CombatantCurrentHealthExpression<ActionStartingTriggeredEffectContext>(Her)));
+        var tookNothing = AR.AtLeast(AR.Minus(new CombatantCurrentHealthExpression<ActionResolvedTriggeredEffectContext>(Her),
+            AR.Counter(bearer, Mark(id, "hp"))), 0);
+        var judged = challenge.Kind switch
+        {
+            ChallengeKind.WithstandAttack => AR.If(tookNothing,
+                Won<ActionResolvedTriggeredEffectContext>(challenge, bearer),
+                Ended<ActionResolvedTriggeredEffectContext>(challenge, bearer, ChallengeFailed)),
+            _ => AR.Nothing,
+        };
+        var after = AR.If(armed, AR.If(new ActionDealtDamageExpression<ActionResolvedTriggeredEffectContext>(), judged,
+            AR.Seq(
+                AR.Add(bearer, Progress(id), AR.C(1)),
+                AR.If(AR.AtLeast(AR.Counter(bearer, Progress(id)), 2),
+                    Ended<ActionResolvedTriggeredEffectContext>(challenge, bearer, ChallengeFailed)))));
+        yield return On(TriggerEvent.ActionStarting, before);
+        yield return On(TriggerEvent.ActionResolved, after);
     }
 
     // "Is the target Challenged?" — for card programs: 1 when it carries any Challenge.
