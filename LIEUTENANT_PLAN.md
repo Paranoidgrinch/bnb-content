@@ -24,7 +24,7 @@ haben sollten die aus dem design dokument übertrumpfen“ — in kleinen Commit
 | L11 | Ereignisse | Erfolg, Fehlschlag, Zahlungen werden mit `announceRule` angesagt (`lt_order_fulfilled`, `lt_order_failed`, `lt_challenge_fulfilled`, `lt_challenge_lost`, `lt_strength_paid`, `lt_authority_paid`); Riten und Relikte hören darauf. Jede Verpflichtung endet genau einmal |
 | L12 | General-Pool | bleibt unverändert (Kanon §6); die Lieutenant braucht keine Rolle je General-Karte (keine Zutat, kein Stab-Teil) |
 | L13 | Spielbar ab Start | ja, im Neuer-Lauf-Panel wie die anderen drei |
-| L14 | Mehrspieler | Belohnungen einer Challenge gehen an den Helden, der sie gestellt hat (er trägt den Charakter-Marker); Treffer anderer Helden zählen nicht |
+| L14 | Mehrspieler | Nur Treffer und Karten der Lieutenant zählen für ihre Versprechen; Belohnungen gehen an sie. Spielen zwei Lieutenants am selben Tisch, liest jede Regel die erste von beiden (gebaut als `FirstTarget`) — bewusst einfach, bis Mehrspieler das braucht |
 | L15 | Engine | Core nur, wo ein Baustein fehlt; alles Lieutenant-Eigene bleibt Inhalt (`Converter/Lieutenant/`) |
 
 ## 1 Upgrade-Regeln (gelten statt der Kanon-Upgrades)
@@ -226,3 +226,23 @@ Abweichungen beim Bauen:
 | S6 Rares | ✔ `LieutenantRareTests` (27); Core: `eventBlockedAmount` (RogueDeck-Core a703df1) |
 | S7 Relikte | ✔ `LieutenantRelicTests` (19) |
 | S8 Pools, Shop, Märkte, Archiv, Kompendium, ART_SLOTS | ✔ `LieutenantPoolTests` (7), Archiv-Test, `LieutenantRunTests` (Bot, 2 Läufe) |
+| S9 bnb-godot | ✔ `golden.sh` (4 + 2 Lieutenant-Läufe), `bench.sh`, `smoke-mp.sh` (vierter Platz); `--smoke-screens --character=lieutenant`: 56 Bildschirme, 0 Fehler |
+
+## 6 Was beim Bauen über die Engine gelernt wurde
+
+- **Die Ereignisse einer Aktion werden nebeneinander gehört.** Zwei Treffer einer Karte sehen beide „Zahl erreicht“;
+  eine Beurteilung neben dem Zähler liest ihn, bevor er wächst. Darum zählen Treffer nur, und beurteilt wird, wenn die
+  Aktion schließt (`ActionResolved`). `ClaimOnceThisAction` hilft in Treffer-Triggern nicht (dort ist kein Scope offen).
+- **Eine Karte wird mitten im Programm gehört**: jeder kausale Schritt lässt die Ereignisse davor durch, auch ihr
+  eigenes `CardPlayed`. Regeln „bis zur nächsten Deed“ enden darum beim Schließen ihrer Aktion.
+- **Eine fehlschlagende Bedingung kostet einen Zyklus.** Ein Status, der jede Status-Anwendung hört und 35 Fragen
+  stellt, sprengte im Akt IV das Limit von 1024 Zyklen. Fragen als eine balancierte Wenn-sonst-Kette (`N.FirstOf`).
+- **Das Spieldokument ist JSON mit Tiefe 64**: lange Ketten balanciert bauen (`N.AnyOf`).
+- **Ein Status hört seine eigene Anwendung nicht**; was eine Karte beim Ausstellen tun muss, tut die Karte selbst
+  (Zähler zurücksetzen, Hand bepreisen).
+
+## 7 Offen
+
+- **Family-Bench / Balance**: nicht gemessen. Die Zahlen sind Entwurf (Kanon §9). Kein Family-Deck-File für sie.
+- **Bilder**: keine Platzhalter für ihre Karten, Relikte und Figur (wie beim Apprentice); ART_SLOTS listet sie.
+- **Tutorial**: keins für sie (wie beim Apprentice).
