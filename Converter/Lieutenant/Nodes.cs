@@ -110,6 +110,34 @@ internal static class Statuses
         new(trigger, JsonSerializer.SerializeToElement(
             TheOpeningHand.For(program, trigger), CombatJson.CreateOptions<TContext>()), scope);
 
+    // A draw trigger that means EVERY draw, not only the turn's opening hand (TheOpeningHand explains the default).
+    public static StatusTriggerData OnEveryDraw(IEffectNode<CardsDrawnTriggeredEffectContext> body) =>
+        new(nameof(TriggerEvent.CardsDrawn), JsonSerializer.SerializeToElement(
+            new EffectProgram<CardsDrawnTriggeredEffectContext>(body), CombatJson.CreateOptions<CardsDrawnTriggeredEffectContext>()));
+
+    // "Until your next Deed has resolved": a Deed played while the status stands marks it spent, and the close
+    // of that action takes it away. Not on the card-played event itself — a card's program can be heard mid-way
+    // (each causal step lets the events of the step before it through), so a status read by the Deed would be
+    // gone before the Deed reached it.
+    public static IReadOnlyList<StatusTriggerData> UntilNextDeedResolves(string id)
+    {
+        var spent = id + "_spent";
+        return
+        [
+            On(TriggerEvent.CardPlayed, N<CardPlayedTriggeredEffectContext>.If(
+                N<CardPlayedTriggeredEffectContext>.CardTagged(Cards.CardAuthoring.DeedTag),
+                N<CardPlayedTriggeredEffectContext>.Set(N<CardPlayedTriggeredEffectContext>.Self, spent, 1))),
+            On(TriggerEvent.ActionResolved, N<ActionResolvedTriggeredEffectContext>.If(
+                N<ActionResolvedTriggeredEffectContext>.Is(N<ActionResolvedTriggeredEffectContext>.Counter(N<ActionResolvedTriggeredEffectContext>.Self, spent), 1),
+                N<ActionResolvedTriggeredEffectContext>.Seq(
+                    N<ActionResolvedTriggeredEffectContext>.Set(N<ActionResolvedTriggeredEffectContext>.Self, spent, 0),
+                    N<ActionResolvedTriggeredEffectContext>.Remove(N<ActionResolvedTriggeredEffectContext>.Self, id)))),
+            On(TriggerEvent.TurnEnded, N<TurnEndedTriggeredEffectContext>.Seq(
+                N<TurnEndedTriggeredEffectContext>.Set(N<TurnEndedTriggeredEffectContext>.Self, spent, 0),
+                N<TurnEndedTriggeredEffectContext>.Remove(N<TurnEndedTriggeredEffectContext>.Self, id))),
+        ];
+    }
+
     public static StatusTriggerData On<TContext>(TriggerEvent trigger, IEffectNode<TContext> body,
         StatusTriggerScope scope = StatusTriggerScope.Bearer) where TContext : class =>
         Trigger(new EffectProgram<TContext>(body), trigger.ToString(), scope);

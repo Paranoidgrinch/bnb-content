@@ -30,6 +30,9 @@ public static class LieutenantKeywords
     public const string PhaseHits = "lt_phase_hits";
     public const string PhaseHp = "lt_phase_hp";
 
+    // Her health as each enemy action began — what that action took is read against it when it closes.
+    public const string HpBeforeAction = "lt_hp_before_action";
+
     // What Open Guard did to the hit that spent it: the HP that would not have been lost without it (§2.5),
     // for this hit and for the whole fight.
     public const string GuardExtra = "lt_guard_extra";

@@ -22,6 +22,7 @@ internal static class CardShapes
     public static CombatNodeModel Issue(ChallengeSpec challenge, string on = Target) =>
         If(new CombatConditionSpec("isAlive", on), Seq(
             Clear(challenge.Id, on), Reset(Obligations.Armed(challenge.Id), on), Reset(Obligations.Progress(challenge.Id), on),
+            Reset(Obligations.Grace(challenge.Id), on), Reset(Obligations.Remanded(challenge.Id), on),
             Apply(challenge.Id, 1, on)));
 
     private static CombatNodeModel Reset(string counter, string on) =>

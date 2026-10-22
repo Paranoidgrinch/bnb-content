@@ -113,6 +113,52 @@ Kanon-Upgrade → gebautes Upgrade; Facette nach §1 (— = nur ×1,5).
 | Headlong | nur 1 Open Guard | nur 1 Open Guard | N |
 | Split Lip | 10 Schaden | 11 Schaden | — |
 
+**Uncommons** (Akt II: Dispatch, Make an Example, Ultimatum, Remand, Stand Down, Overhand, Heave, Grip, Broken Pike,
+Recoil, Poise, Overreach; der Rest Akt I)
+
+| Karte | Kanon + | gebaut + | Facette |
+|---|---|---|---|
+| Against the Wall | 10 Block | 11 Block | — |
+| Double File | zieh 2, wirf 1 ab | zieh 1, 6 Block | — (U4) |
+| Mind the Gap | 11 Schaden | 12 Schaden | — |
+| Cadence | zieh 2, wirf 1 ab | zieh 2, wirf 1 ab | (Ziehen ist ihre Identität) |
+| No Excuses | 11 Schaden | 12 Schaden | — |
+| No Surrender | 8 Block | 8 Block | — |
+| Gauntlet | 10 Schaden | 11 Schaden | — |
+| On Your Feet | 11 Block | 12 Block | — |
+| Pursuit | zieh 2, wirf 1 ab | zieh 2, wirf 1 ab | (Ziehen ist ihre Identität) |
+| No Running | 12 Schaden | 13 Schaden | — |
+| Dare | 9 Block | 9 Block | — |
+| Second Blade | 6 × 2 | 7 × 2 | — |
+| Testimony | 9 Block | 9 Block | — |
+| Whistle | 5 Block | 5 Block | — |
+| Dispatch | 9 Block | 9 Block | — |
+| Make an Example | 18 Schaden | 20 Schaden | — |
+| Under the Colours (Rite) | kostet 0 | Erfolg gibt auch 3 Block | D (U5) |
+| Flank | 12 / 9 | 13 / 10 | — |
+| Ultimatum | 11 Schaden | 12 Schaden | — |
+| Remand | 10 Block | 11 Block | — |
+| Stand Down | 6 Block | 6 Block | — |
+| Arms Drill | 5 pro Treffer | 6 pro Treffer | — |
+| Overhand | 18 Schaden | 20 Schaden | — |
+| Heave | 10 pro Treffer | 12 pro Treffer | — |
+| Grip | 5 pro Strength, 3 ohne | 6 pro Strength, 3 ohne | — |
+| Shield Punch | 8 Schaden, 5 + Strength | 8 Schaden, 6 + Strength | — |
+| Scar (Rite) | kostet 0 | sofort 1 Strength | G (U5) |
+| Broken Pike | 16 / 9 | 18 / 10 | — |
+| Front Rank | 14 Schaden | 16 Schaden | — |
+| Recoil | 11 Block | 12 Block | — |
+| Ruckus | 4 an alle | 5 an alle | — |
+| Poise | 13 Block | 15 Block | — |
+| Overreach (Rite) | +6 | +6 | — |
+| Bloody Cobbles | 9 pro Treffer | 10 pro Treffer | — |
+| Broken Nose (Rite) | kostet 0 | sofort 1 Authority | G (U5) |
+
+Abweichungen vom Kanon beim Bauen: **Dispatch** bietet alles außer Workings aus dem Ablagestapel an (die Kartenwahl
+kennt nur ein Ausschluss-Tag; ihre Deeds sind genau das). **Poise**: „bis deine nächste Deed aufgelöst ist, bekommst du
+kein Open Guard“ (die Engine hört eine Karte mitten im Programm). **Flank**: der andere Gegner ist zufällig.
+**Make an Example / Broken Pike**: die Streuung ist Schaden ohne Strength (Status-Schaden), Block hält ihn auf.
+
 ## 5 Stand
 
 | Schritt | Stand |
@@ -120,3 +166,4 @@ Kanon-Upgrade → gebautes Upgrade; Facette nach §1 (— = nur ×1,5).
 | S1 Plan | ✔ |
 | S2/S3 Start, Authority, Open Guard, Orders, Challenges | ✔ `LieutenantTests` (11) |
 | S4 Commons | ✔ `LieutenantCardTests` (15) |
+| S5 Uncommons | ✔ `LieutenantUncommonTests` (24) |

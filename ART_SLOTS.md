@@ -2,7 +2,7 @@
 
 Generated: `dotnet run --project Converter -- --art-slots ART_SLOTS.md`. **Do not edit by hand.**
 
-**953 pictures**: 434 cards, 246 relics, 269 bodies
+**988 pictures**: 469 cards, 246 relics, 269 bodies
 (every enemy, elite and boss) and 4 the player can be. Every one of them is filled today by a PLACEHOLDER — a plate with the file's own
 name and the word placeholder on it, written by `bnb-godot/tools/make-card-art.py`,
 `make-relic-art.py` and `make-enemy-art.py`. A painted picture replaces one by being saved over it, so
@@ -641,7 +641,7 @@ Drawn like a body and facing RIGHT — the player stands on the left of the aren
 | `lieutenant` | The Lieutenant | New stripes on an old uniform, and always first through the door. |
 | `sorcerers_apprentice` | The Sorcerer's Apprentice | Knows every incantation, and not quite what happens when one is put after another. |
 
-## Cards — 434 pictures
+## Cards — 469 pictures
 
 No visual canon was ever written for the cards, so the row carries the card's own rules
 text instead of a brief. Act = the act that unlocks it; the starters, the Junk and the
@@ -1014,7 +1014,7 @@ cards a boss or a door hands over are never offered and have no act.
 | `ap_windblown_leaf` | Windblown Leaf | working | common | Put a card from your hand at the bottom of your draw pile, then draw 2 cards. Gain 1 Gust. Wand: Shape — Scatter: the next single-target damaging Speak hits ALL enemies at 60%. |
 | `ap_wrong_way_round` | The Wrong Way Round | working | uncommon | Draw 2 cards, then two wand cards trade places for free; if they did, gain 1 Gust. Wand: Order: the rest of the cast runs backwards, once; with 2 or more left to turn, its Exhaustion is 1 lower. |
 
-### Given in play — 122
+### Given in play — 157
 
 Handed over by a boss, a door or an event rather than offered; never in a reward pool.
 
@@ -1064,29 +1064,64 @@ Handed over by a boss, a door or an event rather than offered; never in a reward
 | `honey_spoon_action` | A Little Honey | Gain 2 Energy. Then end the turn with at least 1 Energy, or the spoon costs you 6 HP. |
 | `issue_a_citation` | Issue a Citation | Remove 1 Code Violation from the Dragon. Costs 1 Authorization; one authority per turn. |
 | `last_slice_tin_action` | Take Another Slice | Draw 2. Then play no more than four real cards this turn, or the tin costs you 6 HP. |
+| `lt_against_the_wall` | Against the Wall | Gain 7 Block. Order: end this turn with at least 14 Block. Success: 1 Authority. |
 | `lt_armguard` | Armguard | Gain 8 Block. You may spend 1 Strength to gain 4 Ward Wax. |
+| `lt_arms_drill` | Arms Drill | Deal 4 damage twice. You may spend 1 Strength to deal 4 damage a third time. |
 | `lt_arrest` | Arrest | Deal 6 damage. Challenge: defeat it by the end of your next turn. Success: 1 Authority and draw 1 card. |
+| `lt_bloody_cobbles` | Bloody Cobbles | Deal 7 damage; twice if an enemy Attack took your HP last enemy phase. Gain 1 Open Guard. |
 | `lt_braced_pike` | Braced Pike | Gain 7 Block. If the target intends to attack: Challenge: its next Attack, within its next two actions, takes none of your HP. Success: 1 Authority and 1 Strength. |
+| `lt_broken_nose` | Broken Nose | The first time each enemy phase Open Guard costs you HP, gain 1 Authority and 1 Strength. Exhaust. |
+| `lt_broken_pike` | Broken Pike | Deal 12 damage. Then you may spend 2 Strength: every other enemy takes 7 damage. |
 | `lt_buckle` | Buckle | Gain 1 Strength, 3 Block and 1 Open Guard. If you keep an Order this turn, lose that Open Guard. |
 | `lt_buckler_up` | Buckler Up | Gain 5 Block. If you have Open Guard, gain 2 more. |
+| `lt_cadence` | Cadence | Draw 1 card. Order: play exactly two more cards this turn. Success: 1 Authority. |
 | `lt_clear_the_square` | Clear the Square | Deal 8 damage to ALL enemies. Gain 1 Open Guard for each enemy hit, at most 3. |
 | `lt_clenched_jaw` | Clenched Jaw | Gain 6 Block. If an enemy Attack took your HP last enemy phase, gain 1 Strength. |
 | `lt_cut_the_strap` | Cut the Strap | Remove up to 8 Block from the target, then deal 6 damage. |
+| `lt_dare` | Dare | Gain 6 Block and 1 Open Guard. If the target intends to attack: Challenge: let its next Attack, within its next two actions, take your HP. Success: 2 Authority and 1 Strength. |
+| `lt_dispatch` | Dispatch | Gain 6 Block. You may spend 2 Authority to return a Deed from your discard pile to your hand. |
+| `lt_double_file` | Double File | Draw 1 card. Gain 4 Block. Order: hit two different enemies with Deeds later this turn. Success: 1 Authority and 4 Block. |
 | `lt_first_orders` | First Orders | Gain 4 Block. Order: play a Deed later this turn. Success: 1 Authority. |
+| `lt_flank` | Flank | Deal 9 damage. You may spend 1 Authority to deal 7 damage to another enemy. |
+| `lt_front_rank` | Front Rank | Deal 11 damage, 4 more if you have Open Guard. Then gain 1 Open Guard. |
 | `lt_gatehouse` | Gatehouse | Gain 8 Block. Order: in the next enemy phase, an enemy attacks you and no Attack damage gets through to your HP. Success: 1 Authority. |
+| `lt_gauntlet` | Gauntlet | Deal 7 damage. Challenge: take at least 12 of its HP with one later Deed hit before it acts. Success: 1 Authority and 1 Strength. |
+| `lt_grip` | Grip | Spend up to 2 Strength: for each, draw 1 card and gain 4 Block. If you spend none, gain 2 Block. |
 | `lt_headlong` | Headlong | Gain 2 Open Guard. Your next two Deeds this turn cost 1 less. |
+| `lt_heave` | Heave | Deal 8 damage. Then you may spend 2 Strength to deal 8 damage again. |
 | `lt_heel_turn` | Heel Turn | Deal 3 damage. If you have Open Guard, deal 3 damage twice instead. |
 | `lt_last_bell` | Last Bell | Deal 7 damage. Order: end this turn with exactly 0 Energy. Success: 1 Authority. |
+| `lt_make_an_example` | Make an Example | Deal 14 damage. You may spend 1 Authority: every other enemy takes half the HP it lost. |
 | `lt_marked_man` | Marked Man | Deal 5 damage. Challenge: hit it with Deeds twice more before it acts. Success: 1 Authority. |
+| `lt_mind_the_gap` | Mind the Gap | Deal 8 damage. Order: end this turn with Open Guard and at least 8 Block. Success: 1 Authority. |
 | `lt_new_stripes` | New Stripes | Gain 1 Strength. You may gain 1 Open Guard to issue a Challenge: hit it with a Deed before it acts. Success: 1 Authority. |
+| `lt_no_excuses` | No Excuses | Deal 8 damage. Order: the first card you play next turn is a Deed. Success: 1 Authority and 4 Block. |
+| `lt_no_running` | No Running | Deal 9 damage. If the target had Block: Challenge: a later Deed hit takes its HP before it acts. Success: 1 Authority and draw 1 card. |
+| `lt_no_surrender` | No Surrender | Gain 5 Block. Order: go into the next enemy phase with Open Guard; an enemy attacks you and no Attack damage gets through to your HP. Success: 2 Authority. |
+| `lt_on_your_feet` | On Your Feet | Gain 8 Block. If the target intends to attack: Challenge: after its next Attack, within its next two actions, you still have Block. Success: 1 Authority and draw 1 more next turn. |
+| `lt_overhand` | Overhand | Deal 14 damage. With 3 or more Strength, this ignores up to 10 of the target's Block. |
+| `lt_overreach` | Overreach | The first time each turn you gain Open Guard, your next Deed this turn deals 4 more damage with its first hit. Exhaust. |
 | `lt_pike_butt` | Pike Butt | Deal 4 damage twice. |
+| `lt_poise` | Poise | Gain 10 Block. You may spend 1 Authority: until your next Deed this turn has resolved, you gain no Open Guard. |
+| `lt_pursuit` | Pursuit | Draw 1 card. Challenge: hit it with a Deed later this turn and again next turn. Success: 2 Authority. |
+| `lt_recoil` | Recoil | Gain 8 Block. If you go into the enemy phase with Open Guard and an enemy Attack takes your HP, draw 2 more cards next turn. |
+| `lt_remand` | Remand | Gain 7 Block. You may spend 1 Authority: your Challenge survives one more deadline (once per Challenge). |
 | `lt_roll_call` | Roll Call | Draw 1 card. Order: play a Deed and a Working later this turn. Success: 1 Authority. |
+| `lt_ruckus` | Ruckus | Deal 3 damage to ALL enemies. If it hits two or more, gain 1 Open Guard and draw 1 card. |
 | `lt_scabbard` | Scabbard | Gain 4 Block. Order: play no further Deed this turn and end it with Energy left. Success: 1 Authority. |
+| `lt_scar` | Scar | The first time each enemy phase an enemy Attack takes your HP, gain 1 Strength. Exhaust. |
+| `lt_second_blade` | Second Blade | Deal 5 damage twice. Challenge: hit it with two more Deeds before it acts. Success: 1 Authority and 1 Strength. |
 | `lt_second_rank` | Second Rank | Gain 6 Block. You may spend 1 Authority: your next Deed this turn costs 0. |
+| `lt_shield_punch` | Shield Punch | Deal 5 damage. Gain 4 Block, plus 1 for each Strength. |
 | `lt_signal` | Signal | Gain 2 Block. You may spend 1 Authority to gain 1 Energy. |
 | `lt_split_lip` | Split Lip | Deal 7 damage. If this kills the target, draw 1 card; otherwise gain 1 Open Guard. |
+| `lt_stand_down` | Stand Down | Gain 4 Block. You may spend 1 Authority to withdraw your Challenge and draw 3 cards. |
+| `lt_testimony` | Testimony | Gain 6 Block. Challenge: keep an Order before it acts. Success: 1 Authority and draw 1 card. |
+| `lt_ultimatum` | Ultimatum | Deal 8 damage. You may spend 2 Authority to apply 2 Doubt. |
+| `lt_under_the_colours` | Under the Colours | The first time each turn you keep an Order, gain 1 Strength. Exhaust. |
 | `lt_watch_cut` | Watch Cut | Deal 6 damage. If the target is Challenged, deal 2 more. |
 | `lt_whetstone` | Whetstone | Gain 1 Strength. If you spent Strength earlier this turn, draw 1 card. |
+| `lt_whistle` | Whistle | Gain 3 Block. You may spend 1 Authority to draw 2 cards. |
 | `lt_witness` | Witness | Gain 4 Block. Your next Deed hit on a Challenged enemy this turn counts twice toward its Challenge. |
 | `make_amends` | Make Amends | Choose one: PAY IN COIN — spend 1 Energy. OFFER A CARD — discard a card from your hand. Either settles 1 Wergild, oldest demand first. |
 | `missing_signature` | Missing Signature | Exhaust. If it is still in your hand at the end of your turn, file 1 Paperwork. |

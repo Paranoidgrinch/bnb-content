@@ -30,6 +30,7 @@ public static partial class LieutenantRules
             "Your next Deed this turn costs 0."),
         Discount(Headlong, "Headlong", Cards.CardAuthoring.DeedTag, 1,
             "Your next Deed this turn costs 1 less, once per stack."),
+        .. UncommonRules(),
     ];
 
     // Buckle: an Order kept before the end of this turn takes back the Open Guard the card gave.
@@ -57,7 +58,7 @@ public static partial class LieutenantRules
         return Status(id, name, StatusPolarity.Buff, description,
             triggers:
             [
-                On(TriggerEvent.CardsDrawn, MarkHand<CardsDrawnTriggeredEffectContext>(tag, -off)),
+                OnEveryDraw(MarkHand<CardsDrawnTriggeredEffectContext>(tag, -off)),
                 On(TriggerEvent.CardPlayed, CP.If(CP.CardTagged(tag), CP.Seq(
                     CP.Adjust(CP.Self, id, CP.C(-1)),
                     CP.If(CP.Not(CP.Wears(CP.Self, id)), MarkHand<CardPlayedTriggeredEffectContext>(tag, 0))))),
