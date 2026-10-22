@@ -87,6 +87,8 @@ public static class BlueprintAssembler
                 // The Sorcerer's Apprentice's cards and his five wand actions (Apprentice/), after hers.
                 .. Apprentice.ApprenticeCards.Compile(),
                 .. Apprentice.ApprenticeWand.All(),
+                // The Lieutenant's cards (Lieutenant/), after his.
+                .. Lieutenant.LieutenantCards.Compile(),
             ],
             EnemyMapper.MapActions(enemies).ToList(),
             // The act's map is GENERATED per run from MapGeneration below; the authored map stays empty.
@@ -147,6 +149,7 @@ public static class BlueprintAssembler
                 .. Events.ActThreeEventObjects.Statuses(),
                 .. Witch.WitchKeywords.All(), .. Witch.WitchRules.All(),
                 .. Apprentice.ApprenticeKeywords.All(),
+                .. Lieutenant.LieutenantKeywords.All(),
             ],
             // The Apprentice's wand: who carries one, and every number it works with (Apprentice/ApprenticeWand).
             Wand = Apprentice.ApprenticeWand.Rules,
@@ -175,6 +178,7 @@ public static class BlueprintAssembler
                     Tutorial = Tutorial.Build(maps[0].Map.Spec, Tutorial.WitchLearner(Witch.WitchCharacter.StartWith(witchHot))),
                 },
                 Apprentice.ApprenticeCharacter.Roster(),
+                Lieutenant.LieutenantCharacter.Roster(),
             ],
             // The tutorial: six city rooms in a fixed order, realised from the city's own rules (Tutorial.cs).
             Tutorial = Tutorial.Build(maps[0].Map.Spec, start),
@@ -396,6 +400,11 @@ public static class BlueprintAssembler
                 {
                     Art = $"characters/{Apprentice.ApprenticeCharacter.Id}.png",
                     FlavorText = "Knows every incantation, and not quite what happens when one is put after another.",
+                },
+                [Lieutenant.LieutenantCharacter.Id] = new()
+                {
+                    Art = $"characters/{Lieutenant.LieutenantCharacter.Id}.png",
+                    FlavorText = "New stripes on an old uniform, and always first through the door.",
                 },
             },
             Game = new EntityPresentation

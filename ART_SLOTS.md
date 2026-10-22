@@ -2,8 +2,8 @@
 
 Generated: `dotnet run --project Converter -- --art-slots ART_SLOTS.md`. **Do not edit by hand.**
 
-**928 pictures**: 410 cards, 246 relics, 269 bodies
-(every enemy, elite and boss) and 3 the player can be. Every one of them is filled today by a PLACEHOLDER — a plate with the file's own
+**933 pictures**: 414 cards, 246 relics, 269 bodies
+(every enemy, elite and boss) and 4 the player can be. Every one of them is filled today by a PLACEHOLDER — a plate with the file's own
 name and the word placeholder on it, written by `bnb-godot/tools/make-card-art.py`,
 `make-relic-art.py` and `make-enemy-art.py`. A painted picture replaces one by being saved over it, so
 the list below can be worked down in any order and nothing has to be registered anywhere. A slot with no
@@ -630,7 +630,7 @@ ever met in a boss room is drawn as a boss, even if it also turns up as filler.
 | `waxen_bailiff` | Waxen Bailiff | 42 | 1 | The Waxen Bailiff |
 | `wrong_window_scribe` | Wrong-Window Scribe | 25 | 2 | The Wrong Window |
 
-## Characters — 3 pictures
+## Characters — 4 pictures
 
 Drawn like a body and facing RIGHT — the player stands on the left of the arena.
 
@@ -638,9 +638,10 @@ Drawn like a body and facing RIGHT — the player stands on the left of the aren
 |---|---|---|
 | `bureaucrat` | Bureaucrat | Armed with forms, stamps, and a fireproof sense of procedure. |
 | `hedge_witch` | The Hedge Witch | Turns cards into ingredients and hides behind the pot when she is not cooking. |
+| `lieutenant` | The Lieutenant | New stripes on an old uniform, and always first through the door. |
 | `sorcerers_apprentice` | The Sorcerer's Apprentice | Knows every incantation, and not quite what happens when one is put after another. |
 
-## Cards — 410 pictures
+## Cards — 414 pictures
 
 No visual canon was ever written for the cards, so the row carries the card's own rules
 text instead of a brief. Act = the act that unlocks it; the starters, the Junk and the
@@ -1013,7 +1014,7 @@ cards a boss or a door hands over are never offered and have no act.
 | `ap_windblown_leaf` | Windblown Leaf | working | common | Put a card from your hand at the bottom of your draw pile, then draw 2 cards. Gain 1 Gust. Wand: Shape — Scatter: the next single-target damaging Speak hits ALL enemies at 60%. |
 | `ap_wrong_way_round` | The Wrong Way Round | working | uncommon | Draw 2 cards, then two wand cards trade places for free; if they did, gain 1 Gust. Wand: Order: the rest of the cast runs backwards, once; with 2 or more left to turn, its Exhaustion is 1 lower. |
 
-### Given in play — 98
+### Given in play — 102
 
 Handed over by a boss, a door or an event rather than offered; never in a reward pool.
 
@@ -1063,6 +1064,10 @@ Handed over by a boss, a door or an event rather than offered; never in a reward
 | `honey_spoon_action` | A Little Honey | Gain 2 Energy. Then end the turn with at least 1 Energy, or the spoon costs you 6 HP. |
 | `issue_a_citation` | Issue a Citation | Remove 1 Code Violation from the Dragon. Costs 1 Authorization; one authority per turn. |
 | `last_slice_tin_action` | Take Another Slice | Draw 2. Then play no more than four real cards this turn, or the tin costs you 6 HP. |
+| `lt_buckler_up` | Buckler Up | Gain 5 Block. If you have Open Guard, gain 2 more. |
+| `lt_first_orders` | First Orders | Gain 4 Block. Order: play a Deed later this turn. Success: 1 Authority. |
+| `lt_new_stripes` | New Stripes | Gain 1 Strength. You may gain 1 Open Guard to issue a Challenge: hit it with a Deed before it acts. Success: 1 Authority. |
+| `lt_watch_cut` | Watch Cut | Deal 6 damage. If the target is Challenged, deal 2 more. |
 | `make_amends` | Make Amends | Choose one: PAY IN COIN — spend 1 Energy. OFFER A CARD — discard a card from your hand. Either settles 1 Wergild, oldest demand first. |
 | `missing_signature` | Missing Signature | Exhaust. If it is still in your hand at the end of your turn, file 1 Paperwork. |
 | `near_boundary` | Near Boundary | Accept the surveyor's nearer figure as this turn's exact measure. Meeting it lets it brace. |
