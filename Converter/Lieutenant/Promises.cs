@@ -68,6 +68,16 @@ public static class Promises
     public static readonly ChallengeSpec Testimony = new("lt_c_testimony", "Testimony", KeepOrder,
         "keep an Order before it acts", new Reward(Draw: 1));
 
+    // ── rares ────────────────────────────────────────────────────────────────────────────────────────────
+
+    public static readonly ChallengeSpec BlackGauntlet = new("lt_c_black_gauntlet", "Black Gauntlet", SurviveThenHit,
+        "survive its next Attack, within its next two actions, then hit it with a Deed before it acts again",
+        new Reward(Authority: 2, Strength: 1));
+
+    // Succession's second Challenge, laid by the Rite rather than a card.
+    public static readonly ChallengeSpec Successor = new("lt_c_successor", "Succession", Hits,
+        "hit it with a Deed before it acts", new Reward());
+
     public static readonly IReadOnlyList<OrderSpec> Orders =
     [
         FirstOrders, FirstOrdersPlus, RollCall, Gatehouse, LastBell, LastBellPlus, Scabbard,
@@ -78,5 +88,6 @@ public static class Promises
     [
         NewStripes, MarkedMan, BracedPike, Arrest,
         Gauntlet, OnYourFeet, Pursuit, NoRunning, Dare, SecondBlade, Testimony,
+        BlackGauntlet, Successor,
     ];
 }

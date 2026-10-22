@@ -23,6 +23,7 @@ internal static class CardShapes
         If(new CombatConditionSpec("isAlive", on), Seq(
             Clear(challenge.Id, on), Reset(Obligations.Armed(challenge.Id), on), Reset(Obligations.Progress(challenge.Id), on),
             Reset(Obligations.Grace(challenge.Id), on), Reset(Obligations.Remanded(challenge.Id), on),
+            Reset(Obligations.Redressed(challenge.Id), on),
             Apply(challenge.Id, 1, on)));
 
     private static CombatNodeModel Reset(string counter, string on) =>
@@ -38,22 +39,41 @@ internal static class CardShapes
     public static CombatConditionSpec Has(string status, int atLeast = 1, string on = You) => HasStacks(status, atLeast, on);
 
     // "You may spend N Authority to …" — offered only when she has it (L10).
-    public static CombatNodeModel MaySpendAuthority(int cost, string offer, CombatNodeModel then, CombatNodeModel? otherwise = null) =>
-        If(Has(Authority, cost),
-            CombatNodeModel.ChooseOptions(1, [$"Spend {cost} Authority: {offer}", "Keep the Authority"],
-                [Seq(Remove(Authority, cost, You), Apply(LieutenantKeywords.AuthorityPulse, cost, You), then),
-                 otherwise ?? Seq()],
-                "Authority"),
-            otherwise ?? Seq());
+    public static CombatNodeModel MaySpendAuthority(int cost, string offer, CombatNodeModel then, CombatNodeModel? otherwise = null)
+    {
+        var no = otherwise ?? Seq();
+        CombatNodeModel Offer(int price, CombatNodeModel pay) => CombatNodeModel.ChooseOptions(1,
+            [price == 0 ? $"Brevet: {offer}" : $"Spend {price} Authority: {offer}", "Keep the Authority"],
+            [Seq(pay, then), no], "Authority");
+        // Brevet (rare): the next Authority cost paid this turn is 1 less; a price of 0 is no payment (§2.2).
+        var discounted = cost - 1;
+        var withBrevet = discounted <= 0
+            ? Offer(0, new CombatNodeModel("removeStatus", You, StatusId: LieutenantRules.Brevet))
+            : If(Has(Authority, discounted), Offer(discounted, Seq(
+                new CombatNodeModel("removeStatus", You, StatusId: LieutenantRules.Brevet), PayAuthority(discounted))), no);
+        return If(Has(LieutenantRules.Brevet), withBrevet,
+            If(Has(Authority, cost), Offer(cost, PayAuthority(cost)), no));
+    }
+
+    public static CombatNodeModel PayAuthority(int cost) =>
+        Seq(Remove(Authority, cost, You), Apply(LieutenantKeywords.AuthorityPulse, cost, You));
 
     // "You may spend N Strength to …" — positive Strength only (L9). What was really paid is written down for the
     // cards and relics that read it (LieutenantKeywords.StrengthPulse).
     public static CombatNodeModel MaySpendStrength(int cost, string offer, CombatNodeModel then, CombatNodeModel? otherwise = null) =>
         If(Has(Strength, cost),
             CombatNodeModel.ChooseOptions(1, [$"Spend {cost} Strength: {offer}", "Keep the Strength"],
-                [Seq(PayStrength(cost), then), otherwise ?? Seq()],
+                [Seq(PayDeclared(cost), then), otherwise ?? Seq()],
                 "Strength"),
             otherwise ?? Seq());
+
+    // A declared payment (§2.7): the card's effect reads what was declared; Armsmaster's saving takes 1 off what is
+    // really paid for a declaration of 2 or more, and only what is really paid is announced.
+    public static CombatNodeModel PayDeclared(int declared) => declared < 2
+        ? PayStrength(declared)
+        : If(Has(LieutenantRules.ArmsmasterSaving),
+            Seq(new CombatNodeModel("removeStatus", You, StatusId: LieutenantRules.ArmsmasterSaving), PayStrength(declared - 1)),
+            PayStrength(declared));
 
     // A card program cannot announce; it leaves a pulse, which her standing status turns into the announcement.
     public static CombatNodeModel PayStrength(int cost) =>

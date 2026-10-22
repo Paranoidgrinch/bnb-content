@@ -31,6 +31,7 @@ public static partial class LieutenantRules
         Discount(Headlong, "Headlong", Cards.CardAuthoring.DeedTag, 1,
             "Your next Deed this turn costs 1 less, once per stack."),
         .. UncommonRules(),
+        .. RareRules(),
     ];
 
     // Buckle: an Order kept before the end of this turn takes back the Open Guard the card gave.

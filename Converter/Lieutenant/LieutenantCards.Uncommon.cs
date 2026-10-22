@@ -184,7 +184,7 @@ public static partial class LieutenantCards
 
     private static CombatNodeModel GripOut(int perUnit, int none)
     {
-        CombatNodeModel Pay(int n) => Seq(PayStrength(n), Draw(n), Block(perUnit * n));
+        CombatNodeModel Pay(int n) => Seq(PayDeclared(n), Draw(n), Block(perUnit * n));
         var two = CombatNodeModel.ChooseOptions(1,
             [$"Spend 2 Strength: draw 2, gain {2 * perUnit} Block", $"Spend 1 Strength: draw 1, gain {perUnit} Block", $"Keep it: gain {none} Block"],
             [Pay(2), Pay(1), Block(none)], "Grip");

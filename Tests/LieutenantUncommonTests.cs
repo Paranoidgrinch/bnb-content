@@ -1,53 +1,13 @@
 using BnbContent.Converter.Lieutenant;
 using RogueDeck.Core.Combat;
 using static BnbContent.Tests.LieutenantTests;
+using static BnbContent.Tests.LieutenantDuel;
 
 namespace BnbContent.Tests;
 
 // The Lieutenant's uncommons, one rule each (lieutenant_master.md §3.3).
 public class LieutenantUncommonTests
 {
-    private static int Standing(CombatantState c) => c.Health.Current + Block(c);
-    private static string[] Five(params string[] cards) =>
-        [.. cards, .. Enumerable.Repeat("lt_buckler_up", Math.Max(0, 5 - cards.Length))];
-
-    private sealed class Duel : IDisposable
-    {
-        public required RogueDeck.Sandbox.Composition.RunPlayback Play { get; init; }
-        public required RogueDeck.Sandbox.Run.InteractiveRunSession Session { get; init; }
-        public required CombatantId Enemy { get; init; }
-        public CombatantId? Other { get; init; }
-        public void P(string card, int? choose = null, CombatantId? at = null) =>
-            LieutenantTests.Play(Play, Session, card, at ?? Enemy, choose);
-        public void End() => EndTurn(Play, Session);
-        public CombatantState Me => Hero(Play);
-        public CombatantState It => Body(Play, Enemy);
-        public int Hand => Now(Play).Hand.Count;
-        public void Dispose() => Play.Dispose();
-    }
-
-    private static Duel One(string[] deck, string enemy = Quiet, string intent = QuietIntent, params (string, int)[] hero)
-    {
-        var (play, session, id) = Fight(deck, enemy: enemy, intent: intent, hero: hero);
-        return new Duel { Play = play, Session = session, Enemy = id };
-    }
-
-    // Two bodies: a biter (the Enemy) and a quiet tablet (the Other).
-    private static Duel Two(string[] deck, params (string, int)[] hero)
-    {
-        var probe = FightProbe.RosterAgainstHero("lt_two", 9, hero, (Biter, BiteIntent, null), (Quiet, QuietIntent, null));
-        var (play, session, _) = FightProbe.Start(probe, deck, character: LieutenantCharacter.Id);
-        var all = Now(play).State.Combatants.Where(c => c.Id != Now(play).HeroId).ToList();
-        return new Duel
-        {
-            Play = play, Session = session,
-            Enemy = all.First(c => c.DefinitionId.value == Biter).Id,
-            Other = all.First(c => c.DefinitionId.value == Quiet).Id,
-        };
-    }
-
-    private static int Authority(Duel d) => Stacks(d.Me, LieutenantKeywords.Authority);
-    private static int Strength(Duel d) => Stacks(d.Me, LieutenantKeywords.Strength);
 
     [Fact]
     public void Double_file_wants_two_different_enemies_hit()
@@ -209,12 +169,14 @@ public class LieutenantUncommonTests
     public void Stand_down_withdraws_the_challenge_and_draws_three()
     {
         using var d = One(["lt_new_stripes", "lt_stand_down", "lt_buckler_up", "lt_buckler_up", "lt_buckler_up",
-            "lt_watch_cut", "lt_watch_cut", "lt_watch_cut"], hero: (LieutenantKeywords.Authority, 1));
-        if (!Now(d.Play).Hand.Any(c => c.DefinitionId.value == "lt_new_stripes")
-            || !Now(d.Play).Hand.Any(c => c.DefinitionId.value == "lt_stand_down"))
-            return;   // the opening five did not hold both
+            "lt_watch_cut", "lt_watch_cut", "lt_watch_cut", "lt_watch_cut"],
+            hero: [(LieutenantKeywords.Authority, 1), (Obligations.Reinforcements, 4)]);   // nine cards: the whole deck
+        Assert.Contains(Now(d.Play).Hand, c => c.DefinitionId.value == "lt_new_stripes");
+        Assert.Contains(Now(d.Play).Hand, c => c.DefinitionId.value == "lt_stand_down");
         d.P("lt_new_stripes", choose: 0);
-        var hand = d.Hand;
+        d.P("lt_buckler_up");
+        d.P("lt_buckler_up");
+        var hand = d.Hand;                 // 6 in hand, 3 in the discard pile to draw back
         d.P("lt_stand_down", choose: 0);
         Assert.Equal(0, Stacks(d.It, Promises.NewStripes.Id));
         Assert.Equal(hand - 1 + 3, d.Hand);

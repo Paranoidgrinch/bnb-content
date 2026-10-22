@@ -82,6 +82,8 @@ public static class LieutenantKeywords
             D.Add(she, GuardExtraTotal,
                 D.Counter(she, GuardExtra)),
             D.Remove(she, OpenGuard),
+            D.Each(CombatantTargetSelectors.AllCombatants, D.Remove(D.It, Obligations.GuardStriker)),
+            D.Apply(D.Self, Obligations.GuardStriker, 1),
             D.Announce(she, GuardSpent),
             D.If(
                 D.AtLeast(D.Counter(she, GuardExtra), 1),
@@ -121,6 +123,9 @@ public static class LieutenantKeywords
 
     // Gain up to the cap; what would pass it is lost (§2.2).
     internal static IEffectNode<T> GainAuthority<T>(ICombatantTargetSelector who, int amount) where T : class =>
+        GainAuthority<T>(who, N<T>.C(amount));
+
+    internal static IEffectNode<T> GainAuthority<T>(ICombatantTargetSelector who, ICombatExpression<T, int> amount) where T : class =>
         N<T>.If(N<T>.Cmp(N<T>.Stacks(who, Authority), ComparisonOperator.Less, N<T>.C(AuthorityCap)),
-            N<T>.Apply(who, Authority, N<T>.Min(N<T>.C(amount), N<T>.Minus(N<T>.C(AuthorityCap), N<T>.Stacks(who, Authority)))));
+            N<T>.Apply(who, Authority, N<T>.Min(amount, N<T>.Minus(N<T>.C(AuthorityCap), N<T>.Stacks(who, Authority)))));
 }

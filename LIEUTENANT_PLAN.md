@@ -159,6 +159,51 @@ kennt nur ein Ausschluss-Tag; ihre Deeds sind genau das). **Poise**: „bis dein
 kein Open Guard“ (die Engine hört eine Karte mitten im Programm). **Flank**: der andere Gegner ist zufällig.
 **Make an Example / Broken Pike**: die Streuung ist Schaden ohne Strength (Status-Schaden), Block hält ihn auf.
 
+**Rares** (Akt I: Brevet, Insubordination, Parade Ground, Drum Major, Service Record, Splintered Shield, Last Ditch,
+Open Visor · Akt II: Black Gauntlet, Redress, Riposte, Countercharge, Forced March, Reprimand · Akt III: Chain of
+Command, Succession, Hilt Knot, Pike Square, Rising Star, Watchword · Akt IV: Armsmaster, Full Tilt, Blood Debt,
+Watch Surgeon, Field Pardon)
+
+| Karte | Kanon + | gebaut + | Facette |
+|---|---|---|---|
+| Chain of Command (Rite) | 10 Block, zieh 3 | 10 Block, zieh 3 | — |
+| Brevet | 9 Block, zieh 1 | 2 Authority, 8 Block | — (U4) |
+| Insubordination | 12 pro Treffer | 15 pro Treffer | — |
+| Parade Ground | 12 Block, 6 Ward Wax pro Energie | 15 Block, 5 pro Energie | — |
+| Drum Major | 9 Block | 10 Block | — |
+| Black Gauntlet | 14 Schaden | 16 Schaden | — |
+| Succession (Rite) | 2 Strength | 2 Strength | G |
+| Service Record | 10 Basis; Kill: 1 Authority | 12 Basis | — |
+| Redress | 13 Block, zieh 1 beim Verlegen | 15 Block | — (U4) |
+| Riposte (Rite) | 8 | 8 | — |
+| Countercharge | 12 Schaden, bis 3 Strength | 12 Schaden, bis 3 Strength | S |
+| Hilt Knot (Rite) | zieh 2 wirf 1, 7 Block | zieh 1, 8 Block | — |
+| Forced March | 4 / 4 | 4 / 4 | — |
+| Pike Square | 15 Block, 4 + 3 × Strength | 15 Block, 4 + 3 × Strength | — |
+| Armsmaster (Rite) | 2 Strength | 2 Strength | G |
+| Full Tilt | 11 pro Treffer | 13 pro Treffer | — |
+| Blood Debt | 9 Block, bis 24 | 9 Block, bis 24 | — |
+| Open Visor | 10 Block, alle Treffer | 11 Block | — (siehe unten) |
+| Splintered Shield | danach 4 Block | 16 Block, danach 4 Block | G |
+| Last Ditch | 13 Basis, bis 16 | 15 Basis, bis 16 | — |
+| Reprimand | 12 Block, 3 Strength | 13 Block, 3 Strength | — |
+| Rising Star (Rite) | 2 Authority | 2 Authority | G |
+| Watchword | 8 Block, 2 Authority | 8 Block, 2 Authority | — |
+| Watch Surgeon (Rite) | heilt 3 | heilt 3 | — |
+| Field Pardon | 13 Block, zieh 1 | 15 Block | — (U4) |
+
+Abweichungen beim Bauen:
+- **Open Visor**: schon die Basis lässt alle Treffer der nächsten Deed Block ignorieren (der Block wird zurückgegeben,
+  der geschluckte Schaden geht durch). Zwei Treffer einer Karte werden nebeneinander gehört; „nur der erste“ ist nicht
+  sauber zu trennen. Dafür braucht es den neuen Core-Ausdruck `eventBlockedAmount`.
+- **Pike Square**: der Schutz wird beim Ausspielen aus der Strength berechnet; er gilt für den ersten Treffer jeder
+  Gegner-Aktion (≈ „jeder Angreifer“), die Vergeltung ist `min(Schutz, 12)`.
+- **Watch Surgeon**: kein „you may“ — zahlt und heilt, wenn sie verletzt ist und Authority hat.
+- **Redress**: verlegt auf den Gegner, auf den die Karte zielt (statt eine Liste anzubieten).
+- **Insubordination**: gibt die älteste Order auf.
+- **Chain of Command / Watchword / Succession**: ihr Ziehen „nächster Zug“ geschieht, wenn die nächste Hand gegeben
+  wird (wie Magpie's Luck der Hexe).
+
 ## 5 Stand
 
 | Schritt | Stand |
@@ -167,3 +212,4 @@ kein Open Guard“ (die Engine hört eine Karte mitten im Programm). **Flank**: 
 | S2/S3 Start, Authority, Open Guard, Orders, Challenges | ✔ `LieutenantTests` (11) |
 | S4 Commons | ✔ `LieutenantCardTests` (15) |
 | S5 Uncommons | ✔ `LieutenantUncommonTests` (24) |
+| S6 Rares | ✔ `LieutenantRareTests` (27); Core: `eventBlockedAmount` (RogueDeck-Core a703df1) |

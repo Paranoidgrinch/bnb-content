@@ -74,6 +74,7 @@ public enum ChallengeKind
     KeepBlock,         // after its next Attack (within its next two actions) she still has Block
     TakeHit,           // its next Attack (within its next two actions) takes her HP, and she lives
     DistinctDeeds,     // hits from N different Deeds played later, before it acts
+    SurviveThenHit,    // live through its next Attack (within its next two actions), then a Deed hit before it acts again
 }
 
 public sealed record ChallengeSpec(string Id, string Name, ChallengeKind Kind, string Condition, Reward Reward, int N = 1)
@@ -130,14 +131,26 @@ public static class Obligations
     public static string Progress(string id) => id + "_progress";
     // Remand: one deadline forgiven (grace), and whether this Challenge has had its one extension.
     public static string Grace(string id) => id + "_grace";
+    public static string Redressed(string id) => id + "_redressed";
     public static string Remanded(string id) => id + "_remanded";
     // A Deed of hers struck the bearer during the action now closing (Second Blade): set, never added, so
     // however many hits one card makes it is one card.
     private static string Struck(string id) => id + "_struck";
+    // Black Gauntlet's first stage done: the attack survived, the answer owed.
+    private const int Survived = 10;
     // Double File: the enemies a Deed of hers has hit since the Order was armed.
     public const string DoubleFileMark = "lt_mark_double_file";
     // Remand's request, applied by the card and answered here.
     public const string RemandPulse = "lt_pulse_remand";
+    // Field Pardon, Redress and Insubordination ask the same way.
+    public const string PardonPulse = "lt_pulse_pardon";
+    public const string RedressPulse = "lt_pulse_redress";
+    public const string AbandonPulse = "lt_pulse_abandon";
+    // The enemy whose Challenge was last kept (Succession looks past it), and the one that last struck her Open
+    // Guard (Blood Debt pays it back).
+    public const string LastWon = "lt_mark_last_won";
+    public const string GuardStriker = "lt_mark_guard_striker";
+    public static string ArmedRoundOf(string id) => ArmedRound(id);
     private static string Mark(string id, string what) => id + "_at_" + what;
     private static string ArmedRound(string id) => id + "_round";
 
@@ -158,6 +171,10 @@ public static class Obligations
             Status(DoubleFileMark, "Hit for Double File", StatusPolarity.Neutral,
                 "A Deed of the Lieutenant's has hit this enemy for her Double File Order."),
             Status(RemandPulse, "Remand", StatusPolarity.Neutral, "Your Challenge is extended."),
+            Status(PardonPulse, "Field Pardon", StatusPolarity.Neutral, "A standing promise is declared kept."),
+            Status(RedressPulse, "Redress", StatusPolarity.Neutral, "The Lieutenant's Challenge moves to this enemy."),
+            Status(AbandonPulse, "Insubordination", StatusPolarity.Neutral, "Your oldest Order is abandoned."),
+            Status(LastWon, "Challenge Kept", StatusPolarity.Neutral, "The Lieutenant's last Challenge was kept against this enemy."),
             .. OrderList.Select(OrderStatus),
             .. ChallengeList.Select(ChallengeStatus),
         ];
@@ -192,6 +209,14 @@ public static class Obligations
                         SA.All(SA.Set(SA.It, Grace(c.Id), 1), SA.Set(SA.It, Remanded(c.Id), 1))))),
                 SA.Remove(SA.Event, RemandPulse),
             ])),
+            SA.If(SA.StatusIs(PardonPulse), Pardon()),
+            SA.If(SA.StatusIs(RedressPulse), Redress()),
+            SA.If(SA.StatusIs(AbandonPulse), SA.Seq(
+            [
+                .. OrderList.Select((o, i) => SA.If(SA.Is(SA.Counter(SA.Event, OlderOrder), i + 1),
+                    SA.Seq(SA.Remove(SA.Event, o.Id), ReleasePlace<StatusAppliedTriggeredEffectContext>(SA.Event, i + 1)))),
+                SA.Remove(SA.Event, AbandonPulse),
+            ])),
             .. OrderList.Select((o, i) => SA.If(SA.StatusIs(o.Id), IssueOrder(o, i + 1))),
             .. ChallengeList.Select(c => SA.If(SA.StatusIs(c.Id), IssueChallenge(c))),
         ]);
@@ -208,6 +233,58 @@ public static class Obligations
                     new CombatantCurrentHealthExpression<ActionStartingTriggeredEffectContext>(Her)), StatusTriggerScope.Anywhere),
                 On(TriggerEvent.StatusApplied, issued, StatusTriggerScope.Anywhere),
             ]);
+    }
+
+    // Field Pardon (§2.7): ONE promise standing when the card was played is declared kept — normal reward, normal
+    // announcement, once. Orders first, the older first, then the Challenge.
+    private static IEffectNode<StatusAppliedTriggeredEffectContext> Pardon()
+    {
+        var her = SA.Event;
+        const string done = "lt_pardon_done";
+        var open = SA.Is(SA.Counter(her, done), 0);
+        return SA.Seq(
+        [
+            SA.Set(her, done, 0),
+            .. OrderList.Select((o, i) => SA.If(SA.And(open, SA.Is(SA.Counter(her, OlderOrder), i + 1)),
+                SA.Seq(SA.Set(her, done, 1), Kept<StatusAppliedTriggeredEffectContext>(o, her)))),
+            .. OrderList.Select((o, i) => SA.If(SA.And(open, SA.Is(SA.Counter(her, NewerOrder), i + 1)),
+                SA.Seq(SA.Set(her, done, 1), Kept<StatusAppliedTriggeredEffectContext>(o, her)))),
+            .. ChallengeList.Select(c => SA.If(SA.And(open, SA.AtLeast(SA.Count(CombatantTargetSelectors.WithStatus(
+                    CombatantTargetSelectors.AllCombatants, new StatusDefinitionId(c.Id))), 1)),
+                SA.Seq(SA.Set(her, done, 1), Won<StatusAppliedTriggeredEffectContext>(c, BearerOf(c.Id))))),
+            SA.Remove(her, PardonPulse),
+        ]);
+    }
+
+    // Redress (§2.4): the Challenge moves to the enemy the card was aimed at — that enemy must meet what the
+    // Challenge asks of a target, its count starts again, its deadline and Remand stay. Once per Challenge, and
+    // never Pursuit (its first hit belongs to the first enemy).
+    private static IEffectNode<StatusAppliedTriggeredEffectContext> Redress()
+    {
+        var to = SA.Event;
+        var others = CombatantTargetSelectors.Except(CombatantTargetSelectors.AllCombatants, to);
+        IEffectNode<StatusAppliedTriggeredEffectContext> Move(ChallengeSpec c)
+        {
+            ICombatExpression<StatusAppliedTriggeredEffectContext, bool> fits = AnswersAnAttack(c.Kind)
+                ? SA.IntendsAttack(to)
+                : c == Promises.NoRunning ? SA.AtLeast(SA.BlockOf(to), 1) : SA.AtLeast(SA.C(1), 1);
+            var from = SA.It;
+            return SA.Each(CombatantTargetSelectors.WithStatus(others, new StatusDefinitionId(c.Id)),
+                SA.If(SA.And(fits, SA.Is(SA.Counter(from, Redressed(c.Id)), 0)), SA.Seq(
+                    SA.Set(to, Armed(c.Id), 1),
+                    SA.Set(to, ArmedRound(c.Id), SA.Counter(from, ArmedRound(c.Id))),
+                    SA.Set(to, Grace(c.Id), SA.Counter(from, Grace(c.Id))),
+                    SA.Set(to, Remanded(c.Id), SA.Counter(from, Remanded(c.Id))),
+                    SA.Set(to, Progress(c.Id), 0),
+                    SA.Set(to, Redressed(c.Id), 1),
+                    SA.Remove(from, c.Id),
+                    SA.Apply(to, c.Id, 1))));
+        }
+        return SA.Seq(
+        [
+            .. ChallengeList.Where(c => c.Kind != ChallengeKind.Pursuit).Select(Move),
+            SA.Remove(to, RedressPulse),
+        ]);
     }
 
     // The Order takes a place: the newest place if there is room, otherwise the oldest Order gives way. A second
@@ -371,7 +448,10 @@ public static class Obligations
     private static IEffectNode<T> Won<T>(ChallengeSpec challenge, ICombatantTargetSelector enemy) where T : class
     {
         var her = Her;
+        // `enemy` finds the bearer BY this Challenge, so it is marked before the Challenge comes off.
         return N<T>.Seq(
+            N<T>.Each(CombatantTargetSelectors.AllCombatants, N<T>.Remove(N<T>.It, LastWon)),
+            N<T>.Apply(enemy, LastWon, 1),
             N<T>.Remove(enemy, challenge.Id),
             challenge.Reward.Pay<T>(her),
             N<T>.Add(her, ChallengesWon, N<T>.C(1)),
@@ -383,10 +463,11 @@ public static class Obligations
         N<T>.Seq(N<T>.Remove(enemy, challenge.Id), N<T>.Announce(Her, how));
 
     private static bool Counted(ChallengeKind kind) =>
-        kind is ChallengeKind.Hits or ChallengeKind.BigHit or ChallengeKind.Pursuit or ChallengeKind.DistinctDeeds;
+        kind is ChallengeKind.Hits or ChallengeKind.BigHit or ChallengeKind.Pursuit or ChallengeKind.DistinctDeeds
+            or ChallengeKind.SurviveThenHit;
 
     private static bool AnswersAnAttack(ChallengeKind kind) =>
-        kind is ChallengeKind.WithstandAttack or ChallengeKind.KeepBlock or ChallengeKind.TakeHit;
+        kind is ChallengeKind.WithstandAttack or ChallengeKind.KeepBlock or ChallengeKind.TakeHit or ChallengeKind.SurviveThenHit;
 
     private static StatusData ChallengeStatus(ChallengeSpec challenge)
     {
@@ -454,6 +535,7 @@ public static class Obligations
                 D.Set(D.Event, Progress(id), D.Max(progress, D.C(1))),
                 D.If(D.AtLeast(progress, 1), D.Set(D.Event, Progress(id), 2))),
             ChallengeKind.DistinctDeeds => D.Set(D.Event, Struck(id), 1),
+            ChallengeKind.SurviveThenHit => D.If(D.AtLeast(progress, Survived), D.Set(D.Event, Progress(id), Survived + 1)),
             _ => D.Nothing,
         };
         return D.If(deedHit, count);
@@ -465,6 +547,7 @@ public static class Obligations
         var fallen = BearerOf(id, fallen: true);
         var need = challenge.Kind switch
         {
+            ChallengeKind.SurviveThenHit => Survived + 1,
             ChallengeKind.Pursuit => 2,
             ChallengeKind.BigHit => 1,
             _ => challenge.N,
@@ -525,15 +608,22 @@ public static class Obligations
             ChallengeKind.KeepBlock => AR.AtLeast(AR.BlockOf(Her), 1),
             _ => AR.AtLeast(lost, 1),
         };
-        var judged = AR.If(kept,
-            Won<ActionResolvedTriggeredEffectContext>(challenge, bearer),
-            Ended<ActionResolvedTriggeredEffectContext>(challenge, bearer, ChallengeFailed));
-        var after = AR.If(armed, AR.If(new ActionDealtDamageExpression<ActionResolvedTriggeredEffectContext>(), judged,
+        var judged = challenge.Kind == ChallengeKind.SurviveThenHit
+            // She lived through it: now the answering blow, before its next action.
+            ? AR.Set(bearer, Progress(id), Survived)
+            : AR.If(kept,
+                Won<ActionResolvedTriggeredEffectContext>(challenge, bearer),
+                Ended<ActionResolvedTriggeredEffectContext>(challenge, bearer, ChallengeFailed));
+        var stillWaiting = AR.Cmp(AR.Counter(bearer, Progress(id)), ComparisonOperator.Less, AR.C(Survived));
+        var after = AR.If(AR.And(armed, stillWaiting), AR.If(new ActionDealtDamageExpression<ActionResolvedTriggeredEffectContext>(), judged,
             AR.Seq(
                 AR.Add(bearer, Progress(id), AR.C(1)),
                 AR.If(AR.AtLeast(AR.Counter(bearer, Progress(id)), 2),
                     Deadline<ActionResolvedTriggeredEffectContext>(challenge, bearer)))));
-        yield return On(TriggerEvent.ActionStarting, before);
+        // Black Gauntlet, once she has survived: the next action it starts is the deadline for her answer.
+        var answerDue = AS.If(AS.And(AS.Is(AS.Counter(bearer, Armed(id)), 1), AS.AtLeast(AS.Counter(bearer, Progress(id)), Survived)),
+            Deadline<ActionStartingTriggeredEffectContext>(challenge, bearer));
+        yield return On(TriggerEvent.ActionStarting, challenge.Kind == ChallengeKind.SurviveThenHit ? AS.Seq(answerDue, before) : before);
         yield return On(TriggerEvent.ActionResolved, after);
     }
 

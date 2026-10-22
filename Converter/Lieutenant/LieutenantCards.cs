@@ -69,10 +69,10 @@ public static partial class LieutenantCards
         FirstOrders.Id, NewStripes.Id,
     ];
 
-    public static IReadOnlyList<BnbCard> All() => [.. Starter(), .. Commons(), .. Uncommons()];
+    public static IReadOnlyList<BnbCard> All() => [.. Starter(), .. Commons(), .. Uncommons(), .. Rares()];
 
     // Her reward cards gated to an act, as the others' are: starters and the upgraded twins are never offered.
-    public static IReadOnlyList<BnbCard> RewardPool(int act) => Cards.FinalCards.Offerable([.. Commons(), .. Uncommons()], act);
+    public static IReadOnlyList<BnbCard> RewardPool(int act) => Cards.FinalCards.Offerable([.. Commons(), .. Uncommons(), .. Rares()], act);
 
     public static IReadOnlyList<CardData> Compile() => All().Select(c => c.Compile()).ToList();
 }
