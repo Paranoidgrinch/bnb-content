@@ -34,11 +34,23 @@ internal static class LieutenantDuel
         return new Duel { Play = play, Session = session, Enemy = id };
     }
 
+    // One enemy and the relics she carries.
+    internal static Duel Armed(string relic, string[] deck, string enemy = Quiet, string intent = QuietIntent, int? health = null,
+        params (string, int)[] hero)
+    {
+        var (play, session, id) = FightProbe.Start(FightProbe.SoloAgainstHero(enemy, intent, 9, hero), deck, health,
+            character: LieutenantCharacter.Id, relics: [relic]);
+        return new Duel { Play = play, Session = session, Enemy = id };
+    }
+
     // Two bodies: a biter (the Enemy) and a quiet tablet (the Other).
-    internal static Duel Two(string[] deck, params (string, int)[] hero)
+    internal static Duel Two(string[] deck, params (string, int)[] hero) => TwoArmed(null, deck, hero);
+
+    internal static Duel TwoArmed(string? relic, string[] deck, params (string, int)[] hero)
     {
         var probe = FightProbe.RosterAgainstHero("lt_two", 9, hero, (Biter, BiteIntent, null), (Quiet, QuietIntent, null));
-        var (play, session, _) = FightProbe.Start(probe, deck, character: LieutenantCharacter.Id);
+        var (play, session, _) = FightProbe.Start(probe, deck, character: LieutenantCharacter.Id,
+            relics: relic is null ? null : [relic]);
         var all = Now(play).State.Combatants.Where(c => c.Id != Now(play).HeroId).ToList();
         return new Duel
         {

@@ -46,6 +46,7 @@ public static class LieutenantKeywords
 
     public const string GuardSpent = "lt_open_guard_spent";       // an enemy hit spent her Open Guard
     public const string GuardHurt = "lt_open_guard_hurt";         // …and it cost her HP she would have kept
+    public const string GuardHeld = "lt_open_guard_held";         // …or the whole hit took none of her HP
     public const string StrengthPaid = "lt_strength_paid";        // a card took positive Strength from her
     public const string AuthorityPaid = "lt_authority_paid";      // a card took positive Authority from her
 
@@ -87,7 +88,8 @@ public static class LieutenantKeywords
             D.Announce(she, GuardSpent),
             D.If(
                 D.AtLeast(D.Counter(she, GuardExtra), 1),
-                D.Announce(she, GuardHurt)));
+                D.Announce(she, GuardHurt)),
+            D.If(D.Is(D.Amount, 0), D.Announce(she, GuardHeld)));
 
         return Status(OpenGuard, "Open Guard", StatusPolarity.Neutral,
             $"The next enemy Attack hit on you deals {OpenGuardPerStack} more damage per stack, before Block, and " +

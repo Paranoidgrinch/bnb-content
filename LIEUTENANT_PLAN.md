@@ -204,6 +204,17 @@ Abweichungen beim Bauen:
 - **Chain of Command / Watchword / Succession**: ihr Ziehen „nächster Zug“ geschieht, wenn die nächste Hand gegeben
   wird (wie Magpie's Luck der Hexe).
 
+**Relikte** — Abweichungen vom Kanon §4 beim Bauen:
+- **Torn Standard**: kein „you may“ und keine Wahl des Gegners — gelegt nur, wenn keine Challenge offen ist (so
+  verdrängt es nie eine), auf den schwächsten Gegner.
+- **Full Tang**: trifft den schwächsten Gegner.
+- **Lead Knuckles**: die 8 kommen als eigener Schaden ohne Strength auf das Ziel der Deed, wenn ihr Spielen gehört
+  wird (die Deed kann da schon getroffen haben).
+- **Scarlet Epaulette**: die nächste Deed (nicht nur Einzelziel) schlägt beim Schließen ihrer Aktion noch einmal zu,
+  für die Hälfte ihres Treffers ohne Strength, plus einmal Strength. Zählt nicht als Deed-Treffer.
+- **Commission / Brandy Flask**: über die Brücke Kampf → Lauf (`CombatResolvedRunEvent.Counters`); die Reserve ist ein
+  Lauf-Zähler, der nächste Kampf bekommt sie als Eröffnung.
+
 ## 5 Stand
 
 | Schritt | Stand |
@@ -213,3 +224,4 @@ Abweichungen beim Bauen:
 | S4 Commons | ✔ `LieutenantCardTests` (15) |
 | S5 Uncommons | ✔ `LieutenantUncommonTests` (24) |
 | S6 Rares | ✔ `LieutenantRareTests` (27); Core: `eventBlockedAmount` (RogueDeck-Core a703df1) |
+| S7 Relikte | ✔ `LieutenantRelicTests` (19) |

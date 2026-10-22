@@ -23,7 +23,8 @@ public static class LieutenantCharacter
     };
 
     // Her cards (and their upgrades) and her relics: offered to her alone.
-    public static IReadOnlyList<string> Exclusive => [.. LieutenantCards.All().Select(c => c.Id)];
+    public static IReadOnlyList<string> Exclusive =>
+        [.. LieutenantCards.All().Select(c => c.Id), .. LieutenantRelics.All().Select(r => r.Id)];
 
     public static RunCharacter Roster() => new(Id, Start, Exclusive: Exclusive);
 }

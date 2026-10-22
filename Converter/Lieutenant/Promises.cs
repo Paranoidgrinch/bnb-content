@@ -78,6 +78,12 @@ public static class Promises
     public static readonly ChallengeSpec Successor = new("lt_c_successor", "Succession", Hits,
         "hit it with a Deed before it acts", new Reward());
 
+    // ── relics ───────────────────────────────────────────────────────────────────────────────────────────
+
+    // Torn Standard's Challenge, laid by the relic when an Order fails.
+    public static readonly ChallengeSpec TornStandard = new("lt_c_torn_standard", "Torn Standard", HitByNextTurn,
+        "hit it with a Deed by the end of your next turn", new Reward());
+
     public static readonly IReadOnlyList<OrderSpec> Orders =
     [
         FirstOrders, FirstOrdersPlus, RollCall, Gatehouse, LastBell, LastBellPlus, Scabbard,
@@ -88,6 +94,6 @@ public static class Promises
     [
         NewStripes, MarkedMan, BracedPike, Arrest,
         Gauntlet, OnYourFeet, Pursuit, NoRunning, Dare, SecondBlade, Testimony,
-        BlackGauntlet, Successor,
+        BlackGauntlet, Successor, TornStandard,
     ];
 }

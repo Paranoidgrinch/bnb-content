@@ -91,9 +91,10 @@ public class FinalRelicPoolTests
     [Fact]
     public void Every_combat_rule_a_relic_installs_is_registered()
     {
-        // The Hedge Witch's relic rules live with her other rules (WitchRules), and ship with them.
+        // The characters' relic rules live with their other rules (WitchRules, ApprenticeRules, LieutenantRules).
         var statuses = FinalRelics.Statuses().Concat(Converter.Witch.WitchRules.All())
-            .Concat(Converter.Apprentice.ApprenticeRules.All()).Select(s => s.Id).ToHashSet();
+            .Concat(Converter.Apprentice.ApprenticeRules.All()).Concat(Converter.Lieutenant.LieutenantRules.All())
+            .Select(s => s.Id).ToHashSet();
 
         foreach (var relic in FinalRelics.All().Where(r => r.CombatRule is not null))
             Assert.True(statuses.Contains(relic.CombatRule!.Id),

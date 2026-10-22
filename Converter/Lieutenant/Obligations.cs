@@ -75,6 +75,7 @@ public enum ChallengeKind
     TakeHit,           // its next Attack (within its next two actions) takes her HP, and she lives
     DistinctDeeds,     // hits from N different Deeds played later, before it acts
     SurviveThenHit,    // live through its next Attack (within its next two actions), then a Deed hit before it acts again
+    HitByNextTurn,     // a Deed hit by the end of her next turn, whatever it does meanwhile
 }
 
 public sealed record ChallengeSpec(string Id, string Name, ChallengeKind Kind, string Condition, Reward Reward, int N = 1)
@@ -464,7 +465,7 @@ public static class Obligations
 
     private static bool Counted(ChallengeKind kind) =>
         kind is ChallengeKind.Hits or ChallengeKind.BigHit or ChallengeKind.Pursuit or ChallengeKind.DistinctDeeds
-            or ChallengeKind.SurviveThenHit;
+            or ChallengeKind.SurviveThenHit or ChallengeKind.HitByNextTurn;
 
     private static bool AnswersAnAttack(ChallengeKind kind) =>
         kind is ChallengeKind.WithstandAttack or ChallengeKind.KeepBlock or ChallengeKind.TakeHit or ChallengeKind.SurviveThenHit;
@@ -495,7 +496,7 @@ public static class Obligations
             triggers.Add(On(TriggerEvent.ActionStarting, BeforeItActs(challenge)));
         if (AnswersAnAttack(challenge.Kind))
             triggers.AddRange(AttackResponse(challenge));
-        if (challenge.Kind is ChallengeKind.Kill or ChallengeKind.Pursuit)
+        if (challenge.Kind is ChallengeKind.Kill or ChallengeKind.Pursuit or ChallengeKind.HitByNextTurn)
             triggers.Add(On(TriggerEvent.TurnEnded, ByHerNextTurn(challenge), StatusTriggerScope.Anywhere));
         if (challenge.Kind == ChallengeKind.KeepOrder)
             triggers.Add(On(TriggerEvent.RuleAnnounced, RA.If(
@@ -526,6 +527,7 @@ public static class Obligations
         var count = challenge.Kind switch
         {
             // Two with Witness, which the hit spends.
+            ChallengeKind.HitByNextTurn => D.Set(D.Event, Progress(id), 1),
             ChallengeKind.Hits => D.All(
                 D.Add(D.Event, Progress(id), D.Plus(D.C(1), D.Min(D.C(1), D.Stacks(D.Self, Witness)))),
                 D.Remove(D.Self, Witness)),
@@ -549,7 +551,7 @@ public static class Obligations
         {
             ChallengeKind.SurviveThenHit => Survived + 1,
             ChallengeKind.Pursuit => 2,
-            ChallengeKind.BigHit => 1,
+            ChallengeKind.BigHit or ChallengeKind.HitByNextTurn => 1,
             _ => challenge.N,
         };
         return AR.Seq(

@@ -47,6 +47,7 @@ public sealed class ConversionPools
         Eligibility.Bureaucrat => RunExpr.CharacterIs(BureaucratId),
         Eligibility.HedgeWitch => RunExpr.CharacterIs(Witch.WitchCharacter.Id),
         Eligibility.Apprentice => RunExpr.CharacterIs(Apprentice.ApprenticeCharacter.Id),
+        Eligibility.Lieutenant => RunExpr.CharacterIs(Lieutenant.LieutenantCharacter.Id),
         _ => null,
     };
 

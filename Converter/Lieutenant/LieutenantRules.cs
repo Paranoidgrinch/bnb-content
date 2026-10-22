@@ -32,6 +32,7 @@ public static partial class LieutenantRules
             "Your next Deed this turn costs 1 less, once per stack."),
         .. UncommonRules(),
         .. RareRules(),
+        .. RelicRules(),
     ];
 
     // Buckle: an Order kept before the end of this turn takes back the Open Guard the card gave.
@@ -54,8 +55,15 @@ public static partial class LieutenantRules
     // renewed on every card she draws while the discount stands; the first such card she plays uses
     // one stack, and when the last is used — or the turn ends — the prices come off again.
 
-    private static StatusData Discount(string id, string name, string tag, int off, string description)
+    private static StatusData Discount(string id, string name, string tag, int off, string description, bool intoNextTurn = false)
     {
+        var aged = id + "_aged";
+        var endOfTurn = intoNextTurn
+            ? TE.If(TE.Is(TE.Counter(TE.Self, aged), 1),
+                TE.Seq(MarkHand<TurnEndedTriggeredEffectContext>(tag, 0), TE.Set(TE.Self, aged, 0), TE.Remove(TE.Self, id)),
+                // The hand goes to the discard pile now; the next turn's draw is priced again as it comes.
+                TE.Seq(MarkHand<TurnEndedTriggeredEffectContext>(tag, 0), TE.Set(TE.Self, aged, 1)))
+            : TE.Seq(MarkHand<TurnEndedTriggeredEffectContext>(tag, 0), TE.Remove(TE.Self, id));
         return Status(id, name, StatusPolarity.Buff, description,
             triggers:
             [
@@ -63,11 +71,11 @@ public static partial class LieutenantRules
                 On(TriggerEvent.CardPlayed, CP.If(CP.CardTagged(tag), CP.Seq(
                     CP.Adjust(CP.Self, id, CP.C(-1)),
                     CP.If(CP.Not(CP.Wears(CP.Self, id)), MarkHand<CardPlayedTriggeredEffectContext>(tag, 0))))),
-                On(TriggerEvent.TurnEnded, TE.Seq(MarkHand<TurnEndedTriggeredEffectContext>(tag, 0), TE.Remove(TE.Self, id))),
+                On(TriggerEvent.TurnEnded, endOfTurn),
             ]);
     }
 
-    private static IEffectNode<T> MarkHand<T>(string tag, int delta) where T : class =>
+    internal static IEffectNode<T> MarkHand<T>(string tag, int delta) where T : class =>
         new ForEachCardInZoneNode<T>(Her, CardZone.Hand,
             new ConditionalEffectNode<T>(
                 new CardInstanceHasTagExpression<T>(new IteratedCardExpression<T>(), new TagId(tag)),

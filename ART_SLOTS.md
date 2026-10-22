@@ -2,7 +2,7 @@
 
 Generated: `dotnet run --project Converter -- --art-slots ART_SLOTS.md`. **Do not edit by hand.**
 
-**1013 pictures**: 494 cards, 246 relics, 269 bodies
+**1031 pictures**: 494 cards, 264 relics, 269 bodies
 (every enemy, elite and boss) and 4 the player can be. Every one of them is filled today by a PLACEHOLDER — a plate with the file's own
 name and the word placeholder on it, written by `bnb-godot/tools/make-card-art.py`,
 `make-relic-art.py` and `make-enemy-art.py`. A painted picture replaces one by being saved over it, so
@@ -54,11 +54,11 @@ The relic briefs below are the design canon's own words
 `BnB_Elite_Relics_MASTER_AND_VISUAL_CANON.md` for #169–210). Frames, palettes and the label rule live
 there in full; only the object line is repeated here, because that is the line that differs per relic.
 
-## Relics — 246 pictures
+## Relics — 264 pictures
 
 The catalogue number is the design canon's, and it is not part of the file name: the id is.
 
-### Normal relics — 74
+### Normal relics — 86
 
 | # | code | title | rarity | the object |
 |---:|---|---|---|---|
@@ -136,8 +136,20 @@ The catalogue number is the design canon's, and it is not part of the file name:
 | — | `ar_ash_bookcord` | Ash Bookcord | rare | Once per turn, after a wand card is exhausted by Burn or Burn Out, you may inscribe a card from your hand into its slot for free. |
 | — | `ar_star_chart` | Star Chart | rare | The first time you cast each turn, gain 1 Rote. |
 | — | `ar_tutors_cane` | Tutor's Cane | rare | The wand starts each combat with one more slot. |
+| — | `lt_relic_tin_fife` | Tin Fife | common | The first time each turn you issue an Order, draw 1 card, then put a card from your hand on the bottom of your draw pile. |
+| — | `lt_relic_chipped_buckler` | Chipped Buckler | common | The first time each turn a Deed of yours hits a Challenged enemy, gain 4 Block. |
+| — | `lt_relic_split_chinstrap` | Split Chinstrap | common | Once each enemy phase, when an enemy hit spends your Open Guard and takes none of your HP, gain 1 Authority at the start of your next turn. |
+| — | `lt_relic_sword_knot` | Sword Knot | uncommon | The first time each turn you spend Strength on a card, gain 1 Authority. |
+| — | `lt_relic_warrant_cord` | Warrant Cord | uncommon | Once each turn, when your Challenge ends because its target fell before you kept it, gain 1 Authority. |
+| — | `lt_relic_parade_spur` | Parade Spur | uncommon | At the end of your turn, if you have Open Guard, you may gain 1 more. If you do and an enemy attacks you before your next turn, gain 1 Authority when it comes. |
+| — | `lt_relic_pay_chest` | Pay Chest | uncommon | At the end of your turn, if you have 3 or more Authority, gain 5 Block. |
+| — | `lt_relic_dented_gorget` | Dented Gorget | uncommon | Once each enemy phase, when an enemy hit spends your Open Guard, your first Deed next turn costs 1 less. |
+| — | `lt_relic_torn_standard` | Torn Standard | rare | Once each turn, when an Order fails at its deadline and you have no Challenge out, Challenge the weakest enemy: hit it with a Deed by the end of your next turn (1 Authority). |
+| — | `lt_relic_full_tang` | Full Tang | rare | The first time each turn you spend Strength on a card, deal 6 damage to the weakest enemy for each Strength spent (at most 3). |
+| — | `lt_relic_scarlet_epaulette` | Scarlet Epaulette | rare | The first time each turn you gain Open Guard, your next Deed this turn strikes its target once more for half of its blow. |
+| — | `lt_relic_commission` | Commission | rare | Begin each combat with 1 Authority. After a victory, keep up to 2 Authority you have left for the start of the next combat. |
 
-### Shop relics — 36
+### Shop relics — 42
 
 | # | code | title | rarity | the object |
 |---:|---|---|---|---|
@@ -177,6 +189,12 @@ The catalogue number is the design canon's, and it is not part of the file name:
 | — | `ar_spare_wicks` | Spare Wicks | shop | At the start of each combat, apply 2 Singe to ALL enemies. |
 | — | `ar_slate_board` | Slate Board | shop | Whenever you inscribe a card, gain 2 Block. |
 | — | `ar_oil_lamp` | Oil Lamp | shop | At the end of your turn, if you did not cast, gain 1 Focus. |
+| — | `lt_relic_lead_knuckles` | Lead Knuckles | shop | Once each turn, when you play a Deed with Open Guard, you may Exhaust another card from your hand to deal 8 more damage to its target. |
+| — | `lt_relic_iron_shackle` | Iron Shackle | shop | The first time each turn you issue a Challenge, you may gain 1 Open Guard to apply 2 Doubt to its target. |
+| — | `lt_relic_brandy_flask` | Brandy Flask | shop | After a victorious combat, heal half the HP Open Guard cost you in it (at most 6). |
+| — | `lt_relic_badge_chain` | Badge Chain | shop | Once each turn, when you keep a Challenge, you may turn 1 of the Authority it gave you into 1 Strength. |
+| — | `lt_relic_worn_epaulette` | Worn Epaulette | shop | The first time each turn you keep an Order, your next Working costs 1 less, this turn or the next. |
+| — | `lt_relic_spur_buckle` | Spur Buckle | shop | Once each turn, after a card spends your Strength, you may spend 1 more Strength to gain 1 Energy. |
 
 ### Event relics — 25
 
