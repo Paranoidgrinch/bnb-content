@@ -44,38 +44,14 @@ public static partial class LieutenantRules
     // fight's last state can be read when it resolves.
     public const string AuthorityLeft = "lt_authority_left";
 
-    private static ICombatExpression<T, bool> AnyChallengeOn<T>(ICombatantTargetSelector who) where T : class
-    {
-        ICombatExpression<T, bool>? any = null;
-        foreach (var c in Promises.Challenges)
-        {
-            var one = N<T>.Wears(who, c.Id);
-            any = any is null ? one : N<T>.Or(any, one);
-        }
-        return any!;
-    }
+    internal static ICombatExpression<T, bool> AnyChallengeOn<T>(ICombatantTargetSelector who) where T : class =>
+        N<T>.AnyOf([.. Promises.Challenges.Select(c => N<T>.Wears(who, c.Id))]);
 
-    private static ICombatExpression<T, bool> IsAnOrder<T>() where T : class
-    {
-        ICombatExpression<T, bool>? any = null;
-        foreach (var o in Promises.Orders)
-        {
-            var one = N<T>.StatusIs(o.Id);
-            any = any is null ? one : N<T>.Or(any, one);
-        }
-        return any!;
-    }
+    private static ICombatExpression<T, bool> IsAnOrder<T>() where T : class =>
+        N<T>.AnyOf([.. Promises.Orders.Select(o => N<T>.StatusIs(o.Id))]);
 
-    private static ICombatExpression<T, bool> IsAChallenge<T>() where T : class
-    {
-        ICombatExpression<T, bool>? any = null;
-        foreach (var c in Promises.Challenges)
-        {
-            var one = N<T>.StatusIs(c.Id);
-            any = any is null ? one : N<T>.Or(any, one);
-        }
-        return any!;
-    }
+    private static ICombatExpression<T, bool> IsAChallenge<T>() where T : class =>
+        N<T>.AnyOf([.. Promises.Challenges.Select(c => N<T>.StatusIs(c.Id))]);
 
     private static StatusData Relic(string id, string name, string description, IReadOnlyList<StatusTriggerData> triggers,
         IReadOnlyList<PassiveModifierData>? passives = null) =>
@@ -235,9 +211,8 @@ public static partial class LieutenantRules
     {
         var c = Promises.TornStandard;
         var target = CombatantTargetSelectors.LowestHealthEnemyOfSource;
-        var anyOut = Promises.Challenges.Select(x => (ICombatExpression<RuleAnnouncedTriggeredEffectContext, bool>)RA.AtLeast(
-                RA.Count(CombatantTargetSelectors.WithStatus(CombatantTargetSelectors.AllCombatants, new StatusDefinitionId(x.Id))), 1))
-            .Aggregate((a, b) => RA.Or(a, b));
+        var anyOut = RA.AnyOf([.. Promises.Challenges.Select(x => RA.AtLeast(
+            RA.Count(CombatantTargetSelectors.WithStatus(CombatantTargetSelectors.AllCombatants, new StatusDefinitionId(x.Id))), 1))]);
         return RA.If(RA.And(RA.Announced(Obligations.OrderFailed), RA.And(RA.Not(anyOut), RA.Fresh(Her, Latch(TornStandard)))),
             RA.Seq(
                 RA.Spend(Her, Latch(TornStandard)),

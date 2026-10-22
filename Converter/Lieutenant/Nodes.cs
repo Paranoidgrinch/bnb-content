@@ -21,6 +21,33 @@ internal static class N<T> where T : class
     public static IEffectNode<T> If(ICombatExpression<T, bool> test, IEffectNode<T> then, IEffectNode<T>? otherwise = null) =>
         new ConditionalEffectNode<T>(test, then, otherwise);
 
+    // The first case that holds, and only it — an if-else chain. ⚠ A conditional that fails with nothing to do
+    // still costs the fight a queue cycle (it hands its completion back as a continuation), so a rule that asks
+    // thirty questions of every status application asks them as ONE chain, which costs one, not thirty.
+    public static IEffectNode<T> FirstOf(IEnumerable<(ICombatExpression<T, bool> When, IEffectNode<T> Then)> cases)
+    {
+        var list = cases.ToList();
+        if (list.Count == 0)
+            return Nothing;
+        // Halved rather than chained, so the depth grows with the logarithm of the cases: the game document is
+        // JSON, and its reader stops at 64 levels.
+        if (list.Count > 3)
+        {
+            var left = list.Take(list.Count / 2).ToList();
+            var right = list.Skip(list.Count / 2).ToList();
+            return new ConditionalEffectNode<T>(AnyOf(left.Select(c => c.When).ToList()), FirstOf(left), FirstOf(right));
+        }
+        IEffectNode<T>? chain = null;
+        foreach (var (when, then) in Enumerable.Reverse(list))
+            chain = new ConditionalEffectNode<T>(when, then, chain);
+        return chain!;
+    }
+
+    // Any of these, as a balanced tree of ors.
+    public static ICombatExpression<T, bool> AnyOf(IReadOnlyList<ICombatExpression<T, bool>> tests) =>
+        tests.Count == 1 ? tests[0]
+            : Or(AnyOf([.. tests.Take(tests.Count / 2)]), AnyOf([.. tests.Skip(tests.Count / 2)]));
+
     public static IEffectNode<T> Each(ICombatantTargetSelector who, IEffectNode<T> body) =>
         new ForEachTargetEffectNode<T>(who, body);
 

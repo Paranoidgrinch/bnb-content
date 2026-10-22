@@ -168,14 +168,9 @@ public static partial class LieutenantRules
     // once, and no Deed (§2.7).
     private static StatusData RiposteRite()
     {
-        ICombatExpression<ActionResolvedTriggeredEffectContext, bool>? challenged = null;
-        foreach (var c in Promises.Challenges)
-        {
-            var one = AR.Wears(AR.Self, c.Id);
-            challenged = challenged is null ? one : AR.Or(challenged, one);
-        }
+        var challenged = AnyChallengeOn<ActionResolvedTriggeredEffectContext>(AR.Self);
         var struck = AR.And(AR.Not(AR.Wears(AR.Self, Command)),
-            AR.And(new ActionDealtDamageExpression<ActionResolvedTriggeredEffectContext>(), challenged!));
+            AR.And(new ActionDealtDamageExpression<ActionResolvedTriggeredEffectContext>(), challenged));
         return Status(Riposte, "Riposte", StatusPolarity.Buff,
             "Once each enemy phase, when a Challenged enemy has attacked you, deal it this much damage plus your Strength.",
             triggers:

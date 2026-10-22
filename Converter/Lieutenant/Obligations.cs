@@ -190,19 +190,20 @@ public static class Obligations
         var struck = D.If(ByAnEnemy<DamageReceivedTriggeredEffectContext>(),
             D.All(D.Add(D.Event, PhaseHits, D.C(1)), D.Add(D.Event, PhaseHp, D.Amount)));
 
-        // Anything applied anywhere: is it a promise being issued?
-        var issued = SA.All(
+        // Anything applied anywhere: is it a promise being issued, or a pulse? Asked as one chain — this hears
+        // every status applied in the fight (see N.FirstOf).
+        var issued = SA.FirstOf(
         [
-            SA.If(SA.StatusIs(StrengthPulse), SA.Seq(
+            (SA.StatusIs(StrengthPulse), SA.Seq(
                 SA.Set(SA.Event, StrengthPaidLast, SA.Stacks(SA.Event, StrengthPulse)),
                 SA.Set(SA.Event, StrengthPaidRound, SA.Round),
                 SA.Remove(SA.Event, StrengthPulse),
                 SA.Announce(SA.Event, StrengthPaid))),
-            SA.If(SA.StatusIs(AuthorityPulse), SA.Seq(
+            (SA.StatusIs(AuthorityPulse), SA.Seq(
                 SA.Set(SA.Event, AuthorityPaidLast, SA.Stacks(SA.Event, AuthorityPulse)),
                 SA.Remove(SA.Event, AuthorityPulse),
                 SA.Announce(SA.Event, AuthorityPaid))),
-            SA.If(SA.StatusIs(RemandPulse), SA.Seq(
+            (SA.StatusIs(RemandPulse), SA.Seq(
             [
                 .. ChallengeList.Select(c => SA.Each(CombatantTargetSelectors.WithStatus(CombatantTargetSelectors.AllCombatants,
                         new StatusDefinitionId(c.Id)),
@@ -210,16 +211,16 @@ public static class Obligations
                         SA.All(SA.Set(SA.It, Grace(c.Id), 1), SA.Set(SA.It, Remanded(c.Id), 1))))),
                 SA.Remove(SA.Event, RemandPulse),
             ])),
-            SA.If(SA.StatusIs(PardonPulse), Pardon()),
-            SA.If(SA.StatusIs(RedressPulse), Redress()),
-            SA.If(SA.StatusIs(AbandonPulse), SA.Seq(
+            (SA.StatusIs(PardonPulse), Pardon()),
+            (SA.StatusIs(RedressPulse), Redress()),
+            (SA.StatusIs(AbandonPulse), SA.Seq(
             [
                 .. OrderList.Select((o, i) => SA.If(SA.Is(SA.Counter(SA.Event, OlderOrder), i + 1),
                     SA.Seq(SA.Remove(SA.Event, o.Id), ReleasePlace<StatusAppliedTriggeredEffectContext>(SA.Event, i + 1)))),
                 SA.Remove(SA.Event, AbandonPulse),
             ])),
-            .. OrderList.Select((o, i) => SA.If(SA.StatusIs(o.Id), IssueOrder(o, i + 1))),
-            .. ChallengeList.Select(c => SA.If(SA.StatusIs(c.Id), IssueChallenge(c))),
+            .. OrderList.Select((o, i) => (SA.StatusIs(o.Id), IssueOrder(o, i + 1))),
+            .. ChallengeList.Select(c => (SA.StatusIs(c.Id), IssueChallenge(c))),
         ]);
 
         return Status(Command, "Lieutenant", StatusPolarity.Neutral,
@@ -241,20 +242,18 @@ public static class Obligations
     private static IEffectNode<StatusAppliedTriggeredEffectContext> Pardon()
     {
         var her = SA.Event;
-        const string done = "lt_pardon_done";
-        var open = SA.Is(SA.Counter(her, done), 0);
         return SA.Seq(
-        [
-            SA.Set(her, done, 0),
-            .. OrderList.Select((o, i) => SA.If(SA.And(open, SA.Is(SA.Counter(her, OlderOrder), i + 1)),
-                SA.Seq(SA.Set(her, done, 1), Kept<StatusAppliedTriggeredEffectContext>(o, her)))),
-            .. OrderList.Select((o, i) => SA.If(SA.And(open, SA.Is(SA.Counter(her, NewerOrder), i + 1)),
-                SA.Seq(SA.Set(her, done, 1), Kept<StatusAppliedTriggeredEffectContext>(o, her)))),
-            .. ChallengeList.Select(c => SA.If(SA.And(open, SA.AtLeast(SA.Count(CombatantTargetSelectors.WithStatus(
-                    CombatantTargetSelectors.AllCombatants, new StatusDefinitionId(c.Id))), 1)),
-                SA.Seq(SA.Set(her, done, 1), Won<StatusAppliedTriggeredEffectContext>(c, BearerOf(c.Id))))),
-            SA.Remove(her, PardonPulse),
-        ]);
+            SA.FirstOf(
+            [
+                .. OrderList.Select((o, i) => (SA.Is(SA.Counter(her, OlderOrder), i + 1),
+                    Kept<StatusAppliedTriggeredEffectContext>(o, her))),
+                .. OrderList.Select((o, i) => (SA.Is(SA.Counter(her, NewerOrder), i + 1),
+                    Kept<StatusAppliedTriggeredEffectContext>(o, her))),
+                .. ChallengeList.Select(c => (SA.AtLeast(SA.Count(CombatantTargetSelectors.WithStatus(
+                        CombatantTargetSelectors.AllCombatants, new StatusDefinitionId(c.Id))), 1),
+                    Won<StatusAppliedTriggeredEffectContext>(c, BearerOf(c.Id)))),
+            ]),
+            SA.Remove(her, PardonPulse));
     }
 
     // Redress (§2.4): the Challenge moves to the enemy the card was aimed at — that enemy must meet what the
@@ -307,7 +306,7 @@ public static class Obligations
 
     // The Order in this place is replaced: it ends without success or failure (§2.3).
     private static IEffectNode<StatusAppliedTriggeredEffectContext> GiveWay(ICombatantTargetSelector her, string place) =>
-        SA.All([.. OrderList.Select((o, i) => SA.If(SA.Is(SA.Counter(her, place), i + 1),
+        SA.FirstOf([.. OrderList.Select((o, i) => (SA.Is(SA.Counter(her, place), i + 1),
             SA.Seq(SA.Remove(her, o.Id), SA.Announce(her, OrderReplaced))))]);
 
     // An Order that ends leaves its place; the newer one moves up.
@@ -321,7 +320,7 @@ public static class Obligations
     private static IEffectNode<StatusAppliedTriggeredEffectContext> IssueChallenge(ChallengeSpec challenge)
     {
         var all = CombatantTargetSelectors.AllCombatants;
-        return SA.Seq(
+        return SA.All(
         [
             .. ChallengeList.Where(c => c.Id != challenge.Id).Select(c => SA.Each(all, SA.Remove(SA.It, c.Id))),
             SA.Each(CombatantTargetSelectors.Except(all, SA.Event), SA.Remove(SA.It, challenge.Id)),
