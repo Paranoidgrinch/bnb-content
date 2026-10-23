@@ -5,6 +5,7 @@ namespace BnbContent.Converter.Lieutenant;
 
 // Every Order and Challenge a Lieutenant card can issue (lieutenant_master.md §3), in one place, so that each
 // becomes its own status and "is this enemy Challenged?" can name them all. A card's text quotes its promise's.
+// Every Challenge pays 1 Strength more than the canon drafted (bench 2026-10-23): her Challenges are her scaling.
 public static class Promises
 {
     // ── starters ─────────────────────────────────────────────────────────────────────────────────────────
@@ -15,7 +16,7 @@ public static class Promises
         "play a Deed later this turn", new Reward(Block: 3));
 
     public static readonly ChallengeSpec NewStripes = new("lt_c_new_stripes", "New Stripes", Hits,
-        "hit it with a Deed before it acts", new Reward());
+        "hit it with a Deed before it acts", new Reward(Strength: 1));
 
     // ── commons ──────────────────────────────────────────────────────────────────────────────────────────
 
@@ -31,11 +32,11 @@ public static class Promises
         "play no further Deed this turn and end it with Energy left", new Reward());
 
     public static readonly ChallengeSpec MarkedMan = new("lt_c_marked_man", "Marked Man", Hits,
-        "hit it with Deeds twice more before it acts", new Reward(), N: 2);
+        "hit it with Deeds twice more before it acts", new Reward(Strength: 1), N: 2);
     public static readonly ChallengeSpec BracedPike = new("lt_c_braced_pike", "Braced Pike", WithstandAttack,
-        "its next Attack, within its next two actions, takes none of your HP", new Reward(Strength: 1));
+        "its next Attack, within its next two actions, takes none of your HP", new Reward(Strength: 2));
     public static readonly ChallengeSpec Arrest = new("lt_c_arrest", "Arrest", Kill,
-        "defeat it by the end of your next turn", new Reward(Draw: 1));
+        "defeat it by the end of your next turn", new Reward(Strength: 1, Draw: 1));
 
     // ── uncommons ────────────────────────────────────────────────────────────────────────────────────────
 
@@ -54,19 +55,19 @@ public static class Promises
         new Reward(Authority: 2));
 
     public static readonly ChallengeSpec Gauntlet = new("lt_c_gauntlet", "Gauntlet", BigHit,
-        "take at least 12 of its HP with one later Deed hit before it acts", new Reward(Strength: 1), N: 12);
+        "take at least 12 of its HP with one later Deed hit before it acts", new Reward(Strength: 2), N: 12);
     public static readonly ChallengeSpec OnYourFeet = new("lt_c_on_your_feet", "On Your Feet", KeepBlock,
-        "after its next Attack, within its next two actions, you still have Block", new Reward(NextTurnDraw: 1));
+        "after its next Attack, within its next two actions, you still have Block", new Reward(Strength: 1, NextTurnDraw: 1));
     public static readonly ChallengeSpec Pursuit = new("lt_c_pursuit", "Pursuit", ChallengeKind.Pursuit,
-        "hit it with a Deed later this turn and again next turn", new Reward(Authority: 2));
+        "hit it with a Deed later this turn and again next turn", new Reward(Authority: 2, Strength: 1));
     public static readonly ChallengeSpec NoRunning = new("lt_c_no_running", "No Running", BigHit,
-        "a later Deed hit takes its HP before it acts", new Reward(Draw: 1), N: 1);
+        "a later Deed hit takes its HP before it acts", new Reward(Strength: 1, Draw: 1), N: 1);
     public static readonly ChallengeSpec Dare = new("lt_c_dare", "Dare", TakeHit,
-        "let its next Attack, within its next two actions, take your HP", new Reward(Authority: 2, Strength: 1));
+        "let its next Attack, within its next two actions, take your HP", new Reward(Authority: 2, Strength: 2));
     public static readonly ChallengeSpec SecondBlade = new("lt_c_second_blade", "Second Blade", DistinctDeeds,
-        "hit it with two more Deeds before it acts", new Reward(Strength: 1), N: 2);
+        "hit it with two more Deeds before it acts", new Reward(Strength: 2), N: 2);
     public static readonly ChallengeSpec Testimony = new("lt_c_testimony", "Testimony", KeepOrder,
-        "keep an Order before it acts", new Reward(Draw: 1));
+        "keep an Order before it acts", new Reward(Strength: 1, Draw: 1));
 
     // ── upgrades whose facet is in the promise (plan §1, O) ──────────────────────────────────────────────
 
@@ -82,33 +83,33 @@ public static class Promises
         "in the next enemy phase, an enemy attacks you and no Attack damage gets through to your HP", new Reward(Authority: 2));
 
     public static readonly ChallengeSpec OnYourFeetPlus = new("lt_c_on_your_feet_plus", "On Your Feet+", KeepBlock,
-        OnYourFeet.Condition, new Reward(Strength: 1, NextTurnDraw: 1));
+        OnYourFeet.Condition, new Reward(Block: 4, Strength: 1, NextTurnDraw: 1));
     public static readonly ChallengeSpec DarePlus = new("lt_c_dare_plus", "Dare+", TakeHit,
-        Dare.Condition, new Reward(Authority: 2, Strength: 1, NextTurnDraw: 1));
+        Dare.Condition, new Reward(Authority: 2, Strength: 2, NextTurnDraw: 1));
     public static readonly ChallengeSpec MarkedManPlus = new("lt_c_marked_man_plus", "Marked Man+", Hits,
-        MarkedMan.Condition, new Reward(Strength: 1), N: 2);
+        MarkedMan.Condition, new Reward(Strength: 1, Draw: 1), N: 2);
     public static readonly ChallengeSpec ArrestPlus = new("lt_c_arrest_plus", "Arrest+", Kill,
-        Arrest.Condition, new Reward(Strength: 1, Draw: 1));
+        Arrest.Condition, new Reward(Block: 5, Strength: 1, Draw: 1));
     public static readonly ChallengeSpec GauntletPlus = new("lt_c_gauntlet_plus", "Gauntlet+", BigHit,
-        "take at least 10 of its HP with one later Deed hit before it acts", new Reward(Strength: 1), N: 10);
+        "take at least 10 of its HP with one later Deed hit before it acts", new Reward(Strength: 2), N: 10);
     public static readonly ChallengeSpec TestimonyPlus = new("lt_c_testimony_plus", "Testimony+", KeepOrder,
-        Testimony.Condition, new Reward(Strength: 1, Draw: 1));
+        Testimony.Condition, new Reward(Strength: 1, Draw: 1, WardWax: 3));
 
     // ── rares ────────────────────────────────────────────────────────────────────────────────────────────
 
     public static readonly ChallengeSpec BlackGauntlet = new("lt_c_black_gauntlet", "Black Gauntlet", SurviveThenHit,
         "survive its next Attack, within its next two actions, then hit it with a Deed before it acts again",
-        new Reward(Authority: 2, Strength: 1));
+        new Reward(Authority: 2, Strength: 2));
 
     // Succession's second Challenge, laid by the Rite rather than a card.
     public static readonly ChallengeSpec Successor = new("lt_c_successor", "Succession", Hits,
-        "hit it with a Deed before it acts", new Reward());
+        "hit it with a Deed before it acts", new Reward(Strength: 1));
 
     // ── relics ───────────────────────────────────────────────────────────────────────────────────────────
 
     // Torn Standard's Challenge, laid by the relic when an Order fails.
     public static readonly ChallengeSpec TornStandard = new("lt_c_torn_standard", "Torn Standard", HitByNextTurn,
-        "hit it with a Deed by the end of your next turn", new Reward());
+        "hit it with a Deed by the end of your next turn", new Reward(Strength: 1));
 
     public static readonly IReadOnlyList<OrderSpec> Orders =
     [

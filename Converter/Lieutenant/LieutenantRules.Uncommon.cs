@@ -97,16 +97,16 @@ public static partial class LieutenantRules
         var hurt = AR.And(AR.Not(AR.Wears(AR.Self, Command)),
             AR.Above(AR.Counter(Her, HpBeforeAction), new CombatantCurrentHealthExpression<ActionResolvedTriggeredEffectContext>(Her)));
         return Status(Scar, "Scar", StatusPolarity.Buff,
-            "The first time each enemy phase an enemy Attack takes your HP, gain 1 Strength.",
+            "The first time each enemy phase an enemy Attack takes your HP, gain 2 Strength.",
             triggers:
             [
                 On(TriggerEvent.ActionResolved, AR.If(AR.And(hurt, AR.Fresh(Her, Latch(Scar))),
-                    AR.Seq(AR.Spend(Her, Latch(Scar)), AR.Apply(Her, Strength, 1))), StatusTriggerScope.Anywhere),
+                    AR.Seq(AR.Spend(Her, Latch(Scar)), AR.Apply(Her, Strength, 2))), StatusTriggerScope.Anywhere),
             ]);
     }
 
     // Overreach: the first Open Guard she gains each turn — new or added to — charges her next Deed's first hit.
-    // The Rite's stacks are the bonus (4, or 6 upgraded).
+    // The Rite's stacks are the bonus (6, or 9 upgraded).
     private static StatusData OverreachRite()
     {
         IEffectNode<T> Charge<T>() where T : class => N<T>.If(
@@ -123,11 +123,11 @@ public static partial class LieutenantRules
 
     // Broken Nose: the first time each enemy phase Open Guard costs her HP she would have kept (§2.5).
     private static StatusData BrokenNoseRite() => Status(BrokenNose, "Broken Nose", StatusPolarity.Buff,
-        "The first time each enemy phase Open Guard costs you HP, gain 1 Authority and 1 Strength.",
+        "The first time each enemy phase Open Guard costs you HP, gain 1 Authority and 2 Strength.",
         triggers:
         [
             On(TriggerEvent.RuleAnnounced, RA.If(RA.And(RA.Announced(GuardHurt), RA.Fresh(Her, Latch(BrokenNose))),
                 RA.Seq(RA.Spend(Her, Latch(BrokenNose)), GainAuthority<RuleAnnouncedTriggeredEffectContext>(Her, 1),
-                    RA.Apply(Her, Strength, 1))), StatusTriggerScope.Anywhere),
+                    RA.Apply(Her, Strength, 2))), StatusTriggerScope.Anywhere),
         ]);
 }

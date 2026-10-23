@@ -252,6 +252,31 @@ vorher 14 von 84, jetzt **37 von 84 (44 %)**; dazu sieben Schwellen-Facetten (S)
 | Service Record | 10 Basis; Kill: 1 Authority | C |
 | Brevet | Retain, 1 Authority, 8 Block | I |
 
+### 4c Balance-Durchgang (2026-10-23)
+
+Erster Family-Bench (`lieutenant_decks.py` → `LIEUTENANT_DECKS.json`, 10 Decks je Akt, `--family-acts 2,3
+--family-relics only --bench-shuffles 2`, 70 HP). Ergebnisse in `~/Desktop/bnb-balance/20261023-lieutenant-family-v*.txt`.
+
+- **Open Guard bleibt bewusst strafend**: der erste gegnerische Treffer einer Aktion macht 25 % mehr je Stack
+  (abgerundet, mindestens 1 je Stack), vor Block (Core: `PassiveModifierOperation.AddPercentPerStack`).
+- **Zahlen**: die meisten Commons/Uncommons um 1–3 Schaden oder Block hoch, Upgrades mit; Broken Nose 1 Authority +
+  2 Strength, Scar 2 Strength, Bloody Cobbles 9, Last Ditch 12, Shield Punch 7.
+- **Jede Challenge zahlt 1 Strength mehr** als der Kanon; vier Plus-Specs mit eigener Zusatzbelohnung, damit die
+  Facetten-Quote hält. Orders unverändert.
+- **Bench-Decks** für Aggro mit mehr Block gebaut (Watch Cuts und First Orders raus, Dare, Clenched Jaw, Armguard rein).
+
+| Stand v5 | Akt II | Akt III |
+|---|---|---|
+| By the Book | 95 % | 91 % |
+| Shield & Steel | 96 % | 73 % (Bosse ins Zug-Limit) |
+| Strength Spender | 81 % | 44 % |
+| Duelist | 88 % | 36 % |
+| Bloodied Veteran | 77 % | 32 % |
+| Front Rank / Common Heavy / Bruiser | 79–90 % | 28–29 % |
+
+Ziel wäre Akt II ~89–94 %, Akt III Median ~42–44 %. Die Aggro-Decks verlieren an den Akt-III-Bossen (0–1/10):
+gleich schnell wie Paperwork, aber 7–8× so viel verlorenes Leben. Vorerst so gelassen (Entscheidung 2026-10-23).
+
 ## 5 Stand
 
 | Schritt | Stand |
@@ -283,6 +308,7 @@ vorher 14 von 84, jetzt **37 von 84 (44 %)**; dazu sieben Schwellen-Facetten (S)
 
 - **Golden-Set** für bnb-godot noch nicht aufgenommen (nach U2 aufnehmen; Skripte sind vorbereitet, nicht committet).
 
-- **Family-Bench / Balance**: nicht gemessen. Die Zahlen sind Entwurf (Kanon §9). Kein Family-Deck-File für sie.
+- **Balance**: Aggro-Decks im Akt III zu schwach gegen Bosse (§4c). Nächster Schritt wäre Sustain für Aggro
+  (Block auf Angriffen unter Open Guard, kleine Heilung auf Bloody Cobbles/Scar), nicht weniger Open Guard.
 - **Bilder**: keine Platzhalter für ihre Karten, Relikte und Figur (wie beim Apprentice); ART_SLOTS listet sie.
 - **Tutorial**: keins für sie (wie beim Apprentice).

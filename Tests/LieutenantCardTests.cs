@@ -37,7 +37,7 @@ public class LieutenantCardTests
         using var f = F(Five("lt_pike_butt"), hero: (LieutenantKeywords.Strength, 1));
         var before = Standing(f.It);
         f.Play_("lt_pike_butt");
-        Assert.Equal(before - 10, Standing(f.It));
+        Assert.Equal(before - 12, Standing(f.It));
     }
 
     [Fact]
@@ -46,11 +46,11 @@ public class LieutenantCardTests
         using var f = F(Five("lt_heel_turn", "lt_heel_turn", "lt_new_stripes"));
         var before = Standing(f.It);
         f.Play_("lt_heel_turn");
-        Assert.Equal(before - 3, Standing(f.It));
+        Assert.Equal(before - 4, Standing(f.It));
         f.Play_("lt_new_stripes", choose: 0);   // 1 Strength, 1 Open Guard
         before = Standing(f.It);
         f.Play_("lt_heel_turn");
-        Assert.Equal(before - 8, Standing(f.It));
+        Assert.Equal(before - 10, Standing(f.It));
     }
 
     [Fact]
@@ -136,7 +136,7 @@ public class LieutenantCardTests
             Assert.Equal(1, Stacks(f.It, Promises.BracedPike.Id));
             f.End();
             Assert.Equal(1, Stacks(f.Me, LieutenantKeywords.Authority));
-            Assert.Equal(1, Stacks(f.Me, LieutenantKeywords.Strength));
+            Assert.Equal(2, Stacks(f.Me, LieutenantKeywords.Strength));
         }
         // Against an enemy that does not mean to attack, nothing is issued.
         using var g = F(Five("lt_braced_pike"));
@@ -147,9 +147,11 @@ public class LieutenantCardTests
     [Fact]
     public void Braced_pike_fails_when_the_attack_gets_through()
     {
-        using var f = F(Five("lt_braced_pike", "lt_new_stripes"), enemy: Biter, intent: BiteIntent);
-        f.Play_("lt_new_stripes", choose: 0);   // the Challenge it issues is replaced by Braced Pike's
-        f.Play_("lt_braced_pike");   // 7 Block against 6 + 2 (Open Guard)
+        using var f = F(Five("lt_braced_pike", "lt_new_stripes", "lt_new_stripes", "lt_new_stripes"), enemy: Biter, intent: BiteIntent);
+        f.Play_("lt_new_stripes", choose: 0);   // the Challenges they issue are replaced by Braced Pike's
+        f.Play_("lt_new_stripes", choose: 0);
+        f.Play_("lt_new_stripes", choose: 0);
+        f.Play_("lt_braced_pike");   // 9 Block against 6 + 4 (three stacks of Open Guard: three quarters of 6)
         f.End();
         Assert.Equal(0, Stacks(f.Me, LieutenantKeywords.Authority));
         Assert.Equal(0, Stacks(f.It, Promises.BracedPike.Id));
@@ -214,7 +216,7 @@ public class LieutenantCardTests
         Assert.Equal(4, Stacks(f.Me, Converter.Cards.Keywords.WardWax));
         var hand = Now(f.Play).Hand.Count;
         f.Play_("lt_whetstone");
-        Assert.Equal(1, Stacks(f.Me, LieutenantKeywords.Strength));
+        Assert.Equal(2, Stacks(f.Me, LieutenantKeywords.Strength));
         Assert.Equal(hand, Now(f.Play).Hand.Count);   // one played, one drawn
     }
 

@@ -28,13 +28,13 @@ public static partial class LieutenantCards
         $"Draw 1 card. Gain 4 Block. {Promises.DoubleFile.Text}", DoubleFileOut(4));
 
     private static readonly BnbCard MindTheGap = Uncommon("lt_mind_the_gap", "Mind the Gap", DeedTag, 1,
-        $"Deal 8 damage. {Promises.MindTheGap.Text}", Seq(Damage(8), Issue(Promises.MindTheGap)));
+        $"Deal 10 damage. {Promises.MindTheGap.Text}", Seq(Damage(10), Issue(Promises.MindTheGap)));
 
     private static readonly BnbCard Cadence = Uncommon("lt_cadence", "Cadence", WorkingTag, 0,
         $"Draw 1 card. {Promises.Cadence.Text}", Seq(Draw(1), Issue(Promises.Cadence)));
 
     private static readonly BnbCard NoExcuses = Uncommon("lt_no_excuses", "No Excuses", DeedTag, 1,
-        $"Deal 8 damage. {Promises.NoExcuses.Text}", Seq(Damage(8), Issue(Promises.NoExcuses)));
+        $"Deal 10 damage. {Promises.NoExcuses.Text}", Seq(Damage(10), Issue(Promises.NoExcuses)));
 
     private static readonly BnbCard NoSurrender = Uncommon("lt_no_surrender", "No Surrender", WorkingTag, 1,
         $"Gain 5 Block. {Promises.NoSurrender.Text}", Seq(Block(5), Issue(Promises.NoSurrender)));
@@ -42,7 +42,7 @@ public static partial class LieutenantCards
     // ── Challenges ───────────────────────────────────────────────────────────────────────────────────────
 
     private static readonly BnbCard Gauntlet = Uncommon("lt_gauntlet", "Gauntlet", DeedTag, 1,
-        $"Deal 7 damage. {Promises.Gauntlet.Text}", Seq(Damage(7), Issue(Promises.Gauntlet)));
+        $"Deal 9 damage. {Promises.Gauntlet.Text}", Seq(Damage(9), Issue(Promises.Gauntlet)));
 
     private static CombatConditionSpec IntendsToAttack => new("intends", Target, Id: nameof(IntentKind.Attack));
 
@@ -60,16 +60,16 @@ public static partial class LieutenantCards
         If(ScratchAtLeast(1), Issue(Promises.NoRunning)));
 
     private static readonly BnbCard NoRunning = Uncommon("lt_no_running", "No Running", DeedTag, 1,
-        $"Deal 9 damage. If the target had Block: {Promises.NoRunning.Text}", NoRunningHit(9));
+        $"Deal 11 damage. If the target had Block: {Promises.NoRunning.Text}", NoRunningHit(11));
 
     private static CombatNodeModel DareOut(int block) =>
         Seq(Block(block), Apply(OpenGuard, 1, You), If(IntendsToAttack, Issue(Promises.Dare)));
 
     private static readonly BnbCard Dare = Uncommon("lt_dare", "Dare", WorkingTag, 0,
-        $"Gain 6 Block and 1 Open Guard. If the target intends to attack: {Promises.Dare.Text}", DareOut(6));
+        $"Gain 8 Block and 1 Open Guard. If the target intends to attack: {Promises.Dare.Text}", DareOut(8));
 
     private static readonly BnbCard SecondBlade = Uncommon("lt_second_blade", "Second Blade", DeedTag, 1,
-        $"Deal 5 damage twice. {Promises.SecondBlade.Text}", Seq(Repeat(2, Damage(5)), Issue(Promises.SecondBlade)));
+        $"Deal 6 damage twice. {Promises.SecondBlade.Text}", Seq(Repeat(2, Damage(6)), Issue(Promises.SecondBlade)));
 
     private static readonly BnbCard Testimony = Uncommon("lt_testimony", "Testimony", WorkingTag, 1,
         $"Gain 6 Block. {Promises.Testimony.Text}", Seq(Block(6), Issue(Promises.Testimony)));
@@ -123,7 +123,7 @@ public static partial class LieutenantCards
     }
 
     private static readonly BnbCard Flank = Uncommon("lt_flank", "Flank", DeedTag, 1,
-        "Deal 9 damage. You may spend 1 Authority to deal 7 damage to another enemy.", FlankHit(9, 7));
+        "Deal 10 damage. You may spend 1 Authority to deal 8 damage to another enemy.", FlankHit(10, 8));
 
     private static CombatNodeModel UltimatumHit(int damage, int price = 2) =>
         Seq(Damage(damage), MaySpendAuthority(price, "apply 2 Doubt", Apply(Cards.Keywords.Doubt, 2)));
@@ -161,7 +161,7 @@ public static partial class LieutenantCards
         Seq(Repeat(2, Damage(damage)), MaySpendStrength(1, $"deal {damage} damage a third time", Damage(damage)));
 
     private static readonly BnbCard ArmsDrill = Uncommon("lt_arms_drill", "Arms Drill", DeedTag, 1,
-        "Deal 4 damage twice. You may spend 1 Strength to deal 4 damage a third time.", ArmsDrillHit(4));
+        "Deal 5 damage twice. You may spend 1 Strength to deal 5 damage a third time.", ArmsDrillHit(5));
 
     // "Ignores up to 10 of its Block": the Block is set aside for the blow and what the blow left of it returns.
     private static CombatNodeModel OverhandHit(int damage, int strength = 3)
@@ -185,7 +185,7 @@ public static partial class LieutenantCards
         If(new CombatConditionSpec("isAlive", Target), MaySpendStrength(price, $"deal {damage} damage again", Damage(damage))));
 
     private static readonly BnbCard Heave = Uncommon("lt_heave", "Heave", DeedTag, 1,
-        "Deal 8 damage. Then you may spend 2 Strength to deal 8 damage again.", HeaveHit(8), act: 2);
+        "Deal 10 damage. Then you may spend 2 Strength to deal 10 damage again.", HeaveHit(10), act: 2);
 
     private static CombatNodeModel GripOut(int perUnit, int none)
     {
@@ -205,7 +205,7 @@ public static partial class LieutenantCards
         Seq(Damage(damage), Block(Plus(CombatAmountSpec.FromConst(block), Stacks(Strength, You))));
 
     private static readonly BnbCard ShieldPunch = Uncommon("lt_shield_punch", "Shield Punch", DeedTag, 1,
-        "Deal 5 damage. Gain 4 Block, plus 1 for each Strength.", ShieldPunchHit(5, 4));
+        "Deal 7 damage. Gain 5 Block, plus 1 for each Strength.", ShieldPunchHit(7, 5));
 
     private static CombatNodeModel BrokenPikeHit(int damage, int splash, int price = 2) => Seq(Damage(damage),
         MaySpendStrength(price, $"{splash} damage to every other enemy",
@@ -220,7 +220,7 @@ public static partial class LieutenantCards
         Seq(If(Has(OpenGuard), Damage(damage + more), Damage(damage)), Apply(OpenGuard, 1, You));
 
     private static readonly BnbCard FrontRank = Uncommon("lt_front_rank", "Front Rank", DeedTag, 1,
-        "Deal 11 damage, 4 more if you have Open Guard. Then gain 1 Open Guard.", FrontRankHit(11, 4));
+        "Deal 11 damage, 7 more if you have Open Guard. Then gain 1 Open Guard.", FrontRankHit(11, 7));
 
     private static readonly BnbCard Recoil = Uncommon("lt_recoil", "Recoil", WorkingTag, 1,
         "Gain 8 Block. If you go into the enemy phase with Open Guard and an enemy Attack takes your HP, draw 2 more cards next turn.",
@@ -248,7 +248,7 @@ public static partial class LieutenantCards
         Seq(If(HurtInLastPhase, Repeat(2, Damage(damage)), Damage(damage)), Apply(OpenGuard, 1, You));
 
     private static readonly BnbCard BloodyCobbles = Uncommon("lt_bloody_cobbles", "Bloody Cobbles", DeedTag, 1,
-        "Deal 7 damage; twice if an enemy Attack took your HP last enemy phase. Gain 1 Open Guard.", BloodyCobblesHit(7));
+        "Deal 9 damage; twice if an enemy Attack took your HP last enemy phase. Gain 1 Open Guard.", BloodyCobblesHit(9));
 
     // ── Rites ────────────────────────────────────────────────────────────────────────────────────────────
 
@@ -256,34 +256,34 @@ public static partial class LieutenantCards
         "The first time each turn you keep an Order, gain 1 Strength.", Rite(LieutenantRules.UnderTheColours));
 
     private static readonly BnbCard Scar = Uncommon("lt_scar", "Scar", RiteTag, 1,
-        "The first time each enemy phase an enemy Attack takes your HP, gain 1 Strength.", Rite(LieutenantRules.Scar));
+        "The first time each enemy phase an enemy Attack takes your HP, gain 2 Strength.", Rite(LieutenantRules.Scar));
 
     private static readonly BnbCard Overreach = Uncommon("lt_overreach", "Overreach", RiteTag, 1,
-        "The first time each turn you gain Open Guard, your next Deed this turn deals 4 more damage with its first hit.",
-        Rite(LieutenantRules.Overreach, 4), act: 2);
+        "The first time each turn you gain Open Guard, your next Deed this turn deals 6 more damage with its first hit.",
+        Rite(LieutenantRules.Overreach, 6), act: 2);
 
     private static readonly BnbCard BrokenNose = Uncommon("lt_broken_nose", "Broken Nose", RiteTag, 1,
-        "The first time each enemy phase Open Guard costs you HP, gain 1 Authority and 1 Strength.", Rite(LieutenantRules.BrokenNose));
+        "The first time each enemy phase Open Guard costs you HP, gain 1 Authority and 2 Strength.", Rite(LieutenantRules.BrokenNose));
 
     public static IReadOnlyList<BnbCard> Uncommons() =>
     [
         AgainstTheWall, AgainstTheWall.Upgraded($"Gain 10 Block. {Promises.AgainstTheWallPlus.Text}", Seq(Block(10), Issue(Promises.AgainstTheWallPlus))),
         DoubleFile, DoubleFile.Upgraded($"Draw 1 card. Gain 6 Block. {Promises.DoubleFile.Text}", DoubleFileOut(6)),
-        MindTheGap, MindTheGap.Upgraded($"Deal 11 damage. {Promises.MindTheGapPlus.Text}", Seq(Damage(11), Issue(Promises.MindTheGapPlus))),
+        MindTheGap, MindTheGap.Upgraded($"Deal 14 damage. {Promises.MindTheGapPlus.Text}", Seq(Damage(14), Issue(Promises.MindTheGapPlus))),
         Cadence, Cadence.Upgraded($"Draw 2 cards, then discard 1. {Promises.Cadence.Text}",
             Seq(DrawDiscard(Cadence.Id, 2, 1), Issue(Promises.Cadence))),
-        NoExcuses, NoExcuses.Upgraded($"Deal 11 damage. {Promises.NoExcusesPlus.Text}", Seq(Damage(11), Issue(Promises.NoExcusesPlus))),
+        NoExcuses, NoExcuses.Upgraded($"Deal 14 damage. {Promises.NoExcusesPlus.Text}", Seq(Damage(14), Issue(Promises.NoExcusesPlus))),
         NoSurrender, NoSurrender.Upgraded($"Gain 7 Block. {Promises.NoSurrenderPlus.Text}", Seq(Block(7), Issue(Promises.NoSurrenderPlus))),
-        Gauntlet, Gauntlet.Upgraded($"Deal 10 damage. {Promises.GauntletPlus.Text}", Seq(Damage(10), Issue(Promises.GauntletPlus))),
+        Gauntlet, Gauntlet.Upgraded($"Deal 13 damage. {Promises.GauntletPlus.Text}", Seq(Damage(13), Issue(Promises.GauntletPlus))),
         OnYourFeet, OnYourFeet.Upgraded($"Gain 10 Block. If the target intends to attack: {Promises.OnYourFeetPlus.Text}",
             Seq(Block(10), If(IntendsToAttack, Issue(Promises.OnYourFeetPlus)))),
         Pursuit, Pursuit.Upgraded($"Draw 2 cards, then discard 1. {Promises.Pursuit.Text}",
             Seq(DrawDiscard(Pursuit.Id, 2, 1), Issue(Promises.Pursuit))),
-        NoRunning, NoRunning.Upgraded($"Deal 13 damage. If the target had Block: {Promises.NoRunning.Text}", NoRunningHit(13)),
-        Dare, Dare.Upgraded($"Gain 8 Block and 1 Open Guard. If the target intends to attack: {Promises.DarePlus.Text}",
-            Seq(Block(8), Apply(OpenGuard, 1, You), If(IntendsToAttack, Issue(Promises.DarePlus)))),
-        SecondBlade, SecondBlade.Upgraded($"Deal 5 damage three times. {Promises.SecondBlade.Text}",
-            Seq(Repeat(3, Damage(5)), Issue(Promises.SecondBlade))),
+        NoRunning, NoRunning.Upgraded($"Deal 16 damage. If the target had Block: {Promises.NoRunning.Text}", NoRunningHit(16)),
+        Dare, Dare.Upgraded($"Gain 11 Block and 1 Open Guard. If the target intends to attack: {Promises.DarePlus.Text}",
+            Seq(Block(11), Apply(OpenGuard, 1, You), If(IntendsToAttack, Issue(Promises.DarePlus)))),
+        SecondBlade, SecondBlade.Upgraded($"Deal 6 damage three times. {Promises.SecondBlade.Text}",
+            Seq(Repeat(3, Damage(6)), Issue(Promises.SecondBlade))),
         Testimony, Testimony.Upgraded($"Gain 8 Block. {Promises.TestimonyPlus.Text}", Seq(Block(8), Issue(Promises.TestimonyPlus))),
         Whistle, Whistle.Upgraded("Gain 5 Block. You may spend 1 Authority to draw 2 cards.", WhistleOut(5)),
         Dispatch, Dispatch.Upgraded("Gain 9 Block. You may spend 2 Authority to return a Deed from your discard pile to your hand.",
@@ -292,29 +292,29 @@ public static partial class LieutenantCards
             MakeAnExampleHit(18, free: true)),
         UnderTheColours, UnderTheColours.Upgraded("The first time each turn you keep an Order, gain 1 Strength and 3 Block.",
             Rite(LieutenantRules.UnderTheColoursPlus)),
-        Flank, Flank.Upgraded("Deal 12 damage. Deal 8 damage to another enemy.", FlankHit(12, 8, free: true)),
+        Flank, Flank.Upgraded("Deal 14 damage. Deal 10 damage to another enemy.", FlankHit(14, 10, free: true)),
         Ultimatum, Ultimatum.Upgraded("Deal 11 damage. You may spend 1 Authority to apply 2 Doubt.", UltimatumHit(11, price: 1)),
         Remand, Remand.Upgraded("Gain 11 Block. You may spend 1 Authority: your Challenge survives one more deadline (once per Challenge).",
             Seq(Block(11), IfChallengeOut(MaySpendAuthority(1, "extend your Challenge", Apply(Obligations.RemandPulse, 1, You))))),
         StandDown, StandDown.Upgraded("Gain 6 Block. You may spend 1 Authority to withdraw your Challenge and draw 3 cards.", StandDownOut(6)),
-        ArmsDrill, ArmsDrill.Upgraded("Deal 5 damage three times.", Repeat(3, Damage(5))),
+        ArmsDrill, ArmsDrill.Upgraded("Deal 7 damage three times.", Repeat(3, Damage(7))),
         Overhand, Overhand.Upgraded("Deal 18 damage. This ignores up to 10 of the target's Block.", OverhandHit(18, strength: 0)),
-        Heave, Heave.Upgraded("Deal 10 damage. Then you may spend 1 Strength to deal 10 damage again.", HeaveHit(10, price: 1)),
+        Heave, Heave.Upgraded("Deal 13 damage. Then you may spend 1 Strength to deal 13 damage again.", HeaveHit(13, price: 1)),
         Grip, Grip.Upgraded("Spend up to 2 Strength: for each, draw 1 card and gain 6 Block. If you spend none, gain 3 Block.", GripOut(6, 3)),
-        ShieldPunch, ShieldPunch.Upgraded("Deal 8 damage. Gain 6 Block, plus 1 for each Strength.", ShieldPunchHit(8, 6)),
-        Scar, Scar.Upgraded("Gain 1 Strength. The first time each enemy phase an enemy Attack takes your HP, gain 1 Strength.",
+        ShieldPunch, ShieldPunch.Upgraded("Deal 10 damage. Gain 8 Block, plus 1 for each Strength.", ShieldPunchHit(10, 8)),
+        Scar, Scar.Upgraded("Gain 1 Strength. The first time each enemy phase an enemy Attack takes your HP, gain 2 Strength.",
             Seq(Apply(Strength, 1, You), Rite(LieutenantRules.Scar))),
         BrokenPike, BrokenPike.Upgraded("Deal 16 damage. Then you may spend 1 Strength: every other enemy takes 9 damage.", BrokenPikeHit(16, 9, price: 1)),
-        FrontRank, FrontRank.Upgraded("Deal 16 damage, 4 more if you have Open Guard. Then gain 1 Open Guard.", FrontRankHit(16, 4)),
+        FrontRank, FrontRank.Upgraded("Deal 16 damage, 10 more if you have Open Guard. Then gain 1 Open Guard.", FrontRankHit(16, 10)),
         Recoil, Recoil.Upgraded("Gain 12 Block. If you go into the enemy phase with Open Guard and an enemy Attack takes your HP, draw 2 more cards next turn.",
             Seq(Block(12), Apply(LieutenantRules.Recoil, 1, You))),
         Ruckus, Ruckus.Upgraded("Deal 5 damage to ALL enemies. If it hits two or more, gain 1 Open Guard and draw 1 card.", RuckusHit(5)),
         Poise, Poise.Upgraded("Gain 15 Block. You may spend 1 Authority: until your next Deed this turn has resolved, you gain no Open Guard.", PoiseOut(15)),
-        Overreach, Overreach.Upgraded("The first time each turn you gain Open Guard, your next Deed this turn deals 6 more damage with its first hit.",
-            Rite(LieutenantRules.Overreach, 6)),
-        BloodyCobbles, BloodyCobbles.Upgraded("Deal 10 damage; twice if an enemy Attack took your HP last enemy phase. Gain 1 Open Guard.",
-            BloodyCobblesHit(10)),
-        BrokenNose, BrokenNose.Upgraded("Gain 1 Authority. The first time each enemy phase Open Guard costs you HP, gain 1 Authority and 1 Strength.",
+        Overreach, Overreach.Upgraded("The first time each turn you gain Open Guard, your next Deed this turn deals 9 more damage with its first hit.",
+            Rite(LieutenantRules.Overreach, 9)),
+        BloodyCobbles, BloodyCobbles.Upgraded("Deal 13 damage; twice if an enemy Attack took your HP last enemy phase. Gain 1 Open Guard.",
+            BloodyCobblesHit(13)),
+        BrokenNose, BrokenNose.Upgraded("Gain 1 Authority. The first time each enemy phase Open Guard costs you HP, gain 1 Authority and 2 Strength.",
             Seq(GainAuthority(1), Rite(LieutenantRules.BrokenNose))),
     ];
 }

@@ -177,8 +177,8 @@ public class LieutenantRelicTests
     {
         using var d = Armed("lt_relic_brandy_flask", Five("lt_new_stripes"), Biter, BiteIntent);
         d.P("lt_new_stripes", choose: 0);
-        d.End();                                   // 6 + 2, no Block: Open Guard cost 2
-        Assert.Equal(2, Counter(d.Me, LieutenantKeywords.GuardExtraTotal));
+        d.End();                                   // 6 + a quarter of 6, no Block: Open Guard cost 1
+        Assert.Equal(1, Counter(d.Me, LieutenantKeywords.GuardExtraTotal));
     }
 
     [Fact]
@@ -188,7 +188,7 @@ public class LieutenantRelicTests
         d.P("lt_new_stripes", choose: 0);
         d.P("lt_watch_cut", choose: 0);
         Assert.Equal(0, Authority(d));
-        Assert.Equal(2, Strength(d));
+        Assert.Equal(3, Strength(d));   // the card's 1, the Challenge's 1 and its Authority's 1
     }
 
     [Fact]

@@ -79,11 +79,11 @@ public class LieutenantUncommonTests
     [Fact]
     public void Gauntlet_is_kept_by_a_blow_of_twelve()
     {
-        using var d = Two(Five("lt_gauntlet", "lt_watch_cut"), (LieutenantKeywords.Strength, 4));
-        d.P("lt_gauntlet");        // 11 of 24
+        using var d = One(Five("lt_gauntlet", "lt_watch_cut"), health: 40, hero: (LieutenantKeywords.Strength, 4));
+        d.P("lt_gauntlet");        // 13 of 40
         d.P("lt_watch_cut");       // 6 + 2 (Challenged) + 4 = 12
         Assert.Equal(1, Authority(d));
-        Assert.Equal(5, Strength(d));
+        Assert.Equal(6, Strength(d));
     }
 
     [Fact]
@@ -123,11 +123,12 @@ public class LieutenantUncommonTests
     [Fact]
     public void Dare_pays_when_the_attack_draws_blood()
     {
-        using var d = One(Five("lt_dare"), enemy: Biter, intent: BiteIntent);
-        d.P("lt_dare");            // 6 Block against 6 + 2
+        using var d = One(Five("lt_dare", "lt_new_stripes"), enemy: Biter, intent: BiteIntent);
+        d.P("lt_new_stripes", choose: 0);   // its Challenge gives way to Dare's
+        d.P("lt_dare");            // 8 Block against 6 + 3 (two stacks of Open Guard)
         d.End();
         Assert.Equal(2, Authority(d));
-        Assert.Equal(1, Strength(d));
+        Assert.Equal(3, Strength(d));   // New Stripes' 1 and Dare's 2
     }
 
     [Fact]
@@ -139,7 +140,7 @@ public class LieutenantUncommonTests
         Assert.Equal(0, Authority(d));
         d.P("lt_watch_cut");
         Assert.Equal(1, Authority(d));
-        Assert.Equal(1, Strength(d));
+        Assert.Equal(2, Strength(d));
     }
 
     [Fact]
@@ -194,10 +195,10 @@ public class LieutenantUncommonTests
     [Fact]
     public void Heave_strikes_again_with_the_strength_that_is_left()
     {
-        using var d = Two(Five("lt_heave"), (LieutenantKeywords.Strength, 3));
+        using var d = One(Five("lt_heave"), health: 40, hero: (LieutenantKeywords.Strength, 3));
         var before = Standing(d.It);
-        d.P("lt_heave", choose: 0);   // 8 + 3, then 8 + 1
-        Assert.Equal(before - 20, Standing(d.It));
+        d.P("lt_heave", choose: 0);   // 10 + 3, then 10 + 1
+        Assert.Equal(before - 24, Standing(d.It));
         Assert.Equal(1, Strength(d));
     }
 
@@ -241,7 +242,7 @@ public class LieutenantUncommonTests
         using var d = One(Five("lt_scar"), enemy: Biter, intent: BiteIntent);
         d.P("lt_scar");
         d.End();
-        Assert.Equal(1, Strength(d));
+        Assert.Equal(2, Strength(d));
     }
 
     [Fact]
@@ -251,8 +252,8 @@ public class LieutenantUncommonTests
         d.P("lt_overreach");
         d.P("lt_new_stripes", choose: 0);   // 1 Strength, Open Guard, a Challenge
         var before = Standing(d.It);
-        d.P("lt_watch_cut");                // 6 + 2 + 1 + 4
-        Assert.Equal(before - 13, Standing(d.It));
+        d.P("lt_watch_cut");                // 6 + 2 + 1 + 6
+        Assert.Equal(before - 15, Standing(d.It));
     }
 
     [Fact]
@@ -263,7 +264,7 @@ public class LieutenantUncommonTests
         d.P("lt_new_stripes", choose: 0);
         d.End();
         Assert.Equal(1, Authority(d));
-        Assert.Equal(2, Strength(d));
+        Assert.Equal(3, Strength(d));   // New Stripes' 1 and Broken Nose's 2
     }
 
     [Fact]

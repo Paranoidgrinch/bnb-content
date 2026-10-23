@@ -30,10 +30,10 @@ public class LieutenantUpgradeTests
     [Fact]
     public void Heave_plus_strikes_again_for_one_strength()
     {
-        using var d = Two(Five("lt_heave+"), (LieutenantKeywords.Strength, 1));
+        using var d = One(Five("lt_heave+"), health: 40, hero: (LieutenantKeywords.Strength, 1));
         var before = Standing(d.It);
-        d.P("lt_heave+", choose: 0);    // 10 + 1, then 10 + 0
-        Assert.Equal(before - 21, Standing(d.It));
+        d.P("lt_heave+", choose: 0);    // 13 + 1, then 13 + 0
+        Assert.Equal(before - 27, Standing(d.It));
     }
 
     [Fact]

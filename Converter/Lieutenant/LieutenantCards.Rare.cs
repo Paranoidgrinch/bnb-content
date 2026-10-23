@@ -87,8 +87,8 @@ public static partial class LieutenantCards
     }
 
     private static readonly BnbCard LastDitch = Rare("lt_last_ditch", "Last Ditch", DeedTag, 1,
-        "Deal 10 damage, plus 1 for every 3 HP you are missing (at most 12). You may gain 1 Open Guard to double that bonus.",
-        LastDitchHit(10, 12), 1);
+        "Deal 12 damage, plus 1 for every 3 HP you are missing (at most 12). You may gain 1 Open Guard to double that bonus.",
+        LastDitchHit(12, 12), 1);
 
     private static CombatNodeModel OpenVisorOut(int block) => Seq(Block(block),
         If(Has(OpenGuard), Seq(),
@@ -251,8 +251,8 @@ public static partial class LieutenantCards
             Seq(ServiceRecordHit(10), If(new CombatConditionSpec("isAlive", Target), Seq(), GainAuthority(1)))),
         SplinteredShield, SplinteredShield.Upgraded("Gain 16 Block. You may lose all your Block to gain 1 Strength, 1 Authority and 2 Open Guard, then 4 Block.",
             SplinteredShieldOut(16, 4)),
-        LastDitch, LastDitch.Upgraded("Deal 15 damage, plus 1 for every 3 HP you are missing (at most 16). You may gain 1 Open Guard to double that bonus.",
-            LastDitchHit(15, 16)),
+        LastDitch, LastDitch.Upgraded("Deal 18 damage, plus 1 for every 3 HP you are missing (at most 16). You may gain 1 Open Guard to double that bonus.",
+            LastDitchHit(18, 16)),
         OpenVisor, OpenVisor.Upgraded("Gain 11 Block. If you have no Open Guard, you may gain 1. With Open Guard, your next Deed this turn ignores Block.",
             OpenVisorOut(11)),
         BlackGauntlet, BlackGauntlet.Upgraded($"Deal 16 damage. {Promises.BlackGauntlet.Text}", Seq(Damage(16), Issue(Promises.BlackGauntlet))),

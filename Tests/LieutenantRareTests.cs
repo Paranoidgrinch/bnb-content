@@ -78,8 +78,8 @@ public class LieutenantRareTests
         d.P("lt_new_stripes", choose: 0);
         d.P("lt_watch_cut");                    // kept
         var before = Standing(d.It);
-        d.P("lt_service_record");               // 8 + 4, 1 Strength
-        Assert.Equal(before - 13, Standing(d.It));
+        d.P("lt_service_record");               // 8 + 4, 2 Strength
+        Assert.Equal(before - 14, Standing(d.It));
     }
 
     [Fact]
@@ -99,14 +99,14 @@ public class LieutenantRareTests
     {
         using var d = Two(Five("lt_last_ditch", "lt_last_ditch"));
         var before = Standing(d.It);
-        d.P("lt_last_ditch", choose: 1);        // full health: 10
-        Assert.Equal(before - 10, Standing(d.It));
+        d.P("lt_last_ditch", choose: 1);        // full health: 12
+        Assert.Equal(before - 12, Standing(d.It));
         d.Dispose();
 
         using var e = One(Five("lt_last_ditch"), enemy: Biter, intent: BiteIntent, health: 50);
         // 30 missing: +10; with Open Guard, +20 — the biter has 24
         e.P("lt_last_ditch", choose: 1);
-        Assert.Equal(4, e.It.Health.Current);
+        Assert.Equal(2, e.It.Health.Current);
     }
 
     [Fact]
@@ -132,7 +132,7 @@ public class LieutenantRareTests
         Assert.Equal(1, Stacks(d.It, Promises.BlackGauntlet.Id));
         d.P("lt_watch_cut");
         Assert.Equal(2, Authority(d));
-        Assert.Equal(1, Strength(d));
+        Assert.Equal(2, Strength(d));
     }
 
     [Fact]
@@ -268,7 +268,7 @@ public class LieutenantRareTests
         Assert.Equal(2, Authority(d));
         d.End();
         Assert.Equal(3, Authority(d));
-        Assert.Equal(2, Strength(d));
+        Assert.Equal(3, Strength(d));
     }
 
     [Fact]
@@ -312,10 +312,10 @@ public class LieutenantRareTests
     {
         using var d = Two(Five("lt_blood_debt", "lt_new_stripes"));
         d.P("lt_new_stripes", choose: 0);
-        d.P("lt_blood_debt");                    // 6 Block against 6 + 2: 2 through, both of them Open Guard's
+        d.P("lt_blood_debt");                    // 6 Block against 6 + 1: 1 through, and it is Open Guard's
         var health = d.It.Health.Current;
         d.End();
-        Assert.Equal(health - 2, d.It.Health.Current);
+        Assert.Equal(health - 1, d.It.Health.Current);
     }
 
     [Fact]
