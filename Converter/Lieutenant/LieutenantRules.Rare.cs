@@ -21,6 +21,7 @@ public static partial class LieutenantRules
     public const string Brevet = "lt_brevet";
     public const string ParadeGround = "lt_parade_ground";
     public const string ParadeBase = "lt_parade_base";
+    public const string ParadeCap = "lt_parade_cap";
     public const string DrumMajor = "lt_drum_major";
     public const string Succession = "lt_succession";
     public const string Riposte = "lt_riposte";
@@ -106,11 +107,11 @@ public static partial class LieutenantRules
             N<T>.Set(Her, waiting, 0),
             N<T>.Remove(Her, ParadeGround));
         return Status(ParadeGround, "Parade Ground", StatusPolarity.Buff,
-            "If you keep an Order before this turn ends, gain this much Ward Wax for each Energy you end it with (at most 2).",
+            "If you keep an Order before this turn ends, gain this much Ward Wax for each Energy you end it with (at most 2, or 3 upgraded).",
             triggers:
             [
                 On(TriggerEvent.TurnEnded, TE.Seq(
-                    TE.Set(TE.Self, energy, TE.Min(TE.C(2), TE.Energy(TE.Self))),
+                    TE.Set(TE.Self, energy, TE.Min(TE.Counter(TE.Self, ParadeCap), TE.Energy(TE.Self))),
                     TE.If(TE.Above(TE.Counter(TE.Self, Obligations.OrdersKept), TE.Counter(TE.Self, ParadeBase)),
                         Pay<TurnEndedTriggeredEffectContext>(), TE.Set(TE.Self, waiting, 1)))),
                 On(TriggerEvent.RuleAnnounced, RA.If(RA.And(RA.Announced(Obligations.OrderFulfilled), RA.Is(RA.Counter(Her, waiting), 1)),
@@ -130,6 +131,8 @@ public static partial class LieutenantRules
             [
                 On(TriggerEvent.RuleAnnounced, RA.If(RA.Announced(Obligations.OrderFulfilled), RA.Seq(
                     RA.If(RA.Is(RA.Counter(Her, after), 1), RA.Apply(Her, HeldEnergy.Id, 1), RA.GainEnergy(Her, 1)),
+                    // Two stacks (upgraded): a card with it.
+                    RA.If(RA.AtLeast(RA.Stacks(Her, DrumMajor), 2), RA.Draw(Her, 1)),
                     RA.Remove(Her, DrumMajor))), StatusTriggerScope.Anywhere),
                 On(TriggerEvent.TurnEnded, TE.Set(TE.Self, after, 1)),
                 On(TriggerEvent.TurnStarted, TS.Seq(TS.Set(TS.Self, after, 0), TS.Remove(TS.Self, DrumMajor))),

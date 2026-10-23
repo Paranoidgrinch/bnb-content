@@ -23,7 +23,7 @@ public static partial class LieutenantRules
     public static IReadOnlyList<StatusData> All() =>
     [
         Status(Witness, "Witness", StatusPolarity.Buff,
-            "Your next Deed hit on a Challenged enemy this turn counts twice toward its Challenge.",
+            "Your next Deed hits on a Challenged enemy this turn count twice toward its Challenge, one hit for each stack.",
             triggers: [On(TriggerEvent.TurnEnded, TE.Remove(TE.Self, Witness))]),
         BuckleMark(),
         Discount(SecondRank, "Second Rank", Cards.CardAuthoring.DeedTag, 99,

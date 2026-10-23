@@ -68,6 +68,32 @@ public static class Promises
     public static readonly ChallengeSpec Testimony = new("lt_c_testimony", "Testimony", KeepOrder,
         "keep an Order before it acts", new Reward(Draw: 1));
 
+    // ── upgrades whose facet is in the promise (plan §1, O) ──────────────────────────────────────────────
+
+    public static readonly OrderSpec GatehousePlus = new("lt_o_gatehouse_plus", "Gatehouse+", Withstand,
+        Gatehouse.Condition, new Reward(NextTurnDraw: 1));
+    public static readonly OrderSpec AgainstTheWallPlus = new("lt_o_against_the_wall_plus", "Against the Wall+", EndWithBlock,
+        AgainstTheWall.Condition, new Reward(WardWax: 3), N: 14);
+    public static readonly OrderSpec MindTheGapPlus = new("lt_o_mind_the_gap_plus", "Mind the Gap+", EndExposed,
+        "end this turn with Open Guard and at least 6 Block", new Reward(), N: 6);
+    public static readonly OrderSpec NoExcusesPlus = new("lt_o_no_excuses_plus", "No Excuses+", OpenNextTurn,
+        NoExcuses.Condition, new Reward(Block: 4, Draw: 1));
+    public static readonly OrderSpec NoSurrenderPlus = new("lt_o_no_surrender_plus", "No Surrender+", Withstand,
+        "in the next enemy phase, an enemy attacks you and no Attack damage gets through to your HP", new Reward(Authority: 2));
+
+    public static readonly ChallengeSpec OnYourFeetPlus = new("lt_c_on_your_feet_plus", "On Your Feet+", KeepBlock,
+        OnYourFeet.Condition, new Reward(Strength: 1, NextTurnDraw: 1));
+    public static readonly ChallengeSpec DarePlus = new("lt_c_dare_plus", "Dare+", TakeHit,
+        Dare.Condition, new Reward(Authority: 2, Strength: 1, NextTurnDraw: 1));
+    public static readonly ChallengeSpec MarkedManPlus = new("lt_c_marked_man_plus", "Marked Man+", Hits,
+        MarkedMan.Condition, new Reward(Strength: 1), N: 2);
+    public static readonly ChallengeSpec ArrestPlus = new("lt_c_arrest_plus", "Arrest+", Kill,
+        Arrest.Condition, new Reward(Strength: 1, Draw: 1));
+    public static readonly ChallengeSpec GauntletPlus = new("lt_c_gauntlet_plus", "Gauntlet+", BigHit,
+        "take at least 10 of its HP with one later Deed hit before it acts", new Reward(Strength: 1), N: 10);
+    public static readonly ChallengeSpec TestimonyPlus = new("lt_c_testimony_plus", "Testimony+", KeepOrder,
+        Testimony.Condition, new Reward(Strength: 1, Draw: 1));
+
     // ── rares ────────────────────────────────────────────────────────────────────────────────────────────
 
     public static readonly ChallengeSpec BlackGauntlet = new("lt_c_black_gauntlet", "Black Gauntlet", SurviveThenHit,
@@ -88,6 +114,7 @@ public static class Promises
     [
         FirstOrders, FirstOrdersPlus, RollCall, Gatehouse, LastBell, LastBellPlus, Scabbard,
         AgainstTheWall, DoubleFile, MindTheGap, Cadence, NoExcuses, NoSurrender,
+        GatehousePlus, AgainstTheWallPlus, MindTheGapPlus, NoExcusesPlus, NoSurrenderPlus,
     ];
 
     public static readonly IReadOnlyList<ChallengeSpec> Challenges =
@@ -95,5 +122,6 @@ public static class Promises
         NewStripes, MarkedMan, BracedPike, Arrest,
         Gauntlet, OnYourFeet, Pursuit, NoRunning, Dare, SecondBlade, Testimony,
         BlackGauntlet, Successor, TornStandard,
+        MarkedManPlus, ArrestPlus, GauntletPlus, TestimonyPlus, OnYourFeetPlus, DarePlus,
     ];
 }

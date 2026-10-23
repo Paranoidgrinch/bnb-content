@@ -215,6 +215,43 @@ Abweichungen beim Bauen:
 - **Commission / Brandy Flask**: über die Brücke Kampf → Lauf (`CombatResolvedRunEvent.Counters`); die Reserve ist ein
   Lauf-Zähler, der nächste Kampf bekommt sie als Eröffnung.
 
+### 4b Facetten-Durchgang (2026-10-23) — ersetzt die Zeilen oben, wo er sie nennt
+
+Gemessen wie bei Hexe und Apprentice (`UpgradeFacetShareTests`: Text ohne Zahlen, Kosten oder Retain ändern sich):
+vorher 14 von 84, jetzt **37 von 84 (44 %)**; dazu sieben Schwellen-Facetten (S), die die Messung nicht sieht.
+
+| Karte | neu + | Facette |
+|---|---|---|
+| Clear the Square | 11 an alle, nur 1 Open Guard | N |
+| Gatehouse | 10 Block; Erfolg auch 1 Karte mehr im nächsten Zug | O |
+| Scabbard | Retain, 5 Block | I |
+| Marked Man | 7 Schaden; Erfolg auch 1 Strength | O |
+| Arrest | 8 Schaden; Erfolg auch 1 Strength | O |
+| Witness | 5 Block; die nächsten zwei Treffer zählen doppelt | B |
+| Split Lip | 10 Schaden; Kill: zieh 1 und 1 Energie | C |
+| Headlong | kein Open Guard mehr | N |
+| Against the Wall | 10 Block; Erfolg auch 3 Ward Wax | O |
+| Mind the Gap | 11 Schaden; 6 statt 8 Block | S |
+| No Excuses | 11 Schaden; Erfolg auch zieh 1 | O |
+| No Surrender | 7 Block; ohne Open Guard | N |
+| Gauntlet | 10 Schaden; ein Treffer von 10 statt 12 | S |
+| On Your Feet | 10 Block; Erfolg auch 1 Strength | O |
+| Dare | 8 Block; Erfolg auch 1 Karte mehr im nächsten Zug | O |
+| Second Blade | 5 × 3 | B |
+| Testimony | 8 Block; Erfolg auch 1 Strength | O |
+| Make an Example | 18 Schaden; Streuung ohne Authority | N |
+| Flank | 12 / 8, ohne Authority | N |
+| Ultimatum | 11 Schaden; 2 Doubt für 1 Authority | S |
+| Arms Drill | 5 × 3, ohne Strength | N |
+| Overhand | 18 Schaden; ignoriert Block ohne Strength-Bedingung | C |
+| Heave | 10 / 10; zweiter Treffer für 1 Strength | S |
+| Broken Pike | 16 / 9; Streuung für 1 Strength | S |
+| Countercharge | 11 Schaden; bis 2 Strength, je auch 3 Block | K |
+| Parade Ground | 12 Block; bis 3 Energie | S |
+| Drum Major | 9 Block; die Energie kommt mit einer Karte | D |
+| Service Record | 10 Basis; Kill: 1 Authority | C |
+| Brevet | Retain, 1 Authority, 8 Block | I |
+
 ## 5 Stand
 
 | Schritt | Stand |
@@ -226,6 +263,7 @@ Abweichungen beim Bauen:
 | S6 Rares | ✔ `LieutenantRareTests` (27); Core: `eventBlockedAmount` (RogueDeck-Core a703df1) |
 | S7 Relikte | ✔ `LieutenantRelicTests` (19) |
 | S8 Pools, Shop, Märkte, Archiv, Kompendium, ART_SLOTS | ✔ `LieutenantPoolTests` (7), Archiv-Test, `LieutenantRunTests` (Bot, 2 Läufe) |
+| Facetten-Durchgang | ✔ 37/84 (`UpgradeFacetShareTests`, `LieutenantUpgradeTests` 8) |
 | S9 bnb-godot | ✔ `golden.sh` (4 + 2 Lieutenant-Läufe), `bench.sh`, `smoke-mp.sh` (vierter Platz); `--smoke-screens --character=lieutenant`: 56 Bildschirme, 0 Fehler |
 
 ## 6 Was beim Bauen über die Engine gelernt wurde
@@ -243,14 +281,6 @@ Abweichungen beim Bauen:
 
 ## 7 Offen
 
-- **U2 noch nicht erfüllt (wichtig, als Nächstes):** nur ~16 von 84 Upgrades (19 %) haben eine Facette, Regel
-  verlangt ≥ 40 %. Vorschlag für weitere 24 (dann 40/84 = 48 %): Commons Clear the Square+ (N: 1 Open Guard),
-  Gatehouse+ (O), Scabbard+ (I), Marked Man+ (O: +1 Strength), Arrest+ (O), Witness+ (B: zwei Treffer), Split Lip+
-  (C: Kill auch 1 Energie) · Uncommons Against the Wall+ (O), Mind the Gap+ (S: 6 Block), No Excuses+ (O), No
-  Surrender+ (N: ohne Open Guard), Gauntlet+ (S: 10), Second Blade+ (B: 5 × 3), Testimony+ (O), Make an Example+
-  (N: ohne Authority), Flank+ (N), Ultimatum+ (S: 1 Authority), Overhand+ (S: 2 Strength), Heave+ (S: 1 Strength),
-  Broken Pike+ (S: 1 Strength) · Rares Parade Ground+ (S: bis 3 Energie), Drum Major+ (D), Service Record+ (C: Kill
-  1 Authority), Brevet+ (I).
 - **Golden-Set** für bnb-godot noch nicht aufgenommen (nach U2 aufnehmen; Skripte sind vorbereitet, nicht committet).
 
 - **Family-Bench / Balance**: nicht gemessen. Die Zahlen sind Entwurf (Kanon §9). Kein Family-Deck-File für sie.

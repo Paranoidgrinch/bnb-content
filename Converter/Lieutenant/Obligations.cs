@@ -16,7 +16,7 @@ using RA = BnbContent.Converter.Lieutenant.N<RogueDeck.Core.Combat.RuleAnnounced
 namespace BnbContent.Converter.Lieutenant;
 
 // What a kept promise pays (§2.2): 1 Authority unless the card says more, then whatever else it names.
-public sealed record Reward(int Authority = 1, int Block = 0, int Strength = 0, int Draw = 0, int NextTurnDraw = 0)
+public sealed record Reward(int Authority = 1, int Block = 0, int Strength = 0, int Draw = 0, int NextTurnDraw = 0, int WardWax = 0)
 {
     public string Text
     {
@@ -25,6 +25,7 @@ public sealed record Reward(int Authority = 1, int Block = 0, int Strength = 0, 
             var parts = new List<string> { $"{Authority} Authority" };
             if (Strength > 0) parts.Add($"{Strength} Strength");
             if (Block > 0) parts.Add($"{Block} Block");
+            if (WardWax > 0) parts.Add($"{WardWax} Ward Wax");
             if (Draw > 0) parts.Add(Draw == 1 ? "draw 1 card" : $"draw {Draw} cards");
             if (NextTurnDraw > 0) parts.Add($"draw {NextTurnDraw} more next turn");
             return parts.Count == 1 ? parts[0] : string.Join(", ", parts[..^1]) + " and " + parts[^1];
@@ -36,6 +37,7 @@ public sealed record Reward(int Authority = 1, int Block = 0, int Strength = 0, 
         GainAuthority<T>(her, Authority),
         .. Strength > 0 ? [N<T>.Apply(her, LieutenantKeywords.Strength, Strength)] : Array.Empty<IEffectNode<T>>(),
         .. Block > 0 ? [N<T>.Block(her, Block)] : Array.Empty<IEffectNode<T>>(),
+        .. WardWax > 0 ? [N<T>.Apply(her, Cards.Keywords.WardWax, WardWax)] : Array.Empty<IEffectNode<T>>(),
         .. Draw > 0 ? [N<T>.Draw(her, Draw)] : Array.Empty<IEffectNode<T>>(),
         .. NextTurnDraw > 0 ? [N<T>.Apply(her, Obligations.Reinforcements, NextTurnDraw)] : Array.Empty<IEffectNode<T>>(),
     ]);
@@ -122,7 +124,7 @@ public static class Obligations
     // Chain of Command (rare): a second Order place. The id is the Rite's; the Rite lives with the rares.
     public const string ChainOfCommand = "lt_chain_of_command";
 
-    // Witness (common): the next Deed hit on a Challenged enemy this turn counts twice.
+    // Witness (common): the next Deed hit (two, upgraded) on a Challenged enemy this turn counts twice, one stack each.
     public const string Witness = "lt_witness";
 
     // A promise's own counters. The issuing CARD clears them before it lays the promise down (CardShapes.Issue):
@@ -529,7 +531,7 @@ public static class Obligations
             ChallengeKind.HitByNextTurn => D.Set(D.Event, Progress(id), 1),
             ChallengeKind.Hits => D.All(
                 D.Add(D.Event, Progress(id), D.Plus(D.C(1), D.Min(D.C(1), D.Stacks(D.Self, Witness)))),
-                D.Remove(D.Self, Witness)),
+                D.Adjust(D.Self, Witness, D.C(-1))),
             ChallengeKind.BigHit => D.If(D.AtLeast(D.Amount, challenge.N), D.Set(D.Event, Progress(id), 1)),
             // Later this turn, then again in a later round.
             ChallengeKind.Pursuit => D.If(D.Cmp(D.Round, ComparisonOperator.Equal, D.Counter(D.Event, ArmedRound(id))),
