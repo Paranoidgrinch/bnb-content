@@ -266,7 +266,7 @@ public static class Compendium
             "Marked Man: hit it with Deeds twice more before it acts. Pike Butt's two hits keep it.",
             Concept: true),
         new("open_guard", "Open Guard",
-            "Exposure she takes on purpose. The next enemy Attack hit on her deals 2 more per stack, before Block, and spends all of it. Unused, it lapses at the start of her turn. It is not a debuff: nothing cleanses it.",
+            "Exposure she takes on purpose. The next enemy Attack hit on her deals 25% more per stack (rounded down, at least 1), before Block, and spends all of it. Unused, it lapses at the start of her turn. It is not a debuff: nothing cleanses it.",
             "With 2 Open Guard, an attack of 6 hits her for 10; behind 10 Block it costs her nothing."),
         new("spend_strength", "Spending Strength",
             "Some of her cards spend Strength — only Strength she really has. What is spent is gone, and hits after it in the same card are weaker.",

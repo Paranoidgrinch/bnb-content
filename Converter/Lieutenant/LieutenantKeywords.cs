@@ -21,7 +21,7 @@ public static class LieutenantKeywords
     public const string Command = "lt_command";
 
     public const int AuthorityCap = 6;
-    public const int OpenGuardPerStack = 2;
+    public const int OpenGuardPercentPerStack = 25;
 
     // ── counters on her ──────────────────────────────────────────────────────────────────────────────────
 
@@ -68,18 +68,23 @@ public static class LieutenantKeywords
         .. LieutenantRules.All(),
     ];
 
-    // +2 a stack to the first enemy Attack hit of an enemy action, before Block (once per action is the engine's
-    // own claim); that hit spends all of it. Untouched, it lapses when her next turn begins. Not a Debuff: no
-    // cleanse lifts it and nothing that counts negative statuses sees it (§2.5).
+    // +25 % a stack (rounded down, at least 1 a stack) to the first enemy Attack hit of an enemy action, before Block
+    // (once per action is the engine's own claim); that hit spends all of it. Untouched, it lapses when her next turn
+    // begins. Not a Debuff: no cleanse lifts it and nothing that counts negative statuses sees it (§2.5). The user
+    // (2026-10-23): it stays punishing — heavy blows hurt more behind it — and its payoffs carry the weight.
     private static StatusData OpenGuardStatus()
     {
         var she = D.Event;
+        var stacks = D.Stacks(she, OpenGuard);
+        var percent = D.Times(stacks, OpenGuardPercentPerStack);
+        // The blow as it landed, Block included, and what the stacks put on top of it: total × p / (100 + p).
+        var landed = D.Plus(D.Amount, new EventBlockedAmountExpression<DamageReceivedTriggeredEffectContext>());
+        var extra = D.Max(stacks,
+            new DivideExpression<DamageReceivedTriggeredEffectContext>(
+                new MultiplyExpression<DamageReceivedTriggeredEffectContext>(landed, percent),
+                D.Plus(D.C(100), percent)));
         var spend = D.Seq(
-            D.Set(she, GuardExtra,
-                D.Min(
-                    D.Amount,
-                    D.Times(
-                        D.Stacks(she, OpenGuard), OpenGuardPerStack))),
+            D.Set(she, GuardExtra, D.Min(D.Amount, extra)),
             D.Add(she, GuardExtraTotal,
                 D.Counter(she, GuardExtra)),
             D.Remove(she, OpenGuard),
@@ -92,8 +97,8 @@ public static class LieutenantKeywords
             D.If(D.Is(D.Amount, 0), D.Announce(she, GuardHeld)));
 
         return Status(OpenGuard, "Open Guard", StatusPolarity.Neutral,
-            $"The next enemy Attack hit on you deals {OpenGuardPerStack} more damage per stack, before Block, and " +
-            "spends all of it. Lapses at the start of your turn.",
+            $"The next enemy Attack hit on you deals {OpenGuardPercentPerStack}% more damage per stack (rounded down, at " +
+            "least 1 per stack), before Block, and spends all of it. Lapses at the start of your turn.",
             triggers:
             [
                 On(TriggerEvent.DamageTaken, D.If(ByAnEnemy<DamageReceivedTriggeredEffectContext>(), spend)),
@@ -101,8 +106,8 @@ public static class LieutenantKeywords
             ],
             passives:
             [
-                new PassiveModifierData(PassiveModifierPipeline.DamageReceived, PassiveModifierOperation.AddPerStack,
-                    OpenGuardPerStack, OncePerAction: true),
+                new PassiveModifierData(PassiveModifierPipeline.DamageReceived, PassiveModifierOperation.AddPercentPerStack,
+                    OpenGuardPercentPerStack, OncePerAction: true),
             ]);
     }
 

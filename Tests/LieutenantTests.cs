@@ -159,9 +159,9 @@ public class LieutenantTests
         play.Dispose();
     }
 
-    // Open Guard: +2 a stack to the first enemy hit, before Block, and spent by it (LT-027).
+    // Open Guard: a quarter more a stack (at least 1) on the first enemy hit, before Block, and spent by it (LT-027).
     [Fact]
-    public void Open_guard_adds_two_a_stack_to_the_first_enemy_hit_only()
+    public void Open_guard_adds_a_quarter_a_stack_to_the_first_enemy_hit_only()
     {
         int Lost(bool exposed)
         {
@@ -173,12 +173,12 @@ public class LieutenantTests
             Assert.Equal(0, Stacks(hero, LieutenantKeywords.OpenGuard));
             var lost = hero.Health.Max - hero.Health.Current;
             if (exposed)
-                Assert.Equal(2, Counter(hero, LieutenantKeywords.GuardExtra));
+                Assert.Equal(1, Counter(hero, LieutenantKeywords.GuardExtra));
             play.Dispose();
             return lost;
         }
 
-        Assert.Equal(Lost(exposed: false) + 2, Lost(exposed: true));
+        Assert.Equal(Lost(exposed: false) + 1, Lost(exposed: true));
     }
 
     // Absorbed by Block, the extra damage costs no HP — and is recorded as none (§2.5).

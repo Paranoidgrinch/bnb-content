@@ -169,7 +169,7 @@ public static class Tutorial
             "A Challenge is a promise about one enemy, shown on it — most must be kept before that enemy acts. Watch " +
             "Cut deals 2 more to a Challenged enemy."),
         ("lt.open_guard", "Open Guard",
-            "Open Guard is risk you take on purpose: the next enemy hit deals 2 more per stack, before Block, and " +
+            "Open Guard is risk you take on purpose: the next enemy hit deals 25% more per stack (rounded down, at least 1), before Block, and " +
             "spends it. Enough Block makes it cost nothing."),
         ("lt.strength", "Spending Strength",
             "Strength makes every hit stronger — and some of your cards can spend it for something else, like " +
