@@ -1,0 +1,572 @@
+[
+ {
+  "name": "lt_strength_bruiser_a2",
+  "family": "Strength Bruiser",
+  "act": 2,
+  "character": "lieutenant",
+  "cards": {
+   "lt_armguard": 1,
+   "lt_arms_drill": 1,
+   "lt_arms_drill+": 1,
+   "lt_buckle": 1,
+   "lt_buckler_up": 4,
+   "lt_clenched_jaw": 1,
+   "lt_last_ditch": 1,
+   "lt_new_stripes": 1,
+   "lt_pike_butt": 1,
+   "lt_pike_butt+": 2,
+   "lt_shield_punch": 1,
+   "lt_watch_cut": 1,
+   "lt_watch_cut+": 1,
+   "lt_whetstone": 1,
+   "lt_whetstone+": 1
+  },
+  "relics": [
+   "lt_relic_chipped_buckler",
+   "lt_relic_sword_knot"
+  ]
+ },
+ {
+  "name": "lt_strength_bruiser_a3",
+  "family": "Strength Bruiser",
+  "act": 3,
+  "character": "lieutenant",
+  "cards": {
+   "lt_arms_drill+": 2,
+   "lt_buckle": 1,
+   "lt_buckler_up": 4,
+   "lt_clenched_jaw": 2,
+   "lt_hilt_knot": 1,
+   "lt_last_ditch": 1,
+   "lt_new_stripes": 1,
+   "lt_overhand": 1,
+   "lt_pike_butt+": 3,
+   "lt_scar": 1,
+   "lt_shield_punch": 1,
+   "lt_shield_punch+": 1,
+   "lt_watch_cut+": 1,
+   "lt_whetstone+": 2
+  },
+  "relics": [
+   "lt_relic_chipped_buckler",
+   "lt_relic_sword_knot",
+   "lt_relic_full_tang"
+  ]
+ },
+ {
+  "name": "lt_by_the_book_a2",
+  "family": "By the Book",
+  "act": 2,
+  "character": "lieutenant",
+  "cards": {
+   "lt_against_the_wall+": 1,
+   "lt_buckler_up": 2,
+   "lt_cadence": 1,
+   "lt_drum_major": 1,
+   "lt_first_orders+": 1,
+   "lt_gatehouse": 1,
+   "lt_gatehouse+": 1,
+   "lt_new_stripes": 1,
+   "lt_parade_ground": 1,
+   "lt_roll_call": 1,
+   "lt_roll_call+": 1,
+   "lt_scabbard": 1,
+   "lt_signal": 2,
+   "lt_under_the_colours+": 1,
+   "lt_watch_cut": 3
+  },
+  "relics": [
+   "lt_relic_tin_fife",
+   "lt_relic_pay_chest"
+  ]
+ },
+ {
+  "name": "lt_by_the_book_a3",
+  "family": "By the Book",
+  "act": 3,
+  "character": "lieutenant",
+  "cards": {
+   "lt_against_the_wall+": 2,
+   "lt_buckler_up": 1,
+   "lt_cadence": 1,
+   "lt_chain_of_command": 1,
+   "lt_drum_major": 1,
+   "lt_first_orders+": 1,
+   "lt_gatehouse+": 2,
+   "lt_last_bell": 1,
+   "lt_new_stripes": 1,
+   "lt_no_excuses+": 1,
+   "lt_parade_ground": 1,
+   "lt_roll_call": 1,
+   "lt_roll_call+": 1,
+   "lt_scabbard": 1,
+   "lt_signal": 2,
+   "lt_under_the_colours+": 1,
+   "lt_watch_cut": 2,
+   "lt_watch_cut+": 1
+  },
+  "relics": [
+   "lt_relic_tin_fife",
+   "lt_relic_pay_chest",
+   "lt_relic_commission"
+  ]
+ },
+ {
+  "name": "lt_duelist_a2",
+  "family": "Duelist",
+  "act": 2,
+  "character": "lieutenant",
+  "cards": {
+   "lt_arrest": 1,
+   "lt_black_gauntlet": 1,
+   "lt_braced_pike": 1,
+   "lt_braced_pike+": 1,
+   "lt_buckler_up": 2,
+   "lt_gauntlet+": 1,
+   "lt_marked_man": 1,
+   "lt_marked_man+": 1,
+   "lt_new_stripes": 1,
+   "lt_pike_butt": 1,
+   "lt_pike_butt+": 1,
+   "lt_second_blade": 1,
+   "lt_service_record": 1,
+   "lt_watch_cut": 3,
+   "lt_watch_cut+": 1,
+   "lt_witness": 1
+  },
+  "relics": [
+   "lt_relic_chipped_buckler",
+   "lt_relic_warrant_cord"
+  ]
+ },
+ {
+  "name": "lt_duelist_a3",
+  "family": "Duelist",
+  "act": 3,
+  "character": "lieutenant",
+  "cards": {
+   "lt_arrest": 1,
+   "lt_black_gauntlet": 1,
+   "lt_braced_pike+": 2,
+   "lt_buckler_up": 1,
+   "lt_gauntlet+": 1,
+   "lt_marked_man+": 2,
+   "lt_new_stripes": 1,
+   "lt_on_your_feet": 1,
+   "lt_overhand": 1,
+   "lt_pike_butt": 1,
+   "lt_pike_butt+": 1,
+   "lt_riposte": 1,
+   "lt_second_blade": 1,
+   "lt_second_blade+": 1,
+   "lt_service_record": 1,
+   "lt_watch_cut": 2,
+   "lt_watch_cut+": 2,
+   "lt_witness": 1
+  },
+  "relics": [
+   "lt_relic_chipped_buckler",
+   "lt_relic_warrant_cord",
+   "lt_relic_scarlet_epaulette"
+  ]
+ },
+ {
+  "name": "lt_strength_spender_a2",
+  "family": "Strength Spender",
+  "act": 2,
+  "character": "lieutenant",
+  "cards": {
+   "lt_armguard": 1,
+   "lt_armguard+": 1,
+   "lt_arms_drill": 1,
+   "lt_buckle": 2,
+   "lt_buckler_up": 2,
+   "lt_countercharge": 1,
+   "lt_grip": 1,
+   "lt_heave+": 2,
+   "lt_new_stripes": 1,
+   "lt_pike_butt": 1,
+   "lt_watch_cut": 3,
+   "lt_watch_cut+": 1,
+   "lt_whetstone": 1,
+   "lt_whetstone+": 1
+  },
+  "relics": [
+   "lt_relic_sword_knot",
+   "lt_relic_chipped_buckler"
+  ]
+ },
+ {
+  "name": "lt_strength_spender_a3",
+  "family": "Strength Spender",
+  "act": 3,
+  "character": "lieutenant",
+  "cards": {
+   "lt_armguard+": 2,
+   "lt_arms_drill+": 1,
+   "lt_broken_pike": 1,
+   "lt_buckle": 2,
+   "lt_buckler_up": 1,
+   "lt_countercharge": 1,
+   "lt_forced_march": 1,
+   "lt_grip+": 1,
+   "lt_heave+": 2,
+   "lt_hilt_knot": 1,
+   "lt_new_stripes": 1,
+   "lt_pike_butt": 1,
+   "lt_watch_cut": 3,
+   "lt_watch_cut+": 1,
+   "lt_whetstone": 1,
+   "lt_whetstone+": 2
+  },
+  "relics": [
+   "lt_relic_sword_knot",
+   "lt_relic_chipped_buckler",
+   "lt_relic_full_tang"
+  ]
+ },
+ {
+  "name": "lt_front_rank_a2",
+  "family": "Front Rank",
+  "act": 2,
+  "character": "lieutenant",
+  "cards": {
+   "lt_armguard": 1,
+   "lt_bloody_cobbles": 1,
+   "lt_buckler_up": 3,
+   "lt_buckler_up+": 1,
+   "lt_clenched_jaw": 1,
+   "lt_dare+": 1,
+   "lt_front_rank+": 2,
+   "lt_headlong": 1,
+   "lt_heel_turn": 1,
+   "lt_heel_turn+": 1,
+   "lt_new_stripes": 1,
+   "lt_open_visor": 1,
+   "lt_overreach": 1,
+   "lt_split_lip": 1,
+   "lt_watch_cut": 2
+  },
+  "relics": [
+   "lt_relic_dented_gorget",
+   "lt_relic_split_chinstrap"
+  ]
+ },
+ {
+  "name": "lt_front_rank_a3",
+  "family": "Front Rank",
+  "act": 3,
+  "character": "lieutenant",
+  "cards": {
+   "lt_armguard": 1,
+   "lt_bloody_cobbles": 1,
+   "lt_bloody_cobbles+": 1,
+   "lt_broken_nose": 1,
+   "lt_buckler_up": 2,
+   "lt_buckler_up+": 2,
+   "lt_clear_the_square": 1,
+   "lt_clenched_jaw": 1,
+   "lt_dare+": 1,
+   "lt_front_rank+": 2,
+   "lt_headlong": 1,
+   "lt_heel_turn+": 2,
+   "lt_last_ditch": 1,
+   "lt_new_stripes": 1,
+   "lt_open_visor": 1,
+   "lt_overreach+": 1,
+   "lt_split_lip": 1,
+   "lt_watch_cut": 1
+  },
+  "relics": [
+   "lt_relic_dented_gorget",
+   "lt_relic_split_chinstrap",
+   "lt_relic_scarlet_epaulette"
+  ]
+ },
+ {
+  "name": "lt_shield_and_steel_a2",
+  "family": "Shield and Steel",
+  "act": 2,
+  "character": "lieutenant",
+  "cards": {
+   "lt_against_the_wall": 1,
+   "lt_armguard": 1,
+   "lt_braced_pike": 1,
+   "lt_braced_pike+": 1,
+   "lt_buckle": 1,
+   "lt_buckler_up": 2,
+   "lt_buckler_up+": 2,
+   "lt_gatehouse": 1,
+   "lt_gatehouse+": 1,
+   "lt_new_stripes": 1,
+   "lt_no_surrender": 1,
+   "lt_on_your_feet": 1,
+   "lt_shield_punch": 1,
+   "lt_shield_punch+": 1,
+   "lt_splintered_shield": 1,
+   "lt_watch_cut": 2
+  },
+  "relics": [
+   "lt_relic_chipped_buckler",
+   "lt_relic_pay_chest"
+  ]
+ },
+ {
+  "name": "lt_shield_and_steel_a3",
+  "family": "Shield and Steel",
+  "act": 3,
+  "character": "lieutenant",
+  "cards": {
+   "lt_against_the_wall": 1,
+   "lt_armguard": 1,
+   "lt_armguard+": 1,
+   "lt_braced_pike": 1,
+   "lt_braced_pike+": 1,
+   "lt_buckle": 1,
+   "lt_buckler_up": 2,
+   "lt_buckler_up+": 2,
+   "lt_gatehouse+": 2,
+   "lt_no_surrender": 1,
+   "lt_on_your_feet": 1,
+   "lt_parade_ground": 1,
+   "lt_pike_square+": 1,
+   "lt_poise": 1,
+   "lt_shield_punch+": 2,
+   "lt_splintered_shield": 1,
+   "lt_watch_cut": 2
+  },
+  "relics": [
+   "lt_relic_chipped_buckler",
+   "lt_relic_pay_chest",
+   "lt_relic_split_chinstrap"
+  ]
+ },
+ {
+  "name": "lt_bloodied_veteran_a2",
+  "family": "Bloodied Veteran",
+  "act": 2,
+  "character": "lieutenant",
+  "cards": {
+   "lt_bloody_cobbles+": 2,
+   "lt_broken_nose": 1,
+   "lt_buckler_up": 4,
+   "lt_clenched_jaw": 1,
+   "lt_clenched_jaw+": 1,
+   "lt_dare": 1,
+   "lt_dare+": 1,
+   "lt_last_ditch": 1,
+   "lt_new_stripes": 1,
+   "lt_pike_butt": 2,
+   "lt_scar": 1,
+   "lt_split_lip": 1,
+   "lt_watch_cut": 1,
+   "lt_watch_cut+": 1
+  },
+  "relics": [
+   "lt_relic_split_chinstrap",
+   "lt_relic_dented_gorget"
+  ]
+ },
+ {
+  "name": "lt_bloodied_veteran_a3",
+  "family": "Bloodied Veteran",
+  "act": 3,
+  "character": "lieutenant",
+  "cards": {
+   "lt_bloody_cobbles+": 2,
+   "lt_broken_nose": 1,
+   "lt_buckler_up": 2,
+   "lt_buckler_up+": 2,
+   "lt_clenched_jaw+": 2,
+   "lt_dare": 1,
+   "lt_dare+": 1,
+   "lt_last_ditch": 1,
+   "lt_new_stripes": 1,
+   "lt_overhand": 1,
+   "lt_pike_butt": 1,
+   "lt_pike_butt+": 1,
+   "lt_recoil+": 1,
+   "lt_rising_star": 1,
+   "lt_scar": 1,
+   "lt_signal": 1,
+   "lt_split_lip": 1,
+   "lt_watch_cut": 1
+  },
+  "relics": [
+   "lt_relic_split_chinstrap",
+   "lt_relic_dented_gorget",
+   "lt_relic_scarlet_epaulette"
+  ]
+ },
+ {
+  "name": "lt_common_heavy_a2",
+  "family": "Common-heavy",
+  "act": 2,
+  "character": "lieutenant",
+  "cards": {
+   "lt_armguard": 1,
+   "lt_arrest": 1,
+   "lt_braced_pike": 1,
+   "lt_buckle": 1,
+   "lt_buckler_up": 1,
+   "lt_buckler_up+": 2,
+   "lt_clenched_jaw": 1,
+   "lt_cut_the_strap": 1,
+   "lt_gatehouse": 1,
+   "lt_last_bell": 1,
+   "lt_marked_man": 1,
+   "lt_new_stripes+": 1,
+   "lt_pike_butt": 1,
+   "lt_split_lip": 1,
+   "lt_watch_cut": 1,
+   "lt_watch_cut+": 2,
+   "lt_whetstone": 1
+  },
+  "relics": [
+   "lt_relic_tin_fife",
+   "lt_relic_chipped_buckler"
+  ]
+ },
+ {
+  "name": "lt_common_heavy_a3",
+  "family": "Common-heavy",
+  "act": 3,
+  "character": "lieutenant",
+  "cards": {
+   "lt_armguard+": 1,
+   "lt_arrest": 1,
+   "lt_braced_pike": 1,
+   "lt_buckle": 1,
+   "lt_buckler_up+": 2,
+   "lt_clenched_jaw": 1,
+   "lt_cut_the_strap": 1,
+   "lt_gatehouse+": 1,
+   "lt_headlong": 1,
+   "lt_heel_turn": 1,
+   "lt_last_bell": 1,
+   "lt_marked_man": 1,
+   "lt_new_stripes+": 1,
+   "lt_pike_butt+": 1,
+   "lt_roll_call": 1,
+   "lt_second_rank": 1,
+   "lt_split_lip": 1,
+   "lt_watch_cut+": 3,
+   "lt_whetstone": 1
+  },
+  "relics": [
+   "lt_relic_tin_fife",
+   "lt_relic_chipped_buckler",
+   "lt_relic_split_chinstrap"
+  ]
+ },
+ {
+  "name": "paperwork_a2",
+  "family": "Paperwork",
+  "act": 2,
+  "cards": {
+   "paper_cut": 2,
+   "cower_behind_a_desk": 3,
+   "strong_binder": 1,
+   "permit_a38": 1,
+   "counter_ward": 1,
+   "deskward": 1,
+   "cursed_addendum": 2,
+   "inkblot_verdict": 1,
+   "occult_precedent": 2,
+   "red_ink_doctrine+": 1,
+   "summary_judgment+": 1,
+   "form_of_ill_intent+": 2,
+   "inkblot_verdict+": 1
+  },
+  "relics": [
+   "formkeepers_signet",
+   "chancery_scale"
+  ],
+  "character": "bureaucrat"
+ },
+ {
+  "name": "paperwork_a3",
+  "family": "Paperwork",
+  "act": 3,
+  "cards": {
+   "paper_cut": 2,
+   "cower_behind_a_desk": 2,
+   "strong_binder": 1,
+   "permit_a38": 1,
+   "counter_ward": 1,
+   "deskward": 1,
+   "borrowed_candle": 1,
+   "black_ledger": 1,
+   "occult_precedent": 2,
+   "broom_dispatch": 1,
+   "red_ink_doctrine+": 1,
+   "summary_judgment+": 1,
+   "form_of_ill_intent+": 2,
+   "inkblot_verdict+": 2,
+   "cursed_addendum+": 2,
+   "hedge_hospitality+": 1
+  },
+  "relics": [
+   "formkeepers_signet",
+   "chancery_scale",
+   "concordance_medallion"
+  ],
+  "character": "bureaucrat"
+ },
+ {
+  "name": "plain_a2",
+  "family": "plain",
+  "act": 2,
+  "cards": {
+   "paper_cut": 2,
+   "cower_behind_a_desk": 3,
+   "strong_binder": 1,
+   "permit_a38": 1,
+   "violence_allowance": 1,
+   "tallow_budget": 2,
+   "false_signature": 1,
+   "notary_beetle": 1,
+   "marginalia": 1,
+   "borrowed_candle": 1,
+   "dawn_summons+": 1,
+   "counter_ward+": 2,
+   "deskward+": 2
+  },
+  "relics": [
+   "iron_prayer_bead",
+   "lead_counterweight"
+  ],
+  "character": "bureaucrat"
+ },
+ {
+  "name": "plain_a3",
+  "family": "plain",
+  "act": 3,
+  "cards": {
+   "paper_cut": 2,
+   "cower_behind_a_desk": 2,
+   "strong_binder": 1,
+   "permit_a38": 1,
+   "counter_ward": 1,
+   "deskward": 1,
+   "borrowed_candle": 1,
+   "tallow_budget": 1,
+   "false_signature": 1,
+   "marginalia": 1,
+   "notary_beetle": 1,
+   "dawn_summons+": 1,
+   "blood_testimony+": 1,
+   "grievance_ledger+": 1,
+   "counter_ward+": 2,
+   "deskward+": 2,
+   "tallow_budget+": 1,
+   "borrowed_candle+": 1
+  },
+  "relics": [
+   "iron_prayer_bead",
+   "lead_counterweight",
+   "index_bone"
+  ],
+  "character": "bureaucrat"
+ }
+]
