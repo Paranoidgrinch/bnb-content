@@ -3,16 +3,17 @@ using RogueDeck.Run;
 namespace BnbContent.Converter;
 
 // THE TUTORIAL (user, 2026-09-26: "ein tutorial …, wo der spieler alles einmal gezeigt bekommt und erklaert
-// bekommt"). Not a second game: six rooms of the city, walked in a fixed order on the real content, each paying
-// what its role pays in a real run — the payload of every room is realised by the same MapNodeRealizer, from the
-// same Act-I spec, that a generated map uses. What is taught is what the player will meet:
+// bekommt"; 2026-10-23: one per character, offered the first time it is played, "nicht länger als 5 min").
+// Not a second game: three rooms of the city, walked in a fixed order on the real content, each paying what its
+// role pays in a real run — the payload of every room is realised by the same MapNodeRealizer, from the same
+// Act-I spec, that a generated map uses. What is taught is the character and the fight:
 //
 //   1. an easy fight against one enemy          — the hand, Energy, an intent, Block, ending the turn
-//   2. a simple event                            — reading a door and what each branch does
-//   3. a fight against two                       — aiming a card, statuses, the reward
-//   4. the shop                                  — buying, removing a card, right-click to see an upgrade
-//   5. the waiting room                          — rest or improve
-//   6. an elite with a rule of its own           — the rules plates, a relic as the prize
+//   2. a fight against two                       — aiming a card, statuses, the reward
+//   3. the waiting room                          — rest or improve
+//
+// Events, shops and elites were rooms of the first tutorial (six rooms, well over five minutes); they explain
+// themselves on the map and are left to the first run.
 //
 // The coach's words for each moment ride in Presentation.Game.Extra under "tutorial:<moment>" (title) and
 // "tutorial.text:<moment>" (text); the frontend decides WHEN a moment has come, the game says what it means.
@@ -21,11 +22,8 @@ public static class Tutorial
     private static readonly (MapNodeKind Kind, string? Encounter, string? Ref)[] Rooms =
     [
         (MapNodeKind.Combat, "city_easy_queue_01", null),
-        (MapNodeKind.Event, null, "clerks_tea_break"),
         (MapNodeKind.MultiCombat, "city_easy_counter_04", null),
-        (MapNodeKind.Shop, null, null),
         (MapNodeKind.Rest, null, null),
-        (MapNodeKind.Elite, "city_elite_enforcement_01", null),
     ];
 
     public static RunTutorial Build(MapGenerationSpec cityRules, RunStart start)
@@ -37,8 +35,7 @@ public static class Tutorial
             return new Node(new NodeId($"t{index}"), content.Type, content.Payload, content.Tags);
         }).ToList();
 
-        // A learner's body and purse: enough health that the elite teaches rather than ends the lesson, and
-        // gold for the shop to be a shop.
+        // A learner's body: enough health that a mistake teaches rather than ends the lesson.
         var learner = start with
         {
             MaxHealth = 100,
@@ -55,11 +52,16 @@ public static class Tutorial
     public static RunStart WitchLearner(RunStart her) =>
         her with { Deck = [.. her.Deck, new RogueDeck.Core.Combat.CardDefinitionId("black_cat")] };
 
+    // The Lieutenant's carries Armguard: her starter never spends Strength, and spending it is half of her.
+    public static RunStart LieutenantLearner(RunStart her) =>
+        her with { Deck = [.. her.Deck, new RogueDeck.Core.Combat.CardDefinitionId("lt_armguard")] };
+
     // The coach's script, moment by moment, in the order a player meets them.
     public static readonly IReadOnlyList<(string Moment, string Title, string Text)> Steps =
     [
         ("welcome", "Welcome to the Old City Offices",
-            "This short run shows you everything once. Follow the notes; you can skip the tutorial at any time."),
+            "Three short rooms — two fights and a rest — show you how this character plays. Follow the notes; you " +
+            "can skip the tutorial at any time."),
         ("map", "The map",
             "This is the act's map. Each room is a symbol — a fight, an event, a shop, a rest — and the legend says " +
             "which is which. In a real run you choose your own path between them; press M at any time to look."),
@@ -86,25 +88,17 @@ public static class Tutorial
         ("reward", "Your reward",
             "After a fight you get gold, and you may take one of three cards into your deck — or skip. A smaller " +
             "deck draws its best cards more often. Right-click a card to see its improved version."),
-        ("event", "Events",
-            "Rooms marked ? are events. Each choice says in plain words what it will do, under its own line."),
         ("combat.multiple", "More than one enemy",
             "Now there are two. Pick a card, then click the enemy you want it to hit. The arrow keys aim, Space " +
             "plays."),
-        ("shop", "The shop",
-            "Spend your gold on cards and relics, or pay to have a weak card struck from your deck. Right-click a " +
-            "card to see its improved version before you buy."),
         ("rest", "The waiting room",
             "Rest to heal, or improve one card for good. If nothing can be improved, the button says so."),
-        ("elite.rules", "An elite and its rules",
-            "Elites and bosses have rules of their own. They stand in the middle of the room — read them before " +
-            "you play. \"On you\" is a demand placed on you."),
         ("compendium", "The compendium",
             "Every effect and status in the game is explained in the Compendium, with an example. Open it from " +
             "the title screen or with Esc during a run."),
-        ("complete", "That is the whole game",
-            "You have seen fights, events, the shop, the rest and an elite. A real run is five acts of this. Good " +
-            "luck with the paperwork."),
+        ("complete", "Ready for a real run",
+            "That is how this character fights. A real run is five acts: you choose your path on the map, and meet " +
+            "events (?), shops, elites and a boss at the end of every act — each explains itself. Good luck."),
     ];
 
     // THE HEDGE WITCH'S LESSON (user 2026-10-04, plan E9). The same six rooms, walked as her: everything above is
@@ -141,8 +135,49 @@ public static class Tutorial
             "written into your Recipe Book — the Recipes button beside the pot."),
     ];
 
+    // THE SORCERER'S APPRENTICE'S LESSON: told only while the hero carries a wand, each the first time the fight
+    // shows it.
+    public static readonly IReadOnlyList<(string Moment, string Title, string Text)> ApprenticeSteps =
+    [
+        ("ap.wand", "The Wand",
+            "Beside your cards are the wand's actions. Inscribe puts a card from your hand into a wand slot instead of " +
+            "playing it; it stays there. Cast runs the whole wand, slot by slot, each card doing its Wand part."),
+        ("ap.focus", "Focus",
+            "The wand runs on Focus. Every card you play gives 1 Focus (at most 6), kept from turn to turn. A cast " +
+            "costs 2 Focus for one or two wand cards, more for longer wands."),
+        ("ap.cast", "Casting",
+            "Your wand holds a card: Cast it. Modifiers like Heighten change the Speak after them, so the order of the " +
+            "slots matters — the preview shows what the cast will do."),
+        ("ap.exhaustion", "Exhaustion",
+            "Each cast adds Exhaustion. At the limit the wand will not cast; it falls by 3 at the start of your turn. " +
+            "Burn Out empties a slot when you need room."),
+        ("ap.elements", "The four elements",
+            "Singe on an enemy makes each direct hit deal more and is spent; Grit softens enemy hits; Flow refunds " +
+            "Focus after a cast; Gust lets you draw and discard next turn."),
+    ];
+
+    // THE LIEUTENANT'S LESSON: told only while the hero carries her command, each the first time the fight shows it.
+    public static readonly IReadOnlyList<(string Moment, string Title, string Text)> LieutenantSteps =
+    [
+        ("lt.authority", "Authority",
+            "You earn Authority by keeping your word — each kept Order or Challenge gives 1. Cards like Signal spend " +
+            "it. You hold at most 6, and it is gone when the fight ends."),
+        ("lt.order", "An Order",
+            "An Order is a promise about your own actions, shown on you: what it asks and by when. First Orders: play " +
+            "a Deed later this turn. The card that issues it never counts."),
+        ("lt.challenge", "A Challenge",
+            "A Challenge is a promise about one enemy, shown on it — most must be kept before that enemy acts. Watch " +
+            "Cut deals 2 more to a Challenged enemy."),
+        ("lt.open_guard", "Open Guard",
+            "Open Guard is risk you take on purpose: the next enemy hit deals 2 more per stack, before Block, and " +
+            "spends it. Enough Block makes it cost nothing."),
+        ("lt.strength", "Spending Strength",
+            "Strength makes every hit stronger — and some of your cards can spend it for something else, like " +
+            "Armguard's Ward Wax. Only Strength you really have can be spent."),
+    ];
+
     public static IReadOnlyDictionary<string, string> Extra() =>
-        Steps.Concat(WitchSteps).SelectMany((step, index) => new[]
+        Steps.Concat(WitchSteps).Concat(ApprenticeSteps).Concat(LieutenantSteps).SelectMany((step, index) => new[]
         {
             KeyValuePair.Create($"tutorial:{step.Moment}", step.Title),
             KeyValuePair.Create($"tutorial.text:{step.Moment}", step.Text),

@@ -169,18 +169,28 @@ public static class BlueprintAssembler
             Start = start,
             // The roster: the Bureaucrat first (the default every older save is read as), each with what is
             // offered to it alone — the Bureaucrat's own reward cards and relics, the Witch's cards (plan C1/W1).
+            // Each but the Lieutenant is locked until earned (CharacterUnlocks), and each learns from a lesson of
+            // its own: the same three rooms, walked as that character.
             Characters =
             [
-                new RunCharacter(data.Bureaucrat.Id, start, Exclusive: BureaucratExclusive()),
-                // Her own tutorial: the same six rooms, walked as her (Tutorial.WitchSteps tell her side of it).
+                new RunCharacter(data.Bureaucrat.Id, start, UnlockFlag: CharacterUnlocks.FlagOf(data.Bureaucrat.Id),
+                    Exclusive: BureaucratExclusive()),
                 Witch.WitchCharacter.Roster(hotAfterBrew: witchHot) with
                 {
+                    UnlockFlag = CharacterUnlocks.FlagOf(Witch.WitchCharacter.Id),
                     Tutorial = Tutorial.Build(maps[0].Map.Spec, Tutorial.WitchLearner(Witch.WitchCharacter.StartWith(witchHot))),
                 },
-                Apprentice.ApprenticeCharacter.Roster(),
-                Lieutenant.LieutenantCharacter.Roster(),
+                Apprentice.ApprenticeCharacter.Roster() with
+                {
+                    UnlockFlag = CharacterUnlocks.FlagOf(Apprentice.ApprenticeCharacter.Id),
+                    Tutorial = Tutorial.Build(maps[0].Map.Spec, Apprentice.ApprenticeCharacter.Start),
+                },
+                Lieutenant.LieutenantCharacter.Roster() with
+                {
+                    Tutorial = Tutorial.Build(maps[0].Map.Spec, Tutorial.LieutenantLearner(Lieutenant.LieutenantCharacter.Start)),
+                },
             ],
-            // The tutorial: six city rooms in a fixed order, realised from the city's own rules (Tutorial.cs).
+            // The Bureaucrat's tutorial: three city rooms in a fixed order, realised from the city's own rules.
             Tutorial = Tutorial.Build(maps[0].Map.Spec, start),
             // Victory now means the WHOLE run — the city and the archives behind it. (The engine's meta rules
             // key off the run's result; a per-act flag would need an act-completed hook that is not data yet.)
@@ -413,7 +423,8 @@ public static class BlueprintAssembler
                 FlavorText = GameTitle,
                 // The compendium's plain words and examples (Compendium.cs): a wiki is about the GAME, so its
                 // words hang off the game's own entry.
-                Extra = Compendium.Extra().Concat(Tutorial.Extra()).ToDictionary(p => p.Key, p => p.Value),
+                Extra = Compendium.Extra().Concat(Tutorial.Extra()).Concat(CharacterUnlocks.Extra())
+                    .ToDictionary(p => p.Key, p => p.Value),
             },
         };
     }
