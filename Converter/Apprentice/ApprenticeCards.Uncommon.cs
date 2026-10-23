@@ -111,7 +111,7 @@ public static partial class ApprenticeCards
     public static IReadOnlyList<BnbCard> Uncommons() =>
     [
         SplitWick, SplitWick.Up(
-            "Deal 5 damage twice.", Repeat(2, Damage(5)),
+            "Deal 4 damage three times.", Repeat(3, Damage(4)),
             "Shape — Fork: the next damaging Speak becomes two hits of 70% each, each its own hit for Singe.",
             Shape(WandRule.Fork, percent: 70, amount: 2)),
         CrackedSlate, CrackedSlate.Up(

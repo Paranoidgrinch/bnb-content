@@ -187,8 +187,8 @@ public static partial class ApprenticeCards
             "Ground: this cast's Exhaustion is 2 lower, or 4 lower when 5 or more instructions run.",
             Ground(WandRule.ByLength, amount: 2, amount2: 4, cap: 5), cost: 0),
         Pinprick, Pinprick.Up(
-            "Deal 9 damage. If the target intends to attack, gain 8 Block.",
-            Seq(Damage(9), If(Intends, Block(8))),
+            "Deal 9 damage and gain 6 Block.",
+            Seq(Damage(9), Block(6)),
             "Clause: if the target intends to attack, the next damaging Speak hits once more for 5.",
             Clause(WandRule.BonusHit, amount: 5)),
         CupOfWater, CupOfWater.Up(

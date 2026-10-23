@@ -92,3 +92,11 @@ weiterhin eine eigene Identität hat. Das Gleiche gilt für Relikte.“ Umgesetz
 `source-data/design/sorcerers_apprentice_expansion.md`: 42 neue Karten (Akt I +10, II 16, III 9, IV 7), 9 neue
 Relikte, Rote/Poise und der Auslöser nach einem Cast in der Engine. Family-Bench (Anteil an Paperworks erhaltener
 Gesundheit, Median): Akt II 89 % (Bürokrat 92 %), Akt III 46 % (Bürokrat 51 %).
+
+## 5 Upgrade-Facetten (2026-10-23)
+
+Gemessen wie bei der Hexe (Text ohne Zahlen, Kosten, Retain): 33 von 84 Upgrades (39 %) hatten eine Facette, die
+Regel R1 verlangt ≥ 40 %. Zehn weitere, jeweils auf der Spiel-Hälfte (die Stab-Hälfte bleibt): Split Wick+ und
+Paper Spill+ (B: drei Treffer), Soot Mark+ (A: an alle), Scorch Mark+ (D: 1 Singe an alle), Stone Tablet+, Inkhorn+,
+Tuning Fork+ (I: Retain), Candle Grease+ und Slate Sponge+ (D: 1 Grit), Pinprick+ (C: Block ohne Bedingung).
+Jetzt 43 von 84 (51 %); `UpgradeFacetShareTests` hält die Grenze.

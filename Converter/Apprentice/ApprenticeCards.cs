@@ -25,8 +25,8 @@ public static partial class ApprenticeCards
             Tags: [CharacterTag, Self(id), .. tags ?? []], Wand: wand);
 
     private static BnbCard Up(this BnbCard card, string play, CombatNodeModel program, string wandText, WandImprint wand,
-        int? cost = null, IReadOnlyList<string>? tags = null) =>
-        card.Upgraded(play + WandLine + wandText, program, cost: cost, tags: tags, wand: wand);
+        int? cost = null, IReadOnlyList<string>? tags = null, bool? retain = null) =>
+        card.Upgraded(play + WandLine + wandText, program, cost: cost, tags: tags, wand: wand, retainInHand: retain);
 
     // ── starter (§6) ──────────────────────────────────────────────────────────────────────────────────────
 
