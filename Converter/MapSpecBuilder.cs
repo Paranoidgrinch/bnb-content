@@ -296,7 +296,7 @@ public static class MapSpecBuilder
                 new RewardOffer("spoils",
                 [
                     new ChangeResourceRunEffect(StandardRunIds.Gold, min, max),
-                    new OfferRewardRunEffect(new RewardId($"cards:{elite.Id}"), pools.CardRewardSource(), 1)
+                    new OfferRewardRunEffect(new RewardId($"cards:{elite.Id}"), pools.EliteCardRewardSource(), 1)
                         { Kind = RewardKinds.Card },
                     // Says what it is, for the same reason a boss's does: a reward that does not name its
                     // kind is announced as a card, and the one thing an elite is fought for would reach the

@@ -135,14 +135,19 @@ public sealed class ConversionPools
     // (which cards enter the pool at all); what they did not have was a CURVE. Same table as the relics use,
     // and the same trick for applying it: each entry of a rarity is weighted by that rarity's share times the
     // size of every other class in the draw, so the class odds hold however many cards sit in each class.
-    public IRewardSource CardRewardSource(int count = 3) =>
+    public IRewardSource CardRewardSource(int count = 3, int? upgradedPercent = null) =>
         new PoolRewardSource(new RunPool<RewardOffer>(
             [
                 .. CurveEntries(RewardCards, BureaucratId), .. CurveEntries(WitchRewardCards, Witch.WitchCharacter.Id),
                 .. CurveEntries(ApprenticeRewardCards, Apprentice.ApprenticeCharacter.Id),
                 .. CurveEntries(LieutenantRewardCards, Lieutenant.LieutenantCharacter.Id),
             ]),
-            count) { UpgradeChancePercent = UpgradedShare };
+            count) { UpgradeChancePercent = upgradedPercent ?? UpgradedShare };
+
+    // AN ELITE'S CARDS ARE SPOILS (user, playtest 3, E1: "card belohnungen nach elites fühlen sich nicht sehr
+    // besonders an"): five to choose from instead of three, and every one of them already improved.
+    public const int EliteCardOffers = 5;
+    public IRewardSource EliteCardRewardSource() => CardRewardSource(EliteCardOffers, upgradedPercent: 100);
 
     // THE GENERAL CARDS' SHARE OF A REWARD (sharpening pass 2026-10-21). They used to sit in the same rarity
     // classes as a character's own cards, and since there are no general Commons and the late acts' character
