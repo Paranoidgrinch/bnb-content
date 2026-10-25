@@ -280,12 +280,12 @@ public class ActFourEventLiveTests
     }
 
     [Fact]
-    public void Following_the_donkey_finds_water_and_something_left_behind()
+    public void Following_the_donkey_costs_eight_on_the_thorns_and_finds_something_left_behind()
     {
         using var story = Door("the_triple_counted_donkey", "follow_the_donkey", health: 30);
 
         Assert.NotEmpty(story.Run.Relics);
-        Assert.Equal(30 + (70 * 10 + 99) / 100, story.Run.Health.Current);
+        Assert.Equal(30 - 8, story.Run.Health.Current);   // playtest 3, E3: no relic for nothing
     }
 
     // ── 8. The Four Canopic Jars ──────────────────────────────────────────────────────────────────────────

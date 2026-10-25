@@ -139,8 +139,12 @@ public static class ActFourEvents
             [Remove("choose what is scraped out with it"), new ChangeMaxHealthRunEffect(-7)]),
         Branch("take_the_fragment", "Take the Fragment.",
             "A chip of the empty oval, pocket-sized. It is a cartouche with nobody in it, which turns out to "
-            + "be a useful thing to be carrying in a building like this.",
-            [.. Grant(ActFourEventRelicRules.CartoucheId)]));
+            + "be a useful thing to be carrying in a building like this. The next three offices want to know "
+            + "whose it was.",
+            [
+                .. Grant(ActFourEventRelicRules.CartoucheId),
+                Openings.ForFights(Openings.EventFights, Applies(ActFour.BurdenedId, 1)),
+            ]));
 
     // ── 5 · Mid–Late ──────────────────────────────────────────────────────────────────────────────────────
 
@@ -213,10 +217,11 @@ public static class ActFourEvents
                 new ChangeMaxHealthRunEffect(5),
             ]),
         Branch("follow_the_donkey", "Follow the Donkey.",
-            "It knows a way through. Where it stops there is water and something somebody left behind.",
+            "It knows a way through, though not a kind one: eight of you stay on the thorns. Where it stops "
+            + "there is something somebody left behind.",
             [
                 NormalRelic(pools, "the_triple_counted_donkey", RelicAuthoring.Rarity.Common),
-                Heal(10),
+                new ApplyRunDamageRunEffect(8),
             ]));
 
     // ── 8 · Mid–Late ──────────────────────────────────────────────────────────────────────────────────────
@@ -227,8 +232,8 @@ public static class ActFourEvents
         + "of them is what it says. You may open one.",
         Branch("jar_of_breath", "Jar of Breath.",
             "It is empty, and the emptiness is the point: it is a jar for holding a breath somebody else has "
-            + "finished with.",
-            [.. Grant(ActFourEventRelicRules.JarId)]),
+            + "finished with. It takes five of your own to seal it again.",
+            [.. Grant(ActFourEventRelicRules.JarId), new ChangeMaxHealthRunEffect(-5)]),
         Branch("jar_of_blood", "Jar of Blood.",
             "Twelve more of you, all at once, and a great deal of it in your mouth for the next room.",
             [new ChangeMaxHealthRunEffect(12), Openings.ForFights(Openings.EventFights, Applies("poison", 5))]),
