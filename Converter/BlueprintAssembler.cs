@@ -135,12 +135,13 @@ public static class BlueprintAssembler
                     Opening = [new ComputedHealRunEffect(RunExpr.MissingHealth)],
                 })
                 .ToList(),
-            Statuses =
+            Statuses = RuleTexts.Apply(
             [
                 .. StatusMapper.Map("statuses", data.Statuses),
                 .. Cards.FinalCards.Statuses(),
                 .. Relics.FinalRelics.Statuses(),
                 .. PassiveStatuses.All(),
+                .. AmbushFooting.All(),
                 .. ActTwo.All(),
                 .. ActThree.All(),
                 .. ActFour.All(),
@@ -150,7 +151,7 @@ public static class BlueprintAssembler
                 .. Witch.WitchKeywords.All(), .. Witch.WitchRules.All(),
                 .. Apprentice.ApprenticeKeywords.All(),
                 .. Lieutenant.LieutenantKeywords.All(),
-            ],
+            ]),
             // The Apprentice's wand: who carries one, and every number it works with (Apprentice/ApprenticeWand).
             Wand = Apprentice.ApprenticeWand.Rules,
             // ONLY THE AUTHORED POOLS SHIP. Until 2026-09-10 every ported v2 relic whose id did not meet a
@@ -345,13 +346,16 @@ public static class BlueprintAssembler
                     {
                         Icon = $"statuses/{s.Id}.png",
                         FlavorText = s.Description,
-                        Tags = s.Tags ?? [],
+                        Tags = LogOnlyStatuses.Ids.Contains(s.Id) ? [.. s.Tags ?? [], LogOnlyStatuses.Tag] : s.Tags ?? [],
                     })
                 // …and the phase markers, which are authored rather than ported and so had no entry at all.
                 // A frontend cannot tell "the boss is in its second phase" from "the boss has 3 Paperwork" by
                 // looking at either — the status has to say which it is, and this is where it says it.
                 .Concat(BossPhases.Markers.Select(id => KeyValuePair.Create(
                     id, new EntityPresentation { Tags = [BossPhases.PhaseTag] })))
+                // …and the log-only statuses that are authored here rather than ported (LogOnlyStatuses).
+                .Concat(LogOnlyStatuses.Ids.Where(id => data.Statuses.All(s => s.Id != id)).Select(id => KeyValuePair.Create(
+                    id, new EntityPresentation { Tags = [LogOnlyStatuses.Tag] })))
                 .GroupBy(e => e.Key)
                 .ToDictionary(g => g.Key, g => g.Last().Value),
             // Every body in the game is a picture too, on the same terms as a card or a relic: the id is the
