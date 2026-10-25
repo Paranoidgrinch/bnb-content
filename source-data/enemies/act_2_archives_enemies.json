@@ -1986,18 +1986,6 @@
         ]
       },
       {
-        "id": "consequence_without_cause",
-        "name": "Consequence Without Cause",
-        "intent_type": "mixed",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 12
-          }
-        ]
-      },
-      {
         "id": "return_to_the_premise",
         "name": "Return to the Premise",
         "intent_type": "block",
@@ -2006,6 +1994,18 @@
             "type": "gain_block",
             "target": "owner",
             "amount": 8
+          }
+        ]
+      },
+      {
+        "id": "consequence_without_cause",
+        "name": "Consequence Without Cause",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 12
           }
         ]
       },

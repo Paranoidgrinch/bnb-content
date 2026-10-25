@@ -7316,12 +7316,17 @@
       {
         "id": "hide_in_the_footnote",
         "name": "Hide in the Footnote",
-        "intent_type": "block",
+        "intent_type": "mixed",
         "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 4
+          },
           {
             "type": "gain_block",
             "target": "owner",
-            "amount": 8
+            "amount": 6
           }
         ]
       },
@@ -9764,18 +9769,6 @@
         ]
       },
       {
-        "id": "lantern_glass_cut",
-        "name": "Lantern-Glass Cut",
-        "intent_type": "attack",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 7
-          }
-        ]
-      },
-      {
         "id": "seal_the_room",
         "name": "Seal the Room",
         "intent_type": "block",
@@ -9789,6 +9782,18 @@
             "type": "gain_block",
             "target": "owner",
             "amount": 3
+          }
+        ]
+      },
+      {
+        "id": "lantern_glass_cut",
+        "name": "Lantern-Glass Cut",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 7
           }
         ]
       }
