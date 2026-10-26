@@ -15,6 +15,9 @@ public sealed class BabData
     // room; which ENCOUNTERS and EVENTS belong to it is decided by the act number the entries carry, not by the
     // file they came from (MapSpecBuilder filters on it).
     public required IReadOnlyList<BabActManifest> Acts { get; init; }
+    // The cards' rules in short (playtest 3, F1): card id → the text its face and its description carry, replacing
+    // the authored sentence. A card not named keeps its own. The mechanics are the programs'; only the words change.
+    public IReadOnlyDictionary<string, string> CardTexts { get; init; } = new Dictionary<string, string>();
 
     public static readonly JsonSerializerOptions JsonOptions = new()
     {
@@ -29,8 +32,10 @@ public sealed class BabData
         List<T> Many<T>(params string[] relatives) =>
             relatives.SelectMany(r => Read<List<T>>(Path.Combine(dataDirectory, r))).ToList();
 
+        var cardTexts = Path.Combine(dataDirectory, "cards/card_texts.json");
         return new BabData
         {
+            CardTexts = File.Exists(cardTexts) ? Read<Dictionary<string, string>>(cardTexts) : new Dictionary<string, string>(),
             Acts =
             [
                 One<BabActManifest>("acts/act_1_city.json"),

@@ -1,3 +1,4 @@
+using BnbContent.Converter;
 using BnbContent.Converter.Apprentice;
 using RogueDeck.Core.Combat;
 using static BnbContent.Tests.ApprenticeTests;
@@ -26,6 +27,8 @@ public class ApprenticeProxyTests
         }
     }
 
+    private static readonly IReadOnlyDictionary<string, string> ShortTexts = BabData.Load(TestData.Directory).CardTexts;
+
     // Only the wand part was added: the card's play, its cost and its tags are what they were.
     [Fact]
     public void A_proxy_changes_nothing_about_playing_the_card()
@@ -35,7 +38,8 @@ public class ApprenticeProxyTests
         {
             var before = plain[card.Id];
             Assert.Equal(before.Costs, card.Costs);
-            Assert.Equal(before.DescriptionKey, card.DescriptionKey);
+            // …in the card's own short words where it has them (source-data/cards/card_texts.json).
+            Assert.Equal(ShortTexts.GetValueOrDefault(card.Id, before.DescriptionKey), card.DescriptionKey);
             var options = CombatJson.CreateOptions<CardPlayContext>();
             Assert.Equal(System.Text.Json.JsonSerializer.Serialize(before.Program, options),
                 System.Text.Json.JsonSerializer.Serialize(card.Program, options));

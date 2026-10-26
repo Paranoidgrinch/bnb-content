@@ -245,7 +245,25 @@ public static class BlueprintAssembler
         };
         // …and, last, how hard each act hits (ActTuning). `tuned: false` is the document as AUTHORED — what the
         // mechanics tests pin, number for number; the shipped game is tuned.
+        finished = ShortTexts(finished, data.CardTexts);
         return tuned ? ActTuning.ApplyApprenticeDamage(ActTuning.Apply(finished, data)) : finished;
+    }
+
+    // THE SHORT CARD TEXTS (source-data/cards/card_texts.json, playtest 3 F1) replace a card's description and the
+    // words on its face. Applied last, after everything that reads a card's text to build something else.
+    private static RunBlueprint ShortTexts(RunBlueprint blueprint, IReadOnlyDictionary<string, string> texts)
+    {
+        if (texts.Count == 0)
+            return blueprint;
+        var faces = new Dictionary<string, EntityPresentation>(blueprint.Presentation.Cards, StringComparer.Ordinal);
+        foreach (var (id, text) in texts)
+            if (faces.TryGetValue(id, out var face))
+                faces[id] = face with { FlavorText = text };
+        return blueprint with
+        {
+            Cards = [.. blueprint.Cards.Select(c => texts.TryGetValue(c.Id, out var text) ? c with { DescriptionKey = text } : c)],
+            Presentation = blueprint.Presentation with { Cards = faces },
+        };
     }
 
     // What only the Bureaucrat may be offered: the Bureaucrat's own reward cards (every act, upgrades included) and the

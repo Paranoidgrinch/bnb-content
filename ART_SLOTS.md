@@ -1127,102 +1127,102 @@ Handed over by a boss, a door or an event rather than offered; never in a reward
 
 | code | title | what it does |
 |---|---|---|
-| `acknowledge_service` | Acknowledge Service | Sign for the notice: gain 2 Paperwork. The Knight's enforcement deals 10 instead of 19 and 1 Paperwork. Leave it in hand to refuse. |
-| `ask_for_expedited_service` | Ask for Expedited Service | This Service Window opens the Commissioner by 15 % instead of 25 %, but afterwards you stand at Position 1 instead of going back into the queue. |
-| `authorized_entry` | Authorized Entry | Remove up to 12 Block from the Municipal Dragon. Costs 1 Authorization; one authority per turn. |
+| `acknowledge_service` | Acknowledge Service | Sign: take 2 Paperwork; the Enforcement deals 10 and 1 Paperwork instead of 19. Keep in hand to refuse. |
+| `ask_for_expedited_service` | Ask for Expedited Service | This Service Window opens him 15% instead of 25%, but you stay at Position 1 after. |
+| `authorized_entry` | Authorized Entry | Remove up to 12 Block from the Dragon. Costs 1 Authorization; once a turn. |
 | `authorized_expedition` | Authorized Expedition | Gain 1 Energy. Costs 1 Authorization; one authority per turn. |
-| `better_chair_cushion_action` | The Better Chair | Gain 14 Block. Then end the turn holding a real card, or the cushion costs you 6 HP. |
+| `better_chair_cushion_action` | The Better Chair | Gain 14 Block. End the turn holding a real card, or lose 6 HP. |
 | `black_flood_vessel_action` | Empty the Vessel | Discard your hand, draw 7, and gain 2 Energy. Once a combat. |
-| `borrow_one_minute` | Borrow One Minute | Once per turn: push one filed hour back by 1 turn, to a maximum countdown of 3. Free while you hold a Free Adjustment. |
-| `borrowers_claim` | Borrower's Claim | Retain. Exhaust. Put another card from your hand on the bottom of your draw pile, then draw 1. If it is still in your hand at the end of your turn, file 1 Paperwork. |
-| `break_the_burden_seal` | Break the Burden Seal | Break open the burden chamber: 1 Burdened comes off you, or 1 Paperwork if you carry no burden. The colony packs the breach — 12 Block when its turn comes. |
+| `borrow_one_minute` | Borrow One Minute | Once a turn: push a scheduled hour back 1 turn (max 3). Free with a Free Adjustment. |
+| `borrowers_claim` | Borrower's Claim | Retain. Exhaust. Put a card from hand under your draw pile, draw 1. Held at turn end: 1 Paperwork. |
+| `break_the_burden_seal` | Break the Burden Seal | Remove 1 Burdened from you (or 1 Paperwork). The colony gains 12 Block on its turn. |
 | `break_the_granary_labor_seal` | Break the Labor Seal | An over-ration can no longer burden you. One Burdened comes off. |
-| `break_the_granary_ration_seal` | Break the Ration Seal | From now on every exact ration costs her 10 blood and 10 cover. She loses 10 cover now. |
-| `break_the_granary_record_seal` | Break the Record Seal | A failed ration can no longer be written up. Up to 2 Paperwork comes off. |
+| `break_the_granary_ration_seal` | Break the Ration Seal | From now on each exact ration costs her 10 HP and 10 Block. She loses 10 Block now. |
+| `break_the_granary_record_seal` | Break the Record Seal | Missed rations no longer give Paperwork. Remove up to 2 Paperwork. |
 | `break_the_granary_reserve_seal` | Break the Reserve Seal | She can no longer take Grain, and no longer eats. You heal 5. |
-| `break_the_pest_seal` | Break the Pest Seal | Break open the pest chamber: the colony loses 12 HP, and what was living in there gets on you — 2 Poison. |
-| `break_the_ration_seal` | Break the Ration Seal | Break open the ration chamber: 1 Energy on your next turn. The colony eats too — it gains 1 Strength. |
+| `break_the_pest_seal` | Break the Pest Seal | The colony loses 12 HP. You take 2 Poison. |
+| `break_the_ration_seal` | Break the Ration Seal | You gain 1 Energy next turn. The colony gains 1 Strength. |
 | `break_the_seal_of_access` | Break the Great Seal of Access | Shatter the Great Seal of Access and take its Fragment. |
 | `break_the_seal_of_execution` | Break the Great Seal of Execution | Shatter the Great Seal of Execution and take its Fragment. |
 | `break_the_seal_of_testimony` | Break the Great Seal of Testimony | Shatter the Great Seal of Testimony and take its Fragment. |
-| `cauldron_add` | Into the Pot | Put a card from your hand into the cauldron instead of playing it. The first each turn is free. |
-| `cauldron_brew` | Brew | With three ingredients in the cauldron: brew them. Three of one family make a concentrated brew; any other mix gives what each ingredient gives. The ingredients then go to your discard pile. |
-| `cite_the_old_survey` | Cite the Old Survey | Spend 1 Old Right, once a turn. OLD BOUNDARY — Current and Former Survey are swapped for the rest of this turn. OLD RIGHT OF PASSAGE — the Surveyor's next attempt to cash a Claim comes to nothing, and the Claim remains. OLD MEASURE — remove up to 8 of the Surveyor's Block. |
+| `cauldron_add` | Into the Pot | Put a card from hand into the cauldron instead of playing it. The first each turn is free. |
+| `cauldron_brew` | Brew | Brew the 3 ingredients. Three of one family: a concentrated brew. Otherwise each gives its own effect. |
+| `cite_the_old_survey` | Cite the Old Survey | Once a turn, spend 1 Old Right: swap Current and Former law; or void its next Claim; or remove 8 of its Block. |
 | `claim_an_exception` | Claim an Exception | The Articles do not touch you for the rest of this turn. |
-| `clause_evidentiary` | Evidentiary Clause | Sign: draw 2 cards. Liability: 1 Doubt and 1 Paperwork when the record is read. Refuse: the Petition gains 1 Strength. |
-| `clause_extension` | Extension Clause | Sign: gain 1 Energy. Liability: 1 Fatigue when the record is read. Refuse: the Petition gains 8 Block. |
-| `clause_protective` | Protective Clause | Sign: gain 10 Block. Liability: 2 Paperwork when the record is read. Refuse: the Petition gains 1 Strength. |
-| `correction_reed_action` | A Small Correction | Send a card away and take one back out of your discard pile; it costs 1 less this turn. With nothing to take back, draw 1. Once a turn. |
-| `counter_petition` | Counter-Petition | Once a turn, spend 1 Safe-Conduct to argue one of the Ombudsman's complaints under the other Ground — Road becomes Root, or Root becomes Road. It creates nothing, moves nothing, and nobody's standing changes hands. |
+| `clause_evidentiary` | Evidentiary Clause | Sign: draw 2; 1 Doubt and 1 Paperwork later. Refuse: the Petition gains 1 Strength. |
+| `clause_extension` | Extension Clause | Sign: gain 1 Energy; 1 Fatigue later. Refuse: the Petition gains 8 Block. |
+| `clause_protective` | Protective Clause | Sign: gain 10 Block; 2 Paperwork later. Refuse: the Petition gains 1 Strength. |
+| `correction_reed_action` | A Small Correction | Once a turn: discard a card, return one from discard costing 1 less. None there: draw 1. |
+| `counter_petition` | Counter-Petition | Once a turn, spend 1 Safe-Conduct: move one complaint from Road to Root, or back. |
 | `counter_petition_twine_action` | Counter-Petition | Discard a card, draw a card, and gain 1 Energy. Once a turn. |
-| `dedicate_a_work` | Dedicate a Work | Give Eanna a card from your hand for the rest of this fight. A card she has claimed settles 4 Temple Due, an ordinary one 1, and rubbish nothing — Eanna wants value. Dedicated cards come back when she is dead. |
-| `draw_against_the_treasury` | Draw Against the Treasury | Spend a Treasury Credit: take up to 12 Block off the treasury. Once a turn. |
-| `draw_ahead` | Draw Ahead | Draw 1 card out of a later day. The quantity moves; the cards are still yours. |
-| `edict_of_the_open_audience_action` | Open the Audience | Every card in your hand costs 0 for the rest of this turn. Once a combat. |
-| `erasure_tablet_action` | Erase the Line | Every enemy's next action is erased: it deals no damage, and they guard for 20 instead. Once a combat. |
-| `far_boundary` | Far Boundary | Accept the surveyor's further figure as this turn's exact measure. Meeting it costs it 10 HP and strips its cover. |
+| `dedicate_a_work` | Dedicate a Work | Give Eanna a card from hand for this fight: claimed settles 4 Temple Due, others 1, Junk 0. |
+| `draw_against_the_treasury` | Draw Against the Treasury | Once a turn, spend a Credit: remove up to 12 Block from the treasury. |
+| `draw_ahead` | Draw Ahead | Draw 1 card now, taken from a later day. |
+| `edict_of_the_open_audience_action` | Open the Audience | Once a combat: cards in your hand cost 0 this turn. |
+| `erasure_tablet_action` | Erase the Line | Once a combat: every enemy's next action deals no damage; they gain 20 Block instead. |
+| `far_boundary` | Far Boundary | Take the far measure this turn. Met: it loses 10 HP and its cover. |
 | `file_an_objection` | File an Objection | The Dragon's next attack deals 5 less. Costs 1 Authorization; one authority per turn. |
 | `file_the_request` | File the Request | Resolve the Request for Additional Review. |
-| `fine_print` | Fine Print | Unplayable. While it is in your hand, the first card you play each turn costs 1 more. |
+| `fine_print` | Fine Print | Unplayable. While in hand, your first card each turn costs 1 more. |
 | `fragment_of_access` | Fragment of Access | Remove up to 12 Block from the Lord Sealkeeper. |
 | `fragment_of_execution` | Fragment of Execution | The Sealkeeper's next attack deals 8 less. |
 | `fragment_of_testimony` | Fragment of Testimony | Remove 2 stacks of Paperwork from yourself. |
-| `hold_the_moon` | Hold the Moon | The phase does not advance: a second night of this same phase, for you and for him. What you counted comes back at once — and so does what he counted. Once an orbit. |
-| `honey_spoon_action` | A Little Honey | Gain 2 Energy. Then end the turn with at least 1 Energy, or the spoon costs you 6 HP. |
+| `hold_the_moon` | Hold the Moon | Once an orbit: the phase repeats for both of you. Counted cards return at once, his too. |
+| `honey_spoon_action` | A Little Honey | Gain 2 Energy. End the turn with 1+ Energy, or lose 6 HP. |
 | `issue_a_citation` | Issue a Citation | Remove 1 Code Violation from the Dragon. Costs 1 Authorization; one authority per turn. |
-| `last_slice_tin_action` | Take Another Slice | Draw 2. Then play no more than four real cards this turn, or the tin costs you 6 HP. |
-| `make_amends` | Make Amends | Choose one: PAY IN COIN — spend 1 Energy. OFFER A CARD — discard a card from your hand. Either settles 1 Wergild, oldest demand first. |
-| `missing_signature` | Missing Signature | Exhaust. If it is still in your hand at the end of your turn, file 1 Paperwork. |
-| `near_boundary` | Near Boundary | Accept the surveyor's nearer figure as this turn's exact measure. Meeting it lets it brace. |
-| `notice_of_delay` | Notice of Delay | Retain. Exhaust. If it is still in your hand at the end of your turn, gain 1 Fatigue. |
+| `last_slice_tin_action` | Take Another Slice | Draw 2. Play at most 4 real cards this turn, or lose 6 HP. |
+| `make_amends` | Make Amends | Pay 1 Energy or discard a card: settle 1 Wergild, oldest first. |
+| `missing_signature` | Missing Signature | Exhaust. Still in hand at turn end: 1 Paperwork on you. |
+| `near_boundary` | Near Boundary | Take the near measure this turn. Met: it gains Block. |
+| `notice_of_delay` | Notice of Delay | Retain. Exhaust. Still in hand at turn end: 1 Fatigue. |
 | `offer_the_surplus` | Offer the Surplus | Spend 1 Energy to settle 1 Temple Due. |
-| `petition_for_priority` | Petition for Priority | Move one place toward the Counter. Gain 1 Paperwork. Only one administrative choice per turn. |
-| `redacted_leaf` | Redacted Leaf | Unplayable. Retain. At the start of your turn one card in your hand is Redacted, and the Leaf is spent. |
-| `return_receipt` | Return Receipt | Choose one: FILE THE RECEIPT — remove 1 Overdue; the Bell loses 5 HP. CONTEST THE FEE — remove 1 Late Fee; mark 1 draw-pile card Misfiled. |
-| `revise_body_shall_bear` | Revise: Thirty-Six | Spend a Reed Mark to edit this sentence one step. 36 HP, ignoring Block. Revised: 24 · 12 · nothing · and at four, Nisaba bears 18 herself. |
-| `revise_guard_counted_nothing` | Revise: The Guard Counts Nothing | Spend a Reed Mark to edit this sentence one step. Every Block you gain next turn is worth 18 less. Revised: 12 · 6 · none · and at four, 6 more. |
-| `revise_hand_shall_hold_two` | Revise: The Hand Holds Two | Spend a Reed Mark to edit this sentence one step. You draw 3 fewer cards next turn. Revised: 2 · 1 · none · and at four, you draw one more. |
-| `revise_measures_withheld` | Revise: Three Measures | Spend a Reed Mark to edit this sentence one step. 3 Energy off your next turn. Revised: 2 · 1 · none · and at four, one card of that turn costs 1 less. |
-| `revise_the_last_line` | Revise: The Last Line | Spend a Reed Mark to edit the last sentence one step. At four it reads THE NAME OF THE SUPPLICANT SHALL REMAIN and she can be killed; at five it reads THE NAME OF THE KEEPER SHALL BE ERASED, and it is read at once. |
-| `revise_three_wounds` | Revise: Three Wounds | Spend a Reed Mark to edit this sentence one step. 3 sheets of Red Tape into your draw pile. Revised: 2 · 1 · none · and at four, one sheet is struck out. |
-| `revise_two_works_broken` | Revise: Two Works | Spend a Reed Mark to edit this sentence one step. 2 cards exhausted out of your draw pile. Revised: 1 · none · and at four, one comes back from the exhaust pile. |
-| `right_of_audience` | Right of Audience | Once a turn, spend Favour. ONE — strike one of the Queen's Claims off. TWO — her law is suspended for the rest of this turn. THREE — her guard is struck away and her granted name is prepared, which takes 8 off her final order. |
-| `royal_grace_cup_action` | Royal Grace | Choose one: 1 Energy, a card, or 10 Block. Every enemy guards for 6. Once a turn. |
-| `scrape_the_first_entry` | Scrape the First Entry | Blank this entry on the scroll. One entry a turn, and the correction is written up: 1 Paperwork. |
-| `scrape_the_second_entry` | Scrape the Second Entry | Blank this entry on the scroll. One entry a turn, and the correction is written up: 1 Paperwork. |
-| `scrape_the_third_entry` | Scrape the Third Entry | Blank this entry on the scroll. One entry a turn, and the correction is written up: 1 Paperwork. |
-| `settle_the_burden` | Settle the Burden | Spend a Treasury Credit: 1 Burdened is settled and comes off you. Once a turn. |
-| `silence_the_inner_stair` | Silence the Inner Stair | The Inner Stair office says nothing until the Vizier's next action is over. One office only — the sheets are gone at the end of the turn either way. |
-| `silence_the_royal_seal` | Silence the Royal Seal | The Royal Seal office says nothing until the Vizier's next action is over. One office only — the sheets are gone at the end of the turn either way. |
-| `silence_the_tally` | Silence the Tally | The Tally office says nothing until the Vizier's next action is over. One office only — the sheets are gone at the end of the turn either way. |
-| `silver_name_tally_action` | Speak the Silver Name | Once a combat: one enemy's guard is gone, you gain 10 Block against what it was about to do, and the next card you play this turn is refunded. |
-| `sluice_gate_of_the_two_lands_action` | Work the Two Lands | Open the gate — lose 12 Block for 1 Energy — or close it — spend 1 Energy for 12 Block. You must be able to pay in full. Once a turn. |
-| `spend_a_counterseal` | Spend a Counterseal | Spend 1 Counterseal to prise one Notarial Seal back out of the wood. The ring returns to ordinary rotation; the Weight of Precedent already earned stays where it is. |
-| `strike_down_the_article` | Strike Down the Article | The Article is struck; the next prepared Article takes its place. The Charter gains 8 Block. |
-| `summons_to_appear` | Summons to Appear | Retain. Exhaust. If it is still in your hand at the end of your turn, take 5 damage. |
-| `take_ahead` | Take Ahead | Take 1 Energy out of a later day. It arrives the moment you run out. Tomorrow is simply smaller. |
-| `the_alternating_stone` | The Alternating Stone | Accept this blueprint: the first two cards you play must be of different kinds. Met, the Monument falls a step; missed, 2 Paperwork. |
+| `petition_for_priority` | Petition for Priority | Move one place closer to the Counter. Take 1 Paperwork. One queue choice a turn. |
+| `redacted_leaf` | Redacted Leaf | Unplayable. Retain. Turn start: a card in your hand is Redacted, and this is spent. |
+| `return_receipt` | Return Receipt | Remove 1 Overdue (the Bell loses 5 HP), or remove 1 Late Fee (misfile a draw-pile card). |
+| `revise_body_shall_bear` | Revise: Thirty-Six | Spend a Reed Mark: revise one step. 36 HP → 24 → 12 → none → she takes 18. |
+| `revise_guard_counted_nothing` | Revise: The Guard Counts Nothing | Spend a Reed Mark: revise one step. Block −18 → −12 → −6 → none → +6. |
+| `revise_hand_shall_hold_two` | Revise: The Hand Holds Two | Spend a Reed Mark: revise one step. Draw 3 fewer → 2 → 1 → none → draw 1 more. |
+| `revise_measures_withheld` | Revise: Three Measures | Spend a Reed Mark: revise one step. −3 Energy → −2 → −1 → none → a card −1 cost. |
+| `revise_the_last_line` | Revise: The Last Line | Spend a Reed Mark: revise the last line. At 4 she can die; at 5 it erases her. |
+| `revise_three_wounds` | Revise: Three Wounds | Spend a Reed Mark: revise one step. 3 Red Tape → 2 → 1 → none → one removed. |
+| `revise_two_works_broken` | Revise: Two Works | Spend a Reed Mark: revise one step. 2 cards Exhausted → 1 → none → one returns. |
+| `right_of_audience` | Right of Audience | Once a turn, spend Favour. 1: remove a Claim. 2: no law this turn. 3: strip her guard; final order −8. |
+| `royal_grace_cup_action` | Royal Grace | Once a turn: gain 1 Energy, a card, or 10 Block. Every enemy gains 6 Block. |
+| `scrape_the_first_entry` | Scrape the First Entry | Once a turn: blank this entry. Take 1 Paperwork. |
+| `scrape_the_second_entry` | Scrape the Second Entry | Once a turn: blank this entry. Take 1 Paperwork. |
+| `scrape_the_third_entry` | Scrape the Third Entry | Once a turn: blank this entry. Take 1 Paperwork. |
+| `settle_the_burden` | Settle the Burden | Once a turn, spend a Credit: remove 1 Burdened from you. |
+| `silence_the_inner_stair` | Silence the Inner Stair | The Inner Stair office does nothing during the Vizier's next action. |
+| `silence_the_royal_seal` | Silence the Royal Seal | The Royal Seal office does nothing during the Vizier's next action. |
+| `silence_the_tally` | Silence the Tally | The Tally office does nothing during the Vizier's next action. |
+| `silver_name_tally_action` | Speak the Silver Name | Once a combat: remove an enemy's Block, gain 10 Block, refund your next card this turn. |
+| `sluice_gate_of_the_two_lands_action` | Work the Two Lands | Once a turn: lose 12 Block for 1 Energy, or spend 1 Energy for 12 Block. |
+| `spend_a_counterseal` | Spend a Counterseal | Spend 1 Counterseal: remove one Notarial Seal. Weight of Precedent stays. |
+| `strike_down_the_article` | Strike Down the Article | Strike the Article; the next one takes its place. The Charter gains 8 Block. |
+| `summons_to_appear` | Summons to Appear | Retain. Exhaust. Still in hand at turn end: take 5 damage. |
+| `take_ahead` | Take Ahead | Gain 1 Energy now, taken from a later day. |
+| `the_alternating_stone` | The Alternating Stone | Blueprint: your first two cards are of different kinds. Met: Monument −1. Missed: 2 Paperwork. |
 | `the_answer_of_burden` | The Answer of Burden | Answer the sphinx by carrying it: 2 Burdened. One Answer Mark. |
-| `the_answer_of_burial` | The Answer of Burial | Answer the sphinx by being packed down and filed: 1 Entombed and 1 Paperwork. One Answer Mark. |
+| `the_answer_of_burial` | The Answer of Burial | Answer: take 1 Entombed and 1 Paperwork. Gain an Answer Mark. |
 | `the_answer_of_measure` | The Answer of Measure | Answer the sphinx by walking to a figure: 2 Weighed. One Answer Mark. |
-| `the_equal_courses` | The Equal Courses | Accept this blueprint: play exactly 2 Deeds this turn. Met, the Monument falls a step; missed, you are Burdened. |
-| `the_measured_course` | The Measured Course | Accept the fallback course: spend exactly what the Architect has measured for this turn. Met, the Monument falls a step; missed, it climbs one. |
-| `the_measured_foundation` | The Measured Foundation | Accept this blueprint: spend exactly 2 Energy this turn. Met, the Monument falls a step; missed, it climbs one and you are Entombed. |
-| `unfinished_citation` | Unfinished Citation | Retain. Exhaust. Clear a Reference from a card in your hand. If it is still in your hand at the end of your turn, file 1 Paperwork. |
+| `the_equal_courses` | The Equal Courses | Blueprint: play exactly 2 Deeds. Met: Monument −1. Missed: Burdened. |
+| `the_measured_course` | The Measured Course | Blueprint: spend exactly the measured Energy. Met: Monument −1. Missed: Monument +1. |
+| `the_measured_foundation` | The Measured Foundation | Blueprint: spend exactly 2 Energy. Met: Monument −1. Missed: Monument +1 and Entombed. |
+| `unfinished_citation` | Unfinished Citation | Retain. Exhaust. Clear a Reference from a card in hand. Still in hand at turn end: 1 Paperwork. |
 | `uphold_the_article` | Uphold the Article | The Article stands. Gain 6 Block. |
 | `vacant_throne_decree_action` | The Throne Stands Empty | Gain 3 Energy, draw 3, and gain 20 Block. Once a combat. |
-| `wand_burn_out` | Burn Out | Once per turn, while the wand has Exhaustion: Exhaust a wand card and lower Exhaustion by 3. |
-| `wand_cast` | Cast | Read the wand from its first slot to its last, each card doing its wand part. Costs 2 Focus for 1–2 cards, 3 for 3–4, 4 for 5–6, and adds Exhaustion. |
-| `wand_inscribe` | Inscribe | Put a card from your hand into a free wand slot instead of playing it. The first each combat is free, then 1 Focus. |
+| `wand_burn_out` | Burn Out | Once a turn, with Exhaustion: Exhaust a wand card, −3 Exhaustion. |
+| `wand_cast` | Cast | Run the wand slot by slot. Costs 2 Focus for 1–2 cards, 3 for 3–4, 4 for 5–6; adds Exhaustion. |
+| `wand_inscribe` | Inscribe | Put a card from hand into a free wand slot instead of playing it. First each combat free, then 1 Focus. |
 | `wand_swap` | Swap | Two wand cards trade places. 1 Focus. |
-| `wand_withdraw` | Withdraw | A wand card goes to your discard pile. 1 Focus. |
-| `wash_the_burdened_vessel` | Wash the Burdened Vessel | Pay 1 Energy: the jar holding Burdened is emptied and cannot come back. You are Embalmed 1 for handling it. One jar a turn. |
-| `wash_the_doubt_vessel` | Wash the Doubt Vessel | Pay 1 Energy: the jar holding Doubt is emptied and cannot come back. You are Embalmed 1 for handling it. One jar a turn. |
-| `wash_the_entombed_vessel` | Wash the Entombed Vessel | Pay 1 Energy: the jar holding Entombed is emptied and cannot come back. You are Embalmed 1 for handling it. One jar a turn. |
-| `wash_the_inscribed_vessel` | Wash the Inscribed Vessel | Pay 1 Energy: the jar holding Inscribed is emptied and cannot come back. You are Embalmed 1 for handling it. One jar a turn. |
-| `wash_the_paperwork_vessel` | Wash the Paperwork Vessel | Pay 1 Energy: the jar holding Paperwork is emptied and cannot come back. You are Embalmed 1 for handling it. One jar a turn. |
-| `wash_the_weighed_vessel` | Wash the Weighed Vessel | Pay 1 Energy: the jar holding Weighed is emptied and cannot come back. You are Embalmed 1 for handling it. One jar a turn. |
-| `work_the_sluice` | Work the Sluice | Spend 1 Sluice Authority: at the end of this turn, after the river answers your Energy, it moves one step back toward the Ordered Flood. Once a turn. |
+| `wand_withdraw` | Withdraw | A wand card goes to your discard. 1 Focus. |
+| `wash_the_burdened_vessel` | Wash the Burdened Vessel | Once a turn, 1 Energy: empty the Burdened jar for good. Take 1 Embalmed. |
+| `wash_the_doubt_vessel` | Wash the Doubt Vessel | Once a turn, 1 Energy: empty the Doubt jar for good. Take 1 Embalmed. |
+| `wash_the_entombed_vessel` | Wash the Entombed Vessel | Once a turn, 1 Energy: empty the Entombed jar for good. Take 1 Embalmed. |
+| `wash_the_inscribed_vessel` | Wash the Inscribed Vessel | Once a turn, 1 Energy: empty the Inscribed jar for good. Take 1 Embalmed. |
+| `wash_the_paperwork_vessel` | Wash the Paperwork Vessel | Once a turn, 1 Energy: empty the Paperwork jar for good. Take 1 Embalmed. |
+| `wash_the_weighed_vessel` | Wash the Weighed Vessel | Once a turn, 1 Energy: empty the Weighed jar for good. Take 1 Embalmed. |
+| `work_the_sluice` | Work the Sluice | Once a turn, spend 1 Sluice Authority: at turn end the water moves a step back to the Ordered Flood. |
 | `wrong_form` | Wrong Form | Exhaust. Discard another card. |
-| `yield_your_place` | Yield Your Place | Move one place away from the Counter. Gain 6 Block. Only one administrative choice per turn. |
+| `yield_your_place` | Yield Your Place | Move one place away from the Counter. Gain 6 Block. One queue choice a turn. |
 

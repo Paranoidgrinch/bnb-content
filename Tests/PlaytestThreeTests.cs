@@ -190,4 +190,25 @@ public class PlaytestThreeTests
                 Assert.Equal(name, statuses[id].NameKey);
         }
     }
+
+    // F1 — card texts are short: every part of a card's text (its play, and its wand part) is at most 25 words, the
+    // median part at most 12, and every short text names a real card and is what that card ships with.
+    [Fact]
+    public void Card_texts_are_short()
+    {
+        var data = BabData.Load(TestData.Directory);
+        var cards = FightProbe.Shipped.Cards.ToDictionary(c => c.Id, StringComparer.Ordinal);
+        foreach (var (id, text) in data.CardTexts)
+        {
+            Assert.True(cards.ContainsKey(id), $"{id} is not a card");
+            Assert.Equal(text, cards[id].DescriptionKey);
+            Assert.Equal(text, FightProbe.Shipped.Presentation.Cards[id].FlavorText);
+        }
+        var parts = cards.Values.SelectMany(c => (c.DescriptionKey ?? "").Split("\nWand: "))
+            .Select(p => p.Split(' ', StringSplitOptions.RemoveEmptyEntries).Length).Order().ToList();
+        var over = cards.Values.Where(c => (c.DescriptionKey ?? "").Split("\nWand: ")
+            .Any(p => p.Split(' ', StringSplitOptions.RemoveEmptyEntries).Length > 25)).Select(c => c.Id).ToList();
+        Assert.True(over.Count == 0, string.Join(", ", over));
+        Assert.True(parts[parts.Count / 2] <= 12, $"median {parts[parts.Count / 2]}");
+    }
 }
