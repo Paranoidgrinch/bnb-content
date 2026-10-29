@@ -2,7 +2,7 @@
 
 Generated: `dotnet run --project Converter -- --art-slots ART_SLOTS.md`. **Do not edit by hand.**
 
-**954 pictures**: 490 cards, 261 relics, 199 bodies
+**951 pictures**: 487 cards, 261 relics, 199 bodies
 (every enemy, elite and boss) and 4 the player can be. Every one of them is filled today by a PLACEHOLDER — a plate with the file's own
 name and the word placeholder on it, written by `bnb-godot/tools/make-card-art.py`,
 `make-relic-art.py` and `make-enemy-art.py`. A painted picture replaces one by being saved over it, so
@@ -586,7 +586,7 @@ Drawn like a body and facing RIGHT — the player stands on the left of the aren
 | `lieutenant` | The Lieutenant | New stripes on an old uniform, and always first through the door. |
 | `sorcerers_apprentice` | The Sorcerer's Apprentice | Knows every incantation, and not quite what happens when one is put after another. |
 
-## Cards — 490 pictures
+## Cards — 487 pictures
 
 No visual canon was ever written for the cards, so the row carries the card's own rules
 text instead of a brief. Act = the act that unlocks it; the starters, the Junk and the
@@ -1048,15 +1048,13 @@ cards a boss or a door hands over are never offered and have no act.
 | `lt_whistle` | Whistle | working | uncommon | Gain 3 Block. You may spend 1 Authority to draw 2 cards. |
 | `lt_witness` | Witness | working | common | Gain 4 Block. Your next Deed hit on a Challenged enemy this turn counts twice toward its Challenge. |
 
-### Given in play — 94
+### Given in play — 91
 
 Handed over by a boss, a door or an event rather than offered; never in a reward pool.
 
 | code | title | what it does |
 |---|---|---|
 | `ask_for_expedited_service` | Ask for Expedited Service | This Service Window opens him 15% instead of 25%, but you stay at Position 1 after. |
-| `authorized_entry` | Authorized Entry | Remove up to 12 Block from the Dragon. Costs 1 Authorization; once a turn. |
-| `authorized_expedition` | Authorized Expedition | Gain 1 Energy. Costs 1 Authorization; one authority per turn. |
 | `better_chair_cushion_action` | The Better Chair | Gain 14 Block. End the turn holding a real card, or lose 6 HP. |
 | `black_flood_vessel_action` | Empty the Vessel | Discard your hand, draw 7, and gain 2 Energy. Once a combat. |
 | `borrow_one_minute` | Borrow One Minute | Once a turn: push a scheduled hour back 1 turn (max 3). Free with a Free Adjustment. |
@@ -1084,7 +1082,6 @@ Handed over by a boss, a door or an event rather than offered; never in a reward
 | `edict_of_the_open_audience_action` | Open the Audience | Once a combat: cards in your hand cost 0 this turn. |
 | `erasure_tablet_action` | Erase the Line | Once a combat: every enemy's next action deals no damage; they gain 20 Block instead. |
 | `far_boundary` | Far Boundary | Take the far measure this turn. Met: it loses 10 HP and its cover. |
-| `file_an_objection` | File an Objection | The Dragon's next attack deals 5 less. Costs 1 Authorization; one authority per turn. |
 | `file_the_request` | File the Request | Resolve the Request for Additional Review. |
 | `fine_print` | Fine Print | Unplayable. While in hand, your first card each turn costs 1 more. |
 | `fragment_of_access` | Fragment of Access | Remove up to 12 Block from the Lord Sealkeeper. |
@@ -1092,13 +1089,13 @@ Handed over by a boss, a door or an event rather than offered; never in a reward
 | `fragment_of_testimony` | Fragment of Testimony | Remove 2 stacks of Paperwork from yourself. |
 | `hold_the_moon` | Hold the Moon | Once an orbit: the phase repeats for both of you. Counted cards return at once, his too. |
 | `honey_spoon_action` | A Little Honey | Gain 2 Energy. End the turn with 1+ Energy, or lose 6 HP. |
-| `issue_a_citation` | Issue a Citation | Remove 1 Code Violation from the Dragon. Costs 1 Authorization; one authority per turn. |
 | `last_slice_tin_action` | Take Another Slice | Draw 2. Play at most 4 real cards this turn, or lose 6 HP. |
 | `make_amends` | Make Amends | Pay 1 Energy or discard a card: settle 1 Wergild, oldest first. |
 | `missing_signature` | Missing Signature | Exhaust. Still in hand at turn end: 1 Paperwork on you. |
 | `near_boundary` | Near Boundary | Take the near measure this turn. Met: it gains Block. |
 | `notice_of_delay` | Notice of Delay | Retain. Exhaust. Still in hand at turn end: 1 Fatigue. |
 | `offer_the_surplus` | Offer the Surplus | Spend 1 Energy to settle 1 Temple Due. |
+| `pay_the_fee` | Pay the Fee | Pay 15 Gold, charged after the fight. The Dragon hoards one more Permit. |
 | `petition_for_priority` | Petition for Priority | Move one place closer to the Counter. Take 1 Paperwork. One queue choice a turn. |
 | `redacted_leaf` | Redacted Leaf | Unplayable. Retain. Turn start: a card in your hand is Redacted, and this is spent. |
 | `return_receipt` | Return Receipt | Remove 1 Overdue (the Bell loses 5 HP), or remove 1 Late Fee (misfile a draw-pile card). |

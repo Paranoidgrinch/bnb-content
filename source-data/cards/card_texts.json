@@ -281,7 +281,6 @@
  "petition_for_priority": "Move one place closer to the Counter. Take 1 Paperwork.\nOne queue choice a turn.",
  "yield_your_place": "Move one place away from the Counter. Gain 6 Block.\nOne queue choice a turn.",
  "ask_for_expedited_service": "This Service Window opens him 15% instead of 25%, but you stay at Position 1 after.",
- "authorized_entry": "Remove up to 12 Block from the Dragon.\nCosts 1 Authorization; once a turn.",
  "strike_down_the_article": "Strike the Article; the next one takes its place. The Charter gains 8 Block.",
  "return_receipt": "Remove 1 Overdue (the Bell loses 5 HP), or remove 1 Late Fee (misfile a draw-pile card).",
  "borrow_one_minute": "Once a turn: push a scheduled hour back 1 turn (max 3). Free with a Free Adjustment.",

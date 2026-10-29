@@ -48,7 +48,7 @@ public static class RuleTexts
             ["the_sealkeeper"] = (null,
                 "3 Seals raise its Block each turn. Strip it and wound it: break a Seal, take its Fragment, start its next phase."),
             ["the_municipal_dragon"] = (null,
-                "Each Permit: 3 Block a turn, 2 damage on its Assessment. Hit hard in one turn to steal one."),
+                "Every second turn, a Fee Notice: pay 15 Gold and it hoards a Permit, or refuse: 8 damage, 2 Paperwork, Anger."),
             ["hoarded_permit"] = (null, "3 Block a turn, and 2 more damage on the Dragon's Assessment."),
             ["the_living_charter"] = (null,
                 "Its Article changes the rules for both sides. Every second action you may keep or strike it."),

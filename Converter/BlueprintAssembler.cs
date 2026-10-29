@@ -132,7 +132,14 @@ public static class BlueprintAssembler
                     // (BnB Boss Master §Act V), which this does not touch: it opens the doors at full and
                     // then hands out nothing until the end. "The build that enters is the build that must
                     // win" reads better when the build enters whole.
-                    Opening = [new ComputedHealRunEffect(RunExpr.MissingHealth)],
+                    Opening =
+                    [
+                        new ComputedHealRunEffect(RunExpr.MissingHealth),
+                        // The city's Dragon takes its fees after the fight; the collector is opened with the city.
+                        .. m.Act.Act == 1
+                            ? [new InstallProgramByIdRunEffect(new RunProgramSourceId(MunicipalDragon.FeesProgramId))]
+                            : Array.Empty<IRunEffectRequest>(),
+                    ],
                 })
                 .ToList(),
             Statuses = RuleTexts.Apply(
@@ -279,7 +286,10 @@ public static class BlueprintAssembler
     private static IReadOnlyDictionary<string, ITriggeredRunEffectDefinition>? AuthoredPrograms(
         IReadOnlyDictionary<int, ConversionPools> pools)
     {
-        var programs = new Dictionary<string, ITriggeredRunEffectDefinition>();
+        var programs = new Dictionary<string, ITriggeredRunEffectDefinition>
+        {
+            [MunicipalDragon.FeesProgramId] = MunicipalDragon.FeesProgram(),
+        };
         if (pools.TryGetValue(Events.ActOneEvents.Act, out var actOne))
             foreach (var (id, body) in Events.ActOneEventPrograms.All(actOne))
                 programs[id] = body;
@@ -292,7 +302,7 @@ public static class BlueprintAssembler
         if (pools.TryGetValue(Events.ActFourEvents.Act, out var actFour))
             foreach (var (id, body) in Events.ActFourEventPrograms.All(actFour))
                 programs[id] = body;
-        return programs.Count > 0 ? programs : null;
+        return programs;
     }
 
     // Anything the document ships that the manifest above did not name explains itself from its OWN

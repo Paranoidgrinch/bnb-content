@@ -1,5 +1,6 @@
 using BnbContent.Converter;
 using RogueDeck.Core.Combat;
+using RogueDeck.Run;
 using RogueDeck.Sandbox.Composition;
 using RogueDeck.Sandbox.Run;
 
@@ -364,65 +365,66 @@ public class BossCombatTests
 
     // ── The Municipal Dragon ──────────────────────────────────────────────────
 
-    // The hoard guards the Dragon: 3 Block per Hoarded Permit, every player turn.
+    // The hoard guards the Dragon: 3 Block per Hoarded Permit, every player turn — and the first Notice is
+    // telegraphed a turn ahead.
     [Fact]
-    public void The_hoard_guards_the_dragon()
+    public void The_hoard_raises_three_block_per_permit()
     {
         var (play, _, dragonId) = Dragon();
 
         Assert.Equal(MunicipalDragon.StartingPermits,
             FightProbe.StacksOf(Enemy(play, dragonId), MunicipalDragon.PermitId));
         Assert.Equal(3 * MunicipalDragon.StartingPermits, BlockOf(Enemy(play, dragonId)));
+        Assert.Equal(1, FightProbe.StacksOf(Enemy(play, dragonId), MunicipalDragon.NoticeNextId));
+        Assert.Equal(0, FightProbe.StacksOf(Hero(play), MunicipalDragon.NoticeId));
     }
 
-    // Fourteen points of pressure in one turn prise a Permit loose — once per turn — and it becomes the
-    // player's Authorization, spent on boss-context actions.
+    // Paying the fee puts it into the hoard: one more Permit, and the payment is tallied for the Gold.
     [Fact]
-    public void Pressure_steals_a_permit_and_authorization_buys_an_action()
+    public void Paying_the_fee_feeds_the_hoard()
     {
-        var (play, session, dragonId) = Dragon(Enumerable.Repeat("paper_cut", 30).ToList(), energy: 9);
-
-        // Through 6 Block of hoard first, then 14 HP: five Paper Cuts do it.
-        for (var i = 0; i < 5; i++)
-            Cut(play, session, dragonId);
-
-        Assert.Equal(1, FightProbe.StacksOf(Hero(play), MunicipalDragon.AuthorizationId));
-        Assert.Equal(MunicipalDragon.StartingPermits - 1,
-            FightProbe.StacksOf(Enemy(play, dragonId), MunicipalDragon.PermitId));
-
-        // The actions arrive with the authority to pay for them.
+        var (play, session, dragonId) = Dragon(Enumerable.Repeat("cower_behind_a_desk", 10).ToList(), energy: 9);
         play.CombatDriver!.EndTurn();
         Assert.Null(session.Error);
-        Assert.Contains(play.CombatDriver.Current!.Hand,
-            c => c.DefinitionId.value == MunicipalDragon.EntryCardId);
 
-        var guarded = BlockOf(Enemy(play, dragonId));
-        Play(play, session, MunicipalDragon.EntryCardId);
-        Assert.Equal(Math.Max(0, guarded - 12), BlockOf(Enemy(play, dragonId)));
-        Assert.Equal(0, FightProbe.StacksOf(Hero(play), MunicipalDragon.AuthorizationId));
+        Assert.Equal(1, FightProbe.StacksOf(Hero(play), MunicipalDragon.NoticeId));
+        Play(play, session, MunicipalDragon.PayCardId);
+        Assert.Equal(1, Hero(play).GetCounter(MunicipalDragon.FeesPaidCounter));
+        play.CombatDriver.EndTurn();
+        Assert.Null(session.Error);
+
+        Assert.Equal(MunicipalDragon.StartingPermits + 1,
+            FightProbe.StacksOf(Enemy(play, dragonId), MunicipalDragon.PermitId));
+        Assert.Equal(0, FightProbe.StacksOf(Enemy(play, dragonId), MunicipalDragon.AngerId));
     }
 
-    // Burning the registry turns every unstolen Permit into a Code Violation, and each one makes the
-    // unlicensed Dragon hit harder.
+    // Refusing takes the fee out of you and angers the Dragon.
     [Fact]
-    public void Burning_the_registry_turns_permits_into_code_violations()
+    public void Refusing_the_fee_costs_blood_and_paperwork_and_angers_the_dragon()
     {
-        var (play, session, dragonId) = Dragon(Enumerable.Repeat("paper_cut", 60).ToList(), energy: 9);
+        var (play, session, dragonId) = Dragon(Enumerable.Repeat("cower_behind_a_desk", 10).ToList(), energy: 9);
+        play.CombatDriver!.EndTurn();
+        Assert.Null(session.Error);
+        Assert.Equal(1, FightProbe.StacksOf(Hero(play), MunicipalDragon.NoticeId));
 
-        for (var turn = 0; turn < 14 && FightProbe.StacksOf(Enemy(play, dragonId), MunicipalDragon.UnlicensedId) == 0; turn++)
-        {
-            while (play.CombatDriver!.Current!.Hand.Any(c => c.DefinitionId.value == "paper_cut")
-                   && Hero(play).Resources[StandardCombatIds.EnergyResource].Current > 0)
-                Cut(play, session, dragonId);
-            play.CombatDriver.EndTurn();
-            Assert.Null(session.Error);
-        }
+        var paperwork = FightProbe.StacksOf(Hero(play), "paperwork");
+        play.CombatDriver.EndTurn(); // the Notice still open: refused
+        Assert.Null(session.Error);
 
-        Assert.Equal(1, FightProbe.StacksOf(Enemy(play, dragonId), MunicipalDragon.UnlicensedId));
-        Assert.Equal(0, FightProbe.StacksOf(Enemy(play, dragonId), MunicipalDragon.PermitId));
-        // Whatever was left in the hoard is now written up against the Dragon.
-        var violations = FightProbe.StacksOf(Enemy(play, dragonId), MunicipalDragon.ViolationId);
-        Assert.True(violations >= 0 && violations <= MunicipalDragon.PermitMaximum);
+        Assert.Equal(1, FightProbe.StacksOf(Enemy(play, dragonId), MunicipalDragon.AngerId));
+        Assert.True(FightProbe.StacksOf(Hero(play), "paperwork") >= paperwork + MunicipalDragon.RefusalPaperwork);
+        Assert.Equal(MunicipalDragon.StartingPermits,
+            FightProbe.StacksOf(Enemy(play, dragonId), MunicipalDragon.PermitId));
+    }
+
+    // The fees are collected after the fight, by a program the city opens with.
+    [Fact]
+    public void The_city_opens_with_the_dragons_fee_collector()
+    {
+        Assert.Contains(MunicipalDragon.FeesProgramId, FightProbe.Game.Programs!.Keys);
+        Assert.Contains(FightProbe.Game.Acts![0].Opening!, e => e is InstallProgramByIdRunEffect install
+            && install.Source.Value == MunicipalDragon.FeesProgramId);
+        Assert.DoesNotContain(FightProbe.Game.Acts![1].Opening!, e => e is InstallProgramByIdRunEffect);
     }
 
     private static (RunPlayback Play, InteractiveRunSession Session, CombatantId DragonId) Dragon(

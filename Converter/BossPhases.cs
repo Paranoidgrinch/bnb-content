@@ -28,7 +28,7 @@ public static class BossPhases
         LordSealkeeper.CrackingId,
         LordSealkeeper.UnsealedId,
         DeputyUndersecretary.ExecutiveId,
-        MunicipalDragon.UnlicensedId,
+        MunicipalDragon.NoticeNextId,
         LivingCharter.ContradictoryId,
 
         // ── Act II ────────────────────────────────────────────────────────────────────────────────────────
