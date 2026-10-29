@@ -729,12 +729,13 @@ public static class EncounterPassives
 
     // "Not This Counter": the first non-Junk card TYPE each turn is the "Wrong Window"; the first LATER card of
     // that same type makes the Scribe gain 5 Block. Encoded as: on the player's 2nd card of the turn's OPENING
-    // type, the Scribe (all enemies of the card's source) gains 5 Block. Faithful simplification: the opening
-    // type is literally the first card's type (Junk not skipped) — see ADAPTATIONS.md.
+    // type, the Scribe — the enemy wearing the rule's chip, and no partner beside it — gains 5 Block. Faithful
+    // simplification: the opening type is literally the first card's type (Junk not skipped) — see ADAPTATIONS.md.
     private static EncounterTriggerData NotThisCounter() =>
         OnNthCardOfTheOpeningType(2,
             new GainBlockNode<CardPlayedTriggeredEffectContext>(
-                CombatantTargetSelectors.AllEnemiesOfSource,
+                CombatantTargetSelectors.AllEnemiesOfSourceWithStatus(
+                    new StatusDefinitionId(PassiveStatuses.NotThisCounterId)),
                 new ConstantExpression<CardPlayedTriggeredEffectContext>(5)));
 
     // The shared shape of the counter passives: fire `effect` when the player plays their Nth card of the type

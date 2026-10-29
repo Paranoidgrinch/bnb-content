@@ -2061,6 +2061,11 @@
       "doubt_intro",
       "clerk",
       "stage_counter"
+    ],
+    "starting_statuses": [
+      {
+        "status": "not_this_counter"
+      }
     ]
   },
   {

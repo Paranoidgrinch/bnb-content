@@ -49,6 +49,8 @@ public static class PassiveStatuses
         Marker(BothDirectionsMandatoryId, "Both Directions Mandatory",
             "The first card you play each turn picks the road: a Deed sends the Signpost down the dangerous "
             + "shortcut, anything else down the long administrative route. Play nothing and it lists no route."),
+        Marker(NotThisCounterId, "Not This Counter",
+            "Play a second card of the type you opened your turn with and the Scribe gains 5 Block. Once a turn."),
         Loophole(),
         // The applicant marker itself is built in Cards/Keywords.cs: besides marking the player it keeps the
         // record of what got through each round, which several cards ask about and which therefore has to be
@@ -800,6 +802,10 @@ public static class PassiveStatuses
     // Contradictory Signpost: a pure marker so its encounter trigger can write the route counter to the
     // Signpost and nobody else (see EncounterPassives.BothDirectionsMandatory).
     public const string BothDirectionsMandatoryId = "both_directions_mandatory";
+
+    // Wrong-Window Scribe: the rule's chip, and the handle its encounter trigger finds the Scribe by — so in a
+    // duo only the Scribe is the window that refuses you.
+    public const string NotThisCounterId = "not_this_counter";
     public static CounterId SignpostedRouteCounter => new("signposted_route");
 
     // A status that carries nothing but its own presence: the handle a cross-combatant trigger uses to find
