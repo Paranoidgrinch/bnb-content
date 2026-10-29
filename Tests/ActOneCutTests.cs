@@ -47,4 +47,88 @@ public class ActOneCutTests
         Assert.Equal(0, BlockOf(play, line));
         play.Dispose();
     }
+
+    private static int Health(RunPlayback play, CombatantId id) => Body(play, id).Health.Current;
+
+    private static CombatantState Hero(RunPlayback play) =>
+        play.CombatDriver!.Current!.State.GetCombatant(play.CombatDriver.Current.HeroId);
+
+    private static int Patrons(RunPlayback play) =>
+        play.CombatDriver!.Current!.State.Combatants.Count(c => c.IsAlive
+            && FightProbe.StacksOf(c, Converter.Elites.WaitingRoom.PatronId) > 0);
+
+    // The Waiting Room's board asks for an exact number of cards. Meet it and your number is called: through the
+    // next turn the Room stands at the counter — no Block, double damage.
+    [Fact]
+    public void Playing_the_boards_number_calls_you_to_the_counter()
+    {
+        var probe = FightProbe.Roster("waiting_called", energy: 9,
+            ("devouring_waiting_room", "walls_hold_still", 88));
+        var (play, session, room) = FightProbe.Start(probe, Enumerable.Repeat("paper_cut", 10).ToList());
+
+        Assert.Equal(1, FightProbe.StacksOf(Body(play, room), Converter.Elites.WaitingRoom.RuleId));
+        Assert.Equal(2, FightProbe.StacksOf(Body(play, room), Converter.Elites.WaitingRoom.NowServingId));
+        Play(play, session, "paper_cut", room);
+        Play(play, session, "paper_cut", room);
+        play.CombatDriver!.EndTurn();
+        Assert.Null(session.Error);
+        Assert.Equal(0, Patrons(play));
+
+        // At the counter: the Block it raised on its own turn is gone, and a Paper Cut lands twice over.
+        Assert.Equal(1, FightProbe.StacksOf(Body(play, room), Converter.Elites.WaitingRoom.AtTheCounterId));
+        Assert.Equal(0, BlockOf(play, room));
+        Assert.Equal(3, FightProbe.StacksOf(Body(play, room), Converter.Elites.WaitingRoom.NowServingId));
+        var before = Health(play, room);
+        Play(play, session, "paper_cut", room);
+        Assert.Equal(before - 12, Health(play, room));
+
+        // One card against a 3: missed, and the counter closes again.
+        play.CombatDriver.EndTurn();
+        Assert.Null(session.Error);
+        Assert.Equal(0, FightProbe.StacksOf(Body(play, room), Converter.Elites.WaitingRoom.AtTheCounterId));
+        Assert.Equal(1, Patrons(play));
+        play.Dispose();
+    }
+
+    // Missing the number seats another Patron, three at most; each sighs 3 damage at you every enemy turn, and
+    // the Room's own attack counts them.
+    [Fact]
+    public void Missing_the_number_seats_patrons_who_make_the_wait_hurt()
+    {
+        var probe = FightProbe.Roster("waiting_missed", energy: 9,
+            ("devouring_waiting_room", "everyone_waits_longer", 88));
+        var (play, session, _) = FightProbe.Start(probe, Enumerable.Repeat("paper_cut", 10).ToList(), health: 400);
+
+        var health = new List<int> { Hero(play).Health.Current };
+        for (var turn = 0; turn < 4; turn++)
+        {
+            play.CombatDriver!.EndTurn(); // nothing played: never the number on the board
+            Assert.Null(session.Error);
+            health.Add(Hero(play).Health.Current);
+        }
+
+        Assert.Equal(Converter.Elites.WaitingRoom.MaxPatrons, Patrons(play));
+        // The wait grows with the room: every turn costs more than the one before, until the chairs are full.
+        var losses = health.Zip(health.Skip(1), (a, b) => a - b).ToList();
+        Assert.True(losses[0] >= 5, string.Join(",", losses) + $" patrons {Patrons(play)}");
+        Assert.True(losses[2] > losses[0], string.Join(",", losses));
+        play.Dispose();
+    }
+
+    // The fight is the Room, not its queue: when the Room falls, the patrons go home with it.
+    [Fact]
+    public void When_the_room_falls_the_patrons_go_home()
+    {
+        var probe = FightProbe.Roster("waiting_closed", energy: 9,
+            ("devouring_waiting_room", "chairs_creep_closer", 6));
+        var (play, session, room) = FightProbe.Start(probe, Enumerable.Repeat("paper_cut", 10).ToList(), health: 400);
+
+        play.CombatDriver!.EndTurn(); // nothing played: a Patron sits down
+        Assert.Null(session.Error);
+        Assert.Equal(1, Patrons(play));
+
+        Play(play, session, "paper_cut", room);
+        Assert.True(play.CombatDriver.Current is null || Patrons(play) == 0, "the patrons should leave with the Room");
+        play.Dispose();
+    }
 }

@@ -1,5 +1,6 @@
 using System.Text.Json;
 using RogueDeck.Core.Combat;
+using RogueDeck.Run;
 using RogueDeck.Sandbox.Composition;
 using RogueDeck.Scenario.Authoring;
 
@@ -68,15 +69,19 @@ public static class PassiveStatuses
         .. Appointments.Select(a => AppointmentDue(a.StatusId, a.Name, a.Description, a.Due, a.Expiry)),
         AppointmentsAccelerated(),
         OfficeHours(),
-        Marker(LostTimeLedgerId, "Lost Time",
-            "Every point of Energy you leave unspent at the end of your turn becomes Lost Time here, up to three."),
+        Counted(WindowClosedId, "Window Closed",
+            "The office is shut. It opens after this many of its own turns. Damage dealt now is banked."),
+        Marker(WindowOpenId, "Window Open",
+            "The office is open for one action: damage lands normally, and the banked business lands at once."),
+        Counted(PendingBusinessId, "Pending Business",
+            "Damage banked while the window was closed. It all lands on the office when the window opens."),
         Marker(StepLowerId, "Lower Step",
-            "The bottom of the staircase. A case held here climbs at the end of its holder's turn."),
+            "The bottom of the staircase. This court hears Deeds: play one and the case is held here."),
         Marker(StepMiddleId, "Middle Step",
-            "The middle of the staircase. A case held here climbs one step, or is remanded back down."),
+            "The middle of the staircase. This court hears Workings: play one and the case goes back down."),
         Marker(StepUpperId, "Upper Step",
-            "The top of the staircase. A case that gets here has nowhere left to climb, and the ruling is "
-            + "announced instead."),
+            "The top of the staircase. Play a Deed and a Working in one turn and the case goes back down. "
+            + "Otherwise it rules."),
         HoldsTheCase(),
         RulingPending(),
         Marker(IronWarrantId, "Iron Warrant",
@@ -84,14 +89,14 @@ public static class PassiveStatuses
             + "so the same one never comes twice running."),
         Contempt(),
         Marker(InventoryLanternId, "Inventory Lantern",
-            "One card you draw each turn is marked as the Procession's property."),
+            "Each turn it presses a wax seal on one card you draw."),
         Marker(LockCartId, "Lock Cart",
-            "A marked card still in your hand when your turn ends is taken away — and every seizure hardens "
-            + "the Marshal."),
+            "A sealed card still in your hand when your turn ends is locked away for the fight — and every card it "
+            + "locks hardens the Marshal."),
         Marker(SeizureMarshalId, "Seizure Marshal",
-            "Grows stronger with every card the Lock Cart takes."),
-        Marker(InventoryPendingId, "Inventoried",
-            "The Lantern has marked a card of yours as property this turn."),
+            "Grows stronger with every card the Lock Cart locks away."),
+        Marker(InventoryPendingId, "Under Seal",
+            "The Lantern has sealed a card in your hand this turn. Play it, or the Cart locks it away."),
         Marker(GateShutId, "Gate: Shut",
             "The portcullis is down. Hit hard enough in a single turn and it grinds upward."),
         GateHalfRaised(),
@@ -106,6 +111,7 @@ public static class PassiveStatuses
         .. LordSealkeeper.Statuses(),
         .. MunicipalDragon.Statuses(),
         .. LivingCharter.Statuses(),
+        .. Elites.WaitingRoom.Statuses(),
         .. Elites.ReturnBell.Statuses(),
         .. Elites.RollingStacksColossus.Statuses(),
         .. Elites.CatalogueOfUnwiseNames.Statuses(),
@@ -157,22 +163,23 @@ public static class PassiveStatuses
         string StatusId, string Name, string Description,
         Func<ICombatExpression<TurnEndedTriggeredEffectContext, bool>> Fulfilled);
 
+    // THE ORDERS ARE ABOUT WHICH CARDS YOU PLAY (content cut 2026-10-29: the Warrant stands in Ordinance, the stage
+    // where the rules care about card types). Each one is a real trade: obeying "hold your fire" costs you a turn of
+    // damage for the 5 it costs the Avatar.
     public static readonly ComplianceOrder[] ComplianceOrders =
     [
-        // "Spend at least 3 Energy this turn" — with a three-Energy hero that is an emptied pool.
-        new("order_pay_the_fee", "Order: Pay the Fee",
-            "Spend at least 3 Energy this turn. Obey and the Avatar takes 5; refuse and it takes it in Contempt.",
+        new("order_hold_your_fire", "Order: Hold Your Fire",
+            "Play no Deed this turn. Obey and the Avatar takes 5; disobey and it gains Contempt.",
             () =>
             new ComparisonExpression<TurnEndedTriggeredEffectContext>(
-                new CombatantCurrentResourceExpression<TurnEndedTriggeredEffectContext>(
-                    CombatantTargetSelectors.Source, StandardCombatIds.EnergyResource),
+                new CardsPlayedThisTurnWithTagExpression<TurnEndedTriggeredEffectContext>(
+                    CombatantTargetSelectors.Source, new TagId(Cards.CardAuthoring.DeedTag)),
                 ComparisonOperator.Equal,
                 new ConstantExpression<TurnEndedTriggeredEffectContext>(0))),
 
-        // "Play at least two different card types this turn."
         new("order_file_two_kinds", "Order: File Two Kinds",
-            "Play at least two different kinds of card this turn. Obey and the Avatar takes 5; refuse and it "
-            + "takes it in Contempt.",
+            "Play at least two different kinds of card this turn. Obey and the Avatar takes 5; disobey and it "
+            + "gains Contempt.",
             () =>
         {
             ICombatExpression<TurnEndedTriggeredEffectContext, int>? kinds = null;
@@ -190,18 +197,11 @@ public static class PassiveStatuses
                 new ConstantExpression<TurnEndedTriggeredEffectContext>(2));
         }),
 
-        // "Play a Skill before the first Attack" — the turn's opening card must not be an attack.
-        new("order_observe_the_sequence", "Order: Observe the Sequence",
-            "Do not open the turn with a Deed. Obey and the Avatar takes 5; refuse and it takes it in Contempt.",
+        new("order_workings_first", "Order: Workings First",
+            "Open the turn with a Working. Obey and the Avatar takes 5; disobey and it gains Contempt.",
             () =>
-            new AndExpression<TurnEndedTriggeredEffectContext>(
-                new ComparisonExpression<TurnEndedTriggeredEffectContext>(
-                    new CardsPlayedThisTurnExpression<TurnEndedTriggeredEffectContext>(CombatantTargetSelectors.Source),
-                    ComparisonOperator.Greater,
-                    new ConstantExpression<TurnEndedTriggeredEffectContext>(0)),
-                new NotExpression<TurnEndedTriggeredEffectContext>(
-                    new FirstCardPlayedThisTurnHasTagExpression<TurnEndedTriggeredEffectContext>(
-                        CombatantTargetSelectors.Source, new TagId(Cards.CardAuthoring.DeedTag))))),
+            new FirstCardPlayedThisTurnHasTagExpression<TurnEndedTriggeredEffectContext>(
+                CombatantTargetSelectors.Source, new TagId(Cards.CardAuthoring.WorkingTag))),
     ];
 
     // Contempt: every point makes the Avatar's next direct attack hit 4 harder, and the attack spends it all.
@@ -244,19 +244,16 @@ public static class PassiveStatuses
     public const string StepUpperId = "step_upper";
     public const string HoldsTheCaseId = "holds_the_case";
     public const string RulingPendingId = "ruling_pending";
-    public static CounterId CaseDamageThisTurnCounter => new("case_damage_this_turn");
     public static CounterId RemandedThisTurnCounter => new("remanded_this_turn");
     public static CounterId FinalRulingCounter => new("final_ruling");
     private static CounterId TriedAscentCounter => new("tried_ascent");
     private static CounterId CaseMovedThisRoundCounter => new("case_moved_this_round");
-    private const int RemandThreshold = 12;
 
-    // The Case itself: its holder hits 2 harder, takes the Remand threshold, and carries the ladder's movement.
+    // The Case itself: its holder hits 2 harder and carries the ladder's movement up. What sends it down is the
+    // court hearing the right kind of card (HearTheCase).
     private static StatusData HoldsTheCase()
     {
         var self = CombatantTargetSelectors.Source;
-        var hit = CombatantTargetSelectors.EventTarget;
-        var stepBelow = CombatantTargetSelectors.IterationTarget;
 
         ICombatExpression<TContext, bool> Wears<TContext>(ICombatantTargetSelector who, string marker)
             where TContext : class =>
@@ -281,44 +278,6 @@ public static class PassiveStatuses
                     new ModifyStatusStacksNode<TContext>(holder, new StatusDefinitionId(HoldsTheCaseId),
                         new ConstantExpression<TContext>(-1)),
                 }));
-
-        // 12 HP of damage in one player turn remands the case one level down — once per turn, and it also
-        // cancels a ruling this Step had announced.
-        var onHit = new EffectProgram<DamageReceivedTriggeredEffectContext>(
-            new SequenceEffectNode<DamageReceivedTriggeredEffectContext>(new IEffectNode<DamageReceivedTriggeredEffectContext>[]
-            {
-                new SetCombatantCounterNode<DamageReceivedTriggeredEffectContext>(
-                    hit, CaseDamageThisTurnCounter,
-                    new EventAmountExpression<DamageReceivedTriggeredEffectContext>(), relative: true),
-                new ConditionalEffectNode<DamageReceivedTriggeredEffectContext>(
-                    new AndExpression<DamageReceivedTriggeredEffectContext>(
-                        new ComparisonExpression<DamageReceivedTriggeredEffectContext>(
-                            new AddExpression<DamageReceivedTriggeredEffectContext>(
-                                new CombatantCounterExpression<DamageReceivedTriggeredEffectContext>(hit, CaseDamageThisTurnCounter),
-                                new EventAmountExpression<DamageReceivedTriggeredEffectContext>()),
-                            ComparisonOperator.GreaterOrEqual,
-                            new ConstantExpression<DamageReceivedTriggeredEffectContext>(RemandThreshold)),
-                        new ComparisonExpression<DamageReceivedTriggeredEffectContext>(
-                            new CombatantCounterExpression<DamageReceivedTriggeredEffectContext>(hit, RemandedThisTurnCounter),
-                            ComparisonOperator.Equal,
-                            new ConstantExpression<DamageReceivedTriggeredEffectContext>(0))),
-                    new SequenceEffectNode<DamageReceivedTriggeredEffectContext>(new IEffectNode<DamageReceivedTriggeredEffectContext>[]
-                    {
-                        new SetCombatantCounterNode<DamageReceivedTriggeredEffectContext>(
-                            hit, RemandedThisTurnCounter,
-                            new ConstantExpression<DamageReceivedTriggeredEffectContext>(1), relative: false),
-                        new SetCombatantCounterNode<DamageReceivedTriggeredEffectContext>(
-                            hit, FinalRulingCounter,
-                            new ConstantExpression<DamageReceivedTriggeredEffectContext>(0), relative: false),
-                        // Down one level, from wherever this Step stands.
-                        new ConditionalEffectNode<DamageReceivedTriggeredEffectContext>(
-                            Wears<DamageReceivedTriggeredEffectContext>(hit, StepUpperId),
-                            Hand<DamageReceivedTriggeredEffectContext>(hit, StepMiddleId),
-                            new ConditionalEffectNode<DamageReceivedTriggeredEffectContext>(
-                                Wears<DamageReceivedTriggeredEffectContext>(hit, StepMiddleId),
-                                Hand<DamageReceivedTriggeredEffectContext>(hit, StepLowerId))),
-                    })),
-            }));
 
         // The ladder moves at the holder's own turn end, but only ONCE per round: handing the Case on also
         // marks the receiver as "already moved this round", so a Case cannot climb two Steps in the round in
@@ -368,9 +327,6 @@ public static class PassiveStatuses
                                     new ConstantExpression<TurnEndedTriggeredEffectContext>(1), relative: false),
                             })))),
                 new SetCombatantCounterNode<TurnEndedTriggeredEffectContext>(
-                    self, CaseDamageThisTurnCounter,
-                    new ConstantExpression<TurnEndedTriggeredEffectContext>(0), relative: false),
-                new SetCombatantCounterNode<TurnEndedTriggeredEffectContext>(
                     self, RemandedThisTurnCounter,
                     new ConstantExpression<TurnEndedTriggeredEffectContext>(0), relative: false),
             }));
@@ -379,8 +335,8 @@ public static class PassiveStatuses
         {
             Id = HoldsTheCaseId,
             NameKey = "Holds the Case",
-            DescriptionKey = "Whoever holds the case hits 2 harder. Deal 12 damage to the holder inside one of your turns and the "
-+ "case is remanded a step down; otherwise it climbs at the holder's turn end.",
+            DescriptionKey = "Whoever holds the case hits 2 harder. Play the kind of card its step hears and the case goes "
++ "down a step; otherwise it climbs at the holder's turn end.",
             Polarity = StatusPolarity.Buff,
             StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
             UsesStacks = true,
@@ -392,12 +348,76 @@ public static class PassiveStatuses
             ],
             Triggers =
             [
-                new StatusTriggerData("DamageTaken", JsonSerializer.SerializeToElement(
-                    onHit, CombatJson.CreateOptions<DamageReceivedTriggeredEffectContext>())),
                 new StatusTriggerData("TurnEnded", JsonSerializer.SerializeToElement(
                     onTurnEnd, CombatJson.CreateOptions<TurnEndedTriggeredEffectContext>())),
             ],
         };
+    }
+
+    // THE COURT HEARS A KIND OF CARD (content cut 2026-10-29: the stairs stand in Ordinance, where the rules care
+    // about card types, and no longer ask for a damage threshold). At the end of the player's turn the step that
+    // holds the case asks what it was shown: the bottom hears Deeds, the middle Workings, the top a Deed and a
+    // Working both. Shown it, the case goes down a step — at the bottom it is simply held there — and a ruling the
+    // top had announced is withdrawn. An encounter trigger, because it is the PLAYER's turn that ends.
+    public static EncounterTriggerData HearTheCase()
+    {
+        var player = CombatantTargetSelectors.Source;
+        var holder = CombatantTargetSelectors.FirstTarget(
+            CombatantTargetSelectors.WithStatus(CombatantTargetSelectors.AllAliveCombatants,
+                new StatusDefinitionId(HoldsTheCaseId)));
+
+        ICombatExpression<TurnEndedTriggeredEffectContext, bool> Played(string tag) =>
+            new ComparisonExpression<TurnEndedTriggeredEffectContext>(
+                new CardsPlayedThisTurnWithTagExpression<TurnEndedTriggeredEffectContext>(player, new TagId(tag)),
+                ComparisonOperator.GreaterOrEqual, new ConstantExpression<TurnEndedTriggeredEffectContext>(1));
+        ICombatExpression<TurnEndedTriggeredEffectContext, bool> On(string marker) =>
+            new TargetHasStatusExpression<TurnEndedTriggeredEffectContext>(holder, new StatusDefinitionId(marker));
+
+        IEffectNode<TurnEndedTriggeredEffectContext> HandDownTo(string toMarker) =>
+            new ForEachTargetEffectNode<TurnEndedTriggeredEffectContext>(
+                CombatantTargetSelectors.WithStatus(CombatantTargetSelectors.AllAliveCombatants,
+                    new StatusDefinitionId(toMarker)),
+                new SequenceEffectNode<TurnEndedTriggeredEffectContext>(new IEffectNode<TurnEndedTriggeredEffectContext>[]
+                {
+                    new ApplyStatusNode<TurnEndedTriggeredEffectContext>(CombatantTargetSelectors.IterationTarget,
+                        new StatusDefinitionId(HoldsTheCaseId), new ConstantExpression<TurnEndedTriggeredEffectContext>(1)),
+                    new SetCombatantCounterNode<TurnEndedTriggeredEffectContext>(CombatantTargetSelectors.IterationTarget,
+                        CaseMovedThisRoundCounter, new ConstantExpression<TurnEndedTriggeredEffectContext>(1), relative: false),
+                    new ModifyStatusStacksNode<TurnEndedTriggeredEffectContext>(holder, new StatusDefinitionId(HoldsTheCaseId),
+                        new ConstantExpression<TurnEndedTriggeredEffectContext>(-1)),
+                }));
+
+        var heard = new SequenceEffectNode<TurnEndedTriggeredEffectContext>(new IEffectNode<TurnEndedTriggeredEffectContext>[]
+        {
+            new SetCombatantCounterNode<TurnEndedTriggeredEffectContext>(
+                holder, RemandedThisTurnCounter, new ConstantExpression<TurnEndedTriggeredEffectContext>(1), relative: false),
+            new SetCombatantCounterNode<TurnEndedTriggeredEffectContext>(
+                holder, FinalRulingCounter, new ConstantExpression<TurnEndedTriggeredEffectContext>(0), relative: false),
+        });
+
+        var deed = Cards.CardAuthoring.DeedTag;
+        var working = Cards.CardAuthoring.WorkingTag;
+        var program = new EffectProgram<TurnEndedTriggeredEffectContext>(
+            new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
+                new ComparisonExpression<TurnEndedTriggeredEffectContext>(
+                    new CombatantStatusStacksExpression<TurnEndedTriggeredEffectContext>(
+                        player, new StatusDefinitionId(ApplicantId)),
+                    ComparisonOperator.Greater, new ConstantExpression<TurnEndedTriggeredEffectContext>(0)),
+                new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
+                    new AndExpression<TurnEndedTriggeredEffectContext>(On(StepUpperId),
+                        new AndExpression<TurnEndedTriggeredEffectContext>(Played(deed), Played(working))),
+                    new SequenceEffectNode<TurnEndedTriggeredEffectContext>(new IEffectNode<TurnEndedTriggeredEffectContext>[]
+                        { heard, HandDownTo(StepMiddleId) }),
+                    new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
+                        new AndExpression<TurnEndedTriggeredEffectContext>(On(StepMiddleId), Played(working)),
+                        new SequenceEffectNode<TurnEndedTriggeredEffectContext>(new IEffectNode<TurnEndedTriggeredEffectContext>[]
+                            { heard, HandDownTo(StepLowerId) }),
+                        new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
+                            new AndExpression<TurnEndedTriggeredEffectContext>(On(StepLowerId), Played(deed)),
+                            heard)))));
+
+        return new EncounterTriggerData("TurnEnded",
+            JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<TurnEndedTriggeredEffectContext>()));
     }
 
     // The announced ruling is a mark on the player for that round: the other Steps read it and stand aside.
@@ -416,16 +436,15 @@ public static class PassiveStatuses
             "RoundEnded", program);
     }
 
-    // Devouring Waiting Room: the Room keeps the Lost Time ledger (so killing it erases the resource, while
-    // killing the Moth Cloud leaves what was already lost). The marker is how the Moth and the encounter
-    // trigger find the Room.
-    public const string LostTimeLedgerId = "lost_time_ledger";
-    public static CounterId LostTimeCounter => new("lost_time");
-    public const int LostTimeMaximum = 3;
-
     // Reopening-Hours Monolith: the office's own schedule. Closed windows bank whatever the player does; the
     // open window processes the backlog in one go.
     public const string OfficeHoursId = "office_hours";
+    // The window's state as chips the player reads (content cut 2026-10-29: "telegraphed"): closed with the turns
+    // until it opens as stacks, open, and the business banked so far as stacks.
+    public const string WindowClosedId = "window_closed";
+    public const string WindowOpenId = "window_open";
+    public const string PendingBusinessId = "pending_business";
+    public const int ClosedWindowsPerOpening = 2;
     public static CounterId PendingBusinessCounter => new("pending_business");
     public static CounterId OfficeOpenCounter => new("office_open");
     private static CounterId ClosedWindowsCounter => new("closed_windows");
@@ -453,6 +472,9 @@ public static class PassiveStatuses
                     new SetCombatantCounterNode<DamageReceivedTriggeredEffectContext>(
                         hit, PendingBusinessCounter,
                         new EventAmountExpression<DamageReceivedTriggeredEffectContext>(), relative: true),
+                    new ApplyStatusNode<DamageReceivedTriggeredEffectContext>(
+                        hit, new StatusDefinitionId(PendingBusinessId),
+                        new EventAmountExpression<DamageReceivedTriggeredEffectContext>()),
                 })));
 
         var pending = new CombatantCounterExpression<TurnEndedTriggeredEffectContext>(self, PendingBusinessCounter);
@@ -463,9 +485,16 @@ public static class PassiveStatuses
                     ComparisonOperator.Equal,
                     new ConstantExpression<TurnEndedTriggeredEffectContext>(1)),
                 // The office was open for one action; the shutters come down again.
-                new SetCombatantCounterNode<TurnEndedTriggeredEffectContext>(
-                    self, OfficeOpenCounter,
-                    new ConstantExpression<TurnEndedTriggeredEffectContext>(0), relative: false),
+                new SequenceEffectNode<TurnEndedTriggeredEffectContext>(new IEffectNode<TurnEndedTriggeredEffectContext>[]
+                {
+                    new SetCombatantCounterNode<TurnEndedTriggeredEffectContext>(
+                        self, OfficeOpenCounter,
+                        new ConstantExpression<TurnEndedTriggeredEffectContext>(0), relative: false),
+                    new RemoveStatusNode<TurnEndedTriggeredEffectContext>(self, new StatusDefinitionId(WindowOpenId)),
+                    new ApplyStatusNode<TurnEndedTriggeredEffectContext>(
+                        self, new StatusDefinitionId(WindowClosedId),
+                        new ConstantExpression<TurnEndedTriggeredEffectContext>(ClosedWindowsPerOpening)),
+                }),
                 new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
                     // One closed window has already passed, so this one completes the pair.
                     new ComparisonExpression<TurnEndedTriggeredEffectContext>(
@@ -485,14 +514,25 @@ public static class PassiveStatuses
                         new SetCombatantCounterNode<TurnEndedTriggeredEffectContext>(
                             self, OpenWindowsCounter,
                             new ConstantExpression<TurnEndedTriggeredEffectContext>(1), relative: true),
+                        new RemoveStatusNode<TurnEndedTriggeredEffectContext>(self, new StatusDefinitionId(WindowClosedId)),
+                        new ApplyStatusNode<TurnEndedTriggeredEffectContext>(
+                            self, new StatusDefinitionId(WindowOpenId),
+                            new ConstantExpression<TurnEndedTriggeredEffectContext>(1)),
+                        new RemoveStatusNode<TurnEndedTriggeredEffectContext>(self, new StatusDefinitionId(PendingBusinessId)),
                         new DealDamageNode<TurnEndedTriggeredEffectContext>(self, pending),
                         new SetCombatantCounterNode<TurnEndedTriggeredEffectContext>(
                             self, PendingBusinessCounter,
                             new ConstantExpression<TurnEndedTriggeredEffectContext>(0), relative: false),
                     }),
-                    new SetCombatantCounterNode<TurnEndedTriggeredEffectContext>(
-                        self, ClosedWindowsCounter,
-                        new ConstantExpression<TurnEndedTriggeredEffectContext>(1), relative: true))));
+                    new SequenceEffectNode<TurnEndedTriggeredEffectContext>(new IEffectNode<TurnEndedTriggeredEffectContext>[]
+                    {
+                        new SetCombatantCounterNode<TurnEndedTriggeredEffectContext>(
+                            self, ClosedWindowsCounter,
+                            new ConstantExpression<TurnEndedTriggeredEffectContext>(1), relative: true),
+                        new ModifyStatusStacksNode<TurnEndedTriggeredEffectContext>(
+                            self, new StatusDefinitionId(WindowClosedId),
+                            new ConstantExpression<TurnEndedTriggeredEffectContext>(-1)),
+                    }))));
 
         return new StatusData
         {
@@ -970,6 +1010,10 @@ public static class PassiveStatuses
 
     // Every status the player can see owes them an explanation on hover, so a description is not optional
     // here — a marker with a name and nothing else is a riddle on a chip (Tests/StatusDescriptionTests).
+    // A marker whose STACKS are the number the player reads: a countdown, a tally, a bank.
+    private static StatusData Counted(string id, string name, string description) =>
+        Marker(id, name, description) with { UsesStacks = true };
+
     private static StatusData Marker(string id, string name, string description) => new()
     {
         Id = id,

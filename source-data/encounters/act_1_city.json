@@ -170,21 +170,17 @@
     "act": 1,
     "difficulty": "elite",
     "enemies": [
-      "devouring_waiting_room",
-      "minute_moth_cloud"
+      "devouring_waiting_room"
     ],
     "weight": 1,
     "tags": [
       "stage_ordinance",
-      "delay",
+      "queue",
       "waiting",
-      "fatigue_pressure",
-      "elite_delay",
-      "multi_enemy"
+      "elite_queue"
     ],
     "enemy_health": [
-      68,
-      24
+      88
     ],
     "role": "elite"
   },

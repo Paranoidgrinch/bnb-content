@@ -3118,6 +3118,10 @@
     "starting_statuses": [
       {
         "status": "office_hours"
+      },
+      {
+        "status": "window_closed",
+        "stacks": 2
       }
     ],
     "intent_rules": [
@@ -3164,7 +3168,7 @@
   {
     "id": "devouring_waiting_room",
     "name": "Devouring Waiting Room",
-    "max_hp": 68,
+    "max_hp": 88,
     "intent_pattern": "cycle",
     "intents": [
       {
@@ -3193,41 +3197,19 @@
           {
             "type": "gain_block",
             "target": "owner",
-            "amount": 13
+            "amount": 12
           }
         ]
       },
       {
-        "id": "time_eats_back",
-        "name": "Time Eats Back",
+        "id": "everyone_waits_longer",
+        "name": "Everyone Waits Longer",
         "intent_type": "attack",
         "actions": [
           {
-            "type": "damage_per_counter",
+            "type": "deal_damage",
             "target": "player",
-            "counter": "lost_time",
-            "amount": 7,
-            "amount_per_stack": 4
-          },
-          {
-            "type": "set_counter",
-            "target": "owner",
-            "counter": "lost_time",
-            "amount": 0,
-            "relative": false
-          }
-        ]
-      },
-      {
-        "id": "lose_the_day",
-        "name": "Lose the Day",
-        "intent_type": "debuff",
-        "actions": [
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "fatigue",
-            "amount": 2
+            "amount": 5
           }
         ]
       },
@@ -3251,84 +3233,15 @@
     ],
     "starting_statuses": [
       {
-        "status": "lost_time_ledger"
+        "status": "the_waiting_room"
       }
     ],
     "tags": [
       "city",
-      "delay",
+      "queue",
       "elite",
       "waiting_room",
-      "stage_delay"
-    ]
-  },
-  {
-    "id": "minute_moth_cloud",
-    "name": "Minute-Moth Cloud",
-    "max_hp": 24,
-    "intent_pattern": "cycle",
-    "intents": [
-      {
-        "id": "nibble_the_hour",
-        "name": "Nibble the Hour",
-        "intent_type": "mixed",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 5
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "fatigue",
-            "amount": 1
-          }
-        ]
-      },
-      {
-        "id": "dust_over_the_chairs",
-        "name": "Dust over the Chairs",
-        "intent_type": "block",
-        "actions": [
-          {
-            "type": "gain_block",
-            "target": "all_enemies",
-            "amount": 4
-          }
-        ]
-      },
-      {
-        "id": "steal_a_minute",
-        "name": "Steal a Minute",
-        "intent_type": "buff",
-        "actions": [
-          {
-            "type": "gain_block",
-            "target": "owner",
-            "amount": 0
-          }
-        ]
-      },
-      {
-        "id": "wingbeat_delay",
-        "name": "Wingbeat Delay",
-        "intent_type": "attack",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 7
-          }
-        ]
-      }
-    ],
-    "tags": [
-      "city",
-      "delay",
-      "elite",
-      "moth",
-      "stage_delay"
+      "stage_ordinance"
     ]
   },
   {

@@ -69,15 +69,19 @@ public class EliteCombatTests
         var probe = FightProbe.Solo("reopening_hours_monolith", "close_without_warning", energy: 9);
         var (play, session, monolithId) = FightProbe.Start(probe, Enumerable.Repeat("paper_cut", 10).ToList());
 
+        // The window says how long it stays shut, and the bank says what it holds.
+        Assert.Equal(2, FightProbe.StacksOf(Enemy(play, monolithId), PassiveStatuses.WindowClosedId));
         for (var i = 0; i < 3; i++)
             Cut(play, session, monolithId);
         Assert.Equal(92, Enemy(play, monolithId).Health.Current);
         Assert.Equal(18, Enemy(play, monolithId).GetCounter(PassiveStatuses.PendingBusinessCounter));
+        Assert.Equal(18, FightProbe.StacksOf(Enemy(play, monolithId), PassiveStatuses.PendingBusinessId));
 
         play.CombatDriver!.EndTurn();
         Assert.Null(session.Error);
         Assert.Equal(92, Enemy(play, monolithId).Health.Current); // still closed after one window
         Assert.Equal(0, Enemy(play, monolithId).GetCounter(PassiveStatuses.OfficeOpenCounter));
+        Assert.Equal(1, FightProbe.StacksOf(Enemy(play, monolithId), PassiveStatuses.WindowClosedId));
 
         for (var i = 0; i < 3; i++)
             Cut(play, session, monolithId);
@@ -89,6 +93,9 @@ public class EliteCombatTests
         Assert.Equal(1, Enemy(play, monolithId).GetCounter(PassiveStatuses.OfficeOpenCounter));
         Assert.Equal(0, Enemy(play, monolithId).GetCounter(PassiveStatuses.PendingBusinessCounter));
         Assert.Equal(92 - 36, Enemy(play, monolithId).Health.Current);
+        Assert.Equal(0, FightProbe.StacksOf(Enemy(play, monolithId), PassiveStatuses.WindowClosedId));
+        Assert.Equal(1, FightProbe.StacksOf(Enemy(play, monolithId), PassiveStatuses.WindowOpenId));
+        Assert.Equal(0, FightProbe.StacksOf(Enemy(play, monolithId), PassiveStatuses.PendingBusinessId));
     }
 
     // …and during the open window damage lands the ordinary way, before the shutters come down again.
@@ -112,70 +119,12 @@ public class EliteCombatTests
         play.CombatDriver.EndTurn(); // one open action, then closed again
         Assert.Null(session.Error);
         Assert.Equal(0, Enemy(play, monolithId).GetCounter(PassiveStatuses.OfficeOpenCounter));
-    }
-
-    // Devouring Waiting Room: Energy the player leaves unspent at the end of their turn becomes Lost Time on
-    // the Room (max 3), and Time Eats Back cashes the whole ledger in at 7 + 4 each.
-    [Fact]
-    public void The_waiting_room_turns_unspent_energy_into_lost_time_and_eats_it_back()
-    {
-        var probe = FightProbe.Roster("lost_time", ("devouring_waiting_room", "walls_hold_still", 68));
-        var (play, session, roomId) = FightProbe.Start(probe);
-
-        play.CombatDriver!.EndTurn(); // three Energy left untouched → three Lost Time (the cap)
-        Assert.Null(session.Error);
-        Assert.Equal(3, Enemy(play, roomId).GetCounter(PassiveStatuses.LostTimeCounter));
-
-        play.CombatDriver.EndTurn(); // already at the maximum
-        Assert.Null(session.Error);
-        Assert.Equal(3, Enemy(play, roomId).GetCounter(PassiveStatuses.LostTimeCounter));
-    }
-
-    [Fact]
-    public void Time_eats_back_cashes_the_whole_ledger_in_one_hit()
-    {
-        var probe = FightProbe.Roster("time_eats", ("devouring_waiting_room", "time_eats_back", 68));
-        var (play, session, roomId) = FightProbe.Start(probe);
-
-        // The unspent Energy is banked at the player's turn end — before the Room acts in the same step — so
-        // the very first Time Eats Back already carries a full ledger: 7 + 4 × 3, and it clears it.
-        var before = Hero(play).Health.Current;
-        play.CombatDriver!.EndTurn();
-        Assert.Null(session.Error);
-        Assert.Equal(before - 19, Hero(play).Health.Current);
-        Assert.Equal(0, Enemy(play, roomId).GetCounter(PassiveStatuses.LostTimeCounter));
-
-        var loaded = Hero(play).Health.Current;
-        play.CombatDriver.EndTurn(); // the next turn refills the ledger and it eats again
-        Assert.Null(session.Error);
-        Assert.Equal(loaded - 19, Hero(play).Health.Current);
-    }
-
-    // The Moth Cloud feeds the Room's ledger rather than its own — killing the Room is what erases the resource.
-    [Fact]
-    public void The_moth_cloud_steals_a_minute_for_the_room()
-    {
-        var probe = FightProbe.Roster("stolen_minutes",
-            ("minute_moth_cloud", "steal_a_minute", 24),
-            ("devouring_waiting_room", "walls_hold_still", 68));
-        var (play, session, _) = FightProbe.Start(probe, Enumerable.Repeat("paper_cut", 10).ToList());
-
-        var combat = play.CombatDriver!.Current!;
-        var roomId = combat.State.Combatants.First(c => c.Id.value.StartsWith("devouring_waiting_room")).Id;
-        var mothId = combat.State.Combatants.First(c => c.Id.value.StartsWith("minute_moth_cloud")).Id;
-
-        // Spend every point of Energy, so the only Lost Time that appears is the Moth's theft.
-        for (var i = 0; i < 3; i++)
-            Cut(play, session, mothId);
-        play.CombatDriver.EndTurn();
-        Assert.Null(session.Error);
-
-        Assert.Equal(1, Enemy(play, roomId).GetCounter(PassiveStatuses.LostTimeCounter));
-        Assert.Equal(0, Enemy(play, mothId).GetCounter(PassiveStatuses.LostTimeCounter));
+        Assert.Equal(0, FightProbe.StacksOf(Enemy(play, monolithId), PassiveStatuses.WindowOpenId));
+        Assert.Equal(2, FightProbe.StacksOf(Enemy(play, monolithId), PassiveStatuses.WindowClosedId));
     }
 
     // Appellate Staircase: the Case starts on the Lower Step, which hits 2 harder for holding it, and climbs
-    // one Step per round unless the player remands it with 12 damage in a turn.
+    // one Step per round unless the court is shown the kind of card it hears.
     [Fact]
     public void The_case_climbs_the_staircase_unless_the_player_remands_it()
     {
@@ -183,32 +132,32 @@ public class EliteCombatTests
             ("lower_appellate_step", "stone_step_cut", 24),
             ("middle_appellate_step", "staircase_strike", 30),
             ("upper_appellate_step", "final_step_falls", 36));
-        var (play, session, _) = FightProbe.Start(probe, Enumerable.Repeat(Hammer, 10).ToList());
+        var (play, session, _) = FightProbe.Start(probe, Court);
 
         var combat = play.CombatDriver!.Current!;
         var lowerId = combat.State.Combatants.First(c => c.Id.value.StartsWith("lower_appellate_step")).Id;
         var middleId = combat.State.Combatants.First(c => c.Id.value.StartsWith("middle_appellate_step")).Id;
-
 
         // The Lower Step's 8-damage cut arrives as 10 while it holds the Case.
         var before = Hero(play).Health.Current;
         play.CombatDriver.EndTurn();
         Assert.Null(session.Error);
 
-        // No remand happened, so the Case climbed to the Middle Step.
+        // Nothing was shown to the court, so the Case climbed to the Middle Step.
         Assert.Equal(0, FightProbe.StacksOf(Enemy(play, lowerId), PassiveStatuses.HoldsTheCaseId));
         Assert.Equal(1, FightProbe.StacksOf(Enemy(play, middleId), PassiveStatuses.HoldsTheCaseId));
         Assert.True(Hero(play).Health.Current <= before - 10, "the Case-holder hits 2 harder");
     }
 
+    // The middle court hears Workings: one sends the Case back down. At the bottom a Deed holds it there.
     [Fact]
-    public void Twelve_damage_in_a_turn_remands_the_case_one_step_down()
+    public void Showing_the_court_its_kind_of_card_sends_the_case_down()
     {
         var probe = FightProbe.Roster("remand_ladder", energy: 9,
             ("lower_appellate_step", "procedural_step", 24),
             ("middle_appellate_step", "procedural_landing", 30),
             ("upper_appellate_step", "authority_above", 36));
-        var (play, session, _) = FightProbe.Start(probe, Enumerable.Repeat(Hammer, 10).ToList());
+        var (play, session, _) = FightProbe.Start(probe, Court);
 
         var combat = play.CombatDriver!.Current!;
         var lowerId = combat.State.Combatants.First(c => c.Id.value.StartsWith("lower_appellate_step")).Id;
@@ -218,13 +167,31 @@ public class EliteCombatTests
         Assert.Null(session.Error);
         Assert.Equal(1, FightProbe.StacksOf(Enemy(play, middleId), PassiveStatuses.HoldsTheCaseId));
 
-        // 12 HP of ACTUAL damage in one turn sends the Case back down — the Step's own Block counts against
-        // that, so the first 12-damage form only lands 9 through Procedural Landing's guard.
-        Disposal(play, session, middleId);
-        Assert.Equal(1, FightProbe.StacksOf(Enemy(play, middleId), PassiveStatuses.HoldsTheCaseId)); // not yet
-        Disposal(play, session, middleId);
+        // A Deed is the wrong kind for the middle court …
+        PlayCard(play, session, "paper_cut", middleId);
+        // … a Working is the right one.
+        PlayCard(play, session, "cower_behind_a_desk", null);
+        play.CombatDriver.EndTurn();
+        Assert.Null(session.Error);
         Assert.Equal(1, FightProbe.StacksOf(Enemy(play, lowerId), PassiveStatuses.HoldsTheCaseId));
         Assert.Equal(0, FightProbe.StacksOf(Enemy(play, middleId), PassiveStatuses.HoldsTheCaseId));
+
+        // At the bottom a Deed holds it where it is.
+        PlayCard(play, session, "paper_cut", lowerId);
+        play.CombatDriver.EndTurn();
+        Assert.Null(session.Error);
+        Assert.Equal(1, FightProbe.StacksOf(Enemy(play, lowerId), PassiveStatuses.HoldsTheCaseId));
+    }
+
+    // Two Deeds and three Workings: every hand holds both kinds.
+    private static readonly IReadOnlyList<string> Court =
+        ["paper_cut", "paper_cut", "cower_behind_a_desk", "cower_behind_a_desk", "cower_behind_a_desk"];
+
+    private static void PlayCard(RunPlayback play, InteractiveRunSession session, string cardId, CombatantId? target)
+    {
+        var card = play.CombatDriver!.Current!.Hand.First(c => c.DefinitionId.value == cardId);
+        play.CombatDriver.PlayCard(card.Id, target);
+        Assert.Null(session.Error);
     }
 
     // Iron Warrant Avatar: a visible order each turn. Obeying it strips 5 (Block first, health after);
@@ -232,14 +199,11 @@ public class EliteCombatTests
     [Fact]
     public void Obeying_the_warrants_order_costs_it_five()
     {
-        // The opening order is "Pay the Fee": end the turn on empty. Three 1-cost Paper Cuts do exactly that.
+        // The opening order is "Hold Your Fire": no Deed this turn. A turn of no attacks obeys it.
         var probe = FightProbe.Roster("compliance", ("iron_warrant_avatar", "iron_authority", 94));
         var (play, session, avatarId) = FightProbe.Start(probe, Enumerable.Repeat("paper_cut", 10).ToList());
 
         Assert.Equal(1, FightProbe.StacksOf(Hero(play), PassiveStatuses.ComplianceOrders[0].StatusId));
-
-        for (var i = 0; i < 3; i++)
-            Cut(play, session, avatarId);
         var before = Enemy(play, avatarId).Health.Current;
 
         play.CombatDriver!.EndTurn();
@@ -249,6 +213,8 @@ public class EliteCombatTests
         Assert.Equal(before - 5, Enemy(play, avatarId).Health.Current);
         Assert.Equal(0, FightProbe.StacksOf(Enemy(play, avatarId), PassiveStatuses.ContemptId));
         Assert.Equal(0, FightProbe.StacksOf(Hero(play), PassiveStatuses.ComplianceOrders[0].StatusId)); // spent
+        // …and the next order is about card kinds as well.
+        Assert.Equal(1, FightProbe.StacksOf(Hero(play), PassiveStatuses.ComplianceOrders[1].StatusId));
     }
 
     [Fact]
@@ -257,8 +223,9 @@ public class EliteCombatTests
         var probe = FightProbe.Roster("contempt", ("iron_warrant_avatar", "iron_authority", 94));
         var (play, session, avatarId) = FightProbe.Start(probe, Enumerable.Repeat("paper_cut", 10).ToList());
 
+        Cut(play, session, avatarId); // a Deed: the order to hold fire is broken
         var before = Hero(play).Health.Current;
-        play.CombatDriver!.EndTurn(); // the fee goes unpaid: three Energy left on the table
+        play.CombatDriver!.EndTurn();
 
         Assert.Null(session.Error);
         // The refusal is recorded as Contempt and enforced in the same breath: Contempt forces the Avatar off

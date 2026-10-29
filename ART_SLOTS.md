@@ -2,7 +2,7 @@
 
 Generated: `dotnet run --project Converter -- --art-slots ART_SLOTS.md`. **Do not edit by hand.**
 
-**955 pictures**: 490 cards, 261 relics, 200 bodies
+**954 pictures**: 490 cards, 261 relics, 199 bodies
 (every enemy, elite and boss) and 4 the player can be. Every one of them is filled today by a PLACEHOLDER — a plate with the file's own
 name and the word placeholder on it, written by `bnb-godot/tools/make-card-art.py`,
 `make-relic-art.py` and `make-enemy-art.py`. A painted picture replaces one by being saved over it, so
@@ -349,7 +349,7 @@ The catalogue number is the design canon's, and it is not part of the file name:
 | 209 | `tooth_from_the_false_lid_3` | Tooth From the False Lid III | mimic | The first blow of every fight glances off the tooth: 12 Block and heal 2. It comes with the lock-plate, its keyhole ringed with tooth-marks. |
 | 210 | `tooth_from_the_false_lid_4` | Tooth From the False Lid IV | mimic | The first blow of every fight glances off the tooth: 16 Block and heal 4. It comes with the whole false lid, folded shut around it like a jaw at rest. |
 
-## Bodies — 200 pictures
+## Bodies — 199 pictures
 
 Every enemy, elite and boss in the game. No visual canon was written for the bodies, so
 the row carries what the fight itself says: how much it can take, how many rooms use it,
@@ -396,7 +396,7 @@ ever met in a boss room is drawn as a boss, even if it also turns up as filler.
 | `weigher_of_the_unspoken_heart` | The Weigher of the Unspoken Heart | 610 | 1 | The Weigher of the Unspoken Heart |
 | `whispering_catalogue_boss` | The Whispering Catalogue | 258 | 1 | The Whispering Catalogue |
 
-### Elite bodies — 51
+### Elite bodies — 50
 
 | code | title | HP | rooms | met in |
 |---|---|---:|---:|---|
@@ -406,7 +406,7 @@ ever met in a boss room is drawn as a boss, even if it also turns up as filler.
 | `catalogue_of_unwise_names` | The Catalogue of Unwise Names | 136 | 1 | The Catalogue of Unwise Names |
 | `colossus_of_the_endless_procession` | Colossus of the Endless Procession | 388 | 1 | Colossus of the Endless Procession |
 | `curse_bearer` | Curse-Bearer | 108 | 1 | The Tombbreakers Three |
-| `devouring_waiting_room` | Devouring Waiting Room | 68 | 1 | The Waiting Room Eats the Day |
+| `devouring_waiting_room` | Devouring Waiting Room | 88 | 1 | The Waiting Room Eats the Day |
 | `drawer_of_infinite_returns` | The Drawer of Infinite Returns | 154 | 1 | The Drawer of Infinite Returns |
 | `final_appointment` | Final Appointment | 34 | 1 | The Three Appointments |
 | `first_appointment` | First Appointment | 24 | 1 | The Three Appointments |
@@ -424,7 +424,6 @@ ever met in a boss room is drawn as a boss, even if it also turns up as filler.
 | `lower_appellate_step` | Lower Appellate Step | 24 | 1 | The Appeal Climbs the Stairs |
 | `magistrate_of_thorns` | Magistrate of Thorns | 220 | 1 | Magistrate of Thorns |
 | `middle_appellate_step` | Middle Appellate Step | 30 | 1 | The Appeal Climbs the Stairs |
-| `minute_moth_cloud` | Minute-Moth Cloud | 24 | 1 | The Waiting Room Eats the Day |
 | `mummified_overseer_of_the_linen_house` | Mummified Overseer of the Linen House | 318 | 1 | Mummified Overseer of the Linen House |
 | `obituary_with_three_endings` | The Obituary with Three Endings | 128 | 1 | The Obituary with Three Endings |
 | `portcullis_judicator` | Portcullis Judicator | 98 | 1 | The Gatehouse Drops the Portcullis |

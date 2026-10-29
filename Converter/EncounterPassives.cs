@@ -35,7 +35,9 @@ public static class EncounterPassives
         "inverted_hourglass" => StolenSand(),
         "minute_moth" => [StolenMinute()],
         "number_ticket_wisp" => YourNumberCameUp(),
-        "devouring_waiting_room" => [LostTime()],
+        Elites.WaitingRoom.EnemyId => Elites.WaitingRoom.Triggers(),
+        // The court hears the case once, however many steps are standing: keyed on the bottom step alone.
+        "lower_appellate_step" => [PassiveStatuses.HearTheCase()],
         "iron_warrant_avatar" => [IssueComplianceOrder(), JudgeCompliance()],
         "inventory_lantern" => [ClearTheInventoryLatch(), MarkTheGoods()],
         "lock_cart" => [SeizeTheGoods()],
@@ -413,40 +415,6 @@ public static class EncounterPassives
                     CombatantTargetSelectors.AllEnemiesOfSourceWithStatus(
                         new StatusDefinitionId(PassiveStatuses.IronWarrantId)),
                     new SequenceEffectNode<TurnEndedTriggeredEffectContext>([.. orders.Select(o => Judge(o))]))));
-
-        return new EncounterTriggerData("TurnEnded",
-            JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<TurnEndedTriggeredEffectContext>()));
-    }
-
-    // "Lost Time" (Devouring Waiting Room): every point of Energy the player leaves unspent at the end of their
-    // turn becomes Lost Time on the Room, up to 3. Energy that Fatigue took is simply not there to count — it
-    // was removed at the turn's start — so the design's "freely unspent" needs no extra bookkeeping.
-    private static EncounterTriggerData LostTime()
-    {
-        var player = CombatantTargetSelectors.Source; // the combatant whose turn ended
-        var room = CombatantTargetSelectors.IterationTarget;
-        var ledger = new CombatantCounterExpression<TurnEndedTriggeredEffectContext>(
-            room, PassiveStatuses.LostTimeCounter);
-
-        var program = new EffectProgram<TurnEndedTriggeredEffectContext>(
-            new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
-                new ComparisonExpression<TurnEndedTriggeredEffectContext>(
-                    new CombatantStatusStacksExpression<TurnEndedTriggeredEffectContext>(
-                        player, new StatusDefinitionId(PassiveStatuses.ApplicantId)),
-                    ComparisonOperator.Greater,
-                    new ConstantExpression<TurnEndedTriggeredEffectContext>(0)),
-                new ForEachTargetEffectNode<TurnEndedTriggeredEffectContext>(
-                    CombatantTargetSelectors.AllEnemiesOfSourceWithStatus(
-                        new StatusDefinitionId(PassiveStatuses.LostTimeLedgerId)),
-                    new SetCombatantCounterNode<TurnEndedTriggeredEffectContext>(
-                        room, PassiveStatuses.LostTimeCounter,
-                        new MinExpression<TurnEndedTriggeredEffectContext>(
-                            new AddExpression<TurnEndedTriggeredEffectContext>(
-                                ledger,
-                                new CombatantCurrentResourceExpression<TurnEndedTriggeredEffectContext>(
-                                    player, StandardCombatIds.EnergyResource)),
-                            new ConstantExpression<TurnEndedTriggeredEffectContext>(PassiveStatuses.LostTimeMaximum)),
-                        relative: false))));
 
         return new EncounterTriggerData("TurnEnded",
             JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<TurnEndedTriggeredEffectContext>()));

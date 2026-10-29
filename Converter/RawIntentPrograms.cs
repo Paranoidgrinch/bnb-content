@@ -77,7 +77,6 @@ public static class RawIntentPrograms
             "detached_footnote.see_note_below" => ReadTheMargin(),
             "hourglass_with_two_bottoms.left_future" => Future(16, ActTwo.LeftElapsedCounter),
             "hourglass_with_two_bottoms.right_future" => Future(25, ActTwo.RightElapsedCounter),
-            "minute_moth_cloud.steal_a_minute" => StealAMinute(),
             "lower_appellate_step.await_the_ruling" => AwaitTheRuling(),
             "middle_appellate_step.await_the_ruling" => AwaitTheRuling(),
             "upper_appellate_step.await_the_ruling" => AwaitTheRuling(),
@@ -95,6 +94,7 @@ public static class RawIntentPrograms
                 "lord_sealkeeper" => LordSealkeeper.Intent(intentId),
                 "municipal_dragon" => MunicipalDragon.Intent(intentId),
                 "living_charter" => LivingCharter.Intent(intentId),
+                Elites.WaitingRoom.EnemyId => Elites.WaitingRoom.Intent(intentId),
                 Elites.ReturnBell.EnemyId => Elites.ReturnBell.Intent(intentId),
                 Elites.RollingStacksColossus.EnemyId => Elites.RollingStacksColossus.Intent(intentId),
                 Elites.CatalogueOfUnwiseNames.EnemyId => Elites.CatalogueOfUnwiseNames.Intent(intentId),
@@ -131,22 +131,4 @@ public static class RawIntentPrograms
                     CombatantTargetSelectors.IterationTarget, new ConstantExpression<EnemyActionContext>(4))));
     }
 
-    // "Gain 1 Lost Time for the Waiting Room": the Moth writes the track its partner keeps, capped at 3, found
-    // through the marker the Room carries — so killing the Room really does erase the resource with it.
-    private static EffectProgram<EnemyActionContext> StealAMinute()
-    {
-        var room = CombatantTargetSelectors.AllAlliesOfSourceWithStatus(
-            new StatusDefinitionId(PassiveStatuses.LostTimeLedgerId));
-        var ledger = CombatantTargetSelectors.IterationTarget;
-
-        return new EffectProgram<EnemyActionContext>(
-            new ForEachTargetEffectNode<EnemyActionContext>(room,
-                new SetCombatantCounterNode<EnemyActionContext>(ledger, PassiveStatuses.LostTimeCounter,
-                    new MinExpression<EnemyActionContext>(
-                        new AddExpression<EnemyActionContext>(
-                            new CombatantCounterExpression<EnemyActionContext>(ledger, PassiveStatuses.LostTimeCounter),
-                            new ConstantExpression<EnemyActionContext>(1)),
-                        new ConstantExpression<EnemyActionContext>(PassiveStatuses.LostTimeMaximum)),
-                    relative: false)));
-    }
 }
