@@ -30,6 +30,12 @@ public static class BossPhases
         DeputyUndersecretary.ExecutiveId,
         MunicipalDragon.NoticeNextId,
         LivingCharter.ContradictoryId,
+        // Act I's elites whose next move is a state the player plans around (content cut 2026-10-29).
+        Elites.WaitingRoom.NowServingId,
+        Elites.WaitingRoom.CalledId,
+        Elites.WaitingRoom.AtTheCounterId,
+        PassiveStatuses.WindowClosedId,
+        PassiveStatuses.WindowOpenId,
 
         // ── Act II ────────────────────────────────────────────────────────────────────────────────────────
         WhisperingCatalogue.SpeaksInFullId,        // Phase II: it predicts you twice a turn
