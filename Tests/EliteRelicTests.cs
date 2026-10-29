@@ -57,7 +57,7 @@ public class EliteRelicTests
     public void Every_elite_encounter_pays_out_the_one_relic_written_for_it()
     {
         var elites = Data.Encounters.Where(e => e.Role == "elite" && e.Act <= 4).ToList();
-        Assert.Equal(38, elites.Count);
+        Assert.Equal(35, elites.Count);
 
         foreach (var elite in elites)
         {
@@ -287,14 +287,6 @@ public class EliteRelicTests
 
         var (play, _, _) = WithRelic(EliteRelicRules.ChairId);
         Assert.Equal(opening + 2, Hand(play).Count);
-        play.Dispose();
-    }
-
-    [Fact]
-    public void The_chorus_makes_the_first_card_of_the_fight_free()
-    {
-        var (play, _, _) = WithRelic(EliteRelicRules.HalfSignedId);
-        Assert.Equal(1, FightProbe.StacksOf(Hero(play), RelicRules.NextCardFreeId));
         play.Dispose();
     }
 

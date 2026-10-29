@@ -21,7 +21,6 @@ public static class EncounterPassives
     public static IReadOnlyList<EncounterTriggerData> ForEnemy(string enemyId) => enemyId switch
     {
         "wrong_window_scribe" => [NotThisCounter()],
-        "triplicate_examiner" => [ThreeCopiesRequired()],
         "oath_candle" => [WitnessTheSeal()],
         "contradictory_signpost" => [BothDirectionsMandatory()],
         // The Hourglass's two bottoms are pushed back by what the PLAYER plays, so the rule is about the
@@ -33,21 +32,13 @@ public static class EncounterPassives
         // Break the jar and the life it was holding is lost (ActTwo.BreakTheJar).
         "spare_life_jar" => [ActTwo.BreakTheJar()],
         "exception_imp" => Loophole(),
-        "old_statute_ghost" => StillInForce(),
         "inverted_hourglass" => StolenSand(),
         "minute_moth" => [StolenMinute()],
-        "sustaining_gavel" => [Sustained()],
-        "warrant_bailiff" => OutstandingWarrant(),
-        "threshold_seizure_ward" => SeizeTheFiling(),
         "number_ticket_wisp" => YourNumberCameUp(),
-        "duplicate_copy_mite" => CarbonCopies(),
         "devouring_waiting_room" => [LostTime()],
-        "living_petition_chorus" => [ClauseOffer()],
         "iron_warrant_avatar" => [IssueComplianceOrder(), JudgeCompliance()],
         "inventory_lantern" => [ClearTheInventoryLatch(), MarkTheGoods()],
         "lock_cart" => [SeizeTheGoods()],
-        "final_notice_knight" => [TheDeadlineRuns(), OfferAcknowledgement()],
-        "sealed_spear" => [WhenTheSpearFalls()],
         "deputy_undersecretary" => DeputyUndersecretary.Triggers(),
         "queue_commissioner" => QueueCommissioner.Triggers(),
         "lord_sealkeeper" => LordSealkeeper.Triggers(),
@@ -197,8 +188,6 @@ public static class EncounterPassives
             new StartingStatusSpec(new StatusDefinitionId(QueueCommissioner.PositionId), QueueCommissioner.StartPosition),
             new StartingStatusSpec(new StatusDefinitionId(QueueCommissioner.JustJoinedId), 1),
         ],
-        "final_notice_knight" =>
-            [new StartingStatusSpec(new StatusDefinitionId(PassiveStatuses.FinalNoticeId), PassiveStatuses.FinalNoticeStart)],
         // Act V: Nanshe's tablet is worn by the PLAYER, because what it does is let them READ her whole
         // Distribution — all three days of intents at once. A sight is a faculty of the one who looks.
         ActFive.NansheEnemyId =>
@@ -332,168 +321,6 @@ public static class EncounterPassives
         _ => Array.Empty<StartingStatusSpec>(),
     };
 
-    // "Final Notice" (Final Notice Knight): the deadline ticks down at the end of every player turn, is SERVED
-    // when it runs out, and enforcement lands one turn later — the player always gets a response window. The
-    // whole countdown lives on the player, so every read here is a single selector on the trigger's source.
-    private static EncounterTriggerData TheDeadlineRuns()
-    {
-        var player = CombatantTargetSelectors.Source;
-        var knight = CombatantTargetSelectors.AllEnemiesOfSourceWithStatus(
-            new StatusDefinitionId(PassiveStatuses.FinalNoticeKnightId));
-
-        ICombatExpression<TurnEndedTriggeredEffectContext, bool> Stacks(string statusId, ComparisonOperator op, int value) =>
-            new ComparisonExpression<TurnEndedTriggeredEffectContext>(
-                new CombatantStatusStacksExpression<TurnEndedTriggeredEffectContext>(
-                    player, new StatusDefinitionId(statusId)),
-                op, new ConstantExpression<TurnEndedTriggeredEffectContext>(value));
-
-        IEffectNode<TurnEndedTriggeredEffectContext> Apply(ICombatantTargetSelector target, string statusId, int stacks) =>
-            new ApplyStatusNode<TurnEndedTriggeredEffectContext>(
-                target, new StatusDefinitionId(statusId),
-                new ConstantExpression<TurnEndedTriggeredEffectContext>(stacks));
-
-        IEffectNode<TurnEndedTriggeredEffectContext> Remove(ICombatantTargetSelector target, string statusId) =>
-            new RemoveStatusNode<TurnEndedTriggeredEffectContext>(target, new StatusDefinitionId(statusId));
-
-        // Every branch below reads the SAME pre-write state, so exactly one of them can apply per turn.
-        var program = new EffectProgram<TurnEndedTriggeredEffectContext>(
-            new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
-                new ComparisonExpression<TurnEndedTriggeredEffectContext>(
-                    new CombatantStatusStacksExpression<TurnEndedTriggeredEffectContext>(
-                        player, new StatusDefinitionId(PassiveStatuses.ApplicantId)),
-                    ComparisonOperator.Greater,
-                    new ConstantExpression<TurnEndedTriggeredEffectContext>(0)),
-                new SequenceEffectNode<TurnEndedTriggeredEffectContext>(new IEffectNode<TurnEndedTriggeredEffectContext>[]
-                {
-                    // The enforcement handed down between this turn and the last one is over: a fresh notice.
-                    new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
-                        Stacks(PassiveStatuses.EnforceQueuedId, ComparisonOperator.GreaterOrEqual, 2),
-                        new SequenceEffectNode<TurnEndedTriggeredEffectContext>(new IEffectNode<TurnEndedTriggeredEffectContext>[]
-                        {
-                            Remove(player, PassiveStatuses.EnforceQueuedId),
-                            Remove(player, PassiveStatuses.ServiceAcknowledgedId),
-                            Remove(player, PassiveStatuses.FinalNoticeId),
-                            Apply(player, PassiveStatuses.FinalNoticeId, PassiveStatuses.FinalNoticeStart),
-                            Remove(knight, PassiveStatuses.DeadlineServedId),
-                            Apply(knight, PassiveStatuses.DeadlineCountingId, 1),
-                        })),
-
-                    // The response window is over: the Knight's next action IS the enforcement.
-                    new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
-                        Stacks(PassiveStatuses.EnforceQueuedId, ComparisonOperator.Equal, 1),
-                        new ModifyStatusStacksNode<TurnEndedTriggeredEffectContext>(
-                            player, new StatusDefinitionId(PassiveStatuses.EnforceQueuedId),
-                            new ConstantExpression<TurnEndedTriggeredEffectContext>(1))),
-
-                    // Otherwise the deadline runs. A Notice pushed past 3 (the Spear's death) is clamped here
-                    // first, so the extra stack is spent rather than banked.
-                    new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
-                        Stacks(PassiveStatuses.EnforceQueuedId, ComparisonOperator.Equal, 0),
-                        new SequenceEffectNode<TurnEndedTriggeredEffectContext>(new IEffectNode<TurnEndedTriggeredEffectContext>[]
-                        {
-                            new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
-                                Stacks(PassiveStatuses.FinalNoticeId, ComparisonOperator.Greater, PassiveStatuses.FinalNoticeStart),
-                                new ModifyStatusStacksNode<TurnEndedTriggeredEffectContext>(
-                                    player, new StatusDefinitionId(PassiveStatuses.FinalNoticeId),
-                                    new ConstantExpression<TurnEndedTriggeredEffectContext>(-1))),
-                            new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
-                                Stacks(PassiveStatuses.FinalNoticeId, ComparisonOperator.Greater, 0),
-                                new ModifyStatusStacksNode<TurnEndedTriggeredEffectContext>(
-                                    player, new StatusDefinitionId(PassiveStatuses.FinalNoticeId),
-                                    new ConstantExpression<TurnEndedTriggeredEffectContext>(-1))),
-                            // The last stack just went: the notice is served, and the answer turn begins.
-                            new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
-                                Stacks(PassiveStatuses.FinalNoticeId, ComparisonOperator.Equal, 1),
-                                new SequenceEffectNode<TurnEndedTriggeredEffectContext>(new IEffectNode<TurnEndedTriggeredEffectContext>[]
-                                {
-                                    Apply(player, PassiveStatuses.EnforceQueuedId, 1),
-                                    Remove(knight, PassiveStatuses.DeadlineCountingId),
-                                    Apply(knight, PassiveStatuses.DeadlineServedId, 1),
-                                })),
-                        })),
-                })));
-
-        return new EncounterTriggerData("TurnEnded",
-            JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<TurnEndedTriggeredEffectContext>()));
-    }
-
-    // "Acknowledge Service": on the response turn the Knight lays the acknowledgement on the table as a card.
-    // Playing it signs (2 Paperwork now, a lighter enforcement later); letting it sit refuses.
-    private static EncounterTriggerData OfferAcknowledgement()
-    {
-        var player = CombatantTargetSelectors.Source;
-
-        var program = new EffectProgram<TurnStartedTriggeredEffectContext>(
-            new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
-                new AndExpression<TurnStartedTriggeredEffectContext>(
-                    new ComparisonExpression<TurnStartedTriggeredEffectContext>(
-                        new CombatantStatusStacksExpression<TurnStartedTriggeredEffectContext>(
-                            player, new StatusDefinitionId(PassiveStatuses.ApplicantId)),
-                        ComparisonOperator.Greater,
-                        new ConstantExpression<TurnStartedTriggeredEffectContext>(0)),
-                    new ComparisonExpression<TurnStartedTriggeredEffectContext>(
-                        new CombatantStatusStacksExpression<TurnStartedTriggeredEffectContext>(
-                            player, new StatusDefinitionId(PassiveStatuses.EnforceQueuedId)),
-                        ComparisonOperator.Equal,
-                        new ConstantExpression<TurnStartedTriggeredEffectContext>(1))),
-                new CreateCardInstanceNode<TurnStartedTriggeredEffectContext>(
-                    player, new CardDefinitionId(PassiveStatuses.AcknowledgeCardId), CardZone.Hand,
-                    new ConstantExpression<TurnStartedTriggeredEffectContext>(1))));
-
-        return new EncounterTriggerData("TurnStarted",
-            JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<TurnStartedTriggeredEffectContext>()));
-    }
-
-    // Killing the Sealed Spear buys time: while the deadline is merely running it slips back a step, and if the
-    // Spear falls during the response turn the enforcement is cancelled outright and the notice restarts at 1.
-    // The Knight's two mirror markers say which case applies WITHOUT reading the player's statuses — from the
-    // Spear's side the player is only reachable through a multi-target selector, which cannot be read. They
-    // also stand in for "it was the Spear that fell": a DOWNED combatant's own statuses read as absent, so the
-    // trigger cannot check the fallen body's identity; instead it asks whether the fallen one has an ALLY
-    // wearing a mirror — true only for the Spear, since nothing else in the fight is the Knight's ally.
-    private static EncounterTriggerData WhenTheSpearFalls()
-    {
-        var applicant = CombatantTargetSelectors.AllEnemiesOfSourceWithStatus(
-            new StatusDefinitionId(PassiveStatuses.ApplicantId));
-        var knight = CombatantTargetSelectors.IterationTarget;
-
-        IEffectNode<CombatantDownedTriggeredEffectContext> Apply(ICombatantTargetSelector target, string statusId, int stacks) =>
-            new ApplyStatusNode<CombatantDownedTriggeredEffectContext>(
-                target, new StatusDefinitionId(statusId),
-                new ConstantExpression<CombatantDownedTriggeredEffectContext>(stacks));
-
-        IEffectNode<CombatantDownedTriggeredEffectContext> Remove(ICombatantTargetSelector target, string statusId) =>
-            new RemoveStatusNode<CombatantDownedTriggeredEffectContext>(target, new StatusDefinitionId(statusId));
-
-        IEffectNode<CombatantDownedTriggeredEffectContext> ForKnightWith(string mirror, IEffectNode<CombatantDownedTriggeredEffectContext> body) =>
-            new ForEachTargetEffectNode<CombatantDownedTriggeredEffectContext>(
-                CombatantTargetSelectors.AllAlliesOfSourceWithStatus(new StatusDefinitionId(mirror)), body);
-
-        var program = new EffectProgram<CombatantDownedTriggeredEffectContext>(
-            new SequenceEffectNode<CombatantDownedTriggeredEffectContext>(new IEffectNode<CombatantDownedTriggeredEffectContext>[]
-            {
-                // Still counting: the deadline slips one step back (the turn-end clamp keeps it at 3).
-                ForKnightWith(PassiveStatuses.DeadlineCountingId,
-                    Apply(applicant, PassiveStatuses.FinalNoticeId, 1)),
-
-                // Already served: the enforcement is cancelled and the notice restarts at 1. An
-                // acknowledgement already signed is spent — its 2 Paperwork stays where it landed.
-                ForKnightWith(PassiveStatuses.DeadlineServedId,
-                    new SequenceEffectNode<CombatantDownedTriggeredEffectContext>(new IEffectNode<CombatantDownedTriggeredEffectContext>[]
-                    {
-                        Remove(applicant, PassiveStatuses.EnforceQueuedId),
-                        Remove(applicant, PassiveStatuses.ServiceAcknowledgedId),
-                        Remove(applicant, PassiveStatuses.FinalNoticeId),
-                        Apply(applicant, PassiveStatuses.FinalNoticeId, 1),
-                        Remove(knight, PassiveStatuses.DeadlineServedId),
-                        Apply(knight, PassiveStatuses.DeadlineCountingId, 1),
-                    })),
-            }));
-
-        return new EncounterTriggerData("Downed",
-            JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<CombatantDownedTriggeredEffectContext>()));
-    }
-
     // "Compliance Order" (Iron Warrant Avatar): the Avatar issues one visible, achievable demand at the start
     // of the player's turn. The orders take turns, so the same one never comes twice in a row.
     private static EncounterTriggerData IssueComplianceOrder()
@@ -591,50 +418,6 @@ public static class EncounterPassives
             JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<TurnEndedTriggeredEffectContext>()));
     }
 
-    // "Clause offer" (Living Petition Chorus): at the start of each player turn the Petition lays one clause on
-    // the table — as a card in the player's hand, since a combat has no yes/no prompt. The three clauses take
-    // turns, so each appears once per reading cycle.
-    private static EncounterTriggerData ClauseOffer()
-    {
-        var player = CombatantTargetSelectors.Source; // the combatant whose turn started
-        var petition = CombatantTargetSelectors.IterationTarget;
-        var clauses = ClauseCards.All;
-
-        IEffectNode<TurnStartedTriggeredEffectContext> Offer(int index) =>
-            new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
-                new ComparisonExpression<TurnStartedTriggeredEffectContext>(
-                    new CombatantCounterExpression<TurnStartedTriggeredEffectContext>(
-                        petition, PassiveStatuses.ClauseIndexCounter),
-                    ComparisonOperator.Equal,
-                    new ConstantExpression<TurnStartedTriggeredEffectContext>(index)),
-                new SequenceEffectNode<TurnStartedTriggeredEffectContext>(new IEffectNode<TurnStartedTriggeredEffectContext>[]
-                {
-                    new CreateCardInstanceNode<TurnStartedTriggeredEffectContext>(
-                        player, new CardDefinitionId(clauses[index].CardId), CardZone.Hand,
-                        new ConstantExpression<TurnStartedTriggeredEffectContext>(1)),
-                    new SetCombatantCounterNode<TurnStartedTriggeredEffectContext>(
-                        petition, PassiveStatuses.ClauseIndexCounter,
-                        new ConstantExpression<TurnStartedTriggeredEffectContext>((index + 1) % clauses.Length),
-                        relative: false),
-                }));
-
-        var program = new EffectProgram<TurnStartedTriggeredEffectContext>(
-            new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
-                new ComparisonExpression<TurnStartedTriggeredEffectContext>(
-                    new CombatantStatusStacksExpression<TurnStartedTriggeredEffectContext>(
-                        player, new StatusDefinitionId(PassiveStatuses.ApplicantId)),
-                    ComparisonOperator.Greater,
-                    new ConstantExpression<TurnStartedTriggeredEffectContext>(0)),
-                new ForEachTargetEffectNode<TurnStartedTriggeredEffectContext>(
-                    CombatantTargetSelectors.AllEnemiesOfSourceWithStatus(
-                        new StatusDefinitionId(PassiveStatuses.PetitionId)),
-                    new SequenceEffectNode<TurnStartedTriggeredEffectContext>(
-                        [.. Enumerable.Range(0, clauses.Length).Select(Offer)]))));
-
-        return new EncounterTriggerData("TurnStarted",
-            JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<TurnStartedTriggeredEffectContext>()));
-    }
-
     // "Lost Time" (Devouring Waiting Room): every point of Energy the player leaves unspent at the end of their
     // turn becomes Lost Time on the Room, up to 3. Energy that Fatigue took is simply not there to count — it
     // was removed at the turn's start — so the design's "freely unspent" needs no extra bookkeeping.
@@ -667,53 +450,6 @@ public static class EncounterPassives
 
         return new EncounterTriggerData("TurnEnded",
             JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<TurnEndedTriggeredEffectContext>()));
-    }
-
-    // "Carbon Copies" (Duplicate Copy Mites): the first time each round another enemy gains Bookworm, the Mites
-    // guard themselves for 4. Same shape as the Oath Candle's Witness the Seal — the loop over
-    // `alliesWithStatus(carbon_copies)` finds the Mites on the GAINER's side, the gainer carrying the marker is
-    // the "another enemy" clause, and `iterationTarget` holds the once-per-round latch. Reading: "gained
-    // Bookworm" is "the affected enemy now carries Bookworm", since a program cannot read the event's status.
-    private static IReadOnlyList<EncounterTriggerData> CarbonCopies() =>
-    [
-        CarbonCopiesTrigger<StatusAppliedTriggeredEffectContext>("StatusApplied"),
-        CarbonCopiesTrigger<StatusMergedTriggeredEffectContext>("StatusMerged"),
-    ];
-
-    private static EncounterTriggerData CarbonCopiesTrigger<TContext>(string trigger) where TContext : class
-    {
-        var mites = CombatantTargetSelectors.IterationTarget;
-        var gainer = CombatantTargetSelectors.EventTarget;
-        var marker = new StatusDefinitionId(PassiveStatuses.CarbonCopiesId);
-
-        var body = new ConditionalEffectNode<TContext>(
-            new AndExpression<TContext>(
-                new AndExpression<TContext>(
-                    new ComparisonExpression<TContext>(
-                        new CombatantStatusStacksExpression<TContext>(gainer, marker),
-                        ComparisonOperator.Equal,
-                        new ConstantExpression<TContext>(0)),
-                    new TriggerEventStatusIsExpression<TContext>(new StatusDefinitionId("bookworm"))),
-                new ComparisonExpression<TContext>(
-                    new CombatantCounterExpression<TContext>(mites, PassiveStatuses.CopiedThisRoundCounter),
-                    ComparisonOperator.Equal,
-                    new ConstantExpression<TContext>(0))),
-            // CAUSAL: the latch has to be shut before anything else can read it. A plain sequence starts
-            // both steps at once, so a second Bookworm arriving in the same drain would find the gate open
-            // and the Mites would guard twice.
-            new CausalSequenceEffectNode<TContext>(new IEffectNode<TContext>[]
-            {
-                new GainBlockNode<TContext>(mites, new ConstantExpression<TContext>(4)),
-                new SetCombatantCounterNode<TContext>(mites, PassiveStatuses.CopiedThisRoundCounter,
-                    new ConstantExpression<TContext>(1), relative: false),
-            }));
-
-        var program = new EffectProgram<TContext>(
-            new ForEachTargetEffectNode<TContext>(
-                CombatantTargetSelectors.AllAlliesOfSourceWithStatus(marker), body));
-
-        return new EncounterTriggerData(trigger,
-            JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<TContext>()));
     }
 
     // "Your Number Came Up" (Number-Ticket Wisp): the Wisp burns out with the Panic it hands out — whenever
@@ -761,147 +497,6 @@ public static class EncounterPassives
 
         return new EncounterTriggerData(trigger,
             JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<TContext>()));
-    }
-
-    // "Outstanding Warrant" (Warrant Bailiff): while the player is 4 Paperwork deep the Bailiff's attacks hit
-    // for 5 more. A passive modifier cannot be conditional, so — as with the Unsigned Form Ghost — presence IS
-    // the condition: this watcher switches the buff on and off whenever the player's statuses move. The
-    // condition is about the PLAYER while the buff belongs to the enemy, hence an encounter trigger.
-    private static IReadOnlyList<EncounterTriggerData> OutstandingWarrant() =>
-    [
-        WarrantTrigger<StatusAppliedTriggeredEffectContext>("StatusApplied"),
-        WarrantTrigger<StatusMergedTriggeredEffectContext>("StatusMerged"),
-        WarrantTrigger<StatusStacksChangedTriggeredEffectContext>("StatusStacksChanged"),
-        WarrantTrigger<StatusRemovedTriggeredEffectContext>("StatusRemoved"),
-        WarrantTrigger<StatusExpiredTriggeredEffectContext>("StatusExpired"),
-    ];
-
-    private static EncounterTriggerData WarrantTrigger<TContext>(string trigger) where TContext : class
-    {
-        var bailiff = CombatantTargetSelectors.IterationTarget;
-        var player = CombatantTargetSelectors.EventTarget;
-        var served = new StatusDefinitionId(PassiveStatuses.WarrantServedId);
-        var paperwork = new CombatantStatusStacksExpression<TContext>(player, new StatusDefinitionId("paperwork"));
-        var buff = new CombatantStatusStacksExpression<TContext>(bailiff, served);
-
-        var body = new ConditionalEffectNode<TContext>(
-            new ComparisonExpression<TContext>(paperwork, ComparisonOperator.GreaterOrEqual,
-                new ConstantExpression<TContext>(4)),
-            new ConditionalEffectNode<TContext>(
-                new ComparisonExpression<TContext>(buff, ComparisonOperator.Equal, new ConstantExpression<TContext>(0)),
-                new ApplyStatusNode<TContext>(bailiff, served, new ConstantExpression<TContext>(1))),
-            new ConditionalEffectNode<TContext>(
-                new ComparisonExpression<TContext>(buff, ComparisonOperator.Greater, new ConstantExpression<TContext>(0)),
-                new ModifyStatusStacksNode<TContext>(bailiff, served, new ConstantExpression<TContext>(-1))));
-
-        var program = new EffectProgram<TContext>(
-            new ForEachTargetEffectNode<TContext>(
-                CombatantTargetSelectors.WithStatus(CombatantTargetSelectors.AllCombatants,
-                    new StatusDefinitionId(PassiveStatuses.OutstandingWarrantId)),
-                new ConditionalEffectNode<TContext>(
-                    new ComparisonExpression<TContext>(
-                        new CombatantStatusStacksExpression<TContext>(player,
-                            new StatusDefinitionId(PassiveStatuses.ApplicantId)),
-                        ComparisonOperator.Greater,
-                        new ConstantExpression<TContext>(0)),
-                    body)));
-
-        return new EncounterTriggerData(trigger,
-            JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<TContext>()));
-    }
-
-    // "Seize the Filing" (Threshold Seizure Ward): the first Paperwork the PLAYER files on any enemy each round
-    // is turned against them — that enemy gains 1 Bookworm, which will erase the filing at its turn start.
-    // Reading: the enemy-facing status the Bureaucrat files is Paperwork, so "the target now carries Paperwork
-    // and the filer is the player" stands in for "Paperwork was applied" (a program cannot read the event's
-    // status id).
-    private static IReadOnlyList<EncounterTriggerData> SeizeTheFiling() =>
-    [
-        SeizeTrigger<StatusAppliedTriggeredEffectContext>("StatusApplied"),
-        SeizeTrigger<StatusMergedTriggeredEffectContext>("StatusMerged"),
-    ];
-
-    private static EncounterTriggerData SeizeTrigger<TContext>(string trigger) where TContext : class
-    {
-        var ward = CombatantTargetSelectors.IterationTarget;
-        var filedOn = CombatantTargetSelectors.EventTarget;
-        var filer = CombatantTargetSelectors.Source;
-
-        var body = new ConditionalEffectNode<TContext>(
-            new AndExpression<TContext>(
-                new AndExpression<TContext>(
-                    // The filer is the player…
-                    new ComparisonExpression<TContext>(
-                        new CombatantStatusStacksExpression<TContext>(filer,
-                            new StatusDefinitionId(PassiveStatuses.ApplicantId)),
-                        ComparisonOperator.Greater,
-                        new ConstantExpression<TContext>(0)),
-                    // …the filing landed on an enemy (never on the player themselves)…
-                    new ComparisonExpression<TContext>(
-                        new CombatantStatusStacksExpression<TContext>(filedOn, new StatusDefinitionId("paperwork")),
-                        ComparisonOperator.Greater,
-                        new ConstantExpression<TContext>(0))),
-                new ComparisonExpression<TContext>(
-                    new CombatantCounterExpression<TContext>(ward, PassiveStatuses.SeizedThisRoundCounter),
-                    ComparisonOperator.Equal,
-                    new ConstantExpression<TContext>(0))),
-            new SequenceEffectNode<TContext>(new IEffectNode<TContext>[]
-            {
-                new ApplyStatusNode<TContext>(filedOn, new StatusDefinitionId("bookworm"),
-                    new ConstantExpression<TContext>(1)),
-                new SetCombatantCounterNode<TContext>(ward, PassiveStatuses.SeizedThisRoundCounter,
-                    new ConstantExpression<TContext>(1), relative: false),
-            }));
-
-        var program = new EffectProgram<TContext>(
-            new ForEachTargetEffectNode<TContext>(
-                CombatantTargetSelectors.AllEnemiesOfSourceWithStatus(
-                    new StatusDefinitionId(PassiveStatuses.SeizeTheFilingId)),
-                body));
-
-        return new EncounterTriggerData(trigger,
-            JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<TContext>()));
-    }
-
-    // "Sustained" (Sustaining Gavel): the first time each round ANOTHER living enemy gains Block, the Gavel
-    // copies half of it, rounded down. Same shape as the Oath Candle's Witness the Seal — the loop over
-    // `alliesWithStatus(sustained)` is the "is the Gavel here / is the gainer on its side" gate and the handle
-    // on the latch holder — but the Gavel guards ITSELF instead of topping the other body up, and the gainer
-    // carrying the marker is the "no recursion" clause.
-    private static EncounterTriggerData Sustained()
-    {
-        var marker = new StatusDefinitionId(PassiveStatuses.SustainedId);
-        var gainer = CombatantTargetSelectors.EventTarget;
-        var gavel = CombatantTargetSelectors.IterationTarget;
-
-        var body = new ConditionalEffectNode<BlockGainedTriggeredEffectContext>(
-            new AndExpression<BlockGainedTriggeredEffectContext>(
-                new ComparisonExpression<BlockGainedTriggeredEffectContext>(
-                    new CombatantStatusStacksExpression<BlockGainedTriggeredEffectContext>(gainer, marker),
-                    ComparisonOperator.Equal,
-                    new ConstantExpression<BlockGainedTriggeredEffectContext>(0)),
-                new ComparisonExpression<BlockGainedTriggeredEffectContext>(
-                    new CombatantCounterExpression<BlockGainedTriggeredEffectContext>(
-                        gavel, PassiveStatuses.SustainedThisRoundCounter),
-                    ComparisonOperator.Equal,
-                    new ConstantExpression<BlockGainedTriggeredEffectContext>(0))),
-            new SequenceEffectNode<BlockGainedTriggeredEffectContext>(new IEffectNode<BlockGainedTriggeredEffectContext>[]
-            {
-                new GainBlockNode<BlockGainedTriggeredEffectContext>(gavel,
-                    new DivideExpression<BlockGainedTriggeredEffectContext>(
-                        new EventAmountExpression<BlockGainedTriggeredEffectContext>(),
-                        new ConstantExpression<BlockGainedTriggeredEffectContext>(2))),
-                new SetCombatantCounterNode<BlockGainedTriggeredEffectContext>(
-                    gavel, PassiveStatuses.SustainedThisRoundCounter,
-                    new ConstantExpression<BlockGainedTriggeredEffectContext>(1), relative: false),
-            }));
-
-        var program = new EffectProgram<BlockGainedTriggeredEffectContext>(
-            new ForEachTargetEffectNode<BlockGainedTriggeredEffectContext>(
-                CombatantTargetSelectors.AllAlliesOfSourceWithStatus(marker), body));
-
-        return new EncounterTriggerData("BlockGained",
-            JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<BlockGainedTriggeredEffectContext>()));
     }
 
     // "Stolen Sand" (Inverted Hourglass): whenever Fatigue actually costs the player Energy, the Hourglass
@@ -983,87 +578,6 @@ public static class EncounterPassives
 
         return new EncounterTriggerData("TurnEnded",
             JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<TurnEndedTriggeredEffectContext>()));
-    }
-
-    // The statuses the Old Statute Ghost keeps in force. Paperwork is deliberately not among them — it is the
-    // bureaucracy's own instrument, not an expired penalty.
-    private static readonly string[] ExpiringPenalties = { "panic", "doubt", "fatigue" };
-
-    // "Still in Force" (Old Statute Ghost): the first time each round one of Panic / Doubt / Fatigue vanishes
-    // from the player entirely, the Ghost gains 1 Precedent; at 2 it re-files one stack of the status that just
-    // went and clears its Precedent. Like the Imp's Loophole this reads "which status" from a mirror of the
-    // player's counts — and because the cash-out happens in the branch of the status that vanished, "the most
-    // recently disappeared one" needs no extra memory at all.
-    private static IReadOnlyList<EncounterTriggerData> StillInForce() =>
-    [
-        StillInForceTrigger<StatusExpiredTriggeredEffectContext>("StatusExpired"),
-        StillInForceTrigger<StatusRemovedTriggeredEffectContext>("StatusRemoved"),
-        StillInForceTrigger<StatusStacksChangedTriggeredEffectContext>("StatusStacksChanged"),
-        StillInForceTrigger<StatusAppliedTriggeredEffectContext>("StatusApplied"),
-        StillInForceTrigger<StatusMergedTriggeredEffectContext>("StatusMerged"),
-    ];
-
-    private static EncounterTriggerData StillInForceTrigger<TContext>(string trigger) where TContext : class
-    {
-        var ghost = CombatantTargetSelectors.IterationTarget;
-        var player = CombatantTargetSelectors.EventTarget;
-
-        ICombatExpression<TContext, int> Stacks(string statusId) =>
-            new CombatantStatusStacksExpression<TContext>(player, new StatusDefinitionId(statusId));
-        ICombatExpression<TContext, int> Counter(CounterId counter) =>
-            new CombatantCounterExpression<TContext>(ghost, counter);
-
-        var detections = ExpiringPenalties.Select(penalty => (IEffectNode<TContext>)
-            new ConditionalEffectNode<TContext>(
-                new AndExpression<TContext>(
-                    new ComparisonExpression<TContext>(Counter(SeenCounter(penalty)),
-                        ComparisonOperator.Greater, new ConstantExpression<TContext>(0)),
-                    new ComparisonExpression<TContext>(Stacks(penalty),
-                        ComparisonOperator.Equal, new ConstantExpression<TContext>(0))),
-                new SequenceEffectNode<TContext>(new IEffectNode<TContext>[]
-                {
-                    new SetCombatantCounterNode<TContext>(ghost, PassiveStatuses.PrecedentLatchCounter,
-                        new ConstantExpression<TContext>(1), relative: false),
-                    new ConditionalEffectNode<TContext>(
-                        new ComparisonExpression<TContext>(Counter(PassiveStatuses.PrecedentCounter),
-                            ComparisonOperator.GreaterOrEqual, new ConstantExpression<TContext>(1)),
-                        // Second precedent: the statute is re-imposed and the tally starts over.
-                        new SequenceEffectNode<TContext>(new IEffectNode<TContext>[]
-                        {
-                            new ApplyStatusNode<TContext>(player, new StatusDefinitionId(penalty),
-                                new ConstantExpression<TContext>(1)),
-                            new SetCombatantCounterNode<TContext>(ghost, PassiveStatuses.PrecedentCounter,
-                                new ConstantExpression<TContext>(0), relative: false),
-                        }),
-                        new SetCombatantCounterNode<TContext>(ghost, PassiveStatuses.PrecedentCounter,
-                            new ConstantExpression<TContext>(1), relative: false)),
-                })));
-
-        var body = new List<IEffectNode<TContext>>
-        {
-            new ConditionalEffectNode<TContext>(
-                new ComparisonExpression<TContext>(Counter(PassiveStatuses.PrecedentLatchCounter),
-                    ComparisonOperator.Equal, new ConstantExpression<TContext>(0)),
-                new SequenceEffectNode<TContext>(detections.ToList())),
-        };
-        body.AddRange(ExpiringPenalties.Select(penalty => (IEffectNode<TContext>)
-            new SetCombatantCounterNode<TContext>(ghost, SeenCounter(penalty), Stacks(penalty), relative: false)));
-
-        // Only what happens to the APPLICANT counts — the Ghost is deaf to statuses moving on its own side.
-        var program = new EffectProgram<TContext>(
-            new ForEachTargetEffectNode<TContext>(
-                CombatantTargetSelectors.WithStatus(CombatantTargetSelectors.AllCombatants,
-                    new StatusDefinitionId(PassiveStatuses.StillInForceId)),
-                new ConditionalEffectNode<TContext>(
-                    new ComparisonExpression<TContext>(
-                        new CombatantStatusStacksExpression<TContext>(player,
-                            new StatusDefinitionId(PassiveStatuses.ApplicantId)),
-                        ComparisonOperator.Greater,
-                        new ConstantExpression<TContext>(0)),
-                    new SequenceEffectNode<TContext>(body))));
-
-        return new EncounterTriggerData(trigger,
-            JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<TContext>()));
     }
 
     // The negative statuses the enemy side files on the player in Act I. Loophole watches all of them.
@@ -1222,23 +736,6 @@ public static class EncounterPassives
             new GainBlockNode<CardPlayedTriggeredEffectContext>(
                 CombatantTargetSelectors.AllEnemiesOfSource,
                 new ConstantExpression<CardPlayedTriggeredEffectContext>(5)));
-
-    // "Three Copies Required": the turn's opening card TYPE is what the Examiner demands in triplicate — the
-    // player's THIRD card of that type gives the Examiner 8 Block and the player 1 Doubt. Same simplification
-    // as Not This Counter (opening type = literally the first card's type).
-    private static EncounterTriggerData ThreeCopiesRequired() =>
-        OnNthCardOfTheOpeningType(3,
-            new SequenceEffectNode<CardPlayedTriggeredEffectContext>(new IEffectNode<CardPlayedTriggeredEffectContext>[]
-            {
-                new GainBlockNode<CardPlayedTriggeredEffectContext>(
-                    CombatantTargetSelectors.AllEnemiesOfSource,
-                    new ConstantExpression<CardPlayedTriggeredEffectContext>(8)),
-                // The card's player — the hero in a solo fight — takes the Doubt.
-                new ApplyStatusNode<CardPlayedTriggeredEffectContext>(
-                    CombatantTargetSelectors.Source,
-                    new StatusDefinitionId("doubt"),
-                    new ConstantExpression<CardPlayedTriggeredEffectContext>(1)),
-            }));
 
     // The shared shape of the counter passives: fire `effect` when the player plays their Nth card of the type
     // that OPENED the turn. Exactly-N (not ≥N) makes it once per player turn on its own — no cooldown state.

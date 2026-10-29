@@ -26,14 +26,6 @@ public static class EliteRelics
             "The first time an enemy falls each fight, gain 1 Energy and draw a card.",
             combatRule: EliteRelicRules.CaseThatClimbed),
 
-        Elite(EliteRelicRules.HalfSignedId, "Half-Signed Page", "city_elite_appeal_02",
-            "The first card you play each fight costs nothing.",
-            combatRule: EliteRelicRules.HalfSignedPage),
-
-        Elite(EliteRelicRules.RemittiturId, "Remittitur Seal", "city_elite_appeal_03",
-            "The first status an enemy puts on you each fight is sent back: 2 Paperwork on whoever filed it.",
-            combatRule: EliteRelicRules.RemittiturSeal),
-
         Elite(EliteRelicRules.ThriceStruckId, "Thrice-Struck Appointment Card", "city_elite_delay_01",
             "Every third turn, draw one more card.",
             combatRule: EliteRelicRules.ThriceStruckAppointment),
@@ -61,11 +53,7 @@ public static class EliteRelics
 
         Elite(EliteRelicRules.GateChainId, "Gate-Chain Counterweight", "city_elite_enforcement_03",
             "Deal 20 or more damage in one turn and your first card next turn costs 1 less.",
-            combatRule: EliteRelicRules.GateChainCounterweight),
-
-        Elite(EliteRelicRules.SpearheadId, "Sealed Spearhead", "city_elite_enforcement_04",
-            "When an enemy falls, every other enemy takes 6 damage.",
-            combatRule: EliteRelicRules.SealedSpearhead),
+            combatRule: EliteRelicRules.GateChainCounterweight)
     ];
 
     // ── Act II — The Endless Archives ─────────────────────────────────────────────────────────────────────

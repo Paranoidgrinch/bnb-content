@@ -204,17 +204,20 @@ public class ActSeamTests
                 after.LaneProfiles.Select(lane => lane.Name).ToList());
         }
 
-        // …while what an act KEEPS goes the other way once you leave the city: the archives hold one jar fewer
-        // than the city and the road holds no more than the archives. Comfort is what the acts take away.
-        Assert.True(Holds(acts[1], MapNodeKind.Treasure) < Holds(acts[0], MapNodeKind.Treasure));
-        Assert.True(Holds(acts[2], MapNodeKind.Treasure) <= Holds(acts[1], MapNodeKind.Treasure));
+        // …while what an act KEEPS goes the other way once you leave the city: fewer jars a room in the archives
+        // than in the city, and no more on the road than in the archives. Comfort is what the acts take away.
+        // Per ROOM since the city was cut to fifteen (2026-10-29) while the later acts still run their old length.
+        double PerRoom(StrategicActSpec spec) => (double)Holds(spec, MapNodeKind.Treasure) / spec.Rows;
+        Assert.True(PerRoom(acts[1]) < PerRoom(acts[0]));
+        Assert.True(PerRoom(acts[2]) <= PerRoom(acts[1]));
     }
 
     // v0.0.0'S CONFIGURATION IS FROZEN, and this is the test that says so out loud. The rule-based generator
     // ships beside the strategic one so a playtester can walk the same act both ways (plan §4b), and a baseline
     // that quietly moved would be no baseline at all. The per-path table therefore still reads exactly as the
     // audit wrote it, and the act's backbone is still the five rows the retired `FreeRows` formula produced for
-    // every act in the game. What those numbers PRODUCE is pinned in Tests/Golden/map-v0.0.0.txt.
+    // every act in the game. (The city's own promises were cut to fifteen rooms' worth on 2026-10-29, for both
+    // generators.) What those numbers PRODUCE is pinned in Tests/Golden/map-v0.0.0.txt.
     [Fact]
     public void The_old_generators_promises_are_the_ones_it_has_always_made()
     {

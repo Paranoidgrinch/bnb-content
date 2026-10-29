@@ -12,7 +12,7 @@ public static class ActStages
 {
     public static readonly IReadOnlyDictionary<int, IReadOnlyList<string>> Order = new Dictionary<int, IReadOnlyList<string>>
     {
-        [1] = ["queue", "counter", "form", "seal", "ordinance", "delay", "appeal", "enforcement"],
+        [1] = ["queue", "ordinance", "seal", "delay"],
         [2] = ["returns", "stacks", "catalogue", "reading_room", "redaction", "errata", "annex", "hours",
                "necrology", "concordance"],
         [3] = ["road", "hedgerows", "testimony", "tollwater", "covenants", "quorum", "appeals", "precedents",

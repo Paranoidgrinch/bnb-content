@@ -22,8 +22,8 @@ public static class EliteRelicRules
     public static IReadOnlyList<StatusData> All() =>
     [
         // Act I
-        CaseThatClimbed, HalfSignedPage, RemittiturSeal, ThriceStruckAppointment, ShutterKeyLateHour,
-        ChairOfTheNinthHour, ContemptLedgerNail, GateChainCounterweight, SealedSpearhead,
+        CaseThatClimbed, ThriceStruckAppointment, ShutterKeyLateHour,
+        ChairOfTheNinthHour, ContemptLedgerNail, GateChainCounterweight,
         // Act II
         CrackedBellLip, RollerPinOfTheStacks, TheUnspokenWord, StripOfCensoringInk, ConcordanceThread,
         DrawerWithinADrawer, MissingPresentHand,
@@ -75,65 +75,6 @@ public static class EliteRelicRules
     // The Living Petition Chorus asks you to sign, over and over, and the convenient relief is the trap. The
     // relic is the one signature that cost nothing.
     public static string HalfSignedId => "half_signed_page";
-    private static CounterId HalfSignedUsed => new("half_signed_page_used");
-
-    public static StatusData HalfSignedPage => Rule(
-        HalfSignedId, "Half-Signed Page",
-        "The first card you play each fight costs nothing.",
-        [
-            // The discount is handed over at the opening hand and taken by the first play. NextCardFree is
-            // the Normal pool's own object for exactly this, so the chorus does not invent a second one.
-            Trigger(new EffectProgram<CardsDrawnTriggeredEffectContext>(
-                new ConditionalEffectNode<CardsDrawnTriggeredEffectContext>(
-                    new AndExpression<CardsDrawnTriggeredEffectContext>(
-                        FirstRound<CardsDrawnTriggeredEffectContext>(),
-                        Unspent<CardsDrawnTriggeredEffectContext>(HalfSignedUsed)),
-                    new CausalSequenceEffectNode<CardsDrawnTriggeredEffectContext>(
-                    [
-                        Spend<CardsDrawnTriggeredEffectContext>(HalfSignedUsed),
-                        new ApplyStatusNode<CardsDrawnTriggeredEffectContext>(
-                            You, new StatusDefinitionId(RelicRules.NextCardFreeId),
-                            new ConstantExpression<CardsDrawnTriggeredEffectContext>(1)),
-                    ]))),
-                nameof(TriggerEvent.CardsDrawn)),
-        ]);
-
-    // The Remanded Case is sent back down the way it came. So is the first thing put on you.
-    public static string RemittiturId => "remittitur_seal";
-    private static CounterId RemittiturUsed => new("remittitur_seal_used");
-
-    public static StatusData RemittiturSeal => Rule(
-        RemittiturId, "Remittitur Seal",
-        "The first status an enemy puts on you each fight is sent back: 2 Paperwork on whoever filed it.",
-        [
-            // In a status-APPLICATION event the Source is whoever APPLIED it — which is precisely who the
-            // seal wants. The bearer is reached through the rule it carries, not through Source.
-            //
-            // ⚠⚠ ONLY WHAT AN ENEMY FILES (playtest 2026-09-27). The first status that lands on the hero in every
-            // fight is the hero's OWN — the encounter's Applicant marker, a Rite, "gain 3 Censure" — and the
-            // seal sent each of those back to its filer: 2 Paperwork on the hero at the start of every fight,
-            // which never decays. The filer is the bearer exactly when it wears THIS rule: the rule exists only
-            // on the one who carries the relic, and the test holds whatever order the opening statuses land in
-            // (the Applicant marker would not — the relic's rule may arrive before it).
-            Trigger(new EffectProgram<StatusAppliedTriggeredEffectContext>(
-                new ConditionalEffectNode<StatusAppliedTriggeredEffectContext>(
-                    new AndExpression<StatusAppliedTriggeredEffectContext>(
-                        Unspent<StatusAppliedTriggeredEffectContext>(RemittiturUsed),
-                        new ComparisonExpression<StatusAppliedTriggeredEffectContext>(
-                            new CombatantStatusStacksExpression<StatusAppliedTriggeredEffectContext>(
-                                CombatantTargetSelectors.Source, new StatusDefinitionId(RemittiturId)),
-                            ComparisonOperator.Equal,
-                            new ConstantExpression<StatusAppliedTriggeredEffectContext>(0))),
-                    new CausalSequenceEffectNode<StatusAppliedTriggeredEffectContext>(
-                    [
-                        Spend<StatusAppliedTriggeredEffectContext>(RemittiturUsed),
-                        new ApplyStatusNode<StatusAppliedTriggeredEffectContext>(
-                            CombatantTargetSelectors.Source,
-                            new StatusDefinitionId(Cards.Keywords.Paperwork),
-                            new ConstantExpression<StatusAppliedTriggeredEffectContext>(2)),
-                    ]))),
-                nameof(TriggerEvent.StatusApplied)),
-        ]);
 
     // Three appointments, and the third is the one that is kept.
     public static string ThriceStruckId => "thrice_struck_appointment";
@@ -272,20 +213,6 @@ public static class EliteRelicRules
                     Set<CardsDrawnTriggeredEffectContext>(GateDamage, 0),
                 ])),
                 nameof(TriggerEvent.CardsDrawn)),
-        ]);
-
-    // The Final Notice Knight closes the accounts. So does the spear: what is owed by one is owed by all.
-    public static string SpearheadId => "sealed_spearhead";
-
-    public static StatusData SealedSpearhead => Rule(
-        SpearheadId, "Sealed Spearhead",
-        "When an enemy falls, every other enemy takes 6 damage.",
-        [
-            Trigger(new EffectProgram<CombatantDownedTriggeredEffectContext>(
-                new DealDamageNode<CombatantDownedTriggeredEffectContext>(
-                    CombatantTargetSelectors.AllEnemiesOfSource,
-                    new ConstantExpression<CombatantDownedTriggeredEffectContext>(6))),
-                nameof(TriggerEvent.Downed), StatusTriggerScope.Anywhere),
         ]);
 
     // ══ ACT II ════════════════════════════════════════════════════════════════════════════════════════════

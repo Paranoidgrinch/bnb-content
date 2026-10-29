@@ -76,7 +76,7 @@ public static class BlueprintAssembler
                 .. ActFive.GivenCards(),
                 .. Relics.ActThreeBossRelicCards.All(),
                 .. Relics.ActFourBossRelicCards.All(),
-                .. ClauseCards.Cards(), NoticeCards.Acknowledge(), DeputyUndersecretary.ReviewCard(),
+                DeputyUndersecretary.ReviewCard(),
                 .. QueueCommissioner.Cards(), .. LordSealkeeper.Cards(), .. MunicipalDragon.Cards(),
                 .. LivingCharter.Cards(), .. Elites.ReturnBell.Cards(),
                 .. Bosses.CuratorOfMisplacedHours.Cards(),

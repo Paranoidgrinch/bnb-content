@@ -7,7 +7,7 @@ namespace BnbContent.Converter.Cards;
 // The final card pool: everything the design sheets in source-data/design define, in one place.
 //
 // It REPLACES the ported v2 cards wherever the ids meet (paper_cut, permit_a38, the Junk), and stands beside
-// what is not a player reward card at all (the boss-given cards in ClauseCards/NoticeCards and friends).
+// what is not a player reward card at all (the boss-given cards in DeputyUndersecretary and friends).
 // The v2 cards that nothing final has replaced yet are still emitted, because the ported EVENTS still name
 // some of them; they go when Phase D replaces those events.
 public static class FinalCards

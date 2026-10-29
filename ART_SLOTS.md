@@ -2,7 +2,7 @@
 
 Generated: `dotnet run --project Converter -- --art-slots ART_SLOTS.md`. **Do not edit by hand.**
 
-**1031 pictures**: 494 cards, 264 relics, 269 bodies
+**955 pictures**: 490 cards, 261 relics, 200 bodies
 (every enemy, elite and boss) and 4 the player can be. Every one of them is filled today by a PLACEHOLDER — a plate with the file's own
 name and the word placeholder on it, written by `bnb-godot/tools/make-card-art.py`,
 `make-relic-art.py` and `make-enemy-art.py`. A painted picture replaces one by being saved over it, so
@@ -54,7 +54,7 @@ The relic briefs below are the design canon's own words
 `BnB_Elite_Relics_MASTER_AND_VISUAL_CANON.md` for #169–210). Frames, palettes and the label rule live
 there in full; only the object line is repeated here, because that is the line that differs per relic.
 
-## Relics — 264 pictures
+## Relics — 261 pictures
 
 The catalogue number is the design canon's, and it is not part of the file name: the id is.
 
@@ -300,20 +300,17 @@ The catalogue number is the design canon's, and it is not part of the file name:
 | 167 | `flood_reckoning_crown` | Flood-Reckoning Crown | boss | A royal crown whose band carries four stepped water-level marks and reed finials. One side rises slightly higher, hinting at changing flood state. |
 | 168 | `black_flood_vessel` | Black Flood Vessel | boss | A broad black ceramic flood jar with a carved wave band and a single dark stream spilling over one side. The jar body is almost silhouette-black against the ivory icon field. |
 
-### Elite relics — 38
+### Elite relics — 35
 
 | # | code | title | rarity | the object |
 |---:|---|---|---|---|
 | 169 | `case_that_climbed` | The Case That Climbed | elite | A brass document clip holding a sheaf worn through at the top sheet. Three notches are cut into the clip's spine, one deeper than the other two. |
-| 170 | `half_signed_page` | Half-Signed Page | elite | A petition leaf whose signature breaks off mid-stroke, the trailing ink drying into a dotted line that never resumes. |
-| 171 | `remittitur_seal` | Remittitur Seal | elite | A wax seal split down the middle, one half red and one half black, held together by a single linen thread. |
 | 172 | `thrice_struck_appointment` | Thrice-Struck Appointment Card | elite | A stiff card ruled into three fields, each stamped with a different hour and each struck through with one pen line. |
 | 173 | `shutter_key_late_hour` | Shutter Key of the Late Hour | elite | A heavy iron shutter key with a hinged brass plate reading OPEN on one face and CLOSED on the other. |
 | 174 | `chair_of_the_ninth_hour` | Chair of the Ninth Hour | elite | A waiting-room chair whose seat is hollowed by centuries of sitting, a numeral nine burnt into the backrest. |
 | 175 | `contempt_ledger_nail` | Contempt Ledger Nail | elite | An iron nail driven through a folded warrant into a scrap of oak. |
 | 176 | `inventory_lantern_glass` | Inventory Lantern Glass | elite | A single pane of smoked lantern glass in a pewter mount. |
 | 177 | `gate_chain_counterweight` | Gate-Chain Counterweight | elite | A lead counterweight cast in the shape of a gatehouse, hanging from three chain links. |
-| 178 | `sealed_spearhead` | Sealed Spearhead | elite | An iron spearhead whose socket is sealed shut with red wax poured over a rolled notice. |
 | 179 | `cracked_bell_lip` | Cracked Bell-Lip | elite | A curved fragment of bronze bell lip, its strike point worn into a shallow dish. |
 | 180 | `roller_pin_of_the_stacks` | Roller Pin of the Stacks | elite | A short stone roller on a pewter axle. |
 | 181 | `blank_line_black_book` | Blank Line in the Black Book | elite | A black catalogue open at a page of three ruled lines — two filled with names scratched out to illegibility, the third still empty. |
@@ -352,7 +349,7 @@ The catalogue number is the design canon's, and it is not part of the file name:
 | 209 | `tooth_from_the_false_lid_3` | Tooth From the False Lid III | mimic | The first blow of every fight glances off the tooth: 12 Block and heal 2. It comes with the lock-plate, its keyhole ringed with tooth-marks. |
 | 210 | `tooth_from_the_false_lid_4` | Tooth From the False Lid IV | mimic | The first blow of every fight glances off the tooth: 16 Block and heal 4. It comes with the whole false lid, folded shut around it like a jaw at rest. |
 
-## Bodies — 269 pictures
+## Bodies — 200 pictures
 
 Every enemy, elite and boss in the game. No visual canon was written for the bodies, so
 the row carries what the fight itself says: how much it can take, how many rooms use it,
@@ -399,41 +396,30 @@ ever met in a boss room is drawn as a boss, even if it also turns up as filler.
 | `weigher_of_the_unspoken_heart` | The Weigher of the Unspoken Heart | 610 | 1 | The Weigher of the Unspoken Heart |
 | `whispering_catalogue_boss` | The Whispering Catalogue | 258 | 1 | The Whispering Catalogue |
 
-### Elite bodies — 66
+### Elite bodies — 51
 
 | code | title | HP | rooms | met in |
 |---|---|---:|---:|---|
 | `after_hours_return_bell` | After-Hours Return Bell | 118 | 1 | After-Hours Return Bell |
 | `ant_queen_of_the_proper_line` | Ant Queen of the Proper Line | 160 | 1 | Ant Queen of the Proper Line |
-| `archivists_hound` | Archivist's Hound | 76 | 1 | The Archivist's Hound |
-| `bailiff_of_warrants` | Bailiff of Warrants | 50 | 1 | The Bailiff Twins |
-| `bailiff_of_writs` | Bailiff of Writs | 52 | 1 | The Bailiff Twins |
 | `black_ink_oracle` | Black-Ink Oracle | 150 | 1 | Black-Ink Oracle |
 | `catalogue_of_unwise_names` | The Catalogue of Unwise Names | 136 | 1 | The Catalogue of Unwise Names |
 | `colossus_of_the_endless_procession` | Colossus of the Endless Procession | 388 | 1 | Colossus of the Endless Procession |
-| `counter_of_certification` | Counter of Certification | 42 | 1 | The Three Counters |
-| `counter_of_delay` | Counter of Delay | 38 | 1 | The Three Counters |
-| `counter_of_denial` | Counter of Denial | 40 | 1 | The Three Counters |
 | `curse_bearer` | Curse-Bearer | 108 | 1 | The Tombbreakers Three |
 | `devouring_waiting_room` | Devouring Waiting Room | 68 | 1 | The Waiting Room Eats the Day |
 | `drawer_of_infinite_returns` | The Drawer of Infinite Returns | 154 | 1 | The Drawer of Infinite Returns |
-| `escalation_writ` | Escalation Writ | 30 | 1 | The Case Returns Higher |
 | `final_appointment` | Final Appointment | 34 | 1 | The Three Appointments |
-| `final_notice_knight` | Final Notice Knight | 62 | 1 | The Final Notice Arrives Armed |
 | `first_appointment` | First Appointment | 24 | 1 | The Three Appointments |
 | `first_line_bearer` | First Line-Bearer | 27 | 1 | Ant Queen of the Proper Line |
 | `grandmother_web` | Grandmother Web | 154 | 1 | Grandmother Web |
 | `great_toll_frog` | Great Toll Frog | 176 | 1 | Great Toll Frog |
 | `hearing_reed` | Hearing Reed | 78 | 1 | Three Reeds of Appeal |
-| `ink_witch_auditor` | Ink Witch Auditor | 72 | 1 | The Ink Witch Auditor |
 | `inventory_lantern` | Inventory Lantern | 24 | 1 | The Seizure Procession |
 | `iron_warrant_avatar` | Iron Warrant Avatar | 94 | 1 | The Warrant Becomes Iron |
 | `juniper_injunction` | Juniper Injunction | 188 | 1 | Juniper Injunction |
 | `keeper_of_the_living_cartouche` | Keeper of the Living Cartouche | 300 | 1 | Keeper of the Living Cartouche |
 | `keeper_of_the_thirty_six_decans` | Keeper of the Thirty-Six Decans | 365 | 1 | Keeper of the Thirty-Six Decans |
 | `lamp_thief` | Lamp Thief | 100 | 1 | The Tombbreakers Three |
-| `licensed_chimera` | Licensed Chimera | 90 | 1 | The Licensed Chimera |
-| `living_petition_chorus` | Living Petition Chorus | 90 | 1 | The Petition Reads Itself Aloud |
 | `lock_cart` | Lock Cart | 32 | 1 | The Seizure Procession |
 | `lower_appellate_step` | Lower Appellate Step | 24 | 1 | The Appeal Climbs the Stairs |
 | `magistrate_of_thorns` | Magistrate of Thorns | 220 | 1 | Magistrate of Thorns |
@@ -447,20 +433,16 @@ ever met in a boss room is drawn as a boss, even if it also turns up as filler.
 | `red_tape_golem` | Red Tape Golem | 96 | 1 | The Red Tape Golem |
 | `refusal_reed` | Refusal Reed | 90 | 1 | Three Reeds of Appeal |
 | `remand_reed` | Remand Reed | 84 | 1 | Three Reeds of Appeal |
-| `remanded_case_phantom` | Remanded Case Phantom | 60 | 1 | The Case Returns Higher |
 | `reopening_hours_monolith` | Reopening-Hours Monolith | 92 | 1 | The Office That Reopens Itself |
 | `rolling_stacks_colossus` | The Rolling Stacks Colossus | 132 | 1 | The Rolling Stacks Colossus |
 | `rope_master_of_the_corvee` | Rope-Master of the Corvée | 275 | 1 | Rope-Master of the Corvée |
 | `scarab_host_of_the_sealed_granary` | Scarab Host of the Sealed Granary | 255 | 1 | Scarab Host of the Sealed Granary |
-| `sealed_spear` | Sealed Spear | 30 | 1 | The Final Notice Arrives Armed |
 | `second_appointment` | Second Appointment | 28 | 1 | The Three Appointments |
 | `second_line_bearer` | Second Line-Bearer | 27 | 1 | Ant Queen of the Proper Line |
 | `seizure_marshal` | Seizure Marshal | 40 | 1 | The Seizure Procession |
-| `senior_clerk` | The Senior Clerk | 82 | 1 | The Senior Clerk |
 | `silence_between_two_words` | The Silence Between Two Words | 140 | 1 | The Silence Between Two Words |
 | `sphinx_of_the_processional_measure` | Sphinx of the Processional Measure | 344 | 1 | Sphinx of the Processional Measure |
 | `stag_of_pre_approved_violence` | The Stag of Pre-Approved Violence | 138 | 1 | The Stag of Pre-Approved Violence |
-| `stampede_of_stamps` | Stampede of Stamps | 66 | 1 | The Stampede of Stamps |
 | `surveyor_of_forgotten_paths` | Surveyor of Forgotten Paths | 198 | 1 | Surveyor of Forgotten Paths |
 | `surveyor_of_the_errant_cord` | Surveyor of the Errant Cord | 248 | 1 | Surveyor of the Errant Cord |
 | `the_wrong_bridge_in_person` | The Wrong Bridge in Person | 200 | 1 | The Wrong Bridge in Person |
@@ -470,46 +452,31 @@ ever met in a boss room is drawn as a boss, even if it also turns up as filler.
 | `volume_of_causes` | Volume of Causes | 76 | 1 | Volumes of Cause and Consequence |
 | `volume_of_consequences` | Volume of Consequences | 84 | 1 | Volumes of Cause and Consequence |
 
-### Mimic bodies — 4
+### Mimic bodies — 3
 
 | code | title | HP | rooms | met in |
 |---|---|---:|---:|---|
 | `brass_maw_of_returns` | Brass Maw of Returns | 50 | 3 | Brass Maw of Returns |
 | `cairn_of_stray_paths` | Cairn of Stray Paths | 58 | 5 | Every Detour Leaves a Stone |
 | `cursed_loot_bearer` | Cursed Loot Bearer | 156 | 3 | Every Object Requires a Form |
-| `receipt_mimic` | Receipt Mimic | 52 | 1 | Suspicious Receipt Chest |
 
-### Standard bodies — 164
+### Standard bodies — 111
 
 | code | title | HP | rooms | met in |
 |---|---|---:|---:|---|
 | `a_very_official_line` | A Very Official Line | 29 | 3 | A Very Official Line |
-| `appeals_clerk` | Appeals Clerk | 38 | 1 | Your Complaint Is Accepted |
-| `appointment_leech` | Appointment Leech | 31 | 1 | A Drained Appointment |
 | `blackthorn_bride` | The Blackthorn Bride | 101 | 3 | The Bride at the Threshold |
 | `blank_death_certificate` | Blank Death Certificate | 100 | 1 | Blank Death Certificate |
-| `blank_line_leech` | Blank-Line Leech | 45 | 1 | Required Field Left Blank |
-| `blue_slip_sprite` | Blue Slip Sprite | 23 | 1 | Blue Slip, Wrong Door |
 | `bracken_moot` | The Bracken Moot | 98 | 2 | Boundary Hearing |
-| `bylaw_gargoyle` | Bylaw Gargoyle | 48 | 1 | The Bylaw Looks Down |
-| `bylaw_hydra` | Bylaw Hydra | 44 | 1 | The Bylaw Grows Heads |
-| `chain_of_office_specter` | Chain of Office Specter | 40 | 1 | Chain of Office |
 | `charter_shell_snail` | Charter-Shell Snail | 90 | 2 | Shell Charter |
 | `checkout_codex` | Checkout Codex | 89 | 2 | Checkout Codex |
 | `choir_of_unspoken_words` | Choir of Unspoken Words | 64 | 1 | Choir of Unspoken Words |
-| `civic_battering_ram` | Civic Battering Ram | 69 | 1 | The Civic Ram Advances |
-| `civic_bell_ringer` | Civic Bell-Ringer | 34 | 1 | The Bell and the Seal |
-| `clerkling_apprentice` | Clerkling Apprentice | 28 | 2 | First Day at the Counter |
-| `closing_bell_specter` | Closing Bell Specter | 38 | 1 | The Bell Will Not Stop |
-| `cobblestone_bailiff` | Cobblestone Bailiff | 38 | 2 | Cobblestone Enforcement |
+| `clerkling_apprentice` | Clerkling Apprentice | 28 | 1 | First Day at the Counter |
 | `cobra_of_the_entry_mark` | Cobra of the Entry Mark | 94 | 3 | The Entry Mark |
-| `compliance_chain_guard` | Compliance Chain Guard | 42 | 2 | Chains of Compliance |
-| `contradictory_signpost` | Contradictory Signpost | 49 | 1 | Mandatory in Every Direction |
+| `contradictory_signpost` | Contradictory Signpost | 49 | 2 | Mandatory in Every Direction |
 | `contrary_magpie` | Contrary Magpie | 73 | 2 | Contrary Permit |
 | `cornerstone_oath_stone` | Cornerstone Oath-Stone | 137 | 2 | Oath in the Foundation |
 | `corridor_in_the_wrong_edition` | Corridor in the Wrong Edition | 60 | 1 | Corridor in the Wrong Edition |
-| `counter_bell_toad` | Counter Bell Toad | 30 | 1 | The Bell Calls Someone Else |
-| `counterclaim_imp` | Counterclaim Imp | 45 | 2 | Counterclaim in Red Ink |
 | `crabwise_shelf` | Crabwise Shelf | 56 | 2 | Crabwise Shelf |
 | `crocodile_beneath_the_balance` | Crocodile Beneath the Balance | 196 | 2 | Jaws Beneath the Scale |
 | `crocodile_of_the_short_measure` | Crocodile of the Short Measure | 100 | 2 | The Short Measure |
@@ -520,7 +487,6 @@ ever met in a boss room is drawn as a boss, even if it also turns up as filler.
 | `ditch_lamprey_of_appeals` | Ditch Lamprey of Appeals | 98 | 2 | Upstream Appeal |
 | `donkey_of_the_third_tally` | Donkey of the Third Tally | 119 | 1 | The Donkey Was Counted Three Times |
 | `drowned_field_scribe` | Drowned Field Scribe | 106 | 2 | Silted Record |
-| `duplicate_copy_mite` | Duplicate Copy Mites | 37 | 2 | Certified Pest Control |
 | `eclipse_scarab` | Eclipse Scarab | 174 | 1 | Black Noon |
 | `elsewhere_path` | Elsewhere Path | 113 | 2 | The Hawthorn Destination |
 | `embossed_seal` | Embossed Seal | 24 | 1 | The Certificate Is Alive |
@@ -537,115 +503,77 @@ ever met in a boss room is drawn as a boss, even if it also turns up as filler.
 | `fanged_alphabet` | Fanged Alphabet | 58 | 1 | Fanged Alphabet |
 | `fatal_comma` | Fatal Comma | 77 | 2 | Fatal Comma |
 | `feather_bearer` | Feather-Bearer | 184 | 2 | Feather's True Measure |
-| `filing_beetle` | Filing Beetle | 40 | 2 | Courier at the Filing Cabinet |
+| `filing_beetle` | Filing Beetle | 40 | 1 | Misplaced Files |
 | `flood_mark_reader` | Flood-Mark Reader | 105 | 2 | Read the Floodmark |
-| `folded_affidavit_bat` | Folded Affidavit Bat | 30 | 1 | Folded Statement Overhead |
 | `footfall_root` | Footfall Root | 124 | 2 | Footsteps Become Precedent |
 | `foreign_tribute_shade` | Foreign Tribute Shade | 115 | 2 | Correct Tribute, Wrong Procedure |
 | `form_rat_a` | Form Rat | 11 | 1 | Forms in the Gutter |
 | `form_rat_b` | Form Rat | 11 | 1 | Forms in the Gutter |
 | `form_rat_c` | Form Rat | 11 | 1 | Forms in the Gutter |
-| `form_rat_swarm` | Form Rat Swarm | 22 | 1 | Paper Vermin |
 | `fourfold_vessel_guardian` | Fourfold Vessel Guardian | 170 | 3 | The Fourfold Office |
 | `foxglove_witness` | Foxglove Witness | 75 | 2 | Roadside Testimony |
-| `gatehouse_enforcer` | Gatehouse Enforcer | 50 | 1 | The Gatehouse Enforces Procedure |
 | `golden_ushabti_captain` | Golden Ushabti Captain | 194 | 2 | The Eternal Shift |
 | `handworn_tally_coin` | Handworn Tally Coin | 113 | 2 | Every Name Has Value |
 | `hawthorn_tenant` | The Hawthorn Tenant | 83 | 3 | Thorn Lease |
 | `hieroglyphic_complaint_wall` | Hieroglyphic Complaint Wall | 150 | 2 | Undismissed Complaint |
 | `hourglass_with_two_bottoms` | Hourglass With Two Bottoms | 96 | 2 | Hourglass With Two Bottoms |
 | `hungry_grain_thief` | Hungry Grain Thief | 96 | 2 | Granary Theft |
-| `ink_spattered_scribe` | Ink-Spattered Scribe | 30 | 3 | Ink and Wax |
 | `inverted_hourglass` | Inverted Hourglass | 51 | 2 | The Sand Runs Upward |
 | `jar_seal_scarab_swarm` | Jar-Seal Scarab Swarm | 94 | 1 | The Jar Seal Breaks |
-| `jurisdiction_snail` | Jurisdiction Snail | 30 | 1 | Not This Jurisdiction |
-| `jurisdictional_clerkling` | Jurisdictional Clerkling | 19 | 1 | A Matter for Another Desk |
 | `keeper_of_buried_names` | Keeper of Buried Names | 132 | 4 | Names Kept Below Ground |
 | `kneeling_petitioners` | Kneeling Petitioners | 120 | 3 | Processional Seal |
-| `lantern_inspector` | Lantern Inspector | 33 | 1 | Lamp and Ledger |
 | `levy_constable` | Levy Constable | 44 | 1 | The Levy Comes Due |
-| `line_cutter_weasel` | Line-Cutter Weasel | 20 | 1 | The Line Moves Without You |
 | `linen_wrapped_embalmer` | Linen-Wrapped Embalmer | 150 | 3 | Instructions for Wrapping |
 | `living_certificate` | Living Certificate | 28 | 1 | The Certificate Is Alive |
 | `mandated_mushroom_circle` | Mandated Mushroom Circle | 94 | 2 | Hare Before the Quorum |
 | `margin_note_gnawer` | Margin-Note Gnawer | 33 | 1 | Correction in the Margin |
-| `minor_tax_familiar` | Minor Tax Familiar | 29 | 1 | Minor Tax Assessment |
 | `minute_moth` | Minute Moth | 36 | 1 | Minutes Become Moths |
 | `miscellany_index` | Miscellany Index | 107 | 2 | Miscellany Index |
-| `misfiled_page` | Misfiled Page | 27 | 1 | The Page That Followed You |
 | `mnemonic_chain` | Mnemonic Chain | 93 | 2 | Mnemonic Chain |
 | `moon_cycle_ibis` | Moon-Cycle Ibis | 155 | 1 | Fixed-Day Moon |
 | `mossbound_clerk` | Mossbound Clerk | 70 | 2 | The First Use Became Custom |
-| `motion_to_reconsider` | Motion to Reconsider | 40 | 1 | Motion to Reconsider |
 | `municipal_gargoyle` | Municipal Gargoyle | 48 | 1 | Stone Ordinance |
 | `mute_margin` | Mute Margin | 70 | 1 | Mute Margin |
 | `name_eating_baboon` | Name-Eating Baboon | 90 | 2 | Chewed Credentials |
 | `name_erasing_chisel_spirit` | Name-Erasing Chisel Spirit | 166 | 2 | Erase the Favor |
 | `natron_bearer` | Natron Bearer | 144 | 1 | Dry What Would Decay |
 | `number_ticket_wisp` | Number-Ticket Wisp | 25 | 1 | Now Serving the Wrong Number |
-| `oath_candle` | Oath Candle | 39 | 1 | Witness at the Sealed Threshold |
+| `oath_candle` | Oath Candle | 39 | 2 | Witness at the Sealed Threshold |
 | `oathbound_gate` | Oathbound Gate | 224 | 2 | Oathbound Gate |
 | `object_listed_as_other` | Object Listed as "Other" | 54 | 2 | Object Listed as "Other" |
-| `objection_sprite` | Objection Sprite | 34 | 1 | An Objection Is Raised |
-| `old_statute_ghost` | Old Statute Ghost | 54 | 2 | The Statute Was Never Repealed |
 | `ordinance_tablet` | Ordinance Tablet | 46 | 1 | Subsection Carved in Stone |
 | `orphan_citation` | Orphan Citation | 62 | 2 | Orphan Citation |
-| `overdue_page` | Overdue Page | 15 | 2 | Overdue Delivery |
 | `palette_bearing_apprentice` | Palette-Bearing Apprentice | 119 | 3 | Fresh Pigment |
 | `palimpsest_husk` | Palimpsest Husk | 75 | 3 | Palimpsest Husk |
-| `permit_beggar` | Permit Beggar | 27 | 2 | A Question of Permits |
 | `permit_hare` | Permit Hare | 66 | 5 | The Hare Checks the Road |
-| `pigeon_courier` | Pigeon Courier | 19 | 4 | Courier at the Filing Cabinet |
 | `precedent_lichen` | Precedent Lichen | 98 | 2 | Two Authorities Agree |
-| `procedural_advocate` | Procedural Advocate | 42 | 1 | The Procedure Argues Back |
-| `public_hours_clerk` | Public-Hours Clerk | 34 | 1 | Public Hours End at Once |
 | `queue_crier_homunculus` | Queue-Crier Homunculus | 31 | 2 | The Line Has Started Moving |
-| `queue_imp` | Queue Imp | 22 | 3 | The Wrong Counter |
-| `receipt_eyed_clerk` | Receipt-Eyed Clerk | 35 | 1 | Proof of Arrival |
 | `reckoning_hedge` | Reckoning Hedge | 77 | 6 | Counter-Survey |
-| `red_tape_serpent` | Red Tape Serpent | 42 | 1 | Red Tape Crossing |
 | `reed_cord_surveyor` | Reed-Cord Surveyor | 85 | 2 | The Surveyor Measures the Road |
-| `registry_moth` | Registry Moth | 21 | 2 | Dust in the Registry |
 | `roadside_witchling` | Roadside Witchling | 92 | 2 | The Witch at the Milestone |
 | `rope_gang_wraith` | Rope-Gang Wraith | 120 | 1 | Keep the Work Rhythm |
 | `royal_genealogy_wall` | Royal Genealogy Wall | 188 | 2 | Dynastic Favor Claim |
 | `runaway_laborer` | Runaway Laborer | 102 | 1 | Break the Gang |
-| `seal_bearer_toad` | Seal-Bearer Toad | 28 | 3 | Ink and Wax |
-| `seal_witness` | Seal Witness | 34 | 1 | Witnessed and Filed |
 | `sealed_door_ward` | Sealed Door Ward | 56 | 2 | The Sealed Door |
 | `second_person_entry` | Second-Person Entry | 60 | 4 | Second-Person Entry |
-| `self_correcting_record` | Self-Correcting Record | 53 | 2 | The Record Corrects You |
+| `self_correcting_record` | Self-Correcting Record | 53 | 1 | The Record Corrects You |
 | `silt_buried_farmer_shade` | Silt-Buried Farmer Shade | 109 | 1 | Rising Field |
 | `sleeping_stump_auditor` | Sleeping Stump Auditor | 117 | 2 | The Old Measure |
 | `spare_life_jar` | Spare-Life Jar | 83 | 2 | Dead-Letter Revival |
-| `stamp_goblin` | Stamp Goblin | 22 | 3 | Stamping Errand |
 | `star_table_scribe` | Star-Table Scribe | 160 | 2 | The Fixed Decan Measure |
-| `stationary_queue_marker` | Stationary Queue Marker | 40 | 1 | The Queue Has Not Advanced |
 | `stone_hauler_ushabti` | Stone-Hauler Ushabti | 128 | 2 | The Stones Grow Heavier |
 | `streamside_oath_fish` | Streamside Oath-Fish | 84 | 2 | Oaths in Running Water |
-| `street_law_writ` | Street-Law Writ | 38 | 1 | The Street Cites Precedent |
-| `street_ordinance_wisp` | Street Ordinance Wisp | 22 | 2 | Flickering Ordinance |
 | `sun_seal_bearer` | Sun-Seal Bearer | 134 | 3 | The Authorized Impression |
-| `sustaining_gavel` | Sustaining Gavel | 44 | 1 | Sustained Counterclaim |
 | `the_sedge_bench` | The Sedge Bench | 111 | 2 | Charter Review |
-| `threshold_seizure_ward` | Threshold Seizure Ward | 61 | 2 | Seized at the Threshold |
-| `tollhouse_sprite` | Tollhouse Sprite | 24 | 1 | The Tollhouse Dispute |
-| `triplicate_examiner` | Triplicate Examiner | 41 | 2 | The Evidence Exists in Triplicate |
 | `two_bank_toll_ford` | Two-Bank Toll Ford | 97 | 4 | Both Banks Demand Payment |
 | `unclaimed_reading_table` | Unclaimed Reading Table | 66 | 2 | Unclaimed Reading Table |
 | `uncounted_pilgrim` | Uncounted Pilgrim | 92 | 2 | No Number in the Register |
 | `unfinished_mummy` | Unfinished Mummy | 160 | 3 | Hooks Still Attached |
 | `unoccurred_tuesday` | Unoccurred Tuesday | 87 | 2 | Unoccurred Tuesday |
-| `unsigned_form_ghost` | Unsigned Form Ghost | 43 | 1 | Unsigned in Triplicate |
 | `untranslated_trail_marker` | The Untranslated Trail Marker | 121 | 2 | Three Readings on One Stone |
 | `vacant_portrait` | Vacant Portrait | 81 | 2 | Vacant Portrait |
-| `velvet_rope_mimic` | Velvet Rope Mimic | 22 | 1 | Held Behind the Velvet Rope |
 | `volume_q_null` | Volume Q-Null | 52 | 2 | Volume Q-Null |
-| `waiting_bench_gremlin` | Waiting-Bench Gremlin | 36 | 1 | A Bench Older Than Patience |
-| `waiting_room_gnawer` | Waiting-Room Gnawer | 19 | 1 | Something Under the Bench |
-| `warrant_bailiff` | Warrant Bailiff | 58 | 3 | Warrant Served in Person |
 | `wax_notary` | Wax Notary | 48 | 2 | The Wax Is Still Warm |
-| `waxen_bailiff` | Waxen Bailiff | 42 | 1 | The Waxen Bailiff |
 | `wrong_window_scribe` | Wrong-Window Scribe | 25 | 2 | The Wrong Window |
 
 ## Characters — 4 pictures
@@ -659,7 +587,7 @@ Drawn like a body and facing RIGHT — the player stands on the left of the aren
 | `lieutenant` | The Lieutenant | New stripes on an old uniform, and always first through the door. |
 | `sorcerers_apprentice` | The Sorcerer's Apprentice | Knows every incantation, and not quite what happens when one is put after another. |
 
-## Cards — 494 pictures
+## Cards — 490 pictures
 
 No visual canon was ever written for the cards, so the row carries the card's own rules
 text instead of a brief. Act = the act that unlocks it; the starters, the Junk and the
@@ -1121,13 +1049,12 @@ cards a boss or a door hands over are never offered and have no act.
 | `lt_whistle` | Whistle | working | uncommon | Gain 3 Block. You may spend 1 Authority to draw 2 cards. |
 | `lt_witness` | Witness | working | common | Gain 4 Block. Your next Deed hit on a Challenged enemy this turn counts twice toward its Challenge. |
 
-### Given in play — 98
+### Given in play — 94
 
 Handed over by a boss, a door or an event rather than offered; never in a reward pool.
 
 | code | title | what it does |
 |---|---|---|
-| `acknowledge_service` | Acknowledge Service | Sign: take 2 Paperwork; the Enforcement deals 10 and 1 Paperwork instead of 19. Keep in hand to refuse. |
 | `ask_for_expedited_service` | Ask for Expedited Service | This Service Window opens him 15% instead of 25%, but you stay at Position 1 after. |
 | `authorized_entry` | Authorized Entry | Remove up to 12 Block from the Dragon. Costs 1 Authorization; once a turn. |
 | `authorized_expedition` | Authorized Expedition | Gain 1 Energy. Costs 1 Authorization; one authority per turn. |
@@ -1149,9 +1076,6 @@ Handed over by a boss, a door or an event rather than offered; never in a reward
 | `cauldron_brew` | Brew | Brew the 3 ingredients. Three of one family: a concentrated brew. Otherwise each gives its own effect. |
 | `cite_the_old_survey` | Cite the Old Survey | Once a turn, spend 1 Old Right: swap Current and Former law; or void its next Claim; or remove 8 of its Block. |
 | `claim_an_exception` | Claim an Exception | The Articles do not touch you for the rest of this turn. |
-| `clause_evidentiary` | Evidentiary Clause | Sign: draw 2; 1 Doubt and 1 Paperwork later. Refuse: the Petition gains 1 Strength. |
-| `clause_extension` | Extension Clause | Sign: gain 1 Energy; 1 Fatigue later. Refuse: the Petition gains 8 Block. |
-| `clause_protective` | Protective Clause | Sign: gain 10 Block; 2 Paperwork later. Refuse: the Petition gains 1 Strength. |
 | `correction_reed_action` | A Small Correction | Once a turn: discard a card, return one from discard costing 1 less. None there: draw 1. |
 | `counter_petition` | Counter-Petition | Once a turn, spend 1 Safe-Conduct: move one complaint from Road to Root, or back. |
 | `counter_petition_twine_action` | Counter-Petition | Discard a card, draw a card, and gain 1 Energy. Once a turn. |

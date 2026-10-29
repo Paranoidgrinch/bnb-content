@@ -2,25 +2,21 @@ using BnbContent.Converter;
 
 namespace BnbContent.Tests;
 
-// The curated Act-I pool: the FINAL_AUDIT lists exactly 32 standard templates — 23 solos and 9 duos — built
-// from the 25 final identities, plus the elite / boss / mimic pools the generated map draws from. Encounters
-// without a role are inert leftovers from the demo port and must never reach a map.
+// The curated Act-I pool after the content cut of 2026-10-29: four stages (Queue, Ordinance, Seal, Delay), 13
+// identities in 13 solos and 6 duos, plus the elite / boss / mimic pools the generated map draws from. The few
+// encounters without a role are test fixtures (quiet dummies) and must never reach a map.
 public class ActOnePoolTests
 {
     private static readonly BabData Data = BabData.Load(TestData.Directory);
 
-    // Every identity the reworked Act I fields. Two of them (Oath Candle, Sustaining Gavel) are support-first
-    // and never appear alone, which is why 25 identities make 23 solos.
+    // Every identity the cut Act I fields, stage by stage. The Oath Candle is support-first and never appears
+    // alone, which is why 13 identities make 12 solos.
     private static readonly string[] FinalIdentities =
     [
         "a_very_official_line", "number_ticket_wisp", "queue_crier_homunculus",
-        "wrong_window_scribe", "receipt_eyed_clerk", "triplicate_examiner",
-        "filing_beetle", "unsigned_form_ghost", "duplicate_copy_mite", "blank_line_leech",
+        "contradictory_signpost", "wrong_window_scribe", "self_correcting_record", "exception_imp",
         "wax_notary", "sealed_door_ward", "oath_candle",
-        "contradictory_signpost", "exception_imp", "old_statute_ghost",
         "inverted_hourglass", "fading_number_token", "minute_moth",
-        "counterclaim_imp", "self_correcting_record", "sustaining_gavel",
-        "warrant_bailiff", "threshold_seizure_ward", "civic_battering_ram",
     ];
 
     // Scoped to Act I: the catalogue holds every act's encounters, and these counts are Act I's.
@@ -28,10 +24,10 @@ public class ActOnePoolTests
         Data.Encounters.Where(e => e.Act == 1 && e.Role == role);
 
     [Fact]
-    public void The_standard_pool_is_the_audits_twenty_three_solos_and_nine_duos()
+    public void The_standard_pool_is_twelve_solos_and_six_duos()
     {
-        Assert.Equal(23, WithRole("combat").Count());
-        Assert.Equal(9, WithRole("multi_combat").Count());
+        Assert.Equal(12, WithRole("combat").Count());
+        Assert.Equal(6, WithRole("multi_combat").Count());
 
         Assert.All(WithRole("combat"), e => Assert.Single(e.Enemies));
         Assert.All(WithRole("multi_combat"), e => Assert.True(e.Enemies.Count >= 2, e.Id));
@@ -69,8 +65,9 @@ public class ActOnePoolTests
     [Fact]
     public void The_map_pools_are_complete()
     {
-        // The audit's ten elites: four enforcement, three delay, three appeal.
-        Assert.Equal(10, WithRole("elite").Count());
+        // Seven elites: three in Ordinance (the Queue's examiner stands there too), two in Seal, two in Delay.
+        Assert.Equal(7, WithRole("elite").Count());
+        Assert.Equal(5, WithRole("boss").Count());
         // The act's boss pool: the map draws one of them per run.
         Assert.NotEmpty(WithRole("boss"));
         Assert.NotEmpty(WithRole("mimic"));

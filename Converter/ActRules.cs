@@ -121,29 +121,30 @@ internal sealed record ActRules
     };
 
     // ── Act I: The Old City Offices ────────────────────────────────────────────────
-    // Per-path guarantees from the audit. Combat 8 counts ordinary fights; the duo is a MultiCombat on top, and
+    // Per-path guarantees, cut with the act (2026-10-29). Combat 4 counts ordinary fights; the duo is a MultiCombat on top, and
     // the enemy floor counts both plus the elite.
     private static readonly ActRules City = new()
     {
         PerPathMinimums = new Dictionary<MapNodeKind, int>
         {
-            [MapNodeKind.Combat] = 8,
+            [MapNodeKind.Combat] = 4,
             [MapNodeKind.MultiCombat] = 1,
             [MapNodeKind.Elite] = 1,
-            [MapNodeKind.Event] = 3,
+            [MapNodeKind.Event] = 1,
+            [MapNodeKind.Rest] = 1,
+            [MapNodeKind.Treasure] = 1,
+            [MapNodeKind.Shop] = 1,
+        },
+        // THE CITY IS FIFTEEN ROOMS (content cut, 2026-10-29): ten promises on the five free rows every act has.
+        // Ceilings: no single route may pile up the soft stuff. A path is guaranteed its rest, shop and
+        // treasure and may hold at most one more of each, so a "safe" route cannot be farmed — and at most two
+        // elites, so a greedy one cannot stack them either.
+        PerPathMaximums = new Dictionary<MapNodeKind, int>
+        {
             [MapNodeKind.Rest] = 2,
             [MapNodeKind.Treasure] = 2,
             [MapNodeKind.Shop] = 2,
-        },
-        // Ceilings: no single route may pile up the soft stuff. A path is guaranteed its two rests, two shops
-        // and two treasures and may hold at most one more of each, so a "safe" route cannot be farmed — and at
-        // most two elites, so a greedy one cannot stack them either.
-        PerPathMaximums = new Dictionary<MapNodeKind, int>
-        {
-            [MapNodeKind.Rest] = 3,
-            [MapNodeKind.Treasure] = 3,
-            [MapNodeKind.Shop] = 3,
-            [MapNodeKind.Event] = 5,
+            [MapNodeKind.Event] = 3,
             [MapNodeKind.Elite] = 2,
             [MapNodeKind.MultiCombat] = 2,
         },
@@ -193,32 +194,33 @@ internal sealed record ActRules
             [MapNodeKind.MultiCombat] = 20,
             [MapNodeKind.Elite] = 35,
         },
-        // The act is twenty-three rooms long and holds this much of each thing — the totals §6 of the plan
-        // derived from what v0.0.0's twenty-three rows actually contain, not from multiplying the per-path
-        // table (routes share rooms, so that multiplication means nothing). Combat is absent on purpose: it is
-        // the filler, and what it amounts to is whatever the other budgets leave.
-        Rows = 23,
+        // FIFTEEN ROOMS (content cut, 2026-10-29: "15,16,17,20,3 zeilen für akt i-v"), down from twenty-three:
+        // four stages of about four rows each. The budgets are the old act's scaled to its new length, which
+        // keeps the city's mix — fights first, a campfire in reach, a shop once the first purse is in. Combat is
+        // absent on purpose: it is the filler, and what it amounts to is whatever the other budgets leave.
+        Rows = 15,
         RoomBudgets = Budgets(
-            (MapNodeKind.Elite, 3, 5, 8),
-            (MapNodeKind.MultiCombat, 2, 4, 7),
-            (MapNodeKind.Event, 8, 11, 15),
-            (MapNodeKind.Rest, 4, 6, 9),
-            (MapNodeKind.Treasure, 4, 6, 9),
-            (MapNodeKind.Shop, 4, 5, 7)),
+            (MapNodeKind.Elite, 2, 3, 5),
+            (MapNodeKind.MultiCombat, 1, 3, 5),
+            (MapNodeKind.Event, 5, 7, 10),
+            (MapNodeKind.Rest, 3, 4, 6),
+            (MapNodeKind.Treasure, 2, 4, 6),
+            (MapNodeKind.Shop, 2, 3, 5)),
         // A campfire in every quarter, so no stretch of the city is unsurvivable; the elites spread out rather
         // than queue up at the end; the crowded fight stays rare while the deck is still a handful of cards.
         // The opening quarter budgets no elite at all because the act already gates one out of it (35 %) — a
         // band that repeats a gate is a sentence about nothing.
         DepthBands = Quarters(
-            [(MapNodeKind.Rest, 1, 2), (MapNodeKind.MultiCombat, 0, 1)],
-            [(MapNodeKind.Rest, 1, 3), (MapNodeKind.Elite, 0, 2), (MapNodeKind.Shop, 1, 3)],
-            [(MapNodeKind.Rest, 1, 3), (MapNodeKind.Elite, 0, 3), (MapNodeKind.Shop, 1, 3)],
-            [(MapNodeKind.Rest, 1, 3), (MapNodeKind.Elite, 0, 3), (MapNodeKind.Treasure, 1, 4)]),
+            [(MapNodeKind.Rest, 0, 1), (MapNodeKind.MultiCombat, 0, 1)],
+            [(MapNodeKind.Rest, 1, 2), (MapNodeKind.Elite, 0, 2), (MapNodeKind.Shop, 1, 2)],
+            [(MapNodeKind.Rest, 0, 2), (MapNodeKind.Elite, 0, 2), (MapNodeKind.Shop, 0, 2)],
+            [(MapNodeKind.Rest, 1, 2), (MapNodeKind.Elite, 0, 2), (MapNodeKind.Treasure, 1, 3)]),
         // THE FLOOR IS v0.0.0'S OWN THINNEST ROUTE, measured over 100 seeds (plan S8: Act I 120..150). The
         // strategic act may lay its trouble out differently, but no walk through it may ask less than the
         // easiest walk through the old one — which is precisely what the retired per-path minimums bought.
         // The ceiling is a remark, not a promise: v0.0.0's richest route measured 190.
-        PathPressure = new PathPressureRules { Minimum = 120, Maximum = 200 },
+        // Scaled with the act (fifteen rooms of twenty-three): 120..200 becomes 75..130.
+        PathPressure = new PathPressureRules { Minimum = 75, Maximum = 130 },
         // v0.0.0's forks average a contrast of 10 and three quarters of them are hollow. Thirty is a fork whose
         // two ways differ by an elite, or by a campfire against a shop — a question rather than a formality.
         ForkQuality = new ForkQualityRules { MinimumContrast = 30 },

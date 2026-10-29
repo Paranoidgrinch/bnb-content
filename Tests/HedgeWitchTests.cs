@@ -251,12 +251,12 @@ public class HedgeWitchTests
     [Fact]
     public void The_pot_will_not_take_a_fights_own_card()
     {
-        var (play, session, _) = Fight(["acknowledge_service", "adders_nip", "pot_lid", "pot_lid", "pot_lid"]);
-        Assert.Contains(Now(play).Hand, c => c.DefinitionId.value == "acknowledge_service");
+        var (play, session, _) = Fight(["file_the_request", "adders_nip", "pot_lid", "pot_lid", "pot_lid"]);
+        Assert.Contains(Now(play).Hand, c => c.DefinitionId.value == "file_the_request");
         play.CombatDriver!.UseAction(Add, null);
         Assert.Null(session.Error);
         var offered = Assert.IsAssignableFrom<IReadOnlyList<CardInstance>>(play.CombatDriver.PendingCardChoice);
-        Assert.DoesNotContain(offered, c => c.DefinitionId.value == "acknowledge_service");
+        Assert.DoesNotContain(offered, c => c.DefinitionId.value == "file_the_request");
         play.Dispose();
     }
 

@@ -22,13 +22,6 @@ public static class PassiveStatuses
     private static readonly ICombatantTargetSelector Opponent =
         CombatantTargetSelectors.LowestHealthEnemyOfSource;
 
-    // Unsigned Form Ghost: a WATCHER status that carries the toggle triggers and never leaves, plus the SHIELD
-    // status that actually carries the damage reduction. Two statuses because a passive modifier cannot be made
-    // conditional — presence is the condition — and a status that removed itself could never come back.
-    public const string StillMissingASignatureId = "still_missing_a_signature";
-    public const string SignaturePendingId = "signature_pending";
-    private const int SignatureThreshold = 3;
-
     // Wax Notary: one status carrying both halves of "Paper Seals Wax".
     public const string PaperSealsWaxId = "paper_seals_wax";
     private static CounterId SeenPaperworkCounter => new("seen_paperwork");
@@ -49,8 +42,6 @@ public static class PassiveStatuses
     public static IReadOnlyList<StatusData> All() =>
     [
         QueueAdvances(),
-        StillMissingASignature(),
-        SignaturePending(),
         PaperSealsWax(),
         OneRemainingSeal(),
         SealIntact(),
@@ -62,40 +53,21 @@ public static class PassiveStatuses
         // The applicant marker itself is built in Cards/Keywords.cs: besides marking the player it keeps the
         // record of what got through each round, which several cards ask about and which therefore has to be
         // kept whether or not the player is wearing anything else.
-        StillInForce(),
         Marker(StolenSandId, "Stolen Sand",
             "Every time Fatigue actually takes Energy from you, the Hourglass banks a grain — up to three."),
         YourNumberIsFading(),
         Marker(StolenMinuteId, "Stolen Minute",
             "End a turn on exactly 0 Energy and the Moth keeps the minute, up to two. At two it spends them."),
-        Counterclaim(),
-        Sustained(),
         CorrectAgainstTheEvidence(),
         .. CardTypes.Select(Correction),
-        Marker(OutstandingWarrantId, "Outstanding Warrant",
-            "While you are carrying 4 or more Paperwork, the Bailiff's attacks hit for 5 more."),
-        WarrantServed(),
-        SeizeTheFiling(),
-        BreakTheApproach(),
         Marker(YourNumberCameUpId, "Your Number Came Up",
             "Each time a stack of Panic fades from you on its own, the Wisp burns and you take 4 damage. "
             + "Cleansing Panic outright does not feed it."),
-        CarbonCopies(),
         .. Appointments.Select(a => AppointmentDue(a.StatusId, a.Name, a.Description, a.Due, a.Expiry)),
         AppointmentsAccelerated(),
         OfficeHours(),
         Marker(LostTimeLedgerId, "Lost Time",
             "Every point of Energy you leave unspent at the end of your turn becomes Lost Time here, up to three."),
-        Marker(PetitionId, "The Petition",
-            "At the start of each of your turns the Chorus lays one of its three clauses into your hand. "
-            + "They take turns."),
-        Marker(PhantomId, "Remanded Case",
-            "The case itself. While a living, unspent Remanding Writ still stands, downing this body sends the "
-            + "case back instead of ending it."),
-        RemandingWrit(),
-        Remandable(),
-        Marker(SpentWritId, "Spent Writ",
-            "This Writ has already sent the case back once. It cannot do it again."),
         Marker(StepLowerId, "Lower Step",
             "The bottom of the staircase. A case held here climbs at the end of its holder's turn."),
         Marker(StepMiddleId, "Middle Step",
@@ -118,19 +90,6 @@ public static class PassiveStatuses
             "Grows stronger with every card the Lock Cart takes."),
         Marker(InventoryPendingId, "Inventoried",
             "The Lantern has marked a card of yours as property this turn."),
-        FinalNotice(),
-        EnforcementServed(),
-        Marker(ServiceAcknowledgedId, "Service Acknowledged",
-            "You signed for the notice: 2 Paperwork now, and a lighter enforcement when the deadline lands."),
-        Marker(FinalNoticeKnightId, "Final Notice Knight",
-            "The one serving the notice. The deadline runs on you, not on it."),
-        Marker(SealedSpearId, "Sealed Spear",
-            "Bound to the notice. What its death does depends on whether the deadline has already been served."),
-        Marker(DeadlineCountingId, "Deadline Running",
-            "The Final Notice is counting down at the end of each of your turns."),
-        Marker(DeadlineServedId, "Deadline Served",
-            "The deadline has run out. Enforcement lands on the Knight's next action, so you get one turn to "
-            + "answer it."),
         Marker(GateShutId, "Gate: Shut",
             "The portcullis is down. Hit hard enough in a single turn and it grinds upward."),
         GateHalfRaised(),
@@ -179,9 +138,7 @@ public static class PassiveStatuses
     // read through an iteration target, which expressions cannot do reliably inside a loop.
     public const string InventoryPendingId = "inventory_pending";
     public static CounterId SeizedCardsCounter => new("seized_cards");
-    public static CounterId MarshalStrengthCounter => new("marshal_strength");
     public const int SeizureCapacity = 2;
-    public const int MarshalStrengthLimit = 4;
 
     // Portcullis Judicator: the gate's height is three visible marker statuses (the only state a combat UI
     // shows by name), the pressure tally lives in a counter, and the gatehouse status carries the machinery.
@@ -193,48 +150,6 @@ public static class PassiveStatuses
     public static CounterId GatePressureCounter => new("gate_pressure");
     public static CounterId GateBeatCounter => new("gate_beat");
     public const int GateThreshold = 12;
-
-    // Final Notice Knight: the deadline is the PLAYER's — Final Notice, Enforcement Served and the
-    // acknowledgement all sit on the applicant, where every program can address them with a single selector
-    // (and where the player can read their own countdown). The Knight's two mirrors say which phase the
-    // encounter is in for programs that run from the enemy side, e.g. the Spear's death.
-    public const string FinalNoticeId = "final_notice";
-    public const string EnforceQueuedId = "enforcement_served";
-    public const string ServiceAcknowledgedId = "service_acknowledged";
-    public const string FinalNoticeKnightId = "final_notice_knight";
-    public const string SealedSpearId = "sealed_spear";
-    public const string DeadlineCountingId = "deadline_running";
-    public const string DeadlineServedId = "deadline_served";
-    public const int FinalNoticeStart = 3;
-    public const string AcknowledgeCardId = "acknowledge_service";
-
-    // Enforcement Served counts the response window: 1 = served (the player's answer turn), 2 = the Knight's
-    // next action IS the enforcement.
-    private static StatusData EnforcementServed() => new()
-    {
-        Id = EnforceQueuedId,
-        NameKey = "Enforcement Served",
-        DescriptionKey = "The Knight will enforce the deadline on its next action.",
-        Polarity = StatusPolarity.Debuff,
-        StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
-        UsesStacks = true,
-        Tags = [],
-        PassiveModifiers = [],
-        Triggers = [],
-    };
-
-    private static StatusData FinalNotice() => new()
-    {
-        Id = FinalNoticeId,
-        NameKey = "Final Notice",
-        DescriptionKey = "Counts down at the end of each of your turns. At 0 the Knight serves enforcement.",
-        Polarity = StatusPolarity.Debuff,
-        StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
-        UsesStacks = true,
-        Tags = [],
-        PassiveModifiers = [],
-        Triggers = [],
-    };
 
     public sealed record ComplianceOrder(
         string StatusId, string Name, string Description,
@@ -499,82 +414,6 @@ public static class PassiveStatuses
             "RoundEnded", program);
     }
 
-    // The Remanded Case: two bodies and two legitimate kill orders. The Phantom carries the return rule, the
-    // Writ the escalation; which one dies first decides how the fight ends.
-    public const string PhantomId = "remanded_case";
-    public const string RemandableId = "remandable";
-    public const string RemandingWritId = "remanding_writ";
-    public const string SpentWritId = "spent_writ";
-    public static CounterId FinalityCounter => new("finality");
-
-    // Route A — the Phantom would be downed while a living, unspent Writ still stands: the case is REMANDED
-    // instead. Authored as death prevention (the engine's one-shot pre-down interceptor) rather than a revive:
-    // reviving is impossible by construction — healing and status application refuse a downed target, and the
-    // guard rejects the program outright. The prevention consumes this status, so it happens once; the Writ's
-    // own death removes it too, which is what makes route B mutually exclusive.
-    private static StatusData Remandable() => new()
-    {
-        Id = RemandableId,
-        NameKey = "Remandable",
-        DescriptionKey = "While a living, unspent Remanding Writ still stands, the first time this body would go down the case "
-+ "is remanded instead — and it comes back angrier.",
-        Polarity = StatusPolarity.Buff,
-        StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
-        UsesStacks = false,
-        Tags = [],
-        PassiveModifiers = [],
-        Triggers = [],
-        DeathPrevention = new StatusDeathPreventionData(24,
-        [
-            // The Writ pays FIRST: its 12 is a flat HP loss, and the interceptor's damage is credited to the
-            // Phantom — so granting the Strength before it would let the case buff its own recoil.
-            new InterceptorEffectData(nameof(EffectKind.DealDamage), nameof(EffectTarget.AllAllies), 12, "", 0,
-                StatusPolarity.Debuff),
-            // Then the case comes back angrier, and the Writ can never remand again.
-            new InterceptorEffectData(nameof(EffectKind.ApplyStatus), nameof(EffectTarget.Self), 2, "strength", 0,
-                StatusPolarity.Buff),
-            new InterceptorEffectData(nameof(EffectKind.ApplyStatus), nameof(EffectTarget.AllAllies), 1,
-                SpentWritId, 0, StatusPolarity.Neutral),
-            new InterceptorEffectData(nameof(EffectKind.RemoveStatus), nameof(EffectTarget.AllAllies), 0,
-                RemandingWritId, 0, StatusPolarity.Neutral),
-        ]),
-    };
-
-    // Route B — the Writ dies before it ever caused a remand: the Phantom gains Finality (+2 Strength) and its
-    // next intent becomes Final Judgment. Carried by the Writ, since that is the body being downed; losing the
-    // marker (route A) is what makes a spent Writ silent here.
-    private static StatusData RemandingWrit()
-    {
-        var phantom = CombatantTargetSelectors.AllAlliesOfSourceWithStatus(new StatusDefinitionId(PhantomId));
-        var thatPhantom = CombatantTargetSelectors.IterationTarget;
-
-        var program = new EffectProgram<CombatantDownedTriggeredEffectContext>(
-            new ForEachTargetEffectNode<CombatantDownedTriggeredEffectContext>(phantom,
-                new SequenceEffectNode<CombatantDownedTriggeredEffectContext>(new IEffectNode<CombatantDownedTriggeredEffectContext>[]
-                {
-                    new ApplyStatusNode<CombatantDownedTriggeredEffectContext>(
-                        thatPhantom, new StatusDefinitionId("strength"),
-                        new ConstantExpression<CombatantDownedTriggeredEffectContext>(2)),
-                    new SetCombatantCounterNode<CombatantDownedTriggeredEffectContext>(
-                        thatPhantom, FinalityCounter,
-                        new ConstantExpression<CombatantDownedTriggeredEffectContext>(1), relative: false),
-                    // No Writ, no remand: the case has nowhere left to be sent back to.
-                    new ModifyStatusStacksNode<CombatantDownedTriggeredEffectContext>(
-                        thatPhantom, new StatusDefinitionId(RemandableId),
-                        new ConstantExpression<CombatantDownedTriggeredEffectContext>(-1)),
-                })));
-
-        return Passive(RemandingWritId, "Remanding Writ",
-            "While this Writ lives, downing the case remands it instead of ending it. Kill the Writ first and "
-            + "the case takes Finality — and its next move is Final Judgment.",
-            "Downed", program);
-    }
-
-    // Living Petition Chorus: the marker the clause cards write their signatures and liabilities onto.
-    public const string PetitionId = "the_petition";
-    public static CounterId SignaturesCounter => new("signatures");
-    public static CounterId ClauseIndexCounter => new("clause_index");
-
     // Devouring Waiting Room: the Room keeps the Lost Time ledger (so killing it erases the resource, while
     // killing the Moth Cloud leaves what was already lost). The marker is how the Moth and the encounter
     // trigger find the Room.
@@ -790,155 +629,9 @@ public static class PassiveStatuses
             "RoundEnded", program);
     }
 
-    // Duplicate Copy Mites: marker + the once-per-round latch, cleared at round end like its siblings.
-    public const string CarbonCopiesId = "carbon_copies";
-    public static CounterId CopiedThisRoundCounter => new("copied_this_round");
-
-    private static StatusData CarbonCopies()
-    {
-        var carriers = CombatantTargetSelectors.WithStatus(
-            CombatantTargetSelectors.AllCombatants, new StatusDefinitionId(CarbonCopiesId));
-
-        var program = new EffectProgram<RoundEndedTriggeredEffectContext>(
-            new SetCombatantCounterNode<RoundEndedTriggeredEffectContext>(
-                carriers, CopiedThisRoundCounter,
-                new ConstantExpression<RoundEndedTriggeredEffectContext>(0), relative: false));
-
-        return Passive(CarbonCopiesId, "Carbon Copies",
-            "The first time each round another enemy gains Bookworm, the Mites guard themselves for 4.",
-            "RoundEnded", program);
-    }
-
     // Number-Ticket Wisp: the marker its encounter trigger finds it by (the rule itself watches the PLAYER's
     // Panic, so it lives on the encounter).
     public const string YourNumberCameUpId = "your_number_came_up";
-
-    // The Ward's marker also clears its once-per-round latch at round end (RoundEnded triggers have no bearer
-    // filter, so the reset targets every carrier).
-    private static StatusData SeizeTheFiling()
-    {
-        var carriers = CombatantTargetSelectors.WithStatus(
-            CombatantTargetSelectors.AllCombatants, new StatusDefinitionId(SeizeTheFilingId));
-
-        var program = new EffectProgram<RoundEndedTriggeredEffectContext>(
-            new SetCombatantCounterNode<RoundEndedTriggeredEffectContext>(
-                carriers, SeizedThisRoundCounter,
-                new ConstantExpression<RoundEndedTriggeredEffectContext>(0), relative: false));
-
-        return Passive(SeizeTheFilingId, "Seize the Filing",
-            "The first Paperwork you file on any enemy each round is turned against you: that enemy gains "
-            + "1 Bookworm, and will eat the filing at its turn start.",
-            "RoundEnded", program);
-    }
-
-    // Warrant Bailiff: the marker its watcher finds it by, and the buff the watcher switches on and off.
-    public const string OutstandingWarrantId = "outstanding_warrant";
-    public const string WarrantServedId = "warrant_served";
-
-    // Threshold Seizure Ward: marker + the once-per-round latch its encounter trigger reads.
-    public const string SeizeTheFilingId = "seize_the_filing";
-    public static CounterId SeizedThisRoundCounter => new("seized_this_round");
-
-    // Civic Battering Ram: Momentum, plus the two bits of bookkeeping "Break the Approach" needs.
-    public const string BreakTheApproachId = "break_the_approach";
-    public static CounterId MomentumCounter => new("momentum");
-    private static CounterId HadBlockCounter => new("ram_had_block");
-    private static CounterId ApproachBrokenCounter => new("approach_broken_this_turn");
-
-    // "Outstanding Warrant" is a plain buff the Bailiff wears while the player is 4 Paperwork deep — the
-    // watcher that switches it lives on the encounter (EncounterPassives), because the condition is about the
-    // PLAYER while the buff belongs to the enemy.
-    private static StatusData WarrantServed() => new()
-    {
-        Id = WarrantServedId,
-        NameKey = "Warrant Served",
-        DescriptionKey = "The warrant is out: this character's attacks hit for 5 more.",
-        Polarity = StatusPolarity.Buff,
-        StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
-        UsesStacks = true,
-        Tags = [],
-        PassiveModifiers =
-        [
-            new PassiveModifierData(PassiveModifierPipeline.DamageDealt,
-                PassiveModifierOperation.AddFlat, 5, RestrictDamageKind: DamageKind.Direct),
-        ],
-        Triggers = [],
-    };
-
-    // "Break the Approach" (Civic Battering Ram): the first time each player turn a card strips the Ram's Block
-    // away entirely, it loses a Momentum. "Entirely" needs to know the Block was there — the Ram remembers
-    // gaining it (BlockGained on itself) and forgets once the guard is broken.
-    private static StatusData BreakTheApproach()
-    {
-        var ram = CombatantTargetSelectors.EventTarget;
-
-        var onBlockGained = new EffectProgram<BlockGainedTriggeredEffectContext>(
-            new SetCombatantCounterNode<BlockGainedTriggeredEffectContext>(
-                ram, HadBlockCounter, new ConstantExpression<BlockGainedTriggeredEffectContext>(1), relative: false));
-
-        var onHit = new EffectProgram<DamageReceivedTriggeredEffectContext>(
-            new ConditionalEffectNode<DamageReceivedTriggeredEffectContext>(
-                new AndExpression<DamageReceivedTriggeredEffectContext>(
-                    new AndExpression<DamageReceivedTriggeredEffectContext>(
-                        // A guard that was there and is now gone…
-                        new ComparisonExpression<DamageReceivedTriggeredEffectContext>(
-                            new CombatantCounterExpression<DamageReceivedTriggeredEffectContext>(ram, HadBlockCounter),
-                            ComparisonOperator.Equal,
-                            new ConstantExpression<DamageReceivedTriggeredEffectContext>(1)),
-                        new ComparisonExpression<DamageReceivedTriggeredEffectContext>(
-                            new CombatantDefensivePoolExpression<DamageReceivedTriggeredEffectContext>(
-                                ram, StandardCombatIds.BlockDefensivePool),
-                            ComparisonOperator.Equal,
-                            new ConstantExpression<DamageReceivedTriggeredEffectContext>(0))),
-                    // …once per player turn.
-                    new ComparisonExpression<DamageReceivedTriggeredEffectContext>(
-                        new CombatantCounterExpression<DamageReceivedTriggeredEffectContext>(ram, ApproachBrokenCounter),
-                        ComparisonOperator.Equal,
-                        new ConstantExpression<DamageReceivedTriggeredEffectContext>(0))),
-                new SequenceEffectNode<DamageReceivedTriggeredEffectContext>(new IEffectNode<DamageReceivedTriggeredEffectContext>[]
-                {
-                    new SetCombatantCounterNode<DamageReceivedTriggeredEffectContext>(
-                        ram, MomentumCounter,
-                        new MaxExpression<DamageReceivedTriggeredEffectContext>(
-                            new SubtractExpression<DamageReceivedTriggeredEffectContext>(
-                                new CombatantCounterExpression<DamageReceivedTriggeredEffectContext>(ram, MomentumCounter),
-                                new ConstantExpression<DamageReceivedTriggeredEffectContext>(1)),
-                            new ConstantExpression<DamageReceivedTriggeredEffectContext>(0)),
-                        relative: false),
-                    new SetCombatantCounterNode<DamageReceivedTriggeredEffectContext>(
-                        ram, HadBlockCounter, new ConstantExpression<DamageReceivedTriggeredEffectContext>(0),
-                        relative: false),
-                    new SetCombatantCounterNode<DamageReceivedTriggeredEffectContext>(
-                        ram, ApproachBrokenCounter, new ConstantExpression<DamageReceivedTriggeredEffectContext>(1),
-                        relative: false),
-                })));
-
-        var onTurnEnd = new EffectProgram<TurnEndedTriggeredEffectContext>(
-            new SetCombatantCounterNode<TurnEndedTriggeredEffectContext>(
-                CombatantTargetSelectors.Source, ApproachBrokenCounter,
-                new ConstantExpression<TurnEndedTriggeredEffectContext>(0), relative: false));
-
-        return new StatusData
-        {
-            Id = BreakTheApproachId,
-            NameKey = "Break the Approach",
-            DescriptionKey = "The first time each turn a card strips the Ram's Block away entirely, it loses a Momentum.",
-            Polarity = StatusPolarity.Neutral,
-            StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
-            UsesStacks = false,
-            Tags = [],
-            PassiveModifiers = [],
-            Triggers =
-            [
-                new StatusTriggerData("BlockGained", JsonSerializer.SerializeToElement(
-                    onBlockGained, CombatJson.CreateOptions<BlockGainedTriggeredEffectContext>())),
-                new StatusTriggerData("DamageTaken", JsonSerializer.SerializeToElement(
-                    onHit, CombatJson.CreateOptions<DamageReceivedTriggeredEffectContext>())),
-                new StatusTriggerData("TurnEnded", JsonSerializer.SerializeToElement(
-                    onTurnEnd, CombatJson.CreateOptions<TurnEndedTriggeredEffectContext>())),
-            ],
-        };
-    }
 
     // Self-Correcting Record: the card TYPES it can correct against (CardMapper emits a card's type as a
     // combat tag), the passive that arms a correction, and its once-per-player-turn latch.
@@ -1048,85 +741,6 @@ public static class PassiveStatuses
         ],
     };
 
-    // Counterclaim Imp: the passive itself is owner-scoped (the Imp is what gets filed on), so one status
-    // carries both the reaction and the once-per-player-turn latch it clears at its own turn end.
-    public const string CounterclaimId = "counterclaim";
-    public static CounterId CounterclaimUsedCounter => new("counterclaim_used");
-
-    private static StatusData Counterclaim()
-    {
-        var imp = CombatantTargetSelectors.EventTarget; // the status' recipient: the Imp
-        var filer = CombatantTargetSelectors.Source;    // whoever applied it
-
-        StatusTriggerData Reaction<TContext>(string trigger) where TContext : class
-        {
-            var program = new EffectProgram<TContext>(
-                new ConditionalEffectNode<TContext>(
-                    new AndExpression<TContext>(
-                        // Only the player's own filings answer back, and only the first each turn.
-                        new ComparisonExpression<TContext>(
-                            new CombatantStatusStacksExpression<TContext>(filer, new StatusDefinitionId(ApplicantId)),
-                            ComparisonOperator.Greater,
-                            new ConstantExpression<TContext>(0)),
-                        new ComparisonExpression<TContext>(
-                            new CombatantCounterExpression<TContext>(imp, CounterclaimUsedCounter),
-                            ComparisonOperator.Equal,
-                            new ConstantExpression<TContext>(0))),
-                    new SequenceEffectNode<TContext>(new IEffectNode<TContext>[]
-                    {
-                        new ApplyStatusNode<TContext>(filer, new StatusDefinitionId("paperwork"),
-                            new ConstantExpression<TContext>(1)),
-                        new SetCombatantCounterNode<TContext>(imp, CounterclaimUsedCounter,
-                            new ConstantExpression<TContext>(1), relative: false),
-                    })));
-
-            return new StatusTriggerData(trigger,
-                JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<TContext>()));
-        }
-
-        return new StatusData
-        {
-            Id = CounterclaimId,
-            NameKey = "Counterclaim",
-            DescriptionKey = "The first Paperwork you file on the Imp each turn is answered — you get 1 Paperwork back.",
-            Polarity = StatusPolarity.Neutral,
-            StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
-            UsesStacks = false,
-            Tags = [],
-            PassiveModifiers = [],
-            Triggers =
-            [
-                Reaction<StatusAppliedTriggeredEffectContext>("StatusApplied"),
-                Reaction<StatusMergedTriggeredEffectContext>("StatusMerged"),
-                new StatusTriggerData("TurnEnded", JsonSerializer.SerializeToElement(
-                    new EffectProgram<TurnEndedTriggeredEffectContext>(
-                        new SetCombatantCounterNode<TurnEndedTriggeredEffectContext>(
-                            CombatantTargetSelectors.Source, CounterclaimUsedCounter,
-                            new ConstantExpression<TurnEndedTriggeredEffectContext>(0), relative: false)),
-                    CombatJson.CreateOptions<TurnEndedTriggeredEffectContext>())),
-            ],
-        };
-    }
-
-    // Sustaining Gavel: marker + the once-per-round latch its encounter trigger reads (EncounterPassives).
-    public const string SustainedId = "sustained";
-    public static CounterId SustainedThisRoundCounter => new("sustained_this_round");
-
-    private static StatusData Sustained()
-    {
-        var carriers = CombatantTargetSelectors.WithStatus(
-            CombatantTargetSelectors.AllCombatants, new StatusDefinitionId(SustainedId));
-
-        var program = new EffectProgram<RoundEndedTriggeredEffectContext>(
-            new SetCombatantCounterNode<RoundEndedTriggeredEffectContext>(
-                carriers, SustainedThisRoundCounter,
-                new ConstantExpression<RoundEndedTriggeredEffectContext>(0), relative: false));
-
-        return Passive(SustainedId, "Sustained",
-            "The first time each round another living enemy gains Block, the Gavel copies half of it, rounded down.",
-            "RoundEnded", program);
-    }
-
     // Inverted Hourglass: the marker its encounter trigger finds it by; the sand itself is a counter.
     public const string StolenSandId = "stolen_sand_passive";
     public static CounterId StolenSandCounter => new("stolen_sand");
@@ -1161,27 +775,6 @@ public static class PassiveStatuses
     // The hero carries this in every fight (EncounterMapper) so a program can ask "did this happen to the
     // player?" — selectors are structural and cannot name a side.
     public const string ApplicantId = "the_applicant";
-
-    // Old Statute Ghost: marker + the two tracks of "Still in Force".
-    public const string StillInForceId = "still_in_force_passive";
-    public static CounterId PrecedentCounter => new("precedent");
-    public static CounterId PrecedentLatchCounter => new("precedent_this_round");
-
-    private static StatusData StillInForce()
-    {
-        var carriers = CombatantTargetSelectors.WithStatus(
-            CombatantTargetSelectors.AllCombatants, new StatusDefinitionId(StillInForceId));
-
-        var program = new EffectProgram<RoundEndedTriggeredEffectContext>(
-            new SetCombatantCounterNode<RoundEndedTriggeredEffectContext>(
-                carriers, PrecedentLatchCounter,
-                new ConstantExpression<RoundEndedTriggeredEffectContext>(0), relative: false));
-
-        return Passive(StillInForceId, "Still in Force",
-            "The first time each round Panic, Doubt or Fatigue leaves you entirely, the Ghost gains 1 Precedent. "
-            + "At 2 it re-files one stack of whatever just went, and clears its Precedent.",
-            "RoundEnded", program);
-    }
 
     // Exception Imp: the marker its encounter trigger finds it by, plus the once-per-round latch it clears at
     // round end (like the Oath Candle's, and for the same reason — RoundEnded triggers have no bearer filter).
@@ -1415,82 +1008,6 @@ public static class PassiveStatuses
             + "does Everyone Moves at Once and the count goes back to nothing.",
             "TurnStarted", program);
     }
-
-    // "Still Missing a Signature" (Unsigned Form Ghost): while the Ghost carries fewer than 3 Paperwork it takes
-    // 25% less direct damage; at 3+ the reduction is off; if Bookworm files it back below 3 the reduction
-    // returns. The engine's passive modifiers cannot be conditional, so the reduction lives in its own status
-    // (SignaturePending) and this watcher switches it on and off whenever the Ghost's statuses move.
-    //
-    // Every status event the Ghost is the SUBJECT of resolves the bearer as `eventTarget` (Applied/Merged/
-    // Removed bind it to the affected combatant; StacksChanged binds both source and eventTarget to it), so one
-    // program shape serves all four. All four are needed: a first Paperwork APPLIES, further ones MERGE, and
-    // Bookworm only ADJUSTS the count. The program is idempotent — it adds a missing shield or drops a present
-    // one — so the shield's own status events cannot make it loop.
-    private static StatusData StillMissingASignature() => new()
-    {
-        Id = StillMissingASignatureId,
-        NameKey = "Still Missing a Signature",
-        DescriptionKey = "While the Ghost carries fewer than 3 Paperwork, it takes 25 % less damage from cards and attacks. "
-+ "File enough on it and the form is finally signed.",
-        Polarity = StatusPolarity.Neutral,
-        StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
-        UsesStacks = false,
-        Tags = [],
-        PassiveModifiers = [],
-        Triggers =
-        [
-            SignatureTrigger<StatusAppliedTriggeredEffectContext>("StatusApplied"),
-            SignatureTrigger<StatusMergedTriggeredEffectContext>("StatusMerged"),
-            SignatureTrigger<StatusStacksChangedTriggeredEffectContext>("StatusStacksChanged"),
-            SignatureTrigger<StatusRemovedTriggeredEffectContext>("StatusRemoved"),
-        ],
-    };
-
-    private static StatusTriggerData SignatureTrigger<TContext>(string trigger) where TContext : class
-    {
-        var bearer = CombatantTargetSelectors.EventTarget;
-        var paperwork = new CombatantStatusStacksExpression<TContext>(bearer, new StatusDefinitionId("paperwork"));
-        var shield = new CombatantStatusStacksExpression<TContext>(bearer, new StatusDefinitionId(SignaturePendingId));
-
-        var program = new EffectProgram<TContext>(
-            new ConditionalEffectNode<TContext>(
-                new ComparisonExpression<TContext>(paperwork, ComparisonOperator.GreaterOrEqual,
-                    new ConstantExpression<TContext>(SignatureThreshold)),
-                // Filed often enough: drop the reduction (if it is still up).
-                new ConditionalEffectNode<TContext>(
-                    new ComparisonExpression<TContext>(shield, ComparisonOperator.Greater,
-                        new ConstantExpression<TContext>(0)),
-                    new ModifyStatusStacksNode<TContext>(bearer, new StatusDefinitionId(SignaturePendingId),
-                        new ConstantExpression<TContext>(-1))),
-                // Still unsigned: put the reduction back (if it is not already up).
-                new ConditionalEffectNode<TContext>(
-                    new ComparisonExpression<TContext>(shield, ComparisonOperator.Equal,
-                        new ConstantExpression<TContext>(0)),
-                    new ApplyStatusNode<TContext>(bearer, new StatusDefinitionId(SignaturePendingId),
-                        new ConstantExpression<TContext>(1)))));
-
-        return new StatusTriggerData(trigger,
-            JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<TContext>()));
-    }
-
-    // The reduction itself: 25% less DIRECT damage (card hits and attacks; Paperwork's own tick is
-    // DamageOverTime and stays untouched). Carried only while the watcher says the form is still unsigned.
-    private static StatusData SignaturePending() => new()
-    {
-        Id = SignaturePendingId,
-        NameKey = "Signature Pending",
-        DescriptionKey = "The form is unsigned: 25 % less damage from cards and attacks. Paperwork's own tick goes through it.",
-        Polarity = StatusPolarity.Buff,
-        StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
-        UsesStacks = true,
-        Tags = [],
-        PassiveModifiers =
-        [
-            new PassiveModifierData(PassiveModifierPipeline.DamageReceived,
-                PassiveModifierOperation.ScalePercent, 75, RestrictDamageKind: DamageKind.Direct),
-        ],
-        Triggers = [],
-    };
 
     // "Paper Seals Wax" (Wax Notary): the first time each player turn the Notary RECEIVES Paperwork it gains 5
     // Block; the Paperwork stays. "Receives" is read as "the count went up", by remembering the last seen count
