@@ -46,13 +46,16 @@ public static class QueueCommissioner
     public const int PriorityThreshold = 14;
     public const int ServicesForTransition = 2;
     public const int QueueBeats = 5;
+    // A busy turn pushes you along (content cut 2026-10-29: the Queue stage's own rule, carried into its boss).
+    public const int BriskTurnCards = 4;
 
     // ── Content ───────────────────────────────────────────────────────────────
 
     public static IEnumerable<StatusData> Statuses() =>
     [
         TheCommissioner(),
-        Stacked(PositionId, "Queue Position", "How far you still are from the Counter."),
+        Stacked(PositionId, "Queue Position",
+            "How far you still are from the Counter. A turn of 4 or more cards moves you a place closer."),
         PassiveStatuses.NamedMarker(PriorityId, "Priority", "Prevents the next backward move in the queue."),
         PassiveStatuses.NamedMarker(ServiceId, "Serving You", "The Counter is yours this turn."),
         PassiveStatuses.NamedMarker(CounterClosedId, "Counter Closed", "The queue does not move this turn."),
@@ -77,7 +80,40 @@ public static class QueueCommissioner
         TheQueueMoves(),
         TheWindowCloses(),
         PriorityIsEarned(),
+        ABriskTurnMovesYouUp(),
     ];
+
+    // A turn of four or more cards moves you one place closer, on top of the queue's own step. It never takes
+    // you past Position 1: the Counter itself is still reached by the queue moving.
+    private static EncounterTriggerData ABriskTurnMovesYouUp()
+    {
+        var player = CombatantTargetSelectors.Source;
+
+        ICombatExpression<TurnEndedTriggeredEffectContext, int> Stacks(string statusId) =>
+            new CombatantStatusStacksExpression<TurnEndedTriggeredEffectContext>(
+                player, new StatusDefinitionId(statusId));
+
+        var program = new EffectProgram<TurnEndedTriggeredEffectContext>(
+            new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
+                new AndExpression<TurnEndedTriggeredEffectContext>(
+                    new ComparisonExpression<TurnEndedTriggeredEffectContext>(
+                        Stacks(PassiveStatuses.ApplicantId), ComparisonOperator.Greater,
+                        new ConstantExpression<TurnEndedTriggeredEffectContext>(0)),
+                    new AndExpression<TurnEndedTriggeredEffectContext>(
+                        new ComparisonExpression<TurnEndedTriggeredEffectContext>(
+                            Stacks(PositionId), ComparisonOperator.Greater,
+                            new ConstantExpression<TurnEndedTriggeredEffectContext>(1)),
+                        new ComparisonExpression<TurnEndedTriggeredEffectContext>(
+                            new CardsPlayedThisTurnExpression<TurnEndedTriggeredEffectContext>(player),
+                            ComparisonOperator.GreaterOrEqual,
+                            new ConstantExpression<TurnEndedTriggeredEffectContext>(BriskTurnCards)))),
+                new ModifyStatusStacksNode<TurnEndedTriggeredEffectContext>(
+                    player, new StatusDefinitionId(PositionId),
+                    new ConstantExpression<TurnEndedTriggeredEffectContext>(-1))));
+
+        return new EncounterTriggerData("TurnEnded",
+            JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<TurnEndedTriggeredEffectContext>()));
+    }
 
     // ── The player's side of the queue ────────────────────────────────────────
 

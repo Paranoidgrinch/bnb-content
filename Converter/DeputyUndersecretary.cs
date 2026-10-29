@@ -31,7 +31,6 @@ public static class DeputyUndersecretary
     public static CounterId BlockThisTurnCounter => new("block_this_turn");
     public static CounterId DelayBeatCounter => new("delay_beat");
     public static CounterId BossBeatCounter => new("boss_beat");
-    public static CounterId CloseFileUsesCounter => new("close_file_uses");
     public static CounterId BacklogTotalCounter => new("backlog_total");
 
     public const int DeskCapacity = 3;
@@ -39,7 +38,9 @@ public static class DeputyUndersecretary
     public const int BacklogTransition = 4;
     public const int BacklogMaximum = 5;
     public const int FileIntensityMaximum = 2;
-    public const int BossBeats = 5;
+    // Phase II's loop: Executive Adjournment, Decide Without Hearing, Everything Outstanding (content cut
+    // 2026-10-29: three moves, down from five with two more that only reshuffled armour).
+    public const int BossBeats = 3;
 
     // A Matter: what it is called, which Backlog it leaves, and how the player clears it within one turn.
     // `Resolved` is null for the Request for Additional Review — that one is cleared by playing its card.
@@ -575,38 +576,9 @@ public static class DeputyUndersecretary
 
     public static EffectProgram<EnemyActionContext>? Intent(string intentId) => intentId switch
     {
-        "close_an_unanswered_file" => CloseAnUnansweredFile(),
         "everything_outstanding" => EverythingOutstanding(),
         _ => null,
     };
-
-    // Spends ONE File's intensity — the first that has any — and turns the closure into armour.
-    private static EffectProgram<EnemyActionContext> CloseAnUnansweredFile()
-    {
-        var self = CombatantTargetSelectors.Source;
-
-        ICombatExpression<EnemyActionContext, int> Stacks(string statusId) =>
-            new CombatantStatusStacksExpression<EnemyActionContext>(self, new StatusDefinitionId(statusId));
-
-        IEffectNode<EnemyActionContext> Spend(string fileId, IEffectNode<EnemyActionContext>? next) =>
-            new ConditionalEffectNode<EnemyActionContext>(
-                new ComparisonExpression<EnemyActionContext>(
-                    Stacks(fileId), ComparisonOperator.Greater, new ConstantExpression<EnemyActionContext>(0)),
-                new ModifyStatusStacksNode<EnemyActionContext>(
-                    self, new StatusDefinitionId(fileId), new ConstantExpression<EnemyActionContext>(-1)),
-                @else: next);
-
-        return new EffectProgram<EnemyActionContext>(
-            new SequenceEffectNode<EnemyActionContext>(new IEffectNode<EnemyActionContext>[]
-            {
-                Spend(FileComplaintId, Spend(FileDelayId, Spend(FileDefectiveId, null))),
-                new ApplyStatusNode<EnemyActionContext>(
-                    self, new StatusDefinitionId("strength"), new ConstantExpression<EnemyActionContext>(1)),
-                new GainBlockNode<EnemyActionContext>(self, new ConstantExpression<EnemyActionContext>(10)),
-                new SetCombatantCounterNode<EnemyActionContext>(
-                    self, CloseFileUsesCounter, new ConstantExpression<EnemyActionContext>(1), relative: true),
-            }));
-    }
 
     // The signature: 14, plus 2 for every File intensity still outstanding, capped at 20. It reads the Files
     // but never spends them.

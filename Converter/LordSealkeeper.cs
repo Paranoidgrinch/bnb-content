@@ -8,14 +8,14 @@ namespace BnbContent.Converter;
 // Act I's third boss: "Choose which protection disappears first, then decide how to spend the authority you
 // broke loose."
 //
-// Three Great Seals stand as statuses on the Sealkeeper. Each player turn they raise a Seal Ward of Block;
-// stripping that Block and drawing blood breaks one Seal of the player's choosing — and the broken Seal leaves
-// a Fragment in the player's hand, a one-use piece of the boss's own authority. Once every Seal is gone (or the
-// Keeper is down to 58 HP) it unseals itself, and in Phase II it tries to reclaim the Fragments still unspent.
+// Three Great Seals stand as statuses on the Sealkeeper, each with one effect. Each player turn they raise a
+// Seal Ward of Block; stripping that Block and drawing blood breaks one Seal of the player's choosing — and the
+// broken Seal leaves a Fragment in the player's hand, a one-use piece of the boss's own authority.
 //
-// Every Fragment therefore exists twice: as a card the player holds, and as an "outstanding" marker on the
-// Sealkeeper — that marker is how the boss's own programs know what is still out there, since a boss program
-// can never read the player's hand or statuses. Deviations: ADAPTATIONS.md.
+// SIMPLIFIED in the content cut of 2026-10-29 (it had seventeen special moves): every broken Seal moves the
+// Keeper into its next phase, and a phase is two or three moves in a loop. Three Seals: the Keeper presses its
+// authority. One broken: it cracks and certifies. Two broken: it is unsealed and hits with what is left.
+// Deviations: ADAPTATIONS.md.
 public static class LordSealkeeper
 {
     public const string SealkeeperId = "the_sealkeeper";
@@ -26,32 +26,32 @@ public static class LordSealkeeper
     public const string CrackedId = "cracked";                       // on the boss, until the turn ends
     public const string BreakReadyId = "a_seal_may_break";           // on the player
     public const string BreakUsedId = "a_seal_has_broken";           // one break per player turn, on the player
-    public const string UnsealPendingId = "the_keeper_unsealed_next"; // telegraph, on the boss
-    public const string UnsealedId = "unsealed_authority";           // Phase II, on the boss
+    public const string CrackingId = "the_keeper_cracks";            // Phase II (one Seal broken), on the boss
+    public const string UnsealedId = "unsealed_authority";           // Phase III (two broken), on the boss
     public const string BluntedId = "blunted_stamp";                 // Fragment of Execution, on the boss
-    public const string ReclaimPendingId = "reclaiming_a_fragment";  // telegraph, on the boss
 
-    public static CounterId SealBeatCounter => new("seal_beat");
-    public const int SealBeats = 6;
-    public const int UnsealHealth = 58;
+    // Where the Keeper is in its phase's loop: Phases II and III read it through their intent rules (Phase I
+    // is the plain cycle). It goes back to the start whenever a Seal breaks.
+    public static CounterId PhaseBeatCounter => new("phase_beat");
+    public const int PhaseTwoMoves = 3;
+    public const int PhaseThreeMoves = 2;
 
-    // The three Seals, their break card, their Fragment card and the marker that says the Fragment is still
-    // out there. Order is the order Reclaim works through them.
+    // The three Seals, their break card and their Fragment card.
     public sealed record Seal(
         string SealId, string SealName, string SealText,
-        string BreakCardId, string FragmentCardId, string OutstandingId, string FragmentName, string FragmentText);
+        string BreakCardId, string FragmentCardId, string FragmentName, string FragmentText);
 
     public static readonly Seal[] Seals =
     [
         new(AccessSealId, "Great Seal of Access", "The Seal Ward is 4 Block stronger.",
-            "break_the_seal_of_access", "fragment_of_access", "fragment_of_access_outstanding",
+            "break_the_seal_of_access", "fragment_of_access",
             "Fragment of Access", "Remove up to 12 Block from the Lord Sealkeeper."),
         new(TestimonySealId, "Great Seal of Testimony",
             "The first status you land on the Sealkeeper each turn gives it 5 Block.",
-            "break_the_seal_of_testimony", "fragment_of_testimony", "fragment_of_testimony_outstanding",
+            "break_the_seal_of_testimony", "fragment_of_testimony",
             "Fragment of Testimony", "Remove 2 stacks of Paperwork from yourself."),
         new(ExecutionSealId, "Great Seal of Execution", "The Sealkeeper's attacks deal 4 more.",
-            "break_the_seal_of_execution", "fragment_of_execution", "fragment_of_execution_outstanding",
+            "break_the_seal_of_execution", "fragment_of_execution",
             "Fragment of Execution", "The Sealkeeper's next attack deals 8 less."),
     ];
 
@@ -69,14 +69,10 @@ public static class LordSealkeeper
             "Choose a Great Seal to break this turn."),
         PassiveStatuses.NamedMarker(BreakUsedId, "A Seal Has Broken",
             "One Seal has already been broken this turn. The next has to wait."),
-        PassiveStatuses.NamedMarker(UnsealPendingId, "The Keeper Unseals Itself",
-            "Its next action sheds what is left of the Seals."),
-        PassiveStatuses.NamedMarker(UnsealedId, "Unsealed Authority", "Phase II."),
-        PassiveStatuses.NamedMarker(ReclaimPendingId, "Reclaiming a Fragment",
-            "Its next action takes back a Fragment you have not spent."),
-        .. Seals.Select(s => PassiveStatuses.NamedMarker(s.OutstandingId, s.FragmentName + " (unspent)",
-            $"{s.FragmentName} is out of the Keeper's hands and still unspent. In Phase II it will try to take "
-            + "it back.")),
+        PassiveStatuses.NamedMarker(CrackingId, "The Keeper Cracks",
+            "Phase II: one Seal is broken. It certifies and denies: Seal the Record, Certified Denial, Unsealed Verdict."),
+        PassiveStatuses.NamedMarker(UnsealedId, "Unsealed Authority",
+            "Phase III: two Seals are broken. It hits with what is left: Stamp the Flesh, Authority Without Seal."),
         Cracked(),
         BluntedStamp(),
     ];
@@ -280,82 +276,30 @@ public static class LordSealkeeper
     private static StatusData TheSealkeeper()
     {
         var self = CombatantTargetSelectors.Source;
+        var beat = new CombatantCounterExpression<TurnEndedTriggeredEffectContext>(self, PhaseBeatCounter);
 
-        ICombatExpression<TurnEndedTriggeredEffectContext, int> Stacks(string statusId) =>
-            new CombatantStatusStacksExpression<TurnEndedTriggeredEffectContext>(
-                self, new StatusDefinitionId(statusId));
-
-        var beat = new CombatantCounterExpression<TurnEndedTriggeredEffectContext>(self, SealBeatCounter);
-
-        var sealsStanding = new AddExpression<TurnEndedTriggeredEffectContext>(
-            Stacks(AccessSealId),
-            new AddExpression<TurnEndedTriggeredEffectContext>(Stacks(TestimonySealId), Stacks(ExecutionSealId)));
-
-        var fragmentsOutstanding = new AddExpression<TurnEndedTriggeredEffectContext>(
-            Stacks(Seals[0].OutstandingId),
-            new AddExpression<TurnEndedTriggeredEffectContext>(
-                Stacks(Seals[1].OutstandingId), Stacks(Seals[2].OutstandingId)));
+        // The phase loop moves on one step per Keeper turn: three moves in Phase II, two in Phase III.
+        IEffectNode<TurnEndedTriggeredEffectContext> Step(int length) =>
+            new SetCombatantCounterNode<TurnEndedTriggeredEffectContext>(
+                self, PhaseBeatCounter,
+                new RemainderExpression<TurnEndedTriggeredEffectContext>(
+                    new AddExpression<TurnEndedTriggeredEffectContext>(
+                        beat, new ConstantExpression<TurnEndedTriggeredEffectContext>(1)),
+                    new ConstantExpression<TurnEndedTriggeredEffectContext>(length)),
+                relative: false);
 
         var program = new EffectProgram<TurnEndedTriggeredEffectContext>(
-            new SequenceEffectNode<TurnEndedTriggeredEffectContext>(new IEffectNode<TurnEndedTriggeredEffectContext>[]
-            {
-                // Nothing left to certify, or too wounded to keep certifying: the unsealing is announced.
-                new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
-                    new AndExpression<TurnEndedTriggeredEffectContext>(
-                        new ComparisonExpression<TurnEndedTriggeredEffectContext>(
-                            Stacks(UnsealedId), ComparisonOperator.Equal,
-                            new ConstantExpression<TurnEndedTriggeredEffectContext>(0)),
-                        new AndExpression<TurnEndedTriggeredEffectContext>(
-                            new ComparisonExpression<TurnEndedTriggeredEffectContext>(
-                                Stacks(UnsealPendingId), ComparisonOperator.Equal,
-                                new ConstantExpression<TurnEndedTriggeredEffectContext>(0)),
-                            new OrExpression<TurnEndedTriggeredEffectContext>(
-                                new ComparisonExpression<TurnEndedTriggeredEffectContext>(
-                                    sealsStanding, ComparisonOperator.Equal,
-                                    new ConstantExpression<TurnEndedTriggeredEffectContext>(0)),
-                                new ComparisonExpression<TurnEndedTriggeredEffectContext>(
-                                    new CombatantCurrentHealthExpression<TurnEndedTriggeredEffectContext>(self),
-                                    ComparisonOperator.LessOrEqual,
-                                    new ConstantExpression<TurnEndedTriggeredEffectContext>(UnsealHealth))))),
-                    new ApplyStatusNode<TurnEndedTriggeredEffectContext>(
-                        self, new StatusDefinitionId(UnsealPendingId),
-                        new ConstantExpression<TurnEndedTriggeredEffectContext>(1))),
-
-                new SetCombatantCounterNode<TurnEndedTriggeredEffectContext>(
-                    self, SealBeatCounter,
-                    new RemainderExpression<TurnEndedTriggeredEffectContext>(
-                        new AddExpression<TurnEndedTriggeredEffectContext>(
-                            beat, new ConstantExpression<TurnEndedTriggeredEffectContext>(1)),
-                        new ConstantExpression<TurnEndedTriggeredEffectContext>(SealBeats)),
-                    relative: false),
-
-                // Reclaim is previewed a full player turn ahead: the beat the rotation is about to reach
-                // decides whether the Keeper announces it.
-                new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
-                    new AndExpression<TurnEndedTriggeredEffectContext>(
-                        new ComparisonExpression<TurnEndedTriggeredEffectContext>(
-                            Stacks(UnsealedId), ComparisonOperator.Greater,
-                            new ConstantExpression<TurnEndedTriggeredEffectContext>(0)),
-                        new AndExpression<TurnEndedTriggeredEffectContext>(
-                            new ComparisonExpression<TurnEndedTriggeredEffectContext>(
-                                beat, ComparisonOperator.Equal,
-                                new ConstantExpression<TurnEndedTriggeredEffectContext>(1)),
-                            new ComparisonExpression<TurnEndedTriggeredEffectContext>(
-                                fragmentsOutstanding, ComparisonOperator.Greater,
-                                new ConstantExpression<TurnEndedTriggeredEffectContext>(0)))),
-                    new ApplyStatusNode<TurnEndedTriggeredEffectContext>(
-                        self, new StatusDefinitionId(ReclaimPendingId),
-                        new ConstantExpression<TurnEndedTriggeredEffectContext>(1)),
-                    @else: new RemoveStatusNode<TurnEndedTriggeredEffectContext>(
-                        self, new StatusDefinitionId(ReclaimPendingId))),
-            }));
+            new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
+                new TargetHasStatusExpression<TurnEndedTriggeredEffectContext>(self, new StatusDefinitionId(UnsealedId)),
+                Step(PhaseThreeMoves),
+                Step(PhaseTwoMoves)));
 
         return new StatusData
         {
             Id = SealkeeperId,
             NameKey = "The Lord Sealkeeper",
             DescriptionKey = "Three Great Seals stand on the Keeper. Each of your turns they raise a Ward of Block; strip that Block "
-+ "and draw blood to break a Seal of your choosing — and take the Fragment it leaves in your hand.",
++ "and draw blood to break a Seal of your choosing, take the Fragment it leaves — and the Keeper moves into its next phase.",
             Polarity = StatusPolarity.Neutral,
             StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
             UsesStacks = false,
@@ -434,6 +378,12 @@ public static class LordSealkeeper
 
     // ── The player's cards ────────────────────────────────────────────────────
 
+    // The Keeper as one combatant an expression can read (an iteration target cannot be read inside a loop).
+    private static ICombatantTargetSelector TheKeeper { get; } =
+        CombatantTargetSelectors.FirstTarget(
+            CombatantTargetSelectors.WithStatus(
+                CombatantTargetSelectors.AllAliveCombatants, new StatusDefinitionId(SealkeeperId)));
+
     // One of three offers, live only for the turn the break was earned: it takes the Seal down and hands the
     // player its Fragment.
     private static CardData BreakCard(Seal seal) => new()
@@ -460,10 +410,26 @@ public static class LordSealkeeper
                         {
                             new RemoveStatusNode<CardPlayContext>(
                                 CombatantTargetSelectors.IterationTarget, new StatusDefinitionId(seal.SealId)),
-                            // The Keeper itself remembers that this Fragment is out there.
-                            new ApplyStatusNode<CardPlayContext>(
-                                CombatantTargetSelectors.IterationTarget, new StatusDefinitionId(seal.OutstandingId),
-                                new ConstantExpression<CardPlayContext>(1)),
+                            // The broken Seal moves the Keeper into its next phase, from the top of its loop.
+                            new ConditionalEffectNode<CardPlayContext>(
+                                new TargetHasStatusExpression<CardPlayContext>(TheKeeper, new StatusDefinitionId(CrackingId)),
+                                new SequenceEffectNode<CardPlayContext>(new IEffectNode<CardPlayContext>[]
+                                {
+                                    new RemoveStatusNode<CardPlayContext>(
+                                        CombatantTargetSelectors.IterationTarget, new StatusDefinitionId(CrackingId)),
+                                    new ApplyStatusNode<CardPlayContext>(
+                                        CombatantTargetSelectors.IterationTarget, new StatusDefinitionId(UnsealedId),
+                                        new ConstantExpression<CardPlayContext>(1)),
+                                }),
+                                new ConditionalEffectNode<CardPlayContext>(
+                                    new NotExpression<CardPlayContext>(
+                                        new TargetHasStatusExpression<CardPlayContext>(TheKeeper, new StatusDefinitionId(UnsealedId))),
+                                    new ApplyStatusNode<CardPlayContext>(
+                                        CombatantTargetSelectors.IterationTarget, new StatusDefinitionId(CrackingId),
+                                        new ConstantExpression<CardPlayContext>(1)))),
+                            new SetCombatantCounterNode<CardPlayContext>(
+                                CombatantTargetSelectors.IterationTarget, PhaseBeatCounter,
+                                new ConstantExpression<CardPlayContext>(0), relative: false),
                         })),
                     new CreateCardInstanceNode<CardPlayContext>(
                         CombatantTargetSelectors.Source, new CardDefinitionId(seal.FragmentCardId), CardZone.Hand,
@@ -502,92 +468,10 @@ public static class LordSealkeeper
                 new SequenceEffectNode<CardPlayContext>(new IEffectNode<CardPlayContext>[]
                 {
                     Effect(),
-                    // Spending it also takes it off the Keeper's list of things to reclaim.
-                    new RemoveStatusNode<CardPlayContext>(keeper, new StatusDefinitionId(seal.OutstandingId)),
                 })),
             PlayedCardDestinationZone = CardZone.ExhaustPile,
             // Kept in hand between turns: the Fragment is a boss-context action, not a card of the deck.
             TurnEndHandDestinationZone = CardZone.Hand,
         };
-    }
-
-    // ── Raw intents ───────────────────────────────────────────────────────────
-
-    public static EffectProgram<EnemyActionContext>? Intent(string intentId) => intentId switch
-    {
-        "the_keeper_unsealed" => TheKeeperUnsealed(),
-        "reclaim_the_seal" => ReclaimTheSeal(),
-        _ => null,
-    };
-
-    // The transition: whatever is left of the Seals shatters (granting nothing), the Ward falls, and the Keeper
-    // stands up in its own authority.
-    private static EffectProgram<EnemyActionContext> TheKeeperUnsealed()
-    {
-        var self = CombatantTargetSelectors.Source;
-
-        return new EffectProgram<EnemyActionContext>(
-            new SequenceEffectNode<EnemyActionContext>(
-            [
-                .. Seals.Select(s => (IEffectNode<EnemyActionContext>)
-                    new RemoveStatusNode<EnemyActionContext>(self, new StatusDefinitionId(s.SealId))),
-                new RemoveStatusNode<EnemyActionContext>(self, new StatusDefinitionId(UnsealPendingId)),
-                new ModifyDefensivePoolNode<EnemyActionContext>(
-                    self, StandardCombatIds.BlockDefensivePool, new ConstantExpression<EnemyActionContext>(-999)),
-                new GainBlockNode<EnemyActionContext>(self, new ConstantExpression<EnemyActionContext>(10)),
-                new ApplyStatusNode<EnemyActionContext>(
-                    self, new StatusDefinitionId(UnsealedId), new ConstantExpression<EnemyActionContext>(1)),
-            ]));
-    }
-
-    // Reclaim: the first Fragment still unspent comes home, in the Seals' own order. A Fragment the player
-    // already spent leaves the Keeper with nothing but a thin guard.
-    private static EffectProgram<EnemyActionContext> ReclaimTheSeal()
-    {
-        var self = CombatantTargetSelectors.Source;
-
-        ICombatExpression<EnemyActionContext, int> Stacks(string statusId) =>
-            new CombatantStatusStacksExpression<EnemyActionContext>(self, new StatusDefinitionId(statusId));
-
-        IEffectNode<EnemyActionContext> Reclaimed(Seal seal) =>
-            new SequenceEffectNode<EnemyActionContext>(
-            [
-                new RemoveStatusNode<EnemyActionContext>(self, new StatusDefinitionId(seal.OutstandingId)),
-                .. seal.SealId switch
-                {
-                    AccessSealId => new IEffectNode<EnemyActionContext>[]
-                    {
-                        new GainBlockNode<EnemyActionContext>(self, new ConstantExpression<EnemyActionContext>(16)),
-                    },
-                    TestimonySealId =>
-                    [
-                        new RemoveStatusesByPolarityNode<EnemyActionContext>(self, StatusPolarity.Debuff),
-                        new GainBlockNode<EnemyActionContext>(self, new ConstantExpression<EnemyActionContext>(6)),
-                    ],
-                    _ =>
-                    [
-                        new ApplyStatusNode<EnemyActionContext>(
-                            self, new StatusDefinitionId("strength"), new ConstantExpression<EnemyActionContext>(2)),
-                    ],
-                },
-            ]);
-
-        IEffectNode<EnemyActionContext> Chain(int index) =>
-            index == Seals.Length
-                // Nothing outstanding: the reclamation grasps at air.
-                ? new GainBlockNode<EnemyActionContext>(self, new ConstantExpression<EnemyActionContext>(5))
-                : new ConditionalEffectNode<EnemyActionContext>(
-                    new ComparisonExpression<EnemyActionContext>(
-                        Stacks(Seals[index].OutstandingId), ComparisonOperator.Greater,
-                        new ConstantExpression<EnemyActionContext>(0)),
-                    Reclaimed(Seals[index]),
-                    @else: Chain(index + 1));
-
-        return new EffectProgram<EnemyActionContext>(
-            new SequenceEffectNode<EnemyActionContext>(new IEffectNode<EnemyActionContext>[]
-            {
-                new RemoveStatusNode<EnemyActionContext>(self, new StatusDefinitionId(ReclaimPendingId)),
-                Chain(0),
-            }));
     }
 }

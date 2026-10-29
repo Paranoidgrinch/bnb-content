@@ -20,9 +20,6 @@ public static class LivingCharter
     public const string ContinuanceId = "article_of_continuance";
     public const string RedressId = "article_of_redress";
     public const string MutualSecurityId = "article_of_mutual_security";
-    public const string ReciprocalBurdenId = "article_of_reciprocal_burden";
-    public const string DueNoticeId = "article_of_due_notice";
-    public const string UnderNoticeId = "under_due_notice";      // the Article's mirror on the player
     public const string FullDisclosureId = "article_of_full_disclosure";
     public const string DisclosedId = "under_full_disclosure";   // the Article's mirror on the player
 
@@ -32,7 +29,6 @@ public static class LivingCharter
     public const string CrisisId = "constitutional_crisis";           // final state, on the Charter
     public const string RemedyId = "remedy_due";                      // Redress, per side
     public const string SecurityUsedId = "security_invoked";          // Mutual Security latch, per side
-    public const string BurdenUsedId = "burden_borne";                // Reciprocal Burden latch, per side
     public const string ExceptionId = "exception";                    // Crisis token, per side
     public const string ExceptionClaimedId = "exception_claimed";     // spent by the player for this turn
 
@@ -55,10 +51,11 @@ public static class LivingCharter
     public const int CrisisHealth = 34;
     public const int CharterBeats = 5;
 
-    // The Articles this fight reaches for, in order. Three of them are ever visible at once (one in Phase I,
-    // two after the Amendment); a strike-down publishes the next in this rotation.
+    // The Articles this fight reaches for, in order. Two of them are ever visible at once (one in Phase I, two
+    // after the Amendment); a strike-down publishes the next in this rotation. Four, each one sentence a player
+    // reads at a glance (content cut 2026-10-29: Due Notice and Reciprocal Burden are gone).
     public static readonly string[] Articles =
-        [ContinuanceId, RedressId, MutualSecurityId, DueNoticeId, FullDisclosureId];
+        [ContinuanceId, RedressId, MutualSecurityId, FullDisclosureId];
 
     // ── Content ───────────────────────────────────────────────────────────────
 
@@ -71,14 +68,6 @@ public static class LivingCharter
             "A side that loses 14 HP in a turn is owed 8 Block at the start of its next one."),
         PassiveStatuses.NamedMarker(MutualSecurityId, "Article of Mutual Security",
             "The first Block a side gains each turn gives the other side 4 Block."),
-        PassiveStatuses.NamedMarker(ReciprocalBurdenId, "Article of Reciprocal Burden",
-            "The first status a side lands on its opponent each turn costs the applier 1 Doubt."),
-        // Due Notice is law that acts on the ENGINE's application rule rather than through a trigger: while it
-        // is published, what either side files takes effect only from the recipient's next turn.
-        Postponing(DueNoticeId, "Article of Due Notice",
-            "A negative status filed on either side takes effect at the start of that side's next turn."),
-        Postponing(UnderNoticeId, "Under Due Notice",
-            "Negative statuses filed on you take effect at the start of your next turn."),
         // Full Disclosure is law that only widens the VIEW — the Charter shows its hand, and the design is
         // explicit that an article may favour the player.
         PassiveStatuses.NamedMarker(FullDisclosureId, "Article of Full Disclosure",
@@ -95,8 +84,6 @@ public static class LivingCharter
         PassiveStatuses.NamedMarker(RemedyId, "Remedy Due", "8 Block at the start of your next turn."),
         PassiveStatuses.NamedMarker(SecurityUsedId, "Security Invoked",
             "The Charter has already invoked its security this turn."),
-        PassiveStatuses.NamedMarker(BurdenUsedId, "Burden Borne",
-            "The burden has already been borne this turn."),
         PassiveStatuses.NamedMarker(ExceptionId, "Exception", "May be claimed to ignore an Article this turn."),
         PassiveStatuses.NamedMarker(ExceptionClaimedId, "Exception Claimed",
             "The Articles do not touch you this turn."),
@@ -111,16 +98,8 @@ public static class LivingCharter
         TheLawClosesThePlayersTurn(),
         RedressIsRecorded(),
         MutualSecurityIsInvoked(),
-        ReciprocalBurdenIsBorne(),
         ExceptionsAreIssued(),
     ];
-
-    // A status whose whole effect is the engine's postponement rule: what lands on its bearer waits a turn.
-    private static StatusData Postponing(string id, string name, string description) =>
-        PassiveStatuses.NamedMarker(id, name, description) with
-        {
-            IncomingStatusDelay = new IncomingStatusDelayData(1, StatusPolarity.Debuff),
-        };
 
     // A status whose whole effect is what its bearer may SEE (the engine's disclosure rule).
     private static StatusData Disclosing(string id, string name, string description) =>
@@ -176,15 +155,6 @@ public static class LivingCharter
                                 new GainBlockNode<TurnStartedTriggeredEffectContext>(
                                     iterated, new ConstantExpression<TurnStartedTriggeredEffectContext>(8)),
                             })),
-                        // Due Notice binds BOTH sides: the Charter carries the Article itself, the player
-                        // carries its mirror for as long as the Article stands.
-                        new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
-                            CharterHas(DueNoticeId),
-                            new ApplyStatusNode<TurnStartedTriggeredEffectContext>(
-                                player, new StatusDefinitionId(UnderNoticeId),
-                                new ConstantExpression<TurnStartedTriggeredEffectContext>(1)),
-                            @else: new RemoveStatusNode<TurnStartedTriggeredEffectContext>(
-                                player, new StatusDefinitionId(UnderNoticeId))),
                         // Full Disclosure grants its sight to the PLAYER, so it too rides on a mirror.
                         new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
                             CharterHas(FullDisclosureId),
@@ -196,8 +166,6 @@ public static class LivingCharter
                         // The per-turn latches of the Articles open again for both sides.
                         new RemoveStatusNode<TurnStartedTriggeredEffectContext>(
                             iterated, new StatusDefinitionId(SecurityUsedId)),
-                        new RemoveStatusNode<TurnStartedTriggeredEffectContext>(
-                            iterated, new StatusDefinitionId(BurdenUsedId)),
                         // The Judicial Review the Charter called is answered on this turn.
                         new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
                             new ComparisonExpression<TurnStartedTriggeredEffectContext>(
@@ -237,8 +205,6 @@ public static class LivingCharter
                             relative: false))),
                     new RemoveStatusNode<TurnStartedTriggeredEffectContext>(
                         player, new StatusDefinitionId(SecurityUsedId)),
-                    new RemoveStatusNode<TurnStartedTriggeredEffectContext>(
-                        player, new StatusDefinitionId(BurdenUsedId)),
                     new RemoveStatusNode<TurnStartedTriggeredEffectContext>(
                         player, new StatusDefinitionId(ExceptionClaimedId)),
                 })));
@@ -436,66 +402,6 @@ public static class LivingCharter
 
         return new EncounterTriggerData("BlockGained",
             JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<BlockGainedTriggeredEffectContext>()));
-    }
-
-    // Article of Reciprocal Burden: the first status a side lands on its opponent each turn is answered with a
-    // Doubt on the applier — the Charter included. A player holding a claimed Exception is spared.
-    private static EncounterTriggerData ReciprocalBurdenIsBorne()
-    {
-        var applier = CombatantTargetSelectors.Source;
-        var recipient = CombatantTargetSelectors.EventTarget;
-        var charter = CombatantTargetSelectors.WithStatus(
-            CombatantTargetSelectors.AllCombatants, new StatusDefinitionId(CharterId));
-
-        ICombatExpression<StatusAppliedTriggeredEffectContext, int> Stacks(
-            ICombatantTargetSelector who, string statusId) =>
-            new CombatantStatusStacksExpression<StatusAppliedTriggeredEffectContext>(
-                who, new StatusDefinitionId(statusId));
-
-        // Only cross-side applications count: a side dressing itself is not a burden on anybody.
-        var crossSide = new OrExpression<StatusAppliedTriggeredEffectContext>(
-            new AndExpression<StatusAppliedTriggeredEffectContext>(
-                new ComparisonExpression<StatusAppliedTriggeredEffectContext>(
-                    Stacks(applier, PassiveStatuses.ApplicantId), ComparisonOperator.Greater,
-                    new ConstantExpression<StatusAppliedTriggeredEffectContext>(0)),
-                new ComparisonExpression<StatusAppliedTriggeredEffectContext>(
-                    Stacks(recipient, CharterId), ComparisonOperator.Greater,
-                    new ConstantExpression<StatusAppliedTriggeredEffectContext>(0))),
-            new AndExpression<StatusAppliedTriggeredEffectContext>(
-                new ComparisonExpression<StatusAppliedTriggeredEffectContext>(
-                    Stacks(applier, CharterId), ComparisonOperator.Greater,
-                    new ConstantExpression<StatusAppliedTriggeredEffectContext>(0)),
-                new ComparisonExpression<StatusAppliedTriggeredEffectContext>(
-                    Stacks(recipient, PassiveStatuses.ApplicantId), ComparisonOperator.Greater,
-                    new ConstantExpression<StatusAppliedTriggeredEffectContext>(0))));
-
-        var program = new EffectProgram<StatusAppliedTriggeredEffectContext>(
-            new ForEachTargetEffectNode<StatusAppliedTriggeredEffectContext>(charter,
-                new ConditionalEffectNode<StatusAppliedTriggeredEffectContext>(
-                    new AndExpression<StatusAppliedTriggeredEffectContext>(
-                        new IterationTargetHasStatusExpression<StatusAppliedTriggeredEffectContext>(
-                            new StatusDefinitionId(ReciprocalBurdenId)),
-                        new AndExpression<StatusAppliedTriggeredEffectContext>(
-                            crossSide,
-                            new AndExpression<StatusAppliedTriggeredEffectContext>(
-                                new ComparisonExpression<StatusAppliedTriggeredEffectContext>(
-                                    Stacks(applier, BurdenUsedId), ComparisonOperator.Equal,
-                                    new ConstantExpression<StatusAppliedTriggeredEffectContext>(0)),
-                                new ComparisonExpression<StatusAppliedTriggeredEffectContext>(
-                                    Stacks(applier, ExceptionClaimedId), ComparisonOperator.Equal,
-                                    new ConstantExpression<StatusAppliedTriggeredEffectContext>(0))))),
-                    new SequenceEffectNode<StatusAppliedTriggeredEffectContext>(new IEffectNode<StatusAppliedTriggeredEffectContext>[]
-                    {
-                        new ApplyStatusNode<StatusAppliedTriggeredEffectContext>(
-                            applier, new StatusDefinitionId(BurdenUsedId),
-                            new ConstantExpression<StatusAppliedTriggeredEffectContext>(1)),
-                        new ApplyStatusNode<StatusAppliedTriggeredEffectContext>(
-                            applier, new StatusDefinitionId("doubt"),
-                            new ConstantExpression<StatusAppliedTriggeredEffectContext>(1)),
-                    }))));
-
-        return new EncounterTriggerData("StatusApplied",
-            JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<StatusAppliedTriggeredEffectContext>()));
     }
 
     // Constitutional Crisis: one Exception each per round, never more than one held.

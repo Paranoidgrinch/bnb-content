@@ -25,7 +25,7 @@ public static class BossPhases
         // ── Act I ─────────────────────────────────────────────────────────────────────────────────────────
         QueueCommissioner.FinalCounterId,          // the transition, telegraphed on the boss
         QueueCommissioner.PriorityQueueId,         // Phase II
-        LordSealkeeper.UnsealPendingId,
+        LordSealkeeper.CrackingId,
         LordSealkeeper.UnsealedId,
         DeputyUndersecretary.ExecutiveId,
         MunicipalDragon.UnlicensedId,

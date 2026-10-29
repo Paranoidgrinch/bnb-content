@@ -244,24 +244,6 @@
         ]
       },
       {
-        "id": "disposition_memorandum",
-        "name": "Disposition Memorandum",
-        "intent_type": "mixed",
-        "special": true,
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 9
-          },
-          {
-            "type": "gain_block",
-            "target": "owner",
-            "amount": 12
-          }
-        ]
-      },
-      {
         "id": "decide_without_hearing",
         "name": "Decide Without Hearing",
         "intent_type": "attack",
@@ -271,19 +253,6 @@
             "type": "deal_damage",
             "target": "player",
             "amount": 16
-          }
-        ]
-      },
-      {
-        "id": "close_an_unanswered_file",
-        "name": "Close an Unanswered File",
-        "intent_type": "buff",
-        "special": true,
-        "actions": [
-          {
-            "type": "gain_block",
-            "target": "owner",
-            "amount": 0
           }
         ]
       },
@@ -353,7 +322,7 @@
             }
           ]
         },
-        "action": "disposition_memorandum",
+        "action": "decide_without_hearing",
         "priority": 59
       },
       {
@@ -370,106 +339,11 @@
               "counter": "boss_beat",
               "op": "eq",
               "value": 2
-            },
-            {
-              "kind": "self_counter",
-              "counter": "close_file_uses",
-              "op": "lt",
-              "value": 2
-            },
-            {
-              "kind": "any_of",
-              "conditions": [
-                {
-                  "kind": "self_status",
-                  "status": "file_unanswered_complaint",
-                  "min_stacks": 1
-                },
-                {
-                  "kind": "self_status",
-                  "status": "file_accumulated_delay",
-                  "min_stacks": 1
-                },
-                {
-                  "kind": "self_status",
-                  "status": "file_defective_filing",
-                  "min_stacks": 1
-                }
-              ]
-            }
-          ]
-        },
-        "action": "close_an_unanswered_file",
-        "priority": 58
-      },
-      {
-        "condition": {
-          "kind": "all_of",
-          "conditions": [
-            {
-              "kind": "self_status",
-              "status": "executive_disposition",
-              "min_stacks": 1
-            },
-            {
-              "kind": "self_counter",
-              "counter": "boss_beat",
-              "op": "eq",
-              "value": 2
-            }
-          ]
-        },
-        "action": "disposition_memorandum",
-        "priority": 57
-      },
-      {
-        "condition": {
-          "kind": "all_of",
-          "conditions": [
-            {
-              "kind": "self_status",
-              "status": "executive_disposition",
-              "min_stacks": 1
-            },
-            {
-              "kind": "self_counter",
-              "counter": "boss_beat",
-              "op": "eq",
-              "value": 3
-            }
-          ]
-        },
-        "action": "decide_without_hearing",
-        "priority": 56
-      },
-      {
-        "condition": {
-          "kind": "all_of",
-          "conditions": [
-            {
-              "kind": "self_status",
-              "status": "executive_disposition",
-              "min_stacks": 1
-            },
-            {
-              "kind": "self_counter",
-              "counter": "boss_beat",
-              "op": "eq",
-              "value": 4
             }
           ]
         },
         "action": "everything_outstanding",
-        "priority": 55
-      },
-      {
-        "condition": {
-          "kind": "self_status",
-          "status": "executive_disposition",
-          "min_stacks": 1
-        },
-        "action": "executive_adjournment",
-        "priority": 10
+        "priority": 58
       }
     ],
     "tags": [
@@ -830,6 +704,18 @@
         ]
       },
       {
+        "id": "mallet_of_validity",
+        "name": "Mallet of Validity",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 15
+          }
+        ]
+      },
+      {
         "id": "seal_the_record",
         "name": "Seal the Record",
         "intent_type": "mixed",
@@ -850,19 +736,8 @@
             "target": "owner",
             "amount": 8
           }
-        ]
-      },
-      {
-        "id": "mallet_of_validity",
-        "name": "Mallet of Validity",
-        "intent_type": "attack",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 15
-          }
-        ]
+        ],
+        "special": true
       },
       {
         "id": "certified_denial",
@@ -880,57 +755,8 @@
             "status": "doubt",
             "amount": 1
           }
-        ]
-      },
-      {
-        "id": "the_keeper_unsealed",
-        "name": "The Keeper Unsealed",
-        "intent_type": "buff",
-        "special": true,
-        "actions": [
-          {
-            "type": "gain_block",
-            "target": "owner",
-            "amount": 0
-          }
-        ]
-      },
-      {
-        "id": "shattered_impression",
-        "name": "Shattered Impression",
-        "intent_type": "mixed",
-        "special": true,
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 13
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "paperwork",
-            "amount": 1
-          }
-        ]
-      },
-      {
-        "id": "splintered_authority",
-        "name": "Splintered Authority",
-        "intent_type": "mixed",
-        "special": true,
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 10
-          },
-          {
-            "type": "gain_block",
-            "target": "owner",
-            "amount": 10
-          }
-        ]
+        ],
+        "special": true
       },
       {
         "id": "unsealed_verdict",
@@ -961,19 +787,6 @@
             "target": "player",
             "status": "paperwork",
             "amount": 2
-          }
-        ]
-      },
-      {
-        "id": "reclaim_the_seal",
-        "name": "Reclaim the Seal",
-        "intent_type": "buff",
-        "special": true,
-        "actions": [
-          {
-            "type": "gain_block",
-            "target": "owner",
-            "amount": 0
           }
         ]
       },
@@ -1014,31 +827,22 @@
     "intent_rules": [
       {
         "condition": {
-          "kind": "self_status",
-          "status": "the_keeper_unsealed_next",
-          "min_stacks": 1
-        },
-        "action": "the_keeper_unsealed",
-        "priority": 100
-      },
-      {
-        "condition": {
           "kind": "all_of",
           "conditions": [
             {
               "kind": "self_status",
-              "status": "unsealed_authority",
+              "status": "the_keeper_cracks",
               "min_stacks": 1
             },
             {
               "kind": "self_counter",
-              "counter": "seal_beat",
+              "counter": "phase_beat",
               "op": "eq",
               "value": 0
             }
           ]
         },
-        "action": "shattered_impression",
+        "action": "seal_the_record",
         "priority": 60
       },
       {
@@ -1047,18 +851,18 @@
           "conditions": [
             {
               "kind": "self_status",
-              "status": "unsealed_authority",
+              "status": "the_keeper_cracks",
               "min_stacks": 1
             },
             {
               "kind": "self_counter",
-              "counter": "seal_beat",
+              "counter": "phase_beat",
               "op": "eq",
               "value": 1
             }
           ]
         },
-        "action": "splintered_authority",
+        "action": "certified_denial",
         "priority": 59
       },
       {
@@ -1067,38 +871,18 @@
           "conditions": [
             {
               "kind": "self_status",
-              "status": "unsealed_authority",
+              "status": "the_keeper_cracks",
               "min_stacks": 1
             },
             {
               "kind": "self_counter",
-              "counter": "seal_beat",
+              "counter": "phase_beat",
               "op": "eq",
               "value": 2
-            },
-            {
-              "kind": "any_of",
-              "conditions": [
-                {
-                  "kind": "self_status",
-                  "status": "fragment_of_access_outstanding",
-                  "min_stacks": 1
-                },
-                {
-                  "kind": "self_status",
-                  "status": "fragment_of_testimony_outstanding",
-                  "min_stacks": 1
-                },
-                {
-                  "kind": "self_status",
-                  "status": "fragment_of_execution_outstanding",
-                  "min_stacks": 1
-                }
-              ]
             }
           ]
         },
-        "action": "reclaim_the_seal",
+        "action": "unsealed_verdict",
         "priority": 58
       },
       {
@@ -1112,34 +896,14 @@
             },
             {
               "kind": "self_counter",
-              "counter": "seal_beat",
+              "counter": "phase_beat",
               "op": "eq",
-              "value": 2
-            }
-          ]
-        },
-        "action": "unsealed_verdict",
-        "priority": 57
-      },
-      {
-        "condition": {
-          "kind": "all_of",
-          "conditions": [
-            {
-              "kind": "self_status",
-              "status": "unsealed_authority",
-              "min_stacks": 1
-            },
-            {
-              "kind": "self_counter",
-              "counter": "seal_beat",
-              "op": "eq",
-              "value": 3
+              "value": 0
             }
           ]
         },
         "action": "stamp_the_flesh",
-        "priority": 56
+        "priority": 50
       },
       {
         "condition": {
@@ -1152,88 +916,14 @@
             },
             {
               "kind": "self_counter",
-              "counter": "seal_beat",
+              "counter": "phase_beat",
               "op": "eq",
-              "value": 4
-            }
-          ]
-        },
-        "action": "unsealed_verdict",
-        "priority": 55
-      },
-      {
-        "condition": {
-          "kind": "all_of",
-          "conditions": [
-            {
-              "kind": "self_status",
-              "status": "unsealed_authority",
-              "min_stacks": 1
-            },
-            {
-              "kind": "self_counter",
-              "counter": "seal_beat",
-              "op": "eq",
-              "value": 5
-            },
-            {
-              "kind": "not",
-              "conditions": [
-                {
-                  "kind": "any_of",
-                  "conditions": [
-                    {
-                      "kind": "self_status",
-                      "status": "fragment_of_access_outstanding",
-                      "min_stacks": 1
-                    },
-                    {
-                      "kind": "self_status",
-                      "status": "fragment_of_testimony_outstanding",
-                      "min_stacks": 1
-                    },
-                    {
-                      "kind": "self_status",
-                      "status": "fragment_of_execution_outstanding",
-                      "min_stacks": 1
-                    }
-                  ]
-                }
-              ]
+              "value": 1
             }
           ]
         },
         "action": "authority_without_seal",
-        "priority": 54
-      },
-      {
-        "condition": {
-          "kind": "all_of",
-          "conditions": [
-            {
-              "kind": "self_status",
-              "status": "unsealed_authority",
-              "min_stacks": 1
-            },
-            {
-              "kind": "self_counter",
-              "counter": "seal_beat",
-              "op": "eq",
-              "value": 5
-            }
-          ]
-        },
-        "action": "splintered_authority",
-        "priority": 53
-      },
-      {
-        "condition": {
-          "kind": "self_status",
-          "status": "unsealed_authority",
-          "min_stacks": 1
-        },
-        "action": "shattered_impression",
-        "priority": 10
+        "priority": 49
       }
     ],
     "tags": [

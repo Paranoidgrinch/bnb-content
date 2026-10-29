@@ -131,4 +131,24 @@ public class ActOneCutTests
         Assert.True(play.CombatDriver.Current is null || Patrons(play) == 0, "the patrons should leave with the Room");
         play.Dispose();
     }
+
+    // The Queue Commissioner carries the Queue stage's rule: a busy turn moves you along. Four cards move you a
+    // place on top of the queue's own step; three do not.
+    [Theory]
+    [InlineData(3, 2)]
+    [InlineData(4, 1)]
+    public void A_busy_turn_moves_you_up_the_commissioners_queue(int cards, int positionAfter)
+    {
+        var (play, session, boss) = FightProbe.Start(
+            FightProbe.Authored("city_boss_02", energy: 9), Enumerable.Repeat("paper_cut", 10).ToList(), health: 400);
+        Assert.Equal(QueueCommissioner.StartPosition, FightProbe.StacksOf(Hero(play), QueueCommissioner.PositionId));
+
+        for (var i = 0; i < cards; i++)
+            Play(play, session, "paper_cut", boss);
+        play.CombatDriver!.EndTurn();
+        Assert.Null(session.Error);
+
+        Assert.Equal(positionAfter, FightProbe.StacksOf(Hero(play), QueueCommissioner.PositionId));
+        play.Dispose();
+    }
 }

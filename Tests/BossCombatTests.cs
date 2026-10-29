@@ -291,7 +291,7 @@ public class BossCombatTests
 
         Play(play, session, access.BreakCardId);
         Assert.Equal(0, FightProbe.StacksOf(Enemy(play, keeperId), access.SealId));
-        Assert.Equal(1, FightProbe.StacksOf(Enemy(play, keeperId), access.OutstandingId));
+        Assert.Equal(1, FightProbe.StacksOf(Enemy(play, keeperId), LordSealkeeper.CrackingId)); // Phase II
         Assert.Contains(play.CombatDriver!.Current!.Hand, c => c.DefinitionId.value == access.FragmentCardId);
 
         // Only one Seal per turn: a second offer does nothing.
@@ -305,7 +305,6 @@ public class BossCombatTests
         Assert.True(guarded > 0, "the Ward rises again on the surviving Seals");
         Play(play, session, access.FragmentCardId);
         Assert.Equal(Math.Max(0, guarded - 12), BlockOf(Enemy(play, keeperId)));
-        Assert.Equal(0, FightProbe.StacksOf(Enemy(play, keeperId), access.OutstandingId));
     }
 
     // A Fragment stays in hand across turns: it is the boss's authority, not a card of the deck.
@@ -324,31 +323,39 @@ public class BossCombatTests
             c => c.DefinitionId.value == LordSealkeeper.Seals[2].FragmentCardId);
     }
 
-    // Wearing the Keeper down unseals it: the Seals shatter, the Ward falls, and Phase II begins.
+    // Every broken Seal is a phase: one broken and the Keeper cracks, two and it is unsealed — and each phase
+    // telegraphs its own short loop of moves.
     [Fact]
-    public void The_keeper_unseals_itself_when_the_seals_are_gone()
+    public void Each_broken_seal_moves_the_keeper_into_its_next_phase()
     {
         var (play, session, keeperId) = Sealkeeper(Enumerable.Repeat("paper_cut", 60).ToList(), energy: 9);
 
+        var phases = new List<string>();
         for (var turn = 0; turn < 12 && FightProbe.StacksOf(Enemy(play, keeperId), LordSealkeeper.UnsealedId) == 0; turn++)
         {
             while (play.CombatDriver!.Current!.Hand.Any(c => c.DefinitionId.value == "paper_cut")
                    && Hero(play).Resources[StandardCombatIds.EnergyResource].Current > 0)
                 Cut(play, session, keeperId);
 
-            // Whatever Seal is offered, take it.
+            // Whatever Seal still stands and is offered, take it.
             var offer = play.CombatDriver.Current!.Hand
-                .FirstOrDefault(c => LordSealkeeper.Seals.Any(s => s.BreakCardId == c.DefinitionId.value));
+                .FirstOrDefault(c => LordSealkeeper.Seals.Any(s => s.BreakCardId == c.DefinitionId.value
+                    && FightProbe.StacksOf(Enemy(play, keeperId), s.SealId) > 0));
             if (offer is not null)
+            {
                 play.CombatDriver.PlayCard(offer.Id, keeperId);
+                Assert.Null(session.Error);
+                phases.Add(FightProbe.StacksOf(Enemy(play, keeperId), LordSealkeeper.CrackingId) > 0 ? "II"
+                    : FightProbe.StacksOf(Enemy(play, keeperId), LordSealkeeper.UnsealedId) > 0 ? "III" : "I");
+            }
 
             play.CombatDriver.EndTurn();
             Assert.Null(session.Error);
         }
 
+        Assert.Equal(["II", "III"], phases);
         Assert.Equal(1, FightProbe.StacksOf(Enemy(play, keeperId), LordSealkeeper.UnsealedId));
-        Assert.All(LordSealkeeper.Seals,
-            seal => Assert.Equal(0, FightProbe.StacksOf(Enemy(play, keeperId), seal.SealId)));
+        Assert.Equal(1, LordSealkeeper.Seals.Count(seal => FightProbe.StacksOf(Enemy(play, keeperId), seal.SealId) > 0));
     }
 
     private static (RunPlayback Play, InteractiveRunSession Session, CombatantId KeeperId) Sealkeeper(
@@ -501,40 +508,6 @@ public class BossCombatTests
         // Once per side per turn: a second guard passes unanswered.
         Play(play, session, "cower_behind_a_desk");
         Assert.Equal(charterBlock + answered, BlockOf(Enemy(play, charterId)));
-    }
-
-    // Article of Due Notice: what either side files takes effect only from the recipient's next turn. The
-    // Charter carries the Article, the player its mirror, and both rest on the engine's postponement rule.
-    [Fact]
-    public void The_article_of_due_notice_postpones_what_is_filed()
-    {
-        var (play, session, charterId) = Charter(Enumerable.Repeat("permit_a38", 30).ToList(), energy: 9);
-
-        // Strike Articles down until the rotation reaches Due Notice (the Emergency Amendment publishes one of
-        // its own along the way, so the number of strikes is not fixed).
-        for (var round = 0; round < 8
-             && FightProbe.StacksOf(Enemy(play, charterId), LivingCharter.DueNoticeId) == 0; round++)
-        {
-            for (var i = 0; i < 5 && FightProbe.StacksOf(Hero(play), LivingCharter.ReviewPendingId) == 0; i++)
-                play.CombatDriver!.EndTurn();
-            Play(play, session, LivingCharter.StrikeDownCardId);
-        }
-        Assert.Null(session.Error);
-        Assert.Equal(1, FightProbe.StacksOf(Enemy(play, charterId), LivingCharter.DueNoticeId));
-
-        // The Article binds the player as well, through its mirror.
-        play.CombatDriver!.EndTurn();
-        Assert.Equal(1, FightProbe.StacksOf(Hero(play), LivingCharter.UnderNoticeId));
-
-        // Permit A38 files 5 Paperwork — which does not count until the Charter's next turn begins.
-        Play(play, session, "permit_a38");
-        Assert.Equal(0, FightProbe.StacksOf(Enemy(play, charterId), "paperwork"));
-        Assert.Single(Enemy(play, charterId).PendingStatuses);
-
-        play.CombatDriver!.EndTurn();
-        Assert.Null(session.Error);
-        Assert.Equal(5, FightProbe.StacksOf(Enemy(play, charterId), "paperwork"));
-        Assert.Empty(Enemy(play, charterId).PendingStatuses);
     }
 
     // Article of Full Disclosure: the law that favours the player. The Charter shows what it will do next and
