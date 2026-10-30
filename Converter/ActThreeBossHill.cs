@@ -34,6 +34,9 @@ public static partial class ActThree
     public const string CrownBreaksPendingId = "the_crown_breaks_open";
     public const string HillDoubledId = "rezoned";
     public const string HillNotedId = "hill_noted";
+    public const string ForbiddenDeedId = "hill_forbids_deeds";
+    public const string ForbiddenWorkingId = "hill_forbids_workings";
+    public const string ForbiddenRiteId = "hill_forbids_rites";
 
     public const int FootpathLaw = 34;
     public const int MeasuredSlopeLaw = 35;
@@ -66,6 +69,12 @@ public static partial class ActThree
             "Everything buried comes up through the road at the hill's next action."),
         Marker(HillDoubledId, "Rezoned",
             "The hill's next Trespass is 2 rather than 1. One licence still refuses the whole of it."),
+        Marker(ForbiddenDeedId, "Forbidden: Deeds",
+            "You played Deeds most last turn. Every Deed this turn is a Trespass owed to the Hill."),
+        Marker(ForbiddenWorkingId, "Forbidden: Workings",
+            "You played Workings most last turn. Every Working this turn is a Trespass owed to the Hill."),
+        Marker(ForbiddenRiteId, "Forbidden: Rites",
+            "You played Rites most last turn. Every Rite this turn is a Trespass owed to the Hill."),
         Marker(HillNotedId, "Footing Noted",
             "The hill has already answered one piece of footing this turn."),
     ];
@@ -101,93 +110,69 @@ public static partial class ActThree
     // ── the hill itself ───────────────────────────────────────────────────────────────────────────────────
     private static StatusData TheLandscapeHasStanding()
     {
-        var player = CombatantTargetSelectors.Source;
-        var memory = CostMemory("the_hill");
-
-        ICombatExpression<CardPlayedTriggeredEffectContext, int> ThisCost() =>
-            new AddExpression<CardPlayedTriggeredEffectContext>(
-                new CardInstanceBaseCostExpression<CardPlayedTriggeredEffectContext>(
-                    new TriggerEventCardInstanceExpression<CardPlayedTriggeredEffectContext>(),
-                    StandardCombatIds.EnergyResource),
-                new ConstantExpression<CardPlayedTriggeredEffectContext>(1));
-
-        // Keep to the Footpath — the fourth real card. The Slope Has Been Measured — two in a row of one
-        // price. Which is law depends on how far up the hill you have come, and in the crown it alternates.
-        var footpath = new AndExpression<CardPlayedTriggeredEffectContext>(
-            new OrExpression<CardPlayedTriggeredEffectContext>(
-                new NotExpression<CardPlayedTriggeredEffectContext>(
-                    Wears<CardPlayedTriggeredEffectContext>(Hill, SurveyedFaceId)),
-                new AndExpression<CardPlayedTriggeredEffectContext>(
-                    Wears<CardPlayedTriggeredEffectContext>(Hill, CrownOfTheHillId),
-                    new ComparisonExpression<CardPlayedTriggeredEffectContext>(
-                        new CombatantCounterExpression<CardPlayedTriggeredEffectContext>(
-                            Hill, CrownedLawCounter),
-                        ComparisonOperator.Equal,
-                        new ConstantExpression<CardPlayedTriggeredEffectContext>(0)))),
-            new ComparisonExpression<CardPlayedTriggeredEffectContext>(
-                NonJunkPlayedThisTurn(player), ComparisonOperator.Equal,
-                new ConstantExpression<CardPlayedTriggeredEffectContext>(4)));
-
-        var measured = new AndExpression<CardPlayedTriggeredEffectContext>(
+        // REWORKED in the content cut of 2026-10-29: the kind of card you played most last turn is forbidden
+        // this turn, and the forbidden kind is a chip on the Hill. Every forbidden card is a Trespass.
+        ICombatExpression<CardPlayedTriggeredEffectContext, bool> Forbidden(string marker, string tag) =>
             new AndExpression<CardPlayedTriggeredEffectContext>(
-                Wears<CardPlayedTriggeredEffectContext>(Hill, SurveyedFaceId),
-                new OrExpression<CardPlayedTriggeredEffectContext>(
-                    new NotExpression<CardPlayedTriggeredEffectContext>(
-                        Wears<CardPlayedTriggeredEffectContext>(Hill, CrownOfTheHillId)),
-                    new ComparisonExpression<CardPlayedTriggeredEffectContext>(
-                        new CombatantCounterExpression<CardPlayedTriggeredEffectContext>(
-                            Hill, CrownedLawCounter),
-                        ComparisonOperator.Equal,
-                        new ConstantExpression<CardPlayedTriggeredEffectContext>(1)))),
-            new AndExpression<CardPlayedTriggeredEffectContext>(
-                new ComparisonExpression<CardPlayedTriggeredEffectContext>(
-                    new CombatantCounterExpression<CardPlayedTriggeredEffectContext>(player, memory),
-                    ComparisonOperator.Greater,
-                    new ConstantExpression<CardPlayedTriggeredEffectContext>(0)),
-                new ComparisonExpression<CardPlayedTriggeredEffectContext>(
-                    new CombatantCounterExpression<CardPlayedTriggeredEffectContext>(player, memory),
-                    ComparisonOperator.Equal, ThisCost())));
+                Wears<CardPlayedTriggeredEffectContext>(Hill, marker),
+                new TriggerEventSourceCardHasTagExpression<CardPlayedTriggeredEffectContext>(new TagId(tag)));
 
         var footing = new EffectProgram<CardPlayedTriggeredEffectContext>(
-            new CausalSequenceEffectNode<CardPlayedTriggeredEffectContext>(
-            [
-                new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
-                    new OrExpression<CardPlayedTriggeredEffectContext>(footpath, measured),
-                    new CausalSequenceEffectNode<CardPlayedTriggeredEffectContext>(
-                    [
-                        Violate<CardPlayedTriggeredEffectContext>(
-                            Hill, FootpathLaw, HillNotedId,
-                            stacks: HillTrespass<CardPlayedTriggeredEffectContext>()),
-                        new RemoveStatusNode<CardPlayedTriggeredEffectContext>(
-                            Hill, new StatusDefinitionId(HillDoubledId)),
-                    ])),
-                new SetCombatantCounterNode<CardPlayedTriggeredEffectContext>(
-                    player, memory, ThisCost(), relative: false),
-            ]));
+            new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
+                new OrExpression<CardPlayedTriggeredEffectContext>(
+                    Forbidden(ForbiddenDeedId, Cards.CardAuthoring.DeedTag),
+                    new OrExpression<CardPlayedTriggeredEffectContext>(
+                        Forbidden(ForbiddenWorkingId, Cards.CardAuthoring.WorkingTag),
+                        Forbidden(ForbiddenRiteId, Cards.CardAuthoring.RiteTag))),
+                new CausalSequenceEffectNode<CardPlayedTriggeredEffectContext>(
+                [
+                    Violate<CardPlayedTriggeredEffectContext>(
+                        Hill, FootpathLaw, stacks: HillTrespass<CardPlayedTriggeredEffectContext>()),
+                    new RemoveStatusNode<CardPlayedTriggeredEffectContext>(
+                        Hill, new StatusDefinitionId(HillDoubledId)),
+                ])));
+
+        ICombatExpression<TurnEndedTriggeredEffectContext, int> Played(string tag) =>
+            new CardsPlayedThisTurnWithTagExpression<TurnEndedTriggeredEffectContext>(
+                CombatantTargetSelectors.Source, new TagId(tag));
+
+        IEffectNode<TurnEndedTriggeredEffectContext> Forbid(string marker) =>
+            new ApplyStatusNode<TurnEndedTriggeredEffectContext>(
+                Hill, new StatusDefinitionId(marker), new ConstantExpression<TurnEndedTriggeredEffectContext>(1));
+
+        ICombatExpression<TurnEndedTriggeredEffectContext, bool> AtLeast(
+            ICombatExpression<TurnEndedTriggeredEffectContext, int> a, ICombatExpression<TurnEndedTriggeredEffectContext, int> b) =>
+            new ComparisonExpression<TurnEndedTriggeredEffectContext>(a, ComparisonOperator.GreaterOrEqual, b);
+
+        var one = new ConstantExpression<TurnEndedTriggeredEffectContext>(1);
+        var deeds = Played(Cards.CardAuthoring.DeedTag);
+        var workings = Played(Cards.CardAuthoring.WorkingTag);
+        var rites = Played(Cards.CardAuthoring.RiteTag);
+
+        var forbid = new EffectProgram<TurnEndedTriggeredEffectContext>(
+            new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
+                PlayersTurn<TurnEndedTriggeredEffectContext>(),
+                new CausalSequenceEffectNode<TurnEndedTriggeredEffectContext>(
+                [
+                    new RemoveStatusNode<TurnEndedTriggeredEffectContext>(Hill, new StatusDefinitionId(ForbiddenDeedId)),
+                    new RemoveStatusNode<TurnEndedTriggeredEffectContext>(Hill, new StatusDefinitionId(ForbiddenWorkingId)),
+                    new RemoveStatusNode<TurnEndedTriggeredEffectContext>(Hill, new StatusDefinitionId(ForbiddenRiteId)),
+                    new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
+                        new AndExpression<TurnEndedTriggeredEffectContext>(
+                            AtLeast(deeds, one),
+                            new AndExpression<TurnEndedTriggeredEffectContext>(AtLeast(deeds, workings), AtLeast(deeds, rites))),
+                        Forbid(ForbiddenDeedId),
+                        new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
+                            new AndExpression<TurnEndedTriggeredEffectContext>(AtLeast(workings, one), AtLeast(workings, rites)),
+                            Forbid(ForbiddenWorkingId),
+                            new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
+                                AtLeast(rites, one), Forbid(ForbiddenRiteId)))),
+                ])));
 
         var bell = new EffectProgram<TurnStartedTriggeredEffectContext>(
             new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
                 PlayersTurn<TurnStartedTriggeredEffectContext>(),
-                new CausalSequenceEffectNode<TurnStartedTriggeredEffectContext>(
-                [
-                    new SetCombatantCounterNode<TurnStartedTriggeredEffectContext>(
-                        Applicant, memory, new ConstantExpression<TurnStartedTriggeredEffectContext>(0),
-                        relative: false),
-                    new RemoveStatusNode<TurnStartedTriggeredEffectContext>(
-                        Hill, new StatusDefinitionId(HillNotedId)),
-                    // In the crown the two laws take it in turns, and which one is showing is on the board
-                    // before the player acts.
-                    new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
-                        Wears<TurnStartedTriggeredEffectContext>(Hill, CrownOfTheHillId),
-                        new SetCombatantCounterNode<TurnStartedTriggeredEffectContext>(
-                            Hill, CrownedLawCounter,
-                            new SubtractExpression<TurnStartedTriggeredEffectContext>(
-                                new ConstantExpression<TurnStartedTriggeredEffectContext>(1),
-                                new CombatantCounterExpression<TurnStartedTriggeredEffectContext>(
-                                    Hill, CrownedLawCounter)),
-                            relative: false)),
-                    QueueTheThresholds<TurnStartedTriggeredEffectContext>(),
-                ])));
+                QueueTheThresholds<TurnStartedTriggeredEffectContext>()));
 
         // "Whenever the Hill WOULD gain a newly created Claim: remove that Claim and bury it." The landscape
         // does not hold standing — it holds the memory of standing.
@@ -228,17 +213,17 @@ public static partial class ActThree
                     Hill, new ConstantExpression<StatusApplicationBlockedTriggeredEffectContext>(6))));
 
         return Rule(HillId, "The Landscape Has Standing",
-            "On the lower slope the fourth real card of a turn is a Trespass; on the surveyed face it is two "
-            + "cards in a row of one price; in the crown the two take it in turns. The hill holds no "
-            + "standing at all — every Claim it is granted goes into the ground as a BURIED CLAIM, and at "
-            + "251 and again at 123 HP the slope stirs, gives you one whole turn to answer, and then cashes "
-            + "out everything under it. Settling with it in full is what takes one back out.",
+            "The kind of card you played most last turn is forbidden this turn: each one is a Trespass. "
+            + "Its Claims are buried and pay out at 251 and 123 HP.",
             [
                 new StatusTriggerData("CardPlayed", JsonSerializer.SerializeToElement(
                     footing, CombatJson.CreateOptions<CardPlayedTriggeredEffectContext>()),
                     StatusTriggerScope.Anywhere),
                 new StatusTriggerData("TurnStarted", JsonSerializer.SerializeToElement(
                     bell, CombatJson.CreateOptions<TurnStartedTriggeredEffectContext>()),
+                    StatusTriggerScope.Anywhere),
+                new StatusTriggerData("TurnEnded", JsonSerializer.SerializeToElement(
+                    forbid, CombatJson.CreateOptions<TurnEndedTriggeredEffectContext>()),
                     StatusTriggerScope.Anywhere),
                 new StatusTriggerData("StatusApplied", JsonSerializer.SerializeToElement(
                     bury<StatusAppliedTriggeredEffectContext>(),

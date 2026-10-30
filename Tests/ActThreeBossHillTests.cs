@@ -53,22 +53,6 @@ public class ActThreeBossHillTests
 
     // ── Keep to the Footpath ──────────────────────────────────────────────────────────────────────────────
 
-    // On the lower slope the fourth real card of a turn is the footing the hill objects to.
-    [Fact]
-    public void The_lower_slope_answers_a_fourth_card()
-    {
-        var (play, session, hill) = Start("raise_the_footpath", [.. Enumerable.Repeat(Working, 5)], energy: 4);
-
-        Play(play, session, Working, hill);
-        Play(play, session, Working, hill);
-        Play(play, session, Working, hill);
-        Assert.Equal(1, FightProbe.StacksOf(Hero(play), ActThree.SafeConductId));
-
-        Play(play, session, Working, hill);
-        Assert.Equal(0, FightProbe.StacksOf(Hero(play), ActThree.SafeConductId));
-        play.Dispose();
-    }
-
     // ── Buried Claims ─────────────────────────────────────────────────────────────────────────────────────
 
     // The hill never holds standing. What it is granted goes into the ground, where nothing can transfer it
@@ -226,23 +210,6 @@ public class ActThreeBossHillTests
         Assert.Equal(0, Block(TheHill(play)));
         Assert.Equal(1, FightProbe.StacksOf(TheHill(play), ActThree.CrownOfTheHillId));
         Assert.True(FightProbe.StacksOf(Hero(play), ActThree.SafeConductId) >= 1);
-        play.Dispose();
-    }
-
-    // In the crown, refusing the hill hardens the ground — and the licence still refuses it entirely.
-    [Fact]
-    public void Refusing_the_crowned_hill_hardens_the_ground()
-    {
-        var (play, session, hill) = Start("raise_the_footpath",
-            [.. Enumerable.Repeat(Working, 5)], energy: 4, health: null,
-            (ActThree.CrownOfTheHillId, 1), (ActThree.SurveyedFaceId, 1));
-
-        // The crown alternates, and the first bell of the fight sets it to the measure.
-        Play(play, session, Working, hill);
-        Play(play, session, Working, hill); // a matched pair
-
-        Assert.Equal(0, FightProbe.StacksOf(Hero(play), ActThree.SafeConductId));
-        Assert.Equal(6, Block(TheHill(play)));
         play.Dispose();
     }
 

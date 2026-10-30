@@ -67,6 +67,9 @@ public static partial class ActThree
     private static IEnumerable<StatusData> HillQueenStatuses() =>
     [
         TheHillCourt(),
+        SummonedToTheHall(),
+        WaitingInTheHall(),
+        Marker(FullHearingHeldId, "Full Hearing Given", "The Queen has already heard you in full this fight."),
         Favor(),
         Marker(GrantedNamePreparedId, "Granted Name Prepared",
             "Her guard is gone and her name is in your mouth. Her next final order is 8 lighter."),
@@ -272,7 +275,9 @@ public static partial class ActThree
         DescriptionKey =
             "Once a turn, spend Favour. ONE — strike one of the Queen's Claims off. TWO — her law is "
             + "suspended for the rest of this turn. THREE — her guard is struck away and her granted name "
-            + "is prepared, which takes 8 off her final order.",
+            + "is prepared, which takes 8 off her final order. Or, once a fight and for no Favour, KNEEL FOR "
+            + "A FULL HEARING: your next turn is spent waiting in the hall, and she loses 35 HP, every Claim "
+            + "and her guard, and you gain 2 Safe-Conduct.",
         Costs = [],
         Tags = [AudienceTag, new TagId("form")],
         Program = new EffectProgram<CardPlayContext>(
@@ -282,15 +287,19 @@ public static partial class ActThree
                     new AndExpression<CardPlayContext>(
                         new NotExpression<CardPlayContext>(
                             Wears<CardPlayContext>(Applicant, AudienceUsedId)),
-                        new ComparisonExpression<CardPlayContext>(
-                            HeldFavor<CardPlayContext>(), ComparisonOperator.GreaterOrEqual,
-                            new ConstantExpression<CardPlayContext>(1))),
+                        new OrExpression<CardPlayContext>(
+                            new ComparisonExpression<CardPlayContext>(
+                                HeldFavor<CardPlayContext>(), ComparisonOperator.GreaterOrEqual,
+                                new ConstantExpression<CardPlayContext>(1)),
+                            new NotExpression<CardPlayContext>(
+                                Wears<CardPlayContext>(HillQueen, FullHearingHeldId)))),
                     new ChooseOptionsNode<CardPlayContext>(
-                        [AskForRedress(), InvokeReciprocity(), SpeakTheGrantedName()],
+                        [AskForRedress(), InvokeReciprocity(), SpeakTheGrantedName(), KneelForAFullHearing()],
                         [
                             "ask for redress — 1 Favour, and a Claim is struck off",
                             "invoke reciprocity — 2 Favour, and her law is suspended this turn",
                             "speak the granted name — 3 Favour, and her guard and her order are lighter",
+                            "kneel for a full hearing — costs your next turn, once a fight",
                         ],
                         count: 1, purpose: "how you would be heard")),
                 AnotherAudience(),
@@ -316,6 +325,106 @@ public static partial class ActThree
                 heard,
                 RoyalReciprocity(),
             ]));
+
+    // ── the full hearing (content cut 2026-10-29) ─────────────────────────────────────────────────────────
+    //
+    // "An audience costs your next turn but gives a lot." Once a fight, for no Favour: she loses 35 HP, every
+    // Claim and her guard at once, you gain 2 Safe-Conduct — and your next turn is spent waiting in the hall.
+    public const string FullHearingHeldId = "full_hearing_held";
+    public const string WaitingInTheHallId = "waiting_in_the_hall";
+    public const string HallSummonedId = "summoned_to_the_hall";
+    private const int FullHearingHealth = 35;
+
+    private static IEffectNode<CardPlayContext> KneelForAFullHearing() =>
+        new ConditionalEffectNode<CardPlayContext>(
+            new NotExpression<CardPlayContext>(Wears<CardPlayContext>(HillQueen, FullHearingHeldId)),
+            new CausalSequenceEffectNode<CardPlayContext>(
+            [
+                new ApplyStatusNode<CardPlayContext>(
+                    HillQueen, new StatusDefinitionId(FullHearingHeldId), new ConstantExpression<CardPlayContext>(1)),
+                new ApplyStatusNode<CardPlayContext>(
+                    Applicant, new StatusDefinitionId(AudienceUsedId), new ConstantExpression<CardPlayContext>(1)),
+                new SetHealthNode<CardPlayContext>(
+                    HillQueen,
+                    new SubtractExpression<CardPlayContext>(
+                        new CombatantCurrentHealthExpression<CardPlayContext>(HillQueen),
+                        new ConstantExpression<CardPlayContext>(FullHearingHealth))),
+                new RemoveStatusNode<CardPlayContext>(HillQueen, new StatusDefinitionId(ClaimId)),
+                new ModifyDefensivePoolNode<CardPlayContext>(
+                    HillQueen, StandardCombatIds.BlockDefensivePool,
+                    new NegateExpression<CardPlayContext>(
+                        new CombatantDefensivePoolExpression<CardPlayContext>(
+                            HillQueen, StandardCombatIds.BlockDefensivePool))),
+                new ApplyStatusNode<CardPlayContext>(
+                    Applicant, new StatusDefinitionId(SafeConductId), new ConstantExpression<CardPlayContext>(2),
+                    sourceSelector: HillQueen),
+                new ApplyStatusNode<CardPlayContext>(
+                    Applicant, new StatusDefinitionId(HallSummonedId), new ConstantExpression<CardPlayContext>(1)),
+            ]));
+
+    // Summoned this turn; waiting through the next. The summons arms at the end of this turn, and the wait
+    // takes the next turn's hand and Energy as soon as it is dealt.
+    private static StatusData SummonedToTheHall()
+    {
+        var player = CombatantTargetSelectors.EventTarget;
+        var arm = new EffectProgram<TurnEndedTriggeredEffectContext>(
+            new CausalSequenceEffectNode<TurnEndedTriggeredEffectContext>(
+            [
+                new RemoveStatusNode<TurnEndedTriggeredEffectContext>(
+                    CombatantTargetSelectors.Source, new StatusDefinitionId(HallSummonedId)),
+                new ApplyStatusNode<TurnEndedTriggeredEffectContext>(
+                    CombatantTargetSelectors.Source, new StatusDefinitionId(WaitingInTheHallId),
+                    new ConstantExpression<TurnEndedTriggeredEffectContext>(1)),
+            ]));
+        return new StatusData
+        {
+            Id = HallSummonedId,
+            NameKey = "Summoned to the Hall",
+            DescriptionKey = "The Queen will hear you in full. Your next turn is spent waiting in the hall.",
+            Polarity = StatusPolarity.Neutral,
+            StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
+            UsesStacks = false,
+            Tags = [],
+            PassiveModifiers = [],
+            Triggers =
+            [
+                new StatusTriggerData("TurnEnded", JsonSerializer.SerializeToElement(
+                    arm, CombatJson.CreateOptions<TurnEndedTriggeredEffectContext>())),
+            ],
+        };
+    }
+
+    private static StatusData WaitingInTheHall()
+    {
+        var wait = new EffectProgram<CardsDrawnTriggeredEffectContext>(
+            new CausalSequenceEffectNode<CardsDrawnTriggeredEffectContext>(
+            [
+                new RemoveStatusNode<CardsDrawnTriggeredEffectContext>(
+                    CombatantTargetSelectors.Source, new StatusDefinitionId(WaitingInTheHallId)),
+                new MoveAllCardsFromZoneNode<CardsDrawnTriggeredEffectContext>(
+                    CombatantTargetSelectors.Source, CardZone.Hand, CardZone.DiscardPile),
+                new LoseResourceNode<CardsDrawnTriggeredEffectContext>(
+                    CombatantTargetSelectors.Source, StandardCombatIds.EnergyResource,
+                    new CombatantCurrentResourceExpression<CardsDrawnTriggeredEffectContext>(
+                        CombatantTargetSelectors.Source, StandardCombatIds.EnergyResource)),
+            ]));
+        return new StatusData
+        {
+            Id = WaitingInTheHallId,
+            NameKey = "Waiting in the Hall",
+            DescriptionKey = "This turn is spent waiting for the full hearing: no hand and no Energy.",
+            Polarity = StatusPolarity.Debuff,
+            StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
+            UsesStacks = false,
+            Tags = [],
+            PassiveModifiers = [],
+            Triggers =
+            [
+                new StatusTriggerData("CardsDrawn", JsonSerializer.SerializeToElement(
+                    wait, CombatJson.CreateOptions<CardsDrawnTriggeredEffectContext>())),
+            ],
+        };
+    }
 
     private static IEffectNode<CardPlayContext> AskForRedress() =>
         SpendFavor(1,
@@ -376,8 +485,10 @@ public static partial class ActThree
         where TContext : class =>
         new ConditionalEffectNode<TContext>(
             new AndExpression<TContext>(
-                new ComparisonExpression<TContext>(
-                    HeldFavor<TContext>(), ComparisonOperator.Greater, new ConstantExpression<TContext>(0)),
+                new OrExpression<TContext>(
+                    new ComparisonExpression<TContext>(
+                        HeldFavor<TContext>(), ComparisonOperator.Greater, new ConstantExpression<TContext>(0)),
+                    new NotExpression<TContext>(Wears<TContext>(HillQueen, FullHearingHeldId))),
                 new ComparisonExpression<TContext>(
                     new CombatantZoneCardCountExpression<TContext>(Applicant, CardZone.Hand, AudienceTag),
                     ComparisonOperator.Equal, new ConstantExpression<TContext>(0))),

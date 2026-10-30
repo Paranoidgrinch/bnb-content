@@ -331,7 +331,7 @@ public class ActThreeBossQueenTests
                        (ActThree.CourtInSessionId, 1)]);
         var before = Hero(plain).Health.Current;
         plain.CombatDriver!.EndTurn();
-        Assert.Equal(before - 30, Hero(plain).Health.Current);
+        Assert.Equal(before - 36, Hero(plain).Health.Current); // and 3 for each of her 2 Claims
         Assert.Equal(0, FightProbe.StacksOf(Court(plain), ActThree.ClaimId));
         plain.Dispose();
 
@@ -341,7 +341,7 @@ public class ActThreeBossQueenTests
                        (ActThree.CourtInSessionId, 1), (ActThree.GrantedNamePreparedId, 1)]);
         var start = Hero(named).Health.Current;
         named.CombatDriver!.EndTurn();
-        Assert.Equal(start - 22, Hero(named).Health.Current);
+        Assert.Equal(start - 28, Hero(named).Health.Current); // and 3 for each of her 2 Claims
         Assert.Equal(0, FightProbe.StacksOf(Court(named), ActThree.GrantedNamePreparedId));
         named.Dispose();
     }

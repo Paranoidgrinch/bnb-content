@@ -30,6 +30,8 @@ public static partial class ActThree
     public const string OmbudsmanId = "grounds_of_complaint";
 
     public const string RoadClaimId = "road_claim";
+    public const string HearingRoadId = "hearing_the_road";
+    public const string HearingRootId = "hearing_the_root";
     public const string RootClaimId = "root_claim";
     public const string RoadHeardId = "road_heard";
     public const string RootHeardId = "root_heard";
@@ -60,6 +62,10 @@ public static partial class ActThree
     private static IEnumerable<StatusData> OmbudsmanStatuses() =>
     [
         GroundsOfComplaint(),
+        Marker(HearingRoadId, "Hearing: the Road",
+            "Two cards of the same cost in a row owe the Ombudsman 1 Trespass. Road Claims become demands for Gold."),
+        Marker(HearingRootId, "Hearing: the Root",
+            "Ending your turn with Energy unspent owes the Ombudsman 1 Trespass. Root Claims become blows."),
         GroundClaim(RoadClaimId, "Road Claim",
             "Standing the Ombudsman holds under the Right of the Road. Heard, it becomes a demand for money."),
         GroundClaim(RootClaimId, "Root Claim",
@@ -119,18 +125,29 @@ public static partial class ActThree
     {
         var player = CombatantTargetSelectors.Source;
 
-        // Right of the Road — the fourth real card of a turn.
+        // Right of the Road — two cards of the same cost in a row (content cut 2026-10-29).
+        var memory = CostMemory("ombudsman_road");
+        ICombatExpression<CardPlayedTriggeredEffectContext, int> ThisCost() =>
+            new AddExpression<CardPlayedTriggeredEffectContext>(
+                new CardInstanceBaseCostExpression<CardPlayedTriggeredEffectContext>(
+                    new TriggerEventCardInstanceExpression<CardPlayedTriggeredEffectContext>(),
+                    StandardCombatIds.EnergyResource),
+                new ConstantExpression<CardPlayedTriggeredEffectContext>(1));
         var road = new EffectProgram<CardPlayedTriggeredEffectContext>(
-            new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
-                new AndExpression<CardPlayedTriggeredEffectContext>(
-                    GroundLive<CardPlayedTriggeredEffectContext>(0),
-                    new ComparisonExpression<CardPlayedTriggeredEffectContext>(
-                        NonJunkPlayedThisTurn(player), ComparisonOperator.Equal,
-                        new ConstantExpression<CardPlayedTriggeredEffectContext>(4))),
-                Violate<CardPlayedTriggeredEffectContext>(
-                    Ombudsman, RightOfTheRoadLaw, OmbudsmanNotedRoadId)));
+            new CausalSequenceEffectNode<CardPlayedTriggeredEffectContext>(
+            [
+                new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
+                    new AndExpression<CardPlayedTriggeredEffectContext>(
+                        GroundLive<CardPlayedTriggeredEffectContext>(0),
+                        new ComparisonExpression<CardPlayedTriggeredEffectContext>(
+                            new CombatantCounterExpression<CardPlayedTriggeredEffectContext>(player, memory),
+                            ComparisonOperator.Equal, ThisCost())),
+                    Violate<CardPlayedTriggeredEffectContext>(
+                        Ombudsman, RightOfTheRoadLaw, OmbudsmanNotedRoadId)),
+                new SetCombatantCounterNode<CardPlayedTriggeredEffectContext>(player, memory, ThisCost(), relative: false),
+            ]));
 
-        // Right of the Root — ending a turn with nothing left to spend.
+        // Right of the Root — ending a turn with Energy left unspent (content cut 2026-10-29).
         var root = new EffectProgram<TurnEndedTriggeredEffectContext>(
             new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
                 new AndExpression<TurnEndedTriggeredEffectContext>(
@@ -140,7 +157,7 @@ public static partial class ActThree
                         new ComparisonExpression<TurnEndedTriggeredEffectContext>(
                             new CombatantCurrentResourceExpression<TurnEndedTriggeredEffectContext>(
                                 Applicant, StandardCombatIds.EnergyResource),
-                            ComparisonOperator.Equal,
+                            ComparisonOperator.Greater,
                             new ConstantExpression<TurnEndedTriggeredEffectContext>(0)))),
                 Violate<TurnEndedTriggeredEffectContext>(
                     Ombudsman, RightOfTheRootLaw, OmbudsmanNotedRootId)));
@@ -158,6 +175,8 @@ public static partial class ActThree
                         Ombudsman, new StatusDefinitionId(OmbudsmanNotedRootId)),
                     new RemoveStatusNode<TurnStartedTriggeredEffectContext>(
                         Applicant, new StatusDefinitionId(CounterPetitionUsedId)),
+                    new SetCombatantCounterNode<TurnStartedTriggeredEffectContext>(
+                        Applicant, memory, new ConstantExpression<TurnStartedTriggeredEffectContext>(0), relative: false),
                     // The first bell opens the hearings on the Road rather than moving them: the complaint
                     // has to be heard on some Ground before it can be heard on the other.
                     new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
@@ -179,6 +198,21 @@ public static partial class ActThree
                                 relative: false))),
                     OfferACounterPetition<TurnStartedTriggeredEffectContext>(),
                     QueueTheBoundary<TurnStartedTriggeredEffectContext>(),
+                    // Which Ground is being heard is worn on the Ombudsman, so the live law is on screen.
+                    new RemoveStatusNode<TurnStartedTriggeredEffectContext>(
+                        Ombudsman, new StatusDefinitionId(HearingRoadId)),
+                    new RemoveStatusNode<TurnStartedTriggeredEffectContext>(
+                        Ombudsman, new StatusDefinitionId(HearingRootId)),
+                    new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
+                        GroundLive<TurnStartedTriggeredEffectContext>(0),
+                        new ApplyStatusNode<TurnStartedTriggeredEffectContext>(
+                            Ombudsman, new StatusDefinitionId(HearingRoadId),
+                            new ConstantExpression<TurnStartedTriggeredEffectContext>(1))),
+                    new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
+                        GroundLive<TurnStartedTriggeredEffectContext>(1),
+                        new ApplyStatusNode<TurnStartedTriggeredEffectContext>(
+                            Ombudsman, new StatusDefinitionId(HearingRootId),
+                            new ConstantExpression<TurnStartedTriggeredEffectContext>(1))),
                 ])));
 
         // A Claim remembers which law made it. The act writes the law down as the violation goes past, and
@@ -204,11 +238,8 @@ public static partial class ActThree
                 ])));
 
         return Rule(OmbudsmanId, "Grounds of Complaint",
-            "Two rights, and only one of them is being heard at a time until the boundary is joined: the "
-            + "Right of the Road (a fourth real card in a turn) and the Right of the Root (ending a turn "
-            + "with no Energy). Standing remembers which right made it — a Road Claim becomes a demand for "
-            + "money, a Root Claim becomes a blow — and a licence spent on a COUNTER-PETITION moves one "
-            + "complaint from the one Ground to the other. Hear one of each and the two jurisdictions join.",
+            "Road (two cards of one cost in a row) and Root (ending a turn with Energy unspent) alternate. "
+            + "Road Claims cost Gold, Root Claims HP.",
             [
                 new StatusTriggerData("CardPlayed", JsonSerializer.SerializeToElement(
                     road, CombatJson.CreateOptions<CardPlayedTriggeredEffectContext>()),

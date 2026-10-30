@@ -51,66 +51,7 @@ public class ActThreeBossOmbudsmanTests
 
     // ── the two Grounds ───────────────────────────────────────────────────────────────────────────────────
 
-    // The hearings open on the Road, so the fourth real card of the first turn is the breach — and ending
-    // that turn with nothing left to spend is not, because the Root is not being heard.
-    [Fact]
-    public void Only_the_ground_being_heard_is_law()
-    {
-        var (play, session, boss) = Start("hear_both_parties", [.. Enumerable.Repeat(Working, 5)], energy: 4);
-
-        Play(play, session, Working, boss);
-        Play(play, session, Working, boss);
-        Play(play, session, Working, boss);
-        Assert.Equal(1, FightProbe.StacksOf(Hero(play), ActThree.SafeConductId));
-
-        Play(play, session, Working, boss); // the fourth: the Right of the Road
-        Assert.Equal(0, FightProbe.StacksOf(Hero(play), ActThree.SafeConductId));
-
-        play.CombatDriver!.EndTurn(); // the purse is empty, but the Root is not being heard
-        Assert.Equal(0, TrespassFrom(play, boss));
-        play.Dispose();
-    }
-
-    // …and the hearing moves to the other Ground every turn while they are still separate.
-    [Fact]
-    public void The_hearing_moves_to_the_other_ground_each_turn()
-    {
-        var (play, _, boss) = Start("hear_both_parties", [.. Enumerable.Repeat(Working, 5)], energy: 0);
-
-        play.CombatDriver!.EndTurn(); // turn 1 is the Road: an empty purse says nothing
-        Assert.Equal(0, TrespassFrom(play, boss));
-
-        play.CombatDriver.EndTurn();  // turn 2 is the Root, and the purse was empty
-        Assert.Equal(0, FightProbe.StacksOf(Hero(play), ActThree.SafeConductId));
-        play.Dispose();
-    }
-
     // ── Grounds of Complaint ──────────────────────────────────────────────────────────────────────────────
-
-    // Standing remembers which right made it: a breach of the Road is a Road Claim.
-    [Fact]
-    public void Standing_remembers_the_ground_that_made_it()
-    {
-        var (play, session, boss) = Start("hear_both_parties",
-            [.. Enumerable.Repeat(Working, 5)], energy: 9);
-
-        // Three breaches of the Road, one a turn, and the first is refused by the opening licence.
-        for (var turn = 0; turn < 4; turn++)
-        {
-            if (turn > 0)
-            {
-                play.CombatDriver!.EndTurn(); // the hearing moves to the Root …
-                play.CombatDriver.EndTurn();  // … and back to the Road
-            }
-            for (var card = 0; card < 4; card++)
-                Play(play, session, Working, boss);
-        }
-
-        Assert.Equal(1, FightProbe.StacksOf(Boss(play), ActThree.ClaimId));
-        Assert.Equal(1, FightProbe.StacksOf(Boss(play), ActThree.RoadClaimId));
-        Assert.Equal(0, FightProbe.StacksOf(Boss(play), ActThree.RootClaimId));
-        play.Dispose();
-    }
 
     // ── Counter-Petition ──────────────────────────────────────────────────────────────────────────────────
 
@@ -233,23 +174,6 @@ public class ActThreeBossOmbudsmanTests
         play.Dispose();
     }
 
-    // Under combined jurisdiction both rights are law at once.
-    [Fact]
-    public void Combined_jurisdiction_makes_both_rights_law()
-    {
-        var (play, session, boss) = Start("hear_both_parties",
-            [.. Enumerable.Repeat(Working, 5)], energy: 4,
-            (ActThree.CombinedJurisdictionId, 1));
-
-        for (var card = 0; card < 4; card++)
-            Play(play, session, Working, boss); // the Road answers the fourth card …
-        Assert.Equal(0, FightProbe.StacksOf(Hero(play), ActThree.SafeConductId));
-
-        play.CombatDriver!.EndTurn();           // … and the Root answers the empty purse
-        Assert.Equal(1, TrespassFrom(play, boss));
-        play.Dispose();
-    }
-
     // ── Settlement Has Weight ─────────────────────────────────────────────────────────────────────────────
 
     // Settling in full strikes one Ombudsman Trespass off the record — and where there is nothing on it,
@@ -289,7 +213,7 @@ public class ActThreeBossOmbudsmanTests
         var before = Hero(play).Health.Current;
         play.CombatDriver!.EndTurn();
 
-        Assert.Equal(before - 28, Hero(play).Health.Current); // 18 and two roots
+        Assert.Equal(before - 37, Hero(play).Health.Current); // 18 and two roots, and 3 for each of its 3 Claims
         Assert.Equal(1, OwedTo(play, boss));                  // one road
         Assert.Equal(0, FightProbe.StacksOf(Boss(play), ActThree.ClaimId));
         Assert.Equal(0, FightProbe.StacksOf(Boss(play), ActThree.RoadClaimId));

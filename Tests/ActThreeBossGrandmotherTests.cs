@@ -288,7 +288,7 @@ public class ActThreeBossGrandmotherTests
         var before = Hero(play).Health.Current;
         play.CombatDriver!.EndTurn();
 
-        Assert.Equal(before - 16, Hero(play).Health.Current);
+        Assert.Equal(before - 25, Hero(play).Health.Current); // and 3 for each of her 3 Claims
         play.Dispose();
 
         // Already a guest, so the invitation to stay is not queued in front of the signature.
@@ -304,7 +304,7 @@ public class ActThreeBossGrandmotherTests
         var start = Hero(hurt).Health.Current;
         hurt.CombatDriver!.EndTurn();
 
-        Assert.Equal(start - 33, Hero(hurt).Health.Current);
+        Assert.Equal(start - 42, Hero(hurt).Health.Current); // and 3 for each of her 3 Claims
         Assert.Equal(0, FightProbe.StacksOf(Granny(hurt), ActThree.ClaimId));
         Assert.Equal(0, FightProbe.StacksOf(Granny(hurt), ActThree.RememberedFavorId));
         hurt.Dispose();
