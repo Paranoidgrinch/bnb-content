@@ -131,7 +131,7 @@ public static class ActBench
     }
 
     // An act's encounters by role, as the act's own pools hand them out (a mimic is a treasure, not a fight here).
-    private static IEnumerable<(string Role, EncounterDefinition Encounter)> Pool(RunBlueprint game, int act, string point)
+    public static IEnumerable<(string Role, EncounterDefinition Encounter)> Pool(RunBlueprint game, int act, string point)
     {
         var pool = game.Acts![act - 1].MapGeneration!.Encounters;
         var byId = game.Encounters.ToDictionary(e => e.Id.Value, StringComparer.Ordinal);

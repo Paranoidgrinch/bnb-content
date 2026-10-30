@@ -61,6 +61,10 @@ var familyNormals = 10;
 // THE ACT BENCH (ActBench, act III/IV tuning 2026-10-08): --act-bench <snapshots.json> --bench-acts 3,4 [--yes]
 //      + the --bench-* knobs — every encounter of an act against the decks real runs brought there.
 string? actBench = null;
+// THE MECHANIC AUDIT (MechanicAudit, 2026-10-30): --mechanic-audit <snapshots.json> --bench-acts 1,2,3,4 [--audit-per n]
+//      [--bench-only id,id] — the planner's line through every encounter replayed on a traced fork, every rule counted.
+string? mechanicAudit = null;
+var auditPer = 2;
 string? benchActs = null;
 string? benchRuns = null;
 // THE AUDIT (Audit, CONTENT_FIX_PLAN F5): --audit [--audit-only id,id] — every card and combat relic over four
@@ -124,6 +128,8 @@ for (var i = 0; i < args.Length - 1; i++)
         case "--family-relics": familyRelics = args[i + 1]; break;
         case "--family-normals": familyNormals = int.Parse(args[i + 1]); break;
         case "--act-bench": actBench = args[i + 1]; break;
+        case "--mechanic-audit": mechanicAudit = args[i + 1]; break;
+        case "--audit-per": auditPer = int.Parse(args[i + 1]); break;
         case "--bench-acts": benchActs = args[i + 1]; break;
         case "--bench-runs": benchRuns = args[i + 1]; break;
         case "--tuning": ActTuning.Override(args[i + 1]); break;
@@ -162,6 +168,11 @@ try
         return CalcCheck.Run(blueprint, calcCheck, seed, Console.WriteLine);
     if (audit)
         return Audit.Run(blueprint, Split(auditOnly) is { Count: > 0 } picked ? picked : null, jobs, Console.WriteLine);
+    if (mechanicAudit is not null)
+        return MechanicAudit.Run(blueprint, new MechanicAudit.Options(
+            mechanicAudit, [.. Split(benchActs).Select(int.Parse)], auditPer, benchHorizon,
+            args.Contains("--bench-beam") ? benchBeam : 6, args.Contains("--bench-perturn") ? benchPerTurn : 100, jobs,
+            Split(benchOnly)), Console.WriteLine);
     if (actBench is not null)
         return ActBench.Run(blueprint, new ActBench.Options(
             actBench, [.. Split(benchActs).Select(int.Parse)], args.Contains("--bench-shuffles") ? benchShuffles : 1, benchHorizon,
