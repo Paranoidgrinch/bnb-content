@@ -58,8 +58,8 @@ public class ActThreeEliteStagTests
 
     // ── Violence Requires Leave ───────────────────────────────────────────────────────────────────────────
 
-    // The first Deed of the turn needs leave. The fight opens the player with one Safe-Conduct and the Stag
-    // hands over a second at the bell, so the first two violations are simply refused.
+    // The first Deed of the turn needs leave. Since the content cut of 2026-10-29 the Stag grants leave only
+    // every other round, so the first round has just the act's opening licence — and it is spent.
     [Fact]
     public void The_first_deed_of_a_turn_needs_leave()
     {
@@ -67,18 +67,16 @@ public class ActThreeEliteStagTests
             FightProbe.Solo(ActThree.StagEnemyId, "stamp_the_hoof", energy: 9),
             deck: [Deed, Deed, Working, Working, Working], health: 400);
 
-        // The act's own licence, plus the one the Stag grants at the start of the player's turn.
-        Assert.Equal(2, FightProbe.StacksOf(Hero(play), ActThree.SafeConductId));
-
+        Assert.Equal(1, FightProbe.StacksOf(Hero(play), ActThree.SafeConductId));
         Play(play, session, Deed, stag);
 
-        Assert.Equal(1, FightProbe.StacksOf(Hero(play), ActThree.SafeConductId)); // refused, so it fired
+        Assert.Equal(0, FightProbe.StacksOf(Hero(play), ActThree.SafeConductId)); // leave given, so lawful
         Assert.Equal(0, TrespassFrom(play, stag));
+        Assert.Equal(0, FightProbe.StacksOf(Stag(play), ActThree.StagSanctionId));
         play.Dispose();
     }
 
-    // A Working is not violence, and the second Deed of a turn is not a second offence — the road answers
-    // one act of violence a turn.
+    // A Working is not violence, and the second Deed of a turn is not a second offence.
     [Fact]
     public void Only_the_first_deed_of_a_turn_is_an_offence()
     {
@@ -87,34 +85,37 @@ public class ActThreeEliteStagTests
             deck: [Working, Deed, Deed, Deed, Deed], health: 400);
 
         Play(play, session, Working, stag);
-        Assert.Equal(2, FightProbe.StacksOf(Hero(play), ActThree.SafeConductId)); // nothing to answer
+        Assert.Equal(1, FightProbe.StacksOf(Hero(play), ActThree.SafeConductId)); // nothing to answer
 
         Play(play, session, Deed, stag);
         Play(play, session, Deed, stag);
         Play(play, session, Deed, stag);
 
-        Assert.Equal(1, FightProbe.StacksOf(Hero(play), ActThree.SafeConductId)); // exactly one licence spent
+        Assert.Equal(0, FightProbe.StacksOf(Hero(play), ActThree.SafeConductId)); // exactly one licence spent
         play.Dispose();
     }
 
     // ── Sanction ──────────────────────────────────────────────────────────────────────────────────────────
 
-    // Every licence spent refusing the Stag is a Sanction, once a turn — and because the Stag refills the
-    // licence at every bell, a turn that opens with a Deed always costs one.
+    // Violence without leave is the Sanction: round 1 spends the opening licence, round 2 the Stag's own
+    // grant, and in round 3 there is none to spend.
     [Fact]
-    public void Refusing_the_stag_sanctions_you_once_a_turn()
+    public void A_deed_without_leave_is_a_sanction()
     {
         var (play, session, stag) = FightProbe.Start(
             FightProbe.Solo(ActThree.StagEnemyId, "stamp_the_hoof", energy: 9),
-            deck: [Deed, Deed, Deed, Deed, Deed], health: 400);
+            deck: [.. Enumerable.Repeat(Deed, 10)], health: 400);
 
         Play(play, session, Deed, stag);
-        Play(play, session, Deed, stag);
-        Assert.Equal(1, FightProbe.StacksOf(Stag(play), ActThree.StagSanctionId));
-
         play.CombatDriver!.EndTurn();
+        Assert.Equal(1, FightProbe.StacksOf(Hero(play), ActThree.SafeConductId)); // the Stag's grant
         Play(play, session, Deed, stag);
-        Assert.Equal(2, FightProbe.StacksOf(Stag(play), ActThree.StagSanctionId));
+        Assert.Equal(0, FightProbe.StacksOf(Stag(play), ActThree.StagSanctionId));
+        play.CombatDriver.EndTurn();
+
+        Play(play, session, Deed, stag);
+        Assert.Equal(1, TrespassFrom(play, stag));
+        Assert.Equal(1, FightProbe.StacksOf(Stag(play), ActThree.StagSanctionId));
         play.Dispose();
     }
 
@@ -185,7 +186,7 @@ public class ActThreeEliteStagTests
         var before = Hero(play).Health.Current;
         play.CombatDriver!.EndTurn();
 
-        Assert.Equal(before - 30, Hero(play).Health.Current);          // the stated maximum
+        Assert.Equal(before - 39, Hero(play).Health.Current);          // the stated maximum, and 3 per Claim
         Assert.Equal(1, FightProbe.StacksOf(Stag(play), ActThree.ClaimId));
         Assert.Equal(2, FightProbe.StacksOf(Stag(play), ActThree.ClaimConsumedId));
         play.Dispose();
@@ -201,14 +202,13 @@ public class ActThreeEliteStagTests
             FightProbe.Solo(ActThree.StagEnemyId, "mark_the_verge", energy: 9),
             deck: [Deed, Deed, Deed, Deed, Deed], health: 400);
 
-        play.CombatDriver!.EndTurn(); // the Stag stakes the verge
+        play.CombatDriver!.EndTurn(); // the Stag stakes the verge, and grants leave in round 2
 
-        Assert.Equal(3, FightProbe.StacksOf(Hero(play), ActThree.SafeConductId));
+        Assert.Equal(2, FightProbe.StacksOf(Hero(play), ActThree.SafeConductId));
         Play(play, session, Deed, stag);
 
-        Assert.Equal(2, FightProbe.StacksOf(Hero(play), ActThree.SafeConductId)); // one licence, not two
+        Assert.Equal(1, FightProbe.StacksOf(Hero(play), ActThree.SafeConductId)); // one licence, not two
         Assert.Equal(0, TrespassFrom(play, stag));
-        Assert.Equal(1, FightProbe.StacksOf(Stag(play), ActThree.StagSanctionId));
         play.Dispose();
     }
 

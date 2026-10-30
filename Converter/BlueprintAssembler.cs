@@ -139,6 +139,10 @@ public static class BlueprintAssembler
                         .. m.Act.Act == 1
                             ? [new InstallProgramByIdRunEffect(new RunProgramSourceId(MunicipalDragon.FeesProgramId))]
                             : Array.Empty<IRunEffectRequest>(),
+                        // …and the Green Docket's Toll Frog pays out what it spits.
+                        .. m.Act.Act == 3
+                            ? [new InstallProgramByIdRunEffect(new RunProgramSourceId(ActThree.FrogSpoilsProgramId))]
+                            : Array.Empty<IRunEffectRequest>(),
                     ],
                 })
                 .ToList(),
@@ -290,6 +294,7 @@ public static class BlueprintAssembler
         var programs = new Dictionary<string, ITriggeredRunEffectDefinition>
         {
             [MunicipalDragon.FeesProgramId] = MunicipalDragon.FeesProgram(),
+            [ActThree.FrogSpoilsProgramId] = ActThree.FrogSpoilsProgram(),
         };
         if (pools.TryGetValue(Events.ActOneEvents.Act, out var actOne))
             foreach (var (id, body) in Events.ActOneEventPrograms.All(actOne))

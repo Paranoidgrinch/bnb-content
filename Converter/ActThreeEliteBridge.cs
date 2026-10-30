@@ -209,8 +209,36 @@ public static partial class ActThree
                     new CombatantCurrentHealthExpression<TContext>(Bridge),
                     ComparisonOperator.LessOrEqual,
                     new ConstantExpression<TContext>(OtherBankHealth))),
-            new ApplyStatusNode<TContext>(
-                Bridge, new StatusDefinitionId(TheOtherBankId), new ConstantExpression<TContext>(1)));
+            new CausalSequenceEffectNode<TContext>(
+            [
+                new ApplyStatusNode<TContext>(
+                    Bridge, new StatusDefinitionId(TheOtherBankId), new ConstantExpression<TContext>(1)),
+                // Content cut 2026-10-29: turning around, the Bridge's books turn too. Every point you still
+                // owe it is struck off and becomes its debt to you, paid out of its own stonework.
+                new SetHealthNode<TContext>(
+                    Bridge,
+                    new SubtractExpression<TContext>(
+                        new CombatantCurrentHealthExpression<TContext>(Bridge),
+                        new MultiplyExpression<TContext>(
+                            OwedToTheBridge<TContext>(), new ConstantExpression<TContext>(TurnedDebtHealth)))),
+                new RepeatEffectNode<TContext>(
+                    OwedToTheBridge<TContext>(),
+                    new ModifySelectedStatusStacksNode<TContext>(
+                        Applicant,
+                        new StatusSelectionSpec(StatusPolarityFilter.Debuff)
+                        {
+                            Definition = new StatusDefinitionId(WergildId),
+                            FromActingSource = true,
+                        },
+                        new ConstantExpression<TContext>(-1),
+                        sourceSelector: Bridge)),
+            ]));
+
+    private const int TurnedDebtHealth = 8;
+
+    private static ICombatExpression<TContext, int> OwedToTheBridge<TContext>() where TContext : class =>
+        new CombatantStatusStacksFromSourceExpression<TContext>(
+            Applicant, new StatusDefinitionId(WergildId), Bridge);
 
     // ── settlement, read from whichever bank you are standing on ──────────────────────────────────────────
     private static IEffectNode<TurnEndedTriggeredEffectContext> TheTollForCrossing()

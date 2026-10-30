@@ -4,7 +4,7 @@ using RogueDeck.Scenario.Authoring;
 
 namespace BnbContent.Converter;
 
-// Act III elite 2 — **Grandmother Web** (154 HP).
+// Act III elite 2 — **The Old Web** (until the content cut of 2026-10-29, Grandmother Web) (154 HP).
 //
 // > Local customs are physical threads: Safe-Conduct can cut one, but the web eventually mends.
 //

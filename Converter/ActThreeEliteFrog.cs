@@ -1,5 +1,6 @@
 using System.Text.Json;
 using RogueDeck.Core.Combat;
+using RogueDeck.Run;
 using RogueDeck.Scenario.Authoring;
 
 namespace BnbContent.Converter;
@@ -68,34 +69,61 @@ public static partial class ActThree
             new CombatantCurrentHealthExpression<TContext>(Frog),
             ComparisonOperator.Greater, new ConstantExpression<TContext>(0));
 
+    // REWORKED in the content cut of 2026-10-29: the Frog swallows every payment as Toll, and a hard enough
+    // beating in one turn makes it spit the lot back — as Gold, paid out by a run program after the fight.
+    public const int FrogSpitDamage = 25;
+    public const int GoldPerToll = 8;
+    public const string FrogSpoilsProgramId = "ford_frog_spoils";
+    public static CounterId FrogBruiseCounter => new("frog_bruise");
+    public static CounterId FrogGoldCounter => new("frog_gold_spat");
+
+    public static ITriggeredRunEffectDefinition FrogSpoilsProgram() =>
+        RunPrograms.On<CombatResolvedRunEvent>(
+        [
+            RunEffectTemplates.GainResource(StandardRunIds.Gold,
+                RunExpr.Multiply(RunEventValues.CombatCounter(FrogGoldCounter.ToString()), RunExpr.Const(GoldPerToll))),
+        ]);
+
     private static StatusData NothingCrossesForFree()
     {
-        var player = CombatantTargetSelectors.Source;
+        var frog = CombatantTargetSelectors.EventTarget;
+        var bruise = new CombatantCounterExpression<DamageReceivedTriggeredEffectContext>(frog, FrogBruiseCounter);
+        var toll = new CombatantStatusStacksExpression<DamageReceivedTriggeredEffectContext>(
+            frog, new StatusDefinitionId(TollId));
 
-        // "The first time each player turn the player spends their final current Energy: 1 Trespass." The
-        // card has to have COST something — a free card played on an empty purse is not a crossing paid for.
-        var spent = new EffectProgram<CardPlayedTriggeredEffectContext>(
-            new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
-                new AndExpression<CardPlayedTriggeredEffectContext>(
-                    new ComparisonExpression<CardPlayedTriggeredEffectContext>(
-                        new CombatantCurrentResourceExpression<CardPlayedTriggeredEffectContext>(
-                            player, StandardCombatIds.EnergyResource),
-                        ComparisonOperator.Equal,
-                        new ConstantExpression<CardPlayedTriggeredEffectContext>(0)),
-                    new ComparisonExpression<CardPlayedTriggeredEffectContext>(
-                        new CardInstanceBaseCostExpression<CardPlayedTriggeredEffectContext>(
-                            new TriggerEventCardInstanceExpression<CardPlayedTriggeredEffectContext>(),
-                            StandardCombatIds.EnergyResource),
-                        ComparisonOperator.Greater,
-                        new ConstantExpression<CardPlayedTriggeredEffectContext>(0))),
-                Violate<CardPlayedTriggeredEffectContext>(
-                    Frog, NothingCrossesForFreeLaw, FrogCrossingNotedId)));
+        // Bearer-scoped: the Frog is the one being hit. Only blows struck in the player's own turn count.
+        var beaten = new EffectProgram<DamageReceivedTriggeredEffectContext>(
+            new ConditionalEffectNode<DamageReceivedTriggeredEffectContext>(
+                new TargetHasStatusExpression<DamageReceivedTriggeredEffectContext>(
+                    CombatantTargetSelectors.Source, new StatusDefinitionId(PassiveStatuses.ApplicantId)),
+                new CausalSequenceEffectNode<DamageReceivedTriggeredEffectContext>(
+                [
+                    new SetCombatantCounterNode<DamageReceivedTriggeredEffectContext>(
+                        frog, FrogBruiseCounter,
+                        new EventAmountExpression<DamageReceivedTriggeredEffectContext>(), relative: true),
+                    new ConditionalEffectNode<DamageReceivedTriggeredEffectContext>(
+                        new AndExpression<DamageReceivedTriggeredEffectContext>(
+                            new ComparisonExpression<DamageReceivedTriggeredEffectContext>(
+                                bruise, ComparisonOperator.GreaterOrEqual,
+                                new ConstantExpression<DamageReceivedTriggeredEffectContext>(FrogSpitDamage)),
+                            new ComparisonExpression<DamageReceivedTriggeredEffectContext>(
+                                toll, ComparisonOperator.Greater,
+                                new ConstantExpression<DamageReceivedTriggeredEffectContext>(0))),
+                        new CausalSequenceEffectNode<DamageReceivedTriggeredEffectContext>(
+                        [
+                            new SetCombatantCounterNode<DamageReceivedTriggeredEffectContext>(
+                                CombatantTargetSelectors.Source, FrogGoldCounter, toll, relative: true),
+                            new RemoveStatusNode<DamageReceivedTriggeredEffectContext>(
+                                frog, new StatusDefinitionId(TollId)),
+                        ])),
+                ])));
 
         var reset = new EffectProgram<TurnStartedTriggeredEffectContext>(
             new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
                 PlayersTurn<TurnStartedTriggeredEffectContext>(),
-                new RemoveStatusNode<TurnStartedTriggeredEffectContext>(
-                    Frog, new StatusDefinitionId(FrogCrossingNotedId))));
+                new SetCombatantCounterNode<TurnStartedTriggeredEffectContext>(
+                    Frog, FrogBruiseCounter, new ConstantExpression<TurnStartedTriggeredEffectContext>(0),
+                    relative: false)));
 
         // "The Toll Is Never Gone — whenever the Frog gains a newly created Claim, create Wergild 2." One
         // demand per grant, and grants stop at the Claim ceiling, so the ford cannot bill you forever.
@@ -105,14 +133,11 @@ public static partial class ActThree
                 DemandWergild<TContext>(CombatantTargetSelectors.EventTarget, 2)));
 
         return Rule(GreatTollFrogId, "Nothing Crosses for Free",
-            "The first time each turn you spend your last Energy, you owe the Frog 1 Trespass — and every "
-            + "Claim it is granted becomes a demand for 2. Each point of that demand you pay is swallowed as "
-            + "a Toll, up to 5, and the ford eventually gives all of it back at once. Pay in full and you "
-            + "may LEAVE THE CHANGE: one more card discarded takes a Toll back out of its throat.",
+            "Every Wergild point you pay it is swallowed as Toll (max 5). Deal it 25 in one turn and it spits "
+            + "the Toll back: 8 Gold each.",
             [
-                new StatusTriggerData("CardPlayed", JsonSerializer.SerializeToElement(
-                    spent, CombatJson.CreateOptions<CardPlayedTriggeredEffectContext>()),
-                    StatusTriggerScope.Anywhere),
+                new StatusTriggerData("DamageTaken", JsonSerializer.SerializeToElement(
+                    beaten, CombatJson.CreateOptions<DamageReceivedTriggeredEffectContext>())),
                 new StatusTriggerData("TurnStarted", JsonSerializer.SerializeToElement(
                     reset, CombatJson.CreateOptions<TurnStartedTriggeredEffectContext>()),
                     StatusTriggerScope.Anywhere),

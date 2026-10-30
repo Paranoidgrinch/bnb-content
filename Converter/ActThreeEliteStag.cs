@@ -95,47 +95,54 @@ public static partial class ActThree
                 [
                     new RemoveStatusNode<TurnStartedTriggeredEffectContext>(
                         Stag, new StatusDefinitionId(StagViolenceNotedId)),
+                    // Leave is granted every other round (the content cut of 2026-10-29): on the rounds between,
+                    // a Deed needs a licence you saved.
                     new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
-                        new ComparisonExpression<TurnStartedTriggeredEffectContext>(
-                            new CombatantStatusStacksExpression<TurnStartedTriggeredEffectContext>(
-                                Applicant, new StatusDefinitionId(SafeConductId)),
-                            ComparisonOperator.Less,
-                            new ConstantExpression<TurnStartedTriggeredEffectContext>(SafeConductCeiling)),
+                        new AndExpression<TurnStartedTriggeredEffectContext>(
+                            new ComparisonExpression<TurnStartedTriggeredEffectContext>(
+                                new RemainderExpression<TurnStartedTriggeredEffectContext>(
+                                    new RoundNumberExpression<TurnStartedTriggeredEffectContext>(),
+                                    new ConstantExpression<TurnStartedTriggeredEffectContext>(2)),
+                                ComparisonOperator.Equal,
+                                new ConstantExpression<TurnStartedTriggeredEffectContext>(0)),
+                            new ComparisonExpression<TurnStartedTriggeredEffectContext>(
+                                new CombatantStatusStacksExpression<TurnStartedTriggeredEffectContext>(
+                                    Applicant, new StatusDefinitionId(SafeConductId)),
+                                ComparisonOperator.Less,
+                                new ConstantExpression<TurnStartedTriggeredEffectContext>(SafeConductCeiling))),
                         new ApplyStatusNode<TurnStartedTriggeredEffectContext>(
                             Applicant, new StatusDefinitionId(SafeConductId),
                             new ConstantExpression<TurnStartedTriggeredEffectContext>(1),
                             sourceSelector: Stag)),
                 ])));
 
-        // "Whenever Safe-Conduct prevents Stag Trespass, the Stag gains 1 Sanction." A refusal is an event
-        // the engine announces: on it, the SOURCE is whoever refused (the player, wearing the licence) and
-        // the EVENT TARGET is whoever was refused — so "was it MY Trespass" is a question about the target.
-        var sanction = new EffectProgram<StatusApplicationBlockedTriggeredEffectContext>(
-            new ConditionalEffectNode<StatusApplicationBlockedTriggeredEffectContext>(
-                new AndExpression<StatusApplicationBlockedTriggeredEffectContext>(
-                    new TriggerEventStatusIsExpression<StatusApplicationBlockedTriggeredEffectContext>(
+        // REWORKED (content cut 2026-10-29): violence WITHOUT leave builds the Sanction. A Stag Trespass that
+        // actually lands — no licence refused it — is a Sanction; the source of the application is the Stag.
+        var sanction = new EffectProgram<StatusAppliedTriggeredEffectContext>(
+            new ConditionalEffectNode<StatusAppliedTriggeredEffectContext>(
+                new AndExpression<StatusAppliedTriggeredEffectContext>(
+                    new TriggerEventStatusIsExpression<StatusAppliedTriggeredEffectContext>(
                         new StatusDefinitionId(TrespassId)),
-                    new AndExpression<StatusApplicationBlockedTriggeredEffectContext>(
-                        new ComparisonExpression<StatusApplicationBlockedTriggeredEffectContext>(
-                            new CombatantStatusStacksExpression<StatusApplicationBlockedTriggeredEffectContext>(
-                                CombatantTargetSelectors.EventTarget,
+                    new AndExpression<StatusAppliedTriggeredEffectContext>(
+                        new ComparisonExpression<StatusAppliedTriggeredEffectContext>(
+                            new CombatantStatusStacksExpression<StatusAppliedTriggeredEffectContext>(
+                                CombatantTargetSelectors.Source,
                                 new StatusDefinitionId(StagLawId)),
                             ComparisonOperator.Greater,
-                            new ConstantExpression<StatusApplicationBlockedTriggeredEffectContext>(0)),
-                        new ComparisonExpression<StatusApplicationBlockedTriggeredEffectContext>(
-                            new CombatantStatusStacksExpression<StatusApplicationBlockedTriggeredEffectContext>(
+                            new ConstantExpression<StatusAppliedTriggeredEffectContext>(0)),
+                        new ComparisonExpression<StatusAppliedTriggeredEffectContext>(
+                            new CombatantStatusStacksExpression<StatusAppliedTriggeredEffectContext>(
                                 Stag, new StatusDefinitionId(StagSanctionId)),
                             ComparisonOperator.Less,
-                            new ConstantExpression<StatusApplicationBlockedTriggeredEffectContext>(
+                            new ConstantExpression<StatusAppliedTriggeredEffectContext>(
                                 StagSanctionsForCharge)))),
-                new ApplyStatusNode<StatusApplicationBlockedTriggeredEffectContext>(
+                new ApplyStatusNode<StatusAppliedTriggeredEffectContext>(
                     Stag, new StatusDefinitionId(StagSanctionId),
-                    new ConstantExpression<StatusApplicationBlockedTriggeredEffectContext>(1))));
+                    new ConstantExpression<StatusAppliedTriggeredEffectContext>(1))));
 
         return Rule(StagLawId, "Violence Requires Leave",
-            "The first Deed you play each turn is 1 Trespass owed to the Stag — and each of your turns opens "
-            + "with a Safe-Conduct from the Stag itself, up to three. Every licence you spend refusing it is "
-            + "a Sanction, and at 3 Sanctions its next action is the Authorized Charge.",
+            "Your first Deed each turn needs leave: a Safe-Conduct (it grants one every other round). Without "
+            + "leave: a Sanction. At 3, its Charge.",
             [
                 new StatusTriggerData("CardPlayed", JsonSerializer.SerializeToElement(
                     breach, CombatJson.CreateOptions<CardPlayedTriggeredEffectContext>()),
@@ -143,8 +150,8 @@ public static partial class ActThree
                 new StatusTriggerData("TurnStarted", JsonSerializer.SerializeToElement(
                     grant, CombatJson.CreateOptions<TurnStartedTriggeredEffectContext>()),
                     StatusTriggerScope.Anywhere),
-                new StatusTriggerData("StatusApplicationPrevented", JsonSerializer.SerializeToElement(
-                    sanction, CombatJson.CreateOptions<StatusApplicationBlockedTriggeredEffectContext>()),
+                new StatusTriggerData("StatusApplied", JsonSerializer.SerializeToElement(
+                    sanction, CombatJson.CreateOptions<StatusAppliedTriggeredEffectContext>()),
                     StatusTriggerScope.Anywhere),
             ]);
     }

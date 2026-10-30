@@ -56,22 +56,6 @@ public class ActThreeEliteFrogTests
 
     // ── Nothing Crosses for Free ──────────────────────────────────────────────────────────────────────────
 
-    // Spending your last Energy is a crossing you did not pay for. Once a turn.
-    [Fact]
-    public void Spending_your_last_energy_is_a_crossing()
-    {
-        var (play, session, frog) = FightProbe.Start(
-            FightProbe.Solo(ActThree.GreatTollFrogEnemyId, "mud_bank_impact", energy: 2),
-            deck: [OneCost, OneCost, OneCost, OneCost, OneCost], health: 400);
-
-        Play(play, session, OneCost, frog);
-        Assert.Equal(1, FightProbe.StacksOf(Hero(play), ActThree.SafeConductId)); // 1 Energy left: nothing
-
-        Play(play, session, OneCost, frog);
-        Assert.Equal(0, FightProbe.StacksOf(Hero(play), ActThree.SafeConductId)); // the purse is empty
-        play.Dispose();
-    }
-
     // A free card played on an empty purse is not a crossing paid for: the card has to have cost something.
     [Fact]
     public void A_card_that_costs_nothing_is_not_a_crossing()

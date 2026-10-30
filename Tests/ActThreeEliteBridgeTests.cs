@@ -286,7 +286,7 @@ public class ActThreeEliteBridgeTests
         var before = Hero(play).Health.Current;
         play.CombatDriver!.EndTurn();
 
-        Assert.Equal(before - 28, Hero(play).Health.Current);
+        Assert.Equal(before - 34, Hero(play).Health.Current); // and 3 for each of its 2 Claims
         Assert.Equal(0, FightProbe.StacksOf(Bridge(play), ActThree.ClaimId));
         Assert.Equal(0, FightProbe.StacksOf(Hero(play), ActThree.ReturnStandingId));
         play.Dispose();
