@@ -91,6 +91,14 @@ public static class GrandCrossReference
     private static readonly ICombatantTargetSelector Self = CombatantTargetSelectors.Source;
     private static readonly ICombatantTargetSelector Across = CombatantTargetSelectors.LowestHealthEnemyOfSource;
 
+    // An expiry has no Source — the engine reports only whose status ran out — so Final Result coming due reaches
+    // the engine and the player by what they wear (mechanic audit 2026-10-30: Self and Across resolved to nobody).
+    private static readonly ICombatantTargetSelector EngineBearer = CombatantTargetSelectors.FirstTarget(
+        CombatantTargetSelectors.WithStatus(CombatantTargetSelectors.AllCombatants, new StatusDefinitionId(EngineRulesId)));
+    private static readonly ICombatantTargetSelector ThePlayer = CombatantTargetSelectors.FirstTarget(
+        CombatantTargetSelectors.WithStatus(
+            CombatantTargetSelectors.AllCombatants, new StatusDefinitionId(PassiveStatuses.ApplicantId)));
+
     private static readonly (string Marker, int Index, CounterId Standing)[] Volumes =
     [
         (ThePremiseId, 1, PremiseStandingCounter),
@@ -273,22 +281,22 @@ public static class GrandCrossReference
                 new CausalSequenceEffectNode<StatusExpiredTriggeredEffectContext>(
                 [
                     new DealDamageNode<StatusExpiredTriggeredEffectContext>(
-                        Across,
+                        ThePlayer,
                         new CombatantCounterExpression<StatusExpiredTriggeredEffectContext>(
-                            Self, FinalResultDamageCounter)),
+                            EngineBearer, FinalResultDamageCounter)),
                     // "Increase damage by 3, maximum 29" — 20 → 23 → 26 → 29 → 29…
                     new SetCombatantCounterNode<StatusExpiredTriggeredEffectContext>(
-                        Self, FinalResultDamageCounter,
+                        EngineBearer, FinalResultDamageCounter,
                         new MinExpression<StatusExpiredTriggeredEffectContext>(
                             new AddExpression<StatusExpiredTriggeredEffectContext>(
                                 new CombatantCounterExpression<StatusExpiredTriggeredEffectContext>(
-                                    Self, FinalResultDamageCounter),
+                                    EngineBearer, FinalResultDamageCounter),
                                 new ConstantExpression<StatusExpiredTriggeredEffectContext>(FinalResultStep)),
                             new ConstantExpression<StatusExpiredTriggeredEffectContext>(FinalResultCeiling)),
                         relative: false),
                     // "Final Result cannot be permanently removed": it files itself again at once.
                     new ApplyStatusNode<StatusExpiredTriggeredEffectContext>(
-                        Self, new StatusDefinitionId(FinalResultId),
+                        EngineBearer, new StatusDefinitionId(FinalResultId),
                         new ConstantExpression<StatusExpiredTriggeredEffectContext>(1), durationTurns: 2),
                 ])));
 
@@ -296,7 +304,9 @@ public static class GrandCrossReference
             "It keeps the roll of what is still standing, and the last thing to fall decides what it becomes.",
             [
                 Watch("TurnStarted", onTurnStarted),
-                Watch("StatusExpired", onExpired),
+                // Anywhere: Final Result is another status; Bearer scope only heard the engine's own rule expire
+                // (mechanic audit 2026-10-30).
+                Watch("StatusExpired", onExpired, StatusTriggerScope.Anywhere),
             ]);
     }
 

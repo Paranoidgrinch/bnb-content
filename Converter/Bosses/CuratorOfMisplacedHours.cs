@@ -96,6 +96,14 @@ public static class CuratorOfMisplacedHours
     private static readonly ICombatantTargetSelector Self = CombatantTargetSelectors.Source;
     private static readonly ICombatantTargetSelector Across = CombatantTargetSelectors.LowestHealthEnemyOfSource;
 
+    // An expiry has no Source — the engine reports only whose status ran out — so a filed hour coming due reaches
+    // the clock and the player by what they wear (mechanic audit 2026-10-30: Self and Across resolved to nobody).
+    private static readonly ICombatantTargetSelector ClockBearer = CombatantTargetSelectors.FirstTarget(
+        CombatantTargetSelectors.WithStatus(CombatantTargetSelectors.AllCombatants, new StatusDefinitionId(CuratorStateId)));
+    private static readonly ICombatantTargetSelector ThePlayer = CombatantTargetSelectors.FirstTarget(
+        CombatantTargetSelectors.WithStatus(
+            CombatantTargetSelectors.AllCombatants, new StatusDefinitionId(PassiveStatuses.ApplicantId)));
+
     // Every hour that can sit on the timeline, in the order the design lists them.
     public static readonly string[] Scheduled =
     [
@@ -373,7 +381,7 @@ public static class CuratorOfMisplacedHours
                 Due(ScheduledFirstBookingId, Hit(10)),
                 Due(ScheduledSecondBookingId, Hit(10)),
                 Due(ScheduledAuthorityId, new ApplyStatusNode<StatusExpiredTriggeredEffectContext>(
-                    Self, new StatusDefinitionId("strength"),
+                    ClockBearer, new StatusDefinitionId("strength"),
                     new ConstantExpression<StatusExpiredTriggeredEffectContext>(3))),
                 Due(ScheduledPassageId, new CausalSequenceEffectNode<StatusExpiredTriggeredEffectContext>(
                     [Hit(24), Paperwork(1)])),
@@ -383,7 +391,7 @@ public static class CuratorOfMisplacedHours
                 // Temporal Overlap: "if at least two resolve in the same window, apply 1 Paperwork after both
                 // resolve; maximum once per window."
                 new ConditionalEffectNode<StatusExpiredTriggeredEffectContext>(
-                    CounterIs<StatusExpiredTriggeredEffectContext>(Self, ResolvedThisWindowCounter, 2),
+                    CounterIs<StatusExpiredTriggeredEffectContext>(ClockBearer, ResolvedThisWindowCounter, 2),
                     Paperwork(1)),
             ]));
 
@@ -404,7 +412,9 @@ public static class CuratorOfMisplacedHours
             + "ready or not.",
             [
                 Watch("TurnStarted", onTurnStarted),
-                Watch("StatusExpired", onExpired),
+                // Anywhere: the hours that come due are OTHER statuses; a Bearer-scoped StatusExpired only hears the
+                // clock itself run out, and the filed hours never landed (mechanic audit 2026-10-30).
+                Watch("StatusExpired", onExpired, StatusTriggerScope.Anywhere),
                 Watch("Downed", onDowned),
             ]);
     }
@@ -416,7 +426,7 @@ public static class CuratorOfMisplacedHours
             new CausalSequenceEffectNode<StatusExpiredTriggeredEffectContext>(
             [
                 payload,
-                Bump<StatusExpiredTriggeredEffectContext>(Self, ResolvedThisWindowCounter, 1),
+                Bump<StatusExpiredTriggeredEffectContext>(ClockBearer, ResolvedThisWindowCounter, 1),
             ]));
 
     // "Replace non-signature timeline entries as necessary, then schedule 10 / 17 / 25 at 1 / 2 / 3 turns.
@@ -694,11 +704,11 @@ public static class CuratorOfMisplacedHours
 
     private static IEffectNode<StatusExpiredTriggeredEffectContext> Hit(int amount) =>
         new DealDamageNode<StatusExpiredTriggeredEffectContext>(
-            Across, new ConstantExpression<StatusExpiredTriggeredEffectContext>(amount));
+            ThePlayer, new ConstantExpression<StatusExpiredTriggeredEffectContext>(amount));
 
     private static IEffectNode<StatusExpiredTriggeredEffectContext> Paperwork(int stacks) =>
         new ApplyStatusNode<StatusExpiredTriggeredEffectContext>(
-            Across, new StatusDefinitionId(Keywords.Paperwork),
+            ThePlayer, new StatusDefinitionId(Keywords.Paperwork),
             new ConstantExpression<StatusExpiredTriggeredEffectContext>(stacks));
 
     private static IEffectNode<EnemyActionContext> Block(int amount) =>
@@ -752,9 +762,10 @@ public static class CuratorOfMisplacedHours
     private static ICombatExpression<TContext, bool> IsTheApplicant<TContext>() where TContext : class =>
         new TargetHasStatusExpression<TContext>(Self, new StatusDefinitionId(PassiveStatuses.ApplicantId));
 
-    private static StatusTriggerData Watch<TContext>(string trigger, EffectProgram<TContext> program)
+    private static StatusTriggerData Watch<TContext>(
+        string trigger, EffectProgram<TContext> program, StatusTriggerScope scope = StatusTriggerScope.Bearer)
         where TContext : class =>
-        new(trigger, JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<TContext>()));
+        new(trigger, JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<TContext>()), scope);
 
     // A filed hour: it carries a duration, which is the countdown the whole fight negotiates over.
     private static StatusData Filed(string id, string name, string description) => new()

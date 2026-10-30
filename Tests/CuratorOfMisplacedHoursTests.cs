@@ -107,6 +107,11 @@ public class CuratorOfMisplacedHoursTests
         Assert.False(Has(play, curator, CuratorOfMisplacedHours.ScheduledCollapseId),
             "the filed hour never came due");
         Assert.True(MyHealth(play) < before, "the Collapse came due and did nothing");
+        // The Curator's own actions hit too, so health alone cannot tell. The window counter is bumped only by the
+        // expiry rule: until 2026-10-30 that rule heard nothing but the clock itself expire, and an hour that came
+        // due simply vanished.
+        Assert.True(Curator(play, curator).GetCounter(new CounterId("curator_resolved_window")) >= 1,
+            "the hour ran out but the clock never answered it");
     }
 
     // §7.6 Borrow One Minute: the player is handed one minute a turn, and spending it pushes a filed hour
