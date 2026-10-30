@@ -1462,12 +1462,12 @@
       {
         "id": "hold_in_custody",
         "name": "Hold in Custody",
-        "intent_type": "attack",
+        "intent_type": "block",
         "actions": [
           {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 20
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 12
           }
         ]
       },
@@ -1576,12 +1576,12 @@
       {
         "id": "schedule_the_collapse",
         "name": "Schedule the Collapse",
-        "intent_type": "attack",
+        "intent_type": "block",
         "actions": [
           {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 22
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 8
           }
         ]
       }
@@ -1615,12 +1615,12 @@
       {
         "id": "open_the_account",
         "name": "Open the Account",
-        "intent_type": "attack",
+        "intent_type": "block",
         "actions": [
           {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 10
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 8
           }
         ]
       },
