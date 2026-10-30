@@ -68,7 +68,7 @@ public static partial class ActFour
         new StatusData
         {
             Id = GranaryArmourId,
-            NameKey = "Black Granaries",
+            NameKey = "Granaries Standing",
             DescriptionKey = "Her armour: each intact granary takes 3 off every blow. An exact ration breaks one.",
             Polarity = StatusPolarity.Buff,
             StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
