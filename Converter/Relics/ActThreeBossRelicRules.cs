@@ -315,7 +315,7 @@ public static partial class BossRelicRules
             ComparisonOperator.LessOrEqual, new ConstantExpression<TurnEndedTriggeredEffectContext>(4)));
 
     // One shape for all three: the offer at the bell, and the reckoning at the turn's end — and the clause
-    // is only answered for on a turn where the gift was actually taken, because declining is always free.
+    // is only answered for on a turn where the gift was actually taken, because declining the relic is free.
     private static StatusData Grandmothers(
         string id, string name, CounterId used, string cardId, TagId tag, string text,
         ICombatExpression<TurnEndedTriggeredEffectContext, bool> kept) =>

@@ -150,7 +150,8 @@ public static partial class ActThree
     // ── the table ─────────────────────────────────────────────────────────────────────────────────────────
     private static StatusData TheCourtesies()
     {
-        // The offering, at the bell. A courtesy is a gift and a promise together, and declining is free.
+        // The offering, at the bell. A courtesy is a gift and a promise together. Declining costs 1 Trespass (user,
+        // 2026-10-30): while it was free nobody ever accepted, and nothing she is built on happened.
         IEffectNode<CardsDrawnTriggeredEffectContext> Take(string key) =>
             new ConditionalEffectNode<CardsDrawnTriggeredEffectContext>(
                 new NotExpression<CardsDrawnTriggeredEffectContext>(
@@ -173,19 +174,20 @@ public static partial class ActThree
         ChooseOptionsNode<CardsDrawnTriggeredEffectContext> Offer(string purpose) =>
             new(
                 [
-                    new NoOpEffectNode<CardsDrawnTriggeredEffectContext>(),
+                    Violate<CardsDrawnTriggeredEffectContext>(Grandmother, CourtesyBreachLaw,
+                        stacks: new ConstantExpression<CardsDrawnTriggeredEffectContext>(1)),
                     .. Courtesies.Select(c => Take(c.Key)),
                 ],
                 [
-                    "decline, politely",
+                    "decline — and refusing her table is 1 Trespass",
                     .. Courtesies.Select(c => $"accept {c.Name} — and {c.Clause}"),
                 ],
                 count: 1, purpose: purpose);
 
         // ADAPTATION: the design has Grandmother choose which courtesy to offer, one in Phase I and two in
         // Phase II. An option list is a fixed list, so the whole table is laid out and the player takes what
-        // they like — which keeps "only conditions that are achievable may be offered" true by construction,
-        // and keeps DECLINING free, which is the rule the character is built on. In Household Law she sets a
+        // they like — which keeps "only conditions that are achievable may be offered" true by construction.
+        // Declining is 1 Trespass, less than a broken promise. In Household Law she sets a
         // second place, so the table is offered twice.
         var program = new EffectProgram<CardsDrawnTriggeredEffectContext>(
             new ConditionalEffectNode<CardsDrawnTriggeredEffectContext>(
@@ -262,7 +264,7 @@ public static partial class ActThree
                     new ConstantExpression<TContext>(1))));
 
         return Rule(GrandmotherId, "The Courtesies",
-            "She offers, and declining is never a violation. Each courtesy is a gift and a promise for that "
+            "She offers, and refusing her table is 1 Trespass. Each courtesy is a gift and a promise for that "
             + "turn; keep it and it costs her 5 HP, break it and it is 2 Trespass at once — which one "
             + "licence still refuses whole. Three courtesies accepted and you are staying the night; three "
             + "favours remembered and she declares a house rule that binds you whether you took anything or "

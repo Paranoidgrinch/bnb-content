@@ -69,17 +69,19 @@ public class ActThreeBossGrandmotherTests
 
     // ── the courtesies ────────────────────────────────────────────────────────────────────────────────────
 
-    // Declining is never a violation, and costs nothing at all.
+    // Refusing her table is 1 Trespass (user, 2026-10-30: while it was free, nobody ever accepted). The one Safe
+    // Conduct the player starts with refuses the first.
     [Fact]
-    public void Declining_is_never_a_violation()
+    public void Declining_costs_one_trespass()
     {
         var (play, _, granny) = Start("ask_after_your_health", [.. Enumerable.Repeat(Working, 5)], energy: 0);
 
         NextTurnTaking(play, Decline);
-        play.CombatDriver!.EndTurn();
-
         Assert.Equal(0, TrespassFrom(play, granny));
-        Assert.Equal(1, FightProbe.StacksOf(Hero(play), ActThree.SafeConductId));
+        Assert.Equal(0, FightProbe.StacksOf(Hero(play), ActThree.SafeConductId));
+
+        NextTurnTaking(play, Decline);
+        Assert.Equal(1, TrespassFrom(play, granny));
         play.Dispose();
     }
 
@@ -256,7 +258,7 @@ public class ActThreeBossGrandmotherTests
             [.. Enumerable.Repeat(Working, 5)], energy: 5,
             (HouseRuleHoney, 2));
 
-        NextTurnTaking(play, Decline); // nothing accepted at all
+        NextTurnTaking(play, Decline); // nothing accepted at all (the refusal's Trespass spends the Safe Conduct)
         for (var i = 0; i < 9; i++)
         {
             if (!play.CombatDriver!.Current!.Hand.Any(c => c.DefinitionId.value == Working))
@@ -266,10 +268,7 @@ public class ActThreeBossGrandmotherTests
 
         play.CombatDriver!.EndTurn();
 
-        var refusals = play.CombatDriver.Current!.State.CombatLog
-            .Where(e => e.Type == StandardCombatLogTypes.StatusApplicationBlocked)
-            .Select(e => e.Message).ToList();
-        Assert.Contains(refusals, m => m.Contains("prevented 2 stack(s)", StringComparison.Ordinal));
+        Assert.Equal(2, TrespassFrom(play, granny));
         play.Dispose();
     }
 

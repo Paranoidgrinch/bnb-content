@@ -173,7 +173,7 @@ public static class PassiveStatuses
     public static readonly ComplianceOrder[] ComplianceOrders =
     [
         new("order_hold_your_fire", "Order: Hold Your Fire",
-            "Play no Deed this turn. Obey and the Avatar takes 5; disobey and it gains Contempt.",
+            "Play no Deed this turn. Obey and the Avatar takes 2; disobey and it gains Contempt.",
             () =>
             new ComparisonExpression<TurnEndedTriggeredEffectContext>(
                 new CardsPlayedThisTurnWithTagExpression<TurnEndedTriggeredEffectContext>(
@@ -182,7 +182,7 @@ public static class PassiveStatuses
                 new ConstantExpression<TurnEndedTriggeredEffectContext>(0))),
 
         new("order_file_two_kinds", "Order: File Two Kinds",
-            "Play at least two different kinds of card this turn. Obey and the Avatar takes 5; disobey and it "
+            "Play at least two different kinds of card this turn. Obey and the Avatar takes 2; disobey and it "
             + "gains Contempt.",
             () =>
         {
@@ -202,7 +202,7 @@ public static class PassiveStatuses
         }),
 
         new("order_workings_first", "Order: Workings First",
-            "Open the turn with a Working. Obey and the Avatar takes 5; disobey and it gains Contempt.",
+            "Open the turn with a Working. Obey and the Avatar takes 2; disobey and it gains Contempt.",
             () =>
             new FirstCardPlayedThisTurnHasTagExpression<TurnEndedTriggeredEffectContext>(
                 CombatantTargetSelectors.Source, new TagId(Cards.CardAuthoring.WorkingTag))),

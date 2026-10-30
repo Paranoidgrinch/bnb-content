@@ -76,7 +76,7 @@ public static partial class ActFour
     public const int GoldPerSpoil = 40;
     public const int MaxSpoils = 8;
     public const int MaxCarriedFeathers = 6;
-    public const int DevourAt = 3;
+    public const int DevourAt = 2; // 3 until 2026-10-30: no bench fight ever missed three measures
     public const int DevourDamage = 40;
     public const int FeatherAppeasement = 12;
     public const int WeigherFeathersFromTheRoad = 2;
@@ -148,7 +148,7 @@ public static partial class ActFour
         Face(SpoilsCarriedId, "Spoils Carried", "What you took this act, counted at the door of every fight.",
             stacks: true),
         TheDevourerWaits(),
-        Face(UnworthyId, "Unworthy", "Your failures this fight. At 3 Ammit devours: 40 damage, 12 less for "
+        Face(UnworthyId, "Unworthy", "Your failures this fight. At 2 Ammit devours: 40 damage, 12 less for "
             + "each Feather she eats.", StatusPolarity.Neutral, stacks: true),
         AmmitsShadow(),
         FeathersFromTheRoad(),
@@ -544,7 +544,7 @@ public static partial class ActFour
     //
     // NEW: "counts your failures this fight (missed measures). At 3 she devours, a huge hit. Feathers appease
     // her." Her own pressure intent raises the measure; at her turn start she reads the act's tallies since
-    // she last looked: each miss is Unworthy, each measure met is a Feather. At 3 Unworthy she devours.
+    // she last looked: each miss is Unworthy, each measure met is a Feather. At 2 Unworthy she devours.
     private static StatusData TheDevourerWaits()
     {
         var ammit = CombatantTargetSelectors.Source;
@@ -590,7 +590,7 @@ public static partial class ActFour
         ]);
 
         return Face(AmmitRuleId, "The Devourer Waits",
-            "Each measure you miss is Unworthy; each one met is a Feather. At 3 Unworthy she devours: 40, and "
+            "Each measure you miss is Unworthy; each one met is a Feather. At 2 Unworthy she devours: 40, and "
             + "12 less for each Feather she eats (up to 3).",
             triggers: [On("TurnStarted", read, StatusTriggerScope.Bearer)]);
     }

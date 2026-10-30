@@ -14,7 +14,7 @@ public static class RuleTexts
         {
             // ── Act I elites ────────────────────────────────────────────────────────────────────────────────
             ["iron_warrant"] = (null,
-                "Each turn it orders which cards you play. Obey: it takes 5 damage. Disobey: it gains 1 Contempt (max 3)."),
+                "Each turn it orders which cards you play. Obey: it takes 2 damage. Disobey: it gains 1 Contempt (max 3)."),
             ["seizure_marshal"] = ("Profits from Seizures",
                 "Gains 1 Strength for every card the Lock Cart locks away."),
             ["inventory_lantern"] = ("Wax Seal",
@@ -152,7 +152,7 @@ public static class RuleTexts
             ["three_rings_of_law"] = (null,
                 "One law rotates each turn. A Claim under it can make that law permanent. Paying in full gives a Counterseal."),
             ["the_courtesies"] = (null,
-                "Accepting a gift is a promise. Keep it: she loses 5 HP. Break it: 2 Trespass. Declining is always free."),
+                "Accepting a gift is a promise. Keep it: she loses 5 HP. Break it: 2 Trespass. Declining: 1 Trespass."),
             ["the_landscape_has_standing"] = (null,
                 "Your most-played card kind last turn is forbidden: each is a Trespass. Its Claims are buried and pay out at 251 and 123 HP."),
             ["the_hill_court"] = (null,
@@ -176,7 +176,7 @@ public static class RuleTexts
             ["necropolis_passage"] = (null,
                 "Two doors guard it (half damage). Each turn one is real: hit it to hurt the Finder. Hit the false one: 1 Entombed."),
             ["the_devourer_waits"] = (null,
-                "Each missed measure is 1 Unworthy, each met one a Feather. At 3 Unworthy she devours: 40, minus 12 per Feather (max 3)."),
+                "Each missed measure is 1 Unworthy, each met one a Feather. At 2 Unworthy she devours: 40, minus 12 per Feather (max 3)."),
 
             // ── Act IV elites ──────────────────────────────────────────────────────────────────────────────
             ["labyrinth_body"] = (null, "Uses Act IV law: Weighed, Burdened and Entombed."),

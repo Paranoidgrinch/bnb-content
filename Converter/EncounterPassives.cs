@@ -310,7 +310,7 @@ public static class EncounterPassives
             JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<TurnStartedTriggeredEffectContext>()));
     }
 
-    // …and judges it when the turn ends: compliance strips 5 (Block first, the rest off its HP), refusal is
+    // …and judges it when the turn ends: compliance strips 2 (Block first, the rest off its HP), refusal is
     // recorded as Contempt, up to 3.
     private static EncounterTriggerData JudgeCompliance()
     {
@@ -329,9 +329,10 @@ public static class EncounterPassives
                 {
                     new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
                         order.Fulfilled(),
-                        // Compliance Credit 5: it comes off the Avatar's guard first and its health after.
+                        // Compliance Credit 2 (5 until 2026-10-30, when obeying was simply the best card in the
+                        // fight): it comes off the Avatar's guard first and its health after.
                         new DealDamageNode<TurnEndedTriggeredEffectContext>(
-                            avatar, new ConstantExpression<TurnEndedTriggeredEffectContext>(5)),
+                            avatar, new ConstantExpression<TurnEndedTriggeredEffectContext>(2)),
                         // Refusal is recorded, up to three counts.
                         new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
                             new ComparisonExpression<TurnEndedTriggeredEffectContext>(

@@ -209,8 +209,8 @@ public class EliteCombatTests
         play.CombatDriver!.EndTurn();
         Assert.Null(session.Error);
 
-        // Compliance Credit lands as 5 off the Avatar (its Iron Authority Block only guards from its turn on).
-        Assert.Equal(before - 5, Enemy(play, avatarId).Health.Current);
+        // Compliance Credit lands as 2 off the Avatar (its Iron Authority Block only guards from its turn on).
+        Assert.Equal(before - 2, Enemy(play, avatarId).Health.Current);
         Assert.Equal(0, FightProbe.StacksOf(Enemy(play, avatarId), PassiveStatuses.ContemptId));
         Assert.Equal(0, FightProbe.StacksOf(Hero(play), PassiveStatuses.ComplianceOrders[0].StatusId)); // spent
         // …and the next order is about card kinds as well.
