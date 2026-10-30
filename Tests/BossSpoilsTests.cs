@@ -95,7 +95,7 @@ public class BossSpoilsTests
                       from offer in ((FixedRewardSource)entry.Value.Source).Offers
                       select Labeler.Offer(offer)).ToList();
 
-        Assert.Equal(35, elites.Count);
+        Assert.Equal(33, elites.Count);
         Assert.All(elites, label =>
         {
             Assert.Contains("Gold", label);

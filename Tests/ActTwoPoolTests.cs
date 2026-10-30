@@ -2,8 +2,8 @@ using BnbContent.Converter;
 
 namespace BnbContent.Tests;
 
-// Act II as the master counts it: 25 unique identities across ten stages, and 35 encounter templates —
-// 23 solo and 12 combination. The counts are pinned here so a stage cannot quietly go missing.
+// Act II after the content cut of 2026-10-29: 12 identities across four stages (Returns, Stacks, Catalogue,
+// Necrology), 11 solos and 5 combinations. The counts are pinned here so a stage cannot quietly go missing.
 public class ActTwoPoolTests
 {
     private static readonly BabData Data = BabData.Load(TestData.Directory);
@@ -13,12 +13,12 @@ public class ActTwoPoolTests
 
     // The STANDARD pool: elites and bosses are their own rosters and are counted separately.
     [Fact]
-    public void The_act_fields_twenty_five_standard_identities()
+    public void The_act_fields_twelve_standard_identities()
     {
         var fielded = ActTwoWithRole("combat").Concat(ActTwoWithRole("multi_combat"))
             .SelectMany(e => e.Enemies).Distinct().ToList();
 
-        Assert.Equal(25, fielded.Count);
+        Assert.Equal(12, fielded.Count);
     }
 
     // Five bosses. Four are single bodies; the Grand Cross-Reference is three volumes around a central
@@ -33,25 +33,25 @@ public class ActTwoPoolTests
         Assert.Single(bosses, b => b.Enemies.Count == 4);
     }
 
-    // §1.1 of the elite master: nine elites, each its own encounter.
+    // Seven elites, each its own encounter (the Presentless Clock and the Silence Between Two Words are gone).
     [Fact]
-    public void The_act_fields_nine_elites()
+    public void The_act_fields_seven_elites()
     {
         var elites = ActTwoWithRole("elite").ToList();
 
-        Assert.Equal(9, elites.Count);
-        // Eight are single bodies. The Volumes of Cause and Consequence are two, because that is what they
+        Assert.Equal(7, elites.Count);
+        // Six are single bodies. The Volumes of Cause and Consequence are two, because that is what they
         // are: 76 and 84 HP facing each other with a Concordance line between them.
         Assert.All(elites, e => Assert.InRange(e.Enemies.Count, 1, 2));
         Assert.Single(elites.Where(e => e.Enemies.Count == 2));
     }
 
-    // §3's stage table: 23 solo, 12 combination, 35 in all.
+    // 11 solo, 5 combination, 16 in all.
     [Fact]
-    public void The_encounter_pool_is_the_shape_the_master_states()
+    public void The_encounter_pool_is_the_shape_the_cut_states()
     {
-        Assert.Equal(23, ActTwoWithRole("combat").Count());
-        Assert.Equal(12, ActTwoWithRole("multi_combat").Count());
+        Assert.Equal(11, ActTwoWithRole("combat").Count());
+        Assert.Equal(5, ActTwoWithRole("multi_combat").Count());
     }
 
     // Every enemy an Act-II encounter fields must exist, or the fight cannot be built at all.

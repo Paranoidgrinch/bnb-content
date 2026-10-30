@@ -221,15 +221,17 @@ public class ActSeamTests
     [Fact]
     public void The_old_generators_promises_are_the_ones_it_has_always_made()
     {
-        var archives = Game.Acts![1].MapGeneration!;
+        // The labyrinth keeps the audit's table (the city, the archives and the road were cut to length on
+        // 2026-10-29, for both generators).
+        var labyrinth = Game.Acts![3].MapGeneration!;
 
-        Assert.Equal(8, archives.PerPathMinimums[MapNodeKind.Combat]);
-        Assert.Equal(2, archives.PerPathMinimums[MapNodeKind.MultiCombat]);
-        Assert.Equal(2, archives.PerPathMinimums[MapNodeKind.Elite]);
-        Assert.Equal(3, archives.PerPathMinimums[MapNodeKind.Event]);
-        Assert.Equal(2, archives.PerPathMinimums[MapNodeKind.Rest]);
-        Assert.Equal(1, archives.PerPathMinimums[MapNodeKind.Treasure]);
-        Assert.Equal(2, archives.PerPathMinimums[MapNodeKind.Shop]);
+        Assert.Equal(12, labyrinth.PerPathMinimums[MapNodeKind.Combat]);
+        Assert.Equal(3, labyrinth.PerPathMinimums[MapNodeKind.MultiCombat]);
+        Assert.Equal(4, labyrinth.PerPathMinimums[MapNodeKind.Elite]);
+        Assert.Equal(4, labyrinth.PerPathMinimums[MapNodeKind.Event]);
+        Assert.Equal(3, labyrinth.PerPathMinimums[MapNodeKind.Rest]);
+        Assert.Equal(2, labyrinth.PerPathMinimums[MapNodeKind.Treasure]);
+        Assert.Equal(3, labyrinth.PerPathMinimums[MapNodeKind.Shop]);
 
         Assert.All(Roomed, act => Assert.Equal(5, act.MapGeneration!.Rows));
     }

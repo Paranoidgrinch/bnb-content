@@ -16,22 +16,6 @@
     "role": "combat"
   },
   {
-    "id": "archives_returns_02",
-    "name": "Object Listed as \"Other\"",
-    "act": 2,
-    "difficulty": "normal",
-    "enemies": [
-      "object_listed_as_other"
-    ],
-    "weight": 2,
-    "tags": [
-      "stage_returns",
-      "archives",
-      "classification"
-    ],
-    "role": "combat"
-  },
-  {
     "id": "archives_returns_03",
     "name": "Dead-Letter Ouroboros",
     "act": 2,
@@ -50,16 +34,16 @@
   },
   {
     "id": "archives_returns_duo_01",
-    "name": "Returned as \"Other\"",
+    "name": "Returned to Sender, Twice",
     "act": 2,
     "difficulty": "normal",
     "enemies": [
       "brass_maw_of_returns",
-      "object_listed_as_other"
+      "dead_letter_ouroboros"
     ],
     "enemy_health": [
       37,
-      40
+      33
     ],
     "weight": 2,
     "tags": [
@@ -87,22 +71,6 @@
     "role": "combat"
   },
   {
-    "id": "archives_stacks_02",
-    "name": "Volume Q-Null",
-    "act": 2,
-    "difficulty": "normal",
-    "enemies": [
-      "volume_q_null"
-    ],
-    "weight": 2,
-    "tags": [
-      "stage_stacks",
-      "archives",
-      "misfiled"
-    ],
-    "role": "combat"
-  },
-  {
     "id": "archives_stacks_03",
     "name": "Corridor in the Wrong Edition",
     "act": 2,
@@ -120,23 +88,22 @@
   },
   {
     "id": "archives_stacks_duo_01",
-    "name": "Crabwise Return",
+    "name": "The Wrong Edition, Shelved Sideways",
     "act": 2,
     "difficulty": "normal",
     "enemies": [
       "crabwise_shelf",
-      "dead_letter_ouroboros"
+      "corridor_in_the_wrong_edition"
     ],
     "enemy_health": [
       41,
-      35
+      42
     ],
     "weight": 2,
     "tags": [
       "stage_stacks",
       "archives",
       "misfiled",
-      "overdue",
       "multi_enemy"
     ],
     "role": "multi_combat"
@@ -191,216 +158,22 @@
   },
   {
     "id": "archives_catalogue_duo_01",
-    "name": "Citation in Volume Q-Null",
+    "name": "Cited Without a Source",
     "act": 2,
     "difficulty": "normal",
     "enemies": [
       "second_person_entry",
-      "volume_q_null"
+      "orphan_citation"
     ],
     "enemy_health": [
       44,
-      38
+      43
     ],
     "weight": 2,
     "tags": [
       "stage_catalogue",
       "archives",
       "referenced",
-      "misfiled",
-      "multi_enemy"
-    ],
-    "role": "multi_combat"
-  },
-  {
-    "id": "archives_reading_room_01",
-    "name": "Unclaimed Reading Table",
-    "act": 2,
-    "difficulty": "normal",
-    "enemies": [
-      "unclaimed_reading_table"
-    ],
-    "weight": 2,
-    "tags": [
-      "stage_reading_room",
-      "archives",
-      "hand_pressure"
-    ],
-    "role": "combat"
-  },
-  {
-    "id": "archives_reading_room_02",
-    "name": "Mute Margin",
-    "act": 2,
-    "difficulty": "normal",
-    "enemies": [
-      "mute_margin"
-    ],
-    "weight": 2,
-    "tags": [
-      "stage_reading_room",
-      "archives",
-      "misfiled"
-    ],
-    "role": "combat"
-  },
-  {
-    "id": "archives_reading_room_03",
-    "name": "Choir of Unspoken Words",
-    "act": 2,
-    "difficulty": "normal",
-    "enemies": [
-      "choir_of_unspoken_words"
-    ],
-    "weight": 2,
-    "tags": [
-      "stage_reading_room",
-      "archives",
-      "hand_pressure"
-    ],
-    "role": "combat"
-  },
-  {
-    "id": "archives_reading_room_duo_01",
-    "name": "Reserved Silence",
-    "act": 2,
-    "difficulty": "normal",
-    "enemies": [
-      "unclaimed_reading_table",
-      "second_person_entry"
-    ],
-    "enemy_health": [
-      49,
-      44
-    ],
-    "weight": 2,
-    "tags": [
-      "stage_reading_room",
-      "archives",
-      "referenced",
-      "multi_enemy"
-    ],
-    "role": "multi_combat"
-  },
-  {
-    "id": "archives_redaction_01",
-    "name": "Palimpsest Husk",
-    "act": 2,
-    "difficulty": "normal",
-    "enemies": [
-      "palimpsest_husk"
-    ],
-    "weight": 2,
-    "tags": [
-      "stage_redaction",
-      "archives",
-      "redaction"
-    ],
-    "role": "combat"
-  },
-  {
-    "id": "archives_redaction_02",
-    "name": "Expunged Name",
-    "act": 2,
-    "difficulty": "normal",
-    "enemies": [
-      "expunged_name"
-    ],
-    "weight": 2,
-    "tags": [
-      "stage_redaction",
-      "archives",
-      "redaction"
-    ],
-    "role": "combat"
-  },
-  {
-    "id": "archives_redaction_03",
-    "name": "Vacant Portrait",
-    "act": 2,
-    "difficulty": "normal",
-    "enemies": [
-      "vacant_portrait"
-    ],
-    "weight": 2,
-    "tags": [
-      "stage_redaction",
-      "archives",
-      "redaction"
-    ],
-    "role": "combat"
-  },
-  {
-    "id": "archives_redaction_duo_01",
-    "name": "Absent Subject Citation",
-    "act": 2,
-    "difficulty": "normal",
-    "enemies": [
-      "vacant_portrait",
-      "second_person_entry"
-    ],
-    "enemy_health": [
-      60,
-      44
-    ],
-    "weight": 2,
-    "tags": [
-      "stage_redaction",
-      "archives",
-      "referenced",
-      "multi_enemy"
-    ],
-    "role": "multi_combat"
-  },
-  {
-    "id": "archives_errata_01",
-    "name": "Fatal Comma",
-    "act": 2,
-    "difficulty": "normal",
-    "enemies": [
-      "fatal_comma"
-    ],
-    "weight": 2,
-    "tags": [
-      "stage_errata",
-      "archives"
-    ],
-    "role": "combat"
-  },
-  {
-    "id": "archives_errata_02",
-    "name": "Errata Doppelgänger",
-    "act": 2,
-    "difficulty": "normal",
-    "enemies": [
-      "errata_doppelganger"
-    ],
-    "weight": 2,
-    "tags": [
-      "stage_errata",
-      "archives",
-      "redaction"
-    ],
-    "role": "combat"
-  },
-  {
-    "id": "archives_errata_duo_01",
-    "name": "The Comma Beneath the Palimpsest",
-    "act": 2,
-    "difficulty": "normal",
-    "enemies": [
-      "fatal_comma",
-      "palimpsest_husk"
-    ],
-    "enemy_health": [
-      57,
-      56
-    ],
-    "weight": 2,
-    "tags": [
-      "stage_errata",
-      "archives",
-      "redaction",
       "multi_enemy"
     ],
     "role": "multi_combat"
@@ -415,7 +188,7 @@
     ],
     "weight": 2,
     "tags": [
-      "stage_annex",
+      "stage_stacks",
       "archives"
     ],
     "role": "combat"
@@ -430,84 +203,11 @@
     ],
     "weight": 2,
     "tags": [
-      "stage_annex",
+      "stage_returns",
       "archives",
       "referenced"
     ],
     "role": "combat"
-  },
-  {
-    "id": "archives_annex_duo_01",
-    "name": "Borrower on Record",
-    "act": 2,
-    "difficulty": "normal",
-    "enemies": [
-      "checkout_codex",
-      "mnemonic_chain"
-    ],
-    "enemy_health": [
-      66,
-      69
-    ],
-    "weight": 2,
-    "tags": [
-      "stage_annex",
-      "archives",
-      "referenced",
-      "multi_enemy"
-    ],
-    "role": "multi_combat"
-  },
-  {
-    "id": "archives_hours_01",
-    "name": "Unoccurred Tuesday",
-    "act": 2,
-    "difficulty": "normal",
-    "enemies": [
-      "unoccurred_tuesday"
-    ],
-    "weight": 2,
-    "tags": [
-      "stage_hours",
-      "archives"
-    ],
-    "role": "combat"
-  },
-  {
-    "id": "archives_hours_02",
-    "name": "Hourglass With Two Bottoms",
-    "act": 2,
-    "difficulty": "normal",
-    "enemies": [
-      "hourglass_with_two_bottoms"
-    ],
-    "weight": 2,
-    "tags": [
-      "stage_hours",
-      "archives"
-    ],
-    "role": "combat"
-  },
-  {
-    "id": "archives_hours_duo_01",
-    "name": "Two-Bottom Tuesday",
-    "act": 2,
-    "difficulty": "normal",
-    "enemies": [
-      "unoccurred_tuesday",
-      "hourglass_with_two_bottoms"
-    ],
-    "enemy_health": [
-      64,
-      71
-    ],
-    "weight": 2,
-    "tags": [
-      "stage_hours",
-      "archives",
-      "multi_enemy"
-    ],
-    "role": "multi_combat"
   },
   {
     "id": "archives_necrology_01",
@@ -522,6 +222,22 @@
       "stage_necrology",
       "archives",
       "referenced"
+    ],
+    "role": "combat"
+  },
+  {
+    "id": "archives_necrology_02",
+    "name": "The Last Will of Nobody in Particular",
+    "act": 2,
+    "difficulty": "normal",
+    "enemies": [
+      "the_testator"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_necrology",
+      "archives",
+      "overdue"
     ],
     "role": "combat"
   },
@@ -555,105 +271,29 @@
   },
   {
     "id": "archives_necrology_duo_02",
-    "name": "Revised Mortality",
+    "name": "The Will Is Kept in a Jar",
     "act": 2,
     "difficulty": "normal",
     "enemies": [
       "spare_life_jar",
-      "errata_doppelganger"
+      "the_testator"
     ],
     "enemy_health": [
       61,
-      63
+      48
     ],
     "weight": 2,
     "tags": [
       "stage_necrology",
       "archives",
-      "redaction",
+      "overdue",
       "multi_enemy"
     ],
     "role": "multi_combat",
     "enemy_statuses": [
       {
         "index": 1,
-        "status": "spare_life_doppelganger"
-      }
-    ]
-  },
-  {
-    "id": "archives_concordance_01",
-    "name": "Miscellany Index",
-    "act": 2,
-    "difficulty": "normal",
-    "enemies": [
-      "miscellany_index"
-    ],
-    "weight": 2,
-    "tags": [
-      "stage_concordance",
-      "archives",
-      "redaction",
-      "misfiled"
-    ],
-    "role": "combat"
-  },
-  {
-    "id": "archives_concordance_duo_01",
-    "name": "Orphan Citation, See Footnote",
-    "act": 2,
-    "difficulty": "normal",
-    "enemies": [
-      "orphan_citation",
-      "detached_footnote"
-    ],
-    "enemy_health": [
-      46,
-      64
-    ],
-    "weight": 2,
-    "tags": [
-      "stage_concordance",
-      "archives",
-      "referenced",
-      "multi_enemy"
-    ],
-    "role": "multi_combat",
-    "enemy_statuses": [
-      {
-        "index": 0,
-        "status": "footnote_source"
-      }
-    ]
-  },
-  {
-    "id": "archives_concordance_trio_01",
-    "name": "Everything Else, See Footnote",
-    "act": 2,
-    "difficulty": "hard",
-    "enemies": [
-      "palimpsest_husk",
-      "detached_footnote",
-      "miscellany_index"
-    ],
-    "enemy_health": [
-      47,
-      54,
-      67
-    ],
-    "weight": 1,
-    "tags": [
-      "stage_concordance",
-      "archives",
-      "redaction",
-      "misfiled",
-      "multi_enemy"
-    ],
-    "role": "multi_combat",
-    "enemy_statuses": [
-      {
-        "index": 0,
-        "status": "footnote_source"
+        "status": "spare_life_testator"
       }
     ]
   },
@@ -703,21 +343,6 @@
     "role": "elite"
   },
   {
-    "id": "archives_elite_silence_between_two_words",
-    "name": "The Silence Between Two Words",
-    "act": 2,
-    "difficulty": "elite",
-    "enemies": [
-      "silence_between_two_words"
-    ],
-    "weight": 1,
-    "tags": [
-      "archives",
-      "elite"
-    ],
-    "role": "elite"
-  },
-  {
     "id": "archives_elite_black_ink_oracle",
     "name": "Black-Ink Oracle",
     "act": 2,
@@ -755,21 +380,6 @@
     "difficulty": "elite",
     "enemies": [
       "drawer_of_infinite_returns"
-    ],
-    "weight": 1,
-    "tags": [
-      "archives",
-      "elite"
-    ],
-    "role": "elite"
-  },
-  {
-    "id": "archives_elite_presentless_clock",
-    "name": "Presentless Clock",
-    "act": 2,
-    "difficulty": "elite",
-    "enemies": [
-      "presentless_clock"
     ],
     "weight": 1,
     "tags": [

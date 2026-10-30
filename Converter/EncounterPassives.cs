@@ -25,10 +25,8 @@ public static class EncounterPassives
         "contradictory_signpost" => [BothDirectionsMandatory()],
         // The Hourglass's two bottoms are pushed back by what the PLAYER plays, so the rule is about the
         // player's play and finds the glass by the marker it wears (ActTwo.DelayABottom).
-        "hourglass_with_two_bottoms" => [ActTwo.DelayABottom()],
         // The Footnote writes down what its SOURCE does, and the announcement is the Source's moment — so
         // the rule is found from the announcer's side (ActTwo.WriteInTheMargin).
-        "detached_footnote" => [ActTwo.WriteInTheMargin()],
         // Break the jar and the life it was holding is lost (ActTwo.BreakTheJar).
         "spare_life_jar" => [ActTwo.BreakTheJar()],
         "exception_imp" => Loophole(),
@@ -36,6 +34,8 @@ public static class EncounterPassives
         "minute_moth" => [StolenMinute()],
         "number_ticket_wisp" => YourNumberCameUp(),
         Elites.WaitingRoom.EnemyId => Elites.WaitingRoom.Triggers(),
+        Testator.EnemyId => Testator.Triggers(),
+        Elites.DrawerOfInfiniteReturns.EnemyId => Elites.DrawerOfInfiniteReturns.Triggers(),
         // The court hears the case once, however many steps are standing: keyed on the bottom step alone.
         "lower_appellate_step" => [PassiveStatuses.HearTheCase()],
         "iron_warrant_avatar" => [IssueComplianceOrder(), JudgeCompliance()],
@@ -200,7 +200,7 @@ public static class EncounterPassives
         // Act II: the archive's rules live on the player, because it is the player's hand and the player's draw
         // they are about. Two misfiling enemies ask for the same marker and it merges, so a card is taken back
         // once however many shelves are in the room.
-        "crabwise_shelf" or "volume_q_null" =>
+        "crabwise_shelf" =>
             [new StartingStatusSpec(new StatusDefinitionId(ActTwo.ArchiveRegulationsId), 1)],
         // The Cross-Reference's citations land on the player's hand, its Binding Guard is broken by what the
         // player plays, and its misfilings need the act's own take-back rule.
@@ -241,18 +241,6 @@ public static class EncounterPassives
         // The Obituary's death clauses are kept in step by the player's own record and plays.
         Elites.ObituaryWithThreeEndings.EnemyId =>
             [new StartingStatusSpec(new StatusDefinitionId(Elites.ObituaryWithThreeEndings.ObituaryRulesId), 1)],
-        // The Clock changes when the PLAYER's effects happened, so the player carries the attribution.
-        Elites.PresentlessClock.EnemyId =>
-        [
-            new StartingStatusSpec(new StatusDefinitionId(Elites.PresentlessClock.ClockRulesId), 1),
-            new StartingStatusSpec(new StatusDefinitionId(ActTwo.ArchiveRegulationsId), 1),
-        ],
-        // The Drawer's nesting is about the player's card and the player's turn, and it misfiles too.
-        Elites.DrawerOfInfiniteReturns.EnemyId =>
-        [
-            new StartingStatusSpec(new StatusDefinitionId(Elites.DrawerOfInfiniteReturns.DrawerRulesId), 1),
-            new StartingStatusSpec(new StatusDefinitionId(ActTwo.ArchiveRegulationsId), 1),
-        ],
         // The Magistrate asks its question at the start of the player's turn, so the player carries it.
         ActThree.MagistrateEnemyId =>
             [new StartingStatusSpec(new StatusDefinitionId(ActThree.JudgmentOfferId), 1)],
@@ -267,13 +255,6 @@ public static class EncounterPassives
         // The Oracle's riddle is asked of the player's hand, so the player carries it.
         Elites.BlackInkOracle.EnemyId =>
             [new StartingStatusSpec(new StatusDefinitionId(Elites.BlackInkOracle.OracleRulesId), 1)],
-        // The Silence's pair is about the player's hand and the player's plays, so the player carries it —
-        // and the act's take-back rule too, because a single Word spoken misfiles a card.
-        Elites.SilenceBetweenTwoWords.EnemyId =>
-        [
-            new StartingStatusSpec(new StatusDefinitionId(Elites.SilenceBetweenTwoWords.SilenceRulesId), 1),
-            new StartingStatusSpec(new StatusDefinitionId(ActTwo.ArchiveRegulationsId), 1),
-        ],
         // The Catalogue's ledger is the player's cards and the player's plays, so the player carries the rules.
         Elites.CatalogueOfUnwiseNames.EnemyId =>
             [new StartingStatusSpec(new StatusDefinitionId(Elites.CatalogueOfUnwiseNames.CatalogueRulesId), 1)],
@@ -284,37 +265,8 @@ public static class EncounterPassives
             new StartingStatusSpec(new StatusDefinitionId(ActTwo.ArchiveRegulationsId), 1),
             new StartingStatusSpec(new StatusDefinitionId(Elites.RollingStacksColossus.OpenAisleRulesId), 1),
         ],
-        // The Reading Room's rules are about the player's hand and the player's plays, so the player carries
-        // them: they watch the whole fight and answer what the player did.
-        "unclaimed_reading_table" =>
-            [new StartingStatusSpec(new StatusDefinitionId(ActTwo.ReservedSeatId), 1)],
-        "mute_margin" =>
-        [
-            new StartingStatusSpec(new StatusDefinitionId(ActTwo.ArchiveRegulationsId), 1),
-            new StartingStatusSpec(new StatusDefinitionId(ActTwo.ShrinkingMarginId), 1),
-        ],
-        "choir_of_unspoken_words" =>
-            [new StartingStatusSpec(new StatusDefinitionId(ActTwo.UnspokenWordId), 1)],
-        // The Redaction Galleries answer what the PLAYER plays, so the player carries the rules.
-        "palimpsest_husk" =>
-        [
-            new StartingStatusSpec(new StatusDefinitionId(ActTwo.ArchiveRegulationsId), 1),
-            new StartingStatusSpec(new StatusDefinitionId(ActTwo.OlderTextBeneathId), 1),
-        ],
-        "vacant_portrait" =>
-            [new StartingStatusSpec(new StatusDefinitionId(ActTwo.AbsenceBecomesVisibleId), 1)],
-        // The register is about the player's own play history, so the player carries it — and it is only
-        // there when the Expunged Name is.
-        "expunged_name" =>
-            [new StartingStatusSpec(new StatusDefinitionId(ActTwo.NoLongerRecognizedId), 1)],
-        "miscellany_index" =>
-            [new StartingStatusSpec(new StatusDefinitionId(ActTwo.ResidueId), 1)],
         "mnemonic_chain" =>
             [new StartingStatusSpec(new StatusDefinitionId(ActTwo.RememberedVolumeId), 1)],
-        "fatal_comma" =>
-            [new StartingStatusSpec(new StatusDefinitionId(ActTwo.ClausesId), 1)],
-        "errata_doppelganger" =>
-            [new StartingStatusSpec(new StatusDefinitionId(ActTwo.RevisionPassId), 1)],
         "corridor_in_the_wrong_edition" =>
         [
             new StartingStatusSpec(new StatusDefinitionId(ActTwo.ArchiveRegulationsId), 1),

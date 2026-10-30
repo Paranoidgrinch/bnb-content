@@ -92,23 +92,6 @@ public class ActTwoStageOneTests
         play.Dispose();
     }
 
-    // The Object files you by however you OPEN a turn; keep to that category and it stores itself away.
-    [Fact]
-    public void Keeping_to_one_category_lets_the_object_file_itself_safely()
-    {
-        var (play, session, enemyId) = FightProbe.Start(
-            FightProbe.Solo("object_listed_as_other", "miscellaneous_storage"),
-            deck: [.. Enumerable.Repeat("paper_cut", 10)]);
-
-        Play(play, session, "paper_cut", enemyId); // a Deed opens the turn
-        Play(play, session, "paper_cut", enemyId); // …and only Deeds follow
-        var before = Block(Enemy(play, enemyId));
-        play.CombatDriver!.EndTurn();
-
-        Assert.True(Block(Enemy(play, enemyId)) > before, "the Object should have stored itself away");
-        play.Dispose();
-    }
-
     private static void Play(RunPlayback play, InteractiveRunSession session, string cardId, CombatantId target)
     {
         var card = play.CombatDriver!.Current!.Hand.First(c => c.DefinitionId.value == cardId);

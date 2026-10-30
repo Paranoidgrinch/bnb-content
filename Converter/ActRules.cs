@@ -248,24 +248,24 @@ internal sealed record ActRules
     {
         PerPathMinimums = new Dictionary<MapNodeKind, int>
         {
-            [MapNodeKind.Combat] = 8,
-            [MapNodeKind.MultiCombat] = 2,
-            [MapNodeKind.Elite] = 2,
-            [MapNodeKind.Event] = 3,
-            [MapNodeKind.Rest] = 2,
+            [MapNodeKind.Combat] = 5,
+            [MapNodeKind.MultiCombat] = 1,
+            [MapNodeKind.Elite] = 1,
+            [MapNodeKind.Event] = 1,
+            [MapNodeKind.Rest] = 1,
             [MapNodeKind.Treasure] = 1,
-            [MapNodeKind.Shop] = 2,
+            [MapNodeKind.Shop] = 1,
         },
         // The ceilings move with the floors: one spare rest, shop and treasure as in the city, but a route may
         // take a third elite here — the greedy way through the stacks is a real option, not a rounding error.
         PerPathMaximums = new Dictionary<MapNodeKind, int>
         {
-            [MapNodeKind.Rest] = 3,
+            [MapNodeKind.Rest] = 2,
             [MapNodeKind.Treasure] = 2,
-            [MapNodeKind.Shop] = 3,
-            [MapNodeKind.Event] = 5,
-            [MapNodeKind.Elite] = 3,
-            [MapNodeKind.MultiCombat] = 3,
+            [MapNodeKind.Shop] = 2,
+            [MapNodeKind.Event] = 3,
+            [MapNodeKind.Elite] = 2,
+            [MapNodeKind.MultiCombat] = 2,
         },
         // The archives' three ways through: down the shelves themselves, along the desks where the staff still
         // pretend to work, or through the reading rooms nobody has swept in years.
@@ -313,20 +313,22 @@ internal sealed record ActRules
         },
         // Twenty-four rooms, and more of them dangerous than the city's: an elite more, a crowded fight more,
         // one treasure fewer. v0.0.0's thinnest route through the archives measured 160.
-        Rows = 24,
+        // SIXTEEN ROOMS since the content cut (2026-10-29), down from twenty-four: four stages of four rows.
+        Rows = 16,
         RoomBudgets = Budgets(
-            (MapNodeKind.Elite, 4, 6, 9),
-            (MapNodeKind.MultiCombat, 3, 5, 8),
-            (MapNodeKind.Event, 8, 11, 15),
-            (MapNodeKind.Rest, 4, 6, 9),
-            (MapNodeKind.Treasure, 3, 5, 8),
-            (MapNodeKind.Shop, 4, 5, 7)),
+            (MapNodeKind.Elite, 3, 4, 6),
+            (MapNodeKind.MultiCombat, 2, 3, 5),
+            (MapNodeKind.Event, 5, 7, 10),
+            (MapNodeKind.Rest, 3, 4, 6),
+            (MapNodeKind.Treasure, 3, 4, 6),
+            (MapNodeKind.Shop, 2, 3, 5)),
         DepthBands = Quarters(
-            [(MapNodeKind.Rest, 1, 2), (MapNodeKind.MultiCombat, 0, 2)],
-            [(MapNodeKind.Rest, 1, 3), (MapNodeKind.Elite, 0, 3), (MapNodeKind.Shop, 1, 3)],
-            [(MapNodeKind.Rest, 1, 3), (MapNodeKind.Elite, 0, 3), (MapNodeKind.Shop, 1, 3)],
-            [(MapNodeKind.Rest, 1, 3), (MapNodeKind.Elite, 0, 3), (MapNodeKind.Treasure, 1, 4)]),
-        PathPressure = new PathPressureRules { Minimum = 160, Maximum = 240 },
+            [(MapNodeKind.Rest, 0, 1), (MapNodeKind.MultiCombat, 0, 1)],
+            [(MapNodeKind.Rest, 1, 2), (MapNodeKind.Elite, 0, 2), (MapNodeKind.Shop, 1, 2)],
+            [(MapNodeKind.Rest, 0, 2), (MapNodeKind.Elite, 0, 2), (MapNodeKind.Shop, 0, 2)],
+            [(MapNodeKind.Rest, 1, 2), (MapNodeKind.Elite, 0, 2), (MapNodeKind.Treasure, 1, 3)]),
+        // Scaled with the act (sixteen rooms of twenty-four): 160..240 becomes 105..160.
+        PathPressure = new PathPressureRules { Minimum = 105, Maximum = 160 },
         ForkQuality = new ForkQualityRules { MinimumContrast = 30 },
         // TWO MORE DECISIONS AN ACT (user, 2026-09-28). With the engine's 6/2/2 an act forked about three times and
         // its lanes then ran side by side to the boss, so a door in the first rows decided the act. Splitting and

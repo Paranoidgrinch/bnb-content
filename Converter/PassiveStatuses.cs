@@ -50,6 +50,12 @@ public static class PassiveStatuses
         Marker(BothDirectionsMandatoryId, "Both Directions Mandatory",
             "The first card you play each turn picks the road: a Deed sends the Signpost down the dangerous "
             + "shortcut, anything else down the long administrative route. Play nothing and it lists no route."),
+        // Act II shelves whose rule otherwise runs on the player or inside an intent (content cut 2026-10-29: every
+        // law is visible on its enemy).
+        Marker(ShelvedSidewaysId, "Shelved Sideways",
+            "Its Mis-Shelve misfiles a card in your draw pile: when you draw it, it goes back under the pile."),
+        Marker(WrongEditionEnemyId, "The Wrong Edition",
+            "Each turn one card in your hand is the wrong edition: it works, then it is Misfiled."),
         Marker(NotThisCounterId, "Not This Counter",
             "Play a second card of the type you opened your turn with and the Scribe gains 5 Block. Once a turn."),
         Loophole(),
@@ -115,11 +121,9 @@ public static class PassiveStatuses
         .. Elites.ReturnBell.Statuses(),
         .. Elites.RollingStacksColossus.Statuses(),
         .. Elites.CatalogueOfUnwiseNames.Statuses(),
-        .. Elites.SilenceBetweenTwoWords.Statuses(),
         .. Elites.BlackInkOracle.Statuses(),
         .. Elites.VolumesOfCauseAndConsequence.Statuses(),
         .. Elites.DrawerOfInfiniteReturns.Statuses(),
-        .. Elites.PresentlessClock.Statuses(),
         .. Elites.ObituaryWithThreeEndings.Statuses(),
         .. Bosses.WhisperingCatalogue.Statuses(),
         .. Bosses.WardenOfSealedVolumes.Statuses(),
@@ -846,6 +850,8 @@ public static class PassiveStatuses
     // Wrong-Window Scribe: the rule's chip, and the handle its encounter trigger finds the Scribe by — so in a
     // duo only the Scribe is the window that refuses you.
     public const string NotThisCounterId = "not_this_counter";
+    public const string ShelvedSidewaysId = "shelved_sideways";
+    public const string WrongEditionEnemyId = "the_wrong_edition";
     public static CounterId SignpostedRouteCounter => new("signposted_route");
 
     // A status that carries nothing but its own presence: the handle a cross-combatant trigger uses to find

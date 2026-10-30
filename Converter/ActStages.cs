@@ -13,8 +13,7 @@ public static class ActStages
     public static readonly IReadOnlyDictionary<int, IReadOnlyList<string>> Order = new Dictionary<int, IReadOnlyList<string>>
     {
         [1] = ["queue", "ordinance", "seal", "delay"],
-        [2] = ["returns", "stacks", "catalogue", "reading_room", "redaction", "errata", "annex", "hours",
-               "necrology", "concordance"],
+        [2] = ["returns", "stacks", "catalogue", "necrology"],
         [3] = ["road", "hedgerows", "testimony", "tollwater", "covenants", "quorum", "appeals", "precedents",
                "jurisdictions", "court"],
         [4] = ["stelae", "gate", "granary", "basins", "causeway", "yards", "monument", "hall", "seal", "procession",
@@ -29,16 +28,15 @@ public static class ActStages
     // stage whose slice holds that depth. Source: source-data/design/…Master_Elite_Pool_Acts_I-IV_FINAL_AUDIT.md.
     public static readonly IReadOnlyDictionary<string, int> EliteStageAfterLesson = new Dictionary<string, int>
     {
-        // Act II (§ Earliest recommended availability)
-        ["archives_elite_after_hours_return_bell"] = 2,
-        ["archives_elite_rolling_stacks_colossus"] = 3,
+        // Act II, after the content cut of 2026-10-29: four stages, and each elite stands in the stage after the
+        // lesson it examines (the last stage takes the last two).
+        ["archives_elite_after_hours_return_bell"] = 1,
+        ["archives_elite_drawer_of_infinite_returns"] = 1,
+        ["archives_elite_rolling_stacks_colossus"] = 2,
         ["archives_elite_catalogue_of_unwise_names"] = 3,
-        ["archives_elite_silence_between_two_words"] = 4,
-        ["archives_elite_black_ink_oracle"] = 5,
-        ["archives_elite_volumes_of_cause_and_consequence"] = 6,
-        ["archives_elite_drawer_of_infinite_returns"] = 6,
-        ["archives_elite_presentless_clock"] = 7,
-        ["archives_elite_obituary_with_three_endings"] = 7,
+        ["archives_elite_volumes_of_cause_and_consequence"] = 3,
+        ["archives_elite_black_ink_oracle"] = 3,
+        ["archives_elite_obituary_with_three_endings"] = 4,
         // Act III (§ Earliest recommended appearance)
         ["green_docket_elite_stag_of_pre_approved_violence"] = 2,
         ["green_docket_elite_grandmother_web"] = 2,

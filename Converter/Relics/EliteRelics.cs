@@ -78,10 +78,6 @@ public static class EliteRelics
             "Every card reward shows one more card to choose from.",
             rewardRules: [new DrawMoreOffersRule(new RewardMatch(Kind: RewardKinds.Card), 1)]),
 
-        Elite(EliteRelicRules.UnspokenId, "The Unspoken Word", "archives_elite_silence_between_two_words",
-            "End a turn still holding two cards or more: 4 Block at your next hand.",
-            combatRule: EliteRelicRules.TheUnspokenWord),
-
         Elite(EliteRelicRules.CensoringInkId, "Strip of Censoring Ink", "archives_elite_black_ink_oracle",
             "Every fight opens with 8 Block: the first blow is blacked out.",
             combatRule: EliteRelicRules.StripOfCensoringInk),
@@ -94,10 +90,6 @@ public static class EliteRelics
         Elite(EliteRelicRules.DrawerId, "Drawer Within a Drawer", "archives_elite_drawer_of_infinite_returns",
             "The first card you exhaust each fight comes back to your discard pile.",
             combatRule: EliteRelicRules.DrawerWithinADrawer),
-
-        Elite(EliteRelicRules.PresentHandId, "The Missing Present Hand", "archives_elite_presentless_clock",
-            "Your opening turn is filed to the past: 6 Block and a card at your second hand.",
-            combatRule: EliteRelicRules.MissingPresentHand),
 
         // ⚠ THE STRONGEST RELIC IN THIS POOL, and deliberately so — it is what an obituary that refuses to
         // end badly should hand over. The design said "once per RUN"; a run-layer death prevention is a

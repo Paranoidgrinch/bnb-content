@@ -61,70 +61,6 @@
     ]
   },
   {
-    "id": "object_listed_as_other",
-    "name": "Object Listed as \"Other\"",
-    "max_hp": 54,
-    "intent_pattern": "cycle",
-    "intents": [
-      {
-        "id": "improper_category",
-        "name": "Improper Category",
-        "intent_type": "mixed",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 11
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "overdue",
-            "amount": 1
-          }
-        ]
-      },
-      {
-        "id": "handling_fee",
-        "name": "Handling Fee",
-        "intent_type": "attack",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 14
-          }
-        ]
-      },
-      {
-        "id": "miscellaneous_storage",
-        "name": "Miscellaneous Storage",
-        "intent_type": "block",
-        "actions": [
-          {
-            "type": "gain_block",
-            "target": "owner",
-            "amount": 16
-          }
-        ]
-      }
-    ],
-    "starting_statuses": [
-      {
-        "status": "other_delinquency"
-      },
-      {
-        "status": "miscellaneous_classification"
-      }
-    ],
-    "tags": [
-      "archives",
-      "returns",
-      "classification",
-      "stage_returns"
-    ]
-  },
-  {
     "id": "dead_letter_ouroboros",
     "name": "Dead-Letter Ouroboros",
     "max_hp": 47,
@@ -240,56 +176,11 @@
       "stacks",
       "misfiled",
       "stage_stacks"
-    ]
-  },
-  {
-    "id": "volume_q_null",
-    "name": "Volume Q-Null",
-    "max_hp": 52,
-    "intent_pattern": "cycle",
-    "intents": [
-      {
-        "id": "null_index",
-        "name": "Null Index",
-        "intent_type": "mixed",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 10
-          }
-        ]
-      },
-      {
-        "id": "undefined_entry",
-        "name": "Undefined Entry",
-        "intent_type": "attack",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 15
-          }
-        ]
-      },
-      {
-        "id": "close_the_volume",
-        "name": "Close the Volume",
-        "intent_type": "block",
-        "actions": [
-          {
-            "type": "gain_block",
-            "target": "owner",
-            "amount": 14
-          }
-        ]
-      }
     ],
-    "tags": [
-      "archives",
-      "stacks",
-      "misfiled",
-      "stage_stacks"
+    "starting_statuses": [
+      {
+        "status": "shelved_sideways"
+      }
     ]
   },
   {
@@ -340,6 +231,11 @@
       "stacks",
       "misfiled",
       "stage_stacks"
+    ],
+    "starting_statuses": [
+      {
+        "status": "the_wrong_edition"
+      }
     ]
   },
   {
@@ -517,424 +413,6 @@
     ]
   },
   {
-    "id": "unclaimed_reading_table",
-    "name": "Unclaimed Reading Table",
-    "max_hp": 66,
-    "intent_pattern": "cycle",
-    "intents": [
-      {
-        "id": "clear_the_table",
-        "name": "Clear the Table",
-        "intent_type": "attack",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 14
-          }
-        ]
-      },
-      {
-        "id": "quiet_reminder",
-        "name": "Quiet Reminder",
-        "intent_type": "mixed",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 11
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "overdue",
-            "amount": 1
-          }
-        ]
-      },
-      {
-        "id": "reserved_seat",
-        "name": "Reserved Seat",
-        "intent_type": "block",
-        "actions": [
-          {
-            "type": "gain_block",
-            "target": "owner",
-            "amount": 18
-          }
-        ]
-      }
-    ],
-    "tags": [
-      "archives",
-      "reading_room",
-      "hand_pressure",
-      "stage_reading_room"
-    ]
-  },
-  {
-    "id": "mute_margin",
-    "name": "Mute Margin",
-    "max_hp": 70,
-    "intent_pattern": "cycle",
-    "intents": [
-      {
-        "id": "narrow_the_margin",
-        "name": "Narrow the Margin",
-        "intent_type": "attack",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 12
-          }
-        ]
-      },
-      {
-        "id": "edge_cut",
-        "name": "Edge Cut",
-        "intent_type": "attack",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 17
-          }
-        ]
-      },
-      {
-        "id": "white_space",
-        "name": "White Space",
-        "intent_type": "block",
-        "actions": [
-          {
-            "type": "gain_block",
-            "target": "owner",
-            "amount": 18
-          }
-        ]
-      }
-    ],
-    "tags": [
-      "archives",
-      "reading_room",
-      "misfiled",
-      "stage_reading_room"
-    ]
-  },
-  {
-    "id": "choir_of_unspoken_words",
-    "name": "Choir of Unspoken Words",
-    "max_hp": 64,
-    "intent_pattern": "cycle",
-    "intents": [
-      {
-        "id": "held_note",
-        "name": "Held Note",
-        "intent_type": "mixed",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 12
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "overdue",
-            "amount": 1
-          }
-        ]
-      },
-      {
-        "id": "unspoken_crescendo",
-        "name": "Unspoken Crescendo",
-        "intent_type": "attack",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 18
-          }
-        ]
-      },
-      {
-        "id": "hush",
-        "name": "Hush",
-        "intent_type": "block",
-        "actions": [
-          {
-            "type": "gain_block",
-            "target": "owner",
-            "amount": 16
-          }
-        ]
-      }
-    ],
-    "tags": [
-      "archives",
-      "reading_room",
-      "hand_pressure",
-      "stage_reading_room"
-    ]
-  },
-  {
-    "id": "palimpsest_husk",
-    "name": "Palimpsest Husk",
-    "max_hp": 75,
-    "intent_pattern": "cycle",
-    "intents": [
-      {
-        "id": "scrape_the_surface",
-        "name": "Scrape the Surface",
-        "intent_type": "attack",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 13
-          }
-        ]
-      },
-      {
-        "id": "older_ink",
-        "name": "Older Ink",
-        "intent_type": "attack",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 17
-          }
-        ]
-      },
-      {
-        "id": "layer_over",
-        "name": "Layer Over",
-        "intent_type": "block",
-        "actions": [
-          {
-            "type": "gain_block",
-            "target": "owner",
-            "amount": 18
-          }
-        ]
-      }
-    ],
-    "tags": [
-      "archives",
-      "redaction",
-      "stage_redaction"
-    ],
-    "starting_statuses": [
-      {
-        "status": "palimpsest_body"
-      }
-    ]
-  },
-  {
-    "id": "expunged_name",
-    "name": "Expunged Name",
-    "max_hp": 72,
-    "intent_pattern": "cycle",
-    "intents": [
-      {
-        "id": "strike_the_name",
-        "name": "Strike the Name",
-        "intent_type": "attack",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 14
-          }
-        ]
-      },
-      {
-        "id": "unpersoned_blow",
-        "name": "Unpersoned Blow",
-        "intent_type": "attack",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 19
-          }
-        ]
-      },
-      {
-        "id": "seal_the_register",
-        "name": "Seal the Register",
-        "intent_type": "block",
-        "actions": [
-          {
-            "type": "gain_block",
-            "target": "owner",
-            "amount": 16
-          }
-        ]
-      }
-    ],
-    "tags": [
-      "archives",
-      "redaction",
-      "stage_redaction"
-    ]
-  },
-  {
-    "id": "vacant_portrait",
-    "name": "Vacant Portrait",
-    "max_hp": 81,
-    "intent_pattern": "cycle",
-    "intents": [
-      {
-        "id": "erase_the_face",
-        "name": "Erase the Face",
-        "intent_type": "attack",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 13
-          }
-        ]
-      },
-      {
-        "id": "absence_accuses",
-        "name": "Absence Accuses",
-        "intent_type": "attack",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 18
-          }
-        ]
-      },
-      {
-        "id": "empty_frame",
-        "name": "Empty Frame",
-        "intent_type": "block",
-        "actions": [
-          {
-            "type": "gain_block",
-            "target": "owner",
-            "amount": 21
-          }
-        ]
-      }
-    ],
-    "tags": [
-      "archives",
-      "redaction",
-      "stage_redaction"
-    ]
-  },
-  {
-    "id": "fatal_comma",
-    "name": "Fatal Comma",
-    "max_hp": 77,
-    "intent_pattern": "cycle",
-    "intents": [
-      {
-        "id": "set_the_clauses",
-        "name": "Set the Clauses",
-        "intent_type": "attack",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 3
-          }
-        ]
-      },
-      {
-        "id": "punctuation_cut",
-        "name": "Punctuation Cut",
-        "intent_type": "attack",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 16
-          }
-        ]
-      },
-      {
-        "id": "editorial_stay",
-        "name": "Editorial Stay",
-        "intent_type": "block",
-        "actions": [
-          {
-            "type": "gain_block",
-            "target": "owner",
-            "amount": 17
-          }
-        ]
-      }
-    ],
-    "tags": [
-      "archives",
-      "errata",
-      "stage_errata"
-    ],
-    "starting_statuses": [
-      {
-        "status": "fatal_comma_delinquency"
-      }
-    ]
-  },
-  {
-    "id": "errata_doppelganger",
-    "name": "Errata Doppelgänger",
-    "max_hp": 85,
-    "intent_pattern": "cycle",
-    "intents": [
-      {
-        "id": "errata_transfer",
-        "name": "Errata Transfer",
-        "intent_type": "attack",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 14
-          }
-        ]
-      },
-      {
-        "id": "revised_strike",
-        "name": "Revised Strike",
-        "intent_type": "attack",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 20
-          }
-        ]
-      },
-      {
-        "id": "fresh_binding",
-        "name": "Fresh Binding",
-        "intent_type": "block",
-        "actions": [
-          {
-            "type": "gain_block",
-            "target": "owner",
-            "amount": 18
-          }
-        ]
-      }
-    ],
-    "tags": [
-      "archives",
-      "errata",
-      "redaction",
-      "stage_errata"
-    ]
-  },
-  {
     "id": "checkout_codex",
     "name": "Checkout Codex",
     "max_hp": 89,
@@ -1040,132 +518,6 @@
     "starting_statuses": [
       {
         "status": "mnemonic_chain_collect"
-      }
-    ]
-  },
-  {
-    "id": "unoccurred_tuesday",
-    "name": "Unoccurred Tuesday",
-    "max_hp": 87,
-    "intent_pattern": "cycle",
-    "intents": [
-      {
-        "id": "calendar_residue",
-        "name": "Calendar Residue",
-        "intent_type": "attack",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 16
-          }
-        ]
-      },
-      {
-        "id": "resume_on_wednesday",
-        "name": "Resume on Wednesday",
-        "intent_type": "attack",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 24
-          }
-        ]
-      },
-      {
-        "id": "tuesday_does_not_occur",
-        "name": "Tuesday Does Not Occur",
-        "intent_type": "debuff",
-        "actions": [
-          {
-            "type": "apply_status",
-            "target": "owner",
-            "status": "tuesday_does_not_occur",
-            "amount": 1
-          }
-        ]
-      }
-    ],
-    "tags": [
-      "archives",
-      "hours",
-      "stage_hours"
-    ]
-  },
-  {
-    "id": "hourglass_with_two_bottoms",
-    "name": "Hourglass With Two Bottoms",
-    "max_hp": 96,
-    "intent_pattern": "cycle",
-    "intents": [
-      {
-        "id": "left_future",
-        "name": "Left Future",
-        "intent_type": "attack",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 16
-          }
-        ]
-      },
-      {
-        "id": "right_future",
-        "name": "Right Future",
-        "intent_type": "attack",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 25
-          }
-        ]
-      },
-      {
-        "id": "flip_the_glass",
-        "name": "Flip the Glass",
-        "intent_type": "block",
-        "actions": [
-          {
-            "type": "gain_block",
-            "target": "owner",
-            "amount": 18
-          }
-        ]
-      }
-    ],
-    "tags": [
-      "archives",
-      "hours",
-      "stage_hours"
-    ],
-    "starting_statuses": [
-      {
-        "status": "two_futures_at_once"
-      }
-    ],
-    "intent_rules": [
-      {
-        "condition": {
-          "kind": "self_counter",
-          "counter": "left_bottom_elapsed",
-          "op": "ge",
-          "value": 3
-        },
-        "action": "left_future",
-        "priority": 20
-      },
-      {
-        "condition": {
-          "kind": "self_counter",
-          "counter": "right_bottom_elapsed",
-          "op": "ge",
-          "value": 3
-        },
-        "action": "right_future",
-        "priority": 10
       }
     ]
   },
@@ -1288,130 +640,6 @@
       {
         "status": "stored_life"
       }
-    ]
-  },
-  {
-    "id": "detached_footnote",
-    "name": "Detached Footnote",
-    "max_hp": 86,
-    "intent_pattern": "cycle",
-    "intents": [
-      {
-        "id": "marginal_jab",
-        "name": "Marginal Jab",
-        "intent_type": "attack",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 14
-          }
-        ]
-      },
-      {
-        "id": "see_note_below",
-        "name": "See Note Below",
-        "intent_type": "mixed",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 16
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "overdue",
-            "amount": 1
-          }
-        ]
-      },
-      {
-        "id": "find_another_source",
-        "name": "Find Another Source",
-        "intent_type": "block",
-        "actions": [
-          {
-            "type": "gain_block",
-            "target": "owner",
-            "amount": 14
-          }
-        ]
-      }
-    ],
-    "tags": [
-      "archives",
-      "concordance",
-      "support",
-      "stage_concordance"
-    ],
-    "starting_statuses": [
-      {
-        "status": "marginal_note"
-      }
-    ],
-    "intent_rules": [
-      {
-        "condition": {
-          "kind": "self_counter",
-          "counter": "footnote_notes",
-          "op": "ge",
-          "value": 2
-        },
-        "action": "see_note_below",
-        "priority": 20
-      }
-    ]
-  },
-  {
-    "id": "miscellany_index",
-    "name": "Miscellany Index",
-    "max_hp": 107,
-    "intent_pattern": "cycle",
-    "intents": [
-      {
-        "id": "index_everything",
-        "name": "Index Everything",
-        "intent_type": "attack",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 17
-          }
-        ]
-      },
-      {
-        "id": "cross_list",
-        "name": "Cross-List",
-        "intent_type": "attack",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 12
-          }
-        ]
-      },
-      {
-        "id": "everything_else",
-        "name": "Everything Else",
-        "intent_type": "attack",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 4
-          }
-        ]
-      }
-    ],
-    "tags": [
-      "archives",
-      "concordance",
-      "redaction",
-      "misfiled",
-      "stage_concordance"
     ]
   },
   {
@@ -1731,90 +959,6 @@
     ]
   },
   {
-    "id": "silence_between_two_words",
-    "name": "The Silence Between Two Words",
-    "max_hp": 140,
-    "intent_pattern": "cycle",
-    "intents": [
-      {
-        "id": "leave_space_between_the_words",
-        "name": "Leave Space Between the Words",
-        "intent_type": "block",
-        "actions": [
-          {
-            "type": "gain_block",
-            "target": "owner",
-            "amount": 19
-          }
-        ]
-      },
-      {
-        "id": "remove_the_unnecessary_word",
-        "name": "Remove the Unnecessary Word",
-        "intent_type": "attack",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 13
-          }
-        ]
-      },
-      {
-        "id": "hold_the_sentence_open",
-        "name": "Hold the Sentence Open",
-        "intent_type": "mixed",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 11
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "doubt",
-            "amount": 1
-          }
-        ]
-      },
-      {
-        "id": "a_word_nearly_spoken",
-        "name": "A Word Nearly Spoken",
-        "intent_type": "attack",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 16
-          }
-        ]
-      },
-      {
-        "id": "the_unsaid_sentence",
-        "name": "The Unsaid Sentence",
-        "intent_type": "attack",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 22
-          }
-        ]
-      }
-    ],
-    "tags": [
-      "archives",
-      "elite",
-      "act_2"
-    ],
-    "starting_statuses": [
-      {
-        "status": "the_silence"
-      }
-    ]
-  },
-  {
     "id": "black_ink_oracle",
     "name": "Black-Ink Oracle",
     "max_hp": 150,
@@ -2039,7 +1183,7 @@
   {
     "id": "drawer_of_infinite_returns",
     "name": "The Drawer of Infinite Returns",
-    "max_hp": 154,
+    "max_hp": 130,
     "intent_pattern": "cycle",
     "intents": [
       {
@@ -2074,7 +1218,7 @@
           {
             "type": "gain_block",
             "target": "owner",
-            "amount": 20
+            "amount": 14
           }
         ]
       },
@@ -2095,18 +1239,6 @@
             "amount": 1
           }
         ]
-      },
-      {
-        "id": "inner_compartment",
-        "name": "Inner Compartment",
-        "intent_type": "block",
-        "actions": [
-          {
-            "type": "gain_block",
-            "target": "owner",
-            "amount": 12
-          }
-        ]
       }
     ],
     "tags": [
@@ -2120,126 +1252,6 @@
       },
       {
         "status": "drawer_delinquency"
-      }
-    ]
-  },
-  {
-    "id": "presentless_clock",
-    "name": "Presentless Clock",
-    "max_hp": 158,
-    "intent_pattern": "cycle",
-    "intents": [
-      {
-        "id": "history_refuses_revision",
-        "name": "History Refuses Revision",
-        "intent_type": "attack",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 15
-          }
-        ]
-      },
-      {
-        "id": "no_present_tense",
-        "name": "No Present Tense",
-        "intent_type": "attack",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 10
-          }
-        ]
-      },
-      {
-        "id": "second_hand_no_first",
-        "name": "Second Hand, No First",
-        "intent_type": "attack",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 18
-          }
-        ]
-      },
-      {
-        "id": "borrowed_tomorrow",
-        "name": "Borrowed Tomorrow",
-        "intent_type": "attack",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 11
-          }
-        ]
-      },
-      {
-        "id": "tomorrow_has_already_been_filed",
-        "name": "Tomorrow Has Already Been Filed",
-        "intent_type": "attack",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 13
-          }
-        ]
-      },
-      {
-        "id": "chronology_closed",
-        "name": "Chronology Closed",
-        "intent_type": "block",
-        "actions": [
-          {
-            "type": "gain_block",
-            "target": "owner",
-            "amount": 24
-          }
-        ]
-      },
-      {
-        "id": "second_hand_no_first_again",
-        "name": "Second Hand, No First",
-        "intent_type": "attack",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 18
-          }
-        ]
-      },
-      {
-        "id": "history_repeats_incorrectly",
-        "name": "History Repeats Incorrectly",
-        "intent_type": "attack",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 19
-          }
-        ]
-      }
-    ],
-    "tags": [
-      "archives",
-      "elite",
-      "act_2"
-    ],
-    "starting_statuses": [
-      {
-        "status": "the_presentless_clock"
-      },
-      {
-        "status": "clock_reference"
-      },
-      {
-        "status": "clock_delinquency"
       }
     ]
   },
@@ -2327,6 +1339,9 @@
       },
       {
         "status": "proper_notice_of_passing"
+      },
+      {
+        "status": "living_a_respectable_life"
       }
     ]
   },
@@ -2812,9 +1827,6 @@
     "starting_statuses": [
       {
         "status": "the_authority"
-      },
-      {
-        "status": "binding_authority"
       }
     ],
     "tags": [
@@ -2882,9 +1894,6 @@
     "starting_statuses": [
       {
         "status": "the_conclusion"
-      },
-      {
-        "status": "stored_conclusion_ledger"
       }
     ],
     "tags": [
@@ -2965,6 +1974,73 @@
       "boss",
       "act_2",
       "grand_cross_reference"
+    ]
+  },
+  {
+    "id": "the_testator",
+    "name": "The Testator",
+    "max_hp": 70,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "draft_a_codicil",
+        "name": "Draft a Codicil",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 11
+          }
+        ]
+      },
+      {
+        "id": "witness_the_will",
+        "name": "Witness the Will",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 12
+          }
+        ]
+      },
+      {
+        "id": "read_the_will_aloud",
+        "name": "Read the Will Aloud",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 8
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "overdue",
+            "amount": 1
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "the_testament"
+      },
+      {
+        "status": "testator_delinquency"
+      },
+      {
+        "status": "testament_heirs"
+      }
+    ],
+    "tags": [
+      "archives",
+      "necrology",
+      "overdue",
+      "stage_necrology"
     ]
   }
 ]

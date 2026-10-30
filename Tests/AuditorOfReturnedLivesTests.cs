@@ -89,8 +89,8 @@ public class AuditorOfReturnedLivesTests
     [Fact]
     public void Crossing_a_threshold_puts_an_account_on_the_table()
     {
-        // Just under the Account of Identity.
-        var (play, _, auditor) = Fight(AuditorOfReturnedLives.IdentityHealth - 5, "open_the_account");
+        // Just under the Account of Obligation, the first one.
+        var (play, _, auditor) = Fight(AuditorOfReturnedLives.ObligationHealth - 5, "open_the_account");
 
         Assert.False(Has(play, auditor, AuditorOfReturnedLives.AuditPendingId));
 
@@ -104,7 +104,7 @@ public class AuditorOfReturnedLivesTests
     [Fact]
     public void Withholding_leaves_the_account_unreconciled()
     {
-        var (play, _, auditor) = Fight(AuditorOfReturnedLives.IdentityHealth - 5, "open_the_account");
+        var (play, _, auditor) = Fight(AuditorOfReturnedLives.ObligationHealth - 5, "open_the_account");
 
         EndTurn(play);
         Assert.True(Has(play, auditor, AuditorOfReturnedLives.AuditPendingId));
@@ -123,7 +123,7 @@ public class AuditorOfReturnedLivesTests
     public void Submitting_two_lines_closes_the_account()
     {
         // Two turns of citations before the threshold, so there is something to submit.
-        var (play, _, auditor) = Fight(AuditorOfReturnedLives.IdentityHealth + 4, "open_the_account");
+        var (play, _, auditor) = Fight(AuditorOfReturnedLives.ObligationHealth + 4, "open_the_account");
 
         EndTurn(play);
         AnswerCitations(play, auditor);
@@ -132,7 +132,7 @@ public class AuditorOfReturnedLivesTests
         Assert.Equal(2, Documentation(play));
 
         // Cross the threshold ourselves.
-        while (Auditor(play, auditor).Health.Current > AuditorOfReturnedLives.IdentityHealth
+        while (Auditor(play, auditor).Health.Current > AuditorOfReturnedLives.ObligationHealth
                && Hand(play).Count > 0)
         {
             play.CombatDriver!.PlayCard(Hand(play)[0].Id, auditor);
@@ -153,7 +153,7 @@ public class AuditorOfReturnedLivesTests
     [Fact]
     public void Resolving_an_account_replaces_the_attack()
     {
-        var (play, _, auditor) = Fight(AuditorOfReturnedLives.IdentityHealth - 5, "final_reconciliation");
+        var (play, _, auditor) = Fight(AuditorOfReturnedLives.ObligationHealth - 5, "final_reconciliation");
 
         EndTurn(play);   // queues the Account
         Assert.True(Has(play, auditor, AuditorOfReturnedLives.AuditPendingId));

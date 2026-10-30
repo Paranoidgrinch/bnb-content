@@ -10,8 +10,8 @@ namespace BnbContent.Converter.Bosses;
 //
 // "The damage may be real. The record may still be insufficient."
 //
-// The Auditor does not argue about whether it is dying. It asks whether the death can be DOCUMENTED. Three
-// times — at 216, 144 and 72 HP — an Account comes due, and the player gets one full turn to answer it:
+// The Auditor does not argue about whether it is dying. It asks whether the death can be DOCUMENTED. Twice —
+// at 192 and 96 HP — an Account comes due, and the player gets one full turn to answer it:
 //
 //   SUBMIT DOCUMENTATION — spend 2 of the Supporting Documentation its own citations hand you. Account closed.
 //   WITHHOLD             — spend nothing, take a Discrepancy, and live with what that Account does unclosed.
@@ -56,13 +56,14 @@ public static class AuditorOfReturnedLives
     private static CounterId AnsweredLastTurnCounter => new("auditor_answered_last_turn");
     private static CounterId AnsweredThisTurnCounter => new("auditor_answered_this_turn");
     private static CounterId DelayedDocumentationCounter => new("auditor_delayed_documentation");
-    private static CounterId IdentityPenaltyCounter => new("auditor_identity_penalty");
 
     public const int DocumentationMaximum = 6;
     public const int DocumentationPerAccount = 2;
     public const int DiscrepancyMaximum = 3;
-    public const int IdentityHealth = 216;
-    public const int ObligationHealth = 144;
+    // THINNED in the content cut of 2026-10-29: two Accounts instead of three, and the Account of Identity (which
+    // redacted a card) is gone. The Auditor stands in Necrology now, and its fight is whether its death is final.
+    public const int ObligationHealth = 192;
+    public const int LifeAccountHealth = 96;
     public const int LifeHealth = 72;
     public const int AnnouncementMargin = 29;
 
@@ -72,7 +73,7 @@ public static class AuditorOfReturnedLives
     // The three Accounts, each with the body-count that calls it.
     private static readonly (int Account, int Health)[] Accounts =
     [
-        (1, IdentityHealth), (2, ObligationHealth), (3, LifeHealth),
+        (2, ObligationHealth), (3, LifeAccountHealth),
     ];
 
     // ── Content ───────────────────────────────────────────────────────────────────────────────────────────
@@ -122,8 +123,6 @@ public static class AuditorOfReturnedLives
                 [
                     // A suspended gain was never lost — it simply waited for the Auditor's turn to begin.
                     ReleaseDelayedDocumentation(),
-                    // 8.6: the Account of Identity's one penalty falls on the hand after the crossing.
-                    ServeTheIdentityPenalty(),
                     // 8.4: the response window. One full player turn to close the Account or refuse to.
                     new ConditionalEffectNode<CardsDrawnTriggeredEffectContext>(
                         AcrossHas<CardsDrawnTriggeredEffectContext>(AuditPendingId),
@@ -288,11 +287,6 @@ public static class AuditorOfReturnedLives
                     new ConstantExpression<EnemyActionContext>(1),
                     new SubtractExpression<EnemyActionContext>(
                         new ConstantExpression<EnemyActionContext>(DiscrepancyMaximum), Discrepancy()))),
-            // Identity: a card of yours is redacted and cited — which can still pay you back, because the
-            // citation is Auditor-issued.
-            new ConditionalEffectNode<EnemyActionContext>(
-                CounterIs<EnemyActionContext>(Self, AccountCounter, 1),
-                SetOn<EnemyActionContext>(Across, IdentityPenaltyCounter, 1)),
             // Obligation: two Auditor-issued Overdue, and the act's own Delinquency rule takes it from there.
             new ConditionalEffectNode<EnemyActionContext>(
                 CounterIs<EnemyActionContext>(Self, AccountCounter, 2),
@@ -432,29 +426,6 @@ public static class AuditorOfReturnedLives
                 FileOneLine<CardsDrawnTriggeredEffectContext>(),
                 SetOn<CardsDrawnTriggeredEffectContext>(Self, DelayedDocumentationCounter, 0),
                 SyncTheClause<CardsDrawnTriggeredEffectContext>(),
-            ]));
-
-    // 8.6 unreconciled Identity: "after the next normal draw, redact 1 valid card and reference that same
-    // card. This happens once." The redaction and the citation land together, so the card that was damaged is
-    // the card that can pay it back.
-    private static IEffectNode<CardsDrawnTriggeredEffectContext> ServeTheIdentityPenalty() =>
-        new ConditionalEffectNode<CardsDrawnTriggeredEffectContext>(
-            Positive<CardsDrawnTriggeredEffectContext>(Self, IdentityPenaltyCounter),
-            new CausalSequenceEffectNode<CardsDrawnTriggeredEffectContext>(
-            [
-                new ForEachCardInZoneNode<CardsDrawnTriggeredEffectContext>(
-                    Self, CardZone.Hand,
-                    new CausalSequenceEffectNode<CardsDrawnTriggeredEffectContext>(
-                    [
-                        new MarkCardInstanceNode<CardsDrawnTriggeredEffectContext>(
-                            Self, new IteratedCardExpression<CardsDrawnTriggeredEffectContext>(),
-                            new TagId(ActTwo.RedactedMark)),
-                        new MarkCardInstanceNode<CardsDrawnTriggeredEffectContext>(
-                            Self, new IteratedCardExpression<CardsDrawnTriggeredEffectContext>(),
-                            new TagId(AuditorReferenceMark)),
-                    ]),
-                    takeFirst: 1),
-                SetOn<CardsDrawnTriggeredEffectContext>(Self, IdentityPenaltyCounter, 0),
             ]));
 
     // ── Intents ───────────────────────────────────────────────────────────────────────────────────────────

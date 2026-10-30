@@ -30,6 +30,8 @@ public static class ObituaryWithThreeEndings
     public const string RespectableLifeId = "a_respectable_life";
     public const string HeroicLifeId = "a_heroic_life";
     public const string HeroicPhaseId = "living_a_heroic_life";
+    // The first ending's own chip (content cut 2026-10-29: every return shows its ending — one chip at a time).
+    public const string RespectablePhaseId = "living_a_respectable_life";
     public const string AccuratePhaseId = "a_completely_accurate_account";
 
     // "Only source-bound obligations created by this Obituary count." Kept as a counter on the player rather
@@ -51,10 +53,12 @@ public static class ObituaryWithThreeEndings
         Marker(TheObituaryId, "The Obituary",
             "A biography that will not be finished badly. Kill it while its record is unsettled and the death "
             + "does not take — it is rewritten and comes back as a different life."),
-        Marker(HeroicPhaseId, "A Heroic Life",
-            "The second ending. This death is only final if you have played a Redacted card this turn."),
-        Marker(AccuratePhaseId, "A Completely Accurate Account",
-            "The last ending. There is nothing left to rewrite: this death takes."),
+        Marker(RespectablePhaseId, "Ending: A Respectable Life",
+            "First ending. Its death is final only if you owe it nothing. Otherwise it returns as a Heroic Life."),
+        Marker(HeroicPhaseId, "Ending: A Heroic Life",
+            "Second ending. Its death is final only if you played a Redacted card this turn. Otherwise it returns once more."),
+        Marker(AccuratePhaseId, "Ending: A Completely Accurate Account",
+            "Last ending. There is nothing left to rewrite: this death is final."),
         RespectableLife(),
         HeroicLife(),
         Rules(),
@@ -106,6 +110,8 @@ public static class ObituaryWithThreeEndings
             // "…gain 8 Block; no attack occurs during the transition window."
             new InterceptorEffectData(nameof(EffectKind.GainBlock), nameof(EffectTarget.Self), 8, "", 0,
                 StatusPolarity.Neutral),
+            new InterceptorEffectData(nameof(EffectKind.RemoveStatus), nameof(EffectTarget.Self), 0,
+                RespectablePhaseId, 0, StatusPolarity.Neutral),
             new InterceptorEffectData(nameof(EffectKind.ApplyStatus), nameof(EffectTarget.Self), 1,
                 HeroicPhaseId, 0, StatusPolarity.Neutral),
         ]),
@@ -124,6 +130,8 @@ public static class ObituaryWithThreeEndings
         Triggers = [],
         DeathPrevention = new StatusDeathPreventionData(AccurateHealth,
         [
+            new InterceptorEffectData(nameof(EffectKind.RemoveStatus), nameof(EffectTarget.Self), 0,
+                HeroicPhaseId, 0, StatusPolarity.Neutral),
             new InterceptorEffectData(nameof(EffectKind.ApplyStatus), nameof(EffectTarget.Self), 1,
                 AccuratePhaseId, 0, StatusPolarity.Neutral),
         ]),

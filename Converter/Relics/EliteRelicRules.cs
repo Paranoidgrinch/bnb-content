@@ -25,8 +25,8 @@ public static class EliteRelicRules
         CaseThatClimbed, ThriceStruckAppointment, ShutterKeyLateHour,
         ChairOfTheNinthHour, ContemptLedgerNail, GateChainCounterweight,
         // Act II
-        CrackedBellLip, RollerPinOfTheStacks, TheUnspokenWord, StripOfCensoringInk, ConcordanceThread,
-        DrawerWithinADrawer, MissingPresentHand,
+        CrackedBellLip, RollerPinOfTheStacks, StripOfCensoringInk, ConcordanceThread,
+        DrawerWithinADrawer,
         // Act III
         PreApprovedAntlerTine, MendedThread, TollStoneWrongBank, CoinLeftInTheThroat, TheProperLine,
         BoneTagFromTheJuniper, BoneTagCharm, ObsoleteBoundaryCord, ReedCutAtTheHearing, ThornChosenFromThree,
@@ -71,10 +71,6 @@ public static class EliteRelicRules
                     ]))),
                 nameof(TriggerEvent.Downed), StatusTriggerScope.Anywhere),
         ]);
-
-    // The Living Petition Chorus asks you to sign, over and over, and the convenient relief is the trap. The
-    // relic is the one signature that cost nothing.
-    public static string HalfSignedId => "half_signed_page";
 
     // Three appointments, and the third is the one that is kept.
     public static string ThriceStruckId => "thrice_struck_appointment";
@@ -265,42 +261,6 @@ public static class EliteRelicRules
                 nameof(TriggerEvent.CardMovedToZone)),
         ]);
 
-    // The creature is the silence, not the words. A hand you did not empty is the silence kept.
-    public static string UnspokenId => "the_unspoken_word";
-
-    public static StatusData TheUnspokenWord => Rule(
-        UnspokenId, "The Unspoken Word",
-        "End a turn still holding two cards or more: 4 Block.",
-        [
-            // Paid at the HAND and not at turn end, for the reason Block always is: it expires at the start
-            // of its owner's turn, so a wall built at turn end is gone before anything reaches it. The count
-            // that decides it is taken at turn end and read at the hand.
-            Trigger(new EffectProgram<TurnEndedTriggeredEffectContext>(
-                new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
-                    new ComparisonExpression<TurnEndedTriggeredEffectContext>(
-                        new CombatantZoneCardCountExpression<TurnEndedTriggeredEffectContext>(
-                            You, CardZone.Hand, null),
-                        ComparisonOperator.GreaterOrEqual,
-                        new ConstantExpression<TurnEndedTriggeredEffectContext>(2)),
-                    Set<TurnEndedTriggeredEffectContext>(UnspokenOwed, 1))),
-                nameof(TriggerEvent.TurnEnded)),
-            Trigger(new EffectProgram<CardsDrawnTriggeredEffectContext>(
-                new ConditionalEffectNode<CardsDrawnTriggeredEffectContext>(
-                    new ComparisonExpression<CardsDrawnTriggeredEffectContext>(
-                        new CombatantCounterExpression<CardsDrawnTriggeredEffectContext>(You, UnspokenOwed),
-                        ComparisonOperator.Greater,
-                        new ConstantExpression<CardsDrawnTriggeredEffectContext>(0)),
-                    new CausalSequenceEffectNode<CardsDrawnTriggeredEffectContext>(
-                    [
-                        Set<CardsDrawnTriggeredEffectContext>(UnspokenOwed, 0),
-                        new GainBlockNode<CardsDrawnTriggeredEffectContext>(
-                            You, new ConstantExpression<CardsDrawnTriggeredEffectContext>(4)),
-                    ]))),
-                nameof(TriggerEvent.CardsDrawn)),
-        ]);
-
-    private static CounterId UnspokenOwed => new("the_unspoken_word_owed");
-
     // The Oracle blacks out a field and asks about it. The strip blacks out a blow.
     public static string CensoringInkId => "strip_of_censoring_ink";
     private static CounterId InkUsed => new("strip_of_censoring_ink_used");
@@ -376,34 +336,6 @@ public static class EliteRelicRules
                             CardZone.DiscardPile),
                     ]))),
                 nameof(TriggerEvent.CardMovedToZone)),
-        ]);
-
-    // A clock with no present. The first thing you do happens twice, once in each of the hours it has.
-    public static string PresentHandId => "missing_present_hand";
-    private static CounterId PresentHandUsed => new("missing_present_hand_used");
-
-    public static StatusData MissingPresentHand => Rule(
-        PresentHandId, "The Missing Present Hand",
-        "Your opening turn is filed to the past: 6 Block and a card at your second hand.",
-        [
-            // ADAPTATION. "The first card resolves again next turn" would have to keep a card instance
-            // across a turn boundary and replay it in a context it was not played in; a replay node exists,
-            // but it replays a card the CURRENT play is holding. So the clock pays what a turn-one card is
-            // worth, one turn later — which is what "filed to the past" does here.
-            Trigger(new EffectProgram<CardsDrawnTriggeredEffectContext>(
-                new ConditionalEffectNode<CardsDrawnTriggeredEffectContext>(
-                    new AndExpression<CardsDrawnTriggeredEffectContext>(
-                        Unspent<CardsDrawnTriggeredEffectContext>(PresentHandUsed),
-                        new NotExpression<CardsDrawnTriggeredEffectContext>(
-                            FirstRound<CardsDrawnTriggeredEffectContext>())),
-                    new CausalSequenceEffectNode<CardsDrawnTriggeredEffectContext>(
-                    [
-                        Spend<CardsDrawnTriggeredEffectContext>(PresentHandUsed),
-                        new GainBlockNode<CardsDrawnTriggeredEffectContext>(
-                            You, new ConstantExpression<CardsDrawnTriggeredEffectContext>(6)),
-                        Draw<CardsDrawnTriggeredEffectContext>(1),
-                    ]))),
-                nameof(TriggerEvent.CardsDrawn)),
         ]);
 
     // ══ ACT III ═══════════════════════════════════════════════════════════════════════════════════════════

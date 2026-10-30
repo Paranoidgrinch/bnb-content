@@ -1,362 +1,209 @@
 using System.Text.Json;
 using RogueDeck.Core.Combat;
+using RogueDeck.Run;
+using RogueDeck.Sandbox.Composition;
 using RogueDeck.Scenario.Authoring;
-using BnbContent.Converter.Cards;
 
 namespace BnbContent.Converter.Elites;
 
-// ── The Drawer of Infinite Returns (Act II elite) ─────────────────────────────────────────────────────────
+// ── The Drawer of Infinite Returns (Act II elite, Returns) ─────────────────────────────────────────────────
 //
-// Open a drawer and there is another drawer inside it. The Drawer never keeps anything — it returns it from
-// somewhere deeper, and each return is worth more than the last. You may file one card away; it comes back
-// cheaper next turn, and if you let it go past you it goes deeper still and comes back cheaper again. What it
-// costs is time, and the Drawer counts that time as Depth Pressure.
+// REWORKED in the content cut of 2026-10-29. Every turn the Drawer demands one card from your hand, and the card
+// says so on its face. Play the demanded card and it works as always — and then it goes into the drawer: the
+// drawer stands open, and an open drawer takes double damage until the end of your next turn. Keep it from the
+// drawer instead and it files 1 Overdue against you, which it collects like any archive source. Every card it
+// swallowed comes back to your hand when it dies.
 //
-// Refusing to play along is a real option: with nothing filed the Drawer simply guards itself, and you fight
-// through 14 extra Block a turn.
+// A shut drawer guards itself (10 Block each of its turns), so feeding it is how the fight is won quickly, and
+// what it costs is the cards it keeps.
 public static class DrawerOfInfiniteReturns
 {
     public const string EnemyId = "drawer_of_infinite_returns";
 
     public const string TheDrawerId = "the_drawer";
-    public const string DrawerRulesId = "nested_return_rules";
-    public const string DepthPressureId = "depth_pressure";
+    public const string DrawerOpenId = "drawer_open";
     public const string DrawerDelinquencyId = "drawer_delinquency";
-    public const string NestedMark = "nested_card";
+    public const string DemandedMark = "drawer_demand";
+    public const string FedMark = "in_the_drawer";
 
-    // All of Nested Return's state, kept on the player: which depth the card is at (0 = the drawer is empty)
-    // and how many player turns it still has to wait down there.
-    private static CounterId DepthCounter => new("nested_depth");
-    private static CounterId WaitCounter => new("nested_wait");
+    public const int OpenRounds = 2;      // the turn you feed it, and your next one
+    public const int ShutBlock = 10;
 
-    private const int MaxDepth = 3;
-    private const int MaxPressure = 3;
-    private const int ClosedDrawerBlock = 14;
-
-    private static readonly ICombatantTargetSelector Opponent = CombatantTargetSelectors.LowestHealthEnemyOfSource;
-    private static readonly ICombatantTargetSelector Self = CombatantTargetSelectors.Source;
-    private static readonly ICombatantTargetSelector Drawers =
-        CombatantTargetSelectors.AllEnemiesOfSourceWithStatus(new StatusDefinitionId(TheDrawerId));
+    private static ICombatantTargetSelector Drawer { get; } =
+        CombatantTargetSelectors.FirstTarget(
+            CombatantTargetSelectors.WithStatus(
+                CombatantTargetSelectors.AllAliveCombatants, new StatusDefinitionId(TheDrawerId)));
 
     public static IEnumerable<StatusData> Statuses() =>
     [
         TheDrawer(),
-        DepthPressure(),
-        Rules(),
+        new StatusData
+        {
+            Id = DrawerOpenId,
+            NameKey = "Drawer Open",
+            DescriptionKey = "It holds a card you fed it: it takes double damage until the end of your next turn.",
+            Polarity = StatusPolarity.Debuff,
+            StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
+            UsesStacks = false,
+            Tags = [],
+            PassiveModifiers =
+            [
+                new PassiveModifierData(PassiveModifierPipeline.DamageReceived, PassiveModifierOperation.ScalePercent, 200),
+            ],
+            Triggers = [],
+        },
         ActTwo.Delinquency(DrawerDelinquencyId, "Returned to Sender",
-            "The Drawer collects what it is owed."),
+            "At 2 Overdue owed to the Drawer, it collects: 1 Paperwork."),
     ];
 
-    // ── 11.2 Closed Drawer ────────────────────────────────────────────────────────────────────────────────
-    //
-    // "If no card is currently inside Nested Return, Drawer gains 14 Block at the beginning of its turn."
-    // An engagement incentive, not an immunity — the Drawer reads the player's own depth counter to know
-    // whether its drawer is empty.
+    public static IReadOnlyList<EncounterTriggerData> Triggers() =>
+        [TheDemand(), FeedingTheDrawer(), RefusingTheDrawer(), EverythingComesBack()];
+
+    // A shut drawer guards itself at the start of its turn.
     private static StatusData TheDrawer()
     {
+        var self = CombatantTargetSelectors.Source;
         var guard = new EffectProgram<TurnStartedTriggeredEffectContext>(
             new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
-                new ComparisonExpression<TurnStartedTriggeredEffectContext>(
-                    new CombatantCounterExpression<TurnStartedTriggeredEffectContext>(Opponent, DepthCounter),
-                    ComparisonOperator.Equal,
-                    new ConstantExpression<TurnStartedTriggeredEffectContext>(0)),
-                new GainBlockNode<TurnStartedTriggeredEffectContext>(
-                    Self, new ConstantExpression<TurnStartedTriggeredEffectContext>(ClosedDrawerBlock))));
+                new NotExpression<TurnStartedTriggeredEffectContext>(
+                    new TargetHasStatusExpression<TurnStartedTriggeredEffectContext>(self, new StatusDefinitionId(DrawerOpenId))),
+                new GainBlockNode<TurnStartedTriggeredEffectContext>(self, Const<TurnStartedTriggeredEffectContext>(ShutBlock))));
 
-        return Rule(TheDrawerId, "The Drawer",
-            "An empty drawer is a closed drawer: it guards itself while it holds nothing of yours.",
-            [
-                new StatusTriggerData("TurnStarted", JsonSerializer.SerializeToElement(
-                    guard, CombatJson.CreateOptions<TurnStartedTriggeredEffectContext>())),
-            ]);
-    }
-
-    private static StatusData DepthPressure() => new()
-    {
-        Id = DepthPressureId,
-        NameKey = "Depth Pressure",
-        DescriptionKey = "How long the Drawer has been holding something of yours. At 3 it slams shut.",
-        Polarity = StatusPolarity.Buff,
-        StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
-        UsesStacks = true,
-        Tags = [],
-        PassiveModifiers = [],
-        Triggers = [],
-    };
-
-    // ── 11.3–11.6 Nested Return ───────────────────────────────────────────────────────────────────────────
-    //
-    // Three moments, all on the player, because it is the player's card and the player's turn that the whole
-    // mechanism is about:
-    //   after the normal draw — return what is due, or offer to file something;
-    //   at the turn's end     — anything that came back and was not played goes deeper;
-    //   on play               — the nesting ends, and from Depth 2 on it pays a card.
-    private static StatusData Rules()
-    {
-        var afterDraw = new EffectProgram<CardsDrawnTriggeredEffectContext>(
-            new ConditionalEffectNode<CardsDrawnTriggeredEffectContext>(
-                Nesting<CardsDrawnTriggeredEffectContext>(),
-                // Something is down there: either it is still waiting, or it is due back.
-                new ConditionalEffectNode<CardsDrawnTriggeredEffectContext>(
-                    new ComparisonExpression<CardsDrawnTriggeredEffectContext>(
-                        Count<CardsDrawnTriggeredEffectContext>(WaitCounter),
-                        ComparisonOperator.Greater,
-                        new ConstantExpression<CardsDrawnTriggeredEffectContext>(0)),
-                    new SetCombatantCounterNode<CardsDrawnTriggeredEffectContext>(
-                        Self, WaitCounter,
-                        new ConstantExpression<CardsDrawnTriggeredEffectContext>(-1), relative: true),
-                    @else: ReturnTheCard()),
-                @else: Offer()));
-
-        var atTurnEnd = new EffectProgram<TurnEndedTriggeredEffectContext>(
-            new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
-                new AndExpression<TurnEndedTriggeredEffectContext>(
-                    Nesting<TurnEndedTriggeredEffectContext>(),
-                    // It only goes deeper if it CAME BACK and was left unplayed. "Came back" is read as "not
-                    // in the drawer" rather than "in hand": by the time a turn-end program reaches its
-                    // card-touching nodes the hand has already been discarded, so the card is in the discard
-                    // pile — and a card that was PLAYED has had its mark taken off, so the mark alone is
-                    // enough to tell the two apart.
-                    new ComparisonExpression<TurnEndedTriggeredEffectContext>(
-                        new CombatantZoneCardCountExpression<TurnEndedTriggeredEffectContext>(
-                            Self, CardZone.BanishedPile, mark: new TagId(NestedMark)),
-                        ComparisonOperator.Equal,
-                        new ConstantExpression<TurnEndedTriggeredEffectContext>(0))),
-                GoDeeper()));
-
-        var onPlay = new EffectProgram<CardPlayedTriggeredEffectContext>(
-            new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
-                new CardInstanceHasMarkExpression<CardPlayedTriggeredEffectContext>(
-                    new TriggerEventCardInstanceExpression<CardPlayedTriggeredEffectContext>(),
-                    new TagId(NestedMark)),
-                new CausalSequenceEffectNode<CardPlayedTriggeredEffectContext>(
-                [
-                    // "Draw 1 after the card is played" — from Depth 2 on, and read before the depth is
-                    // cleared, because clearing it is what ends the nesting.
-                    new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
-                        new ComparisonExpression<CardPlayedTriggeredEffectContext>(
-                            Count<CardPlayedTriggeredEffectContext>(DepthCounter),
-                            ComparisonOperator.GreaterOrEqual,
-                            new ConstantExpression<CardPlayedTriggeredEffectContext>(2)),
-                        new DrawCardsNode<CardPlayedTriggeredEffectContext>(
-                            Self, new ConstantExpression<CardPlayedTriggeredEffectContext>(1))),
-                    new MarkCardInstanceNode<CardPlayedTriggeredEffectContext>(
-                        Self, new TriggerEventCardInstanceExpression<CardPlayedTriggeredEffectContext>(),
-                        new TagId(NestedMark), remove: true),
-                    Set<CardPlayedTriggeredEffectContext>(DepthCounter, 0),
-                    Set<CardPlayedTriggeredEffectContext>(WaitCounter, 0),
-                ])));
-
-        return Rule(DrawerRulesId, "Nested Return",
-            "One card at a time may be filed away. It comes back cheaper the deeper it went — and the Drawer "
-            + "counts every turn it holds it.",
-            [
-                new StatusTriggerData("CardsDrawn", JsonSerializer.SerializeToElement(
-                    afterDraw, CombatJson.CreateOptions<CardsDrawnTriggeredEffectContext>())),
-                new StatusTriggerData("TurnEnded", JsonSerializer.SerializeToElement(
-                    atTurnEnd, CombatJson.CreateOptions<TurnEndedTriggeredEffectContext>())),
-                new StatusTriggerData("CardPlayed", JsonSerializer.SerializeToElement(
-                    onPlay, CombatJson.CreateOptions<CardPlayedTriggeredEffectContext>())),
-            ]);
-    }
-
-    // 11.3: "the player MAY voluntarily choose one non-Junk card in hand and file it away. No Energy cost."
-    // Voluntary, so it is a prompt with a real refusal — and no prompt at all when there is nothing worth
-    // filing.
-    private static IEffectNode<CardsDrawnTriggeredEffectContext> Offer() =>
-        new ConditionalEffectNode<CardsDrawnTriggeredEffectContext>(
-            new ComparisonExpression<CardsDrawnTriggeredEffectContext>(
-                new SubtractExpression<CardsDrawnTriggeredEffectContext>(
-                    new CombatantZoneCardCountExpression<CardsDrawnTriggeredEffectContext>(Self, CardZone.Hand),
-                    new CombatantZoneCardCountExpression<CardsDrawnTriggeredEffectContext>(
-                        Self, CardZone.Hand, tag: new TagId(CardAuthoring.JunkTag))),
-                ComparisonOperator.Greater,
-                new ConstantExpression<CardsDrawnTriggeredEffectContext>(0)),
-            new ChooseOptionsNode<CardsDrawnTriggeredEffectContext>(
-                [FileItAway(), new NoOpEffectNode<CardsDrawnTriggeredEffectContext>()],
-                ["file a card away in the Drawer", "keep your hand"],
-                count: 1, purpose: "the Drawer stands open"));
-
-    private static IEffectNode<CardsDrawnTriggeredEffectContext> FileItAway() =>
-        new CausalSequenceEffectNode<CardsDrawnTriggeredEffectContext>(
-        [
-            new MarkCardInstanceNode<CardsDrawnTriggeredEffectContext>(
-                Self,
-                new ChosenCardInZoneExpression<CardsDrawnTriggeredEffectContext>(
-                    CardZone.Hand, "file a card away"),
-                new TagId(NestedMark)),
-            // The card leaves the normal zones entirely — Banished is the one place nothing else reaches
-            // into, which is what "temporarily leaves combat zones" has to mean for the return to be the
-            // Drawer's alone.
-            new MoveCardToZoneNode<CardsDrawnTriggeredEffectContext>(
-                Self, Nested<CardsDrawnTriggeredEffectContext>(CardZone.Hand), CardZone.BanishedPile),
-            Set<CardsDrawnTriggeredEffectContext>(DepthCounter, 1),
-            Set<CardsDrawnTriggeredEffectContext>(WaitCounter, 0),
-        ]);
-
-    // 11.4–11.6: it comes back cheaper the deeper it went. At Depth 3 it comes back free.
-    private static IEffectNode<CardsDrawnTriggeredEffectContext> ReturnTheCard()
-    {
-        var card = Nested<CardsDrawnTriggeredEffectContext>(CardZone.BanishedPile);
-
-        return new CausalSequenceEffectNode<CardsDrawnTriggeredEffectContext>(
-        [
-            new MoveCardToZoneNode<CardsDrawnTriggeredEffectContext>(Self, card, CardZone.Hand),
-            new ConditionalEffectNode<CardsDrawnTriggeredEffectContext>(
-                new ComparisonExpression<CardsDrawnTriggeredEffectContext>(
-                    Count<CardsDrawnTriggeredEffectContext>(DepthCounter),
-                    ComparisonOperator.GreaterOrEqual,
-                    new ConstantExpression<CardsDrawnTriggeredEffectContext>(MaxDepth)),
-                // "Cost becomes 0 for that turn" — the whole printed cost taken off, not one off it.
-                new SetCardInstanceMarkCounterNode<CardsDrawnTriggeredEffectContext>(
-                    Self, Nested<CardsDrawnTriggeredEffectContext>(CardZone.Hand),
-                    StandardCombatIds.CardCostDeltaCounter,
-                    new NegateExpression<CardsDrawnTriggeredEffectContext>(
-                        new CardInstanceBaseCostExpression<CardsDrawnTriggeredEffectContext>(
-                            Nested<CardsDrawnTriggeredEffectContext>(CardZone.Hand),
-                            StandardCombatIds.EnergyResource)),
-                    relative: false),
-                @else: new SetCardInstanceMarkCounterNode<CardsDrawnTriggeredEffectContext>(
-                    Self, Nested<CardsDrawnTriggeredEffectContext>(CardZone.Hand),
-                    StandardCombatIds.CardCostDeltaCounter,
-                    new ConstantExpression<CardsDrawnTriggeredEffectContext>(-1), relative: false)),
-        ]);
-    }
-
-    // The turn ended and it is still in your hand: down it goes. Depth Pressure counts entering Depth 2 and
-    // every Depth-3 return you let pass — not the step from 2 to 3, which the design leaves free.
-    private static IEffectNode<TurnEndedTriggeredEffectContext> GoDeeper()
-    {
-        var depth = Count<TurnEndedTriggeredEffectContext>(DepthCounter);
-
-        return new CausalSequenceEffectNode<TurnEndedTriggeredEffectContext>(
-        [
-            new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
-                new OrExpression<TurnEndedTriggeredEffectContext>(
-                    new ComparisonExpression<TurnEndedTriggeredEffectContext>(
-                        depth, ComparisonOperator.Equal,
-                        new ConstantExpression<TurnEndedTriggeredEffectContext>(1)),
-                    new ComparisonExpression<TurnEndedTriggeredEffectContext>(
-                        depth, ComparisonOperator.GreaterOrEqual,
-                        new ConstantExpression<TurnEndedTriggeredEffectContext>(MaxDepth))),
-                Pressure<TurnEndedTriggeredEffectContext>()),
-            new SetCombatantCounterNode<TurnEndedTriggeredEffectContext>(
-                Self, DepthCounter,
-                new MinExpression<TurnEndedTriggeredEffectContext>(
-                    new ConstantExpression<TurnEndedTriggeredEffectContext>(MaxDepth),
-                    new AddExpression<TurnEndedTriggeredEffectContext>(
-                        depth, new ConstantExpression<TurnEndedTriggeredEffectContext>(1))),
-                relative: false),
-            // A deeper drawer takes a full player turn to come back out of.
-            Set<TurnEndedTriggeredEffectContext>(WaitCounter, 1),
-            // Wherever the card ended up when the hand was put down — discard, or still in hand if something
-            // retained it — the discount lapses and the drawer takes it back.
-            .. new[] { CardZone.DiscardPile, CardZone.Hand }.SelectMany(zone =>
-                new IEffectNode<TurnEndedTriggeredEffectContext>[]
-                {
-                    new SetCardInstanceMarkCounterNode<TurnEndedTriggeredEffectContext>(
-                        Self, Nested<TurnEndedTriggeredEffectContext>(zone),
-                        StandardCombatIds.CardCostDeltaCounter,
-                        new ConstantExpression<TurnEndedTriggeredEffectContext>(0), relative: false),
-                    new MoveCardToZoneNode<TurnEndedTriggeredEffectContext>(
-                        Self, Nested<TurnEndedTriggeredEffectContext>(zone), CardZone.BanishedPile),
-                }),
-        ]);
-    }
-
-    private static IEffectNode<TContext> Pressure<TContext>() where TContext : class =>
-        new ForEachTargetEffectNode<TContext>(Drawers,
-            new ConditionalEffectNode<TContext>(
-                new ComparisonExpression<TContext>(
-                    new CombatantStatusStacksExpression<TContext>(
-                        CombatantTargetSelectors.IterationTarget, new StatusDefinitionId(DepthPressureId)),
-                    ComparisonOperator.Less, new ConstantExpression<TContext>(MaxPressure)),
-                new ApplyStatusNode<TContext>(
-                    CombatantTargetSelectors.IterationTarget, new StatusDefinitionId(DepthPressureId),
-                    new ConstantExpression<TContext>(1))));
-
-    // ── 11.8 Intents ──────────────────────────────────────────────────────────────────────────────────────
-    public static EffectProgram<EnemyActionContext>? Intent(string intentId) => intentId switch
-    {
-        "open_another_drawer" => Normal(Damage(13)),
-        "mahogany_runner" => Normal(Damage(17)),
-        "index_the_contents" => Normal(new CausalSequenceEffectNode<EnemyActionContext>(
-            [new GainBlockNode<EnemyActionContext>(Self, Const(20)), MisfileOne()])),
-        "return_to_sender" => Normal(new CausalSequenceEffectNode<EnemyActionContext>(
-        [
-            Damage(11),
-            new ApplyStatusNode<EnemyActionContext>(
-                Opponent, new StatusDefinitionId(ActTwo.OverdueId), Const(1)),
-        ])),
-        "inner_compartment" => Normal(new CausalSequenceEffectNode<EnemyActionContext>(
-        [
-            new GainBlockNode<EnemyActionContext>(Self, Const(12)),
-            new ConditionalEffectNode<EnemyActionContext>(
-                new ComparisonExpression<EnemyActionContext>(
-                    new CombatantCounterExpression<EnemyActionContext>(Opponent, DepthCounter),
-                    ComparisonOperator.Greater, Const(0)),
-                Pressure<EnemyActionContext>()),
-        ])),
-        _ => null,
-    };
-
-    // Signature — Drawer Slams Shut: at Depth Pressure 3 whatever it was going to do becomes 24 damage and a
-    // misfiling, and the pressure is spent.
-    private static EffectProgram<EnemyActionContext> Normal(IEffectNode<EnemyActionContext> body) =>
-        new(new ConditionalEffectNode<EnemyActionContext>(
-            new ComparisonExpression<EnemyActionContext>(
-                new CombatantStatusStacksExpression<EnemyActionContext>(
-                    Self, new StatusDefinitionId(DepthPressureId)),
-                ComparisonOperator.GreaterOrEqual, Const(MaxPressure)),
-            new CausalSequenceEffectNode<EnemyActionContext>(
-            [
-                Damage(24),
-                MisfileOne(),
-                new RemoveStatusNode<EnemyActionContext>(Self, new StatusDefinitionId(DepthPressureId)),
-            ]),
-            @else: body));
-
-    private static IEffectNode<EnemyActionContext> MisfileOne() =>
-        new ForEachCardInZoneNode<EnemyActionContext>(
-            Opponent, CardZone.DrawPile,
-            new MarkCardInstanceNode<EnemyActionContext>(
-                Opponent, new IteratedCardExpression<EnemyActionContext>(),
-                new TagId(ActTwo.MisfiledMark)),
-            takeFirst: 1);
-
-    private static IEffectNode<EnemyActionContext> Damage(int amount) =>
-        new DealDamageNode<EnemyActionContext>(Opponent, Const(amount));
-
-    private static ConstantExpression<EnemyActionContext> Const(int value) => new(value);
-
-    // ── shared shapes ─────────────────────────────────────────────────────────────────────────────────────
-
-    private static ICardInstanceExpression<TContext> Nested<TContext>(CardZone zone) where TContext : class =>
-        new FirstMarkedCardInOwnerZoneExpression<TContext>(
-            CombatantTargetSelectors.Source, zone, new TagId(NestedMark));
-
-    private static ICombatExpression<TContext, int> Count<TContext>(CounterId counter) where TContext : class =>
-        new CombatantCounterExpression<TContext>(CombatantTargetSelectors.Source, counter);
-
-    private static ICombatExpression<TContext, bool> Nesting<TContext>() where TContext : class =>
-        new ComparisonExpression<TContext>(
-            Count<TContext>(DepthCounter), ComparisonOperator.Greater, new ConstantExpression<TContext>(0));
-
-    private static IEffectNode<TContext> Set<TContext>(CounterId counter, int value) where TContext : class =>
-        new SetCombatantCounterNode<TContext>(
-            CombatantTargetSelectors.Source, counter, new ConstantExpression<TContext>(value), relative: false);
-
-    private static StatusData Rule(
-        string id, string name, string description, IReadOnlyList<StatusTriggerData> triggers) => new()
+        return new StatusData
         {
-            Id = id,
-            NameKey = name,
-            DescriptionKey = description,
+            Id = TheDrawerId,
+            NameKey = "The Drawer",
+            DescriptionKey = "From your second turn it demands a card each turn. Play it and it is fed: the drawer opens and "
+                + "takes double damage. Keep it: 1 Overdue. It gives everything back when it dies.",
             Polarity = StatusPolarity.Neutral,
             StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
             UsesStacks = false,
             Tags = [],
             PassiveModifiers = [],
-            Triggers = triggers,
+            Triggers =
+            [
+                new StatusTriggerData("TurnStarted", JsonSerializer.SerializeToElement(
+                    guard, CombatJson.CreateOptions<TurnStartedTriggeredEffectContext>())),
+            ],
         };
+    }
+
+    // After your draw, one card in hand is demanded — the first one, as every Act II mark reads "one card".
+    private static EncounterTriggerData TheDemand()
+    {
+        var player = CombatantTargetSelectors.Source;
+        var program = new EffectProgram<CardsDrawnTriggeredEffectContext>(
+            new ConditionalEffectNode<CardsDrawnTriggeredEffectContext>(
+                new AndExpression<CardsDrawnTriggeredEffectContext>(
+                    new AndExpression<CardsDrawnTriggeredEffectContext>(
+                        PlayersTurn<CardsDrawnTriggeredEffectContext>(),
+                        // From the second round: the act files no Paperwork in a fight's first two rounds.
+                        new ComparisonExpression<CardsDrawnTriggeredEffectContext>(
+                            new RoundNumberExpression<CardsDrawnTriggeredEffectContext>(),
+                            ComparisonOperator.GreaterOrEqual, Const<CardsDrawnTriggeredEffectContext>(2))),
+                    // Once a turn: no card already demanded.
+                    new ComparisonExpression<CardsDrawnTriggeredEffectContext>(
+                        new CombatantZoneCardCountExpression<CardsDrawnTriggeredEffectContext>(
+                            player, CardZone.Hand, new TagId(DemandedMark)),
+                        ComparisonOperator.Equal, Const<CardsDrawnTriggeredEffectContext>(0))),
+                new ForEachCardInZoneNode<CardsDrawnTriggeredEffectContext>(
+                    player, CardZone.Hand,
+                    new MarkCardInstanceNode<CardsDrawnTriggeredEffectContext>(
+                        player, new IteratedCardExpression<CardsDrawnTriggeredEffectContext>(), new TagId(DemandedMark)),
+                    takeFirst: 1)));
+        return Encounter("CardsDrawn", program);
+    }
+
+    // The demanded card, played: it has done its work, and now it is the drawer's.
+    private static EncounterTriggerData FeedingTheDrawer()
+    {
+        var player = CombatantTargetSelectors.Source;
+        var card = new TriggerEventCardInstanceExpression<CardPlayedTriggeredEffectContext>();
+        var program = new EffectProgram<CardPlayedTriggeredEffectContext>(
+            new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
+                new AndExpression<CardPlayedTriggeredEffectContext>(
+                    PlayersTurn<CardPlayedTriggeredEffectContext>(),
+                    new CardInstanceHasMarkExpression<CardPlayedTriggeredEffectContext>(card, new TagId(DemandedMark))),
+                new CausalSequenceEffectNode<CardPlayedTriggeredEffectContext>(
+                [
+                    new MarkCardInstanceNode<CardPlayedTriggeredEffectContext>(player, card, new TagId(DemandedMark), remove: true),
+                    new MarkCardInstanceNode<CardPlayedTriggeredEffectContext>(player, card, new TagId(FedMark)),
+                    new MoveCardToZoneNode<CardPlayedTriggeredEffectContext>(player, card, CardZone.ExhaustPile),
+                    new RemoveStatusNode<CardPlayedTriggeredEffectContext>(Drawer, new StatusDefinitionId(DrawerOpenId)),
+                    new ApplyStatusNode<CardPlayedTriggeredEffectContext>(
+                        Drawer, new StatusDefinitionId(DrawerOpenId), Const<CardPlayedTriggeredEffectContext>(OpenRounds)),
+                ])));
+        return Encounter("CardPlayed", program);
+    }
+
+    // Your turn ends: a demanded card still in hand was refused (1 Overdue, from the Drawer), and the drawer
+    // closes a round.
+    private static EncounterTriggerData RefusingTheDrawer()
+    {
+        var player = CombatantTargetSelectors.Source;
+        var program = new EffectProgram<TurnEndedTriggeredEffectContext>(
+            new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
+                PlayersTurn<TurnEndedTriggeredEffectContext>(),
+                new CausalSequenceEffectNode<TurnEndedTriggeredEffectContext>(
+                [
+                    new ForEachCardInZoneNode<TurnEndedTriggeredEffectContext>(
+                        player, CardZone.Hand,
+                        new CausalSequenceEffectNode<TurnEndedTriggeredEffectContext>(
+                        [
+                            new MarkCardInstanceNode<TurnEndedTriggeredEffectContext>(
+                                player, new IteratedCardExpression<TurnEndedTriggeredEffectContext>(),
+                                new TagId(DemandedMark), remove: true),
+                            new ApplyStatusNode<TurnEndedTriggeredEffectContext>(
+                                player, new StatusDefinitionId(ActTwo.OverdueId),
+                                Const<TurnEndedTriggeredEffectContext>(1), sourceSelector: Drawer),
+                        ]),
+                        markFilter: new TagId(DemandedMark)),
+                    new ModifyStatusStacksNode<TurnEndedTriggeredEffectContext>(
+                        Drawer, new StatusDefinitionId(DrawerOpenId), Const<TurnEndedTriggeredEffectContext>(-1)),
+                ])));
+        return Encounter("TurnEnded", program);
+    }
+
+    // When the Drawer falls, everything it swallowed comes back to your hand.
+    private static EncounterTriggerData EverythingComesBack()
+    {
+        var player = CombatantTargetSelectors.AllEnemiesOfSourceWithStatus(new StatusDefinitionId(PassiveStatuses.ApplicantId));
+        var program = new EffectProgram<CombatantDownedTriggeredEffectContext>(
+            new ConditionalEffectNode<CombatantDownedTriggeredEffectContext>(
+                new TargetHasStatusExpression<CombatantDownedTriggeredEffectContext>(
+                    CombatantTargetSelectors.SourceIncludingDowned, new StatusDefinitionId(TheDrawerId)),
+                new ForEachCardInZoneNode<CombatantDownedTriggeredEffectContext>(
+                    player, CardZone.ExhaustPile,
+                    new CausalSequenceEffectNode<CombatantDownedTriggeredEffectContext>(
+                    [
+                        new MarkCardInstanceNode<CombatantDownedTriggeredEffectContext>(
+                            player, new IteratedCardExpression<CombatantDownedTriggeredEffectContext>(),
+                            new TagId(FedMark), remove: true),
+                        new MoveCardToZoneNode<CombatantDownedTriggeredEffectContext>(
+                            player, new IteratedCardExpression<CombatantDownedTriggeredEffectContext>(), CardZone.Hand),
+                    ]),
+                    markFilter: new TagId(FedMark))));
+        return Encounter("Downed", program);
+    }
+
+    // The intents are authored in the source data; nothing here is code-only any more.
+    public static EffectProgram<EnemyActionContext>? Intent(string intentId) => null;
+
+    // ── idioms ─────────────────────────────────────────────────────────────────────────────────────────────
+
+    private static ICombatExpression<TContext, bool> PlayersTurn<TContext>() where TContext : class =>
+        new AndExpression<TContext>(
+            new TargetHasStatusExpression<TContext>(
+                CombatantTargetSelectors.Source, new StatusDefinitionId(PassiveStatuses.ApplicantId)),
+            new ComparisonExpression<TContext>(
+                new CountTargetsExpression<TContext>(
+                    CombatantTargetSelectors.WithStatus(
+                        CombatantTargetSelectors.AllAliveCombatants, new StatusDefinitionId(TheDrawerId))),
+                ComparisonOperator.Greater, Const<TContext>(0)));
+
+    private static EncounterTriggerData Encounter<TContext>(string trigger, EffectProgram<TContext> program)
+        where TContext : class =>
+        new(trigger, JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<TContext>()));
+
+    private static ConstantExpression<TContext> Const<TContext>(int value) where TContext : class => new(value);
 }

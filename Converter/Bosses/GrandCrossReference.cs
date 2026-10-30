@@ -15,17 +15,18 @@ namespace BnbContent.Converter.Bosses;
 // itself spends every turn on one structural action that deals no damage — rotating the link, bracing the
 // pair, reversing which way a passive reads, or feeding the volume nobody is talking to.
 //
-//   The Premise    (68) — conditions and citations. Its citations also redact.
-//   The Authority  (72) — binding interpretation. A big hit on one linked volume is partly redirected to
-//                         the other, so burst is redistributed rather than erased.
-//   The Conclusion (76) — stored consequence. It banks a fifth of everything the linked pair takes and
-//                         eventually draws the necessary result out of it.
+//   The Premise    (68) — conditions and citations. Its first citation each round also misfiles the card.
+//   The Authority  (72) — binding interpretation: the heaviest hitter of the three.
+//   The Conclusion (76) — the result: it hits and guards.
+//
+// SIMPLIFIED in the content cut of 2026-10-29: the Authority's redirected damage and the Conclusion's stored
+// damage are gone, and nothing here redacts any more — the Premise misfiles instead.
 //
 // Kill all three and the engine becomes real: 96 HP, and the rule it fights under is decided by WHICH VOLUME
 // YOU KILLED LAST. That is the whole boss — the player writes the final law by choosing a kill order.
 //
 //   Premise last    → Nothing Follows Without a Premise: answer its citations or Assumption becomes fact.
-//   Authority last  → Only the Authorized Reading Counts: a Binding Guard you break with redacted cards.
+//   Authority last  → Only the Authorized Reading Counts: a Binding Guard you break with a Deed and a Working.
 //   Conclusion last → The Result Was Always Fixed: a Final Result that returns, harder, for ever.
 //
 // Deviations: ADAPTATIONS.md.
@@ -46,12 +47,9 @@ public static class GrandCrossReference
     public const string UntouchableId = "no_further_reference_yet";
     public const string IsolatedStrengthId = "isolated_in_the_margin";
     public const string ReversedId = "the_citation_is_reversed";
-    public const string PreservedId = "the_result_is_preserved";
 
     // Phase-I passives, each on its own volume.
     public const string FoundationalCitationId = "foundational_citation";
-    public const string BindingAuthorityId = "binding_authority";
-    public const string StoredLedgerId = "stored_conclusion_ledger";
 
     // Phase II — the three Final Theses, one of which the player chooses by kill order.
     public const string ThesisPremiseId = "nothing_follows_without_a_premise";
@@ -77,20 +75,13 @@ public static class GrandCrossReference
     private static CounterId SignatureSpentCounter => new("gcr_signature_spent");
     private static CounterId FinalResultDamageCounter => new("gcr_final_result_damage");
 
-    // On the Conclusion: what the linked pair has paid it.
-    private static CounterId StoredCounter => new("gcr_stored_conclusion");
-
     // On the player: this fight's own bookkeeping.
     private static CounterId CitationDueCounter => new("gcr_citation_due");
     private static CounterId FoundationUsedCounter => new("gcr_foundation_used");
     private static CounterId BindingUsedCounter => new("gcr_binding_used");
-    private static CounterId RedactedPlayedCounter => new("gcr_redacted_played");
+    private static CounterId GuardBrokenCounter => new("gcr_guard_broken");
 
-    public const int StoredMaximum = 22;
-    public const int StoredShare = 5;              // a fifth of what the linked pair takes
-    public const int BindingThreshold = 14;
-    public const int BindingRelief = 5;
-    public const int AssumptionMaximum = 3;
+              // a fifth of what the linked pair takes
     public const int BindingGuardAmount = 14;
     public const int FinalResultStart = 20;
     public const int FinalResultStep = 3;
@@ -117,7 +108,6 @@ public static class GrandCrossReference
         Marker(TheConcordanceId, "The Concordance", "It is not part of the argument yet."),
         Marker(IsolatedStrengthId, "Isolated in the Margin", "Nobody is citing it, so it is getting stronger."),
         Marker(ReversedId, "The Citation Is Reversed", "The linked passive reads the other way round."),
-        Marker(PreservedId, "The Result Is Preserved", "What it has stored cannot be spent yet."),
         Marker(ConvergedId, "All References Converge", "Everything it has ever cited arrives at once."),
 
         // "The central body cannot initially be attacked." Written as complete immunity while the volumes
@@ -127,19 +117,17 @@ public static class GrandCrossReference
         Untouchable(),
 
         Stacking(AssumptionId, "Assumption", "What it has concluded without you. At 3 it becomes fact."),
-        Stacking(BindingGuardId, "Binding Guard", "Only the authorized reading counts. Redact one and it goes."),
+        Stacking(BindingGuardId, "Binding Guard", "Only the authorized reading counts. Play a Deed and a Working in one turn and it goes."),
         Filed(FinalResultId, "Final Result", "The result was always fixed. This is how long you have."),
 
         Marker(ThesisPremiseId, "Nothing Follows Without a Premise",
             "Answer its citations, or what it assumed becomes fact."),
         Marker(ThesisAuthorityId, "Only the Authorized Reading Counts",
-            "It guards itself with a reading you can only break with a redacted card."),
+            "Each turn it raises a Binding Guard. Play a Deed and a Working in one turn: the guard breaks and it loses 5 HP."),
         Marker(ThesisConclusionId, "The Result Was Always Fixed",
             "The result is already scheduled, and it comes back harder."),
 
         FoundationalCitation(),
-        BindingAuthority(),
-        StoredLedger(),
 
         ActTwo.Reference(CitationId, "Concordance Citation", CitationMark,
             "The Cross-Reference has cited this card. Play it and the citation is answered.",
@@ -152,99 +140,12 @@ public static class GrandCrossReference
 
     // ── The Premise's passive ─────────────────────────────────────────────────────────────────────────────
     //
-    // "The first time each round either linked volume applies Referenced, that card also becomes Redacted."
+    // "The first time each round either linked volume applies Referenced, that card also becomes Misfiled."
     // The citing itself is done by the shared citation rule, so this hangs on the same beat and marks the
     // card it has just cited.
     private static StatusData FoundationalCitation() =>
         Marker(FoundationalCitationId, "Foundational Citation",
-            "The first citation each round redacts the card it lands on.");
-
-    // ── The Authority's passive ───────────────────────────────────────────────────────────────────────────
-    //
-    // "The first time each player turn a single card would deal at least 14 direct damage to either linked
-    // volume: reduce that target's damage by 5 and deal 5 secondary damage to the linked partner."
-    //
-    // ADAPTATION: written as a reaction rather than an interception. A passive modifier is read from combatant
-    // state and cannot see the size of the packet, and no once-per-turn gate exists on one. So the volume is
-    // healed the 5 it should not have taken and the partner is dealt 5 — which leaves both bodies exactly
-    // where the design puts them, and keeps the design's own point that the damage is REDISTRIBUTED rather
-    // than erased. The secondary damage is dealt by the Authority, so it is not a card hit and cannot feed
-    // this rule again.
-    private static StatusData BindingAuthority()
-    {
-        var struck = CombatantTargetSelectors.EventTarget;
-
-        var onDamage = new EffectProgram<DamageReceivedTriggeredEffectContext>(
-            new ConditionalEffectNode<DamageReceivedTriggeredEffectContext>(
-                new AndExpression<DamageReceivedTriggeredEffectContext>(
-                    new ComparisonExpression<DamageReceivedTriggeredEffectContext>(
-                        new EventAmountExpression<DamageReceivedTriggeredEffectContext>(),
-                        ComparisonOperator.GreaterOrEqual,
-                        new ConstantExpression<DamageReceivedTriggeredEffectContext>(BindingThreshold)),
-                    IsZero<DamageReceivedTriggeredEffectContext>(Self, BindingUsedCounter)),
-                new CausalSequenceEffectNode<DamageReceivedTriggeredEffectContext>(
-                [
-                    Bump<DamageReceivedTriggeredEffectContext>(Self, BindingUsedCounter, 1),
-                    new HealNode<DamageReceivedTriggeredEffectContext>(
-                        struck, new ConstantExpression<DamageReceivedTriggeredEffectContext>(BindingRelief)),
-                    // The partner pays what the struck volume did not.
-                    HitThePartner(),
-                ])));
-
-        return Rule(BindingAuthorityId, "Binding Authority",
-            "A heavy blow on one linked volume is read down by 5, and the 5 is read across to its partner.",
-            [Watch("DamageTaken", onDamage, StatusTriggerScope.Anywhere)]);
-    }
-
-    // ADAPTATION: the partner is named rather than derived. Nothing selects "the other member of the current
-    // pair" — a selector reaches allies or enemies, not one named half of a link — so the reading goes to the
-    // Authority whenever something else was struck (it is half of the pair in two rotations out of three) and
-    // the other way, to whichever volume still stands, when the Authority itself was struck.
-    private static IEffectNode<DamageReceivedTriggeredEffectContext> HitThePartner()
-    {
-        IEffectNode<DamageReceivedTriggeredEffectContext> Read(string marker) =>
-            new ForEachTargetEffectNode<DamageReceivedTriggeredEffectContext>(
-                CombatantTargetSelectors.WithStatus(
-                    CombatantTargetSelectors.AllCombatants, new StatusDefinitionId(marker)),
-                new DealDamageNode<DamageReceivedTriggeredEffectContext>(
-                    CombatantTargetSelectors.IterationTarget,
-                    new ConstantExpression<DamageReceivedTriggeredEffectContext>(BindingRelief),
-                    ignoresBlock: true));
-
-        var struckTheAuthority = new TargetHasStatusExpression<DamageReceivedTriggeredEffectContext>(
-            CombatantTargetSelectors.EventTarget, new StatusDefinitionId(TheAuthorityId));
-
-        return new ConditionalEffectNode<DamageReceivedTriggeredEffectContext>(
-            struckTheAuthority,
-            new ConditionalEffectNode<DamageReceivedTriggeredEffectContext>(
-                Alive<DamageReceivedTriggeredEffectContext>(TheConclusionId),
-                Read(TheConclusionId),
-                @else: Read(ThePremiseId)),
-            @else: Read(TheAuthorityId));
-    }
-
-    // ── The Conclusion's ledger ───────────────────────────────────────────────────────────────────────────
-    //
-    // "Whenever either linked volume takes direct card damage, store 20% of the actual damage taken, rounded
-    // down, to a maximum of 22."
-    private static StatusData StoredLedger()
-    {
-        var onDamage = new EffectProgram<DamageReceivedTriggeredEffectContext>(
-            new SetCombatantCounterNode<DamageReceivedTriggeredEffectContext>(
-                Self, StoredCounter,
-                new MinExpression<DamageReceivedTriggeredEffectContext>(
-                    new AddExpression<DamageReceivedTriggeredEffectContext>(
-                        new CombatantCounterExpression<DamageReceivedTriggeredEffectContext>(Self, StoredCounter),
-                        new DivideExpression<DamageReceivedTriggeredEffectContext>(
-                            new EventAmountExpression<DamageReceivedTriggeredEffectContext>(),
-                            new ConstantExpression<DamageReceivedTriggeredEffectContext>(StoredShare))),
-                    new ConstantExpression<DamageReceivedTriggeredEffectContext>(StoredMaximum)),
-                relative: false));
-
-        return Rule(StoredLedgerId, "Stored Conclusion",
-            "A fifth of everything the linked pair takes is kept, and eventually drawn out of the ledger.",
-            [Watch("DamageTaken", onDamage, StatusTriggerScope.Anywhere)]);
-    }
+            "The first citation each round also misfiles the card it lands on.");
 
     private static StatusData Untouchable() => new()
     {
@@ -277,11 +178,7 @@ public static class GrandCrossReference
                     // hands the player the very tool for breaking it.
                     new ConditionalEffectNode<CardsDrawnTriggeredEffectContext>(
                         AcrossHas<CardsDrawnTriggeredEffectContext>(ThesisAuthorityId),
-                        new CausalSequenceEffectNode<CardsDrawnTriggeredEffectContext>(
-                        [
-                            GuardUp<CardsDrawnTriggeredEffectContext>(BindingGuardAmount),
-                            RedactTheTopCard<CardsDrawnTriggeredEffectContext>(),
-                        ])),
+                        GuardUp<CardsDrawnTriggeredEffectContext>(BindingGuardAmount)),
                     // Nothing Follows Without a Premise cites every turn, whatever else is due.
                     new ConditionalEffectNode<CardsDrawnTriggeredEffectContext>(
                         AcrossHas<CardsDrawnTriggeredEffectContext>(ThesisPremiseId),
@@ -291,18 +188,17 @@ public static class GrandCrossReference
         var onPlay = new EffectProgram<CardPlayedTriggeredEffectContext>(
             new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
                 IsTheApplicant<CardPlayedTriggeredEffectContext>(),
-                // "The first time each turn the player plays a Redacted card: remove all Binding Guard, and
-                // the Grand Cross-Reference loses 5 HP." The authorized reading is broken with the very thing
-                // it did to your hand.
+                // The first time each turn the player has played both a Deed and a Working: remove all Binding
+                // Guard, and the Grand Cross-Reference loses 5 HP. A reading is broken by showing it the other kind.
                 new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
                     new AndExpression<CardPlayedTriggeredEffectContext>(
-                        new CardInstanceHasMarkExpression<CardPlayedTriggeredEffectContext>(
-                            new TriggerEventCardInstanceExpression<CardPlayedTriggeredEffectContext>(),
-                            new TagId(ActTwo.RedactedMark)),
-                        IsZero<CardPlayedTriggeredEffectContext>(Self, RedactedPlayedCounter)),
+                        new AndExpression<CardPlayedTriggeredEffectContext>(
+                            PlayedAKind<CardPlayedTriggeredEffectContext>(CardAuthoring.DeedTag),
+                            PlayedAKind<CardPlayedTriggeredEffectContext>(CardAuthoring.WorkingTag)),
+                        IsZero<CardPlayedTriggeredEffectContext>(Self, GuardBrokenCounter)),
                     new CausalSequenceEffectNode<CardPlayedTriggeredEffectContext>(
                     [
-                        Bump<CardPlayedTriggeredEffectContext>(Self, RedactedPlayedCounter, 1),
+                        Bump<CardPlayedTriggeredEffectContext>(Self, GuardBrokenCounter, 1),
                         new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
                             AcrossHas<CardPlayedTriggeredEffectContext>(BindingGuardId),
                             new CausalSequenceEffectNode<CardPlayedTriggeredEffectContext>(
@@ -319,7 +215,7 @@ public static class GrandCrossReference
                 [
                     SetOn<TurnStartedTriggeredEffectContext>(Self, BindingUsedCounter, 0),
                     SetOn<TurnStartedTriggeredEffectContext>(Self, FoundationUsedCounter, 0),
-                    SetOn<TurnStartedTriggeredEffectContext>(Self, RedactedPlayedCounter, 0),
+                    SetOn<TurnStartedTriggeredEffectContext>(Self, GuardBrokenCounter, 0),
                 ])));
 
         return Rule(CrossReferenceRulesId, "The Concordance",
@@ -497,7 +393,7 @@ public static class GrandCrossReference
                             [
                                 new MarkCardInstanceNode<CardsDrawnTriggeredEffectContext>(
                                     Self, new IteratedCardExpression<CardsDrawnTriggeredEffectContext>(),
-                                    new TagId(ActTwo.RedactedMark)),
+                                    new TagId(ActTwo.MisfiledMark)),
                                 Bump<CardsDrawnTriggeredEffectContext>(Self, FoundationUsedCounter, 1),
                             ])),
                     ]),
@@ -612,7 +508,7 @@ public static class GrandCrossReference
     {
         "issue_the_binding_interpretation" => WhileLinked(2, Strike(16)),
         // "Overrule the Lesser Reading": the heaviest card in the next hand is redacted.
-        "overrule_the_lesser_reading" => WhileLinked(2, ActTwo.RedactOne()),
+        "overrule_the_lesser_reading" => WhileLinked(2, ActTwo.MisfileOne(ActTwo.MisfiledMark)),
         // "Cite the Higher Authority": both linked volumes brace.
         "cite_the_higher_authority" => WhileLinked(2,
             new ForEachTargetEffectNode<EnemyActionContext>(
@@ -625,30 +521,10 @@ public static class GrandCrossReference
 
     private static EffectProgram<EnemyActionContext>? Conclusion(string intentId) => intentId switch
     {
-        // "9 + Stored Conclusion, maximum 31. Then Stored Conclusion → 0." Preserved, it cannot be spent.
-        "draw_the_necessary_result" => WhileLinked(3,
-            new ConditionalEffectNode<EnemyActionContext>(
-                SelfHas<EnemyActionContext>(PreservedId),
-                new RemoveStatusNode<EnemyActionContext>(Self, new StatusDefinitionId(PreservedId)),
-                @else: new CausalSequenceEffectNode<EnemyActionContext>(
-                [
-                    new DealDamageNode<EnemyActionContext>(Across,
-                        new MinExpression<EnemyActionContext>(
-                            new AddExpression<EnemyActionContext>(
-                                new ConstantExpression<EnemyActionContext>(9),
-                                new CombatantCounterExpression<EnemyActionContext>(Self, StoredCounter)),
-                            new ConstantExpression<EnemyActionContext>(31))),
-                    SetOn<EnemyActionContext>(Self, StoredCounter, 0),
-                ]))),
+        "draw_the_necessary_result" => WhileLinked(3, Strike(15)),
         "conclude_from_missing_evidence" => WhileLinked(3,
             new CausalSequenceEffectNode<EnemyActionContext>([Strike(13), ApplyToPlayer(Keywords.Doubt, 1)])),
-        "preserve_the_result" => WhileLinked(3,
-            new CausalSequenceEffectNode<EnemyActionContext>(
-            [
-                Block(14),
-                new ApplyStatusNode<EnemyActionContext>(Self, new StatusDefinitionId(PreservedId),
-                    new ConstantExpression<EnemyActionContext>(1)),
-            ])),
+        "preserve_the_result" => WhileLinked(3, Block(14)),
         "file_the_result_elsewhere" => WhileLinked(3,
             new CausalSequenceEffectNode<EnemyActionContext>(
                 [ActTwo.MisfileOne(ActTwo.MisfiledMark), Strike(9)])),
@@ -726,13 +602,10 @@ public static class GrandCrossReference
 
     // ── Small shared pieces ───────────────────────────────────────────────────────────────────────────────
 
-    // The same reading of randomness the act uses everywhere: the draw pile is already shuffled, so its
-    // first card is the random one.
-    private static IEffectNode<TContext> RedactTheTopCard<TContext>() where TContext : class =>
-        new ForEachCardInZoneNode<TContext>(
-            Self, CardZone.DrawPile,
-            ActTwo.Redact<TContext>(Self, new IteratedCardExpression<TContext>()),
-            takeFirst: 1);
+    private static ICombatExpression<TContext, bool> PlayedAKind<TContext>(string tag) where TContext : class =>
+        new ComparisonExpression<TContext>(
+            new CardsPlayedThisTurnWithTagExpression<TContext>(CombatantTargetSelectors.Source, new TagId(tag)),
+            ComparisonOperator.GreaterOrEqual, new ConstantExpression<TContext>(1));
 
     private static IEffectNode<TContext> GuardUp<TContext>(int amount) where TContext : class =>
         new ForEachTargetEffectNode<TContext>(Across,

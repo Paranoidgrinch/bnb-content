@@ -127,11 +127,6 @@ public static class ActTwo
     // card is taken back. One rule owns that moment, exactly as one place owns the Paperwork tick.
     public const string MisfiledMark = "misfiled";
     public const string MisfiledSidewaysMark = "misfiled_sideways";
-    // Volume Q-Null's own misfiling. A THIRD mark for the same destination as the plain one, because what is
-    // written into the mark is not only where the card goes but what happens when it is taken back: only a
-    // Q-Null misfiling inspects its replacement. The alternative — asking who put the mark there — is the
-    // thing a program cannot do, which is why the destinations are written into marks in the first place.
-    public const string MisfiledNullMark = "misfiled_null";
     public const string ArchiveRegulationsId = "archive_regulations";
 
     // The hero carries this in every fight where something can misfile. Idempotent by construction: two
@@ -143,7 +138,6 @@ public static class ActTwo
             [
                 TakeBack(MisfiledMark, CardZone.DiscardPile),
                 TakeBack(MisfiledSidewaysMark, CardZone.DrawPile),
-                TakeBack(MisfiledNullMark, CardZone.DiscardPile, propagate: true),
             ]));
 
         return Rule(ArchiveRegulationsId, "Archive Regulations",
@@ -163,8 +157,7 @@ public static class ActTwo
     private static readonly EffectResultKey<OrderedTargetOutcomes<DrawCardsOutcome>> Replacement =
         new("misfiled_replacement");
 
-    private static IEffectNode<CardsDrawnTriggeredEffectContext> TakeBack(
-        string mark, CardZone destination, bool propagate = false)
+    private static IEffectNode<CardsDrawnTriggeredEffectContext> TakeBack(string mark, CardZone destination)
     {
         var steps = new List<IEffectNode<CardsDrawnTriggeredEffectContext>>
         {
@@ -189,47 +182,11 @@ public static class ActTwo
             new AnnounceRuleNode<CardsDrawnTriggeredEffectContext>(
                 CombatantTargetSelectors.AllEnemiesOfSource, AnnounceMisfiling),
         };
-        if (propagate)
-            steps.Add(NullReference());
         return new ForEachCardInZoneNode<CardsDrawnTriggeredEffectContext>(
             CombatantTargetSelectors.Source, CardZone.Hand,
             new CausalSequenceEffectNode<CardsDrawnTriggeredEffectContext>(steps),
             markFilter: new TagId(mark));
     }
-
-    // ── Stage 5 — Volume Q-Null's signature ───────────────────────────────────────────────────────────────
-    //
-    // "When a card Misfiled by Volume Q-Null is skipped, inspect the immediate replacement. If it has the
-    // same persistent Base Cost, it also becomes Misfiled. Maximum one propagation per original skip. No
-    // recursion."
-    //
-    // This is the one place in the game that knows all three facts at once: which card was skipped, which
-    // card came back in its place, and that the skip belonged to Q-Null. The skipped card is the iterated
-    // one — still addressable after it has been moved, because an instance reference does not care which
-    // zone it is in — and the replacement names itself through the draw's result key, which the Colossus's
-    // hook next door already relies on.
-    //
-    // BASE cost, not current: `CardInstanceBaseCostExpression` reads the printed price, so a card made
-    // cheaper for the turn still propagates and one permanently re-priced does not. That is the "persistent"
-    // in the design's own wording.
-    //
-    // ⚠ THE PROPAGATION LANDS AS A PLAIN MISFILING, not as another Q-Null one — that is the "no recursion"
-    // rule, and it is expressed by which mark is written rather than by a guard: a plain misfiling has no
-    // inspection step, so the chain cannot continue even if the next replacement matched too.
-    private static IEffectNode<CardsDrawnTriggeredEffectContext> NullReference() =>
-        new ConditionalEffectNode<CardsDrawnTriggeredEffectContext>(
-            new ComparisonExpression<CardsDrawnTriggeredEffectContext>(
-                new CardInstanceBaseCostExpression<CardsDrawnTriggeredEffectContext>(
-                    new IteratedCardExpression<CardsDrawnTriggeredEffectContext>(),
-                    StandardCombatIds.EnergyResource),
-                ComparisonOperator.Equal,
-                new CardInstanceBaseCostExpression<CardsDrawnTriggeredEffectContext>(
-                    new DrawCardOutcomeExpression<CardsDrawnTriggeredEffectContext>(Replacement),
-                    StandardCombatIds.EnergyResource)),
-            new MarkCardInstanceNode<CardsDrawnTriggeredEffectContext>(
-                CombatantTargetSelectors.Source,
-                new DrawCardOutcomeExpression<CardsDrawnTriggeredEffectContext>(Replacement),
-                new TagId(MisfiledMark)));
 
     // ── Stage 2 — The Misfiled Stacks ─────────────────────────────────────────────────────────────────────
 
@@ -395,7 +352,6 @@ public static class ActTwo
     public const string BrassMawDelinquencyId = "brass_maw_delinquency";
     public const string ReturnParcelId = "return_parcel";
     public const string OuroborosDelinquencyId = "ouroboros_delinquency";
-    public const string OtherDelinquencyId = "other_delinquency";
 
     public static IReadOnlyList<StatusData> All() =>
     [
@@ -403,41 +359,22 @@ public static class ActTwo
         ReturnParcel(),
         BrassMawDelinquency(),
         OuroborosDelinquency(),
-        Delinquency(OtherDelinquencyId, "Improper Storage",
-            "What is kept waiting is filed against you."),
-        MiscellaneousClassification(),
         ArchiveRegulations(),
         WrongEdition(),
         SecondPersonReference(),
         LearnedLetter(),
         FangedAlphabetReference(),
         OrphanCitationReference(),
-        ReservedSeat(),
-        ShrinkingMargin(),
-        LeaveOneWordUnspoken(),
-        Voice(),
         BlankCertificateReference(),
         CertificationRequired(),
         BehindTheDesk(),
-        TwoFuturesAtOnce(),
-        NoLongerRecognized(),
-        PalimpsestBody(),
-        FootnoteSource(),
-        MarginalNote(),
         StoredLife(),
         SpareLifeOuroboros(),
-        SpareLifeDoppelganger(),
+        SpareLifeTestator(),
         CertificateCertified(),
         CertificateClause(),
-        OlderTextBeneath(),
-        AbsenceBecomesVisible(),
-        Clauses(),
-        CommaDelinquency(),
-        RevisionPass(),
         RememberedVolume(),
         ChainCollect(),
-        TuesdayDoesNotOccur(),
-        Residue(),
     ];
 
     public const string CertificateReferenceMark = "referenced_certificate";
@@ -526,74 +463,6 @@ public static class ActTwo
                             new StatusDefinitionId(CertificationRequiredId),
                             new ConstantExpression<TurnStartedTriggeredEffectContext>(1))))),
             ]);
-
-    public const string MiscellaneousClassificationId = "miscellaneous_classification";
-
-    // "The first non-Junk card type played each player turn becomes Recognized Category. Play a different type
-    // that turn and the Object loses 5 Block (or takes 3 if it has none); play only the Recognized Category and
-    // it gains 6."
-    //
-    // Read at the player's turn END, once, per type — which is the only moment that knows what the whole turn
-    // turned out to be. "First non-Junk" is read as the literal first card, exactly as Act I reads it for the
-    // Wrong-Window Scribe: the engine records ONE opening type per turn, and skipping Junk would need a second,
-    // Junk-aware record. See ADAPTATIONS.
-    private static StatusData MiscellaneousClassification()
-    {
-        IEffectNode<TurnEndedTriggeredEffectContext> Category(string recognized, string[] others)
-        {
-            ICombatExpression<TurnEndedTriggeredEffectContext, int> Played(string tag) =>
-                new CardsPlayedThisTurnWithTagExpression<TurnEndedTriggeredEffectContext>(
-                    Opponent, new TagId(tag));
-
-            // "At least one different type" — the two categories that are not the recognized one.
-            ICombatExpression<TurnEndedTriggeredEffectContext, int> strayed = Played(others[0]);
-            for (var i = 1; i < others.Length; i++)
-                strayed = new AddExpression<TurnEndedTriggeredEffectContext>(strayed, Played(others[i]));
-
-            return new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
-                new AndExpression<TurnEndedTriggeredEffectContext>(
-                    new FirstCardPlayedThisTurnHasTagExpression<TurnEndedTriggeredEffectContext>(
-                        Opponent, new TagId(recognized)),
-                    new ComparisonExpression<TurnEndedTriggeredEffectContext>(
-                        strayed, ComparisonOperator.Greater,
-                        new ConstantExpression<TurnEndedTriggeredEffectContext>(0))),
-                // Strayed: the classification is disturbed.
-                new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
-                    new ComparisonExpression<TurnEndedTriggeredEffectContext>(
-                        new CombatantDefensivePoolExpression<TurnEndedTriggeredEffectContext>(
-                            CombatantTargetSelectors.Source, StandardCombatIds.BlockDefensivePool),
-                        ComparisonOperator.Greater,
-                        new ConstantExpression<TurnEndedTriggeredEffectContext>(0)),
-                    // Losing Block is not gaining a negative amount of it — the pool is moved directly.
-                    new ModifyDefensivePoolNode<TurnEndedTriggeredEffectContext>(
-                        CombatantTargetSelectors.Source, StandardCombatIds.BlockDefensivePool,
-                        new ConstantExpression<TurnEndedTriggeredEffectContext>(-5)),
-                    new DealDamageNode<TurnEndedTriggeredEffectContext>(
-                        CombatantTargetSelectors.Source,
-                        new ConstantExpression<TurnEndedTriggeredEffectContext>(3),
-                        ignoresBlock: true)),
-                // Kept to the one category: properly stored.
-                new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
-                    new FirstCardPlayedThisTurnHasTagExpression<TurnEndedTriggeredEffectContext>(
-                        Opponent, new TagId(recognized)),
-                    new GainBlockNode<TurnEndedTriggeredEffectContext>(
-                        CombatantTargetSelectors.Source,
-                        new ConstantExpression<TurnEndedTriggeredEffectContext>(6))));
-        }
-
-        var program = new EffectProgram<TurnEndedTriggeredEffectContext>(
-            new CausalSequenceEffectNode<TurnEndedTriggeredEffectContext>(
-            [
-                Category(CardAuthoring.DeedTag, [CardAuthoring.WorkingTag, CardAuthoring.RiteTag]),
-                Category(CardAuthoring.WorkingTag, [CardAuthoring.DeedTag, CardAuthoring.RiteTag]),
-                Category(CardAuthoring.RiteTag, [CardAuthoring.DeedTag, CardAuthoring.WorkingTag]),
-            ]));
-
-        return Rule(MiscellaneousClassificationId, "Miscellaneous Classification",
-            "However you begin a turn is how the Object files you; stray from it and the filing suffers.",
-            [new StatusTriggerData("TurnEnded", JsonSerializer.SerializeToElement(
-                program, CombatJson.CreateOptions<TurnEndedTriggeredEffectContext>()))]);
-    }
 
     // "Whenever Brass Maw resolves its Delinquency: gain 1 Return Parcel, maximum 2." The parcels ride on the
     // Maw's next direct attack and are spent by it.
@@ -830,187 +699,7 @@ public static class ActTwo
             Redact<EnemyActionContext>(Opponent, new IteratedCardExpression<EnemyActionContext>()),
             takeFirst: 1);
 
-    // ── Stage 5 — The Redaction Galleries ─────────────────────────────────────────────────────────────────
-
-    public const string OlderTextBeneathId = "older_text_beneath";
-    public const string AbsenceBecomesVisibleId = "the_absence_becomes_visible";
-
-    private static CounterId PalimpsestUsedCounter => new("palimpsest_used");
-    private static CounterId PortraitUsedCounter => new("portrait_used");
-
-    // A rule about the card that was just PLAYED looks immediately — the opposite of a rule that reaches into
-    // the hand. Waiting a beat is what carries that card out of the moment; Wrong Edition (stage 2) is the
-    // same shape and the same reason.
-    private static EffectProgram<CardPlayedTriggeredEffectContext> OnPlayedCard(
-        string mark, CounterId latch, IEffectNode<CardPlayedTriggeredEffectContext> then) =>
-        new(new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
-            new AndExpression<CardPlayedTriggeredEffectContext>(
-                new CardInstanceHasMarkExpression<CardPlayedTriggeredEffectContext>(
-                    new TriggerEventCardInstanceExpression<CardPlayedTriggeredEffectContext>(),
-                    new TagId(mark)),
-                Unspent<CardPlayedTriggeredEffectContext>(latch)),
-            new CausalSequenceEffectNode<CardPlayedTriggeredEffectContext>(
-                [then, Spend<CardPlayedTriggeredEffectContext>(latch)])));
-
-    // "The first time each turn a Redacted card is fully played, it becomes Misfiled afterwards." The Husk
-    // does not stop the card — it files it away for next time.
-    // The marker the Husk wears on its BODY, so a rule that lives on the player can still announce from the
-    // body it belongs to (AnnounceFrom). Without it the Husk's signature would announce from the player, and
-    // every listener on the enemy side would be on the wrong side of it.
-    public const string PalimpsestBodyId = "palimpsest_body";
-
-    public static StatusData PalimpsestBody() =>
-        Rule(PalimpsestBodyId, "Palimpsest", "Layer over layer; the older text is always there.", []);
-
-    public static StatusData OlderTextBeneath() =>
-        Rule(OlderTextBeneathId, "Older Text Beneath",
-            "What was written over you once is written over again.",
-            [
-                Watch("CardPlayed", OnPlayedCard(RedactedMark, PalimpsestUsedCounter,
-                    new CausalSequenceEffectNode<CardPlayedTriggeredEffectContext>(
-                    [
-                        AnnounceFrom<CardPlayedTriggeredEffectContext>(PalimpsestBodyId, AnnounceSignature),
-                        new MarkCardInstanceNode<CardPlayedTriggeredEffectContext>(
-                            CombatantTargetSelectors.Source,
-                            new TriggerEventCardInstanceExpression<CardPlayedTriggeredEffectContext>(),
-                            new TagId(RedactedMark), remove: true),
-                        new MarkCardInstanceNode<CardPlayedTriggeredEffectContext>(
-                            CombatantTargetSelectors.Source,
-                            new TriggerEventCardInstanceExpression<CardPlayedTriggeredEffectContext>(),
-                            new TagId(MisfiledMark)),
-                    ]))),
-                ClearEachTurn(PalimpsestUsedCounter),
-            ]);
-
-    // "The first time each turn the player plays a Redacted card, the Portrait loses 8 Block."
-    public static StatusData AbsenceBecomesVisible() =>
-        Rule(AbsenceBecomesVisibleId, "The Absence Becomes Visible",
-            "Every redacted word makes the empty frame easier to see through.",
-            [
-                // "…loses 8 Block; if it has less than 8, the remainder becomes direct damage." Both halves,
-                // because a frame with nothing to strip is exactly when the absence should be felt.
-                Watch("CardPlayed", OnPlayedCard(RedactedMark, PortraitUsedCounter,
-                    new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
-                        new ComparisonExpression<CardPlayedTriggeredEffectContext>(
-                            PortraitBlock, ComparisonOperator.GreaterOrEqual,
-                            new ConstantExpression<CardPlayedTriggeredEffectContext>(8)),
-                        new ModifyDefensivePoolNode<CardPlayedTriggeredEffectContext>(
-                            Choir, StandardCombatIds.BlockDefensivePool,
-                            new ConstantExpression<CardPlayedTriggeredEffectContext>(-8)),
-                        new CausalSequenceEffectNode<CardPlayedTriggeredEffectContext>(
-                        [
-                            // What guard there is goes, and what is left of the 8 lands as damage.
-                            new DealDamageNode<CardPlayedTriggeredEffectContext>(
-                                Choir,
-                                new SubtractExpression<CardPlayedTriggeredEffectContext>(
-                                    new ConstantExpression<CardPlayedTriggeredEffectContext>(8), PortraitBlock),
-                                ignoresBlock: true),
-                            new ModifyDefensivePoolNode<CardPlayedTriggeredEffectContext>(
-                                Choir, StandardCombatIds.BlockDefensivePool,
-                                new SubtractExpression<CardPlayedTriggeredEffectContext>(
-                                    new ConstantExpression<CardPlayedTriggeredEffectContext>(0), PortraitBlock)),
-                        ])))),
-                ClearEachTurn(PortraitUsedCounter),
-            ]);
-
-
     // ── Stage 6 — Scriptorium of Errata ───────────────────────────────────────────────────────────────────
-
-    public const string ClauseAMark = "clause_a";
-    public const string ClauseBMark = "clause_b";
-    public const string ClausesId = "clause_a_clause_b";
-    public const string RevisionPassId = "revision_pass";
-    public const string CommaDelinquencyId = "fatal_comma_delinquency";
-
-    private static CounterId PlayedAcounter => new("clause_a_played");
-    private static CounterId PlayedBcounter => new("clause_b_played");
-    private static CounterId RevisionUsedCounter => new("revision_used");
-
-    // "Mark two different cards as Clause A and Clause B. A before B: the Comma takes 8 direct damage."
-    //
-    // The two clauses are the first two cards in hand, addressed by position — the only way to name two
-    // DIFFERENT cards, since a zone iteration can require a mark but not refuse one. The reward lands when the
-    // pair completes in the right order, which is the same moment the design pays it.
-    public static StatusData Clauses() =>
-        Rule(ClausesId, "Clause A / Clause B",
-            "Two clauses are marked. The order you read them in is the whole sentence.",
-            [
-                Watch("CardsDrawn", Guarded(
-                    IsTheApplicant<CardsDrawnTriggeredEffectContext>(),
-                    new CausalSequenceEffectNode<CardsDrawnTriggeredEffectContext>(
-                    [
-                        MarkAt(CardZone.Hand, 0, ClauseAMark),
-                        MarkAt(CardZone.Hand, 1, ClauseBMark),
-                    ]))),
-                // Playing A records it; playing B with A already read is the correct order.
-                Watch("CardPlayed", Guarded(
-                    new AndExpression<CardPlayedTriggeredEffectContext>(
-                        IsTheApplicant<CardPlayedTriggeredEffectContext>(),
-                        PlayedCardIs<CardPlayedTriggeredEffectContext>(ClauseAMark)),
-                    Spend<CardPlayedTriggeredEffectContext>(PlayedAcounter))),
-                Watch("CardPlayed", Guarded(
-                    new AndExpression<CardPlayedTriggeredEffectContext>(
-                        new AndExpression<CardPlayedTriggeredEffectContext>(
-                            IsTheApplicant<CardPlayedTriggeredEffectContext>(),
-                            PlayedCardIs<CardPlayedTriggeredEffectContext>(ClauseBMark)),
-                        new ComparisonExpression<CardPlayedTriggeredEffectContext>(
-                            new CombatantCounterExpression<CardPlayedTriggeredEffectContext>(
-                                CombatantTargetSelectors.Source, PlayedAcounter),
-                            ComparisonOperator.Equal,
-                            new ConstantExpression<CardPlayedTriggeredEffectContext>(1))),
-                    new CausalSequenceEffectNode<CardPlayedTriggeredEffectContext>(
-                    [
-                        new DealDamageNode<CardPlayedTriggeredEffectContext>(
-                            Choir, new ConstantExpression<CardPlayedTriggeredEffectContext>(8),
-                            ignoresBlock: true),
-                        Spend<CardPlayedTriggeredEffectContext>(PlayedBcounter),
-                    ]))),
-                ClearEachTurn(PlayedAcounter),
-                ClearEachTurn(PlayedBcounter),
-            ]);
-
-    // "If neither clause is played: 1 Overdue from Fatal Comma." Filed by the Comma at its own turn, which is
-    // both the moment that knows the answer and the only place the Overdue can come from IT.
-    public static StatusData CommaDelinquency() =>
-        Rule(CommaDelinquencyId, "Unread Clauses",
-            "A sentence you never read is a sentence you owe the Comma.",
-            [
-                new StatusTriggerData("TurnStarted", JsonSerializer.SerializeToElement(
-                    new EffectProgram<TurnStartedTriggeredEffectContext>(
-                        new CausalSequenceEffectNode<TurnStartedTriggeredEffectContext>(
-                        [
-                            new NoOpEffectNode<TurnStartedTriggeredEffectContext>(),
-                            new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
-                                new AndExpression<TurnStartedTriggeredEffectContext>(
-                                    OpponentUnspent(PlayedAcounter), OpponentUnspent(PlayedBcounter)),
-                                new ApplyStatusNode<TurnStartedTriggeredEffectContext>(
-                                    Opponent, new StatusDefinitionId(OverdueId),
-                                    new ConstantExpression<TurnStartedTriggeredEffectContext>(1))),
-                        ])),
-                    CombatJson.CreateOptions<TurnStartedTriggeredEffectContext>())),
-            ]);
-
-    // "The first Redacted card played each turn has its Redaction removed, and another card in hand takes it."
-    // The design lifts the redaction BEFORE the card resolves, so the card lands whole; nothing can intervene
-    // between a play and its resolution, so here the card still lands halved and only the MARK moves on. See
-    // ADAPTATIONS.
-    public static StatusData RevisionPass() =>
-        Rule(RevisionPassId, "Revision Pass",
-            "The doppelgänger moves a redaction along rather than letting it rest.",
-            [
-                Watch("CardPlayed", OnPlayedCard(RedactedMark, RevisionUsedCounter,
-                    new CausalSequenceEffectNode<CardPlayedTriggeredEffectContext>(
-                    [
-                        new MarkCardInstanceNode<CardPlayedTriggeredEffectContext>(
-                            CombatantTargetSelectors.Source,
-                            new TriggerEventCardInstanceExpression<CardPlayedTriggeredEffectContext>(),
-                            new TagId(RedactedMark), remove: true),
-                        Redact<CardPlayedTriggeredEffectContext>(
-                            CombatantTargetSelectors.Source,
-                            new CardInZoneExpression<CardPlayedTriggeredEffectContext>(CardZone.Hand)),
-                    ]))),
-                ClearEachTurn(RevisionUsedCounter),
-            ]);
 
     // A rule about the card that was just played, with no once-a-turn limit.
     private static EffectProgram<CardPlayedTriggeredEffectContext> WhenPlayedCardIs(
@@ -1022,17 +711,6 @@ public static class ActTwo
     private static ICombatExpression<TContext, bool> PlayedCardIs<TContext>(string mark) where TContext : class =>
         new CardInstanceHasMarkExpression<TContext>(
             new TriggerEventCardInstanceExpression<TContext>(), new TagId(mark));
-
-    private static IEffectNode<CardsDrawnTriggeredEffectContext> MarkAt(CardZone zone, int index, string mark) =>
-        new MarkCardInstanceNode<CardsDrawnTriggeredEffectContext>(
-            CombatantTargetSelectors.Source,
-            new CardInZoneExpression<CardsDrawnTriggeredEffectContext>(zone, index),
-            new TagId(mark));
-
-    private static ICombatExpression<TurnStartedTriggeredEffectContext, bool> OpponentUnspent(CounterId latch) =>
-        new ComparisonExpression<TurnStartedTriggeredEffectContext>(
-            new CombatantCounterExpression<TurnStartedTriggeredEffectContext>(Opponent, latch),
-            ComparisonOperator.Equal, new ConstantExpression<TurnStartedTriggeredEffectContext>(0));
 
     // ── Stage 7 — Restricted Annex ────────────────────────────────────────────────────────────────────────
 
@@ -1115,48 +793,6 @@ public static class ActTwo
                     CombatJson.CreateOptions<TurnStartedTriggeredEffectContext>())),
             ]);
 
-    // ── Stage 6 — Expunged Name's signature ───────────────────────────────────────────────────────────────
-    //
-    // "The first time each player turn the player plays a card whose name has already been played earlier in
-    // the combat: that card becomes Redacted immediately before resolution. Maximum once per player turn."
-    //
-    // This one waited on the ENGINE, not on a reading: card-play records were per TURN and were wiped before
-    // the next turn could ask, so "already played earlier in the COMBAT" had nothing to read. It does now
-    // (`cardPlaysThisCombat`), and the count includes the play being made — so "I have played this before" is
-    // strictly more than one.
-    //
-    // ⚠ A BEAT LATE, like everything else in this act that wants to act "immediately before resolution":
-    // nothing steps between a play and its resolution, so the card resolves at full strength and carries the
-    // Redaction into its NEXT outing. Invisible in this turn's numbers, visible in the log — the same
-    // concession the Palimpsest Husk and the Errata Doppelgänger already make, and named for the same reason.
-    public const string NoLongerRecognizedId = "no_longer_recognized";
-
-    private static CounterId RecognizedUsedCounter => new("no_longer_recognized_used");
-
-    public static StatusData NoLongerRecognized() =>
-        Rule(NoLongerRecognizedId, "No Longer Recognized",
-            "The register has seen that name before. Say it twice in one fight and it is struck through.",
-            [
-                Watch("CardPlayed", Guarded(
-                    new AndExpression<CardPlayedTriggeredEffectContext>(
-                        Unspent<CardPlayedTriggeredEffectContext>(RecognizedUsedCounter),
-                        new ComparisonExpression<CardPlayedTriggeredEffectContext>(
-                            new CardPlaysThisCombatExpression<CardPlayedTriggeredEffectContext>(
-                                CombatantTargetSelectors.Source,
-                                new TriggerEventCardInstanceExpression<CardPlayedTriggeredEffectContext>()),
-                            ComparisonOperator.Greater,
-                            new ConstantExpression<CardPlayedTriggeredEffectContext>(1))),
-                    new CausalSequenceEffectNode<CardPlayedTriggeredEffectContext>(
-                    [
-                        new MarkCardInstanceNode<CardPlayedTriggeredEffectContext>(
-                            CombatantTargetSelectors.Source,
-                            new TriggerEventCardInstanceExpression<CardPlayedTriggeredEffectContext>(),
-                            new TagId(RedactedMark)),
-                        Spend<CardPlayedTriggeredEffectContext>(RecognizedUsedCounter),
-                    ]))),
-                ClearEachTurn(RecognizedUsedCounter),
-            ]);
-
     // ── Stage 7 — the Checkout Codex ──────────────────────────────────────────────────────────────────────
     //
     // "After normal draw, choose one valid non-Junk card and place it visibly Behind the Desk. It is
@@ -1187,6 +823,28 @@ public static class ActTwo
     // excluding Junk is not expressible — the same reading Act I takes for the Wrong-Window Scribe's "first
     // non-Junk card type", already recorded in ADAPTATIONS.
     public const string BehindTheDeskMark = "behind_the_desk";
+    public const string AskAtTheDeskCardId = "ask_at_the_desk";
+
+    // DEMAND IMMEDIATE ACCESS (content cut 2026-10-29): a free card dealt with the shelving. Played, it is the first
+    // card of the turn like any other — so it hands the held card back — and on the way it prices that card 1
+    // higher for its next play (the engine's per-instance cost delta, spent by the play that pays it).
+    public static CardData AskAtTheDesk() => new()
+    {
+        Id = AskAtTheDeskCardId,
+        NameKey = "Ask at the Desk",
+        DescriptionKey = "Get the card behind the desk back now. It costs 1 more this time.",
+        Costs = [],
+        Tags = [new TagId("form")],
+        Program = new EffectProgram<CardPlayContext>(
+            new ForEachCardInZoneNode<CardPlayContext>(
+                CombatantTargetSelectors.Source, CardZone.DrawPile,
+                new SetCardInstanceMarkCounterNode<CardPlayContext>(
+                    CombatantTargetSelectors.Source, new IteratedCardExpression<CardPlayContext>(),
+                    StandardCombatIds.CardCostDeltaCounter, new ConstantExpression<CardPlayContext>(1), relative: true),
+                markFilter: new TagId(BehindTheDeskMark))),
+        PlayedCardDestinationZone = CardZone.ExhaustPile,
+        TurnEndHandDestinationZone = CardZone.ExhaustPile,
+    };
     public const string BehindTheDeskId = "behind_the_desk_rule";
 
     private static CounterId DeskRetrievedCounter => new("desk_retrieved");
@@ -1220,6 +878,10 @@ public static class ActTwo
                             new IteratedCardExpression<CardsDrawnTriggeredEffectContext>(),
                             CardZone.DrawPile, placement: ZonePlacement.Top),
                         Spend<CardsDrawnTriggeredEffectContext>(DeskShelvedCounter),
+                        // …and the desk bell: Ask at the Desk hands it back at once, for a price.
+                        new CreateCardInstanceNode<CardsDrawnTriggeredEffectContext>(
+                            CombatantTargetSelectors.Source, new CardDefinitionId(AskAtTheDeskCardId), CardZone.Hand,
+                            new ConstantExpression<CardsDrawnTriggeredEffectContext>(1)),
                     ]),
                     takeFirst: 1)));
 
@@ -1280,8 +942,8 @@ public static class ActTwo
             ]));
 
         return Rule(BehindTheDeskId, "Behind the Desk",
-            "One of your cards is kept behind the desk. Play something else and it is handed back; leave "
-            + "without asking and the Codex files it against you.",
+            "Each turn one of your cards goes behind the desk. Your first card played hands it back; Ask at the "
+            + "Desk does it at once, but it costs 1 more. Left there: 1 Overdue.",
             [
                 new StatusTriggerData("CardsDrawn", JsonSerializer.SerializeToElement(
                     shelve, CombatJson.CreateOptions<CardsDrawnTriggeredEffectContext>()),
@@ -1292,147 +954,6 @@ public static class ActTwo
                 new StatusTriggerData("TurnStarted", JsonSerializer.SerializeToElement(
                     charge, CombatJson.CreateOptions<TurnStartedTriggeredEffectContext>())),
             ]);
-    }
-
-    // ── Stage 8 — Archive of Misplaced Hours ──────────────────────────────────────────────────────────────
-
-    public const string TuesdayDoesNotOccurId = "tuesday_does_not_occur";
-
-    // "Every third turn belonging to Tuesday does not happen: it takes no action, and direct card damage
-    // against it is increased by 25%."
-    //
-    // Nothing lets an enemy skip its own turn — Stun only stops the player playing cards — so the missing turn
-    // is an INTENT that does nothing but leave Tuesday exposed for the round. At the table that is the same
-    // thing: it stands there, and you hit it harder. Its place in the cycle is what makes it every third.
-    public static StatusData TuesdayDoesNotOccur() => new()
-    {
-        Id = TuesdayDoesNotOccurId,
-        NameKey = "Tuesday Does Not Occur",
-        DescriptionKey = "This day did not happen. What you do to it lands 25% harder.",
-        Polarity = StatusPolarity.Debuff,
-        StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
-        UsesStacks = false,
-        UsesDuration = true,
-        Tags = [],
-        PassiveModifiers =
-        [
-            new PassiveModifierData(PassiveModifierPipeline.DamageReceived,
-                PassiveModifierOperation.ScalePercent, 125, RestrictDamageKind: DamageKind.Direct),
-        ],
-        Triggers = [],
-    };
-
-    // ── Stage 8 — the Hourglass With Two Bottoms ──────────────────────────────────────────────────────────
-    //
-    // "Maintain two visible Scheduled Intents, Left Bottom and Right Bottom, with separate countdowns. The
-    // first Attack each player turn may increase Left Bottom's countdown by 1, maximum 3. The first Skill
-    // each player turn may increase Right Bottom's, maximum 3. Each side may be delayed at most once per
-    // player turn."
-    //
-    // The engine has no "scheduled intent": the two futures are the Hourglass's own two attacks, and what was
-    // missing was the CLOCK and the player's hand on it. The clock is two counters on the body, ticking up at
-    // its own turn start, and its intent rules post whichever future has come due.
-    //
-    // ⚠ THE COUNTERS COUNT UP, not down, and that is not a stylistic choice. A countdown has to be
-    // INITIALISED and a counter defaults to 0, so a down-counter would fire both futures on the first tick
-    // unless something set it first. Counting elapsed turns to a threshold starts correctly at nothing, and a
-    // DELAY is then a decrement — the same arithmetic read from the other end. The design's "maximum 3" is
-    // the threshold itself: the wait can be pushed back to three turns and no further, which is exactly
-    // "elapsed may not go below zero".
-    //
-    // ⚠ "ATTACK vs SKILL" IS "DEED vs ANYTHING ELSE". B&B has no Skill type — its non-attack cards are forms,
-    // arguments and rites — so the player's offensive type is the Deed, which is the reading the Contradictory
-    // Signpost's two roads already take (EncounterPassives.BothDirectionsMandatory).
-    //
-    // ⚠ "MAY increase" is read as DOES. The option would be a free player-activated action and the engine has
-    // none (see the Checkout Codex's third door, and the Municipal Dragon's writs). Delaying is pure upside
-    // for the player, so reading it as automatic is the generous reading rather than a silent nerf.
-    public const string TwoFuturesId = "two_futures_at_once";
-
-    public static CounterId LeftElapsedCounter => new("left_bottom_elapsed");
-    public static CounterId RightElapsedCounter => new("right_bottom_elapsed");
-    private static CounterId LeftDelayedCounter => new("left_bottom_delayed");
-    private static CounterId RightDelayedCounter => new("right_bottom_delayed");
-
-    // Three turns of sand per side — the design's own ceiling, used as the fuse so that "maximum 3" is a rule
-    // the player can actually reach rather than a number nothing tests.
-    public const int TwoFuturesFuse = 3;
-
-    // The clock, on the Hourglass: a turn of its own passes for both bottoms, and both delays are released
-    // for the player's coming turn.
-    public static StatusData TwoFuturesAtOnce()
-    {
-        IEffectNode<TurnStartedTriggeredEffectContext> Tick(CounterId counter) =>
-            new SetCombatantCounterNode<TurnStartedTriggeredEffectContext>(
-                CombatantTargetSelectors.Source, counter,
-                new ConstantExpression<TurnStartedTriggeredEffectContext>(1), relative: true);
-
-        IEffectNode<TurnStartedTriggeredEffectContext> Release(CounterId latch) =>
-            new SetCombatantCounterNode<TurnStartedTriggeredEffectContext>(
-                CombatantTargetSelectors.Source, latch,
-                new ConstantExpression<TurnStartedTriggeredEffectContext>(0), relative: false);
-
-        var sand = new EffectProgram<TurnStartedTriggeredEffectContext>(
-            new CausalSequenceEffectNode<TurnStartedTriggeredEffectContext>(
-            [
-                Tick(LeftElapsedCounter),
-                Tick(RightElapsedCounter),
-                Release(LeftDelayedCounter),
-                Release(RightDelayedCounter),
-            ]));
-
-        return Rule(TwoFuturesId, "Two Futures at Once",
-            "Two bottoms, two countdowns. A deed pushes the left one back, anything else the right — once "
-            + "each per turn.",
-            [
-                new StatusTriggerData("TurnStarted", JsonSerializer.SerializeToElement(
-                    sand, CombatJson.CreateOptions<TurnStartedTriggeredEffectContext>())),
-            ]);
-    }
-
-    // The player's hand on the clock, as an ENCOUNTER trigger — the same shape the Oath Candle and the
-    // Signpost use, and for the same reason: the rule is about what the PLAYER played, and the body it writes
-    // to is found by the marker it wears rather than named.
-    public static EncounterTriggerData DelayABottom()
-    {
-        var glass = CombatantTargetSelectors.IterationTarget;
-
-        IEffectNode<CardPlayedTriggeredEffectContext> Push(CounterId elapsed, CounterId latch) =>
-            new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
-                new AndExpression<CardPlayedTriggeredEffectContext>(
-                    // Once per turn per side…
-                    new ComparisonExpression<CardPlayedTriggeredEffectContext>(
-                        new CombatantCounterExpression<CardPlayedTriggeredEffectContext>(glass, latch),
-                        ComparisonOperator.Equal,
-                        new ConstantExpression<CardPlayedTriggeredEffectContext>(0)),
-                    // …and never past the ceiling: elapsed 0 IS a full three turns of sand.
-                    new ComparisonExpression<CardPlayedTriggeredEffectContext>(
-                        new CombatantCounterExpression<CardPlayedTriggeredEffectContext>(glass, elapsed),
-                        ComparisonOperator.Greater,
-                        new ConstantExpression<CardPlayedTriggeredEffectContext>(0))),
-                new CausalSequenceEffectNode<CardPlayedTriggeredEffectContext>(
-                [
-                    new SetCombatantCounterNode<CardPlayedTriggeredEffectContext>(
-                        glass, elapsed,
-                        new ConstantExpression<CardPlayedTriggeredEffectContext>(-1), relative: true),
-                    new SetCombatantCounterNode<CardPlayedTriggeredEffectContext>(
-                        glass, latch,
-                        new ConstantExpression<CardPlayedTriggeredEffectContext>(1), relative: false),
-                ]));
-
-        var program = new EffectProgram<CardPlayedTriggeredEffectContext>(
-            new ForEachTargetEffectNode<CardPlayedTriggeredEffectContext>(
-                CombatantTargetSelectors.AllEnemiesOfSourceWithStatus(new StatusDefinitionId(TwoFuturesId)),
-                new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
-                    new CardInstanceHasTagExpression<CardPlayedTriggeredEffectContext>(
-                        new TriggerEventCardInstanceExpression<CardPlayedTriggeredEffectContext>(),
-                        new TagId(Cards.CardAuthoring.DeedTag)),
-                    Push(LeftElapsedCounter, LeftDelayedCounter),
-                    @else: Push(RightElapsedCounter, RightDelayedCounter))));
-
-        return new EncounterTriggerData("CardPlayed",
-            JsonSerializer.SerializeToElement(
-                program, CombatJson.CreateOptions<CardPlayedTriggeredEffectContext>()));
     }
 
     // ── Stage 9 — Necrology Vaults ────────────────────────────────────────────────────────────────────────
@@ -1465,14 +986,14 @@ public static class ActTwo
     // by accident.
     public const string StoredLifeId = "stored_life";
     public const string SpareLifeOuroborosId = "spare_life_ouroboros";
-    public const string SpareLifeDoppelgangerId = "spare_life_doppelganger";
+    public const string SpareLifeTestatorId = "spare_life_testator";
 
     private const int OuroborosSpare = 11;      // 30 % of 35, rounded up
-    private const int DoppelgangerSpare = 19;   // 30 % of 63, rounded up
+    private const int TestatorSpare = 15;       // 30 % of 48, rounded up
 
     public static StatusData SpareLifeOuroboros() => SpareLife(SpareLifeOuroborosId, OuroborosSpare);
 
-    public static StatusData SpareLifeDoppelganger() => SpareLife(SpareLifeDoppelgangerId, DoppelgangerSpare);
+    public static StatusData SpareLifeTestator() => SpareLife(SpareLifeTestatorId, TestatorSpare);
 
     private static StatusData SpareLife(string id, int survivingHealth) => new()
     {
@@ -1522,227 +1043,12 @@ public static class ActTwo
                 new TargetHasStatusExpression<CombatantDownedTriggeredEffectContext>(
                     CombatantTargetSelectors.SourceIncludingDowned, new StatusDefinitionId(StoredLifeId)),
                 new CausalSequenceEffectNode<CombatantDownedTriggeredEffectContext>(
-                    [Lose(SpareLifeOuroborosId), Lose(SpareLifeDoppelgangerId)])));
+                    [Lose(SpareLifeOuroborosId), Lose(SpareLifeTestatorId)])));
 
         return new EncounterTriggerData("Downed",
             JsonSerializer.SerializeToElement(
                 program, CombatJson.CreateOptions<CombatantDownedTriggeredEffectContext>()));
     }
-
-    // ── Stage 10 — the Detached Footnote ──────────────────────────────────────────────────────────────────
-    //
-    // "At combat start Footnote links visibly to one other enemy; that enemy becomes its Source. The first
-    // time each round the Source's signature mechanic actually triggers, Footnote gains 1 Note, maximum 2. At
-    // 2 Notes its next direct attack becomes See Note Below (14 damage, 1 Overdue, Notes → 0)."
-    //
-    // This is the body the announcement seam was built for. "The Source's signature mechanic ACTUALLY
-    // TRIGGERS" is not an engine event and never could be — it is a conclusion another rule reached, and
-    // until a rule could say so there was nothing to hang this on. Now the per-body rules of this act
-    // announce `signature` from the body they belong to, and the Footnote listens.
-    //
-    // ⚠ THE LINK IS AUTHORED, NOT CHOSEN. "Links to one other enemy" needs a pick the engine cannot make at
-    // combat start, so each encounter says which body is the Source through its slot-indexed scaffolding —
-    // which is also how the master states these pairings (encounter 34: "Footnote begins linked to Orphan
-    // Citation"). Source DEATH and re-linking is therefore not built: it would need the pick this substitutes
-    // for. Named, not approximated.
-    //
-    // ⚠ AND IT HEARS `signature`, NOT THE NAMED MOMENTS. A misfiling skip announces `misfiling` and nothing
-    // else, precisely because the mark cannot say whose it was — so the Footnote cannot be fed by a shelf it
-    // is not linked to.
-    public const string FootnoteSourceId = "footnote_source";
-    public const string MarginalNoteId = "marginal_note";
-
-    public static CounterId NotesCounter => new("footnote_notes");
-    private static CounterId NoteThisRoundCounter => new("footnote_note_this_round");
-    public const int NotesFull = 2;
-
-    // The marker on the SOURCE — the body the Footnote is reading.
-    public static StatusData FootnoteSource() =>
-        Rule(FootnoteSourceId, "Source",
-            "The Footnote is reading this one. What it does, the Footnote writes down.", []);
-
-    // The rule on the FOOTNOTE: one Note per round, at most two, and a fresh round may write again.
-    public static StatusData MarginalNote() =>
-        Rule(MarginalNoteId, "Marginal Note",
-            "Once a round, whatever its Source does gets written in the margin. Two notes and the Footnote "
-            + "reads them out.",
-            [
-                new StatusTriggerData("TurnStarted", JsonSerializer.SerializeToElement(
-                    new EffectProgram<TurnStartedTriggeredEffectContext>(
-                        new SetCombatantCounterNode<TurnStartedTriggeredEffectContext>(
-                            CombatantTargetSelectors.Source, NoteThisRoundCounter,
-                            new ConstantExpression<TurnStartedTriggeredEffectContext>(0), relative: false)),
-                    CombatJson.CreateOptions<TurnStartedTriggeredEffectContext>())),
-            ]);
-
-    // What the Footnote does when its Source speaks — an ENCOUNTER trigger, because the announcement is
-    // somebody else's moment and the Footnote has to be found from the announcer's side. Exactly the Oath
-    // Candle's shape: the loop over the announcer's allies IS the "is a Footnote here" gate, and inside it
-    // `iterationTarget` is the Footnote, so its own latch and its own Notes can be read and written.
-    public static EncounterTriggerData WriteInTheMargin()
-    {
-        var footnote = CombatantTargetSelectors.IterationTarget;
-
-        var body = new ConditionalEffectNode<RuleAnnouncedTriggeredEffectContext>(
-            new AndExpression<RuleAnnouncedTriggeredEffectContext>(
-                new ComparisonExpression<RuleAnnouncedTriggeredEffectContext>(
-                    new CombatantCounterExpression<RuleAnnouncedTriggeredEffectContext>(
-                        footnote, NoteThisRoundCounter),
-                    ComparisonOperator.Equal,
-                    new ConstantExpression<RuleAnnouncedTriggeredEffectContext>(0)),
-                new ComparisonExpression<RuleAnnouncedTriggeredEffectContext>(
-                    new CombatantCounterExpression<RuleAnnouncedTriggeredEffectContext>(footnote, NotesCounter),
-                    ComparisonOperator.Less,
-                    new ConstantExpression<RuleAnnouncedTriggeredEffectContext>(NotesFull))),
-            new CausalSequenceEffectNode<RuleAnnouncedTriggeredEffectContext>(
-            [
-                new SetCombatantCounterNode<RuleAnnouncedTriggeredEffectContext>(
-                    footnote, NotesCounter,
-                    new ConstantExpression<RuleAnnouncedTriggeredEffectContext>(1), relative: true),
-                new SetCombatantCounterNode<RuleAnnouncedTriggeredEffectContext>(
-                    footnote, NoteThisRoundCounter,
-                    new ConstantExpression<RuleAnnouncedTriggeredEffectContext>(1), relative: false),
-            ]));
-
-        var program = new EffectProgram<RuleAnnouncedTriggeredEffectContext>(
-            new ConditionalEffectNode<RuleAnnouncedTriggeredEffectContext>(
-                new AndExpression<RuleAnnouncedTriggeredEffectContext>(
-                    // …a body's own rule, and the body the Footnote is reading.
-                    new AnnouncedRuleIsExpression<RuleAnnouncedTriggeredEffectContext>(AnnounceSignature),
-                    new TargetHasStatusExpression<RuleAnnouncedTriggeredEffectContext>(
-                        CombatantTargetSelectors.EventTarget, new StatusDefinitionId(FootnoteSourceId))),
-                new ForEachTargetEffectNode<RuleAnnouncedTriggeredEffectContext>(
-                    CombatantTargetSelectors.AllAlliesOfSourceWithStatus(
-                        new StatusDefinitionId(MarginalNoteId)),
-                    body)));
-
-        return new EncounterTriggerData("RuleAnnounced",
-            JsonSerializer.SerializeToElement(
-                program, CombatJson.CreateOptions<RuleAnnouncedTriggeredEffectContext>()));
-    }
-
-    // ── Stage 10 — Hall of Concordances ───────────────────────────────────────────────────────────────────
-
-    public const string ResidueId = "everything_else";
-    private static CounterId ResidueCounter => new("residue");
-    private const int ResidueFull = 4;
-
-    // "The first time each round a Redacted card is played, and the first time each round a Misfiled card is
-    // actually skipped, gain 1 Residue, to a maximum of 4. At 4: Residue → 0, one card in hand becomes
-    // Redacted and another becomes Misfiled."
-    //
-    // The design counts four sources. Three of them are moments only ANOTHER rule knows it reached — a
-    // Delinquency resolving, a Reference being fulfilled, a Misfiled card actually being skipped — and none of
-    // them announces itself in a way the Index could watch. It therefore counts the one it can see for itself,
-    // and a proxy for the others would be a different enemy. See ADAPTATIONS.
-    // ★ ALL FOUR SOURCES NOW, and three of them only because the archive learned to say things out loud.
-    //
-    // "The first time each round each of the following occurs — a Delinquency resolves; a Misfiled card is
-    // actually skipped; a Reference is fulfilled; a Redacted card is played — gain 1 Residue, to a maximum
-    // of 4."
-    //
-    // The three the Index could not see are the three that are CONCLUSIONS another rule reached, and none of
-    // them was an engine event. They announce themselves now (see "what the archive says out loud"), and this
-    // is the body that listens. Each source has its OWN once-a-round latch, because the design counts them
-    // separately — four sources in one round is a full Residue, and the same source four times is one.
-    //
-    // ⚠ WHO ACCUMULATES DEPENDS ON WHO IS ACTING. This rule lives on the PLAYER (it is the player's hand it
-    // settles on), but the acting Source differs by event: a card play is the player's, an announcement is
-    // the ANNOUNCER's — an enemy. So the residue's owner is passed in rather than assumed, and from an
-    // announcer's side the player is its opponent.
-    public static StatusData Residue() =>
-        Rule(ResidueId, "Residue",
-            "Everything the archive did to you settles, and then it settles on you.",
-            [
-                Watch("CardPlayed", WhenPlayedCardIs(RedactedMark,
-                    Once<CardPlayedTriggeredEffectContext>(
-                        CombatantTargetSelectors.Source, ResidueLatch(AnnounceRedacted),
-                        Gain<CardPlayedTriggeredEffectContext>(CombatantTargetSelectors.Source)))),
-                new StatusTriggerData("RuleAnnounced", JsonSerializer.SerializeToElement(
-                    Settles(), CombatJson.CreateOptions<RuleAnnouncedTriggeredEffectContext>()),
-                    StatusTriggerScope.Anywhere),
-                ReleaseLatchesEachRound(),
-            ]);
-
-    private const string AnnounceRedacted = "redacted";
-
-    private static CounterId ResidueLatch(string source) => new($"residue_{source}");
-
-    private static readonly string[] ResidueSources =
-        [AnnounceDelinquency, AnnounceReference, AnnounceMisfiling, AnnounceRedacted];
-
-    // One announcement, matched against the three names the Index can hear from outside itself.
-    private static EffectProgram<RuleAnnouncedTriggeredEffectContext> Settles()
-    {
-        // The announcer is the acting source; the one the residue settles on is across the table from it.
-        var player = Opponent;
-
-        IEffectNode<RuleAnnouncedTriggeredEffectContext> Source(string name) =>
-            new ConditionalEffectNode<RuleAnnouncedTriggeredEffectContext>(
-                new AnnouncedRuleIsExpression<RuleAnnouncedTriggeredEffectContext>(name),
-                Once<RuleAnnouncedTriggeredEffectContext>(
-                    player, ResidueLatch(name),
-                    Gain<RuleAnnouncedTriggeredEffectContext>(player)));
-
-        return new(new CausalSequenceEffectNode<RuleAnnouncedTriggeredEffectContext>(
-            [Source(AnnounceDelinquency), Source(AnnounceReference), Source(AnnounceMisfiling)]));
-    }
-
-    // Do `then` at most once per round for this source, recorded on the one who accumulates.
-    private static IEffectNode<TContext> Once<TContext>(
-        ICombatantTargetSelector who, CounterId latch, IEffectNode<TContext> then) where TContext : class =>
-        new ConditionalEffectNode<TContext>(
-            new ComparisonExpression<TContext>(
-                new CombatantCounterExpression<TContext>(who, latch),
-                ComparisonOperator.Equal, new ConstantExpression<TContext>(0)),
-            new CausalSequenceEffectNode<TContext>(
-            [
-                then,
-                new SetCombatantCounterNode<TContext>(
-                    who, latch, new ConstantExpression<TContext>(1), relative: false),
-            ]));
-
-    // Every source may count again, released at the player's DRAW — which is this act's own idiom for "once
-    // a round" (`ClearEachTurn`) and the one moment every rule here already trusts to be the player's. A
-    // RoundEnded release was the obvious first choice and it did not fire: the latches are kept on the
-    // player, and in a round-scoped context the acting source is not who a bearer-borne rule means by "me".
-    private static StatusTriggerData ReleaseLatchesEachRound() =>
-        Watch("CardsDrawn", Guarded(
-            IsTheApplicant<CardsDrawnTriggeredEffectContext>(),
-            new CausalSequenceEffectNode<CardsDrawnTriggeredEffectContext>(
-                [.. ResidueSources.Select(source =>
-                    (IEffectNode<CardsDrawnTriggeredEffectContext>)
-                    new SetCombatantCounterNode<CardsDrawnTriggeredEffectContext>(
-                        CombatantTargetSelectors.Source, ResidueLatch(source),
-                        new ConstantExpression<CardsDrawnTriggeredEffectContext>(0), relative: false))])));
-
-    // One more Residue, and at four the archive files everything else.
-    private static IEffectNode<TContext> Gain<TContext>(ICombatantTargetSelector who) where TContext : class =>
-        new CausalSequenceEffectNode<TContext>(
-        [
-            new ConditionalEffectNode<TContext>(
-                new ComparisonExpression<TContext>(
-                    new CombatantCounterExpression<TContext>(who, ResidueCounter),
-                    ComparisonOperator.Less, new ConstantExpression<TContext>(ResidueFull)),
-                new SetCombatantCounterNode<TContext>(
-                    who, ResidueCounter,
-                    new ConstantExpression<TContext>(1), relative: true)),
-            new ConditionalEffectNode<TContext>(
-                new ComparisonExpression<TContext>(
-                    new CombatantCounterExpression<TContext>(who, ResidueCounter),
-                    ComparisonOperator.GreaterOrEqual, new ConstantExpression<TContext>(ResidueFull)),
-                new CausalSequenceEffectNode<TContext>(
-                [
-                    new SetCombatantCounterNode<TContext>(
-                        who, ResidueCounter,
-                        new ConstantExpression<TContext>(0), relative: false),
-                    Redact<TContext>(who,
-                        new CardInZoneExpression<TContext>(CardZone.Hand)),
-                    new MarkCardInstanceNode<TContext>(
-                        who,
-                        new CardInZoneExpression<TContext>(CardZone.Hand, 1), new TagId(MisfiledMark)),
-                ])),
-        ]);
 
     // ── Stage 4 — The Hushed Reading Room ─────────────────────────────────────────────────────────────────
     //
@@ -1758,17 +1064,6 @@ public static class ActTwo
     //     that was just played, which is invisible because that card was on its way to the discard pile
     //     anyway. `Guarded` puts a no-op in front of every rule for exactly that reason. See
     //     RogueDeck.Sandbox.Tests/CardPlayedTriggerHandTimingTests.
-
-    public const string ReservedSeatId = "reserved_seat";
-    public const string ShrinkingMarginId = "shrinking_margin";
-    public const string UnspokenWordId = "leave_one_word_unspoken";
-    public const string VoiceId = "voice";
-
-    private static CounterId SeatTakenCounter => new("reserved_seat_taken");
-    private static CounterId MarginCounter => new("mute_margin");
-    private static CounterId MarginBittenCounter => new("mute_margin_bitten");
-    private const int MarginStart = 5;
-    private const int MarginFloor = 3;
 
     // A rule about the PLAYED card looks immediately: waiting a beat is what carries that card out of reach.
     private static EffectProgram<TContext> Immediate<TContext>(
@@ -1786,142 +1081,6 @@ public static class ActTwo
             new ConditionalEffectNode<TContext>(when, then),
         ]));
 
-    // "After the player's fourth played card in a turn, the oldest remaining card in hand goes straight to
-    // discard. Once per turn." A card taken this way was not played, so a Reference on it fails exactly as if
-    // the hand had been put down holding it — the Stage-4 duo's whole lesson, and it needs no special case:
-    // the citing enemy already collects from the discard pile.
-    //
-    // "The oldest remaining VALID non-Junk card" is read as the oldest card, full stop: a zone iteration can
-    // require a tag but not refuse one. See ADAPTATIONS.
-    public static StatusData ReservedSeat() =>
-        Rule(ReservedSeatId, "Reserved Seat",
-            "The table clears a place once a turn, whether or not you were using it.",
-            [
-                Watch("CardPlayed", Guarded(
-                    new AndExpression<CardPlayedTriggeredEffectContext>(
-                        new AndExpression<CardPlayedTriggeredEffectContext>(
-                            IsTheApplicant<CardPlayedTriggeredEffectContext>(),
-                            PlayedThisTurn<CardPlayedTriggeredEffectContext>(
-                                ComparisonOperator.GreaterOrEqual,
-                                new ConstantExpression<CardPlayedTriggeredEffectContext>(4))),
-                        Unspent<CardPlayedTriggeredEffectContext>(SeatTakenCounter)),
-                    new CausalSequenceEffectNode<CardPlayedTriggeredEffectContext>(
-                    [
-                        new ForEachCardInZoneNode<CardPlayedTriggeredEffectContext>(
-                            CombatantTargetSelectors.Source, CardZone.Hand,
-                            new MoveCardToZoneNode<CardPlayedTriggeredEffectContext>(
-                                CombatantTargetSelectors.Source,
-                                new IteratedCardExpression<CardPlayedTriggeredEffectContext>(),
-                                CardZone.DiscardPile),
-                            takeFirst: 1),
-                        Spend<CardPlayedTriggeredEffectContext>(SeatTakenCounter),
-                    ]))),
-                ClearEachTurn(SeatTakenCounter),
-            ]);
-
-    // "A visible limit of 5. Exceed it and a card in your hand is Misfiled, and the limit shrinks by one to a
-    // floor of 3; finish a turn inside it and it recovers by one, to a ceiling of 5."
-    //
-    // The limit lives on the player as a counter, and 0 means "not set yet": a starting status can put a
-    // status on a combatant but not a number, so the margin introduces itself on the first draw.
-    public static StatusData ShrinkingMargin() =>
-        Rule(ShrinkingMarginId, "Shrinking Margin",
-            "The margin allows five, and remembers every time you wrote past it.",
-            [
-                Watch("CardsDrawn", Guarded(
-                    new AndExpression<CardsDrawnTriggeredEffectContext>(
-                        IsTheApplicant<CardsDrawnTriggeredEffectContext>(),
-                        new ComparisonExpression<CardsDrawnTriggeredEffectContext>(
-                            new CombatantCounterExpression<CardsDrawnTriggeredEffectContext>(
-                                CombatantTargetSelectors.Source, MarginCounter),
-                            ComparisonOperator.Equal,
-                            new ConstantExpression<CardsDrawnTriggeredEffectContext>(0))),
-                    new SetCombatantCounterNode<CardsDrawnTriggeredEffectContext>(
-                        CombatantTargetSelectors.Source, MarginCounter,
-                        new ConstantExpression<CardsDrawnTriggeredEffectContext>(MarginStart), relative: false))),
-                // The count includes the card in flight, so a count PAST the margin is the card that went past.
-                Watch("CardPlayed", Guarded(
-                    new AndExpression<CardPlayedTriggeredEffectContext>(
-                        new AndExpression<CardPlayedTriggeredEffectContext>(
-                            IsTheApplicant<CardPlayedTriggeredEffectContext>(),
-                            PlayedThisTurn<CardPlayedTriggeredEffectContext>(
-                                ComparisonOperator.Greater,
-                                new CombatantCounterExpression<CardPlayedTriggeredEffectContext>(
-                                    CombatantTargetSelectors.Source, MarginCounter))),
-                        Unspent<CardPlayedTriggeredEffectContext>(MarginBittenCounter)),
-                    new CausalSequenceEffectNode<CardPlayedTriggeredEffectContext>(
-                    [
-                        new ForEachCardInZoneNode<CardPlayedTriggeredEffectContext>(
-                            CombatantTargetSelectors.Source, CardZone.Hand,
-                            new MarkCardInstanceNode<CardPlayedTriggeredEffectContext>(
-                                CombatantTargetSelectors.Source,
-                                new IteratedCardExpression<CardPlayedTriggeredEffectContext>(),
-                                new TagId(MisfiledMark)),
-                            takeFirst: 1),
-                        Step<CardPlayedTriggeredEffectContext>(-1, MarginFloor, ComparisonOperator.Greater),
-                        Spend<CardPlayedTriggeredEffectContext>(MarginBittenCounter),
-                    ]))),
-                Watch("TurnEnded", Guarded(
-                    new AndExpression<TurnEndedTriggeredEffectContext>(
-                        IsTheApplicant<TurnEndedTriggeredEffectContext>(),
-                        Unspent<TurnEndedTriggeredEffectContext>(MarginBittenCounter)),
-                    Step<TurnEndedTriggeredEffectContext>(1, MarginStart, ComparisonOperator.Less))),
-                ClearEachTurn(MarginBittenCounter),
-            ]);
-
-    // "End a turn holding exactly one card and the Choir's guard breaks; end holding none and it finds a
-    // Voice." The crescendo the design pays at two Voices is folded into the Voice status itself.
-    public static StatusData LeaveOneWordUnspoken() =>
-        Rule(UnspokenWordId, "Leave One Word Unspoken",
-            "The choir listens to what you did not say.",
-            [
-                Watch("TurnEnded", Guarded(
-                    IsTheApplicant<TurnEndedTriggeredEffectContext>(),
-                    new CausalSequenceEffectNode<TurnEndedTriggeredEffectContext>(
-                    [
-                        new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
-                            HandHolds<TurnEndedTriggeredEffectContext>(1),
-                            new ModifyDefensivePoolNode<TurnEndedTriggeredEffectContext>(
-                                Choir, StandardCombatIds.BlockDefensivePool,
-                                new ConstantExpression<TurnEndedTriggeredEffectContext>(-6))),
-                        new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
-                            HandHolds<TurnEndedTriggeredEffectContext>(0),
-                            new ApplyStatusNode<TurnEndedTriggeredEffectContext>(
-                                Choir, new StatusDefinitionId(VoiceId),
-                                new ConstantExpression<TurnEndedTriggeredEffectContext>(1))),
-                    ]))),
-            ]);
-
-    // Each Voice is +4 on the Choir's next direct attack, and the attack spends them all — two of them are the
-    // design's +8, without a second status to hold the total.
-    public static StatusData Voice()
-    {
-        var spend = new EffectProgram<DamageDealtTriggeredEffectContext>(
-            new RemoveStatusNode<DamageDealtTriggeredEffectContext>(
-                CombatantTargetSelectors.Source, new StatusDefinitionId(VoiceId)));
-
-        return new StatusData
-        {
-            Id = VoiceId,
-            NameKey = "Voice",
-            DescriptionKey = "A word the choir kept, waiting on its next blow.",
-            Polarity = StatusPolarity.Buff,
-            StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
-            UsesStacks = true,
-            Tags = [],
-            PassiveModifiers =
-            [
-                new PassiveModifierData(PassiveModifierPipeline.DamageDealt,
-                    PassiveModifierOperation.AddPerStack, 4, RestrictDamageKind: DamageKind.Direct),
-            ],
-            Triggers =
-            [
-                new StatusTriggerData("DamageDealt", JsonSerializer.SerializeToElement(
-                    spend, CombatJson.CreateOptions<DamageDealtTriggeredEffectContext>())),
-            ],
-        };
-    }
-
     private static readonly ICombatExpression<CardPlayedTriggeredEffectContext, int> PortraitBlock =
         new CombatantDefensivePoolExpression<CardPlayedTriggeredEffectContext>(
             CombatantTargetSelectors.LowestHealthEnemyOfSource, StandardCombatIds.BlockDefensivePool);
@@ -1934,38 +1093,10 @@ public static class ActTwo
         new ComparisonExpression<TContext>(
             new CardsPlayedThisTurnExpression<TContext>(CombatantTargetSelectors.Source), op, than);
 
-    private static ICombatExpression<TContext, bool> HandHolds<TContext>(int cards) where TContext : class =>
-        new ComparisonExpression<TContext>(
-            new CombatantZoneCardCountExpression<TContext>(CombatantTargetSelectors.Source, CardZone.Hand),
-            ComparisonOperator.Equal, new ConstantExpression<TContext>(cards));
-
-    private static IEffectNode<TContext> Step<TContext>(int step, int stop, ComparisonOperator past)
-        where TContext : class =>
-        new ConditionalEffectNode<TContext>(
-            new ComparisonExpression<TContext>(
-                new CombatantCounterExpression<TContext>(CombatantTargetSelectors.Source, MarginCounter),
-                past, new ConstantExpression<TContext>(stop)),
-            new SetCombatantCounterNode<TContext>(
-                CombatantTargetSelectors.Source, MarginCounter,
-                new ConstantExpression<TContext>(step), relative: true));
-
     private static ICombatExpression<TContext, bool> Unspent<TContext>(CounterId latch) where TContext : class =>
         new ComparisonExpression<TContext>(
             new CombatantCounterExpression<TContext>(CombatantTargetSelectors.Source, latch),
             ComparisonOperator.Equal, new ConstantExpression<TContext>(0));
-
-    // The same latch, read and written about a NAMED combatant rather than about whoever is acting — needed
-    // wherever a rule on one side keeps a once-per-turn record about the other.
-    private static ICombatExpression<TContext, bool> UnspentOn<TContext>(
-        ICombatantTargetSelector who, CounterId latch) where TContext : class =>
-        new ComparisonExpression<TContext>(
-            new CombatantCounterExpression<TContext>(who, latch),
-            ComparisonOperator.Equal, new ConstantExpression<TContext>(0));
-
-    private static IEffectNode<TContext> SpendOn<TContext>(
-        ICombatantTargetSelector who, CounterId latch) where TContext : class =>
-        new SetCombatantCounterNode<TContext>(
-            who, latch, new ConstantExpression<TContext>(1), relative: false);
 
     private static IEffectNode<TContext> Spend<TContext>(CounterId latch) where TContext : class =>
         new SetCombatantCounterNode<TContext>(
@@ -1976,13 +1107,6 @@ public static class ActTwo
         where TContext : class =>
         new(trigger, JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<TContext>()),
             StatusTriggerScope.Anywhere);
-
-    private static StatusTriggerData ClearEachTurn(CounterId latch) =>
-        Watch("CardsDrawn", Guarded(
-            IsTheApplicant<CardsDrawnTriggeredEffectContext>(),
-            new SetCombatantCounterNode<CardsDrawnTriggeredEffectContext>(
-                CombatantTargetSelectors.Source, latch,
-                new ConstantExpression<CardsDrawnTriggeredEffectContext>(0), relative: false)));
 
     // ── shapes ────────────────────────────────────────────────────────────────────────────────────────────
 

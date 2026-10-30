@@ -8,43 +8,6 @@ namespace BnbContent.Converter;
 // cross-combatant reactions — and EnemyMapper prefers this program when one exists for "<enemy>.<intent>".
 public static class RawIntentPrograms
 {
-    private static EffectProgram<EnemyActionContext> Redacting(int damage) =>
-        new(new CausalSequenceEffectNode<EnemyActionContext>(
-        [
-            new DealDamageNode<EnemyActionContext>(
-                CombatantTargetSelectors.LowestHealthEnemyOfSource,
-                new ConstantExpression<EnemyActionContext>(damage)),
-            ActTwo.RedactOne(),
-        ]));
-
-    // "Deal 16 damage. Apply 1 Overdue from Footnote. Notes → 0."
-    private static EffectProgram<EnemyActionContext> ReadTheMargin() =>
-        new(new CausalSequenceEffectNode<EnemyActionContext>(
-        [
-            new DealDamageNode<EnemyActionContext>(
-                CombatantTargetSelectors.LowestHealthEnemyOfSource,
-                new ConstantExpression<EnemyActionContext>(16)),
-            // Filed by the Footnote itself — an Overdue remembers who it is owed to.
-            new ApplyStatusNode<EnemyActionContext>(
-                CombatantTargetSelectors.LowestHealthEnemyOfSource,
-                new StatusDefinitionId(ActTwo.OverdueId),
-                new ConstantExpression<EnemyActionContext>(1)),
-            new SetCombatantCounterNode<EnemyActionContext>(
-                CombatantTargetSelectors.Source, ActTwo.NotesCounter,
-                new ConstantExpression<EnemyActionContext>(0), relative: false),
-        ]));
-
-    // One bottom of the Hourglass emptying: the damage the label promises, and its own sand turned over.
-    private static EffectProgram<EnemyActionContext> Future(int damage, CounterId elapsed) =>
-        new(new CausalSequenceEffectNode<EnemyActionContext>(
-        [
-            new DealDamageNode<EnemyActionContext>(
-                CombatantTargetSelectors.LowestHealthEnemyOfSource,
-                new ConstantExpression<EnemyActionContext>(damage)),
-            new SetCombatantCounterNode<EnemyActionContext>(
-                CombatantTargetSelectors.Source, elapsed,
-                new ConstantExpression<EnemyActionContext>(0), relative: false),
-        ]));
 
     private static EffectProgram<EnemyActionContext> Misfiling(int damage, string mark) =>
         new(new CausalSequenceEffectNode<EnemyActionContext>(
@@ -60,23 +23,7 @@ public static class RawIntentPrograms
         {
             // Act II: an attack that also misfiles. Which SHELF did it decides where the card goes when it is
             // taken back, so the destination is written into the mark itself.
-            // Act II's redacting attacks. The halving itself is the engine's; what the intent adds is the
-            // mark beside it, which is what an enemy rule can see.
-            "palimpsest_husk.scrape_the_surface" => Redacting(13),
-            "expunged_name.strike_the_name" => Redacting(14),
-            "vacant_portrait.erase_the_face" => Redacting(13),
-            "errata_doppelganger.errata_transfer" => Redacting(14),
-            "miscellany_index.cross_list" => Redacting(12),
             "crabwise_shelf.mis_shelve" => Misfiling(11, ActTwo.MisfiledSidewaysMark),
-            "volume_q_null.null_index" => Misfiling(10, ActTwo.MisfiledNullMark),
-            // The Hourglass's two futures: the blow, and the sand of that bottom starting over. The reset
-            // lives in the ACTION because the action is the only thing that knows the future came due — an
-            // intent rule reads a counter, it cannot spend one.
-            // The Footnote reading its margin out. ⚠ NOT `Future`: this one also FILES — the label promises
-            // "16 dmg, Overdue +1", and borrowing the Hourglass's shape would have quietly dropped the debt.
-            "detached_footnote.see_note_below" => ReadTheMargin(),
-            "hourglass_with_two_bottoms.left_future" => Future(16, ActTwo.LeftElapsedCounter),
-            "hourglass_with_two_bottoms.right_future" => Future(25, ActTwo.RightElapsedCounter),
             "lower_appellate_step.await_the_ruling" => AwaitTheRuling(),
             "middle_appellate_step.await_the_ruling" => AwaitTheRuling(),
             "upper_appellate_step.await_the_ruling" => AwaitTheRuling(),
@@ -97,10 +44,8 @@ public static class RawIntentPrograms
                 Elites.ReturnBell.EnemyId => Elites.ReturnBell.Intent(intentId),
                 Elites.RollingStacksColossus.EnemyId => Elites.RollingStacksColossus.Intent(intentId),
                 Elites.CatalogueOfUnwiseNames.EnemyId => Elites.CatalogueOfUnwiseNames.Intent(intentId),
-                Elites.SilenceBetweenTwoWords.EnemyId => Elites.SilenceBetweenTwoWords.Intent(intentId),
                 Elites.BlackInkOracle.EnemyId => Elites.BlackInkOracle.Intent(intentId),
                 Elites.DrawerOfInfiniteReturns.EnemyId => Elites.DrawerOfInfiniteReturns.Intent(intentId),
-                Elites.PresentlessClock.EnemyId => Elites.PresentlessClock.Intent(intentId),
                 Elites.ObituaryWithThreeEndings.EnemyId => Elites.ObituaryWithThreeEndings.Intent(intentId),
                 Bosses.WhisperingCatalogue.EnemyId => Bosses.WhisperingCatalogue.Intent(intentId),
                 Bosses.WardenOfSealedVolumes.EnemyId => Bosses.WardenOfSealedVolumes.Intent(intentId),

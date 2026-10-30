@@ -36,6 +36,14 @@ public static class BossPhases
         Elites.WaitingRoom.AtTheCounterId,
         PassiveStatuses.WindowClosedId,
         PassiveStatuses.WindowOpenId,
+        // …and Act II's: the Obituary's ending, the Drawer's open drawer, the Testator's testament.
+        Elites.ObituaryWithThreeEndings.RespectablePhaseId,
+        Elites.ObituaryWithThreeEndings.HeroicPhaseId,
+        Elites.ObituaryWithThreeEndings.AccuratePhaseId,
+        Elites.DrawerOfInfiniteReturns.DrawerOpenId,
+        Testator.HeirsId,
+        Testator.ClaimantId,
+        Testator.DebtsId,
 
         // ── Act II ────────────────────────────────────────────────────────────────────────────────────────
         WhisperingCatalogue.SpeaksInFullId,        // Phase II: it predicts you twice a turn
