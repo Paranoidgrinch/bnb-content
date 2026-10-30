@@ -9,7 +9,7 @@ namespace BnbContent.Converter.Events;
 // What Act IV's doors promise for AFTER the door closes.
 //
 // The Labyrinth's promises are almost all about a STRETCH of road rather than one fight — "the next two
-// combats start Burdened 2", "the next three start Inscribed 1" — because that is what an office does: it
+// combats start Burdened 2", "the next three start Entombed 1" — because that is what an office does: it
 // files something about you, and the filing outlives the room. An opening is consumed by ONE fight, so a
 // promise about N of them is a CHAIN: the door arms the first and installs the body that arms the second,
 // which installs the body that arms the third, each stepping down as it is kept. No counter, no state — the
@@ -25,7 +25,6 @@ public static class ActFourEventPrograms
 {
     // ── the stretches ─────────────────────────────────────────────────────────────────────────────────────
 
-    public const string Inscribed1 = "inscribed_1";
     public const string Burdened2 = "burdened_2";
     public const string Paperwork3 = "paperwork_3";
     public const string PanicAndBurden = "panic_1_burdened_1";
@@ -35,8 +34,7 @@ public static class ActFourEventPrograms
     public const string Panic2 = "panic_2";
     public const string Paperwork2 = "paperwork_2";
     public const string Burdened1 = "burdened_1";
-    public const string Embalmed1 = "embalmed_1";
-    public const string Inscribed2 = "inscribed_2";
+    public const string Entombed1 = "entombed_1";
     public const string EnergyAndPanic = "energy_1_panic_1";
 
     // ── the four fight doors ──────────────────────────────────────────────────────────────────────────────
@@ -45,10 +43,10 @@ public static class ActFourEventPrograms
     public const string TabletPrize = "act_four_tablet_prize";
     public const string RobbersJoined = "act_four_robbers_joined";
     public const string RobbersPrize = "act_four_robbers_prize";
-    public const string TitheRefused = "act_four_tithe_refused";
-    public const string TithePrize = "act_four_tithe_prize";
-    public const string CountRefused = "act_four_count_refused";
-    public const string CountPrize = "act_four_count_prize";
+    public const string AmmitChallenged = "act_four_ammit_challenged";
+    public const string AmmitPrize = "act_four_ammit_prize";
+    public const string BoatRide = "act_four_boat_ride";
+    private const int AmmitShadowHealth = 90;
 
     public static IReadOnlyDictionary<string, ITriggeredRunEffectDefinition> All(ConversionPools pools)
     {
@@ -57,7 +55,7 @@ public static class ActFourEventPrograms
             [TabletDemanded] = FightWaitsBody(TabletDemanded, TabletPrize,
                 // The Reed-Pen Scribe, the Cartouche Recarver and the Palette-Bearing Apprentice: three
                 // writers, so whoever is standing there writes harder, and what they are writing is about you.
-                EveryEnemyGains("strength", 2), Applies(ActFour.InscribedId, 1)),
+                EveryEnemyGains("strength", 2), Applies(ActFour.BurdenedId, 1)),
             [TabletPrize] = VictoryBody(TabletPrize,
                 new OfferRewardRunEffect(
                     new RewardId("event:forewritten_tablet:relic"),
@@ -74,20 +72,27 @@ public static class ActFourEventPrograms
                     pools.NormalRelicOfRarity("the Tomb Robbers' share",
                         (RelicAuthoring.Rarity.Common, 100)),
                     1)),
-            [TitheRefused] = FightWaitsBody(TitheRefused, TithePrize,
-                // The Copper Tribute Bearer and the Ivory-Weight Jackal: a collector and the thing that goes
-                // with the collector, and the collector never comes to the door unaccompanied.
-                EveryEnemyGains("strength", 2), Applies(ActFour.BurdenedId, 1)),
-            // Refusing the tithe keeps the Gold you were holding — the branch takes nothing — and winning
-            // adds seventy to it.
-            [TithePrize] = VictoryBody(TithePrize,
-                new ChangeResourceRunEffect(StandardRunIds.Gold, 70)),
-            [CountPrize] = VictoryBody(CountPrize,
-                new ChangeResourceRunEffect(StandardRunIds.Gold, 90),
-                new RemoveCardsRunEffect(RunSelectors.DeckCards
-                    .ChooseByPlayer(1, "choose what the survey strikes out")),
-                new UpgradeCardsRunEffect(RunSelectors.DeckCards.Upgradable()
-                    .ChooseByPlayer(1, "choose what the survey enters correctly"))),
+            // Ammit's Shadow (content cut 2026-10-30): the next ordinary fight is fought with her shadow in it,
+            // and winning pays like an elite.
+            [AmmitChallenged] = FightWaitsBody(AmmitChallenged, AmmitPrize,
+                new CombatNodeModel("summonCombatant", "source", CombatAmountSpec.FromConst(AmmitShadowHealth),
+                    TeamId: "enemies", SummonDefinitionId: ActFour.AmmitShadowId,
+                    SummonDisplayName: "Ammit's Shadow",
+                    StartingStatuses: [new StatusGrant(new StatusDefinitionId(ActFour.AmmitShadowId), 1)])),
+            [AmmitPrize] = VictoryBody(AmmitPrize,
+                new ChangeResourceRunEffect(StandardRunIds.Gold, 60),
+                new OfferRewardRunEffect(
+                    new RewardId("event:ammits_shadow:relic"),
+                    pools.NormalRelicOfRarity("Ammit's Shadow's prize",
+                        (RelicAuthoring.Rarity.Uncommon, 50), (RelicAuthoring.Rarity.Rare, 50)),
+                    1)),
+            // The Boat of Millions of Years carries you past the next ordinary fight: it is won before it starts.
+            [BoatRide] = RunPrograms.When<NodeEnteredRunEvent>(NormalCombat(),
+            [
+                Literal(Openings.NextCombat(new CombatNodeModel("setCombatResult", "source",
+                    CombatResult: CombatResult.Victory))),
+                Done(BoatRide),
+            ]),
         };
 
         // Every link of every stretch. A chain of N is registered down to 1, so a door that promises two
@@ -112,7 +117,6 @@ public static class ActFourEventPrograms
 
     private static IReadOnlyDictionary<string, int> Stretches => new Dictionary<string, int>
     {
-        [Inscribed1] = 3,
         [Burdened2] = 2,
         [Paperwork3] = 2,
         [PanicAndBurden] = 2,
@@ -121,15 +125,13 @@ public static class ActFourEventPrograms
         [Doubt1] = 2,
         [Panic2] = 1,
         [Paperwork2] = 3,
-        [Burdened1] = 1,
-        [Embalmed1] = 3,
-        [Inscribed2] = 1,
+        [Burdened1] = 3,
+        [Entombed1] = 3,
         [EnergyAndPanic] = 2,
     };
 
     private static IReadOnlyList<CombatNodeModel> Nodes(string key) => key switch
     {
-        Inscribed1 => [Applies(ActFour.InscribedId, 1)],
         Burdened2 => [Applies(ActFour.BurdenedId, 2)],
         Paperwork3 => [Applies("paperwork", 3)],
         PanicAndBurden => [Applies("panic", 1), Applies(ActFour.BurdenedId, 1)],
@@ -139,8 +141,7 @@ public static class ActFourEventPrograms
         Panic2 => [Applies("panic", 2)],
         Paperwork2 => [Applies("paperwork", 2)],
         Burdened1 => [Applies(ActFour.BurdenedId, 1)],
-        Embalmed1 => [Applies(ActFour.EmbalmedId, 1)],
-        Inscribed2 => [Applies(ActFour.InscribedId, 2)],
+        Entombed1 => [Applies(ActFour.EntombedId, 1)],
         // The festival's drum: the turn opens louder and worse. Both halves land at the first turn start,
         // which is the one moment an opening is read — and the "+1 Energy" is a Spare Hand, because the
         // pool an opening gives into has just been refilled to its maximum (see ActFourEventRelicRules).

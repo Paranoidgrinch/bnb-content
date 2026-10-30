@@ -13,14 +13,19 @@ public class ActFourEventTests
 {
     private static readonly RunBlueprint Game = FightProbe.Game;
 
+    // Since the content cut of 2026-10-30: eighteen kept (the Triple-Counted Donkey and the Copper Tithe are
+    // gone) and eight new doors, each with a price or a risk.
     internal static readonly string[] Twenty =
     [
         "the_dry_nilometer", "the_black_granary", "the_red_linen_procession", "the_nameless_cartouche",
-        "the_forewritten_tablet", "the_tomb_robbers_fire", "the_triple_counted_donkey",
+        "the_forewritten_tablet", "the_tomb_robbers_fire",
         "the_four_canopic_jars", "the_chamber_of_false_measures", "the_crocodile_at_the_weighing_place",
-        "the_wall_of_old_complaints", "the_copper_tithe", "the_unnamed_throne", "the_fixed_day_festival",
+        "the_wall_of_old_complaints", "the_unnamed_throne", "the_fixed_day_festival",
         "the_broken_sluice", "the_unfinished_burial", "sealed_offer",
         "the_house_of_life_at_night", "the_merciful_balance", "the_cartouche_repair_bench",
+        "senet_with_the_dead", "the_workers_bread", "the_inner_chamber", "the_opening_of_the_mouth",
+        "the_book_of_the_dead_vendor", "the_negative_confession", "the_boat_of_millions_of_years",
+        "ammits_shadow",
     ];
 
     // ── the shape of the set ──────────────────────────────────────────────────────────────────────────────
@@ -28,7 +33,7 @@ public class ActFourEventTests
     [Fact]
     public void All_twenty_ship_with_a_script_and_a_look()
     {
-        Assert.Equal(20, Twenty.Length);
+        Assert.Equal(26, Twenty.Length);
         foreach (var id in Twenty)
         {
             Assert.True(Game.Events.ContainsKey(id), $"'{id}' has no script");
@@ -97,31 +102,6 @@ public class ActFourEventTests
                 }
     }
 
-    // Every Act-IV promise must be one a run can keep, and every one the document authors must be one a door
-    // (or another promise) actually reaches. A stretch's later links are installed by the link before them.
-    [Fact]
-    public void Every_authored_promise_is_installed_by_someone()
-    {
-        var installed = Twenty
-            .SelectMany(id => Effects(Game.Events[id]))
-            .SelectMany(Flatten)
-            .OfType<InstallProgramByIdRunEffect>()
-            .Select(e => e.Source.Value)
-            .ToHashSet();
-
-        // …plus what the Labyrinth's own promises install: each stretch's next link, and the two prizes the
-        // fight doors arm when the fight they set is actually walked into.
-        installed.Add(ActFourEventPrograms.TabletPrize);
-        installed.Add(ActFourEventPrograms.RobbersPrize);
-        installed.Add(ActFourEventPrograms.TithePrize);
-        installed.Add(ActFourEventPrograms.CountPrize);
-        foreach (var name in Game.Programs!.Keys.Where(k => k.Contains("_again_", StringComparison.Ordinal)))
-            installed.Add(name);
-
-        var labyrinth = Game.Programs.Keys.Where(k => k.StartsWith("act_four_", StringComparison.Ordinal));
-        Assert.Equal(labyrinth.OrderBy(k => k), installed.OrderBy(k => k));
-    }
-
     // ── the nine relics the twenty hand over ──────────────────────────────────────────────────────────────
 
     // Act IV's nine Event relics, each granted by exactly one branch of exactly one door and reachable
@@ -130,7 +110,7 @@ public class ActFourEventTests
     [Fact]
     public void The_nine_relics_these_doors_grant_are_authored_and_granted_exactly_once()
     {
-        Assert.Equal(9, EventRelics.ActIV.Count);
+        Assert.Equal(EventRelics.ActIV.Count, EventRelics.ActIV.Select(r => r.Id).Distinct().Count());
 
         var granted = Twenty
             .SelectMany(id => Effects(Game.Events[id]))

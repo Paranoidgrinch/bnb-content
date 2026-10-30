@@ -151,13 +151,13 @@ public static class EventRelics
 
         Event(ActFourEventRelicRules.KnotId, "Red Linen Knot",
             "The Red Linen Procession — Follow Until the Last Gate.",
-            "Every fight opens with 8 Block and one Embalmed, and the first time the linen holds something "
-            + "in place you are wrapped again for 8.",
+            "Every fight opens with 8 Block, and the first time an affliction is held on you instead of "
+            + "fading you are wrapped again for 8.",
             combatRule: ActFourEventRelicRules.RedLinenKnot),
 
         Event(ActFourEventRelicRules.CartoucheId, "Blank Cartouche",
             "The Nameless Cartouche — Take the Fragment.",
-            "An extra card in your first hand. The first Inscribed you gain each fight finds no name to be "
+            "An extra card in your first hand. The first Burdened you gain each fight finds no name to be "
             + "written under and comes off again.",
             combatRule: ActFourEventRelicRules.BlankCartouche),
 
@@ -182,7 +182,7 @@ public static class EventRelics
         Event(ActFourEventRelicRules.TabletId, "Tablet of the Missing Name",
             "The Unnamed Throne — Restore the Name.",
             "Every fight opens with one Nameless Authority: the first blessing you gain lands one stack "
-            + "larger. If the register holds you afterwards, 1 Inscribed comes off.",
+            + "larger.",
             combatRule: ActFourEventRelicRules.TabletOfTheMissingName),
 
         Event(ActFourEventRelicRules.CoilId, "Funerary Linen Coil",

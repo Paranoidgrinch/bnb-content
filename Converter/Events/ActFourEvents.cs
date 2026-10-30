@@ -10,15 +10,15 @@ namespace BnbContent.Converter.Events;
 //
 // The Licensing Labyrinth's doors are OFFICES, and an office does not bargain: it measures you, files the
 // measurement, and the filing follows you down the corridor. That is why so many of these promise a STRETCH
-// of road rather than a single fight — "the next three combats start Inscribed 1" — and why nearly every one
-// of them is written in the act's own five words. The exceptions are the four doors that offer a fight, and
+// of road rather than a single fight — "the next three combats start Burdened 1" — and why nearly every one
+// of them is written in the act's own three words. The exceptions are the four doors that offer a fight, and
 // what a door can do about a fight is set one on the road ahead (see ActFourEventPrograms).
 //
 // Nine of the twenty hand over an Event relic, and each of the nine is the ONLY place that relic can be got.
 //
 // The design's §4.6 "shop-like event markets" are all in earlier acts (the Licensed Vendor, the Conceptual
 // Toll, the Travelling Chandler); the Labyrinth has none. Its offices do not sell — they assess.
-public static class ActFourEvents
+public static partial class ActFourEvents
 {
     public const int Act = 4;
 
@@ -33,12 +33,10 @@ public static class ActFourEvents
             TheNamelessCartouche(),
             TheForewrittenTablet(pools),
             TheTombRobbersFire(pools),
-            TheTripleCountedDonkey(pools),
             TheFourCanopicJars(),
             TheChamberOfFalseMeasures(),
             TheCrocodileAtTheWeighingPlace(pools),
             TheWallOfOldComplaints(),
-            TheCopperTithe(pools),
             TheUnnamedThrone(),
             TheFixedDayFestival(),
             TheBrokenSluice(),
@@ -48,6 +46,8 @@ public static class ActFourEvents
             TheCartoucheRepairBench(pools),
             // Playtest feedback 2, G2: in place of the Survey of the Dead.
             GambleEvents.SealedOffer(pools),
+            // The content cut of 2026-10-30: eight more doors, each with a price or a risk.
+            .. NewDoors(pools),
         ];
     }
 
@@ -64,7 +64,7 @@ public static class ActFourEvents
         Branch("move_the_marker", "Move the Marker.",
             "Ninety Gold for a level that suits everybody. It is entered in the register, and the register "
             + "follows you for two rooms.",
-            [Gold(90), .. Stretch(ActFourEventPrograms.Inscribed1, 2)]),
+            [Gold(90), .. Stretch(ActFourEventPrograms.Burdened1, 2)]),
         Branch("leave_unmeasured", "Leave Unmeasured.",
             "Nothing is written down at all, which is restful. The next office you meet has to start from "
             + "the beginning, and starts with you.",
@@ -92,7 +92,7 @@ public static class ActFourEvents
             + "enters your name for having done it.",
             [
                 Upgrade(2, "choose two to put in order"),
-                .. Stretch(ActFourEventPrograms.Inscribed1, 1),
+                .. Stretch(ActFourEventPrograms.Burdened1, 1),
             ]));
 
     // ── 3 · All ───────────────────────────────────────────────────────────────────────────────────────────
@@ -107,7 +107,7 @@ public static class ActFourEvents
             [
                 Remove("choose what goes into the wrapping"),
                 Heal(15),
-                Openings.ForFights(Openings.EventFights, Applies(ActFour.EmbalmedId, 2)),
+                Openings.ForFights(Openings.EventFights, Applies(ActFour.EntombedId, 1)),
             ]),
         Branch("cut_the_linen", "Cut the Linen.",
             "It parts, and what is inside is a filing you can improve twice. The corridor closes behind you "
@@ -132,7 +132,7 @@ public static class ActFourEvents
             + "for the next three rooms has a name to enter.",
             [
                 Upgrade(2, "choose two to sign"),
-                .. Stretch(ActFourEventPrograms.Inscribed1, 3),
+                .. Stretch(ActFourEventPrograms.Burdened1, 3),
             ]),
         Branch("scrape_it_deeper", "Scrape It Deeper.",
             "You take the hole down to clean stone. Something of yours goes with it and so does seven of you.",
@@ -185,7 +185,7 @@ public static class ActFourEvents
             + "where you got it.",
             [
                 NormalRelic(pools, "the_tomb_robbers_fire", RelicAuthoring.Rarity.Uncommon),
-                Openings.ForFights(Openings.EventFights, Applies(ActThree.TrespassId, 1)),
+                Openings.ForFights(Openings.EventFights, Applies(ActFour.EntombedId, 1)),
             ],
             costs: [Price(70)]),
         Branch("join_the_opening", "Join the Opening.",
@@ -197,32 +197,6 @@ public static class ActFourEvents
             "A hundred Gold off the cloth while they are arguing. They come looking, and they are still "
             + "looking two rooms later.",
             [Gold(100), .. Stretch(ActFourEventPrograms.PanicAndBurden, 2)]));
-
-    // ── 7 · Early–Mid ─────────────────────────────────────────────────────────────────────────────────────
-
-    private static BnbEvent TheTripleCountedDonkey(ConversionPools pools) => Event(
-        "the_triple_counted_donkey", "The Triple-Counted Donkey", Band.EarlyMid,
-        "One donkey, three tokens, three offices — each of which counted it, and each of which is correct. "
-        + "The donkey is standing in the corridor waiting to be resolved.",
-        Branch("honor_the_first_tally", "Honor the First Tally.",
-            "The oldest count wins, which is the tidiest answer and pays seventy-five Gold. You carry the "
-            + "other two tokens out with you.",
-            [Gold(75), Openings.ForFights(Openings.EventFights, Applies(ActFour.BurdenedId, 1))]),
-        Branch("break_all_three", "Break All Three Tokens.",
-            "There is no donkey now, officially. It costs you a little blood and one of your own procedures, "
-            + "and you come out of it more solid than you went in.",
-            [
-                Remove("choose what is broken with them"),
-                new ApplyRunDamageRunEffect(5),
-                new ChangeMaxHealthRunEffect(5),
-            ]),
-        Branch("follow_the_donkey", "Follow the Donkey.",
-            "It knows a way through, though not a kind one: eight of you stay on the thorns. Where it stops "
-            + "there is something somebody left behind.",
-            [
-                NormalRelic(pools, "the_triple_counted_donkey", RelicAuthoring.Rarity.Common),
-                new ApplyRunDamageRunEffect(8),
-            ]));
 
     // ── 8 · Mid–Late ──────────────────────────────────────────────────────────────────────────────────────
 
@@ -245,7 +219,7 @@ public static class ActFourEvents
             + "office finds you very thoroughly on the register.",
             [
                 Upgrade(3, "choose three to enter under the name"),
-                Openings.ForFights(Openings.EventFights, Applies(ActFour.InscribedId, 2)),
+                Openings.ForFights(Openings.EventFights, Applies(ActFour.BurdenedId, 1)),
             ]));
 
     // ── 9 · Mid ───────────────────────────────────────────────────────────────────────────────────────────
@@ -288,7 +262,7 @@ public static class ActFourEvents
         Branch("take_the_offerings", "Take the Offerings.",
             "A hundred and twenty Gold that was meant for somebody who is not coming. It is noted. It is "
             + "noted for three rooms.",
-            [Gold(120), .. Stretch(ActFourEventPrograms.Inscribed1, 3)]));
+            [Gold(120), .. Stretch(ActFourEventPrograms.Burdened1, 3)]));
 
     // ── 11 · All ──────────────────────────────────────────────────────────────────────────────────────────
 
@@ -307,32 +281,6 @@ public static class ActFourEvents
             "All of them, in order, which takes as long as it takes. What you carry away is the chisel "
             + "somebody left in the wall, and two rooms' worth of doubt about everything.",
             [.. Grant(ActFourEventRelicRules.ChiselId), .. Stretch(ActFourEventPrograms.Doubt1, 2)]));
-
-    // ── 12 · All ──────────────────────────────────────────────────────────────────────────────────────────
-
-    private static BnbEvent TheCopperTithe(ConversionPools pools) => Event(
-        "the_copper_tithe", "The Copper Tithe", Band.All,
-        "A table across the corridor, a copper bowl on the table, and a bearer beside the bowl who has been "
-        + "told what the tithe is and has no authority to hear anything else.",
-        Branch("pay_the_tithe", "Pay the Tithe.",
-            "A part of what you carry into the bowl, and the receipt is worth having: two of your procedures "
-            + "come back stamped.",
-            [LosePercentGold(15), Upgrade(2, "choose two the receipt covers")]),
-        Branch("give_more_than_required", "Give More Than Required.",
-            "More than a third, which nobody asks twice about. What comes back out of the bowl was not put "
-            + "there by you.",
-            [
-                LosePercentGold(35),
-                new OfferRewardRunEffect(
-                    new RewardId("event:copper_tithe:relic"),
-                    pools.NormalRelicOfRarity("the Copper Tithe's overpayment",
-                        (RelicAuthoring.Rarity.Uncommon, 50), (RelicAuthoring.Rarity.Rare, 50)),
-                    1),
-            ]),
-        Branch("give_nothing", "Give Nothing.",
-            "You keep what you carry, which is the whole of the point. The bearer writes nothing down and "
-            + "sends word ahead, and the word is waiting on the next ordinary road.",
-            [Install(ActFourEventPrograms.TitheRefused)]));
 
     // ── 13 · Late · Rare ──────────────────────────────────────────────────────────────────────────────────
 
@@ -414,12 +362,12 @@ public static class ActFourEvents
             + "wrapping notices: the next three fights begin preserved and half buried.",
             [
                 NormalRelic(pools, "the_unfinished_burial", RelicAuthoring.Rarity.Uncommon),
-                Openings.ForFights(Openings.EventFights, Applies(ActFour.EmbalmedId, 3), Applies(ActFour.EntombedId, 1)),
+                Openings.ForFights(Openings.EventFights, Applies(ActFour.EntombedId, 2)),
             ]),
         Branch("unwrap_the_name", "Unwrap the Name.",
             "You go back to the collar for the name, and two of your own procedures come away as something "
             + "else entirely. Two rooms of the register have you now.",
-            [Transform(2, pools, "choose two to unwrap"), .. Stretch(ActFourEventPrograms.Inscribed1, 2)]));
+            [Transform(2, pools, "choose two to unwrap"), .. Stretch(ActFourEventPrograms.Burdened1, 2)]));
 
     // ── 18 · Late · Rare ──────────────────────────────────────────────────────────────────────────────────
 
@@ -444,7 +392,7 @@ public static class ActFourEvents
             [
                 Transform(2, pools, "choose two lines to replace"),
                 Upgrade(2, "choose two to write out in the better hand"),
-                .. Stretch(ActFourEventPrograms.Inscribed2, 1),
+                .. Stretch(ActFourEventPrograms.Burdened1, 1),
             ]));
 
     // ── 19 · All ──────────────────────────────────────────────────────────────────────────────────────────
@@ -486,7 +434,7 @@ public static class ActFourEvents
         Branch("leave_no_name", "Leave No Name.",
             "You take a name out and put nothing in, which is the one thing the bench is not for. The "
             + "register spends the next room looking for what should have been there.",
-            [Remove("choose the name to leave out"), .. Stretch(ActFourEventPrograms.Inscribed2, 1)]));
+            [Remove("choose the name to leave out"), .. Stretch(ActFourEventPrograms.Burdened1, 1)]));
 
     // ── the shared shapes ─────────────────────────────────────────────────────────────────────────────────
 

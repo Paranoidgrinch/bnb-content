@@ -63,47 +63,7 @@ public class ActFourEventRelicTests
 
     // ── Red Linen Knot ────────────────────────────────────────────────────────────────────────────────────
 
-    [Fact]
-    public void The_knot_opens_the_fight_wrapped_and_wraps_again_when_the_linen_holds()
-    {
-        var (play, session, _) = WithRelic(
-            ActFourEventRelicRules.KnotId, heroStatuses: [("panic", 1)]);
-
-        Assert.Equal(ActFourEventRelicRules.KnotBlock, Block(Hero(play)));
-        Assert.Equal(1, FightProbe.StacksOf(Hero(play), ActFour.EmbalmedId));
-
-        // Panic fades at the bearer's turn end — and does not, because the linen is holding it.
-        play.CombatDriver!.EndTurn();
-        Assert.Null(session.Error);
-
-        Assert.Equal(1, FightProbe.StacksOf(Hero(play), "panic"));
-        Assert.Equal(0, FightProbe.StacksOf(Hero(play), ActFour.EmbalmedId));
-        Assert.Equal(ActFourEventRelicRules.KnotBlock, Block(Hero(play)));
-        play.Dispose();
-    }
-
     // ── Blank Cartouche ───────────────────────────────────────────────────────────────────────────────────
-
-    [Fact]
-    public void The_blank_cartouche_deals_one_more_and_holds_no_name()
-    {
-        var (play, session, _) = WithRelic(
-            ActFourEventRelicRules.CartoucheId, enemy: Scribe, intent: NameOffice);
-
-        var opening = play.CombatDriver!.Current!.Hand.Count;
-
-        play.CombatDriver.EndTurn();            // the office writes: 11 damage and an Inscribed
-        Assert.Null(session.Error);
-        Assert.Equal(0, FightProbe.StacksOf(Hero(play), ActFour.InscribedId));
-        play.Dispose();
-
-        var (bare, bareSession, _) = WithRelic(null, enemy: Scribe, intent: NameOffice);
-        Assert.Equal(opening - 1, bare.CombatDriver!.Current!.Hand.Count);
-        bare.CombatDriver.EndTurn();
-        Assert.Null(bareSession.Error);
-        Assert.Equal(1, FightProbe.StacksOf(Hero(bare), ActFour.InscribedId));
-        bare.Dispose();
-    }
 
     // ── Jar of Borrowed Breath ────────────────────────────────────────────────────────────────────────────
 
@@ -206,23 +166,6 @@ public class ActFourEventRelicTests
 
         Play(play, session, Wax, target);
         Assert.Equal(WaxStacks + 1 + WaxStacks, FightProbe.StacksOf(Hero(play), Keywords.WardWax));
-        play.Dispose();
-    }
-
-    // "If you have Inscribed afterward, remove 1 Inscribed." The throne will not have you registered twice,
-    // and the invariant holds whichever of the two registers spends itself on the blessing: exactly ONE
-    // enlargement reaches it, and the register is clear afterwards.
-    [Fact]
-    public void A_name_restored_is_not_entered_in_the_register_as_well()
-    {
-        var (play, session, target) = WithRelic(
-            ActFourEventRelicRules.TabletId, deck: [.. Enumerable.Repeat(Wax, 12)],
-            heroStatuses: [(ActFour.InscribedId, 1)]);
-
-        Play(play, session, Wax, target);
-
-        Assert.Equal(WaxStacks + 1, FightProbe.StacksOf(Hero(play), Keywords.WardWax));
-        Assert.Equal(0, FightProbe.StacksOf(Hero(play), ActFour.InscribedId));
         play.Dispose();
     }
 

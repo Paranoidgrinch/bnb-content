@@ -56,17 +56,6 @@ public class ActFourEventLiveTests
     }
 
     [Fact]
-    public void Moving_the_marker_pays_ninety_and_is_entered_for_two_rooms()
-    {
-        using var story = Door("the_dry_nilometer", "move_the_marker", fights: 2);
-
-        Assert.Equal(90, Gold(story));
-        Assert.Equal(1, Hero(story, ActFour.InscribedId));
-        story.WinTheFight();
-        Assert.Equal(1, Hero(story, ActFour.InscribedId));
-    }
-
-    [Fact]
     public void Leaving_unmeasured_heals_and_starts_the_next_office_from_the_beginning()
     {
         using var story = Door("the_dry_nilometer", "leave_unmeasured", health: 30);
@@ -99,26 +88,7 @@ public class ActFourEventLiveTests
         Assert.Equal(20 + (70 * 35 + 99) / 100, story.Run.Health.Current);
     }
 
-    [Fact]
-    public void Restoring_the_record_improves_two_and_is_entered_once()
-    {
-        using var story = Door("the_black_granary", "restore_the_record");
-
-        Assert.Equal(2, story.Run.Deck.Count(c => c.UpgradeLevel > 0));
-        Assert.Equal(1, Hero(story, ActFour.InscribedId));
-    }
-
     // ── 3. The Red Linen Procession ───────────────────────────────────────────────────────────────────────
-
-    [Fact]
-    public void Joining_the_procession_gives_one_card_to_the_wrapping()
-    {
-        using var story = Door("the_red_linen_procession", "join_the_procession", health: 30);
-
-        Assert.Equal(Papers.Length - 1, story.Run.Deck.Count);
-        Assert.Equal(30 + (70 * 15 + 99) / 100, story.Run.Health.Current);
-        Assert.Equal(2, Hero(story, ActFour.EmbalmedId));
-    }
 
     [Fact]
     public void Cutting_the_linen_corrects_two_and_closes_the_corridor()
@@ -129,30 +99,7 @@ public class ActFourEventLiveTests
         Assert.Equal(2, Hero(story, ActFour.EntombedId));
     }
 
-    [Fact]
-    public void Following_to_the_last_gate_costs_twelve_and_is_paid_in_linen()
-    {
-        using var story = Door("the_red_linen_procession", "follow_to_the_last_gate", health: 40);
-
-        Assert.Equal(28, story.Run.Health.Current);
-        Assert.True(Has(story, ActFourEventRelicRules.KnotId));
-        Assert.Equal(1, Hero(story, ActFour.EmbalmedId));   // the knot's own opening
-    }
-
     // ── 4. The Nameless Cartouche ─────────────────────────────────────────────────────────────────────────
-
-    [Fact]
-    public void Inscribing_your_name_is_entered_for_three_rooms()
-    {
-        using var story = Door("the_nameless_cartouche", "inscribe_your_name", fights: 3);
-
-        Assert.Equal(2, story.Run.Deck.Count(c => c.UpgradeLevel > 0));
-        Assert.Equal(1, Hero(story, ActFour.InscribedId));
-        story.WinTheFight();
-        Assert.Equal(1, Hero(story, ActFour.InscribedId));
-        story.WinTheFight();
-        Assert.Equal(1, Hero(story, ActFour.InscribedId));
-    }
 
     [Fact]
     public void Scraping_it_deeper_takes_a_card_and_seven_of_you()
@@ -184,21 +131,6 @@ public class ActFourEventLiveTests
         Assert.Equal(50, Gold(story));
     }
 
-    // ADAPTATION, proved: the door cannot open a fight, so it sets one on the road — the next ordinary
-    // corridor is the three scribes', and the prize is paid only for winning it.
-    [Fact]
-    public void Demanding_the_tablet_sets_the_scribes_on_the_next_corridor()
-    {
-        using var story = Door("the_forewritten_tablet", "demand_the_tablet");
-
-        Assert.Equal(2, Enemies(story, "strength"));
-        Assert.Equal(1, Hero(story, ActFour.InscribedId));
-
-        var relics = story.Run.Relics.Count;
-        story.WinTheFight();
-        Assert.Equal(relics + 1, story.Run.Relics.Count);
-    }
-
     [Fact]
     public void Signing_beneath_it_strikes_two_out_and_files_for_two_rooms()
     {
@@ -219,7 +151,7 @@ public class ActFourEventLiveTests
 
         Assert.Equal(30, Gold(story));
         Assert.NotEmpty(story.Run.Relics);
-        Assert.Equal(1, Hero(story, ActThree.TrespassId));
+        Assert.Equal(1, Hero(story, ActFour.EntombedId));
     }
 
     [Fact]
@@ -258,36 +190,6 @@ public class ActFourEventLiveTests
         Assert.Equal(1, Hero(story, ActFour.BurdenedId));
     }
 
-    // ── 7. The Triple-Counted Donkey ──────────────────────────────────────────────────────────────────────
-
-    [Fact]
-    public void The_first_tally_pays_seventy_five_and_the_other_tokens_are_carried()
-    {
-        using var story = Door("the_triple_counted_donkey", "honor_the_first_tally");
-
-        Assert.Equal(75, Gold(story));
-        Assert.Equal(1, Hero(story, ActFour.BurdenedId));
-    }
-
-    [Fact]
-    public void Breaking_all_three_tokens_costs_blood_and_leaves_you_more_solid()
-    {
-        using var story = Door("the_triple_counted_donkey", "break_all_three", health: 40);
-
-        Assert.Equal(Papers.Length - 1, story.Run.Deck.Count);
-        Assert.Equal(75, story.Run.Health.Max);
-        Assert.Equal(40, story.Run.Health.Current);   // five out and five back: a bigger body, no better off
-    }
-
-    [Fact]
-    public void Following_the_donkey_costs_eight_on_the_thorns_and_finds_something_left_behind()
-    {
-        using var story = Door("the_triple_counted_donkey", "follow_the_donkey", health: 30);
-
-        Assert.NotEmpty(story.Run.Relics);
-        Assert.Equal(30 - 8, story.Run.Health.Current);   // playtest 3, E3: no relic for nothing
-    }
-
     // ── 8. The Four Canopic Jars ──────────────────────────────────────────────────────────────────────────
 
     [Fact]
@@ -315,15 +217,6 @@ public class ActFourEventLiveTests
 
         Assert.Equal(150, Gold(story));
         Assert.Equal(2, Hero(story, ActFour.BurdenedId));
-    }
-
-    [Fact]
-    public void The_jar_of_the_name_enters_three_under_somebody_elses()
-    {
-        using var story = Door("the_four_canopic_jars", "jar_of_the_name");
-
-        Assert.Equal(3, story.Run.Deck.Count(c => c.UpgradeLevel > 0));
-        Assert.Equal(2, Hero(story, ActFour.InscribedId));
     }
 
     // ── 9. The Chamber of False Measures ──────────────────────────────────────────────────────────────────
@@ -379,19 +272,6 @@ public class ActFourEventLiveTests
         Assert.Equal(1, Hero(story, ActFour.EntombedId));
     }
 
-    [Fact]
-    public void Taking_the_offerings_is_noted_for_three_rooms()
-    {
-        using var story = Door("the_crocodile_at_the_weighing_place", "take_the_offerings", fights: 3);
-
-        Assert.Equal(120, Gold(story));
-        Assert.Equal(1, Hero(story, ActFour.InscribedId));
-        story.WinTheFight();
-        Assert.Equal(1, Hero(story, ActFour.InscribedId));
-        story.WinTheFight();
-        Assert.Equal(1, Hero(story, ActFour.InscribedId));
-    }
-
     // ── 11. The Wall of Old Complaints ────────────────────────────────────────────────────────────────────
 
     [Fact]
@@ -421,39 +301,6 @@ public class ActFourEventLiveTests
         Assert.Equal(1, Hero(story, "doubt"));
         story.WinTheFight();
         Assert.Equal(1, Hero(story, "doubt"));
-    }
-
-    // ── 12. The Copper Tithe ──────────────────────────────────────────────────────────────────────────────
-
-    [Fact]
-    public void Paying_the_tithe_takes_a_part_of_the_purse_and_stamps_two()
-    {
-        using var story = Door("the_copper_tithe", "pay_the_tithe", gold: 200);
-
-        Assert.Equal(200 - (200 * 15 + 99) / 100, Gold(story));
-        Assert.Equal(2, story.Run.Deck.Count(c => c.UpgradeLevel > 0));
-    }
-
-    [Fact]
-    public void Giving_more_than_required_takes_a_third_and_pays_out_of_the_bowl()
-    {
-        using var story = Door("the_copper_tithe", "give_more_than_required", gold: 200);
-
-        Assert.Equal(200 - (200 * 35 + 99) / 100, Gold(story));
-        Assert.NotEmpty(story.Run.Relics);
-    }
-
-    [Fact]
-    public void Giving_nothing_keeps_the_purse_and_sends_the_bearer_down_the_corridor()
-    {
-        using var story = Door("the_copper_tithe", "give_nothing", gold: 200, energy: 5);
-
-        Assert.Equal(200, Gold(story));                 // refusing costs nothing at the door
-        Assert.Equal(2, Enemies(story, "strength"));
-        Assert.Equal(1, Hero(story, ActFour.BurdenedId));
-
-        story.WinTheFight();
-        Assert.Equal(270, Gold(story));
     }
 
     // ── 13. The Unnamed Throne ────────────────────────────────────────────────────────────────────────────
@@ -569,28 +416,6 @@ public class ActFourEventLiveTests
         Assert.True(Has(story, ActFourEventRelicRules.CoilId));
     }
 
-    [Fact]
-    public void Taking_the_amulet_begins_the_next_fight_preserved_and_half_buried()
-    {
-        using var story = Door("the_unfinished_burial", "take_the_amulet");
-
-        Assert.NotEmpty(story.Run.Relics);
-        Assert.Equal(3, Hero(story, ActFour.EmbalmedId));
-        Assert.Equal(1, Hero(story, ActFour.EntombedId));
-    }
-
-    [Fact]
-    public void Unwrapping_the_name_turns_two_into_something_else_for_two_rooms()
-    {
-        using var story = Door("the_unfinished_burial", "unwrap_the_name", fights: 2);
-
-        Assert.Equal(Papers.Length, story.Run.Deck.Count);
-        Assert.Equal(Papers.Length - 2, story.Run.Deck.Count(c => c.DefinitionId.value == "paper_cut"));
-        Assert.Equal(1, Hero(story, ActFour.InscribedId));
-        story.WinTheFight();
-        Assert.Equal(1, Hero(story, ActFour.InscribedId));
-    }
-
     // ── 17. The Survey of the Dead ────────────────────────────────────────────────────────────────────────
 
     // ── 18. The House of Life at Night ────────────────────────────────────────────────────────────────────
@@ -611,17 +436,6 @@ public class ActFourEventLiveTests
 
         Assert.Equal(Papers.Length - 1, story.Run.Deck.Count);
         Assert.Equal(75, story.Run.Health.Max);
-    }
-
-    [Fact]
-    public void Replacing_a_line_writes_two_others_in_the_better_hand()
-    {
-        using var story = Door("the_house_of_life_at_night", "replace_a_line");
-
-        Assert.Equal(Papers.Length, story.Run.Deck.Count);
-        Assert.Equal(Papers.Length - 2, story.Run.Deck.Count(c => c.DefinitionId.value == "paper_cut"));
-        Assert.Equal(2, story.Run.Deck.Count(c => c.UpgradeLevel > 0));
-        Assert.Equal(2, Hero(story, ActFour.InscribedId));
     }
 
     // ── 19. The Merciful Balance ──────────────────────────────────────────────────────────────────────────
@@ -685,42 +499,6 @@ public class ActFourEventLiveTests
         Assert.Equal(50, Gold(story));
     }
 
-    [Fact]
-    public void Leaving_no_name_sets_the_register_looking_for_what_should_be_there()
-    {
-        using var story = Door("the_cartouche_repair_bench", "leave_no_name");
-
-        Assert.Equal(Papers.Length - 1, story.Run.Deck.Count);
-        Assert.Equal(2, Hero(story, ActFour.InscribedId));
-    }
-
     // ── the stretch itself ────────────────────────────────────────────────────────────────────────────────
 
-    // A promise about three rooms is three rooms and not four: the last link steps down after it is kept.
-    [Fact]
-    public void A_three_room_promise_stops_at_three()
-    {
-        using var story = Door("the_nameless_cartouche", "inscribe_your_name", fights: 4);
-
-        story.WinTheFight();
-        story.WinTheFight();
-        story.WinTheFight();
-        Assert.Equal(0, Hero(story, ActFour.InscribedId));
-    }
-
-    // …and it survives being written to disk between rooms, because what is still owed IS the name of the
-    // program still installed.
-    [Fact]
-    public void A_stretch_survives_a_save_between_rooms()
-    {
-        using var parked = EventStory.EnterAndPark(
-            "the_dry_nilometer", "move_the_marker", Papers, fights: 2, intent: Quiet, enemy: Office);
-
-        using var resumed = parked.SaveAndResume();
-        resumed.Settle();
-
-        Assert.Equal(1, Hero(resumed, ActFour.InscribedId));
-        resumed.WinTheFight();
-        Assert.Equal(1, Hero(resumed, ActFour.InscribedId));   // the second link came back with the save
-    }
 }

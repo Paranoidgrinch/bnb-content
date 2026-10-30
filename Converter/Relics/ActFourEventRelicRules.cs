@@ -126,8 +126,8 @@ public static class ActFourEventRelicRules
     // which is also the only place Block may be given, since Block expires at the start of its owner's turn.
     public static StatusData RedLinenKnot => Rule(
         KnotId, "Red Linen Knot",
-        "The fight opens with 8 Block and one Embalmed. The first time the linen holds something in place "
-        + "that would have faded, you are wrapped again: 8 Block.",
+        "The fight opens with 8 Block. The first time an affliction is held on you instead of fading, you "
+        + "are wrapped again: 8 Block.",
         [
             Trigger(new EffectProgram<CardsDrawnTriggeredEffectContext>(
                 new CausalSequenceEffectNode<CardsDrawnTriggeredEffectContext>(
@@ -138,9 +138,6 @@ public static class ActFourEventRelicRules
                         [
                             new GainBlockNode<CardsDrawnTriggeredEffectContext>(
                                 You, new ConstantExpression<CardsDrawnTriggeredEffectContext>(KnotBlock)),
-                            new ApplyStatusNode<CardsDrawnTriggeredEffectContext>(
-                                You, new StatusDefinitionId(ActFour.EmbalmedId),
-                                new ConstantExpression<CardsDrawnTriggeredEffectContext>(1)),
                         ])),
                     new ConditionalEffectNode<CardsDrawnTriggeredEffectContext>(
                         new AndExpression<CardsDrawnTriggeredEffectContext>(
@@ -162,7 +159,8 @@ public static class ActFourEventRelicRules
 
     // ── Blank Cartouche ───────────────────────────────────────────────────────────────────────────────────
 
-    // "Draw +1 on turn 1. First time each combat you gain Inscribed, remove 1 Inscribed."
+    // "Draw +1 on turn 1. First time each combat you gain Burdened, remove 1 Burdened." (Inscribed until the
+    // content cut of 2026-10-30.)
     //
     // A cartouche with no name in it: the first thing entered on your behalf slides straight back off. Both
     // halves are the same object — an extra card for a register that will not hold the first entry.
@@ -171,7 +169,7 @@ public static class ActFourEventRelicRules
     // combatant wearing the cartouche, addressed by the rule it carries.
     public static StatusData BlankCartouche => Rule(
         CartoucheId, "Blank Cartouche",
-        "An extra card in your first hand. The first Inscribed you gain each fight finds no name to be "
+        "An extra card in your first hand. The first Burdened you gain each fight finds no name to be "
         + "written under and comes straight off again.",
         [
             Trigger(new EffectProgram<CardsDrawnTriggeredEffectContext>(
@@ -190,7 +188,7 @@ public static class ActFourEventRelicRules
         return new EffectProgram<TContext>(
             new ConditionalEffectNode<TContext>(
                 new AndExpression<TContext>(
-                    new TriggerEventStatusIsExpression<TContext>(new StatusDefinitionId(ActFour.InscribedId)),
+                    new TriggerEventStatusIsExpression<TContext>(new StatusDefinitionId(ActFour.BurdenedId)),
                     new ComparisonExpression<TContext>(
                         new CombatantCounterExpression<TContext>(wearer, CartoucheUsed),
                         ComparisonOperator.Equal, new ConstantExpression<TContext>(0))),
@@ -199,7 +197,7 @@ public static class ActFourEventRelicRules
                     new SetCombatantCounterNode<TContext>(
                         wearer, CartoucheUsed, new ConstantExpression<TContext>(1), relative: false),
                     new ModifyStatusStacksNode<TContext>(
-                        wearer, new StatusDefinitionId(ActFour.InscribedId),
+                        wearer, new StatusDefinitionId(ActFour.BurdenedId),
                         new ConstantExpression<TContext>(-1)),
                 ])));
     }
@@ -413,9 +411,7 @@ public static class ActFourEventRelicRules
     // is the relic's own trigger, listening for its authority to be the amplifier that fired.
     public static StatusData TabletOfTheMissingName => Rule(
         TabletId, "Tablet of the Missing Name",
-        "Every fight opens with one Nameless Authority: the first blessing you gain lands one stack larger. "
-        + "A name restored will not be entered twice — if the register holds you afterwards, 1 Inscribed "
-        + "comes off.",
+        "Every fight opens with one Nameless Authority: the first blessing you gain lands one stack larger.",
         [
             Trigger(new EffectProgram<CardsDrawnTriggeredEffectContext>(
                 new ConditionalEffectNode<CardsDrawnTriggeredEffectContext>(
@@ -424,23 +420,8 @@ public static class ActFourEventRelicRules
                         You, new StatusDefinitionId(AuthorityId),
                         new ConstantExpression<CardsDrawnTriggeredEffectContext>(1)))),
                 nameof(TriggerEvent.CardsDrawn)),
-            Trigger(NotEnteredTwice<StatusApplicationAmplifiedTriggeredEffectContext>(),
-                nameof(TriggerEvent.StatusApplicationAmplified)),
         ]);
 
-    private static EffectProgram<TContext> NotEnteredTwice<TContext>() where TContext : class
-    {
-        var wearer = ActFour.Bearer(TabletId);
-        return new EffectProgram<TContext>(
-            new ConditionalEffectNode<TContext>(
-                new AndExpression<TContext>(
-                    new TriggerEventAmplifierIsExpression<TContext>(new StatusDefinitionId(AuthorityId)),
-                    new TargetHasStatusExpression<TContext>(
-                        wearer, new StatusDefinitionId(ActFour.InscribedId))),
-                new ModifyStatusStacksNode<TContext>(
-                    wearer, new StatusDefinitionId(ActFour.InscribedId),
-                    new ConstantExpression<TContext>(-1))));
-    }
 
     // The throne's authority: a name where there was none, spent on the first thing entered under it.
     // Neutral, like the register it answers, so that being about to be amplified is not itself a blessing
