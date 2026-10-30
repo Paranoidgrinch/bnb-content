@@ -86,7 +86,7 @@ public static class RuleTexts
             ["concordance_broken"] = (null, "Only one volume left: the link between them no longer applies."),
             ["the_volume_of_consequences"] = (null,
                 "Hits 6 harder if you played the cited card, 6 softer if you did not."),
-            ["the_drawer"] = (null, "Each turn it demands a card. Play it: fed, the drawer opens for double damage. Keep it: 1 Overdue."),
+            ["the_drawer"] = (null, "Each turn it demands a card. Play it: fed, the drawer opens for double damage (it holds 3). Keep it: 1 Overdue."),
             ["drawer_open"] = (null, "It holds a fed card: double damage until the end of your next turn. Shut, it gains 10 Block."),
             ["drawer_delinquency"] = (null, "At 2 Overdue owed to the Drawer, it collects: 1 Paperwork."),
             ["the_obituary"] = (null,

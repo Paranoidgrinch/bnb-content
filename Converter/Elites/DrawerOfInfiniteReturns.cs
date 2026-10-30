@@ -28,6 +28,9 @@ public static class DrawerOfInfiniteReturns
 
     public const int OpenRounds = 2;      // the turn you feed it, and your next one
     public const int ShutBlock = 10;
+    public const int DrawerHolds = 3;
+
+    private static CounterId HeldCounter => new("drawer_holds");
 
     private static ICombatantTargetSelector Drawer { get; } =
         CombatantTargetSelectors.FirstTarget(
@@ -74,7 +77,7 @@ public static class DrawerOfInfiniteReturns
             Id = TheDrawerId,
             NameKey = "The Drawer",
             DescriptionKey = "From your second turn it demands a card each turn. Play it and it is fed: the drawer opens and "
-                + "takes double damage. Keep it: 1 Overdue. It gives everything back when it dies.",
+                + "takes double damage. Keep it: 1 Overdue. It holds three; a fourth pushes the oldest back out. It gives everything back when it dies.",
             Polarity = StatusPolarity.Neutral,
             StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
             UsesStacks = false,
@@ -129,6 +132,31 @@ public static class DrawerOfInfiniteReturns
                     new MarkCardInstanceNode<CardPlayedTriggeredEffectContext>(player, card, new TagId(DemandedMark), remove: true),
                     new MarkCardInstanceNode<CardPlayedTriggeredEffectContext>(player, card, new TagId(FedMark)),
                     new MoveCardToZoneNode<CardPlayedTriggeredEffectContext>(player, card, CardZone.ExhaustPile),
+                    // The drawer holds three. A fourth pushes the oldest back out, into your discard pile —
+                    // otherwise a long fight could swallow the whole deck and leave nothing to fight with.
+                    new SetCombatantCounterNode<CardPlayedTriggeredEffectContext>(
+                        player, HeldCounter, Const<CardPlayedTriggeredEffectContext>(1), relative: true),
+                    new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
+                        new ComparisonExpression<CardPlayedTriggeredEffectContext>(
+                            new CombatantCounterExpression<CardPlayedTriggeredEffectContext>(player, HeldCounter),
+                            ComparisonOperator.Greater, Const<CardPlayedTriggeredEffectContext>(DrawerHolds)),
+                        new CausalSequenceEffectNode<CardPlayedTriggeredEffectContext>(
+                        [
+                            new ForEachCardInZoneNode<CardPlayedTriggeredEffectContext>(
+                                player, CardZone.ExhaustPile,
+                                new CausalSequenceEffectNode<CardPlayedTriggeredEffectContext>(
+                                [
+                                    new MarkCardInstanceNode<CardPlayedTriggeredEffectContext>(
+                                        player, new IteratedCardExpression<CardPlayedTriggeredEffectContext>(),
+                                        new TagId(FedMark), remove: true),
+                                    new MoveCardToZoneNode<CardPlayedTriggeredEffectContext>(
+                                        player, new IteratedCardExpression<CardPlayedTriggeredEffectContext>(),
+                                        CardZone.DiscardPile),
+                                ]),
+                                markFilter: new TagId(FedMark), takeFirst: 1),
+                            new SetCombatantCounterNode<CardPlayedTriggeredEffectContext>(
+                                player, HeldCounter, Const<CardPlayedTriggeredEffectContext>(-1), relative: true),
+                        ])),
                     new RemoveStatusNode<CardPlayedTriggeredEffectContext>(Drawer, new StatusDefinitionId(DrawerOpenId)),
                     new ApplyStatusNode<CardPlayedTriggeredEffectContext>(
                         Drawer, new StatusDefinitionId(DrawerOpenId), Const<CardPlayedTriggeredEffectContext>(OpenRounds)),
