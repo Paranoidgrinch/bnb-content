@@ -356,25 +356,25 @@ internal sealed record ActRules
     {
         PerPathMinimums = new Dictionary<MapNodeKind, int>
         {
-            [MapNodeKind.Combat] = 8,
-            [MapNodeKind.MultiCombat] = 2,
-            [MapNodeKind.Elite] = 3,
-            [MapNodeKind.Event] = 3,
-            [MapNodeKind.Rest] = 2,
+            [MapNodeKind.Combat] = 6,
+            [MapNodeKind.MultiCombat] = 1,
+            [MapNodeKind.Elite] = 1,
+            [MapNodeKind.Event] = 1,
+            [MapNodeKind.Rest] = 1,
             [MapNodeKind.Treasure] = 1,
-            [MapNodeKind.Shop] = 2,
+            [MapNodeKind.Shop] = 1,
         },
         // Out here the soft rooms are what is scarce: a route may find one spare rest and one spare shop and
         // no spare treasure at all, because there is nothing on this road that keeps anything. What it may
         // pile up instead is trouble — a fourth elite and a fourth crowded fight are both allowed.
         PerPathMaximums = new Dictionary<MapNodeKind, int>
         {
-            [MapNodeKind.Rest] = 3,
+            [MapNodeKind.Rest] = 2,
             [MapNodeKind.Treasure] = 2,
-            [MapNodeKind.Shop] = 3,
-            [MapNodeKind.Event] = 6,
-            [MapNodeKind.Elite] = 4,
-            [MapNodeKind.MultiCombat] = 4,
+            [MapNodeKind.Shop] = 2,
+            [MapNodeKind.Event] = 3,
+            [MapNodeKind.Elite] = 2,
+            [MapNodeKind.MultiCombat] = 2,
         },
         // Three ways across the same country: the old road that everything with a right to it is standing on,
         // the hedgeways where the doors are, and the long way round through the water meadows.
@@ -423,22 +423,24 @@ internal sealed record ActRules
         },
         // Twenty-five rooms of open country, and the road's own bargain: more elites than the archives and
         // less of everything that keeps you. v0.0.0's thinnest route measured 185.
-        Rows = 25,
+        // SEVENTEEN ROOMS since the content cut (2026-10-29), down from twenty-five: four stages of four rows.
+        Rows = 17,
         RoomBudgets = Budgets(
-            (MapNodeKind.Elite, 5, 7, 10),
-            (MapNodeKind.MultiCombat, 3, 5, 8),
-            (MapNodeKind.Event, 9, 12, 16),
-            (MapNodeKind.Rest, 4, 6, 9),
-            (MapNodeKind.Treasure, 3, 5, 8),
-            (MapNodeKind.Shop, 4, 5, 8)),
+            (MapNodeKind.Elite, 3, 5, 7),
+            (MapNodeKind.MultiCombat, 2, 3, 5),
+            (MapNodeKind.Event, 6, 8, 11),
+            (MapNodeKind.Rest, 3, 4, 6),
+            (MapNodeKind.Treasure, 2, 3, 5),
+            (MapNodeKind.Shop, 2, 3, 5)),
         // The road's elites stand from a fifth of the way in, so its opening quarter is the one quarter in the
         // game that budgets an elite of its own — one, and only one.
         DepthBands = Quarters(
-            [(MapNodeKind.Rest, 1, 2), (MapNodeKind.MultiCombat, 0, 2), (MapNodeKind.Elite, 0, 1)],
-            [(MapNodeKind.Rest, 1, 3), (MapNodeKind.Elite, 0, 3), (MapNodeKind.Shop, 1, 3)],
-            [(MapNodeKind.Rest, 1, 3), (MapNodeKind.Elite, 0, 3), (MapNodeKind.Shop, 1, 3)],
-            [(MapNodeKind.Rest, 1, 3), (MapNodeKind.Elite, 0, 3), (MapNodeKind.Treasure, 1, 4)]),
-        PathPressure = new PathPressureRules { Minimum = 185, Maximum = 270 },
+            [(MapNodeKind.Rest, 0, 1), (MapNodeKind.MultiCombat, 0, 1), (MapNodeKind.Elite, 0, 1)],
+            [(MapNodeKind.Rest, 1, 2), (MapNodeKind.Elite, 0, 2), (MapNodeKind.Shop, 1, 2)],
+            [(MapNodeKind.Rest, 0, 2), (MapNodeKind.Elite, 0, 2), (MapNodeKind.Shop, 0, 2)],
+            [(MapNodeKind.Rest, 1, 2), (MapNodeKind.Elite, 0, 2), (MapNodeKind.Treasure, 1, 3)]),
+        // Scaled with the act (seventeen rooms of twenty-five): 185..270 becomes 120..185.
+        PathPressure = new PathPressureRules { Minimum = 120, Maximum = 185 },
         ForkQuality = new ForkQualityRules { MinimumContrast = 30 },
         // TWO MORE DECISIONS AN ACT (user, 2026-09-28). With the engine's 6/2/2 an act forked about three times and
         // its lanes then ran side by side to the boss, so a door in the first rows decided the act. Splitting and

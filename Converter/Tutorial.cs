@@ -82,6 +82,10 @@ public static class Tutorial
         ("combat.statuses", "Statuses",
             "The small chips under a body are statuses — Paperwork, Doubt and many more. The number is how much. " +
             "Hover any of them to read what it does; a chip lights up when it changes."),
+        ("act3.docket", "The Green Docket",
+            "Every party here lives under customary law. Each enemy's chip names its own law; break it and you " +
+            "owe that party a Trespass. Three Trespass to one party become its Claim. A Safe-Conduct refuses one " +
+            "Trespass."),
         ("combat.relics", "Relics",
             "The little tiles above you are your relics. They work on their own; a relic lights up when it " +
             "triggers. Hover one to read it."),

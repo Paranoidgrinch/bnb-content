@@ -29,7 +29,7 @@ public static class EliteRelicRules
         DrawerWithinADrawer,
         // Act III
         PreApprovedAntlerTine, MendedThread, TollStoneWrongBank, CoinLeftInTheThroat, TheProperLine,
-        BoneTagFromTheJuniper, BoneTagCharm, ObsoleteBoundaryCord, ReedCutAtTheHearing, ThornChosenFromThree,
+        ObsoleteBoundaryCord, ThornChosenFromThree,
         // Act IV
         TheErrantCord, BrokenGranarySeal, CutCorveeRope, GlyphStruckFromTheName, OverseersLinenShears,
         RiddlesThirdAnswer, LampThiefsWick, DecanStarTableChip, ProcessionalStepStone,
@@ -452,50 +452,6 @@ public static class EliteRelicRules
 
     private static CounterId LinePlays => new("head_of_the_line_plays");
 
-    // The hedge enjoins a remedy. The tag is a counter-injunction: the first thing forbidden to you is not.
-    public static string BoneTagId => "bone_tag_from_the_juniper";
-
-    public static StatusData BoneTagFromTheJuniper => new()
-    {
-        Id = BoneTagId,
-        NameKey = "Bone Tag from the Juniper",
-        DescriptionKey = "The first affliction laid on you each fight finds the way already spoken for.",
-        Polarity = StatusPolarity.Neutral,
-        StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
-        UsesStacks = true,
-        Tags = [],
-        // A refusal, not a reaction: the tag is a prohibition of one stack, which is the only shape that can
-        // stop something before it lands rather than answer it afterwards.
-        Prevention = new StatusPreventionData(StatusPreventionScope.UnwantedByBearer, StacksPerStack: 1),
-        Triggers =
-        [
-            Trigger(new EffectProgram<CardsDrawnTriggeredEffectContext>(
-                new ConditionalEffectNode<CardsDrawnTriggeredEffectContext>(
-                    FirstRound<CardsDrawnTriggeredEffectContext>(),
-                    new ApplyStatusNode<CardsDrawnTriggeredEffectContext>(
-                        You, new StatusDefinitionId(BoneTagCharmId),
-                        new ConstantExpression<CardsDrawnTriggeredEffectContext>(1)))),
-                nameof(TriggerEvent.CardsDrawn)),
-        ],
-    };
-
-    // The charge the tag lays down: one stack, refusing one whole application, renewed at every opening hand.
-    public static string BoneTagCharmId => "bone_tag_charm";
-
-    public static StatusData BoneTagCharm => new()
-    {
-        Id = BoneTagCharmId,
-        NameKey = "Spoken For",
-        DescriptionKey = "The next affliction laid on you is refused.",
-        Polarity = StatusPolarity.Buff,
-        StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
-        UsesStacks = true,
-        Tags = [],
-        Prevention = new StatusPreventionData(
-            StatusPreventionScope.UnwantedByBearer, StacksPerStack: 1, RefusesWholeApplication: true),
-        Triggers = [],
-    };
-
     // Yesterday's boundary is today's defence. What lapses on its own leaves something behind.
     public static string BoundaryCordId => "obsolete_boundary_cord";
     private static CounterId CordRead => new("obsolete_boundary_cord_read");
@@ -523,30 +479,6 @@ public static class EliteRelicRules
                         You, ActFour.DecaysUnpreserved, CordRead),
                 ])),
                 nameof(TriggerEvent.CardsDrawn)),
-        ]);
-
-    // A Claim walks Hearing → Remand → Refusal. The reed cut at the hearing sends two.
-    public static string ReedId => "reed_cut_at_the_hearing";
-    private static CounterId ReedUsed => new("reed_cut_at_the_hearing_used");
-
-    public static StatusData ReedCutAtTheHearing => Rule(
-        ReedId, "Reed Cut at the Hearing",
-        "The first Claim you lay each fight is laid twice.",
-        [
-            Trigger(new EffectProgram<StatusAppliedTriggeredEffectContext>(
-                new ConditionalEffectNode<StatusAppliedTriggeredEffectContext>(
-                    new AndExpression<StatusAppliedTriggeredEffectContext>(
-                        Unspent<StatusAppliedTriggeredEffectContext>(ReedUsed),
-                        IsStatus<StatusAppliedTriggeredEffectContext>(ActThree.ClaimId)),
-                    new CausalSequenceEffectNode<StatusAppliedTriggeredEffectContext>(
-                    [
-                        Spend<StatusAppliedTriggeredEffectContext>(ReedUsed),
-                        new ApplyStatusNode<StatusAppliedTriggeredEffectContext>(
-                            CombatantTargetSelectors.EventTarget,
-                            new StatusDefinitionId(ActThree.ClaimId),
-                            new ConstantExpression<StatusAppliedTriggeredEffectContext>(1)),
-                    ]))),
-                nameof(TriggerEvent.StatusApplied), StatusTriggerScope.Anywhere),
         ]);
 
     // Under which custom would you prefer to be judged?

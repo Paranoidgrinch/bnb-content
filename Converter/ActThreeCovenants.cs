@@ -4,89 +4,167 @@ using RogueDeck.Scenario.Authoring;
 
 namespace BnbContent.Converter;
 
-// Act III, Stage 5 — The Wayside Covenants. The stage where the act starts being NICE to you, and where the
+// Act III, Stage 4 — The Covenants. The stage where the act starts being NICE to you, and where the
 // player learns that hospitality is a debt engine. All three parties hand out Safe-Conduct, and all three
 // want something back for it: the Witchling wants the gift used, the Bride wants the relationship to
 // progress, and the Cup wants its generosity to create obligation somewhere in the social network.
 public static partial class ActThree
 {
     public const string CourtesySafeConductId = "courtesy_safe_conduct";
+    public const string GiftOutstandingId = "witchling_gift_outstanding";
     public const string PromiseMustBePairedId = "a_promise_must_be_paired";
+    public const string PromiseOpenId = "promise_open";
     public const string BetrothalClaimId = "betrothal_claim";
     public const string BetrothalGiftGivenId = "betrothal_gift_given";
     public const string DrinkBeforeChoosingId = "drink_before_choosing";
-    public const string CupPouredThisTurnId = "cup_poured_this_turn";
 
-    // How many of the Witchling's own stacks the player was carrying when this turn began. The rule is about
-    // whether any of HERS was spent, and the difference between two readings answers that exactly — which is
-    // why it needs no way to ask whose stack an interceptor happened to spend.
-    public static CounterId CourtesyCarriedCounter => new("courtesy_carried");
+    public const string WitchlingGiftCardId = "witchlings_gift";
+    public const string WitchlingCharmCardId = "witchlings_charm";
+    public const string CrossroadsDrinkCardId = "drink_from_the_cup";
 
-    // Turns since the Cup last poured.
-    public static CounterId CupPatienceCounter => new("cup_patience");
+    // Turns an accepted gift may go unused before it is an insult.
+    public const int GiftPatienceTurns = 2;
 
-    private const int WitchlingHeal = 6;
-    private const int CupPatience = 2;
-
-    // ── Roadside Witchling — Courtesy Safe-Conduct ────────────────────────────────────────────────────────
-
-    // "If the player carries Witchling-granted Safe-Conduct through a later full player turn without spending
-    // any of it: 1 Trespass from the Witchling. If the player spends it: the Witchling heals. Only her own
-    // granted stacks count."
+    // ── Roadside Witchling — the gift with strings ────────────────────────────────────────────────────────
     //
-    // The gift is real, and ignoring it is rude. Whose stack the engine's interceptor happened to spend is
-    // not a question anything can ask — so the rule does not ask it. It counts hers at the start of the turn
-    // and counts them again at the end, and the difference is the whole answer.
+    // "Offers a gift each turn (Safe-Conduct or a card); an accepted gift not used within 2 turns becomes
+    // Trespass; declining is free." The offer is a free card in your hand that vanishes at the end of the turn
+    // — leaving it is declining. Accepting puts a visible chip on you that counts the turns down.
     public static StatusData CourtesySafeConduct()
     {
         var witchling = Lawgiver(CourtesySafeConductId);
 
-        ICombatExpression<TContext, int> Hers<TContext>() where TContext : class =>
-            new CombatantStatusStacksFromSourceExpression<TContext>(
-                Applicant, new StatusDefinitionId(SafeConductId), witchling);
-
-        var remember = new EffectProgram<TurnStartedTriggeredEffectContext>(
+        var offer = new EffectProgram<TurnStartedTriggeredEffectContext>(
             new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
-                PlayersTurn<TurnStartedTriggeredEffectContext>(),
-                new SetCombatantCounterNode<TurnStartedTriggeredEffectContext>(
-                    Applicant, CourtesyCarriedCounter,
-                    Hers<TurnStartedTriggeredEffectContext>(), relative: false)));
+                new AndExpression<TurnStartedTriggeredEffectContext>(
+                    PlayersTurn<TurnStartedTriggeredEffectContext>(),
+                    Alive<TurnStartedTriggeredEffectContext>(witchling)),
+                new CreateCardInstanceNode<TurnStartedTriggeredEffectContext>(
+                    CombatantTargetSelectors.Source, new CardDefinitionId(WitchlingGiftCardId), CardZone.Hand,
+                    new ConstantExpression<TurnStartedTriggeredEffectContext>(1))));
 
-        var carried = new CombatantCounterExpression<TurnEndedTriggeredEffectContext>(
-            Applicant, CourtesyCarriedCounter);
+        // A licence spent is a gift used.
+        var used = new EffectProgram<StatusApplicationBlockedTriggeredEffectContext>(
+            new ConditionalEffectNode<StatusApplicationBlockedTriggeredEffectContext>(
+                new TriggerEventStatusIsExpression<StatusApplicationBlockedTriggeredEffectContext>(
+                    new StatusDefinitionId(TrespassId)),
+                new RemoveStatusNode<StatusApplicationBlockedTriggeredEffectContext>(
+                    Applicant, new StatusDefinitionId(GiftOutstandingId))));
+
+        var outstanding = new CombatantStatusStacksExpression<TurnEndedTriggeredEffectContext>(
+            Applicant, new StatusDefinitionId(GiftOutstandingId));
 
         var reckon = new EffectProgram<TurnEndedTriggeredEffectContext>(
             new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
-                PlayersTurn<TurnEndedTriggeredEffectContext>(),
-                new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
-                    // Fewer of hers than the turn began with: the gift was used, and the bond is confirmed.
+                new AndExpression<TurnEndedTriggeredEffectContext>(
+                    PlayersTurn<TurnEndedTriggeredEffectContext>(),
                     new ComparisonExpression<TurnEndedTriggeredEffectContext>(
-                        Hers<TurnEndedTriggeredEffectContext>(), ComparisonOperator.Less, carried),
-                    new HealNode<TurnEndedTriggeredEffectContext>(
-                        witchling, new ConstantExpression<TurnEndedTriggeredEffectContext>(WitchlingHeal)),
-                    // Carried a whole turn and never used: rude.
-                    new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
-                        new AndExpression<TurnEndedTriggeredEffectContext>(
-                            new ComparisonExpression<TurnEndedTriggeredEffectContext>(
-                                carried, ComparisonOperator.Greater,
-                                new ConstantExpression<TurnEndedTriggeredEffectContext>(0)),
-                            new ComparisonExpression<TurnEndedTriggeredEffectContext>(
-                                Hers<TurnEndedTriggeredEffectContext>(),
-                                ComparisonOperator.GreaterOrEqual, carried)),
-                        FileTrespass<TurnEndedTriggeredEffectContext>(witchling)))));
+                        outstanding, ComparisonOperator.Greater,
+                        new ConstantExpression<TurnEndedTriggeredEffectContext>(0))),
+                new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
+                    new ComparisonExpression<TurnEndedTriggeredEffectContext>(
+                        outstanding, ComparisonOperator.LessOrEqual,
+                        new ConstantExpression<TurnEndedTriggeredEffectContext>(1)),
+                    new CausalSequenceEffectNode<TurnEndedTriggeredEffectContext>(
+                    [
+                        new RemoveStatusNode<TurnEndedTriggeredEffectContext>(
+                            Applicant, new StatusDefinitionId(GiftOutstandingId)),
+                        new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
+                            Alive<TurnEndedTriggeredEffectContext>(witchling),
+                            FileTrespass<TurnEndedTriggeredEffectContext>(witchling)),
+                    ]),
+                    new ModifyStatusStacksNode<TurnEndedTriggeredEffectContext>(
+                        Applicant, new StatusDefinitionId(GiftOutstandingId),
+                        new ConstantExpression<TurnEndedTriggeredEffectContext>(-1)))));
 
-        return Rule(CourtesySafeConductId, "Courtesy Safe-Conduct",
-            "The Witchling's own Safe-Conduct is a gift with strings. Spend it and she is pleased — she "
-            + "recovers 6 HP. Carry it through a whole turn unspent and you owe her 1 Trespass.",
+        return Rule(CourtesySafeConductId, "A Gift with Strings",
+            "Each turn she offers a gift. Leaving it is free. Accept it and use it within 2 turns, or owe her "
+            + "1 Trespass.",
             [
                 new StatusTriggerData("TurnStarted", JsonSerializer.SerializeToElement(
-                    remember, CombatJson.CreateOptions<TurnStartedTriggeredEffectContext>()),
+                    offer, CombatJson.CreateOptions<TurnStartedTriggeredEffectContext>()),
+                    StatusTriggerScope.Anywhere),
+                new StatusTriggerData("StatusApplicationPrevented", JsonSerializer.SerializeToElement(
+                    used, CombatJson.CreateOptions<StatusApplicationBlockedTriggeredEffectContext>()),
                     StatusTriggerScope.Anywhere),
                 new StatusTriggerData("TurnEnded", JsonSerializer.SerializeToElement(
                     reckon, CombatJson.CreateOptions<TurnEndedTriggeredEffectContext>()),
                     StatusTriggerScope.Anywhere),
             ]);
     }
+
+    public static StatusData GiftOutstanding() => new()
+    {
+        Id = GiftOutstandingId,
+        NameKey = "A Gift Unused",
+        DescriptionKey = "The Witchling's gift. Spend a Safe-Conduct or play her Charm before this runs out, or owe her 1 Trespass.",
+        Polarity = StatusPolarity.Debuff,
+        StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
+        UsesStacks = true,
+        Tags = [],
+        PassiveModifiers = [],
+        Triggers = [],
+    };
+
+    private static IEffectNode<CardPlayContext> GiftAccepted() =>
+        new CausalSequenceEffectNode<CardPlayContext>(
+        [
+            new RemoveStatusNode<CardPlayContext>(CombatantTargetSelectors.Source, new StatusDefinitionId(GiftOutstandingId)),
+            new ApplyStatusNode<CardPlayContext>(
+                CombatantTargetSelectors.Source, new StatusDefinitionId(GiftOutstandingId),
+                new ConstantExpression<CardPlayContext>(GiftPatienceTurns)),
+        ]);
+
+    public static CardData WitchlingsGift() => new()
+    {
+        Id = WitchlingGiftCardId,
+        NameKey = "The Witchling's Gift",
+        DescriptionKey = "Accept: 1 Safe-Conduct, or her Charm. Use it within 2 turns or owe her 1 Trespass. Unplayed, it is declined.",
+        Costs = [],
+        Tags = [new TagId("form")],
+        Program = new EffectProgram<CardPlayContext>(
+            new ChooseOptionsNode<CardPlayContext>(
+                [
+                    new CausalSequenceEffectNode<CardPlayContext>(
+                    [
+                        new ApplyStatusNode<CardPlayContext>(
+                            CombatantTargetSelectors.Source, new StatusDefinitionId(SafeConductId),
+                            new ConstantExpression<CardPlayContext>(1),
+                            sourceSelector: Lawgiver(CourtesySafeConductId)),
+                        GiftAccepted(),
+                    ]),
+                    new CausalSequenceEffectNode<CardPlayContext>(
+                    [
+                        new CreateCardInstanceNode<CardPlayContext>(
+                            CombatantTargetSelectors.Source, new CardDefinitionId(WitchlingCharmCardId), CardZone.Hand,
+                            new ConstantExpression<CardPlayContext>(1)),
+                        GiftAccepted(),
+                    ]),
+                ],
+                ["a safe-conduct", "her charm"],
+                count: 1,
+                purpose: "accept the gift")),
+        PlayedCardDestinationZone = CardZone.ExhaustPile,
+        TurnEndHandDestinationZone = CardZone.ExhaustPile,
+    };
+
+    public static CardData WitchlingsCharm() => new()
+    {
+        Id = WitchlingCharmCardId,
+        NameKey = "The Witchling's Charm",
+        DescriptionKey = "Gain 8 Block. Draw 1. Using it settles her gift.",
+        Costs = [],
+        Tags = [new TagId("form")],
+        Program = new EffectProgram<CardPlayContext>(
+            new CausalSequenceEffectNode<CardPlayContext>(
+            [
+                new GainBlockNode<CardPlayContext>(CombatantTargetSelectors.Source, new ConstantExpression<CardPlayContext>(8)),
+                new DrawCardsNode<CardPlayContext>(CombatantTargetSelectors.Source, new ConstantExpression<CardPlayContext>(1)),
+                new RemoveStatusNode<CardPlayContext>(CombatantTargetSelectors.Source, new StatusDefinitionId(GiftOutstandingId)),
+            ])),
+        PlayedCardDestinationZone = CardZone.ExhaustPile,
+        TurnEndHandDestinationZone = CardZone.Hand,
+    };
 
     // ── The Blackthorn Bride ──────────────────────────────────────────────────────────────────────────────
 
@@ -121,6 +199,16 @@ public static partial class ActThree
                 new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
                     bothHeavy,
                     Violate<CardPlayedTriggeredEffectContext>(bride, PairedPromiseLaw)),
+                // The open promise is worn by the Bride, so the next card's limit is on screen.
+                new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
+                    new ComparisonExpression<CardPlayedTriggeredEffectContext>(
+                        ThisCost(), ComparisonOperator.GreaterOrEqual,
+                        new ConstantExpression<CardPlayedTriggeredEffectContext>(3)),
+                    new ApplyStatusNode<CardPlayedTriggeredEffectContext>(
+                        bride, new StatusDefinitionId(PromiseOpenId),
+                        new ConstantExpression<CardPlayedTriggeredEffectContext>(1)),
+                    new RemoveStatusNode<CardPlayedTriggeredEffectContext>(
+                        bride, new StatusDefinitionId(PromiseOpenId))),
                 new SetCombatantCounterNode<CardPlayedTriggeredEffectContext>(
                     player, memory, ThisCost(), relative: false),
             ]));
@@ -128,13 +216,18 @@ public static partial class ActThree
         var reset = new EffectProgram<TurnStartedTriggeredEffectContext>(
             new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
                 PlayersTurn<TurnStartedTriggeredEffectContext>(),
-                new SetCombatantCounterNode<TurnStartedTriggeredEffectContext>(
-                    Applicant, memory,
-                    new ConstantExpression<TurnStartedTriggeredEffectContext>(0), relative: false)));
+                new CausalSequenceEffectNode<TurnStartedTriggeredEffectContext>(
+                [
+                    new SetCombatantCounterNode<TurnStartedTriggeredEffectContext>(
+                        Applicant, memory,
+                        new ConstantExpression<TurnStartedTriggeredEffectContext>(0), relative: false),
+                    new RemoveStatusNode<TurnStartedTriggeredEffectContext>(
+                        Lawgiver(PromiseMustBePairedId), new StatusDefinitionId(PromiseOpenId)),
+                ])));
 
         return Rule(PromiseMustBePairedId, "A Promise Must Be Paired",
-            "Follow a card of Base Cost 2 or more with another and you owe the Blackthorn Bride 1 Trespass. "
-            + "Something cheap has to come between.",
+            "After a card costing 2 or more, your next card must cost 0 or 1, or you owe the Bride 1 "
+            + "Trespass.",
             [
                 new StatusTriggerData("CardPlayed", JsonSerializer.SerializeToElement(
                     program, CombatJson.CreateOptions<CardPlayedTriggeredEffectContext>()),
@@ -202,83 +295,56 @@ public static partial class ActThree
             ]);
     }
 
+    public static StatusData PromiseOpen() =>
+        Marker(PromiseOpenId, "A Promise Open",
+            "You played a card costing 2 or more. Your next card must cost 0 or 1, or owe the Bride 1 Trespass.");
+
     public static StatusData BetrothalGiftGiven() =>
         Marker(BetrothalGiftGivenId, "Welcomed",
             "The Bride has already welcomed you once.");
 
     // ── Crossroads Cup — Drink Before Choosing ────────────────────────────────────────────────────────────
-
-    // "Every two player turns the player gains 1 Safe-Conduct. The first time each player turn the player
-    // spends Safe-Conduct, the living enemy with the fewest Claims gains 1 newly created Claim."
     //
-    // The Cup helps. Its help also creates obligation somewhere in the social network, and that is the whole
-    // identity: an unattended ceremonial cup at a crossroads is a polite debt engine.
+    // "At your turn start it offers a drink, +1 Energy this turn, but the enemy with the fewest Claims gains
+    // one." The drink is a free card that vanishes at the end of the turn; leaving it costs nothing.
     public static StatusData DrinkBeforeChoosing()
     {
         var cup = Lawgiver(DrinkBeforeChoosingId);
 
         var pour = new EffectProgram<TurnStartedTriggeredEffectContext>(
             new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
-                PlayersTurn<TurnStartedTriggeredEffectContext>(),
-                new CausalSequenceEffectNode<TurnStartedTriggeredEffectContext>(
-                [
-                    new RemoveStatusNode<TurnStartedTriggeredEffectContext>(
-                        cup, new StatusDefinitionId(CupPouredThisTurnId)),
-                    new SetCombatantCounterNode<TurnStartedTriggeredEffectContext>(
-                        Applicant, CupPatienceCounter,
-                        new ConstantExpression<TurnStartedTriggeredEffectContext>(1), relative: true),
-                    new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
-                        new ComparisonExpression<TurnStartedTriggeredEffectContext>(
-                            new CombatantCounterExpression<TurnStartedTriggeredEffectContext>(
-                                Applicant, CupPatienceCounter),
-                            ComparisonOperator.GreaterOrEqual,
-                            new ConstantExpression<TurnStartedTriggeredEffectContext>(CupPatience)),
-                        new CausalSequenceEffectNode<TurnStartedTriggeredEffectContext>(
-                        [
-                            new SetCombatantCounterNode<TurnStartedTriggeredEffectContext>(
-                                Applicant, CupPatienceCounter,
-                                new ConstantExpression<TurnStartedTriggeredEffectContext>(0), relative: false),
-                            new ApplyStatusNode<TurnStartedTriggeredEffectContext>(
-                                Applicant, new StatusDefinitionId(SafeConductId),
-                                new ConstantExpression<TurnStartedTriggeredEffectContext>(1),
-                                sourceSelector: cup),
-                        ])),
-                ])));
-
-        // A licence being spent is a refusal happening: the engine says so when a Trespass is turned away.
-        var obligation = new EffectProgram<StatusApplicationBlockedTriggeredEffectContext>(
-            new ConditionalEffectNode<StatusApplicationBlockedTriggeredEffectContext>(
-                new AndExpression<StatusApplicationBlockedTriggeredEffectContext>(
-                    new TriggerEventStatusIsExpression<StatusApplicationBlockedTriggeredEffectContext>(
-                        new StatusDefinitionId(TrespassId)),
-                    new ComparisonExpression<StatusApplicationBlockedTriggeredEffectContext>(
-                        new CombatantStatusStacksExpression<StatusApplicationBlockedTriggeredEffectContext>(
-                            cup, new StatusDefinitionId(CupPouredThisTurnId)),
-                        ComparisonOperator.Equal,
-                        new ConstantExpression<StatusApplicationBlockedTriggeredEffectContext>(0))),
-                new CausalSequenceEffectNode<StatusApplicationBlockedTriggeredEffectContext>(
-                [
-                    new ApplyStatusNode<StatusApplicationBlockedTriggeredEffectContext>(
-                        cup, new StatusDefinitionId(CupPouredThisTurnId),
-                        new ConstantExpression<StatusApplicationBlockedTriggeredEffectContext>(1)),
-                    CreateClaim<StatusApplicationBlockedTriggeredEffectContext>(
-                        CombatantTargetSelectors.LowestStatusStacks(Parties, new StatusDefinitionId(ClaimId))),
-                ])));
+                new AndExpression<TurnStartedTriggeredEffectContext>(
+                    PlayersTurn<TurnStartedTriggeredEffectContext>(),
+                    Alive<TurnStartedTriggeredEffectContext>(cup)),
+                new CreateCardInstanceNode<TurnStartedTriggeredEffectContext>(
+                    CombatantTargetSelectors.Source, new CardDefinitionId(CrossroadsDrinkCardId), CardZone.Hand,
+                    new ConstantExpression<TurnStartedTriggeredEffectContext>(1))));
 
         return Rule(DrinkBeforeChoosingId, "Drink Before Choosing",
-            "Every second turn the Cup pours you 1 Safe-Conduct. The first licence you spend each turn is "
-            + "recognised somewhere else: whichever party holds the fewest Claims gains one.",
-            [
-                new StatusTriggerData("TurnStarted", JsonSerializer.SerializeToElement(
-                    pour, CombatJson.CreateOptions<TurnStartedTriggeredEffectContext>()),
-                    StatusTriggerScope.Anywhere),
-                new StatusTriggerData("StatusApplicationPrevented", JsonSerializer.SerializeToElement(
-                    obligation, CombatJson.CreateOptions<StatusApplicationBlockedTriggeredEffectContext>()),
-                    StatusTriggerScope.Anywhere),
-            ]);
+            "Each turn the Cup offers you a drink: +1 Energy, but the party holding the fewest Claims gains one.",
+            [new StatusTriggerData("TurnStarted", JsonSerializer.SerializeToElement(
+                pour, CombatJson.CreateOptions<TurnStartedTriggeredEffectContext>()),
+                StatusTriggerScope.Anywhere)]);
     }
 
-    public static StatusData CupPouredThisTurn() =>
-        Marker(CupPouredThisTurnId, "Toast Made",
-            "The Cup has already turned one of your licences into somebody's standing this turn.");
+    public static CardData DrinkFromTheCup() => new()
+    {
+        Id = CrossroadsDrinkCardId,
+        NameKey = "Drink from the Cup",
+        DescriptionKey = "Gain 1 Energy. The enemy with the fewest Claims gains a Claim. Unplayed, it is gone at the end of the turn.",
+        Costs = [],
+        Tags = [new TagId("form")],
+        Program = new EffectProgram<CardPlayContext>(
+            new CausalSequenceEffectNode<CardPlayContext>(
+            [
+                new GainResourceNode<CardPlayContext>(
+                    CombatantTargetSelectors.Source, StandardCombatIds.EnergyResource,
+                    new ConstantExpression<CardPlayContext>(1)),
+                CreateClaim<CardPlayContext>(
+                    CombatantTargetSelectors.FirstTarget(
+                        CombatantTargetSelectors.LowestStatusStacks(Parties, new StatusDefinitionId(ClaimId)))),
+            ])),
+        PlayedCardDestinationZone = CardZone.ExhaustPile,
+        TurnEndHandDestinationZone = CardZone.ExhaustPile,
+    };
 }

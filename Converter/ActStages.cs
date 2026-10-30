@@ -14,8 +14,7 @@ public static class ActStages
     {
         [1] = ["queue", "ordinance", "seal", "delay"],
         [2] = ["returns", "stacks", "catalogue", "necrology"],
-        [3] = ["road", "hedgerows", "testimony", "tollwater", "covenants", "quorum", "appeals", "precedents",
-               "jurisdictions", "court"],
+        [3] = ["road", "hedgerows", "tollwater", "covenants"],
         [4] = ["stelae", "gate", "granary", "basins", "causeway", "yards", "monument", "hall", "seal", "procession",
                "linen", "vaults", "warrens", "fixed_days", "cartouche", "balance", "sealed_court"],
     };
@@ -37,16 +36,15 @@ public static class ActStages
         ["archives_elite_volumes_of_cause_and_consequence"] = 3,
         ["archives_elite_black_ink_oracle"] = 3,
         ["archives_elite_obituary_with_three_endings"] = 4,
-        // Act III (§ Earliest recommended appearance)
-        ["green_docket_elite_stag_of_pre_approved_violence"] = 2,
+        // Act III, after the content cut of 2026-10-29: two elites stand behind each of the first three lessons,
+        // and the Magistrate behind the last.
+        ["green_docket_elite_stag_of_pre_approved_violence"] = 1,
+        ["green_docket_elite_ant_queen_of_the_proper_line"] = 1,
         ["green_docket_elite_grandmother_web"] = 2,
+        ["green_docket_elite_surveyor_of_forgotten_paths"] = 2,
+        ["green_docket_elite_great_toll_frog"] = 3,
         ["green_docket_elite_the_wrong_bridge_in_person"] = 3,
-        ["green_docket_elite_great_toll_frog"] = 4,
-        ["green_docket_elite_ant_queen_of_the_proper_line"] = 5,
-        ["green_docket_elite_juniper_injunction"] = 6,
-        ["green_docket_elite_surveyor_of_forgotten_paths"] = 7,
-        ["green_docket_elite_three_reeds_of_appeal"] = 8,
-        ["green_docket_elite_magistrate_of_thorns"] = 9,
+        ["green_docket_elite_magistrate_of_thorns"] = 4,
     };
 
     // The 1-based stage an elite stands in, or null when nothing names one.

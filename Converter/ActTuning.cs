@@ -75,9 +75,8 @@ public static class ActTuning
     public static readonly Dictionary<string, Factor> Encounters = new(StringComparer.Ordinal)
     {
         // Act III — already in the band as authored (beam 6 reads multi-body fights about twice as dear as the strong
-        // planner: three reeds 31 → 13).
+        // planner).
         ["green_docket_elite_ant_queen_of_the_proper_line"] = new(110, 110),
-        ["green_docket_elite_three_reeds_of_appeal"] = new(),
         // Act IV bosses: from 2.6 (Mother) to 60 (Vizier) as authored — one factor cannot fit them.
         ["labyrinth_boss_vizier_of_the_kings_mouth"] = new(85, 85),
         // The Scribe was 43.5 and lost 3/10 at authored numbers: a sheet of Paperwork per recorded Working grew

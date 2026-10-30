@@ -16,22 +16,6 @@
     "role": "combat"
   },
   {
-    "id": "green_docket_road_02",
-    "name": "The First Use Became Custom",
-    "act": 3,
-    "difficulty": "normal",
-    "enemies": [
-      "mossbound_clerk"
-    ],
-    "weight": 2,
-    "tags": [
-      "stage_road",
-      "green_docket",
-      "precedent"
-    ],
-    "role": "combat"
-  },
-  {
     "id": "green_docket_road_duo_01",
     "name": "Every Detour Leaves a Stone",
     "act": 3,
@@ -55,22 +39,21 @@
   },
   {
     "id": "green_docket_road_duo_02",
-    "name": "Stray-Path Precedent",
+    "name": "The Path Points Past the Hare",
     "act": 3,
     "difficulty": "normal",
     "enemies": [
-      "mossbound_clerk",
-      "cairn_of_stray_paths"
+      "permit_hare",
+      "elsewhere_path"
     ],
     "enemy_health": [
-      51,
-      38
+      48,
+      78
     ],
     "weight": 2,
     "tags": [
       "stage_road",
       "green_docket",
-      "precedent",
       "multi_enemy"
     ],
     "role": "multi_combat"
@@ -111,13 +94,7 @@
       "claim_transfer",
       "multi_enemy"
     ],
-    "role": "multi_combat",
-    "enemy_statuses": [
-      {
-        "index": 1,
-        "status": "prior_dispute"
-      }
-    ]
+    "role": "multi_combat"
   },
   {
     "id": "green_docket_hedgerows_duo_02",
@@ -162,123 +139,7 @@
       "tenant",
       "multi_enemy"
     ],
-    "role": "multi_combat",
-    "enemy_statuses": [
-      {
-        "index": 0,
-        "status": "prior_dispute"
-      }
-    ]
-  },
-  {
-    "id": "green_docket_testimony_duo_01",
-    "name": "Roadside Testimony",
-    "act": 3,
-    "difficulty": "normal",
-    "enemies": [
-      "reckoning_hedge",
-      "foxglove_witness"
-    ],
-    "enemy_health": [
-      55,
-      48
-    ],
-    "weight": 2,
-    "tags": [
-      "stage_testimony",
-      "green_docket",
-      "testimony",
-      "multi_enemy"
-    ],
     "role": "multi_combat"
-  },
-  {
-    "id": "green_docket_testimony_duo_02",
-    "name": "Contrary Permit",
-    "act": 3,
-    "difficulty": "normal",
-    "enemies": [
-      "permit_hare",
-      "contrary_magpie"
-    ],
-    "enemy_health": [
-      48,
-      47
-    ],
-    "weight": 2,
-    "tags": [
-      "stage_testimony",
-      "green_docket",
-      "testimony",
-      "multi_enemy"
-    ],
-    "role": "multi_combat",
-    "enemy_statuses": [
-      {
-        "index": 0,
-        "status": "claim"
-      },
-      {
-        "index": 0,
-        "status": "claim_created"
-      }
-    ]
-  },
-  {
-    "id": "green_docket_testimony_duo_03",
-    "name": "Surveyed Detours",
-    "act": 3,
-    "difficulty": "normal",
-    "enemies": [
-      "reckoning_hedge",
-      "cairn_of_stray_paths"
-    ],
-    "enemy_health": [
-      55,
-      38
-    ],
-    "weight": 2,
-    "tags": [
-      "stage_testimony",
-      "green_docket",
-      "precedent",
-      "multi_enemy"
-    ],
-    "role": "multi_combat"
-  },
-  {
-    "id": "green_docket_testimony_trio_01",
-    "name": "Two Witnesses, One Account",
-    "act": 3,
-    "difficulty": "hard",
-    "enemies": [
-      "reckoning_hedge",
-      "foxglove_witness",
-      "contrary_magpie"
-    ],
-    "enemy_health": [
-      48,
-      41,
-      41
-    ],
-    "weight": 1,
-    "tags": [
-      "stage_testimony",
-      "green_docket",
-      "testimony",
-      "multi_enemy"
-    ],
-    "role": "multi_combat",
-    "enemy_statuses": [
-      {
-        "index": 0,
-        "status": "claim"
-      },
-      {
-        "index": 0,
-        "status": "claim_created"
-      }
-    ]
   },
   {
     "id": "green_docket_tollwater_01",
@@ -430,470 +291,6 @@
     "role": "multi_combat"
   },
   {
-    "id": "green_docket_quorum_duo_01",
-    "name": "Hare Before the Quorum",
-    "act": 3,
-    "difficulty": "normal",
-    "enemies": [
-      "mandated_mushroom_circle",
-      "permit_hare"
-    ],
-    "enemy_health": [
-      68,
-      48
-    ],
-    "weight": 2,
-    "tags": [
-      "stage_quorum",
-      "green_docket",
-      "claim",
-      "multi_enemy"
-    ],
-    "role": "multi_combat"
-  },
-  {
-    "id": "green_docket_quorum_duo_02",
-    "name": "Boundary Hearing",
-    "act": 3,
-    "difficulty": "normal",
-    "enemies": [
-      "bracken_moot",
-      "errant_boundary_stone"
-    ],
-    "enemy_health": [
-      70,
-      54
-    ],
-    "weight": 2,
-    "tags": [
-      "stage_quorum",
-      "green_docket",
-      "claim",
-      "multi_enemy"
-    ],
-    "role": "multi_combat",
-    "enemy_statuses": [
-      {
-        "index": 1,
-        "status": "prior_dispute"
-      }
-    ]
-  },
-  {
-    "id": "green_docket_quorum_duo_03",
-    "name": "Two-Bank Quorum",
-    "act": 3,
-    "difficulty": "normal",
-    "enemies": [
-      "mandated_mushroom_circle",
-      "two_bank_toll_ford"
-    ],
-    "enemy_health": [
-      68,
-      70
-    ],
-    "weight": 2,
-    "tags": [
-      "stage_quorum",
-      "green_docket",
-      "claim",
-      "wergild",
-      "multi_enemy"
-    ],
-    "role": "multi_combat",
-    "enemy_statuses": [
-      {
-        "index": 0,
-        "status": "claim"
-      },
-      {
-        "index": 0,
-        "status": "claim_created"
-      }
-    ]
-  },
-  {
-    "id": "green_docket_quorum_duo_04",
-    "name": "Detour Hearing",
-    "act": 3,
-    "difficulty": "normal",
-    "enemies": [
-      "bracken_moot",
-      "cairn_of_stray_paths"
-    ],
-    "enemy_health": [
-      70,
-      38
-    ],
-    "weight": 2,
-    "tags": [
-      "stage_quorum",
-      "green_docket",
-      "claim",
-      "multi_enemy"
-    ],
-    "role": "multi_combat"
-  },
-  {
-    "id": "green_docket_appeals_duo_01",
-    "name": "Upstream Appeal",
-    "act": 3,
-    "difficulty": "normal",
-    "enemies": [
-      "ditch_lamprey_of_appeals",
-      "two_bank_toll_ford"
-    ],
-    "enemy_health": [
-      70,
-      70
-    ],
-    "weight": 2,
-    "tags": [
-      "stage_appeals",
-      "green_docket",
-      "claim",
-      "wergild",
-      "multi_enemy"
-    ],
-    "role": "multi_combat"
-  },
-  {
-    "id": "green_docket_appeals_duo_02",
-    "name": "Charter Review",
-    "act": 3,
-    "difficulty": "normal",
-    "enemies": [
-      "the_sedge_bench",
-      "charter_shell_snail"
-    ],
-    "enemy_health": [
-      90,
-      66
-    ],
-    "weight": 2,
-    "tags": [
-      "stage_appeals",
-      "green_docket",
-      "claim",
-      "wergild",
-      "multi_enemy"
-    ],
-    "role": "multi_combat"
-  },
-  {
-    "id": "green_docket_appeals_duo_03",
-    "name": "Boundary Appeal",
-    "act": 3,
-    "difficulty": "normal",
-    "enemies": [
-      "ditch_lamprey_of_appeals",
-      "errant_boundary_stone"
-    ],
-    "enemy_health": [
-      70,
-      54
-    ],
-    "weight": 2,
-    "tags": [
-      "stage_appeals",
-      "green_docket",
-      "claim",
-      "multi_enemy"
-    ],
-    "role": "multi_combat",
-    "enemy_statuses": [
-      {
-        "index": 1,
-        "status": "prior_dispute"
-      }
-    ]
-  },
-  {
-    "id": "green_docket_appeals_duo_04",
-    "name": "Betrothal Review",
-    "act": 3,
-    "difficulty": "normal",
-    "enemies": [
-      "the_sedge_bench",
-      "blackthorn_bride"
-    ],
-    "enemy_health": [
-      90,
-      76
-    ],
-    "weight": 2,
-    "tags": [
-      "stage_appeals",
-      "green_docket",
-      "claim",
-      "wergild",
-      "multi_enemy"
-    ],
-    "role": "multi_combat"
-  },
-  {
-    "id": "green_docket_precedents_01",
-    "name": "The Old Measure",
-    "act": 3,
-    "difficulty": "normal",
-    "enemies": [
-      "sleeping_stump_auditor"
-    ],
-    "weight": 2,
-    "tags": [
-      "stage_precedents",
-      "green_docket",
-      "claim"
-    ],
-    "role": "combat"
-  },
-  {
-    "id": "green_docket_precedents_02",
-    "name": "Footsteps Become Precedent",
-    "act": 3,
-    "difficulty": "normal",
-    "enemies": [
-      "footfall_root"
-    ],
-    "weight": 2,
-    "tags": [
-      "stage_precedents",
-      "green_docket",
-      "claim"
-    ],
-    "role": "combat"
-  },
-  {
-    "id": "green_docket_precedents_duo_01",
-    "name": "Two Authorities Agree",
-    "act": 3,
-    "difficulty": "normal",
-    "enemies": [
-      "precedent_lichen",
-      "sleeping_stump_auditor"
-    ],
-    "enemy_health": [
-      70,
-      88
-    ],
-    "weight": 2,
-    "tags": [
-      "stage_precedents",
-      "green_docket",
-      "claim",
-      "multi_enemy"
-    ],
-    "role": "multi_combat"
-  },
-  {
-    "id": "green_docket_precedents_duo_02",
-    "name": "Deep-Root Precedent",
-    "act": 3,
-    "difficulty": "normal",
-    "enemies": [
-      "precedent_lichen",
-      "footfall_root"
-    ],
-    "enemy_health": [
-      70,
-      90
-    ],
-    "weight": 2,
-    "tags": [
-      "stage_precedents",
-      "green_docket",
-      "claim",
-      "multi_enemy"
-    ],
-    "role": "multi_combat"
-  },
-  {
-    "id": "green_docket_jurisdictions_01",
-    "name": "Three Readings on One Stone",
-    "act": 3,
-    "difficulty": "normal",
-    "enemies": [
-      "untranslated_trail_marker"
-    ],
-    "weight": 2,
-    "tags": [
-      "stage_jurisdictions",
-      "green_docket",
-      "claim"
-    ],
-    "role": "combat"
-  },
-  {
-    "id": "green_docket_jurisdictions_duo_01",
-    "name": "The Hawthorn Destination",
-    "act": 3,
-    "difficulty": "normal",
-    "enemies": [
-      "elsewhere_path",
-      "hawthorn_tenant"
-    ],
-    "enemy_health": [
-      80,
-      71
-    ],
-    "weight": 2,
-    "tags": [
-      "stage_jurisdictions",
-      "green_docket",
-      "multi_enemy"
-    ],
-    "role": "multi_combat"
-  },
-  {
-    "id": "green_docket_jurisdictions_duo_02",
-    "name": "Two Courts Claim the Hare",
-    "act": 3,
-    "difficulty": "normal",
-    "enemies": [
-      "permit_hare",
-      "errant_boundary_stone"
-    ],
-    "enemy_health": [
-      78,
-      85
-    ],
-    "weight": 2,
-    "tags": [
-      "stage_jurisdictions",
-      "green_docket",
-      "claim",
-      "recurrence",
-      "multi_enemy"
-    ],
-    "role": "multi_combat",
-    "enemy_statuses": [
-      {
-        "index": 0,
-        "status": "claim",
-        "stacks": 2
-      },
-      {
-        "index": 0,
-        "status": "claim_created",
-        "stacks": 2
-      },
-      {
-        "index": 1,
-        "status": "superior_jurisdiction"
-      }
-    ]
-  },
-  {
-    "id": "green_docket_jurisdictions_duo_03",
-    "name": "No Path Has Final Authority",
-    "act": 3,
-    "difficulty": "normal",
-    "enemies": [
-      "untranslated_trail_marker",
-      "elsewhere_path"
-    ],
-    "enemy_health": [
-      88,
-      80
-    ],
-    "weight": 2,
-    "tags": [
-      "stage_jurisdictions",
-      "green_docket",
-      "claim",
-      "multi_enemy"
-    ],
-    "role": "multi_combat"
-  },
-  {
-    "id": "green_docket_court_01",
-    "name": "Names Kept Below Ground",
-    "act": 3,
-    "difficulty": "normal",
-    "enemies": [
-      "keeper_of_buried_names"
-    ],
-    "weight": 2,
-    "tags": [
-      "stage_court",
-      "green_docket",
-      "claim",
-      "wergild"
-    ],
-    "role": "combat"
-  },
-  {
-    "id": "green_docket_court_duo_01",
-    "name": "A Small Promise Reaches the Court",
-    "act": 3,
-    "difficulty": "normal",
-    "enemies": [
-      "crossroads_cup",
-      "keeper_of_buried_names"
-    ],
-    "enemy_health": [
-      53,
-      102
-    ],
-    "weight": 2,
-    "tags": [
-      "stage_court",
-      "green_docket",
-      "claim",
-      "wergild",
-      "multi_enemy"
-    ],
-    "role": "multi_combat"
-  },
-  {
-    "id": "green_docket_court_duo_02",
-    "name": "Every Name Has Value",
-    "act": 3,
-    "difficulty": "normal",
-    "enemies": [
-      "keeper_of_buried_names",
-      "handworn_tally_coin"
-    ],
-    "enemy_health": [
-      102,
-      79
-    ],
-    "weight": 2,
-    "tags": [
-      "stage_court",
-      "green_docket",
-      "claim",
-      "wergild",
-      "multi_enemy"
-    ],
-    "role": "multi_combat"
-  },
-  {
-    "id": "green_docket_court_trio_01",
-    "name": "Handworn Reckoning",
-    "act": 3,
-    "difficulty": "hard",
-    "enemies": [
-      "crossroads_cup",
-      "keeper_of_buried_names",
-      "handworn_tally_coin"
-    ],
-    "enemy_health": [
-      45,
-      92,
-      68
-    ],
-    "weight": 1,
-    "tags": [
-      "stage_court",
-      "green_docket",
-      "claim",
-      "wergild",
-      "multi_enemy"
-    ],
-    "role": "multi_combat"
-  },
-  {
     "id": "green_docket_elite_stag_of_pre_approved_violence",
     "name": "The Stag of Pre-Approved Violence",
     "act": 3,
@@ -912,7 +309,7 @@
   },
   {
     "id": "green_docket_elite_grandmother_web",
-    "name": "Grandmother Web",
+    "name": "The Old Web",
     "act": 3,
     "difficulty": "elite",
     "enemies": [
@@ -981,23 +378,6 @@
     "role": "elite"
   },
   {
-    "id": "green_docket_elite_juniper_injunction",
-    "name": "Juniper Injunction",
-    "act": 3,
-    "difficulty": "elite",
-    "enemies": [
-      "juniper_injunction"
-    ],
-    "weight": 1,
-    "tags": [
-      "green_docket",
-      "elite",
-      "claim",
-      "wergild"
-    ],
-    "role": "elite"
-  },
-  {
     "id": "green_docket_elite_surveyor_of_forgotten_paths",
     "name": "Surveyor of Forgotten Paths",
     "act": 3,
@@ -1011,25 +391,6 @@
       "elite",
       "claim",
       "precedent"
-    ],
-    "role": "elite"
-  },
-  {
-    "id": "green_docket_elite_three_reeds_of_appeal",
-    "name": "Three Reeds of Appeal",
-    "act": 3,
-    "difficulty": "elite",
-    "enemies": [
-      "hearing_reed",
-      "remand_reed",
-      "refusal_reed"
-    ],
-    "weight": 1,
-    "tags": [
-      "green_docket",
-      "elite",
-      "claim",
-      "multi_enemy"
     ],
     "role": "elite"
   },
@@ -1155,5 +516,71 @@
     "enemy_health": [
       104
     ]
+  },
+  {
+    "id": "green_docket_road_03",
+    "name": "The Cairn Points Elsewhere",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "cairn_of_stray_paths",
+      "elsewhere_path"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_road",
+      "green_docket",
+      "multi_enemy"
+    ],
+    "role": "multi_combat",
+    "enemy_health": [
+      50,
+      80
+    ]
+  },
+  {
+    "id": "green_docket_road_04",
+    "name": "A Cairn by the Wayside",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "cairn_of_stray_paths"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_road",
+      "green_docket"
+    ],
+    "role": "combat"
+  },
+  {
+    "id": "green_docket_hedgerows_02",
+    "name": "The Tenant at the Gate",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "hawthorn_tenant"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_hedgerows",
+      "green_docket"
+    ],
+    "role": "combat"
+  },
+  {
+    "id": "green_docket_covenants_03",
+    "name": "A Cup Left at the Crossroads",
+    "act": 3,
+    "difficulty": "normal",
+    "enemies": [
+      "crossroads_cup"
+    ],
+    "weight": 2,
+    "tags": [
+      "stage_covenants",
+      "green_docket"
+    ],
+    "role": "combat"
   }
 ]

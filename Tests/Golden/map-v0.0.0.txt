@@ -185,124 +185,97 @@ r14 w1  B
 spec: rows 5 · boss rooms 1 · width 2-4 · wide guarantee rows True · lanes 3
 
 --- seed 1 ---
-rows 26 · nodes 60 · edges 71 · entries 3 · forks 12 · merges 12 · crossings 1
-widths 34333333222222222222222221
-uniform rows 23 · varied rows 2 · width-1 rows 1
-  Combat      total  25   per route 10
-  Elite       total   8   per route 3..4
-  Event       total   8   per route 3..4
-  Shop        total   4   per route 2
-  Rest        total   4   per route 2
+rows 17 · nodes 39 · edges 46 · entries 3 · forks 8 · merges 9 · crossings 0
+widths 34333222222222221
+uniform rows 14 · varied rows 2 · width-1 rows 1
+  Combat      total  22   per route 8..9
+  Elite       total   3   per route 1..2
+  Event       total   3   per route 1..2
+  Shop        total   2   per route 1
+  Rest        total   2   per route 1
   Boss        total   1   per route 1
   Treasure    total   2   per route 1
-  MultiCombat total   8   per route 2..3
+  MultiCombat total   4   per route 1..2
 
 r00 w3  C C C       0>0,1 1>2 2>3
 r01 w4  C C C C     0>0 1>1 2>1 3>1,2
 r02 w3  C C C       0>0 1>1 2>1,2
-r03 w3  ? ? ?       0>0 1>1 2>2
-r04 w3  C C C       0>0 1>1 2>2
-r05 w3  E E E       0>0 1>1 2>1,2
-r06 w3  M M M       0>0 1>1,2 2>2
-r07 w3  M M ?       0>0 1>0 2>0,1
-r08 w2  $ $         0>0 1>0,1
-r09 w2  R R         0>0 1>1
-r10 w2  C C         0>0 1>1
-r11 w2  C C         0>0 1>1
-r12 w2  E E         0>0 1>1
-r13 w2  E M         0>0 1>1
-r14 w2  ? ?         0>0 1>0,1
-r15 w2  T T         0>0 1>0,1
-r16 w2  C C         0>0 1>1
-r17 w2  M M         0>0 1>1
-r18 w2  $ $         0>0,1 1>1
-r19 w2  C C         0>0 1>1
-r20 w2  R R         0>0 1>1
-r21 w2  C C         0>0 1>1
-r22 w2  E E         0>0 1>1
-r23 w2  ? ?         0>0,1 1>0,1
-r24 w2  C C         0>0 1>0
-r25 w1  B           
+r03 w3  C C C       0>0 1>1 2>2
+r04 w3  M M ?       0>0 1>0 2>1
+r05 w2  C C         0>0 1>1
+r06 w2  M M         0>0 1>0,1
+r07 w2  E E         0>0,1 1>1
+r08 w2  E C         0>0 1>1
+r09 w2  ? ?         0>0 1>1
+r10 w2  $ $         0>0 1>0,1
+r11 w2  R R         0>0,1 1>1
+r12 w2  C C         0>0 1>1
+r13 w2  T T         0>0 1>1
+r14 w2  C C         0>0,1 1>1
+r15 w2  C C         0>0 1>0
+r16 w1  B           
 
 --- seed 7 ---
-rows 27 · nodes 74 · edges 92 · entries 3 · forks 18 · merges 19 · crossings 2
-widths 343333334444442222222222221
-uniform rows 22 · varied rows 4 · width-1 rows 1
-  Combat      total  32   per route 9..13
-  Elite       total   9   per route 3
-  Event       total  10   per route 3..6
-  Shop        total   7   per route 2..3
-  Rest        total   7   per route 2..3
+rows 18 · nodes 50 · edges 62 · entries 3 · forks 12 · merges 13 · crossings 1
+widths 343333444422222221
+uniform rows 14 · varied rows 3 · width-1 rows 1
+  Combat      total  26   per route 8..11
+  Elite       total   4   per route 1
+  Event       total   6   per route 1..3
+  Shop        total   3   per route 1..2
+  Rest        total   3   per route 1..2
   Boss        total   1   per route 1
   Treasure    total   3   per route 1..2
-  MultiCombat total   5   per route 2
+  MultiCombat total   4   per route 1
 
 r00 w3  C ? C       0>0 1>1,2,3 2>3
 r01 w4  C C C C     0>0,1 1>1 2>1 3>2
 r02 w3  C C C       0>0,1 1>1 2>2
-r03 w3  ? ? ?       0>0 1>1 2>2
+r03 w3  C C C       0>0 1>1 2>2
 r04 w3  C C C       0>0,1 1>0,1 2>2
-r05 w3  E E E       0>0,1 1>0,1 2>2
-r06 w3  M M M       0>0 1>1 2>2
-r07 w3  C ? R       0>0 1>1,2 2>3
-r08 w4  $ $ $ $     0>0 1>1 2>2 3>2,3
-r09 w4  R R R R     0>0 1>0,1 2>2 3>3
-r10 w4  C C C C     0>0 1>1 2>1,2 3>3
-r11 w4  C C C C     0>0 1>1,2 2>2 3>3
-r12 w4  E E E E     0>0,1 1>1 2>1,2 3>3
-r13 w4  C $ T C     0>0 1>0 2>1 3>1
-r14 w2  ? ?         0>0 1>1
-r15 w2  T T         0>0 1>1
-r16 w2  C C         0>0 1>1
-r17 w2  C C         0>0 1>0,1
-r18 w2  M M         0>0 1>1
-r19 w2  C ?         0>0 1>1
-r20 w2  $ $         0>0 1>1
-r21 w2  R R         0>0 1>1
-r22 w2  C C         0>0,1 1>1
-r23 w2  E E         0>0 1>0,1
-r24 w2  ? ?         0>0 1>0,1
-r25 w2  C C         0>0 1>0
-r26 w1  B           
+r05 w3  C ? R       0>0,1 1>1,2 2>3
+r06 w4  M M M M     0>0 1>1 2>2 3>3
+r07 w4  E E E E     0>0 1>1 2>1,2 3>3
+r08 w4  ? ? ? ?     0>0 1>0,1 2>2 3>2,3
+r09 w4  C $ T C     0>0 1>0,1 2>1 3>1
+r10 w2  $ $         0>0 1>1
+r11 w2  R R         0>0 1>1
+r12 w2  T T         0>0 1>1
+r13 w2  C C         0>0,1 1>1
+r14 w2  C C         0>0 1>1
+r15 w2  C C         0>0 1>1
+r16 w2  C C         0>0 1>0
+r17 w1  B           
 
 --- seed 20260820 ---
-rows 25 · nodes 86 · edges 108 · entries 4 · forks 23 · merges 22 · crossings 4
-widths 4322222444444444444444441
-uniform rows 21 · varied rows 3 · width-1 rows 1
-  Combat      total  31   per route 8..10
-  Elite       total  10   per route 3
-  Event       total  12   per route 3..5
-  Shop        total   8   per route 2
-  Rest        total   8   per route 2
+rows 16 · nodes 54 · edges 65 · entries 4 · forks 12 · merges 12 · crossings 2
+widths 4322244444444441
+uniform rows 12 · varied rows 3 · width-1 rows 1
+  Combat      total  23   per route 6..8
+  Elite       total   4   per route 1
+  Event       total   6   per route 1..3
+  Shop        total   4   per route 1
+  Rest        total   4   per route 1
   Boss        total   1   per route 1
   Treasure    total   5   per route 1..2
-  MultiCombat total  11   per route 2..3
+  MultiCombat total   7   per route 1..2
 
 r00 w4  C ? C C     0>0 1>1 2>1 3>2
 r01 w3  C C C       0>0 1>0 2>0,1
 r02 w2  C C         0>0,1 1>1
-r03 w2  ? ?         0>0 1>1
-r04 w2  C C         0>0 1>1
-r05 w2  E E         0>0 1>1
-r06 w2  C ?         0>0,1 1>2,3
-r07 w4  M M M M     0>0,1 1>0,1 2>2 3>3
-r08 w4  $ $ $ $     0>0 1>1 2>2 3>3
-r09 w4  R R R R     0>0 1>1 2>2 3>3
-r10 w4  C C C C     0>0 1>1 2>1,2 3>2,3
-r11 w4  E E E E     0>0 1>1,2 2>1,2 3>3
-r12 w4  M M T M     0>0 1>1 2>2 3>3
-r13 w4  ? ? ? ?     0>0 1>1 2>2,3 3>3
-r14 w4  T T T T     0>0 1>1 2>2 3>3
-r15 w4  C C C C     0>0 1>1,2 2>2 3>3
-r16 w4  C C C C     0>0 1>0,1 2>1,2 3>3
-r17 w4  M M M M     0>0 1>1 2>2 3>3
-r18 w4  C C C C     0>0,1 1>0,1 2>1,2 3>3
-r19 w4  $ $ $ $     0>0,1 1>1,2 2>2,3 3>3
-r20 w4  R R R R     0>0 1>1 2>2 3>3
-r21 w4  E E E E     0>0 1>1,2 2>2 3>3
-r22 w4  ? ? ? ?     0>0,1 1>0,1 2>2 3>3
-r23 w4  C C C C     0>0 1>0 2>0 3>0
-r24 w1  B           
+r03 w2  C C         0>0 1>1
+r04 w2  C ?         0>0,1 1>2,3
+r05 w4  M M M M     0>0 1>1,2 2>2 3>3
+r06 w4  E E E E     0>0,1 1>0,1 2>2 3>3
+r07 w4  ? ? ? ?     0>0 1>1 2>2 3>3
+r08 w4  M M T M     0>0 1>1 2>2 3>3
+r09 w4  $ $ $ $     0>0 1>1 2>1,2 3>2,3
+r10 w4  R R R R     0>0 1>1,2 2>1,2 3>3
+r11 w4  C C C C     0>0 1>1 2>2 3>3
+r12 w4  T T T T     0>0 1>1 2>2,3 3>3
+r13 w4  C C C C     0>0 1>1 2>2 3>3
+r14 w4  C C C C     0>0 1>0 2>0 3>0
+r15 w1  B           
 
 === ACT 4 ===
 spec: rows 5 · boss rooms 1 · width 2-4 · wide guarantee rows True · lanes 3

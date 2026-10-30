@@ -40,7 +40,7 @@ public static partial class ActThree
         ?? HillIntent(enemyId, intentId)
         ?? HillQueenIntent(enemyId, intentId);
 
-    // The nine. An elite is a Green Docket body like any other — the act's customs open on it — but it is
+    // The seven (and the Queen's three bearers). An elite is a Green Docket body like any other — the act's customs open on it — but it is
     // never a standard identity, so the pool tests count the two rosters apart.
     public static readonly IReadOnlySet<string> EliteIdentities = new HashSet<string>(StringComparer.Ordinal)
     {
@@ -50,9 +50,7 @@ public static partial class ActThree
         GreatTollFrogEnemyId,
         AntQueenEnemyId,
         "first_line_bearer", "second_line_bearer", "third_line_bearer",
-        JuniperEnemyId,
         SurveyorEnemyId,
-        HearingReedId, RemandReedId, RefusalReedId,
         MagistrateEnemyId,
     };
 
@@ -64,9 +62,7 @@ public static partial class ActThree
         .. BridgeStatuses(),
         .. FrogStatuses(),
         .. QueenStatuses(),
-        .. JuniperStatuses(),
         .. SurveyorStatuses(),
-        .. ReedStatuses(),
         .. MagistrateStatuses(),
         .. BossStatuses(),
     ];
@@ -79,9 +75,7 @@ public static partial class ActThree
         ?? BridgeIntent(enemyId, intentId)
         ?? FrogIntent(enemyId, intentId)
         ?? QueenIntent(enemyId, intentId)
-        ?? JuniperIntent(enemyId, intentId)
         ?? SurveyorIntent(enemyId, intentId)
-        ?? ReedIntent(enemyId, intentId)
         ?? MagistrateIntent(enemyId, intentId)
         ?? BossIntent(enemyId, intentId);
 
@@ -93,8 +87,6 @@ public static partial class ActThree
         [
             ACleanFight(),
             TheTollForCrossing(),
-            PetitionForRelief(),
-            NothingEndsHere(),
             FullRedress(),
             SettlementHasWeight(),
             TheCounterseal(),

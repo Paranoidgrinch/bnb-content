@@ -86,13 +86,18 @@ public static partial class ActThree
         Id = ClaimId,
         NameKey = "Claim",
         DescriptionKey =
-            "Recognised standing. It is not a damage bonus: each party reads its own Claims its own way. "
-            + "At most 3 to a party.",
+            "Recognised standing, won from 3 of your Trespass. Each Claim adds 3 to this party's attacks. "
+            + "At most 3.",
         Polarity = StatusPolarity.Buff,
         StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
         UsesStacks = true,
         Tags = [],
-        PassiveModifiers = [],
+        // Since the content cut of 2026-10-29 a Claim means the same thing everywhere: standing makes the
+        // party's blows heavier, on top of whatever its own rule reads into it.
+        PassiveModifiers =
+        [
+            new PassiveModifierData(PassiveModifierPipeline.DamageDealt, PassiveModifierOperation.AddPerStack, 3),
+        ],
         Triggers = [],
     };
 
@@ -213,59 +218,6 @@ public static partial class ActThree
                 sourceSelector: holder),
         ]);
 
-    // A Claim CHANGES HANDS: one leaves the holder and one arrives with the new one, and the announcement is
-    // never touched. The design spends a section on this distinction because it is what keeps the Boundary
-    // Stone, the Ditch Lamprey and the Bracken Moot from feeding each other forever.
-    public static IEffectNode<TContext> TransferClaim<TContext>(
-        ICombatantTargetSelector from, ICombatantTargetSelector to, bool foreign = true)
-        where TContext : class
-    {
-        var giver = CombatantTargetSelectors.FirstTarget(from);
-
-        // "No foreign rule may move a Claim downhill." By Stage 9 the Boundary Stone has precedence over
-        // lesser border disputes, and every transfer in the act asks whether one is standing — except the
-        // Stone's own, which is the rule the precedence belongs to.
-        ICombatExpression<TContext, bool> Permitted() => foreign
-            ? new OrExpression<TContext>(
-                new ComparisonExpression<TContext>(
-                    new CombatantCurrentHealthExpression<TContext>(Lawgiver(SuperiorJurisdictionId)),
-                    ComparisonOperator.Equal,
-                    new ConstantExpression<TContext>(0)),
-                new ComparisonExpression<TContext>(
-                    new CombatantStatusStacksExpression<TContext>(giver, new StatusDefinitionId(ClaimId)),
-                    ComparisonOperator.LessOrEqual,
-                    new CombatantStatusStacksExpression<TContext>(
-                        CombatantTargetSelectors.FirstTarget(to), new StatusDefinitionId(ClaimId))))
-            : new ComparisonExpression<TContext>(
-                new ConstantExpression<TContext>(1), ComparisonOperator.Equal,
-                new ConstantExpression<TContext>(1));
-
-        // Nothing arrives that did not leave. Two rules can answer the same grant — the Boundary Stone
-        // passing a title on and the Ditch Lamprey attaching to it are written to meet — and without this
-        // the pair would between them hand the recipient two Claims out of one, which is standing created
-        // by a transfer and the one thing the act's whole vocabulary is built to prevent.
-        return new ConditionalEffectNode<TContext>(
-            new AndExpression<TContext>(
-                new ComparisonExpression<TContext>(
-                    new CombatantStatusStacksExpression<TContext>(giver, new StatusDefinitionId(ClaimId)),
-                    ComparisonOperator.Greater,
-                    new ConstantExpression<TContext>(0)),
-                Permitted()),
-            new CausalSequenceEffectNode<TContext>(
-            [
-                new ModifySelectedStatusStacksNode<TContext>(
-                    giver,
-                    new StatusSelectionSpec(StatusPolarityFilter.Any)
-                    {
-                        Definition = new StatusDefinitionId(ClaimId),
-                    },
-                    new ConstantExpression<TContext>(-1)),
-                new ApplyStatusNode<TContext>(
-                    to, new StatusDefinitionId(ClaimId), new ConstantExpression<TContext>(1),
-                    sourceSelector: to),
-            ]));
-    }
-
     // ── the pressure intents ──────────────────────────────────────────────────────────────────────────────
 
     // An Act-III body's pressure intent is a blow and a violation, and the violation has to go through the
@@ -278,12 +230,10 @@ public static partial class ActThree
         $"{enemyId}.{intentId}" switch
         {
             "permit_hare.check_the_permit" => Pressure(10),
-            "mossbound_clerk.record_custom" => Pressure(10),
+            "cairn_of_stray_paths.loose_stone" => Pressure(7),
             "reckoning_hedge.measure_back" => Pressure(10),
             "errant_boundary_stone.move_the_marker" => Pressure(11),
             "hawthorn_tenant.enforce_the_plot" => Pressure(12),
-            "foxglove_witness.testify" => Pressure(10),
-            "contrary_magpie.contrary_cry" => Pressure(10),
             "two_bank_toll_ford.collect_both_banks" => Pressure(13),
             // The tollkeepers do not accuse; they charge. Their pressure intent names a price instead of
             // filing a violation.
@@ -292,21 +242,9 @@ public static partial class ActThree
             "blackthorn_bride.thorn_vow" => Pressure(14),
             "crossroads_cup.spill_at_the_crossroads" => Pressure(11),
             "roadside_witchling.roadside_hex" => Pressure(13),
-            "mandated_mushroom_circle.call_quorum" => Pressure(11),
-            "bracken_moot.hear_petition" => Pressure(11),
-            "the_sedge_bench.contempt_of_review" => Pressure(19),
-            "sleeping_stump_auditor.old_measure" => Pressure(13),
-            "precedent_lichen.cite_authority" => Pressure(10),
-            "footfall_root.remember_footstep" => Pressure(14),
-            "untranslated_trail_marker.unreadable_warning" => Pressure(14),
             "elsewhere_path.arrive_elsewhere" => Pressure(15),
-            "keeper_of_buried_names.speak_the_name" => Pressure(16),
             _ when EliteIntent(enemyId, intentId) is { } elite => elite,
-            _ when AppealsIntent(enemyId, intentId) is { } appeals => appeals,
-            _ when PrecedentsIntent(enemyId, intentId) is { } precedents => precedents,
-            _ when CourtIntent(enemyId, intentId) is { } court => court,
             // The two that GIVE. A gift carries its giver's name, which is the whole of the Witchling.
-            "roadside_witchling.courtesy_gift" => Hospitality(0),
             "crossroads_cup.offer_the_cup" => Hospitality(0),
             _ => null,
         };
@@ -355,96 +293,58 @@ public static partial class ActThree
         ClaimCreated(),
         GreenDocketCustoms(),
         NoHastyPassage(),
-        HillLawHeard(),
-        FirstUseBecameCustom(),
+        Quarry(),
+        QuarrySwitched(),
         EveryDetourLeavesAStone(),
         DetourStone(),
-        DetourLatch(),
         CurrentSurvey(),
         SurveyedThisTurn(),
+        SignSameCost(),
+        SignDifferentCost(),
         WanderingTitle(),
-        PriorDispute(),
+        BeyondTheBorder(),
+        BorderNext(),
         RespectTheOccupiedPlot(),
-        PlotEnforcedThisTurn(),
-        PriorPossession(),
-        ISawThatToo(),
-        TestifiedThisTurn(),
-        ContraryTestimony(),
-        ContestedThisTurn(),
         GreenDocketBody(),
         ClaimConsumed(),
-        QuorumRequiresDissent(),
-        QuorumFailedThisTurn(),
-        CommonMandate(),
-        CommonMandateGranted(),
-        ClaimsAreHeardTogether(),
-        Hearing(),
-        Attended(),
-        AimedLast(),
-        NamesOnceSpoken(),
-        NameHeardThisTurn(),
-        AllClaimsHaveValue(),
-        Tally(),
-        ThreeReadings(),
-        ReadingObserved(),
         Destination(),
         TheDestination(),
-        SuperiorJurisdiction(),
-        TheOldMeasure(),
-        MeasuredThisTurn(),
-        CitedAuthority(),
-        CitedThisTurn(),
-        DeepMemory(),
-        Memory(),
-        AttachToTheAppeal(),
-        AppealRemembered(),
-        AppealTakenThisTurn(),
-        UnderReviewBench(),
-        UnderReview(),
+        Attended(),
+        ArrowPointsElsewhere(),
         CourtesySafeConduct(),
+        GiftOutstanding(),
         APromiseMustBePaired(),
+        PromiseOpen(),
         BetrothalClaim(),
         BetrothalGiftGiven(),
         DrinkBeforeChoosing(),
-        CupPouredThisTurn(),
         Wergild(),
         WergildDemanded(),
         WergildDue(),
         WergildFallsDue(),
         OathAccepted(),
         PaymentAccordingToCharter(),
+        ShellEnergy(),
+        ShellDeed(),
+        ShellWorking(),
+        OathKept(),
         TollOnBothBanks(),
         .. EliteStatuses(),
     ];
 
     // The cards the act itself hands the player: never dealt into a deck, only pushed into a fight.
     public static IReadOnlyList<CardData> GivenCards() =>
-        [MakeAmends(), CiteTheOldSurvey(), CounterPetition(), SpendACounterseal(), RightOfAudience()];
+        [MakeAmends(), CiteTheOldSurvey(), CounterPetition(), SpendACounterseal(), RightOfAudience(),
+            WitchlingsGift(), WitchlingsCharm(), DrinkFromTheCup()];
 
-    // The standard roster, stage by stage. Anything in here is a Green Docket body, which is how a fight
+    // The standard roster: Road, Hedgerows, Tollwater, Covenants, three to a stage. Anything in here is a Green Docket body, which is how a fight
     // knows to open under the act's customs.
     public static readonly IReadOnlySet<string> Identities = new HashSet<string>(StringComparer.Ordinal)
     {
-        // Stage 1 — the Road of Permitted Turns
-        "permit_hare", "mossbound_clerk", "cairn_of_stray_paths",
-        // Stage 2 — the Surveyed Hedgerows
-        "reckoning_hedge", "errant_boundary_stone", "hawthorn_tenant",
-        // Stage 3 — the Meadow of Living Testimony
-        "foxglove_witness", "contrary_magpie",
-        // Stage 4 — the Tollwater Crossings
+        "permit_hare", "elsewhere_path", "cairn_of_stray_paths",
+        "reckoning_hedge", "hawthorn_tenant", "errant_boundary_stone",
         "charter_shell_snail", "streamside_oath_fish", "two_bank_toll_ford",
-        // Stage 5 — the Wayside Covenants
         "roadside_witchling", "blackthorn_bride", "crossroads_cup",
-        // Stage 6 — the Quorum Ring
-        "mandated_mushroom_circle", "bracken_moot",
-        // Stage 7 — the Mire of Appeals
-        "ditch_lamprey_of_appeals", "the_sedge_bench",
-        // Stage 8 — the Old-Growth Precedents
-        "sleeping_stump_auditor", "precedent_lichen", "footfall_root",
-        // Stage 9 — the Moonlit Jurisdictions
-        "untranslated_trail_marker", "elsewhere_path",
-        // Stage 10 — the Court Beneath the Hill
-        "keeper_of_buried_names", "handworn_tally_coin",
     };
 
     // What the player carries into a fight against any Green Docket body: the customs that turn three
@@ -518,16 +418,11 @@ public static partial class ActThree
     // all — a pressure intent, or a witness's own testimony — and nothing that asks about laws answers it.
     public const int NoLaw = 0;
     public const int HastyPassageLaw = 1;
-    public const int CustomaryUseLaw = 2;
+    public const int BorderLaw = 2;
     public const int CurrentSurveyLaw = 3;
     public const int OccupiedPlotLaw = 4;
     public const int PairedPromiseLaw = 5;
-    public const int QuorumLaw = 6;
-    public const int OldMeasureLaw = 7;
-    public const int InscriptionLaw = 8;
     public const int DestinationLaw = 9;
-    public const int HillLaw = 10;
-    public const int BuriedNamesLaw = 11;
 
     // Which law is being broken by the violation currently being filed. Kept on the player because the player
     // is the one combatant every rule can address, and read again the instant the Trespass lands.
@@ -580,78 +475,25 @@ public static partial class ActThree
         [
             new SetCombatantCounterNode<TContext>(
                 Applicant, LawBeingFiledCounter, new ConstantExpression<TContext>(law), relative: false),
-            // What the fight has established, for anything that cites authority rather than making it.
-            new SetCombatantCounterNode<TContext>(
-                Applicant, LastLawBrokenCounter, new ConstantExpression<TContext>(law), relative: false),
-            WitnessTestimony<TContext>(law),
-            CitedAuthoritySpeaks<TContext>(law),
             theLawSpeaks,
         ]);
     }
 
-    // The Contrary Magpie's whole identity: the argument is never about whether the thing happened, only
-    // about who gets to say they saw it. It has to sit INSIDE the filing rather than react to it, because a
-    // violation that has already landed is owed to somebody, and the design is explicit that Safe-Conduct is
-    // only offered against the source the Magpie leaves behind.
+    // The filing itself: one Trespass application owed to the lawgiver.
     // `stacks` is how many the filing attempts at once — one everywhere except where a party has staked
     // something (the Stag's verge, the Web's knot). It stays ONE application whatever the count, because a
     // licence refuses an application rather than a stack.
-    // `unrefusableBy` names the ONE licence that may not be spent against this filing — the Juniper's
-    // injunction against safe passage, and nothing else in the act. The licence is not removed and is still
+    // `unrefusableBy` names the ONE licence that may not be spent against this filing. The licence is not removed and is still
     // spendable against everything else; it simply has no say in this violation.
     private static IEffectNode<TContext> ContestedFiling<TContext>(
         ICombatantTargetSelector lawgiver, ICombatExpression<TContext, int>? stacks = null,
         string? unrefusableBy = null)
-        where TContext : class
-    {
-        var magpie = Lawgiver(ContraryTestimonyId);
-        var howMany = stacks ?? new ConstantExpression<TContext>(1);
-        StatusDefinitionId? beyond = unrefusableBy is null ? null : new StatusDefinitionId(unrefusableBy);
+        where TContext : class =>
+        new ApplyStatusNode<TContext>(
+            Applicant, new StatusDefinitionId(TrespassId), stacks ?? new ConstantExpression<TContext>(1),
+            sourceSelector: lawgiver,
+            unrefusableBy: unrefusableBy is null ? null : new StatusDefinitionId(unrefusableBy));
 
-        IEffectNode<TContext> Trespass(ICombatantTargetSelector owed) =>
-            new ApplyStatusNode<TContext>(
-                Applicant, new StatusDefinitionId(TrespassId), howMany,
-                sourceSelector: owed, unrefusableBy: beyond);
-
-        var mayContest = new AndExpression<TContext>(
-            // There has to be a Magpie standing, and it has to have kept quiet so far this turn. With no
-            // Magpie on the field the health read is zero and the whole question is false.
-            new AndExpression<TContext>(
-                new ComparisonExpression<TContext>(
-                    new CombatantCurrentHealthExpression<TContext>(magpie),
-                    ComparisonOperator.Greater,
-                    new ConstantExpression<TContext>(0)),
-                new ComparisonExpression<TContext>(
-                    new CombatantStatusStacksExpression<TContext>(
-                        magpie, new StatusDefinitionId(ContestedThisTurnId)),
-                    ComparisonOperator.Equal,
-                    new ConstantExpression<TContext>(0))),
-            new AndExpression<TContext>(
-                // It contests ANOTHER party's filing, never its own.
-                new ComparisonExpression<TContext>(
-                    new CombatantStatusStacksExpression<TContext>(
-                        lawgiver, new StatusDefinitionId(ContraryTestimonyId)),
-                    ComparisonOperator.Equal,
-                    new ConstantExpression<TContext>(0)),
-                // …and only where it has less standing than the party it is contradicting.
-                new ComparisonExpression<TContext>(
-                    new CombatantStatusStacksExpression<TContext>(magpie, new StatusDefinitionId(ClaimId)),
-                    ComparisonOperator.Less,
-                    new CombatantStatusStacksExpression<TContext>(lawgiver, new StatusDefinitionId(ClaimId)))));
-
-        return new ConditionalEffectNode<TContext>(
-            mayContest,
-            new CausalSequenceEffectNode<TContext>(
-            [
-                Trespass(magpie),
-                new ApplyStatusNode<TContext>(
-                    magpie, new StatusDefinitionId(ContestedThisTurnId), new ConstantExpression<TContext>(1)),
-            ]),
-            Trespass(lawgiver));
-    }
-
-    // "Whoever's turn just started is the player" — how a rule that counts per PLAYER turn tells the player's
-    // turn boundary from an enemy's, turns here belonging to combatants rather than to the table.
     private static ICombatExpression<TContext, bool> PlayersTurn<TContext>()
         where TContext : class =>
         new ComparisonExpression<TContext>(

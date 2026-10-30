@@ -21,11 +21,11 @@ public static class LogOnlyStatuses
         "lt_pulse_abandon", "lt_mark_double_file", "lt_mark_last_won", "lt_mark_guard_striker",
         // between-fight markings carried into a fight
         "act_one_markings", "act_two_markings",
+        // Act III's shared law, explained once by the tutorial (moment act3.docket) instead of on every body
+        "green_docket_body",
         // once-per-turn and once-per-fight guards of enemy rules
-        "eternal_cartouche_spent", "detour_recorded_this_turn", "surveyed_this_turn", "plot_enforced_this_turn",
-        "testified_this_turn", "contested_this_turn", "quorum_failed_this_turn", "name_heard_this_turn",
-        "measured_this_turn", "cited_this_turn", "appeal_taken_this_turn", "cup_poured_this_turn",
-        "web_measured_this_turn", "line_broken_this_turn", "appeal_moved_this_turn", "counter_petition_used",
+        "eternal_cartouche_spent", "surveyed_this_turn", "border_next",
+        "web_measured_this_turn", "line_broken_this_turn", "counter_petition_used",
         "credit_drawn_this_turn",
         // the spent ambush footing (AmbushFooting): its chip would say only that the chip before it is gone
         "ambush_footing_spent",

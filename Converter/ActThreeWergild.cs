@@ -67,8 +67,8 @@ public static partial class ActThree
 
     public static StatusData OathAccepted() =>
         Marker(OathAcceptedId, "Oath Accepted",
-            "This party treats restitution as a sacred thing: settling with it in full grants 2 Safe-Conduct "
-            + "instead of 1.");
+            "Settle its Wergild in full twice and it leaves in peace, counted as defeated. Each full settlement "
+            + "grants 2 Safe-Conduct.");
 
     // ── raising a demand ──────────────────────────────────────────────────────────────────────────────────
 
@@ -283,27 +283,10 @@ public static partial class ActThree
             new RemoveStatusNode<TurnEndedTriggeredEffectContext>(
                 Applicant, new StatusDefinitionId(Events.ActThreeEventObjects.BottledWaterId)),
             // A coin at the table is worn down by other people keeping their word.
-            PaidInKind(),
             // …and the elites that wrote their own terms of settlement read them here.
             EliteSettlement(),
-            new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
-                new ComparisonExpression<TurnEndedTriggeredEffectContext>(
-                    new CombatantStatusStacksExpression<TurnEndedTriggeredEffectContext>(
-                        creditor, new StatusDefinitionId(UnderReviewId)),
-                    ComparisonOperator.Greater,
-                    new ConstantExpression<TurnEndedTriggeredEffectContext>(0)),
-                new CausalSequenceEffectNode<TurnEndedTriggeredEffectContext>(
-                [
-                    new ModifySelectedStatusStacksNode<TurnEndedTriggeredEffectContext>(
-                        creditor,
-                        new StatusSelectionSpec(StatusPolarityFilter.Any)
-                        {
-                            Definition = new StatusDefinitionId(ClaimId),
-                        },
-                        new ConstantExpression<TurnEndedTriggeredEffectContext>(-1)),
-                    new RemoveStatusNode<TurnEndedTriggeredEffectContext>(
-                        creditor, new StatusDefinitionId(UnderReviewId)),
-                ])),
+            AnOathKept(),
+            TheOtherBankAngered(),
         ]);
 
         // Left owing. Each creditor clears its OWN demand one point at a time and leaves every other
@@ -375,8 +358,8 @@ public static partial class ActThree
                     count: 1,
                     purpose: "make amends"),
                 // The card exhausts when it is played, and comes back while anything is still owed — here
-                // rather than inside the payment, because a payment that could not go through (the Juniper's
-                // injunction, an empty purse) still has to leave the player a way to try again. The count is
+                // rather than inside the payment, because a payment that could not go through (an
+                // empty purse) still has to leave the player a way to try again. The count is
                 // ONE rather than none, because the copy being played is still in hand while its own program
                 // runs and is about to leave.
                 AnotherMeansToPay(),
@@ -385,30 +368,23 @@ public static partial class ActThree
         TurnEndHandDestinationZone = CardZone.Hand,
     };
 
-    // The Juniper's injunction against coin closes this route while it stands. With the hedge on the field
-    // its demand is the only one there is, so "the Juniper's Wergild cannot be paid with Energy" and "coin
-    // pays nothing" are the same sentence — and the offering route is guaranteed open beside it.
     private static ICombatExpression<CardPlayContext, bool> CanPayInCoin() =>
         new AndExpression<CardPlayContext>(
-            new NotExpression<CardPlayContext>(
-                PaymentEnjoined<CardPlayContext>(InjunctionCoinId)),
+            CharterAcceptsCoin(),
             new ComparisonExpression<CardPlayContext>(
                 new CombatantCurrentResourceExpression<CardPlayContext>(
                     CombatantTargetSelectors.Source, StandardCombatIds.EnergyResource),
                 ComparisonOperator.GreaterOrEqual,
                 new ConstantExpression<CardPlayContext>(1)));
 
-    // Another card in hand to offer (the copy being played is in hand too) and no injunction against offering.
+    // Another card in hand to offer (the copy being played is in hand too).
     private static ICombatExpression<CardPlayContext, bool> CanOfferACard() =>
-        new AndExpression<CardPlayContext>(
-            new NotExpression<CardPlayContext>(
-                PaymentEnjoined<CardPlayContext>(InjunctionOfferingId)),
             new ComparisonExpression<CardPlayContext>(
                 new SubtractExpression<CardPlayContext>(
                     new CombatantZoneCardCountExpression<CardPlayContext>(CombatantTargetSelectors.Source, CardZone.Hand),
                     new CombatantZoneCardCountExpression<CardPlayContext>(CombatantTargetSelectors.Source, CardZone.Hand, MakeAmendsTag)),
                 ComparisonOperator.GreaterOrEqual,
-                new ConstantExpression<CardPlayContext>(1)));
+                new ConstantExpression<CardPlayContext>(1));
 
     private static IEffectNode<CardPlayContext> PayInCoin() =>
         new ConditionalEffectNode<CardPlayContext>(
@@ -429,23 +405,8 @@ public static partial class ActThree
         var player = CombatantTargetSelectors.Source;
         var offering = new IteratedCardExpression<CardPlayContext>();
 
-        // "Cards with Base Cost 0 cannot be used as Offerings to pay Wergild owed to Charter-Shell Snail."
-        // The charter is the Snail's, so it applies while the Snail is one of the parties owed anything.
-        var acceptable = new AndExpression<CardPlayContext>(
-            new NotExpression<CardPlayContext>(
-                PaymentEnjoined<CardPlayContext>(InjunctionOfferingId)),
-            new NotExpression<CardPlayContext>(
-            new AndExpression<CardPlayContext>(
-                new ComparisonExpression<CardPlayContext>(
-                    new CombatantStatusStacksFromSourceExpression<CardPlayContext>(
-                        player, new StatusDefinitionId(WergildId), Lawgiver(PaymentAccordingToCharterId)),
-                    ComparisonOperator.Greater,
-                    new ConstantExpression<CardPlayContext>(0)),
-                new ComparisonExpression<CardPlayContext>(
-                    new CardInstanceBaseCostExpression<CardPlayContext>(
-                        offering, StandardCombatIds.EnergyResource),
-                    ComparisonOperator.Equal,
-                    new ConstantExpression<CardPlayContext>(0)))));
+        // While the Snail is owed anything, its shell names the only offering it accepts.
+        var acceptable = CharterAcceptsOffering(offering);
 
         return new CausalSequenceEffectNode<CardPlayContext>(
         [
@@ -468,8 +429,6 @@ public static partial class ActThree
                             new CausalSequenceEffectNode<CardPlayContext>(
                             [
                                 PayOneWergild<CardPlayContext>(),
-                                // A name already spoken is worth twice as much to the Keeper.
-                                BuriedNamesAsPayment(offering),
                             ])),
                         new MoveCardToZoneNode<CardPlayContext>(player, offering, CardZone.DiscardPile),
                     ]))),

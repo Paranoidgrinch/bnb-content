@@ -133,18 +133,10 @@ public static class EliteRelics
             "Play three cards in a turn and the line is kept: draw 2.",
             combatRule: EliteRelicRules.TheProperLine),
 
-        Elite(EliteRelicRules.BoneTagId, "Bone Tag from the Juniper", "green_docket_elite_juniper_injunction",
-            "The first affliction laid on you each fight is refused.",
-            combatRule: EliteRelicRules.BoneTagFromTheJuniper),
-
         Elite(EliteRelicRules.BoundaryCordId, "Obsolete Boundary Cord",
             "green_docket_elite_surveyor_of_forgotten_paths",
             "Every turn in which something on you lapsed of its own accord: 3 Block.",
             combatRule: EliteRelicRules.ObsoleteBoundaryCord),
-
-        Elite(EliteRelicRules.ReedId, "Reed Cut at the Hearing", "green_docket_elite_three_reeds_of_appeal",
-            "The first Claim you lay each fight is laid twice.",
-            combatRule: EliteRelicRules.ReedCutAtTheHearing),
 
         Elite(EliteRelicRules.ThornId, "Thorn Chosen From Three", "green_docket_elite_magistrate_of_thorns",
             "At every opening hand, choose: 10 Block, a card and 1 Energy, or 6 damage to every enemy.",

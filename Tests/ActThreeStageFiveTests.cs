@@ -34,75 +34,6 @@ public class ActThreeStageFiveTests
 
     // ── Roadside Witchling — Courtesy Safe-Conduct ────────────────────────────────────────────────────────
 
-    // The gift carries her name, which is the whole point: only her own stacks count.
-    [Fact]
-    public void Her_courtesy_is_hers_and_says_so()
-    {
-        var (play, _, witchling) = FightProbe.Start(
-            FightProbe.Solo("roadside_witchling", "courtesy_gift"));
-
-        Assert.Equal(0, LicencesFrom(play, witchling));
-        play.CombatDriver!.EndTurn();
-
-        Assert.Equal(1, LicencesFrom(play, witchling));
-        play.Dispose();
-    }
-
-    // Carried through a whole turn unspent, the courtesy turns into a grievance — which the licence you were
-    // saving then pays for. Refusing her own gift's grievance with the licence she gave you is exactly the
-    // trap the identity is: the gift is real, and it is not free.
-    [Fact]
-    public void Carrying_her_gift_a_whole_turn_unspent_is_rude()
-    {
-        var (play, _, witchling) = FightProbe.Start(
-            FightProbe.Solo("roadside_witchling", "courtesy_gift"), health: 200);
-
-        play.CombatDriver!.EndTurn(); // she gives: the opening licence and hers
-        Assert.Equal(2, FightProbe.StacksOf(Hero(play), ActThree.SafeConductId));
-
-        play.CombatDriver.EndTurn();  // a whole player turn passes unspent — and she files for it
-
-        // One licence paid for the grievance, and she handed over another afterwards.
-        Assert.Equal(2, FightProbe.StacksOf(Hero(play), ActThree.SafeConductId));
-        Assert.Equal(2, LicencesFrom(play, witchling)); // both of the two are now hers
-        play.Dispose();
-    }
-
-    // Spend it and she is pleased. The fight's own opening licence is spent first — the engine takes the
-    // oldest — so this needs a turn where only hers is left to pay.
-    [Fact]
-    public void Spending_her_gift_pleases_her()
-    {
-        var (play, session, witchling) = FightProbe.Start(
-            FightProbe.Roster("covenants", energy: 9,
-                ("roadside_witchling", "courtesy_gift", null),
-                ("permit_hare", "stamp_passage", null)),
-            deck: [.. Enumerable.Repeat(OneCost, 5)], health: 300);
-
-        var hare = Enemies(play)[1].Id;
-        var witchlingId = Enemies(play)[0].Id;
-        // Burn the fight's opening licence on the Hare's third-card rule — and hit HER while doing it, so
-        // that there is room for her to recover afterwards.
-        Play(play, session, OneCost, witchlingId);
-        Play(play, session, OneCost, witchlingId);
-        Play(play, session, OneCost, witchlingId);
-        Assert.Equal(0, FightProbe.StacksOf(Hero(play), ActThree.SafeConductId));
-
-        play.CombatDriver!.EndTurn(); // she gives, and the Hare only blocks
-        Assert.Equal(1, LicencesFrom(play, Enemies(play)[0].Id));
-
-        var before = Enemies(play)[0].Health.Current;
-        Play(play, session, OneCost, hare);
-        Play(play, session, OneCost, hare);
-        Play(play, session, OneCost, hare); // the third card again: HER licence pays for it
-        Assert.Equal(0, LicencesFrom(play, Enemies(play)[0].Id));
-
-        play.CombatDriver.EndTurn(); // the reckoning finds fewer of hers than the turn began with
-
-        Assert.Equal(before + 6, Enemies(play)[0].Health.Current);
-        play.Dispose();
-    }
-
     // ── The Blackthorn Bride ──────────────────────────────────────────────────────────────────────────────
 
     [Fact]
@@ -163,45 +94,6 @@ public class ActThreeStageFiveTests
     }
 
     // ── Crossroads Cup — Drink Before Choosing ────────────────────────────────────────────────────────────
-
-    [Fact]
-    public void The_cup_pours_every_second_turn()
-    {
-        var (play, _, cup) = FightProbe.Start(
-            FightProbe.Solo("crossroads_cup", "silver_rim"), health: 200);
-
-        Assert.Equal(0, LicencesFrom(play, cup));
-        play.CombatDriver!.EndTurn();
-        Assert.Equal(1, LicencesFrom(play, cup)); // the second player turn begins
-        play.CombatDriver.EndTurn();
-        Assert.Equal(1, LicencesFrom(play, cup)); // …and the third does not
-        play.CombatDriver.EndTurn();
-        Assert.Equal(2, LicencesFrom(play, cup)); // …but the fourth does
-        play.Dispose();
-    }
-
-    // The Cup's generosity is a debt engine: the first licence you spend each turn is recognised as somebody
-    // else's standing.
-    [Fact]
-    public void Spending_a_licence_creates_standing_somewhere_else()
-    {
-        var (play, session, _) = FightProbe.Start(
-            FightProbe.Roster("covenants", energy: 9,
-                ("crossroads_cup", "silver_rim", null),
-                ("permit_hare", "stamp_passage", null)),
-            deck: [.. Enumerable.Repeat(OneCost, 5)], health: 300);
-
-        var hare = Enemies(play)[1].Id;
-        Play(play, session, OneCost, hare);
-        Play(play, session, OneCost, hare);
-        Play(play, session, OneCost, hare); // the Hare's third-card rule, refused by the opening licence
-
-        // Somebody was recognised for it — and the Cup holds none, so the Cup is the one with the fewest.
-        var claims = Enemies(play).Sum(e => FightProbe.StacksOf(e, ActThree.ClaimId));
-        Assert.Equal(1, claims);
-        Assert.Equal(1, FightProbe.StacksOf(Enemies(play)[0], ActThree.CupPouredThisTurnId));
-        play.Dispose();
-    }
 
     // Once a turn: the Cup makes one toast, not one per licence.
     [Fact]

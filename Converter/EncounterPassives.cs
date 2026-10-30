@@ -244,14 +244,6 @@ public static class EncounterPassives
         // The Magistrate asks its question at the start of the player's turn, so the player carries it.
         ActThree.MagistrateEnemyId =>
             [new StartingStatusSpec(new StatusDefinitionId(ActThree.JudgmentOfferId), 1)],
-        // The tribunal's chain has to outlive any of its three reeds, so the player carries it: a rule kept
-        // on a reed would stop working the moment that reed was cut.
-        ActThree.HearingReedId or ActThree.RemandReedId or ActThree.RefusalReedId =>
-            [new StartingStatusSpec(new StatusDefinitionId(ActThree.AppealChainId), 1)],
-        // The Juniper grants its leave at the start of the player's turn, of the player's own hand, so the
-        // player carries the asking.
-        ActThree.JuniperEnemyId =>
-            [new StartingStatusSpec(new StatusDefinitionId(ActThree.GrantedUseId), 1)],
         // The Oracle's riddle is asked of the player's hand, so the player carries it.
         Elites.BlackInkOracle.EnemyId =>
             [new StartingStatusSpec(new StatusDefinitionId(Elites.BlackInkOracle.OracleRulesId), 1)],

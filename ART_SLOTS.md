@@ -2,7 +2,7 @@
 
 Generated: `dotnet run --project Converter -- --art-slots ART_SLOTS.md`. **Do not edit by hand.**
 
-**935 pictures**: 488 cards, 259 relics, 184 bodies
+**919 pictures**: 491 cards, 257 relics, 167 bodies
 (every enemy, elite and boss) and 4 the player can be. Every one of them is filled today by a PLACEHOLDER — a plate with the file's own
 name and the word placeholder on it, written by `bnb-godot/tools/make-card-art.py`,
 `make-relic-art.py` and `make-enemy-art.py`. A painted picture replaces one by being saved over it, so
@@ -54,7 +54,7 @@ The relic briefs below are the design canon's own words
 `BnB_Elite_Relics_MASTER_AND_VISUAL_CANON.md` for #169–210). Frames, palettes and the label rule live
 there in full; only the object line is repeated here, because that is the line that differs per relic.
 
-## Relics — 259 pictures
+## Relics — 257 pictures
 
 The catalogue number is the design canon's, and it is not part of the file name: the id is.
 
@@ -300,7 +300,7 @@ The catalogue number is the design canon's, and it is not part of the file name:
 | 167 | `flood_reckoning_crown` | Flood-Reckoning Crown | boss | A royal crown whose band carries four stepped water-level marks and reed finials. One side rises slightly higher, hinting at changing flood state. |
 | 168 | `black_flood_vessel` | Black Flood Vessel | boss | A broad black ceramic flood jar with a carved wave band and a single dark stream spilling over one side. The jar body is almost silhouette-black against the ivory icon field. |
 
-### Elite relics — 33
+### Elite relics — 31
 
 | # | code | title | rarity | the object |
 |---:|---|---|---|---|
@@ -323,9 +323,7 @@ The catalogue number is the design canon's, and it is not part of the file name:
 | 190 | `toll_stone_wrong_bank` | Toll-Stone from the Wrong Bank | elite | A flat river stone with a toll mark chiselled into one face. |
 | 191 | `coin_left_in_the_throat` | Coin Left in the Throat | elite | A swollen bronze coin, its face worn blank on one side by something that held it a long time. |
 | 192 | `head_of_the_line` | The Head of the Line | elite | Three white bark strips laid end to end on a pewter tray, each notched at exactly the same interval. |
-| 193 | `bone_tag_from_the_juniper` | Bone Tag from the Juniper | elite | A thin bone tag pierced and hung on a juniper twig, one edge scorched. |
 | 194 | `obsolete_boundary_cord` | Obsolete Boundary Cord | elite | A coil of tarred measuring cord with three brass tags, two of them struck through. |
-| 195 | `reed_cut_at_the_hearing` | Reed Cut at the Hearing | elite | Three black-water reeds bound with a linen strip — the shortest cut clean, the other two torn. |
 | 196 | `thorn_chosen_from_three` | Thorn Chosen From Three | elite | Three long blackthorns mounted in a pewter clasp like a set of pen nibs. |
 | 197 | `the_shorter_ferrule` | The Shorter Ferrule | elite | A surveyor's cord with a brass ferrule at each end, cut to two slightly different measures. |
 | 198 | `broken_granary_seal` | Broken Granary Seal | elite | A fired-clay granary seal split cleanly in two. |
@@ -347,7 +345,7 @@ The catalogue number is the design canon's, and it is not part of the file name:
 | 209 | `tooth_from_the_false_lid_3` | Tooth From the False Lid III | mimic | The first blow of every fight glances off the tooth: 12 Block and heal 2. It comes with the lock-plate, its keyhole ringed with tooth-marks. |
 | 210 | `tooth_from_the_false_lid_4` | Tooth From the False Lid IV | mimic | The first blow of every fight glances off the tooth: 16 Block and heal 4. It comes with the whole false lid, folded shut around it like a jaw at rest. |
 
-## Bodies — 184 pictures
+## Bodies — 167 pictures
 
 Every enemy, elite and boss in the game. No visual canon was written for the bodies, so
 the row carries what the fight itself says: how much it can take, how many rooms use it,
@@ -394,7 +392,7 @@ ever met in a boss room is drawn as a boss, even if it also turns up as filler.
 | `weigher_of_the_unspoken_heart` | The Weigher of the Unspoken Heart | 610 | 1 | The Weigher of the Unspoken Heart |
 | `whispering_catalogue_boss` | The Whispering Catalogue | 258 | 1 | The Whispering Catalogue |
 
-### Elite bodies — 48
+### Elite bodies — 44
 
 | code | title | HP | rooms | met in |
 |---|---|---:|---:|---|
@@ -409,12 +407,10 @@ ever met in a boss room is drawn as a boss, even if it also turns up as filler.
 | `final_appointment` | Final Appointment | 34 | 1 | The Three Appointments |
 | `first_appointment` | First Appointment | 24 | 1 | The Three Appointments |
 | `first_line_bearer` | First Line-Bearer | 27 | 1 | Ant Queen of the Proper Line |
-| `grandmother_web` | Grandmother Web | 154 | 1 | Grandmother Web |
+| `grandmother_web` | The Old Web | 154 | 1 | The Old Web |
 | `great_toll_frog` | Great Toll Frog | 176 | 1 | Great Toll Frog |
-| `hearing_reed` | Hearing Reed | 78 | 1 | Three Reeds of Appeal |
 | `inventory_lantern` | Inventory Lantern | 24 | 1 | The Seizure Procession |
 | `iron_warrant_avatar` | Iron Warrant Avatar | 94 | 1 | The Warrant Becomes Iron |
-| `juniper_injunction` | Juniper Injunction | 188 | 1 | Juniper Injunction |
 | `keeper_of_the_living_cartouche` | Keeper of the Living Cartouche | 300 | 1 | Keeper of the Living Cartouche |
 | `keeper_of_the_thirty_six_decans` | Keeper of the Thirty-Six Decans | 365 | 1 | Keeper of the Thirty-Six Decans |
 | `lamp_thief` | Lamp Thief | 100 | 1 | The Tombbreakers Three |
@@ -427,8 +423,6 @@ ever met in a boss room is drawn as a boss, even if it also turns up as filler.
 | `portcullis_judicator` | Portcullis Judicator | 98 | 1 | The Gatehouse Drops the Portcullis |
 | `pry_bar_veteran` | Pry-Bar Veteran | 112 | 1 | The Tombbreakers Three |
 | `red_tape_golem` | Red Tape Golem | 96 | 1 | The Red Tape Golem |
-| `refusal_reed` | Refusal Reed | 90 | 1 | Three Reeds of Appeal |
-| `remand_reed` | Remand Reed | 84 | 1 | Three Reeds of Appeal |
 | `reopening_hours_monolith` | Reopening-Hours Monolith | 92 | 1 | The Office That Reopens Itself |
 | `rolling_stacks_colossus` | The Rolling Stacks Colossus | 132 | 1 | The Rolling Stacks Colossus |
 | `rope_master_of_the_corvee` | Rope-Master of the Corvée | 275 | 1 | Rope-Master of the Corvée |
@@ -452,39 +446,36 @@ ever met in a boss room is drawn as a boss, even if it also turns up as filler.
 | code | title | HP | rooms | met in |
 |---|---|---:|---:|---|
 | `brass_maw_of_returns` | Brass Maw of Returns | 50 | 3 | Brass Maw of Returns |
-| `cairn_of_stray_paths` | Cairn of Stray Paths | 58 | 5 | Every Detour Leaves a Stone |
+| `cairn_of_stray_paths` | Cairn of Stray Paths | 58 | 4 | Every Detour Leaves a Stone |
 | `cursed_loot_bearer` | Cursed Loot Bearer | 156 | 3 | Every Object Requires a Form |
 
-### Standard bodies — 98
+### Standard bodies — 85
 
 | code | title | HP | rooms | met in |
 |---|---|---:|---:|---|
 | `a_very_official_line` | A Very Official Line | 29 | 3 | A Very Official Line |
-| `blackthorn_bride` | The Blackthorn Bride | 101 | 3 | The Bride at the Threshold |
+| `blackthorn_bride` | The Blackthorn Bride | 101 | 2 | The Bride at the Threshold |
 | `blank_death_certificate` | Blank Death Certificate | 100 | 1 | Blank Death Certificate |
-| `bracken_moot` | The Bracken Moot | 98 | 2 | Boundary Hearing |
-| `charter_shell_snail` | Charter-Shell Snail | 90 | 2 | Shell Charter |
+| `charter_shell_snail` | Charter-Shell Snail | 90 | 1 | Shell Charter |
 | `checkout_codex` | Checkout Codex | 89 | 1 | Checkout Codex |
 | `clerkling_apprentice` | Clerkling Apprentice | 28 | 1 | First Day at the Counter |
 | `cobra_of_the_entry_mark` | Cobra of the Entry Mark | 94 | 3 | The Entry Mark |
 | `contradictory_signpost` | Contradictory Signpost | 49 | 2 | Mandatory in Every Direction |
-| `contrary_magpie` | Contrary Magpie | 73 | 2 | Contrary Permit |
 | `cornerstone_oath_stone` | Cornerstone Oath-Stone | 137 | 2 | Oath in the Foundation |
 | `corridor_in_the_wrong_edition` | Corridor in the Wrong Edition | 60 | 2 | Corridor in the Wrong Edition |
 | `crabwise_shelf` | Crabwise Shelf | 56 | 2 | Crabwise Shelf |
 | `crocodile_beneath_the_balance` | Crocodile Beneath the Balance | 196 | 2 | Jaws Beneath the Scale |
 | `crocodile_of_the_short_measure` | Crocodile of the Short Measure | 100 | 2 | The Short Measure |
 | `crooked_rod_bearer` | Crooked Rod Bearer | 88 | 2 | The Crooked Standard |
-| `crossroads_cup` | Crossroads Cup | 82 | 4 | A Cup at the Crossroads |
+| `crossroads_cup` | Crossroads Cup | 82 | 3 | A Cup at the Crossroads |
 | `dead_letter_ouroboros` | Dead-Letter Ouroboros | 47 | 3 | Dead-Letter Ouroboros |
-| `ditch_lamprey_of_appeals` | Ditch Lamprey of Appeals | 98 | 2 | Upstream Appeal |
 | `donkey_of_the_third_tally` | Donkey of the Third Tally | 119 | 1 | The Donkey Was Counted Three Times |
 | `drowned_field_scribe` | Drowned Field Scribe | 106 | 2 | Silted Record |
 | `eclipse_scarab` | Eclipse Scarab | 174 | 1 | Black Noon |
-| `elsewhere_path` | Elsewhere Path | 113 | 2 | The Hawthorn Destination |
+| `elsewhere_path` | Elsewhere Path | 113 | 2 | The Path Points Past the Hare |
 | `embossed_seal` | Embossed Seal | 24 | 1 | The Certificate Is Alive |
 | `empty_handed_envoy` | Empty-Handed Envoy | 102 | 1 | Nothing Was Presented, Yet the Fee Remains |
-| `errant_boundary_stone` | Errant Boundary Stone | 75 | 5 | The Errant Line |
+| `errant_boundary_stone` | Errant Boundary Stone | 75 | 2 | The Errant Line |
 | `eternal_reed_scribe` | Eternal Reed Scribe | 177 | 2 | The Eternal Shift |
 | `exception_imp` | Exception Imp | 40 | 2 | Exception to the Exception |
 | `fading_number_token` | Fading Number Token | 43 | 2 | Your Number Fades |
@@ -495,31 +486,25 @@ ever met in a boss room is drawn as a boss, even if it also turns up as filler.
 | `feather_bearer` | Feather-Bearer | 184 | 2 | Feather's True Measure |
 | `filing_beetle` | Filing Beetle | 40 | 1 | Misplaced Files |
 | `flood_mark_reader` | Flood-Mark Reader | 105 | 2 | Read the Floodmark |
-| `footfall_root` | Footfall Root | 124 | 2 | Footsteps Become Precedent |
 | `foreign_tribute_shade` | Foreign Tribute Shade | 115 | 2 | Correct Tribute, Wrong Procedure |
 | `form_rat_a` | Form Rat | 11 | 1 | Forms in the Gutter |
 | `form_rat_b` | Form Rat | 11 | 1 | Forms in the Gutter |
 | `form_rat_c` | Form Rat | 11 | 1 | Forms in the Gutter |
 | `fourfold_vessel_guardian` | Fourfold Vessel Guardian | 170 | 3 | The Fourfold Office |
-| `foxglove_witness` | Foxglove Witness | 75 | 2 | Roadside Testimony |
 | `golden_ushabti_captain` | Golden Ushabti Captain | 194 | 2 | The Eternal Shift |
-| `handworn_tally_coin` | Handworn Tally Coin | 113 | 2 | Every Name Has Value |
 | `hawthorn_tenant` | The Hawthorn Tenant | 83 | 3 | Thorn Lease |
 | `hieroglyphic_complaint_wall` | Hieroglyphic Complaint Wall | 150 | 2 | Undismissed Complaint |
 | `hungry_grain_thief` | Hungry Grain Thief | 96 | 2 | Granary Theft |
 | `inverted_hourglass` | Inverted Hourglass | 51 | 2 | The Sand Runs Upward |
 | `jar_seal_scarab_swarm` | Jar-Seal Scarab Swarm | 94 | 1 | The Jar Seal Breaks |
-| `keeper_of_buried_names` | Keeper of Buried Names | 132 | 4 | Names Kept Below Ground |
 | `kneeling_petitioners` | Kneeling Petitioners | 120 | 3 | Processional Seal |
 | `levy_constable` | Levy Constable | 44 | 1 | The Levy Comes Due |
 | `linen_wrapped_embalmer` | Linen-Wrapped Embalmer | 150 | 3 | Instructions for Wrapping |
 | `living_certificate` | Living Certificate | 28 | 1 | The Certificate Is Alive |
-| `mandated_mushroom_circle` | Mandated Mushroom Circle | 94 | 2 | Hare Before the Quorum |
 | `margin_note_gnawer` | Margin-Note Gnawer | 33 | 1 | Correction in the Margin |
 | `minute_moth` | Minute Moth | 36 | 1 | Minutes Become Moths |
 | `mnemonic_chain` | Mnemonic Chain | 93 | 1 | Mnemonic Chain |
 | `moon_cycle_ibis` | Moon-Cycle Ibis | 155 | 1 | Fixed-Day Moon |
-| `mossbound_clerk` | Mossbound Clerk | 70 | 2 | The First Use Became Custom |
 | `municipal_gargoyle` | Municipal Gargoyle | 48 | 1 | Stone Ordinance |
 | `name_eating_baboon` | Name-Eating Baboon | 90 | 2 | Chewed Credentials |
 | `name_erasing_chisel_spirit` | Name-Erasing Chisel Spirit | 166 | 2 | Erase the Favor |
@@ -530,10 +515,9 @@ ever met in a boss room is drawn as a boss, even if it also turns up as filler.
 | `ordinance_tablet` | Ordinance Tablet | 46 | 1 | Subsection Carved in Stone |
 | `orphan_citation` | Orphan Citation | 62 | 2 | Orphan Citation |
 | `palette_bearing_apprentice` | Palette-Bearing Apprentice | 119 | 3 | Fresh Pigment |
-| `permit_hare` | Permit Hare | 66 | 5 | The Hare Checks the Road |
-| `precedent_lichen` | Precedent Lichen | 98 | 2 | Two Authorities Agree |
+| `permit_hare` | Permit Hare | 66 | 3 | The Hare Checks the Road |
 | `queue_crier_homunculus` | Queue-Crier Homunculus | 31 | 2 | The Line Has Started Moving |
-| `reckoning_hedge` | Reckoning Hedge | 77 | 6 | Counter-Survey |
+| `reckoning_hedge` | Reckoning Hedge | 77 | 3 | Counter-Survey |
 | `reed_cord_surveyor` | Reed-Cord Surveyor | 85 | 2 | The Surveyor Measures the Road |
 | `roadside_witchling` | Roadside Witchling | 92 | 2 | The Witch at the Milestone |
 | `rope_gang_wraith` | Rope-Gang Wraith | 120 | 1 | Keep the Work Rhythm |
@@ -543,18 +527,15 @@ ever met in a boss room is drawn as a boss, even if it also turns up as filler.
 | `second_person_entry` | Second-Person Entry | 60 | 2 | Second-Person Entry |
 | `self_correcting_record` | Self-Correcting Record | 53 | 1 | The Record Corrects You |
 | `silt_buried_farmer_shade` | Silt-Buried Farmer Shade | 109 | 1 | Rising Field |
-| `sleeping_stump_auditor` | Sleeping Stump Auditor | 117 | 2 | The Old Measure |
 | `spare_life_jar` | Spare-Life Jar | 83 | 2 | Dead-Letter Revival |
 | `star_table_scribe` | Star-Table Scribe | 160 | 2 | The Fixed Decan Measure |
 | `stone_hauler_ushabti` | Stone-Hauler Ushabti | 128 | 2 | The Stones Grow Heavier |
 | `streamside_oath_fish` | Streamside Oath-Fish | 84 | 2 | Oaths in Running Water |
 | `sun_seal_bearer` | Sun-Seal Bearer | 134 | 3 | The Authorized Impression |
-| `the_sedge_bench` | The Sedge Bench | 111 | 2 | Charter Review |
 | `the_testator` | The Testator | 70 | 2 | The Last Will of Nobody in Particular |
-| `two_bank_toll_ford` | Two-Bank Toll Ford | 97 | 4 | Both Banks Demand Payment |
+| `two_bank_toll_ford` | Two-Bank Toll Ford | 97 | 2 | Both Banks Demand Payment |
 | `uncounted_pilgrim` | Uncounted Pilgrim | 92 | 2 | No Number in the Register |
 | `unfinished_mummy` | Unfinished Mummy | 160 | 3 | Hooks Still Attached |
-| `untranslated_trail_marker` | The Untranslated Trail Marker | 121 | 2 | Three Readings on One Stone |
 | `wax_notary` | Wax Notary | 48 | 2 | The Wax Is Still Warm |
 | `wrong_window_scribe` | Wrong-Window Scribe | 25 | 2 | The Wrong Window |
 
@@ -569,7 +550,7 @@ Drawn like a body and facing RIGHT — the player stands on the left of the aren
 | `lieutenant` | The Lieutenant | New stripes on an old uniform, and always first through the door. |
 | `sorcerers_apprentice` | The Sorcerer's Apprentice | Knows every incantation, and not quite what happens when one is put after another. |
 
-## Cards — 488 pictures
+## Cards — 491 pictures
 
 No visual canon was ever written for the cards, so the row carries the card's own rules
 text instead of a brief. Act = the act that unlocks it; the starters, the Junk and the
@@ -1031,7 +1012,7 @@ cards a boss or a door hands over are never offered and have no act.
 | `lt_whistle` | Whistle | working | uncommon | Gain 3 Block. You may spend 1 Authority to draw 2 cards. |
 | `lt_witness` | Witness | working | common | Gain 4 Block. Your next Deed hit on a Challenged enemy this turn counts twice toward its Challenge. |
 
-### Given in play — 92
+### Given in play — 95
 
 Handed over by a boss, a door or an event rather than offered; never in a reward pool.
 
@@ -1063,6 +1044,7 @@ Handed over by a boss, a door or an event rather than offered; never in a reward
 | `dedicate_a_work` | Dedicate a Work | Give Eanna a card from hand for this fight: claimed settles 4 Temple Due, others 1, Junk 0. |
 | `draw_against_the_treasury` | Draw Against the Treasury | Once a turn, spend a Credit: remove up to 12 Block from the treasury. |
 | `draw_ahead` | Draw Ahead | Draw 1 card now, taken from a later day. |
+| `drink_from_the_cup` | Drink from the Cup | Gain 1 Energy. The enemy with the fewest Claims gains a Claim. Unplayed, it is gone at the end of the turn. |
 | `edict_of_the_open_audience_action` | Open the Audience | Once a combat: cards in your hand cost 0 this turn. |
 | `erasure_tablet_action` | Erase the Line | Once a combat: every enemy's next action deals no damage; they gain 20 Block instead. |
 | `far_boundary` | Far Boundary | Take the far measure this turn. Met: it loses 10 HP and its cover. |
@@ -1126,6 +1108,8 @@ Handed over by a boss, a door or an event rather than offered; never in a reward
 | `wash_the_inscribed_vessel` | Wash the Inscribed Vessel | Once a turn, 1 Energy: empty the Inscribed jar for good. Take 1 Embalmed. |
 | `wash_the_paperwork_vessel` | Wash the Paperwork Vessel | Once a turn, 1 Energy: empty the Paperwork jar for good. Take 1 Embalmed. |
 | `wash_the_weighed_vessel` | Wash the Weighed Vessel | Once a turn, 1 Energy: empty the Weighed jar for good. Take 1 Embalmed. |
+| `witchlings_charm` | The Witchling's Charm | Gain 8 Block. Draw 1. Using it settles her gift. |
+| `witchlings_gift` | The Witchling's Gift | Accept: 1 Safe-Conduct, or her Charm. Use it within 2 turns or owe her 1 Trespass. Unplayed, it is declined. |
 | `work_the_sluice` | Work the Sluice | Once a turn, spend 1 Sluice Authority: at turn end the water moves a step back to the Ordered Flood. |
 | `wrong_form` | Wrong Form | Exhaust. Discard another card. |
 | `yield_your_place` | Yield Your Place | Move one place away from the Counter. Gain 6 Block. One queue choice a turn. |

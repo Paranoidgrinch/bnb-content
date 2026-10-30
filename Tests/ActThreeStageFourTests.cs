@@ -93,7 +93,7 @@ public class ActThreeStageFourTests
         play.CombatDriver!.EndTurn(); // demand raised; the opening licence is untouched, nothing refused it
         Assert.Equal(1, FightProbe.StacksOf(Hero(play), ActThree.SafeConductId));
 
-        MakeAmends(play, session, option: 0, at: snail); // pay in coin
+        MakeAmends(play, session, option: 1, at: snail); // offer a Deed — the shell names a Deed this turn
         Assert.Equal(0, OwedTo(play, snail));
 
         play.CombatDriver.EndTurn(); // it falls due, and finds nothing owing
@@ -111,12 +111,13 @@ public class ActThreeStageFourTests
             FightProbe.Solo("two_bank_toll_ford", "collect_both_banks", energy: 9),
             deck: [.. Enumerable.Repeat("paper_cut", 5)], health: 400);
 
-        // Three Trespass from the Ford become its Claim, and the Claim becomes a demand.
+        // Three Trespass from the Ford become its Claim, and the Claim becomes a demand for 2.
         for (var turn = 0; turn < 4; turn++)
             play.CombatDriver!.EndTurn();
-        Assert.Equal(1, FightProbe.StacksOf(Enemies(play)[0], ActThree.ClaimId));
-        Assert.Equal(1, OwedTo(play, ford));
+        Assert.Equal(2, OwedTo(play, ford));
 
+        MakeAmends(play, session, option: 0, at: ford);
+        Assert.True(HasMakeAmends(play), "one point is still owed");
         MakeAmends(play, session, option: 0, at: ford);
 
         Assert.Equal(0, OwedTo(play, ford));
@@ -126,10 +127,10 @@ public class ActThreeStageFourTests
 
     // ── Two-Bank Toll Ford — Toll on Both Banks ───────────────────────────────────────────────────────────
 
-    // "A recognised right and an active demand are separate legal facts." The Ford keeps the Claim AND
-    // charges for it.
+    // Since the content cut of 2026-10-29 every Claim the Ford gains becomes Wergild at once: the Claim is
+    // spent on a demand for 2.
     [Fact]
-    public void The_ford_keeps_its_claim_and_charges_for_it()
+    public void The_fords_claim_becomes_wergild_at_once()
     {
         var (play, _, ford) = FightProbe.Start(
             FightProbe.Solo("two_bank_toll_ford", "collect_both_banks"), health: 400);
@@ -137,8 +138,8 @@ public class ActThreeStageFourTests
         for (var turn = 0; turn < 4; turn++)
             play.CombatDriver!.EndTurn();
 
-        Assert.Equal(1, FightProbe.StacksOf(Enemies(play)[0], ActThree.ClaimId)); // not spent
-        Assert.Equal(1, OwedTo(play, ford));                                      // and charged for
+        Assert.Equal(0, FightProbe.StacksOf(Enemies(play)[0], ActThree.ClaimId)); // spent
+        Assert.Equal(2, OwedTo(play, ford));                                      // on a demand for 2
         play.Dispose();
     }
 

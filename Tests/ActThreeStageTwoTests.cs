@@ -107,78 +107,7 @@ public class ActThreeStageTwoTests
 
     // ── Errant Boundary Stone — Wandering Title ───────────────────────────────────────────────────────────
 
-    // The two teaching fights open with the argument already under way: the Stone holds a Claim before the
-    // player has done anything, and passes it straight on.
-    [Fact]
-    public void Prior_dispute_hands_the_title_on_before_the_first_action()
-    {
-        var (play, _, _) = FightProbe.Start(
-            FightProbe.Authored("green_docket_hedgerows_duo_01"));
-
-        var hedge = Enemies(play)[0];
-        var stone = Enemies(play)[1];
-
-        Assert.Equal(0, FightProbe.StacksOf(stone, ActThree.ClaimId)); // it did not keep it
-        Assert.Equal(1, FightProbe.StacksOf(hedge, ActThree.ClaimId)); // the neighbour holds it now
-        play.Dispose();
-    }
-
-    // …and the Claim the neighbour ends up with is not a NEW one, which is the whole point of the
-    // distinction: the Hedge's survey is not reversed by a title that merely changed hands.
-    [Fact]
-    public void A_title_that_changes_hands_is_not_a_new_claim()
-    {
-        var (play, session, _) = FightProbe.Start(
-            FightProbe.Authored("green_docket_hedgerows_duo_01", energy: 9),
-            deck: [OneCost, AlsoOneCost, TwoCost, OneCost, AlsoOneCost]);
-
-        var hedge = Enemies(play)[0];
-        Assert.Equal(1, FightProbe.StacksOf(hedge, ActThree.ClaimId));
-        Assert.Equal(0, FightProbe.StacksOf(hedge, ActThree.ClaimCreatedId));
-
-        // The survey therefore still reads the way it started: same cost twice is the violation.
-        Play(play, session, OneCost, hedge.Id);
-        Play(play, session, AlsoOneCost, hedge.Id);
-
-        Assert.Equal(0, FightProbe.StacksOf(Hero(play), ActThree.SafeConductId)); // refused, so it fired
-        play.Dispose();
-    }
-
-    // A title only wanders downhill: with nobody holding fewer, it stays put.
-    [Fact]
-    public void A_title_does_not_wander_to_a_neighbour_holding_as_many()
-    {
-        var (play, _, _) = FightProbe.Start(
-            FightProbe.Authored("green_docket_hedgerows_duo_01"));
-
-        var stone = Enemies(play)[1];
-        var hedge = Enemies(play)[0];
-        // After Prior Dispute the Hedge holds 1 and the Stone none; a second Claim on the Stone would find no
-        // neighbour holding fewer than the one it is being asked to leave.
-        Assert.Equal(0, FightProbe.StacksOf(stone, ActThree.ClaimId));
-        Assert.Equal(1, FightProbe.StacksOf(hedge, ActThree.ClaimId));
-        play.Dispose();
-    }
-
     // ── The Hawthorn Tenant — Respect the Occupied Plot ───────────────────────────────────────────────────
-
-    // Striking the occupier while a weaker party stands beside it is a tenancy dispute, not a fight.
-    [Fact]
-    public void Striking_the_tenant_over_a_weaker_neighbour_is_a_trespass()
-    {
-        var (play, session, _) = FightProbe.Start(
-            FightProbe.Authored("green_docket_hedgerows_duo_02", energy: 9),
-            deck: [.. Enumerable.Repeat(OneCost, 5)]);
-
-        var hedge = Enemies(play)[0];
-        var tenant = Enemies(play)[1];
-        Assert.True(hedge.Health.Current < tenant.Health.Current, "the Hedge is fielded as the weaker body");
-
-        Play(play, session, OneCost, tenant.Id);
-
-        Assert.Equal(0, FightProbe.StacksOf(Hero(play), ActThree.SafeConductId)); // the licence paid
-        play.Dispose();
-    }
 
     // Once a turn: the Tenant objects to being struck, not to each blow. The costs alternate on purpose —
     // the Hedge standing beside it is measuring, and two cards of the same Base Cost would be ITS violation,
@@ -199,38 +128,6 @@ public class ActThreeStageTwoTests
         play.Dispose();
     }
 
-    // Striking the weaker party instead is nobody's business.
-    [Fact]
-    public void Striking_the_weaker_party_is_no_trespass()
-    {
-        var (play, session, _) = FightProbe.Start(
-            FightProbe.Authored("green_docket_hedgerows_duo_02", energy: 9),
-            deck: [.. Enumerable.Repeat(OneCost, 5)]);
-
-        var hedge = Enemies(play)[0].Id;
-        Play(play, session, OneCost, hedge);
-
-        Assert.Equal(1, FightProbe.StacksOf(Hero(play), ActThree.SafeConductId));
-        Assert.Equal(0, FightProbe.StacksOf(Hero(play), ActThree.TrespassId));
-        play.Dispose();
-    }
-
     // ── Prior Possession ──────────────────────────────────────────────────────────────────────────────────
 
-    // The Stone may still GIVE the Tenant a title — what it may not do is take one back.
-    [Fact]
-    public void A_title_may_be_lodged_in_the_hawthorn()
-    {
-        var (play, _, _) = FightProbe.Start(
-            FightProbe.Authored("green_docket_hedgerows_duo_03"));
-
-        var stone = Enemies(play)[0];
-        var tenant = Enemies(play)[1];
-
-        Assert.Equal(0, FightProbe.StacksOf(stone, ActThree.ClaimId));
-        Assert.Equal(1, FightProbe.StacksOf(tenant, ActThree.ClaimId));
-        // …and once it is there it is the Tenant's own, not a new grant anybody may answer.
-        Assert.Equal(0, FightProbe.StacksOf(tenant, ActThree.ClaimCreatedId));
-        play.Dispose();
-    }
 }

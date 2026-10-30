@@ -2,9 +2,8 @@ using BnbContent.Converter;
 
 namespace BnbContent.Tests;
 
-// Act III as the master counts it: 25 unique identities across ten stages, and 40 encounter templates — 12
-// solo and 28 combination. The act deliberately holds fewer bodies and more recombination than Act II,
-// because customary law only becomes interesting when several parties hold competing rights.
+// Act III after the content cut of 2026-10-29: 12 identities across four stages (Road, Hedgerows, Tollwater,
+// Covenants), 19 encounter templates — 10 solo and 9 duos — seven elites and five bosses.
 public class ActThreePoolTests
 {
     private static readonly BabData Data = BabData.Load(TestData.Directory);
@@ -16,19 +15,18 @@ public class ActThreePoolTests
         ActThreeWithRole("combat").Concat(ActThreeWithRole("multi_combat"));
 
     [Fact]
-    public void The_act_fields_twenty_five_standard_identities()
+    public void The_act_fields_twelve_standard_identities()
     {
         var fielded = Standard().SelectMany(e => e.Enemies).Distinct().ToList();
 
-        Assert.Equal(25, fielded.Count);
+        Assert.Equal(12, fielded.Count);
     }
 
-    // §5's stage table: 12 solo, 28 combination, 40 in all.
     [Fact]
-    public void The_encounter_pool_is_the_shape_the_master_states()
+    public void The_encounter_pool_is_the_shape_the_cut_states()
     {
-        Assert.Equal(12, ActThreeWithRole("combat").Count());
-        Assert.Equal(28, ActThreeWithRole("multi_combat").Count());
+        Assert.Equal(10, ActThreeWithRole("combat").Count());
+        Assert.Equal(9, ActThreeWithRole("multi_combat").Count());
         // …and the one fight that is not on the stage table at all: the treasure that bites, which the map
         // spec fields on 15% of the act's cairns.
         var mimic = Assert.Single(ActThreeWithRole("mimic"));
@@ -36,9 +34,9 @@ public class ActThreePoolTests
         Assert.Equal(15, FightProbe.Game.Acts![2].MapGeneration!.TreasureMimicChancePercent);
     }
 
-    // Ten stages, four encounters each — the act is a curriculum, and every stage teaches its four.
+    // Four stages, four or five encounters each.
     [Fact]
-    public void Every_stage_fields_four_encounters()
+    public void Every_stage_fields_four_or_five_encounters()
     {
         var stages = Standard()
             .SelectMany(e => e.Tags ?? [])
@@ -46,8 +44,8 @@ public class ActThreePoolTests
             .GroupBy(t => t)
             .ToList();
 
-        Assert.Equal(10, stages.Count);
-        Assert.All(stages, stage => Assert.Equal(4, stage.Count()));
+        Assert.Equal(4, stages.Count);
+        Assert.All(stages, stage => Assert.InRange(stage.Count(), 4, 5));
     }
 
     // Every identity the act fields is authored, or the fight cannot be built at all.
@@ -70,16 +68,11 @@ public class ActThreePoolTests
             Assert.Contains(enemy, ActThree.Identities);
     }
 
-    // Two of the forty are three-body fights, and the master says which: the Stage-3 testimony capstone and
-    // the Stage-10 reckoning. Everything else is one body or two.
+    // No standard fight fields more than two bodies.
     [Fact]
-    public void Exactly_two_encounters_field_three_bodies()
+    public void No_standard_encounter_fields_three_bodies()
     {
-        var trios = Standard().Where(e => e.Enemies.Count == 3).Select(e => e.Id).ToList();
-
-        Assert.Equal(2, trios.Count);
-        Assert.Contains("green_docket_testimony_trio_01", trios);
-        Assert.Contains("green_docket_court_trio_01", trios);
+        Assert.DoesNotContain(Standard(), e => e.Enemies.Count > 2);
     }
 
     // A combination scales its bodies down; a solo is the identity at full strength.
@@ -109,15 +102,13 @@ public class ActThreePoolTests
 
     // ── the elite layer ───────────────────────────────────────────────────────────────────────────────────
 
-    // Nine elites, and the master's own roster: permission, custom, crossing, restitution, formation,
-    // injunction, obsolete right, appeal, judgment. Act III requires three elites on every valid path, so a
-    // nine-encounter pool is what gives a run variance without padding.
+    // Seven elites since the content cut: the Juniper Injunction and the Three Reeds of Appeal are gone.
     [Fact]
-    public void The_act_fields_nine_elite_encounters()
+    public void The_act_fields_seven_elite_encounters()
     {
         var elites = Data.Encounters.Where(e => e.Act == 3 && e.Role == "elite").ToList();
 
-        Assert.Equal(9, elites.Count);
+        Assert.Equal(7, elites.Count);
     }
 
     // An elite is a Green Docket body like any other — the act's customs open on it — but it is never a
@@ -148,9 +139,7 @@ public class ActThreePoolTests
             (ActThree.GreatTollFrogEnemyId, 176),
             (ActThree.AntQueenEnemyId, 160),
             ("first_line_bearer", 27), ("second_line_bearer", 27), ("third_line_bearer", 27),
-            (ActThree.JuniperEnemyId, 188),
             (ActThree.SurveyorEnemyId, 198),
-            (ActThree.HearingReedId, 78), (ActThree.RemandReedId, 84), (ActThree.RefusalReedId, 90),
             (ActThree.MagistrateEnemyId, 220),
         ];
 

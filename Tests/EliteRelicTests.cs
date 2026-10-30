@@ -57,7 +57,7 @@ public class EliteRelicTests
     public void Every_elite_encounter_pays_out_the_one_relic_written_for_it()
     {
         var elites = Data.Encounters.Where(e => e.Role == "elite" && e.Act <= 4).ToList();
-        Assert.Equal(33, elites.Count);
+        Assert.Equal(31, elites.Count);
 
         foreach (var elite in elites)
         {
@@ -267,14 +267,6 @@ public class EliteRelicTests
     {
         var (play, _, _) = WithRelic(EliteRelicRules.CensoringInkId);
         Assert.Equal(8, Block(Hero(play)));
-        play.Dispose();
-    }
-
-    [Fact]
-    public void The_bone_tag_lays_down_a_refusal_at_the_opening_hand()
-    {
-        var (play, _, _) = WithRelic(EliteRelicRules.BoneTagId);
-        Assert.Equal(1, FightProbe.StacksOf(Hero(play), EliteRelicRules.BoneTagCharmId));
         play.Dispose();
     }
 
