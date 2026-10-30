@@ -5,11 +5,11 @@ using RogueDeck.Scenario.Authoring;
 
 namespace BnbContent.Converter;
 
-// Act IV — The Licensing Labyrinth: the five words the whole act is written in, and the Stage-1 identities
+// Act IV — The Licensing Labyrinth: the three words the whole act is written in, and the Stage-1 identities
 // that teach the first of them.
 //
 // Act III's pressure was source-bound STANDING. Act IV's is PROCEDURE — the act asks not what you did but
-// whether you did it to the letter — and five words carry it. Their canonical definition was reconstructed
+// whether you did it to the letter — and three words carry it. Their canonical definition was reconstructed
 // from several hundred uses across three masters and ratified by the user on 2026-08-29; this file is that
 // ratification in code, and every later Act-IV stage is a reading of it.
 //
@@ -19,17 +19,13 @@ namespace BnbContent.Converter;
 //   Burdened X  the TAX. Every card costs 1 more Energy, and paying that surcharge works one stack off. That
 //               is why it collides with the measure: the tax changes what the turn actually cost, so paying
 //               it and hitting the measure are one decision, not two.
-//   Inscribed X the REGISTER, and the amplifier. The next status applied to you lands one stack larger —
-//               whichever direction it was going — and one Inscribed is spent doing it. Hence the act's
-//               central player-side decision: spend the register on a blessing of your own, or let it
-//               magnify the next curse.
 //   Entombed X  BURIAL PRESSURE. It accumulates; at five it buries you — the turn is lost — and five are
 //               spent, so the cycle can start again.
-//   Embalmed X  PRESERVATION. Whenever something on the bearer would fade of its own accord, one Embalmed is
-//               spent instead and the value stays. A player preserves their own buffs with it; an enemy
-//               holds a debuff in place with it.
 //
-// Two of the five needed the engine to learn something (both bought in this step, both proved in
+// Since the content cut of 2026-10-30 the act speaks only these three. Inscribed and Embalmed are gone; the
+// one good idea among them, preservation, is the Natron Bearer's own rule.
+//
+// Two of the original five needed the engine to learn something (both bought in this step, both proved in
 // RogueDeck-Core's own tests): what a turn has actually COST (`resourceSpentThisTurn` — the measure has no
 // meaning without it), and a status that ENLARGES the next application to its bearer and is spent doing it
 // (a StatusAmplificationSpec, the mirror of the prohibition Act III's Safe-Conduct is built on). The other
@@ -42,9 +38,7 @@ public static partial class ActFour
 
     public const string WeighedId = "weighed";
     public const string BurdenedId = "burdened";
-    public const string InscribedId = "inscribed";
     public const string EntombedId = "entombed";
-    public const string EmbalmedId = "embalmed";
     public const string LabyrinthBodyId = "labyrinth_body";
 
     // What Entombed comes to before it buries its bearer, and what is spent when it does (elite master §6.3).
@@ -197,29 +191,6 @@ public static partial class ActFour
         ],
     };
 
-    // The register. Neutral on purpose: being written down is neither a blessing nor a curse until the next
-    // thing happens to you, and which of the two it turns out to be is the player's decision to make.
-    //
-    // The whole of its behaviour is the engine's amplification seam — it enlarges the next application to its
-    // bearer by one stack, in either direction, and is spent doing it. It never enlarges an application of
-    // itself, and one application is enlarged once however much register is held.
-    public static StatusData Inscribed() => new()
-    {
-        Id = InscribedId,
-        NameKey = "Inscribed",
-        DescriptionKey =
-            "You are written into the register. The next status applied to you — good or bad — lands with "
-            + "1 more stack, and 1 Inscribed is spent doing it.",
-        Polarity = StatusPolarity.Neutral,
-        StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
-        UsesStacks = true,
-        Tags = [],
-        PassiveModifiers = [],
-        Triggers = [],
-        Amplification = new StatusAmplificationData(
-            StatusAmplificationScope.Any, AddStacks: 1, StacksSpent: 1),
-    };
-
     // Burial pressure. It does nothing at all until it comes to five, and then it takes the turn: the engine's
     // Stun for one turn, which is exactly "the player loses the turn" — and five stacks are spent, so the
     // cycle can build again rather than the fight ending in a permanent burial.
@@ -261,23 +232,6 @@ public static partial class ActFour
         ],
     };
 
-    // Preservation. It carries no rule of its own: what it does is written at the one place in this game where
-    // a status fades of its own accord — `Fade` below — and every fading status in the port asks there.
-    public static StatusData Embalmed() => new()
-    {
-        Id = EmbalmedId,
-        NameKey = "Embalmed",
-        DescriptionKey =
-            "Preserved. Whenever a status on this character would fade of its own accord, 1 Embalmed is "
-            + "spent instead and the status keeps its stack.",
-        Polarity = StatusPolarity.Neutral,
-        StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
-        UsesStacks = true,
-        Tags = [],
-        PassiveModifiers = [],
-        Triggers = [],
-    };
-
     // Every Licensing Labyrinth body wears this, so a rule can say "the parties in this fight" without
     // knowing which side it is looking from — the same seam Act III's Green Docket body is.
     public static StatusData LabyrinthBody() => new()
@@ -296,43 +250,36 @@ public static partial class ActFour
     // ── fading, and what preservation does to it ──────────────────────────────────────────────────────────
 
     // A status LOSING a stack because a turn went by — Panic shedding one, Poison fading after its tick, Ward
-    // Wax paying for the enemy turn. Every such loss in the port is written through here, because Embalmed is
-    // defined against exactly this event and nothing else: a stack spent, cleansed or paid away is not a fade.
+    // Wax paying for the enemy turn. Every such loss in the port is written through here.
     //
-    // When the bearer is preserved the fade does not happen and one Embalmed is spent in its place, which
-    // makes Embalmed X read "the next X fades on this character do not happen" — one rule, no ordering
-    // agreement between two turn-end triggers, and the same answer whichever status was about to shrink.
-    // `negative` says whether the thing being held is an affliction. A preservation is written down only for
-    // those, because the one body that lives off preservation — Stage 8's Hieroglyphic Complaint Wall — is
-    // built on grievances staying legally active, and a player's own wax being held is not a grievance.
+    // Since the content cut of 2026-10-30 preservation is no longer an act word (Embalmed is gone): it is the
+    // Natron Bearer's own rule. While a Natron Bearer stands, an AFFLICTION on the player does not fade at all,
+    // and the moment is written down (DecaysPreserved), because the Bearer and the Linen House's Overseer both
+    // answer it. Anything else fades as it always did, and is counted as an unpreserved fade if it hurt.
     public static IEffectNode<TContext> Fade<TContext>(
         ICombatantTargetSelector bearer, string statusId, int stacks = 1, bool negative = true)
         where TContext : class =>
-        new ConditionalEffectNode<TContext>(
-            new ComparisonExpression<TContext>(
-                new CombatantStatusStacksExpression<TContext>(bearer, new StatusDefinitionId(EmbalmedId)),
-                ComparisonOperator.Greater,
-                new ConstantExpression<TContext>(0)),
-            negative
-                ? new CausalSequenceEffectNode<TContext>(
-                [
-                    new ModifyStatusStacksNode<TContext>(
-                        bearer, new StatusDefinitionId(EmbalmedId), new ConstantExpression<TContext>(-1)),
-                    new SetCombatantCounterNode<TContext>(
-                        bearer, DecaysPreserved, new ConstantExpression<TContext>(1), relative: true),
-                ])
-                : new ModifyStatusStacksNode<TContext>(
-                    bearer, new StatusDefinitionId(EmbalmedId), new ConstantExpression<TContext>(-1)),
-            negative
-                ? new CausalSequenceEffectNode<TContext>(
+        negative
+            ? new ConditionalEffectNode<TContext>(
+                new AndExpression<TContext>(
+                    new TargetHasStatusExpression<TContext>(bearer, new StatusDefinitionId(PassiveStatuses.ApplicantId)),
+                    new ComparisonExpression<TContext>(
+                        new CountTargetsExpression<TContext>(
+                            CombatantTargetSelectors.WithStatus(
+                                CombatantTargetSelectors.AllAliveCombatants, new StatusDefinitionId(DryWhatWouldDecayId))),
+                        ComparisonOperator.Greater,
+                        new ConstantExpression<TContext>(0))),
+                new SetCombatantCounterNode<TContext>(
+                    bearer, DecaysPreserved, new ConstantExpression<TContext>(1), relative: true),
+                new CausalSequenceEffectNode<TContext>(
                 [
                     new ModifyStatusStacksNode<TContext>(
                         bearer, new StatusDefinitionId(statusId), new ConstantExpression<TContext>(-stacks)),
                     new SetCombatantCounterNode<TContext>(
                         bearer, DecaysUnpreserved, new ConstantExpression<TContext>(1), relative: true),
-                ])
-                : new ModifyStatusStacksNode<TContext>(
-                    bearer, new StatusDefinitionId(statusId), new ConstantExpression<TContext>(-stacks)));
+                ]))
+            : new ModifyStatusStacksNode<TContext>(
+                bearer, new StatusDefinitionId(statusId), new ConstantExpression<TContext>(-stacks));
 
     // ── shapes ────────────────────────────────────────────────────────────────────────────────────────────
 
@@ -340,59 +287,26 @@ public static partial class ActFour
     [
         Weighed(),
         Burdened(),
-        Inscribed(),
         Entombed(),
-        Embalmed(),
         LabyrinthBody(),
-        // Stage 2 — the Gate of Counted Names
-        Uncounted(),
-        NoNumberInTheRegister(),
-        StolenName(),
-        ForgedEntry(),
-        ChewedCredentials(),
         // Stage 3 — the Granary Courts
         Ration(),
         HungryForRations(),
-        // Stage 4 — the Floodmark Basins
-        HighWaterMark(),
-        SiltedRecord(),
-        SiltedRecordRule(),
+        // the Silt-Buried Farmer Shade
         Flood(),
         RisingFlood(),
-        // Stage 5 — the Tribute Causeway
-        AdministrativeCostOfTribute(),
-        Tally(),
-        ThirdTally(),
-        PresentedInFull(),
-        NothingWasPresented(),
         // Stage 6 — the Corvée Yards
-        WorkStrain(),
-        LoseTheWorkRhythm(),
         Escape(),
         EscapePlan(),
         Stone(),
         StoneWork(),
         // Stages 7 and 8 — the Monument Works and the Hall of Reed and Ink
         Placement(),
-        KeptOath(),
-        BrokenOath(),
-        FoundationOath(),
-        FreshPigment(),
-        FreshPigmentRule(),
-        Complaint(),
-        UndismissedComplaint(),
-        // Stages 9 and 10 — the Courts of the Royal Seal and the Processional Galleries
-        AuthorizedImpression(),
-        CounterfeitAuthorization(),
-        ProcessionalApproval(),
         // Stages 11 and 12 — the House of Linen and the Canopic Vaults
         DryWhatWouldDecay(),
-        InstructionsForWrapping(),
         HooksStillAttached(),
         .. VesselOffices(),
         // Stages 13 and 14 — the Necropolis Warrens and the Chamber of Fixed Days
-        NecropolisPassage(),
-        EveryObjectRequiresAForm(),
         LunarReturn(),
         .. LastRites(),
         ApproachOfNoon(),
@@ -400,56 +314,31 @@ public static partial class ActFour
         ChiselSet(),
         EraseTheFavor(),
         RoyalFavor(),
-        DynasticFavor(),
-        // Stages 16 and 17 — the Hall of the Balance and the Sealed Court Before Eternity
-        FeatherOfFinalMeasure(),
-        BalanceOpen(),
-        WaitsBeneathTheScale(),
-        JawsOpen(),
-        EntryDoesNotClose(),
         // The elite layer
         .. EliteStatuses(),
+        .. CutStatuses(),
+        .. StelaeFaces(),
+        JackalMovesTo(),
         // …and the bosses
         .. BossStatuses(),
     ];
 
     // The standard roster, stage by stage.
+    // The standard roster since the content cut of 2026-10-30, stage by stage.
     public static readonly IReadOnlySet<string> Identities = new HashSet<string>(StringComparer.Ordinal)
     {
         // Stage 1 — the Boundary Stelae
-        "reed_cord_surveyor", "crooked_rod_bearer",
-        // Stage 2 — the Gate of Counted Names
-        "uncounted_pilgrim", "cobra_of_the_entry_mark", "name_eating_baboon",
-        // Stage 3 — the Granary Courts
+        "reed_cord_surveyor", "crooked_rod_bearer", "silt_buried_farmer_shade",
+        // Stage 2 — the Granary Courts
         "crocodile_of_the_short_measure", "jar_seal_scarab_swarm", "hungry_grain_thief",
-        // Stage 4 — the Floodmark Basins
-        "flood_mark_reader", "drowned_field_scribe", "silt_buried_farmer_shade",
-        // Stage 5 — the Tribute Causeway
-        "foreign_tribute_shade", "donkey_of_the_third_tally", "empty_handed_envoy",
-        // Stage 6 — the Corvée Yards
-        "rope_gang_wraith", "runaway_laborer", "stone_hauler_ushabti",
-        // Stage 7 — the Monument Works
-        "fallen_capstone_golem", "cornerstone_oath_stone",
-        // Stage 8 — the Hall of Reed and Ink
-        "palette_bearing_apprentice", "hieroglyphic_complaint_wall",
-        // Stage 9 — the Courts of the Royal Seal
-        "sun_seal_bearer", "false_seal_forger",
-        // Stage 10 — the Processional Galleries
-        "kneeling_petitioners",
-        // Stage 11 — the House of Linen
-        "natron_bearer", "linen_wrapped_embalmer", "unfinished_mummy",
-        // Stage 12 — the Canopic Vaults
-        "fourfold_vessel_guardian",
-        // Stage 13 — the Necropolis Warrens
-        "false_door_finder", "cursed_loot_bearer",
-        // Stage 14 — the Chamber of Fixed Days
-        "star_table_scribe", "moon_cycle_ibis", "eclipse_scarab",
-        // Stage 15 — the Cartouche Chambers
-        "name_erasing_chisel_spirit", "royal_genealogy_wall",
-        // Stages 16 and 17 — the final forms. No new identities: each of these five is a body from an
-        // earlier stage in the office the act promoted it into, and the roster counts it once, there.
-        "feather_bearer", "crocodile_beneath_the_balance",
-        "golden_ushabti_captain", "eternal_reed_scribe", "oathbound_gate",
+        // Stage 3 — the Pyramid Works
+        "stone_hauler_ushabti", "runaway_laborer", "fallen_capstone_golem",
+        // Stage 4 — the House of Linen
+        "unfinished_mummy", "natron_bearer", "fourfold_vessel_guardian",
+        // Stage 5 — the Necropolis of Thieves
+        "cursed_loot_bearer", "false_door_finder", "jackal_of_the_western_gate",
+        // Stage 6 — the Hall of Two Truths
+        "assessor_of_the_forty_two", "moon_cycle_ibis", "name_erasing_chisel_spirit", "eclipse_scarab",
     };
 
     // ── shared idioms ─────────────────────────────────────────────────────────────────────────────────────
@@ -495,72 +384,38 @@ public static partial class ActFour
         new SetCombatantCounterNode<TContext>(
             body, bookmark, new CombatantCounterExpression<TContext>(Applicant, tally), relative: false);
 
-    // A body whose STATE follows a number on the player: while the applicant's `watchedId` is at (or below)
-    // `threshold`, the body wearing `ruleId` also wears `markerId`, and otherwise it does not.
-    //
-    // Two bodies in this act live on this — the Uncounted Pilgrim, legible only while the player is in the
-    // register, and the Drowned Field Scribe, whose ink thickens once the player is deep enough in silt —
-    // and both taught the same two lessons, which is why the rule is written once:
-    //
-    //   a status losing its LAST stack is reported as an EXPIRY, not as a removal or a stack change, and
-    //   running out is the commonest way a number reaches zero. A watcher blind to expiry shows a stale
-    //   state for the rest of the fight;
-    //   and the OPENING state has no event at all: a player who walks in already carrying the number raises
-    //   nothing to hear. So the state is also settled at every turn start — the TURN and not the round,
-    //   because a fight's first round starts before its bodies are dressed, and a rule nobody wears yet
-    //   does not fire.
-    public static IReadOnlyList<StatusTriggerData> FollowTheApplicant(
-        string ruleId, string markerId, string watchedId, int threshold, bool wornAtOrAbove)
-    {
-        EffectProgram<TContext> Settle<TContext>(bool gated) where TContext : class
-        {
-            var body = Bearer(ruleId);
-
-            var atOrAbove = new ComparisonExpression<TContext>(
-                new CombatantStatusStacksExpression<TContext>(Applicant, new StatusDefinitionId(watchedId)),
-                ComparisonOperator.GreaterOrEqual,
-                new ConstantExpression<TContext>(threshold));
-
-            IEffectNode<TContext> wear =
-                new ConditionalEffectNode<TContext>(
-                    new NotExpression<TContext>(
-                        new TargetHasStatusExpression<TContext>(body, new StatusDefinitionId(markerId))),
-                    new ApplyStatusNode<TContext>(
-                        body, new StatusDefinitionId(markerId), new ConstantExpression<TContext>(1)));
-
-            IEffectNode<TContext> shed = new RemoveStatusNode<TContext>(body, new StatusDefinitionId(markerId));
-
-            IEffectNode<TContext> settle = wornAtOrAbove
-                ? new ConditionalEffectNode<TContext>(atOrAbove, wear, shed)
-                : new ConditionalEffectNode<TContext>(atOrAbove, shed, wear);
-
-            return new EffectProgram<TContext>(
-                gated
-                    // Only movements of the number being watched are worth settling for.
-                    ? new ConditionalEffectNode<TContext>(
-                        new TriggerEventStatusIsExpression<TContext>(new StatusDefinitionId(watchedId)), settle)
-                    : settle);
-        }
-
-        return
-        [
-            Trigger(Settle<StatusAppliedTriggeredEffectContext>(gated: true),
-                nameof(TriggerEvent.StatusApplied), StatusTriggerScope.Anywhere),
-            Trigger(Settle<StatusMergedTriggeredEffectContext>(gated: true),
-                nameof(TriggerEvent.StatusMerged), StatusTriggerScope.Anywhere),
-            Trigger(Settle<StatusStacksChangedTriggeredEffectContext>(gated: true),
-                nameof(TriggerEvent.StatusStacksChanged), StatusTriggerScope.Anywhere),
-            Trigger(Settle<StatusRemovedTriggeredEffectContext>(gated: true),
-                nameof(TriggerEvent.StatusRemoved), StatusTriggerScope.Anywhere),
-            Trigger(Settle<StatusExpiredTriggeredEffectContext>(gated: true),
-                nameof(TriggerEvent.StatusExpired), StatusTriggerScope.Anywhere),
-            Trigger(Settle<TurnStartedTriggeredEffectContext>(gated: false),
-                nameof(TriggerEvent.TurnStarted), StatusTriggerScope.Anywhere),
-        ];
-    }
-
     private static StatusTriggerData Trigger<TContext>(
         EffectProgram<TContext> program, string trigger,
         StatusTriggerScope scope = StatusTriggerScope.Bearer) where TContext : class =>
         new(trigger, JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<TContext>()), scope);
+
+    // ── the questions several bodies ask ──────────────────────────────────────────────────────────────────
+
+    // An ORIGINAL affliction landing on the player: a debuff, on the applicant, that is not itself a copy.
+    // In a status-application trigger "source" is whoever applied it and "eventTarget" is who received it.
+    private static ICombatExpression<TContext, bool> OriginalAfflictionOnThePlayer<TContext>()
+        where TContext : class =>
+        new AndExpression<TContext>(
+            new AndExpression<TContext>(
+                new TargetHasStatusExpression<TContext>(
+                    CombatantTargetSelectors.EventTarget, new StatusDefinitionId(PassiveStatuses.ApplicantId)),
+                new TriggerEventStatusPolarityIsExpression<TContext>(StatusPolarity.Debuff)),
+            new NotExpression<TContext>(new TriggerEventIsReplicatedExpression<TContext>()));
+
+    private static ICombatExpression<TContext, bool> NotYetThisRound<TContext>(
+        ICombatantTargetSelector body, CounterId latch) where TContext : class =>
+        new ComparisonExpression<TContext>(
+            new CombatantCounterExpression<TContext>(body, latch),
+            ComparisonOperator.Equal,
+            new ConstantExpression<TContext>(0));
+
+    // A round turning is nobody's own event, so a latch is cleared for every body that carries the rule.
+    private static EffectProgram<TContext> ClearLatch<TContext>(string ruleId, CounterId latch)
+        where TContext : class =>
+        new(new ForEachTargetEffectNode<TContext>(
+            CombatantTargetSelectors.WithStatus(
+                CombatantTargetSelectors.AllAliveCombatants, new StatusDefinitionId(ruleId)),
+            new SetCombatantCounterNode<TContext>(
+                CombatantTargetSelectors.IterationTarget, latch,
+                new ConstantExpression<TContext>(0), relative: false)));
 }

@@ -22,30 +22,22 @@ namespace BnbContent.Converter;
 public static partial class ActFour
 {
     public const string ChiselSpiritEnemyId = "name_erasing_chisel_spirit";
-    public const string GenealogyWallEnemyId = "royal_genealogy_wall";
 
     public const string EraseTheFavorId = "erase_the_favor";
     public const string ChiselSetId = "chisel_set_against_your_name";
-    public const string DynasticFavorId = "dynastic_favor";
     public const string RoyalFavorId = "royal_favor";
 
     // What the Wall's lineage will hold, and what a Favor is worth when it is spent.
     public const int RoyalFavorCap = 3;
-    private const int FavorDamage = 3;
-    private const int FavorBlock = 4;
 
     // One stack of the chisel refuses one WHOLE application, however large — "the first positive status gain
     // each round", not "the first stack". The engine spends a prohibition stack for stack and rounds the
     // spend up, so a number bigger than any blessing in the game is how "all of it" is spelled.
     private const int WholeBlessing = 99;
 
-    public static CounterId FavorTakenThisRound => new("favor_taken_this_round");
-
     public static EffectProgram<EnemyActionContext>? CartoucheIntent(string enemyId, string intentId) =>
         $"{enemyId}.{intentId}" switch
         {
-            "royal_genealogy_wall.ancestral_claim" => AncestralClaim(20),
-            "royal_genealogy_wall.royal_line" => RoyalLine(32),
             _ => null,
         };
 
@@ -151,109 +143,4 @@ public static partial class ActFour
         Triggers = [],
     };
 
-    // "The first time each round the player ACTUALLY gains a positive status: the Wall gains Royal Favor
-    // equal to the stacks gained, up to its cap."
-    //
-    // Actually is the whole of §3.8's priority rule, and it needs no priority table: an erased gain raises no
-    // application at all, so the Wall simply never hears it, and a later blessing that survives that round is
-    // still the first one it hears. The two bodies order themselves.
-    public static StatusData DynasticFavor() => new()
-    {
-        Id = DynasticFavorId,
-        NameKey = "Dynastic Favor",
-        DescriptionKey =
-            "Every blessing is ancestral property: the first positive status you actually gain each round is "
-            + "entered in the lineage as that many Royal Favor. You keep your own.",
-        Polarity = StatusPolarity.Neutral,
-        StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
-        UsesStacks = false,
-        Tags = [],
-        PassiveModifiers = [],
-        Triggers =
-        [
-            Trigger(EnterInTheLineage<StatusAppliedTriggeredEffectContext>(),
-                nameof(TriggerEvent.StatusApplied), StatusTriggerScope.Anywhere),
-            Trigger(EnterInTheLineage<StatusMergedTriggeredEffectContext>(),
-                nameof(TriggerEvent.StatusMerged), StatusTriggerScope.Anywhere),
-            Trigger(ClearLatch<RoundStartedTriggeredEffectContext>(DynasticFavorId, FavorTakenThisRound),
-                nameof(TriggerEvent.RoundStarted), StatusTriggerScope.Anywhere),
-        ],
-    };
-
-    private static EffectProgram<TContext> EnterInTheLineage<TContext>() where TContext : class
-    {
-        var wall = Bearer(DynasticFavorId);
-
-        var room = new SubtractExpression<TContext>(
-            new ConstantExpression<TContext>(RoyalFavorCap),
-            new CombatantStatusStacksExpression<TContext>(wall, new StatusDefinitionId(RoyalFavorId)));
-
-        return new EffectProgram<TContext>(
-            new ConditionalEffectNode<TContext>(
-                new AndExpression<TContext>(
-                    new AndExpression<TContext>(
-                        // A blessing, on the player, that is not itself a copy — the act's own gate, read
-                        // for the other polarity.
-                        new TargetHasStatusExpression<TContext>(
-                            CombatantTargetSelectors.EventTarget,
-                            new StatusDefinitionId(PassiveStatuses.ApplicantId)),
-                        new AndExpression<TContext>(
-                            new TriggerEventStatusPolarityIsExpression<TContext>(StatusPolarity.Buff),
-                            new NotExpression<TContext>(new TriggerEventIsReplicatedExpression<TContext>()))),
-                    new AndExpression<TContext>(
-                        NotYetThisRound<TContext>(wall, FavorTakenThisRound),
-                        new ComparisonExpression<TContext>(
-                            room, ComparisonOperator.Greater, new ConstantExpression<TContext>(0)))),
-                new CausalSequenceEffectNode<TContext>(
-                [
-                    new SetCombatantCounterNode<TContext>(
-                        wall, FavorTakenThisRound, new ConstantExpression<TContext>(1), relative: false),
-
-                    // "Equal to stacks gained" — the size of THIS application, which is what the engine now
-                    // reports for a merge as well as for a first application; the instance's new total would
-                    // read a one-stack blessing on top of three as four.
-                    new ApplyStatusNode<TContext>(
-                        wall, new StatusDefinitionId(RoyalFavorId),
-                        new MinExpression<TContext>(new EventAmountExpression<TContext>(), room),
-                        sourceSelector: wall),
-                ])));
-    }
-
-    // Royal retaliation: the lineage is cashed in, three damage a Favor, and the wall is a plain wall again
-    // until the next blessing feeds it.
-    private static EffectProgram<EnemyActionContext> AncestralClaim(int damage) =>
-        new(new CausalSequenceEffectNode<EnemyActionContext>(
-        [
-            new DealDamageNode<EnemyActionContext>(
-                Applicant,
-                new AddExpression<EnemyActionContext>(
-                    Const(damage),
-                    new MultiplyExpression<EnemyActionContext>(
-                        Const(FavorDamage),
-                        new CombatantStatusStacksExpression<EnemyActionContext>(
-                            CombatantTargetSelectors.Source, new StatusDefinitionId(RoyalFavorId))))),
-
-            SpendTheLineage(),
-        ]));
-
-    // …and the same lineage spent the other way, on the wall the dynasty puts between you and it.
-    private static EffectProgram<EnemyActionContext> RoyalLine(int block) =>
-        new(new CausalSequenceEffectNode<EnemyActionContext>(
-        [
-            new GainBlockNode<EnemyActionContext>(
-                CombatantTargetSelectors.Source,
-                new AddExpression<EnemyActionContext>(
-                    Const(block),
-                    new MultiplyExpression<EnemyActionContext>(
-                        Const(FavorBlock),
-                        new CombatantStatusStacksExpression<EnemyActionContext>(
-                            CombatantTargetSelectors.Source, new StatusDefinitionId(RoyalFavorId))))),
-
-            SpendTheLineage(),
-        ]));
-
-    // Spent, not merely used: the cap is 3, and a Favor that stayed on the wall after being cashed would make
-    // the ceiling a floor.
-    private static RemoveStatusNode<EnemyActionContext> SpendTheLineage() =>
-        new(CombatantTargetSelectors.Source, new StatusDefinitionId(RoyalFavorId));
 }

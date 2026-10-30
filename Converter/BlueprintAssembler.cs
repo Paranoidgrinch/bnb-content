@@ -72,6 +72,7 @@ public static class BlueprintAssembler
                 .. ActFour.EliteCards(),
                 // …and the bosses' own: the Architect's blueprints, the Lady's four seals.
                 .. ActFour.BossCards(),
+                .. ActFour.CutCards(),
                 // …and Act V's: the reed sheets the First Tablet lays in hand.
                 .. ActFive.GivenCards(),
                 .. Relics.ActThreeBossRelicCards.All(),
@@ -142,6 +143,11 @@ public static class BlueprintAssembler
                         // …and the Green Docket's Toll Frog pays out what it spits.
                         .. m.Act.Act == 3
                             ? [new InstallProgramByIdRunEffect(new RunProgramSourceId(ActThree.FrogSpoilsProgramId))]
+                            : Array.Empty<IRunEffectRequest>(),
+                        // …and the Labyrinth's ledgers: Feathers carried, and what the tomb counts as taken.
+                        .. m.Act.Act == 4
+                            ? ActFour.CutProgramIds().Select(id =>
+                                (IRunEffectRequest)new InstallProgramByIdRunEffect(new RunProgramSourceId(id))).ToArray()
                             : Array.Empty<IRunEffectRequest>(),
                     ],
                 })
@@ -296,6 +302,8 @@ public static class BlueprintAssembler
             [MunicipalDragon.FeesProgramId] = MunicipalDragon.FeesProgram(),
             [ActThree.FrogSpoilsProgramId] = ActThree.FrogSpoilsProgram(),
         };
+        foreach (var (id, program) in ActFour.CutPrograms())
+            programs[id] = program;
         if (pools.TryGetValue(Events.ActOneEvents.Act, out var actOne))
             foreach (var (id, body) in Events.ActOneEventPrograms.All(actOne))
                 programs[id] = body;

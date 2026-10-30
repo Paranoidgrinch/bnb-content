@@ -30,66 +30,6 @@ public class ActFourYardsTests
         Assert.True(session.Error is null, session.Error);
     }
 
-    // ── the Rope-Gang Wraith ──────────────────────────────────────────────────────────────────────────────
-
-    // The gang answers Fatigue TAKING something, not the player being tired: a bearer with Energy loses it,
-    // and the gang strains.
-    [Fact]
-    public void Fatigue_that_actually_takes_energy_strains_the_gang()
-    {
-        var (play, _, _) = FightProbe.Start(
-            FightProbe.SoloAgainstHero("rope_gang_wraith", "pull_together", energy: 3, ("fatigue", 1)),
-            health: 400);
-
-        Assert.Equal(0, FightProbe.StacksOf(Enemies(play)[0], ActFour.WorkStrainId));
-
-        play.CombatDriver!.EndTurn(); // the player's next turn starts: Fatigue takes an Energy
-
-        Assert.Equal(1, FightProbe.StacksOf(Enemies(play)[0], ActFour.WorkStrainId));
-        Assert.Equal(1, Hero(play).GetCounter(ActFour.EnergyTakenByFatigue));
-        play.Dispose();
-    }
-
-    // …and Fatigue that takes NOTHING leaves the rhythm intact. That is the distinction the identity is built
-    // on, and it is a real one even though it is rare: Energy refills at the player's turn start BEFORE
-    // Fatigue bites, so a player who merely spent everything last turn still has something to lose. What
-    // there is nothing to take from is a turn with no Energy to refill into at all.
-    [Fact]
-    public void Fatigue_that_takes_nothing_leaves_the_rhythm_alone()
-    {
-        var (play, _, _) = FightProbe.Start(
-            FightProbe.SoloAgainstHero("rope_gang_wraith", "pull_together", energy: 0, ("fatigue", 2)),
-            health: 400);
-
-        play.CombatDriver!.EndTurn();
-
-        Assert.Equal(0, Hero(play).GetCounter(ActFour.EnergyTakenByFatigue));
-        Assert.Equal(0, FightProbe.StacksOf(Enemies(play)[0], ActFour.WorkStrainId));
-        play.Dispose();
-    }
-
-    // The snap carries the strain, and spends it doing so: the same rope-snap twice is not the same blow.
-    [Fact]
-    public void The_snap_carries_the_strain_and_spends_it()
-    {
-        var (play, _, _) = FightProbe.Start(
-            FightProbe.SoloAgainstHero("rope_gang_wraith", "rope_snap", energy: 3, ("fatigue", 1)),
-            health: 400);
-
-        var before = Hero(play).Health.Current;
-        play.CombatDriver!.EndTurn(); // Fatigue bites at the player's turn start; the gang strains and snaps
-
-        var strained = before - Hero(play).Health.Current;
-        Assert.Equal(26, strained);   // 20 + 6
-        Assert.Equal(0, FightProbe.StacksOf(Enemies(play)[0], ActFour.WorkStrainId));
-
-        var next = Hero(play).Health.Current;
-        play.CombatDriver.EndTurn();  // no Fatigue left to break the step: the plain snap
-
-        Assert.Equal(20, next - Hero(play).Health.Current);
-        play.Dispose();
-    }
-
     // ── the Stone-Hauler Ushabti ──────────────────────────────────────────────────────────────────────────
 
     // Every card the player overpaid for is a stone, collected when the worker comes round — and the blow

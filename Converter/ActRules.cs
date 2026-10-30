@@ -470,24 +470,24 @@ internal sealed record ActRules
     {
         PerPathMinimums = new Dictionary<MapNodeKind, int>
         {
-            [MapNodeKind.Combat] = 12,
-            [MapNodeKind.MultiCombat] = 3,
-            [MapNodeKind.Elite] = 4,
-            [MapNodeKind.Event] = 4,
-            [MapNodeKind.Rest] = 3,
-            [MapNodeKind.Treasure] = 2,
-            [MapNodeKind.Shop] = 3,
+            [MapNodeKind.Combat] = 7,
+            [MapNodeKind.MultiCombat] = 2,
+            [MapNodeKind.Elite] = 2,
+            [MapNodeKind.Event] = 2,
+            [MapNodeKind.Rest] = 2,
+            [MapNodeKind.Treasure] = 1,
+            [MapNodeKind.Shop] = 2,
         },
         // One spare of each comfort, as everywhere else — and the labyrinth's own indulgence, a sixth elite,
         // because by Act IV a route that goes looking for elites is a build rather than a mistake.
         PerPathMaximums = new Dictionary<MapNodeKind, int>
         {
-            [MapNodeKind.Rest] = 4,
-            [MapNodeKind.Treasure] = 3,
-            [MapNodeKind.Shop] = 4,
-            [MapNodeKind.Event] = 7,
-            [MapNodeKind.Elite] = 6,
-            [MapNodeKind.MultiCombat] = 5,
+            [MapNodeKind.Rest] = 3,
+            [MapNodeKind.Treasure] = 2,
+            [MapNodeKind.Shop] = 3,
+            [MapNodeKind.Event] = 4,
+            [MapNodeKind.Elite] = 4,
+            [MapNodeKind.MultiCombat] = 3,
         },
         // Three ways through the same institution: up the ramp with everything that has been licensed to walk
         // it, along the counters where the licences are actually issued, or down through the storerooms where
@@ -496,24 +496,24 @@ internal sealed record ActRules
         [
             new("the processional ramp", new Dictionary<MapNodeKind, int>
             {
-                [MapNodeKind.Combat] = 12,
-                [MapNodeKind.MultiCombat] = 5,
-                [MapNodeKind.Elite] = 5,
-                [MapNodeKind.Event] = 2,
+                [MapNodeKind.Combat] = 7,
+                [MapNodeKind.MultiCombat] = 3,
+                [MapNodeKind.Elite] = 3,
+                [MapNodeKind.Event] = 1,
             }),
             new("the licence counters", new Dictionary<MapNodeKind, int>
             {
-                [MapNodeKind.Event] = 8,
-                [MapNodeKind.Shop] = 4,
-                [MapNodeKind.Combat] = 6,
-                [MapNodeKind.MultiCombat] = 2,
+                [MapNodeKind.Event] = 5,
+                [MapNodeKind.Shop] = 2,
+                [MapNodeKind.Combat] = 3,
+                [MapNodeKind.MultiCombat] = 1,
             }),
             new("the sealed storerooms", new Dictionary<MapNodeKind, int>
             {
-                [MapNodeKind.Rest] = 5,
-                [MapNodeKind.Treasure] = 4,
-                [MapNodeKind.Combat] = 6,
-                [MapNodeKind.Event] = 3,
+                [MapNodeKind.Rest] = 3,
+                [MapNodeKind.Treasure] = 2,
+                [MapNodeKind.Combat] = 3,
+                [MapNodeKind.Event] = 2,
             }),
         ],
         KindWeights = new Dictionary<MapNodeKind, int>
@@ -541,20 +541,23 @@ internal sealed record ActRules
         // length, comforts included: an act of Act IV's size on Act III's supplies is not harder, only meaner
         // (the same argument the per-path table made, now made about the act instead of about a route).
         // v0.0.0's thinnest route measured 265.
-        Rows = 35,
+        // TWENTY ROOMS since the content cut (2026-10-30), down from thirty-five: six stages, a third longer
+        // than the city.
+        Rows = 20,
         RoomBudgets = Budgets(
-            (MapNodeKind.Elite, 7, 10, 14),
-            (MapNodeKind.MultiCombat, 5, 8, 12),
-            (MapNodeKind.Event, 12, 16, 21),
-            (MapNodeKind.Rest, 7, 9, 12),
-            (MapNodeKind.Treasure, 5, 7, 10),
-            (MapNodeKind.Shop, 5, 7, 10)),
+            (MapNodeKind.Elite, 4, 6, 8),
+            (MapNodeKind.MultiCombat, 3, 4, 6),
+            (MapNodeKind.Event, 7, 9, 12),
+            (MapNodeKind.Rest, 4, 5, 7),
+            (MapNodeKind.Treasure, 2, 3, 5),
+            (MapNodeKind.Shop, 3, 4, 6)),
         DepthBands = Quarters(
-            [(MapNodeKind.Rest, 1, 3), (MapNodeKind.MultiCombat, 0, 3), (MapNodeKind.Elite, 0, 2)],
-            [(MapNodeKind.Rest, 2, 4), (MapNodeKind.Elite, 0, 4), (MapNodeKind.Shop, 1, 4)],
-            [(MapNodeKind.Rest, 2, 4), (MapNodeKind.Elite, 0, 4), (MapNodeKind.Shop, 1, 4)],
-            [(MapNodeKind.Rest, 2, 4), (MapNodeKind.Elite, 0, 4), (MapNodeKind.Treasure, 2, 5)]),
-        PathPressure = new PathPressureRules { Minimum = 265, Maximum = 360 },
+            [(MapNodeKind.Rest, 0, 2), (MapNodeKind.MultiCombat, 0, 2), (MapNodeKind.Elite, 0, 1)],
+            [(MapNodeKind.Rest, 1, 2), (MapNodeKind.Elite, 0, 2), (MapNodeKind.Shop, 1, 2)],
+            [(MapNodeKind.Rest, 1, 2), (MapNodeKind.Elite, 0, 2), (MapNodeKind.Shop, 0, 2)],
+            [(MapNodeKind.Rest, 1, 2), (MapNodeKind.Elite, 0, 2), (MapNodeKind.Treasure, 1, 3)]),
+        // Scaled with the act (twenty rooms of thirty-five): 265..360 becomes 150..205.
+        PathPressure = new PathPressureRules { Minimum = 150, Maximum = 205 },
         ForkQuality = new ForkQualityRules { MinimumContrast = 30 },
         // TWO MORE DECISIONS AN ACT (user, 2026-09-28). With the engine's 6/2/2 an act forked about three times and
         // its lanes then ran side by side to the boss, so a door in the first rows decided the act. Splitting and

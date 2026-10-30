@@ -38,12 +38,14 @@ public static class ActTuning
             ["elite"] = new(150, 160),
             ["boss"] = new(220, 230),
         },
+        // RESCALED in the content cut of 2026-10-30 to about Act III's level (user): a normal body was ~400 HP
+        // and a boss ~1000; now a normal body is ~150-200 and a boss ~750-850.
         [4] = new Dictionary<string, Factor>
         {
-            ["normal"] = new(230, 210),
+            ["normal"] = new(125, 130),
             ["multi"] = new(70, 100),
-            ["elite"] = new(170, 170),
-            ["boss"] = new(160, 160),
+            ["elite"] = new(115, 120),
+            ["boss"] = new(130, 125),
         },
     };
 
@@ -77,45 +79,7 @@ public static class ActTuning
         // Act III — already in the band as authored (beam 6 reads multi-body fights about twice as dear as the strong
         // planner).
         ["green_docket_elite_ant_queen_of_the_proper_line"] = new(110, 110),
-        // Act IV bosses: from 2.6 (Mother) to 60 (Vizier) as authored — one factor cannot fit them.
-        ["labyrinth_boss_vizier_of_the_kings_mouth"] = new(85, 85),
-        // The Scribe was 43.5 and lost 3/10 at authored numbers: a sheet of Paperwork per recorded Working grew
-        // with the square of a Witch's long fight. With one sheet a tablet (ActFourBossScribe) and 85/80 he is
-        // 28.9; the one loss left is w105, the weakest deck (57 HP), which loses him at any setting tried.
-        ["labyrinth_boss_first_scribe_of_the_house_of_life"] = new(85, 80),
-        ["labyrinth_boss_lady_of_the_black_granaries"] = new(120, 120),
-        ["labyrinth_boss_pharaoh_of_the_sealed_name"] = new(130, 130),
-        ["labyrinth_boss_queen_of_the_flood_reckoning"] = new(140, 140),
-        ["labyrinth_boss_weigher_of_the_unspoken_heart"] = new(130, 130),
-        ["labyrinth_boss_mother_of_natron_and_resin"] = new(180, 180),
-        ["labyrinth_boss_architect_of_the_impossible_pyramid"] = new(105, 105),
-        // Act IV multi-fights that hit at once from every side (over in three turns: health is not the lever). The
-        // damage factor reaches every fight their bodies stand in — the court's and the cartouche's single fights
-        // and duo with them, which were cheap.
-        ["labyrinth_sealed_court_trio_01"] = new(85, 75),
-        ["labyrinth_cartouche_duo_01"] = new(70, 110),
-        // …and four duos the raised normal damage made too dear, decided by damage inside five turns: their bodies
-        // keep the earlier normal factor (150) wherever they stand, single fights included.
-        ["labyrinth_linen_duo_01"] = new(70, 150),
-        ["labyrinth_vaults_duo_01"] = new(70, 150),
-        ["labyrinth_vaults_duo_02"] = new(70, 150),
-        ["labyrinth_monument_duo_01"] = new(70, 150),
-        // …and the four the last raise (190 → 210) cost a planner fight: they keep 190.
-        ["labyrinth_floodmark_duo_01"] = new(70, 190),
-        ["labyrinth_balance_duo_01"] = new(70, 190),
-        ["labyrinth_granary_duo_01"] = new(70, 190),
-        ["labyrinth_yards_02"] = new(230, 190),
-        // Act IV elites.
-        ["labyrinth_elite_the_tombbreakers_three"] = new(),
-        ["labyrinth_elite_treasury_of_the_two_pans"] = new(120, 120),
-        ["labyrinth_elite_scarab_host_of_the_sealed_granary"] = new(130, 130),
-        ["labyrinth_elite_rope_master_of_the_corvee"] = new(150, 150),
-        ["labyrinth_elite_colossus_of_the_endless_procession"] = new(130, 130),
-        ["labyrinth_elite_keeper_of_the_thirty_six_decans"] = new(150, 150),
-        ["labyrinth_elite_sphinx_of_the_processional_measure"] = new(140, 140),
-        ["labyrinth_elite_keeper_of_the_living_cartouche"] = new(210, 200),
-        ["labyrinth_elite_mummified_overseer_of_the_linen_house"] = new(210, 200),
-        ["labyrinth_elite_surveyor_of_the_errant_cord"] = new(180, 180),
+        // Act IV's per-encounter overrides went with the rescale of 2026-10-30: the role table alone sets it.
     };
 
     // ── A QUESTION, NOT A TUNING: `--apprentice-damage N`, `--apprentice-block N` ──────────────────────────────

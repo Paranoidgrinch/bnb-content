@@ -1,3 +1,4 @@
+using RogueDeck.Scenario.Authoring;
 using RogueDeck.Core.Combat;
 
 namespace BnbContent.Converter;
@@ -31,17 +32,17 @@ public static partial class ActFour
         {
             "reed_cord_surveyor.set_the_measure" => SetTheMeasure(10, Const(SurveyorMeasure)),
             "reed_cord_surveyor.re_tension_cord" => SurveyError(16),
+            // Ammit raises the measure she then counts your failures against.
+            "ammit_devourer_of_the_unworthy.weigh_the_dead" => SetTheMeasure(16, Const(2)),
             "crooked_rod_bearer.crooked_measure" => CrookedMeasure(11),
             "crooked_rod_bearer.brace_the_standard" => BraceTheStandard(17),
             _ => GranaryIntent(enemyId, intentId)
                  ?? BasinIntent(enemyId, intentId)
-                 ?? CausewayIntent(enemyId, intentId)
                  ?? YardIntent(enemyId, intentId)
                  ?? MonumentIntent(enemyId, intentId)
                  ?? LinenIntent(enemyId, intentId)
                  ?? WarrenIntent(enemyId, intentId)
                  ?? CartoucheIntent(enemyId, intentId)
-                 ?? BalanceIntent(enemyId, intentId)
                  ?? EliteIntent(enemyId, intentId)
                  ?? BossIntent(enemyId, intentId),
         };
@@ -108,8 +109,57 @@ public static partial class ActFour
 
                     new SetCombatantCounterNode<EnemyActionContext>(
                         CombatantTargetSelectors.Source, CrookedStep, Const(1), relative: true),
+                    // The rod shows what it will read next (content cut 2026-10-30): the 1-3-1 is on its face.
+                    new ConditionalEffectNode<EnemyActionContext>(
+                        new ComparisonExpression<EnemyActionContext>(
+                            new RemainderExpression<EnemyActionContext>(
+                                new CombatantCounterExpression<EnemyActionContext>(
+                                    CombatantTargetSelectors.Source, CrookedStep),
+                                Const(2)),
+                            ComparisonOperator.Equal, Const(0)),
+                        new CausalSequenceEffectNode<EnemyActionContext>(
+                        [
+                            new RemoveStatusNode<EnemyActionContext>(
+                                CombatantTargetSelectors.Source, new StatusDefinitionId(RodReadsThreeId)),
+                            new ApplyStatusNode<EnemyActionContext>(
+                                CombatantTargetSelectors.Source, new StatusDefinitionId(RodReadsOneId), Const(1)),
+                        ]),
+                        new CausalSequenceEffectNode<EnemyActionContext>(
+                        [
+                            new RemoveStatusNode<EnemyActionContext>(
+                                CombatantTargetSelectors.Source, new StatusDefinitionId(RodReadsOneId)),
+                            new ApplyStatusNode<EnemyActionContext>(
+                                CombatantTargetSelectors.Source, new StatusDefinitionId(RodReadsThreeId), Const(1)),
+                        ])),
                 ])),
         ]));
+
+    public const string RodReadsOneId = "rod_reads_one";
+    public const string RodReadsThreeId = "rod_reads_three";
+    public const string SurveyorErrorId = "reads_the_error";
+
+    public static IReadOnlyList<StatusData> StelaeFaces() =>
+    [
+        StelaeFace(RodReadsOneId, "The Rod Reads 1",
+            "Its next measure is 1: spend exactly 1 Energy that turn. Then 3, then 1 again. Any miss: 1 Paperwork."),
+        StelaeFace(RodReadsThreeId, "The Rod Reads 3",
+            "Its next measure is 3: spend exactly 3 Energy that turn. Then 1, then 3 again. Any miss: 1 Paperwork."),
+        StelaeFace(SurveyorErrorId, "Reads the Error",
+            "It measures how far off you were: exact is free, one off is 1 Paperwork, two or more is 2."),
+    ];
+
+    private static StatusData StelaeFace(string id, string name, string description) => new()
+    {
+        Id = id,
+        NameKey = name,
+        DescriptionKey = description,
+        Polarity = StatusPolarity.Neutral,
+        StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
+        UsesStacks = false,
+        Tags = [],
+        PassiveModifiers = [],
+        Triggers = [],
+    };
 
     // Brace the standard, and file for a failed measure — any failure, one sheet. The Bearer does not care
     // how far off you were; only the Surveyor measures error. That difference between the two officials is

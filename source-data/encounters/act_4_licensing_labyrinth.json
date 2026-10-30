@@ -10,8 +10,8 @@
     "weight": 2,
     "tags": [
       "licensing_labyrinth",
-      "stage_stelae",
-      "weighed_intro"
+      "weighed_intro",
+      "stage_stelae"
     ],
     "role": "combat"
   },
@@ -26,8 +26,8 @@
     "weight": 2,
     "tags": [
       "licensing_labyrinth",
-      "stage_stelae",
-      "weighed_intro"
+      "weighed_intro",
+      "stage_stelae"
     ],
     "role": "combat"
   },
@@ -43,74 +43,8 @@
     "weight": 1,
     "tags": [
       "licensing_labyrinth",
-      "stage_stelae",
-      "primary_measure"
-    ],
-    "role": "multi_combat"
-  },
-  {
-    "id": "labyrinth_gate_01",
-    "name": "No Number in the Register",
-    "act": 4,
-    "difficulty": "normal",
-    "enemies": [
-      "uncounted_pilgrim"
-    ],
-    "weight": 2,
-    "tags": [
-      "licensing_labyrinth",
-      "stage_gate",
-      "inscribed_intro"
-    ],
-    "role": "combat"
-  },
-  {
-    "id": "labyrinth_gate_02",
-    "name": "The Entry Mark",
-    "act": 4,
-    "difficulty": "normal",
-    "enemies": [
-      "cobra_of_the_entry_mark"
-    ],
-    "weight": 2,
-    "tags": [
-      "licensing_labyrinth",
-      "stage_gate",
-      "inscribed_intro"
-    ],
-    "role": "combat"
-  },
-  {
-    "id": "labyrinth_gate_duo_01",
-    "name": "Chewed Credentials",
-    "act": 4,
-    "difficulty": "hard",
-    "enemies": [
-      "uncounted_pilgrim",
-      "name_eating_baboon"
-    ],
-    "weight": 1,
-    "tags": [
-      "licensing_labyrinth",
-      "stage_gate",
-      "stolen_name"
-    ],
-    "role": "multi_combat"
-  },
-  {
-    "id": "labyrinth_gate_duo_02",
-    "name": "Counterfeit Entry Mark",
-    "act": 4,
-    "difficulty": "hard",
-    "enemies": [
-      "cobra_of_the_entry_mark",
-      "name_eating_baboon"
-    ],
-    "weight": 1,
-    "tags": [
-      "licensing_labyrinth",
-      "stage_gate",
-      "stolen_name"
+      "primary_measure",
+      "stage_stelae"
     ],
     "role": "multi_combat"
   },
@@ -125,8 +59,8 @@
     "weight": 2,
     "tags": [
       "licensing_labyrinth",
-      "stage_granary",
-      "burdened_intro"
+      "burdened_intro",
+      "stage_granary"
     ],
     "role": "combat"
   },
@@ -141,8 +75,8 @@
     "weight": 2,
     "tags": [
       "licensing_labyrinth",
-      "stage_granary",
-      "burdened_intro"
+      "burdened_intro",
+      "stage_granary"
     ],
     "role": "combat"
   },
@@ -157,8 +91,8 @@
     "weight": 2,
     "tags": [
       "licensing_labyrinth",
-      "stage_granary",
-      "ration"
+      "ration",
+      "stage_granary"
     ],
     "role": "combat"
   },
@@ -174,42 +108,10 @@
     "weight": 1,
     "tags": [
       "licensing_labyrinth",
-      "stage_granary",
-      "ration"
+      "ration",
+      "stage_granary"
     ],
     "role": "multi_combat"
-  },
-  {
-    "id": "labyrinth_floodmark_01",
-    "name": "Read the Floodmark",
-    "act": 4,
-    "difficulty": "normal",
-    "enemies": [
-      "flood_mark_reader"
-    ],
-    "weight": 2,
-    "tags": [
-      "licensing_labyrinth",
-      "stage_basins",
-      "entombed_intro"
-    ],
-    "role": "combat"
-  },
-  {
-    "id": "labyrinth_floodmark_02",
-    "name": "Silted Record",
-    "act": 4,
-    "difficulty": "normal",
-    "enemies": [
-      "drowned_field_scribe"
-    ],
-    "weight": 2,
-    "tags": [
-      "licensing_labyrinth",
-      "stage_basins",
-      "entombed_intro"
-    ],
-    "role": "combat"
   },
   {
     "id": "labyrinth_floodmark_03",
@@ -222,90 +124,8 @@
     "weight": 2,
     "tags": [
       "licensing_labyrinth",
-      "stage_basins",
-      "flood"
-    ],
-    "role": "combat"
-  },
-  {
-    "id": "labyrinth_floodmark_duo_01",
-    "name": "Faulty Flood Record",
-    "act": 4,
-    "difficulty": "hard",
-    "enemies": [
-      "flood_mark_reader",
-      "drowned_field_scribe"
-    ],
-    "weight": 1,
-    "tags": [
-      "licensing_labyrinth",
-      "stage_basins",
-      "entombed"
-    ],
-    "role": "multi_combat"
-  },
-  {
-    "id": "labyrinth_causeway_01",
-    "name": "Correct Tribute, Wrong Procedure",
-    "act": 4,
-    "difficulty": "normal",
-    "enemies": [
-      "foreign_tribute_shade"
-    ],
-    "weight": 2,
-    "tags": [
-      "licensing_labyrinth",
-      "stage_causeway",
-      "weighed"
-    ],
-    "role": "combat"
-  },
-  {
-    "id": "labyrinth_causeway_02",
-    "name": "The Donkey Was Counted Three Times",
-    "act": 4,
-    "difficulty": "normal",
-    "enemies": [
-      "donkey_of_the_third_tally"
-    ],
-    "weight": 2,
-    "tags": [
-      "licensing_labyrinth",
-      "stage_causeway",
-      "tally"
-    ],
-    "role": "combat"
-  },
-  {
-    "id": "labyrinth_causeway_duo_01",
-    "name": "Nothing Was Presented, Yet the Fee Remains",
-    "act": 4,
-    "difficulty": "hard",
-    "enemies": [
-      "foreign_tribute_shade",
-      "empty_handed_envoy"
-    ],
-    "weight": 1,
-    "tags": [
-      "licensing_labyrinth",
-      "stage_causeway",
-      "empty_hand"
-    ],
-    "role": "multi_combat"
-  },
-  {
-    "id": "labyrinth_yards_01",
-    "name": "Keep the Work Rhythm",
-    "act": 4,
-    "difficulty": "normal",
-    "enemies": [
-      "rope_gang_wraith"
-    ],
-    "weight": 2,
-    "tags": [
-      "licensing_labyrinth",
-      "stage_yards",
-      "fatigue"
+      "flood",
+      "stage_stelae"
     ],
     "role": "combat"
   },
@@ -320,8 +140,8 @@
     "weight": 2,
     "tags": [
       "licensing_labyrinth",
-      "stage_yards",
-      "burdened"
+      "burdened",
+      "stage_works"
     ],
     "role": "combat"
   },
@@ -337,8 +157,8 @@
     "weight": 1,
     "tags": [
       "licensing_labyrinth",
-      "stage_yards",
-      "escape"
+      "escape",
+      "stage_works"
     ],
     "role": "multi_combat"
   },
@@ -353,193 +173,10 @@
     "weight": 2,
     "tags": [
       "licensing_labyrinth",
-      "stage_monument",
-      "entombed"
+      "entombed",
+      "stage_works"
     ],
     "role": "combat"
-  },
-  {
-    "id": "labyrinth_monument_02",
-    "name": "Oath in the Foundation",
-    "act": 4,
-    "difficulty": "normal",
-    "enemies": [
-      "cornerstone_oath_stone"
-    ],
-    "weight": 2,
-    "tags": [
-      "licensing_labyrinth",
-      "stage_monument",
-      "weighed"
-    ],
-    "role": "combat"
-  },
-  {
-    "id": "labyrinth_monument_duo_01",
-    "name": "Fault in the Monument",
-    "act": 4,
-    "difficulty": "hard",
-    "enemies": [
-      "cornerstone_oath_stone",
-      "fallen_capstone_golem"
-    ],
-    "weight": 1,
-    "tags": [
-      "licensing_labyrinth",
-      "stage_monument",
-      "oath"
-    ],
-    "role": "multi_combat"
-  },
-  {
-    "id": "labyrinth_hall_01",
-    "name": "Fresh Pigment",
-    "act": 4,
-    "difficulty": "normal",
-    "enemies": [
-      "palette_bearing_apprentice"
-    ],
-    "weight": 2,
-    "tags": [
-      "licensing_labyrinth",
-      "stage_hall",
-      "inscribed"
-    ],
-    "role": "combat"
-  },
-  {
-    "id": "labyrinth_hall_02",
-    "name": "Undismissed Complaint",
-    "act": 4,
-    "difficulty": "normal",
-    "enemies": [
-      "hieroglyphic_complaint_wall"
-    ],
-    "weight": 2,
-    "tags": [
-      "licensing_labyrinth",
-      "stage_hall",
-      "embalmed"
-    ],
-    "role": "combat"
-  },
-  {
-    "id": "labyrinth_hall_duo_01",
-    "name": "Fresh-Pigment Grievance",
-    "act": 4,
-    "difficulty": "hard",
-    "enemies": [
-      "palette_bearing_apprentice",
-      "hieroglyphic_complaint_wall"
-    ],
-    "weight": 1,
-    "tags": [
-      "licensing_labyrinth",
-      "stage_hall",
-      "complaint"
-    ],
-    "role": "multi_combat"
-  },
-  {
-    "id": "labyrinth_seal_01",
-    "name": "The Authorized Impression",
-    "act": 4,
-    "difficulty": "normal",
-    "enemies": [
-      "sun_seal_bearer"
-    ],
-    "weight": 2,
-    "tags": [
-      "licensing_labyrinth",
-      "stage_seal",
-      "inscribed"
-    ],
-    "role": "combat"
-  },
-  {
-    "id": "labyrinth_seal_duo_01",
-    "name": "Counterfeit Venom",
-    "act": 4,
-    "difficulty": "hard",
-    "enemies": [
-      "cobra_of_the_entry_mark",
-      "false_seal_forger"
-    ],
-    "weight": 1,
-    "tags": [
-      "licensing_labyrinth",
-      "stage_seal",
-      "replicated"
-    ],
-    "role": "multi_combat"
-  },
-  {
-    "id": "labyrinth_seal_duo_02",
-    "name": "Authorized Counterfeit",
-    "act": 4,
-    "difficulty": "hard",
-    "enemies": [
-      "sun_seal_bearer",
-      "false_seal_forger"
-    ],
-    "weight": 1,
-    "tags": [
-      "licensing_labyrinth",
-      "stage_seal",
-      "replicated"
-    ],
-    "role": "multi_combat"
-  },
-  {
-    "id": "labyrinth_procession_duo_01",
-    "name": "Processional Seal",
-    "act": 4,
-    "difficulty": "hard",
-    "enemies": [
-      "kneeling_petitioners",
-      "sun_seal_bearer"
-    ],
-    "weight": 1,
-    "tags": [
-      "licensing_labyrinth",
-      "stage_procession",
-      "block"
-    ],
-    "role": "multi_combat"
-  },
-  {
-    "id": "labyrinth_procession_duo_02",
-    "name": "Fresh Ink Before the Procession",
-    "act": 4,
-    "difficulty": "hard",
-    "enemies": [
-      "kneeling_petitioners",
-      "palette_bearing_apprentice"
-    ],
-    "weight": 1,
-    "tags": [
-      "licensing_labyrinth",
-      "stage_procession",
-      "inscribed"
-    ],
-    "role": "multi_combat"
-  },
-  {
-    "id": "labyrinth_procession_duo_03",
-    "name": "False-Sealed Petition",
-    "act": 4,
-    "difficulty": "hard",
-    "enemies": [
-      "kneeling_petitioners",
-      "false_seal_forger"
-    ],
-    "weight": 1,
-    "tags": [
-      "licensing_labyrinth",
-      "stage_procession",
-      "replicated"
-    ],
-    "role": "multi_combat"
   },
   {
     "id": "labyrinth_linen_01",
@@ -552,24 +189,7 @@
     "weight": 2,
     "tags": [
       "licensing_labyrinth",
-      "stage_linen",
-      "embalmed"
-    ],
-    "role": "combat"
-  },
-  {
-    "id": "labyrinth_linen_02",
-    "name": "Instructions for Wrapping",
-    "act": 4,
-    "difficulty": "normal",
-    "enemies": [
-      "linen_wrapped_embalmer"
-    ],
-    "weight": 2,
-    "tags": [
-      "licensing_labyrinth",
-      "stage_linen",
-      "embalmed"
+      "stage_linen"
     ],
     "role": "combat"
   },
@@ -584,27 +204,10 @@
     "weight": 2,
     "tags": [
       "licensing_labyrinth",
-      "stage_linen",
-      "entombed"
+      "entombed",
+      "stage_linen"
     ],
     "role": "combat"
-  },
-  {
-    "id": "labyrinth_linen_duo_01",
-    "name": "The Body Is Not Yet Finished",
-    "act": 4,
-    "difficulty": "hard",
-    "enemies": [
-      "linen_wrapped_embalmer",
-      "unfinished_mummy"
-    ],
-    "weight": 1,
-    "tags": [
-      "licensing_labyrinth",
-      "stage_linen",
-      "chain"
-    ],
-    "role": "multi_combat"
   },
   {
     "id": "labyrinth_vaults_01",
@@ -617,8 +220,8 @@
     "weight": 2,
     "tags": [
       "licensing_labyrinth",
-      "stage_vaults",
-      "rotation"
+      "rotation",
+      "stage_linen"
     ],
     "role": "combat"
   },
@@ -634,25 +237,7 @@
     "weight": 1,
     "tags": [
       "licensing_labyrinth",
-      "stage_vaults",
-      "embalmed"
-    ],
-    "role": "multi_combat"
-  },
-  {
-    "id": "labyrinth_vaults_duo_02",
-    "name": "Vessel of the Name",
-    "act": 4,
-    "difficulty": "hard",
-    "enemies": [
-      "fourfold_vessel_guardian",
-      "linen_wrapped_embalmer"
-    ],
-    "weight": 1,
-    "tags": [
-      "licensing_labyrinth",
-      "stage_vaults",
-      "inscribed"
+      "stage_linen"
     ],
     "role": "multi_combat"
   },
@@ -667,8 +252,8 @@
     "weight": 2,
     "tags": [
       "licensing_labyrinth",
-      "stage_warrens",
-      "necropolis_law"
+      "necropolis_law",
+      "stage_necropolis"
     ],
     "role": "combat"
   },
@@ -683,8 +268,8 @@
     "weight": 2,
     "tags": [
       "licensing_labyrinth",
-      "stage_warrens",
-      "burdened"
+      "burdened",
+      "stage_necropolis"
     ],
     "role": "combat"
   },
@@ -700,26 +285,10 @@
     "weight": 1,
     "tags": [
       "licensing_labyrinth",
-      "stage_warrens",
-      "necropolis_law"
+      "necropolis_law",
+      "stage_necropolis"
     ],
     "role": "multi_combat"
-  },
-  {
-    "id": "labyrinth_fixed_days_01",
-    "name": "The Fixed Decan Measure",
-    "act": 4,
-    "difficulty": "normal",
-    "enemies": [
-      "star_table_scribe"
-    ],
-    "weight": 2,
-    "tags": [
-      "licensing_labyrinth",
-      "stage_fixed_days",
-      "weighed"
-    ],
-    "role": "combat"
   },
   {
     "id": "labyrinth_fixed_days_02",
@@ -732,27 +301,10 @@
     "weight": 2,
     "tags": [
       "licensing_labyrinth",
-      "stage_fixed_days",
-      "clock"
+      "clock",
+      "stage_two_truths"
     ],
     "role": "combat"
-  },
-  {
-    "id": "labyrinth_fixed_days_duo_01",
-    "name": "Fixed-Day Moon",
-    "act": 4,
-    "difficulty": "hard",
-    "enemies": [
-      "star_table_scribe",
-      "moon_cycle_ibis"
-    ],
-    "weight": 1,
-    "tags": [
-      "licensing_labyrinth",
-      "stage_fixed_days",
-      "calendar"
-    ],
-    "role": "multi_combat"
   },
   {
     "id": "labyrinth_cartouche_01",
@@ -765,160 +317,14 @@
     "weight": 2,
     "tags": [
       "licensing_labyrinth",
-      "stage_cartouche",
-      "erasure"
-    ],
-    "role": "combat"
-  },
-  {
-    "id": "labyrinth_cartouche_02",
-    "name": "Dynastic Favor Claim",
-    "act": 4,
-    "difficulty": "normal",
-    "enemies": [
-      "royal_genealogy_wall"
-    ],
-    "weight": 2,
-    "tags": [
-      "licensing_labyrinth",
-      "stage_cartouche",
-      "royal_favor"
-    ],
-    "role": "combat"
-  },
-  {
-    "id": "labyrinth_cartouche_duo_01",
-    "name": "Expunged Royal Favor",
-    "act": 4,
-    "difficulty": "hard",
-    "enemies": [
-      "name_erasing_chisel_spirit",
-      "royal_genealogy_wall"
-    ],
-    "weight": 1,
-    "tags": [
-      "licensing_labyrinth",
-      "stage_cartouche",
       "erasure",
-      "royal_favor"
-    ],
-    "role": "multi_combat"
-  },
-  {
-    "id": "labyrinth_balance_01",
-    "name": "Feather's True Measure",
-    "act": 4,
-    "difficulty": "hard",
-    "enemies": [
-      "feather_bearer"
-    ],
-    "weight": 2,
-    "tags": [
-      "licensing_labyrinth",
-      "stage_balance",
-      "weighed"
+      "stage_two_truths"
     ],
     "role": "combat"
-  },
-  {
-    "id": "labyrinth_balance_02",
-    "name": "Jaws Beneath the Scale",
-    "act": 4,
-    "difficulty": "hard",
-    "enemies": [
-      "crocodile_beneath_the_balance"
-    ],
-    "weight": 2,
-    "tags": [
-      "licensing_labyrinth",
-      "stage_balance",
-      "entombed"
-    ],
-    "role": "combat"
-  },
-  {
-    "id": "labyrinth_balance_duo_01",
-    "name": "The Measure and the Jaws",
-    "act": 4,
-    "difficulty": "hard",
-    "enemies": [
-      "feather_bearer",
-      "crocodile_beneath_the_balance"
-    ],
-    "weight": 1,
-    "tags": [
-      "licensing_labyrinth",
-      "stage_balance",
-      "weighed"
-    ],
-    "role": "multi_combat"
-  },
-  {
-    "id": "labyrinth_sealed_court_01",
-    "name": "Oathbound Gate",
-    "act": 4,
-    "difficulty": "hard",
-    "enemies": [
-      "oathbound_gate"
-    ],
-    "weight": 1,
-    "tags": [
-      "licensing_labyrinth",
-      "stage_sealed_court",
-      "oath"
-    ],
-    "role": "combat",
-    "enemy_statuses": [
-      {
-        "index": 0,
-        "status": "broken_oath",
-        "stacks": 2
-      }
-    ]
-  },
-  {
-    "id": "labyrinth_sealed_court_duo_01",
-    "name": "The Eternal Shift",
-    "act": 4,
-    "difficulty": "hard",
-    "enemies": [
-      "golden_ushabti_captain",
-      "eternal_reed_scribe"
-    ],
-    "weight": 1,
-    "tags": [
-      "licensing_labyrinth",
-      "stage_sealed_court",
-      "stone"
-    ],
-    "role": "multi_combat"
-  },
-  {
-    "id": "labyrinth_sealed_court_trio_01",
-    "name": "The Sealed Court Before Eternity",
-    "act": 4,
-    "difficulty": "hard",
-    "enemies": [
-      "oathbound_gate",
-      "golden_ushabti_captain",
-      "eternal_reed_scribe"
-    ],
-    "enemy_health": [
-      141,
-      97,
-      84
-    ],
-    "weight": 1,
-    "tags": [
-      "licensing_labyrinth",
-      "stage_sealed_court",
-      "capstone"
-    ],
-    "role": "multi_combat"
   },
   {
     "id": "labyrinth_elite_surveyor_of_the_errant_cord",
-    "name": "Surveyor of the Errant Cord",
+    "name": "The Errant Cord",
     "act": 4,
     "difficulty": "elite",
     "enemies": [
@@ -968,23 +374,6 @@
     "earliest_depth_percent": 24
   },
   {
-    "id": "labyrinth_elite_keeper_of_the_living_cartouche",
-    "name": "Keeper of the Living Cartouche",
-    "act": 4,
-    "difficulty": "elite",
-    "enemies": [
-      "keeper_of_the_living_cartouche"
-    ],
-    "weight": 1,
-    "tags": [
-      "licensing_labyrinth",
-      "elite",
-      "inscribed"
-    ],
-    "role": "elite",
-    "earliest_depth_percent": 35
-  },
-  {
     "id": "labyrinth_elite_mummified_overseer_of_the_linen_house",
     "name": "Mummified Overseer of the Linen House",
     "act": 4,
@@ -995,25 +384,7 @@
     "weight": 1,
     "tags": [
       "licensing_labyrinth",
-      "elite",
-      "embalmed"
-    ],
-    "role": "elite",
-    "earliest_depth_percent": 41
-  },
-  {
-    "id": "labyrinth_elite_treasury_of_the_two_pans",
-    "name": "The Treasury of the Two Pans",
-    "act": 4,
-    "difficulty": "elite",
-    "enemies": [
-      "treasury_of_the_two_pans"
-    ],
-    "weight": 1,
-    "tags": [
-      "licensing_labyrinth",
-      "elite",
-      "treasury"
+      "elite"
     ],
     "role": "elite",
     "earliest_depth_percent": 41
@@ -1179,24 +550,6 @@
     "role": "boss"
   },
   {
-    "id": "labyrinth_boss_vizier_of_the_kings_mouth",
-    "name": "The Vizier of the King's Mouth",
-    "act": 4,
-    "difficulty": "boss",
-    "enemies": [
-      "vizier_of_the_kings_mouth",
-      "royal_seal_bearer",
-      "keeper_of_tallies",
-      "captain_of_the_inner_stair"
-    ],
-    "weight": 1,
-    "tags": [
-      "licensing_labyrinth",
-      "boss"
-    ],
-    "role": "boss"
-  },
-  {
     "id": "labyrinth_boss_queen_of_the_flood_reckoning",
     "name": "The Queen of the Flood Reckoning",
     "act": 4,
@@ -1231,5 +584,190 @@
     "enemy_health": [
       220
     ]
+  },
+  {
+    "id": "labyrinth_stelae_duo_02",
+    "name": "The Flood Against the Cord",
+    "act": 4,
+    "difficulty": "normal",
+    "enemies": [
+      "reed_cord_surveyor",
+      "silt_buried_farmer_shade"
+    ],
+    "weight": 1,
+    "tags": [
+      "licensing_labyrinth",
+      "stage_stelae"
+    ],
+    "role": "multi_combat",
+    "enemy_health": [
+      70,
+      90
+    ]
+  },
+  {
+    "id": "labyrinth_works_duo_01",
+    "name": "The Capstone and the Runaway",
+    "act": 4,
+    "difficulty": "normal",
+    "enemies": [
+      "fallen_capstone_golem",
+      "runaway_laborer"
+    ],
+    "weight": 1,
+    "tags": [
+      "licensing_labyrinth",
+      "stage_works"
+    ],
+    "role": "multi_combat",
+    "enemy_health": [
+      120,
+      85
+    ]
+  },
+  {
+    "id": "labyrinth_linen_duo_02",
+    "name": "Natron for the Unfinished",
+    "act": 4,
+    "difficulty": "normal",
+    "enemies": [
+      "natron_bearer",
+      "unfinished_mummy"
+    ],
+    "weight": 1,
+    "tags": [
+      "licensing_labyrinth",
+      "stage_linen"
+    ],
+    "role": "multi_combat",
+    "enemy_health": [
+      110,
+      120
+    ]
+  },
+  {
+    "id": "labyrinth_necropolis_duo_02",
+    "name": "The Jackal at the Loot",
+    "act": 4,
+    "difficulty": "normal",
+    "enemies": [
+      "jackal_of_the_western_gate",
+      "cursed_loot_bearer"
+    ],
+    "weight": 1,
+    "tags": [
+      "licensing_labyrinth",
+      "stage_necropolis"
+    ],
+    "role": "multi_combat",
+    "enemy_health": [
+      110,
+      125
+    ]
+  },
+  {
+    "id": "labyrinth_necropolis_duo_03",
+    "name": "The Jackal at the False Door",
+    "act": 4,
+    "difficulty": "normal",
+    "enemies": [
+      "jackal_of_the_western_gate",
+      "false_door_finder"
+    ],
+    "weight": 1,
+    "tags": [
+      "licensing_labyrinth",
+      "stage_necropolis"
+    ],
+    "role": "multi_combat",
+    "enemy_health": [
+      110,
+      120
+    ]
+  },
+  {
+    "id": "labyrinth_two_truths_01",
+    "name": "The Forty-Two Questions",
+    "act": 4,
+    "difficulty": "normal",
+    "enemies": [
+      "assessor_of_the_forty_two"
+    ],
+    "weight": 1,
+    "tags": [
+      "licensing_labyrinth",
+      "stage_two_truths"
+    ],
+    "role": "combat"
+  },
+  {
+    "id": "labyrinth_two_truths_duo_01",
+    "name": "The Ibis Before the Assessor",
+    "act": 4,
+    "difficulty": "normal",
+    "enemies": [
+      "moon_cycle_ibis",
+      "assessor_of_the_forty_two"
+    ],
+    "weight": 1,
+    "tags": [
+      "licensing_labyrinth",
+      "stage_two_truths"
+    ],
+    "role": "multi_combat",
+    "enemy_health": [
+      125,
+      140
+    ]
+  },
+  {
+    "id": "labyrinth_two_truths_duo_02",
+    "name": "Noon and the Moon",
+    "act": 4,
+    "difficulty": "normal",
+    "enemies": [
+      "eclipse_scarab",
+      "moon_cycle_ibis"
+    ],
+    "weight": 1,
+    "tags": [
+      "licensing_labyrinth",
+      "stage_two_truths"
+    ],
+    "role": "multi_combat",
+    "enemy_health": [
+      140,
+      125
+    ]
+  },
+  {
+    "id": "labyrinth_elite_curse_of_the_opened_tomb",
+    "name": "The Curse of the Opened Tomb",
+    "act": 4,
+    "difficulty": "elite",
+    "enemies": [
+      "curse_of_the_opened_tomb"
+    ],
+    "weight": 1,
+    "tags": [
+      "licensing_labyrinth",
+      "elite"
+    ],
+    "role": "elite"
+  },
+  {
+    "id": "labyrinth_elite_ammit_devourer_of_the_unworthy",
+    "name": "Ammit, Devourer of the Unworthy",
+    "act": 4,
+    "difficulty": "elite",
+    "enemies": [
+      "ammit_devourer_of_the_unworthy"
+    ],
+    "weight": 1,
+    "tags": [
+      "licensing_labyrinth",
+      "elite"
+    ],
+    "role": "elite"
   }
 ]

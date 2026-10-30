@@ -15,8 +15,7 @@ public static class ActStages
         [1] = ["queue", "ordinance", "seal", "delay"],
         [2] = ["returns", "stacks", "catalogue", "necrology"],
         [3] = ["road", "hedgerows", "tollwater", "covenants"],
-        [4] = ["stelae", "gate", "granary", "basins", "causeway", "yards", "monument", "hall", "seal", "procession",
-               "linen", "vaults", "warrens", "fixed_days", "cartouche", "balance", "sealed_court"],
+        [4] = ["stelae", "granary", "works", "linen", "necropolis", "two_truths"],
     };
 
     // ── ELITES BELONG TO A STAGE TOO (user, 2026-09-28) ──────────────────────────────────────────────────────
@@ -45,6 +44,17 @@ public static class ActStages
         ["green_docket_elite_great_toll_frog"] = 3,
         ["green_docket_elite_the_wrong_bridge_in_person"] = 3,
         ["green_docket_elite_magistrate_of_thorns"] = 4,
+        // Act IV, after the content cut of 2026-10-30: six stages, ten elites, each behind the lesson it examines.
+        ["labyrinth_elite_surveyor_of_the_errant_cord"] = 1,
+        ["labyrinth_elite_sphinx_of_the_processional_measure"] = 1,
+        ["labyrinth_elite_scarab_host_of_the_sealed_granary"] = 2,
+        ["labyrinth_elite_rope_master_of_the_corvee"] = 3,
+        ["labyrinth_elite_colossus_of_the_endless_procession"] = 3,
+        ["labyrinth_elite_mummified_overseer_of_the_linen_house"] = 4,
+        ["labyrinth_elite_curse_of_the_opened_tomb"] = 4,
+        ["labyrinth_elite_the_tombbreakers_three"] = 5,
+        ["labyrinth_elite_keeper_of_the_thirty_six_decans"] = 5,
+        ["labyrinth_elite_ammit_devourer_of_the_unworthy"] = 5,
     };
 
     // The 1-based stage an elite stands in, or null when nothing names one.

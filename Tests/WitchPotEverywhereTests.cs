@@ -41,7 +41,9 @@ public class WitchPotEverywhereTests
                 var pot = now.State.GetCardZones(now.HeroId).SetAside.Count;
                 var enemy = FirstEnemy(now);
                 var cost = now.ActionCost(Add, enemy).Sum(c => c.Amount);
-                if (hand > 0 && pot < WitchActions.Slots && (cost != 0 || !now.CanUse(Add, enemy)))
+                // A lost turn (Act IV's burial stuns) takes the pot with everything else.
+                var stunned = now.State.GetCombatant(now.HeroId).Statuses.Any(s => s.DefinitionId.value == "standard.stun");
+                if (!stunned && hand > 0 && pot < WitchActions.Slots && (cost != 0 || !now.CanUse(Add, enemy)))
                     offenders.Add($"{encounter.Id.Value} turn {turn}: cost {cost}, usable {now.CanUse(Add, enemy)}, "
                         + $"energy {now.HeroEnergy}, statuses [{string.Join(",", now.State.GetCombatant(now.HeroId).Statuses.Select(s => s.DefinitionId.value))}]");
                 driver.EndTurn();

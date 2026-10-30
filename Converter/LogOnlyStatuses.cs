@@ -23,10 +23,12 @@ public static class LogOnlyStatuses
         "act_one_markings", "act_two_markings",
         // Act III's shared law, explained once by the tutorial (moment act3.docket) instead of on every body
         "green_docket_body",
+        // Act IV's shared law, explained once by the tutorial (moment act4.labyrinth)
+        "labyrinth_body",
         // once-per-turn and once-per-fight guards of enemy rules
         "eternal_cartouche_spent", "surveyed_this_turn", "border_next",
         "web_measured_this_turn", "line_broken_this_turn", "counter_petition_used",
-        "credit_drawn_this_turn",
+        "sinned_this_turn", "the_real_door", "door_slammed", "tomb_spoils_carried", "jackal_moves_to",
         // the spent ambush footing (AmbushFooting): its chip would say only that the chip before it is gone
         "ambush_footing_spent",
     };

@@ -21,112 +21,27 @@ namespace BnbContent.Converter;
 // exactly as the tax writes down its surcharges, and the gang keeps a bookmark in it.
 public static partial class ActFour
 {
-    public const string WraithEnemyId = "rope_gang_wraith";
     public const string RunawayEnemyId = "runaway_laborer";
     public const string UshabtiEnemyId = "stone_hauler_ushabti";
 
-    public const string WorkRhythmId = "lose_the_work_rhythm";
     public const string WorkStrainId = "work_strain";
     public const string EscapePlanId = "escape_plan";
     public const string EscapeId = "escape";
     public const string StoneWorkId = "stone_work";
     public const string StoneId = "stone";
 
-    // What one rope-snap carries when the gang has lost its step (appendix: +4-8), and how many broken braces
-    // buy a conscript their freedom.
-    private const int WorkStrainDamage = 6;
-    private const int RopeSnapDamage = 20;
     public const int EscapesToLeave = 2;
 
-    // The bookmarks: the gang's place in the tally of Energy Fatigue has taken, and the Ushabti's in the tally
-    // of surcharges paid. The brace is what the gang had standing when the player's turn began.
-    public static CounterId RhythmRead => new("rhythm_read");
     public static CounterId StonesQuarried => new("stones_quarried");
     public static CounterId BraceAtTurnStart => new("brace_at_turn_start");
 
     public static EffectProgram<EnemyActionContext>? YardIntent(string enemyId, string intentId) =>
         $"{enemyId}.{intentId}" switch
         {
-            "rope_gang_wraith.rope_snap" => RopeSnap(),
             _ => null,
         };
 
     // ── the Rope-Gang Wraith ──────────────────────────────────────────────────────────────────────────────
-
-    // The strain itself: a mark the player can see, because the rope-snap it feeds is the one intent in this
-    // stage worth playing around.
-    public static StatusData WorkStrain() => new()
-    {
-        Id = WorkStrainId,
-        NameKey = "Work Strain",
-        DescriptionKey =
-            "The gang has lost its step. Its next Rope Snap carries 6 more damage, and the strain is spent "
-            + "doing it.",
-        Polarity = StatusPolarity.Buff,
-        StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
-        UsesStacks = false,
-        Tags = [],
-        PassiveModifiers = [],
-        Triggers = [],
-    };
-
-    // "When Fatigue actually removes Energy from the player" — not when the player is tired, which is a
-    // different fact: a player with no Energy left loses nothing to Fatigue, and the gang keeps its rhythm.
-    public static StatusData LoseTheWorkRhythm() => new()
-    {
-        Id = WorkRhythmId,
-        NameKey = "Lose the Work Rhythm",
-        DescriptionKey =
-            "This gang pulls in step. Whenever Fatigue actually takes Energy out of your hands, it strains — "
-            + "and its next Rope Snap carries the strain.",
-        Polarity = StatusPolarity.Neutral,
-        StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
-        UsesStacks = false,
-        Tags = [],
-        PassiveModifiers = [],
-        Triggers = [Trigger(FeelTheStrain(), nameof(TriggerEvent.TurnStarted))],
-    };
-
-    private static EffectProgram<TurnStartedTriggeredEffectContext> FeelTheStrain()
-    {
-        var gang = CombatantTargetSelectors.Source;
-        var unread = SinceLastLooked<TurnStartedTriggeredEffectContext>(gang, EnergyTakenByFatigue, RhythmRead);
-
-        return new EffectProgram<TurnStartedTriggeredEffectContext>(
-            new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
-                new ComparisonExpression<TurnStartedTriggeredEffectContext>(
-                    unread, ComparisonOperator.Greater,
-                    new ConstantExpression<TurnStartedTriggeredEffectContext>(0)),
-                new CausalSequenceEffectNode<TurnStartedTriggeredEffectContext>(
-                [
-                    new ApplyStatusNode<TurnStartedTriggeredEffectContext>(
-                        gang, new StatusDefinitionId(WorkStrainId),
-                        new ConstantExpression<TurnStartedTriggeredEffectContext>(1), sourceSelector: gang),
-
-                    MoveTheBookmark<TurnStartedTriggeredEffectContext>(gang, EnergyTakenByFatigue, RhythmRead),
-                ])));
-    }
-
-    // The snap, and the spending of the strain. The damage is the same arithmetic its telegraph states —
-    // "20 dmg +6 per Work Strain (max +6)" — written again here because the strain has to be spent in the
-    // same breath, and the authored action list is what the telegraph is built from.
-    private static EffectProgram<EnemyActionContext> RopeSnap() =>
-        new(new CausalSequenceEffectNode<EnemyActionContext>(
-        [
-            new DealDamageNode<EnemyActionContext>(
-                Applicant,
-                new AddExpression<EnemyActionContext>(
-                    Const(RopeSnapDamage),
-                    new MinExpression<EnemyActionContext>(
-                        new MultiplyExpression<EnemyActionContext>(
-                            Const(WorkStrainDamage),
-                            new CombatantStatusStacksExpression<EnemyActionContext>(
-                                CombatantTargetSelectors.Source, new StatusDefinitionId(WorkStrainId))),
-                        Const(WorkStrainDamage)))),
-
-            new RemoveStatusNode<EnemyActionContext>(
-                CombatantTargetSelectors.Source, new StatusDefinitionId(WorkStrainId)),
-        ]));
 
     // ── the Runaway Laborer ───────────────────────────────────────────────────────────────────────────────
 

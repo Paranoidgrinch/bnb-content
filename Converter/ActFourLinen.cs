@@ -22,12 +22,10 @@ namespace BnbContent.Converter;
 public static partial class ActFour
 {
     public const string NatronBearerEnemyId = "natron_bearer";
-    public const string EmbalmerEnemyId = "linen_wrapped_embalmer";
     public const string MummyEnemyId = "unfinished_mummy";
     public const string VesselGuardianEnemyId = "fourfold_vessel_guardian";
 
     public const string DryWhatWouldDecayId = "dry_what_would_decay";
-    public const string WrappingInstructionsId = "instructions_for_wrapping";
     public const string HooksStillAttachedId = "hooks_still_attached";
 
     // The Guardian's four offices, in the order it works them.
@@ -40,7 +38,6 @@ public static partial class ActFour
         [OfficeOfTheBodyId, OfficeOfTheBreathId, OfficeOfTheBloodId, OfficeOfTheNameId];
 
     public static CounterId DryingRead => new("drying_read");
-    public static CounterId WrappedThisRound => new("wrapped_this_round");
     public static CounterId HookedThisTurn => new("hooked_this_turn");
 
     public static EffectProgram<EnemyActionContext>? LinenIntent(string enemyId, string intentId) =>
@@ -49,22 +46,21 @@ public static partial class ActFour
             "fourfold_vessel_guardian.body_office" => Office(14, BurdenedId, 1, OfficeOfTheBodyId),
             "fourfold_vessel_guardian.breath_office" => Office(13, "panic", 1, OfficeOfTheBreathId),
             "fourfold_vessel_guardian.blood_office" => Office(14, "poison", 1, OfficeOfTheBloodId),
-            "fourfold_vessel_guardian.name_office" => Office(11, InscribedId, 1, OfficeOfTheNameId),
+            "fourfold_vessel_guardian.name_office" => Office(11, EntombedId, 1, OfficeOfTheNameId),
             _ => null,
         };
 
     // ── the Natron Bearer ─────────────────────────────────────────────────────────────────────────────────
 
-    // "Whenever Embalmed prevents a negative status from naturally decaying: apply 1 Entombed. Max once per
-    // round." The same tally the Complaint Wall carves from, answered with burial instead of grievance — one
-    // moment of preservation, one measure of natron, whatever else the round held.
+    // Since the content cut of 2026-10-30 this is the Embalmed idea as one body's rule: while the Bearer
+    // stands your afflictions do not decay at all (ActFour.Fade asks for it), and once a round in which one was
+    // held in place you are packed 1 Entombed deeper.
     public static StatusData DryWhatWouldDecay() => new()
     {
         Id = DryWhatWouldDecayId,
         NameKey = "Dry What Would Decay",
         DescriptionKey =
-            "Nothing on you is allowed to lapse, and drying is burial: once each round in which preservation "
-            + "held an affliction in place, you are packed 1 Entombed deeper.",
+            "While it lives, your afflictions do not fade. Each round one was held in place: 1 Entombed.",
         Polarity = StatusPolarity.Neutral,
         StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
         UsesStacks = false,
@@ -96,59 +92,6 @@ public static partial class ActFour
 
     // ── the Linen-Wrapped Embalmer ────────────────────────────────────────────────────────────────────────
 
-    // "When Inscribed strengthens an Embalmed application: apply 1 Burdened. Max once per round."
-    //
-    // Which is one question now that an amplification says what grew and what paid for it: was the enlarged
-    // thing the wrapping, and was it the register that enlarged it? The Embalmer writes the instructions on
-    // one turn and wraps to them on the next, so the chain is its own.
-    public static StatusData InstructionsForWrapping() => new()
-    {
-        Id = WrappingInstructionsId,
-        NameKey = "Instructions for Wrapping",
-        DescriptionKey =
-            "This embalmer wraps to what is written: once each round, an Embalmed the register made larger "
-            + "leaves you carrying 1 Burdened.",
-        Polarity = StatusPolarity.Neutral,
-        StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
-        UsesStacks = false,
-        Tags = [],
-        PassiveModifiers = [],
-        Triggers =
-        [
-            Trigger(WrapToTheInstructions(), nameof(TriggerEvent.StatusApplicationAmplified),
-                StatusTriggerScope.Anywhere),
-            Trigger(ClearLatch<RoundStartedTriggeredEffectContext>(WrappingInstructionsId, WrappedThisRound),
-                nameof(TriggerEvent.RoundStarted), StatusTriggerScope.Anywhere),
-        ],
-    };
-
-    private static EffectProgram<StatusApplicationAmplifiedTriggeredEffectContext> WrapToTheInstructions()
-    {
-        var embalmer = Bearer(WrappingInstructionsId);
-
-        return new EffectProgram<StatusApplicationAmplifiedTriggeredEffectContext>(
-            new ConditionalEffectNode<StatusApplicationAmplifiedTriggeredEffectContext>(
-                new AndExpression<StatusApplicationAmplifiedTriggeredEffectContext>(
-                    new AndExpression<StatusApplicationAmplifiedTriggeredEffectContext>(
-                        new TriggerEventStatusIsExpression<StatusApplicationAmplifiedTriggeredEffectContext>(
-                            new StatusDefinitionId(EmbalmedId)),
-                        new TriggerEventAmplifierIsExpression<StatusApplicationAmplifiedTriggeredEffectContext>(
-                            new StatusDefinitionId(InscribedId))),
-                    NotYetThisRound<StatusApplicationAmplifiedTriggeredEffectContext>(embalmer, WrappedThisRound)),
-                new CausalSequenceEffectNode<StatusApplicationAmplifiedTriggeredEffectContext>(
-                [
-                    new SetCombatantCounterNode<StatusApplicationAmplifiedTriggeredEffectContext>(
-                        embalmer, WrappedThisRound,
-                        new ConstantExpression<StatusApplicationAmplifiedTriggeredEffectContext>(1),
-                        relative: false),
-
-                    new ApplyStatusNode<StatusApplicationAmplifiedTriggeredEffectContext>(
-                        Applicant, new StatusDefinitionId(BurdenedId),
-                        new ConstantExpression<StatusApplicationAmplifiedTriggeredEffectContext>(1),
-                        sourceSelector: embalmer),
-                ])));
-    }
-
     // ── the Unfinished Mummy ──────────────────────────────────────────────────────────────────────────────
 
     // "While the player has Embalmed: the first Attack played each player turn adds 1 Entombed after
@@ -159,8 +102,8 @@ public static partial class ActFour
         Id = HooksStillAttachedId,
         NameKey = "Hooks Still Attached",
         DescriptionKey =
-            "This body is still in process. While you are Embalmed, the first Deed you play each turn "
-            + "catches on its hooks: 1 Entombed.",
+            "This body is still in process. The first Deed you play each turn catches on its hooks: "
+            + "1 Entombed.",
         Polarity = StatusPolarity.Neutral,
         StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
         UsesStacks = false,
@@ -187,14 +130,8 @@ public static partial class ActFour
                         new TargetHasStatusExpression<CardPlayedTriggeredEffectContext>(
                             CombatantTargetSelectors.Source,
                             new StatusDefinitionId(PassiveStatuses.ApplicantId))),
-                    new AndExpression<CardPlayedTriggeredEffectContext>(
-                        // …while they are preserved, which is the state the hooks catch on.
-                        new ComparisonExpression<CardPlayedTriggeredEffectContext>(
-                            new CombatantStatusStacksExpression<CardPlayedTriggeredEffectContext>(
-                                Applicant, new StatusDefinitionId(EmbalmedId)),
-                            ComparisonOperator.Greater,
-                            new ConstantExpression<CardPlayedTriggeredEffectContext>(0)),
-                        NotYetThisRound<CardPlayedTriggeredEffectContext>(mummy, HookedThisTurn))),
+                    // …the first one each turn (content cut 2026-10-30: no longer only while you are preserved).
+                    NotYetThisRound<CardPlayedTriggeredEffectContext>(mummy, HookedThisTurn)),
                 new CausalSequenceEffectNode<CardPlayedTriggeredEffectContext>(
                 [
                     new SetCombatantCounterNode<CardPlayedTriggeredEffectContext>(

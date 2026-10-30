@@ -176,7 +176,7 @@ public static class EncounterPassives
     public static IReadOnlyList<StartingStatusSpec> ActOpeningStatuses(IEnumerable<string> enemyIds)
     {
         var roster = enemyIds as IReadOnlyList<string> ?? [.. enemyIds];
-        return [.. ActThree.HeroOpening(roster), .. ActFour.NecropolisOpening(roster)];
+        return [.. ActThree.HeroOpening(roster)];
     }
 
     public static IReadOnlyList<StartingStatusSpec> HeroOpeningStatuses(string enemyId) => enemyId switch

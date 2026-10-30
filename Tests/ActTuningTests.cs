@@ -43,10 +43,10 @@ public class ActTuningTests
         Assert.Equal([.. Health(Authored, "labyrinth_stelae_01").Select(h => Scale(h, normal))], Health(Shipped, "labyrinth_stelae_01"));
         Assert.Equal([.. Health(Authored, "labyrinth_stelae_duo_01").Select(h => Scale(h, multi))], Health(Shipped, "labyrinth_stelae_duo_01"));
 
-        var vizier = ActTuning.Encounters["labyrinth_boss_vizier_of_the_kings_mouth"].HealthPercent;
-        Assert.NotEqual(ActTuning.For(4, "boss").HealthPercent, vizier);
-        Assert.Equal([.. Health(Authored, "labyrinth_boss_vizier_of_the_kings_mouth").Select(h => Scale(h, vizier))],
-            Health(Shipped, "labyrinth_boss_vizier_of_the_kings_mouth"));
+        const string queen = "green_docket_elite_ant_queen_of_the_proper_line";
+        var own = ActTuning.Encounters[queen].HealthPercent;
+        Assert.NotEqual(ActTuning.For(3, "elite").HealthPercent, own);
+        Assert.Equal([.. Health(Authored, queen).Select(h => Scale(h, own))], Health(Shipped, queen));
     }
 
     [Fact]

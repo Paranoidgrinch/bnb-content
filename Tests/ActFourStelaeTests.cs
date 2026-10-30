@@ -152,45 +152,6 @@ public class ActFourStelaeTests
 
     // ── Inscribed: the register ───────────────────────────────────────────────────────────────────────────
 
-    // Being in the register makes the next thing that happens to you bigger — here the measure itself, which
-    // arrives demanding three instead of two — and one Inscribed is spent doing it.
-    [Fact]
-    public void The_register_enlarges_the_next_application_and_is_spent()
-    {
-        var (play, _, _) = FightProbe.Start(
-            FightProbe.SoloAgainstHero("reed_cord_surveyor", "set_the_measure", energy: 3,
-                (ActFour.InscribedId, 1)));
-
-        play.CombatDriver!.EndTurn();
-
-        Assert.Equal(3, FightProbe.StacksOf(Hero(play), ActFour.WeighedId));
-        Assert.Equal(0, FightProbe.StacksOf(Hero(play), ActFour.InscribedId));
-        play.Dispose();
-    }
-
-    // …and it is polarity-blind, which is the act's central decision: spend the register on a blessing of
-    // your own and the next curse arrives at its ordinary size.
-    [Fact]
-    public void The_register_enlarges_a_blessing_just_as_readily_and_is_then_gone()
-    {
-        var (play, session, surveyor) = FightProbe.Start(
-            FightProbe.SoloAgainstHero("reed_cord_surveyor", "set_the_measure", energy: 3,
-                (ActFour.InscribedId, 1)),
-            deck: [.. Enumerable.Repeat(Wax, 5)]);
-
-        // A blessing of the player's own reaches the register first: seven wax become eight.
-        Play(play, session, Wax, surveyor);
-
-        Assert.Equal(8, FightProbe.StacksOf(Hero(play), Keywords.WardWax));
-        Assert.Equal(0, FightProbe.StacksOf(Hero(play), ActFour.InscribedId));
-
-        play.CombatDriver!.EndTurn();
-
-        // …so the measure arrives at its ordinary size.
-        Assert.Equal(2, FightProbe.StacksOf(Hero(play), ActFour.WeighedId));
-        play.Dispose();
-    }
-
     // ── Entombed: burial ──────────────────────────────────────────────────────────────────────────────────
 
     // Four is pressure and nothing else. The fifth buries the turn — and five are spent doing it, so the
@@ -229,26 +190,6 @@ public class ActFourStelaeTests
     }
 
     // ── Embalmed: preservation ────────────────────────────────────────────────────────────────────────────
-
-    // Panic sheds a stack at every turn end. A preserved bearer sheds nothing: the Embalmed is spent instead,
-    // and the fade happens again as soon as the preservation runs out.
-    [Fact]
-    public void Preservation_holds_a_value_that_would_otherwise_fade()
-    {
-        var (play, _, _) = FightProbe.Start(
-            FightProbe.SoloAgainstHero("reed_cord_surveyor", "reed_lash", energy: 3,
-                ("panic", 2), (ActFour.EmbalmedId, 1)));
-
-        play.CombatDriver!.EndTurn();
-
-        Assert.Equal(2, FightProbe.StacksOf(Hero(play), "panic"));       // held
-        Assert.Equal(0, FightProbe.StacksOf(Hero(play), ActFour.EmbalmedId)); // …and paid for
-
-        play.CombatDriver.EndTurn();
-
-        Assert.Equal(1, FightProbe.StacksOf(Hero(play), "panic"));       // the fade returns
-        play.Dispose();
-    }
 
     // ── the Boundary Stelae ───────────────────────────────────────────────────────────────────────────────
 

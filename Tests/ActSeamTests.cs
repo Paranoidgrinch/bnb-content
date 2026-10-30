@@ -111,8 +111,8 @@ public class ActSeamTests
         Assert.Equal(5, city.Count);
         Assert.Equal(5, archives.Count);
         Assert.Equal(5, road.Count);
-        // …and the labyrinth ends on any of EIGHT, which is the act's own design (boss master §Act IV).
-        Assert.Equal(8, labyrinth.Count);
+        // …and the labyrinth ends on any of SEVEN (the Vizier left in the content cut of 2026-10-30).
+        Assert.Equal(7, labyrinth.Count);
         Assert.All(city, id => Assert.StartsWith("city_boss_", id, StringComparison.Ordinal));
         Assert.DoesNotContain("archives_boss_grand_cross_reference", city);
         Assert.All(archives, id => Assert.StartsWith("archives_boss_", id, StringComparison.Ordinal));
@@ -221,17 +221,19 @@ public class ActSeamTests
     [Fact]
     public void The_old_generators_promises_are_the_ones_it_has_always_made()
     {
-        // The labyrinth keeps the audit's table (the city, the archives and the road were cut to length on
-        // 2026-10-29, for both generators).
+        // Every act was cut to length (the city, the archives and the road on 2026-10-29, the labyrinth on
+        // 2026-10-30, for both generators); the labyrinth is still the longest of them.
         var labyrinth = Game.Acts![3].MapGeneration!;
 
-        Assert.Equal(12, labyrinth.PerPathMinimums[MapNodeKind.Combat]);
-        Assert.Equal(3, labyrinth.PerPathMinimums[MapNodeKind.MultiCombat]);
-        Assert.Equal(4, labyrinth.PerPathMinimums[MapNodeKind.Elite]);
-        Assert.Equal(4, labyrinth.PerPathMinimums[MapNodeKind.Event]);
-        Assert.Equal(3, labyrinth.PerPathMinimums[MapNodeKind.Rest]);
-        Assert.Equal(2, labyrinth.PerPathMinimums[MapNodeKind.Treasure]);
-        Assert.Equal(3, labyrinth.PerPathMinimums[MapNodeKind.Shop]);
+        Assert.Equal(7, labyrinth.PerPathMinimums[MapNodeKind.Combat]);
+        Assert.Equal(2, labyrinth.PerPathMinimums[MapNodeKind.MultiCombat]);
+        Assert.Equal(2, labyrinth.PerPathMinimums[MapNodeKind.Elite]);
+        Assert.Equal(2, labyrinth.PerPathMinimums[MapNodeKind.Event]);
+        Assert.Equal(2, labyrinth.PerPathMinimums[MapNodeKind.Rest]);
+        Assert.Equal(1, labyrinth.PerPathMinimums[MapNodeKind.Treasure]);
+        Assert.Equal(2, labyrinth.PerPathMinimums[MapNodeKind.Shop]);
+        Assert.All(Game.Acts.Take(3), act => Assert.True(
+            act.MapGeneration!.PerPathMinimums[MapNodeKind.Combat] < labyrinth.PerPathMinimums[MapNodeKind.Combat]));
 
         Assert.All(Roomed, act => Assert.Equal(5, act.MapGeneration!.Rows));
     }

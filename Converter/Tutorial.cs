@@ -86,6 +86,10 @@ public static class Tutorial
             "Every party here lives under customary law. Each enemy's chip names its own law; break it and you " +
             "owe that party a Trespass. Three Trespass to one party become its Claim. A Safe-Conduct refuses one " +
             "Trespass."),
+        ("act4.labyrinth", "The Licensing Labyrinth",
+            "The road to the Judgment of the Dead is one long procedure, written in three words. Weighed: spend " +
+            "exactly that much Energy this turn. Burdened: every card costs 1 more until the surcharge is paid. " +
+            "Entombed: at 5 you are buried and lose the turn. Each enemy's chip names its own law."),
         ("combat.relics", "Relics",
             "The little tiles above you are your relics. They work on their own; a relic lights up when it " +
             "triggers. Hover one to read it."),

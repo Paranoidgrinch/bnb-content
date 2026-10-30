@@ -27,219 +27,32 @@ public static partial class ActFour
 {
     public const string FalseDoorFinderEnemyId = "false_door_finder";
     public const string CursedLootBearerEnemyId = "cursed_loot_bearer";
-    public const string StarTableScribeEnemyId = "star_table_scribe";
     public const string MoonCycleIbisEnemyId = "moon_cycle_ibis";
     public const string EclipseScarabEnemyId = "eclipse_scarab";
 
-    public const string NecropolisPassageId = "necropolis_passage";
-    public const string EveryObjectRequiresAFormId = "every_object_requires_a_form";
     public const string LunarReturnId = "lunar_return";
     public const string LastRiteBurdenedId = "last_rite_burdened";
     public const string LastRiteEntombedId = "last_rite_entombed";
     public const string ApproachOfNoonId = "approach_of_noon";
 
-    // What the Finder's passage check asks for, and how many licences a body may hold at once. The measure is
-    // the same small, payable number the Reed-Cord Surveyor opens the act with — a check nobody can meet is
-    // elite machinery (§6.2), not a standard's. The cap is two: the fight opens you with one, compliance can
-    // put one more in your pocket, and nothing stockpiles a way out of the stage.
-    private const int PassageMeasure = 2;
-    private const int SafeConductCap = 2;
-
     // How many approaches the Scarab makes before noon goes missing. Three of them plus the black turn itself
     // is the master's "every fourth own turn".
     public const int EclipseSteps = 3;
 
-    // The Finder's two bookmarks — one in each of the act's running tallies, because "was it met?" and "was
-    // it missed?" are two different answers to one resolution, and the Finder gives a different thing for
-    // each. The Loot Bearer's bookmark sits in the surcharge tally instead.
-    public static CounterId PassagesMetRead => new("passages_met_read");
-    public static CounterId PassagesFailedRead => new("passages_failed_read");
-    public static CounterId SurchargesRead => new("surcharges_read");
-
-    // The Scribe's day, and nothing else: the table is fixed, so which day it is on is the whole of its state.
-    public static CounterId DecanStep => new("decan_step");
-
     public static EffectProgram<EnemyActionContext>? WarrenIntent(string enemyId, string intentId) =>
         $"{enemyId}.{intentId}" switch
         {
-            "false_door_finder.certify_passage" => SetTheMeasure(13, Const(PassageMeasure)),
-            "star_table_scribe.fixed_decan_measure" => FixedDecanMeasure(14),
-            "star_table_scribe.table_cover" => TableCover(27),
             "moon_cycle_ibis.set_the_rite" => SetTheRite(15),
             "moon_cycle_ibis.wing_shelter" => WingShelter(25),
             "eclipse_scarab.black_noon" => BlackNoon(12),
             _ => null,
         };
 
-    // What the act serves on the player when a Finder is in the room: the customs that turn three Trespass
-    // into a Claim, and the one Safe-Conduct §3.9 insists the player is never expected to arrive with.
-    //
-    // Asked of the whole roster, like Act III's own opening and for the same reason — Safe-Conduct is kept as
-    // per-grant instances, so asking twice would hand out two licences rather than merging one. The
-    // Tombbreakers Three bring the same law with them for the same reason the Finder does: their Lamp Thief
-    // files Trespass, and the audit is emphatic that the player never arrives with unexplained Act-III
-    // resources.
-    public static IReadOnlyList<StartingStatusSpec> NecropolisOpening(IEnumerable<string> enemyIds) =>
-        enemyIds.Any(id => id == FalseDoorFinderEnemyId || Tombbreakers.Contains(id))
-            ?
-            [
-                new StartingStatusSpec(new StatusDefinitionId(ActThree.GreenDocketCustomsId), 1),
-                new StartingStatusSpec(new StatusDefinitionId(ActThree.SafeConductId), 1),
-            ]
-            : [];
-
     // ── the False-Door Finder ─────────────────────────────────────────────────────────────────────────────
-
-    // The passage procedure. The check itself is `Certify Passage` — the act's one Primary Measure, raised
-    // only when none stands (§3.1) — and this rule is what ANSWERS it: a licence for compliance, a violation
-    // for failure, from the Finder and owed to the Finder.
-    //
-    // It answers on the Finder's OWN turn start, which is the first moment after the player's turn ended in
-    // which the result exists, and it takes each resolution once by keeping a bookmark in each tally. That is
-    // what makes the answer independent of how many other bodies also watched the same measure resolve.
-    public static StatusData NecropolisPassage() => new()
-    {
-        Id = NecropolisPassageId,
-        NameKey = "Necropolis Passage",
-        DescriptionKey =
-            "This entrance is legally valid. A passage check you meet earns 1 Safe-Conduct (up to 2); one "
-            + "you miss is 1 Trespass owed to the Finder — and three Trespass are a Claim.",
-        Polarity = StatusPolarity.Neutral,
-        StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
-        UsesStacks = false,
-        Tags = [],
-        PassiveModifiers = [],
-        Triggers = [Trigger(CertifyTheResult(), nameof(TriggerEvent.TurnStarted))],
-    };
-
-    private static EffectProgram<TurnStartedTriggeredEffectContext> CertifyTheResult()
-    {
-        var finder = CombatantTargetSelectors.Source;
-        var missed = SinceLastLooked<TurnStartedTriggeredEffectContext>(finder, MeasuresFailed, PassagesFailedRead);
-        var met = SinceLastLooked<TurnStartedTriggeredEffectContext>(finder, MeasuresMet, PassagesMetRead);
-
-        return new EffectProgram<TurnStartedTriggeredEffectContext>(
-            new CausalSequenceEffectNode<TurnStartedTriggeredEffectContext>(
-            [
-                // A failure is filed in the Finder's own name — which is the whole reason the law is worth
-                // borrowing: three violations owed to ONE party are that party's Claim, and a Safe-Conduct
-                // refuses the filing outright.
-                new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
-                    new ComparisonExpression<TurnStartedTriggeredEffectContext>(
-                        missed, ComparisonOperator.Greater,
-                        new ConstantExpression<TurnStartedTriggeredEffectContext>(0)),
-                    new ApplyStatusNode<TurnStartedTriggeredEffectContext>(
-                        Applicant, new StatusDefinitionId(ActThree.TrespassId),
-                        new ConstantExpression<TurnStartedTriggeredEffectContext>(1), sourceSelector: finder)),
-
-                // Compliance is worth a licence, and the cap is local: this stage is the only place in the
-                // act that hands them out at all.
-                new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
-                    new AndExpression<TurnStartedTriggeredEffectContext>(
-                        new ComparisonExpression<TurnStartedTriggeredEffectContext>(
-                            met, ComparisonOperator.Greater,
-                            new ConstantExpression<TurnStartedTriggeredEffectContext>(0)),
-                        new ComparisonExpression<TurnStartedTriggeredEffectContext>(
-                            new CombatantStatusStacksExpression<TurnStartedTriggeredEffectContext>(
-                                Applicant, new StatusDefinitionId(ActThree.SafeConductId)),
-                            ComparisonOperator.Less,
-                            new ConstantExpression<TurnStartedTriggeredEffectContext>(SafeConductCap))),
-                    new ApplyStatusNode<TurnStartedTriggeredEffectContext>(
-                        Applicant, new StatusDefinitionId(ActThree.SafeConductId),
-                        new ConstantExpression<TurnStartedTriggeredEffectContext>(1), sourceSelector: finder)),
-
-                MoveTheBookmark<TurnStartedTriggeredEffectContext>(finder, MeasuresFailed, PassagesFailedRead),
-                MoveTheBookmark<TurnStartedTriggeredEffectContext>(finder, MeasuresMet, PassagesMetRead),
-            ]));
-    }
 
     // ── the Cursed Loot Bearer ────────────────────────────────────────────────────────────────────────────
 
-    // "Whenever Burdened actually increases the Energy cost paid for a card: apply Paperwork. Max once per
-    // card." The act already writes that moment down — the tally Burdened keeps when a surcharge is PAID
-    // rather than cleansed away — so the Bearer needs no rule of its own beyond a bookmark in it, and the
-    // "once per card" cap is structural: the tally only ever moves once per card.
-    //
-    // Nor does the total need a ceiling. Every payment works a stack off, so a turn can only pay as many
-    // surcharges as there was Burdened to pay them with.
-    public static StatusData EveryObjectRequiresAForm() => new()
-    {
-        Id = EveryObjectRequiresAFormId,
-        NameKey = "Every Object Requires a Form",
-        DescriptionKey =
-            "These goods generate their own paperwork as they get harder to carry: 1 Paperwork for every "
-            + "card whose Burdened surcharge you actually paid.",
-        Polarity = StatusPolarity.Neutral,
-        StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
-        UsesStacks = false,
-        Tags = [],
-        PassiveModifiers = [],
-        Triggers = [Trigger(FileForTheGoods(), nameof(TriggerEvent.TurnStarted))],
-    };
-
-    private static EffectProgram<TurnStartedTriggeredEffectContext> FileForTheGoods()
-    {
-        var bearer = CombatantTargetSelectors.Source;
-        var unfiled = SinceLastLooked<TurnStartedTriggeredEffectContext>(bearer, BurdenPaid, SurchargesRead);
-
-        return new EffectProgram<TurnStartedTriggeredEffectContext>(
-            new CausalSequenceEffectNode<TurnStartedTriggeredEffectContext>(
-            [
-                new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
-                    new ComparisonExpression<TurnStartedTriggeredEffectContext>(
-                        unfiled, ComparisonOperator.Greater,
-                        new ConstantExpression<TurnStartedTriggeredEffectContext>(0)),
-                    new ApplyStatusNode<TurnStartedTriggeredEffectContext>(
-                        Applicant, new StatusDefinitionId(Cards.Keywords.Paperwork), unfiled,
-                        sourceSelector: bearer)),
-
-                MoveTheBookmark<TurnStartedTriggeredEffectContext>(bearer, BurdenPaid, SurchargesRead),
-            ]));
-    }
-
     // ── the Star-Table Scribe ─────────────────────────────────────────────────────────────────────────────
-
-    // The appointed day's measure: 1, then 2, then 3, then 1 again. No random order — the table is the whole
-    // identity, and a player who has read it knows what tomorrow asks for.
-    //
-    // The day advances only when a measure was actually raised, so a turn spent measuring against somebody
-    // else's standard (§3.1) does not silently skip a day out of the table.
-    private static EffectProgram<EnemyActionContext> FixedDecanMeasure(int damage) =>
-        new(new CausalSequenceEffectNode<EnemyActionContext>(
-        [
-            new DealDamageNode<EnemyActionContext>(Applicant, Const(damage)),
-            new ConditionalEffectNode<EnemyActionContext>(
-                new NotExpression<EnemyActionContext>(
-                    new TargetHasStatusExpression<EnemyActionContext>(
-                        Applicant, new StatusDefinitionId(WeighedId))),
-                new CausalSequenceEffectNode<EnemyActionContext>(
-                [
-                    new ApplyStatusNode<EnemyActionContext>(
-                        Applicant, new StatusDefinitionId(WeighedId),
-                        new AddExpression<EnemyActionContext>(
-                            Const(1),
-                            new RemainderExpression<EnemyActionContext>(
-                                new CombatantCounterExpression<EnemyActionContext>(
-                                    CombatantTargetSelectors.Source, DecanStep),
-                                Const(3)))),
-
-                    new SetCombatantCounterNode<EnemyActionContext>(
-                        CombatantTargetSelectors.Source, DecanStep, Const(1), relative: true),
-                ])),
-        ]));
-
-    // Cover the table, and write the day up: a measure taken wrong goes into the register, where it will
-    // make the next thing that happens to the player one stack worse. The Scribe does not care HOW wrong —
-    // measuring error by band is the Reed-Cord Surveyor's office, not the astronomer's.
-    private static EffectProgram<EnemyActionContext> TableCover(int block) =>
-        new(new CausalSequenceEffectNode<EnemyActionContext>(
-        [
-            new GainBlockNode<EnemyActionContext>(CombatantTargetSelectors.Source, Const(block)),
-            new ConditionalEffectNode<EnemyActionContext>(
-                AtLeast(2),
-                new ApplyStatusNode<EnemyActionContext>(
-                    Applicant, new StatusDefinitionId(InscribedId), Const(1))),
-        ]));
 
     // ── the Moon-Cycle Ibis ───────────────────────────────────────────────────────────────────────────────
 

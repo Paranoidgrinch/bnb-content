@@ -41,7 +41,7 @@ public class ActFourLinenTests
         var (play, _, _) = FightProbe.Start(
             FightProbe.Solo("natron_bearer", "drying_rite"), health: 800);
 
-        play.CombatDriver!.EndTurn(); // 1 Fatigue and 1 Embalmed
+        play.CombatDriver!.EndTurn(); // 1 Fatigue
         Assert.Equal(0, FightProbe.StacksOf(Hero(play), ActFour.EntombedId));
 
         play.CombatDriver.EndTurn();  // the player's turn ends: the Fatigue is held, and the natron packs
@@ -51,15 +51,14 @@ public class ActFourLinenTests
         play.Dispose();
     }
 
-    // A round in which nothing was held buries nothing: what it dries is preservation, not affliction.
+    // A player carrying no affliction has nothing to hold in place, and nothing is packed.
     [Fact]
     public void A_round_that_held_nothing_buries_nothing()
     {
-        var (play, _, _) = FightProbe.Start(
-            FightProbe.SoloAgainstHero("natron_bearer", "natron_dust", energy: 3, ("fatigue", 1)),
-            health: 800);
+        var (play, _, _) = FightProbe.Start(FightProbe.Solo("natron_bearer", "pack_natron"), health: 800);
 
-        play.CombatDriver!.EndTurn(); // the Fatigue fades of its own accord — nothing is dried
+        play.CombatDriver!.EndTurn();
+        play.CombatDriver.EndTurn();
 
         Assert.Equal(0, Hero(play).GetCounter(ActFour.DecaysPreserved));
         Assert.Equal(0, FightProbe.StacksOf(Hero(play), ActFour.EntombedId));
@@ -68,131 +67,23 @@ public class ActFourLinenTests
 
     // ── the Linen-Wrapped Embalmer ────────────────────────────────────────────────────────────────────────
 
-    // It writes the instructions on one turn and wraps to them on the next: the register thickens the
-    // wrapping, and a wrapping that tight is weight.
-    [Fact]
-    public void A_wrapping_the_register_thickened_leaves_you_carrying_weight()
-    {
-        var (play, _, _) = FightProbe.Start(
-            FightProbe.Authored("labyrinth_linen_02"), health: 800);
-
-        play.CombatDriver!.EndTurn(); // Write Instructions: 1 Inscribed
-        Assert.Equal(1, FightProbe.StacksOf(Hero(play), ActFour.InscribedId));
-        Assert.Equal(0, FightProbe.StacksOf(Hero(play), ActFour.BurdenedId));
-
-        play.CombatDriver.EndTurn();  // Wrap Tight: the register makes it 2, and the weight follows
-
-        Assert.Equal(2, FightProbe.StacksOf(Hero(play), ActFour.EmbalmedId));
-        Assert.Equal(0, FightProbe.StacksOf(Hero(play), ActFour.InscribedId)); // spent doing it
-        Assert.Equal(1, FightProbe.StacksOf(Hero(play), ActFour.BurdenedId));
-        play.Dispose();
-    }
-
-    // …and a wrapping nobody wrote instructions for is just a wrapping.
-    [Fact]
-    public void An_unwritten_wrapping_costs_nothing_extra()
-    {
-        var (play, _, _) = FightProbe.Start(
-            FightProbe.Solo("linen_wrapped_embalmer", "wrap_tight"), health: 800);
-
-        play.CombatDriver!.EndTurn();
-
-        Assert.Equal(1, FightProbe.StacksOf(Hero(play), ActFour.EmbalmedId));
-        Assert.Equal(0, FightProbe.StacksOf(Hero(play), ActFour.BurdenedId));
-        play.Dispose();
-    }
-
     // ── the Unfinished Mummy ──────────────────────────────────────────────────────────────────────────────
 
-    // Preservation is not a state you move around in: the first Deed struck while Embalmed catches on the
-    // hooks, and only the first.
+    // The first Deed of each turn catches on the hooks; the second goes through clean.
     [Fact]
-    public void The_first_blow_struck_while_preserved_catches_on_the_hooks()
-    {
-        var (play, session, _) = FightProbe.Start(
-            FightProbe.SoloAgainstHero("unfinished_mummy", "stillness", energy: 5,
-                (ActFour.EmbalmedId, 3)),
-            deck: [.. Enumerable.Repeat(OneCost, 8)], health: 800);
-
-        var mummy = Enemies(play)[0].Id;
-        Play(play, session, OneCost, mummy);
-        Assert.Equal(1, FightProbe.StacksOf(Hero(play), ActFour.EntombedId));
-
-        Play(play, session, OneCost, mummy);  // the second blow is free of them
-        Assert.Equal(1, FightProbe.StacksOf(Hero(play), ActFour.EntombedId));
-
-        play.CombatDriver!.EndTurn();          // …until the next turn
-        Play(play, session, OneCost, mummy);
-
-        Assert.Equal(2, FightProbe.StacksOf(Hero(play), ActFour.EntombedId));
-        play.Dispose();
-    }
-
-    // An unpreserved player strikes freely: the hooks catch on the linen, not on the blow.
-    [Fact]
-    public void An_unpreserved_player_strikes_freely()
+    public void The_first_deed_of_a_turn_catches_on_the_hooks()
     {
         var (play, session, _) = FightProbe.Start(
             FightProbe.Solo("unfinished_mummy", "stillness", energy: 3),
             deck: [.. Enumerable.Repeat(OneCost, 8)], health: 800);
 
         Play(play, session, OneCost, Enemies(play)[0].Id);
-
-        Assert.Equal(0, FightProbe.StacksOf(Hero(play), ActFour.EntombedId));
+        Assert.Equal(1, FightProbe.StacksOf(Hero(play), ActFour.EntombedId));
+        Play(play, session, OneCost, Enemies(play)[0].Id);
+        Assert.Equal(1, FightProbe.StacksOf(Hero(play), ActFour.EntombedId));
         play.Dispose();
     }
 
     // ── the Fourfold Vessel Guardian ──────────────────────────────────────────────────────────────────────
 
-    // One office a turn, in order, and the office is a FACE: which vessel is open can be read off the body,
-    // and only the open one does anything.
-    [Fact]
-    public void The_guardian_works_one_office_a_turn_and_wears_which()
-    {
-        var (play, _, _) = FightProbe.Start(
-            FightProbe.Authored("labyrinth_vaults_01"), health: 900);
-
-        var offices = new[]
-        {
-            (ActFour.OfficeOfTheBodyId, ActFour.BurdenedId),
-            (ActFour.OfficeOfTheBreathId, "panic"),
-            (ActFour.OfficeOfTheBloodId, "poison"),
-            (ActFour.OfficeOfTheNameId, ActFour.InscribedId),
-        };
-
-        foreach (var (office, applied) in offices)
-        {
-            play.CombatDriver!.EndTurn();
-
-            var guardian = Enemies(play)[0];
-            Assert.Equal(1, FightProbe.StacksOf(guardian, office));
-
-            // …and no other office is open at the same time.
-            foreach (var (other, _) in offices.Where(o => o.Item1 != office))
-                Assert.Equal(0, FightProbe.StacksOf(guardian, other));
-
-            Assert.True(FightProbe.StacksOf(Hero(play), applied) >= 1,
-                $"the {office} office applied nothing");
-        }
-
-        play.Dispose();
-    }
-
-    // Encounter 40's chain in one turn pair: the Guardian's Name office writes the register, and the
-    // Embalmer's wrapping is thickened by it.
-    [Fact]
-    public void The_name_office_feeds_the_embalmers_wrapping()
-    {
-        var (play, _, _) = FightProbe.Start(
-            FightProbe.Roster("vessel_of_the_name", 3,
-                ("fourfold_vessel_guardian", "name_office", null),
-                ("linen_wrapped_embalmer", "wrap_tight", null)),
-            health: 900);
-
-        play.CombatDriver!.EndTurn(); // the Name office writes 1 Inscribed, and the wrapping is thickened
-
-        Assert.Equal(2, FightProbe.StacksOf(Hero(play), ActFour.EmbalmedId));
-        Assert.Equal(1, FightProbe.StacksOf(Hero(play), ActFour.BurdenedId));
-        play.Dispose();
-    }
 }
