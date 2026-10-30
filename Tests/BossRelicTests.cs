@@ -27,7 +27,7 @@ public class BossRelicTests
         BossRelics.PharaohOfTheSealedName, BossRelics.WeigherOfTheUnspokenHeart,
         BossRelics.ArchitectOfTheImpossiblePyramid, BossRelics.LadyOfTheBlackGranaries,
         BossRelics.FirstScribeOfTheHouseOfLife, BossRelics.MotherOfNatronAndResin,
-        BossRelics.VizierOfTheKingsMouth, BossRelics.QueenOfTheFloodReckoning,
+        BossRelics.QueenOfTheFloodReckoning,
     ];
 
     // ── the pool ──────────────────────────────────────────────────────────────────────────────────────────
@@ -35,7 +35,7 @@ public class BossRelicTests
     [Fact]
     public void Every_boss_of_all_four_acts_has_exactly_three()
     {
-        Assert.Equal(69, BossRelics.All().Count);
+        Assert.Equal(66, BossRelics.All().Count);
         foreach (var boss in Bosses)
             Assert.Equal(3, BossRelics.For(boss).Count);
         Assert.All(BossRelics.All(), relic =>

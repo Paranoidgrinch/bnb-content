@@ -10,13 +10,14 @@ namespace BnbContent.Converter;
 //
 // She never stops you shedding an affliction. She KEEPS it. Every negative status that leaves the player —
 // faded, cleansed, spent, taken off any way at all — goes into the next empty VESSEL, and four of them full
-// is UNSEAL THE VESSELS: everything stored comes back at one stack apiece, with two Embalmed on top.
+// is UNSEAL THE VESSELS: everything stored comes back at one stack apiece, with two Entombed on top.
 //
 // The counterplay is not to stop the storing. It is to decide what the jars are allowed to hold:
 //
-//   WASH A VESSEL   once a turn, 1 Energy, empty one jar you choose — and take 1 Embalmed for it.
+//   WASH A VESSEL   once a turn, 1 Energy, empty one jar you choose — and take 1 Entombed for it.
 //
-// Which is the whole bargain in one line: preservation later, or preservation now. Washing the jar that
+// Which is the whole bargain in one line: the burial later, or a little of it now (Embalmed until the
+// content cut of 2026-10-30). Washing the jar that
 // holds the Entombed and leaving the one that holds a single sheet of Paperwork is the fight.
 //
 // Fill all four (or reach 305) and THREE JARS ARE ENOUGH: the shelf shortens, the cycle comes round faster,
@@ -38,7 +39,7 @@ public static partial class ActFour
     public const int JarsPhaseTwo = 3;
     private const int ThreeJarsAt = 305;
     private const int PreparationAt = 90;
-    private const int UnsealEmbalmed = 2;
+    private const int UnsealEntombed = 2;
     private const int ThreeJarsBlock = 14;
     private const int UnsealThreeLoss = 12;
     private const int PreparationBase = 34;
@@ -59,7 +60,6 @@ public static partial class ActFour
         (WeighedId, "vessel_of_the_weighed", "wash_the_weighed_vessel", "Weighed"),
         (BurdenedId, "vessel_of_the_burdened", "wash_the_burdened_vessel", "Burdened"),
         (EntombedId, "vessel_of_the_entombed", "wash_the_entombed_vessel", "Entombed"),
-        (InscribedId, "vessel_of_the_inscribed", "wash_the_inscribed_vessel", "Inscribed"),
         (Cards.Keywords.Paperwork, "vessel_of_the_paperwork", "wash_the_paperwork_vessel", "Paperwork"),
         (Cards.Keywords.Doubt, "vessel_of_the_doubt", "wash_the_doubt_vessel", "Doubt"),
     ];
@@ -68,8 +68,8 @@ public static partial class ActFour
         $"{enemyId}.{intentId}" switch
         {
             "mother_of_natron_and_resin.pack_with_natron" => ByJars(
-                I: Seq(Debuff(EmbalmedId, 2)),
-                II: Seq(Debuff(EmbalmedId, 2), Debuff(WeighedId, 2))),
+                I: Seq(Debuff(EntombedId, 2)),
+                II: Seq(Debuff(EntombedId, 2), Debuff(WeighedId, 2))),
             "mother_of_natron_and_resin.black_resin" => ByJars(
                 I: Seq(Debuff("poison", 3)),
                 II: Seq(Debuff("poison", 4))),
@@ -77,8 +77,8 @@ public static partial class ActFour
                 I: Seq(Debuff(BurdenedId, 1), Debuff(EntombedId, 1)),
                 II: Seq(Debuff(BurdenedId, 1), Debuff(EntombedId, 2))),
             "mother_of_natron_and_resin.name_the_body" => ByJars(
-                I: Seq(Debuff(InscribedId, 1), Hit(14)),
-                II: Seq(Debuff(InscribedId, 2), Hit(16))),
+                I: Seq(Debuff(BurdenedId, 1), Hit(14)),
+                II: Seq(Debuff(BurdenedId, 2), Hit(16))),
             "mother_of_natron_and_resin.funerary_hook" => ByJars(
                 I: Seq(Hit(14), Hit(14)),
                 II: Seq(Hit(16), Hit(16))),
@@ -86,8 +86,8 @@ public static partial class ActFour
                 I: Seq(Debuff(Cards.Keywords.Doubt, 1), Debuff("panic", 1), Hit(16)),
                 II: Seq(Debuff(Cards.Keywords.Doubt, 1), Debuff("panic", 1), Hit(19))),
             "mother_of_natron_and_resin.resin_over_the_mouth" => ByJars(
-                I: Seq(Guard(26), Debuff(EmbalmedId, 1)),
-                II: Seq(Guard(28), Debuff(EmbalmedId, 1))),
+                I: Seq(Guard(26), Debuff(EntombedId, 1)),
+                II: Seq(Guard(28), Debuff(EntombedId, 1))),
             "mother_of_natron_and_resin.unseal_the_vessels" => UnsealTheVessels(),
             "mother_of_natron_and_resin.finish_the_preparation" => FinishThePreparation(),
             _ => null,
@@ -456,7 +456,7 @@ public static partial class ActFour
                 .. MotherVessels.Select(v => GiveBack(v.Vessel, v.Status)),
 
                 new ApplyStatusNode<EnemyActionContext>(
-                    Applicant, new StatusDefinitionId(EmbalmedId), Const(UnsealEmbalmed),
+                    Applicant, new StatusDefinitionId(EntombedId), Const(UnsealEntombed),
                     sourceSelector: mother),
 
                 new ConditionalEffectNode<EnemyActionContext>(
@@ -526,7 +526,7 @@ public static partial class ActFour
             Id = id,
             NameKey = $"Wash the {kind} Vessel",
             DescriptionKey =
-                $"Pay 1 Energy: the jar holding {kind} is emptied and cannot come back. You are Embalmed 1 "
+                $"Pay 1 Energy: the jar holding {kind} is emptied and cannot come back. You are Entombed 1 "
                 + "for handling it. One jar a turn.",
             Costs = [],
             Tags = [new TagId(VesselTag), new TagId(Cards.CardAuthoring.TemporaryTag)],
@@ -558,7 +558,7 @@ public static partial class ActFour
                         new SetCombatantCounterNode<CardPlayContext>(
                             mother, WashSpent, new ConstantExpression<CardPlayContext>(1), relative: false),
                         new ApplyStatusNode<CardPlayContext>(
-                            CombatantTargetSelectors.Source, new StatusDefinitionId(EmbalmedId),
+                            CombatantTargetSelectors.Source, new StatusDefinitionId(EntombedId),
                             new ConstantExpression<CardPlayContext>(1), sourceSelector: mother),
                     ]))),
             PlayedCardDestinationZone = CardZone.ExhaustPile,

@@ -42,7 +42,7 @@ public static partial class ActFour
 
     // The four blueprints, each a face on HIS table saying what this turn was accepted as. On his body and
     // not on the player's: see ADAPTATIONS — a neutral rule-marker applied to the player is an application
-    // like any other, so the register enlarges it and eats an Inscribed doing it.
+    // like any other (the old register would have enlarged it), and an announcement is not a thing that happens to you.
     public const string BlueprintFoundationId = "blueprint_measured_foundation";
     public const string BlueprintCoursesId = "blueprint_equal_courses";
     public const string BlueprintAlternatingId = "blueprint_alternating_stone";

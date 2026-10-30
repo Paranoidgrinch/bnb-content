@@ -38,7 +38,6 @@ public static class BossRelics
     public const string LadyOfTheBlackGranaries = "The Lady of the Black Granaries";
     public const string FirstScribeOfTheHouseOfLife = "The First Scribe of the House of Life";
     public const string MotherOfNatronAndResin = "The Mother of Natron and Resin";
-    public const string VizierOfTheKingsMouth = "The Vizier of the King's Mouth";
     public const string QueenOfTheFloodReckoning = "The Queen of the Flood Reckoning";
 
     public static IReadOnlyList<BnbRelic> All() =>
@@ -284,17 +283,6 @@ public static class BossRelics
             "Each turn the basin washes a stack off one of your afflictions — or gives you 12 Block if you "
             + "have none.",
             combatRule: BossRelicRules.BasinOfBlackNatron),
-
-        Boss("triune_office_seal", "Triune Office Seal", VizierOfTheKingsMouth,
-            "All three offices answer to you: an extra card each turn, 8 more on your first Deed, and 8 "
-            + "Block on your first Working.",
-            combatRule: BossRelicRules.TriuneOfficeSeal),
-        Boss("staff_of_the_kings_mouth", "Staff of the King's Mouth", VizierOfTheKingsMouth,
-            "The first real card of each turn is paid for out of the King's own purse, up to 2 Energy.",
-            combatRule: BossRelicRules.StaffOfTheKingsMouth),
-        Boss("vacant_throne_decree", "Vacant-Throne Decree", VizierOfTheKingsMouth,
-            "Once a combat, the empty throne pays: 3 Energy, three cards and 20 Block.",
-            combatRule: BossRelicRules.VacantThroneDecree),
 
         Boss("sluice_gate_of_the_two_lands", "Sluice Gate of the Two Lands", QueenOfTheFloodReckoning,
             "Once a turn you may work the gate: 12 Block into an Energy, or an Energy into 12 Block.",

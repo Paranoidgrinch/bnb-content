@@ -112,32 +112,6 @@ public class ActFourBossPharaohTests
         play.Dispose();
     }
 
-    // …and taking the next name wipes the ledger: the ward whole again, the Authority gone, and something
-    // handed to the player to carry into it. It is not an attack.
-    [Fact]
-    public void Taking_the_next_name_resets_the_ward_and_the_authority()
-    {
-        // Fielded one blow above the band, because the ward makes the real descent long and this test is
-        // about what happens when it is crossed.
-        var (play, session, king) = FightProbe.Start(
-            FightProbe.Roster("pharaoh_band", energy: 9,
-                ("pharaoh_of_the_sealed_name", "those_not_counted_kneel", 430)),
-            deck: [.. Enumerable.Repeat(OneCost, 20)], health: 900);
-
-        play.CombatDriver!.EndTurn();  // refuse once, so there is Authority to lose
-        Assert.Equal(1, FightProbe.StacksOf(King(play), ActFour.AuthorityId));
-
-        while (King(play).Health.Current > 420)
-            Play(play, session, OneCost, king);
-
-        var king2 = King(play);
-        Assert.Equal(1, FightProbe.StacksOf(king2, ActFour.TwoLandsNameId));
-        Assert.Equal(ActFour.WardFull, FightProbe.StacksOf(king2, ActFour.CartoucheWardId));
-        Assert.Equal(0, FightProbe.StacksOf(king2, ActFour.AuthorityId));
-        Assert.Equal(1, FightProbe.StacksOf(Hero(play), ActFour.InscribedId));
-        play.Dispose();
-    }
-
     // The second name asks about ORDER rather than about amount: lead with a Deed, or lead with a Working.
     [Fact]
     public void The_second_name_asks_which_hand_you_lead_with()

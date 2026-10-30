@@ -9,7 +9,7 @@ namespace BnbContent.Converter.Relics;
 // The in-combat rules of the ACT IV boss relics — the Licensing Labyrinth's eight offices, handed to the
 // player. Each is a piece of its boss's own machinery: the Pharaoh's names and his open audience, the
 // Weigher's third-turn judgment and her two pans, the Architect's retention and repetition, the Lady's
-// granary, the First Scribe's copies and erasures, the Mother's wrappings, the Vizier's three offices, and
+// granary, the First Scribe's copies and erasures, the Mother's wrappings, and
 // the Queen's gauge.
 //
 // The devices are the ones the earlier pools established, and they are used here without further comment:
@@ -34,7 +34,6 @@ public static partial class BossRelicRules
     public const string AcquittalJudgmentId = "acquittal_judgment";
     public const string ErasedLineId = "erased_line";
     public const string CanopicWardId = "canopic_ward";
-    public const string TriuneStrikeId = "triune_strike";
 
     // What an erased line guards for instead of doing what it said.
     public const int ErasedLineBlock = 20;
@@ -65,9 +64,6 @@ public static partial class BossRelicRules
     private static CounterId CorrectionUsed => new("correction_reed");
     private static CounterId AudienceUsed => new("edict_of_the_open_audience");
     private static CounterId ShroudSpent => new("resin_shroud_spent");
-    private static CounterId TriuneWorking => new("triune_office_working");
-    private static CounterId StaffUsed => new("staff_of_the_kings_mouth");
-    private static CounterId ThroneUsed => new("vacant_throne_decree");
     private static CounterId SluiceUsed => new("sluice_gate_of_the_two_lands");
     private static CounterId VesselUsed => new("black_flood_vessel");
     private static CounterId CrownEnergy => new("flood_reckoning_crown_energy");
@@ -89,7 +85,6 @@ public static partial class BossRelicRules
         BlackGranaryKey, RationSeal,
         PalimpsestReed, ErasureTablet, ErasedLine, CorrectionReed,
         CanopicCabinet, CanopicWard, ResinShroud, BasinOfBlackNatron,
-        TriuneOfficeSeal, TriuneStrike, StaffOfTheKingsMouth, VacantThroneDecree,
         SluiceGateOfTheTwoLands, FloodReckoningCrown, BlackFloodVessel,
     ];
 
@@ -737,85 +732,6 @@ public static partial class BossRelicRules
                         new StatusSelectionSpec(StatusPolarityFilter.Debuff, StatusPick.First),
                         new ConstantExpression<CardsDrawnTriggeredEffectContext>(-1)),
                     Block<CardsDrawnTriggeredEffectContext>(12))),
-                nameof(TriggerEvent.CardsDrawn)),
-        ]);
-
-    // ── The Vizier of the King's Mouth — the three offices, kept by the holder ────────────────────────────
-
-    // "Each turn: first Deed +8 total damage; draw +1; first Working gains 8 Block. All three offices active."
-    public static readonly StatusData TriuneOfficeSeal = Rule(
-        "triune_office_seal", "Triune Office Seal",
-        "All three offices answer to you: an extra card each turn, 8 more on your first Deed, and 8 Block on "
-        + "your first Working.",
-        [
-            Trigger(new EffectProgram<CardsDrawnTriggeredEffectContext>(
-                new CausalSequenceEffectNode<CardsDrawnTriggeredEffectContext>(
-                [
-                    SetCounter<CardsDrawnTriggeredEffectContext>(TriuneWorking, 0),
-                    Draw<CardsDrawnTriggeredEffectContext>(1),
-                    new ApplyStatusNode<CardsDrawnTriggeredEffectContext>(
-                        Self, new StatusDefinitionId(TriuneStrikeId),
-                        new ConstantExpression<CardsDrawnTriggeredEffectContext>(1)),
-                ])),
-                nameof(TriggerEvent.CardsDrawn)),
-            Trigger(new EffectProgram<CardPlayedTriggeredEffectContext>(
-                new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
-                    PlayedHasTag(CardAuthoring.WorkingTag),
-                    OnceEachTurn<CardPlayedTriggeredEffectContext>(
-                        TriuneWorking, Block<CardPlayedTriggeredEffectContext>(8)))),
-                nameof(TriggerEvent.CardPlayed)),
-        ]);
-
-    // The office of the inner stair, as the holder wears it: +8 on one Deed, spent by that Deed.
-    public static readonly StatusData TriuneStrike = new()
-    {
-        Id = TriuneStrikeId,
-        NameKey = "Armed Authority",
-        DescriptionKey = "Your next Deed deals 8 more damage.",
-        Polarity = StatusPolarity.Buff,
-        StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
-        UsesStacks = true,
-        PassiveModifiers =
-        [
-            new PassiveModifierData(PassiveModifierPipeline.DamageDealt, PassiveModifierOperation.AddFlat, 8,
-                RestrictDamageKind: DamageKind.Direct, RestrictSourceCardTag: CardAuthoring.DeedTag,
-                OncePerAction: true),
-        ],
-        Triggers =
-        [
-            Trigger(new EffectProgram<CardPlayedTriggeredEffectContext>(
-                new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
-                    PlayedHasTag(CardAuthoring.DeedTag),
-                    new RemoveStatusNode<CardPlayedTriggeredEffectContext>(
-                        Self, new StatusDefinitionId(TriuneStrikeId)))),
-                nameof(TriggerEvent.CardPlayed)),
-        ],
-    };
-
-    // "First non-Junk card each turn refunds Energy actually spent after resolving, maximum refund 2."
-    public static readonly StatusData StaffOfTheKingsMouth = Rule(
-        "staff_of_the_kings_mouth", "Staff of the King's Mouth",
-        "The first real card of each turn is paid for out of the King's own purse, up to 2 Energy.",
-        [
-            Trigger(new EffectProgram<CardPlayedTriggeredEffectContext>(
-                new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
-                    PlayedNonJunk(),
-                    OnceEachTurn<CardPlayedTriggeredEffectContext>(
-                        StaffUsed, Hold(RefundUpTo(2))))),
-                nameof(TriggerEvent.CardPlayed)),
-            ClearLatch(StaffUsed),
-        ]);
-
-    // "Once/combat free action: gain 3 Energy, draw 3, gain 20 Block."
-    public static readonly StatusData VacantThroneDecree = Rule(
-        "vacant_throne_decree", "Vacant-Throne Decree",
-        "Once a combat, the empty throne pays: 3 Energy, three cards and 20 Block.",
-        [
-            Trigger(new EffectProgram<CardsDrawnTriggeredEffectContext>(
-                new ConditionalEffectNode<CardsDrawnTriggeredEffectContext>(
-                    Counter<CardsDrawnTriggeredEffectContext>(ThroneUsed, ComparisonOperator.Equal, 0),
-                    OfferTheCard<CardsDrawnTriggeredEffectContext>(
-                        ActFourBossRelicCards.ThroneId, ActFourBossRelicCards.ThroneTag))),
                 nameof(TriggerEvent.CardsDrawn)),
         ]);
 

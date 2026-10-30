@@ -300,53 +300,6 @@ public class ActFourBossRelicTests
         play.Dispose();
     }
 
-    // ── The Vizier of the King's Mouth ────────────────────────────────────────────────────────────────────
-
-    [Fact]
-    public void The_triune_seal_opens_all_three_offices()
-    {
-        var (play, session, target) = WithRelic("triune_office_seal", deck: Both());
-        var plain = WithRelic(relicId: null, deck: Both());
-
-        Assert.Equal(plain.Play.CombatDriver!.Current!.Hand.Count + 1,
-            play.CombatDriver!.Current!.Hand.Count);
-        plain.Play.Dispose();
-
-        var health = Enemy(play, target).Health.Current;
-        Play(play, session, Deed, target);
-        Assert.Equal(6 + 8, health - Enemy(play, target).Health.Current);
-
-        Play(play, session, Working, target);
-        Assert.Equal(5 + 8, Block(Hero(play)));
-        play.Dispose();
-    }
-
-    [Fact]
-    public void The_staff_pays_for_the_first_card_of_the_turn()
-    {
-        var (play, session, target) = WithRelic("staff_of_the_kings_mouth");
-
-        Play(play, session, Deed, target);
-        Assert.Equal(1, FightProbe.StacksOf(Hero(play), "held_energy"));
-        Play(play, session, Deed, target);
-        Assert.Equal(1, FightProbe.StacksOf(Hero(play), "held_energy")); // and only the first
-        play.Dispose();
-    }
-
-    [Fact]
-    public void The_vacant_throne_pays_all_three_ways()
-    {
-        var (play, session, target) = WithRelic("vacant_throne_decree");
-        var hand = play.CombatDriver!.Current!.Hand.Count;
-
-        PlayAction(play, session, ActFourBossRelicCards.ThroneId, target);
-
-        Assert.Equal(20, Block(Hero(play)));
-        Assert.Equal(3, FightProbe.StacksOf(Hero(play), "held_energy"));
-        Assert.Equal(hand + 2, play.CombatDriver.Current!.Hand.Count); // three drawn, the decree spent
-        play.Dispose();
-    }
-
     // ── The Queen of the Flood Reckoning ──────────────────────────────────────────────────────────────────
 
     [Fact]

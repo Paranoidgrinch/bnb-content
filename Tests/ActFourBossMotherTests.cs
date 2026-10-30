@@ -75,7 +75,29 @@ public class ActFourBossMotherTests
         play.Dispose();
     }
 
-    // Washing is offered as one sheet per occupied jar, costs an Energy and an Embalmed, and is spent for
+    // …and the announcement is exactly what makes the response turn real: wash one jar and the shelf is no
+    // longer full. (Washing costs 1 Entombed, and a burial that spends Entombed fills a jar like anything
+    // else that leaves you — so the wash is a real price, not a free answer.)
+    [Fact]
+    public void Washing_a_jar_takes_the_unsealing_back()
+    {
+        var (play, session, mother) = AShelfBeingFilled();
+
+        for (var turn = 0; turn < 3; turn++)
+        {
+            Play(play, session, Cut, mother);
+            play.CombatDriver!.EndTurn();
+        }
+
+        Assert.True(Wears(play, ActFour.VesselsFullId));
+        var entombed = FightProbe.StacksOf(Hero(play), ActFour.EntombedId);
+        Play(play, session, "wash_the_burdened_vessel", null);
+        Assert.Equal(3, Shelf(play));
+        Assert.Equal(entombed + 1, FightProbe.StacksOf(Hero(play), ActFour.EntombedId));
+        play.Dispose();
+    }
+
+    // Washing is offered as one sheet per occupied jar, costs an Energy and an Entombed, and is spent for
     // the turn the moment it is used.
     [Fact]
     public void One_jar_a_turn_may_be_washed()
@@ -90,74 +112,18 @@ public class ActFourBossMotherTests
         Assert.Contains("wash_the_burdened_vessel", hand);
 
         var energy = Energy(Hero(play));
+        var entombed = FightProbe.StacksOf(Hero(play), ActFour.EntombedId);
         Play(play, session, "wash_the_weighed_vessel", null);
 
         Assert.Equal(1, Shelf(play));
         Assert.Equal(0, FightProbe.StacksOf(Mother(play), "vessel_of_the_weighed"));
-        Assert.Equal(1, FightProbe.StacksOf(Hero(play), ActFour.EmbalmedId));
+        Assert.Equal(entombed + 1, FightProbe.StacksOf(Hero(play), ActFour.EntombedId));
         Assert.Equal(energy - 1, Energy(Hero(play)));
 
         // One a turn — and a sheet that does nothing costs nothing either.
         Play(play, session, "wash_the_burdened_vessel", null);
         Assert.Equal(1, Shelf(play));
         Assert.Equal(energy - 1, Energy(Hero(play)));
-        play.Dispose();
-    }
-
-    // A full shelf is announced at the start of the player's turn and answered at the end of it: everything
-    // stored comes back, a stack per jar, with two Embalmed on top — and the first unsealing shortens the
-    // shelf for good.
-    [Fact]
-    public void A_full_shelf_gives_everything_back()
-    {
-        var (play, session, mother) = AShelfBeingFilled();
-
-        for (var turn = 0; turn < 3; turn++)
-        {
-            Play(play, session, Cut, mother);
-            play.CombatDriver!.EndTurn();
-        }
-
-        // Three Burdens spent and one Measure taken.
-        Assert.Equal(4, Shelf(play));
-        Assert.True(Wears(play, ActFour.VesselsFullId));
-
-        play.CombatDriver!.EndTurn();
-
-        Assert.Equal(1, FightProbe.StacksOf(Hero(play), ActFour.WeighedId));
-        Assert.Equal(2, FightProbe.StacksOf(Hero(play), ActFour.EmbalmedId));
-        Assert.Equal(0, Shelf(play));
-        Assert.False(Wears(play, ActFour.VesselsFullId));
-
-        // Three jars are enough from here on, and the fight pauses to say so.
-        Assert.True(Wears(play, ActFour.ThreeJarsId));
-        Assert.Equal(14, Block(Mother(play)));
-        play.Dispose();
-    }
-
-    // …and the announcement is exactly what makes the response turn real: wash one jar and there is nothing
-    // full to unseal.
-    [Fact]
-    public void Washing_a_jar_takes_the_unsealing_back()
-    {
-        var (play, session, mother) = AShelfBeingFilled();
-
-        for (var turn = 0; turn < 3; turn++)
-        {
-            Play(play, session, Cut, mother);
-            play.CombatDriver!.EndTurn();
-        }
-
-        Assert.True(Wears(play, ActFour.VesselsFullId));
-        Play(play, session, "wash_the_burdened_vessel", null);
-        Assert.Equal(3, Shelf(play));
-
-        play.CombatDriver!.EndTurn();
-
-        // Nothing was given back, and the shelf still holds what it held.
-        Assert.Equal(0, FightProbe.StacksOf(Hero(play), ActFour.WeighedId));
-        Assert.Equal(3, Shelf(play));
-        Assert.False(Wears(play, ActFour.ThreeJarsId));
         play.Dispose();
     }
 

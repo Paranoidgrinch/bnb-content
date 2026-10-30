@@ -18,14 +18,12 @@ public static class ActFourBossRelicCards
     public const string AudienceId = "edict_of_the_open_audience_action";
     public const string ErasureId = "erasure_tablet_action";
     public const string CorrectionId = "correction_reed_action";
-    public const string ThroneId = "vacant_throne_decree_action";
     public const string SluiceId = "sluice_gate_of_the_two_lands_action";
     public const string VesselId = "black_flood_vessel_action";
 
     public static readonly TagId AudienceTag = new("edict_of_the_open_audience_action");
     public static readonly TagId ErasureTag = new("erasure_tablet_action");
     public static readonly TagId CorrectionTag = new("correction_reed_action");
-    public static readonly TagId ThroneTag = new("vacant_throne_decree_action");
     public static readonly TagId SluiceTag = new("sluice_gate_of_the_two_lands_action");
     public static readonly TagId VesselTag = new("black_flood_vessel_action");
 
@@ -41,7 +39,7 @@ public static class ActFourBossRelicCards
 
     public static IReadOnlyList<CardData> All() =>
     [
-        OpenTheAudience(), EraseTheLine(), ASmallCorrection(), TheThroneStandsEmpty(),
+        OpenTheAudience(), EraseTheLine(), ASmallCorrection(),
         WorkTheTwoLands(), EmptyTheVessel(),
     ];
 
@@ -155,20 +153,6 @@ public static class ActFourBossRelicCards
                             takeFirst: 1),
                     ]),
                     new DrawCardsNode<CardPlayContext>(Self, new ConstantExpression<CardPlayContext>(1)))));
-
-    // ── The Vizier's empty throne ─────────────────────────────────────────────────────────────────────────
-
-    private static CardData TheThroneStandsEmpty() =>
-        Action(ThroneId, "The Throne Stands Empty",
-            "Gain 3 Energy, draw 3, and gain 20 Block. Once a combat.",
-            ThroneTag,
-            Once("vacant_throne_decree",
-                new CausalSequenceEffectNode<CardPlayContext>(
-                [
-                    HeldEnergy.Hold<CardPlayContext>(3),
-                    new DrawCardsNode<CardPlayContext>(Self, new ConstantExpression<CardPlayContext>(3)),
-                    new GainBlockNode<CardPlayContext>(Self, new ConstantExpression<CardPlayContext>(20)),
-                ])));
 
     // ── The Queen's sluice ────────────────────────────────────────────────────────────────────────────────
 

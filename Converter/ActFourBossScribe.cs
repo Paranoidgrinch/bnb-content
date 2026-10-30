@@ -14,7 +14,7 @@ namespace BnbContent.Converter;
 //
 //   a DEED      6 damage.
 //   a WORKING   6 Block for him, and a sheet of Paperwork for you — once per tablet.
-//   ANYTHING    1 Strength for him — once per tablet — and Inscribed for you.
+//   ANYTHING    1 Strength for him — once per tablet — and Burdened for you.
 //   EMPTY       1 Doubt: nothing recorded is its own kind of wrong.
 //
 // Which makes the whole fight a sequencing puzzle with one escape hatch: SCRAPE AN ENTRY, offered the moment
@@ -74,8 +74,8 @@ public static partial class ActFour
         $"{enemyId}.{intentId}" switch
         {
             "first_scribe_of_the_house_of_life.dip_the_reed" => ByPalimpsest(
-                I: Seq(Debuff(InscribedId, 2)),
-                II: Seq(Debuff(InscribedId, 2), Debuff(Cards.Keywords.Paperwork, 1))),
+                I: Seq(Debuff(BurdenedId, 2)),
+                II: Seq(Debuff(BurdenedId, 2), Debuff(Cards.Keywords.Paperwork, 1))),
             "first_scribe_of_the_house_of_life.margin_of_arrears" => ByPalimpsest(
                 I: Seq(Debuff(Cards.Keywords.Paperwork, 2), Hit(15)),
                 II: Seq(Debuff(Cards.Keywords.Paperwork, 2), Hit(18))),
@@ -86,8 +86,8 @@ public static partial class ActFour
                 I: Seq(Hit(27)),
                 II: Seq(Hit(30))),
             "first_scribe_of_the_house_of_life.seal_the_scroll" => ByPalimpsest(
-                I: Seq(Guard(24), Debuff(EmbalmedId, 1)),
-                II: Seq(Guard(26), Debuff(EmbalmedId, 1))),
+                I: Seq(Guard(24), Debuff(EntombedId, 1)),
+                II: Seq(Guard(26), Debuff(EntombedId, 1))),
             "first_scribe_of_the_house_of_life.correct_the_margin" => CorrectTheMargin(),
             "first_scribe_of_the_house_of_life.the_text_is_now_canon" => TheTextIsNowCanon(),
             _ => null,
@@ -121,7 +121,7 @@ public static partial class ActFour
         NameKey = name,
         DescriptionKey =
             "What the scroll says you did: 1 a Deed (6 damage), 2 a Working (6 Block for him, a sheet for "
-            + "you once a tablet), 3 anything else (Strength for him, Inscribed for you). Nothing written is 1 Doubt.",
+            + "you once a tablet), 3 anything else (Strength for him, Burdened for you). Nothing written is 1 Doubt.",
         Polarity = StatusPolarity.Neutral,
         StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
         UsesStacks = true,
@@ -426,7 +426,7 @@ public static partial class ActFour
                         scribe, StrengthFromTablet,
                         new ConstantExpression<TurnEndedTriggeredEffectContext>(1), relative: false),
                 ])),
-            Give(InscribedId, 1),
+            Give(BurdenedId, 1),
         ]);
 
         // …and a recorded Working is worth a sheet ONCE per tablet; every one of them still Blocks him. Paperwork

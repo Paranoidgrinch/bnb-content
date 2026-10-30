@@ -68,13 +68,13 @@ public static partial class ActFour
         $"{enemyId}.{intentId}" switch
         {
             "pharaoh_of_the_sealed_name.speak_the_throne_name" => ByName(
-                I: Seq(Debuff(InscribedId, 2)),
+                I: Seq(Debuff(BurdenedId, 2)),
                 II: Seq(Hit(29)),
-                III: Seq(Debuff(EmbalmedId, 2), Guard(18))),
+                III: Seq(Debuff(EntombedId, 2), Guard(18))),
             "pharaoh_of_the_sealed_name.staff_of_the_two_lands" => ByName(
                 I: Seq(Hit(26), Guard(18)),
                 II: Seq(Guard(28), Debuff(WeighedId, 3)),
-                III: Seq(Debuff(InscribedId, 2), Debuff(Cards.Keywords.Doubt, 1), Hit(16))),
+                III: Seq(Debuff(BurdenedId, 2), Debuff(Cards.Keywords.Doubt, 1), Hit(16))),
             "pharaoh_of_the_sealed_name.those_not_counted_kneel" => ByName(
                 I: Seq(Debuff(BurdenedId, 1), Debuff(Cards.Keywords.Paperwork, 2)),
                 II: Seq(Debuff(EntombedId, 1), Debuff(BurdenedId, 1)),
@@ -110,7 +110,7 @@ public static partial class ActFour
         Command(CommandNorthId, "Royal Command: Northern Precedence",
             "Lead with a Working — the first card you play this turn."),
         Command(CommandPurifyId, "Royal Command: Purify the Royal Record",
-            "End the turn carrying less Inscribed and Entombed together than you began it with."),
+            "End the turn carrying less Burdened and Entombed together than you began it with."),
     ];
 
     // ── the ward, the authority, the exposure ─────────────────────────────────────────────────────────────
@@ -225,14 +225,14 @@ public static partial class ActFour
                 Applicant, new StatusDefinitionId(statusId));
 
         var record = new AddExpression<TurnStartedTriggeredEffectContext>(
-            Carried(InscribedId), Carried(EntombedId));
+            Carried(BurdenedId), Carried(EntombedId));
 
         var energy = new CombatantCurrentResourceExpression<TurnStartedTriggeredEffectContext>(
             Applicant, StandardCombatIds.EnergyResource);
 
         // The command stands on HIM, not on the player: a command is the KING asking, and — see ADAPTATIONS —
-        // a neutral rule-marker applied to the player is an application like any other, so the register would
-        // enlarge it and spend an Inscribed doing it.
+        // a neutral rule-marker applied to the player is an application like any other, and the command is
+        // his, not yours.
         IEffectNode<TurnStartedTriggeredEffectContext> Issue(string commandId) =>
             new ApplyStatusNode<TurnStartedTriggeredEffectContext>(
                 pharaoh, new StatusDefinitionId(commandId),
@@ -370,7 +370,7 @@ public static partial class ActFour
                                 Applicant, new TagId(Cards.CardAuthoring.WorkingTag))),
                         Obeyed(CommandPurifyId, new ComparisonExpression<TurnEndedTriggeredEffectContext>(
                             new AddExpression<TurnEndedTriggeredEffectContext>(
-                                Carried(InscribedId), Carried(EntombedId)),
+                                Carried(BurdenedId), Carried(EntombedId)),
                             ComparisonOperator.Less,
                             new CombatantCounterExpression<TurnEndedTriggeredEffectContext>(
                                 pharaoh, RecordAtDawn)))))));
@@ -501,7 +501,7 @@ public static partial class ActFour
                 Take(TwoLandsAt, 1, TwoLandsNameId,
                 [
                     new ApplyStatusNode<DamageReceivedTriggeredEffectContext>(
-                        Applicant, new StatusDefinitionId(InscribedId),
+                        Applicant, new StatusDefinitionId(BurdenedId),
                         new ConstantExpression<DamageReceivedTriggeredEffectContext>(1),
                         sourceSelector: pharaoh),
                     new GainBlockNode<DamageReceivedTriggeredEffectContext>(
@@ -511,11 +511,11 @@ public static partial class ActFour
                 Take(EternalAt, 2, EternalNameId,
                 [
                     new ApplyStatusNode<DamageReceivedTriggeredEffectContext>(
-                        Applicant, new StatusDefinitionId(EmbalmedId),
+                        Applicant, new StatusDefinitionId(EntombedId),
                         new ConstantExpression<DamageReceivedTriggeredEffectContext>(2),
                         sourceSelector: pharaoh),
                     new ApplyStatusNode<DamageReceivedTriggeredEffectContext>(
-                        Applicant, new StatusDefinitionId(InscribedId),
+                        Applicant, new StatusDefinitionId(BurdenedId),
                         new ConstantExpression<DamageReceivedTriggeredEffectContext>(1),
                         sourceSelector: pharaoh),
                 ]),

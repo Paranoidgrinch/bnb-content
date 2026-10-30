@@ -86,8 +86,8 @@ public static partial class ActFour
             // Boss-caused water movement always resolves AFTER the blow, and is always previewed: the intent
             // says which way the river goes before the player spends the turn that answers it.
             "queen_of_the_flood_reckoning.open_the_eastern_sluice" => ByFlood(
-                I: Seq(Hit(22), Debuff(InscribedId, 1), RiverRises()),
-                II: Seq(Hit(24), Debuff(InscribedId, 1), RiverRises())),
+                I: Seq(Hit(22), Debuff(BurdenedId, 1), RiverRises()),
+                II: Seq(Hit(24), Debuff(BurdenedId, 1), RiverRises())),
             "queen_of_the_flood_reckoning.close_the_western_sluice" => ByFlood(
                 I: Seq(Guard(26), Debuff(BurdenedId, 1), RiverFalls()),
                 II: Seq(Guard(28), Debuff(BurdenedId, 1), RiverFalls())),

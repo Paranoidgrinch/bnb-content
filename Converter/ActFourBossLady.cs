@@ -11,29 +11,19 @@ namespace BnbContent.Converter;
 // Every turn she names a RATION — a number of cards, reachable from the state the turn actually opens with —
 // and the whole fight is what happens around that number:
 //
-//   EXACT     her next blow lands 5 softer, and you break one of her four SEALS.
-//   UNDER     Reserve intact: a Grain, and she eats 7 a head at the end of her turn.
-//             Record intact: 2 Paperwork.
-//   OVER      Labor intact: Burdened. Record intact: 2 Paperwork.
+//   EXACT     her next blow lands 5 softer, and one of her three granaries (her armour) breaks.
+//   UNDER     a granary standing: she takes a Grain, and eats 7 a head at the end of her turn.
+//   OVER      a granary standing: Burdened.
 //
-// The seals are four STATE FUNCTIONS, and breaking one takes that function away for good — which is the
-// whole fight: the player is not grinding down four identical shields, they are deciding, in order, which of
-// her powers to dismantle. Reserve is her healing. Labor is her burden. Record is her paperwork. Ration turns
-// correct rationing into a damage window: with it broken, every further exact ration costs her 10 blood and
-// 10 cover.
-//
-// All four broken and THE STORES STAND OPEN for two whole player turns — nothing to heal with, nothing to
-// stand behind, and a quarter more from everything you land. Then FAMINE ACCOUNTING: the rations alternate
-// 2 → 5 → 2 → 5, every miss is a step of Famine, and at three the Empty Storehouse answers.
+// (Simplified in the content cut of 2026-10-30: the four seals and their sub-rules are gone.) Each standing
+// granary takes 3 off every blow. All three broken and THE STORES STAND OPEN for two whole player turns —
+// nothing to heal with, nothing to stand behind. Then FAMINE ACCOUNTING: the rations alternate 2 → 5 → 2 → 5,
+// every miss is a step of Famine, and at three the Empty Storehouse answers.
 public static partial class ActFour
 {
     public const string LadyEnemyId = "lady_of_the_black_granaries";
 
     public const string BlackGranariesId = "the_black_granaries";
-    public const string ReserveSealId = "granary_reserve_seal";
-    public const string LaborSealId = "granary_labor_seal";
-    public const string RecordSealId = "granary_record_seal";
-    public const string LadyRationSealId = "granary_ration_seal";
 
     public const string LadyRationId = "the_ration";
     public const string GrainId = "grain";
@@ -42,10 +32,6 @@ public static partial class ActFour
     public const string FamineAccountingId = "famine_accounting";
     public const string FamineId = "famine";
 
-    public const string ReserveCardId = "break_the_granary_reserve_seal";
-    public const string LaborCardId = "break_the_granary_labor_seal";
-    public const string RecordCardId = "break_the_granary_record_seal";
-    public const string LadyRationCardId = "break_the_granary_ration_seal";
 
     public const string BlackSealTag = "black_granary_seal";
 
@@ -56,11 +42,13 @@ public static partial class ActFour
     private const int EmergencyOpeningAt = 300;
 
     // What the player is owed, how long the stores have stood open, and where the ration table has got to.
-    public static CounterId SealBreakOwed => new("seal_break_owed");
     public static CounterId OpenTurns => new("open_store_turns");
     public static CounterId RationStep => new("ration_step");
 
-    private static readonly string[] LadySeals = [ReserveSealId, LaborSealId, RecordSealId, LadyRationSealId];
+    // SIMPLIFIED in the content cut of 2026-10-30: the four seals and their sub-rules are gone. Three black
+    // granaries are her armour, one stack each, and an exact ration breaks one.
+    public const string GranaryArmourId = "black_granary_armour";
+    private static readonly string[] LadySeals = [GranaryArmourId];
 
     public static EffectProgram<EnemyActionContext>? LadyIntent(string enemyId, string intentId) =>
         $"{enemyId}.{intentId}" switch
@@ -77,15 +65,21 @@ public static partial class ActFour
     public static IReadOnlyList<StatusData> LadyStatuses() =>
     [
         TheBlackGranaries(),
-        GranarySeal(ReserveSealId, "Reserve Seal",
-            "Intact, an under-ration feeds her: a Grain, and 7 healed a head at the end of her turn."),
-        GranarySeal(LaborSealId, "Labor Seal",
-            "Intact, an over-ration is answered with Burdened."),
-        GranarySeal(RecordSealId, "Record Seal",
-            "Intact, any failed ration is written up: 2 Paperwork."),
-        GranarySeal(LadyRationSealId, "Ration Seal",
-            "Intact, a correct ration is merely correct. Broken, every exact ration costs her 10 blood and "
-            + "10 cover."),
+        new StatusData
+        {
+            Id = GranaryArmourId,
+            NameKey = "Black Granaries",
+            DescriptionKey = "Her armour: each intact granary takes 3 off every blow. An exact ration breaks one.",
+            Polarity = StatusPolarity.Buff,
+            StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
+            UsesStacks = true,
+            Tags = [],
+            PassiveModifiers =
+            [
+                new PassiveModifierData(PassiveModifierPipeline.DamageReceived, PassiveModifierOperation.AddPerStack, -3),
+            ],
+            Triggers = [],
+        },
         TheRation(),
         Grain(),
         MeasuredExactly(),
@@ -94,31 +88,8 @@ public static partial class ActFour
         Famine(),
     ];
 
-    public static IReadOnlyList<CardData> LadySealCards() =>
-    [
-        GranarySealCard(ReserveCardId, "Break the Reserve Seal",
-            "She can no longer take Grain, and no longer eats. You heal 5.",
-            ReserveSealId, lady => [new HealNode<CardPlayContext>(
-                CombatantTargetSelectors.Source, new ConstantExpression<CardPlayContext>(5))]),
-
-        GranarySealCard(LaborCardId, "Break the Labor Seal",
-            "An over-ration can no longer burden you. One Burdened comes off.",
-            LaborSealId, lady => [new ModifyStatusStacksNode<CardPlayContext>(
-                CombatantTargetSelectors.Source, new StatusDefinitionId(BurdenedId),
-                new ConstantExpression<CardPlayContext>(-1))]),
-
-        GranarySealCard(RecordCardId, "Break the Record Seal",
-            "A failed ration can no longer be written up. Up to 2 Paperwork comes off.",
-            RecordSealId, lady => [new ModifyStatusStacksNode<CardPlayContext>(
-                CombatantTargetSelectors.Source, new StatusDefinitionId(Cards.Keywords.Paperwork),
-                new ConstantExpression<CardPlayContext>(-2))]),
-
-        GranarySealCard(LadyRationCardId, "Break the Ration Seal",
-            "From now on every exact ration costs her 10 blood and 10 cover. She loses 10 cover now.",
-            LadyRationSealId, lady => [new ModifyDefensivePoolNode<CardPlayContext>(
-                lady, StandardCombatIds.BlockDefensivePool,
-                new ConstantExpression<CardPlayContext>(-RationWindowLoss))]),
-    ];
+    // The seal cards are gone with the seals (content cut 2026-10-30): a granary breaks by itself.
+    public static IReadOnlyList<CardData> LadySealCards() => [];
 
     // ── the four functions, and the numbers around them ───────────────────────────────────────────────────
 
@@ -240,8 +211,8 @@ public static partial class ActFour
         Id = BlackGranariesId,
         NameKey = "The Black Granaries",
         DescriptionKey =
-            "Four seals, and a ration every turn. Play exactly what she counted as sufficient and you break "
-            + "a seal of your choosing; play too few or too many and the seals still standing answer for it.",
+            "Each turn she names a ration of cards. Exact: a granary breaks. Too few: she eats. Too many: "
+            + "Burdened. All three broken: the stores stand open.",
         Polarity = StatusPolarity.Neutral,
         StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
         UsesStacks = false,
@@ -284,8 +255,7 @@ public static partial class ActFour
                     new MinExpression<TurnStartedTriggeredEffectContext>(energy, inHand)));
 
         // The ration is a face on HER, not on the player — see ADAPTATIONS: a neutral rule-marker applied to
-        // the player is an application like any other, so the register enlarges it and eats an Inscribed
-        // doing it. An announcement is not a thing that happens to you.
+        // the player is an application like any other (the old register would have enlarged it). An announcement is not a thing that happens to you.
         IEffectNode<TurnStartedTriggeredEffectContext> Announce(int preferred) =>
             new ApplyStatusNode<TurnStartedTriggeredEffectContext>(
                 lady, new StatusDefinitionId(LadyRationId), Reachable(preferred), sourceSelector: lady);
@@ -295,14 +265,6 @@ public static partial class ActFour
                 new CombatantCounterExpression<TurnStartedTriggeredEffectContext>(lady, RationStep),
                 new ConstantExpression<TurnStartedTriggeredEffectContext>(2)),
             ComparisonOperator.Equal, new ConstantExpression<TurnStartedTriggeredEffectContext>(0));
-
-        IEffectNode<TurnStartedTriggeredEffectContext> Offer(string cardId, string sealId) =>
-            new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
-                new TargetHasStatusExpression<TurnStartedTriggeredEffectContext>(
-                    lady, new StatusDefinitionId(sealId)),
-                new CreateCardInstanceNode<TurnStartedTriggeredEffectContext>(
-                    Applicant, new CardDefinitionId(cardId), CardZone.Hand,
-                    new ConstantExpression<TurnStartedTriggeredEffectContext>(1)));
 
         return new EffectProgram<TurnStartedTriggeredEffectContext>(
             new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
@@ -336,21 +298,6 @@ public static partial class ActFour
                             everyOther, Announce(2), Announce(5)),
                         new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
                             everyOther, Announce(3), Announce(4))),
-
-                    // …and what an exact ration earned: the intact seals, as a hand of choices.
-                    new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
-                        new ComparisonExpression<TurnStartedTriggeredEffectContext>(
-                            new CombatantCounterExpression<TurnStartedTriggeredEffectContext>(
-                                lady, SealBreakOwed),
-                            ComparisonOperator.Greater,
-                            new ConstantExpression<TurnStartedTriggeredEffectContext>(0)),
-                        new CausalSequenceEffectNode<TurnStartedTriggeredEffectContext>(
-                        [
-                            Offer(ReserveCardId, ReserveSealId),
-                            Offer(LaborCardId, LaborSealId),
-                            Offer(RecordCardId, RecordSealId),
-                            Offer(LadyRationCardId, LadyRationSealId),
-                        ])),
 
                     new SetCombatantCounterNode<TurnStartedTriggeredEffectContext>(
                         lady, RationStep,
@@ -398,16 +345,9 @@ public static partial class ActFour
                 lady, new StatusDefinitionId(ShortMeasureId),
                 new ConstantExpression<TurnEndedTriggeredEffectContext>(1), sourceSelector: lady),
 
-            // The choice is owed, and taken next turn from the seals still standing.
+            // With her granaries already broken, counting correctly is a weapon…
             new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
-                anySeal,
-                new SetCombatantCounterNode<TurnEndedTriggeredEffectContext>(
-                    lady, SealBreakOwed, new ConstantExpression<TurnEndedTriggeredEffectContext>(1),
-                    relative: false)),
-
-            // With the Ration Seal broken, counting correctly is a weapon.
-            new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
-                new NotExpression<TurnEndedTriggeredEffectContext>(Intact(LadyRationSealId)),
+                new NotExpression<TurnEndedTriggeredEffectContext>(anySeal),
                 new CausalSequenceEffectNode<TurnEndedTriggeredEffectContext>(
                 [
                     new DealDamageNode<TurnEndedTriggeredEffectContext>(
@@ -416,6 +356,19 @@ public static partial class ActFour
                     new ModifyDefensivePoolNode<TurnEndedTriggeredEffectContext>(
                         lady, StandardCombatIds.BlockDefensivePool,
                         new ConstantExpression<TurnEndedTriggeredEffectContext>(-RationWindowLoss)),
+                ])),
+
+            // …and while they stand, an exact ration breaks one; the last one throws the stores open.
+            new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
+                anySeal,
+                new CausalSequenceEffectNode<TurnEndedTriggeredEffectContext>(
+                [
+                    new ModifyStatusStacksNode<TurnEndedTriggeredEffectContext>(
+                        lady, new StatusDefinitionId(GranaryArmourId),
+                        new ConstantExpression<TurnEndedTriggeredEffectContext>(-1)),
+                    new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
+                        new NotExpression<TurnEndedTriggeredEffectContext>(Intact(GranaryArmourId)),
+                        TheGranariesStandOpen<TurnEndedTriggeredEffectContext>(lady)),
                 ])),
 
             new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
@@ -428,22 +381,16 @@ public static partial class ActFour
         var under = new CausalSequenceEffectNode<TurnEndedTriggeredEffectContext>(
         [
             new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
-                Intact(ReserveSealId),
+                Intact(GranaryArmourId),
                 new ApplyStatusNode<TurnEndedTriggeredEffectContext>(
                     lady, new StatusDefinitionId(GrainId),
                     new ConstantExpression<TurnEndedTriggeredEffectContext>(1), sourceSelector: lady)),
-
-            new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
-                Intact(RecordSealId), Give(Cards.Keywords.Paperwork, 2)),
         ]);
 
         var over = new CausalSequenceEffectNode<TurnEndedTriggeredEffectContext>(
         [
             new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
-                Intact(LaborSealId), Give(BurdenedId, 1)),
-
-            new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
-                Intact(RecordSealId), Give(Cards.Keywords.Paperwork, 2)),
+                Intact(GranaryArmourId), Give(BurdenedId, 1)),
         ]);
 
         var missed = new CausalSequenceEffectNode<TurnEndedTriggeredEffectContext>(
@@ -609,13 +556,13 @@ public static partial class ActFour
 
     private static EffectProgram<EnemyActionContext> NothingLeavesUncounted() =>
         ByAccounting(
-            WhileIntact(RecordSealId, Debuff(Cards.Keywords.Paperwork, 3), Hit(20)),
+            WhileIntact(GranaryArmourId, Debuff(Cards.Keywords.Paperwork, 3), Hit(20)),
             Seq(Hit(22), Debuff(Cards.Keywords.Paperwork, 2)));
 
     private static EffectProgram<EnemyActionContext> RationTheLiving() =>
         ByAccounting(
-            WhileIntact(LaborSealId, Debuff(BurdenedId, 2), Hit(22)),
-            Seq(Hit(24), Debuff(InscribedId, 1)));
+            WhileIntact(GranaryArmourId, Debuff(BurdenedId, 2), Hit(22)),
+            Seq(Hit(24), Debuff(BurdenedId, 1)));
 
     private static EffectProgram<EnemyActionContext> TheHungryCrowd() =>
         ByAccounting(
@@ -626,7 +573,7 @@ public static partial class ActFour
     // aside, so an empty reserve is answered with the plainest thing she has left: a blow.
     private static EffectProgram<EnemyActionContext> OpenOneJar() =>
         ByAccounting(
-            WhileIntact(ReserveSealId,
+            WhileIntact(GranaryArmourId,
                 new HealNode<EnemyActionContext>(CombatantTargetSelectors.Source, Const(18)), Hit(20)),
             Hit(31));
 
@@ -635,58 +582,8 @@ public static partial class ActFour
         [
             Hit(38),
             Debuff(BurdenedId, 1),
-            Debuff(InscribedId, 1),
+            Debuff(BurdenedId, 1),
             new RemoveStatusNode<EnemyActionContext>(
                 CombatantTargetSelectors.Source, new StatusDefinitionId(FamineId)),
         ]));
-
-    // ── the seals, as cards ───────────────────────────────────────────────────────────────────────────────
-
-    // A seal is broken by PLAYING it — which is how a choice among four is put in front of the player. The
-    // card costs nothing, is only ever in hand when a break is owed, and breaks exactly one.
-    private static CardData GranarySealCard(
-        string id, string name, string text, string sealId,
-        Func<ICombatantTargetSelector, IReadOnlyList<IEffectNode<CardPlayContext>>> reward)
-    {
-        var lady = Bearer(BlackGranariesId);
-
-        var anySealLeft = LadySeals
-            .Select(other => (ICombatExpression<CardPlayContext, bool>)
-                new TargetHasStatusExpression<CardPlayContext>(lady, new StatusDefinitionId(other)))
-            .Aggregate((a, b) => new OrExpression<CardPlayContext>(a, b));
-
-        var body = new List<IEffectNode<CardPlayContext>>
-        {
-            new RemoveStatusNode<CardPlayContext>(lady, new StatusDefinitionId(sealId)),
-            new SetCombatantCounterNode<CardPlayContext>(
-                lady, SealBreakOwed, new ConstantExpression<CardPlayContext>(0), relative: false),
-        };
-        body.AddRange(reward(lady));
-
-        // Causal: the fourth seal has to SEE that it was the last one, or the stores never open on the break
-        // that opened them.
-        body.Add(new ConditionalEffectNode<CardPlayContext>(
-            new NotExpression<CardPlayContext>(anySealLeft),
-            TheGranariesStandOpen<CardPlayContext>(lady)));
-
-        return new CardData
-        {
-            Id = id,
-            NameKey = name,
-            DescriptionKey = text,
-            Costs = [],
-            Tags = [new TagId(BlackSealTag), new TagId(Cards.CardAuthoring.TemporaryTag)],
-            Program = new EffectProgram<CardPlayContext>(
-                new ConditionalEffectNode<CardPlayContext>(
-                    new AndExpression<CardPlayContext>(
-                        new ComparisonExpression<CardPlayContext>(
-                            new CombatantCounterExpression<CardPlayContext>(lady, SealBreakOwed),
-                            ComparisonOperator.Greater, new ConstantExpression<CardPlayContext>(0)),
-                        new TargetHasStatusExpression<CardPlayContext>(
-                            lady, new StatusDefinitionId(sealId))),
-                    new CausalSequenceEffectNode<CardPlayContext>(body))),
-            PlayedCardDestinationZone = CardZone.ExhaustPile,
-            TurnEndHandDestinationZone = CardZone.ExhaustPile,
-        };
-    }
 }
