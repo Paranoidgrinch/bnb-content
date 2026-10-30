@@ -160,22 +160,20 @@ public static class EliteRelics
             "Every third Burdened surcharge you pay gives 1 Energy back.",
             combatRule: EliteRelicRules.CutCorveeRope),
 
-        Elite(EliteRelicRules.GlyphId, "Glyph Struck From the Name",
-            "labyrinth_elite_keeper_of_the_living_cartouche",
-            "The first time the register enlarges something against you each fight, it does not.",
-            combatRule: EliteRelicRules.GlyphStruckFromTheName),
+        // The two new elites of the content cut (2026-10-30) pay out between fights.
+        Elite("a_ring_put_back", "A Ring Put Back", "labyrinth_elite_curse_of_the_opened_tomb",
+            "What you did not keep keeps paying: every victory leaves 15 Gold.",
+            runPrograms: [AfterEveryVictory(Gold(15))]),
+
+        Elite("heart_lighter_than_the_feather", "Heart Lighter Than the Feather",
+            "labyrinth_elite_ammit_devourer_of_the_unworthy",
+            "Weighed and not devoured: every victory heals 4.",
+            runPrograms: [AfterEveryVictory(Heal(4))]),
 
         Elite(EliteRelicRules.ShearsId, "Overseer's Linen Shears",
             "labyrinth_elite_mummified_overseer_of_the_linen_house",
             "The first thing that fades from you each fight: heal 3 and gain 3 Block.",
             combatRule: EliteRelicRules.OverseersLinenShears),
-
-        // Both pans answer for themselves: the lighter one pays in coin. A fight cannot hand over Gold, so
-        // the weight is a run program and says so.
-        Elite("weight_from_the_lighter_pan", "Weight From the Lighter Pan",
-            "labyrinth_elite_treasury_of_the_two_pans",
-            "Every victory is weighed out in coin: 25 Gold.",
-            runPrograms: [AfterEveryVictory(Gold(25))]),
 
         Elite(EliteRelicRules.RiddleId, "The Riddle's Third Answer",
             "labyrinth_elite_sphinx_of_the_processional_measure",

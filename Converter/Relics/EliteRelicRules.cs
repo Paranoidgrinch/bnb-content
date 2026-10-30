@@ -31,7 +31,7 @@ public static class EliteRelicRules
         PreApprovedAntlerTine, MendedThread, TollStoneWrongBank, CoinLeftInTheThroat, TheProperLine,
         ObsoleteBoundaryCord, ThornChosenFromThree,
         // Act IV
-        TheErrantCord, BrokenGranarySeal, CutCorveeRope, GlyphStruckFromTheName, OverseersLinenShears,
+        TheErrantCord, BrokenGranarySeal, CutCorveeRope, OverseersLinenShears,
         RiddlesThirdAnswer, LampThiefsWick, DecanStarTableChip, ProcessionalStepStone,
         TheThirdEnding,
         // the mimic, one rule per grade
@@ -583,28 +583,6 @@ public static class EliteRelicRules
                     EveryNth<CardCostPaidTriggeredEffectContext>(
                         RopePaid, 3, HeldEnergy.Hold<CardCostPaidTriggeredEffectContext>(1)))),
                 nameof(TriggerEvent.CardCostPaid)),
-        ]);
-
-    // The register writes down every application it enlarges. One glyph is struck out.
-    public static string GlyphId => "glyph_struck_from_the_name";
-    private static CounterId GlyphUsed => new("glyph_struck_used");
-
-    public static StatusData GlyphStruckFromTheName => Rule(
-        GlyphId, "Glyph Struck From the Name",
-        "The first time the register enlarges something against you each fight, it does not.",
-        [
-            Trigger(new EffectProgram<StatusApplicationAmplifiedTriggeredEffectContext>(
-                new ConditionalEffectNode<StatusApplicationAmplifiedTriggeredEffectContext>(
-                    Unspent<StatusApplicationAmplifiedTriggeredEffectContext>(GlyphUsed),
-                    new CausalSequenceEffectNode<StatusApplicationAmplifiedTriggeredEffectContext>(
-                    [
-                        Spend<StatusApplicationAmplifiedTriggeredEffectContext>(GlyphUsed),
-                        // Undo exactly what the register added, whatever it added it to.
-                        new ModifyStatusStacksNode<StatusApplicationAmplifiedTriggeredEffectContext>(
-                            You, new StatusDefinitionId(ActFour.InscribedId),
-                            new ConstantExpression<StatusApplicationAmplifiedTriggeredEffectContext>(-1)),
-                    ]))),
-                nameof(TriggerEvent.StatusApplicationAmplified)),
         ]);
 
     // The Overseer counts what preservation holds. The shears are what happens when you let go.

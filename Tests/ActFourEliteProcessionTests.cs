@@ -134,22 +134,20 @@ public class ActFourEliteProcessionTests
 
     // ── the Tombbreakers Three ────────────────────────────────────────────────────────────────────────────
 
-    // They bring Act III's law into the tomb with them: the Lamp Thief files Trespass, so the room opens the
-    // player with the licence that refuses one — the audit is emphatic that nobody arrives with unexplained
-    // Act-III resources.
+    // The three come as three, and Act IV no longer brings Act III's law into the tomb with them.
     [Fact]
-    public void The_tomb_opens_under_act_three_law()
+    public void The_tomb_opens_with_three_robbers_and_no_act_three_law()
     {
         var (play, _, _) = FightProbe.Start(
             FightProbe.Authored("labyrinth_elite_the_tombbreakers_three"), health: 900);
 
-        Assert.Equal(1, FightProbe.StacksOf(Hero(play), ActThree.SafeConductId));
-        Assert.Equal(1, FightProbe.StacksOf(Hero(play), ActThree.GreenDocketCustomsId));
+        Assert.Equal(0, FightProbe.StacksOf(Hero(play), ActThree.SafeConductId));
+        Assert.Equal(0, FightProbe.StacksOf(Hero(play), ActThree.GreenDocketCustomsId));
         Assert.Equal(3, Enemies(play).Count(c => FightProbe.StacksOf(c, ActFour.TombbreakerId) > 0));
         play.Dispose();
     }
 
-    // The veteran takes a Claim on the find, and the standing is what makes it dangerous.
+    // The veteran takes the first share as Strength, and a second share braces instead.
     [Fact]
     public void The_veteran_claims_the_find_and_grows_on_it()
     {
@@ -158,13 +156,11 @@ public class ActFourEliteProcessionTests
 
         play.CombatDriver!.EndTurn();
         var veteran = Body(play, "pry_bar_veteran");
-        Assert.Equal(1, FightProbe.StacksOf(veteran, ActThree.ClaimId));
         Assert.Equal(2, FightProbe.StacksOf(veteran, "strength"));
 
-        // A second share is not a second claim: it braces instead.
         play.CombatDriver.EndTurn();
         var again = Body(play, "pry_bar_veteran");
-        Assert.Equal(1, FightProbe.StacksOf(again, ActThree.ClaimId));
+        Assert.Equal(2, FightProbe.StacksOf(again, "strength"));
         Assert.Equal(16, BlockOf(again));
         play.Dispose();
     }

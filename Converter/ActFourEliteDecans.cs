@@ -6,20 +6,19 @@ using RogueDeck.Scenario.Authoring;
 namespace BnbContent.Converter;
 
 // Act IV, elite — the Keeper of the Thirty-Six Decans. The act's final examination: one watch a turn, each of
-// the five words in its own hour, and a reckoning at the sixth.
+// the act's three words in its own hour, and a reckoning at the fourth.
 //
 //   WATCH I — MEASURE       1 Weighed.    Answered by meeting it.
-//   WATCH II — NAME         1 Inscribed.  Answered by spending the register.
-//   WATCH III — LABOR       1 Burdened.   Answered by paying the surcharge off.
-//   WATCH IV — BURIAL       1 Entombed.   Answered by being buried and coming out the other side.
-//   WATCH V — PRESERVATION  1 Embalmed.   Answered by spending the preservation on something.
-//   WATCH VI — RECKONING    the stars are read, and the reading is worth more the more of the act you are
+//   WATCH II — LABOR        1 Burdened.   Answered by paying the surcharge off.
+//   WATCH III — BURIAL      1 Entombed.   Answered by being buried and coming out the other side.
+//   WATCH IV — RECKONING    the stars are read, and the reading is worth more the more of the act you are
 //                           still carrying.
 //
 // Every watch you clear costs the Keeper 6 HP, which is the whole examination: it is not asking you to
-// survive the five words, it is asking you to have LEARNED them. And once the first full round of six is
-// done the hours shorten — a minor reckoning after the third watch as well — so a player who is merely
-// enduring runs out of turns before a player who is answering does.
+// survive the three words, it is asking you to have LEARNED them. And once the first full round is done the
+// hours shorten — a minor reckoning at the third watch as well — so a player who is merely enduring runs out
+// of turns before a player who is answering does. (Five words and six watches until the content cut of
+// 2026-10-30.)
 public static partial class ActFour
 {
     public const string DecanKeeperEnemyId = "keeper_of_the_thirty_six_decans";
@@ -27,7 +26,7 @@ public static partial class ActFour
     public const string ThirtySixDecansId = "the_thirty_six_decans";
     public const string HoursShortenedId = "the_hours_shorten";
 
-    public const int Watches = 6;
+    public const int Watches = 4;
     private const int CorrectObservationLoss = 6;
     private const int ReckoningBase = 16;
     private const int ReckoningPerKind = 4;
@@ -42,9 +41,9 @@ public static partial class ActFour
     public static CounterId MinorDue => new("minor_reckoning_due");
     public static CounterId WatchRead => new("watch_read");
 
-    // The five words, in the order the examination asks for them. Watch VI has no burden of its own.
+    // The three words, in the order the examination asks for them. The last watch has no burden of its own.
     private static readonly string[] WatchStatuses =
-        [WeighedId, InscribedId, BurdenedId, EntombedId, EmbalmedId];
+        [WeighedId, BurdenedId, EntombedId];
 
     public static EffectProgram<EnemyActionContext>? DecanKeeperIntent(string enemyId, string intentId) =>
         $"{enemyId}.{intentId}" switch
@@ -65,9 +64,8 @@ public static partial class ActFour
         Id = ThirtySixDecansId,
         NameKey = "The Thirty-Six Decans",
         DescriptionKey =
-            "One watch a turn: measure, name, labour, burial, preservation, and then the stars are read. "
-            + "Clear the watch's burden before your turn ends and the keeper loses 6 — it is asking whether "
-            + "you have LEARNED the five words, not whether you can survive them.",
+            "One watch a turn: measure, labour, burial, then the stars are read. Clear the watch's burden "
+            + "before your turn ends and the keeper loses 6.",
         Polarity = StatusPolarity.Neutral,
         StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
         UsesStacks = false,
@@ -115,7 +113,7 @@ public static partial class ActFour
                 Applicant, new StatusDefinitionId(WatchStatuses[i]),
                 new ConstantExpression<TurnStartedTriggeredEffectContext>(1), sourceSelector: keeper)));
 
-        // The sixth watch carries no burden of its own: it queues the reading, and from then on the hours
+        // The last watch carries no burden of its own: it queues the reading, and from then on the hours
         // are permanently shorter.
         hours.Add(At(Watches - 1, new CausalSequenceEffectNode<TurnStartedTriggeredEffectContext>(
         [

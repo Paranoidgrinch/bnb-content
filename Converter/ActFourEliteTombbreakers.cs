@@ -152,9 +152,8 @@ public static partial class ActFour
 
     // ── the Pry-Bar Veteran ───────────────────────────────────────────────────────────────────────────────
 
-    // "If it has no Claim, gain 1 Claim; otherwise 16 Block." The Claim is Act III's, made through the act's
-    // own one making-point so that the standing is announced like any other — and the +2 Strength that comes
-    // with holding it is granted with it, because nothing in this fight ever takes a Claim off a robber.
+    // "First share: Strength; afterwards 16 Block." (Until the content cut of 2026-10-30 the share was an
+    // Act-III Claim; Act IV no longer speaks Act III.)
     private static EffectProgram<EnemyActionContext> TakeTheFirstShare()
     {
         var veteran = CombatantTargetSelectors.Source;
@@ -163,15 +162,11 @@ public static partial class ActFour
             new ConditionalEffectNode<EnemyActionContext>(
                 new ComparisonExpression<EnemyActionContext>(
                     new CombatantStatusStacksExpression<EnemyActionContext>(
-                        veteran, new StatusDefinitionId(ActThree.ClaimId)),
+                        veteran, new StatusDefinitionId("strength")),
                     ComparisonOperator.Greater, Const(0)),
                 new GainBlockNode<EnemyActionContext>(veteran, Const(16)),
-                new CausalSequenceEffectNode<EnemyActionContext>(
-                [
-                    ActThree.CreateClaim<EnemyActionContext>(veteran),
-                    new ApplyStatusNode<EnemyActionContext>(
-                        veteran, new StatusDefinitionId("strength"), Const(VeteransClaimStrength)),
-                ])));
+                new ApplyStatusNode<EnemyActionContext>(
+                    veteran, new StatusDefinitionId("strength"), Const(VeteransClaimStrength))));
     }
 
     // ── the Lamp Thief ────────────────────────────────────────────────────────────────────────────────────
@@ -195,14 +190,13 @@ public static partial class ActFour
             new DealDamageNode<EnemyActionContext>(Applicant, Const(damage)),
         ]));
 
-    // …and its trespass is filed in its own name, through Act III's rule: three owed to this thief become
-    // this thief's Claim, and the Safe-Conduct the tomb opens you with refuses the first one.
+    // …and the passage it finds buries you a little (Entombed since the content cut of 2026-10-30).
     private static EffectProgram<EnemyActionContext> FindAnotherPassage(int damage) =>
         new(new CausalSequenceEffectNode<EnemyActionContext>(
         [
             new DealDamageNode<EnemyActionContext>(Applicant, InTheDark(damage)),
             new ApplyStatusNode<EnemyActionContext>(
-                Applicant, new StatusDefinitionId(ActThree.TrespassId), Const(1),
+                Applicant, new StatusDefinitionId(EntombedId), Const(1),
                 sourceSelector: CombatantTargetSelectors.Source),
         ]));
 }

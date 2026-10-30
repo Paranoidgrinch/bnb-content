@@ -5,7 +5,7 @@ using RogueDeck.Scenario.Authoring;
 
 namespace BnbContent.Converter;
 
-// Act IV, elite — the Surveyor of the Errant Cord. An ancient surveyor moves the same boundary stones and
+// Act IV, elite — the Errant Cord (once the Surveyor of the Errant Cord). An ancient surveyor moves the same boundary stones and
 // solemnly insists they were always there.
 //
 // Its whole identity is that the PLAYER picks how hard the survey is. Each of your turns it offers two exact

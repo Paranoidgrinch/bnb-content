@@ -164,31 +164,6 @@ public class ActFourEliteTests
         play.Dispose();
     }
 
-    // Cut through the cover and into the colony and it offers its chambers — once a turn, however many times
-    // you cut. Breaking the pest seal costs it 12 HP and puts what was living in there on you.
-    [Fact]
-    public void Reaching_the_colony_offers_a_chamber_to_break()
-    {
-        var (play, session, host) = FightProbe.Start(
-            FightProbe.Solo("scarab_host_of_the_sealed_granary", "granary_wall", energy: 9),
-            deck: Cuts, health: 800);
-
-        // Three cuts to get through 18 Block, and the fourth reaches the colony.
-        for (var i = 0; i < 4; i++)
-            Play(play, session, OneCost, host);
-
-        Assert.True(Holds(play, ActFour.BreakPestCardId), "no chamber was offered after cutting through");
-
-        var before = Body(play, "scarab_host_of_the_sealed_granary").Health.Current;
-        Play(play, session, ActFour.BreakPestCardId, null);
-
-        Assert.Equal(12, before - Body(play, "scarab_host_of_the_sealed_granary").Health.Current);
-        Assert.Equal(2, FightProbe.StacksOf(Hero(play), "poison"));
-        Assert.Equal(0, FightProbe.StacksOf(Body(play, "scarab_host_of_the_sealed_granary"),
-            ActFour.PestSealId));
-        play.Dispose();
-    }
-
     // ── the Rope-Master of the Corvée ─────────────────────────────────────────────────────────────────────
 
     // Every surcharge actually paid is labour owed, and at three the missing hands are called: a Stone-Hauler

@@ -5,144 +5,87 @@ using RogueDeck.Scenario.Authoring;
 
 namespace BnbContent.Converter;
 
-// Act IV, elite — the Mummified Overseer of the Linen House. Preservation read at boss grade: the body that
-// measures how much of you is already wrapped.
+// Act IV, elite — the Mummified Overseer of the Linen House. REWORKED in the content cut of 2026-10-30: the
+// Overseer wraps your hand.
 //
-// Embalmed holds a fading thing in place, and Stage 11 taught the player that being preserved is not a
-// favour. The Overseer counts it. Every affliction preservation holds tightens the wrapping; every one that
-// fades with nothing holding it loosens it again — so the player's answer to this body is to let things
-// lapse, which is exactly what the rest of the act has been teaching them not to be able to afford.
+// Each turn, once the hand is drawn, it wraps two cards of it in linen (cards already wrapped, and cards that
+// cannot be played, are passed over). A wrapped card costs 0 — the price is written on that copy and spent by
+// the play — but playing it buries you a little: 1 Entombed. A wrapped card stays wrapped until it is played,
+// so the linen piles up in the deck if it is left alone. The offer is good, and five Entombed lose the turn:
+// the fight is deciding how much free play the burial is worth.
 //
-// At four the second wrapping goes on: the Overseer braces, and up to two of the afflictions already on the
-// player each gain a stack. It creates nothing new to fill an empty slot — a body with nothing on it has
-// nothing to wrap tighter, and that is the whole reward for having stayed clean.
+// Its own intents tax the hand (Burdened makes every unwrapped card dearer, which makes the free ones dearer
+// to refuse) rather than burying, so the Entombed on the player is the player's own doing.
 public static partial class ActFour
 {
     public const string LinenOverseerEnemyId = "mummified_overseer_of_the_linen_house";
 
     public const string LinenHouseId = "the_linen_house";
-    public const string WrappingId = "wrapping";
+    public const string LinenWrappedMark = "linen_wrapped";
 
-    public const int WrappingLimit = 4;
-    private const int WrappingPerRound = 2;
-    private const int SecondWrappingBlock = 24;
+    public const int WrapsPerTurn = 2;
 
-    // The Overseer's bookmarks in the two tallies the act's one fading point keeps.
-    public static CounterId HeldRead => new("held_read");
-    public static CounterId LapsedRead => new("lapsed_read");
+    // A discount larger than any printed cost: the per-copy price clamps at 0 (CardInstanceCostModifier).
+    private const int FreeOfCharge = -9;
 
-    public static EffectProgram<EnemyActionContext>? LinenOverseerIntent(string enemyId, string intentId) =>
-        $"{enemyId}.{intentId}" switch
-        {
-            "mummified_overseer_of_the_linen_house.second_wrapping" => SecondWrapping(),
-            _ => null,
-        };
+    private static CounterId WrappedThisTurn => new("linen_wrapped_this_turn");
 
-    public static IReadOnlyList<StatusData> LinenOverseerStatuses() => [TheLinenHouse(), Wrapping()];
+    public static EffectProgram<EnemyActionContext>? LinenOverseerIntent(string enemyId, string intentId) => null;
 
-    // ── the linen house ───────────────────────────────────────────────────────────────────────────────────
+    public static IReadOnlyList<StatusData> LinenOverseerStatuses() => [TheLinenHouse()];
 
-    public static StatusData TheLinenHouse() => new()
+    public static StatusData TheLinenHouse()
     {
-        Id = LinenHouseId,
-        NameKey = "The Linen House",
-        DescriptionKey =
-            "This overseer measures how much of you is already wrapped. Every affliction preservation holds "
-            + "in place tightens the wrapping — at most twice a round — and every one you let lapse loosens "
-            + "it. At 4 the second wrapping goes on.",
-        Polarity = StatusPolarity.Neutral,
-        StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
-        UsesStacks = false,
-        Tags = [],
-        PassiveModifiers = [],
-        Triggers = [Trigger(MeasureTheWrapping(), nameof(TriggerEvent.TurnStarted))],
-    };
+        var overseer = Bearer(LinenHouseId);
+        var mark = new TagId(LinenWrappedMark);
+        var card = new IteratedCardExpression<CardsDrawnTriggeredEffectContext>();
 
-    public static StatusData Wrapping() => new()
-    {
-        Id = WrappingId,
-        NameKey = "Wrapping",
-        DescriptionKey =
-            "How much of you the linen already holds. At 4 the overseer wraps you a second time — and lets "
-            + "the wrapping out again.",
-        Polarity = StatusPolarity.Neutral,
-        StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
-        UsesStacks = true,
-        Tags = [],
-        PassiveModifiers = [],
-        Triggers = [],
-    };
-
-    // Both halves at the Overseer's own turn start, through one bookmark in each of the act's two fading
-    // tallies — held and lapsed. The per-round ceiling on the tightening is the master's, and reading a
-    // whole turn's worth at one moment is what makes it enforceable at all: a rule that fired per fade could
-    // only count, never cap.
-    private static EffectProgram<TurnStartedTriggeredEffectContext> MeasureTheWrapping()
-    {
-        var overseer = CombatantTargetSelectors.Source;
-        var held = SinceLastLooked<TurnStartedTriggeredEffectContext>(overseer, DecaysPreserved, HeldRead);
-        var lapsed = SinceLastLooked<TurnStartedTriggeredEffectContext>(overseer, DecaysUnpreserved, LapsedRead);
-
-        var wrapping = new CombatantStatusStacksExpression<TurnStartedTriggeredEffectContext>(
-            overseer, new StatusDefinitionId(WrappingId));
-
-        return new EffectProgram<TurnStartedTriggeredEffectContext>(
-            new CausalSequenceEffectNode<TurnStartedTriggeredEffectContext>(
+        var wrapOne = new ConditionalEffectNode<CardsDrawnTriggeredEffectContext>(
+            new AndExpression<CardsDrawnTriggeredEffectContext>(
+                new ComparisonExpression<CardsDrawnTriggeredEffectContext>(
+                    new CombatantCounterExpression<CardsDrawnTriggeredEffectContext>(overseer, WrappedThisTurn),
+                    ComparisonOperator.Less, N<CardsDrawnTriggeredEffectContext>(WrapsPerTurn)),
+                new AndExpression<CardsDrawnTriggeredEffectContext>(
+                    new NotExpression<CardsDrawnTriggeredEffectContext>(
+                        new CardInstanceHasMarkExpression<CardsDrawnTriggeredEffectContext>(card, mark)),
+                    new NotExpression<CardsDrawnTriggeredEffectContext>(
+                        new CardInstanceHasTagExpression<CardsDrawnTriggeredEffectContext>(
+                            card, StandardCombatIds.UnplayableTag)))),
+            new CausalSequenceEffectNode<CardsDrawnTriggeredEffectContext>(
             [
-                // Tighten — at most two a round, and never past four.
-                new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
-                    new ComparisonExpression<TurnStartedTriggeredEffectContext>(
-                        held, ComparisonOperator.Greater,
-                        new ConstantExpression<TurnStartedTriggeredEffectContext>(0)),
-                    new ApplyStatusNode<TurnStartedTriggeredEffectContext>(
-                        overseer, new StatusDefinitionId(WrappingId),
-                        new MinExpression<TurnStartedTriggeredEffectContext>(
-                            new MinExpression<TurnStartedTriggeredEffectContext>(
-                                held,
-                                new ConstantExpression<TurnStartedTriggeredEffectContext>(WrappingPerRound)),
-                            new SubtractExpression<TurnStartedTriggeredEffectContext>(
-                                new ConstantExpression<TurnStartedTriggeredEffectContext>(WrappingLimit),
-                                wrapping)),
-                        sourceSelector: overseer)),
-
-                // …and loosen, one for each affliction that faded with nothing holding it.
-                new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
-                    new ComparisonExpression<TurnStartedTriggeredEffectContext>(
-                        lapsed, ComparisonOperator.Greater,
-                        new ConstantExpression<TurnStartedTriggeredEffectContext>(0)),
-                    new ModifyStatusStacksNode<TurnStartedTriggeredEffectContext>(
-                        overseer, new StatusDefinitionId(WrappingId),
-                        new SubtractExpression<TurnStartedTriggeredEffectContext>(
-                            new ConstantExpression<TurnStartedTriggeredEffectContext>(0), lapsed))),
-
-                MoveTheBookmark<TurnStartedTriggeredEffectContext>(overseer, DecaysPreserved, HeldRead),
-                MoveTheBookmark<TurnStartedTriggeredEffectContext>(overseer, DecaysUnpreserved, LapsedRead),
+                new MarkCardInstanceNode<CardsDrawnTriggeredEffectContext>(
+                    Applicant, card, mark, sourceSelector: overseer),
+                new SetCardInstanceMarkCounterNode<CardsDrawnTriggeredEffectContext>(
+                    Applicant, card, StandardCombatIds.CardCostDeltaCounter,
+                    N<CardsDrawnTriggeredEffectContext>(FreeOfCharge), relative: false),
+                new SetCombatantCounterNode<CardsDrawnTriggeredEffectContext>(
+                    overseer, WrappedThisTurn, N<CardsDrawnTriggeredEffectContext>(1), relative: true),
             ]));
-    }
 
-    // The signature. Two of the afflictions already on the player go one deeper — chosen by position, so the
-    // pick is deterministic and a replay reproduces it — and NOTHING is created to fill an empty slot: a
-    // player carrying one affliction has one wrapped tighter, and a player carrying none walks away with the
-    // Block and no more.
-    private static EffectProgram<EnemyActionContext> SecondWrapping()
-    {
-        IEffectNode<EnemyActionContext> Tighten(int index) =>
-            new ModifySelectedStatusStacksNode<EnemyActionContext>(
-                Applicant,
-                new StatusSelectionSpec(StatusPolarityFilter.Debuff, StatusPick.First, index),
-                Const(1));
-
-        return new EffectProgram<EnemyActionContext>(
-            new CausalSequenceEffectNode<EnemyActionContext>(
+        var wrap = new ConditionalEffectNode<CardsDrawnTriggeredEffectContext>(
+            new AndExpression<CardsDrawnTriggeredEffectContext>(
+                IsPlayersTurn<CardsDrawnTriggeredEffectContext>(), Standing<CardsDrawnTriggeredEffectContext>(overseer)),
+            new CausalSequenceEffectNode<CardsDrawnTriggeredEffectContext>(
             [
-                new GainBlockNode<EnemyActionContext>(
-                    CombatantTargetSelectors.Source, Const(SecondWrappingBlock)),
-
-                Tighten(0),
-                Tighten(1),
-
-                new RemoveStatusNode<EnemyActionContext>(
-                    CombatantTargetSelectors.Source, new StatusDefinitionId(WrappingId)),
+                new SetCombatantCounterNode<CardsDrawnTriggeredEffectContext>(
+                    overseer, WrappedThisTurn, N<CardsDrawnTriggeredEffectContext>(0), relative: false),
+                new ForEachCardInZoneNode<CardsDrawnTriggeredEffectContext>(Applicant, CardZone.Hand, wrapOne),
             ]));
+
+        var played = new TriggerEventCardInstanceExpression<CardPlayedTriggeredEffectContext>();
+        var unwrap = new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
+            new CardInstanceHasMarkExpression<CardPlayedTriggeredEffectContext>(played, mark),
+            new CausalSequenceEffectNode<CardPlayedTriggeredEffectContext>(
+            [
+                new MarkCardInstanceNode<CardPlayedTriggeredEffectContext>(Applicant, played, mark, remove: true),
+                new ApplyStatusNode<CardPlayedTriggeredEffectContext>(
+                    Applicant, new StatusDefinitionId(EntombedId), N<CardPlayedTriggeredEffectContext>(1),
+                    sourceSelector: overseer),
+            ]));
+
+        return Face(LinenHouseId, "The Linen House",
+            "Each turn it wraps 2 cards in your hand in linen. A wrapped card costs 0, but playing it gives you "
+            + "1 Entombed.",
+            triggers: [On("CardsDrawn", wrap), On("CardPlayed", unwrap)]);
     }
 }
