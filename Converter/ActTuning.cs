@@ -1,6 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
+using RogueDeck.Core.Combat;
 using RogueDeck.Run;
 using RogueDeck.Scenario.Authoring;
 
@@ -71,9 +72,9 @@ public static class ActTuning
         }
     }
 
-    // encounter id → factor, over its act's role factor: for the fights a role's factor cannot fit (a boss that already
-    // costs 30 next to one that costs 2). Health on that encounter; damage on every body met in it (a body met in more
-    // than one overridden encounter takes the first).
+    // encounter id → factor, in place of its act's role factor: for the fights a role's factor cannot fit (a boss that
+    // already costs 30 next to one that costs 2). Health and damage both on that encounter alone — a body it shares
+    // with other rooms fights here with its own copies of its actions.
     public static readonly Dictionary<string, Factor> Encounters = new(StringComparer.Ordinal)
     {
         // Act III — already in the band as authored (beam 6 reads multi-body fights about twice as dear as the strong
@@ -165,15 +166,8 @@ public static class ActTuning
                 bodyAct.TryAdd(body, encounter.Act);
                 onlyMulti[body] = onlyMulti.GetValueOrDefault(body, true) && encounter.Enemies.Count > 1;
             }
-        var overridden = new Dictionary<string, int>(StringComparer.Ordinal);
-        foreach (var encounter in data.Encounters)
-            if (Encounters.TryGetValue(encounter.Id, out var own))
-                foreach (var body in encounter.Enemies)
-                    overridden.TryAdd(body, own.DamagePercent);
         int DamagePercent(string body)
         {
-            if (overridden.TryGetValue(body, out var forced))
-                return forced;
             if (!bodyAct.TryGetValue(body, out var act))
                 return 100;
             var role = roles.GetValueOrDefault(body, EnemyRole.Standard) switch
@@ -187,15 +181,53 @@ public static class ActTuning
         }
 
         var options = RunJson.CreateOptions();
-        var actions = blueprint.EnemyActions.Select(action =>
+        EnemyActionData Scaled(EnemyActionData action, int percent)
         {
-            var percent = DamagePercent(action.Id.Split('.')[0]);
             if (percent == 100)
                 return action;
             var node = JsonSerializer.SerializeToNode(action, options)!;
             ScaleDamage(node["Program"], percent);
             var scaled = node.Deserialize<EnemyActionData>(options)!;
             return scaled with { Intent = new ActionIntent(ScaleLabel(scaled.Intent.Label, percent), scaled.Intent.Kind) };
+        }
+        var authored = blueprint.EnemyActions.ToDictionary(a => a.Id, StringComparer.Ordinal);
+        var actions = blueprint.EnemyActions.Select(action => Scaled(action, DamagePercent(action.Id.Split('.')[0]))).ToList();
+
+        // An encounter's own damage reaches only the bodies met in THAT encounter: where it differs from the body's
+        // shared factor, the encounter's roster points at copies of the body's actions ("<action>@<encounter>"),
+        // scaled from the authored action. Names and descriptions stay the authored action's.
+        encounters = encounters.Select(encounter =>
+        {
+            if (!Encounters.TryGetValue(encounter.Id.Value, out var own))
+                return encounter;
+            var changed = false;
+            var enemies = encounter.Enemies.Select(enemy =>
+            {
+                if (own.DamagePercent == DamagePercent(enemy.Id))
+                    return enemy;
+                changed = true;
+                EnemyActionDefinitionId Copy(EnemyActionDefinitionId id)
+                {
+                    var copyId = $"{id.value}@{encounter.Id.Value}";
+                    if (authored.TryGetValue(id.value, out var source) && authored.TryAdd(copyId, source))
+                        actions.Add(Scaled(source, own.DamagePercent) with
+                        {
+                            Id = copyId,
+                            NameKey = source.NameKey ?? $"enemy-action.{source.Id}.name",
+                            DescriptionKey = source.DescriptionKey ?? $"enemy-action.{source.Id}.desc",
+                        });
+                    return authored.ContainsKey(copyId) ? new EnemyActionDefinitionId(copyId) : id;
+                }
+                return enemy with
+                {
+                    Actions = [.. enemy.Actions.Select(Copy)],
+                    IntentRules = enemy.IntentRules is { } rules ? [.. rules.Select(r => r with { Action = Copy(r.Action) })] : null,
+                };
+            }).ToList();
+            return changed
+                ? new EncounterDefinition(encounter.Id, enemies, encounter.HeroResources, encounter.HeroStartingStatuses,
+                    encounter.HeroDisplayName, encounter.CardsDrawnPerTurn, encounter.TriggeredEffects)
+                : encounter;
         }).ToList();
 
         return blueprint with { Encounters = encounters, EnemyActions = actions };

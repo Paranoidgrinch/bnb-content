@@ -75,6 +75,28 @@ public class ActTuningTests
         Assert.Equal(Json(Authored.Relics), Json(Shipped.Relics));
     }
 
+    [Fact]
+    public void An_encounters_own_damage_reaches_only_that_encounter_through_copies()
+    {
+        var copies = Shipped.Encounters
+            .SelectMany(e => e.Enemies.SelectMany(b => b.Actions).Select(a => (Encounter: e.Id.Value, Action: a.value)))
+            .Where(x => x.Action.Contains('@', StringComparison.Ordinal))
+            .ToList();
+        Assert.NotEmpty(copies);
+        foreach (var (encounter, id) in copies)
+        {
+            var (authoredId, owner) = (id[..id.IndexOf('@', StringComparison.Ordinal)], id[(id.IndexOf('@', StringComparison.Ordinal) + 1)..]);
+            Assert.Equal(encounter, owner);
+            Assert.True(ActTuning.Encounters.ContainsKey(owner));
+            var copy = Action(Shipped, id);
+            var source = Action(Authored, authoredId);
+            Assert.Equal(source.NameKey ?? $"enemy-action.{authoredId}.name", copy.NameKey);
+            Assert.Equal(source.Intent.Kind, copy.Intent.Kind);
+        }
+        // The authored action stays in the document for the rooms that share the body.
+        Assert.All(copies, x => Assert.Contains(Shipped.EnemyActions, a => a.Id == x.Action[..x.Action.IndexOf('@', StringComparison.Ordinal)]));
+    }
+
     private static int Scale(int value, int percent) =>
         Math.Max(1, (int)Math.Round(value * percent / 100.0, MidpointRounding.AwayFromZero));
 }
