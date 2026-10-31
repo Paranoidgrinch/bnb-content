@@ -20,6 +20,10 @@ namespace BnbContent.Converter;
 //   after stage 3   two card offers, one removal
 //   after stage 4   two card offers, one relic, one improvement        → the deck the bosses are met with
 //
+// A later act's trial opens where an average run would stand at that act's door: every earlier act's four packages,
+// each followed by that act's boss spoils (a card offer and one of three of its bosses' relics), collected one stop
+// after another before the first fight.
+//
 // The Lieutenant walks it, from her own start (user). Her body is her own; the Infirmary, a relic only this walk
 // hands out, mends her fully after every fight won.
 //
@@ -29,9 +33,13 @@ public static class EncounterTrial
 {
     public const string InfirmaryId = "trial_infirmary";
     public const string ExtraPrefix = "trial:";
-    public static readonly int[] Acts = [1];
+    public static readonly int[] Acts = [1, 2];
 
     public static string SpoilsId(int act, int stage) => $"trial_{act}_spoils_{stage}";
+
+    // What an act's boss leaves behind, for the trial of the act after it: a card offer and a boss relic, one of
+    // three drawn from every boss of the act (which boss a run meets is the map's draw).
+    public static string BossSpoilsId(int act) => $"trial_{act}_boss_spoils";
 
     // The relic that makes every fight start from full health. Event pool: no chest, shelf or boss ever offers it.
     public static RelicAuthoring.BnbRelic Infirmary => RelicAuthoring.Event(InfirmaryId, "The Infirmary",
@@ -69,10 +77,32 @@ public static class EncounterTrial
     };
 
     // The trial's own stops, for the blueprint's events.
-    public static IEnumerable<(string Id, EventScript Script)> Events(IReadOnlyDictionary<int, ConversionPools> pools)
+    public static IEnumerable<(string Id, EventScript Script)> Events(BabData data, IReadOnlyDictionary<int, ConversionPools> pools)
     {
         foreach (var act in Acts)
         {
+            var bossRelics = data.Encounters.Where(e => e.Act == act && e.Role == "boss")
+                .SelectMany(e => BossRelics.For(e.Name)).DistinctBy(r => r.Id).ToList();
+            yield return (BossSpoilsId(act), new EventScript("start",
+            [
+                new EventSituation("start",
+                    $"The Act {Roman(act)} boss is behind you — what a boss leaves: a card, and one of three of its relics.",
+                [
+                    new EventChoice("collect",
+                    [
+                        new OfferRewardRunEffect(new RewardId($"{BossSpoilsId(act)}:card"), pools[act].CardRewardSource(), 1)
+                            { Kind = RewardKinds.Card },
+                        new OfferRewardRunEffect(
+                            new RewardId($"{BossSpoilsId(act)}:relic"),
+                            new PoolRewardSource(
+                                new RunPool<RewardOffer>([.. bossRelics.Select(relic => new RunPool<RewardOffer>.Entry(
+                                    new RewardOffer($"relic-{relic.Id}", [new AddRelicByIdRunEffect(new RelicId(relic.Id))]), 1))]),
+                                3),
+                            1)
+                            { Kind = RewardKinds.Relic },
+                    ], TextKey: "Collect: a card offer and a boss relic"),
+                ]),
+            ]));
             var stages = ActStages.Order[act].Count;
             for (var stage = 1; stage <= stages; stage++)
                 yield return (SpoilsId(act, stage), new EventScript("start",
@@ -101,9 +131,20 @@ public static class EncounterTrial
         return [.. Of("combat", MapNodeKind.Combat), .. Of("multi_combat", MapNodeKind.MultiCombat), .. Of("elite", MapNodeKind.Elite)];
     }
 
+    private static string Roman(int act) => act switch { 1 => "I", 2 => "II", 3 => "III", 4 => "IV", _ => act.ToString() };
+
     public static RunTutorial Build(BabData data, MapGenerationSpec spec, int act, RunStart lieutenant)
     {
         var nodes = new List<Node>();
+        void Stop(string eventId) => nodes.Add(new Node(new NodeId($"trial{nodes.Count}"), StandardRunIds.EventNode,
+            new EventRef(new EventId(eventId)), [MapNodeTags.Treasure]));
+        // The acts before this one, as an average run would have come out of them.
+        for (var earlier = 1; earlier < act; earlier++)
+        {
+            for (var stage = 1; stage <= ActStages.Order[earlier].Count; stage++)
+                Stop(SpoilsId(earlier, stage));
+            Stop(BossSpoilsId(earlier));
+        }
         void Fight(MapNodeKind kind, string encounter)
         {
             // The room as the act realises it, minus its pay: a trial fight is a reading, not a step up.
@@ -116,8 +157,7 @@ public static class EncounterTrial
         {
             foreach (var (kind, encounter) in Stage(data, spec, act, stage))
                 Fight(kind, encounter);
-            nodes.Add(new Node(new NodeId($"trial{nodes.Count}"), StandardRunIds.EventNode,
-                new EventRef(new EventId(SpoilsId(act, stage))), [MapNodeTags.Treasure]));
+            Stop(SpoilsId(act, stage));
         }
         foreach (var boss in spec.Encounters!.For(MapNodeKind.Boss).Select(e => e.Encounter.Value).Distinct().Order(StringComparer.Ordinal))
             Fight(MapNodeKind.Boss, boss);

@@ -45,7 +45,7 @@ public static class BlueprintAssembler
             foreach (var (id, script) in actMap.Events)
                 events[id] = script;
         // The encounter trial's stage packages (EncounterTrial): stops only its own walk ever reaches.
-        foreach (var (id, script) in EncounterTrial.Events(pools))
+        foreach (var (id, script) in EncounterTrial.Events(data, pools))
             events[id] = script;
 
         var start = new RunStart
