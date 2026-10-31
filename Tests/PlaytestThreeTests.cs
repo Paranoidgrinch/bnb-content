@@ -117,7 +117,8 @@ public class PlaytestThreeTests
 
     // E3 — an event's relic always costs something: HP, max HP, a card, Gold, a curse, harder fights after it, or a
     // gamble (an `outcome:` situation is the result of a wager the player chose to take). Treasure rooms are chests,
-    // not events, and are left out.
+    // not events, and are left out — and so are the encounter trial's stage packages (EncounterTrial), which stand in
+    // for the chests a run would have opened by then.
     [Fact]
     public void No_event_gives_a_relic_for_nothing()
     {
@@ -131,7 +132,7 @@ public class PlaytestThreeTests
         var offenders = new List<string>();
         foreach (var (id, node) in json["Events"]!.AsObject())
         {
-            if (id.StartsWith("treasure:", StringComparison.Ordinal))
+            if (id.StartsWith("treasure:", StringComparison.Ordinal) || id.StartsWith("trial_", StringComparison.Ordinal))
                 continue;
             foreach (var situation in node!["situations"]!.AsArray())
             {

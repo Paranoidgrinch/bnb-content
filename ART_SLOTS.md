@@ -2,7 +2,7 @@
 
 Generated: `dotnet run --project Converter -- --art-slots ART_SLOTS.md`. **Do not edit by hand.**
 
-**882 pictures**: 482 cards, 254 relics, 142 bodies
+**883 pictures**: 482 cards, 255 relics, 142 bodies
 (every enemy, elite and boss) and 4 the player can be. Every one of them is filled today by a PLACEHOLDER — a plate with the file's own
 name and the word placeholder on it, written by `bnb-godot/tools/make-card-art.py`,
 `make-relic-art.py` and `make-enemy-art.py`. A painted picture replaces one by being saved over it, so
@@ -54,7 +54,7 @@ The relic briefs below are the design canon's own words
 `BnB_Elite_Relics_MASTER_AND_VISUAL_CANON.md` for #169–210). Frames, palettes and the label rule live
 there in full; only the object line is repeated here, because that is the line that differs per relic.
 
-## Relics — 254 pictures
+## Relics — 255 pictures
 
 The catalogue number is the design canon's, and it is not part of the file name: the id is.
 
@@ -196,7 +196,7 @@ The catalogue number is the design canon's, and it is not part of the file name:
 | — | `lt_relic_worn_epaulette` | Worn Epaulette | shop | The first time each turn you keep an Order, your next Working costs 1 less, this turn or the next. |
 | — | `lt_relic_spur_buckle` | Spur Buckle | shop | Once each turn, after a card spends your Strength, you may spend 1 more Strength to gain 1 Energy. |
 
-### Event relics — 25
+### Event relics — 26
 
 | # | code | title | rarity | the object |
 |---:|---|---|---|---|
@@ -225,6 +225,7 @@ The catalogue number is the design canon's, and it is not part of the file name:
 | 97 | `tablet_of_the_missing_name` | Tablet of the Missing Name | event | A thick stone tablet with a broad rectangular name panel deliberately scraped away, leaving rough borders around a smooth blank center. |
 | 98 | `funerary_linen_coil` | Funerary Linen Coil | event | A compact roll of funerary linen with one long frayed strip unwinding downward. Faint violet funerary marks appear only on the outer wrap. |
 | 99 | `mercy_counterweight` | Mercy Counterweight | event | A small hanging counterweight engraved with a feather on one face and a single shallow crack on the other. A tiny loop allows it to hang from a scale. |
+| — | `trial_infirmary` | The Infirmary | event | Encounter Trial only: after every fight you win, heal to full. |
 
 ### Boss relics — 66
 

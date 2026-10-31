@@ -23,6 +23,7 @@ public static class FinalRelics
         .. Witch.WitchRelics.All(),
         .. Apprentice.ApprenticeRelics.All(),
         .. Lieutenant.LieutenantRelics.All(),
+        EncounterTrial.Infirmary,
     ];
 
     public static IReadOnlyList<RelicData> Compile() => All().Select(r => r.Compile()).ToList();

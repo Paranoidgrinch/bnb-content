@@ -44,6 +44,9 @@ public static class BlueprintAssembler
         foreach (var (_, actMap) in maps)
             foreach (var (id, script) in actMap.Events)
                 events[id] = script;
+        // The encounter trial's stage packages (EncounterTrial): stops only its own walk ever reaches.
+        foreach (var (id, script) in EncounterTrial.Events(pools))
+            events[id] = script;
 
         var start = new RunStart
         {
@@ -215,7 +218,8 @@ public static class BlueprintAssembler
             // key off the run's result; a per-act flag would need an act-completed hook that is not data yet.)
             MetaRules = [new MetaRule([RunResult.Victory], [new SetMetaFlag("bnb.run.cleared")])],
             Presentation = BuildPresentation(
-                data, enemies, [.. authored.Values.SelectMany(e => e)]),
+                data, enemies, [.. authored.Values.SelectMany(e => e)],
+                EncounterTrial.Extra(data, maps.ToDictionary(m => m.Act.Act, m => m.Map.Spec), Lieutenant.LieutenantCharacter.Start)),
         };
 
         // …and then let anything the manifest did not name explain itself from its own rules text.
@@ -343,7 +347,8 @@ public static class BlueprintAssembler
     }
 
     private static PresentationManifest BuildPresentation(
-        BabData data, IReadOnlyList<BabEnemy> enemies, IReadOnlyList<Events.BnbEvent> authored)
+        BabData data, IReadOnlyList<BabEnemy> enemies, IReadOnlyList<Events.BnbEvent> authored,
+        IEnumerable<KeyValuePair<string, string>> trials)
     {
         // Worked out once over all 294 encounters, not once per body.
         var enemyRoles = EnemyRole.Of(data);
@@ -470,6 +475,7 @@ public static class BlueprintAssembler
                 // The compendium's plain words and examples (Compendium.cs): a wiki is about the GAME, so its
                 // words hang off the game's own entry.
                 Extra = Compendium.Extra().Concat(Tutorial.Extra()).Concat(CharacterUnlocks.Extra())
+                    .Concat(trials)
                     .ToDictionary(p => p.Key, p => p.Value),
             },
         };
