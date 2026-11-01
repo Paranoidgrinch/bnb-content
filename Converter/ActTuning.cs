@@ -29,6 +29,12 @@ public static class ActTuning
     // act → role (normal | multi | elite | boss) → factor. Missing = 100/100.
     public static readonly Dictionary<int, Dictionary<string, Factor>> Table = new()
     {
+        // Act I, from the first hand-played encounter trial (user, 2026-11-01): "the normal enemies could take 10 %
+        // more health, otherwise that fits".
+        [1] = new Dictionary<string, Factor>
+        {
+            ["normal"] = new(110, 100),
+        },
         // Measured 2026-10-08 (ActBench over the ten playthroughs' decks, beam 6): the Act-III and Act-IV single
         // bodies died before they struck. The multi-fights are made of the same normal bodies, so they take the
         // damage too. Act IV sits above Act III in every role (user, 2026-10-08) — and against a stronger deck.

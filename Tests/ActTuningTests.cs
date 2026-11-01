@@ -6,7 +6,8 @@ using RogueDeck.Scenario.Authoring;
 namespace BnbContent.Tests;
 
 // What ActTuning does to the document, pinned against the document as authored: the factor reaches the program
-// AND the telegraph, health per encounter, damage per body — and nothing outside Acts III and IV moves.
+// AND the telegraph, health per encounter, damage per body — and nothing outside Acts III and IV moves but the
+// health of Act I's single fights.
 public class ActTuningTests
 {
     private static readonly RunBlueprint Authored = FightProbe.Game;
@@ -59,10 +60,15 @@ public class ActTuningTests
     }
 
     [Fact]
-    public void Nothing_outside_acts_three_and_four_moves()
+    public void Nothing_outside_acts_three_and_four_moves_but_act_one_normal_health()
     {
         var data = BabData.Load(TestData.Directory);
-        var outside = data.Encounters.Where(e => e.Act is not (3 or 4)).ToList();
+        // Act I's single fights carry 10 % more health (the trial of 2026-11-01), and nothing else of Act I moves.
+        var actOneNormals = data.Encounters.Where(e => e.Act == 1 && ActTuning.RoleOf(e) == "normal").ToList();
+        Assert.NotEmpty(actOneNormals);
+        foreach (var encounter in actOneNormals)
+            Assert.Equal([.. Health(Authored, encounter.Id).Select(h => Scale(h, 110))], Health(Shipped, encounter.Id));
+        var outside = data.Encounters.Where(e => e.Act is not (3 or 4)).Except(actOneNormals).ToList();
         var bodies = outside.SelectMany(e => e.Enemies).ToHashSet(StringComparer.Ordinal);
         var inside = data.Encounters.Where(e => e.Act is 3 or 4).SelectMany(e => e.Enemies).ToHashSet(StringComparer.Ordinal);
         foreach (var encounter in outside)
