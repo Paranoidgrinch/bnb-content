@@ -32,6 +32,7 @@ public static class EncounterPassives
         "exception_imp" => Loophole(),
         "inverted_hourglass" => StolenSand(),
         "minute_moth" => [StolenMinute()],
+        "queue_crier_homunculus" => [CuttingTheLine()],
         "number_ticket_wisp" => YourNumberCameUp(),
         Elites.WaitingRoom.EnemyId => Elites.WaitingRoom.Triggers(),
         Testator.EnemyId => Testator.Triggers(),
@@ -458,9 +459,11 @@ public static class EncounterPassives
             JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<TContext>()));
     }
 
-    // "Stolen Minute" (Minute Moth): a player turn that ends on exactly 0 Energy hands the Moth a minute, up to
-    // 2 — at which point its intent rule swaps in Wingbeat Delay (which spends them). The turn's own combatant
-    // is the source here, so the applicant marker says whether it was the player's turn that ended.
+    // "Stolen Minute" (Minute Moth): every player turn that ends on exactly 0 Energy gives the Moth 1 Strength and
+    // 3 Block (user, 2026-11-01; it used to bank minutes for a Wingbeat). The Strength lands now; the Block is owed
+    // (a counter) and paid at the Moth's own turn end, because Block is cleared at a combatant's turn start and
+    // would be gone before it guarded anything. The turn's own combatant is the source here, so the applicant
+    // marker says whether it was the player's turn that ended.
     private static EncounterTriggerData StolenMinute()
     {
         var player = CombatantTargetSelectors.Source;
@@ -480,12 +483,37 @@ public static class EncounterPassives
                             player, StandardCombatIds.EnergyResource),
                         ComparisonOperator.Equal,
                         new ConstantExpression<TurnEndedTriggeredEffectContext>(0))),
-                new SetCombatantCounterNode<TurnEndedTriggeredEffectContext>(
-                    moth, PassiveStatuses.StolenMinuteCounter,
-                    new ConstantExpression<TurnEndedTriggeredEffectContext>(1), relative: true)));
+                new SequenceEffectNode<TurnEndedTriggeredEffectContext>(new IEffectNode<TurnEndedTriggeredEffectContext>[]
+                {
+                    new ApplyStatusNode<TurnEndedTriggeredEffectContext>(
+                        moth, new StatusDefinitionId("strength"), new ConstantExpression<TurnEndedTriggeredEffectContext>(1)),
+                    new SetCombatantCounterNode<TurnEndedTriggeredEffectContext>(
+                        moth, PassiveStatuses.StolenMinuteCounter,
+                        new ConstantExpression<TurnEndedTriggeredEffectContext>(1), relative: true),
+                })));
 
         return new EncounterTriggerData("TurnEnded",
             JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<TurnEndedTriggeredEffectContext>()));
+    }
+
+    // "Cutting the Line" (Queue-Crier Homunculus): the fourth card of a player turn cuts the line — 1 Panic. Exactly
+    // the fourth, so it is once a turn on its own; the loop over the Crier's enemies-of-the-player is the gate that
+    // it is on the table at all.
+    private static EncounterTriggerData CuttingTheLine()
+    {
+        var player = CombatantTargetSelectors.Source;
+        var program = new EffectProgram<CardPlayedTriggeredEffectContext>(
+            new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
+                new ComparisonExpression<CardPlayedTriggeredEffectContext>(
+                    new CardsPlayedThisTurnExpression<CardPlayedTriggeredEffectContext>(player),
+                    ComparisonOperator.Equal, new ConstantExpression<CardPlayedTriggeredEffectContext>(4)),
+                new ForEachTargetEffectNode<CardPlayedTriggeredEffectContext>(
+                    CombatantTargetSelectors.FirstTarget(CombatantTargetSelectors.AllEnemiesOfSourceWithStatus(
+                        new StatusDefinitionId(PassiveStatuses.CuttingTheLineId))),
+                    new ApplyStatusNode<CardPlayedTriggeredEffectContext>(
+                        player, new StatusDefinitionId("panic"), new ConstantExpression<CardPlayedTriggeredEffectContext>(1)))));
+        return new EncounterTriggerData("CardPlayed",
+            JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<CardPlayedTriggeredEffectContext>()));
     }
 
     // "Loophole" (Exception Imp): the first time each round the enemy side puts a debuff on the player, the Imp

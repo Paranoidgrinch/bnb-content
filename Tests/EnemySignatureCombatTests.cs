@@ -273,29 +273,43 @@ public class EnemySignatureCombatTests
         Assert.Equal(rested + 3, tiredBefore - Hero(tired.Play).Health.Current);
     }
 
-    // Minute Moth, "Stolen Minute": a player turn that ends on exactly 0 Energy hands it a minute; at 2 it
-    // swaps its next intent for Wingbeat Delay, which spends them.
+    // Minute Moth, "Stolen Minute": every player turn that ends on exactly 0 Energy gives it 1 Strength and 3 Block
+    // (the Block paid at its own turn end, so it stands through the player's next turn).
     [Fact]
-    public void The_moth_collects_empty_turns_and_cashes_them_for_a_wingbeat()
+    public void The_moth_grows_on_every_empty_turn()
     {
-        var probe = FightProbe.Solo("minute_moth", "dusty_wings");
+        var probe = FightProbe.Solo("minute_moth", "nibble_the_hour");
         var (play, session, mothId) = FightProbe.Start(probe, Enumerable.Repeat("paper_cut", 10).ToList());
 
         Spend(play, session, mothId); // three 1-energy Paper Cuts empty the pool
-        Assert.Equal(1, Enemy(play, mothId).GetCounter(PassiveStatuses.StolenMinuteCounter));
-        Assert.Equal(0, FightProbe.StacksOf(Hero(play), "fatigue"));
+        Assert.Equal(1, FightProbe.StacksOf(Enemy(play, mothId), "strength"));
+        Assert.Equal(3, BlockOf(play, mothId));
 
-        // The second empty turn brings the Moth to 2 — its intent rule swaps in the Wingbeat straight away.
-        var before = Hero(play).Health.Current;
-        Spend(play, session, mothId);
-        Assert.Equal(before - 8, Hero(play).Health.Current);
-        Assert.Equal(0, Enemy(play, mothId).GetCounter(PassiveStatuses.StolenMinuteCounter));
-        // The Wingbeat's Fatigue has already fired by now (it does so at the hero's turn start), which is
-        // exactly what it costs: this turn opens on 2 Energy instead of 3.
-        Assert.Equal(2, Hero(play).Resources[StandardCombatIds.EnergyResource].Current);
+        // A turn that keeps an Energy back gives it nothing.
+        var combat = play.CombatDriver!.Current!;
+        play.CombatDriver.PlayCard(combat.Hand.First(c => c.DefinitionId.value == "paper_cut").Id, mothId);
+        play.CombatDriver.EndTurn();
+        Assert.Null(session.Error);
+        Assert.Equal(1, FightProbe.StacksOf(Enemy(play, mothId), "strength"));
+        Assert.Equal(0, BlockOf(play, mothId));
     }
 
-    // Plays until the hero's energy is spent, then ends the turn.
+    // Queue-Crier Homunculus, "Cutting the Line": the fourth card of a turn cuts the line — 1 Panic, once a turn.
+    [Fact]
+    public void Playing_a_fourth_card_cuts_the_line()
+    {
+        var probe = FightProbe.Roster("cutting_the_line", energy: 9, ("queue_crier_homunculus", "move_everyone_back_one_place", 200));
+        var (play, session, crierId) = FightProbe.Start(probe, Enumerable.Repeat("paper_cut", 10).ToList());
+
+        for (var i = 0; i < 3; i++)
+            Cut(play, session, crierId);
+        Assert.Equal(0, FightProbe.StacksOf(Hero(play), "panic"));
+        Cut(play, session, crierId);
+        Assert.Equal(1, FightProbe.StacksOf(Hero(play), "panic"));
+        Cut(play, session, crierId);
+        Assert.Equal(1, FightProbe.StacksOf(Hero(play), "panic"));
+    }
+
     private static void Spend(RunPlayback play, InteractiveRunSession session, CombatantId enemyId)
     {
         while (true)

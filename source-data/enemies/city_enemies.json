@@ -1394,6 +1394,11 @@
         ]
       }
     ],
+    "starting_statuses": [
+      {
+        "status": "cutting_the_line"
+      }
+    ],
     "tags": [
       "city",
       "queue",
@@ -1917,49 +1922,11 @@
             "amount": 5
           }
         ]
-      },
-      {
-        "id": "wingbeat_delay",
-        "name": "Wingbeat Delay",
-        "intent_type": "mixed",
-        "special": true,
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 8
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "fatigue",
-            "amount": 1
-          },
-          {
-            "type": "set_counter",
-            "target": "owner",
-            "counter": "stolen_minute",
-            "amount": 0,
-            "relative": false
-          }
-        ]
       }
     ],
     "starting_statuses": [
       {
         "status": "stolen_minute_passive"
-      }
-    ],
-    "intent_rules": [
-      {
-        "condition": {
-          "kind": "self_counter",
-          "counter": "stolen_minute",
-          "op": "ge",
-          "value": 2
-        },
-        "action": "wingbeat_delay",
-        "priority": 10
       }
     ],
     "tags": [

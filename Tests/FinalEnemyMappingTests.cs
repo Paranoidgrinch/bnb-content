@@ -75,7 +75,8 @@ public class FinalEnemyMappingTests
     {
         var crier = Data.Enemies.Single(e => e.Id == "queue_crier_homunculus");
         Assert.Equal(31, crier.MaxHp);
-        Assert.Null(crier.StartingStatuses); // pure scaling: no passive status, no intent rule
+        // Its scaling lives in the intent; its own rule (Cutting the Line, 2026-11-01) is a status, not an intent rule.
+        Assert.Equal(["cutting_the_line"], crier.StartingStatuses!.Select(s => s.Status));
         Assert.Null(crier.IntentRules);
 
         var actions = EnemyMapper.MapActions([crier]);

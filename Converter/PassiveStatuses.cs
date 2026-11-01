@@ -65,8 +65,9 @@ public static class PassiveStatuses
             "Each time Fatigue costs you Energy it banks a grain (max 3); Turn the Glass hits for 8 + 4 per grain."),
         YourNumberIsFading(),
         FadingEdge(),
-        Marker(StolenMinuteId, "Stolen Minute",
-            "End a turn on exactly 0 Energy and the Moth keeps the minute, up to two. At two it spends them."),
+        StolenMinute(),
+        Marker(CuttingTheLineId, "Cutting the Line",
+            "Play more than 3 cards in a turn and you cut the line: gain 1 Panic."),
         CorrectAgainstTheEvidence(),
         .. CardTypes.Select(Correction),
         Marker(YourNumberCameUpId, "Your Number Came Up",
@@ -725,9 +726,31 @@ public static class PassiveStatuses
     public const string StolenSandId = "stolen_sand_passive";
     public static CounterId StolenSandCounter => new("stolen_sand");
 
-    // Minute Moth: same shape — marker + the counter its intent rule reads.
+    // Minute Moth: the marker its encounter trigger finds it by, and the Block it is owed (paid at its own turn end).
     public const string StolenMinuteId = "stolen_minute_passive";
     public static CounterId StolenMinuteCounter => new("stolen_minute");
+
+    // Queue-Crier Homunculus: the marker its encounter trigger finds it by.
+    public const string CuttingTheLineId = "cutting_the_line";
+
+    private static StatusData StolenMinute()
+    {
+        var self = CombatantTargetSelectors.Source;
+        var owed = new CombatantCounterExpression<TurnEndedTriggeredEffectContext>(self, StolenMinuteCounter);
+        var program = new EffectProgram<TurnEndedTriggeredEffectContext>(
+            new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
+                new ComparisonExpression<TurnEndedTriggeredEffectContext>(
+                    owed, ComparisonOperator.Greater, new ConstantExpression<TurnEndedTriggeredEffectContext>(0)),
+                new SequenceEffectNode<TurnEndedTriggeredEffectContext>(new IEffectNode<TurnEndedTriggeredEffectContext>[]
+                {
+                    new GainBlockNode<TurnEndedTriggeredEffectContext>(self,
+                        new MultiplyExpression<TurnEndedTriggeredEffectContext>(owed, new ConstantExpression<TurnEndedTriggeredEffectContext>(3))),
+                    new SetCombatantCounterNode<TurnEndedTriggeredEffectContext>(self, StolenMinuteCounter,
+                        new ConstantExpression<TurnEndedTriggeredEffectContext>(0), relative: false),
+                })));
+        return Passive(StolenMinuteId, "Stolen Minute",
+            "Each turn you end on 0 Energy, it gains 1 Strength and 3 Block.", "TurnEnded", program);
+    }
 
     // "Your Number Is Fading" (Fading Number Token): while the player carries Fatigue its attacks deal 3 more.
     // (Until 2026-11-01 it lost 3 HP a turn unless the player was Fatigued; user: rather a bonus than a decay.)
