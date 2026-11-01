@@ -31,6 +31,10 @@ public static class LogOnlyStatuses
         "sinned_this_turn", "the_real_door", "door_slammed", "tomb_spoils_carried", "jackal_moves_to",
         // the Seizure Procession's machinery: the Lantern's rule says the whole of it in one sentence (2026-11-01)
         "lock_cart", "seizure_marshal",
+        // the Sealed Door Ward's per-turn dampener: its One Remaining Seal says the whole rule (2026-11-01)
+        "seal_intact",
+        // the Fading Number Token's +3 while you are Fatigued: its rule says it (2026-11-01)
+        "fading_edge",
         // the spent ambush footing (AmbushFooting): its chip would say only that the chip before it is gone
         "ambush_footing_spent",
     };

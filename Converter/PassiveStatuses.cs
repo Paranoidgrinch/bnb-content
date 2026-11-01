@@ -25,7 +25,6 @@ public static class PassiveStatuses
 
     // Wax Notary: one status carrying both halves of "Paper Seals Wax".
     public const string PaperSealsWaxId = "paper_seals_wax";
-    private static CounterId SeenPaperworkCounter => new("seen_paperwork");
     private static CounterId SealedThisTurnCounter => new("wax_sealed_this_turn");
 
     // Sealed Door Ward: the seal itself (carries the rules, and its absence IS the broken seal) plus the
@@ -48,8 +47,8 @@ public static class PassiveStatuses
         SealIntact(),
         WitnessTheSeal(),
         Marker(BothDirectionsMandatoryId, "Both Directions Mandatory",
-            "The first card you play each turn picks the road: a Deed sends the Signpost down the dangerous "
-            + "shortcut, anything else down the long administrative route. Play nothing and it lists no route."),
+            "Your first card each turn picks its road: a Deed sends it down the Shortcut (15 dmg), anything else the "
+            + "Long Route (9 dmg, 9 Block)."),
         // Act II shelves whose rule otherwise runs on the player or inside an intent (content cut 2026-10-29: every
         // law is visible on its enemy).
         Marker(ShelvedSidewaysId, "Shelved Sideways",
@@ -57,21 +56,21 @@ public static class PassiveStatuses
         Marker(WrongEditionEnemyId, "The Wrong Edition",
             "Each turn one card in your hand is the wrong edition: it works, then it is Misfiled."),
         Marker(NotThisCounterId, "Not This Counter",
-            "Play a second card of the type you opened your turn with and the Scribe gains 5 Block. Once a turn."),
+            "Play two cards of the same type in one turn: it gains 5 Block (once a turn)."),
         Loophole(),
         // The applicant marker itself is built in Cards/Keywords.cs: besides marking the player it keeps the
         // record of what got through each round, which several cards ask about and which therefore has to be
         // kept whether or not the player is wearing anything else.
         Marker(StolenSandId, "Stolen Sand",
-            "Every time Fatigue actually takes Energy from you, the Hourglass banks a grain — up to three."),
+            "Each time Fatigue costs you Energy it banks a grain (max 3); Turn the Glass hits for 8 + 4 per grain."),
         YourNumberIsFading(),
+        FadingEdge(),
         Marker(StolenMinuteId, "Stolen Minute",
             "End a turn on exactly 0 Energy and the Moth keeps the minute, up to two. At two it spends them."),
         CorrectAgainstTheEvidence(),
         .. CardTypes.Select(Correction),
         Marker(YourNumberCameUpId, "Your Number Came Up",
-            "Each time a stack of Panic fades from you on its own, the Wisp burns and you take 4 damage. "
-            + "Cleansing Panic outright does not feed it."),
+            "Whenever a Panic stack wears off, you take 4 damage."),
         .. Appointments.Select(a => AppointmentDue(a.StatusId, a.Name, a.Description, a.Due, a.Expiry)),
         OfficeHours(),
         Counted(WindowClosedId, "Window Closed",
@@ -675,8 +674,7 @@ public static class PassiveStatuses
         {
             Id = CorrectAgainstTheEvidenceId,
             NameKey = "Correct Against the Evidence",
-            DescriptionKey = "The first card to take 10 or more HP off the Record each turn is studied. The next damaging card of "
-+ "that same kind deals 4 less.",
+            DescriptionKey = "After a card takes 10+ HP off it, your next card of that type deals 4 less (once a turn).",
             Polarity = StatusPolarity.Neutral,
             StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
             UsesStacks = false,
@@ -731,28 +729,52 @@ public static class PassiveStatuses
     public const string StolenMinuteId = "stolen_minute_passive";
     public static CounterId StolenMinuteCounter => new("stolen_minute");
 
-    // "Your Number Is Fading" (Fading Number Token): at the end of each of its own turns the Token loses 3 HP
-    // unless the player is carrying Fatigue — it only lasts as long as it can keep the queue waiting. Purely
-    // owner-scoped, so an ordinary status trigger does it; the opponent (the hero in a solo party) is the
-    // Token's lowest-health enemy.
+    // "Your Number Is Fading" (Fading Number Token): while the player carries Fatigue its attacks deal 3 more.
+    // (Until 2026-11-01 it lost 3 HP a turn unless the player was Fatigued; user: rather a bonus than a decay.)
+    // Read as its own turn starts — just before it acts — into a sharpening status that carries the +3.
+    public const string FadingEdgeId = "fading_edge";
+
     private static StatusData YourNumberIsFading()
     {
-        var program = new EffectProgram<TurnEndedTriggeredEffectContext>(
-            new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
-                new ComparisonExpression<TurnEndedTriggeredEffectContext>(
-                    new CombatantStatusStacksExpression<TurnEndedTriggeredEffectContext>(
+        var self = CombatantTargetSelectors.Source;
+        var program = new EffectProgram<TurnStartedTriggeredEffectContext>(
+            new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
+                new ComparisonExpression<TurnStartedTriggeredEffectContext>(
+                    new CombatantStatusStacksExpression<TurnStartedTriggeredEffectContext>(
                         Opponent, new StatusDefinitionId("fatigue")),
-                    ComparisonOperator.Equal,
-                    new ConstantExpression<TurnEndedTriggeredEffectContext>(0)),
-                new DealDamageNode<TurnEndedTriggeredEffectContext>(
-                    CombatantTargetSelectors.Source,
-                    new ConstantExpression<TurnEndedTriggeredEffectContext>(3))));
+                    ComparisonOperator.Greater,
+                    new ConstantExpression<TurnStartedTriggeredEffectContext>(0)),
+                new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
+                    new ComparisonExpression<TurnStartedTriggeredEffectContext>(
+                        new CombatantStatusStacksExpression<TurnStartedTriggeredEffectContext>(
+                            self, new StatusDefinitionId(FadingEdgeId)),
+                        ComparisonOperator.Equal,
+                        new ConstantExpression<TurnStartedTriggeredEffectContext>(0)),
+                    new ApplyStatusNode<TurnStartedTriggeredEffectContext>(
+                        self, new StatusDefinitionId(FadingEdgeId),
+                        new ConstantExpression<TurnStartedTriggeredEffectContext>(1))),
+                new RemoveStatusNode<TurnStartedTriggeredEffectContext>(self, new StatusDefinitionId(FadingEdgeId))));
 
         return Passive("your_number_is_fading", "Your Number Is Fading",
-            "At the end of each of its own turns the Token loses 3 HP unless you are carrying Fatigue. It only "
-            + "lasts as long as it can keep the queue waiting.",
-            "TurnEnded", program);
+            "While you have Fatigue, it deals 3 more damage.",
+            "TurnStarted", program);
     }
+
+    private static StatusData FadingEdge() => new()
+    {
+        Id = FadingEdgeId,
+        NameKey = "Sharpened by Fatigue",
+        DescriptionKey = "You have Fatigue: its attacks deal 3 more.",
+        Polarity = StatusPolarity.Buff,
+        StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
+        UsesStacks = false,
+        Tags = [],
+        PassiveModifiers =
+        [
+            new PassiveModifierData(PassiveModifierPipeline.DamageDealt, PassiveModifierOperation.AddFlat, 3),
+        ],
+        Triggers = [],
+    };
 
     // The hero carries this in every fight (EncounterMapper) so a program can ask "did this happen to the
     // player?" — selectors are structural and cannot name a side.
@@ -774,8 +796,7 @@ public static class PassiveStatuses
                 new ConstantExpression<RoundEndedTriggeredEffectContext>(0), relative: false));
 
         return Passive(LoopholeId, "Loophole",
-            "The first time each round the enemy side would put a negative status on you, one stack of it is "
-            + "struck out — a single stack is voided entirely — and the Imp gains 1 Strength for the exception.",
+            "The first time each round its side puts a debuff on you, it gains 1 Strength.",
             "RoundEnded", program);
     }
 
@@ -786,6 +807,7 @@ public static class PassiveStatuses
     // Wrong-Window Scribe: the rule's chip, and the handle its encounter trigger finds the Scribe by — so in a
     // duo only the Scribe is the window that refuses you.
     public const string NotThisCounterId = "not_this_counter";
+    public static CounterId ScribeAnsweredCounter => new("scribe_answered");
     public const string ShelvedSidewaysId = "shelved_sideways";
     public const string WrongEditionEnemyId = "the_wrong_edition";
     public static CounterId SignpostedRouteCounter => new("signposted_route");
@@ -996,21 +1018,19 @@ public static class PassiveStatuses
                     CombatantTargetSelectors.Source, QueuePositionCounter, cappedIncrement, relative: false)));
 
         return Passive(QueueAdvancesId, "The Queue Advances",
-            "End a turn having played 3 or more cards and the line moves: 1 Queue Position, up to 3. At 3 it "
-            + "does Everyone Moves at Once and the count goes back to nothing.",
+            "Each turn you play 3+ cards, the line moves up; at 3 it hits for 12.",
             "TurnStarted", program);
     }
 
-    // "Paper Seals Wax" (Wax Notary): the first time each player turn the Notary RECEIVES Paperwork it gains 5
-    // Block; the Paperwork stays. "Receives" is read as "the count went up", by remembering the last seen count
-    // in a counter — a plain status-event gate would also fire for any other status landing on it (its duo
-    // partner hands out Bookworm). The once-per-turn latch resets at the Notary's own turn end, i.e. exactly
-    // when the player's next turn is about to begin.
+    // "Paper Seals Wax" (Wax Notary): the first debuff that lands on the Notary each player turn gives it 5 Block
+    // (until 2026-11-01 only Paperwork did, read off a remembered high-water mark; user: any debuff). Applied or
+    // merged into a debuff it already carries — either is a debuff landing. The once-per-turn latch resets at the
+    // Notary's own turn end, i.e. exactly when the player's next turn is about to begin.
     private static StatusData PaperSealsWax() => new()
     {
         Id = PaperSealsWaxId,
         NameKey = "Paper Seals Wax",
-        DescriptionKey = "The first time each of your turns the Notary receives Paperwork, it gains 5 Block. The Paperwork stays.",
+        DescriptionKey = "The first debuff you put on it each turn gives it 5 Block.",
         Polarity = StatusPolarity.Neutral,
         StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
         UsesStacks = false,
@@ -1020,8 +1040,6 @@ public static class PassiveStatuses
         [
             SealTrigger<StatusAppliedTriggeredEffectContext>("StatusApplied"),
             SealTrigger<StatusMergedTriggeredEffectContext>("StatusMerged"),
-            SealTrigger<StatusStacksChangedTriggeredEffectContext>("StatusStacksChanged"),
-            SealTrigger<StatusRemovedTriggeredEffectContext>("StatusRemoved"),
             new StatusTriggerData("TurnEnded", JsonSerializer.SerializeToElement(
                 new EffectProgram<TurnEndedTriggeredEffectContext>(
                     new SetCombatantCounterNode<TurnEndedTriggeredEffectContext>(
@@ -1034,36 +1052,27 @@ public static class PassiveStatuses
     private static StatusTriggerData SealTrigger<TContext>(string trigger) where TContext : class
     {
         var bearer = CombatantTargetSelectors.EventTarget;
-        var paperwork = new CombatantStatusStacksExpression<TContext>(bearer, new StatusDefinitionId("paperwork"));
-        var seen = new CombatantCounterExpression<TContext>(bearer, SeenPaperworkCounter);
-
         var program = new EffectProgram<TContext>(
-            new SequenceEffectNode<TContext>(new IEffectNode<TContext>[]
-            {
-                new ConditionalEffectNode<TContext>(
-                    new AndExpression<TContext>(
-                        new ComparisonExpression<TContext>(paperwork, ComparisonOperator.Greater, seen),
-                        new ComparisonExpression<TContext>(
-                            new CombatantCounterExpression<TContext>(bearer, SealedThisTurnCounter),
-                            ComparisonOperator.Equal,
-                            new ConstantExpression<TContext>(0))),
-                    new SequenceEffectNode<TContext>(new IEffectNode<TContext>[]
-                    {
-                        new GainBlockNode<TContext>(bearer, new ConstantExpression<TContext>(5)),
-                        new SetCombatantCounterNode<TContext>(bearer, SealedThisTurnCounter,
-                            new ConstantExpression<TContext>(1), relative: false),
-                    })),
-                // Always resync, so a later filing counts as new and a cleanse doesn't leave a stale high-water mark.
-                new SetCombatantCounterNode<TContext>(bearer, SeenPaperworkCounter, paperwork, relative: false),
-            }));
+            new ConditionalEffectNode<TContext>(
+                new AndExpression<TContext>(
+                    new TriggerEventStatusPolarityIsExpression<TContext>(StatusPolarity.Debuff),
+                    new ComparisonExpression<TContext>(
+                        new CombatantCounterExpression<TContext>(bearer, SealedThisTurnCounter),
+                        ComparisonOperator.Equal,
+                        new ConstantExpression<TContext>(0))),
+                new SequenceEffectNode<TContext>(new IEffectNode<TContext>[]
+                {
+                    new SetCombatantCounterNode<TContext>(bearer, SealedThisTurnCounter,
+                        new ConstantExpression<TContext>(1), relative: false),
+                    new GainBlockNode<TContext>(bearer, new ConstantExpression<TContext>(5)),
+                })));
 
         return new StatusTriggerData(trigger,
             JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<TContext>()));
     }
 
     // "One Remaining Seal" (Sealed Door Ward): while the seal holds, the FIRST card hit against the Ward each
-    // player turn deals 4 less; take 18+ HP damage within one player turn and the seal breaks for good, taking
-    // 6 direct damage with it. The seal's own presence is the "active" flag — once it is gone nothing re-arms
+    // player turn deals 4 less; take 18+ HP damage within one player turn and the seal breaks for good. The seal's own presence is the "active" flag — once it is gone nothing re-arms
     // the dampener, which is exactly what "permanently" means here.
     private static StatusData OneRemainingSeal()
     {
@@ -1089,16 +1098,10 @@ public static class PassiveStatuses
                             new EventAmountExpression<DamageReceivedTriggeredEffectContext>()),
                         ComparisonOperator.GreaterOrEqual,
                         new ConstantExpression<DamageReceivedTriggeredEffectContext>(SealBreakThreshold)),
-                    new SequenceEffectNode<DamageReceivedTriggeredEffectContext>(new IEffectNode<DamageReceivedTriggeredEffectContext>[]
-                    {
-                        // Break FIRST, then take the recoil: with the seal already gone the recoil cannot
-                        // re-enter this trigger at all.
-                        new ModifyStatusStacksNode<DamageReceivedTriggeredEffectContext>(
-                            bearer, new StatusDefinitionId(OneRemainingSealId),
-                            new ConstantExpression<DamageReceivedTriggeredEffectContext>(-1)),
-                        new DealDamageNode<DamageReceivedTriggeredEffectContext>(
-                            bearer, new ConstantExpression<DamageReceivedTriggeredEffectContext>(6)),
-                    })),
+                    // The seal breaks — and nothing more (the 6 it used to take off the Ward went on 2026-11-01).
+                    new ModifyStatusStacksNode<DamageReceivedTriggeredEffectContext>(
+                        bearer, new StatusDefinitionId(OneRemainingSealId),
+                        new ConstantExpression<DamageReceivedTriggeredEffectContext>(-1))),
             }));
 
         // At the Ward's own turn end — the player's turn is next — the dampener is re-armed and the tally resets.
@@ -1123,8 +1126,7 @@ public static class PassiveStatuses
         {
             Id = OneRemainingSealId,
             NameKey = "One Remaining Seal",
-            DescriptionKey = "While the seal holds, the first card to hit the Ward each turn deals 4 less. Deal it 18 or more damage "
-+ "inside a single turn and the seal breaks for good, taking 6 off the Ward with it.",
+            DescriptionKey = "While sealed, your first hit each turn deals 4 less. Deal 18 in one turn to break the seal.",
             Polarity = StatusPolarity.Buff,
             StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
             UsesStacks = true,
@@ -1173,7 +1175,7 @@ public static class PassiveStatuses
                 new ConstantExpression<RoundEndedTriggeredEffectContext>(0), relative: false));
 
         return Passive(WitnessTheSealId, "Witness the Seal",
-            "The first time each round another enemy gains Block, the Candle gives it 3 more.",
+            "The first time each round any enemy gains Block, it gets 3 more.",
             "RoundEnded", program);
     }
 

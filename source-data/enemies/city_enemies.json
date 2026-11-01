@@ -1601,20 +1601,13 @@
       {
         "id": "no_route_listed",
         "name": "No Route Listed",
-        "intent_type": "debuff",
+        "intent_type": "attack",
         "special": true,
         "actions": [
           {
-            "type": "apply_status",
+            "type": "deal_damage",
             "target": "player",
-            "status": "doubt",
             "amount": 1
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "paperwork",
-            "amount": 2
           }
         ]
       }

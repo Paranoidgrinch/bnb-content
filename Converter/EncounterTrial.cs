@@ -45,7 +45,14 @@ public static class EncounterTrial
     public static RelicAuthoring.BnbRelic Infirmary => RelicAuthoring.Event(InfirmaryId, "The Infirmary",
         "The Encounter Trial — every fight is read on its own.",
         "Encounter Trial only: after every fight you win, heal to full.",
-        runPrograms: [RelicAuthoring.AfterEveryVictory(new ComputedHealRunEffect(RunExpr.MissingHealth))]);
+        // A trial walks no act's opening, so the city's after-fight ledgers (the Dragon's fees, the Signpost's
+        // purse) ride here too.
+        runPrograms:
+        [
+            RelicAuthoring.AfterEveryVictory(new ComputedHealRunEffect(RunExpr.MissingHealth)),
+            MunicipalDragon.FeesProgram(),
+            EncounterPassives.SignpostSpoilsProgram(),
+        ]);
 
     // The stage packages, in order. Each is one stop with one choice; its effects ask one after another.
     private static IReadOnlyList<IRunEffectRequest> Spoils(ConversionPools pools, int act, int stage)

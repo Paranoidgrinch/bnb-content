@@ -64,8 +64,8 @@ public class FinalEnemyMappingTests
         var encounter = Data.Encounters.First(e => e.Enemies.Contains("wrong_window_scribe"));
         var mapped = EncounterMapper.Map(encounter, enemies, Data.Bureaucrat.StartingEnergy);
 
-        var trigger = Assert.Single(mapped.TriggeredEffects);
-        Assert.Equal("CardPlayed", trigger.Event);
+        // The pair it answers, and the turn start that opens its once-a-turn latch again.
+        Assert.Equal(["CardPlayed", "TurnStarted"], mapped.TriggeredEffects.Select(t => t.Event).Order(StringComparer.Ordinal));
     }
 
     // Queue-Crier Homunculus ("Lost Your Place", Panic cash-out): the passive is baked into its one pure

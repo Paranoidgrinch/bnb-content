@@ -57,7 +57,7 @@ public class EnemySignatureCombatTests
     }
 
     // Sealed Door Ward, "One Remaining Seal": while the seal holds, the first card hit each player turn deals 4
-    // less — and 18+ HP damage inside one player turn breaks it for good, with 6 direct damage as recoil.
+    // less — and 18+ HP damage inside one player turn breaks it for good (no recoil since 2026-11-01).
     [Fact]
     public void The_wards_seal_dampens_the_first_hit_each_turn_until_a_big_turn_breaks_it()
     {
@@ -72,11 +72,11 @@ public class EnemySignatureCombatTests
         Assert.Equal(56 - 14, Enemy(play, wardId).Health.Current);
         Assert.Equal(1, FightProbe.StacksOf(Enemy(play, wardId), "one_remaining_seal"));
 
-        // The fourth hit crosses 18 for the turn: the seal breaks and takes 6 with it.
+        // The fourth hit crosses 18 for the turn: the seal breaks.
         Cut(play, session, wardId);
         Assert.Equal(0, FightProbe.StacksOf(Enemy(play, wardId), "one_remaining_seal"));
         Assert.Equal(0, FightProbe.StacksOf(Enemy(play, wardId), "seal_intact"));
-        Assert.Equal(56 - 20 - 6, Enemy(play, wardId).Health.Current);
+        Assert.Equal(56 - 20, Enemy(play, wardId).Health.Current);
 
         // Permanently: the next player turn opens with no dampener, so a full 6 lands.
         play.CombatDriver!.EndTurn();
@@ -157,38 +157,53 @@ public class EnemySignatureCombatTests
         Assert.Equal(expectedBlock, BlockOf(play, signpostId));
     }
 
+    // Play nothing and it lists no route: a 1-damage shrug, nothing else (2026-11-01).
     [Fact]
-    public void The_signpost_posts_no_route_when_the_player_plays_nothing()
+    public void The_signpost_shrugs_when_the_player_plays_nothing()
     {
         var probe = FightProbe.Solo("contradictory_signpost", "turn_in_place");
         var (play, session, signpostId) = FightProbe.Start(probe);
 
-        // No Paperwork before round three (playtest feedback 2, E1): the signpost's answer to a player who plays
-        // nothing waits for its third turn, and turns in place until then.
+        // Its answer to a player who plays nothing waits for its third turn, and it turns in place until then.
         play.CombatDriver!.EndTurn();
         play.CombatDriver.EndTurn();
-        Assert.Equal(0, FightProbe.StacksOf(Hero(play), "paperwork"));
-        var heroBefore = play.CombatDriver!.Current!.State.GetCombatant(play.CombatDriver.Current!.HeroId).Health.Current;
+        var heroBefore = Hero(play).Health.Current;
         play.CombatDriver.EndTurn();
         Assert.Null(session.Error);
 
-        var after = play.CombatDriver.Current!;
-        var hero = after.State.GetCombatant(after.HeroId);
-        // No Route Listed deals no damage, and the 2 Paperwork it files do not toll yet: Paperwork resolves
-        // at the END of its bearer's turn, so the hero pays for these at the end of the turn that follows.
-        Assert.Equal(heroBefore, hero.Health.Current);
-        Assert.Equal(1, FightProbe.StacksOf(hero, "doubt")); // …it files instead
-        Assert.Equal(2, FightProbe.StacksOf(hero, "paperwork"));
+        var hero = Hero(play);
+        Assert.Equal(heroBefore - 1, hero.Health.Current);
+        Assert.Equal(0, FightProbe.StacksOf(hero, "doubt"));
+        Assert.Equal(0, FightProbe.StacksOf(hero, "paperwork"));
         Assert.Equal(0, BlockOf(play, signpostId));
     }
 
-    // Exception Imp, "Loophole": the first negative status the enemy side files on the player each round loses
-    // one stack — a single-stack filing is voided outright — and the Imp gains 1 Strength for the trouble.
+    // …and ten turns of nothing in a row confuse it for good: it falls over, the fight is won, and the hero carries
+    // the counter the run pays its fourfold purse for.
     [Fact]
-    public void The_imp_strikes_one_stack_off_the_first_debuff_each_round()
+    public void Ten_idle_turns_leave_the_signpost_confused()
     {
-        // Loophole Prick would be 1 Doubt; the probe uses the intent that files 2 Paperwork so the difference
-        // between "reduced" and "prevented" is visible.
+        var probe = FightProbe.Solo("contradictory_signpost", "turn_in_place");
+        var (play, session, signpostId) = FightProbe.Start(probe, health: 200);
+
+        for (var turn = 1; turn < EncounterPassives.SignpostPatience; turn++)
+        {
+            play.CombatDriver!.EndTurn();
+            Assert.Null(session.Error);
+            Assert.True(Enemy(play, signpostId).IsAlive, $"fell after {turn} idle turns");
+        }
+        var fight = play.CombatDriver!.Current!;
+        fight.EndTurn();
+        Assert.Null(session.Error);
+        Assert.Equal(RogueDeck.Core.Combat.CombatResult.Victory, fight.Result);
+        Assert.Equal(1, fight.State.GetCombatant(fight.HeroId).GetCounter(EncounterPassives.SignpostConfusedCounter));
+    }
+
+    // Exception Imp, "Loophole": the first debuff the enemy side files on the player each round gives the Imp 1
+    // Strength — the filing itself stands in full (since 2026-11-01).
+    [Fact]
+    public void The_imp_grows_on_the_first_debuff_each_round()
+    {
         var probe = FightProbe.Roster("loophole",
             ("exception_imp", "technicality", null),
             ("filing_beetle", "mandatory_attachment", null));
@@ -197,36 +212,15 @@ public class EnemySignatureCombatTests
         var combat = play.CombatDriver!.Current!;
         var impId = combat.State.Combatants.First(c => c.Id.value.StartsWith("exception_imp")).Id;
 
-        play.CombatDriver.EndTurn(); // the Beetle files 2 Paperwork → Loophole strikes one
+        play.CombatDriver.EndTurn(); // the Beetle files 2 Paperwork
         Assert.Null(session.Error);
+        Assert.Equal(2, FightProbe.StacksOf(Hero(play), "paperwork"));
+        Assert.Equal(1, FightProbe.StacksOf(Enemy(play, impId), "strength"));
 
-        var after = play.CombatDriver.Current!;
-        var hero = after.State.GetCombatant(after.HeroId);
-        Assert.Equal(1, FightProbe.StacksOf(hero, "paperwork"));
-        Assert.Equal(1, FightProbe.StacksOf(after.State.GetCombatant(impId), "strength"));
-
-        // Second round: the exception is available again.
+        // Second round: once more.
         play.CombatDriver.EndTurn();
         Assert.Null(session.Error);
-        var second = play.CombatDriver.Current!;
-        Assert.Equal(2, FightProbe.StacksOf(second.State.GetCombatant(second.HeroId), "paperwork")); // 1 + (2−1)
-        Assert.Equal(2, FightProbe.StacksOf(second.State.GetCombatant(impId), "strength"));
-    }
-
-    // A single-stack filing is prevented completely — and that is the round's exception spent.
-    [Fact]
-    public void The_imp_voids_a_single_stack_filing_completely()
-    {
-        var probe = FightProbe.Roster("loophole_single",
-            ("exception_imp", "technicality", null),
-            ("wax_notary", "drip_hot_wax", null)); // 7 damage + exactly 1 Paperwork
-        var (play, session, _) = FightProbe.Start(probe);
-
-        play.CombatDriver!.EndTurn();
-        Assert.Null(session.Error);
-
-        var after = play.CombatDriver.Current!;
-        Assert.Equal(0, FightProbe.StacksOf(after.State.GetCombatant(after.HeroId), "paperwork"));
+        Assert.Equal(2, FightProbe.StacksOf(Enemy(play, impId), "strength"));
     }
 
     // Inverted Hourglass, "Stolen Sand": every time Fatigue actually costs the player Energy the Hourglass
@@ -260,20 +254,23 @@ public class EnemySignatureCombatTests
         Assert.Equal(1, Enemy(play, hourglassId).GetCounter(PassiveStatuses.StolenSandCounter)); // spent, then refilled
     }
 
-    // Fading Number Token, "Your Number Is Fading": it withers by 3 at the end of each of its own turns unless
-    // the player is carrying Fatigue.
-    [Theory]
-    [InlineData("sharp_edge_token", 3)]  // an attack that files nothing → the Token fades
-    [InlineData("number_fades", 0)]      // files 1 Fatigue → it holds together
-    public void The_token_fades_unless_the_player_is_kept_tired(string intentId, int expectedLoss)
+    // Fading Number Token, "Your Number Is Fading": while the player carries Fatigue its attacks deal 3 more.
+    [Fact]
+    public void The_token_hits_harder_while_the_player_is_tired()
     {
-        var probe = FightProbe.Solo("fading_number_token", intentId);
-        var (play, session, tokenId) = FightProbe.Start(probe);
+        var probe = FightProbe.Solo("fading_number_token", "sharp_edge_token");
+        var (play, session, _) = FightProbe.Start(probe);
 
-        play.CombatDriver!.EndTurn();
+        var before = Hero(play).Health.Current;
+        play.CombatDriver!.EndTurn(); // rested: Sharp Edge as printed
         Assert.Null(session.Error);
+        var rested = before - Hero(play).Health.Current;
 
-        Assert.Equal(43 - expectedLoss, Enemy(play, tokenId).Health.Current);
+        var tired = FightProbe.Start(FightProbe.SoloAgainstHero("fading_number_token", "sharp_edge_token", 3, ("fatigue", 2)));
+        var tiredBefore = Hero(tired.Play).Health.Current;
+        tired.Play.CombatDriver!.EndTurn();
+        Assert.Null(tired.Session.Error);
+        Assert.Equal(rested + 3, tiredBefore - Hero(tired.Play).Health.Current);
     }
 
     // Minute Moth, "Stolen Minute": a player turn that ends on exactly 0 Energy hands it a minute; at 2 it

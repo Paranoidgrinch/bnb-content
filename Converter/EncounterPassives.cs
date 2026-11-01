@@ -20,9 +20,9 @@ public static class EncounterPassives
 
     public static IReadOnlyList<EncounterTriggerData> ForEnemy(string enemyId) => enemyId switch
     {
-        "wrong_window_scribe" => [NotThisCounter()],
+        "wrong_window_scribe" => [NotThisCounter(), NotThisCounterResets()],
         "oath_candle" => [WitnessTheSeal()],
-        "contradictory_signpost" => [BothDirectionsMandatory()],
+        "contradictory_signpost" => [BothDirectionsMandatory(), TheSignpostIsLeftStanding()],
         // The Hourglass's two bottoms are pushed back by what the PLAYER plays, so the rule is about the
         // player's play and finds the glass by the marker it wears (ActTwo.DelayABottom).
         // The Footnote writes down what its SOURCE does, and the announcement is the Source's moment — so
@@ -488,77 +488,48 @@ public static class EncounterPassives
             JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<TurnEndedTriggeredEffectContext>()));
     }
 
-    // The negative statuses the enemy side files on the player in Act I. Loophole watches all of them.
-    private static readonly string[] PlayerDebuffs = { "panic", "doubt", "paperwork", "fatigue" };
-
-    // "Loophole" (Exception Imp): the first time each round the enemy side would apply a negative status to the
-    // player, one stack of it is struck — a single-stack application is voided entirely — and the Imp gains 1
-    // Strength for finding the exception.
-    //
-    // No interceptor: the engine's data-authored ones read the TARGET's statuses, and here the exception belongs
-    // to an ENEMY. So the application is undone a beat later instead, which needs a way to tell WHICH status
-    // arrived — a trigger program cannot read the event's status id. The Imp therefore mirrors the player's
-    // debuff counts in its own counters: the status whose count is now HIGHER than the mirror is the one that
-    // just landed. Every relevant event resyncs the mirror, including the reduction's own stack change, so it
-    // converges even when a status is struck down to nothing.
+    // "Loophole" (Exception Imp): the first time each round the enemy side puts a debuff on the player, the Imp
+    // gains 1 Strength. (Until 2026-11-01 it also struck a stack of that debuff out — half a gift to the player,
+    // half to the Imp, which nobody could read; user: one clear sentence.) The loop over the Imp's allies of the
+    // SOURCE finds it only when its own side did the filing; the event's target has to be the player.
     private static IReadOnlyList<EncounterTriggerData> Loophole() =>
     [
-        LoopholeTrigger<StatusAppliedTriggeredEffectContext>("StatusApplied", strike: true),
-        LoopholeTrigger<StatusMergedTriggeredEffectContext>("StatusMerged", strike: true),
-        LoopholeTrigger<StatusStacksChangedTriggeredEffectContext>("StatusStacksChanged", strike: false),
-        LoopholeTrigger<StatusRemovedTriggeredEffectContext>("StatusRemoved", strike: false),
-        LoopholeTrigger<StatusExpiredTriggeredEffectContext>("StatusExpired", strike: false),
+        LoopholeTrigger<StatusAppliedTriggeredEffectContext>("StatusApplied"),
+        LoopholeTrigger<StatusMergedTriggeredEffectContext>("StatusMerged"),
     ];
 
-    private static EncounterTriggerData LoopholeTrigger<TContext>(string trigger, bool strike) where TContext : class
+    private static EncounterTriggerData LoopholeTrigger<TContext>(string trigger) where TContext : class
     {
         var imp = CombatantTargetSelectors.IterationTarget;
         var player = CombatantTargetSelectors.EventTarget;
-        var body = new List<IEffectNode<TContext>>();
-
-        if (strike)
-        {
-            var strikes = PlayerDebuffs.Select(debuff => (IEffectNode<TContext>)
-                new ConditionalEffectNode<TContext>(
-                    new ComparisonExpression<TContext>(
-                        new CombatantStatusStacksExpression<TContext>(player, new StatusDefinitionId(debuff)),
-                        ComparisonOperator.Greater,
-                        new CombatantCounterExpression<TContext>(imp, SeenCounter(debuff))),
-                    new SequenceEffectNode<TContext>(new IEffectNode<TContext>[]
-                    {
-                        new ModifyStatusStacksNode<TContext>(player, new StatusDefinitionId(debuff),
-                            new ConstantExpression<TContext>(-1)),
-                        new SetCombatantCounterNode<TContext>(imp, PassiveStatuses.LoopholeUsedCounter,
-                            new ConstantExpression<TContext>(1), relative: false),
-                        new ApplyStatusNode<TContext>(imp, new StatusDefinitionId("strength"),
-                            new ConstantExpression<TContext>(1)),
-                    })));
-
-            body.Add(new ConditionalEffectNode<TContext>(
-                new ComparisonExpression<TContext>(
-                    new CombatantCounterExpression<TContext>(imp, PassiveStatuses.LoopholeUsedCounter),
-                    ComparisonOperator.Equal,
-                    new ConstantExpression<TContext>(0)),
-                new SequenceEffectNode<TContext>(strikes.ToList())));
-        }
-
-        // Resync the mirror last: whatever the player carries now is what the Imp remembers.
-        body.AddRange(PlayerDebuffs.Select(debuff => (IEffectNode<TContext>)
-            new SetCombatantCounterNode<TContext>(imp, SeenCounter(debuff),
-                new CombatantStatusStacksExpression<TContext>(player, new StatusDefinitionId(debuff)),
-                relative: false)));
-
         var program = new EffectProgram<TContext>(
-            new ForEachTargetEffectNode<TContext>(
-                CombatantTargetSelectors.AllAlliesOfSourceWithStatus(
-                    new StatusDefinitionId(PassiveStatuses.LoopholeId)),
-                new SequenceEffectNode<TContext>(body)));
+            new ConditionalEffectNode<TContext>(
+                new AndExpression<TContext>(
+                    new TriggerEventStatusPolarityIsExpression<TContext>(StatusPolarity.Debuff),
+                    new ComparisonExpression<TContext>(
+                        new CombatantStatusStacksExpression<TContext>(player, new StatusDefinitionId(PassiveStatuses.ApplicantId)),
+                        ComparisonOperator.Greater,
+                        new ConstantExpression<TContext>(0))),
+                new ForEachTargetEffectNode<TContext>(
+                    CombatantTargetSelectors.AllAlliesOfSourceWithStatus(new StatusDefinitionId(PassiveStatuses.LoopholeId)),
+                    new ConditionalEffectNode<TContext>(
+                        new ComparisonExpression<TContext>(
+                            new CombatantCounterExpression<TContext>(imp, PassiveStatuses.LoopholeUsedCounter),
+                            ComparisonOperator.Equal,
+                            new ConstantExpression<TContext>(0)),
+                        new SequenceEffectNode<TContext>(new IEffectNode<TContext>[]
+                        {
+                            new SetCombatantCounterNode<TContext>(imp, PassiveStatuses.LoopholeUsedCounter,
+                                new ConstantExpression<TContext>(1), relative: false),
+                            new ApplyStatusNode<TContext>(imp, new StatusDefinitionId("strength"),
+                                new ConstantExpression<TContext>(1)),
+                        })))));
 
         return new EncounterTriggerData(trigger,
             JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<TContext>()));
     }
 
-    // The Imp's mirror of one player debuff.
+    // A body's mirror of one player status (the Wisp's Panic, the Hourglass's Fatigue).
     public static CounterId SeenCounter(string statusId) => new($"seen_{statusId}");
 
     // "Both Directions Mandatory" (Contradictory Signpost): the FIRST card the player plays each turn picks the
@@ -587,19 +558,81 @@ public static class EncounterPassives
             JsonSerializer.SerializeToElement(Program(), CombatJson.CreateOptions<CardPlayedTriggeredEffectContext>()));
     }
 
+    // THE SIGNPOST'S EASTER EGG (user, 2026-11-01): play nothing and it lists no route — a 1-damage shrug. Play
+    // nothing for ten turns in a row and the Signpost, asked for directions by nobody, gives up: it falls over,
+    // and the run is paid four times a fight's Gold for the patience (SignpostSpoilsProgram, read off the hero's
+    // counter after the fight). The idle count lives on the Signpost and is read through a selector that names it,
+    // since an iteration target cannot be read inside an expression.
+    public const int SignpostPatience = 10;
+    public static CounterId SignpostIdleCounter => new("signpost_idle_turns");
+    public static CounterId SignpostConfusedCounter => new("signpost_confused");
+
+    private static EncounterTriggerData TheSignpostIsLeftStanding()
+    {
+        var player = CombatantTargetSelectors.Source;
+        var marker = new StatusDefinitionId(PassiveStatuses.BothDirectionsMandatoryId);
+        var signposts = CombatantTargetSelectors.AllEnemiesOfSourceWithStatus(marker);
+        var theSignpost = CombatantTargetSelectors.FirstTarget(
+            CombatantTargetSelectors.WithStatus(CombatantTargetSelectors.AllAliveCombatants, marker));
+        var idle = new CombatantCounterExpression<TurnEndedTriggeredEffectContext>(theSignpost, SignpostIdleCounter);
+
+        var program = new EffectProgram<TurnEndedTriggeredEffectContext>(
+            new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
+                new ComparisonExpression<TurnEndedTriggeredEffectContext>(
+                    new CombatantStatusStacksExpression<TurnEndedTriggeredEffectContext>(
+                        player, new StatusDefinitionId(PassiveStatuses.ApplicantId)),
+                    ComparisonOperator.Greater, new ConstantExpression<TurnEndedTriggeredEffectContext>(0)),
+                new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
+                    new ComparisonExpression<TurnEndedTriggeredEffectContext>(
+                        new CardsPlayedThisTurnExpression<TurnEndedTriggeredEffectContext>(player),
+                        ComparisonOperator.Equal, new ConstantExpression<TurnEndedTriggeredEffectContext>(0)),
+                    new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
+                        // This idle turn is not counted yet (the write is enqueued), so the tenth is "nine so far".
+                        new ComparisonExpression<TurnEndedTriggeredEffectContext>(
+                            idle, ComparisonOperator.GreaterOrEqual,
+                            new ConstantExpression<TurnEndedTriggeredEffectContext>(SignpostPatience - 1)),
+                        new SequenceEffectNode<TurnEndedTriggeredEffectContext>(new IEffectNode<TurnEndedTriggeredEffectContext>[]
+                        {
+                            new SetCombatantCounterNode<TurnEndedTriggeredEffectContext>(
+                                player, SignpostConfusedCounter,
+                                new ConstantExpression<TurnEndedTriggeredEffectContext>(1), relative: false),
+                            new DealDamageNode<TurnEndedTriggeredEffectContext>(
+                                signposts, new ConstantExpression<TurnEndedTriggeredEffectContext>(9999), ignoresBlock: true),
+                        }),
+                        new SetCombatantCounterNode<TurnEndedTriggeredEffectContext>(
+                            signposts, SignpostIdleCounter,
+                            new ConstantExpression<TurnEndedTriggeredEffectContext>(1), relative: true)),
+                    new SetCombatantCounterNode<TurnEndedTriggeredEffectContext>(
+                        signposts, SignpostIdleCounter,
+                        new ConstantExpression<TurnEndedTriggeredEffectContext>(0), relative: false))));
+
+        return new EncounterTriggerData("TurnEnded",
+            JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<TurnEndedTriggeredEffectContext>()));
+    }
+
+    public const string SignpostSpoilsProgramId = "signpost_spoils";
+    public const int SignpostBonusGold = 96;   // three more of a fight's 25-40: four times the purse
+
+    public static ITriggeredRunEffectDefinition SignpostSpoilsProgram() =>
+        RunPrograms.On<CombatResolvedRunEvent>(
+        [
+            RunEffectTemplates.GainResource(StandardRunIds.Gold,
+                RunExpr.Multiply(RunEventValues.CombatCounter(SignpostConfusedCounter.ToString()), RunExpr.Const(SignpostBonusGold))),
+        ]);
+
     private static SetCombatantCounterNode<CardPlayedTriggeredEffectContext> Route(
         ICombatantTargetSelector signpost, int route) =>
         new(signpost, PassiveStatuses.SignpostedRouteCounter,
             new ConstantExpression<CardPlayedTriggeredEffectContext>(route), relative: false);
 
-    // "Witness the Seal" (Oath Candle): the first time each round ANOTHER enemy gains Block, that enemy gains 3
-    // more. Everything the program needs is expressed with selectors, since an encounter trigger has no filters
-    // and cannot name a combatant:
+    // "Witness the Seal" (Oath Candle): the first time each round ANY enemy gains Block — the Candle itself
+    // included since 2026-11-01 (user) — that enemy gains 3 more. Everything the program needs is expressed with
+    // selectors, since an encounter trigger has no filters and cannot name a combatant:
     //   · `alliesWithStatus(witness_the_seal)` = the Candle, but only on the GAINER'S side — when the hero
     //     guards itself the loop finds nobody, so the hero is never witnessed;
     //   · the loop body runs once per Candle present, which is also the "is the Candle here" gate;
-    //   · inside it, `iterationTarget` IS the Candle, so its once-per-round latch can be read and written;
-    //   · the gainer carrying the marker means the Candle witnessed itself — the design's "no recursion".
+    //   · inside it, `iterationTarget` IS the Candle, so its once-per-round latch can be read and written —
+    //     and it is closed BEFORE the 3 Block, so the Block it hands out is never witnessed again.
     // The latch is cleared at RoundEnded by the marker status (PassiveStatuses.WitnessTheSeal).
     private static EncounterTriggerData WitnessTheSeal()
     {
@@ -608,23 +641,18 @@ public static class EncounterPassives
         var candle = CombatantTargetSelectors.IterationTarget;
 
         var body = new ConditionalEffectNode<BlockGainedTriggeredEffectContext>(
-            new AndExpression<BlockGainedTriggeredEffectContext>(
-                new ComparisonExpression<BlockGainedTriggeredEffectContext>(
-                    new CombatantStatusStacksExpression<BlockGainedTriggeredEffectContext>(gainer, marker),
-                    ComparisonOperator.Equal,
-                    new ConstantExpression<BlockGainedTriggeredEffectContext>(0)),
-                new ComparisonExpression<BlockGainedTriggeredEffectContext>(
-                    new CombatantCounterExpression<BlockGainedTriggeredEffectContext>(
-                        candle, PassiveStatuses.WitnessedThisRoundCounter),
-                    ComparisonOperator.Equal,
-                    new ConstantExpression<BlockGainedTriggeredEffectContext>(0))),
+            new ComparisonExpression<BlockGainedTriggeredEffectContext>(
+                new CombatantCounterExpression<BlockGainedTriggeredEffectContext>(
+                    candle, PassiveStatuses.WitnessedThisRoundCounter),
+                ComparisonOperator.Equal,
+                new ConstantExpression<BlockGainedTriggeredEffectContext>(0)),
             new SequenceEffectNode<BlockGainedTriggeredEffectContext>(new IEffectNode<BlockGainedTriggeredEffectContext>[]
             {
-                new GainBlockNode<BlockGainedTriggeredEffectContext>(
-                    gainer, new ConstantExpression<BlockGainedTriggeredEffectContext>(3)),
                 new SetCombatantCounterNode<BlockGainedTriggeredEffectContext>(
                     candle, PassiveStatuses.WitnessedThisRoundCounter,
                     new ConstantExpression<BlockGainedTriggeredEffectContext>(1), relative: false),
+                new GainBlockNode<BlockGainedTriggeredEffectContext>(
+                    gainer, new ConstantExpression<BlockGainedTriggeredEffectContext>(3)),
             }));
 
         var program = new EffectProgram<BlockGainedTriggeredEffectContext>(
@@ -635,43 +663,51 @@ public static class EncounterPassives
             JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<BlockGainedTriggeredEffectContext>()));
     }
 
-    // "Not This Counter": the first non-Junk card TYPE each turn is the "Wrong Window"; the first LATER card of
-    // that same type makes the Scribe gain 5 Block. Encoded as: on the player's 2nd card of the turn's OPENING
-    // type, the Scribe — the enemy wearing the rule's chip, and no partner beside it — gains 5 Block. Faithful
-    // simplification: the opening type is literally the first card's type (Junk not skipped) — see ADAPTATIONS.md.
-    private static EncounterTriggerData NotThisCounter() =>
-        OnNthCardOfTheOpeningType(2,
-            new GainBlockNode<CardPlayedTriggeredEffectContext>(
-                CombatantTargetSelectors.AllEnemiesOfSourceWithStatus(
-                    new StatusDefinitionId(PassiveStatuses.NotThisCounterId)),
-                new ConstantExpression<CardPlayedTriggeredEffectContext>(5)));
-
-    // The shared shape of the counter passives: fire `effect` when the player plays their Nth card of the type
-    // that OPENED the turn. Exactly-N (not ≥N) makes it once per player turn on its own — no cooldown state.
-    // The opening type isn't readable as a value, so the program ORs the per-type cases.
-    private static EncounterTriggerData OnNthCardOfTheOpeningType(int n, IEffectNode<CardPlayedTriggeredEffectContext> effect)
+    // "Not This Counter" (Wrong-Window Scribe): the second card of any one type in a player turn makes the Scribe
+    // gain 5 Block, once a turn (until 2026-11-01 only the type that OPENED the turn counted; user: one clear
+    // sentence). The latch is a counter on the Scribe, cleared whenever a turn starts.
+    private static EncounterTriggerData NotThisCounter()
     {
-        ICombatExpression<CardPlayedTriggeredEffectContext, bool>? condition = null;
+        var scribe = CombatantTargetSelectors.AllEnemiesOfSourceWithStatus(new StatusDefinitionId(PassiveStatuses.NotThisCounterId));
+        var latched = CombatantTargetSelectors.FirstTarget(CombatantTargetSelectors.WithStatus(
+            CombatantTargetSelectors.AllAliveCombatants, new StatusDefinitionId(PassiveStatuses.NotThisCounterId)));
+        ICombatExpression<CardPlayedTriggeredEffectContext, bool>? pair = null;
         foreach (var type in CardTypes)
         {
-            var tag = new TagId(type);
-            var nthOfOpeningType = new AndExpression<CardPlayedTriggeredEffectContext>(
-                new FirstCardPlayedThisTurnHasTagExpression<CardPlayedTriggeredEffectContext>(
-                    CombatantTargetSelectors.Source, tag),
-                new ComparisonExpression<CardPlayedTriggeredEffectContext>(
-                    new CardsPlayedThisTurnWithTagExpression<CardPlayedTriggeredEffectContext>(
-                        CombatantTargetSelectors.Source, tag),
-                    ComparisonOperator.Equal,
-                    new ConstantExpression<CardPlayedTriggeredEffectContext>(n)));
-            condition = condition is null
-                ? nthOfOpeningType
-                : new OrExpression<CardPlayedTriggeredEffectContext>(condition, nthOfOpeningType);
+            var two = new ComparisonExpression<CardPlayedTriggeredEffectContext>(
+                new CardsPlayedThisTurnWithTagExpression<CardPlayedTriggeredEffectContext>(
+                    CombatantTargetSelectors.Source, new TagId(type)),
+                ComparisonOperator.GreaterOrEqual,
+                new ConstantExpression<CardPlayedTriggeredEffectContext>(2));
+            pair = pair is null ? two : new OrExpression<CardPlayedTriggeredEffectContext>(pair, two);
         }
-
         var program = new EffectProgram<CardPlayedTriggeredEffectContext>(
-            new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(condition!, effect));
-
+            new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
+                new AndExpression<CardPlayedTriggeredEffectContext>(pair!,
+                    new ComparisonExpression<CardPlayedTriggeredEffectContext>(
+                        new CombatantCounterExpression<CardPlayedTriggeredEffectContext>(latched, PassiveStatuses.ScribeAnsweredCounter),
+                        ComparisonOperator.Equal,
+                        new ConstantExpression<CardPlayedTriggeredEffectContext>(0))),
+                new ForEachTargetEffectNode<CardPlayedTriggeredEffectContext>(scribe,
+                    new SequenceEffectNode<CardPlayedTriggeredEffectContext>(new IEffectNode<CardPlayedTriggeredEffectContext>[]
+                    {
+                        new SetCombatantCounterNode<CardPlayedTriggeredEffectContext>(CombatantTargetSelectors.IterationTarget,
+                            PassiveStatuses.ScribeAnsweredCounter, new ConstantExpression<CardPlayedTriggeredEffectContext>(1), relative: false),
+                        new GainBlockNode<CardPlayedTriggeredEffectContext>(CombatantTargetSelectors.IterationTarget,
+                            new ConstantExpression<CardPlayedTriggeredEffectContext>(5)),
+                    }))));
         return new EncounterTriggerData("CardPlayed",
             JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<CardPlayedTriggeredEffectContext>()));
     }
+
+    // …and the Scribe's latch opens again whenever a turn starts.
+    private static EncounterTriggerData NotThisCounterResets() =>
+        new("TurnStarted", JsonSerializer.SerializeToElement(
+            new EffectProgram<TurnStartedTriggeredEffectContext>(
+                new ForEachTargetEffectNode<TurnStartedTriggeredEffectContext>(
+                    CombatantTargetSelectors.WithStatus(CombatantTargetSelectors.AllAliveCombatants,
+                        new StatusDefinitionId(PassiveStatuses.NotThisCounterId)),
+                    new SetCombatantCounterNode<TurnStartedTriggeredEffectContext>(CombatantTargetSelectors.IterationTarget,
+                        PassiveStatuses.ScribeAnsweredCounter, new ConstantExpression<TurnStartedTriggeredEffectContext>(0), relative: false))),
+            CombatJson.CreateOptions<TurnStartedTriggeredEffectContext>()));
 }

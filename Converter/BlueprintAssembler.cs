@@ -141,7 +141,8 @@ public static class BlueprintAssembler
                         new ComputedHealRunEffect(RunExpr.MissingHealth),
                         // The city's Dragon takes its fees after the fight; the collector is opened with the city.
                         .. m.Act.Act == 1
-                            ? [new InstallProgramByIdRunEffect(new RunProgramSourceId(MunicipalDragon.FeesProgramId))]
+                            ? [new InstallProgramByIdRunEffect(new RunProgramSourceId(MunicipalDragon.FeesProgramId)),
+                               new InstallProgramByIdRunEffect(new RunProgramSourceId(EncounterPassives.SignpostSpoilsProgramId))]
                             : Array.Empty<IRunEffectRequest>(),
                         // …and the Green Docket's Toll Frog pays out what it spits.
                         .. m.Act.Act == 3
@@ -304,6 +305,7 @@ public static class BlueprintAssembler
         var programs = new Dictionary<string, ITriggeredRunEffectDefinition>
         {
             [MunicipalDragon.FeesProgramId] = MunicipalDragon.FeesProgram(),
+            [EncounterPassives.SignpostSpoilsProgramId] = EncounterPassives.SignpostSpoilsProgram(),
             [ActThree.FrogSpoilsProgramId] = ActThree.FrogSpoilsProgram(),
         };
         foreach (var (id, program) in ActFour.CutPrograms())

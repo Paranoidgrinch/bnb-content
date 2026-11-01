@@ -97,6 +97,16 @@ public static class EnemyMapper
                         ? $"{baseDamage} dmg {scaling}"
                         : $"dmg {scaling}");
                     break;
+                // A blow that grows with a counter of its own (the Hourglass's banked sand) telegraphs it the same
+                // way; it used to print nothing at all, so the hit came out of a blank intent.
+                case "damage_per_counter" when effect.Counter is { } counter:
+                    var counterScaling = $"+{effect.AmountPerStack ?? 0} per {Capitalize(counter)}";
+                    if (effect.Cap is { } counterCap)
+                        counterScaling += $" (max +{counterCap})";
+                    parts.Add(effect.Amount is { } counterBase && counterBase != 0
+                        ? $"{counterBase} dmg {counterScaling}"
+                        : $"dmg {counterScaling}");
+                    break;
                 // …and the same for a scaling defence, so a body that spends its own resource on Block
                 // telegraphs what that comes to rather than only its floor.
                 case "block_per_status" when effect.Status is { } blockStatus:
