@@ -1112,113 +1112,6 @@
             "amount": 0
           }
         ]
-      },
-      {
-        "id": "emergency_amendment",
-        "name": "Emergency Amendment",
-        "intent_type": "attack",
-        "special": true,
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 0
-          }
-        ]
-      },
-      {
-        "id": "concurrent_clauses",
-        "name": "Concurrent Clauses",
-        "intent_type": "mixed",
-        "special": true,
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 10
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "doubt",
-            "amount": 1
-          }
-        ]
-      },
-      {
-        "id": "amended_remedy",
-        "name": "Amended Remedy",
-        "intent_type": "mixed",
-        "special": true,
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 9
-          },
-          {
-            "type": "gain_block",
-            "target": "owner",
-            "amount": 11
-          }
-        ]
-      },
-      {
-        "id": "strict_construction_ii",
-        "name": "Strict Construction",
-        "intent_type": "attack",
-        "special": true,
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 16
-          }
-        ]
-      },
-      {
-        "id": "living_commentary",
-        "name": "Living Commentary",
-        "intent_type": "mixed",
-        "special": true,
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 12
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "paperwork",
-            "amount": 1
-          }
-        ]
-      },
-      {
-        "id": "read_the_whole_instrument",
-        "name": "Read the Whole Instrument",
-        "intent_type": "mixed",
-        "special": true,
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 14
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "doubt",
-            "amount": 1
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "paperwork",
-            "amount": 1
-          }
-        ]
       }
     ],
     "starting_statuses": [
@@ -1232,166 +1125,13 @@
     "intent_rules": [
       {
         "condition": {
-          "kind": "self_status",
-          "status": "emergency_amendment",
-          "min_stacks": 1
-        },
-        "action": "emergency_amendment",
-        "priority": 100
-      },
-      {
-        "condition": {
-          "kind": "all_of",
-          "conditions": [
-            {
-              "kind": "not",
-              "conditions": [
-                {
-                  "kind": "self_status",
-                  "status": "contradictory_constitution",
-                  "min_stacks": 1
-                }
-              ]
-            },
-            {
-              "kind": "self_counter",
-              "counter": "actions_since_review",
-              "op": "ge",
-              "value": 2
-            }
-          ]
+          "kind": "self_counter",
+          "counter": "actions_since_review",
+          "op": "ge",
+          "value": 2
         },
         "action": "judicial_review",
         "priority": 90
-      },
-      {
-        "condition": {
-          "kind": "all_of",
-          "conditions": [
-            {
-              "kind": "self_status",
-              "status": "contradictory_constitution",
-              "min_stacks": 1
-            },
-            {
-              "kind": "self_counter",
-              "counter": "actions_since_review",
-              "op": "ge",
-              "value": 3
-            }
-          ]
-        },
-        "action": "judicial_review",
-        "priority": 90
-      },
-      {
-        "condition": {
-          "kind": "all_of",
-          "conditions": [
-            {
-              "kind": "self_status",
-              "status": "contradictory_constitution",
-              "min_stacks": 1
-            },
-            {
-              "kind": "self_counter",
-              "counter": "charter_beat",
-              "op": "eq",
-              "value": 0
-            }
-          ]
-        },
-        "action": "concurrent_clauses",
-        "priority": 60
-      },
-      {
-        "condition": {
-          "kind": "all_of",
-          "conditions": [
-            {
-              "kind": "self_status",
-              "status": "contradictory_constitution",
-              "min_stacks": 1
-            },
-            {
-              "kind": "self_counter",
-              "counter": "charter_beat",
-              "op": "eq",
-              "value": 1
-            }
-          ]
-        },
-        "action": "amended_remedy",
-        "priority": 59
-      },
-      {
-        "condition": {
-          "kind": "all_of",
-          "conditions": [
-            {
-              "kind": "self_status",
-              "status": "contradictory_constitution",
-              "min_stacks": 1
-            },
-            {
-              "kind": "self_counter",
-              "counter": "charter_beat",
-              "op": "eq",
-              "value": 2
-            }
-          ]
-        },
-        "action": "strict_construction_ii",
-        "priority": 58
-      },
-      {
-        "condition": {
-          "kind": "all_of",
-          "conditions": [
-            {
-              "kind": "self_status",
-              "status": "contradictory_constitution",
-              "min_stacks": 1
-            },
-            {
-              "kind": "self_counter",
-              "counter": "charter_beat",
-              "op": "eq",
-              "value": 3
-            }
-          ]
-        },
-        "action": "living_commentary",
-        "priority": 57
-      },
-      {
-        "condition": {
-          "kind": "all_of",
-          "conditions": [
-            {
-              "kind": "self_status",
-              "status": "contradictory_constitution",
-              "min_stacks": 1
-            },
-            {
-              "kind": "self_counter",
-              "counter": "charter_beat",
-              "op": "eq",
-              "value": 4
-            }
-          ]
-        },
-        "action": "read_the_whole_instrument",
-        "priority": 56
-      },
-      {
-        "condition": {
-          "kind": "self_status",
-          "status": "contradictory_constitution",
-          "min_stacks": 1
-        },
-        "action": "concurrent_clauses",
-        "priority": 10
       }
     ],
     "tags": [
@@ -2289,12 +2029,6 @@
             "target": "owner",
             "counter": "appointment_due",
             "amount": 2
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "appointments_accelerated",
-            "amount": 1
           }
         ]
       }
@@ -2302,17 +2036,6 @@
     "starting_statuses": [
       {
         "status": "appointment_due_first"
-      }
-    ],
-    "intent_rules": [
-      {
-        "condition": {
-          "kind": "opponent_status",
-          "status": "appointments_accelerated",
-          "min_stacks": 1
-        },
-        "action": "please_wait_here",
-        "priority": 10
       }
     ],
     "tags": [
@@ -2374,12 +2097,6 @@
             "target": "owner",
             "counter": "appointment_due",
             "amount": 3
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "appointments_accelerated",
-            "amount": 1
           }
         ]
       }
@@ -2387,17 +2104,6 @@
     "starting_statuses": [
       {
         "status": "appointment_due_second"
-      }
-    ],
-    "intent_rules": [
-      {
-        "condition": {
-          "kind": "opponent_status",
-          "status": "appointments_accelerated",
-          "min_stacks": 1
-        },
-        "action": "all_slots_delayed",
-        "priority": 10
       }
     ],
     "tags": [
@@ -2459,12 +2165,6 @@
             "target": "owner",
             "counter": "appointment_due",
             "amount": 4
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "appointments_accelerated",
-            "amount": 1
           }
         ]
       }
@@ -2472,17 +2172,6 @@
     "starting_statuses": [
       {
         "status": "appointment_due_final"
-      }
-    ],
-    "intent_rules": [
-      {
-        "condition": {
-          "kind": "opponent_status",
-          "status": "appointments_accelerated",
-          "min_stacks": 1
-        },
-        "action": "closed_door_pause",
-        "priority": 10
       }
     ],
     "tags": [
@@ -3136,35 +2825,11 @@
             "amount": 10
           }
         ]
-      },
-      {
-        "id": "final_service",
-        "name": "Final Service",
-        "intent_type": "attack",
-        "special": true,
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 17
-          }
-        ]
       }
     ],
     "starting_statuses": [
       {
         "status": "iron_warrant"
-      }
-    ],
-    "intent_rules": [
-      {
-        "condition": {
-          "kind": "self_status",
-          "status": "contempt",
-          "min_stacks": 1
-        },
-        "action": "final_service",
-        "priority": 20
       }
     ],
     "tags": [

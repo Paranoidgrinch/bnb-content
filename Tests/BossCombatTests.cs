@@ -259,69 +259,36 @@ public class BossCombatTests
 
     // ── The Lord Sealkeeper ───────────────────────────────────────────────────
 
-    // Three Seals raise a 16-Block Ward every player turn; the Seal of Access is 4 of it.
+    // Three Seals raise an 18-Block Ward every player turn, 6 apiece.
     [Fact]
     public void The_seal_ward_rises_with_every_standing_seal()
     {
         var (play, _, keeperId) = Sealkeeper();
 
-        Assert.Equal(16, BlockOf(Enemy(play, keeperId)));
+        Assert.Equal(3 * LordSealkeeper.WardPerSeal, BlockOf(Enemy(play, keeperId)));
         Assert.All(LordSealkeeper.Seals,
             seal => Assert.Equal(1, FightProbe.StacksOf(Enemy(play, keeperId), seal.SealId)));
     }
 
-    // Strip the Ward, draw blood, and a Seal may be broken — the player chooses which, and keeps its Fragment.
+    // Strip the Ward and draw blood in one turn and a Seal breaks by itself — the last one standing — moving the
+    // Keeper into its next phase. Only one per turn.
     [Fact]
-    public void Breaking_a_seal_cracks_the_keeper_and_leaves_a_fragment()
+    public void Breaking_through_the_ward_breaks_a_seal()
     {
         var (play, session, keeperId) = Sealkeeper(Enumerable.Repeat("paper_cut", 30).ToList(), energy: 9);
 
-        // 16 Block, then blood: the offer only appears once the Ward is gone. Two Paper Cuts are 12 — not
-        // enough; the third goes through it.
-        for (var i = 0; i < 2; i++)
+        // 18 Block, then blood: three Paper Cuts are exactly the Ward; the fourth draws blood.
+        for (var i = 0; i < 3; i++)
             Cut(play, session, keeperId);
-        Assert.Equal(0, FightProbe.StacksOf(Hero(play), LordSealkeeper.BreakReadyId));
-        Cut(play, session, keeperId);
-        Assert.Equal(1, FightProbe.StacksOf(Hero(play), LordSealkeeper.BreakReadyId));
-        Assert.Equal(1, FightProbe.StacksOf(Enemy(play, keeperId), LordSealkeeper.CrackedId));
-
-        // Three offers on the table; taking one shatters that Seal and hands over its Fragment.
-        var access = LordSealkeeper.Seals[0];
         Assert.All(LordSealkeeper.Seals,
-            seal => Assert.Contains(play.CombatDriver!.Current!.Hand, c => c.DefinitionId.value == seal.BreakCardId));
-
-        Play(play, session, access.BreakCardId);
-        Assert.Equal(0, FightProbe.StacksOf(Enemy(play, keeperId), access.SealId));
+            seal => Assert.Equal(1, FightProbe.StacksOf(Enemy(play, keeperId), seal.SealId)));
+        Cut(play, session, keeperId);
+        Assert.Equal(0, FightProbe.StacksOf(Enemy(play, keeperId), LordSealkeeper.Seals[^1].SealId));
         Assert.Equal(1, FightProbe.StacksOf(Enemy(play, keeperId), LordSealkeeper.CrackingId)); // Phase II
-        Assert.Contains(play.CombatDriver!.Current!.Hand, c => c.DefinitionId.value == access.FragmentCardId);
 
-        // Only one Seal per turn: a second offer does nothing.
-        Play(play, session, LordSealkeeper.Seals[1].BreakCardId);
-        Assert.Equal(1, FightProbe.StacksOf(Enemy(play, keeperId), LordSealkeeper.Seals[1].SealId));
-
-        // The Fragment of Access takes 12 Block off the Keeper — and is a one-use piece of stolen authority.
-        play.CombatDriver.EndTurn();
-        Assert.Null(session.Error);
-        var guarded = BlockOf(Enemy(play, keeperId));
-        Assert.True(guarded > 0, "the Ward rises again on the surviving Seals");
-        Play(play, session, access.FragmentCardId);
-        Assert.Equal(Math.Max(0, guarded - 12), BlockOf(Enemy(play, keeperId)));
-    }
-
-    // A Fragment stays in hand across turns: it is the boss's authority, not a card of the deck.
-    [Fact]
-    public void A_fragment_is_kept_until_it_is_spent()
-    {
-        var (play, session, keeperId) = Sealkeeper(Enumerable.Repeat("paper_cut", 30).ToList(), energy: 9);
-
-        for (var i = 0; i < 4; i++)
-            Cut(play, session, keeperId);
-        Play(play, session, LordSealkeeper.Seals[2].BreakCardId); // Execution
-
-        play.CombatDriver!.EndTurn();
-        Assert.Null(session.Error);
-        Assert.Contains(play.CombatDriver.Current!.Hand,
-            c => c.DefinitionId.value == LordSealkeeper.Seals[2].FragmentCardId);
+        // Only one Seal per turn.
+        Cut(play, session, keeperId);
+        Assert.Equal(2, LordSealkeeper.Seals.Count(seal => FightProbe.StacksOf(Enemy(play, keeperId), seal.SealId) > 0));
     }
 
     // Every broken Seal is a phase: one broken and the Keeper cracks, two and it is unsealed — and each phase
@@ -338,17 +305,11 @@ public class BossCombatTests
                    && Hero(play).Resources[StandardCombatIds.EnergyResource].Current > 0)
                 Cut(play, session, keeperId);
 
-            // Whatever Seal still stands and is offered, take it.
-            var offer = play.CombatDriver.Current!.Hand
-                .FirstOrDefault(c => LordSealkeeper.Seals.Any(s => s.BreakCardId == c.DefinitionId.value
-                    && FightProbe.StacksOf(Enemy(play, keeperId), s.SealId) > 0));
-            if (offer is not null)
-            {
-                play.CombatDriver.PlayCard(offer.Id, keeperId);
-                Assert.Null(session.Error);
-                phases.Add(FightProbe.StacksOf(Enemy(play, keeperId), LordSealkeeper.CrackingId) > 0 ? "II"
-                    : FightProbe.StacksOf(Enemy(play, keeperId), LordSealkeeper.UnsealedId) > 0 ? "III" : "I");
-            }
+            // A turn that broke a Seal shows the phase it broke into.
+            var phase = FightProbe.StacksOf(Enemy(play, keeperId), LordSealkeeper.CrackingId) > 0 ? "II"
+                : FightProbe.StacksOf(Enemy(play, keeperId), LordSealkeeper.UnsealedId) > 0 ? "III" : "I";
+            if (phase != "I" && (phases.Count == 0 || phases[^1] != phase))
+                phases.Add(phase);
 
             play.CombatDriver.EndTurn();
             Assert.Null(session.Error);
@@ -395,24 +356,22 @@ public class BossCombatTests
 
         Assert.Equal(MunicipalDragon.StartingPermits + 1,
             FightProbe.StacksOf(Enemy(play, dragonId), MunicipalDragon.PermitId));
-        Assert.Equal(0, FightProbe.StacksOf(Enemy(play, dragonId), MunicipalDragon.AngerId));
     }
 
-    // Refusing takes the fee out of you and angers the Dragon.
+    // Refusing takes the fee out of you: 8 damage, and nothing else (no Paperwork, no Anger since 2026-11-01).
     [Fact]
-    public void Refusing_the_fee_costs_blood_and_paperwork_and_angers_the_dragon()
+    public void Refusing_the_fee_costs_blood()
     {
         var (play, session, dragonId) = Dragon(Enumerable.Repeat("cower_behind_a_desk", 10).ToList(), energy: 9);
         play.CombatDriver!.EndTurn();
         Assert.Null(session.Error);
         Assert.Equal(1, FightProbe.StacksOf(Hero(play), MunicipalDragon.NoticeId));
 
-        var paperwork = FightProbe.StacksOf(Hero(play), "paperwork");
+        var health = Hero(play).Health.Current;
         play.CombatDriver.EndTurn(); // the Notice still open: refused
         Assert.Null(session.Error);
 
-        Assert.Equal(1, FightProbe.StacksOf(Enemy(play, dragonId), MunicipalDragon.AngerId));
-        Assert.True(FightProbe.StacksOf(Hero(play), "paperwork") >= paperwork + MunicipalDragon.RefusalPaperwork);
+        Assert.True(health - Hero(play).Health.Current >= MunicipalDragon.RefusalDamage);
         Assert.Equal(MunicipalDragon.StartingPermits,
             FightProbe.StacksOf(Enemy(play, dragonId), MunicipalDragon.PermitId));
     }
@@ -480,36 +439,6 @@ public class BossCombatTests
         Assert.Null(session.Error);
         Assert.Equal(0, FightProbe.StacksOf(Enemy(play, charterId), LivingCharter.RemedyId));
         Assert.True(BlockOf(Enemy(play, charterId)) >= 8, "the Charter is owed its Remedy Block");
-    }
-
-    // Article of Mutual Security: the first Block a side raises each turn arms the other side as well — and
-    // that answering Block never answers itself.
-    [Fact]
-    public void The_article_of_mutual_security_arms_both_sides_once()
-    {
-        var (play, session, charterId) = Charter(Enumerable.Repeat("cower_behind_a_desk", 30).ToList(), energy: 9);
-
-        // Strike twice: Continuance out, Redress out, Mutual Security published.
-        for (var round = 0; round < 2; round++)
-        {
-            for (var i = 0; i < 5 && FightProbe.StacksOf(Hero(play), LivingCharter.ReviewPendingId) == 0; i++)
-                play.CombatDriver!.EndTurn();
-            Play(play, session, LivingCharter.StrikeDownCardId);
-        }
-        Assert.Equal(1, FightProbe.StacksOf(Enemy(play, charterId), LivingCharter.MutualSecurityId));
-
-        var charterBlock = BlockOf(Enemy(play, charterId));
-        var mine = BlockOf(Hero(play));
-        Play(play, session, "cower_behind_a_desk"); // 5 Block for me — and 4 for the law, if it is still owed
-
-        // The answering Block never answers itself: the player's guard is exactly its own 5.
-        Assert.Equal(mine + 5, BlockOf(Hero(play)));
-        var answered = BlockOf(Enemy(play, charterId)) - charterBlock;
-        Assert.True(answered is 0 or 4, $"mutual security answers with 4 Block at most, not {answered}");
-
-        // Once per side per turn: a second guard passes unanswered.
-        Play(play, session, "cower_behind_a_desk");
-        Assert.Equal(charterBlock + answered, BlockOf(Enemy(play, charterId)));
     }
 
     // Article of Full Disclosure: the law that favours the player. The Charter shows what it will do next and

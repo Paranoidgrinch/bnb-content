@@ -73,7 +73,6 @@ public static class PassiveStatuses
             "Each time a stack of Panic fades from you on its own, the Wisp burns and you take 4 damage. "
             + "Cleansing Panic outright does not feed it."),
         .. Appointments.Select(a => AppointmentDue(a.StatusId, a.Name, a.Description, a.Due, a.Expiry)),
-        AppointmentsAccelerated(),
         OfficeHours(),
         Counted(WindowClosedId, "Window Closed",
             "The office is shut. It opens after this many of its own turns. Damage dealt now is banked."),
@@ -81,19 +80,14 @@ public static class PassiveStatuses
             "The office is open for one action: damage lands normally, and the banked business lands at once."),
         Counted(PendingBusinessId, "Pending Business",
             "Damage banked while the window was closed. It all lands on the office when the window opens."),
-        Marker(StepLowerId, "Lower Step",
-            "The bottom of the staircase. This court hears Deeds: play one and the case is held here."),
-        Marker(StepMiddleId, "Middle Step",
-            "The middle of the staircase. This court hears Workings: play one and the case goes back down."),
-        Marker(StepUpperId, "Upper Step",
-            "The top of the staircase. Play a Deed and a Working in one turn and the case goes back down. "
-            + "Otherwise it rules."),
+        Marker(StepLowerId, "Lower Step", "The bottom of the staircase."),
+        Marker(StepMiddleId, "Middle Step", "The middle of the staircase."),
+        Marker(StepUpperId, "Upper Step", "The top of the staircase: if the case stays here, the ruling falls."),
         HoldsTheCase(),
         RulingPending(),
         Marker(IronWarrantId, "Iron Warrant",
             "At the start of each of your turns the Avatar issues one achievable demand. The orders take turns, "
             + "so the same one never comes twice running."),
-        Contempt(),
         Marker(InventoryLanternId, "Inventory Lantern",
             "Each turn it presses a wax seal on one card you draw."),
         Marker(LockCartId, "Lock Cart",
@@ -135,9 +129,7 @@ public static class PassiveStatuses
     // Iron Warrant Avatar: it issues a visible order each player turn. The orders are statuses ON THE PLAYER —
     // the only thing a combat UI shows by name — and the Avatar checks them when the turn ends.
     public const string IronWarrantId = "iron_warrant";
-    public const string ContemptId = "contempt";
     public static CounterId OrderIndexCounter => new("compliance_order");
-    public const int ContemptMaximum = 3;
 
     // The Seizure Procession: the Lantern marks, the Cart takes, the Marshal profits. Each body is found by
     // its own marker, and the confiscation itself rides on the engine's per-instance card marks.
@@ -173,7 +165,7 @@ public static class PassiveStatuses
     public static readonly ComplianceOrder[] ComplianceOrders =
     [
         new("order_hold_your_fire", "Order: Hold Your Fire",
-            "Play no Deed this turn. Obey and the Avatar takes 2; disobey and it gains Contempt.",
+            "Play no Deed this turn.",
             () =>
             new ComparisonExpression<TurnEndedTriggeredEffectContext>(
                 new CardsPlayedThisTurnWithTagExpression<TurnEndedTriggeredEffectContext>(
@@ -182,8 +174,7 @@ public static class PassiveStatuses
                 new ConstantExpression<TurnEndedTriggeredEffectContext>(0))),
 
         new("order_file_two_kinds", "Order: File Two Kinds",
-            "Play at least two different kinds of card this turn. Obey and the Avatar takes 2; disobey and it "
-            + "gains Contempt.",
+            "Play two different kinds of card this turn.",
             () =>
         {
             ICombatExpression<TurnEndedTriggeredEffectContext, int>? kinds = null;
@@ -202,44 +193,11 @@ public static class PassiveStatuses
         }),
 
         new("order_workings_first", "Order: Workings First",
-            "Open the turn with a Working. Obey and the Avatar takes 2; disobey and it gains Contempt.",
+            "Play a Working first this turn.",
             () =>
             new FirstCardPlayedThisTurnHasTagExpression<TurnEndedTriggeredEffectContext>(
                 CombatantTargetSelectors.Source, new TagId(Cards.CardAuthoring.WorkingTag))),
     ];
-
-    // Contempt: every point makes the Avatar's next direct attack hit 4 harder, and the attack spends it all.
-    private static StatusData Contempt()
-    {
-        var program = new EffectProgram<DamageDealtTriggeredEffectContext>(
-            new ModifyStatusStacksNode<DamageDealtTriggeredEffectContext>(
-                CombatantTargetSelectors.Source, new StatusDefinitionId(ContemptId),
-                new SubtractExpression<DamageDealtTriggeredEffectContext>(
-                    new ConstantExpression<DamageDealtTriggeredEffectContext>(0),
-                    new CombatantStatusStacksExpression<DamageDealtTriggeredEffectContext>(
-                        CombatantTargetSelectors.Source, new StatusDefinitionId(ContemptId)))));
-
-        return new StatusData
-        {
-            Id = ContemptId,
-            NameKey = "Contempt",
-            DescriptionKey = "Every point makes the Avatar's next direct attack hit 4 harder — and that attack spends the lot.",
-            Polarity = StatusPolarity.Buff,
-            StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
-            UsesStacks = true,
-            Tags = [],
-            PassiveModifiers =
-            [
-                new PassiveModifierData(PassiveModifierPipeline.DamageDealt,
-                    PassiveModifierOperation.AddPerStack, 4, RestrictDamageKind: DamageKind.Direct),
-            ],
-            Triggers =
-            [
-                new StatusTriggerData("DamageDealt", JsonSerializer.SerializeToElement(
-                    program, CombatJson.CreateOptions<DamageDealtTriggeredEffectContext>())),
-            ],
-        };
-    }
 
     // Appellate Staircase: the Case is a status exactly one Step holds. Which Step is which is a marker, so a
     // program can hand the Case one level down (a Remand) or up (the automatic ascent).
@@ -339,8 +297,7 @@ public static class PassiveStatuses
         {
             Id = HoldsTheCaseId,
             NameKey = "Holds the Case",
-            DescriptionKey = "Whoever holds the case hits 2 harder. Play the kind of card its step hears and the case goes "
-+ "down a step; otherwise it climbs at the holder's turn end.",
+            DescriptionKey = "Play a Deed each turn: the case goes down a step. Otherwise it climbs; at the top the ruling falls. It hits 2 harder.",
             Polarity = StatusPolarity.Buff,
             StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
             UsesStacks = true,
@@ -358,11 +315,11 @@ public static class PassiveStatuses
         };
     }
 
-    // THE COURT HEARS A KIND OF CARD (content cut 2026-10-29: the stairs stand in Ordinance, where the rules care
-    // about card types, and no longer ask for a damage threshold). At the end of the player's turn the step that
-    // holds the case asks what it was shown: the bottom hears Deeds, the middle Workings, the top a Deed and a
-    // Working both. Shown it, the case goes down a step — at the bottom it is simply held there — and a ruling the
-    // top had announced is withdrawn. An encounter trigger, because it is the PLAYER's turn that ends.
+    // THE COURT HEARS A DEED (content cut 2026-10-29: the stairs stand in Ordinance, where the rules care about card
+    // types; 2026-11-01, user: one rule in one sentence — every step hears the same, where each used to hear its own
+    // kind). At the end of the player's turn the step that holds the case asks whether a Deed was played: if so the
+    // case goes down a step — at the bottom it is simply held there — and a ruling the top had announced is
+    // withdrawn. An encounter trigger, because it is the PLAYER's turn that ends.
     public static EncounterTriggerData HearTheCase()
     {
         var player = CombatantTargetSelectors.Source;
@@ -400,7 +357,6 @@ public static class PassiveStatuses
         });
 
         var deed = Cards.CardAuthoring.DeedTag;
-        var working = Cards.CardAuthoring.WorkingTag;
         var program = new EffectProgram<TurnEndedTriggeredEffectContext>(
             new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
                 new ComparisonExpression<TurnEndedTriggeredEffectContext>(
@@ -408,12 +364,11 @@ public static class PassiveStatuses
                         player, new StatusDefinitionId(ApplicantId)),
                     ComparisonOperator.Greater, new ConstantExpression<TurnEndedTriggeredEffectContext>(0)),
                 new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
-                    new AndExpression<TurnEndedTriggeredEffectContext>(On(StepUpperId),
-                        new AndExpression<TurnEndedTriggeredEffectContext>(Played(deed), Played(working))),
+                    new AndExpression<TurnEndedTriggeredEffectContext>(On(StepUpperId), Played(deed)),
                     new SequenceEffectNode<TurnEndedTriggeredEffectContext>(new IEffectNode<TurnEndedTriggeredEffectContext>[]
                         { heard, HandDownTo(StepMiddleId) }),
                     new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
-                        new AndExpression<TurnEndedTriggeredEffectContext>(On(StepMiddleId), Played(working)),
+                        new AndExpression<TurnEndedTriggeredEffectContext>(On(StepMiddleId), Played(deed)),
                         new SequenceEffectNode<TurnEndedTriggeredEffectContext>(new IEffectNode<TurnEndedTriggeredEffectContext>[]
                             { heard, HandDownTo(StepLowerId) }),
                         new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
@@ -559,11 +514,10 @@ public static class PassiveStatuses
         };
     }
 
-    // The Three Appointments (elite): each body carries its own visible countdown and its own consequence when
-    // it runs out. The countdown ticks at the body's OWN turn end — once per round, exactly like the design's
+    // The Three Appointments (elite): each body carries its own visible countdown and hits when it runs out — the
+    // same kind of consequence for all three, only harder down the line (one clear sentence, user 2026-11-01). The countdown ticks at the body's OWN turn end — once per round, exactly like the design's
     // "end of each player turn", only a beat later in the round (see ADAPTATIONS.md).
     public static CounterId AppointmentDueCounter => new("appointment_due");
-    public const string AppointmentsAcceleratedId = "appointments_accelerated";
 
     private static CounterId AppointmentStartedCounter => new("appointment_started");
 
@@ -572,14 +526,14 @@ public static class PassiveStatuses
         Appointments =
         [
             ("appointment_due_first", "Appointment Due (First)",
-                "Counts down at the end of this body's turn. When it runs out you take 7 damage and 1 Fatigue.",
-                2, () => Expiry(damage: 7, fatigue: 1)),
+                "Counts down each turn. At 0 it hits you for 7.",
+                2, () => Expiry(damage: 7)),
             ("appointment_due_second", "Appointment Due (Second)",
-                "Counts down at the end of this body's turn. When it runs out you take 2 Paperwork and 1 Fatigue.",
-                3, () => Expiry(paperwork: 2, fatigue: 1)),
+                "Counts down each turn. At 0 it hits you for 10.",
+                3, () => Expiry(damage: 10)),
             ("appointment_due_final", "Appointment Due (Final)",
-                "Counts down at the end of this body's turn. When it runs out you take 15 damage and 1 Fatigue.",
-                4, () => Expiry(damage: 15, fatigue: 1)),
+                "Counts down each turn. At 0 it hits you for 15.",
+                4, () => Expiry(damage: 15)),
         ];
 
     private static IEffectNode<TurnEndedTriggeredEffectContext> Expiry(
@@ -655,24 +609,6 @@ public static class PassiveStatuses
             Triggers = [.. status.Triggers, new StatusTriggerData("TurnStarted",
                 JsonSerializer.SerializeToElement(arm, CombatJson.CreateOptions<TurnStartedTriggeredEffectContext>()))],
         };
-    }
-
-    // The anti-spike latch: whoever uses a scheduling move marks the player, and the other Appointments' intent
-    // rules stand down while the mark is there. It clears at the end of the round — a status is the only handle
-    // an intent CONDITION has on shared state (conditions read statuses, not counters, on the opponent).
-    private static StatusData AppointmentsAccelerated()
-    {
-        var marked = CombatantTargetSelectors.WithStatus(
-            CombatantTargetSelectors.AllCombatants, new StatusDefinitionId(AppointmentsAcceleratedId));
-
-        var program = new EffectProgram<RoundEndedTriggeredEffectContext>(
-            new ModifyStatusStacksNode<RoundEndedTriggeredEffectContext>(
-                marked, new StatusDefinitionId(AppointmentsAcceleratedId),
-                new ConstantExpression<RoundEndedTriggeredEffectContext>(-1)));
-
-        return Passive(AppointmentsAcceleratedId, "Appointments Accelerated",
-            "One appointment has been moved forward. While this stands, the others hold off.",
-            "RoundEnded", program);
     }
 
     // Number-Ticket Wisp: the marker its encounter trigger finds it by (the rule itself watches the PLAYER's

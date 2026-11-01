@@ -2,7 +2,7 @@
 
 Generated: `dotnet run --project Converter -- --art-slots ART_SLOTS.md`. **Do not edit by hand.**
 
-**883 pictures**: 482 cards, 255 relics, 142 bodies
+**876 pictures**: 475 cards, 255 relics, 142 bodies
 (every enemy, elite and boss) and 4 the player can be. Every one of them is filled today by a PLACEHOLDER — a plate with the file's own
 name and the word placeholder on it, written by `bnb-godot/tools/make-card-art.py`,
 `make-relic-art.py` and `make-enemy-art.py`. A painted picture replaces one by being saved over it, so
@@ -523,7 +523,7 @@ Drawn like a body and facing RIGHT — the player stands on the left of the aren
 | `lieutenant` | The Lieutenant | New stripes on an old uniform, and always first through the door. |
 | `sorcerers_apprentice` | The Sorcerer's Apprentice | Knows every incantation, and not quite what happens when one is put after another. |
 
-## Cards — 482 pictures
+## Cards — 475 pictures
 
 No visual canon was ever written for the cards, so the row carries the card's own rules
 text instead of a brief. Act = the act that unlocks it; the starters, the Junk and the
@@ -985,7 +985,7 @@ cards a boss or a door hands over are never offered and have no act.
 | `lt_whistle` | Whistle | working | uncommon | Gain 3 Block. You may spend 1 Authority to draw 2 cards. |
 | `lt_witness` | Witness | working | common | Gain 4 Block. Your next Deed hit on a Challenged enemy this turn counts twice toward its Challenge. |
 
-### Given in play — 86
+### Given in play — 79
 
 Handed over by a boss, a door or an event rather than offered; never in a reward pool.
 
@@ -1000,16 +1000,12 @@ Handed over by a boss, a door or an event rather than offered; never in a reward
 | `break_the_burden_seal` | Break the Burden Seal | Remove 1 Burdened from you (or 1 Paperwork). The colony gains 12 Block on its turn. |
 | `break_the_pest_seal` | Break the Pest Seal | The colony loses 12 HP. You take 2 Poison. |
 | `break_the_ration_seal` | Break the Ration Seal | You gain 1 Energy next turn. The colony gains 1 Strength. |
-| `break_the_seal_of_access` | Break the Great Seal of Access | Shatter the Great Seal of Access and take its Fragment. |
-| `break_the_seal_of_execution` | Break the Great Seal of Execution | Shatter the Great Seal of Execution and take its Fragment. |
-| `break_the_seal_of_testimony` | Break the Great Seal of Testimony | Shatter the Great Seal of Testimony and take its Fragment. |
 | `cauldron_add` | Into the Pot | Put a card from hand into the cauldron instead of playing it. The first each turn is free. |
 | `cauldron_brew` | Brew | Brew the 3 ingredients. Three of one family: a concentrated brew. Otherwise each gives its own effect. |
 | `cite_the_old_survey` | Cite the Old Survey | Once a turn, spend 1 Old Right: swap Current and Former law; or void its next Claim; or remove 8 of its Block. |
-| `claim_an_exception` | Claim an Exception | The Articles do not touch you for the rest of this turn. |
 | `correction_reed_action` | A Small Correction | Once a turn: discard a card, return one from discard costing 1 less. None there: draw 1. |
 | `counter_petition` | Counter-Petition | Once a turn, spend 1 Safe-Conduct: move one complaint from Road to Root, or back. |
-| `counter_petition_twine_action` | Counter-Petition | Discard a card, draw a card, and gain 1 Energy. Once a turn. |
+| `counter_petition_twine_action` | Counter-Petition | Discard a card, draw a card, gain 1 Energy. Once a turn. |
 | `dedicate_a_work` | Dedicate a Work | Give Eanna a card from hand for this fight: claimed settles 4 Temple Due, others 1, Junk 0. |
 | `draw_ahead` | Draw Ahead | Draw 1 card now, taken from a later day. |
 | `drink_from_the_cup` | Drink from the Cup | Gain 1 Energy. The enemy with the fewest Claims gains a Claim. Unplayed, it is gone at the end of the turn. |
@@ -1018,9 +1014,6 @@ Handed over by a boss, a door or an event rather than offered; never in a reward
 | `far_boundary` | Far Boundary | Take the far measure this turn. Met: it loses 10 HP and its cover. |
 | `file_the_request` | File the Request | Resolve the Request for Additional Review. |
 | `fine_print` | Fine Print | Unplayable. While in hand, your first card each turn costs 1 more. |
-| `fragment_of_access` | Fragment of Access | Remove up to 12 Block from the Lord Sealkeeper. |
-| `fragment_of_execution` | Fragment of Execution | The Sealkeeper's next attack deals 8 less. |
-| `fragment_of_testimony` | Fragment of Testimony | Remove 2 stacks of Paperwork from yourself. |
 | `hold_the_moon` | Hold the Moon | Once an orbit: the phase repeats for both of you. Counted cards return at once, his too. |
 | `honey_spoon_action` | A Little Honey | Gain 2 Energy. End the turn with 1+ Energy, or lose 6 HP. |
 | `last_slice_tin_action` | Take Another Slice | Draw 2. Play at most 4 real cards this turn, or lose 6 HP. |
@@ -1029,7 +1022,7 @@ Handed over by a boss, a door or an event rather than offered; never in a reward
 | `near_boundary` | Near Boundary | Take the near measure this turn. Met: it gains Block. |
 | `notice_of_delay` | Notice of Delay | Retain. Exhaust. Still in hand at turn end: 1 Fatigue. |
 | `offer_the_surplus` | Offer the Surplus | Spend 1 Energy to settle 1 Temple Due. |
-| `pay_the_fee` | Pay the Fee | Pay 15 Gold, charged after the fight. The Dragon hoards one more Permit. |
+| `pay_the_fee` | Pay the Fee | Pay 15 Gold after the fight; the Dragon hoards one more Permit. |
 | `petition_for_priority` | Petition for Priority | Move one place closer to the Counter. Take 1 Paperwork. One queue choice a turn. |
 | `redacted_leaf` | Redacted Leaf | Unplayable. Retain. Turn start: a card in your hand is Redacted, and this is spent. |
 | `return_receipt` | Return Receipt | Remove 1 Overdue (the Bell loses 5 HP), or remove 1 Late Fee (misfile a draw-pile card). |
@@ -1049,7 +1042,7 @@ Handed over by a boss, a door or an event rather than offered; never in a reward
 | `silver_name_tally_action` | Speak the Silver Name | Once a combat: remove an enemy's Block, gain 10 Block, refund your next card this turn. |
 | `sluice_gate_of_the_two_lands_action` | Work the Two Lands | Once a turn: lose 12 Block for 1 Energy, or spend 1 Energy for 12 Block. |
 | `spend_a_counterseal` | Spend a Counterseal | Spend 1 Counterseal: remove one Notarial Seal. Weight of Precedent stays. |
-| `strike_down_the_article` | Strike Down the Article | Strike the Article; the next one takes its place. The Charter gains 8 Block. |
+| `strike_down_the_article` | Strike Down the Article | Strike the Article for the next one. The Charter gains 8 Block. |
 | `summons_to_appear` | Summons to Appear | Retain. Exhaust. Still in hand at turn end: take 5 damage. |
 | `take_ahead` | Take Ahead | Gain 1 Energy now, taken from a later day. |
 | `the_alternating_stone` | The Alternating Stone | Blueprint: your first two cards are of different kinds. Met: Monument −1. Missed: 2 Paperwork. |

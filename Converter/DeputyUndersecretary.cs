@@ -42,7 +42,9 @@ public static class DeputyUndersecretary
     // 2026-10-29: three moves, down from five with two more that only reshuffled armour).
     public const int BossBeats = 3;
 
-    // A Matter: what it is called, which Backlog it leaves, and how the player clears it within one turn.
+    // A Matter: what it is called, which Backlog it leaves, and how the player clears it within one turn. Every
+    // Matter leaves the same Backlog and the same File since 2026-11-01 (user: every rule in one clear sentence) —
+    // three kinds of File, each with a rule of its own, came out of three kinds of Backlog nobody could tell apart.
     // `Resolved` is null for the Request for Additional Review — that one is cleared by playing its card.
     public sealed record Matter(
         string StatusId,
@@ -77,11 +79,11 @@ public static class DeputyUndersecretary
 
         new("matter_review", "Matter: Request for Additional Review",
             "File the Request (1 Energy) before the review lapses.",
-            ExpenditureBacklog, FileDelayId, Resolved: null),
+            PerformanceBacklog, FileComplaintId, Resolved: null),
 
         new("matter_response", "Matter: Notice of Missing Response",
             "Play at least one Attack and one Form this turn.",
-            ProceduralBacklog, FileDefectiveId,
+            PerformanceBacklog, FileComplaintId,
             () => new AndExpression<TurnEndedTriggeredEffectContext>(
                 new ComparisonExpression<TurnEndedTriggeredEffectContext>(
                     new CardsPlayedThisTurnWithTagExpression<TurnEndedTriggeredEffectContext>(
@@ -107,8 +109,8 @@ public static class DeputyUndersecretary
         PassiveStatuses.NamedMarker(ExecutiveId, "Executive Disposition", "Phase II."),
         PassiveStatuses.NamedMarker(FilingNotedId, "Filing Noted",
             "The Desk has already noted a filing this turn."),
-        Stacked(FileComplaintId, "Executive File: Unanswered Complaint",
-            "The Deputy gains 4 Block per intensity when its turn starts."),
+        Stacked(FileComplaintId, "Executive Files",
+            "Your Backlog, filed: it gains 4 Block per file every turn (2 files at most)."),
         Stacked(FileDelayId, "Executive File: Accumulated Delay",
             "Every second player turn: 1 Fatigue, and 1 Doubt at intensity 2."),
         Stacked(FileDefectiveId, "Executive File: Defective Filing",
@@ -555,8 +557,8 @@ public static class DeputyUndersecretary
         {
             Id = DeputyId,
             NameKey = "The Deputy Undersecretary",
-            DescriptionKey = "The Desk holds up to three Matters at once, each of them a countdown on you. Let one run out and it "
-+ "goes Overdue and leaves Backlog; four Backlog fills the Desk and the Deputy takes over.",
+            DescriptionKey = "Each turn it gives you a task (2 turns to do it). Unfinished tasks become Backlog; at 4 it takes "
++ "over and gains Block.",
             Polarity = StatusPolarity.Neutral,
             StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
             UsesStacks = false,

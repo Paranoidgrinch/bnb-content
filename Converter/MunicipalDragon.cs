@@ -9,8 +9,8 @@ namespace BnbContent.Converter;
 //
 // REWORKED in the content cut of 2026-10-29. It hoards Permits — each one 3 Block a turn and 2 damage on its
 // Assessment — and every second turn it serves you a Fee Notice: pay 15 Gold and the fee goes into the hoard
-// (one more Permit), or refuse and it takes the fee out of you (8 damage, 2 Paperwork) and grows angrier
-// (Anger: its attacks hit 3 harder per stack). It is the one fight in which the run's Gold is on the table.
+// (one more Permit), or refuse and it takes the fee out of you: 8 damage. (Until 2026-11-01 a refusal also
+// cost 2 Paperwork and gave it Anger — three consequences where one says it; user: one clear sentence.) It is the one fight in which the run's Gold is on the table.
 //
 // The Gold is paid in the fight and collected after it: the fight cannot reach the purse, so paying writes a
 // tally on the hero, and a run program installed when the city opens charges 15 Gold for each payment once
@@ -19,7 +19,6 @@ public static class MunicipalDragon
 {
     public const string DragonId = "the_municipal_dragon";
     public const string PermitId = "hoarded_permit";            // stacks = hoard size, on the Dragon
-    public const string AngerId = "dragons_anger";              // stacks, on the Dragon
     public const string NoticeNextId = "fee_notice_next";       // telegraph, on the Dragon
     public const string NoticeId = "fee_notice";                // on the player while a fee is open
     public const string PaidId = "fee_paid";                    // on the player once it is paid
@@ -34,38 +33,19 @@ public static class MunicipalDragon
     public const int PermitMaximum = 5;
     public const int FeeGold = 15;
     public const int RefusalDamage = 8;
-    public const int RefusalPaperwork = 2;
-    public const int AngerPerStack = 3;
 
     // ── Content ───────────────────────────────────────────────────────────────
 
     public static IEnumerable<StatusData> Statuses() =>
     [
         PassiveStatuses.NamedMarker(DragonId, "The Municipal Dragon",
-            $"Every second turn it serves a Fee Notice: pay {FeeGold} Gold and it hoards a Permit, or refuse and take "
-            + $"{RefusalDamage} damage, {RefusalPaperwork} Paperwork, and its Anger."),
+            $"Every second turn it demands {FeeGold} Gold: pay and it hoards a Permit (it gets stronger), refuse and you take "
+            + $"{RefusalDamage} damage."),
         Stacked(PermitId, "Hoarded Permit", "3 Block a turn, and 2 damage on the Dragon's Assessment."),
-        new StatusData
-        {
-            Id = AngerId,
-            NameKey = "Anger",
-            DescriptionKey = $"A refused fee. Its attacks deal {AngerPerStack} more per stack.",
-            Polarity = StatusPolarity.Buff,
-            StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
-            UsesStacks = true,
-            Tags = [],
-            PassiveModifiers =
-            [
-                new PassiveModifierData(PassiveModifierPipeline.DamageDealt,
-                    PassiveModifierOperation.AddPerStack, AngerPerStack, RestrictDamageKind: DamageKind.Direct),
-            ],
-            Triggers = [],
-        },
         PassiveStatuses.NamedMarker(NoticeNextId, "Fee Notice Next",
             "Your next turn it serves a Fee Notice."),
         PassiveStatuses.NamedMarker(NoticeId, "Fee Notice",
-            $"Play Pay the Fee this turn ({FeeGold} Gold, charged after the fight), or refuse at your turn's end: "
-            + $"{RefusalDamage} damage, {RefusalPaperwork} Paperwork, and the Dragon's Anger."),
+            $"Play Pay the Fee this turn ({FeeGold} Gold, charged after the fight), or take {RefusalDamage} damage at your turn's end."),
         PassiveStatuses.NamedMarker(PaidId, "Fee Paid",
             "You paid. The fee goes into the hoard: one more Permit."),
     ];
@@ -160,8 +140,6 @@ public static class MunicipalDragon
                             new RemoveStatusNode<TurnEndedTriggeredEffectContext>(player, new StatusDefinitionId(NoticeId)),
                             new DealDamageNode<TurnEndedTriggeredEffectContext>(
                                 player, Const<TurnEndedTriggeredEffectContext>(RefusalDamage)),
-                            Apply(player, "paperwork", RefusalPaperwork),
-                            Apply(dragon, AngerId, 1),
                         ])),
                 ])));
 
@@ -173,7 +151,7 @@ public static class MunicipalDragon
     {
         Id = PayCardId,
         NameKey = "Pay the Fee",
-        DescriptionKey = $"Pay {FeeGold} Gold, charged after the fight. The Dragon hoards one more Permit.",
+        DescriptionKey = $"Pay {FeeGold} Gold after the fight; the Dragon hoards one more Permit.",
         Costs = [],
         Tags = [new TagId("form")],
         Program = new EffectProgram<CardPlayContext>(

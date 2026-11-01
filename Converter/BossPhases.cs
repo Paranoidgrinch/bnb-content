@@ -29,7 +29,6 @@ public static class BossPhases
         LordSealkeeper.UnsealedId,
         DeputyUndersecretary.ExecutiveId,
         MunicipalDragon.NoticeNextId,
-        LivingCharter.ContradictoryId,
         // Act I's elites whose next move is a state the player plans around (content cut 2026-10-29).
         Elites.WaitingRoom.NowServingId,
         Elites.WaitingRoom.CalledId,

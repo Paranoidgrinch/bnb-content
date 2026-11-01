@@ -72,8 +72,9 @@ public static class EnemyMapper
                 case "heal" when effect.Amount is { } healed:
                     parts.Add($"heal {healed}");
                     break;
+                // Block for the whole side says so: "4 block, 2 block" read as two blocks for one body.
                 case "gain_block" when effect.Amount is { } block:
-                    parts.Add($"{block} block");
+                    parts.Add(effect.Target is "all_enemies" or "allies" ? $"{block} block to all" : $"{block} block");
                     break;
                 case "apply_status" when effect.Status is { } status:
                     parts.Add($"{Capitalize(status)} +{effect.Amount ?? 1}");

@@ -67,7 +67,7 @@ public static class ActThreeBossRelicCards
 
     // ── The Ombudsman's twine ─────────────────────────────────────────────────────────────────────────────
     private static CardData Twine() =>
-        Action(TwineId, "Counter-Petition", "Discard a card, draw a card, and gain 1 Energy. Once a turn.",
+        Action(TwineId, "Counter-Petition", "Discard a card, draw a card, gain 1 Energy. Once a turn.",
             TwineTag,
             Once("counter_petition_twine",
                 new CausalSequenceEffectNode<CardPlayContext>(

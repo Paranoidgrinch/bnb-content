@@ -7,10 +7,10 @@ namespace BnbContent.Converter;
 
 // Act I's fifth boss: "Combat rules are law. Law can be reviewed, amended and interpreted."
 //
-// The Charter publishes Articles — statuses on itself that rewrite how the fight works for BOTH sides. Every
+// The Charter publishes an Article — a status on itself that rewrites how the fight works for BOTH sides. Every
 // second action it calls a Judicial Review and hands the player the choice to uphold the standing Article or
-// strike it down for the next one. Two Reviews (or 67 HP) bring the Emergency Amendment and a second
-// simultaneous Article; at 34 HP the Constitutional Crisis hands each side an Exception token per round.
+// strike it down for the next one. (Until 2026-11-01 two Reviews brought an Emergency Amendment with a second
+// Article and a second phase, and 34 HP a Crisis of Exception tokens; user: every rule in one clear sentence.)
 //
 // The Articles are authored as encounter triggers gated on the Charter still carrying the Article, so a struck
 // Article stops working the moment it is removed. Deviations: ADAPTATIONS.md.
@@ -19,22 +19,15 @@ public static class LivingCharter
     public const string CharterId = "the_living_charter";
     public const string ContinuanceId = "article_of_continuance";
     public const string RedressId = "article_of_redress";
-    public const string MutualSecurityId = "article_of_mutual_security";
     public const string FullDisclosureId = "article_of_full_disclosure";
     public const string DisclosedId = "under_full_disclosure";   // the Article's mirror on the player
 
     public const string ReviewPendingId = "judicial_review_called";   // on the player: the choice is open
-    public const string AmendmentPendingId = "emergency_amendment";   // telegraph, on the Charter
-    public const string ContradictoryId = "contradictory_constitution"; // Phase II, on the Charter
-    public const string CrisisId = "constitutional_crisis";           // final state, on the Charter
     public const string RemedyId = "remedy_due";                      // Redress, per side
-    public const string SecurityUsedId = "security_invoked";          // Mutual Security latch, per side
-    public const string ExceptionId = "exception";                    // Crisis token, per side
     public const string ExceptionClaimedId = "exception_claimed";     // spent by the player for this turn
 
     public const string UpholdCardId = "uphold_the_article";
     public const string StrikeDownCardId = "strike_down_the_article";
-    public const string ExceptionCardId = "claim_an_exception";
 
     public static CounterId RetainedBlockCounter => new("retained_block");
     public static CounterId RedressDamageCounter => new("redress_damage");
@@ -45,17 +38,14 @@ public static class LivingCharter
 
     public const int RedressThreshold = 14;
     public const int PhaseOneActionsPerReview = 2;
-    public const int PhaseTwoActionsPerReview = 3;
-    public const int ReviewsForAmendment = 2;
-    public const int AmendmentHealth = 67;
-    public const int CrisisHealth = 34;
     public const int CharterBeats = 5;
 
-    // The Articles this fight reaches for, in order. Two of them are ever visible at once (one in Phase I, two
-    // after the Amendment); a strike-down publishes the next in this rotation. Four, each one sentence a player
-    // reads at a glance (content cut 2026-10-29: Due Notice and Reciprocal Burden are gone).
+    // The Articles this fight reaches for, in order. One stands at a time; a strike-down publishes the next in this
+    // rotation. Three, each one sentence a player reads at a glance (content cut 2026-10-29: Due Notice and
+    // Reciprocal Burden are gone; 2026-11-01, user — one clear sentence a rule: Mutual Security is gone, and with
+    // it the Emergency Amendment's second Article, its second phase and the Crisis's Exceptions).
     public static readonly string[] Articles =
-        [ContinuanceId, RedressId, MutualSecurityId, FullDisclosureId];
+        [ContinuanceId, RedressId, FullDisclosureId];
 
     // ── Content ───────────────────────────────────────────────────────────────
 
@@ -66,8 +56,6 @@ public static class LivingCharter
             "Each side keeps half of its Block when its turn comes round again."),
         PassiveStatuses.NamedMarker(RedressId, "Article of Redress",
             "A side that loses 14 HP in a turn is owed 8 Block at the start of its next one."),
-        PassiveStatuses.NamedMarker(MutualSecurityId, "Article of Mutual Security",
-            "The first Block a side gains each turn gives the other side 4 Block."),
         // Full Disclosure is law that only widens the VIEW — the Charter shows its hand, and the design is
         // explicit that an article may favour the player.
         PassiveStatuses.NamedMarker(FullDisclosureId, "Article of Full Disclosure",
@@ -76,20 +64,12 @@ public static class LivingCharter
             "You see the top 2 cards of your draw pile and the Charter's next two intents."),
         PassiveStatuses.NamedMarker(ReviewPendingId, "Judicial Review",
             "Uphold the Article or strike it down before your turn ends."),
-        PassiveStatuses.NamedMarker(AmendmentPendingId, "Emergency Amendment",
-            "The Charter's next action amends itself."),
-        PassiveStatuses.NamedMarker(ContradictoryId, "Contradictory Constitution", "Phase II."),
-        PassiveStatuses.NamedMarker(CrisisId, "Constitutional Crisis",
-            "Each round both sides receive an Exception."),
         PassiveStatuses.NamedMarker(RemedyId, "Remedy Due", "8 Block at the start of your next turn."),
-        PassiveStatuses.NamedMarker(SecurityUsedId, "Security Invoked",
-            "The Charter has already invoked its security this turn."),
-        PassiveStatuses.NamedMarker(ExceptionId, "Exception", "May be claimed to ignore an Article this turn."),
         PassiveStatuses.NamedMarker(ExceptionClaimedId, "Exception Claimed",
             "The Articles do not touch you this turn."),
     ];
 
-    public static IEnumerable<CardData> Cards() => [Uphold(), StrikeDown(), ClaimException()];
+    public static IEnumerable<CardData> Cards() => [Uphold(), StrikeDown()];
 
     public static IReadOnlyList<EncounterTriggerData> Triggers() =>
     [
@@ -97,8 +77,6 @@ public static class LivingCharter
         TheLawAfterTheDraw(),
         TheLawClosesThePlayersTurn(),
         RedressIsRecorded(),
-        MutualSecurityIsInvoked(),
-        ExceptionsAreIssued(),
     ];
 
     // A status whose whole effect is what its bearer may SEE (the engine's disclosure rule).
@@ -163,9 +141,6 @@ public static class LivingCharter
                                 new ConstantExpression<TurnStartedTriggeredEffectContext>(1)),
                             @else: new RemoveStatusNode<TurnStartedTriggeredEffectContext>(
                                 player, new StatusDefinitionId(DisclosedId))),
-                        // The per-turn latches of the Articles open again for both sides.
-                        new RemoveStatusNode<TurnStartedTriggeredEffectContext>(
-                            iterated, new StatusDefinitionId(SecurityUsedId)),
                         // The Judicial Review the Charter called is answered on this turn.
                         new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
                             new ComparisonExpression<TurnStartedTriggeredEffectContext>(
@@ -182,16 +157,6 @@ public static class LivingCharter
                                     player, new CardDefinitionId(StrikeDownCardId), CardZone.Hand,
                                     new ConstantExpression<TurnStartedTriggeredEffectContext>(1)),
                             })),
-                        // In the Crisis, an unspent Exception can be claimed.
-                        new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
-                            new ComparisonExpression<TurnStartedTriggeredEffectContext>(
-                                new CombatantStatusStacksExpression<TurnStartedTriggeredEffectContext>(
-                                    player, new StatusDefinitionId(ExceptionId)),
-                                ComparisonOperator.Greater,
-                                new ConstantExpression<TurnStartedTriggeredEffectContext>(0)),
-                            new CreateCardInstanceNode<TurnStartedTriggeredEffectContext>(
-                                player, new CardDefinitionId(ExceptionCardId), CardZone.Hand,
-                                new ConstantExpression<TurnStartedTriggeredEffectContext>(1))),
                     })),
                     // Continuance for the PLAYER: bank half of what is still standing, before it is cleared.
                     ForCharter(new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
@@ -203,8 +168,6 @@ public static class LivingCharter
                                     player, StandardCombatIds.BlockDefensivePool),
                                 new ConstantExpression<TurnStartedTriggeredEffectContext>(2)),
                             relative: false))),
-                    new RemoveStatusNode<TurnStartedTriggeredEffectContext>(
-                        player, new StatusDefinitionId(SecurityUsedId)),
                     new RemoveStatusNode<TurnStartedTriggeredEffectContext>(
                         player, new StatusDefinitionId(ExceptionClaimedId)),
                 })));
@@ -338,105 +301,6 @@ public static class LivingCharter
             JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<DamageReceivedTriggeredEffectContext>()));
     }
 
-    // Article of Mutual Security: the first Block a side raises each turn arms the other side too. The gift
-    // itself sets the recipient's latch, so security never answers security.
-    private static EncounterTriggerData MutualSecurityIsInvoked()
-    {
-        var gainer = CombatantTargetSelectors.EventTarget;
-        var charter = CombatantTargetSelectors.WithStatus(
-            CombatantTargetSelectors.AllCombatants, new StatusDefinitionId(CharterId));
-        var applicant = CombatantTargetSelectors.WithStatus(
-            CombatantTargetSelectors.AllCombatants, new StatusDefinitionId(PassiveStatuses.ApplicantId));
-
-        ICombatExpression<BlockGainedTriggeredEffectContext, int> Stacks(
-            ICombatantTargetSelector who, string statusId) =>
-            new CombatantStatusStacksExpression<BlockGainedTriggeredEffectContext>(
-                who, new StatusDefinitionId(statusId));
-
-        IEffectNode<BlockGainedTriggeredEffectContext> Answer(ICombatantTargetSelector other) =>
-            new SequenceEffectNode<BlockGainedTriggeredEffectContext>(new IEffectNode<BlockGainedTriggeredEffectContext>[]
-            {
-                new ApplyStatusNode<BlockGainedTriggeredEffectContext>(
-                    gainer, new StatusDefinitionId(SecurityUsedId),
-                    new ConstantExpression<BlockGainedTriggeredEffectContext>(1)),
-                new ApplyStatusNode<BlockGainedTriggeredEffectContext>(
-                    other, new StatusDefinitionId(SecurityUsedId),
-                    new ConstantExpression<BlockGainedTriggeredEffectContext>(1)),
-                new GainBlockNode<BlockGainedTriggeredEffectContext>(
-                    other, new ConstantExpression<BlockGainedTriggeredEffectContext>(4)),
-            });
-
-        var program = new EffectProgram<BlockGainedTriggeredEffectContext>(
-            new ForEachTargetEffectNode<BlockGainedTriggeredEffectContext>(charter,
-                new ConditionalEffectNode<BlockGainedTriggeredEffectContext>(
-                    new AndExpression<BlockGainedTriggeredEffectContext>(
-                        new IterationTargetHasStatusExpression<BlockGainedTriggeredEffectContext>(
-                            new StatusDefinitionId(MutualSecurityId)),
-                        new ComparisonExpression<BlockGainedTriggeredEffectContext>(
-                            Stacks(gainer, SecurityUsedId), ComparisonOperator.Equal,
-                            new ConstantExpression<BlockGainedTriggeredEffectContext>(0))),
-                    new ConditionalEffectNode<BlockGainedTriggeredEffectContext>(
-                        // Who gained? The player's guard arms the Charter, and the Charter's arms the player —
-                        // unless the Charter spends its Exception to refuse the disadvantage.
-                        new ComparisonExpression<BlockGainedTriggeredEffectContext>(
-                            Stacks(gainer, PassiveStatuses.ApplicantId), ComparisonOperator.Greater,
-                            new ConstantExpression<BlockGainedTriggeredEffectContext>(0)),
-                        Answer(charter),
-                        @else: new ConditionalEffectNode<BlockGainedTriggeredEffectContext>(
-                            new ComparisonExpression<BlockGainedTriggeredEffectContext>(
-                                Stacks(gainer, CharterId), ComparisonOperator.Greater,
-                                new ConstantExpression<BlockGainedTriggeredEffectContext>(0)),
-                            new ConditionalEffectNode<BlockGainedTriggeredEffectContext>(
-                                new ComparisonExpression<BlockGainedTriggeredEffectContext>(
-                                    Stacks(gainer, ExceptionId), ComparisonOperator.Greater,
-                                    new ConstantExpression<BlockGainedTriggeredEffectContext>(0)),
-                                new SequenceEffectNode<BlockGainedTriggeredEffectContext>(new IEffectNode<BlockGainedTriggeredEffectContext>[]
-                                {
-                                    new RemoveStatusNode<BlockGainedTriggeredEffectContext>(
-                                        gainer, new StatusDefinitionId(ExceptionId)),
-                                    new ApplyStatusNode<BlockGainedTriggeredEffectContext>(
-                                        gainer, new StatusDefinitionId(SecurityUsedId),
-                                        new ConstantExpression<BlockGainedTriggeredEffectContext>(1)),
-                                }),
-                                @else: Answer(applicant)))))));
-
-        return new EncounterTriggerData("BlockGained",
-            JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<BlockGainedTriggeredEffectContext>()));
-    }
-
-    // Constitutional Crisis: one Exception each per round, never more than one held.
-    private static EncounterTriggerData ExceptionsAreIssued()
-    {
-        var charter = CombatantTargetSelectors.WithStatus(
-            CombatantTargetSelectors.AllCombatants, new StatusDefinitionId(CharterId));
-        var applicant = CombatantTargetSelectors.WithStatus(
-            CombatantTargetSelectors.AllCombatants, new StatusDefinitionId(PassiveStatuses.ApplicantId));
-
-        IEffectNode<RoundStartedTriggeredEffectContext> Issue(ICombatantTargetSelector who) =>
-            new ForEachTargetEffectNode<RoundStartedTriggeredEffectContext>(who,
-                new ConditionalEffectNode<RoundStartedTriggeredEffectContext>(
-                    new NotExpression<RoundStartedTriggeredEffectContext>(
-                        new IterationTargetHasStatusExpression<RoundStartedTriggeredEffectContext>(
-                            new StatusDefinitionId(ExceptionId))),
-                    new ApplyStatusNode<RoundStartedTriggeredEffectContext>(
-                        CombatantTargetSelectors.IterationTarget, new StatusDefinitionId(ExceptionId),
-                        new ConstantExpression<RoundStartedTriggeredEffectContext>(1))));
-
-        var program = new EffectProgram<RoundStartedTriggeredEffectContext>(
-            new ForEachTargetEffectNode<RoundStartedTriggeredEffectContext>(charter,
-                new ConditionalEffectNode<RoundStartedTriggeredEffectContext>(
-                    new IterationTargetHasStatusExpression<RoundStartedTriggeredEffectContext>(
-                        new StatusDefinitionId(CrisisId)),
-                    new SequenceEffectNode<RoundStartedTriggeredEffectContext>(new IEffectNode<RoundStartedTriggeredEffectContext>[]
-                    {
-                        Issue(charter),
-                        Issue(applicant),
-                    }))));
-
-        return new EncounterTriggerData("RoundStarted",
-            JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<RoundStartedTriggeredEffectContext>()));
-    }
-
     // ── The Charter's own machinery ───────────────────────────────────────────
 
     private static StatusData TheCharter()
@@ -479,41 +343,6 @@ public static class LivingCharter
                     self, ActionsSinceReviewCounter,
                     new ConstantExpression<TurnEndedTriggeredEffectContext>(1), relative: true),
 
-                // Two Reviews (or 67 HP) call the Emergency Amendment; 34 HP calls the Crisis.
-                new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
-                    new AndExpression<TurnEndedTriggeredEffectContext>(
-                        new ComparisonExpression<TurnEndedTriggeredEffectContext>(
-                            Stacks(ContradictoryId), ComparisonOperator.Equal,
-                            new ConstantExpression<TurnEndedTriggeredEffectContext>(0)),
-                        new AndExpression<TurnEndedTriggeredEffectContext>(
-                            new ComparisonExpression<TurnEndedTriggeredEffectContext>(
-                                Stacks(AmendmentPendingId), ComparisonOperator.Equal,
-                                new ConstantExpression<TurnEndedTriggeredEffectContext>(0)),
-                            new OrExpression<TurnEndedTriggeredEffectContext>(
-                                new ComparisonExpression<TurnEndedTriggeredEffectContext>(
-                                    Counter(ReviewsCounter), ComparisonOperator.GreaterOrEqual,
-                                    new ConstantExpression<TurnEndedTriggeredEffectContext>(ReviewsForAmendment)),
-                                new ComparisonExpression<TurnEndedTriggeredEffectContext>(
-                                    new CombatantCurrentHealthExpression<TurnEndedTriggeredEffectContext>(self),
-                                    ComparisonOperator.LessOrEqual,
-                                    new ConstantExpression<TurnEndedTriggeredEffectContext>(AmendmentHealth))))),
-                    new ApplyStatusNode<TurnEndedTriggeredEffectContext>(
-                        self, new StatusDefinitionId(AmendmentPendingId),
-                        new ConstantExpression<TurnEndedTriggeredEffectContext>(1))),
-
-                new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
-                    new AndExpression<TurnEndedTriggeredEffectContext>(
-                        new ComparisonExpression<TurnEndedTriggeredEffectContext>(
-                            Stacks(CrisisId), ComparisonOperator.Equal,
-                            new ConstantExpression<TurnEndedTriggeredEffectContext>(0)),
-                        new ComparisonExpression<TurnEndedTriggeredEffectContext>(
-                            new CombatantCurrentHealthExpression<TurnEndedTriggeredEffectContext>(self),
-                            ComparisonOperator.LessOrEqual,
-                            new ConstantExpression<TurnEndedTriggeredEffectContext>(CrisisHealth))),
-                    new ApplyStatusNode<TurnEndedTriggeredEffectContext>(
-                        self, new StatusDefinitionId(CrisisId),
-                        new ConstantExpression<TurnEndedTriggeredEffectContext>(1))),
-
                 new SetCombatantCounterNode<TurnEndedTriggeredEffectContext>(
                     self, CharterBeatCounter,
                     new RemainderExpression<TurnEndedTriggeredEffectContext>(
@@ -527,8 +356,8 @@ public static class LivingCharter
         {
             Id = CharterId,
             NameKey = "The Living Charter",
-            DescriptionKey = "The Charter publishes Articles — rules that rewrite the fight for both sides. Every second action it "
-+ "calls a Judicial Review and lets you uphold the standing Article or strike it down for the next one.",
+            DescriptionKey = "One Article changes the rules for both sides. Every second turn you may keep it or strike it down "
++ "for the next one.",
             Polarity = StatusPolarity.Neutral,
             StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
             UsesStacks = false,
@@ -625,39 +454,11 @@ public static class LivingCharter
         };
     }
 
-    // The Crisis Exception: for this turn, the Articles leave the player alone.
-    private static CardData ClaimException() => new()
-    {
-        Id = ExceptionCardId,
-        NameKey = "Claim an Exception",
-        DescriptionKey = "The Articles do not touch you for the rest of this turn.",
-        Costs = [],
-        Tags = [new TagId("form"), new TagId("charter")],
-        Program = new EffectProgram<CardPlayContext>(
-            new ConditionalEffectNode<CardPlayContext>(
-                new ComparisonExpression<CardPlayContext>(
-                    new CombatantStatusStacksExpression<CardPlayContext>(
-                        CombatantTargetSelectors.Source, new StatusDefinitionId(ExceptionId)),
-                    ComparisonOperator.Greater,
-                    new ConstantExpression<CardPlayContext>(0)),
-                new SequenceEffectNode<CardPlayContext>(new IEffectNode<CardPlayContext>[]
-                {
-                    new RemoveStatusNode<CardPlayContext>(
-                        CombatantTargetSelectors.Source, new StatusDefinitionId(ExceptionId)),
-                    new ApplyStatusNode<CardPlayContext>(
-                        CombatantTargetSelectors.Source, new StatusDefinitionId(ExceptionClaimedId),
-                        new ConstantExpression<CardPlayContext>(1)),
-                }))),
-        PlayedCardDestinationZone = CardZone.ExhaustPile,
-        TurnEndHandDestinationZone = CardZone.ExhaustPile,
-    };
-
     // ── Raw intents ───────────────────────────────────────────────────────────
 
     public static EffectProgram<EnemyActionContext>? Intent(string intentId) => intentId switch
     {
         "judicial_review" => JudicialReview(),
-        "emergency_amendment" => EmergencyAmendment(),
         _ => null,
     };
 
@@ -681,43 +482,4 @@ public static class LivingCharter
             }));
     }
 
-    // The amendment: 8 damage, 1 Paperwork, 8 Block — and a second Article published beside the first.
-    private static EffectProgram<EnemyActionContext> EmergencyAmendment()
-    {
-        var self = CombatantTargetSelectors.Source;
-        var player = CombatantTargetSelectors.EventTarget;
-
-        IEffectNode<EnemyActionContext> Publish(int index) =>
-            new ConditionalEffectNode<EnemyActionContext>(
-                new ComparisonExpression<EnemyActionContext>(
-                    new CombatantCounterExpression<EnemyActionContext>(self, ArticleIndexCounter),
-                    ComparisonOperator.Equal,
-                    new ConstantExpression<EnemyActionContext>(index)),
-                new SequenceEffectNode<EnemyActionContext>(new IEffectNode<EnemyActionContext>[]
-                {
-                    new ApplyStatusNode<EnemyActionContext>(
-                        self, new StatusDefinitionId(Articles[(index + 1) % Articles.Length]),
-                        new ConstantExpression<EnemyActionContext>(1)),
-                    new SetCombatantCounterNode<EnemyActionContext>(
-                        self, ArticleIndexCounter,
-                        new ConstantExpression<EnemyActionContext>((index + 1) % Articles.Length), relative: false),
-                    // The player's copy of the rotation index moves with it (see StrikeDown).
-                    new SetCombatantCounterNode<EnemyActionContext>(
-                        player, ArticleIndexCounter,
-                        new ConstantExpression<EnemyActionContext>((index + 1) % Articles.Length), relative: false),
-                }));
-
-        return new EffectProgram<EnemyActionContext>(
-            new SequenceEffectNode<EnemyActionContext>(
-            [
-                new RemoveStatusNode<EnemyActionContext>(self, new StatusDefinitionId(AmendmentPendingId)),
-                new DealDamageNode<EnemyActionContext>(player, new ConstantExpression<EnemyActionContext>(8)),
-                new ApplyStatusNode<EnemyActionContext>(
-                    player, new StatusDefinitionId("paperwork"), new ConstantExpression<EnemyActionContext>(1)),
-                new GainBlockNode<EnemyActionContext>(self, new ConstantExpression<EnemyActionContext>(8)),
-                .. Enumerable.Range(0, Articles.Length).Select(Publish),
-                new ApplyStatusNode<EnemyActionContext>(
-                    self, new StatusDefinitionId(ContradictoryId), new ConstantExpression<EnemyActionContext>(1)),
-            ]));
-    }
 }

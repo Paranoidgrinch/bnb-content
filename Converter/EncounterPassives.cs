@@ -310,8 +310,8 @@ public static class EncounterPassives
             JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<TurnStartedTriggeredEffectContext>()));
     }
 
-    // …and judges it when the turn ends: compliance strips 2 (Block first, the rest off its HP), refusal is
-    // recorded as Contempt, up to 3.
+    // …and judges it when the turn ends: compliance strips 2 (Block first, the rest off its HP), refusal gives it
+    // 1 Strength.
     private static EncounterTriggerData JudgeCompliance()
     {
         var player = CombatantTargetSelectors.Source;
@@ -333,16 +333,11 @@ public static class EncounterPassives
                         // fight): it comes off the Avatar's guard first and its health after.
                         new DealDamageNode<TurnEndedTriggeredEffectContext>(
                             avatar, new ConstantExpression<TurnEndedTriggeredEffectContext>(2)),
-                        // Refusal is recorded, up to three counts.
-                        new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
-                            new ComparisonExpression<TurnEndedTriggeredEffectContext>(
-                                new CombatantStatusStacksExpression<TurnEndedTriggeredEffectContext>(
-                                    avatar, new StatusDefinitionId(PassiveStatuses.ContemptId)),
-                                ComparisonOperator.Less,
-                                new ConstantExpression<TurnEndedTriggeredEffectContext>(PassiveStatuses.ContemptMaximum)),
-                            new ApplyStatusNode<TurnEndedTriggeredEffectContext>(
-                                avatar, new StatusDefinitionId(PassiveStatuses.ContemptId),
-                                new ConstantExpression<TurnEndedTriggeredEffectContext>(1)))),
+                        // Refusal makes it stronger: 1 Strength (until 2026-11-01 a Contempt of its own, which the
+                        // player had to learn for this one fight — user: every rule in one clear sentence).
+                        new ApplyStatusNode<TurnEndedTriggeredEffectContext>(
+                            avatar, new StatusDefinitionId("strength"),
+                            new ConstantExpression<TurnEndedTriggeredEffectContext>(1))),
                     // The order is spent either way.
                     new ModifyStatusStacksNode<TurnEndedTriggeredEffectContext>(
                         player, new StatusDefinitionId(order.StatusId),

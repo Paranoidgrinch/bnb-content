@@ -22,7 +22,7 @@ public class EliteCombatTests
         Assert.Equal(1, Enemy(play, appointmentId).GetCounter(PassiveStatuses.AppointmentDueCounter));
 
         var before = Hero(play).Health.Current;
-        play.CombatDriver.EndTurn(); // 6 from Called Too Early, then the expiry: 7 damage + 1 Fatigue
+        play.CombatDriver.EndTurn(); // 6 from Called Too Early, then the expiry: 7 damage
         Assert.Null(session.Error);
         Assert.Equal(before - 13, Hero(play).Health.Current);
         Assert.Equal(0, Enemy(play, appointmentId).GetCounter(PassiveStatuses.AppointmentDueCounter));
@@ -34,10 +34,10 @@ public class EliteCombatTests
         Assert.Equal(quiet - 6, Hero(play).Health.Current);
     }
 
-    // A scheduling move brings its own date forward AND marks the encounter, so no second Appointment moves a
-    // date in the same round (the design's anti-spike rule) — the other body stands down to a safe move.
+    // A scheduling move brings its own date one closer — each body its own, in the same round (the anti-spike latch
+    // that made the others stand down went with the simplification of 2026-11-01).
     [Fact]
-    public void Only_one_appointment_moves_a_date_per_round()
+    public void Each_appointment_moves_its_own_date()
     {
         var probe = FightProbe.Roster("appointments_rush",
             ("first_appointment", "move_up_the_date", 24),
@@ -51,12 +51,10 @@ public class EliteCombatTests
         play.CombatDriver.EndTurn();
         Assert.Null(session.Error);
 
-        // The First moved its date (2 → 1 by the move, then 1 → expiry at its turn end, leaving 0); the Second
-        // was blocked and only took its ordinary step: armed 3 → 2. The mark itself is already gone — it lasts
-        // exactly the round it was set in.
-        Assert.Equal(0, FightProbe.StacksOf(Hero(play), PassiveStatuses.AppointmentsAcceleratedId));
-        Assert.Equal(2, Enemy(play, secondId).GetCounter(PassiveStatuses.AppointmentDueCounter));
+        // The First: armed 2, moved to 1, due at its turn end (spent: 0). The Second: armed 3, moved to 2, and its
+        // own turn end takes it to 1.
         Assert.Equal(0, Enemy(play, firstId).GetCounter(PassiveStatuses.AppointmentDueCounter));
+        Assert.Equal(1, Enemy(play, secondId).GetCounter(PassiveStatuses.AppointmentDueCounter));
     }
 
     // Reopening-Hours Monolith: while the office is CLOSED nothing the player does comes off its HP — it is
@@ -149,9 +147,9 @@ public class EliteCombatTests
         Assert.True(Hero(play).Health.Current <= before - 10, "the Case-holder hits 2 harder");
     }
 
-    // The middle court hears Workings: one sends the Case back down. At the bottom a Deed holds it there.
+    // Every step hears a Deed: one sends the Case back down. At the bottom a Deed holds it there.
     [Fact]
-    public void Showing_the_court_its_kind_of_card_sends_the_case_down()
+    public void A_deed_sends_the_case_down()
     {
         var probe = FightProbe.Roster("remand_ladder", energy: 9,
             ("lower_appellate_step", "procedural_step", 24),
@@ -167,10 +165,8 @@ public class EliteCombatTests
         Assert.Null(session.Error);
         Assert.Equal(1, FightProbe.StacksOf(Enemy(play, middleId), PassiveStatuses.HoldsTheCaseId));
 
-        // A Deed is the wrong kind for the middle court …
+        // The middle step hears a Deed too (until 2026-11-01 it heard only Workings).
         PlayCard(play, session, "paper_cut", middleId);
-        // … a Working is the right one.
-        PlayCard(play, session, "cower_behind_a_desk", null);
         play.CombatDriver.EndTurn();
         Assert.Null(session.Error);
         Assert.Equal(1, FightProbe.StacksOf(Enemy(play, lowerId), PassiveStatuses.HoldsTheCaseId));
@@ -194,10 +190,10 @@ public class EliteCombatTests
         Assert.Null(session.Error);
     }
 
-    // Iron Warrant Avatar: a visible order each turn. Obeying it strips 5 (Block first, health after);
-    // refusing records Contempt, which makes its next attack hit 4 harder per count and then spends itself.
+    // Iron Warrant Avatar: a visible order each turn. Obeying it strips 2 (Block first, health after); refusing
+    // gives it 1 Strength.
     [Fact]
-    public void Obeying_the_warrants_order_costs_it_five()
+    public void Obeying_the_warrants_order_costs_it_two()
     {
         // The opening order is "Hold Your Fire": no Deed this turn. A turn of no attacks obeys it.
         var probe = FightProbe.Roster("compliance", ("iron_warrant_avatar", "iron_authority", 94));
@@ -211,16 +207,16 @@ public class EliteCombatTests
 
         // Compliance Credit lands as 2 off the Avatar (its Iron Authority Block only guards from its turn on).
         Assert.Equal(before - 2, Enemy(play, avatarId).Health.Current);
-        Assert.Equal(0, FightProbe.StacksOf(Enemy(play, avatarId), PassiveStatuses.ContemptId));
+        Assert.Equal(0, FightProbe.StacksOf(Enemy(play, avatarId), "strength"));
         Assert.Equal(0, FightProbe.StacksOf(Hero(play), PassiveStatuses.ComplianceOrders[0].StatusId)); // spent
         // …and the next order is about card kinds as well.
         Assert.Equal(1, FightProbe.StacksOf(Hero(play), PassiveStatuses.ComplianceOrders[1].StatusId));
     }
 
     [Fact]
-    public void Refusing_the_order_is_answered_in_steel()
+    public void Refusing_the_order_makes_it_stronger()
     {
-        var probe = FightProbe.Roster("contempt", ("iron_warrant_avatar", "iron_authority", 94));
+        var probe = FightProbe.Roster("refusal", ("iron_warrant_avatar", "iron_authority", 94));
         var (play, session, avatarId) = FightProbe.Start(probe, Enumerable.Repeat("paper_cut", 10).ToList());
 
         Cut(play, session, avatarId); // a Deed: the order to hold fire is broken
@@ -228,10 +224,9 @@ public class EliteCombatTests
         play.CombatDriver!.EndTurn();
 
         Assert.Null(session.Error);
-        // The refusal is recorded as Contempt and enforced in the same breath: Contempt forces the Avatar off
-        // its defensive intent into Final Service, 17 + 4 per count — and the attack spends the whole record.
-        Assert.Equal(before - 21, Hero(play).Health.Current);
-        Assert.Equal(0, FightProbe.StacksOf(Enemy(play, avatarId), PassiveStatuses.ContemptId));
+        // The refusal is 1 Strength — and nothing else: the Avatar keeps to its own intent (Iron Authority, Block).
+        Assert.Equal(1, FightProbe.StacksOf(Enemy(play, avatarId), "strength"));
+        Assert.Equal(before, Hero(play).Health.Current);
     }
 
     // The Seizure Procession: the Lantern marks a card the player has just drawn, the Cart takes it away at the

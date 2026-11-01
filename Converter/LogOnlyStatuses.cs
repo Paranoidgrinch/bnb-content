@@ -29,6 +29,8 @@ public static class LogOnlyStatuses
         "eternal_cartouche_spent", "surveyed_this_turn", "border_next",
         "web_measured_this_turn", "line_broken_this_turn", "counter_petition_used",
         "sinned_this_turn", "the_real_door", "door_slammed", "tomb_spoils_carried", "jackal_moves_to",
+        // the Seizure Procession's machinery: the Lantern's rule says the whole of it in one sentence (2026-11-01)
+        "lock_cart", "seizure_marshal",
         // the spent ambush footing (AmbushFooting): its chip would say only that the chip before it is gone
         "ambush_footing_spent",
     };
