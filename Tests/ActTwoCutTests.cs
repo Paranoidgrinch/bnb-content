@@ -117,18 +117,19 @@ public class ActTwoCutTests
         play.Dispose();
     }
 
-    // Keeping the demanded card costs an Overdue owed to the Drawer.
+    // Keeping the demanded card costs 6 health (user, 2026-11-03: it was an Overdue).
     [Fact]
-    public void Refusing_the_drawer_files_an_overdue()
+    public void Refusing_the_drawer_costs_six_health()
     {
         var (play, session, _) = FightProbe.Start(
             FightProbe.Solo(DrawerOfInfiniteReturns.EnemyId, "index_the_contents", energy: 9),
             Enumerable.Repeat("paper_cut", 10).ToList(), health: 400);
         play.CombatDriver!.EndTurn();
-        Assert.Equal(0, FightProbe.StacksOf(Hero(play), ActTwo.OverdueId)); // nothing demanded in round one
+        Assert.Equal(400, Hero(play).Health.Current); // nothing demanded in round one
         play.CombatDriver.EndTurn();
         Assert.Null(session.Error);
-        Assert.True(FightProbe.StacksOf(Hero(play), ActTwo.OverdueId) >= 1);
+        Assert.Equal(400 - DrawerOfInfiniteReturns.RefusedDamage, Hero(play).Health.Current);
+        Assert.Equal(0, FightProbe.StacksOf(Hero(play), ActTwo.OverdueId));
         play.Dispose();
     }
 

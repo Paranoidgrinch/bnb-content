@@ -1,199 +1,92 @@
+using System.Text.Json;
 using RogueDeck.Scenario.Authoring;
 using RogueDeck.Core.Combat;
+using RogueDeck.Run;
 
 namespace BnbContent.Converter.Elites;
 
 // ── After-Hours Return Bell (Act II elite) ────────────────────────────────────────────────────────────────
 //
-// The Bell is a debt engine with a receipt printer attached. Every Overdue it files also hands the player a
-// Return Receipt; two of its Overdue collecting turns the debt into a Late Fee it keeps; and its signature
-// cashes every Late Fee at once. The counterplay is the Receipt, which can pay down EITHER side — the debt
-// you owe now, or the fee that will be charged later — but never both with one card.
+// Closing time is counted on the Bell: 4, 3, 2, 1 at its turns, and at 0 it rings for 25 and starts again from 4.
+// A busy desk keeps the doors open — every turn you play 4 or more cards puts the count back up by one (never
+// past 4).
 //
-// Everything here is one system, so it lives in one file: the fee, the collection, the receipt, and the toll.
+// REWORKED 2026-11-03 (user, Act II trial: "viel zu kompliziert"): the Overdue, the Late Fees and the Return
+// Receipts are gone; four, not three, cards — "3 kann man fast immer spielen".
 public static class ReturnBell
 {
     public const string EnemyId = "after_hours_return_bell";
-    public const string LateFeeId = "late_fee";
-    public const string DelinquencyId = "bell_delinquency";
-    public const string ReceiptCardId = "return_receipt";
+    public const string ClosingTimeId = "closing_time";
 
-    private const int MaxLateFees = 3;
-    private const int MaxReceipts = 3;
-    private const int BellHpLoss = 5;
-    private const int TollBase = 14;
-    private const int TollPerFee = 4;
+    public const int ClosingFrom = 4;
+    public const int RingDamage = 25;
+    public const int BusyDesk = 4;   // cards in one turn
 
-    private static readonly TagId ReceiptTag = new("return_receipt");
-
-    // Inside the Bell's own programs the player is the one opponent; inside the player's card the Bell is.
     private static readonly ICombatantTargetSelector Opponent = CombatantTargetSelectors.LowestHealthEnemyOfSource;
-    private static readonly ICombatantTargetSelector Self = CombatantTargetSelectors.Source;
 
-    public static IEnumerable<StatusData> Statuses() => [LateFee(), BellDelinquency()];
+    private static ICombatantTargetSelector Bells =>
+        CombatantTargetSelectors.WithStatus(CombatantTargetSelectors.AllAliveCombatants, new StatusDefinitionId(ClosingTimeId));
 
-    public static IEnumerable<CardData> Cards() => [ReturnReceipt()];
+    public static IEnumerable<StatusData> Statuses() => [ClosingTime()];
 
-    // ── Late Fee ──────────────────────────────────────────────────────────────────────────────────────────
-    //
-    // Stored enforcement. It does nothing on its own — it is read by the signature and spent by the Receipt.
-    private static StatusData LateFee() => new()
+    // The count, ticked at the start of the Bell's own turn: the last tick rings, and the count starts over.
+    private static StatusData ClosingTime()
     {
-        Id = LateFeeId,
-        NameKey = "Late Fee",
-        DescriptionKey = "A charge the Bell has recorded and not yet collected.",
-        Polarity = StatusPolarity.Buff,
-        StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
-        UsesStacks = true,
-        Tags = [],
-        PassiveModifiers = [],
-        Triggers = [],
-    };
-
-    // ── 5.3 Late Fee ──────────────────────────────────────────────────────────────────────────────────────
-    //
-    // The Bell's Delinquency is the standard Act II collection with one addition: collecting also books a fee,
-    // up to three. The cap is a guard rather than a status maximum because a status that refused its fourth
-    // stack would refuse it silently.
-    private static StatusData BellDelinquency() =>
-        ActTwo.Delinquency(DelinquencyId, "After-Hours Collection",
-            "When two of the Bell's Overdue collect, the Bell also records a Late Fee (max 3).",
-            lateConsequence: new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
+        var self = CombatantTargetSelectors.Source;
+        var count = new CombatantStatusStacksExpression<TurnStartedTriggeredEffectContext>(self, new StatusDefinitionId(ClosingTimeId));
+        var program = new EffectProgram<TurnStartedTriggeredEffectContext>(
+            new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
                 new ComparisonExpression<TurnStartedTriggeredEffectContext>(
-                    new CombatantStatusStacksExpression<TurnStartedTriggeredEffectContext>(
-                        Self, new StatusDefinitionId(LateFeeId)),
-                    ComparisonOperator.Less,
-                    new ConstantExpression<TurnStartedTriggeredEffectContext>(MaxLateFees)),
-                new ApplyStatusNode<TurnStartedTriggeredEffectContext>(
-                    Self, new StatusDefinitionId(LateFeeId),
-                    new ConstantExpression<TurnStartedTriggeredEffectContext>(1))));
-
-    // ── 5.2 Proof of Return ───────────────────────────────────────────────────────────────────────────────
-    //
-    // "Whenever the Bell ITSELF creates 1 Overdue, it also creates 1 Return Receipt." The Bell creates Overdue
-    // in exactly two intents, so the receipt is issued there rather than from a trigger watching status
-    // applications: the two places are the whole rule, and writing it where the Overdue is written keeps the
-    // pairing provable.
-    //
-    // "Maximum simultaneous Bell-generated Receipts: 3" is read off the cards themselves — hand, draw pile and
-    // discard, the three zones a live Receipt can be in. A Receipt exhausts when played, so leaving combat
-    // frees its slot without anyone counting.
-    private static IEffectNode<EnemyActionContext> IssueReceipt() =>
-        new ConditionalEffectNode<EnemyActionContext>(
-            new ComparisonExpression<EnemyActionContext>(
-                LiveReceipts(), ComparisonOperator.Less,
-                new ConstantExpression<EnemyActionContext>(MaxReceipts)),
-            new CreateCardInstanceNode<EnemyActionContext>(
-                Opponent, new CardDefinitionId(ReceiptCardId), CardZone.DiscardPile,
-                new ConstantExpression<EnemyActionContext>(1)));
-
-    private static ICombatExpression<EnemyActionContext, int> LiveReceipts() =>
-        new AddExpression<EnemyActionContext>(
-            new CombatantZoneCardCountExpression<EnemyActionContext>(Opponent, CardZone.Hand, ReceiptTag),
-            new AddExpression<EnemyActionContext>(
-                new CombatantZoneCardCountExpression<EnemyActionContext>(Opponent, CardZone.DrawPile, ReceiptTag),
-                new CombatantZoneCardCountExpression<EnemyActionContext>(Opponent, CardZone.DiscardPile, ReceiptTag)));
-
-    // ── Return Receipt ────────────────────────────────────────────────────────────────────────────────────
-    //
-    // 1 Energy · Retain · Exhaust. Retain is TurnEndHandDestinationZone = Hand (the card is never discarded at
-    // the turn's end); Exhaust is PlayedCardDestinationZone = ExhaustPile.
-    //
-    // ADAPTATION: the design makes CONTEST THE FEE "unavailable" with no Late Fee on the field. An option list
-    // has no per-option availability, so the option is always offered and does nothing when there is no fee to
-    // contest — the same shape as a card played into an empty board.
-    private static CardData ReturnReceipt() => new()
-    {
-        Id = ReceiptCardId,
-        NameKey = "Return Receipt",
-        DescriptionKey =
-            "Choose one: FILE THE RECEIPT — remove 1 Overdue; the Bell loses 5 HP. "
-            + "CONTEST THE FEE — remove 1 Late Fee; mark 1 draw-pile card Misfiled.",
-        Costs = [new ResourceCost(StandardCombatIds.EnergyResource, 1)],
-        Tags = [ReceiptTag, new TagId("form")],
-        Program = new EffectProgram<CardPlayContext>(
-            new ChooseOptionsNode<CardPlayContext>(
-                [FileTheReceipt(), ContestTheFee()],
-                ["file the receipt", "contest the fee"],
-                count: 1,
-                purpose: "choose one")),
-        PlayedCardDestinationZone = CardZone.ExhaustPile,
-        TurnEndHandDestinationZone = CardZone.Hand,
-    };
-
-    // FILE THE RECEIPT: one Overdue goes away and the Bell pays for having filed it. The Bell fights alone, so
-    // every Overdue on the player is Bell-issued and no source filter is needed to say so.
-    //
-    // "This is direct HP Loss, not a Damage event" — so it is written as a health SET, current minus five,
-    // which no Block, no damage modifier and no damage-taken reaction can see.
-    private static IEffectNode<CardPlayContext> FileTheReceipt() =>
-        new CausalSequenceEffectNode<CardPlayContext>(
-        [
-            new ModifyStatusStacksNode<CardPlayContext>(
-                CombatantTargetSelectors.Source, new StatusDefinitionId(ActTwo.OverdueId),
-                new ConstantExpression<CardPlayContext>(-1)),
-            new SetHealthNode<CardPlayContext>(
-                Opponent,
-                new SubtractExpression<CardPlayContext>(
-                    new CombatantCurrentHealthExpression<CardPlayContext>(Opponent),
-                    new ConstantExpression<CardPlayContext>(BellHpLoss))),
-        ]);
-
-    // CONTEST THE FEE: the fee is struck from the record, and the record is worse for it — one draw-pile card
-    // comes back Misfiled. Without a fee to contest, nothing happens at all.
-    private static IEffectNode<CardPlayContext> ContestTheFee() =>
-        new ConditionalEffectNode<CardPlayContext>(
-            new ComparisonExpression<CardPlayContext>(
-                new CombatantStatusStacksExpression<CardPlayContext>(Opponent, new StatusDefinitionId(LateFeeId)),
-                ComparisonOperator.GreaterOrEqual,
-                new ConstantExpression<CardPlayContext>(1)),
-            new CausalSequenceEffectNode<CardPlayContext>(
+                    count, ComparisonOperator.LessOrEqual, new ConstantExpression<TurnStartedTriggeredEffectContext>(1)),
+                new CausalSequenceEffectNode<TurnStartedTriggeredEffectContext>(
+                [
+                    new DealDamageNode<TurnStartedTriggeredEffectContext>(
+                        Opponent, new ConstantExpression<TurnStartedTriggeredEffectContext>(RingDamage)),
+                    new RemoveStatusNode<TurnStartedTriggeredEffectContext>(self, new StatusDefinitionId(ClosingTimeId)),
+                    new ApplyStatusNode<TurnStartedTriggeredEffectContext>(
+                        self, new StatusDefinitionId(ClosingTimeId), new ConstantExpression<TurnStartedTriggeredEffectContext>(ClosingFrom)),
+                ]),
+                @else: new ModifyStatusStacksNode<TurnStartedTriggeredEffectContext>(
+                    self, new StatusDefinitionId(ClosingTimeId), new ConstantExpression<TurnStartedTriggeredEffectContext>(-1))));
+        return new StatusData
+        {
+            Id = ClosingTimeId,
+            NameKey = "Closing Time",
+            DescriptionKey = "Counts down each turn; at 0 the Bell rings for 25. A turn you play 4+ cards adds 1 back.",
+            Polarity = StatusPolarity.Neutral,
+            StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
+            UsesStacks = true,
+            Tags = [],
+            PassiveModifiers = [],
+            Triggers =
             [
-                new ModifyStatusStacksNode<CardPlayContext>(
-                    Opponent, new StatusDefinitionId(LateFeeId),
-                    new ConstantExpression<CardPlayContext>(-1)),
-                new MarkCardInstanceNode<CardPlayContext>(
-                    CombatantTargetSelectors.Source,
-                    new CardInZoneExpression<CardPlayContext>(CardZone.DrawPile, 0),
-                    new TagId(ActTwo.MisfiledMark)),
-            ]));
-
-    // ── 5.4 Signature — Toll for Every Unreturned Thing ───────────────────────────────────────────────────
-    //
-    // 14 + 4 per Late Fee, then the fees are cleared. The clearing is what makes the intent a decision rather
-    // than a countdown: the player chooses which fees ever reach it.
-    public static EffectProgram<EnemyActionContext>? Intent(string intentId) => intentId switch
-    {
-        "issue_the_closing_notice" => FileOverdue(damage: 0),
-        "the_desk_is_now_closed" => FileOverdue(damage: 12),
-        "toll_for_every_unreturned_thing" or "toll_for_every_unreturned_thing_again" => Toll(),
-        _ => null,
-    };
-
-    private static EffectProgram<EnemyActionContext> FileOverdue(int damage)
-    {
-        var steps = new List<IEffectNode<EnemyActionContext>>();
-        if (damage > 0)
-            steps.Add(new DealDamageNode<EnemyActionContext>(
-                Opponent, new ConstantExpression<EnemyActionContext>(damage)));
-        steps.Add(new ApplyStatusNode<EnemyActionContext>(
-            Opponent, new StatusDefinitionId(ActTwo.OverdueId),
-            new ConstantExpression<EnemyActionContext>(1)));
-        steps.Add(IssueReceipt());
-        return new EffectProgram<EnemyActionContext>(new CausalSequenceEffectNode<EnemyActionContext>(steps));
+                new StatusTriggerData("TurnStarted", JsonSerializer.SerializeToElement(
+                    program, CombatJson.CreateOptions<TurnStartedTriggeredEffectContext>())),
+            ],
+        };
     }
 
-    private static EffectProgram<EnemyActionContext> Toll() =>
-        new(new CausalSequenceEffectNode<EnemyActionContext>(
-        [
-            new DealDamageNode<EnemyActionContext>(
-                Opponent,
-                new AddExpression<EnemyActionContext>(
-                    new ConstantExpression<EnemyActionContext>(TollBase),
-                    new MultiplyExpression<EnemyActionContext>(
-                        new ConstantExpression<EnemyActionContext>(TollPerFee),
-                        new CombatantStatusStacksExpression<EnemyActionContext>(
-                            Self, new StatusDefinitionId(LateFeeId))))),
-            new RemoveStatusNode<EnemyActionContext>(Self, new StatusDefinitionId(LateFeeId)),
-        ]));
+    // The player's fourth card of a turn puts every Bell's count back by one, up to where it starts.
+    public static IReadOnlyList<EncounterTriggerData> Triggers()
+    {
+        var player = CombatantTargetSelectors.Source;
+        var bell = CombatantTargetSelectors.IterationTarget;
+        var program = new EffectProgram<CardPlayedTriggeredEffectContext>(
+            new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
+                new ComparisonExpression<CardPlayedTriggeredEffectContext>(
+                    new CardsPlayedThisTurnExpression<CardPlayedTriggeredEffectContext>(player),
+                    ComparisonOperator.Equal, new ConstantExpression<CardPlayedTriggeredEffectContext>(BusyDesk)),
+                new ForEachTargetEffectNode<CardPlayedTriggeredEffectContext>(Bells,
+                    new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
+                        new ComparisonExpression<CardPlayedTriggeredEffectContext>(
+                            new CombatantStatusStacksExpression<CardPlayedTriggeredEffectContext>(bell, new StatusDefinitionId(ClosingTimeId)),
+                            ComparisonOperator.Less, new ConstantExpression<CardPlayedTriggeredEffectContext>(ClosingFrom)),
+                        new ModifyStatusStacksNode<CardPlayedTriggeredEffectContext>(
+                            bell, new StatusDefinitionId(ClosingTimeId), new ConstantExpression<CardPlayedTriggeredEffectContext>(1))))));
+        return [new EncounterTriggerData("CardPlayed",
+            JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<CardPlayedTriggeredEffectContext>()))];
+    }
+
+    // Its intents are plain and authored in the source data.
+    public static EffectProgram<EnemyActionContext>? Intent(string intentId) => null;
 }

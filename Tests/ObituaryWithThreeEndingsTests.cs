@@ -7,9 +7,7 @@ using RogueDeck.Sandbox.Run;
 
 namespace BnbContent.Tests;
 
-// A biography that will not be finished badly. Each life has a condition under which its death is FINAL, and
-// the whole fight is about meeting one — kill it without meeting the condition and the account is simply
-// rewritten. These tests kill it three ways.
+// A biography that will not be finished badly: it has to be killed three times, and each life fights its own way.
 public class ObituaryWithThreeEndingsTests
 {
     private static CombatantState Enemy(RunPlayback play, CombatantId id) =>
@@ -57,119 +55,38 @@ public class ObituaryWithThreeEndingsTests
         return play.CombatDriver?.Current is not null;
     }
 
-    // 13.1: with nothing owed, the first death is the last one. The encounter really can end after one life,
-    // and when it does the combat ends with it.
+    // Every life comes back (user, 2026-11-03): the first death rewrites it at 46 as a Heroic Life, the second at
+    // 32 as a Completely Accurate Account, and the third is final.
     [Fact]
-    public void A_settled_record_lets_the_first_death_stand()
+    public void It_dies_three_times()
     {
-        var (play, session, obituary) = Fight("an_orderly_decline");
-
-        // Nothing has been issued, so no clause stands.
-        Assert.False(Has(play, obituary, ObituaryWithThreeEndings.RespectableLifeId));
-
-        var stillFighting = GrindDown(play, obituary);
-        Assert.Null(session.Error);
-
-        // Either the combat is over, or the body is down — and in neither case was it rewritten.
-        if (play.CombatDriver?.Current is not null)
-            Assert.False(Has(play, obituary, ObituaryWithThreeEndings.HeroicPhaseId));
-        Assert.False(stillFighting && Has(play, obituary, ObituaryWithThreeEndings.HeroicPhaseId));
-        play.Dispose();
-    }
-
-    // 13.3 / 13.4: owe it a notice and the same death does not take — the account is rewritten at 46 HP with
-    // 8 Block, and it is living a Heroic Life.
-    [Fact]
-    public void An_unsettled_record_rewrites_the_death()
-    {
-        var (play, session, obituary) = Fight("no_outstanding_matters");
-
-        play.CombatDriver!.EndTurn(); // "No Outstanding Matters": 10 damage and a debt of its own
-        Assert.True(Has(play, obituary, ObituaryWithThreeEndings.RespectableLifeId));
+        var (play, session, obituary) = Fight("settled_accounts");
 
         GrindDown(play, obituary, until: ObituaryWithThreeEndings.HeroicPhaseId);
         Assert.Null(session.Error);
-
-        var after = Enemy(play, obituary);
-        Assert.Equal(46, after.Health.Current);
-        Assert.True(Has(play, obituary, ObituaryWithThreeEndings.HeroicPhaseId));
-        // The clause is spent: it rewrites once.
+        Assert.Equal(46, Enemy(play, obituary).Health.Current);
         Assert.False(Has(play, obituary, ObituaryWithThreeEndings.RespectableLifeId));
-        play.Dispose();
-    }
-
-    // 13.2: the Notice is the tool for settling the record before lethal damage — and settling it takes the
-    // clause off, which is what makes the next death final.
-    [Fact]
-    public void Settling_the_record_takes_the_clause_off()
-    {
-        var (play, _, obituary) = Fight("no_outstanding_matters");
-
-        play.CombatDriver!.EndTurn();
-        Assert.True(Has(play, obituary, ObituaryWithThreeEndings.RespectableLifeId));
-
-        // A Notice cited and then played settles one debt; here the debt is settled directly by playing the
-        // cited card the Obituary issued on the next hand.
-        play.CombatDriver.EndTurn();
-        var cited = Hand(play).FirstOrDefault(c => c.HasMark(new TagId(ObituaryWithThreeEndings.NoticeMark)));
-        if (cited is not null)
-        {
-            play.CombatDriver.PlayCard(cited.Id, obituary);
-            Assert.False(Has(play, obituary, ObituaryWithThreeEndings.RespectableLifeId));
-        }
-        play.Dispose();
-    }
-
-    // 13.5: in its second life only a death you redacted something for is final. Without that it is rewritten
-    // again — down to a Completely Accurate Account at 32.
-    [Fact]
-    public void A_heroic_death_without_a_redaction_is_rewritten_again()
-    {
-        var (play, session, obituary) = Fight("an_orderly_decline",
-            (ObituaryWithThreeEndings.HeroicPhaseId, 1));
-
-        play.CombatDriver!.EndTurn(); // the player's turn opens: the heroic clause goes on
-        Assert.True(Has(play, obituary, ObituaryWithThreeEndings.HeroicLifeId));
 
         GrindDown(play, obituary, until: ObituaryWithThreeEndings.AccuratePhaseId);
         Assert.Null(session.Error);
-
         Assert.Equal(32, Enemy(play, obituary).Health.Current);
-        Assert.True(Has(play, obituary, ObituaryWithThreeEndings.AccuratePhaseId));
+        Assert.False(Has(play, obituary, ObituaryWithThreeEndings.HeroicLifeId));
+
+        GrindDown(play, obituary);
+        Assert.Null(session.Error);
+        Assert.True(play.CombatDriver?.Current is null || Enemy(play, obituary).Health.Current <= 0);
         play.Dispose();
     }
 
-    // …and a Redacted card played that turn takes the heroic clause off, so the death would stand.
+    // Each life fights its own way: the same slot is 13 in the first life and two blows of 8 in the second.
     [Fact]
-    public void A_redacted_card_played_makes_the_heroic_death_final()
+    public void The_heroic_life_strikes_twice()
     {
-        var (play, session, obituary) = Fight("record_a_respectable_career",
-            (ObituaryWithThreeEndings.HeroicPhaseId, 1));
-
-        play.CombatDriver!.EndTurn(); // Suppress the Witness: it redacts one of your cards for you
-        Assert.True(Has(play, obituary, ObituaryWithThreeEndings.HeroicLifeId));
-
-        var redacted = Hand(play).FirstOrDefault(c => c.HasMark(new TagId(ActTwo.RedactedMark)));
-        Assert.NotNull(redacted);
-        play.CombatDriver.PlayCard(redacted!.Id, obituary);
+        var (play, session, _) = Fight("record_a_respectable_career", (ObituaryWithThreeEndings.HeroicPhaseId, 1));
+        var hero = play.CombatDriver!.Current!.HeroId;
+        play.CombatDriver.EndTurn();
         Assert.Null(session.Error);
-
-        Assert.False(Has(play, obituary, ObituaryWithThreeEndings.HeroicLifeId));
-        play.Dispose();
-    }
-
-    // 13.8 Phase III: all lethal events are final — no clause is ever put on, whatever the record says.
-    [Fact]
-    public void The_accurate_account_has_no_further_amendments()
-    {
-        var (play, session, obituary) = Fight("no_outstanding_matters",
-            (ObituaryWithThreeEndings.AccuratePhaseId, 1));
-
-        play.CombatDriver!.EndTurn(); // it makes a debt of its own — and it buys nothing
-        Assert.Null(session.Error);
-
-        Assert.False(Has(play, obituary, ObituaryWithThreeEndings.RespectableLifeId));
-        Assert.False(Has(play, obituary, ObituaryWithThreeEndings.HeroicLifeId));
+        Assert.Equal(400 - 16, play.CombatDriver.Current!.State.GetCombatant(hero).Health.Current);
         play.Dispose();
     }
 }

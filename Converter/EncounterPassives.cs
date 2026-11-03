@@ -37,6 +37,9 @@ public static class EncounterPassives
         Elites.WaitingRoom.EnemyId => Elites.WaitingRoom.Triggers(),
         Testator.EnemyId => Testator.Triggers(),
         Elites.DrawerOfInfiniteReturns.EnemyId => Elites.DrawerOfInfiniteReturns.Triggers(),
+        Elites.ReturnBell.EnemyId => Elites.ReturnBell.Triggers(),
+        Bosses.CuratorOfMisplacedHours.EnemyId => Bosses.CuratorOfMisplacedHours.Triggers(),
+        Bosses.WhisperingCatalogue.EnemyId => Bosses.WhisperingCatalogue.Triggers(),
         // The court hears the case once, however many steps are standing: keyed on the bottom step alone.
         "lower_appellate_step" => [PassiveStatuses.HearTheCase()],
         "iron_warrant_avatar" => [IssueComplianceOrder(), JudgeCompliance()],
@@ -203,45 +206,10 @@ public static class EncounterPassives
         // once however many shelves are in the room.
         "crabwise_shelf" =>
             [new StartingStatusSpec(new StatusDefinitionId(ActTwo.ArchiveRegulationsId), 1)],
-        // The Cross-Reference's citations land on the player's hand, its Binding Guard is broken by what the
-        // player plays, and its misfilings need the act's own take-back rule.
-        Bosses.GrandCrossReference.PremiseId
-            or Bosses.GrandCrossReference.AuthorityId
-            or Bosses.GrandCrossReference.ConclusionId
-            or Bosses.GrandCrossReference.EngineId =>
-        [
-            new StartingStatusSpec(new StatusDefinitionId(Bosses.GrandCrossReference.CrossReferenceRulesId), 1),
-            new StartingStatusSpec(new StatusDefinitionId(ActTwo.ArchiveRegulationsId), 1),
-        ],
-        // The Auditor's Documentation is the player's, its citations are answered from the player's hand,
-        // and the answer to an Account is the player's to give — so the player carries the record. It
-        // redacts on an unreconciled Identity, so the act's own rules ride along.
-        Bosses.AuditorOfReturnedLives.EnemyId =>
-        [
-            new StartingStatusSpec(new StatusDefinitionId(Bosses.AuditorOfReturnedLives.AuditorRulesId), 1),
-            new StartingStatusSpec(new StatusDefinitionId(ActTwo.ArchiveRegulationsId), 1),
-        ],
-        // The Curator's evidence is the player's own last turn, and Borrow One Minute is a card in the
-        // player's hand — so the player carries the record and the minute. It misfiles too.
-        Bosses.CuratorOfMisplacedHours.EnemyId =>
-        [
-            new StartingStatusSpec(new StatusDefinitionId(Bosses.CuratorOfMisplacedHours.CuratorRulesId), 1),
-            new StartingStatusSpec(new StatusDefinitionId(ActTwo.ArchiveRegulationsId), 1),
-        ],
         // The Warden reaches into the player's hand and two of its three keys are about the player's own
         // turn, so the player carries the rules that seal and release.
         Bosses.WardenOfSealedVolumes.EnemyId =>
             [new StartingStatusSpec(new StatusDefinitionId(Bosses.WardenOfSealedVolumes.WardenRulesId), 1)],
-        // The Catalogue compiles a record of the PLAYER, so the player carries the ledger the whole fight
-        // writes into — and the act's take-back rule too, because an Established Opening redacts a card.
-        Bosses.WhisperingCatalogue.EnemyId =>
-        [
-            new StartingStatusSpec(new StatusDefinitionId(Bosses.WhisperingCatalogue.CatalogueRulesId), 1),
-            new StartingStatusSpec(new StatusDefinitionId(ActTwo.ArchiveRegulationsId), 1),
-        ],
-        // The Obituary's death clauses are kept in step by the player's own record and plays.
-        Elites.ObituaryWithThreeEndings.EnemyId =>
-            [new StartingStatusSpec(new StatusDefinitionId(Elites.ObituaryWithThreeEndings.ObituaryRulesId), 1)],
         // The Magistrate asks its question at the start of the player's turn, so the player carries it.
         ActThree.MagistrateEnemyId =>
             [new StartingStatusSpec(new StatusDefinitionId(ActThree.JudgmentOfferId), 1)],
@@ -251,13 +219,6 @@ public static class EncounterPassives
         // The Catalogue's ledger is the player's cards and the player's plays, so the player carries the rules.
         Elites.CatalogueOfUnwiseNames.EnemyId =>
             [new StartingStatusSpec(new StatusDefinitionId(Elites.CatalogueOfUnwiseNames.CatalogueRulesId), 1)],
-        // The Colossus misfiles too, so the player carries the same take-back rule — plus the other half of
-        // Open Aisle, which is about the player's hand and the player's plays.
-        Elites.RollingStacksColossus.EnemyId =>
-        [
-            new StartingStatusSpec(new StatusDefinitionId(ActTwo.ArchiveRegulationsId), 1),
-            new StartingStatusSpec(new StatusDefinitionId(Elites.RollingStacksColossus.OpenAisleRulesId), 1),
-        ],
         "mnemonic_chain" =>
             [new StartingStatusSpec(new StatusDefinitionId(ActTwo.RememberedVolumeId), 1)],
         "corridor_in_the_wrong_edition" =>

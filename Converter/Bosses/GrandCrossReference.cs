@@ -1,730 +1,167 @@
 using System.Text.Json;
 using RogueDeck.Core.Combat;
-using RogueDeck.Sandbox.Composition;
 using RogueDeck.Scenario.Authoring;
 using BnbContent.Converter.Cards;
 
 namespace BnbContent.Converter.Bosses;
 
-// ── The Grand Cross-Reference (Act II boss, 68 + 72 + 76 → 96 HP) ─────────────────────────────────────────
+// ── The Grand Cross-Reference (Act II boss, 68 + 72 + 76 HP) ──────────────────────────────────────────────
 //
 // "Nothing in the Archive means anything alone."
 //
-// Three monumental volumes hang around a concordance engine that cannot be touched. Exactly TWO of the
-// volumes are linked at a time and only the linked pair acts; the third is isolated and silent. The engine
-// itself spends every turn on one structural action that deals no damage — rotating the link, bracing the
-// pair, reversing which way a passive reads, or feeding the volume nobody is talking to.
+// Three monumental volumes, two of them linked at a time. The linked pair works together — whatever Block one of
+// them raises, the other raises too — while the third stands Isolated: it does nothing, and it takes double
+// damage. The isolation moves on to the next volume every 2 turns (Premise → Authority → Conclusion).
 //
-//   The Premise    (68) — conditions and citations. Its first citation each round also misfiles the card.
-//   The Authority  (72) — binding interpretation: the heaviest hitter of the three.
-//   The Conclusion (76) — the result: it hits and guards.
-//
-// SIMPLIFIED in the content cut of 2026-10-29: the Authority's redirected damage and the Conclusion's stored
-// damage are gone, and nothing here redacts any more — the Premise misfiles instead.
-//
-// Kill all three and the engine becomes real: 96 HP, and the rule it fights under is decided by WHICH VOLUME
-// YOU KILLED LAST. That is the whole boss — the player writes the final law by choosing a kill order.
-//
-//   Premise last    → Nothing Follows Without a Premise: answer its citations or Assumption becomes fact.
-//   Authority last  → Only the Authorized Reading Counts: a Binding Guard you break with a Deed and a Working.
-//   Conclusion last → The Result Was Always Fixed: a Final Result that returns, harder, for ever.
-//
-// Deviations: ADAPTATIONS.md.
+// REWORKED 2026-11-03 (user, Act II trial: "cooler Multi-Gegner, aber es gibt keine klare Synergie zwischen den
+// Gegnern"): the untouchable Concordance engine and the final law chosen by kill order are gone, and with them
+// the citations, the misfilings, the reversed passives and the isolated volume's growing Strength.
 public static class GrandCrossReference
 {
     public const string PremiseId = "gcr_premise";
     public const string AuthorityId = "gcr_authority";
     public const string ConclusionId = "gcr_conclusion";
-    public const string EngineId = "grand_cross_reference";
 
     // Markers, so every rule can find the body it is about.
     public const string ThePremiseId = "the_premise";
     public const string TheAuthorityId = "the_authority";
     public const string TheConclusionId = "the_conclusion";
-    public const string TheConcordanceId = "the_concordance";
+    public const string IsolatedId = "isolated_in_the_margin";
 
-    public const string EngineRulesId = "the_concordance_engine";
-    public const string UntouchableId = "no_further_reference_yet";
-    public const string IsolatedStrengthId = "isolated_in_the_margin";
-    public const string ReversedId = "the_citation_is_reversed";
+    public const int IsolatedTurns = 2;
 
-    // Phase-I passives, each on its own volume.
-    public const string FoundationalCitationId = "foundational_citation";
-
-    // Phase II — the three Final Theses, one of which the player chooses by kill order.
-    public const string ThesisPremiseId = "nothing_follows_without_a_premise";
-    public const string ThesisAuthorityId = "only_the_authorized_reading_counts";
-    public const string ThesisConclusionId = "the_result_was_always_fixed";
-    public const string AssumptionId = "assumption";
-    public const string BindingGuardId = "binding_guard";
-    public const string FinalResultId = "final_result";
-    public const string ConvergedId = "all_references_converge";
-
-    // On the player.
-    public const string CrossReferenceRulesId = "grand_cross_reference_rules";
-    public const string CitationId = "grand_cross_reference_citation";
-    public const string CitationMark = "referenced_by_the_concordance";
-
-    // On the engine: the link rotation, the roll of who is still standing, and who fell last.
-    private static CounterId RotationCounter => new("gcr_rotation");
-    private static CounterId PremiseStandingCounter => new("gcr_premise_standing");
-    private static CounterId AuthorityStandingCounter => new("gcr_authority_standing");
-    private static CounterId ConclusionStandingCounter => new("gcr_conclusion_standing");
-    private static CounterId LastBrokenCounter => new("gcr_last_broken");   // 1 Premise 2 Authority 3 Conclusion
-    private static CounterId TransitionSpentCounter => new("gcr_transition_spent");
-    private static CounterId SignatureSpentCounter => new("gcr_signature_spent");
-    private static CounterId FinalResultDamageCounter => new("gcr_final_result_damage");
-
-    // On the player: this fight's own bookkeeping.
-    private static CounterId CitationDueCounter => new("gcr_citation_due");
-    private static CounterId FoundationUsedCounter => new("gcr_foundation_used");
-    private static CounterId BindingUsedCounter => new("gcr_binding_used");
-    private static CounterId GuardBrokenCounter => new("gcr_guard_broken");
-
-              // a fifth of what the linked pair takes
-    public const int BindingGuardAmount = 14;
-    public const int FinalResultStart = 20;
-    public const int FinalResultStep = 3;
-    public const int FinalResultCeiling = 29;
-    public const int ConvergenceHealth = 24;
+    private const string LinkText =
+        "Two volumes are linked and share their Block. The Isolated one does nothing and takes double damage.";
 
     private static readonly ICombatantTargetSelector Self = CombatantTargetSelectors.Source;
     private static readonly ICombatantTargetSelector Across = CombatantTargetSelectors.LowestHealthEnemyOfSource;
 
-    // An expiry has no Source — the engine reports only whose status ran out — so Final Result coming due reaches
-    // the engine and the player by what they wear (mechanic audit 2026-10-30: Self and Across resolved to nobody).
-    private static readonly ICombatantTargetSelector EngineBearer = CombatantTargetSelectors.FirstTarget(
-        CombatantTargetSelectors.WithStatus(CombatantTargetSelectors.AllCombatants, new StatusDefinitionId(EngineRulesId)));
-    private static readonly ICombatantTargetSelector ThePlayer = CombatantTargetSelectors.FirstTarget(
-        CombatantTargetSelectors.WithStatus(
-            CombatantTargetSelectors.AllCombatants, new StatusDefinitionId(PassiveStatuses.ApplicantId)));
-
-    private static readonly (string Marker, int Index, CounterId Standing)[] Volumes =
-    [
-        (ThePremiseId, 1, PremiseStandingCounter),
-        (TheAuthorityId, 2, AuthorityStandingCounter),
-        (TheConclusionId, 3, ConclusionStandingCounter),
-    ];
-
-    // ── Content ───────────────────────────────────────────────────────────────────────────────────────────
+    // The order the isolation travels in.
+    private static readonly string[] Order = [ThePremiseId, TheAuthorityId, TheConclusionId];
 
     public static IEnumerable<StatusData> Statuses() =>
     [
-        Marker(ThePremiseId, "The Premise", "Conditions, and the citations that carry them."),
-        Marker(TheAuthorityId, "The Authority", "The reading that binds, and redistributes."),
-        Marker(TheConclusionId, "The Conclusion", "Everything the pair has paid, kept for later."),
-        Marker(TheConcordanceId, "The Concordance", "It is not part of the argument yet."),
-        Marker(IsolatedStrengthId, "Isolated in the Margin", "Nobody is citing it, so it is getting stronger."),
-        Marker(ReversedId, "The Citation Is Reversed", "The linked passive reads the other way round."),
-        Marker(ConvergedId, "All References Converge", "Everything it has ever cited arrives at once."),
-
-        // "The central body cannot initially be attacked." Written as complete immunity while the volumes
-        // stand: the engine has no untargetability, and a body that cannot be hurt is what that means at the
-        // table. It must be on the board from the first bell all the same — the combat ends the moment no
-        // enemy is living, so a concordance that only appeared afterwards would never appear at all.
-        Untouchable(),
-
-        Stacking(AssumptionId, "Assumption", "What it has concluded without you. At 3 it becomes fact."),
-        Stacking(BindingGuardId, "Binding Guard", "Only the authorized reading counts. Play a Deed and a Working in one turn and it goes."),
-        Filed(FinalResultId, "Final Result", "The result was always fixed. This is how long you have."),
-
-        Marker(ThesisPremiseId, "Nothing Follows Without a Premise",
-            "Answer its citations, or what it assumed becomes fact."),
-        Marker(ThesisAuthorityId, "Only the Authorized Reading Counts",
-            "Each turn it raises a Binding Guard. Play a Deed and a Working in one turn: the guard breaks and it loses 5 HP."),
-        Marker(ThesisConclusionId, "The Result Was Always Fixed",
-            "The result is already scheduled, and it comes back harder."),
-
-        FoundationalCitation(),
-
-        ActTwo.Reference(CitationId, "Concordance Citation", CitationMark,
-            "The Cross-Reference has cited this card. Play it and the citation is answered.",
-            cite: CiteWhatIsDue(),
-            onFulfilled: OnCitationAnswered()),
-
-        Rules(),
-        ConcordanceEngine(),
+        Marker(ThePremiseId, "The Premise"),
+        Marker(TheAuthorityId, "The Authority"),
+        Marker(TheConclusionId, "The Conclusion"),
+        Isolated(),
     ];
 
-    // ── The Premise's passive ─────────────────────────────────────────────────────────────────────────────
+    // ── Isolated in the Margin ────────────────────────────────────────────────────────────────────────────
     //
-    // "The first time each round either linked volume applies Referenced, that card also becomes Misfiled."
-    // The citing itself is done by the shared citation rule, so this hangs on the same beat and marks the
-    // card it has just cited.
-    private static StatusData FoundationalCitation() =>
-        Marker(FoundationalCitationId, "Foundational Citation",
-            "The first citation each round also misfiles the card it lands on.");
-
-    private static StatusData Untouchable() => new()
+    // Its stacks are the turns it has left. At the end of its last one it passes to the next volume in the order
+    // that is still standing (with only itself left, it stays).
+    private static StatusData Isolated()
     {
-        Id = UntouchableId,
-        NameKey = "No Further Reference Yet",
-        DescriptionKey = "The concordance is not part of the argument. Nothing you do reaches it.",
-        Polarity = StatusPolarity.Buff,
-        StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
-        UsesStacks = false,
-        Tags = [],
-        PassiveModifiers =
-        [
-            new PassiveModifierData(
-                PassiveModifierPipeline.DamageReceived,
-                PassiveModifierOperation.ScalePercent, Magnitude: 0),
-        ],
-        Triggers = [],
-    };
-
-    // ── The player's side ─────────────────────────────────────────────────────────────────────────────────
-
-    private static StatusData Rules()
-    {
-        var onDraw = new EffectProgram<CardsDrawnTriggeredEffectContext>(
-            new ConditionalEffectNode<CardsDrawnTriggeredEffectContext>(
-                IsTheApplicant<CardsDrawnTriggeredEffectContext>(),
-                new CausalSequenceEffectNode<CardsDrawnTriggeredEffectContext>(
+        var isolated = new StatusDefinitionId(IsolatedId);
+        IEffectNode<TurnEndedTriggeredEffectContext> PassTo(int from, int step)
+        {
+            if (step == Order.Length)
+                return new NoOpEffectNode<TurnEndedTriggeredEffectContext>();
+            var next = new StatusDefinitionId(Order[(from + step) % Order.Length]);
+            var standing = CombatantTargetSelectors.AllAlliesOfSourceWithStatus(next);
+            return new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
+                new ComparisonExpression<TurnEndedTriggeredEffectContext>(
+                    new CountTargetsExpression<TurnEndedTriggeredEffectContext>(standing),
+                    ComparisonOperator.Greater, new ConstantExpression<TurnEndedTriggeredEffectContext>(0)),
+                new CausalSequenceEffectNode<TurnEndedTriggeredEffectContext>(
                 [
-                    // Only the Authorized Reading Counts: a guard put up every turn, and the redaction that
-                    // hands the player the very tool for breaking it.
-                    new ConditionalEffectNode<CardsDrawnTriggeredEffectContext>(
-                        AcrossHas<CardsDrawnTriggeredEffectContext>(ThesisAuthorityId),
-                        GuardUp<CardsDrawnTriggeredEffectContext>(BindingGuardAmount)),
-                    // Nothing Follows Without a Premise cites every turn, whatever else is due.
-                    new ConditionalEffectNode<CardsDrawnTriggeredEffectContext>(
-                        AcrossHas<CardsDrawnTriggeredEffectContext>(ThesisPremiseId),
-                        Bump<CardsDrawnTriggeredEffectContext>(Self, CitationDueCounter, 1)),
-                ])));
+                    new RemoveStatusNode<TurnEndedTriggeredEffectContext>(Self, isolated),
+                    new ForEachTargetEffectNode<TurnEndedTriggeredEffectContext>(CombatantTargetSelectors.FirstTarget(standing),
+                        new ApplyStatusNode<TurnEndedTriggeredEffectContext>(
+                            CombatantTargetSelectors.IterationTarget, isolated,
+                            new ConstantExpression<TurnEndedTriggeredEffectContext>(IsolatedTurns))),
+                ]),
+                @else: PassTo(from, step + 1));
+        }
 
-        var onPlay = new EffectProgram<CardPlayedTriggeredEffectContext>(
-            new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
-                IsTheApplicant<CardPlayedTriggeredEffectContext>(),
-                // The first time each turn the player has played both a Deed and a Working: remove all Binding
-                // Guard, and the Grand Cross-Reference loses 5 HP. A reading is broken by showing it the other kind.
-                new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
-                    new AndExpression<CardPlayedTriggeredEffectContext>(
-                        new AndExpression<CardPlayedTriggeredEffectContext>(
-                            PlayedAKind<CardPlayedTriggeredEffectContext>(CardAuthoring.DeedTag),
-                            PlayedAKind<CardPlayedTriggeredEffectContext>(CardAuthoring.WorkingTag)),
-                        IsZero<CardPlayedTriggeredEffectContext>(Self, GuardBrokenCounter)),
-                    new CausalSequenceEffectNode<CardPlayedTriggeredEffectContext>(
-                    [
-                        Bump<CardPlayedTriggeredEffectContext>(Self, GuardBrokenCounter, 1),
-                        new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
-                            AcrossHas<CardPlayedTriggeredEffectContext>(BindingGuardId),
-                            new CausalSequenceEffectNode<CardPlayedTriggeredEffectContext>(
-                            [
-                                Across_Remove<CardPlayedTriggeredEffectContext>(BindingGuardId),
-                                LoseHealthAcross<CardPlayedTriggeredEffectContext>(5),
-                            ])),
-                    ]))));
+        var program = new EffectProgram<TurnEndedTriggeredEffectContext>(
+            new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
+                new ComparisonExpression<TurnEndedTriggeredEffectContext>(
+                    new CombatantStatusStacksExpression<TurnEndedTriggeredEffectContext>(Self, isolated),
+                    ComparisonOperator.LessOrEqual, new ConstantExpression<TurnEndedTriggeredEffectContext>(1)),
+                Order.Select((marker, index) => (marker, index)).Aggregate(
+                    (IEffectNode<TurnEndedTriggeredEffectContext>)new NoOpEffectNode<TurnEndedTriggeredEffectContext>(),
+                    (rest, v) => new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
+                        new TargetHasStatusExpression<TurnEndedTriggeredEffectContext>(Self, new StatusDefinitionId(v.marker)),
+                        PassTo(v.index, 1), @else: rest)),
+                @else: new ModifyStatusStacksNode<TurnEndedTriggeredEffectContext>(
+                    Self, isolated, new ConstantExpression<TurnEndedTriggeredEffectContext>(-1))));
 
-        var onTurnStarted = new EffectProgram<TurnStartedTriggeredEffectContext>(
-            new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
-                IsTheApplicant<TurnStartedTriggeredEffectContext>(),
-                new CausalSequenceEffectNode<TurnStartedTriggeredEffectContext>(
-                [
-                    SetOn<TurnStartedTriggeredEffectContext>(Self, BindingUsedCounter, 0),
-                    SetOn<TurnStartedTriggeredEffectContext>(Self, FoundationUsedCounter, 0),
-                    SetOn<TurnStartedTriggeredEffectContext>(Self, GuardBrokenCounter, 0),
-                ])));
-
-        return Rule(CrossReferenceRulesId, "The Concordance",
-            "Nothing here means anything alone: what one volume does is read against what another one did.",
+        return new StatusData
+        {
+            Id = IsolatedId,
+            NameKey = "Isolated",
+            DescriptionKey = "Does nothing and takes double damage. Moves to the next volume when its turns run out.",
+            Polarity = StatusPolarity.Debuff,
+            StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
+            UsesStacks = true,
+            Tags = [],
+            PassiveModifiers =
             [
-                Watch("CardsDrawn", onDraw),
-                Watch("CardPlayed", onPlay),
-                Watch("TurnStarted", onTurnStarted),
-            ]);
+                new PassiveModifierData(PassiveModifierPipeline.DamageReceived, PassiveModifierOperation.ScalePercent, 200),
+            ],
+            Triggers =
+            [
+                new StatusTriggerData("TurnEnded", JsonSerializer.SerializeToElement(
+                    program, CombatJson.CreateOptions<TurnEndedTriggeredEffectContext>())),
+            ],
+        };
     }
-
-    // ── The concordance engine ────────────────────────────────────────────────────────────────────────────
-    //
-    // It keeps the roll of who is standing, and that roll is what decides everything: which pair is linked,
-    // when the volumes are gone, and — the whole boss — WHICH ONE FELL LAST.
-    private static StatusData ConcordanceEngine()
-    {
-        var onTurnStarted = new EffectProgram<TurnStartedTriggeredEffectContext>(
-            new CausalSequenceEffectNode<TurnStartedTriggeredEffectContext>(
-            [
-                // A volume that was standing and is not among the living any more fell since the last look,
-                // and the last one to do that writes the final law.
-                .. Volumes.Select(v => NoteIfBroken(v.Marker, v.Index, v.Standing)),
-                // "When all three volumes are Broken: the central body becomes targetable and the last
-                // destroyed volume determines the Final Thesis."
-                new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
-                    new AndExpression<TurnStartedTriggeredEffectContext>(
-                        IsZero<TurnStartedTriggeredEffectContext>(Self, TransitionSpentCounter),
-                        NoVolumesLeft()),
-                    NoFurtherReference()),
-                // Final Signature — All References Converge, at 24 HP, once per combat.
-                new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
-                    new AndExpression<TurnStartedTriggeredEffectContext>(
-                        new AndExpression<TurnStartedTriggeredEffectContext>(
-                            IsZero<TurnStartedTriggeredEffectContext>(Self, SignatureSpentCounter),
-                            Positive<TurnStartedTriggeredEffectContext>(Self, TransitionSpentCounter)),
-                        new ComparisonExpression<TurnStartedTriggeredEffectContext>(
-                            new CombatantCurrentHealthExpression<TurnStartedTriggeredEffectContext>(Self),
-                            ComparisonOperator.LessOrEqual,
-                            new ConstantExpression<TurnStartedTriggeredEffectContext>(ConvergenceHealth))),
-                    new CausalSequenceEffectNode<TurnStartedTriggeredEffectContext>(
-                    [
-                        new ApplyStatusNode<TurnStartedTriggeredEffectContext>(
-                            Self, new StatusDefinitionId(ConvergedId),
-                            new ConstantExpression<TurnStartedTriggeredEffectContext>(1)),
-                        SetOn<TurnStartedTriggeredEffectContext>(Self, SignatureSpentCounter, 1),
-                    ])),
-            ]));
-
-        // The Result Was Always Fixed: the scheduled hour comes due, hits, and is filed again harder.
-        var onExpired = new EffectProgram<StatusExpiredTriggeredEffectContext>(
-            new ConditionalEffectNode<StatusExpiredTriggeredEffectContext>(
-                new TriggerEventStatusIsExpression<StatusExpiredTriggeredEffectContext>(
-                    new StatusDefinitionId(FinalResultId)),
-                new CausalSequenceEffectNode<StatusExpiredTriggeredEffectContext>(
-                [
-                    new DealDamageNode<StatusExpiredTriggeredEffectContext>(
-                        ThePlayer,
-                        new CombatantCounterExpression<StatusExpiredTriggeredEffectContext>(
-                            EngineBearer, FinalResultDamageCounter)),
-                    // "Increase damage by 3, maximum 29" — 20 → 23 → 26 → 29 → 29…
-                    new SetCombatantCounterNode<StatusExpiredTriggeredEffectContext>(
-                        EngineBearer, FinalResultDamageCounter,
-                        new MinExpression<StatusExpiredTriggeredEffectContext>(
-                            new AddExpression<StatusExpiredTriggeredEffectContext>(
-                                new CombatantCounterExpression<StatusExpiredTriggeredEffectContext>(
-                                    EngineBearer, FinalResultDamageCounter),
-                                new ConstantExpression<StatusExpiredTriggeredEffectContext>(FinalResultStep)),
-                            new ConstantExpression<StatusExpiredTriggeredEffectContext>(FinalResultCeiling)),
-                        relative: false),
-                    // "Final Result cannot be permanently removed": it files itself again at once.
-                    new ApplyStatusNode<StatusExpiredTriggeredEffectContext>(
-                        EngineBearer, new StatusDefinitionId(FinalResultId),
-                        new ConstantExpression<StatusExpiredTriggeredEffectContext>(1), durationTurns: 2),
-                ])));
-
-        return Rule(EngineRulesId, "The Concordance Engine",
-            "It keeps the roll of what is still standing, and the last thing to fall decides what it becomes.",
-            [
-                Watch("TurnStarted", onTurnStarted),
-                // Anywhere: Final Result is another status; Bearer scope only heard the engine's own rule expire
-                // (mechanic audit 2026-10-30).
-                Watch("StatusExpired", onExpired, StatusTriggerScope.Anywhere),
-            ]);
-    }
-
-    // A volume is "standing" until the moment it stops being among the living — a downed body is not selected
-    // by a living-only selector, and a downed body's own statuses read as absent, so this is the one question
-    // that can be asked about it from outside.
-    private static IEffectNode<TurnStartedTriggeredEffectContext> NoteIfBroken(
-        string marker, int index, CounterId standing) =>
-        new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
-            Alive<TurnStartedTriggeredEffectContext>(marker),
-            SetOn<TurnStartedTriggeredEffectContext>(Self, standing, 1),
-            @else: new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
-                Positive<TurnStartedTriggeredEffectContext>(Self, standing),
-                new CausalSequenceEffectNode<TurnStartedTriggeredEffectContext>(
-                [
-                    SetOn<TurnStartedTriggeredEffectContext>(Self, standing, 0),
-                    SetOn<TurnStartedTriggeredEffectContext>(Self, LastBrokenCounter, index),
-                ])));
-
-    private static ICombatExpression<TContext, bool> Alive<TContext>(string marker) where TContext : class =>
-        new ComparisonExpression<TContext>(
-            new CountTargetsExpression<TContext>(
-                CombatantTargetSelectors.AllAlliesOfSourceWithStatus(new StatusDefinitionId(marker))),
-            ComparisonOperator.Greater, new ConstantExpression<TContext>(0));
-
-    private static ICombatExpression<TurnStartedTriggeredEffectContext, bool> NoVolumesLeft() =>
-        Volumes.Aggregate(
-            (ICombatExpression<TurnStartedTriggeredEffectContext, bool>)
-                new ComparisonExpression<TurnStartedTriggeredEffectContext>(
-                    new ConstantExpression<TurnStartedTriggeredEffectContext>(0),
-                    ComparisonOperator.Equal,
-                    new ConstantExpression<TurnStartedTriggeredEffectContext>(0)),
-            (all, v) => new AndExpression<TurnStartedTriggeredEffectContext>(all,
-                new NotExpression<TurnStartedTriggeredEffectContext>(
-                    Alive<TurnStartedTriggeredEffectContext>(v.Marker))));
-
-    // "No Further Reference": the concordance stops being scenery and the kill order becomes the law.
-    private static IEffectNode<TurnStartedTriggeredEffectContext> NoFurtherReference() =>
-        new CausalSequenceEffectNode<TurnStartedTriggeredEffectContext>(
-        [
-            new RemoveStatusNode<TurnStartedTriggeredEffectContext>(
-                Self, new StatusDefinitionId(UntouchableId)),
-            new RemoveStatusNode<TurnStartedTriggeredEffectContext>(
-                Self, new StatusDefinitionId(TheConcordanceId)),
-            Thesis(1, ThesisPremiseId),
-            Thesis(2, ThesisAuthorityId),
-            Thesis(3, ThesisConclusionId),
-            // The Conclusion's thesis arrives already scheduled.
-            new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
-                CounterIs<TurnStartedTriggeredEffectContext>(Self, LastBrokenCounter, 3),
-                new CausalSequenceEffectNode<TurnStartedTriggeredEffectContext>(
-                [
-                    SetOn<TurnStartedTriggeredEffectContext>(Self, FinalResultDamageCounter, FinalResultStart),
-                    new ApplyStatusNode<TurnStartedTriggeredEffectContext>(
-                        Self, new StatusDefinitionId(FinalResultId),
-                        new ConstantExpression<TurnStartedTriggeredEffectContext>(1), durationTurns: 2),
-                ])),
-            SetOn<TurnStartedTriggeredEffectContext>(Self, TransitionSpentCounter, 1),
-        ]);
-
-    private static IEffectNode<TurnStartedTriggeredEffectContext> Thesis(int index, string thesis) =>
-        new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
-            CounterIs<TurnStartedTriggeredEffectContext>(Self, LastBrokenCounter, index),
-            new ApplyStatusNode<TurnStartedTriggeredEffectContext>(
-                Self, new StatusDefinitionId(thesis),
-                new ConstantExpression<TurnStartedTriggeredEffectContext>(1)));
-
-    // ── Citations ─────────────────────────────────────────────────────────────────────────────────────────
-
-    private static IEffectNode<EnemyActionContext> CiteLater(int count) =>
-        Bump<EnemyActionContext>(Across, CitationDueCounter, count);
-
-    private static IEffectNode<CardsDrawnTriggeredEffectContext> CiteWhatIsDue() =>
-        new ConditionalEffectNode<CardsDrawnTriggeredEffectContext>(
-            new AndExpression<CardsDrawnTriggeredEffectContext>(
-                IsTheApplicant<CardsDrawnTriggeredEffectContext>(),
-                Positive<CardsDrawnTriggeredEffectContext>(Self, CitationDueCounter)),
-            new CausalSequenceEffectNode<CardsDrawnTriggeredEffectContext>(
-            [
-                new ForEachCardInZoneNode<CardsDrawnTriggeredEffectContext>(
-                    Self, CardZone.Hand,
-                    new CausalSequenceEffectNode<CardsDrawnTriggeredEffectContext>(
-                    [
-                        new MarkCardInstanceNode<CardsDrawnTriggeredEffectContext>(
-                            Self, new IteratedCardExpression<CardsDrawnTriggeredEffectContext>(),
-                            new TagId(CitationMark)),
-                        // 9.3 Foundational Citation: while the Premise stands, the first citation each round
-                        // also redacts the card it lands on.
-                        new ConditionalEffectNode<CardsDrawnTriggeredEffectContext>(
-                            new AndExpression<CardsDrawnTriggeredEffectContext>(
-                                AcrossHas<CardsDrawnTriggeredEffectContext>(ThePremiseId),
-                                IsZero<CardsDrawnTriggeredEffectContext>(Self, FoundationUsedCounter)),
-                            new CausalSequenceEffectNode<CardsDrawnTriggeredEffectContext>(
-                            [
-                                new MarkCardInstanceNode<CardsDrawnTriggeredEffectContext>(
-                                    Self, new IteratedCardExpression<CardsDrawnTriggeredEffectContext>(),
-                                    new TagId(ActTwo.MisfiledMark)),
-                                Bump<CardsDrawnTriggeredEffectContext>(Self, FoundationUsedCounter, 1),
-                            ])),
-                    ]),
-                    takeFirst: 1),
-                SetOn<CardsDrawnTriggeredEffectContext>(Self, CitationDueCounter, 0),
-            ]));
-
-    // What answering a citation is worth depends on which law the kill order wrote.
-    private static IEffectNode<CardPlayedTriggeredEffectContext> OnCitationAnswered() =>
-        new CausalSequenceEffectNode<CardPlayedTriggeredEffectContext>(
-        [
-            // Premise thesis: "Fulfilled Reference — the Grand Cross-Reference loses 7 HP."
-            new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
-                AcrossHas<CardPlayedTriggeredEffectContext>(ThesisPremiseId),
-                LoseHealthAcross<CardPlayedTriggeredEffectContext>(7)),
-            // Conclusion thesis: "Fulfilled Reference — delay Final Result by 1, to a maximum of 3; if it is
-            // already at 3, the Grand Cross-Reference loses 4 HP instead."
-            new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
-                AcrossHas<CardPlayedTriggeredEffectContext>(ThesisConclusionId),
-                new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
-                    new ComparisonExpression<CardPlayedTriggeredEffectContext>(
-                        new CombatantStatusDurationExpression<CardPlayedTriggeredEffectContext>(
-                            Across, new StatusDefinitionId(FinalResultId)),
-                        ComparisonOperator.Less, new ConstantExpression<CardPlayedTriggeredEffectContext>(3)),
-                    new ForEachTargetEffectNode<CardPlayedTriggeredEffectContext>(Across,
-                        new ModifyStatusDurationNode<CardPlayedTriggeredEffectContext>(
-                            CombatantTargetSelectors.IterationTarget, new StatusDefinitionId(FinalResultId),
-                            new ConstantExpression<CardPlayedTriggeredEffectContext>(1))),
-                    @else: LoseHealthAcross<CardPlayedTriggeredEffectContext>(4))),
-        ]);
 
     // ── Intents ───────────────────────────────────────────────────────────────────────────────────────────
-
-    public static EffectProgram<EnemyActionContext>? Intent(string enemyId, string intentId) => enemyId switch
-    {
-        PremiseId => Premise(intentId),
-        AuthorityId => Authority(intentId),
-        ConclusionId => Conclusion(intentId),
-        EngineId => Engine(intentId),
-        _ => null,
-    };
-
-    // "The isolated volume does not act." Only the linked pair moves, which is what keeps three bodies from
-    // becoming three times the action.
-    private static EffectProgram<EnemyActionContext> WhileLinked(
-        int index, IEffectNode<EnemyActionContext> body) =>
-        new(new ConditionalEffectNode<EnemyActionContext>(Linked(index), body));
-
-    // With all three standing the rotation names the pair; with two left they are permanently linked; the
-    // last one standing has nobody to be linked to and acts alone.
-    private static ICombatExpression<EnemyActionContext, bool> Linked(int index)
-    {
-        // The rotation lives on the engine, which every volume can see as an ally.
-        var rotation = new SumOverTargetsExpression<EnemyActionContext>(
-            CombatantTargetSelectors.AllAlliesOfSourceWithStatus(new StatusDefinitionId(EngineRulesId)),
-            new CombatantCounterExpression<EnemyActionContext>(
-                CombatantTargetSelectors.IterationTarget, RotationCounter));
-
-        // Pairs by rotation: 0 → Premise+Authority, 1 → Authority+Conclusion, 2 → Conclusion+Premise.
-        var inPair = index switch
+    //
+    // An Isolated volume does nothing; a linked one acts, and the Block it raises its partner raises too.
+    public static EffectProgram<EnemyActionContext>? Intent(string enemyId, string intentId) =>
+        $"{enemyId}.{intentId}" switch
         {
-            1 => new OrExpression<EnemyActionContext>(RotationIs(rotation, 0), RotationIs(rotation, 2)),
-            2 => new OrExpression<EnemyActionContext>(RotationIs(rotation, 0), RotationIs(rotation, 1)),
-            _ => new OrExpression<EnemyActionContext>(RotationIs(rotation, 1), RotationIs(rotation, 2)),
+            $"{PremiseId}.establish_the_initial_condition" => Linked(Block(6)),
+            $"{PremiseId}.reject_the_unsupported_assumption" => Linked(Damage(14)),
+            $"{PremiseId}.define_the_applicable_case" => Linked(Block(8)),
+            $"{PremiseId}.restate_the_premise" => Linked(Damage(7)),
+
+            $"{AuthorityId}.issue_the_binding_interpretation" => Linked(Damage(16)),
+            $"{AuthorityId}.overrule_the_lesser_reading" => Linked(
+                new ApplyStatusNode<EnemyActionContext>(Across, new StatusDefinitionId(Keywords.Doubt), Const(2))),
+            $"{AuthorityId}.cite_the_higher_authority" => Linked(Block(12)),
+            $"{AuthorityId}.enforce_without_appeal" => Linked(Damage(21)),
+
+            $"{ConclusionId}.draw_the_necessary_result" => Linked(Damage(9)),
+            $"{ConclusionId}.conclude_from_missing_evidence" => Linked(Damage(13)),
+            $"{ConclusionId}.preserve_the_result" => Linked(Block(14)),
+            $"{ConclusionId}.file_the_result_elsewhere" => Linked(Damage(9)),
+            _ => null,
         };
 
-        // Fewer than three standing and there is no isolated volume left to sit out.
-        return new OrExpression<EnemyActionContext>(
-            new NotExpression<EnemyActionContext>(AllThreeStanding()), inPair);
-    }
-
-    private static ICombatExpression<EnemyActionContext, bool> RotationIs(
-        ICombatExpression<EnemyActionContext, int> rotation, int at) =>
-        new ComparisonExpression<EnemyActionContext>(
-            rotation, ComparisonOperator.Equal, new ConstantExpression<EnemyActionContext>(at));
-
-    private static ICombatExpression<EnemyActionContext, bool> AllThreeStanding() =>
-        Volumes.Aggregate(
-            (ICombatExpression<EnemyActionContext, bool>)
-                new ComparisonExpression<EnemyActionContext>(
-                    new ConstantExpression<EnemyActionContext>(0), ComparisonOperator.Equal,
-                    new ConstantExpression<EnemyActionContext>(0)),
-            (all, v) => new AndExpression<EnemyActionContext>(all, VolumeStands(v.Marker)));
-
-    // A volume can see the other volumes as allies, and itself only through its own marker — so "standing"
-    // is asked of allies and of self together.
-    private static ICombatExpression<EnemyActionContext, bool> VolumeStands(string marker) =>
-        new OrExpression<EnemyActionContext>(
-            new TargetHasStatusExpression<EnemyActionContext>(Self, new StatusDefinitionId(marker)),
-            new ComparisonExpression<EnemyActionContext>(
-                new CountTargetsExpression<EnemyActionContext>(
-                    CombatantTargetSelectors.AllAlliesOfSourceWithStatus(new StatusDefinitionId(marker))),
-                ComparisonOperator.Greater, new ConstantExpression<EnemyActionContext>(0)));
-
-    private static EffectProgram<EnemyActionContext>? Premise(string intentId) => intentId switch
-    {
-        "establish_the_initial_condition" => WhileLinked(1,
-            new CausalSequenceEffectNode<EnemyActionContext>([CiteLater(1), Block(6)])),
-        // "14 damage; +4 if the player carries Overdue from either linked volume, maximum 18."
-        "reject_the_unsupported_assumption" => WhileLinked(1,
-            new ConditionalEffectNode<EnemyActionContext>(
-                AcrossHas<EnemyActionContext>(ActTwo.OverdueId), Strike(18), @else: Strike(14))),
-        // "Define the Applicable Case": the next citation is the player's to place.
-        "define_the_applicable_case" => WhileLinked(1,
-            new CausalSequenceEffectNode<EnemyActionContext>([CiteLater(1), Block(8)])),
-        // "Restate the Premise": the previous move again at about half.
-        "restate_the_premise" => WhileLinked(1, Strike(7)),
-        _ => null,
-    };
-
-    private static EffectProgram<EnemyActionContext>? Authority(string intentId) => intentId switch
-    {
-        "issue_the_binding_interpretation" => WhileLinked(2, Strike(16)),
-        // "Overrule the Lesser Reading": the heaviest card in the next hand is redacted.
-        "overrule_the_lesser_reading" => WhileLinked(2, ActTwo.MisfileOne(ActTwo.MisfiledMark)),
-        // "Cite the Higher Authority": both linked volumes brace.
-        "cite_the_higher_authority" => WhileLinked(2,
-            new ForEachTargetEffectNode<EnemyActionContext>(
-                CombatantTargetSelectors.AllAlliesOfSourceWithStatus(new StatusDefinitionId(TheConclusionId)),
-                new GainBlockNode<EnemyActionContext>(
-                    CombatantTargetSelectors.IterationTarget, new ConstantExpression<EnemyActionContext>(12)))),
-        "enforce_without_appeal" => WhileLinked(2, Strike(21)),
-        _ => null,
-    };
-
-    private static EffectProgram<EnemyActionContext>? Conclusion(string intentId) => intentId switch
-    {
-        "draw_the_necessary_result" => WhileLinked(3, Strike(15)),
-        "conclude_from_missing_evidence" => WhileLinked(3,
-            new CausalSequenceEffectNode<EnemyActionContext>([Strike(13), ApplyToPlayer(Keywords.Doubt, 1)])),
-        "preserve_the_result" => WhileLinked(3, Block(14)),
-        "file_the_result_elsewhere" => WhileLinked(3,
-            new CausalSequenceEffectNode<EnemyActionContext>(
-                [ActTwo.MisfileOne(ActTwo.MisfiledMark), Strike(9)])),
-        _ => null,
-    };
-
-    // The engine's four structural actions in Phase I — none of which deals direct damage — and the shared
-    // Phase-II moves once the volumes are gone and it is the only thing left to fight.
-    private static EffectProgram<EnemyActionContext>? Engine(string intentId) => intentId switch
-    {
-        "reweave_the_references" => Structural(
-            // Advance to the next valid linked pair.
-            new SetCombatantCounterNode<EnemyActionContext>(
-                Self, RotationCounter,
-                new RemainderExpression<EnemyActionContext>(
-                    new AddExpression<EnemyActionContext>(
-                        new CombatantCounterExpression<EnemyActionContext>(Self, RotationCounter),
-                        new ConstantExpression<EnemyActionContext>(1)),
-                    new ConstantExpression<EnemyActionContext>(3)),
-                relative: false),
-            // No Further Reference.
-            new CausalSequenceEffectNode<EnemyActionContext>([Strike(18), ApplyToPlayer(Keywords.Doubt, 1)])),
-
-        "all_entries_support_the_finding" => Structural(
-            // Both linked volumes gain 10 Block.
-            new ForEachTargetEffectNode<EnemyActionContext>(
-                CombatantTargetSelectors.AllAlliesOfSourceWithStatus(new StatusDefinitionId(TheConclusionId)),
-                new GainBlockNode<EnemyActionContext>(
-                    CombatantTargetSelectors.IterationTarget, new ConstantExpression<EnemyActionContext>(10))),
-            // Collapse the Index.
-            new CausalSequenceEffectNode<EnemyActionContext>(
-                [Strike(13), ActTwo.MisfileOne(ActTwo.MisfiledMark)])),
-
-        "reverse_the_citation" => Structural(
-            new ApplyStatusNode<EnemyActionContext>(Self, new StatusDefinitionId(ReversedId),
-                new ConstantExpression<EnemyActionContext>(1)),
-            // Bind the Remaining Record.
-            new CausalSequenceEffectNode<EnemyActionContext>([Block(18), CiteLater(1)])),
-
-        "isolate_the_margin" => Structural(
-            // The volume nobody is citing gets stronger while it waits.
-            new ForEachTargetEffectNode<EnemyActionContext>(
-                CombatantTargetSelectors.AllAlliesOfSourceWithStatus(new StatusDefinitionId(ThePremiseId)),
-                new ApplyStatusNode<EnemyActionContext>(
-                    CombatantTargetSelectors.IterationTarget, new StatusDefinitionId(IsolatedStrengthId),
-                    new ConstantExpression<EnemyActionContext>(1))),
-            // Every Entry Ends Here.
-            new CausalSequenceEffectNode<EnemyActionContext>([Strike(11), Strike(11)])),
-
-        _ => null,
-    };
-
-    // While the volumes stand the engine only ever structures; once they are gone it fights. The transition
-    // itself is silent — "no attack occurs during transition" — which the untouchable marker still being on
-    // at the moment of the action is what says.
-    private static EffectProgram<EnemyActionContext> Structural(
-        IEffectNode<EnemyActionContext> concordance, IEffectNode<EnemyActionContext> alone) =>
+    private static EffectProgram<EnemyActionContext> Linked(IEffectNode<EnemyActionContext> body) =>
         new(new ConditionalEffectNode<EnemyActionContext>(
-            SelfHas<EnemyActionContext>(UntouchableId),
-            concordance,
-            @else: new CausalSequenceEffectNode<EnemyActionContext>(
-            [
-                alone,
-                // All References Converge: everything it ever cited arrives at once, and then it is spent.
-                new ConditionalEffectNode<EnemyActionContext>(
-                    SelfHas<EnemyActionContext>(ConvergedId),
-                    new CausalSequenceEffectNode<EnemyActionContext>(
-                    [
-                        Strike(12),
-                        ApplyToPlayer(Keywords.Paperwork, 2),
-                        ApplyToPlayer(Keywords.Doubt, 1),
-                        new RemoveStatusNode<EnemyActionContext>(Self, new StatusDefinitionId(ConvergedId)),
-                    ])),
-            ])));
+            new TargetHasStatusExpression<EnemyActionContext>(Self, new StatusDefinitionId(IsolatedId)),
+            new NoOpEffectNode<EnemyActionContext>(), @else: body));
 
-    // ── Small shared pieces ───────────────────────────────────────────────────────────────────────────────
-
-    private static ICombatExpression<TContext, bool> PlayedAKind<TContext>(string tag) where TContext : class =>
-        new ComparisonExpression<TContext>(
-            new CardsPlayedThisTurnWithTagExpression<TContext>(CombatantTargetSelectors.Source, new TagId(tag)),
-            ComparisonOperator.GreaterOrEqual, new ConstantExpression<TContext>(1));
-
-    private static IEffectNode<TContext> GuardUp<TContext>(int amount) where TContext : class =>
-        new ForEachTargetEffectNode<TContext>(Across,
-            new ApplyStatusNode<TContext>(
-                CombatantTargetSelectors.IterationTarget, new StatusDefinitionId(BindingGuardId),
-                new ConstantExpression<TContext>(amount)));
-
-    private static IEffectNode<TContext> LoseHealthAcross<TContext>(int amount) where TContext : class =>
-        new ForEachTargetEffectNode<TContext>(Across,
-            new SetHealthNode<TContext>(
-                CombatantTargetSelectors.IterationTarget,
-                new SubtractExpression<TContext>(
-                    new CombatantCurrentHealthExpression<TContext>(CombatantTargetSelectors.IterationTarget),
-                    new ConstantExpression<TContext>(amount))));
-
-    private static IEffectNode<EnemyActionContext> Strike(int amount) =>
-        new DealDamageNode<EnemyActionContext>(Across, new ConstantExpression<EnemyActionContext>(amount));
-
+    // Block for itself and for its linked partner: every volume that is not Isolated (the ally selector counts
+    // the actor too).
     private static IEffectNode<EnemyActionContext> Block(int amount) =>
-        new GainBlockNode<EnemyActionContext>(Self, new ConstantExpression<EnemyActionContext>(amount));
+        new ForEachTargetEffectNode<EnemyActionContext>(CombatantTargetSelectors.AllAlliesOfSource,
+            new ConditionalEffectNode<EnemyActionContext>(
+                new NotExpression<EnemyActionContext>(new TargetHasStatusExpression<EnemyActionContext>(
+                    CombatantTargetSelectors.IterationTarget, new StatusDefinitionId(IsolatedId))),
+                new GainBlockNode<EnemyActionContext>(CombatantTargetSelectors.IterationTarget, Const(amount))));
 
-    private static IEffectNode<EnemyActionContext> ApplyToPlayer(string status, int stacks) =>
-        new ApplyStatusNode<EnemyActionContext>(Across, new StatusDefinitionId(status),
-            new ConstantExpression<EnemyActionContext>(stacks));
+    private static IEffectNode<EnemyActionContext> Damage(int amount) =>
+        new DealDamageNode<EnemyActionContext>(Across, Const(amount));
 
-    private static ICombatExpression<TContext, bool> AcrossHas<TContext>(string statusId) where TContext : class =>
-        new TargetHasStatusExpression<TContext>(Across, new StatusDefinitionId(statusId));
+    private static ConstantExpression<EnemyActionContext> Const(int value) => new(value);
 
-    private static ICombatExpression<TContext, bool> SelfHas<TContext>(string statusId) where TContext : class =>
-        new TargetHasStatusExpression<TContext>(Self, new StatusDefinitionId(statusId));
-
-    private static IEffectNode<TContext> Across_Remove<TContext>(string statusId) where TContext : class =>
-        new ForEachTargetEffectNode<TContext>(Across,
-            new RemoveStatusNode<TContext>(
-                CombatantTargetSelectors.IterationTarget, new StatusDefinitionId(statusId)));
-
-    private static ICombatExpression<TContext, bool> Positive<TContext>(
-        ICombatantTargetSelector on, CounterId counter) where TContext : class =>
-        new ComparisonExpression<TContext>(
-            new CombatantCounterExpression<TContext>(on, counter),
-            ComparisonOperator.Greater, new ConstantExpression<TContext>(0));
-
-    private static ICombatExpression<TContext, bool> CounterIs<TContext>(
-        ICombatantTargetSelector on, CounterId counter, int value) where TContext : class =>
-        new ComparisonExpression<TContext>(
-            new CombatantCounterExpression<TContext>(on, counter),
-            ComparisonOperator.Equal, new ConstantExpression<TContext>(value));
-
-    private static ICombatExpression<TContext, bool> IsZero<TContext>(
-        ICombatantTargetSelector on, CounterId counter) where TContext : class =>
-        CounterIs<TContext>(on, counter, 0);
-
-    private static IEffectNode<TContext> SetOn<TContext>(
-        ICombatantTargetSelector on, CounterId counter, int value) where TContext : class =>
-        new SetCombatantCounterNode<TContext>(on, counter, new ConstantExpression<TContext>(value), relative: false);
-
-    private static IEffectNode<TContext> Bump<TContext>(
-        ICombatantTargetSelector on, CounterId counter, int delta) where TContext : class =>
-        new SetCombatantCounterNode<TContext>(on, counter, new ConstantExpression<TContext>(delta), relative: true);
-
-    private static ICombatExpression<TContext, bool> IsTheApplicant<TContext>() where TContext : class =>
-        new TargetHasStatusExpression<TContext>(Self, new StatusDefinitionId(PassiveStatuses.ApplicantId));
-
-    private static StatusTriggerData Watch<TContext>(
-        string trigger, EffectProgram<TContext> program, StatusTriggerScope scope = StatusTriggerScope.Bearer)
-        where TContext : class =>
-        new(trigger, JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<TContext>()), scope);
-
-    private static StatusData Filed(string id, string name, string description) => new()
+    private static StatusData Marker(string id, string name) => new()
     {
         Id = id,
         NameKey = name,
-        DescriptionKey = description,
+        DescriptionKey = LinkText,
         Polarity = StatusPolarity.Neutral,
         StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
         UsesStacks = false,
-        UsesDuration = true,
         Tags = [],
         PassiveModifiers = [],
         Triggers = [],
     };
-
-    private static StatusData Stacking(string id, string name, string description) => new()
-    {
-        Id = id,
-        NameKey = name,
-        DescriptionKey = description,
-        Polarity = StatusPolarity.Neutral,
-        StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
-        UsesStacks = true,
-        Tags = [],
-        PassiveModifiers = [],
-        Triggers = [],
-    };
-
-    private static StatusData Marker(string id, string name, string description) =>
-        Rule(id, name, description, []);
-
-    private static StatusData Rule(
-        string id, string name, string description, IReadOnlyList<StatusTriggerData> triggers) => new()
-        {
-            Id = id,
-            NameKey = name,
-            DescriptionKey = description,
-            Polarity = StatusPolarity.Neutral,
-            StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
-            UsesStacks = false,
-            Tags = [],
-            PassiveModifiers = [],
-            Triggers = triggers,
-        };
 }

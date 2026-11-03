@@ -30,7 +30,8 @@ public class ActTwoPoolTests
 
         Assert.Equal(5, bosses.Count);
         Assert.Equal(4, bosses.Count(b => b.Enemies.Count == 1));
-        Assert.Single(bosses, b => b.Enemies.Count == 4);
+        // The Grand Cross-Reference: three volumes (its Concordance engine is gone since 2026-11-03).
+        Assert.Single(bosses, b => b.Enemies.Count == 3);
     }
 
     // Seven elites, each its own encounter (the Presentless Clock and the Silence Between Two Words are gone).

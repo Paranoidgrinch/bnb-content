@@ -471,8 +471,7 @@
     "enemies": [
       "gcr_premise",
       "gcr_authority",
-      "gcr_conclusion",
-      "grand_cross_reference"
+      "gcr_conclusion"
     ],
     "weight": 1,
     "tags": [

@@ -2,7 +2,7 @@
 
 Generated: `dotnet run --project Converter -- --art-slots ART_SLOTS.md`. **Do not edit by hand.**
 
-**876 pictures**: 475 cards, 255 relics, 142 bodies
+**873 pictures**: 473 cards, 255 relics, 141 bodies
 (every enemy, elite and boss) and 4 the player can be. Every one of them is filled today by a PLACEHOLDER — a plate with the file's own
 name and the word placeholder on it, written by `bnb-godot/tools/make-card-art.py`,
 `make-relic-art.py` and `make-enemy-art.py`. A painted picture replaces one by being saved over it, so
@@ -343,14 +343,14 @@ The catalogue number is the design canon's, and it is not part of the file name:
 | 209 | `tooth_from_the_false_lid_3` | Tooth From the False Lid III | mimic | The first blow of every fight glances off the tooth: 12 Block and heal 2. It comes with the lock-plate, its keyhole ringed with tooth-marks. |
 | 210 | `tooth_from_the_false_lid_4` | Tooth From the False Lid IV | mimic | The first blow of every fight glances off the tooth: 16 Block and heal 4. It comes with the whole false lid, folded shut around it like a jaw at rest. |
 
-## Bodies — 142 pictures
+## Bodies — 141 pictures
 
 Every enemy, elite and boss in the game. No visual canon was written for the bodies, so
 the row carries what the fight itself says: how much it can take, how many rooms use it,
 and one of those rooms by name. The role is what the picture has to BE — a body that is
 ever met in a boss room is drawn as a boss, even if it also turns up as filler.
 
-### Boss bodies — 31
+### Boss bodies — 30
 
 | code | title | HP | rooms | met in |
 |---|---|---:|---:|---|
@@ -363,7 +363,6 @@ ever met in a boss room is drawn as a boss, even if it also turns up as filler.
 | `gcr_authority` | The Authority | 72 | 1 | The Grand Cross-Reference |
 | `gcr_conclusion` | The Conclusion | 76 | 1 | The Grand Cross-Reference |
 | `gcr_premise` | The Premise | 68 | 1 | The Grand Cross-Reference |
-| `grand_cross_reference` | The Grand Cross-Reference | 96 | 1 | The Grand Cross-Reference |
 | `grandmother_clause` | Grandmother Clause | 350 | 1 | Grandmother Clause |
 | `inanna_mistress_of_the_eanna_ledger` | Inanna, Mistress of the Eanna Ledger | 760 | 1 | The Ledger of Eanna |
 | `lady_of_the_black_granaries` | The Lady of the Black Granaries | 600 | 1 | The Lady of the Black Granaries |
@@ -523,7 +522,7 @@ Drawn like a body and facing RIGHT — the player stands on the left of the aren
 | `lieutenant` | The Lieutenant | New stripes on an old uniform, and always first through the door. |
 | `sorcerers_apprentice` | The Sorcerer's Apprentice | Knows every incantation, and not quite what happens when one is put after another. |
 
-## Cards — 475 pictures
+## Cards — 473 pictures
 
 No visual canon was ever written for the cards, so the row carries the card's own rules
 text instead of a brief. Act = the act that unlocks it; the starters, the Junk and the
@@ -985,7 +984,7 @@ cards a boss or a door hands over are never offered and have no act.
 | `lt_whistle` | Whistle | working | uncommon | Gain 3 Block. You may spend 1 Authority to draw 2 cards. |
 | `lt_witness` | Witness | working | common | Gain 4 Block. Your next Deed hit on a Challenged enemy this turn counts twice toward its Challenge. |
 
-### Given in play — 79
+### Given in play — 77
 
 Handed over by a boss, a door or an event rather than offered; never in a reward pool.
 
@@ -995,7 +994,6 @@ Handed over by a boss, a door or an event rather than offered; never in a reward
 | `ask_for_expedited_service` | Ask for Expedited Service | This Service Window opens him 15% instead of 25%, but you stay at Position 1 after. |
 | `better_chair_cushion_action` | The Better Chair | Gain 14 Block. End the turn holding a real card, or lose 6 HP. |
 | `black_flood_vessel_action` | Empty the Vessel | Discard your hand, draw 7, and gain 2 Energy. Once a combat. |
-| `borrow_one_minute` | Borrow One Minute | Once a turn: push a scheduled hour back 1 turn (max 3). Free with a Free Adjustment. |
 | `borrowers_claim` | Borrower's Claim | Retain. Exhaust. Put a card from hand under your draw pile, draw 1. Held at turn end: 1 Paperwork. |
 | `break_the_burden_seal` | Break the Burden Seal | Remove 1 Burdened from you (or 1 Paperwork). The colony gains 12 Block on its turn. |
 | `break_the_pest_seal` | Break the Pest Seal | The colony loses 12 HP. You take 2 Poison. |
@@ -1025,7 +1023,6 @@ Handed over by a boss, a door or an event rather than offered; never in a reward
 | `pay_the_fee` | Pay the Fee | Pay 15 Gold after the fight; the Dragon hoards one more Permit. |
 | `petition_for_priority` | Petition for Priority | Move one place closer to the Counter. Take 1 Paperwork. One queue choice a turn. |
 | `redacted_leaf` | Redacted Leaf | Unplayable. Retain. Turn start: a card in your hand is Redacted, and this is spent. |
-| `return_receipt` | Return Receipt | Remove 1 Overdue (the Bell loses 5 HP), or remove 1 Late Fee (misfile a draw-pile card). |
 | `return_something_taken` | Return Something Taken | Give back 30 Gold (after the fight): it loses 2 Spoils and 15 HP. Or sacrifice a hand card: 1 Spoil, 10 HP. |
 | `revise_body_shall_bear` | Revise: Thirty-Six | Spend a Reed Mark: revise one step. 36 HP → 24 → 12 → none → she takes 18. |
 | `revise_guard_counted_nothing` | Revise: The Guard Counts Nothing | Spend a Reed Mark: revise one step. Block −18 → −12 → −6 → none → +6. |

@@ -651,31 +651,24 @@
       {
         "id": "issue_the_closing_notice",
         "name": "Issue the Closing Notice",
-        "intent_type": "debuff",
+        "intent_type": "attack",
         "actions": [
           {
-            "type": "apply_status",
+            "type": "deal_damage",
             "target": "player",
-            "status": "overdue",
-            "amount": 1
+            "amount": 8
           }
         ]
       },
       {
         "id": "the_desk_is_now_closed",
         "name": "The Desk Is Now Closed",
-        "intent_type": "mixed",
+        "intent_type": "attack",
         "actions": [
           {
             "type": "deal_damage",
             "target": "player",
             "amount": 12
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "overdue",
-            "amount": 1
           }
         ]
       },
@@ -759,7 +752,8 @@
     ],
     "starting_statuses": [
       {
-        "status": "bell_delinquency"
+        "status": "closing_time",
+        "stacks": 4
       }
     ]
   },
@@ -825,7 +819,7 @@
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 23
+            "amount": 12
           }
         ]
       }
@@ -837,7 +831,8 @@
     ],
     "starting_statuses": [
       {
-        "status": "the_aisles_narrow"
+        "status": "colossus_distance",
+        "stacks": 3
       }
     ]
   },
@@ -952,9 +947,6 @@
     "starting_statuses": [
       {
         "status": "the_black_catalogue"
-      },
-      {
-        "status": "catalogue_citation_of_record"
       }
     ]
   },
@@ -967,12 +959,12 @@
       {
         "id": "pose_the_missing_question",
         "name": "Pose the Missing Question",
-        "intent_type": "block",
+        "intent_type": "attack",
         "actions": [
           {
-            "type": "gain_block",
-            "target": "owner",
-            "amount": 12
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 9
           }
         ]
       },
@@ -1033,9 +1025,6 @@
     "starting_statuses": [
       {
         "status": "the_black_ink_oracle"
-      },
-      {
-        "status": "oracle_reference"
       }
     ]
   },
@@ -1075,9 +1064,10 @@
         "intent_type": "debuff",
         "actions": [
           {
-            "type": "gain_block",
-            "target": "owner",
-            "amount": 0
+            "type": "apply_status",
+            "target": "player",
+            "status": "doubt",
+            "amount": 2
           }
         ]
       },
@@ -1097,12 +1087,6 @@
     "starting_statuses": [
       {
         "status": "the_volume_of_causes"
-      },
-      {
-        "status": "causes_reference"
-      },
-      {
-        "status": "concordance_broken"
       }
     ],
     "tags": [
@@ -1169,9 +1153,6 @@
     "starting_statuses": [
       {
         "status": "the_volume_of_consequences"
-      },
-      {
-        "status": "concordance_broken"
       }
     ],
     "tags": [
@@ -1235,7 +1216,7 @@
           {
             "type": "apply_status",
             "target": "player",
-            "status": "overdue",
+            "status": "paperwork",
             "amount": 1
           }
         ]
@@ -1249,9 +1230,6 @@
     "starting_statuses": [
       {
         "status": "the_drawer"
-      },
-      {
-        "status": "drawer_delinquency"
       }
     ]
   },
@@ -1317,12 +1295,12 @@
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 14
+            "amount": 11
           },
           {
             "type": "apply_status",
             "target": "player",
-            "status": "overdue",
+            "status": "paperwork",
             "amount": 1
           }
         ]
@@ -1338,7 +1316,7 @@
         "status": "the_obituary"
       },
       {
-        "status": "proper_notice_of_passing"
+        "status": "a_respectable_life"
       },
       {
         "status": "living_a_respectable_life"
@@ -1352,64 +1330,10 @@
     "intent_pattern": "cycle",
     "intents": [
       {
-        "id": "open_a_new_entry",
-        "name": "Open a New Entry",
-        "intent_type": "block",
-        "actions": [
-          {
-            "type": "gain_block",
-            "target": "owner",
-            "amount": 12
-          }
-        ]
-      },
-      {
-        "id": "compare_with_prior_conduct",
-        "name": "Compare With Prior Conduct",
-        "intent_type": "attack",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 14
-          }
-        ]
-      },
-      {
-        "id": "index_the_deviation",
-        "name": "Index the Deviation",
-        "intent_type": "attack",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 12
-          }
-        ]
-      },
-      {
-        "id": "publish_the_preliminary_finding",
-        "name": "Publish the Preliminary Finding",
-        "intent_type": "attack",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 14
-          }
-        ]
-      },
-      {
-        "id": "reclassify_the_evidence",
-        "name": "Reclassify the Evidence",
-        "intent_type": "block",
-        "actions": [
-          {
-            "type": "gain_block",
-            "target": "owner",
-            "amount": 10
-          }
-        ]
+        "id": "read_you_back",
+        "name": "Read You Back",
+        "intent_type": "mixed",
+        "actions": []
       }
     ],
     "tags": [
@@ -1420,12 +1344,6 @@
     "starting_statuses": [
       {
         "status": "the_whispering_catalogue"
-      },
-      {
-        "status": "the_whispering_catalogue_state"
-      },
-      {
-        "status": "whispering_catalogue_reference"
       }
     ]
   },
@@ -1474,12 +1392,12 @@
       {
         "id": "seal_the_principal_instrument",
         "name": "Seal the Principal Instrument",
-        "intent_type": "block",
+        "intent_type": "attack",
         "actions": [
           {
-            "type": "gain_block",
-            "target": "owner",
-            "amount": 8
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 10
           }
         ]
       },
@@ -1491,7 +1409,7 @@
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 29
+            "amount": 20
           }
         ]
       }
@@ -1504,12 +1422,6 @@
     "starting_statuses": [
       {
         "status": "the_warden_of_sealed_volumes"
-      },
-      {
-        "status": "the_warden_keys"
-      },
-      {
-        "status": "warden_citation"
       }
     ]
   },
@@ -1594,15 +1506,6 @@
     "starting_statuses": [
       {
         "status": "the_curator_of_misplaced_hours"
-      },
-      {
-        "status": "the_archival_clock"
-      },
-      {
-        "status": "curator_citation"
-      },
-      {
-        "status": "curator_dial_present"
       }
     ]
   },
@@ -1639,18 +1542,12 @@
       {
         "id": "account_of_obligation",
         "name": "Account of Obligation",
-        "intent_type": "mixed",
+        "intent_type": "attack",
         "actions": [
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 26
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "overdue",
-            "amount": 1
+            "amount": 20
           }
         ]
       },
@@ -1687,12 +1584,6 @@
     "starting_statuses": [
       {
         "status": "the_auditor_of_returned_lives"
-      },
-      {
-        "status": "the_sealed_accounts"
-      },
-      {
-        "status": "auditor_citation"
       }
     ]
   },
@@ -1754,12 +1645,6 @@
     "starting_statuses": [
       {
         "status": "the_premise"
-      },
-      {
-        "status": "foundational_citation"
-      },
-      {
-        "status": "grand_cross_reference_citation"
       }
     ],
     "tags": [
@@ -1793,9 +1678,10 @@
         "intent_type": "debuff",
         "actions": [
           {
-            "type": "deal_damage",
+            "type": "apply_status",
             "target": "player",
-            "amount": 0
+            "status": "doubt",
+            "amount": 2
           }
         ]
       },
@@ -1894,79 +1780,10 @@
     "starting_statuses": [
       {
         "status": "the_conclusion"
-      }
-    ],
-    "tags": [
-      "archives",
-      "boss",
-      "act_2",
-      "grand_cross_reference"
-    ]
-  },
-  {
-    "id": "grand_cross_reference",
-    "name": "The Grand Cross-Reference",
-    "max_hp": 96,
-    "intent_pattern": "cycle",
-    "intents": [
-      {
-        "id": "reweave_the_references",
-        "name": "Reweave the References",
-        "intent_type": "buff",
-        "actions": [
-          {
-            "type": "gain_block",
-            "target": "owner",
-            "amount": 0
-          }
-        ]
       },
       {
-        "id": "all_entries_support_the_finding",
-        "name": "All Entries Support the Finding",
-        "intent_type": "block",
-        "actions": [
-          {
-            "type": "gain_block",
-            "target": "owner",
-            "amount": 0
-          }
-        ]
-      },
-      {
-        "id": "reverse_the_citation",
-        "name": "Reverse the Citation",
-        "intent_type": "buff",
-        "actions": [
-          {
-            "type": "gain_block",
-            "target": "owner",
-            "amount": 0
-          }
-        ]
-      },
-      {
-        "id": "isolate_the_margin",
-        "name": "Isolate the Margin",
-        "intent_type": "buff",
-        "actions": [
-          {
-            "type": "gain_block",
-            "target": "owner",
-            "amount": 0
-          }
-        ]
-      }
-    ],
-    "starting_statuses": [
-      {
-        "status": "the_concordance"
-      },
-      {
-        "status": "no_further_reference_yet"
-      },
-      {
-        "status": "the_concordance_engine"
+        "status": "isolated_in_the_margin",
+        "stacks": 2
       }
     ],
     "tags": [

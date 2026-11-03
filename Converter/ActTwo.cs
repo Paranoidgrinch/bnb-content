@@ -173,8 +173,6 @@ public static class ActTwo
                 CombatantTargetSelectors.Source,
                 new ConstantExpression<CardsDrawnTriggeredEffectContext>(1),
                 resultKey: Replacement),
-            Elites.RollingStacksColossus.OnMisfilingSkipped(
-                new DrawCardOutcomeExpression<CardsDrawnTriggeredEffectContext>(Replacement)),
             // ⚠ FROM THE WHOLE ENEMY SIDE, because the mark cannot say which shelf filed it (that is why
             // destinations are written into marks at all). The Index only asks THAT a misfiling was skipped;
             // nothing here claims to know whose it was, which is also why this announcement is not a

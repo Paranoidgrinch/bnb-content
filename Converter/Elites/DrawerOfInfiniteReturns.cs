@@ -11,7 +11,7 @@ namespace BnbContent.Converter.Elites;
 // REWORKED in the content cut of 2026-10-29. Every turn the Drawer demands one card from your hand, and the card
 // says so on its face. Play the demanded card and it works as always — and then it goes into the drawer: the
 // drawer stands open, and an open drawer takes double damage until the end of your next turn. Keep it from the
-// drawer instead and it files 1 Overdue against you, which it collects like any archive source. Every card it
+// drawer instead and it costs you 6 health (2026-11-03; it was an Overdue). Every card it
 // swallowed comes back to your hand when it dies.
 //
 // A shut drawer guards itself (10 Block each of its turns), so feeding it is how the fight is won quickly, and
@@ -22,13 +22,13 @@ public static class DrawerOfInfiniteReturns
 
     public const string TheDrawerId = "the_drawer";
     public const string DrawerOpenId = "drawer_open";
-    public const string DrawerDelinquencyId = "drawer_delinquency";
     public const string DemandedMark = "drawer_demand";
     public const string FedMark = "in_the_drawer";
 
     public const int OpenRounds = 2;      // the turn you feed it, and your next one
     public const int ShutBlock = 10;
     public const int DrawerHolds = 3;
+    public const int RefusedDamage = 6;   // a demanded card kept (user, 2026-11-03: it was 1 Overdue)
 
     private static CounterId HeldCounter => new("drawer_holds");
 
@@ -55,8 +55,6 @@ public static class DrawerOfInfiniteReturns
             ],
             Triggers = [],
         },
-        ActTwo.Delinquency(DrawerDelinquencyId, "Returned to Sender",
-            "At 2 Overdue owed to the Drawer, it collects: 1 Paperwork."),
     ];
 
     public static IReadOnlyList<EncounterTriggerData> Triggers() =>
@@ -164,8 +162,7 @@ public static class DrawerOfInfiniteReturns
         return Encounter("CardPlayed", program);
     }
 
-    // Your turn ends: a demanded card still in hand was refused (1 Overdue, from the Drawer), and the drawer
-    // closes a round.
+    // Your turn ends: a demanded card still in hand was refused (6 damage), and the drawer closes a round.
     private static EncounterTriggerData RefusingTheDrawer()
     {
         var player = CombatantTargetSelectors.Source;
@@ -181,9 +178,8 @@ public static class DrawerOfInfiniteReturns
                             new MarkCardInstanceNode<TurnEndedTriggeredEffectContext>(
                                 player, new IteratedCardExpression<TurnEndedTriggeredEffectContext>(),
                                 new TagId(DemandedMark), remove: true),
-                            new ApplyStatusNode<TurnEndedTriggeredEffectContext>(
-                                player, new StatusDefinitionId(ActTwo.OverdueId),
-                                Const<TurnEndedTriggeredEffectContext>(1), sourceSelector: Drawer),
+                            new DealDamageNode<TurnEndedTriggeredEffectContext>(
+                                player, Const<TurnEndedTriggeredEffectContext>(RefusedDamage), kind: DamageKind.DamageOverTime),
                         ]),
                         markFilter: new TagId(DemandedMark)),
                     new ModifyStatusStacksNode<TurnEndedTriggeredEffectContext>(

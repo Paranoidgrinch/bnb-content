@@ -53,8 +53,7 @@ public static class RawIntentPrograms
                 Bosses.AuditorOfReturnedLives.EnemyId => Bosses.AuditorOfReturnedLives.Intent(intentId),
                 Bosses.GrandCrossReference.PremiseId
                     or Bosses.GrandCrossReference.AuthorityId
-                    or Bosses.GrandCrossReference.ConclusionId
-                    or Bosses.GrandCrossReference.EngineId =>
+                    or Bosses.GrandCrossReference.ConclusionId =>
                     Bosses.GrandCrossReference.Intent(enemyId, intentId),
                 Elites.VolumesOfCauseAndConsequence.CausesId
                     or Elites.VolumesOfCauseAndConsequence.ConsequencesId =>

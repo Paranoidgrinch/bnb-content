@@ -82,8 +82,7 @@ public static class BlueprintAssembler
                 .. Relics.ActFourBossRelicCards.All(),
                 DeputyUndersecretary.ReviewCard(),
                 .. QueueCommissioner.Cards(), .. LordSealkeeper.Cards(), .. MunicipalDragon.Cards(),
-                .. LivingCharter.Cards(), .. Elites.ReturnBell.Cards(), ActTwo.AskAtTheDesk(),
-                .. Bosses.CuratorOfMisplacedHours.Cards(),
+                .. LivingCharter.Cards(), ActTwo.AskAtTheDesk(),
                 // The Hedge Witch's cards and her two actions (Witch/, plan W1). Appended LAST, so nothing the
                 // Bureaucrat's game reads moves.
                 .. Witch.WitchCards.Compile(),

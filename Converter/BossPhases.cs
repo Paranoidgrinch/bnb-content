@@ -45,24 +45,9 @@ public static class BossPhases
         Testator.DebtsId,
 
         // ── Act II ────────────────────────────────────────────────────────────────────────────────────────
-        WhisperingCatalogue.SpeaksInFullId,        // Phase II: it predicts you twice a turn
-        WhisperingCatalogue.FinalEntryId,          // the last phase
-        WardenOfSealedVolumes.LockdownPendingId,
-        WardenOfSealedVolumes.TotalLockdownId,
-        WardenOfSealedVolumes.FinalReviewId,
-        CuratorOfMisplacedHours.PresentRemovedPendingId,
-        CuratorOfMisplacedHours.PresentRemovedId,
-        AuditorOfReturnedLives.FormalReconciliationId,
-        AuditorOfReturnedLives.ClosingAuditId,
-        GrandCrossReference.ThesisPremiseId,       // Phase II is whichever Thesis the kill order chose
-        GrandCrossReference.ThesisAuthorityId,
-        GrandCrossReference.ThesisConclusionId,
 
         // The Curator's dial is not a phase, but it is the same kind of fact and it is read at the same
         // moment: it says which of three meanings the telegraphed action has.
-        CuratorOfMisplacedHours.DialPresentId,
-        CuratorOfMisplacedHours.DialFutureId,
-        CuratorOfMisplacedHours.DialPastId,
 
         // ── Act III ───────────────────────────────────────────────────────────────────────────────────────
         ActThree.BoundaryPendingId,

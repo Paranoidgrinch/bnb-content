@@ -52,7 +52,7 @@ public class EnemyArtTests
             .GroupBy(look => look.Frame!, StringComparer.Ordinal)
             .ToDictionary(g => g.Key, g => g.Count(), StringComparer.Ordinal);
 
-        Assert.Equal(31, shipped[EnemyRole.Boss]);
+        Assert.Equal(30, shipped[EnemyRole.Boss]);
         Assert.Equal(44, shipped[EnemyRole.Elite]);
         Assert.Equal(3, shipped[EnemyRole.Mimic]);
         Assert.Equal(64, shipped[EnemyRole.Standard]);
