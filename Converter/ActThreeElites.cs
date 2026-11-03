@@ -79,22 +79,6 @@ public static partial class ActThree
         ?? MagistrateIntent(enemyId, intentId)
         ?? BossIntent(enemyId, intentId);
 
-    // What settling a demand IN FULL does over and above the act's own reward, when the creditor is an elite
-    // that has written its own terms. Spliced into the one settlement in `ActThreeWergild`, because only the
-    // moment a demand is settled knows that it was settled.
-    public static IEffectNode<TurnEndedTriggeredEffectContext> EliteSettlement() =>
-        new CausalSequenceEffectNode<TurnEndedTriggeredEffectContext>(
-        [
-            ACleanFight(),
-            TheTollForCrossing(),
-            FullRedress(),
-            SettlementHasWeight(),
-            TheCounterseal(),
-            ADebtProperlySettled(),
-            SettleTheGround(),
-            TheCourtRemembersPayment(),
-        ]);
-
     // ── the laws the elites add ───────────────────────────────────────────────────────────────────────────
     //
     // Numbered on from the standard pool's, because a law is a number written onto the player as its

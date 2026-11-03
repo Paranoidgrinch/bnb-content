@@ -71,45 +71,9 @@
     "intents": [
       {
         "id": "loose_stone",
-        "name": "Loose Stone",
+        "name": "Loose Stones",
         "intent_type": "mixed",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 7
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "trespass",
-            "amount": 1
-          }
-        ]
-      },
-      {
-        "id": "stonefall",
-        "name": "Stonefall",
-        "intent_type": "attack",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 13
-          }
-        ]
-      },
-      {
-        "id": "brace_cairn",
-        "name": "Brace Cairn",
-        "intent_type": "block",
-        "actions": [
-          {
-            "type": "gain_block",
-            "target": "owner",
-            "amount": 17
-          }
-        ]
+        "actions": []
       }
     ],
     "starting_statuses": [
@@ -183,9 +147,6 @@
       },
       {
         "status": "current_survey"
-      },
-      {
-        "status": "sign_same_cost"
       }
     ],
     "tags": [
@@ -336,18 +297,12 @@
       {
         "id": "charter_toll",
         "name": "Charter Toll",
-        "intent_type": "mixed",
+        "intent_type": "attack",
         "actions": [
           {
             "type": "deal_damage",
             "target": "player",
             "amount": 11
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "wergild",
-            "amount": 1
           }
         ]
       },
@@ -399,20 +354,14 @@
     "intent_pattern": "cycle",
     "intents": [
       {
-        "id": "oath_bite",
-        "name": "Oath Bite",
-        "intent_type": "mixed",
+        "id": "river_shelter",
+        "name": "River Shelter",
+        "intent_type": "block",
         "actions": [
           {
-            "type": "deal_damage",
-            "target": "player",
+            "type": "gain_block",
+            "target": "owner",
             "amount": 12
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "wergild",
-            "amount": 1
           }
         ]
       },
@@ -424,19 +373,7 @@
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 17
-          }
-        ]
-      },
-      {
-        "id": "river_shelter",
-        "name": "River Shelter",
-        "intent_type": "block",
-        "actions": [
-          {
-            "type": "gain_block",
-            "target": "owner",
-            "amount": 18
+            "amount": 8
           }
         ]
       }
@@ -447,6 +384,9 @@
       },
       {
         "status": "oath_accepted"
+      },
+      {
+        "status": "fish_law_no_deeds"
       }
     ],
     "tags": [
@@ -643,9 +583,6 @@
       },
       {
         "status": "a_promise_must_be_paired"
-      },
-      {
-        "status": "betrothal_claim"
       }
     ],
     "tags": [
@@ -666,13 +603,12 @@
       {
         "id": "offer_the_cup",
         "name": "Offer the Cup",
-        "intent_type": "buff",
+        "intent_type": "attack",
         "actions": [
           {
-            "type": "apply_status",
+            "type": "deal_damage",
             "target": "player",
-            "status": "safe_conduct",
-            "amount": 1
+            "amount": 10
           }
         ]
       },
@@ -804,14 +740,8 @@
       {
         "id": "grant_leave_to_resist",
         "name": "Grant Leave to Resist",
-        "intent_type": "mixed",
+        "intent_type": "block",
         "actions": [
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "safe_conduct",
-            "amount": 1
-          },
           {
             "type": "gain_block",
             "target": "owner",
@@ -921,15 +851,8 @@
       {
         "id": "hospitality_has_its_price",
         "name": "Hospitality Has Its Price",
-        "intent_type": "debuff",
-        "actions": [
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "wergild",
-            "amount": 2
-          }
-        ]
+        "intent_type": "buff",
+        "actions": []
       },
       {
         "id": "mend_the_household_law",
@@ -950,12 +873,6 @@
       },
       {
         "status": "grandmother_web_threads"
-      },
-      {
-        "status": "web_thread_entry_taut"
-      },
-      {
-        "status": "web_thread_measure_taut"
       }
     ],
     "tags": [
@@ -998,13 +915,12 @@
       {
         "id": "future_toll",
         "name": "Future Toll",
-        "intent_type": "debuff",
+        "intent_type": "attack",
         "actions": [
           {
-            "type": "apply_status",
+            "type": "deal_damage",
             "target": "player",
-            "status": "wergild",
-            "amount": 2
+            "amount": 12
           }
         ]
       },
@@ -1069,13 +985,12 @@
       {
         "id": "croak_the_amount_due",
         "name": "Croak the Amount Due",
-        "intent_type": "debuff",
+        "intent_type": "attack",
         "actions": [
           {
-            "type": "apply_status",
+            "type": "deal_damage",
             "target": "player",
-            "status": "wergild",
-            "amount": 2
+            "amount": 12
           }
         ]
       },
@@ -1152,13 +1067,12 @@
       {
         "id": "collect_the_queens_claim",
         "name": "Collect the Queen's Claim",
-        "intent_type": "debuff",
+        "intent_type": "attack",
         "actions": [
           {
-            "type": "apply_status",
+            "type": "deal_damage",
             "target": "player",
-            "status": "wergild",
-            "amount": 2
+            "amount": 14
           }
         ]
       },
@@ -1178,13 +1092,7 @@
         "id": "replace_the_fallen",
         "name": "Replace the Fallen",
         "intent_type": "buff",
-        "actions": [
-          {
-            "type": "gain_block",
-            "target": "owner",
-            "amount": 0
-          }
-        ]
+        "actions": []
       },
       {
         "id": "royal_enforcement",
@@ -1194,7 +1102,7 @@
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 27
+            "amount": 20
           }
         ]
       }
@@ -1207,8 +1115,7 @@
         "status": "the_proper_line"
       },
       {
-        "status": "reconstruction_charge",
-        "stacks": 2
+        "status": "shielded_by_the_line"
       }
     ],
     "tags": [
@@ -1428,13 +1335,12 @@
       {
         "id": "declare_the_new_boundary",
         "name": "Declare the New Boundary",
-        "intent_type": "buff",
+        "intent_type": "block",
         "actions": [
           {
-            "type": "apply_status",
-            "target": "player",
-            "status": "safe_conduct",
-            "amount": 1
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 12
           }
         ]
       },
@@ -1523,13 +1429,12 @@
       {
         "id": "demand_redress",
         "name": "Demand Redress",
-        "intent_type": "debuff",
+        "intent_type": "attack",
         "actions": [
           {
-            "type": "apply_status",
+            "type": "deal_damage",
             "target": "player",
-            "status": "wergild",
-            "amount": 2
+            "amount": 14
           }
         ]
       },
@@ -1588,18 +1493,12 @@
       {
         "id": "hear_the_road",
         "name": "Hear the Road",
-        "intent_type": "mixed",
+        "intent_type": "attack",
         "actions": [
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 10
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "wergild",
-            "amount": 2
+            "amount": 12
           }
         ]
       },
@@ -1623,13 +1522,7 @@
           {
             "type": "apply_status",
             "target": "player",
-            "status": "wergild",
-            "amount": 1
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "safe_conduct",
+            "status": "doubt",
             "amount": 1
           }
         ]
@@ -1736,26 +1629,24 @@
       {
         "id": "demand_the_countermark",
         "name": "Demand the Countermark",
-        "intent_type": "debuff",
+        "intent_type": "attack",
         "actions": [
           {
-            "type": "apply_status",
+            "type": "deal_damage",
             "target": "player",
-            "status": "wergild",
-            "amount": 2
+            "amount": 14
           }
         ]
       },
       {
         "id": "old_growth_signature",
         "name": "Old Growth Signature",
-        "intent_type": "buff",
+        "intent_type": "block",
         "actions": [
           {
-            "type": "apply_status",
-            "target": "player",
-            "status": "safe_conduct",
-            "amount": 1
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 16
           }
         ]
       },
@@ -1825,13 +1716,12 @@
       {
         "id": "call_in_a_small_favor",
         "name": "Call in a Small Favour",
-        "intent_type": "debuff",
+        "intent_type": "attack",
         "actions": [
           {
-            "type": "apply_status",
+            "type": "deal_damage",
             "target": "player",
-            "status": "wergild",
-            "amount": 2
+            "amount": 12
           }
         ]
       },
@@ -1932,19 +1822,12 @@
       {
         "id": "mark_the_old_boundary",
         "name": "Mark the Old Boundary",
-        "intent_type": "debuff",
+        "intent_type": "block",
         "actions": [
           {
-            "type": "apply_status",
-            "target": "player",
-            "status": "wergild",
-            "amount": 1
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "safe_conduct",
-            "amount": 1
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 12
           }
         ]
       },
@@ -2009,13 +1892,12 @@
       {
         "id": "call_in_the_gift",
         "name": "Call in the Gift",
-        "intent_type": "debuff",
+        "intent_type": "attack",
         "actions": [
           {
-            "type": "apply_status",
+            "type": "deal_damage",
             "target": "player",
-            "status": "wergild",
-            "amount": 2
+            "amount": 14
           }
         ]
       },

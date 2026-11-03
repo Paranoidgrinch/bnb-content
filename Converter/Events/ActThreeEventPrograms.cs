@@ -121,13 +121,13 @@ public static class ActThreeEventPrograms
             Done(ForgottenNameWaits),
         ]);
 
-    // A demand of the road, waiting for an ordinary fight to be walked into.
+    // A demand of the road, waiting for an ordinary fight to be walked into: 4 HP as that fight opens. (Until
+    // 2026-11-03 a Wergild owed to nobody, settled by Make Amends; the act has no Wergild any more.)
     private static ITriggeredRunEffectDefinition DemandWaitsBody(string name) =>
         RunPrograms.When<NodeEnteredRunEvent>(NormalCombat(),
         [
             Literal(Openings.NextCombat(
-                new CombatNodeModel("applyStatus", "source", CombatAmountSpec.FromConst(2),
-                    StatusId: ActThreeEventObjects.EnvironmentalWergildId))),
+                new CombatNodeModel("dealDamage", "source", CombatAmountSpec.FromConst(4)))),
             Done(name),
         ]);
 

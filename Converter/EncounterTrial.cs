@@ -33,7 +33,7 @@ public static class EncounterTrial
 {
     public const string InfirmaryId = "trial_infirmary";
     public const string ExtraPrefix = "trial:";
-    public static readonly int[] Acts = [1, 2];
+    public static readonly int[] Acts = [1, 2, 3];
 
     public static string SpoilsId(int act, int stage) => $"trial_{act}_spoils_{stage}";
 
@@ -45,13 +45,14 @@ public static class EncounterTrial
     public static RelicAuthoring.BnbRelic Infirmary => RelicAuthoring.Event(InfirmaryId, "The Infirmary",
         "The Encounter Trial — every fight is read on its own.",
         "Encounter Trial only: after every fight you win, heal to full.",
-        // A trial walks no act's opening, so the city's after-fight ledgers (the Dragon's fees, the Signpost's
-        // purse) ride here too.
+        // A trial walks no act's opening, so the acts' after-fight ledgers (the Dragon's fees, the Signpost's
+        // purse, the Toll Frog's belly) ride here too.
         runPrograms:
         [
             RelicAuthoring.AfterEveryVictory(new ComputedHealRunEffect(RunExpr.MissingHealth)),
             MunicipalDragon.FeesProgram(),
             EncounterPassives.SignpostSpoilsProgram(),
+            ActThree.FrogSpoilsProgram(),
         ]);
 
     // The stage packages, in order. Each is one stop with one choice; its effects ask one after another.

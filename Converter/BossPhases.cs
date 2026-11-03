@@ -50,22 +50,11 @@ public static class BossPhases
         // moment: it says which of three meanings the telegraphed action has.
 
         // ── Act III ───────────────────────────────────────────────────────────────────────────────────────
-        ActThree.BoundaryPendingId,
-        ActThree.CombinedJurisdictionId,
-        ActThree.HeartwoodPendingId,
-        ActThree.HeartwoodId,
-        ActThree.StayLongerPendingId,
-        ActThree.HouseholdLawId,
-        ActThree.SlopeStirsPendingId,
-        ActThree.SlopeAnswersPendingId,
-        ActThree.SurveyedFaceId,
-        ActThree.CrownStirsPendingId,
-        ActThree.CrownBreaksPendingId,
+        ActThree.BothHeardId,
+        ActThree.GrandmotherHalfId,
+        ActThree.HillFirstAnswerId,
         ActThree.CrownOfTheHillId,
-        ActThree.CourtSessionPendingId,
-        ActThree.CourtInSessionId,
-        ActThree.GrantedNamePendingId,
-        ActThree.SovereignReciprocityId,
+        ActThree.CourtTightenedId,
 
         // ── Act IV ────────────────────────────────────────────────────────────────────────────────────────
         //

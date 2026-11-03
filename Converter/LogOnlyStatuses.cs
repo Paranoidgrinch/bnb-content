@@ -26,8 +26,7 @@ public static class LogOnlyStatuses
         // Act IV's shared law, explained once by the tutorial (moment act4.labyrinth)
         "labyrinth_body",
         // once-per-turn and once-per-fight guards of enemy rules
-        "eternal_cartouche_spent", "surveyed_this_turn", "border_next",
-        "web_measured_this_turn", "line_broken_this_turn", "counter_petition_used",
+        "eternal_cartouche_spent", "border_next",
         "sinned_this_turn", "the_real_door", "door_slammed", "tomb_spoils_carried", "jackal_moves_to",
         // the Seizure Procession's machinery: the Lantern's rule says the whole of it in one sentence (2026-11-01)
         "lock_cart", "seizure_marshal",

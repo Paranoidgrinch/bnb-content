@@ -1,126 +1,95 @@
-using System.Text.Json;
 using RogueDeck.Core.Combat;
 using RogueDeck.Scenario.Authoring;
 
 namespace BnbContent.Converter;
 
-// Act III, Stage 3 — Tollwater, where the act stops asking what you did and starts naming a price for it. Since
-// the content cut of 2026-10-29: a shell that names the only coin it takes, a fish that leaves once its oath is
-// kept twice, and a ford whose every right is a bill — and whose other bank resents being paid second.
+// Act III, Stage 3 — Tollwater. Since 2026-11-03 (user): a snail that charges for a busy turn, a fish that leaves
+// you be once you have kept its law three turns running, and a ford that banks every right it is granted.
 public static partial class ActThree
 {
     public const string PaymentAccordingToCharterId = "payment_according_to_charter";
-    public const string ShellEnergyId = "shell_names_energy";
-    public const string ShellDeedId = "shell_names_a_deed";
-    public const string ShellWorkingId = "shell_names_a_working";
+    public const string OathAcceptedId = "oath_accepted";
+    public const string FishNoDeedsId = "fish_law_no_deeds";
+    public const string FishLowGuardId = "fish_law_low_guard";
     public const string OathKeptId = "oath_kept";
     public const string TollOnBothBanksId = "toll_on_both_banks";
 
-    public const int OathsToLeave = 2;
-    public const int FordWergildPerClaim = 2;
-    public const int AngeredBankStrength = 2;
+    public const int SnailCardLimit = 3;
+    public const int OathTurnsToLeave = 3;
+    public const int FishGuardLimit = 10;
+    public const int FordBlockPerClaim = 6;
 
     // ── Charter-Shell Snail ───────────────────────────────────────────────────────────────────────────────
-    //
-    // "Its shell names the only accepted payment, rotating each turn between Energy, a Deed and a Working."
-    // The shell is one of three chips; the payment itself (`ActThree.OfferACard`, `CanPayInCoin`) reads it
-    // while the Snail is owed anything.
-    public static StatusData PaymentAccordingToCharter()
-    {
-        var snail = Lawgiver(PaymentAccordingToCharterId);
-
-        IEffectNode<TurnStartedTriggeredEffectContext> Turn(string from, string to) =>
-            new CausalSequenceEffectNode<TurnStartedTriggeredEffectContext>(
-            [
-                new RemoveStatusNode<TurnStartedTriggeredEffectContext>(snail, new StatusDefinitionId(from)),
-                new ApplyStatusNode<TurnStartedTriggeredEffectContext>(
-                    snail, new StatusDefinitionId(to), new ConstantExpression<TurnStartedTriggeredEffectContext>(1)),
-            ]);
-
-        var rotate = new EffectProgram<TurnStartedTriggeredEffectContext>(
-            new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
-                new AndExpression<TurnStartedTriggeredEffectContext>(
-                    PlayersTurn<TurnStartedTriggeredEffectContext>(),
-                    Alive<TurnStartedTriggeredEffectContext>(snail)),
-                new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
-                    Wears<TurnStartedTriggeredEffectContext>(snail, ShellEnergyId),
-                    Turn(ShellEnergyId, ShellDeedId),
-                    new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
-                        Wears<TurnStartedTriggeredEffectContext>(snail, ShellDeedId),
-                        Turn(ShellDeedId, ShellWorkingId),
-                        Turn(ShellWorkingId, ShellEnergyId)))));
-
-        return Rule(PaymentAccordingToCharterId, "Payment According to Charter",
-            "While you owe the Snail, its shell names the only payment Make Amends accepts: Energy, a Deed or "
-            + "a Working. It turns each turn.",
-            [new StatusTriggerData("TurnStarted", JsonSerializer.SerializeToElement(
-                rotate, CombatJson.CreateOptions<TurnStartedTriggeredEffectContext>()),
-                StatusTriggerScope.Anywhere)]);
-    }
-
-    public static StatusData ShellEnergy() =>
-        Marker(ShellEnergyId, "Shell: Energy", "While you owe the Snail, only coin pays: Make Amends with Energy.");
-
-    public static StatusData ShellDeed() =>
-        Marker(ShellDeedId, "Shell: a Deed", "While you owe the Snail, only an offered Deed pays.");
-
-    public static StatusData ShellWorking() =>
-        Marker(ShellWorkingId, "Shell: a Working", "While you owe the Snail, only an offered Working pays.");
-
-    // While the Snail is owed, does its shell accept this means of payment?
-    private static ICombatExpression<CardPlayContext, bool> SnailOwed() =>
-        new ComparisonExpression<CardPlayContext>(
-            new CombatantStatusStacksFromSourceExpression<CardPlayContext>(
-                CombatantTargetSelectors.Source, new StatusDefinitionId(WergildId), Lawgiver(PaymentAccordingToCharterId)),
-            ComparisonOperator.Greater,
-            new ConstantExpression<CardPlayContext>(0));
-
-    private static ICombatExpression<CardPlayContext, bool> CharterAcceptsCoin() =>
-        new OrExpression<CardPlayContext>(
-            new NotExpression<CardPlayContext>(SnailOwed()),
-            Wears<CardPlayContext>(Lawgiver(PaymentAccordingToCharterId), ShellEnergyId));
-
-    private static ICombatExpression<CardPlayContext, bool> CharterAcceptsOffering(
-        ICardInstanceExpression<CardPlayContext> offering) =>
-        new OrExpression<CardPlayContext>(
-            new NotExpression<CardPlayContext>(SnailOwed()),
-            new OrExpression<CardPlayContext>(
-                new AndExpression<CardPlayContext>(
-                    Wears<CardPlayContext>(Lawgiver(PaymentAccordingToCharterId), ShellDeedId),
-                    new CardInstanceHasTagExpression<CardPlayContext>(offering, new TagId(Cards.CardAuthoring.DeedTag))),
-                new AndExpression<CardPlayContext>(
-                    Wears<CardPlayContext>(Lawgiver(PaymentAccordingToCharterId), ShellWorkingId),
-                    new CardInstanceHasTagExpression<CardPlayContext>(offering, new TagId(Cards.CardAuthoring.WorkingTag)))));
+    public static StatusData PaymentAccordingToCharter() =>
+        LawOnPlay(PaymentAccordingToCharterId, "A Toll on Haste",
+            "Playing a third card in a turn breaks its law.",
+            Is(PlayedThisTurn, ComparisonOperator.GreaterOrEqual, SnailCardLimit));
 
     // ── Streamside Oath-Fish ──────────────────────────────────────────────────────────────────────────────
     //
-    // "Pay its Wergild in full twice and it leaves peacefully, counting as defeated." Spliced into the one
-    // settlement in `ActThreeWergild`, which is the only place that knows a demand was settled in full.
-    public static IEffectNode<TurnEndedTriggeredEffectContext> AnOathKept()
+    // Its law follows what it is about to do: while it means to guard, no Deeds; while it means to strike, keep your
+    // Block to 10 or less. Each intent sets the law for the player's next turn (the two alternate, starting with
+    // the guard). Keep its law three turns running and it leaves in peace, counted as defeated.
+    public static StatusData OathAccepted()
     {
-        var creditor = CombatantTargetSelectors.IterationTarget;
-        return new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
-            Wears<TurnEndedTriggeredEffectContext>(creditor, OathAcceptedId),
+        var fish = Lawgiver(OathAcceptedId);
+        var player = CombatantTargetSelectors.Source;
+
+        var deed = new EffectProgram<CardPlayedTriggeredEffectContext>(
+            new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
+                new AndExpression<CardPlayedTriggeredEffectContext>(
+                    Alive<CardPlayedTriggeredEffectContext>(fish),
+                    new AndExpression<CardPlayedTriggeredEffectContext>(
+                        Wearing<CardPlayedTriggeredEffectContext>(fish, FishNoDeedsId),
+                        PlayedIs(Cards.CardAuthoring.DeedTag))),
+                Breach<CardPlayedTriggeredEffectContext>(fish)));
+
+        var reckon = new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
+            new AndExpression<TurnEndedTriggeredEffectContext>(
+                PlayersTurn<TurnEndedTriggeredEffectContext>(), Alive<TurnEndedTriggeredEffectContext>(fish)),
             new CausalSequenceEffectNode<TurnEndedTriggeredEffectContext>(
             [
-                new ApplyStatusNode<TurnEndedTriggeredEffectContext>(
-                    creditor, new StatusDefinitionId(OathKeptId), new ConstantExpression<TurnEndedTriggeredEffectContext>(1)),
                 new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
-                    new ComparisonExpression<TurnEndedTriggeredEffectContext>(
-                        new CombatantStatusStacksExpression<TurnEndedTriggeredEffectContext>(
-                            creditor, new StatusDefinitionId(OathKeptId)),
-                        ComparisonOperator.GreaterOrEqual,
-                        new ConstantExpression<TurnEndedTriggeredEffectContext>(OathsToLeave)),
-                    new SetHealthNode<TurnEndedTriggeredEffectContext>(
-                        creditor, new ConstantExpression<TurnEndedTriggeredEffectContext>(0))),
+                    new AndExpression<TurnEndedTriggeredEffectContext>(
+                        Wearing<TurnEndedTriggeredEffectContext>(fish, FishLowGuardId),
+                        Is(new CombatantDefensivePoolExpression<TurnEndedTriggeredEffectContext>(
+                            player, StandardCombatIds.BlockDefensivePool), ComparisonOperator.Greater, FishGuardLimit)),
+                    Breach<TurnEndedTriggeredEffectContext>(fish)),
+                // The oath: a turn kept is a mark on the fish, a turn broken wipes them.
+                new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
+                    Wearing<TurnEndedTriggeredEffectContext>(fish, LawBrokenThisTurnId),
+                    new RemoveStatusNode<TurnEndedTriggeredEffectContext>(fish, new StatusDefinitionId(OathKeptId)),
+                    @else: new CausalSequenceEffectNode<TurnEndedTriggeredEffectContext>(
+                    [
+                        new ApplyStatusNode<TurnEndedTriggeredEffectContext>(
+                            fish, new StatusDefinitionId(OathKeptId), new ConstantExpression<TurnEndedTriggeredEffectContext>(1)),
+                        new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
+                            Is(new CombatantStatusStacksExpression<TurnEndedTriggeredEffectContext>(fish, new StatusDefinitionId(OathKeptId)),
+                                ComparisonOperator.GreaterOrEqual, OathTurnsToLeave),
+                            new SetHealthNode<TurnEndedTriggeredEffectContext>(fish, new ConstantExpression<TurnEndedTriggeredEffectContext>(0))),
+                    ])),
             ]));
+
+        return Rule(OathAcceptedId, "The Oath of the Stream",
+            "While it guards: no Deeds. While it strikes: no more than 10 Block. Keep its law 3 turns running and it leaves, defeated.",
+            [
+                new StatusTriggerData("CardPlayed", System.Text.Json.JsonSerializer.SerializeToElement(
+                    deed, CombatJson.CreateOptions<CardPlayedTriggeredEffectContext>()), StatusTriggerScope.Anywhere),
+                On("TurnEnded", reckon, StatusTriggerScope.Anywhere),
+            ]);
     }
+
+    public static StatusData FishNoDeeds() =>
+        Marker(FishNoDeedsId, "Law: No Deeds", "It is about to guard. Playing a Deed this turn breaks its law.");
+
+    public static StatusData FishLowGuard() =>
+        Marker(FishLowGuardId, "Law: Low Guard", "It is about to strike. Ending this turn on more than 10 Block breaks its law.");
 
     public static StatusData OathKept() => new()
     {
         Id = OathKeptId,
         NameKey = "Oath Kept",
-        DescriptionKey = "Demands you settled with it in full. At 2 it leaves in peace, counted as defeated.",
+        DescriptionKey = "Turns in a row you kept its law. At 3 it leaves in peace, counted as defeated.",
         Polarity = StatusPolarity.Neutral,
         StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
         UsesStacks = true,
@@ -129,43 +98,43 @@ public static partial class ActThree
         Triggers = [],
     };
 
+    // Its two intents: the act, and the law for your next turn (the other one's).
+    private static EffectProgram<EnemyActionContext> FishActs(IEffectNode<EnemyActionContext> act, string nextLaw, string lastLaw)
+    {
+        var self = CombatantTargetSelectors.Source;
+        return new(new CausalSequenceEffectNode<EnemyActionContext>(
+        [
+            act,
+            new RemoveStatusNode<EnemyActionContext>(self, new StatusDefinitionId(lastLaw)),
+            new ApplyStatusNode<EnemyActionContext>(self, new StatusDefinitionId(nextLaw), new ConstantExpression<EnemyActionContext>(1)),
+        ]));
+    }
+
     // ── Two-Bank Toll Ford ────────────────────────────────────────────────────────────────────────────────
     //
-    // "Every Claim instantly becomes Wergild; paying one bank angers the other." A Claim made for the Ford is
-    // spent at once on a demand for 2; a demand settled in full gives the Ford 2 Strength.
+    // Every Claim granted the Ford is banked behind its walls: 6 Block.
     public static StatusData TollOnBothBanks()
     {
-        var ford = CombatantTargetSelectors.EventTarget;
-
-        EffectProgram<TContext> Program<TContext>() where TContext : class =>
-            new(new ConditionalEffectNode<TContext>(
+        IEffectNode<TContext> Bank<TContext>() where TContext : class =>
+            new ConditionalEffectNode<TContext>(
                 new TriggerEventStatusIsExpression<TContext>(new StatusDefinitionId(ClaimCreatedId)),
-                new CausalSequenceEffectNode<TContext>(
-                [
-                    ConsumeClaim<TContext>(ford),
-                    DemandWergild<TContext>(ford, FordWergildPerClaim),
-                ])));
+                new GainBlockNode<TContext>(CombatantTargetSelectors.EventTarget, new ConstantExpression<TContext>(FordBlockPerClaim)));
 
-        return Rule(TollOnBothBanksId, "Toll on Both Banks",
-            "Every Claim the Ford gains becomes 2 Wergild at once. Settle a demand in full and the other bank "
-            + "is angered: the Ford gains 2 Strength.",
-            [
-                new StatusTriggerData("StatusApplied", JsonSerializer.SerializeToElement(
-                    Program<StatusAppliedTriggeredEffectContext>(),
-                    CombatJson.CreateOptions<StatusAppliedTriggeredEffectContext>())),
-                new StatusTriggerData("StatusMerged", JsonSerializer.SerializeToElement(
-                    Program<StatusMergedTriggeredEffectContext>(),
-                    CombatJson.CreateOptions<StatusMergedTriggeredEffectContext>())),
-            ]);
+        return Rule(TollOnBothBanksId, "Toll on Both Banks", "Every Claim it gains also gives it 6 Block.",
+            [On("StatusApplied", Bank<StatusAppliedTriggeredEffectContext>()), On("StatusMerged", Bank<StatusMergedTriggeredEffectContext>())]);
     }
 
-    public static IEffectNode<TurnEndedTriggeredEffectContext> TheOtherBankAngered()
-    {
-        var creditor = CombatantTargetSelectors.IterationTarget;
-        return new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
-            Wears<TurnEndedTriggeredEffectContext>(creditor, TollOnBothBanksId),
-            new ApplyStatusNode<TurnEndedTriggeredEffectContext>(
-                creditor, new StatusDefinitionId("strength"),
-                new ConstantExpression<TurnEndedTriggeredEffectContext>(AngeredBankStrength)));
-    }
+    // The Act-III normal bodies whose intents are their own programs (the pressure intents are in ActThree.Intent).
+    private static EffectProgram<EnemyActionContext>? NormalIntent(string enemyId, string intentId) =>
+        $"{enemyId}.{intentId}" switch
+        {
+            "streamside_oath_fish.river_shelter" => FishActs(
+                new GainBlockNode<EnemyActionContext>(CombatantTargetSelectors.Source, new ConstantExpression<EnemyActionContext>(12)),
+                nextLaw: FishLowGuardId, lastLaw: FishNoDeedsId),
+            "streamside_oath_fish.current_strike" => FishActs(
+                new DealDamageNode<EnemyActionContext>(Applicant, new ConstantExpression<EnemyActionContext>(12)),
+                nextLaw: FishNoDeedsId, lastLaw: FishLowGuardId),
+            "cairn_of_stray_paths.loose_stone" => Stonefall(),
+            _ => null,
+        };
 }

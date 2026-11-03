@@ -1,4 +1,3 @@
-using System.Text.Json;
 using RogueDeck.Core.Combat;
 using RogueDeck.Run;
 using RogueDeck.Scenario.Authoring;
@@ -7,325 +6,115 @@ namespace BnbContent.Converter;
 
 // Act III elite 4 — **Great Toll Frog** (176 HP).
 //
-// > Restitution is necessary, but every payment becomes ammunition unless the player deliberately leaves
-// > change behind.
+// Nothing crosses for free. At the start of each of its turns the Frog swallows 5 of your Gold, and for every 10
+// in its belly its attacks hit 1 harder. Deal it 25 in one turn and it spits the lot back and its weight is gone.
+// What is still in its belly when the fight ends is gone for good.
 //
-// A colossal frog sits in a ford with coins, feathers, teeth and old Offerings lodged in its throat. It is
-// the act's restitution system turned against itself: Wergild is the one pressure Act III lets you answer
-// outright, and the Frog swallows every point you pay. Each swallowed point is a **Toll**, and the Toll is
-// what its throat eventually throws back at you.
+// Gold is the run's, so the fight only keeps the count (a counter on the player, `frog_belly`) and a run program
+// charges it once the fight is over (FrogSpoilsProgram) — the Municipal Dragon's idiom. The belly is also the
+// Frog's own badge, so the price is always in sight.
 //
-// The way out is the one thing nobody does by reflex — paying MORE than you owe. LEAVE THE CHANGE costs an
-// extra card and takes a Toll back out of the Frog, which is the only route that settles a demand without
-// arming the ford.
+// REWORKED 2026-11-03 (user, Act III pass): the Wergild it swallowed as Toll, and the Toll's payout, are gone.
 public static partial class ActThree
 {
     public const string GreatTollFrogEnemyId = "great_toll_frog";
     public const string GreatTollFrogId = "nothing_crosses_for_free";
-    public const string TollId = "frog_toll";
-    public const string FrogCrossingNotedId = "frog_crossing_noted";
+    public const string SwallowedGoldId = "swallowed_gold";
+    public const string TollWeightId = "toll_weight";
 
-    public const int NothingCrossesForFreeLaw = 17;
-    public const int TollCeiling = 5;
-
-    // What the player owed the Frog when the current payment began, so that "a point ACTUALLY PAID to the
-    // Frog" can be told from a point paid to somebody else — Make Amends settles the oldest demand first,
-    // and never asks which creditor that was.
-    public static CounterId FrogOwedBeforeCounter => new("frog_owed_before");
+    public const int FrogMeal = 5;
+    public const int GoldPerWeight = 10;
+    public const int FrogSpitDamage = 25;
+    public const string FrogSpoilsProgramId = "ford_frog_spoils";
+    public static CounterId FrogBellyCounter => new("frog_belly");
+    public static CounterId FrogBruiseCounter => new("frog_bruise");
 
     private static ICombatantTargetSelector Frog { get; } = Elite(GreatTollFrogId);
 
-    private static IEnumerable<StatusData> FrogStatuses() =>
-    [
-        NothingCrossesForFree(),
-        Toll(),
-        Marker(FrogCrossingNotedId, "Crossing Noted",
-            "The Frog has already charged you for one crossing this turn."),
-    ];
-
-    private static StatusData Toll() => new()
-    {
-        Id = TollId,
-        NameKey = "Toll",
-        DescriptionKey =
-            "What the Frog has swallowed: one for every point of its Wergild you have paid, up to 5. It is "
-            + "not a debt — it is ammunition, and the ford gives it back all at once.",
-        Polarity = StatusPolarity.Buff,
-        StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
-        UsesStacks = true,
-        Tags = [],
-        PassiveModifiers = [],
-        Triggers = [],
-    };
-
-    private static ICombatExpression<TContext, int> OwedToTheFrog<TContext>()
-        where TContext : class =>
-        new CombatantStatusStacksFromSourceExpression<TContext>(
-            Applicant, new StatusDefinitionId(WergildId), Frog);
-
-    private static ICombatExpression<TContext, bool> FrogIsHere<TContext>()
-        where TContext : class =>
-        new ComparisonExpression<TContext>(
-            new CombatantCurrentHealthExpression<TContext>(Frog),
-            ComparisonOperator.Greater, new ConstantExpression<TContext>(0));
-
-    // REWORKED in the content cut of 2026-10-29: the Frog swallows every payment as Toll, and a hard enough
-    // beating in one turn makes it spit the lot back — as Gold, paid out by a run program after the fight.
-    public const int FrogSpitDamage = 25;
-    public const int GoldPerToll = 8;
-    public const string FrogSpoilsProgramId = "ford_frog_spoils";
-    public static CounterId FrogBruiseCounter => new("frog_bruise");
-    public static CounterId FrogGoldCounter => new("frog_gold_spat");
-
+    // After the fight: what the Frog still holds is lost.
     public static ITriggeredRunEffectDefinition FrogSpoilsProgram() =>
         RunPrograms.On<CombatResolvedRunEvent>(
         [
             RunEffectTemplates.GainResource(StandardRunIds.Gold,
-                RunExpr.Multiply(RunEventValues.CombatCounter(FrogGoldCounter.ToString()), RunExpr.Const(GoldPerToll))),
+                RunExpr.Multiply(RunEventValues.CombatCounter(FrogBellyCounter.ToString()), RunExpr.Const(-1))),
         ]);
+
+    private static IEnumerable<StatusData> FrogStatuses() =>
+    [
+        NothingCrossesForFree(),
+        new StatusData
+        {
+            Id = SwallowedGoldId,
+            NameKey = "Swallowed Gold",
+            DescriptionKey = "Your Gold in its belly. Deal it 25 in one turn to get it back; what is left when the fight ends is lost.",
+            Polarity = StatusPolarity.Neutral,
+            StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
+            UsesStacks = true,
+            Tags = [],
+            PassiveModifiers = [],
+            Triggers = [],
+        },
+        new StatusData
+        {
+            Id = TollWeightId,
+            NameKey = "Heavy with Toll",
+            DescriptionKey = "1 more damage on its attacks for every 10 Gold it has swallowed.",
+            Polarity = StatusPolarity.Buff,
+            StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
+            UsesStacks = true,
+            Tags = [],
+            PassiveModifiers =
+            [
+                new PassiveModifierData(PassiveModifierPipeline.DamageDealt, PassiveModifierOperation.AddPerStack, 1,
+                    RestrictDamageKind: DamageKind.Direct),
+            ],
+            Triggers = [],
+        },
+    ];
 
     private static StatusData NothingCrossesForFree()
     {
-        var frog = CombatantTargetSelectors.EventTarget;
-        var bruise = new CombatantCounterExpression<DamageReceivedTriggeredEffectContext>(frog, FrogBruiseCounter);
-        var toll = new CombatantStatusStacksExpression<DamageReceivedTriggeredEffectContext>(
-            frog, new StatusDefinitionId(TollId));
-
-        // Bearer-scoped: the Frog is the one being hit. Only blows struck in the player's own turn count.
-        var beaten = new EffectProgram<DamageReceivedTriggeredEffectContext>(
-            new ConditionalEffectNode<DamageReceivedTriggeredEffectContext>(
-                new TargetHasStatusExpression<DamageReceivedTriggeredEffectContext>(
-                    CombatantTargetSelectors.Source, new StatusDefinitionId(PassiveStatuses.ApplicantId)),
-                new CausalSequenceEffectNode<DamageReceivedTriggeredEffectContext>(
-                [
-                    new SetCombatantCounterNode<DamageReceivedTriggeredEffectContext>(
-                        frog, FrogBruiseCounter,
-                        new EventAmountExpression<DamageReceivedTriggeredEffectContext>(), relative: true),
-                    new ConditionalEffectNode<DamageReceivedTriggeredEffectContext>(
-                        new AndExpression<DamageReceivedTriggeredEffectContext>(
-                            new ComparisonExpression<DamageReceivedTriggeredEffectContext>(
-                                bruise, ComparisonOperator.GreaterOrEqual,
-                                new ConstantExpression<DamageReceivedTriggeredEffectContext>(FrogSpitDamage)),
-                            new ComparisonExpression<DamageReceivedTriggeredEffectContext>(
-                                toll, ComparisonOperator.Greater,
-                                new ConstantExpression<DamageReceivedTriggeredEffectContext>(0))),
-                        new CausalSequenceEffectNode<DamageReceivedTriggeredEffectContext>(
-                        [
-                            new SetCombatantCounterNode<DamageReceivedTriggeredEffectContext>(
-                                CombatantTargetSelectors.Source, FrogGoldCounter, toll, relative: true),
-                            new RemoveStatusNode<DamageReceivedTriggeredEffectContext>(
-                                frog, new StatusDefinitionId(TollId)),
-                        ])),
-                ])));
-
-        var reset = new EffectProgram<TurnStartedTriggeredEffectContext>(
+        // Its own turn: a meal, and the weight of everything swallowed so far.
+        var self = CombatantTargetSelectors.Source;
+        var belly = CounterOn<TurnStartedTriggeredEffectContext>(Applicant, FrogBellyCounter);
+        var meal = new CausalSequenceEffectNode<TurnStartedTriggeredEffectContext>(
+        [
+            new SetCombatantCounterNode<TurnStartedTriggeredEffectContext>(
+                Applicant, FrogBellyCounter, new ConstantExpression<TurnStartedTriggeredEffectContext>(FrogMeal), relative: true),
+            new ApplyStatusNode<TurnStartedTriggeredEffectContext>(
+                self, new StatusDefinitionId(SwallowedGoldId), new ConstantExpression<TurnStartedTriggeredEffectContext>(FrogMeal)),
+            new RemoveStatusNode<TurnStartedTriggeredEffectContext>(self, new StatusDefinitionId(TollWeightId)),
             new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
-                PlayersTurn<TurnStartedTriggeredEffectContext>(),
-                new SetCombatantCounterNode<TurnStartedTriggeredEffectContext>(
-                    Frog, FrogBruiseCounter, new ConstantExpression<TurnStartedTriggeredEffectContext>(0),
-                    relative: false)));
+                Is(belly, ComparisonOperator.GreaterOrEqual, GoldPerWeight),
+                new ApplyStatusNode<TurnStartedTriggeredEffectContext>(self, new StatusDefinitionId(TollWeightId),
+                    new DivideExpression<TurnStartedTriggeredEffectContext>(belly, new ConstantExpression<TurnStartedTriggeredEffectContext>(GoldPerWeight)))),
+            SetCounter<TurnStartedTriggeredEffectContext>(self, FrogBruiseCounter, 0),
+        ]);
 
-        // "The Toll Is Never Gone — whenever the Frog gains a newly created Claim, create Wergild 2." One
-        // demand per grant, and grants stop at the Claim ceiling, so the ford cannot bill you forever.
-        EffectProgram<TContext> billed<TContext>() where TContext : class =>
-            new(new ConditionalEffectNode<TContext>(
-                new TriggerEventStatusIsExpression<TContext>(new StatusDefinitionId(ClaimCreatedId)),
-                DemandWergild<TContext>(CombatantTargetSelectors.EventTarget, 2)));
-
-        return Rule(GreatTollFrogId, "Nothing Crosses for Free",
-            "Every Wergild point you pay it is swallowed as Toll (max 5). Deal it 25 in one turn and it spits "
-            + "the Toll back: 8 Gold each.",
+        // A beating: 25 health from the player in one turn, and it spits everything back.
+        var frog = CombatantTargetSelectors.EventTarget;
+        var bruise = CounterOn<DamageReceivedTriggeredEffectContext>(frog, FrogBruiseCounter);
+        var beaten = new ConditionalEffectNode<DamageReceivedTriggeredEffectContext>(
+            new TargetHasStatusExpression<DamageReceivedTriggeredEffectContext>(
+                CombatantTargetSelectors.Source, new StatusDefinitionId(PassiveStatuses.ApplicantId)),
+            new CausalSequenceEffectNode<DamageReceivedTriggeredEffectContext>(
             [
-                new StatusTriggerData("DamageTaken", JsonSerializer.SerializeToElement(
-                    beaten, CombatJson.CreateOptions<DamageReceivedTriggeredEffectContext>())),
-                new StatusTriggerData("TurnStarted", JsonSerializer.SerializeToElement(
-                    reset, CombatJson.CreateOptions<TurnStartedTriggeredEffectContext>()),
-                    StatusTriggerScope.Anywhere),
-                new StatusTriggerData("StatusApplied", JsonSerializer.SerializeToElement(
-                    billed<StatusAppliedTriggeredEffectContext>(),
-                    CombatJson.CreateOptions<StatusAppliedTriggeredEffectContext>())),
-                new StatusTriggerData("StatusMerged", JsonSerializer.SerializeToElement(
-                    billed<StatusMergedTriggeredEffectContext>(),
-                    CombatJson.CreateOptions<StatusMergedTriggeredEffectContext>())),
-            ]);
-    }
-
-    // ── Swallowed Payment, and the change you may leave ───────────────────────────────────────────────────
-    //
-    // Spliced into the act's one payment, on both sides of it: what the player owed the Frog is written down
-    // first, and afterwards the difference says whether this point was the ford's.
-
-    public static IEffectNode<TContext> RememberWhatTheFrogIsOwed<TContext>()
-        where TContext : class =>
-        new ConditionalEffectNode<TContext>(
-            FrogIsHere<TContext>(),
-            new SetCombatantCounterNode<TContext>(
-                Applicant, FrogOwedBeforeCounter, OwedToTheFrog<TContext>(), relative: false));
-
-    public static IEffectNode<TContext> SwallowThePayment<TContext>()
-        where TContext : class =>
-        new ConditionalEffectNode<TContext>(
-            new AndExpression<TContext>(
-                FrogIsHere<TContext>(),
-                new ComparisonExpression<TContext>(
-                    OwedToTheFrog<TContext>(), ComparisonOperator.Less,
-                    new CombatantCounterExpression<TContext>(Applicant, FrogOwedBeforeCounter))),
-            new CausalSequenceEffectNode<TContext>(
-            [
-                new ConditionalEffectNode<TContext>(
-                    new ComparisonExpression<TContext>(
-                        new CombatantStatusStacksExpression<TContext>(Frog, new StatusDefinitionId(TollId)),
-                        ComparisonOperator.Less, new ConstantExpression<TContext>(TollCeiling)),
-                    new ApplyStatusNode<TContext>(
-                        Frog, new StatusDefinitionId(TollId), new ConstantExpression<TContext>(1))),
-                // The demand is settled in full, which is the one moment the ford will take change back.
-                new ConditionalEffectNode<TContext>(
-                    new AndExpression<TContext>(
-                        new ComparisonExpression<TContext>(
-                            OwedToTheFrog<TContext>(), ComparisonOperator.Equal,
-                            new ConstantExpression<TContext>(0)),
-                        new ComparisonExpression<TContext>(
-                            new CombatantStatusStacksExpression<TContext>(Frog, new StatusDefinitionId(TollId)),
-                            ComparisonOperator.Greater, new ConstantExpression<TContext>(0))),
-                    LeaveTheChange<TContext>()),
+                new SetCombatantCounterNode<DamageReceivedTriggeredEffectContext>(
+                    frog, FrogBruiseCounter, new EventAmountExpression<DamageReceivedTriggeredEffectContext>(), relative: true),
+                new ConditionalEffectNode<DamageReceivedTriggeredEffectContext>(
+                    Is(bruise, ComparisonOperator.GreaterOrEqual, FrogSpitDamage),
+                    new CausalSequenceEffectNode<DamageReceivedTriggeredEffectContext>(
+                    [
+                        SetCounter<DamageReceivedTriggeredEffectContext>(Applicant, FrogBellyCounter, 0),
+                        new RemoveStatusNode<DamageReceivedTriggeredEffectContext>(frog, new StatusDefinitionId(SwallowedGoldId)),
+                        new RemoveStatusNode<DamageReceivedTriggeredEffectContext>(frog, new StatusDefinitionId(TollWeightId)),
+                    ])),
             ]));
 
-    // TAKE THE RECEIPT does nothing at all. LEAVE THE CHANGE costs one more card out of hand and pulls a
-    // Toll back out of the Frog's throat — the only settlement in the fight that does not arm the ford.
-    private static IEffectNode<TContext> LeaveTheChange<TContext>()
-        where TContext : class
-    {
-        var player = CombatantTargetSelectors.Source;
-        var change = new IteratedCardExpression<TContext>();
-
-        return new ChooseOptionsNode<TContext>(
-        [
-            new NoOpEffectNode<TContext>(),
-            new ConditionalEffectNode<TContext>(
-                new ComparisonExpression<TContext>(
-                    new SubtractExpression<TContext>(
-                        new CombatantZoneCardCountExpression<TContext>(Applicant, CardZone.Hand),
-                        new CombatantZoneCardCountExpression<TContext>(
-                            Applicant, CardZone.Hand, MakeAmendsTag)),
-                    ComparisonOperator.Greater, new ConstantExpression<TContext>(0)),
-                new CausalSequenceEffectNode<TContext>(
-                [
-                    new MarkCardInstanceNode<TContext>(
-                        player,
-                        new ChosenCardInZoneExpression<TContext>(
-                            CardZone.Hand, "leave the change", excludeTag: MakeAmendsTag),
-                        OfferingMark),
-                    new ForEachCardInZoneNode<TContext>(
-                        player, CardZone.Hand,
-                        new ConditionalEffectNode<TContext>(
-                            new CardInstanceHasMarkExpression<TContext>(change, OfferingMark),
-                            new CausalSequenceEffectNode<TContext>(
-                            [
-                                new MarkCardInstanceNode<TContext>(player, change, OfferingMark, remove: true),
-                                new MoveCardToZoneNode<TContext>(player, change, CardZone.DiscardPile),
-                                new ModifyStatusStacksNode<TContext>(
-                                    Frog, new StatusDefinitionId(TollId),
-                                    new ConstantExpression<TContext>(-1)),
-                            ]))),
-                ])),
-        ], ["take the receipt", "leave the change"], count: 1, purpose: "the ford's change");
+        return Rule(GreatTollFrogId, "Nothing Crosses for Free",
+            "Each turn it swallows 5 of your Gold; +1 damage per 10 swallowed. Deal it 25 in one turn and it spits it all back.",
+            [On("TurnStarted", meal), On("DamageTaken", beaten)]);
     }
 
-    // ── Intents ───────────────────────────────────────────────────────────────────────────────────────────
-    //
-    // "At Toll 5 Regurgitate the Toll becomes the next eligible OFFENSIVE intent" — so the ford's two other
-    // attacks read the throat before they open it, and its Block and its billing do not.
-    private static EffectProgram<EnemyActionContext>? FrogIntent(string enemyId, string intentId)
-    {
-        if (enemyId != GreatTollFrogEnemyId)
-            return null;
-
-        var self = CombatantTargetSelectors.Source;
-
-        IEffectNode<EnemyActionContext>? offensive = intentId switch
-        {
-            // 15 +2 per open point, capped at +6.
-            "tongue_of_collection" => new DealDamageNode<EnemyActionContext>(
-                Applicant,
-                new AddExpression<EnemyActionContext>(
-                    new ConstantExpression<EnemyActionContext>(15),
-                    new MultiplyExpression<EnemyActionContext>(
-                        new ConstantExpression<EnemyActionContext>(2),
-                        new MinExpression<EnemyActionContext>(
-                            new ConstantExpression<EnemyActionContext>(3),
-                            OwedToTheFrog<EnemyActionContext>())))),
-            "mud_bank_impact" => Blow(19),
-            "regurgitate_the_toll" => RegurgitateTheToll(),
-            _ => null,
-        };
-
-        if (offensive is { } attack)
-            return new EffectProgram<EnemyActionContext>(
-                new ConditionalEffectNode<EnemyActionContext>(
-                    new ComparisonExpression<EnemyActionContext>(
-                        new CombatantStatusStacksExpression<EnemyActionContext>(
-                            self, new StatusDefinitionId(TollId)),
-                        ComparisonOperator.GreaterOrEqual,
-                        new ConstantExpression<EnemyActionContext>(TollCeiling)),
-                    RegurgitateTheToll(), attack));
-
-        IEffectNode<EnemyActionContext>? other = intentId switch
-        {
-            // "Consume 1 Claim; gain 10 +3 per Toll Block, max 25."
-            "swallow_the_offering" => new CausalSequenceEffectNode<EnemyActionContext>(
-            [
-                new ConditionalEffectNode<EnemyActionContext>(
-                    new ComparisonExpression<EnemyActionContext>(
-                        new CombatantStatusStacksExpression<EnemyActionContext>(
-                            self, new StatusDefinitionId(ClaimId)),
-                        ComparisonOperator.GreaterOrEqual, new ConstantExpression<EnemyActionContext>(1)),
-                    ConsumeClaim<EnemyActionContext>(self)),
-                new GainBlockNode<EnemyActionContext>(
-                    self,
-                    new AddExpression<EnemyActionContext>(
-                        new ConstantExpression<EnemyActionContext>(10),
-                        new MultiplyExpression<EnemyActionContext>(
-                            new ConstantExpression<EnemyActionContext>(3),
-                            new MinExpression<EnemyActionContext>(
-                                new ConstantExpression<EnemyActionContext>(TollCeiling),
-                                new CombatantStatusStacksExpression<EnemyActionContext>(
-                                    self, new StatusDefinitionId(TollId)))))),
-            ]),
-            // "Wergild 2; at 2+ Claims Wergild 3 instead."
-            "croak_the_amount_due" => new ConditionalEffectNode<EnemyActionContext>(
-                new ComparisonExpression<EnemyActionContext>(
-                    new CombatantStatusStacksExpression<EnemyActionContext>(self, new StatusDefinitionId(ClaimId)),
-                    ComparisonOperator.GreaterOrEqual, new ConstantExpression<EnemyActionContext>(2)),
-                DemandWergild<EnemyActionContext>(self, 3),
-                DemandWergild<EnemyActionContext>(self, 2)),
-            _ => null,
-        };
-
-        return other is null ? null : new EffectProgram<EnemyActionContext>(other);
-    }
-
-    // "12 +4 per Toll, maximum 32. Then Toll → 0 and the player gains 1 Safe-Conduct." The licence is the
-    // ford's apology, and it is the only thing in the fight that hands one over for free.
-    private static IEffectNode<EnemyActionContext> RegurgitateTheToll()
-    {
-        var self = CombatantTargetSelectors.Source;
-
-        return new CausalSequenceEffectNode<EnemyActionContext>(
-        [
-            new DealDamageNode<EnemyActionContext>(
-                Applicant,
-                new AddExpression<EnemyActionContext>(
-                    new ConstantExpression<EnemyActionContext>(12),
-                    new MultiplyExpression<EnemyActionContext>(
-                        new ConstantExpression<EnemyActionContext>(4),
-                        new MinExpression<EnemyActionContext>(
-                            new ConstantExpression<EnemyActionContext>(TollCeiling),
-                            new CombatantStatusStacksExpression<EnemyActionContext>(
-                                self, new StatusDefinitionId(TollId)))))),
-            new RemoveStatusNode<EnemyActionContext>(self, new StatusDefinitionId(TollId)),
-            new ApplyStatusNode<EnemyActionContext>(
-                Applicant, new StatusDefinitionId(SafeConductId),
-                new ConstantExpression<EnemyActionContext>(1), sourceSelector: self),
-        ]);
-    }
+    private static EffectProgram<EnemyActionContext>? FrogIntent(string enemyId, string intentId) => null;
 }

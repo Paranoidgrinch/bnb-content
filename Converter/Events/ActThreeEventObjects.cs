@@ -21,10 +21,8 @@ namespace BnbContent.Converter.Events;
 //   Stone-Witnessed — a card aimed where somebody has already been aimed does more.
 //   Old Right       — a card that would burn itself out is only discarded.
 //
-// Beside them the act's doors write one thing on the FIGHT rather than on a card: an environmental demand,
-// which is a Wergild owed to nobody. It is settled through the same Make Amends as every other demand, and
-// leaving it owing costs the ordinary 2 HP a point and creates no standing, because there is nobody for the
-// standing to belong to.
+// Beside them the act's doors write one thing on the FIGHT rather than on a card: an environmental demand, 4 HP
+// taken as the next ordinary fight opens (ActThreeEventPrograms.DemandWaitsBody).
 public static class ActThreeEventObjects
 {
     // ★ Static initializers run in DECLARATION order: every id and latch a rule below names is declared here.
@@ -45,7 +43,6 @@ public static class ActThreeEventObjects
     private static CounterId KnotMemory => new("way_knotted_last_cost");
 
     // A courtesy carried into one fight: the act's settlement reads it off the payer and drinks it.
-    public const string BottledWaterId = "bottled_stream_water";
 
     public static IReadOnlyList<string> Inscriptions() =>
         [RowanBlessed, WayKnotted, HearthKept, StoneWitnessed, OldRightInscription];
@@ -55,10 +52,7 @@ public static class ActThreeEventObjects
         RowanBlessedRule, WayKnottedRule, HearthKeptRule, StoneWitnessedRule, OldRightRule,
         Marker(AttendedByYou, "Attended To",
             "You have aimed something at this party this turn."),
-        EnvironmentalWergild(), EnvironmentalDue(),
         QuorumVowRule, AntLineVowRule,
-        Marker(BottledWaterId, "Bottled Stream-Water",
-            "The next demand you settle in full grants one more leave to pass than it would have."),
     ];
 
     // ── Rowan-Blessed ─────────────────────────────────────────────────────────────────────────────────────
@@ -319,42 +313,6 @@ public static class ActThreeEventObjects
                     You, counter, new ConstantExpression<CardsDrawnTriggeredEffectContext>(1),
                     relative: false))),
             nameof(TriggerEvent.CardsDrawn));
-
-    // ── An environmental demand ───────────────────────────────────────────────────────────────────────────
-    //
-    // A Wergild owed to nobody: the hedge's, the bridge's, the road's. It is settled through the act's one
-    // payment like every other demand, and left owing it costs the ordinary 2 HP a point — and creates no
-    // standing, because there is no party for standing to belong to.
-    public const string EnvironmentalWergildId = "environmental_wergild";
-    public const string EnvironmentalDueId = "environmental_wergild_due";
-
-    public static StatusData EnvironmentalWergild() => new()
-    {
-        Id = EnvironmentalWergildId,
-        NameKey = "A Demand of the Road",
-        DescriptionKey =
-            "Something here is owed, and there is nobody to owe it to. Make Amends settles it like any other "
-            + "demand; left owing at the end of your next turn it costs you 2 HP a point, and nothing else.",
-        Polarity = StatusPolarity.Debuff,
-        StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
-        UsesStacks = true,
-        Tags = [],
-        PassiveModifiers = [],
-        Triggers = [],
-    };
-
-    public static StatusData EnvironmentalDue() => new()
-    {
-        Id = EnvironmentalDueId,
-        NameKey = "Due at the Bell",
-        DescriptionKey = "The road's demand is settled at the end of this turn, paid or not.",
-        Polarity = StatusPolarity.Neutral,
-        StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
-        UsesStacks = false,
-        Tags = [],
-        PassiveModifiers = [],
-        Triggers = [],
-    };
 
     // ── the shared shapes ─────────────────────────────────────────────────────────────────────────────────
 

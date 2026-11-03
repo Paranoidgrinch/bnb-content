@@ -4,18 +4,13 @@ using RogueDeck.Scenario.Authoring;
 
 namespace BnbContent.Converter;
 
-// Act III, Stage 1 — The Road. Since the content cut of 2026-10-29 every law here is worn where it can be read:
-// the Hare's quarry, the Path's arrow and the Cairn's stones are all chips on somebody.
+// Act III, Stage 1 — The Road. Since 2026-11-03 (user): the Hare wants a Working before any Deed, the Path's arrow
+// names where your blows must go, and the Cairn throws back a stone for every hit it took.
 public static partial class ActThree
 {
-    // ── Permit Hare — One Quarry per Turn ─────────────────────────────────────────────────────────────────
-    //
-    // "Changing target within a turn is Trespass; a full lawful turn gives a Safe-Conduct." The party your
-    // first aimed card went to wears the Quarry mark; aiming at anybody else in the same turn is the breach.
+    // ── Permit Hare — Permit First ────────────────────────────────────────────────────────────────────────
 
     public const string NoHastyPassageId = "no_hasty_passage";
-    public const string QuarryId = "the_quarry";
-    public const string QuarrySwitchedId = "quarry_switched";
 
     public const string EveryDetourLeavesAStoneId = "every_detour_leaves_a_stone";
     public const string DetourStoneId = "detour_stone";
@@ -25,9 +20,6 @@ public static partial class ActThree
     public const string AttendedId = "attended";
     public const string ArrowPointsElsewhereId = "arrow_points_elsewhere";
 
-    // Stones the Cairn holds before it comes down, and how hard it comes down.
-    public const int CairnStones = 3;
-    public const int CairnCollapseDamage = 18;
 
     // Whether the card just played was aimed at a party to the fight, and at which one.
     private static ICombatExpression<CardPlayedTriggeredEffectContext, bool> AimedAtAParty() =>
@@ -50,88 +42,13 @@ public static partial class ActThree
             Parties,
             new RemoveStatusNode<TContext>(CombatantTargetSelectors.IterationTarget, new StatusDefinitionId(statusId)));
 
-    public static StatusData NoHastyPassage()
-    {
-        var hare = Lawgiver(NoHastyPassageId);
-        var quarryStanding = new ComparisonExpression<CardPlayedTriggeredEffectContext>(
-            new CountTargetsExpression<CardPlayedTriggeredEffectContext>(
-                CombatantTargetSelectors.WithStatus(Parties, new StatusDefinitionId(QuarryId))),
-            ComparisonOperator.Greater,
-            new ConstantExpression<CardPlayedTriggeredEffectContext>(0));
-
-        var aim = new EffectProgram<CardPlayedTriggeredEffectContext>(
-            new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
-                new AndExpression<CardPlayedTriggeredEffectContext>(Alive<CardPlayedTriggeredEffectContext>(hare), AimedAtAParty()),
-                new CausalSequenceEffectNode<CardPlayedTriggeredEffectContext>(
-                [
-                    new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
-                        new AndExpression<CardPlayedTriggeredEffectContext>(
-                            quarryStanding,
-                            new NotExpression<CardPlayedTriggeredEffectContext>(AimedAt(QuarryId))),
-                        Violate<CardPlayedTriggeredEffectContext>(hare, HastyPassageLaw, QuarrySwitchedId)),
-                    ClearFromParties<CardPlayedTriggeredEffectContext>(QuarryId),
-                    new ApplyStatusNode<CardPlayedTriggeredEffectContext>(
-                        CombatantTargetSelectors.EventTarget, new StatusDefinitionId(QuarryId),
-                        new ConstantExpression<CardPlayedTriggeredEffectContext>(1)),
-                ])));
-
-        var reset = new EffectProgram<TurnStartedTriggeredEffectContext>(
-            new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
-                PlayersTurn<TurnStartedTriggeredEffectContext>(),
-                new CausalSequenceEffectNode<TurnStartedTriggeredEffectContext>(
-                [
-                    ClearFromParties<TurnStartedTriggeredEffectContext>(QuarryId),
-                    ClearFromParties<TurnStartedTriggeredEffectContext>(QuarrySwitchedId),
-                ])));
-
-        // A lawful turn: you chose a quarry and kept to it. The Hare stamps your permit.
-        var stamp = new EffectProgram<TurnEndedTriggeredEffectContext>(
-            new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
-                new AndExpression<TurnEndedTriggeredEffectContext>(
-                    new AndExpression<TurnEndedTriggeredEffectContext>(
-                        PlayersTurn<TurnEndedTriggeredEffectContext>(),
-                        Alive<TurnEndedTriggeredEffectContext>(hare)),
-                    new AndExpression<TurnEndedTriggeredEffectContext>(
-                        new ComparisonExpression<TurnEndedTriggeredEffectContext>(
-                            new CountTargetsExpression<TurnEndedTriggeredEffectContext>(
-                                CombatantTargetSelectors.WithStatus(Parties, new StatusDefinitionId(QuarryId))),
-                            ComparisonOperator.Greater,
-                            new ConstantExpression<TurnEndedTriggeredEffectContext>(0)),
-                        new AndExpression<TurnEndedTriggeredEffectContext>(
-                            new NotExpression<TurnEndedTriggeredEffectContext>(
-                                Wears<TurnEndedTriggeredEffectContext>(hare, QuarrySwitchedId)),
-                            new ComparisonExpression<TurnEndedTriggeredEffectContext>(
-                                new CombatantStatusStacksExpression<TurnEndedTriggeredEffectContext>(
-                                    Applicant, new StatusDefinitionId(SafeConductId)),
-                                ComparisonOperator.Less,
-                                new ConstantExpression<TurnEndedTriggeredEffectContext>(SafeConductCeiling))))),
-                new ApplyStatusNode<TurnEndedTriggeredEffectContext>(
-                    Applicant, new StatusDefinitionId(SafeConductId),
-                    new ConstantExpression<TurnEndedTriggeredEffectContext>(1), sourceSelector: hare)));
-
-        return Rule(NoHastyPassageId, "One Quarry per Turn",
-            "Your first aimed card picks this turn's Quarry. Aiming at anyone else: 1 Trespass. Keep to your "
-            + "Quarry all turn: 1 Safe-Conduct.",
-            [
-                new StatusTriggerData("CardPlayed", JsonSerializer.SerializeToElement(
-                    aim, CombatJson.CreateOptions<CardPlayedTriggeredEffectContext>()),
-                    StatusTriggerScope.Anywhere),
-                new StatusTriggerData("TurnStarted", JsonSerializer.SerializeToElement(
-                    reset, CombatJson.CreateOptions<TurnStartedTriggeredEffectContext>()),
-                    StatusTriggerScope.Anywhere),
-                new StatusTriggerData("TurnEnded", JsonSerializer.SerializeToElement(
-                    stamp, CombatJson.CreateOptions<TurnEndedTriggeredEffectContext>()),
-                    StatusTriggerScope.Anywhere),
-            ]);
-    }
-
-    public static StatusData Quarry() =>
-        Marker(QuarryId, "Quarry",
-            "The Permit Hare's law: this turn your cards go here. Aiming at anyone else is a Trespass.");
-
-    public static StatusData QuarrySwitched() =>
-        Marker(QuarrySwitchedId, "Permit Torn",
-            "You changed your quarry this turn: no Safe-Conduct from the Hare.");
+    // Since 2026-11-03 (user): a Deed before any Working this turn breaks its law. The Quarry is gone.
+    public static StatusData NoHastyPassage() =>
+        LawOnPlay(NoHastyPassageId, "Permit First",
+            "Playing a Deed before any Working this turn breaks its law.",
+            new AndExpression<CardPlayedTriggeredEffectContext>(
+                PlayedIs(Cards.CardAuthoring.DeedTag),
+                Is(PlayedThisTurnTagged(Cards.CardAuthoring.WorkingTag), ComparisonOperator.Equal, 0)));
 
     // ── Elsewhere Path — the Arrow ────────────────────────────────────────────────────────────────────────
     //
@@ -195,8 +112,7 @@ public static partial class ActThree
                 Violate<TurnEndedTriggeredEffectContext>(path, DestinationLaw)));
 
         return Rule(DestinationRuleId, "The Arrow",
-            "Each turn the arrow names another party as Destination. Hit it before your turn ends or owe the "
-            + "Path 1 Trespass. Until you do, the Path is hard to hit.",
+            "Each turn the arrow names another enemy. Not hitting it this turn breaks the Path's law; until you do, the Path takes half damage.",
             [
                 new StatusTriggerData("CardPlayed", JsonSerializer.SerializeToElement(
                     visit, CombatJson.CreateOptions<CardPlayedTriggeredEffectContext>()),
@@ -212,7 +128,7 @@ public static partial class ActThree
 
     public static StatusData TheDestination() =>
         Marker(DestinationId, "Destination",
-            "The Elsewhere Path's arrow points here. Hit it this turn, or owe the Path 1 Trespass.");
+            "The Elsewhere Path's arrow points here. Hit it this turn, or you break the Path's law.");
 
     public static StatusData Attended() =>
         Marker(AttendedId, "Visited", "You went where the arrow pointed this turn.");
@@ -233,64 +149,33 @@ public static partial class ActThree
         Triggers = [],
     };
 
-    // ── Cairn of Stray Paths — Every Detour Leaves a Stone ───────────────────────────────────────────────
+    // ── Cairn of Stray Paths — the stones you knocked loose ──────────────────────────────────────────────
     //
-    // "Every Trespass you take adds a stone; at 3 stones it collapses on you for a big hit; each hit on the
-    // Cairn removes a stone." The stones are the Cairn's own stacks, so the count is always on screen.
+    // Since 2026-11-03 (user): every hit you land on the Cairn knocks a stone loose, and on its turn it throws them
+    // all back at you, 5 each. A turn nobody struck it, it braces for 10 instead; and every third turn of its own
+    // it grows 2 Strength. The stones it holds are its own stacks, on its badge.
+    // 3 as authored is the 5 asked for once Act III's damage factor (150 %) is laid over it.
+    public const int StoneDamage = 3;
+    public const int CairnBrace = 10;
+    public const int CairnGrowth = 2;
+    private static CounterId CairnTurnsCounter => new("cairn_turns");
+
     public static StatusData EveryDetourLeavesAStone()
     {
-        var cairn = Lawgiver(EveryDetourLeavesAStoneId);
-
-        var stack = new EffectProgram<StatusAppliedTriggeredEffectContext>(
-            new ConditionalEffectNode<StatusAppliedTriggeredEffectContext>(
-                new AndExpression<StatusAppliedTriggeredEffectContext>(
-                    new TriggerEventStatusIsExpression<StatusAppliedTriggeredEffectContext>(
-                        new StatusDefinitionId(TrespassId)),
-                    Alive<StatusAppliedTriggeredEffectContext>(cairn)),
-                new CausalSequenceEffectNode<StatusAppliedTriggeredEffectContext>(
-                [
-                    new ApplyStatusNode<StatusAppliedTriggeredEffectContext>(
-                        cairn, new StatusDefinitionId(DetourStoneId),
-                        new ConstantExpression<StatusAppliedTriggeredEffectContext>(1)),
-                    new ConditionalEffectNode<StatusAppliedTriggeredEffectContext>(
-                        new ComparisonExpression<StatusAppliedTriggeredEffectContext>(
-                            new CombatantStatusStacksExpression<StatusAppliedTriggeredEffectContext>(
-                                cairn, new StatusDefinitionId(DetourStoneId)),
-                            ComparisonOperator.GreaterOrEqual,
-                            new ConstantExpression<StatusAppliedTriggeredEffectContext>(CairnStones)),
-                        new CausalSequenceEffectNode<StatusAppliedTriggeredEffectContext>(
-                        [
-                            new RemoveStatusNode<StatusAppliedTriggeredEffectContext>(
-                                cairn, new StatusDefinitionId(DetourStoneId)),
-                            new DealDamageNode<StatusAppliedTriggeredEffectContext>(
-                                Applicant,
-                                new ConstantExpression<StatusAppliedTriggeredEffectContext>(CairnCollapseDamage)),
-                        ])),
-                ])));
-
-        // A hit on the Cairn knocks a stone loose. Bearer-scoped: it is the Cairn being hit.
-        var knock = new EffectProgram<DamageReceivedTriggeredEffectContext>(
-            new ModifyStatusStacksNode<DamageReceivedTriggeredEffectContext>(
-                CombatantTargetSelectors.EventTarget, new StatusDefinitionId(DetourStoneId),
-                new ConstantExpression<DamageReceivedTriggeredEffectContext>(-1)));
-
-        return Rule(EveryDetourLeavesAStoneId, "Every Detour Leaves a Stone",
-            "Every Trespass you take adds a stone to the Cairn. At 3 stones it collapses on you for 18. "
-            + "Each hit on the Cairn knocks a stone loose.",
-            [
-                new StatusTriggerData("StatusApplied", JsonSerializer.SerializeToElement(
-                    stack, CombatJson.CreateOptions<StatusAppliedTriggeredEffectContext>()),
-                    StatusTriggerScope.Anywhere),
-                new StatusTriggerData("DamageTaken", JsonSerializer.SerializeToElement(
-                    knock, CombatJson.CreateOptions<DamageReceivedTriggeredEffectContext>())),
-            ]);
+        // In a damage program the struck body is the event's target.
+        var knock = new ApplyStatusNode<DamageReceivedTriggeredEffectContext>(
+            CombatantTargetSelectors.EventTarget, new StatusDefinitionId(DetourStoneId),
+            new ConstantExpression<DamageReceivedTriggeredEffectContext>(1));
+        return Rule(EveryDetourLeavesAStoneId, "Loose Stones",
+            "Every hit on the Cairn knocks a stone loose; on its turn it throws them all at you, 5 each.",
+            [On<DamageReceivedTriggeredEffectContext>("DamageTaken", knock)]);
     }
 
     public static StatusData DetourStone() => new()
     {
         Id = DetourStoneId,
-        NameKey = "Stray Stone",
-        DescriptionKey = "One stone per Trespass you took. At 3 the Cairn collapses on you for 18. Hit it to knock one loose.",
+        NameKey = "Loose Stones",
+        DescriptionKey = "On its turn the Cairn throws each one at you for 5.",
         Polarity = StatusPolarity.Buff,
         StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
         UsesStacks = true,
@@ -298,6 +183,31 @@ public static partial class ActThree
         PassiveModifiers = [],
         Triggers = [],
     };
+
+    // Its one action: the stones it holds, or a brace; and every third turn a little more weight.
+    private static EffectProgram<EnemyActionContext> Stonefall()
+    {
+        var self = CombatantTargetSelectors.Source;
+        var stones = new CombatantStatusStacksExpression<EnemyActionContext>(self, new StatusDefinitionId(DetourStoneId));
+        return new(new CausalSequenceEffectNode<EnemyActionContext>(
+        [
+            new ConditionalEffectNode<EnemyActionContext>(
+                Is(stones, ComparisonOperator.Greater, 0),
+                new CausalSequenceEffectNode<EnemyActionContext>(
+                [
+                    new RepeatEffectNode<EnemyActionContext>(stones,
+                        new DealDamageNode<EnemyActionContext>(Applicant, new ConstantExpression<EnemyActionContext>(StoneDamage))),
+                    new RemoveStatusNode<EnemyActionContext>(self, new StatusDefinitionId(DetourStoneId)),
+                ]),
+                @else: new GainBlockNode<EnemyActionContext>(self, new ConstantExpression<EnemyActionContext>(CairnBrace))),
+            new SetCombatantCounterNode<EnemyActionContext>(self, CairnTurnsCounter, new ConstantExpression<EnemyActionContext>(1), relative: true),
+            new ConditionalEffectNode<EnemyActionContext>(
+                Is(new RemainderExpression<EnemyActionContext>(CounterOn<EnemyActionContext>(self, CairnTurnsCounter),
+                    new ConstantExpression<EnemyActionContext>(3)), ComparisonOperator.Equal, 0),
+                new ApplyStatusNode<EnemyActionContext>(self, new StatusDefinitionId("strength"),
+                    new ConstantExpression<EnemyActionContext>(CairnGrowth))),
+        ]));
+    }
 
     // How many real cards have been played this turn — the Junk the fight hands you does not count as a use.
     private static ICombatExpression<CardPlayedTriggeredEffectContext, int> NonJunkPlayedThisTurn(

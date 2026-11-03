@@ -76,6 +76,11 @@ public static class EnemyMapper
                 case "gain_block" when effect.Amount is { } block:
                     parts.Add(effect.Target is "all_enemies" or "allies" ? $"{block} block to all" : $"{block} block");
                     break;
+                // Act III: a Trespass becomes the filer's Claim the moment it lands (user, 2026-11-03), so the
+                // telegraph says what it costs.
+                case "apply_status" when effect.Status == "trespass":
+                    parts.Add("it gains a Claim");
+                    break;
                 case "apply_status" when effect.Status is { } status:
                     parts.Add($"{Capitalize(status)} +{effect.Amount ?? 1}");
                     break;

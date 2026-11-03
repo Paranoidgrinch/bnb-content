@@ -4,334 +4,163 @@ using RogueDeck.Scenario.Authoring;
 
 namespace BnbContent.Converter;
 
-// Act III, Stage 4 — The Covenants. The stage where the act starts being NICE to you, and where the
-// player learns that hospitality is a debt engine. All three parties hand out Safe-Conduct, and all three
-// want something back for it: the Witchling wants the gift used, the Bride wants the relationship to
-// progress, and the Cup wants its generosity to create obligation somewhere in the social network.
+// Act III, Stage 4 — The Covenants. Since 2026-11-03 (user): a witch whose gifts must be taken, a bride who wants
+// one of each, and a cup whose every drink is a debt.
 public static partial class ActThree
 {
     public const string CourtesySafeConductId = "courtesy_safe_conduct";
-    public const string GiftOutstandingId = "witchling_gift_outstanding";
     public const string PromiseMustBePairedId = "a_promise_must_be_paired";
-    public const string PromiseOpenId = "promise_open";
-    public const string BetrothalClaimId = "betrothal_claim";
-    public const string BetrothalGiftGivenId = "betrothal_gift_given";
     public const string DrinkBeforeChoosingId = "drink_before_choosing";
-
-    public const string WitchlingGiftCardId = "witchlings_gift";
-    public const string WitchlingCharmCardId = "witchlings_charm";
     public const string CrossroadsDrinkCardId = "drink_from_the_cup";
 
-    // Turns an accepted gift may go unused before it is an insult.
-    public const int GiftPatienceTurns = 2;
+    // The gifts a hedge-witch gives (user, 2026-11-03): free, small, and each with a little sting in it.
+    public const string GiftTag = "roadside_gift";
+    public const string CrookedKindnessId = "crooked_kindness";
+    public const string BentPennyId = "bent_penny";
+    public const string WarmKettleId = "warm_kettle_gift";
+    private static readonly string[] WitchlingGifts = [CrookedKindnessId, BentPennyId, WarmKettleId];
+
+    public const int CupClaims = 2;
 
     // ── Roadside Witchling — the gift with strings ────────────────────────────────────────────────────────
     //
-    // "Offers a gift each turn (Safe-Conduct or a card); an accepted gift not used within 2 turns becomes
-    // Trespass; declining is free." The offer is a free card in your hand that vanishes at the end of the turn
-    // — leaving it is declining. Accepting puts a visible chip on you that counts the turns down.
-    public static StatusData CourtesySafeConduct()
-    {
-        var witchling = Lawgiver(CourtesySafeConductId);
+    // Every turn of yours she puts one of her three gifts in your hand, in turn. A gift still in your hand when
+    // the turn ends is an insult: her law is broken, and the gift is gone either way.
+    public static StatusData CourtesySafeConduct() =>
+        GiftGiver(CourtesySafeConductId, "A Gift with Strings",
+            "Each turn she gives you a gift. Still holding it at turn end breaks her law.",
+            WitchlingGifts, GiftTag);
 
-        var offer = new EffectProgram<TurnStartedTriggeredEffectContext>(
-            new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
-                new AndExpression<TurnStartedTriggeredEffectContext>(
-                    PlayersTurn<TurnStartedTriggeredEffectContext>(),
-                    Alive<TurnStartedTriggeredEffectContext>(witchling)),
-                new CreateCardInstanceNode<TurnStartedTriggeredEffectContext>(
-                    CombatantTargetSelectors.Source, new CardDefinitionId(WitchlingGiftCardId), CardZone.Hand,
-                    new ConstantExpression<TurnStartedTriggeredEffectContext>(1))));
-
-        // A licence spent is a gift used.
-        var used = new EffectProgram<StatusApplicationBlockedTriggeredEffectContext>(
-            new ConditionalEffectNode<StatusApplicationBlockedTriggeredEffectContext>(
-                new TriggerEventStatusIsExpression<StatusApplicationBlockedTriggeredEffectContext>(
-                    new StatusDefinitionId(TrespassId)),
-                new RemoveStatusNode<StatusApplicationBlockedTriggeredEffectContext>(
-                    Applicant, new StatusDefinitionId(GiftOutstandingId))));
-
-        var outstanding = new CombatantStatusStacksExpression<TurnEndedTriggeredEffectContext>(
-            Applicant, new StatusDefinitionId(GiftOutstandingId));
-
-        var reckon = new EffectProgram<TurnEndedTriggeredEffectContext>(
-            new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
-                new AndExpression<TurnEndedTriggeredEffectContext>(
-                    PlayersTurn<TurnEndedTriggeredEffectContext>(),
-                    new ComparisonExpression<TurnEndedTriggeredEffectContext>(
-                        outstanding, ComparisonOperator.Greater,
-                        new ConstantExpression<TurnEndedTriggeredEffectContext>(0))),
-                new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
-                    new ComparisonExpression<TurnEndedTriggeredEffectContext>(
-                        outstanding, ComparisonOperator.LessOrEqual,
-                        new ConstantExpression<TurnEndedTriggeredEffectContext>(1)),
-                    new CausalSequenceEffectNode<TurnEndedTriggeredEffectContext>(
-                    [
-                        new RemoveStatusNode<TurnEndedTriggeredEffectContext>(
-                            Applicant, new StatusDefinitionId(GiftOutstandingId)),
-                        new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
-                            Alive<TurnEndedTriggeredEffectContext>(witchling),
-                            FileTrespass<TurnEndedTriggeredEffectContext>(witchling)),
-                    ]),
-                    new ModifyStatusStacksNode<TurnEndedTriggeredEffectContext>(
-                        Applicant, new StatusDefinitionId(GiftOutstandingId),
-                        new ConstantExpression<TurnEndedTriggeredEffectContext>(-1)))));
-
-        return Rule(CourtesySafeConductId, "A Gift with Strings",
-            "Each turn she offers a gift. Leaving it is free. Accept it and use it within 2 turns, or owe her "
-            + "1 Trespass.",
-            [
-                new StatusTriggerData("TurnStarted", JsonSerializer.SerializeToElement(
-                    offer, CombatJson.CreateOptions<TurnStartedTriggeredEffectContext>()),
-                    StatusTriggerScope.Anywhere),
-                new StatusTriggerData("StatusApplicationPrevented", JsonSerializer.SerializeToElement(
-                    used, CombatJson.CreateOptions<StatusApplicationBlockedTriggeredEffectContext>()),
-                    StatusTriggerScope.Anywhere),
-                new StatusTriggerData("TurnEnded", JsonSerializer.SerializeToElement(
-                    reckon, CombatJson.CreateOptions<TurnEndedTriggeredEffectContext>()),
-                    StatusTriggerScope.Anywhere),
-            ]);
-    }
-
-    public static StatusData GiftOutstanding() => new()
-    {
-        Id = GiftOutstandingId,
-        NameKey = "A Gift Unused",
-        DescriptionKey = "The Witchling's gift. Spend a Safe-Conduct or play her Charm before this runs out, or owe her 1 Trespass.",
-        Polarity = StatusPolarity.Debuff,
-        StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
-        UsesStacks = true,
-        Tags = [],
-        PassiveModifiers = [],
-        Triggers = [],
-    };
-
-    private static IEffectNode<CardPlayContext> GiftAccepted() =>
-        new CausalSequenceEffectNode<CardPlayContext>(
+    // A giver of gifts: the gift of this round, in rotation, and the insult of a gift left in hand.
+    public static StatusData GiftGiver(string id, string name, string text, IReadOnlyList<string> gifts, string tag) =>
+        Rule(id, name, text,
         [
-            new RemoveStatusNode<CardPlayContext>(CombatantTargetSelectors.Source, new StatusDefinitionId(GiftOutstandingId)),
-            new ApplyStatusNode<CardPlayContext>(
-                CombatantTargetSelectors.Source, new StatusDefinitionId(GiftOutstandingId),
-                new ConstantExpression<CardPlayContext>(GiftPatienceTurns)),
+            On("TurnStarted", GiveAGift(Lawgiver(id), gifts), StatusTriggerScope.Anywhere),
+            On("TurnEnded", AGiftRefused(Lawgiver(id), tag), StatusTriggerScope.Anywhere),
         ]);
 
-    public static CardData WitchlingsGift() => new()
+    // The player's turn opens: the gift of this round, in turn.
+    private static IEffectNode<TurnStartedTriggeredEffectContext> GiveAGift(ICombatantTargetSelector giver, IReadOnlyList<string> gifts)
     {
-        Id = WitchlingGiftCardId,
-        NameKey = "The Witchling's Gift",
-        DescriptionKey = "Accept: 1 Safe-Conduct, or her Charm. Use it within 2 turns or owe her 1 Trespass. Unplayed, it is declined.",
-        Costs = [],
-        Tags = [new TagId("form")],
-        Program = new EffectProgram<CardPlayContext>(
-            new ChooseOptionsNode<CardPlayContext>(
-                [
-                    new CausalSequenceEffectNode<CardPlayContext>(
-                    [
-                        new ApplyStatusNode<CardPlayContext>(
-                            CombatantTargetSelectors.Source, new StatusDefinitionId(SafeConductId),
-                            new ConstantExpression<CardPlayContext>(1),
-                            sourceSelector: Lawgiver(CourtesySafeConductId)),
-                        GiftAccepted(),
-                    ]),
-                    new CausalSequenceEffectNode<CardPlayContext>(
-                    [
-                        new CreateCardInstanceNode<CardPlayContext>(
-                            CombatantTargetSelectors.Source, new CardDefinitionId(WitchlingCharmCardId), CardZone.Hand,
-                            new ConstantExpression<CardPlayContext>(1)),
-                        GiftAccepted(),
-                    ]),
-                ],
-                ["a safe-conduct", "her charm"],
-                count: 1,
-                purpose: "accept the gift")),
+        var round = new RemainderExpression<TurnStartedTriggeredEffectContext>(
+            new RoundNumberExpression<TurnStartedTriggeredEffectContext>(),
+            new ConstantExpression<TurnStartedTriggeredEffectContext>(gifts.Count));
+        IEffectNode<TurnStartedTriggeredEffectContext> Create(string gift) =>
+            new CreateCardInstanceNode<TurnStartedTriggeredEffectContext>(
+                CombatantTargetSelectors.Source, new CardDefinitionId(gift), CardZone.Hand,
+                new ConstantExpression<TurnStartedTriggeredEffectContext>(1));
+        IEffectNode<TurnStartedTriggeredEffectContext> Give(int index) =>
+            index == gifts.Count - 1
+                ? Create(gifts[index])
+                : new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
+                    Is(round, ComparisonOperator.Equal, (index + 1) % gifts.Count), Create(gifts[index]), @else: Give(index + 1));
+        return new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
+            new AndExpression<TurnStartedTriggeredEffectContext>(
+                PlayersTurn<TurnStartedTriggeredEffectContext>(), Alive<TurnStartedTriggeredEffectContext>(giver)),
+            Give(0));
+    }
+
+    // The player's turn ends with a gift still in hand: the giver's law is broken.
+    private static IEffectNode<TurnEndedTriggeredEffectContext> AGiftRefused(ICombatantTargetSelector giver, string tag) =>
+        new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
+            new AndExpression<TurnEndedTriggeredEffectContext>(
+                new AndExpression<TurnEndedTriggeredEffectContext>(
+                    PlayersTurn<TurnEndedTriggeredEffectContext>(), Alive<TurnEndedTriggeredEffectContext>(giver)),
+                Is(new CombatantZoneCardCountExpression<TurnEndedTriggeredEffectContext>(
+                    CombatantTargetSelectors.Source, CardZone.Hand, new TagId(tag)), ComparisonOperator.Greater, 0)),
+            Breach<TurnEndedTriggeredEffectContext>(giver));
+
+    // A gift: free, gone when played, gone at the end of the turn if not.
+    public static CardData Gift(string id, string name, string text, string tag, IEffectNode<CardPlayContext> body, int cost = 0) => new()
+    {
+        Id = id,
+        NameKey = name,
+        DescriptionKey = text,
+        Costs = cost > 0 ? [new ResourceCost(StandardCombatIds.EnergyResource, cost)] : [],
+        Tags = [new TagId("form"), new TagId(tag)],
+        Program = new EffectProgram<CardPlayContext>(body),
         PlayedCardDestinationZone = CardZone.ExhaustPile,
         TurnEndHandDestinationZone = CardZone.ExhaustPile,
     };
 
-    public static CardData WitchlingsCharm() => new()
-    {
-        Id = WitchlingCharmCardId,
-        NameKey = "The Witchling's Charm",
-        DescriptionKey = "Gain 8 Block. Draw 1. Using it settles her gift.",
-        Costs = [],
-        Tags = [new TagId("form")],
-        Program = new EffectProgram<CardPlayContext>(
-            new CausalSequenceEffectNode<CardPlayContext>(
-            [
-                new GainBlockNode<CardPlayContext>(CombatantTargetSelectors.Source, new ConstantExpression<CardPlayContext>(8)),
-                new DrawCardsNode<CardPlayContext>(CombatantTargetSelectors.Source, new ConstantExpression<CardPlayContext>(1)),
-                new RemoveStatusNode<CardPlayContext>(CombatantTargetSelectors.Source, new StatusDefinitionId(GiftOutstandingId)),
-            ])),
-        PlayedCardDestinationZone = CardZone.ExhaustPile,
-        TurnEndHandDestinationZone = CardZone.Hand,
-    };
+    private static IEffectNode<CardPlayContext> LoseHealth(int amount) =>
+        new SetHealthNode<CardPlayContext>(CombatantTargetSelectors.Source,
+            new SubtractExpression<CardPlayContext>(
+                new CombatantCurrentHealthExpression<CardPlayContext>(CombatantTargetSelectors.Source),
+                new ConstantExpression<CardPlayContext>(amount)));
 
-    // ── The Blackthorn Bride ──────────────────────────────────────────────────────────────────────────────
+    private static IEffectNode<CardPlayContext> DiscardChosen(int count) =>
+        new RepeatEffectNode<CardPlayContext>(new ConstantExpression<CardPlayContext>(count),
+            new MoveCardToZoneNode<CardPlayContext>(CombatantTargetSelectors.Source,
+                new ChosenCardInZoneExpression<CardPlayContext>(CardZone.Hand, "discard a card"), CardZone.DiscardPile));
 
-    // "After a card of Base Cost 2 or more, the next card should cost 0 or 1. If it also costs 2 or more:
-    // 1 Trespass." A promise must be paired.
+    private static IEffectNode<CardPlayContext> Seq(params IEffectNode<CardPlayContext>[] steps) =>
+        new CausalSequenceEffectNode<CardPlayContext>(steps);
+
+    private static ConstantExpression<CardPlayContext> N(int value) => new(value);
+
+    public static IEnumerable<CardData> WitchlingGiftCards() =>
+    [
+        Gift(CrookedKindnessId, "Crooked Kindness", "Lose 2 HP. Draw 2 cards.", GiftTag,
+            Seq(LoseHealth(2), new DrawCardsNode<CardPlayContext>(CombatantTargetSelectors.Source, N(2)))),
+        Gift(BentPennyId, "Bent Penny", "Gain 1 Energy. Gain 1 Doubt.", GiftTag,
+            Seq(new GainResourceNode<CardPlayContext>(CombatantTargetSelectors.Source, StandardCombatIds.EnergyResource, N(1)),
+                new ApplyStatusNode<CardPlayContext>(CombatantTargetSelectors.Source, new StatusDefinitionId(Cards.Keywords.Doubt), N(1)))),
+        Gift(WarmKettleId, "Warm Kettle", "Gain 8 Block. Discard a card.", GiftTag,
+            Seq(new GainBlockNode<CardPlayContext>(CombatantTargetSelectors.Source, N(8)), DiscardChosen(1))),
+    ];
+
+    // ── The Blackthorn Bride — one of each ────────────────────────────────────────────────────────────────
+    //
+    // Since 2026-11-03 (user): each turn at most one card of each cost — a second card of a cost already played
+    // this turn breaks her law. What has been played is remembered on the player, one counter per cost (3 and
+    // more are one cost).
+    private static CounterId BrideCost(int cost) => new($"bride_cost_{cost}");
+
     public static StatusData APromiseMustBePaired()
     {
         var player = CombatantTargetSelectors.Source;
-        var bride = Lawgiver(PromiseMustBePairedId);
-        var memory = CostMemory("betrothal");
-
-        // The Base Cost of the card just played, plus one, so that "nothing yet" can be zero.
-        ICombatExpression<CardPlayedTriggeredEffectContext, int> ThisCost() =>
-            new AddExpression<CardPlayedTriggeredEffectContext>(
-                new CardInstanceBaseCostExpression<CardPlayedTriggeredEffectContext>(
-                    new TriggerEventCardInstanceExpression<CardPlayedTriggeredEffectContext>(),
-                    StandardCombatIds.EnergyResource),
-                new ConstantExpression<CardPlayedTriggeredEffectContext>(1));
-
-        var bothHeavy = new AndExpression<CardPlayedTriggeredEffectContext>(
-            new ComparisonExpression<CardPlayedTriggeredEffectContext>(
-                new CombatantCounterExpression<CardPlayedTriggeredEffectContext>(player, memory),
-                ComparisonOperator.GreaterOrEqual,
-                new ConstantExpression<CardPlayedTriggeredEffectContext>(3)),
-            new ComparisonExpression<CardPlayedTriggeredEffectContext>(
-                ThisCost(), ComparisonOperator.GreaterOrEqual,
-                new ConstantExpression<CardPlayedTriggeredEffectContext>(3)));
-
-        var program = new EffectProgram<CardPlayedTriggeredEffectContext>(
-            new CausalSequenceEffectNode<CardPlayedTriggeredEffectContext>(
-            [
-                new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
-                    bothHeavy,
-                    Violate<CardPlayedTriggeredEffectContext>(bride, PairedPromiseLaw)),
-                // The open promise is worn by the Bride, so the next card's limit is on screen.
-                new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
-                    new ComparisonExpression<CardPlayedTriggeredEffectContext>(
-                        ThisCost(), ComparisonOperator.GreaterOrEqual,
-                        new ConstantExpression<CardPlayedTriggeredEffectContext>(3)),
-                    new ApplyStatusNode<CardPlayedTriggeredEffectContext>(
-                        bride, new StatusDefinitionId(PromiseOpenId),
-                        new ConstantExpression<CardPlayedTriggeredEffectContext>(1)),
-                    new RemoveStatusNode<CardPlayedTriggeredEffectContext>(
-                        bride, new StatusDefinitionId(PromiseOpenId))),
-                new SetCombatantCounterNode<CardPlayedTriggeredEffectContext>(
-                    player, memory, ThisCost(), relative: false),
-            ]));
-
-        var reset = new EffectProgram<TurnStartedTriggeredEffectContext>(
-            new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
-                PlayersTurn<TurnStartedTriggeredEffectContext>(),
-                new CausalSequenceEffectNode<TurnStartedTriggeredEffectContext>(
-                [
-                    new SetCombatantCounterNode<TurnStartedTriggeredEffectContext>(
-                        Applicant, memory,
-                        new ConstantExpression<TurnStartedTriggeredEffectContext>(0), relative: false),
-                    new RemoveStatusNode<TurnStartedTriggeredEffectContext>(
-                        Lawgiver(PromiseMustBePairedId), new StatusDefinitionId(PromiseOpenId)),
-                ])));
-
-        return Rule(PromiseMustBePairedId, "A Promise Must Be Paired",
-            "After a card costing 2 or more, your next card must cost 0 or 1, or you owe the Bride 1 "
-            + "Trespass.",
-            [
-                new StatusTriggerData("CardPlayed", JsonSerializer.SerializeToElement(
-                    program, CombatJson.CreateOptions<CardPlayedTriggeredEffectContext>()),
-                    StatusTriggerScope.Anywhere),
-                new StatusTriggerData("TurnStarted", JsonSerializer.SerializeToElement(
-                    reset, CombatJson.CreateOptions<TurnStartedTriggeredEffectContext>()),
-                    StatusTriggerScope.Anywhere),
-            ]);
+        ICombatExpression<CardPlayedTriggeredEffectContext, bool> CostIs(int cost) =>
+            cost < 3 ? Is(PlayedCostValue, ComparisonOperator.Equal, cost) : Is(PlayedCostValue, ComparisonOperator.GreaterOrEqual, 3);
+        ICombatExpression<CardPlayedTriggeredEffectContext, bool> Again(int cost) =>
+            new AndExpression<CardPlayedTriggeredEffectContext>(CostIs(cost),
+                Is(CounterOn<CardPlayedTriggeredEffectContext>(player, BrideCost(cost)), ComparisonOperator.Greater, 0));
+        var again = new OrExpression<CardPlayedTriggeredEffectContext>(
+            new OrExpression<CardPlayedTriggeredEffectContext>(Again(0), Again(1)),
+            new OrExpression<CardPlayedTriggeredEffectContext>(Again(2), Again(3)));
+        var remember = new CausalSequenceEffectNode<CardPlayedTriggeredEffectContext>(
+            [.. Enumerable.Range(0, 4).Select(cost => (IEffectNode<CardPlayedTriggeredEffectContext>)
+                new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(CostIs(cost),
+                    SetCounter<CardPlayedTriggeredEffectContext>(player, BrideCost(cost), 1)))]);
+        var forget = new CausalSequenceEffectNode<TurnStartedTriggeredEffectContext>(
+            [.. Enumerable.Range(0, 4).Select(cost => SetCounter<TurnStartedTriggeredEffectContext>(CombatantTargetSelectors.Source, BrideCost(cost), 0))]);
+        return LawOnPlay(PromiseMustBePairedId, "One of Each",
+            "Each turn, play at most one card of each cost. A second card of the same cost breaks her law.",
+            again, also: remember, atTurnStart: forget);
     }
-
-    // "At 1 Claim the player gains 1 Safe-Conduct. At 2 Claims, create Wergild 2 from the Bride." Welcome,
-    // then commitment, then obligation — the relationship progresses whether the player wants it to or not.
-    public static StatusData BetrothalClaim()
-    {
-        var bride = CombatantTargetSelectors.EventTarget;
-
-        EffectProgram<TContext> Program<TContext>() where TContext : class
-        {
-            var claims = new CombatantStatusStacksExpression<TContext>(
-                bride, new StatusDefinitionId(ClaimId));
-
-            return new EffectProgram<TContext>(
-                new ConditionalEffectNode<TContext>(
-                    new TriggerEventStatusIsExpression<TContext>(new StatusDefinitionId(ClaimId)),
-                    new CausalSequenceEffectNode<TContext>(
-                    [
-                        // The welcome, once.
-                        new ConditionalEffectNode<TContext>(
-                            new AndExpression<TContext>(
-                                new ComparisonExpression<TContext>(
-                                    claims, ComparisonOperator.GreaterOrEqual,
-                                    new ConstantExpression<TContext>(1)),
-                                new ComparisonExpression<TContext>(
-                                    new CombatantStatusStacksExpression<TContext>(
-                                        bride, new StatusDefinitionId(BetrothalGiftGivenId)),
-                                    ComparisonOperator.Equal,
-                                    new ConstantExpression<TContext>(0))),
-                            new CausalSequenceEffectNode<TContext>(
-                            [
-                                new ApplyStatusNode<TContext>(
-                                    Applicant, new StatusDefinitionId(SafeConductId),
-                                    new ConstantExpression<TContext>(1), sourceSelector: bride),
-                                new ApplyStatusNode<TContext>(
-                                    bride, new StatusDefinitionId(BetrothalGiftGivenId),
-                                    new ConstantExpression<TContext>(1)),
-                            ])),
-                        // …and then the bill.
-                        new ConditionalEffectNode<TContext>(
-                            new ComparisonExpression<TContext>(
-                                claims, ComparisonOperator.Equal, new ConstantExpression<TContext>(2)),
-                            DemandWergild<TContext>(bride, 2)),
-                    ])));
-        }
-
-        return Rule(BetrothalClaimId, "Betrothal Claim",
-            "The Bride's first Claim is welcomed with 1 Safe-Conduct for you. Her second is a demand for "
-            + "2 Wergild.",
-            [
-                new StatusTriggerData("StatusApplied", JsonSerializer.SerializeToElement(
-                    Program<StatusAppliedTriggeredEffectContext>(),
-                    CombatJson.CreateOptions<StatusAppliedTriggeredEffectContext>())),
-                new StatusTriggerData("StatusMerged", JsonSerializer.SerializeToElement(
-                    Program<StatusMergedTriggeredEffectContext>(),
-                    CombatJson.CreateOptions<StatusMergedTriggeredEffectContext>())),
-            ]);
-    }
-
-    public static StatusData PromiseOpen() =>
-        Marker(PromiseOpenId, "A Promise Open",
-            "You played a card costing 2 or more. Your next card must cost 0 or 1, or owe the Bride 1 Trespass.");
-
-    public static StatusData BetrothalGiftGiven() =>
-        Marker(BetrothalGiftGivenId, "Welcomed",
-            "The Bride has already welcomed you once.");
 
     // ── Crossroads Cup — Drink Before Choosing ────────────────────────────────────────────────────────────
     //
-    // "At your turn start it offers a drink, +1 Energy this turn, but the enemy with the fewest Claims gains
-    // one." The drink is a free card that vanishes at the end of the turn; leaving it costs nothing.
+    // Each turn of yours a drink stands in your hand: +1 Energy, and the Cup gains 2 Claims (user, 2026-11-03).
     public static StatusData DrinkBeforeChoosing()
     {
         var cup = Lawgiver(DrinkBeforeChoosingId);
-
-        var pour = new EffectProgram<TurnStartedTriggeredEffectContext>(
-            new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
-                new AndExpression<TurnStartedTriggeredEffectContext>(
-                    PlayersTurn<TurnStartedTriggeredEffectContext>(),
-                    Alive<TurnStartedTriggeredEffectContext>(cup)),
-                new CreateCardInstanceNode<TurnStartedTriggeredEffectContext>(
-                    CombatantTargetSelectors.Source, new CardDefinitionId(CrossroadsDrinkCardId), CardZone.Hand,
-                    new ConstantExpression<TurnStartedTriggeredEffectContext>(1))));
-
+        var pour = new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
+            new AndExpression<TurnStartedTriggeredEffectContext>(
+                PlayersTurn<TurnStartedTriggeredEffectContext>(), Alive<TurnStartedTriggeredEffectContext>(cup)),
+            new CreateCardInstanceNode<TurnStartedTriggeredEffectContext>(
+                CombatantTargetSelectors.Source, new CardDefinitionId(CrossroadsDrinkCardId), CardZone.Hand,
+                new ConstantExpression<TurnStartedTriggeredEffectContext>(1)));
         return Rule(DrinkBeforeChoosingId, "Drink Before Choosing",
-            "Each turn the Cup offers you a drink: +1 Energy, but the party holding the fewest Claims gains one.",
-            [new StatusTriggerData("TurnStarted", JsonSerializer.SerializeToElement(
-                pour, CombatJson.CreateOptions<TurnStartedTriggeredEffectContext>()),
-                StatusTriggerScope.Anywhere)]);
+            "Each turn the Cup offers you a drink: +1 Energy, but the Cup gains 2 Claims.",
+            [On("TurnStarted", pour, StatusTriggerScope.Anywhere)]);
     }
 
     public static CardData DrinkFromTheCup() => new()
     {
         Id = CrossroadsDrinkCardId,
         NameKey = "Drink from the Cup",
-        DescriptionKey = "Gain 1 Energy. The enemy with the fewest Claims gains a Claim. Unplayed, it is gone at the end of the turn.",
+        DescriptionKey = "Gain 1 Energy. The Cup gains 2 Claims. Unplayed, it is gone at the end of the turn.",
         Costs = [],
         Tags = [new TagId("form")],
         Program = new EffectProgram<CardPlayContext>(
@@ -340,9 +169,8 @@ public static partial class ActThree
                 new GainResourceNode<CardPlayContext>(
                     CombatantTargetSelectors.Source, StandardCombatIds.EnergyResource,
                     new ConstantExpression<CardPlayContext>(1)),
-                CreateClaim<CardPlayContext>(
-                    CombatantTargetSelectors.FirstTarget(
-                        CombatantTargetSelectors.LowestStatusStacks(Parties, new StatusDefinitionId(ClaimId)))),
+                CreateClaim<CardPlayContext>(Lawgiver(DrinkBeforeChoosingId)),
+                CreateClaim<CardPlayContext>(Lawgiver(DrinkBeforeChoosingId)),
             ])),
         PlayedCardDestinationZone = CardZone.ExhaustPile,
         TurnEndHandDestinationZone = CardZone.ExhaustPile,

@@ -2,7 +2,7 @@
 
 Generated: `dotnet run --project Converter -- --art-slots ART_SLOTS.md`. **Do not edit by hand.**
 
-**873 pictures**: 473 cards, 255 relics, 141 bodies
+**875 pictures**: 475 cards, 255 relics, 141 bodies
 (every enemy, elite and boss) and 4 the player can be. Every one of them is filled today by a PLACEHOLDER — a plate with the file's own
 name and the word placeholder on it, written by `bnb-godot/tools/make-card-art.py`,
 `make-relic-art.py` and `make-enemy-art.py`. A painted picture replaces one by being saved over it, so
@@ -522,7 +522,7 @@ Drawn like a body and facing RIGHT — the player stands on the left of the aren
 | `lieutenant` | The Lieutenant | New stripes on an old uniform, and always first through the door. |
 | `sorcerers_apprentice` | The Sorcerer's Apprentice | Knows every incantation, and not quite what happens when one is put after another. |
 
-## Cards — 473 pictures
+## Cards — 475 pictures
 
 No visual canon was ever written for the cards, so the row carries the card's own rules
 text instead of a brief. Act = the act that unlocks it; the starters, the Junk and the
@@ -984,7 +984,7 @@ cards a boss or a door hands over are never offered and have no act.
 | `lt_whistle` | Whistle | working | uncommon | Gain 3 Block. You may spend 1 Authority to draw 2 cards. |
 | `lt_witness` | Witness | working | common | Gain 4 Block. Your next Deed hit on a Challenged enemy this turn counts twice toward its Challenge. |
 
-### Given in play — 77
+### Given in play — 79
 
 Handed over by a boss, a door or an event rather than offered; never in a reward pool.
 
@@ -992,6 +992,7 @@ Handed over by a boss, a door or an event rather than offered; never in a reward
 |---|---|---|
 | `ask_at_the_desk` | Ask at the Desk | Get the card behind the desk back now. It costs 1 more this time. |
 | `ask_for_expedited_service` | Ask for Expedited Service | This Service Window opens him 15% instead of 25%, but you stay at Position 1 after. |
+| `bent_penny` | Bent Penny | Gain 1 Energy. Gain 1 Doubt. |
 | `better_chair_cushion_action` | The Better Chair | Gain 14 Block. End the turn holding a real card, or lose 6 HP. |
 | `black_flood_vessel_action` | Empty the Vessel | Discard your hand, draw 7, and gain 2 Energy. Once a combat. |
 | `borrowers_claim` | Borrower's Claim | Retain. Exhaust. Put a card from hand under your draw pile, draw 1. Held at turn end: 1 Paperwork. |
@@ -1000,22 +1001,24 @@ Handed over by a boss, a door or an event rather than offered; never in a reward
 | `break_the_ration_seal` | Break the Ration Seal | You gain 1 Energy next turn. The colony gains 1 Strength. |
 | `cauldron_add` | Into the Pot | Put a card from hand into the cauldron instead of playing it. The first each turn is free. |
 | `cauldron_brew` | Brew | Brew the 3 ingredients. Three of one family: a concentrated brew. Otherwise each gives its own effect. |
-| `cite_the_old_survey` | Cite the Old Survey | Once a turn, spend 1 Old Right: swap Current and Former law; or void its next Claim; or remove 8 of its Block. |
 | `correction_reed_action` | A Small Correction | Once a turn: discard a card, return one from discard costing 1 less. None there: draw 1. |
-| `counter_petition` | Counter-Petition | Once a turn, spend 1 Safe-Conduct: move one complaint from Road to Root, or back. |
 | `counter_petition_twine_action` | Counter-Petition | Discard a card, draw a card, gain 1 Energy. Once a turn. |
+| `crooked_kindness` | Crooked Kindness | Lose 2 HP. Draw 2 cards. |
 | `dedicate_a_work` | Dedicate a Work | Give Eanna a card from hand for this fight: claimed settles 4 Temple Due, others 1, Junk 0. |
 | `draw_ahead` | Draw Ahead | Draw 1 card now, taken from a later day. |
-| `drink_from_the_cup` | Drink from the Cup | Gain 1 Energy. The enemy with the fewest Claims gains a Claim. Unplayed, it is gone at the end of the turn. |
+| `drink_from_the_cup` | Drink from the Cup | Gain 1 Energy. The Cup gains 2 Claims. Unplayed, it is gone at the end of the turn. |
 | `edict_of_the_open_audience_action` | Open the Audience | Once a combat: cards in your hand cost 0 this turn. |
 | `erasure_tablet_action` | Erase the Line | Once a combat: every enemy's next action deals no damage; they gain 20 Block instead. |
 | `far_boundary` | Far Boundary | Take the far measure this turn. Met: it loses 10 HP and its cover. |
 | `file_the_request` | File the Request | Resolve the Request for Additional Review. |
 | `fine_print` | Fine Print | Unplayable. While in hand, your first card each turn costs 1 more. |
+| `heavy_pie` | Heavy Pie | Gain 2 Energy. Gain 2 Doubt. Grandmother loses 6 HP. |
+| `heavy_pie_dear` | Heavy Pie | Gain 2 Energy. Gain 2 Doubt. Grandmother loses 6 HP. |
 | `hold_the_moon` | Hold the Moon | Once an orbit: the phase repeats for both of you. Counted cards return at once, his too. |
 | `honey_spoon_action` | A Little Honey | Gain 2 Energy. End the turn with 1+ Energy, or lose 6 HP. |
 | `last_slice_tin_action` | Take Another Slice | Draw 2. Play at most 4 real cards this turn, or lose 6 HP. |
-| `make_amends` | Make Amends | Pay 1 Energy or discard a card: settle 1 Wergild, oldest first. |
+| `lavender_sachet` | Lavender Sachet | Gain 12 Block. Discard 2 cards. Grandmother loses 6 HP. |
+| `lavender_sachet_dear` | Lavender Sachet | Gain 12 Block. Discard 2 cards. Grandmother loses 6 HP. |
 | `missing_signature` | Missing Signature | Exhaust. Still in hand at turn end: 1 Paperwork on you. |
 | `near_boundary` | Near Boundary | Take the near measure this turn. Met: it gains Block. |
 | `notice_of_delay` | Notice of Delay | Retain. Exhaust. Still in hand at turn end: 1 Fatigue. |
@@ -1031,14 +1034,12 @@ Handed over by a boss, a door or an event rather than offered; never in a reward
 | `revise_the_last_line` | Revise: The Last Line | Spend a Reed Mark: revise the last line. At 4 she can die; at 5 it erases her. |
 | `revise_three_wounds` | Revise: Three Wounds | Spend a Reed Mark: revise one step. 3 Red Tape → 2 → 1 → none → one removed. |
 | `revise_two_works_broken` | Revise: Two Works | Spend a Reed Mark: revise one step. 2 cards Exhausted → 1 → none → one returns. |
-| `right_of_audience` | Right of Audience | Once a turn, spend Favour. 1: remove a Claim. 2: no law this turn. 3: strip her guard; final order −8. |
 | `royal_grace_cup_action` | Royal Grace | Once a turn: gain 1 Energy, a card, or 10 Block. Every enemy gains 6 Block. |
 | `scrape_the_first_entry` | Scrape the First Entry | Once a turn: blank this entry. Take 1 Paperwork. |
 | `scrape_the_second_entry` | Scrape the Second Entry | Once a turn: blank this entry. Take 1 Paperwork. |
 | `scrape_the_third_entry` | Scrape the Third Entry | Once a turn: blank this entry. Take 1 Paperwork. |
 | `silver_name_tally_action` | Speak the Silver Name | Once a combat: remove an enemy's Block, gain 10 Block, refund your next card this turn. |
 | `sluice_gate_of_the_two_lands_action` | Work the Two Lands | Once a turn: lose 12 Block for 1 Energy, or spend 1 Energy for 12 Block. |
-| `spend_a_counterseal` | Spend a Counterseal | Spend 1 Counterseal: remove one Notarial Seal. Weight of Precedent stays. |
 | `strike_down_the_article` | Strike Down the Article | Strike the Article for the next one. The Charter gains 8 Block. |
 | `summons_to_appear` | Summons to Appear | Retain. Exhaust. Still in hand at turn end: take 5 damage. |
 | `take_ahead` | Take Ahead | Gain 1 Energy now, taken from a later day. |
@@ -1049,6 +1050,8 @@ Handed over by a boss, a door or an event rather than offered; never in a reward
 | `the_equal_courses` | The Equal Courses | Blueprint: play exactly 2 Deeds. Met: Monument −1. Missed: Burdened. |
 | `the_measured_course` | The Measured Course | Blueprint: spend exactly the measured Energy. Met: Monument −1. Missed: Monument +1. |
 | `the_measured_foundation` | The Measured Foundation | Blueprint: spend exactly 2 Energy. Met: Monument −1. Missed: Monument +1 and Entombed. |
+| `thorned_shawl` | Thorned Shawl | Lose 5 HP. Draw 2 cards. Grandmother loses 6 HP. |
+| `thorned_shawl_dear` | Thorned Shawl | Lose 5 HP. Draw 2 cards. Grandmother loses 6 HP. |
 | `tomb_curse` | Tomb Curse | Unplayable. Still in hand at the end of your turn: 1 Entombed. |
 | `unfinished_citation` | Unfinished Citation | Retain. Exhaust. Clear a Reference from a card in hand. Still in hand at turn end: 1 Paperwork. |
 | `uphold_the_article` | Uphold the Article | The Article stands. Gain 6 Block. |
@@ -1057,13 +1060,12 @@ Handed over by a boss, a door or an event rather than offered; never in a reward
 | `wand_inscribe` | Inscribe | Put a card from hand into a free wand slot instead of playing it. First each combat free, then 1 Focus. |
 | `wand_swap` | Swap | Two wand cards trade places. 1 Focus. |
 | `wand_withdraw` | Withdraw | A wand card goes to your discard. 1 Focus. |
+| `warm_kettle_gift` | Warm Kettle | Gain 8 Block. Discard a card. |
 | `wash_the_burdened_vessel` | Wash the Burdened Vessel | Once a turn, 1 Energy: empty the Burdened jar for good. Take 1 Entombed. |
 | `wash_the_doubt_vessel` | Wash the Doubt Vessel | Once a turn, 1 Energy: empty the Doubt jar for good. Take 1 Entombed. |
 | `wash_the_entombed_vessel` | Wash the Entombed Vessel | Once a turn, 1 Energy: empty the Entombed jar for good. Take 1 Entombed. |
 | `wash_the_paperwork_vessel` | Wash the Paperwork Vessel | Once a turn, 1 Energy: empty the Paperwork jar for good. Take 1 Entombed. |
 | `wash_the_weighed_vessel` | Wash the Weighed Vessel | Once a turn, 1 Energy: empty the Weighed jar for good. Take 1 Entombed. |
-| `witchlings_charm` | The Witchling's Charm | Gain 8 Block. Draw 1. Using it settles her gift. |
-| `witchlings_gift` | The Witchling's Gift | Accept: 1 Safe-Conduct, or her Charm. Use it within 2 turns or owe her 1 Trespass. Unplayed, it is declined. |
 | `work_the_sluice` | Work the Sluice | Once a turn, spend 1 Sluice Authority: at turn end the water moves a step back to the Ordered Flood. |
 | `wrong_form` | Wrong Form | Exhaust. Discard another card. |
 | `yield_your_place` | Yield Your Place | Move one place away from the Counter. Gain 6 Block. One queue choice a turn. |

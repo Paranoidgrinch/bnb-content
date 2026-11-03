@@ -16,10 +16,9 @@ namespace BnbContent.Converter;
 //               Doubt and Panic would quietly be the best defensive status in the game.
 //   Claim       on an enemy: recognised standing, at most 3. Deliberately not a damage multiplier. The
 //               interesting question is what THIS party believes its Claim entitles it to.
-//   Wergild     a demand owed by the player to one source, settled by Making Amends. (Stage 4.)
 //
-// **Newly created is not the same as transferred.** A Claim is newly created by three Trespass, by unpaid
-// Wergild, or by an effect that says "create"; a transfer only changes owner. Effects that listen for a new
+// **Newly created is not the same as transferred.** A Claim is newly created by a broken law (one Trespass since
+// 2026-11-03) or by an effect that says "create"; a transfer only changes owner. Effects that listen for a new
 // Claim must not hear a transfer, because that is the loop the design spent a whole section closing. So the
 // content keeps the two apart as two things: `claim` is the resource, and `claim_created` is the
 // announcement that a claim was MADE. Only creation raises the announcement — the Act-II idiom of a status
@@ -38,8 +37,9 @@ public static partial class ActThree
     // At most three Claims to a party — the design's suggested ceiling, enforced where claims are made.
     public const int ClaimCeiling = 3;
 
-    // How many Trespass from one source become that source's Claim.
-    public const int TrespassThreshold = 3;
+    // How many Trespass from one source become that source's Claim: one since 2026-11-03 (user) — breaking a law
+    // gives that party a Claim at once. The Trespass is still filed, so a Safe-Conduct can still refuse it.
+    public const int TrespassThreshold = 1;
 
     // One instance per violation, each carrying the source whose law was broken. Merging would collapse the
     // whole point — the threshold is "3 from the SAME source", and merged stacks remember only the last one.
@@ -47,9 +47,7 @@ public static partial class ActThree
     {
         Id = TrespassId,
         NameKey = "Trespass",
-        DescriptionKey =
-            "A violation owed to whoever's law you broke. It deals no damage. At 3 from one source, those 3 "
-            + "are spent and that source gains a Claim.",
+        DescriptionKey = "You broke a law: whoever's law it was gains a Claim.",
         Polarity = StatusPolarity.Debuff,
         StackingBehavior = StatusStackingBehavior.CreateSeparateInstance,
         UsesStacks = true,
@@ -65,7 +63,7 @@ public static partial class ActThree
     {
         Id = SafeConductId,
         NameKey = "Safe-Conduct",
-        DescriptionKey = "Leave to pass. One is spent to refuse one Trespass, and it refuses nothing else.",
+        DescriptionKey = "Leave to pass. The next law you break is forgiven: no Claim.",
         Polarity = StatusPolarity.Buff,
         StackingBehavior = StatusStackingBehavior.CreateSeparateInstance,
         UsesStacks = true,
@@ -85,9 +83,7 @@ public static partial class ActThree
     {
         Id = ClaimId,
         NameKey = "Claim",
-        DescriptionKey =
-            "Recognised standing, won from 3 of your Trespass. Each Claim adds 3 to this party's attacks. "
-            + "At most 3.",
+        DescriptionKey = "Won each time you break this party's law. Each Claim adds 3 to its attacks. At most 3.",
         Polarity = StatusPolarity.Buff,
         StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
         UsesStacks = true,
@@ -159,10 +155,18 @@ public static partial class ActThree
                     new ConstantExpression<StatusAppliedTriggeredEffectContext>(TrespassThreshold)),
                 new CausalSequenceEffectNode<StatusAppliedTriggeredEffectContext>(steps)));
 
+        // A fresh turn: every law may be broken again.
+        var morning = new EffectProgram<TurnStartedTriggeredEffectContext>(
+            ClearFromParties<TurnStartedTriggeredEffectContext>(LawBrokenThisTurnId));
+
         return Rule(GreenDocketCustomsId, "The Green Docket",
-            "Three Trespass owed to one party are spent, and that party gains a Claim.",
-            [new StatusTriggerData("StatusApplied", JsonSerializer.SerializeToElement(
-                program, CombatJson.CreateOptions<StatusAppliedTriggeredEffectContext>()))]);
+            "Break an enemy's law and it gains a Claim: +3 damage on its attacks, at most 3. Each law breaks once a turn.",
+            [
+                new StatusTriggerData("StatusApplied", JsonSerializer.SerializeToElement(
+                    program, CombatJson.CreateOptions<StatusAppliedTriggeredEffectContext>())),
+                new StatusTriggerData("TurnStarted", JsonSerializer.SerializeToElement(
+                    morning, CombatJson.CreateOptions<TurnStartedTriggeredEffectContext>())),
+            ]);
     }
 
     // One instance of one stack at a time, and only the filer's own — three separate picks, because a single
@@ -230,46 +234,18 @@ public static partial class ActThree
         $"{enemyId}.{intentId}" switch
         {
             "permit_hare.check_the_permit" => Pressure(10),
-            "cairn_of_stray_paths.loose_stone" => Pressure(7),
             "reckoning_hedge.measure_back" => Pressure(10),
             "errant_boundary_stone.move_the_marker" => Pressure(11),
             "hawthorn_tenant.enforce_the_plot" => Pressure(12),
             "two_bank_toll_ford.collect_both_banks" => Pressure(13),
-            // The tollkeepers do not accuse; they charge. Their pressure intent names a price instead of
-            // filing a violation.
-            "charter_shell_snail.charter_toll" => Toll(11, 1),
-            "streamside_oath_fish.oath_bite" => Toll(12, 1),
             "blackthorn_bride.thorn_vow" => Pressure(14),
             "crossroads_cup.spill_at_the_crossroads" => Pressure(11),
             "roadside_witchling.roadside_hex" => Pressure(13),
             "elsewhere_path.arrive_elsewhere" => Pressure(15),
             _ when EliteIntent(enemyId, intentId) is { } elite => elite,
-            // The two that GIVE. A gift carries its giver's name, which is the whole of the Witchling.
-            "crossroads_cup.offer_the_cup" => Hospitality(0),
+            _ when NormalIntent(enemyId, intentId) is { } normal => normal,
             _ => null,
         };
-
-    // A licence granted, carrying the name of whoever granted it — the Witchling's courtesy is only her
-    // courtesy if her own stacks can be told from anybody else's.
-    private static EffectProgram<EnemyActionContext> Hospitality(int damage) =>
-        new(new CausalSequenceEffectNode<EnemyActionContext>(
-        [
-            new DealDamageNode<EnemyActionContext>(
-                Applicant, new ConstantExpression<EnemyActionContext>(damage)),
-            new ApplyStatusNode<EnemyActionContext>(
-                Applicant, new StatusDefinitionId(SafeConductId),
-                new ConstantExpression<EnemyActionContext>(1),
-                sourceSelector: CombatantTargetSelectors.Source),
-        ]));
-
-    // A blow, and a demand for restitution owed to whoever struck.
-    private static EffectProgram<EnemyActionContext> Toll(int damage, int points) =>
-        new(new CausalSequenceEffectNode<EnemyActionContext>(
-        [
-            new DealDamageNode<EnemyActionContext>(
-                Applicant, new ConstantExpression<EnemyActionContext>(damage)),
-            DemandWergild<EnemyActionContext>(CombatantTargetSelectors.Source, points),
-        ]));
 
     // A blow, and then a violation owed to whoever struck — no Local Law was broken, so nothing that asks
     // about laws answers this one.
@@ -293,14 +269,9 @@ public static partial class ActThree
         ClaimCreated(),
         GreenDocketCustoms(),
         NoHastyPassage(),
-        Quarry(),
-        QuarrySwitched(),
         EveryDetourLeavesAStone(),
         DetourStone(),
         CurrentSurvey(),
-        SurveyedThisTurn(),
-        SignSameCost(),
-        SignDifferentCost(),
         WanderingTitle(),
         BeyondTheBorder(),
         BorderNext(),
@@ -312,21 +283,14 @@ public static partial class ActThree
         Attended(),
         ArrowPointsElsewhere(),
         CourtesySafeConduct(),
-        GiftOutstanding(),
         APromiseMustBePaired(),
-        PromiseOpen(),
-        BetrothalClaim(),
-        BetrothalGiftGiven(),
         DrinkBeforeChoosing(),
-        Wergild(),
-        WergildDemanded(),
-        WergildDue(),
-        WergildFallsDue(),
         OathAccepted(),
         PaymentAccordingToCharter(),
-        ShellEnergy(),
-        ShellDeed(),
-        ShellWorking(),
+        FishNoDeeds(),
+        FishLowGuard(),
+        Tended(),
+        LawBrokenThisTurn(),
         OathKept(),
         TollOnBothBanks(),
         .. EliteStatuses(),
@@ -334,8 +298,7 @@ public static partial class ActThree
 
     // The cards the act itself hands the player: never dealt into a deck, only pushed into a fight.
     public static IReadOnlyList<CardData> GivenCards() =>
-        [MakeAmends(), CiteTheOldSurvey(), CounterPetition(), SpendACounterseal(), RightOfAudience(),
-            WitchlingsGift(), WitchlingsCharm(), DrinkFromTheCup()];
+        [.. WitchlingGiftCards(), .. GrandmotherGiftCards(), DrinkFromTheCup()];
 
     // The standard roster: Road, Hedgerows, Tollwater, Covenants, three to a stage. Anything in here is a Green Docket body, which is how a fight
     // knows to open under the act's customs.
@@ -359,7 +322,6 @@ public static partial class ActThree
             ?
             [
                 new StartingStatusSpec(new StatusDefinitionId(GreenDocketCustomsId), 1),
-                new StartingStatusSpec(new StatusDefinitionId(WergildFallsDueId), 1),
                 new StartingStatusSpec(new StatusDefinitionId(SafeConductId), 1),
             ]
             : [];

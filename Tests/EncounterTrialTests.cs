@@ -33,6 +33,7 @@ public class EncounterTrialTests
     [Theory]
     [InlineData(1, "city_boss_")]
     [InlineData(2, "archives_boss_")]
+    [InlineData(3, "green_docket_boss_")]
     public void An_act_walks_every_stage_fight_then_every_boss(int act, string bossPrefix)
     {
         var trial = Trial(act);
@@ -63,6 +64,7 @@ public class EncounterTrialTests
     [Theory]
     [InlineData(1)]
     [InlineData(2)]
+    [InlineData(3)]
     public async Task A_bot_walks_into_the_second_stage(int act)
     {
         var trial = Trial(act);

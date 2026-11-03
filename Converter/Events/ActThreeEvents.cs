@@ -14,7 +14,7 @@ namespace BnbContent.Converter.Events;
 // on a road where somebody has a right and is willing to discuss it. So what they hand out is different in
 // kind from the city's markings and the archives' inscriptions-about-filing: an INSCRIPTION here is a
 // courtesy extended to one card and never withdrawn, and what a door writes on the FIGHT is usually a
-// demand — a Wergild owed to nobody, which the act's own Make Amends settles like any other.
+// demand — 4 HP taken as the next ordinary fight opens.
 //
 // Three doors ask the traveller to fight in a particular SHAPE and pay only if the shape held. Neither vow
 // stops anything; the fight writes down whether the promise was kept and the road reads it afterwards.
@@ -64,9 +64,8 @@ public static class ActThreeEvents
             "The rowan leans over the water. What you washed comes out blessed, and so do you.",
             [.. Inscribe(ActThreeEventObjects.RowanBlessed, "choose what to wash carefully"), Heal(10)]),
         Branch("bottle", "Bottle the water.",
-            "It keeps. The first demand you settle in full on the next ordinary road will grant one more "
-            + "leave to pass than it would have.",
-            [Openings.ForFights(Openings.EventFights, Applies(ActThreeEventObjects.BottledWaterId))]));
+            "It keeps. The next ordinary road opens with one more leave to pass: a Safe-Conduct.",
+            [Openings.ForFights(Openings.EventFights, Applies(ActThree.SafeConductId))]));
 
     // ── 3 · Earliest Stage 2 ──────────────────────────────────────────────────────────────────────────────
 
@@ -189,7 +188,7 @@ public static class ActThreeEvents
         others:
         [
             Branch("dispute", "Dispute the crossing.",
-                "Eighty-five Gold's worth of being right, and a crossing's demand waiting at the next "
+                "Eighty-five Gold's worth of being right, and the crossing's demand — 4 HP — waiting at the next "
                 + "ordinary fight.",
                 [Gold(85), Install(ActThreeEventPrograms.ConceptualDemandWaits)]),
             Branch("use_anyway", "Use the bridge anyway.",

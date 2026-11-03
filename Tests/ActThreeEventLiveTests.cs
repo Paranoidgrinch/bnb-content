@@ -69,7 +69,7 @@ public class ActThreeEventLiveTests
     {
         using var story = OnTheRoad("a_clear_stream", "bottle");
 
-        Assert.Equal(1, HeroStacks(story, ActThreeEventObjects.BottledWaterId));
+        Assert.Equal(2, HeroStacks(story, ActThree.SafeConductId)); // the act's one, and the bottle's
     }
 
     // ── 2. The Noticebound Hedge ──────────────────────────────────────────────────────────────────────────
@@ -254,10 +254,11 @@ public class ActThreeEventLiveTests
     [Fact]
     public void Disputing_the_crossing_pays_and_leaves_a_demand()
     {
-        using var story = OnTheRoad("the_conceptual_toll", "dispute");
+        using var story = OnTheRoad("the_conceptual_toll", "dispute", health: 50);
 
         Assert.Equal(85, story.Run.Resources[StandardRunIds.Gold]);
-        Assert.Equal(2, HeroStacks(story, ActThreeEventObjects.EnvironmentalWergildId));
+        // The crossing's demand: 4 HP as the next ordinary fight opens.
+        Assert.Equal(46, story.Fight.State.GetCombatant(story.Fight.HeroId).Health.Current);
     }
 
     [Fact]
