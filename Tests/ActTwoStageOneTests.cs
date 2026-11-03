@@ -41,7 +41,7 @@ public class ActTwoStageOneTests
 
     // At 2 owed, the source collects: it takes back what it is owed and files a Paperwork for the trouble.
     [Fact]
-    public void At_two_owed_the_source_collects_and_files_paperwork()
+    public void At_two_owed_the_source_collects_seven_damage_and_no_paperwork()
     {
         var (play, _, _) = FightProbe.Start(
             FightProbe.Solo("brass_maw_of_returns", "return_intake"));
@@ -50,12 +50,12 @@ public class ActTwoStageOneTests
         play.CombatDriver.EndTurn(); // two Overdue standing
         play.CombatDriver.EndTurn(); // the Maw's next turn opens: Delinquency
 
-        Assert.Equal(1, FightProbe.StacksOf(Hero(play), Keywords.Paperwork));
+        Assert.Equal(0, FightProbe.StacksOf(Hero(play), Keywords.Paperwork));
         play.Dispose();
     }
 
     // "Whenever Brass Maw resolves its Delinquency: gain 1 Return Parcel." The parcels ride on its next direct
-    // attack, +5 each, and that attack spends them all.
+    // attack, +8 each, and that attack spends them all.
     [Fact]
     public void The_maw_spits_back_what_it_collected()
     {
@@ -70,7 +70,8 @@ public class ActTwoStageOneTests
         // turn is the "next direct attack" the parcel was waiting for.
         play.CombatDriver.EndTurn();
 
-        Assert.Equal(before - 14, Hero(play).Health.Current); // 9 base + 5 for the parcel
+        // 7 for the collection, then 9 base + 8 for the parcel (user, 2026-11-03).
+        Assert.Equal(before - ActTwo.CollectionDamage - 17, Hero(play).Health.Current);
         Assert.Equal(0, FightProbe.StacksOf(Enemy(play, enemyId), ActTwo.ReturnParcelId)); // and spent by it
         play.Dispose();
     }
@@ -87,8 +88,10 @@ public class ActTwoStageOneTests
         play.CombatDriver.EndTurn(); // two Overdue
         play.CombatDriver.EndTurn(); // collected — and immediately re-owed
 
-        Assert.Equal(1, FightProbe.StacksOf(Hero(play), Keywords.Paperwork));
+        Assert.Equal(0, FightProbe.StacksOf(Hero(play), Keywords.Paperwork));
         Assert.Equal(2, FightProbe.StacksOf(Hero(play), ActTwo.OverdueId)); // 1 re-owed + 1 from this turn's intent
+        var ouroboros = play.CombatDriver.Current!.State.Combatants.First(c => c.Id != play.CombatDriver.Current.HeroId);
+        Assert.True(ouroboros.DefensivePools[StandardCombatIds.BlockDefensivePool].Current >= 6); // and it guards
         play.Dispose();
     }
 

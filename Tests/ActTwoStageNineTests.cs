@@ -187,10 +187,10 @@ public class ActTwoStageNineTests
             health: 9999);
 
         var ouroboros = Find(play, "dead_letter_ouroboros");
-        var caught = Caught(play, session, ouroboros, caughtAt: 11, turns: 10);  // 30 % of its 35
+        var caught = Caught(play, session, ouroboros, caughtAt: 23, turns: 10);  // 50 % of its 46 as tuned (2026-11-03)
 
         play.Dispose();
-        Assert.True(caught, "the jar should have caught it and left it on 11");
+        Assert.True(caught, "the jar should have caught it and left it on 23");
     }
 
     // "If the Jar dies before resolution, Stored Life is lost." Break the jar first and the body beside it

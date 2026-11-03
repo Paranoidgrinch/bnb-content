@@ -283,6 +283,9 @@
     ],
     "starting_statuses": [
       {
+        "status": "archive_collection"
+      },
+      {
         "status": "second_person_reference"
       }
     ],
@@ -337,6 +340,9 @@
       }
     ],
     "starting_statuses": [
+      {
+        "status": "archive_collection"
+      },
       {
         "status": "learned_letter"
       },
@@ -402,6 +408,9 @@
     ],
     "starting_statuses": [
       {
+        "status": "archive_collection"
+      },
+      {
         "status": "orphan_citation_reference"
       }
     ],
@@ -462,6 +471,9 @@
     ],
     "starting_statuses": [
       {
+        "status": "archive_collection"
+      },
+      {
         "status": "behind_the_desk_rule"
       }
     ]
@@ -517,6 +529,9 @@
     ],
     "starting_statuses": [
       {
+        "status": "archive_collection"
+      },
+      {
         "status": "mnemonic_chain_collect"
       }
     ]
@@ -565,6 +580,9 @@
       }
     ],
     "starting_statuses": [
+      {
+        "status": "archive_collection"
+      },
       {
         "status": "blank_certificate_reference"
       },

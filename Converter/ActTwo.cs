@@ -21,6 +21,13 @@ public static class ActTwo
     // ── the vocabulary ────────────────────────────────────────────────────────────────────────────────────
 
     public const string OverdueId = "overdue";
+    public const int CollectionDamage = 7;
+
+    // The collection every Act-II citer carries (2026-11-03): until then the citing enemies filed Overdue that
+    // nobody ever collected, so a citation left unanswered cost nothing at all.
+    public const string ArchiveCollectionId = "archive_collection";
+    public static StatusData ArchiveCollection() =>
+        Delinquency(ArchiveCollectionId, "Collects What Is Owed", "At 2 Overdue owed to it, it collects them: 7 damage.");
 
     // One stack per filing, each its own instance carrying its own source. Merging would collapse the whole
     // point: the threshold is "2 from the same source", and merged stacks remember only the last source.
@@ -28,7 +35,7 @@ public static class ActTwo
     {
         Id = OverdueId,
         NameKey = "Overdue",
-        DescriptionKey = "A debt owed to whoever filed it. At 2 from one source, that source collects.",
+        DescriptionKey = "A debt owed to whoever filed it. At 2 from one source, that source collects them: 7 damage.",
         Polarity = StatusPolarity.Debuff,
         StackingBehavior = StatusStackingBehavior.CreateSeparateInstance,
         UsesStacks = true,
@@ -50,9 +57,9 @@ public static class ActTwo
             // Two instances of one stack each, so two picks — a single −2 would empty one filing and leave
             // the other standing.
             SpendOne(), SpendOne(),
-            new ApplyStatusNode<TurnStartedTriggeredEffectContext>(
-                Opponent, new StatusDefinitionId(Keywords.Paperwork),
-                new ConstantExpression<TurnStartedTriggeredEffectContext>(1)),
+            // 7 damage (user, 2026-11-03: it was 1 Paperwork).
+            new DealDamageNode<TurnStartedTriggeredEffectContext>(
+                Opponent, new ConstantExpression<TurnStartedTriggeredEffectContext>(CollectionDamage)),
             // A collection is the archive's own moment, and this rule runs on the body that collects — so it
             // announces for itself, under both names: which moment it was, and that a body's rule fired.
             AnnounceSelf<TurnStartedTriggeredEffectContext>(AnnounceDelinquency),
@@ -194,12 +201,12 @@ public static class ActTwo
     // "Misfile 1 card": the mark goes on the draw pile, which is where a misfiling can still cost the player
     // something. The pile is already shuffled, so its top card IS the random one — the reading Act I's
     // Unclaimed Property Tag uses.
-    public static IEffectNode<EnemyActionContext> MisfileOne(string mark) =>
+    public static IEffectNode<EnemyActionContext> MisfileOne(string mark, int count = 1) =>
         new ForEachCardInZoneNode<EnemyActionContext>(
             Opponent, CardZone.DrawPile,
             new MarkCardInstanceNode<EnemyActionContext>(
                 Opponent, new IteratedCardExpression<EnemyActionContext>(), new TagId(mark)),
-            takeFirst: 1);
+            takeFirst: count);
 
     // "After normal draw, select one valid card in hand. If the player plays it this turn, it resolves normally
     // and THEN becomes Misfiled." The rule lives on the player because that is whose hand and whose play it is
@@ -373,6 +380,8 @@ public static class ActTwo
         CertificateClause(),
         RememberedVolume(),
         ChainCollect(),
+        ArchiveCollection(),
+        LearnedBite(),
     ];
 
     public const string CertificateReferenceMark = "referenced_certificate";
@@ -477,7 +486,7 @@ public static class ActTwo
                     CombatantTargetSelectors.Source, new StatusDefinitionId(ReturnParcelId),
                     new ConstantExpression<TurnStartedTriggeredEffectContext>(1))));
 
-    // "+5 damage per Return Parcel on the next direct attack; after that attack, Return Parcel → 0." The same
+    // "+8 damage per Return Parcel (5 until 2026-11-03) on the next direct attack; after that attack, Return Parcel → 0." The same
     // shape Act I's Contempt uses: the modifier is the parcel's presence, the trigger is what spends it.
     private static StatusData ReturnParcel()
     {
@@ -501,7 +510,7 @@ public static class ActTwo
             PassiveModifiers =
             [
                 new PassiveModifierData(PassiveModifierPipeline.DamageDealt,
-                    PassiveModifierOperation.AddPerStack, 5, RestrictDamageKind: DamageKind.Direct),
+                    PassiveModifierOperation.AddPerStack, 8, RestrictDamageKind: DamageKind.Direct),
             ],
             Triggers =
             [
@@ -516,9 +525,15 @@ public static class ActTwo
     private static StatusData OuroborosDelinquency() =>
         Delinquency(OuroborosDelinquencyId, "Return to Sender",
             "Nothing it is owed ever finishes being owed.",
-            new ApplyStatusNode<TurnStartedTriggeredEffectContext>(
-                Opponent, new StatusDefinitionId(OverdueId),
-                new ConstantExpression<TurnStartedTriggeredEffectContext>(1)));
+            new CausalSequenceEffectNode<TurnStartedTriggeredEffectContext>(
+            [
+                new ApplyStatusNode<TurnStartedTriggeredEffectContext>(
+                    Opponent, new StatusDefinitionId(OverdueId),
+                    new ConstantExpression<TurnStartedTriggeredEffectContext>(1)),
+                // …and it guards on what it took (user, 2026-11-03).
+                new GainBlockNode<TurnStartedTriggeredEffectContext>(
+                    CombatantTargetSelectors.Source, new ConstantExpression<TurnStartedTriggeredEffectContext>(6)),
+            ]));
 
     // ── Stage 3 — The Whispering Catalogue ────────────────────────────────────────────────────────────────
 
@@ -555,8 +570,19 @@ public static class ActTwo
                             PlayedCost<CardPlayedTriggeredEffectContext>(),
                             ComparisonOperator.Equal,
                             OnWearer<CardPlayedTriggeredEffectContext>(LastCostCounter)),
-                        SetOnWearer<CardPlayedTriggeredEffectContext>(
-                            LearnedCostCounter, PlayedCost<CardPlayedTriggeredEffectContext>())),
+                        new CausalSequenceEffectNode<CardPlayedTriggeredEffectContext>(
+                        [
+                            SetOnWearer<CardPlayedTriggeredEffectContext>(
+                                LearnedCostCounter, PlayedCost<CardPlayedTriggeredEffectContext>()),
+                            // Knowing a price sharpens its teeth (user, 2026-11-03): +3 on its attacks from now on.
+                            // On the Alphabet itself: in this hook `Source` is the player who played.
+                            new ForEachTargetEffectNode<CardPlayedTriggeredEffectContext>(
+                                CombatantTargetSelectors.WithStatus(
+                                    CombatantTargetSelectors.AllAliveCombatants, new StatusDefinitionId(AlphabetMemoryId)),
+                                new ApplyStatusNode<CardPlayedTriggeredEffectContext>(
+                                    CombatantTargetSelectors.IterationTarget, new StatusDefinitionId(LearnedBiteId),
+                                    new ConstantExpression<CardPlayedTriggeredEffectContext>(1))),
+                        ])),
                     SetOnWearer<CardPlayedTriggeredEffectContext>(
                         LastCostCounter, PlayedCost<CardPlayedTriggeredEffectContext>()),
                 ])));
@@ -567,6 +593,25 @@ public static class ActTwo
                 watch, CombatJson.CreateOptions<CardPlayedTriggeredEffectContext>()),
                 StatusTriggerScope.Anywhere)]);
     }
+
+    public const string LearnedBiteId = "learned_bite";
+
+    private static StatusData LearnedBite() => new()
+    {
+        Id = LearnedBiteId,
+        NameKey = "Learned Bite",
+        DescriptionKey = "It has learned a price: its attacks deal 3 more.",
+        Polarity = StatusPolarity.Buff,
+        StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
+        UsesStacks = false,
+        Tags = [],
+        PassiveModifiers =
+        [
+            new PassiveModifierData(PassiveModifierPipeline.DamageDealt, PassiveModifierOperation.AddFlat, 3,
+                RestrictDamageKind: DamageKind.Direct),
+        ],
+        Triggers = [],
+    };
 
     // …and cites a card of the learned price, one per draw.
     public static StatusData FangedAlphabetReference() =>
@@ -986,8 +1031,10 @@ public static class ActTwo
     public const string SpareLifeOuroborosId = "spare_life_ouroboros";
     public const string SpareLifeTestatorId = "spare_life_testator";
 
-    private const int OuroborosSpare = 11;      // 30 % of 35, rounded up
-    private const int TestatorSpare = 15;       // 30 % of 48, rounded up
+    // 50 % since 2026-11-03 (user; it was 30 %), of the bodies as fielded — 35 and 48 authored, 130 % of that
+    // since the Act-II multi-fights were tuned (ActTuning), 46 and 62.
+    private const int OuroborosSpare = 23;
+    private const int TestatorSpare = 31;
 
     public static StatusData SpareLifeOuroboros() => SpareLife(SpareLifeOuroborosId, OuroborosSpare);
 

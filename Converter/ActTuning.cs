@@ -35,6 +35,13 @@ public static class ActTuning
         {
             ["normal"] = new(110, 100),
         },
+        // Act II, from the second encounter trial (user, 2026-11-03): the normal enemies were all a little too weak —
+        // most single fights cost nothing and were over in two rounds.
+        [2] = new Dictionary<string, Factor>
+        {
+            ["normal"] = new(140, 120),
+            ["multi"] = new(130, 120),
+        },
         // Measured 2026-10-08 (ActBench over the ten playthroughs' decks, beam 6): the Act-III and Act-IV single
         // bodies died before they struck. The multi-fights are made of the same normal bodies, so they take the
         // damage too. Act IV sits above Act III in every role (user, 2026-10-08) — and against a stronger deck.
@@ -87,6 +94,8 @@ public static class ActTuning
         // planner).
         ["green_docket_elite_ant_queen_of_the_proper_line"] = new(110, 110),
         // Act IV's per-encounter overrides went with the rescale of 2026-10-30: the role table alone sets it.
+        // Act II: the Blank Death Certificate already cost 29 in the trial of 2026-11-02, so the act's buff passes it by.
+        ["archives_necrology_01"] = new(100, 100),
     };
 
     // ── A QUESTION, NOT A TUNING: `--apprentice-damage N`, `--apprentice-block N` ──────────────────────────────

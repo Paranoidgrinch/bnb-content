@@ -42,7 +42,7 @@ public static class Testator
     [
         Rewriting(),
         ActTwo.Delinquency(DelinquencyId, "Probate Fees",
-            "At 2 Overdue owed to the Testator, it collects them: 1 Paperwork."),
+            "At 2 Overdue owed to the Testator, it collects them: 7 damage."),
         Marker(HeirsId, "Testament: To My Heirs",
             $"If it dies now, every other enemy gains {HeirsStrength} Strength and {HeirsBlock} Block."),
         Marker(ClaimantId, "Testament: To the Claimant",

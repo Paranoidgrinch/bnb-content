@@ -9,13 +9,13 @@ namespace BnbContent.Converter;
 public static class RawIntentPrograms
 {
 
-    private static EffectProgram<EnemyActionContext> Misfiling(int damage, string mark) =>
+    private static EffectProgram<EnemyActionContext> Misfiling(int damage, string mark, int count = 1) =>
         new(new CausalSequenceEffectNode<EnemyActionContext>(
         [
             new DealDamageNode<EnemyActionContext>(
                 CombatantTargetSelectors.LowestHealthEnemyOfSource,
                 new ConstantExpression<EnemyActionContext>(damage)),
-            ActTwo.MisfileOne(mark),
+            ActTwo.MisfileOne(mark, count),
         ]));
 
     public static EffectProgram<EnemyActionContext>? For(string enemyId, string intentId) =>
@@ -23,7 +23,7 @@ public static class RawIntentPrograms
         {
             // Act II: an attack that also misfiles. Which SHELF did it decides where the card goes when it is
             // taken back, so the destination is written into the mark itself.
-            "crabwise_shelf.mis_shelve" => Misfiling(11, ActTwo.MisfiledSidewaysMark),
+            "crabwise_shelf.mis_shelve" => Misfiling(11, ActTwo.MisfiledSidewaysMark, count: 2),
             "lower_appellate_step.await_the_ruling" => AwaitTheRuling(),
             "middle_appellate_step.await_the_ruling" => AwaitTheRuling(),
             "upper_appellate_step.await_the_ruling" => AwaitTheRuling(),

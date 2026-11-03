@@ -52,7 +52,7 @@ public static class PassiveStatuses
         // Act II shelves whose rule otherwise runs on the player or inside an intent (content cut 2026-10-29: every
         // law is visible on its enemy).
         Marker(ShelvedSidewaysId, "Shelved Sideways",
-            "Its Mis-Shelve misfiles a card in your draw pile: when you draw it, it goes back under the pile."),
+            "Its Mis-Shelve misfiles 2 cards in your draw pile: when you draw one, it goes back under the pile."),
         Marker(WrongEditionEnemyId, "The Wrong Edition",
             "Each turn one card in your hand is the wrong edition: it works, then it is Misfiled."),
         Marker(NotThisCounterId, "Not This Counter",

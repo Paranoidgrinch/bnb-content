@@ -6,7 +6,7 @@ using RogueDeck.Scenario.Authoring;
 namespace BnbContent.Tests;
 
 // What ActTuning does to the document, pinned against the document as authored: the factor reaches the program
-// AND the telegraph, health per encounter, damage per body — and nothing outside Acts III and IV moves but the
+// AND the telegraph, health per encounter, damage per body — and nothing outside Acts II-IV moves but the
 // health of Act I's single fights.
 public class ActTuningTests
 {
@@ -59,8 +59,25 @@ public class ActTuningTests
         Assert.True(changed > 0);
     }
 
+    // Act II's normal and multi-fights carry more health (the trial of 2026-11-02), all but the Blank Death
+    // Certificate, which keeps its own.
     [Fact]
-    public void Nothing_outside_acts_three_and_four_moves_but_act_one_normal_health()
+    public void Act_two_fields_its_normal_and_multi_fights_stronger()
+    {
+        var data = BabData.Load(TestData.Directory);
+        foreach (var encounter in data.Encounters.Where(e => e.Act == 2 && ActTuning.RoleOf(e) is "normal" or "multi"))
+        {
+            var percent = ActTuning.Encounters.TryGetValue(encounter.Id, out var own)
+                ? own.HealthPercent
+                : ActTuning.For(2, ActTuning.RoleOf(encounter)).HealthPercent;
+            Assert.Equal([.. Health(Authored, encounter.Id).Select(h => Scale(h, percent))], Health(Shipped, encounter.Id));
+        }
+        Assert.Equal(Health(Authored, "archives_necrology_01"), Health(Shipped, "archives_necrology_01"));
+        Assert.True(Health(Shipped, "archives_catalogue_01")[0] > Health(Authored, "archives_catalogue_01")[0]);
+    }
+
+    [Fact]
+    public void Nothing_outside_the_tuned_acts_moves_but_act_one_normal_health()
     {
         var data = BabData.Load(TestData.Directory);
         // Act I's single fights carry 10 % more health (the trial of 2026-11-01), and nothing else of Act I moves.
@@ -68,9 +85,10 @@ public class ActTuningTests
         Assert.NotEmpty(actOneNormals);
         foreach (var encounter in actOneNormals)
             Assert.Equal([.. Health(Authored, encounter.Id).Select(h => Scale(h, 110))], Health(Shipped, encounter.Id));
-        var outside = data.Encounters.Where(e => e.Act is not (3 or 4)).Except(actOneNormals).ToList();
+        var tuned = new[] { 2, 3, 4 };
+        var outside = data.Encounters.Where(e => !tuned.Contains(e.Act)).Except(actOneNormals).ToList();
         var bodies = outside.SelectMany(e => e.Enemies).ToHashSet(StringComparer.Ordinal);
-        var inside = data.Encounters.Where(e => e.Act is 3 or 4).SelectMany(e => e.Enemies).ToHashSet(StringComparer.Ordinal);
+        var inside = data.Encounters.Where(e => tuned.Contains(e.Act)).SelectMany(e => e.Enemies).ToHashSet(StringComparer.Ordinal);
         foreach (var encounter in outside)
             Assert.Equal(Json(Authored.Encounters.First(e => e.Id.Value == encounter.Id)),
                 Json(Shipped.Encounters.First(e => e.Id.Value == encounter.Id)));

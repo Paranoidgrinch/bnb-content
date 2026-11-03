@@ -55,9 +55,9 @@ public static class RuleTexts
             ["article_of_continuance"] = (null, "Both sides keep half their Block when their turn comes round."),
 
             // ── Act II standard bodies (content cut 2026-10-29: every law readable on its enemy) ───────────
-            ["brass_maw_delinquency"] = (null, "At 2 Overdue owed to it, it collects: 1 Paperwork, and its next attack deals 5 more (max +10)."),
+            ["brass_maw_delinquency"] = (null, "At 2 Overdue owed to it, it collects them: 7 damage, and its next attack deals 8 more (max +16)."),
             ["return_parcel"] = (null, "Its next attack deals 5 more per Parcel, then the Parcels are spent."),
-            ["ouroboros_delinquency"] = (null, "At 2 Overdue owed to it, it collects: 1 Paperwork. Then it files 1 new Overdue at once."),
+            ["ouroboros_delinquency"] = (null, "At 2 Overdue owed to it, it collects them: 7 damage and 6 Block. Then it files 1 new Overdue at once."),
             ["mnemonic_chain_collect"] = (null, "Leave the remembered card unplayed when it comes back: 1 Overdue, owed to the Chain."),
             ["remembered_volume_rule"] = (null, "The first card you play at the Chain is remembered. Back in hand it costs 1 more; play it and the Chain takes 8."),
             ["second_person_reference"] = (null, "Each turn it cites one card in your hand. Play it, or owe the Entry 1 Overdue."),
@@ -67,7 +67,7 @@ public static class RuleTexts
             ["blank_certificate_reference"] = (null, "Each turn it cites a card. Play it, or owe the Certificate 1 Overdue."),
             ["certification_required"] = (null, "Unless you played its cited card this turn, its first death leaves it at 35 HP instead."),
             ["certification_clause"] = (null, "Its death clause comes back at the start of each of its turns, until it has been used once."),
-            ["stored_life"] = (null, "While the Jar stands, the body beside it survives its first death at 30% HP. Break the Jar first."),
+            ["stored_life"] = (null, "While the Jar stands, the body beside it survives its first death at 50% HP. Break the Jar first."),
             ["archive_regulations"] = (null, "A Misfiled card is skipped when you draw it: it goes away and you draw another."),
             ["wrong_edition_rule"] = (null, "One card in your hand is the wrong edition: it works, then it is Misfiled."),
 
