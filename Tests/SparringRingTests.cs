@@ -58,11 +58,11 @@ public class SparringRingTests
     {
         var bare = Ring(new SparringRing.Snapshot
         {
-            Enemy = ActFive.NannaSinEnemyId, Deck = [.. Enumerable.Repeat(Deed, 12)],
+            Enemy = BnbContent.Converter.Gods.NannaSuen.EnemyId, Deck = [.. Enumerable.Repeat(Deed, 12)],
         });
         var armed = Ring(new SparringRing.Snapshot
         {
-            Enemy = ActFive.NannaSinEnemyId, Deck = [.. Enumerable.Repeat(Deed, 12)],
+            Enemy = BnbContent.Converter.Gods.NannaSuen.EnemyId, Deck = [.. Enumerable.Repeat(Deed, 12)],
             Relics = [Charm],
         });
 
@@ -133,16 +133,16 @@ public class SparringRingTests
     {
         var ring = SparringRing.Assemble(Game, new SparringRing.Snapshot
         {
-            Enemy = ActFive.NannaSinEnemyId, Intent = "crown_of_ur",
+            Enemy = BnbContent.Converter.Gods.NannaSuen.EnemyId, Intent = "crown_of_ur",
         });
 
         var body = Assert.Single(Assert.Single(ring.Encounters).Enemies);
         var action = Assert.Single(body.Actions);
-        Assert.Equal($"{ActFive.NannaSinEnemyId}.crown_of_ur", action.value);
+        Assert.Equal($"{BnbContent.Converter.Gods.NannaSuen.EnemyId}.crown_of_ur", action.value);
         // …and it keeps everything else the game gives it: its real health and its own opening statuses.
-        Assert.Equal(ActFive.NannaSinMaxHealth, body.MaxHealth);
+        Assert.Equal(BnbContent.Converter.Gods.NannaSuen.MaxHealth, body.MaxHealth);
         Assert.Contains(body.StartingStatuses ?? [],
-            s => s.Status.value == ActFive.LunarCalendarId);
+            s => s.Status.value == BnbContent.Converter.Gods.NannaSuen.RuleId);
     }
 
     // An enemy standing on its own still carries the statuses the snapshot opens it with — how a late-phase
@@ -163,22 +163,22 @@ public class SparringRingTests
     }
 
     // ⚠ AND A BOSS MAY TAKE IT STRAIGHT BACK OFF, which is not the ring failing but the fight working. Every
-    // marker on Nanna-Sin's ring is struck off and written again at each turn start, so standing him up in
-    // the Old Moon lasts exactly until his calendar turns. A snapshot reaches a late phase of a fight like
+    // phase on Nanna-Suen's ring is struck off and written again at each turn start, so standing him up at the
+    // Full Moon lasts exactly until his ring turns. A snapshot reaches a late phase of a fight like
     // his by giving it the ROUNDS it counts, not by pinning the chip that counts them.
     [Fact]
     public void A_boss_that_restates_its_own_chips_overwrites_what_the_snapshot_pinned()
     {
         var (play, _) = Ring(new SparringRing.Snapshot
         {
-            Enemy = ActFive.NannaSinEnemyId, Deck = [.. Enumerable.Repeat(Deed, 12)],
-            EnemyStatuses = new Dictionary<string, int> { [ActFive.OldMoonId] = 1 },
+            Enemy = BnbContent.Converter.Gods.NannaSuen.EnemyId, Deck = [.. Enumerable.Repeat(Deed, 12)],
+            EnemyStatuses = new Dictionary<string, int> { [BnbContent.Converter.Gods.NannaSuen.PhaseId("full")] = 1 },
         });
 
         var lord = play.CombatDriver!.Current!.State.Combatants
             .First(c => c.DefinitionId.value.Contains("nanna_sin", StringComparison.Ordinal));
-        Assert.Equal(0, FightProbe.StacksOf(lord, ActFive.OldMoonId));
-        Assert.Equal(1, FightProbe.StacksOf(lord, ActFive.OrbitId));
+        Assert.Equal(0, FightProbe.StacksOf(lord, BnbContent.Converter.Gods.NannaSuen.PhaseId("full")));
+        Assert.Equal(1, FightProbe.StacksOf(lord, BnbContent.Converter.Gods.NannaSuen.PhaseId("new")));
         play.Dispose();
     }
 
@@ -226,7 +226,7 @@ public class SparringRingTests
         Assert.Contains("one or the other", Assert.Throws<InvalidOperationException>(() =>
             SparringRing.Assemble(Game, new SparringRing.Snapshot
             {
-                Encounter = "labyrinth_elite_the_tombbreakers_three", Enemy = ActFive.NannaSinEnemyId,
+                Encounter = "labyrinth_elite_the_tombbreakers_three", Enemy = BnbContent.Converter.Gods.NannaSuen.EnemyId,
             })).Message, StringComparison.Ordinal);
     }
 

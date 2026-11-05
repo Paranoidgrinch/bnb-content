@@ -44,11 +44,10 @@ public static partial class ActFive
                 "The Just Measure",
                 "Every day has its portion: 3 Energy and 5 cards. What you take from tomorrow comes off the next "
                 + "day, never below 1 and 1, and what is still owed after Day III is collected: 10 a point."),
-            [NannaSinEncounterId] = (
-                "The Lunar Calendar",
-                "Eight phases, one a round, carrying the counts — · I · II · III · IV · III · II · I. The "
-                + "card you play on tonight's count is Counted, and comes back free the next time that count "
-                + "comes round. So does the move he made on it."),
+            [Gods.NannaSuen.EncounterId] = (
+                "The Counted Moon",
+                "A fixed ring of four phases, one a round: New Moon, Waxing, Full Moon, Waning. Each phase has one "
+                + "move and one rule; the phase now and the next are on him. Every orbit he completes makes him brighter."),
             [UtuEncounterId] = (
                 "Oaths and Witness",
                 "He asks for a promise every turn and pays for it before you keep it. Nothing here is ever "
@@ -69,17 +68,17 @@ public static partial class ActFive
 
     // Everything the act's gods put into the document. One line per god as they are built.
     public static IReadOnlyList<StatusData> All() =>
-        [.. Gods.GodShapes.Words(), .. Gods.Nisaba.Statuses(), .. Gods.Inanna.Statuses(), .. Gods.Nanshe.Statuses(), .. NannaSinStatuses(),
+        [.. Gods.GodShapes.Words(), .. Gods.Nisaba.Statuses(), .. Gods.Inanna.Statuses(), .. Gods.Nanshe.Statuses(), .. Gods.NannaSuen.Statuses(),
          .. UtuStatuses(), .. EnlilStatuses()];
 
     public static IReadOnlyList<CardData> GivenCards() =>
-        [.. Gods.Nanshe.Cards(), .. NannaSinCards()];
+        [.. Gods.Nanshe.Cards(), .. Gods.NannaSuen.Cards()];
 
     public static EffectProgram<EnemyActionContext>? Intent(string enemyId, string intentId) =>
         Gods.Nisaba.Intent(enemyId, intentId)
         ?? Gods.Inanna.Intent(enemyId, intentId)
         ?? Gods.Nanshe.Intent(enemyId, intentId)
-        ?? NannaSinIntent(enemyId, intentId)
+        ?? Gods.NannaSuen.Intent(enemyId, intentId)
         ?? UtuIntent(enemyId, intentId)
         ?? EnlilIntent(enemyId, intentId);
 
@@ -170,4 +169,7 @@ public static partial class ActFive
         ],
     };
 
+    private static ICombatExpression<TContext, bool> At<TContext>(
+        ICombatExpression<TContext, int> value, ComparisonOperator op, int number) where TContext : class =>
+        new ComparisonExpression<TContext>(value, op, Const<TContext>(number));
 }

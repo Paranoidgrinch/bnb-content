@@ -371,7 +371,7 @@ ever met in a boss room is drawn as a boss, even if it also turns up as filler.
 | `lord_sealkeeper` | The Lord Sealkeeper | 136 | 1 | The Lord Sealkeeper |
 | `mother_of_natron_and_resin` | Selket | 600 | 1 | Selket |
 | `municipal_dragon` | The Municipal Dragon | 142 | 1 | The Municipal Dragon |
-| `nanna_sin_lord_of_the_counted_moon` | Nanna-Sin, Lord of the Counted Moon | 700 | 1 | The Counted Moon |
+| `nanna_sin_lord_of_the_counted_moon` | Nanna-Suen, Lord of the Counted Moon, Father of the Sun and the Morning Star | 1000 | 1 | The Counted Moon |
 | `nanshe_keeper_of_the_just_ration` | Nanshe, Lady of the Just Measure, Who Reads the Dreams of Kings | 900 | 1 | The Just Measure |
 | `nisaba_keeper_of_the_first_tablet` | Nisaba, Lady of the Reed Stylus, Who Writes What Must Come | 950 | 1 | The Reed Stylus |
 | `notary_of_old_growth` | The Notary of Old Growth | 360 | 1 | The Notary of Old Growth |
@@ -1011,12 +1011,12 @@ Handed over by a boss, a door or an event rather than offered; never in a reward
 | `heavy_pie` | Heavy Pie | Gain 2 Energy. Gain 2 Doubt. Grandmother loses 6 HP. |
 | `heavy_pie_dear` | Heavy Pie | Gain 2 Energy. Gain 2 Doubt. Grandmother loses 6 HP. |
 | `his_name` | His Name | Gain 6 Block. The Pharaoh's name, borne for this fight. |
-| `hold_the_moon` | Hold the Moon | Once an orbit: the phase repeats for both of you. Counted cards return at once, his too. |
 | `honey_spoon_action` | A Little Honey | Gain 2 Energy. End the turn with 1+ Energy, or lose 6 HP. |
 | `last_slice_tin_action` | Take Another Slice | Draw 2. Play at most 4 real cards this turn, or lose 6 HP. |
 | `lavender_sachet` | Lavender Sachet | Gain 12 Block. Discard 2 cards. Grandmother loses 6 HP. |
 | `lavender_sachet_dear` | Lavender Sachet | Gain 12 Block. Discard 2 cards. Grandmother loses 6 HP. |
 | `missing_signature` | Missing Signature | Exhaust. Still in hand at turn end: 1 Paperwork on you. |
+| `moonless` | Moonless | Unplayable. Ethereal: at the end of your turn it is exhausted. |
 | `notice_of_delay` | Notice of Delay | Retain. Exhaust. Still in hand at turn end: 1 Fatigue. |
 | `pay_the_fee` | Pay the Fee | Pay 15 Gold after the fight; the Dragon hoards one more Permit. |
 | `petition_for_priority` | Petition for Priority | Move one place closer to the Counter. Take 1 Paperwork. One queue choice a turn. |

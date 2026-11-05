@@ -92,16 +92,10 @@ public static class BossPhases
         Gods.Nanshe.MeasureEqualId,
         Gods.Nanshe.DayId,
 
-        // Nanna-Sin's three later orbits — and, beside them, the ring itself. The phase, the count and the
-        // move that returns are not phases either, but they are the three facts his telegraph is read
-        // AGAINST: the intent says "Pour Away the Light", and only the count says what else is coming.
-        ActFive.ReturningMoonId,
-        ActFive.OldMoonId,
-        ActFive.UnendingMonthId,
-        ActFive.LunarPhaseId,
-        ActFive.LunarCountId,
-        ActFive.ReturningMoveId,
-        ActFive.MoonHeldId,
+        // Nanna-Suen: the phase the moon is in and the one it turns to next — the four rules his telegraph is read
+        // against — and the Radiance his orbits gather.
+        .. Gods.NannaSuen.Ring.SelectMany(p => new[] { Gods.NannaSuen.PhaseId(p.Key), Gods.NannaSuen.NextId(p.Key) }),
+        Gods.NannaSuen.RadianceId,
 
         // Utu's three skies — and, beside them, the four facts his telegraph cannot say by itself. The
         // Witness is a term in every number he deals; the Oath and its clock are what the player is being
