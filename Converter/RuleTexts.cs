@@ -162,9 +162,6 @@ public static class RuleTexts
                 "End your turn with 0 Energy and the Nile rises a step; with Energy left it falls. Each of the 5 levels does something."),
 
             // ── Act V gods ─────────────────────────────────────────────────────────────────────────────────
-            ["oaths_beneath_the_sun"] = (null,
-                "Each turn swear an Oath and get paid at once. Breaking it is allowed, but makes his attacks stronger."),
-            ["beneath_the_morning_sun"] = (null, "Each Oath lasts one turn; he asks again every morning."),
             ["the_word_of_enlil"] = (null,
                 "Each decree is shown a full turn before it starts, runs its count and ends. It binds him too."),
             ["one_word"] = (null, "One decree at a time. The next one is already shown."),

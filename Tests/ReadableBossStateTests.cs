@@ -157,4 +157,19 @@ public class ReadableBossStateTests
             Assert.NotEqual(status.NameKey?.Trim(), status.DescriptionKey?.Trim());
         });
     }
+
+    // ── Utu ───────────────────────────────────────────────────────────────────────────────────────────────
+
+    [Fact]
+    public void Every_face_of_utu_says_what_it_means()
+    {
+        var faces = BnbContent.Converter.Gods.Utu.Statuses().ToList();
+        Assert.NotEmpty(faces);
+        Assert.All(faces, status =>
+        {
+            Assert.False(string.IsNullOrWhiteSpace(status.NameKey), status.Id);
+            Assert.False(string.IsNullOrWhiteSpace(status.DescriptionKey), status.Id);
+            Assert.NotEqual(status.NameKey?.Trim(), status.DescriptionKey?.Trim());
+        });
+    }
 }

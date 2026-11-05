@@ -97,17 +97,11 @@ public static class BossPhases
         .. Gods.NannaSuen.Ring.SelectMany(p => new[] { Gods.NannaSuen.PhaseId(p.Key), Gods.NannaSuen.NextId(p.Key) }),
         Gods.NannaSuen.RadianceId,
 
-        // Utu's three skies — and, beside them, the four facts his telegraph cannot say by itself. The
-        // Witness is a term in every number he deals; the Oath and its clock are what the player is being
-        // asked to plan against; and What Was Witnessed is the announcement that his next move is Judgment.
-        // A player reading "Raise the Saw" without the Witness beside it is reading the wrong damage.
-        ActFive.MorningSunId,
-        ActFive.ZenithId,
-        ActFive.FinalOathId,
-        ActFive.WitnessId,
-        ActFive.OathStandsId,
-        ActFive.JudgmentId,
-        ActFive.NoShadowId,
+        // Utu: No Shadow and the Judge of the Dead, and the Witness his every number is read with.
+        Gods.Utu.NoShadowId,
+        Gods.Utu.JudgeOfTheDeadId,
+        Gods.Utu.WitnessId,
+        Gods.Utu.DeadWitnessId,
 
         // Enlil's three realities — and, beside them, the twelve decrees, the twelve announcements, the two
         // counts and the four Final Orders. This is the largest entry in the whole list and it has to be:

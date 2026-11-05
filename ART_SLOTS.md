@@ -2,7 +2,7 @@
 
 Generated: `dotnet run --project Converter -- --art-slots ART_SLOTS.md`. **Do not edit by hand.**
 
-**850 pictures**: 448 cards, 256 relics, 142 bodies
+**853 pictures**: 451 cards, 256 relics, 142 bodies
 (every enemy, elite and boss) and 4 the player can be. Every one of them is filled today by a PLACEHOLDER — a plate with the file's own
 name and the word placeholder on it, written by `bnb-godot/tools/make-card-art.py`,
 `make-relic-art.py` and `make-enemy-art.py`. A painted picture replaces one by being saved over it, so
@@ -381,7 +381,7 @@ ever met in a boss room is drawn as a boss, even if it also turns up as filler.
 | `queen_under_the_hill` | The Queen Under the Hill | 392 | 1 | The Queen Under the Hill |
 | `queue_commissioner` | The Queue Commissioner | 126 | 1 | The Queue Commissioner |
 | `the_answering_hill` | The Answering Hill | 374 | 1 | The Answering Hill |
-| `utu_witness_of_every_oath` | Utu, Witness of Every Oath | 660 | 1 | Every Oath Ever Sworn |
+| `utu_witness_of_every_oath` | Utu-Shamash, Judge of Heaven and Earth, Witness of Every Oath | 950 | 1 | The Oath and the Saw |
 | `warden_of_sealed_volumes` | The Warden of Sealed Volumes | 270 | 1 | The Warden of Sealed Volumes |
 | `weigher_of_the_unspoken_heart` | The Weigher | 600 | 1 | The Weigher |
 | `whispering_catalogue_boss` | The Whispering Catalogue | 258 | 1 | The Whispering Catalogue |
@@ -524,7 +524,7 @@ Drawn like a body and facing RIGHT — the player stands on the left of the aren
 | `lieutenant` | The Lieutenant | New stripes on an old uniform, and always first through the door. |
 | `sorcerers_apprentice` | The Sorcerer's Apprentice | Knows every incantation, and not quite what happens when one is put after another. |
 
-## Cards — 448 pictures
+## Cards — 451 pictures
 
 No visual canon was ever written for the cards, so the row carries the card's own rules
 text instead of a brief. Act = the act that unlocks it; the starters, the Junk and the
@@ -986,7 +986,7 @@ cards a boss or a door hands over are never offered and have no act.
 | `lt_whistle` | Whistle | working | uncommon | Gain 3 Block. You may spend 1 Authority to draw 2 cards. |
 | `lt_witness` | Witness | working | common | Gain 4 Block. Your next Deed hit on a Challenged enemy this turn counts twice toward its Challenge. |
 
-### Given in play — 52
+### Given in play — 55
 
 Handed over by a boss, a door or an event rather than offered; never in a reward pool.
 
@@ -1029,6 +1029,9 @@ Handed over by a boss, a door or an event rather than offered; never in a reward
 | `sluice_gate_of_the_two_lands_action` | Work the Two Lands | Once a turn: lose 12 Block for 1 Energy, or spend 1 Energy for 12 Block. |
 | `strike_down_the_article` | Strike Down the Article | Strike the Article for the next one. The Charter gains 8 Block. |
 | `summons_to_appear` | Summons to Appear | Retain. Exhaust. Still in hand at turn end: take 5 damage. |
+| `swear_by_the_sun_20` | Swear by the Sun: 20 | Ethereal. Gain 10 Block now. Swear to deal Utu 20 damage this turn, or he gains a Witness. The other oaths are gone. |
+| `swear_by_the_sun_40` | Swear by the Sun: 40 | Ethereal. Gain 20 Block now. Swear to deal Utu 40 damage this turn, or he gains a Witness. The other oaths are gone. |
+| `swear_by_the_sun_60` | Swear by the Sun: 60 | Ethereal. Gain 30 Block now. Swear to deal Utu 60 damage this turn, or he gains a Witness. The other oaths are gone. |
 | `take_from_tomorrow` | Take From Tomorrow | Retain. Gain 1 Energy and draw 1 card. Write 1 Debt: it comes off tomorrow's portion. Returns to your hand. |
 | `thorned_shawl` | Thorned Shawl | Lose 5 HP. Draw 2 cards. Grandmother loses 6 HP. |
 | `thorned_shawl_dear` | Thorned Shawl | Lose 5 HP. Draw 2 cards. Grandmother loses 6 HP. |

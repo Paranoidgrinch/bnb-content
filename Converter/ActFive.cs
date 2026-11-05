@@ -48,11 +48,10 @@ public static partial class ActFive
                 "The Counted Moon",
                 "A fixed ring of four phases, one a round: New Moon, Waxing, Full Moon, Waning. Each phase has one "
                 + "move and one rule; the phase now and the next are on him. Every orbit he completes makes him brighter."),
-            [UtuEncounterId] = (
-                "Oaths and Witness",
-                "He asks for a promise every turn and pays for it before you keep it. Nothing here is ever "
-                + "forbidden to you: the card that breaks your Oath is played, and resolves — and then he has "
-                + "seen it. What he sees he keeps, and every move he makes is read off it."),
+            [Gods.Utu.EncounterId] = (
+                "The Oath and the Saw",
+                "Each turn three oaths are in your hand; the Block is paid at once. Deal him less than you swore and he "
+                + "gains a Witness. His Saw of Judgment returns half of what you dealt him the turn before."),
             [EnlilEncounterId] = (
                 "Decrees",
                 "What stands here is not a threat — it is the rule the fight is being played under. A decree "
@@ -69,17 +68,17 @@ public static partial class ActFive
     // Everything the act's gods put into the document. One line per god as they are built.
     public static IReadOnlyList<StatusData> All() =>
         [.. Gods.GodShapes.Words(), .. Gods.Nisaba.Statuses(), .. Gods.Inanna.Statuses(), .. Gods.Nanshe.Statuses(), .. Gods.NannaSuen.Statuses(),
-         .. UtuStatuses(), .. EnlilStatuses()];
+         .. Gods.Utu.Statuses(), .. EnlilStatuses()];
 
     public static IReadOnlyList<CardData> GivenCards() =>
-        [.. Gods.Nanshe.Cards(), .. Gods.NannaSuen.Cards()];
+        [.. Gods.Nanshe.Cards(), .. Gods.NannaSuen.Cards(), .. Gods.Utu.Cards()];
 
     public static EffectProgram<EnemyActionContext>? Intent(string enemyId, string intentId) =>
         Gods.Nisaba.Intent(enemyId, intentId)
         ?? Gods.Inanna.Intent(enemyId, intentId)
         ?? Gods.Nanshe.Intent(enemyId, intentId)
         ?? Gods.NannaSuen.Intent(enemyId, intentId)
-        ?? UtuIntent(enemyId, intentId)
+        ?? Gods.Utu.Intent(enemyId, intentId)
         ?? EnlilIntent(enemyId, intentId);
 
     private const int WholeDeck = 256;
@@ -172,4 +171,11 @@ public static partial class ActFive
     private static ICombatExpression<TContext, bool> At<TContext>(
         ICombatExpression<TContext, int> value, ComparisonOperator op, int number) where TContext : class =>
         new ComparisonExpression<TContext>(value, op, Const<TContext>(number));
+
+    private static IEffectNode<TContext> Steps<TContext>(IReadOnlyList<IEffectNode<TContext>> steps)
+        where TContext : class => new CausalSequenceEffectNode<TContext>(steps);
+
+    private static IEffectNode<TContext> Drop<TContext>(ICombatantTargetSelector body, string statusId)
+        where TContext : class =>
+        new RemoveStatusNode<TContext>(body, new StatusDefinitionId(statusId));
 }

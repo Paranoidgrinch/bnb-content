@@ -411,127 +411,106 @@
   },
   {
     "id": "utu_witness_of_every_oath",
-    "name": "Utu, Witness of Every Oath",
-    "max_hp": 660,
+    "name": "Utu-Shamash, Judge of Heaven and Earth, Witness of Every Oath",
+    "max_hp": 950,
     "intent_pattern": "cycle",
     "intents": [
       {
+        "id": "the_saw_of_judgment",
+        "name": "The Saw of Judgment · 15 + half of what you dealt him this turn",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 15
+          }
+        ]
+      },
+      {
+        "id": "rays_that_lay_bare",
+        "name": "Rays That Lay Bare · your Block is removed first",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 18
+          }
+        ]
+      },
+      {
+        "id": "the_saw_of_judgment_2",
+        "name": "The Saw of Judgment · 15 + half of what you dealt him this turn",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 15
+          }
+        ]
+      },
+      {
         "id": "rise_between_the_mountains",
         "name": "Rise Between the Mountains",
-        "intent_type": "attack",
-        "actions": [
-          {
-            "type": "damage_per_status",
-            "target": "player",
-            "status": "witness",
-            "status_on": "owner",
-            "amount": 24,
-            "amount_per_stack": 2
-          }
-        ]
-      },
-      {
-        "id": "raise_the_saw",
-        "name": "Raise the Saw",
-        "intent_type": "attack",
-        "actions": [
-          {
-            "type": "damage_per_status",
-            "target": "player",
-            "status": "witness",
-            "status_on": "owner",
-            "amount": 13,
-            "amount_per_stack": 1
-          },
-          {
-            "type": "damage_per_status",
-            "target": "player",
-            "status": "witness",
-            "status_on": "owner",
-            "amount": 13,
-            "amount_per_stack": 1
-          }
-        ]
-      },
-      {
-        "id": "call_the_witness",
-        "name": "Call the Witness",
-        "intent_type": "mixed",
+        "intent_type": "buff",
         "actions": [
           {
             "type": "gain_block",
             "target": "self",
-            "amount": 24
+            "amount": 30
           },
           {
-            "type": "damage_per_status",
-            "target": "player",
-            "status": "witness",
-            "status_on": "owner",
-            "amount": 10,
-            "amount_per_stack": 5
+            "type": "gain_strength",
+            "target": "self",
+            "amount": 1
           }
         ]
       },
       {
-        "id": "cross_the_open_land",
-        "name": "Cross the Open Land",
-        "intent_type": "mixed",
-        "special": true,
-        "actions": [
-          {
-            "type": "damage_per_status",
-            "target": "player",
-            "status": "witness",
-            "status_on": "owner",
-            "amount": 34,
-            "amount_per_stack": 3
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "doubt",
-            "amount": 2
-          }
-        ]
-      },
-      {
-        "id": "nothing_is_hidden",
-        "name": "Nothing Is Hidden",
-        "intent_type": "mixed",
-        "special": true,
-        "actions": [
-          {
-            "type": "damage_per_status",
-            "target": "player",
-            "status": "witness",
-            "status_on": "owner",
-            "amount": 30,
-            "amount_per_stack": 2
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "paperwork",
-            "amount": 3
-          }
-        ]
-      },
-      {
-        "id": "pronounce_what_was_witnessed",
-        "name": "Pronounce What Was Witnessed",
+        "id": "the_saw_of_judgment_3",
+        "name": "The Saw of Judgment · 15 + half of what you dealt him this turn",
         "intent_type": "attack",
-        "special": true,
         "actions": [
           {
-            "type": "damage_per_status",
+            "type": "deal_damage",
             "target": "player",
-            "status": "witness",
-            "status_on": "owner",
-            "amount": 25,
-            "amount_per_stack": 10
+            "amount": 15
           }
         ]
+      },
+      {
+        "id": "the_sun_disk",
+        "name": "The Sun-Disk",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 7
+          },
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 7
+          },
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 7
+          },
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 7
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "utu_the_oath_and_the_saw"
       }
     ],
     "tags": [
@@ -539,48 +518,8 @@
       "divine_ledger",
       "boss",
       "utu",
-      "oath",
-      "witness"
-    ],
-    "starting_statuses": [
-      {
-        "status": "oaths_beneath_the_sun"
-      },
-      {
-        "status": "beneath_the_morning_sun"
-      }
-    ],
-    "intent_rules": [
-      {
-        "condition": {
-          "kind": "self_counter",
-          "counter": "utu_judgment",
-          "op": "ge",
-          "value": 1
-        },
-        "action": "pronounce_what_was_witnessed",
-        "priority": 30
-      },
-      {
-        "condition": {
-          "kind": "self_counter",
-          "counter": "utu_noon_due",
-          "op": "ge",
-          "value": 1
-        },
-        "action": "nothing_is_hidden",
-        "priority": 22
-      },
-      {
-        "condition": {
-          "kind": "self_counter",
-          "counter": "utu_zenith_due",
-          "op": "ge",
-          "value": 1
-        },
-        "action": "cross_the_open_land",
-        "priority": 20
-      }
+      "sun",
+      "judge"
     ]
   },
   {
