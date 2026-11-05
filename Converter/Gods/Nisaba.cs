@@ -19,7 +19,6 @@ public static class Nisaba
 {
     public const string EnemyId = "nisaba_keeper_of_the_first_tablet";
     public const string EncounterId = "act_5_nisaba_keeper_of_the_first_tablet";
-    public const string SentenceEnemyId = "nisaba_sentence";
 
     public const string RuleId = "nisaba_what_she_writes";
     public const string SentenceId = "nisaba_sentence";
@@ -70,6 +69,13 @@ public static class Nisaba
     ];
 
     public static string SentenceKindId(string key) => $"nisaba_sentence_{key}";
+
+    // The body a sentence stands as. A summoned body reaches the table named after its definition (the document
+    // keeps no display name for a summon), so each sentence is its own definition, spelled as it reads.
+    public static string SentenceBodyId(Sentence s) =>
+        string.Join('_', s.Name.ToLowerInvariant().Split(' ', StringSplitOptions.RemoveEmptyEntries));
+
+    public const string FinalLineBodyId = "the_final_line";
 
     public const string FinalLineName = "On the Fourth Dawn the Name of the Supplicant Shall Be Erased";
 
@@ -147,7 +153,7 @@ public static class Nisaba
                         Leave<DamageReceivedTriggeredEffectContext>(body)),
                     new SummonCombatantNode<DamageReceivedTriggeredEffectContext>(
                         StandardCombatIds.EnemyTeam, N<DamageReceivedTriggeredEffectContext>(FinalLineHealth),
-                        new CombatantDefinitionId(SentenceEnemyId), FinalLineName,
+                        new CombatantDefinitionId(FinalLineBodyId), FinalLineName,
                         startingStatuses:
                         [
                             new StatusGrant(new StatusDefinitionId(FinalLineId), 1),
@@ -261,7 +267,7 @@ public static class Nisaba
             .. Sentences.Select(s => If(Not(Written(s.Key)), Do(
                 If(new ComparisonExpression<EnemyActionContext>(CounterOf<EnemyActionContext>(self, Seen), ComparisonOperator.Equal, pick),
                     new SummonCombatantNode<EnemyActionContext>(
-                        StandardCombatIds.EnemyTeam, health, new CombatantDefinitionId(SentenceEnemyId), s.Name,
+                        StandardCombatIds.EnemyTeam, health, new CombatantDefinitionId(SentenceBodyId(s)), s.Name,
                         startingStatuses:
                         [
                             new StatusGrant(new StatusDefinitionId(SentenceId), 1),

@@ -64,7 +64,9 @@ public class GodNisabaTests
         var sentence = Assert.Single(Sentences(play));
         Assert.Equal(Nisaba.SentenceHealth, sentence.Health.Max);
         Assert.Equal(Nisaba.SentenceCountdown, FightProbe.StacksOf(sentence, Nisaba.ComesTrueId));
-        Assert.Single(Nisaba.Sentences, s => FightProbe.StacksOf(sentence, Nisaba.SentenceKindId(s.Key)) > 0);
+        var kind = Assert.Single(Nisaba.Sentences, s => FightProbe.StacksOf(sentence, Nisaba.SentenceKindId(s.Key)) > 0);
+        // the body is what it says (a summon reaches the table named after its definition)
+        Assert.Equal(Nisaba.SentenceBodyId(kind), sentence.DefinitionId.value);
         Assert.Equal(Nisaba.InscribeBlock, Block(Her(play)));
         play.Dispose();
     }
