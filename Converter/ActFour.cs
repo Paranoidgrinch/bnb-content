@@ -289,36 +289,12 @@ public static partial class ActFour
         Burdened(),
         Entombed(),
         LabyrinthBody(),
-        // Stage 3 — the Granary Courts
-        Ration(),
-        HungryForRations(),
-        // the Silt-Buried Farmer Shade
-        Flood(),
-        RisingFlood(),
-        // Stage 6 — the Corvée Yards
-        Escape(),
-        EscapePlan(),
-        Stone(),
-        StoneWork(),
-        // Stages 7 and 8 — the Monument Works and the Hall of Reed and Ink
-        Placement(),
-        // Stages 11 and 12 — the House of Linen and the Canopic Vaults
-        DryWhatWouldDecay(),
-        HooksStillAttached(),
-        .. VesselOffices(),
-        // Stages 13 and 14 — the Necropolis Warrens and the Chamber of Fixed Days
-        LunarReturn(),
-        .. LastRites(),
-        ApproachOfNoon(),
-        // Stage 15 — the Cartouche Chambers
-        ChiselSet(),
-        EraseTheFavor(),
-        RoyalFavor(),
+        // the normal bodies (reworked 2026-11-04) and the act's words: the Scale, Risen and the jars
+        .. NormalStatuses(),
+        .. LabyrinthStatuses(),
         // The elite layer
         .. EliteStatuses(),
         .. CutStatuses(),
-        .. StelaeFaces(),
-        JackalMovesTo(),
         // …and the bosses
         .. BossStatuses(),
     ];

@@ -31,7 +31,7 @@ public static class EliteRelicRules
         PreApprovedAntlerTine, MendedThread, TollStoneWrongBank, CoinLeftInTheThroat, TheProperLine,
         ObsoleteBoundaryCord, ThornChosenFromThree,
         // Act IV
-        TheErrantCord, BrokenGranarySeal, CutCorveeRope, OverseersLinenShears,
+        TheErrantCord, SekhmetsClaw, BrokenGranarySeal, CutCorveeRope, OverseersLinenShears,
         RiddlesThirdAnswer, LampThiefsWick, DecanStarTableChip, ProcessionalStepStone,
         TheThirdEnding,
         // the mimic, one rule per grade
@@ -513,28 +513,46 @@ public static class EliteRelicRules
 
     // ══ ACT IV ════════════════════════════════════════════════════════════════════════════════════════════
 
-    // The Surveyor lets you pick how hard the survey is. The cord picks for you, once.
-    public static string ErrantCordId => "the_shorter_ferrule";
-    private static CounterId CordUsed => new("the_shorter_ferrule_used");
+    // The Priest of the Four Sons pours for his jars. The bowl pours for you: a Feather to open every fight.
+    public static string ErrantCordId => "libation_bowl";
 
     public static StatusData TheErrantCord => Rule(
-        ErrantCordId, "The Shorter Ferrule",
-        "The first Weighed you take each fight is one lighter.",
+        ErrantCordId, "Libation Bowl",
+        "Every fight opens with a Feather on you: your first attack deals 5 more.",
         [
-            Trigger(new EffectProgram<StatusAppliedTriggeredEffectContext>(
-                new ConditionalEffectNode<StatusAppliedTriggeredEffectContext>(
-                    new AndExpression<StatusAppliedTriggeredEffectContext>(
-                        Unspent<StatusAppliedTriggeredEffectContext>(CordUsed),
-                        IsStatus<StatusAppliedTriggeredEffectContext>(ActFour.WeighedId)),
-                    new CausalSequenceEffectNode<StatusAppliedTriggeredEffectContext>(
+            Trigger(new EffectProgram<CardsDrawnTriggeredEffectContext>(
+                new ConditionalEffectNode<CardsDrawnTriggeredEffectContext>(
+                    FirstRound<CardsDrawnTriggeredEffectContext>(),
+                    new ApplyStatusNode<CardsDrawnTriggeredEffectContext>(
+                        You, new StatusDefinitionId(ActFour.ScaleFeatherId),
+                        new ConstantExpression<CardsDrawnTriggeredEffectContext>(1)))),
+                nameof(TriggerEvent.CardsDrawn)),
+        ]);
+
+    // The Lioness rages at every wound. Her claw does once a fight: the first HP you lose is 2 Strength.
+    public static string ClawId => "sekhmets_claw";
+    private static CounterId ClawUsed => new("sekhmets_claw_used");
+
+    public static StatusData SekhmetsClaw => Rule(
+        ClawId, "Sekhmet's Claw",
+        "The first time you lose HP each fight, gain 2 Strength.",
+        [
+            Trigger(new EffectProgram<DamageReceivedTriggeredEffectContext>(
+                new ConditionalEffectNode<DamageReceivedTriggeredEffectContext>(
+                    new AndExpression<DamageReceivedTriggeredEffectContext>(
+                        Unspent<DamageReceivedTriggeredEffectContext>(ClawUsed),
+                        new ComparisonExpression<DamageReceivedTriggeredEffectContext>(
+                            new EventAmountExpression<DamageReceivedTriggeredEffectContext>(),
+                            ComparisonOperator.Greater,
+                            new ConstantExpression<DamageReceivedTriggeredEffectContext>(0))),
+                    new CausalSequenceEffectNode<DamageReceivedTriggeredEffectContext>(
                     [
-                        Spend<StatusAppliedTriggeredEffectContext>(CordUsed),
-                        new ModifyStatusStacksNode<StatusAppliedTriggeredEffectContext>(
-                            CombatantTargetSelectors.EventTarget,
-                            new StatusDefinitionId(ActFour.WeighedId),
-                            new ConstantExpression<StatusAppliedTriggeredEffectContext>(-1)),
+                        Spend<DamageReceivedTriggeredEffectContext>(ClawUsed),
+                        new ApplyStatusNode<DamageReceivedTriggeredEffectContext>(
+                            You, new StatusDefinitionId("strength"),
+                            new ConstantExpression<DamageReceivedTriggeredEffectContext>(2)),
                     ]))),
-                nameof(TriggerEvent.StatusApplied)),
+                nameof(TriggerEvent.DamageTaken)),
         ]);
 
     // The Host is armoured by its own seals, and you choose which to break.

@@ -31,14 +31,15 @@ public static class BossRelics
     public const string AnsweringHill = "The Answering Hill";
     public const string QueenUnderTheHill = "The Queen Under the Hill";
 
-    // Act IV. The names are the encounter names, because that is what the reward wiring matches on.
-    public const string PharaohOfTheSealedName = "The Pharaoh of the Sealed Name";
-    public const string WeigherOfTheUnspokenHeart = "The Weigher of the Unspoken Heart";
-    public const string ArchitectOfTheImpossiblePyramid = "The Architect of the Impossible Pyramid";
-    public const string LadyOfTheBlackGranaries = "The Lady of the Black Granaries";
-    public const string FirstScribeOfTheHouseOfLife = "The First Scribe of the House of Life";
-    public const string MotherOfNatronAndResin = "The Mother of Natron and Resin";
-    public const string QueenOfTheFloodReckoning = "The Queen of the Flood Reckoning";
+    // Act IV. The names are the encounter names, because that is what the reward wiring matches on (renamed with
+    // the rework of 2026-11-04; the relics themselves are unchanged).
+    public const string PharaohOfTheSealedName = "The Pharaoh";
+    public const string WeigherOfTheUnspokenHeart = "The Weigher";
+    public const string ArchitectOfTheImpossiblePyramid = "The Architect";
+    public const string LadyOfTheBlackGranaries = "Renenutet";
+    public const string FirstScribeOfTheHouseOfLife = "The First Scribe";
+    public const string MotherOfNatronAndResin = "Selket";
+    public const string QueenOfTheFloodReckoning = "Anuket of the Cataract";
 
     public static IReadOnlyList<BnbRelic> All() =>
     [

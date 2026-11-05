@@ -53,7 +53,7 @@ public class EnemyArtTests
             .ToDictionary(g => g.Key, g => g.Count(), StringComparer.Ordinal);
 
         Assert.Equal(30, shipped[EnemyRole.Boss]);
-        Assert.Equal(44, shipped[EnemyRole.Elite]);
+        Assert.Equal(45, shipped[EnemyRole.Elite]);
         Assert.Equal(3, shipped[EnemyRole.Mimic]);
         Assert.Equal(64, shipped[EnemyRole.Standard]);
         Assert.Equal(Game.Presentation.Enemies.Count, shipped.Values.Sum());

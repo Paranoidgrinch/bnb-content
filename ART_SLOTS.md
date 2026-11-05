@@ -2,7 +2,7 @@
 
 Generated: `dotnet run --project Converter -- --art-slots ART_SLOTS.md`. **Do not edit by hand.**
 
-**875 pictures**: 475 cards, 255 relics, 141 bodies
+**860 pictures**: 458 cards, 256 relics, 142 bodies
 (every enemy, elite and boss) and 4 the player can be. Every one of them is filled today by a PLACEHOLDER — a plate with the file's own
 name and the word placeholder on it, written by `bnb-godot/tools/make-card-art.py`,
 `make-relic-art.py` and `make-enemy-art.py`. A painted picture replaces one by being saved over it, so
@@ -54,7 +54,7 @@ The relic briefs below are the design canon's own words
 `BnB_Elite_Relics_MASTER_AND_VISUAL_CANON.md` for #169–210). Frames, palettes and the label rule live
 there in full; only the object line is repeated here, because that is the line that differs per relic.
 
-## Relics — 255 pictures
+## Relics — 256 pictures
 
 The catalogue number is the design canon's, and it is not part of the file name: the id is.
 
@@ -298,7 +298,7 @@ The catalogue number is the design canon's, and it is not part of the file name:
 | 167 | `flood_reckoning_crown` | Flood-Reckoning Crown | boss | A royal crown whose band carries four stepped water-level marks and reed finials. One side rises slightly higher, hinting at changing flood state. |
 | 168 | `black_flood_vessel` | Black Flood Vessel | boss | A broad black ceramic flood jar with a carved wave band and a single dark stream spilling over one side. The jar body is almost silhouette-black against the ivory icon field. |
 
-### Elite relics — 31
+### Elite relics — 32
 
 | # | code | title | rarity | the object |
 |---:|---|---|---|---|
@@ -323,7 +323,6 @@ The catalogue number is the design canon's, and it is not part of the file name:
 | 192 | `head_of_the_line` | The Head of the Line | elite | Three white bark strips laid end to end on a pewter tray, each notched at exactly the same interval. |
 | 194 | `obsolete_boundary_cord` | Obsolete Boundary Cord | elite | A coil of tarred measuring cord with three brass tags, two of them struck through. |
 | 196 | `thorn_chosen_from_three` | Thorn Chosen From Three | elite | Three long blackthorns mounted in a pewter clasp like a set of pen nibs. |
-| 197 | `the_shorter_ferrule` | The Shorter Ferrule | elite | A surveyor's cord with a brass ferrule at each end, cut to two slightly different measures. |
 | 198 | `broken_granary_seal` | Broken Granary Seal | elite | A fired-clay granary seal split cleanly in two. |
 | 199 | `cut_corvee_rope` | Cut Corvée Rope | elite | A thick hemp rope cut through and whipped at both ends with linen. |
 | 201 | `overseers_linen_shears` | Overseer's Linen Shears | elite | Long bronze linen shears with **one blade wrapped in its own bandage**. |
@@ -331,8 +330,10 @@ The catalogue number is the design canon's, and it is not part of the file name:
 | 204 | `lamp_thiefs_wick` | The Lamp Thief's Wick | elite | A brass lamp wick-holder with a length of unburnt wick still in it, the reservoir dry and the glass long gone. |
 | 205 | `decan_star_table_chip` | Decan Star-Table Chip | elite | A broken corner of a star-table in dark schist, six decan glyphs running down it in a column. |
 | 206 | `processional_step_stone` | Processional Step-Stone | elite | A single flagstone from a processional way, worn into a shallow footprint **exactly at its centre**. |
+| — | `libation_bowl` | Libation Bowl | elite | Every fight opens with a Feather on you: your first attack deals 5 more. |
+| — | `sekhmets_claw` | Sekhmet's Claw | elite | The first time you lose HP each fight, gain 2 Strength. |
 | — | `a_ring_put_back` | A Ring Put Back | elite | What you did not keep keeps paying: every victory leaves 15 Gold. |
-| — | `heart_lighter_than_the_feather` | Heart Lighter Than the Feather | elite | Weighed and not devoured: every victory heals 4. |
+| — | `heart_lighter_than_the_feather` | Heart Lighter Than the Feather | elite | Not devoured: every victory heals 4. |
 
 ### Mimic relics — 4
 
@@ -343,7 +344,7 @@ The catalogue number is the design canon's, and it is not part of the file name:
 | 209 | `tooth_from_the_false_lid_3` | Tooth From the False Lid III | mimic | The first blow of every fight glances off the tooth: 12 Block and heal 2. It comes with the lock-plate, its keyhole ringed with tooth-marks. |
 | 210 | `tooth_from_the_false_lid_4` | Tooth From the False Lid IV | mimic | The first blow of every fight glances off the tooth: 16 Block and heal 4. It comes with the whole false lid, folded shut around it like a jaw at rest. |
 
-## Bodies — 141 pictures
+## Bodies — 142 pictures
 
 Every enemy, elite and boss in the game. No visual canon was written for the bodies, so
 the row carries what the fight itself says: how much it can take, how many rooms use it,
@@ -354,49 +355,49 @@ ever met in a boss room is drawn as a boss, even if it also turns up as filler.
 
 | code | title | HP | rooms | met in |
 |---|---|---:|---:|---|
-| `architect_of_the_impossible_pyramid` | The Architect of the Impossible Pyramid | 640 | 1 | The Architect of the Impossible Pyramid |
+| `architect_of_the_impossible_pyramid` | The Architect | 631 | 1 | The Architect |
 | `auditor_of_returned_lives` | The Auditor of Returned Lives | 288 | 1 | The Auditor of Returned Lives |
 | `curator_of_misplaced_hours` | The Curator of Misplaced Hours | 278 | 1 | The Curator of Misplaced Hours |
 | `deputy_undersecretary` | The Deputy Undersecretary | 130 | 1 | The Deputy Undersecretary |
 | `enlil_voice_of_the_unalterable_decree` | Enlil, Voice of the Unalterable Decree | 700 | 1 | The Unalterable Decree |
-| `first_scribe_of_the_house_of_life` | The First Scribe of the House of Life | 580 | 1 | The First Scribe of the House of Life |
+| `first_scribe_of_the_house_of_life` | The First Scribe | 569 | 1 | The First Scribe |
 | `gcr_authority` | The Authority | 72 | 1 | The Grand Cross-Reference |
 | `gcr_conclusion` | The Conclusion | 76 | 1 | The Grand Cross-Reference |
 | `gcr_premise` | The Premise | 68 | 1 | The Grand Cross-Reference |
 | `grandmother_clause` | Grandmother Clause | 350 | 1 | Grandmother Clause |
 | `inanna_mistress_of_the_eanna_ledger` | Inanna, Mistress of the Eanna Ledger | 760 | 1 | The Ledger of Eanna |
-| `lady_of_the_black_granaries` | The Lady of the Black Granaries | 600 | 1 | The Lady of the Black Granaries |
+| `lady_of_the_black_granaries` | Renenutet | 585 | 1 | Renenutet |
 | `living_charter` | The Living Charter | 134 | 1 | The Living Charter |
 | `lord_sealkeeper` | The Lord Sealkeeper | 136 | 1 | The Lord Sealkeeper |
-| `mother_of_natron_and_resin` | The Mother of Natron and Resin | 610 | 1 | The Mother of Natron and Resin |
+| `mother_of_natron_and_resin` | Selket | 600 | 1 | Selket |
 | `municipal_dragon` | The Municipal Dragon | 142 | 1 | The Municipal Dragon |
 | `nanna_sin_lord_of_the_counted_moon` | Nanna-Sin, Lord of the Counted Moon | 700 | 1 | The Counted Moon |
 | `nanshe_keeper_of_the_just_ration` | Nanshe, Keeper of the Just Ration | 600 | 1 | The Just Ration |
 | `nisaba_keeper_of_the_first_tablet` | Nisaba, Keeper of the First Tablet | 620 | 1 | The First Tablet |
 | `notary_of_old_growth` | The Notary of Old Growth | 360 | 1 | The Notary of Old Growth |
 | `ombudsman_of_root_and_road` | The Ombudsman of Root and Road | 342 | 1 | The Ombudsman of Root and Road |
-| `pharaoh_of_the_sealed_name` | The Pharaoh of the Sealed Name | 630 | 1 | The Pharaoh of the Sealed Name |
-| `queen_of_the_flood_reckoning` | The Queen of the Flood Reckoning | 620 | 1 | The Queen of the Flood Reckoning |
+| `pharaoh_of_the_sealed_name` | The Pharaoh | 615 | 1 | The Pharaoh |
+| `queen_of_the_flood_reckoning` | Anuket of the Cataract | 615 | 1 | Anuket of the Cataract |
 | `queen_under_the_hill` | The Queen Under the Hill | 392 | 1 | The Queen Under the Hill |
 | `queue_commissioner` | The Queue Commissioner | 126 | 1 | The Queue Commissioner |
 | `the_answering_hill` | The Answering Hill | 374 | 1 | The Answering Hill |
 | `utu_witness_of_every_oath` | Utu, Witness of Every Oath | 660 | 1 | Every Oath Ever Sworn |
 | `warden_of_sealed_volumes` | The Warden of Sealed Volumes | 270 | 1 | The Warden of Sealed Volumes |
-| `weigher_of_the_unspoken_heart` | The Weigher of the Unspoken Heart | 610 | 1 | The Weigher of the Unspoken Heart |
+| `weigher_of_the_unspoken_heart` | The Weigher | 600 | 1 | The Weigher |
 | `whispering_catalogue_boss` | The Whispering Catalogue | 258 | 1 | The Whispering Catalogue |
 
-### Elite bodies — 44
+### Elite bodies — 45
 
 | code | title | HP | rooms | met in |
 |---|---|---:|---:|---|
 | `after_hours_return_bell` | After-Hours Return Bell | 118 | 1 | After-Hours Return Bell |
-| `ammit_devourer_of_the_unworthy` | Ammit, Devourer of the Unworthy | 250 | 1 | Ammit, Devourer of the Unworthy |
+| `ammit_devourer_of_the_unworthy` | Ammit | 250 | 1 | Ammit |
 | `ant_queen_of_the_proper_line` | Ant Queen of the Proper Line | 160 | 1 | Ant Queen of the Proper Line |
 | `black_ink_oracle` | Black-Ink Oracle | 150 | 1 | Black-Ink Oracle |
 | `catalogue_of_unwise_names` | The Catalogue of Unwise Names | 136 | 1 | The Catalogue of Unwise Names |
-| `colossus_of_the_endless_procession` | Colossus of the Endless Procession | 388 | 1 | Colossus of the Endless Procession |
-| `curse_bearer` | Curse-Bearer | 108 | 1 | The Tombbreakers Three |
-| `curse_of_the_opened_tomb` | The Curse of the Opened Tomb | 240 | 1 | The Curse of the Opened Tomb |
+| `colossus_of_the_endless_procession` | Colossus of Memnon | 388 | 1 | Colossus of Memnon |
+| `curse_bearer` | Curse-Bearer | 104 | 1 | The Three Robbers |
+| `curse_of_the_opened_tomb` | The Restless King | 240 | 1 | The Restless King |
 | `devouring_waiting_room` | Devouring Waiting Room | 88 | 1 | The Waiting Room Eats the Day |
 | `drawer_of_infinite_returns` | The Drawer of Infinite Returns | 130 | 1 | The Drawer of Infinite Returns |
 | `final_appointment` | Final Appointment | 34 | 1 | The Three Appointments |
@@ -406,28 +407,29 @@ ever met in a boss room is drawn as a boss, even if it also turns up as filler.
 | `great_toll_frog` | Great Toll Frog | 176 | 1 | Great Toll Frog |
 | `inventory_lantern` | Inventory Lantern | 24 | 1 | The Seizure Procession |
 | `iron_warrant_avatar` | Iron Warrant Avatar | 94 | 1 | The Warrant Becomes Iron |
-| `keeper_of_the_thirty_six_decans` | Keeper of the Thirty-Six Decans | 365 | 1 | Keeper of the Thirty-Six Decans |
-| `lamp_thief` | Lamp Thief | 100 | 1 | The Tombbreakers Three |
+| `keeper_of_the_thirty_six_decans` | Coils of Apep | 348 | 1 | Coils of Apep |
+| `lamp_thief` | Lamp Thief | 104 | 1 | The Three Robbers |
+| `lioness_of_sekhmet` | The Lioness | 261 | 1 | The Lioness |
 | `lock_cart` | Lock Cart | 32 | 1 | The Seizure Procession |
 | `lower_appellate_step` | Lower Appellate Step | 24 | 1 | The Appeal Climbs the Stairs |
 | `magistrate_of_thorns` | Magistrate of Thorns | 220 | 1 | Magistrate of Thorns |
 | `middle_appellate_step` | Middle Appellate Step | 30 | 1 | The Appeal Climbs the Stairs |
-| `mummified_overseer_of_the_linen_house` | Mummified Overseer of the Linen House | 318 | 1 | Mummified Overseer of the Linen House |
+| `mummified_overseer_of_the_linen_house` | The Embalmer | 318 | 1 | The Embalmer |
 | `obituary_with_three_endings` | The Obituary with Three Endings | 128 | 1 | The Obituary with Three Endings |
 | `portcullis_judicator` | Portcullis Judicator | 98 | 1 | The Gatehouse Drops the Portcullis |
-| `pry_bar_veteran` | Pry-Bar Veteran | 112 | 1 | The Tombbreakers Three |
+| `pry_bar_veteran` | Pry-Bar Veteran | 104 | 1 | The Three Robbers |
 | `red_tape_golem` | Red Tape Golem | 96 | 1 | The Red Tape Golem |
 | `reopening_hours_monolith` | Reopening-Hours Monolith | 92 | 1 | The Office That Reopens Itself |
 | `rolling_stacks_colossus` | The Rolling Stacks Colossus | 132 | 1 | The Rolling Stacks Colossus |
-| `rope_master_of_the_corvee` | Rope-Master of the Corvée | 275 | 1 | Rope-Master of the Corvée |
-| `scarab_host_of_the_sealed_granary` | Scarab Host of the Sealed Granary | 255 | 1 | Scarab Host of the Sealed Granary |
+| `rope_master_of_the_corvee` | The Taskmaster | 261 | 1 | The Taskmaster |
+| `scarab_host_of_the_sealed_granary` | Brood Mother | 255 | 1 | Brood Mother |
 | `second_appointment` | Second Appointment | 28 | 1 | The Three Appointments |
 | `second_line_bearer` | Second Line-Bearer | 27 | 1 | Ant Queen of the Proper Line |
 | `seizure_marshal` | Seizure Marshal | 40 | 1 | The Seizure Procession |
-| `sphinx_of_the_processional_measure` | Sphinx of the Processional Measure | 344 | 1 | Sphinx of the Processional Measure |
+| `sphinx_of_the_processional_measure` | The Sphinx | 344 | 1 | The Sphinx |
 | `stag_of_pre_approved_violence` | The Stag of Pre-Approved Violence | 138 | 1 | The Stag of Pre-Approved Violence |
 | `surveyor_of_forgotten_paths` | Surveyor of Forgotten Paths | 198 | 1 | Surveyor of Forgotten Paths |
-| `surveyor_of_the_errant_cord` | The Errant Cord | 248 | 1 | The Errant Cord |
+| `surveyor_of_the_errant_cord` | Priest of the Four Sons | 248 | 1 | Priest of the Four Sons |
 | `the_wrong_bridge_in_person` | The Wrong Bridge in Person | 200 | 1 | The Wrong Bridge in Person |
 | `third_line_bearer` | Third Line-Bearer | 27 | 1 | Ant Queen of the Proper Line |
 | `upper_appellate_step` | Upper Appellate Step | 36 | 1 | The Appeal Climbs the Stairs |
@@ -440,14 +442,14 @@ ever met in a boss room is drawn as a boss, even if it also turns up as filler.
 |---|---|---:|---:|---|
 | `brass_maw_of_returns` | Brass Maw of Returns | 50 | 3 | Brass Maw of Returns |
 | `cairn_of_stray_paths` | Cairn of Stray Paths | 58 | 4 | Every Detour Leaves a Stone |
-| `cursed_loot_bearer` | Cursed Loot Bearer | 156 | 4 | Every Object Requires a Form |
+| `cursed_loot_bearer` | Tomb Robber | 140 | 4 | Tomb Gold |
 
 ### Standard bodies — 64
 
 | code | title | HP | rooms | met in |
 |---|---|---:|---:|---|
 | `a_very_official_line` | A Very Official Line | 29 | 3 | A Very Official Line |
-| `assessor_of_the_forty_two` | Assessor of the Forty-Two | 140 | 2 | The Forty-Two Questions |
+| `assessor_of_the_forty_two` | The Forty-Second Judge | 126 | 2 | The Forty-Second Question |
 | `blackthorn_bride` | The Blackthorn Bride | 101 | 2 | The Bride at the Threshold |
 | `blank_death_certificate` | Blank Death Certificate | 100 | 1 | Blank Death Certificate |
 | `charter_shell_snail` | Charter-Shell Snail | 90 | 1 | Shell Charter |
@@ -456,38 +458,38 @@ ever met in a boss room is drawn as a boss, even if it also turns up as filler.
 | `contradictory_signpost` | Contradictory Signpost | 49 | 2 | Mandatory in Every Direction |
 | `corridor_in_the_wrong_edition` | Corridor in the Wrong Edition | 60 | 2 | Corridor in the Wrong Edition |
 | `crabwise_shelf` | Crabwise Shelf | 56 | 2 | Crabwise Shelf |
-| `crocodile_of_the_short_measure` | Crocodile of the Short Measure | 100 | 2 | The Short Measure |
-| `crooked_rod_bearer` | Crooked Rod Bearer | 88 | 2 | The Crooked Standard |
+| `crocodile_of_the_short_measure` | Sobek's Tithe | 90 | 2 | The Tithe |
+| `crooked_rod_bearer` | Crooked Cubit | 79 | 2 | Bent Measure |
 | `crossroads_cup` | Crossroads Cup | 82 | 3 | A Cup at the Crossroads |
 | `dead_letter_ouroboros` | Dead-Letter Ouroboros | 47 | 3 | Dead-Letter Ouroboros |
-| `eclipse_scarab` | Eclipse Scarab | 174 | 2 | Black Noon |
+| `eclipse_scarab` | Eclipse Beetle | 157 | 2 | Black Noon |
 | `elsewhere_path` | Elsewhere Path | 113 | 2 | The Path Points Past the Hare |
 | `embossed_seal` | Embossed Seal | 24 | 1 | The Certificate Is Alive |
 | `errant_boundary_stone` | Errant Boundary Stone | 75 | 2 | The Errant Line |
 | `exception_imp` | Exception Imp | 40 | 2 | Exception to the Exception |
 | `fading_number_token` | Fading Number Token | 43 | 2 | Your Number Fades |
-| `fallen_capstone_golem` | Fallen Capstone Golem | 145 | 2 | The Capstone Is Already Above You |
-| `false_door_finder` | False-Door Finder | 150 | 3 | This Entrance Is Legally Valid |
+| `fallen_capstone_golem` | Pyramidion Golem | 130 | 2 | The Capstone |
+| `false_door_finder` | False-Door Ka | 135 | 3 | The False Door |
 | `fanged_alphabet` | Fanged Alphabet | 58 | 1 | Fanged Alphabet |
 | `filing_beetle` | Filing Beetle | 40 | 1 | Misplaced Files |
 | `form_rat_a` | Form Rat | 11 | 1 | Forms in the Gutter |
 | `form_rat_b` | Form Rat | 11 | 1 | Forms in the Gutter |
 | `form_rat_c` | Form Rat | 11 | 1 | Forms in the Gutter |
-| `fourfold_vessel_guardian` | Fourfold Vessel Guardian | 170 | 2 | The Fourfold Office |
+| `fourfold_vessel_guardian` | Canopic Keeper | 153 | 2 | Four Jars |
 | `hawthorn_tenant` | The Hawthorn Tenant | 83 | 3 | Thorn Lease |
-| `hungry_grain_thief` | Hungry Grain Thief | 96 | 2 | Granary Theft |
+| `hungry_grain_thief` | Granary Thief | 86 | 2 | Empty Granary |
 | `inverted_hourglass` | Inverted Hourglass | 51 | 2 | The Sand Runs Upward |
-| `jackal_of_the_western_gate` | Jackal of the Western Gate | 110 | 2 | The Jackal at the Loot |
-| `jar_seal_scarab_swarm` | Jar-Seal Scarab Swarm | 94 | 1 | The Jar Seal Breaks |
+| `jackal_of_the_western_gate` | Anubis Jackal | 99 | 2 | Anubis Takes Notice |
+| `jar_seal_scarab_swarm` | Scarab Swarm | 85 | 1 | The Swarm |
 | `levy_constable` | Levy Constable | 44 | 1 | The Levy Comes Due |
 | `living_certificate` | Living Certificate | 28 | 1 | The Certificate Is Alive |
 | `margin_note_gnawer` | Margin-Note Gnawer | 33 | 1 | Correction in the Margin |
 | `minute_moth` | Minute Moth | 36 | 1 | Minutes Become Moths |
 | `mnemonic_chain` | Mnemonic Chain | 93 | 1 | Mnemonic Chain |
-| `moon_cycle_ibis` | Moon-Cycle Ibis | 155 | 2 | The Ibis Before the Assessor |
+| `moon_cycle_ibis` | Thoth's Ibis | 140 | 2 | The Hall of Two Truths |
 | `municipal_gargoyle` | Municipal Gargoyle | 48 | 1 | Stone Ordinance |
-| `name_erasing_chisel_spirit` | Name-Erasing Chisel Spirit | 166 | 1 | Erase the Favor |
-| `natron_bearer` | Natron Bearer | 144 | 2 | Dry What Would Decay |
+| `name_erasing_chisel_spirit` | The Chiseller | 149 | 1 | Defaced |
+| `natron_bearer` | Natron Priest | 130 | 2 | Salt Rite |
 | `number_ticket_wisp` | Number-Ticket Wisp | 25 | 1 | Now Serving the Wrong Number |
 | `oath_candle` | Oath Candle | 39 | 2 | Witness at the Sealed Threshold |
 | `ordinance_tablet` | Ordinance Tablet | 46 | 1 | Subsection Carved in Stone |
@@ -495,19 +497,19 @@ ever met in a boss room is drawn as a boss, even if it also turns up as filler.
 | `permit_hare` | Permit Hare | 66 | 3 | The Hare Checks the Road |
 | `queue_crier_homunculus` | Queue-Crier Homunculus | 31 | 2 | The Line Has Started Moving |
 | `reckoning_hedge` | Reckoning Hedge | 77 | 3 | Counter-Survey |
-| `reed_cord_surveyor` | Reed-Cord Surveyor | 85 | 3 | The Surveyor Measures the Road |
+| `reed_cord_surveyor` | Rope-Stretcher | 76 | 3 | Measuring the Field |
 | `roadside_witchling` | Roadside Witchling | 92 | 2 | The Witch at the Milestone |
-| `runaway_laborer` | Runaway Laborer | 102 | 2 | Break the Gang |
+| `runaway_laborer` | Runaway Ushabti | 92 | 2 | Deserters |
 | `sealed_door_ward` | Sealed Door Ward | 56 | 2 | The Sealed Door |
 | `second_person_entry` | Second-Person Entry | 60 | 2 | Second-Person Entry |
 | `self_correcting_record` | Self-Correcting Record | 53 | 1 | The Record Corrects You |
-| `silt_buried_farmer_shade` | Silt-Buried Farmer Shade | 109 | 2 | Rising Field |
+| `silt_buried_farmer_shade` | Drowned Farmer | 98 | 2 | Silt |
 | `spare_life_jar` | Spare-Life Jar | 83 | 2 | Dead-Letter Revival |
-| `stone_hauler_ushabti` | Stone-Hauler Ushabti | 128 | 2 | The Stones Grow Heavier |
+| `stone_hauler_ushabti` | Ushabti Hauler | 115 | 2 | Stone for the Dead |
 | `streamside_oath_fish` | Streamside Oath-Fish | 84 | 2 | Oaths in Running Water |
 | `the_testator` | The Testator | 70 | 2 | The Last Will of Nobody in Particular |
 | `two_bank_toll_ford` | Two-Bank Toll Ford | 97 | 2 | Both Banks Demand Payment |
-| `unfinished_mummy` | Unfinished Mummy | 160 | 3 | Hooks Still Attached |
+| `unfinished_mummy` | Half-Wrapped Mummy | 144 | 3 | Half-Wrapped |
 | `wax_notary` | Wax Notary | 48 | 2 | The Wax Is Still Warm |
 | `wrong_window_scribe` | Wrong-Window Scribe | 25 | 2 | The Wrong Window |
 
@@ -522,7 +524,7 @@ Drawn like a body and facing RIGHT — the player stands on the left of the aren
 | `lieutenant` | The Lieutenant | New stripes on an old uniform, and always first through the door. |
 | `sorcerers_apprentice` | The Sorcerer's Apprentice | Knows every incantation, and not quite what happens when one is put after another. |
 
-## Cards — 475 pictures
+## Cards — 458 pictures
 
 No visual canon was ever written for the cards, so the row carries the card's own rules
 text instead of a brief. Act = the act that unlocks it; the starters, the Junk and the
@@ -984,7 +986,7 @@ cards a boss or a door hands over are never offered and have no act.
 | `lt_whistle` | Whistle | working | uncommon | Gain 3 Block. You may spend 1 Authority to draw 2 cards. |
 | `lt_witness` | Witness | working | common | Gain 4 Block. Your next Deed hit on a Challenged enemy this turn counts twice toward its Challenge. |
 
-### Given in play — 79
+### Given in play — 62
 
 Handed over by a boss, a door or an event rather than offered; never in a reward pool.
 
@@ -996,9 +998,6 @@ Handed over by a boss, a door or an event rather than offered; never in a reward
 | `better_chair_cushion_action` | The Better Chair | Gain 14 Block. End the turn holding a real card, or lose 6 HP. |
 | `black_flood_vessel_action` | Empty the Vessel | Discard your hand, draw 7, and gain 2 Energy. Once a combat. |
 | `borrowers_claim` | Borrower's Claim | Retain. Exhaust. Put a card from hand under your draw pile, draw 1. Held at turn end: 1 Paperwork. |
-| `break_the_burden_seal` | Break the Burden Seal | Remove 1 Burdened from you (or 1 Paperwork). The colony gains 12 Block on its turn. |
-| `break_the_pest_seal` | Break the Pest Seal | The colony loses 12 HP. You take 2 Poison. |
-| `break_the_ration_seal` | Break the Ration Seal | You gain 1 Energy next turn. The colony gains 1 Strength. |
 | `cauldron_add` | Into the Pot | Put a card from hand into the cauldron instead of playing it. The first each turn is free. |
 | `cauldron_brew` | Brew | Brew the 3 ingredients. Three of one family: a concentrated brew. Otherwise each gives its own effect. |
 | `correction_reed_action` | A Small Correction | Once a turn: discard a card, return one from discard costing 1 less. None there: draw 1. |
@@ -1009,24 +1008,25 @@ Handed over by a boss, a door or an event rather than offered; never in a reward
 | `drink_from_the_cup` | Drink from the Cup | Gain 1 Energy. The Cup gains 2 Claims. Unplayed, it is gone at the end of the turn. |
 | `edict_of_the_open_audience_action` | Open the Audience | Once a combat: cards in your hand cost 0 this turn. |
 | `erasure_tablet_action` | Erase the Line | Once a combat: every enemy's next action deals no damage; they gain 20 Block instead. |
-| `far_boundary` | Far Boundary | Take the far measure this turn. Met: it loses 10 HP and its cover. |
 | `file_the_request` | File the Request | Resolve the Request for Additional Review. |
 | `fine_print` | Fine Print | Unplayable. While in hand, your first card each turn costs 1 more. |
 | `heavy_pie` | Heavy Pie | Gain 2 Energy. Gain 2 Doubt. Grandmother loses 6 HP. |
 | `heavy_pie_dear` | Heavy Pie | Gain 2 Energy. Gain 2 Doubt. Grandmother loses 6 HP. |
+| `his_name` | His Name | Gain 6 Block. The Pharaoh's name, borne for this fight. |
 | `hold_the_moon` | Hold the Moon | Once an orbit: the phase repeats for both of you. Counted cards return at once, his too. |
 | `honey_spoon_action` | A Little Honey | Gain 2 Energy. End the turn with 1+ Energy, or lose 6 HP. |
 | `last_slice_tin_action` | Take Another Slice | Draw 2. Play at most 4 real cards this turn, or lose 6 HP. |
 | `lavender_sachet` | Lavender Sachet | Gain 12 Block. Discard 2 cards. Grandmother loses 6 HP. |
 | `lavender_sachet_dear` | Lavender Sachet | Gain 12 Block. Discard 2 cards. Grandmother loses 6 HP. |
 | `missing_signature` | Missing Signature | Exhaust. Still in hand at turn end: 1 Paperwork on you. |
-| `near_boundary` | Near Boundary | Take the near measure this turn. Met: it gains Block. |
 | `notice_of_delay` | Notice of Delay | Retain. Exhaust. Still in hand at turn end: 1 Fatigue. |
 | `offer_the_surplus` | Offer the Surplus | Spend 1 Energy to settle 1 Temple Due. |
 | `pay_the_fee` | Pay the Fee | Pay 15 Gold after the fight; the Dragon hoards one more Permit. |
 | `petition_for_priority` | Petition for Priority | Move one place closer to the Counter. Take 1 Paperwork. One queue choice a turn. |
+| `pharaohs_tribute` | Tribute | Pay the Pharaoh his tribute. It does nothing else. |
 | `redacted_leaf` | Redacted Leaf | Unplayable. Retain. Turn start: a card in your hand is Redacted, and this is spent. |
-| `return_something_taken` | Return Something Taken | Give back 30 Gold (after the fight): it loses 2 Spoils and 15 HP. Or sacrifice a hand card: 1 Spoil, 10 HP. |
+| `renenutets_bounty` | Her Bounty | Lose 7 HP. Draw 4 cards. Gain 1 Energy. She stores 1 Grain. |
+| `renenutets_bounty_seventh_year` | Her Bounty | Lose 7 HP. Draw 7 cards. She stores 2 Grain. |
 | `revise_body_shall_bear` | Revise: Thirty-Six | Spend a Reed Mark: revise one step. 36 HP → 24 → 12 → none → she takes 18. |
 | `revise_guard_counted_nothing` | Revise: The Guard Counts Nothing | Spend a Reed Mark: revise one step. Block −18 → −12 → −6 → none → +6. |
 | `revise_hand_shall_hold_two` | Revise: The Hand Holds Two | Spend a Reed Mark: revise one step. Draw 3 fewer → 2 → 1 → none → draw 1 more. |
@@ -1035,24 +1035,15 @@ Handed over by a boss, a door or an event rather than offered; never in a reward
 | `revise_three_wounds` | Revise: Three Wounds | Spend a Reed Mark: revise one step. 3 Red Tape → 2 → 1 → none → one removed. |
 | `revise_two_works_broken` | Revise: Two Works | Spend a Reed Mark: revise one step. 2 cards Exhausted → 1 → none → one returns. |
 | `royal_grace_cup_action` | Royal Grace | Once a turn: gain 1 Energy, a card, or 10 Block. Every enemy gains 6 Block. |
-| `scrape_the_first_entry` | Scrape the First Entry | Once a turn: blank this entry. Take 1 Paperwork. |
-| `scrape_the_second_entry` | Scrape the Second Entry | Once a turn: blank this entry. Take 1 Paperwork. |
-| `scrape_the_third_entry` | Scrape the Third Entry | Once a turn: blank this entry. Take 1 Paperwork. |
 | `silver_name_tally_action` | Speak the Silver Name | Once a combat: remove an enemy's Block, gain 10 Block, refund your next card this turn. |
 | `sluice_gate_of_the_two_lands_action` | Work the Two Lands | Once a turn: lose 12 Block for 1 Energy, or spend 1 Energy for 12 Block. |
 | `strike_down_the_article` | Strike Down the Article | Strike the Article for the next one. The Charter gains 8 Block. |
 | `summons_to_appear` | Summons to Appear | Retain. Exhaust. Still in hand at turn end: take 5 damage. |
 | `take_ahead` | Take Ahead | Gain 1 Energy now, taken from a later day. |
-| `the_alternating_stone` | The Alternating Stone | Blueprint: your first two cards are of different kinds. Met: Monument −1. Missed: 2 Paperwork. |
-| `the_answer_of_burden` | The Answer of Burden | Answer the sphinx by carrying it: 2 Burdened. One Answer Mark. |
-| `the_answer_of_burial` | The Answer of Burial | Answer: take 1 Entombed and 1 Paperwork. Gain an Answer Mark. |
-| `the_answer_of_measure` | The Answer of Measure | Answer the sphinx by walking to a figure: 2 Weighed. One Answer Mark. |
-| `the_equal_courses` | The Equal Courses | Blueprint: play exactly 2 Deeds. Met: Monument −1. Missed: Burdened. |
-| `the_measured_course` | The Measured Course | Blueprint: spend exactly the measured Energy. Met: Monument −1. Missed: Monument +1. |
-| `the_measured_foundation` | The Measured Foundation | Blueprint: spend exactly 2 Energy. Met: Monument −1. Missed: Monument +1 and Entombed. |
 | `thorned_shawl` | Thorned Shawl | Lose 5 HP. Draw 2 cards. Grandmother loses 6 HP. |
 | `thorned_shawl_dear` | Thorned Shawl | Lose 5 HP. Draw 2 cards. Grandmother loses 6 HP. |
 | `tomb_curse` | Tomb Curse | Unplayable. Still in hand at the end of your turn: 1 Entombed. |
+| `tomb_gold` | Tomb Gold | Gain 25 Gold (paid after the fight). |
 | `unfinished_citation` | Unfinished Citation | Retain. Exhaust. Clear a Reference from a card in hand. Still in hand at turn end: 1 Paperwork. |
 | `uphold_the_article` | Uphold the Article | The Article stands. Gain 6 Block. |
 | `wand_burn_out` | Burn Out | Once a turn, with Exhaustion: Exhaust a wand card, −3 Exhaustion. |
@@ -1061,12 +1052,6 @@ Handed over by a boss, a door or an event rather than offered; never in a reward
 | `wand_swap` | Swap | Two wand cards trade places. 1 Focus. |
 | `wand_withdraw` | Withdraw | A wand card goes to your discard. 1 Focus. |
 | `warm_kettle_gift` | Warm Kettle | Gain 8 Block. Discard a card. |
-| `wash_the_burdened_vessel` | Wash the Burdened Vessel | Once a turn, 1 Energy: empty the Burdened jar for good. Take 1 Entombed. |
-| `wash_the_doubt_vessel` | Wash the Doubt Vessel | Once a turn, 1 Energy: empty the Doubt jar for good. Take 1 Entombed. |
-| `wash_the_entombed_vessel` | Wash the Entombed Vessel | Once a turn, 1 Energy: empty the Entombed jar for good. Take 1 Entombed. |
-| `wash_the_paperwork_vessel` | Wash the Paperwork Vessel | Once a turn, 1 Energy: empty the Paperwork jar for good. Take 1 Entombed. |
-| `wash_the_weighed_vessel` | Wash the Weighed Vessel | Once a turn, 1 Energy: empty the Weighed jar for good. Take 1 Entombed. |
-| `work_the_sluice` | Work the Sluice | Once a turn, spend 1 Sluice Authority: at turn end the water moves a step back to the Ordered Flood. |
 | `wrong_form` | Wrong Form | Exhaust. Discard another card. |
 | `yield_your_place` | Yield Your Place | Move one place away from the Counter. Gain 6 Block. One queue choice a turn. |
 

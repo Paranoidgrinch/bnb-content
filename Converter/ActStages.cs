@@ -55,6 +55,8 @@ public static class ActStages
         ["labyrinth_elite_the_tombbreakers_three"] = 5,
         ["labyrinth_elite_keeper_of_the_thirty_six_decans"] = 5,
         ["labyrinth_elite_ammit_devourer_of_the_unworthy"] = 5,
+        // The Lioness (2026-11-04): the eleventh, behind the second lesson.
+        ["labyrinth_elite_lioness_of_sekhmet"] = 2,
     };
 
     // The 1-based stage an elite stands in, or null when nothing names one.

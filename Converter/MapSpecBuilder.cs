@@ -276,6 +276,9 @@ public static class MapSpecBuilder
         var rewards = EliteRewards(data, pools, act);
         foreach (var (id, reward) in BossRewards(data, pools, act))
             rewards[id] = reward;
+        // The Tomb Robber alone brings no spoils: its loot is the Tomb Gold that joins your deck (2026-11-04).
+        if (data.Encounters.Any(e => e.Id == ActFour.TombRobberAloneEncounterId && e.Act == act.Act))
+            rewards[ActFour.TombRobberAloneEncounterId] = new MapVictoryReward(new FixedRewardSource([]), Granted: true);
         return rewards;
     }
 

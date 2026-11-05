@@ -58,37 +58,21 @@ public static class BossPhases
 
         // ── Act IV ────────────────────────────────────────────────────────────────────────────────────────
         //
-        // The Pharaoh's three names ARE his three phases, and the exposure is the transition telegraphed one
-        // turn early — the ward is empty and everybody can see it.
+        // Since the rework of 2026-11-04: the Pharaoh's three names ARE his phases, and a broken name is the turn
+        // he loses; every other boss turns at half its health.
+        ActFour.ThroneNameId,
         ActFour.TwoLandsNameId,
         ActFour.EternalNameId,
         ActFour.NameExposedId,
-
-        // The Weigher's second half, and the window that leads to it.
+        ActFour.NameBrokenId,
         ActFour.HeartRemembersId,
-        ActFour.HeartDeclaredLightId,
-
-        // The Architect's second half — the schedule that can no longer be reversed.
         ActFour.PlanAlwaysCorrectId,
-
-        // The Lady's, and the two open-store turns that are its telegraph: the seals are all broken and
-        // everybody can see what is coming.
-        ActFour.GranariesOpenId,
-        ActFour.FamineAccountingId,
+        ActFour.SeventhYearId,
         ActFour.PalimpsestId,
-        ActFour.TextIsCanonId,
-        ActFour.VesselsFullId,
-        ActFour.ThreeJarsId,
-        ActFour.LastPreparationId,
-
-        // The Queen's second half, the turn it is announced on, her signature — and the two readings of the
-        // gauge that are not levels but ANNOUNCEMENTS: the black flood queued for her next action, and the
-        // drift she shows one turn before it moves.
-        ActFour.FloodStirsId,
-        ActFour.FloodDisobeysId,
-        ActFour.FloodCountedId,
-        ActFour.WaterBlackId,
+        ActFour.SelketWrappedId,
         ActFour.FloodDriftsId,
+        // Anuket's black flood is not a phase but an announcement: her next action is already decided.
+        ActFour.WaterBlackId,
 
         // ── Act V ─────────────────────────────────────────────────────────────────────────────────────────
         //

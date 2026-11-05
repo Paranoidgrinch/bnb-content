@@ -50,6 +50,13 @@ public static class EncounterPassives
         "lord_sealkeeper" => LordSealkeeper.Triggers(),
         "municipal_dragon" => MunicipalDragon.Triggers(),
         "living_charter" => LivingCharter.Triggers(),
+        // Act IV: what falls with what — jars with their master, Anubis's watch with the Jackal, the sack with
+        // the Thief (ActFour.LabyrinthTriggers). Every normal body brings it; it is idempotent.
+        _ when ActFour.Identities.Contains(enemyId) => ActFour.LabyrinthTriggers(),
+        // …and the elites' own: the Taskmaster's gang, Apep's coils, the Priest's jars, the brood, the robbers.
+        _ when ActFour.EliteIdentities.Contains(enemyId) => ActFour.EliteTriggers(enemyId),
+        // …and the bosses': the Pharaoh's traitors and Selket's vessels fall with them, her last vessel wraps her.
+        _ when ActFour.BossIdentities.Contains(enemyId) => ActFour.BossTriggers(enemyId),
         _ => Array.Empty<EncounterTriggerData>(),
     };
 
@@ -177,10 +184,11 @@ public static class EncounterPassives
     // and its opening Safe-Conduct, and the same pair again wherever Act IV's False-Door Finder brings that
     // law back for a room (§3.9). Asked of the whole roster rather than of each body, or a duo would hand the
     // player two licences.
-    public static IReadOnlyList<StartingStatusSpec> ActOpeningStatuses(IEnumerable<string> enemyIds)
+    // Act IV's jars open only a single normal fight, so the encounter's role is asked too (a probe has none).
+    public static IReadOnlyList<StartingStatusSpec> ActOpeningStatuses(IEnumerable<string> enemyIds, string? role = null)
     {
         var roster = enemyIds as IReadOnlyList<string> ?? [.. enemyIds];
-        return [.. ActThree.HeroOpening(roster)];
+        return [.. ActThree.HeroOpening(roster), .. ActFour.HeroOpening(roster, role)];
     }
 
     public static IReadOnlyList<StartingStatusSpec> HeroOpeningStatuses(string enemyId) => enemyId switch
@@ -198,9 +206,6 @@ public static class EncounterPassives
         // Distribution — all three days of intents at once. A sight is a faculty of the one who looks.
         ActFive.NansheEnemyId =>
             [new StartingStatusSpec(new StatusDefinitionId(ActFive.RationTabletId), 1)],
-        // Act IV: the Chisel Spirit sets its chisel against the player's name from the first bell — a round
-        // top-up alone would miss the opening round, which starts before the bodies in it are dressed.
-        ActFour.ChiselSpiritEnemyId => ActFour.CartoucheOpening(ActFour.ChiselSpiritEnemyId),
         // Act II: the archive's rules live on the player, because it is the player's hand and the player's draw
         // they are about. Two misfiling enemies ask for the same marker and it merges, so a card is taken back
         // once however many shelves are in the room.

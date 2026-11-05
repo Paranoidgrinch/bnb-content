@@ -87,9 +87,10 @@ public static class Tutorial
             "owe that party a Trespass. Three Trespass to one party become its Claim. A Safe-Conduct refuses one " +
             "Trespass."),
         ("act4.labyrinth", "The Licensing Labyrinth",
-            "The road to the Judgment of the Dead is one long procedure, written in three words. Weighed: spend " +
-            "exactly that much Energy this turn. Burdened: every card costs 1 more until the surcharge is paid. " +
-            "Entombed: at 5 you are buried and lose the turn. Each enemy's chip names its own law."),
+            "The road to the Judgment of the Dead. Burdened: every card costs 1 more until the surcharge is paid. " +
+            "A Scale weighs your turn: as many Deeds as Workings earns a Feather, anything else 1 Burdened. Canopic " +
+            "jars give their master powers until you break them, and the Risen get up once more. Entombed, from the " +
+            "elites on: at 5 you lose a turn."),
         ("combat.relics", "Relics",
             "The little tiles above you are your relics. They work on their own; a relic lights up when it " +
             "triggers. Hover one to read it."),

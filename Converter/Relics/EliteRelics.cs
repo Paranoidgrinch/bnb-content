@@ -147,9 +147,13 @@ public static class EliteRelics
 
     public static readonly IReadOnlyList<BnbRelic> ActIV =
     [
-        Elite(EliteRelicRules.ErrantCordId, "The Shorter Ferrule", "labyrinth_elite_surveyor_of_the_errant_cord",
-            "The first Weighed you take each fight is one lighter.",
+        Elite(EliteRelicRules.ErrantCordId, "Libation Bowl", "labyrinth_elite_surveyor_of_the_errant_cord",
+            "Every fight opens with a Feather on you: your first attack deals 5 more.",
             combatRule: EliteRelicRules.TheErrantCord),
+
+        Elite(EliteRelicRules.ClawId, "Sekhmet's Claw", ActFour.LionessEncounterId,
+            "The first time you lose HP each fight, gain 2 Strength.",
+            combatRule: EliteRelicRules.SekhmetsClaw),
 
         Elite(EliteRelicRules.GranarySealId, "Broken Granary Seal",
             "labyrinth_elite_scarab_host_of_the_sealed_granary",
@@ -167,7 +171,7 @@ public static class EliteRelics
 
         Elite("heart_lighter_than_the_feather", "Heart Lighter Than the Feather",
             "labyrinth_elite_ammit_devourer_of_the_unworthy",
-            "Weighed and not devoured: every victory heals 4.",
+            "Not devoured: every victory heals 4.",
             runPrograms: [AfterEveryVictory(Heal(4))]),
 
         Elite(EliteRelicRules.ShearsId, "Overseer's Linen Shears",

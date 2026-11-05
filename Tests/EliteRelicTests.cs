@@ -57,7 +57,7 @@ public class EliteRelicTests
     public void Every_elite_encounter_pays_out_the_one_relic_written_for_it()
     {
         var elites = Data.Encounters.Where(e => e.Role == "elite" && e.Act <= 4).ToList();
-        Assert.Equal(31, elites.Count);
+        Assert.Equal(32, elites.Count);
 
         foreach (var elite in elites)
         {

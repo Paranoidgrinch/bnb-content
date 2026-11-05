@@ -213,7 +213,7 @@ public static class EncounterMapper
                 .. encounter.Enemies.Distinct().SelectMany(EncounterPassives.HeroOpeningStatuses),
                 // …and an ACT may serve something once per fight, whoever is standing in it (Act III's
                 // customs and the Safe-Conduct it opens you with).
-                .. EncounterPassives.ActOpeningStatuses(encounter.Enemies),
+                .. EncounterPassives.ActOpeningStatuses(encounter.Enemies, encounter.Role),
                 // An ambush cannot open with more than 20 (playtest 3, D1; AmbushFooting).
                 .. encounter.Role != "boss" && encounter.Enemies.Count >= 2
                     ? [new StartingStatusSpec(new StatusDefinitionId(AmbushFooting.Id), AmbushFooting.Budget)]

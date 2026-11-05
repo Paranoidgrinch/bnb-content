@@ -49,8 +49,9 @@ public class BossLengthTests(ITestOutputHelper output)
     // starting one — AND never engages: it refuses every Royal Command, so the Pharaoh's Cartouche Ward
     // stands at a fifth reduction for the whole fight and never once opens into an exposure window. That is
     // the worst case the fight has by construction, so it gets a longer rope. The property this file exists
-    // for is unchanged: the fight still ENDS.
-    [InlineData("labyrinth_boss_pharaoh_of_the_sealed_name", 80)]
+    // for is unchanged: the fight still ENDS. Since the rework of 2026-11-04 every refused Tribute heals him 20
+    // and the one Traitor strikes every round, so the walker needs a little over 80 turns: 90.
+    [InlineData("labyrinth_boss_pharaoh_of_the_sealed_name", 90)]
     [InlineData("labyrinth_boss_weigher_of_the_unspoken_heart", 80)]
     [InlineData("labyrinth_boss_architect_of_the_impossible_pyramid", 80)]
     [InlineData("labyrinth_boss_lady_of_the_black_granaries", 80)]

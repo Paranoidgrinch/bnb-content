@@ -34,6 +34,7 @@ public class EncounterTrialTests
     [InlineData(1, "city_boss_")]
     [InlineData(2, "archives_boss_")]
     [InlineData(3, "green_docket_boss_")]
+    [InlineData(4, "labyrinth_boss_")]
     public void An_act_walks_every_stage_fight_then_every_boss(int act, string bossPrefix)
     {
         var trial = Trial(act);
@@ -46,13 +47,13 @@ public class EncounterTrialTests
         // The bosses close it, and nothing pays: no fight carries a reward of its own.
         Assert.All(fights.TakeLast(5), id => Assert.StartsWith(bossPrefix, id, StringComparison.Ordinal));
         Assert.All(trial.Map.Nodes.Select(n => n.Payload).OfType<EncounterRef>(), r => Assert.Null(r.VictoryReward));
-        // The earlier acts' packages and boss spoils before the first fight; then four stages, four packages, each
+        // The earlier acts' packages and boss spoils before the first fight; then each stage and its package,
         // straight after its stage's last fight.
         var spoils = trial.Map.Nodes.Where(n => n.Payload is EventRef).Select(n => ((EventRef)n.Payload!).Id.Value).ToList();
         var catchUp = Enumerable.Range(1, act - 1)
-            .SelectMany(earlier => Enumerable.Range(1, 4).Select(s => EncounterTrial.SpoilsId(earlier, s)).Append(EncounterTrial.BossSpoilsId(earlier)))
+            .SelectMany(earlier => Enumerable.Range(1, ActStages.Order[earlier].Count).Select(s => EncounterTrial.SpoilsId(earlier, s)).Append(EncounterTrial.BossSpoilsId(earlier)))
             .ToList();
-        Assert.Equal([.. catchUp, .. Enumerable.Range(1, 4).Select(s => EncounterTrial.SpoilsId(act, s))], spoils);
+        Assert.Equal([.. catchUp, .. Enumerable.Range(1, ActStages.Order[act].Count).Select(s => EncounterTrial.SpoilsId(act, s))], spoils);
         Assert.All(trial.Map.Nodes.Take(catchUp.Count), n => Assert.IsType<EventRef>(n.Payload));
         Assert.Contains(EncounterTrial.InfirmaryId, trial.Start!.StartingRelics);
         Assert.Equal(LieutenantCharacter.Start.Deck, trial.Start.Deck);
@@ -65,6 +66,7 @@ public class EncounterTrialTests
     [InlineData(1)]
     [InlineData(2)]
     [InlineData(3)]
+    [InlineData(4)]
     public async Task A_bot_walks_into_the_second_stage(int act)
     {
         var trial = Trial(act);

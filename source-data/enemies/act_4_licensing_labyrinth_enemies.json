@@ -1,25 +1,98 @@
 [
   {
     "id": "reed_cord_surveyor",
-    "name": "Reed-Cord Surveyor",
-    "max_hp": 85,
+    "name": "Rope-Stretcher",
+    "max_hp": 76,
     "intent_pattern": "cycle",
     "intents": [
       {
+        "id": "reed_lash",
+        "name": "Lash",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 12
+          }
+        ]
+      },
+      {
         "id": "set_the_measure",
-        "name": "Set the Measure",
+        "name": "Snap Cord",
         "intent_type": "mixed",
         "actions": [
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 10
+            "amount": 9
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "burdened",
+            "amount": 1
           }
         ]
       },
       {
-        "id": "reed_lash",
-        "name": "Reed Lash",
+        "id": "re_tension_cord",
+        "name": "Pull Taut",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 16
+          }
+        ]
+      },
+      {
+        "id": "rise",
+        "name": "Rise",
+        "intent_type": "buff",
+        "special": true,
+        "actions": []
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "labyrinth_body"
+      },
+      {
+        "status": "weighs_your_turn"
+      },
+      {
+        "status": "the_scale"
+      }
+    ],
+    "tags": [
+      "licensing_labyrinth",
+      "normal",
+      "stage_stelae",
+      "surveyor"
+    ],
+    "intent_rules": [
+      {
+        "condition": {
+          "kind": "self_status",
+          "status": "risen_downed",
+          "min_stacks": 1
+        },
+        "action": "rise",
+        "priority": 1000
+      }
+    ]
+  },
+  {
+    "id": "crooked_rod_bearer",
+    "name": "Crooked Cubit",
+    "max_hp": 79,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "rod_strike",
+        "name": "Rod Strike",
         "intent_type": "attack",
         "actions": [
           {
@@ -30,67 +103,26 @@
         ]
       },
       {
-        "id": "re_tension_cord",
-        "name": "Re-Tension Cord",
-        "intent_type": "block",
-        "actions": [
-          {
-            "type": "gain_block",
-            "target": "owner",
-            "amount": 16
-          }
-        ]
-      }
-    ],
-    "starting_statuses": [
-      {
-        "status": "labyrinth_body"
-      },
-      {
-        "status": "reads_the_error"
-      }
-    ],
-    "tags": [
-      "licensing_labyrinth",
-      "normal",
-      "stage_stelae",
-      "weighed",
-      "surveyor"
-    ]
-  },
-  {
-    "id": "crooked_rod_bearer",
-    "name": "Crooked Rod Bearer",
-    "max_hp": 88,
-    "intent_pattern": "cycle",
-    "intents": [
-      {
         "id": "crooked_measure",
-        "name": "Crooked Measure",
+        "name": "Bent Measure",
         "intent_type": "mixed",
         "actions": [
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 11
-          }
-        ]
-      },
-      {
-        "id": "rod_strike",
-        "name": "Rod Strike",
-        "intent_type": "attack",
-        "actions": [
+            "amount": 10
+          },
           {
-            "type": "deal_damage",
+            "type": "apply_status",
             "target": "player",
-            "amount": 15
+            "status": "burdened",
+            "amount": 1
           }
         ]
       },
       {
         "id": "brace_the_standard",
-        "name": "Brace the Standard",
+        "name": "Brace",
         "intent_type": "block",
         "actions": [
           {
@@ -99,6 +131,13 @@
             "amount": 17
           }
         ]
+      },
+      {
+        "id": "rise",
+        "name": "Rise",
+        "intent_type": "buff",
+        "special": true,
+        "actions": []
       }
     ],
     "starting_statuses": [
@@ -106,44 +145,51 @@
         "status": "labyrinth_body"
       },
       {
-        "status": "rod_reads_one"
+        "status": "weighs_your_turn"
+      },
+      {
+        "status": "the_crooked_cubit"
+      },
+      {
+        "status": "cubit_wants_deeds"
       }
     ],
     "tags": [
       "licensing_labyrinth",
       "normal",
       "stage_stelae",
-      "weighed",
       "rod"
+    ],
+    "intent_rules": [
+      {
+        "condition": {
+          "kind": "self_status",
+          "status": "risen_downed",
+          "min_stacks": 1
+        },
+        "action": "rise",
+        "priority": 1000
+      }
     ]
   },
   {
     "id": "crocodile_of_the_short_measure",
-    "name": "Crocodile of the Short Measure",
-    "max_hp": 100,
+    "name": "Sobek's Tithe",
+    "max_hp": 90,
     "intent_pattern": "cycle",
     "intents": [
       {
-        "id": "short_measure",
-        "name": "Short Measure",
-        "intent_type": "mixed",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 12
-          }
-        ]
-      },
-      {
         "id": "load_the_scale",
-        "name": "Load the Scale",
+        "name": "Weigh Down",
         "intent_type": "mixed",
         "actions": [
           {
-            "type": "deal_damage",
+            "type": "damage_per_status",
             "target": "player",
-            "amount": 11
+            "status": "burdened",
+            "status_on": "player",
+            "amount": 11,
+            "amount_per_stack": 3
           },
           {
             "type": "apply_status",
@@ -155,40 +201,75 @@
       },
       {
         "id": "snap_at_the_deficit",
-        "name": "Snap at the Deficit",
+        "name": "Jaws",
         "intent_type": "attack",
         "actions": [
           {
-            "type": "deal_damage",
+            "type": "damage_per_status",
             "target": "player",
-            "amount": 19
+            "status": "burdened",
+            "status_on": "player",
+            "amount": 15,
+            "amount_per_stack": 3
           }
         ]
+      },
+      {
+        "id": "short_measure",
+        "name": "Wallow",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 18
+          }
+        ]
+      },
+      {
+        "id": "rise",
+        "name": "Rise",
+        "intent_type": "buff",
+        "special": true,
+        "actions": []
       }
     ],
     "starting_statuses": [
       {
         "status": "labyrinth_body"
+      },
+      {
+        "status": "sobeks_tithe"
       }
     ],
     "tags": [
       "licensing_labyrinth",
       "normal",
       "stage_granary",
-      "weighed",
       "burdened",
       "crocodile"
+    ],
+    "intent_rules": [
+      {
+        "condition": {
+          "kind": "self_status",
+          "status": "risen_downed",
+          "min_stacks": 1
+        },
+        "action": "rise",
+        "priority": 1000
+      }
     ]
   },
   {
     "id": "jar_seal_scarab_swarm",
-    "name": "Jar-Seal Scarab Swarm",
-    "max_hp": 94,
+    "name": "Scarab Swarm",
+    "max_hp": 85,
     "intent_pattern": "cycle",
     "intents": [
       {
         "id": "seal_swarm",
-        "name": "Seal Swarm",
+        "name": "Swarm",
         "intent_type": "attack",
         "actions": [
           {
@@ -222,7 +303,7 @@
       },
       {
         "id": "seal_the_jar",
-        "name": "Seal the Jar",
+        "name": "Burrow",
         "intent_type": "block",
         "actions": [
           {
@@ -231,11 +312,21 @@
             "amount": 18
           }
         ]
+      },
+      {
+        "id": "rise",
+        "name": "Rise",
+        "intent_type": "buff",
+        "special": true,
+        "actions": []
       }
     ],
     "starting_statuses": [
       {
         "status": "labyrinth_body"
+      },
+      {
+        "status": "the_swarm"
       }
     ],
     "tags": [
@@ -244,17 +335,28 @@
       "stage_granary",
       "burdened",
       "swarm"
+    ],
+    "intent_rules": [
+      {
+        "condition": {
+          "kind": "self_status",
+          "status": "risen_downed",
+          "min_stacks": 1
+        },
+        "action": "rise",
+        "priority": 1000
+      }
     ]
   },
   {
     "id": "hungry_grain_thief",
-    "name": "Hungry Grain Thief",
-    "max_hp": 96,
+    "name": "Granary Thief",
+    "max_hp": 86,
     "intent_pattern": "cycle",
     "intents": [
       {
         "id": "sack_weight",
-        "name": "Sack Weight",
+        "name": "Snatch",
         "intent_type": "mixed",
         "actions": [
           {
@@ -272,19 +374,24 @@
       },
       {
         "id": "feast_on_rations",
-        "name": "Feast on Rations",
+        "name": "Shiv",
         "intent_type": "attack",
         "actions": [
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 18
+            "amount": 7
+          },
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 7
           }
         ]
       },
       {
         "id": "hide_in_the_granary",
-        "name": "Hide in the Granary",
+        "name": "Hide in the Grain",
         "intent_type": "block",
         "actions": [
           {
@@ -293,6 +400,13 @@
             "amount": 18
           }
         ]
+      },
+      {
+        "id": "rise",
+        "name": "Rise",
+        "intent_type": "buff",
+        "special": true,
+        "actions": []
       }
     ],
     "starting_statuses": [
@@ -300,7 +414,7 @@
         "status": "labyrinth_body"
       },
       {
-        "status": "hungry_for_rations"
+        "status": "the_granary_thief"
       }
     ],
     "tags": [
@@ -309,18 +423,29 @@
       "stage_granary",
       "burdened",
       "thief"
+    ],
+    "intent_rules": [
+      {
+        "condition": {
+          "kind": "self_status",
+          "status": "risen_downed",
+          "min_stacks": 1
+        },
+        "action": "rise",
+        "priority": 1000
+      }
     ]
   },
   {
     "id": "silt_buried_farmer_shade",
-    "name": "Silt-Buried Farmer Shade",
-    "max_hp": 109,
+    "name": "Drowned Farmer",
+    "max_hp": 98,
     "intent_pattern": "cycle",
     "intents": [
       {
         "id": "keep_the_furrow",
-        "name": "Keep the Furrow",
-        "intent_type": "mixed",
+        "name": "Sickle",
+        "intent_type": "attack",
         "actions": [
           {
             "type": "deal_damage",
@@ -342,7 +467,7 @@
           {
             "type": "apply_status",
             "target": "player",
-            "status": "entombed",
+            "status": "burdened",
             "amount": 1
           }
         ]
@@ -358,6 +483,13 @@
             "amount": 20
           }
         ]
+      },
+      {
+        "id": "rise",
+        "name": "Rise",
+        "intent_type": "buff",
+        "special": true,
+        "actions": []
       }
     ],
     "starting_statuses": [
@@ -365,31 +497,35 @@
         "status": "labyrinth_body"
       },
       {
-        "status": "rising_flood"
-      },
-      {
-        "status": "flood",
-        "stacks": 1
+        "status": "risen_farmer"
       }
     ],
     "tags": [
       "licensing_labyrinth",
       "normal",
-      "stage_basins",
-      "weighed",
-      "entombed",
-      "clock"
+      "stage_basins"
+    ],
+    "intent_rules": [
+      {
+        "condition": {
+          "kind": "self_status",
+          "status": "risen_downed",
+          "min_stacks": 1
+        },
+        "action": "rise",
+        "priority": 1000
+      }
     ]
   },
   {
     "id": "runaway_laborer",
-    "name": "Runaway Laborer",
-    "max_hp": 102,
+    "name": "Runaway Ushabti",
+    "max_hp": 92,
     "intent_pattern": "cycle",
     "intents": [
       {
         "id": "desperate_swing",
-        "name": "Desperate Swing",
+        "name": "Swing",
         "intent_type": "attack",
         "actions": [
           {
@@ -401,15 +537,22 @@
       },
       {
         "id": "hide_behind_the_gang",
-        "name": "Hide Behind the Gang",
+        "name": "Duck Behind",
         "intent_type": "block",
         "actions": [
           {
             "type": "gain_block",
             "target": "owner",
-            "amount": 18
+            "amount": 16
           }
         ]
+      },
+      {
+        "id": "rise",
+        "name": "Rise",
+        "intent_type": "buff",
+        "special": true,
+        "actions": []
       }
     ],
     "starting_statuses": [
@@ -417,7 +560,8 @@
         "status": "labyrinth_body"
       },
       {
-        "status": "escape_plan"
+        "status": "fleeing",
+        "stacks": 3
       }
     ],
     "tags": [
@@ -426,23 +570,34 @@
       "stage_yards",
       "escape",
       "conscript"
+    ],
+    "intent_rules": [
+      {
+        "condition": {
+          "kind": "self_status",
+          "status": "risen_downed",
+          "min_stacks": 1
+        },
+        "action": "rise",
+        "priority": 1000
+      }
     ]
   },
   {
     "id": "stone_hauler_ushabti",
-    "name": "Stone-Hauler Ushabti",
-    "max_hp": 128,
+    "name": "Ushabti Hauler",
+    "max_hp": 115,
     "intent_pattern": "cycle",
     "intents": [
       {
         "id": "haul_stone",
-        "name": "Haul Stone",
+        "name": "Haul",
         "intent_type": "mixed",
         "actions": [
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 15
+            "amount": 14
           },
           {
             "type": "apply_status",
@@ -462,23 +617,29 @@
             "target": "player",
             "status": "stone",
             "status_on": "owner",
-            "amount": 19,
-            "amount_per_stack": 3,
-            "cap": 9
+            "amount": 17,
+            "amount_per_stack": 3
           }
         ]
       },
       {
         "id": "brace_the_stone",
-        "name": "Brace the Load",
+        "name": "Brace",
         "intent_type": "block",
         "actions": [
           {
             "type": "gain_block",
             "target": "owner",
-            "amount": 25
+            "amount": 24
           }
         ]
+      },
+      {
+        "id": "rise",
+        "name": "Rise",
+        "intent_type": "buff",
+        "special": true,
+        "actions": []
       }
     ],
     "starting_statuses": [
@@ -495,84 +656,99 @@
       "stage_yards",
       "burdened",
       "ushabti"
+    ],
+    "intent_rules": [
+      {
+        "condition": {
+          "kind": "self_status",
+          "status": "risen_downed",
+          "min_stacks": 1
+        },
+        "action": "rise",
+        "priority": 1000
+      }
     ]
   },
   {
     "id": "fallen_capstone_golem",
-    "name": "Fallen Capstone Golem",
-    "max_hp": 145,
+    "name": "Pyramidion Golem",
+    "max_hp": 130,
     "intent_pattern": "cycle",
     "intents": [
       {
         "id": "falling_dust",
-        "name": "Falling Dust",
+        "name": "Dust Fall",
         "intent_type": "mixed",
         "actions": [
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 15
+            "amount": 14
           },
           {
             "type": "apply_status",
             "target": "player",
-            "status": "entombed",
-            "amount": 1
-          },
-          {
-            "type": "apply_status",
-            "target": "owner",
-            "status": "placement",
+            "status": "burdened",
             "amount": 1
           }
         ]
       },
       {
         "id": "set_support",
-        "name": "Set Support",
+        "name": "Shore Up",
         "intent_type": "block",
         "actions": [
           {
             "type": "gain_block",
             "target": "owner",
-            "amount": 27
-          },
-          {
-            "type": "apply_status",
-            "target": "owner",
-            "status": "placement",
-            "amount": 1
+            "amount": 25
           }
         ]
       },
       {
         "id": "set_the_capstone",
-        "name": "Set the Capstone",
+        "name": "Capstone",
         "intent_type": "attack",
-        "special": true,
         "actions": [
           {
-            "type": "damage_per_status",
+            "type": "deal_damage",
             "target": "player",
-            "status": "entombed",
-            "amount": 25,
-            "amount_per_stack": 4,
-            "cap": 12
+            "amount": 23
           }
-        ]
+        ],
+        "special": true
+      },
+      {
+        "id": "rise",
+        "name": "Rise",
+        "intent_type": "buff",
+        "special": true,
+        "actions": []
       }
     ],
     "starting_statuses": [
       {
         "status": "labyrinth_body"
+      },
+      {
+        "status": "risen_golem"
       }
     ],
     "intent_rules": [
       {
         "condition": {
           "kind": "self_status",
-          "status": "placement",
-          "min_stacks": 3
+          "status": "risen_downed",
+          "min_stacks": 1
+        },
+        "action": "rise",
+        "priority": 1000
+      },
+      {
+        "condition": {
+          "kind": "self_status",
+          "status": "capstone_due",
+          "min_stacks": 1
         },
         "action": "set_the_capstone",
         "priority": 10
@@ -582,44 +758,36 @@
       "licensing_labyrinth",
       "normal",
       "stage_monument",
-      "entombed",
-      "clock",
       "golem"
     ]
   },
   {
     "id": "natron_bearer",
-    "name": "Natron Bearer",
-    "max_hp": 144,
+    "name": "Natron Priest",
+    "max_hp": 130,
     "intent_pattern": "cycle",
     "intents": [
       {
         "id": "drying_rite",
-        "name": "Drying Rite",
-        "intent_type": "mixed",
+        "name": "Dry Rite",
+        "intent_type": "attack",
         "actions": [
           {
             "type": "deal_damage",
             "target": "player",
             "amount": 13
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "fatigue",
-            "amount": 1
           }
         ]
       },
       {
         "id": "natron_dust",
-        "name": "Natron Dust",
+        "name": "Salt Sting",
         "intent_type": "mixed",
         "actions": [
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 18
+            "amount": 15
           },
           {
             "type": "apply_status",
@@ -637,9 +805,16 @@
           {
             "type": "gain_block",
             "target": "owner",
-            "amount": 27
+            "amount": 24
           }
         ]
+      },
+      {
+        "id": "rise",
+        "name": "Rise",
+        "intent_type": "buff",
+        "special": true,
+        "actions": []
       }
     ],
     "starting_statuses": [
@@ -647,50 +822,60 @@
         "status": "labyrinth_body"
       },
       {
-        "status": "dry_what_would_decay"
+        "status": "risen_natron"
       }
     ],
     "tags": [
       "licensing_labyrinth",
       "normal",
       "stage_linen",
-      "entombed",
       "natron"
+    ],
+    "intent_rules": [
+      {
+        "condition": {
+          "kind": "self_status",
+          "status": "risen_downed",
+          "min_stacks": 1
+        },
+        "action": "rise",
+        "priority": 1000
+      }
     ]
   },
   {
     "id": "unfinished_mummy",
-    "name": "Unfinished Mummy",
-    "max_hp": 160,
+    "name": "Half-Wrapped Mummy",
+    "max_hp": 144,
     "intent_pattern": "cycle",
     "intents": [
       {
-        "id": "incomplete_wrapping",
-        "name": "Incomplete Wrapping",
-        "intent_type": "mixed",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 13
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "entombed",
-            "amount": 1
-          }
-        ]
-      },
-      {
         "id": "hook_drag",
-        "name": "Hook Drag",
+        "name": "Hook",
         "intent_type": "attack",
         "actions": [
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 21
+            "amount": 18
+          }
+        ]
+      },
+      {
+        "id": "incomplete_wrapping",
+        "name": "Unravel",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 11
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "burdened",
+            "amount": 1
           }
         ]
       },
@@ -702,9 +887,16 @@
           {
             "type": "gain_block",
             "target": "owner",
-            "amount": 27
+            "amount": 24
           }
         ]
+      },
+      {
+        "id": "rise",
+        "name": "Rise",
+        "intent_type": "buff",
+        "special": true,
+        "actions": []
       }
     ],
     "starting_statuses": [
@@ -712,26 +904,36 @@
         "status": "labyrinth_body"
       },
       {
-        "status": "hooks_still_attached"
+        "status": "risen"
       }
     ],
     "tags": [
       "licensing_labyrinth",
       "normal",
       "stage_linen",
-      "entombed",
       "mummy"
+    ],
+    "intent_rules": [
+      {
+        "condition": {
+          "kind": "self_status",
+          "status": "risen_downed",
+          "min_stacks": 1
+        },
+        "action": "rise",
+        "priority": 1000
+      }
     ]
   },
   {
     "id": "fourfold_vessel_guardian",
-    "name": "Fourfold Vessel Guardian",
-    "max_hp": 170,
+    "name": "Canopic Keeper",
+    "max_hp": 153,
     "intent_pattern": "cycle",
     "intents": [
       {
         "id": "body_office",
-        "name": "Body Office",
+        "name": "Body",
         "intent_type": "mixed",
         "actions": [
           {
@@ -749,7 +951,7 @@
       },
       {
         "id": "breath_office",
-        "name": "Breath Office",
+        "name": "Breath",
         "intent_type": "mixed",
         "actions": [
           {
@@ -767,7 +969,7 @@
       },
       {
         "id": "blood_office",
-        "name": "Blood Office",
+        "name": "Blood",
         "intent_type": "mixed",
         "actions": [
           {
@@ -779,32 +981,27 @@
             "type": "apply_status",
             "target": "player",
             "status": "poison",
-            "amount": 1
+            "amount": 2
           }
         ]
       },
       {
-        "id": "name_office",
-        "name": "Name Office",
-        "intent_type": "mixed",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 11
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "entombed",
-            "amount": 1
-          }
-        ]
+        "id": "rise",
+        "name": "Rise",
+        "intent_type": "buff",
+        "special": true,
+        "actions": []
       }
     ],
     "starting_statuses": [
       {
         "status": "labyrinth_body"
+      },
+      {
+        "status": "the_canopic_keeper"
+      },
+      {
+        "status": "risen_keeper"
       }
     ],
     "tags": [
@@ -813,18 +1010,29 @@
       "stage_vaults",
       "rotation",
       "guardian"
+    ],
+    "intent_rules": [
+      {
+        "condition": {
+          "kind": "self_status",
+          "status": "risen_downed",
+          "min_stacks": 1
+        },
+        "action": "rise",
+        "priority": 1000
+      }
     ]
   },
   {
     "id": "false_door_finder",
-    "name": "False-Door Finder",
-    "max_hp": 150,
+    "name": "False-Door Ka",
+    "max_hp": 135,
     "intent_pattern": "cycle",
     "intents": [
       {
         "id": "certify_passage",
-        "name": "Certify Passage",
-        "intent_type": "mixed",
+        "name": "Knock",
+        "intent_type": "attack",
         "actions": [
           {
             "type": "deal_damage",
@@ -835,17 +1043,13 @@
       },
       {
         "id": "false_threshold",
-        "name": "False Threshold",
+        "name": "Threshold",
         "intent_type": "attack",
         "actions": [
           {
-            "type": "damage_per_status",
+            "type": "deal_damage",
             "target": "player",
-            "status": "claim",
-            "status_on": "owner",
-            "amount": 19,
-            "amount_per_stack": 4,
-            "cap": 12
+            "amount": 18
           }
         ]
       },
@@ -857,9 +1061,16 @@
           {
             "type": "gain_block",
             "target": "owner",
-            "amount": 27
+            "amount": 24
           }
         ]
+      },
+      {
+        "id": "rise",
+        "name": "Rise",
+        "intent_type": "buff",
+        "special": true,
+        "actions": []
       }
     ],
     "starting_statuses": [
@@ -867,27 +1078,37 @@
         "status": "labyrinth_body"
       },
       {
-        "status": "necropolis_passage"
+        "status": "risen_door"
       }
     ],
     "tags": [
       "licensing_labyrinth",
       "normal",
       "stage_warrens",
-      "weighed",
       "trespass",
       "claim"
+    ],
+    "intent_rules": [
+      {
+        "condition": {
+          "kind": "self_status",
+          "status": "risen_downed",
+          "min_stacks": 1
+        },
+        "action": "rise",
+        "priority": 1000
+      }
     ]
   },
   {
     "id": "cursed_loot_bearer",
-    "name": "Cursed Loot Bearer",
-    "max_hp": 156,
+    "name": "Tomb Robber",
+    "max_hp": 140,
     "intent_pattern": "cycle",
     "intents": [
       {
         "id": "cursed_load",
-        "name": "Cursed Load",
+        "name": "Gold Sack",
         "intent_type": "mixed",
         "actions": [
           {
@@ -905,7 +1126,7 @@
       },
       {
         "id": "loot_swing",
-        "name": "Loot Swing",
+        "name": "Pry Bar",
         "intent_type": "attack",
         "actions": [
           {
@@ -917,15 +1138,22 @@
       },
       {
         "id": "inventory_shield",
-        "name": "Inventory Shield",
+        "name": "Duck",
         "intent_type": "block",
         "actions": [
           {
             "type": "gain_block",
             "target": "owner",
-            "amount": 27
+            "amount": 25
           }
         ]
+      },
+      {
+        "id": "rise",
+        "name": "Rise",
+        "intent_type": "buff",
+        "special": true,
+        "actions": []
       }
     ],
     "starting_statuses": [
@@ -943,35 +1171,52 @@
       "burdened",
       "paperwork",
       "loot"
+    ],
+    "intent_rules": [
+      {
+        "condition": {
+          "kind": "self_status",
+          "status": "risen_downed",
+          "min_stacks": 1
+        },
+        "action": "rise",
+        "priority": 1000
+      }
     ]
   },
   {
     "id": "moon_cycle_ibis",
-    "name": "Moon-Cycle Ibis",
-    "max_hp": 155,
+    "name": "Thoth's Ibis",
+    "max_hp": 140,
     "intent_pattern": "cycle",
     "intents": [
       {
-        "id": "set_the_rite",
-        "name": "Set the Rite",
-        "intent_type": "mixed",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 15
-          }
-        ]
-      },
-      {
         "id": "moon_peck",
-        "name": "Moon Peck",
+        "name": "Peck",
         "intent_type": "attack",
         "actions": [
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 21
+            "amount": 18
+          }
+        ]
+      },
+      {
+        "id": "set_the_rite",
+        "name": "Ink Mark",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 12
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "burdened",
+            "amount": 1
           }
         ]
       },
@@ -983,9 +1228,16 @@
           {
             "type": "gain_block",
             "target": "owner",
-            "amount": 25
+            "amount": 20
           }
         ]
+      },
+      {
+        "id": "rise",
+        "name": "Rise",
+        "intent_type": "buff",
+        "special": true,
+        "actions": []
       }
     ],
     "starting_statuses": [
@@ -993,7 +1245,10 @@
         "status": "labyrinth_body"
       },
       {
-        "status": "lunar_return"
+        "status": "weighs_your_turn"
+      },
+      {
+        "status": "thoths_ledger"
       }
     ],
     "tags": [
@@ -1001,49 +1256,47 @@
       "normal",
       "stage_fixed_days",
       "burdened",
-      "entombed",
       "moon"
+    ],
+    "intent_rules": [
+      {
+        "condition": {
+          "kind": "self_status",
+          "status": "risen_downed",
+          "min_stacks": 1
+        },
+        "action": "rise",
+        "priority": 1000
+      }
     ]
   },
   {
     "id": "eclipse_scarab",
-    "name": "Eclipse Scarab",
-    "max_hp": 174,
+    "name": "Eclipse Beetle",
+    "max_hp": 157,
     "intent_pattern": "cycle",
     "intents": [
       {
         "id": "solar_scar",
-        "name": "Solar Scar",
-        "intent_type": "mixed",
+        "name": "Scorch",
+        "intent_type": "attack",
         "actions": [
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 20
-          },
-          {
-            "type": "apply_status",
-            "target": "owner",
-            "status": "approach_of_noon",
-            "amount": 1
+            "amount": 17
           }
         ]
       },
       {
         "id": "approach_noon",
-        "name": "Approach Noon",
+        "name": "Shadow Shell",
         "intent_type": "block",
         "actions": [
           {
             "type": "gain_block",
             "target": "owner",
-            "amount": 27
-          },
-          {
-            "type": "apply_status",
-            "target": "owner",
-            "status": "approach_of_noon",
-            "amount": 1
+            "amount": 24
           }
         ]
       },
@@ -1051,34 +1304,50 @@
         "id": "black_noon",
         "name": "Black Noon",
         "intent_type": "mixed",
-        "special": true,
         "actions": [
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 12
+            "amount": 23
           },
           {
             "type": "apply_status",
             "target": "player",
-            "status": "panic",
+            "status": "burdened",
             "amount": 2
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "entombed",
-            "amount": 1
           }
-        ]
+        ],
+        "special": true
+      },
+      {
+        "id": "rise",
+        "name": "Rise",
+        "intent_type": "buff",
+        "special": true,
+        "actions": []
       }
     ],
     "starting_statuses": [
       {
         "status": "labyrinth_body"
+      },
+      {
+        "status": "weighs_your_turn"
+      },
+      {
+        "status": "the_eclipse"
       }
     ],
     "intent_rules": [
+      {
+        "condition": {
+          "kind": "self_status",
+          "status": "risen_downed",
+          "min_stacks": 1
+        },
+        "action": "rise",
+        "priority": 1000
+      },
       {
         "condition": {
           "kind": "self_status",
@@ -1093,44 +1362,36 @@
       "licensing_labyrinth",
       "normal",
       "stage_fixed_days",
-      "entombed",
-      "panic",
-      "clock"
+      "panic"
     ]
   },
   {
     "id": "name_erasing_chisel_spirit",
-    "name": "Name-Erasing Chisel Spirit",
-    "max_hp": 166,
+    "name": "The Chiseller",
+    "max_hp": 149,
     "intent_pattern": "cycle",
     "intents": [
       {
         "id": "chisel_cut",
-        "name": "Chisel Cut",
-        "intent_type": "mixed",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 20
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "doubt",
-            "amount": 1
-          }
-        ]
-      },
-      {
-        "id": "chip_the_cartouche",
-        "name": "Chip the Cartouche",
+        "name": "Chisel",
         "intent_type": "attack",
         "actions": [
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 23
+            "amount": 17
+          }
+        ]
+      },
+      {
+        "id": "chip_the_cartouche",
+        "name": "Deface",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 20
           }
         ]
       },
@@ -1142,9 +1403,16 @@
           {
             "type": "gain_block",
             "target": "owner",
-            "amount": 27
+            "amount": 24
           }
         ]
+      },
+      {
+        "id": "rise",
+        "name": "Rise",
+        "intent_type": "buff",
+        "special": true,
+        "actions": []
       }
     ],
     "starting_statuses": [
@@ -1152,7 +1420,13 @@
         "status": "labyrinth_body"
       },
       {
-        "status": "erase_the_favor"
+        "status": "weighs_your_turn"
+      },
+      {
+        "status": "the_chisel"
+      },
+      {
+        "status": "chisel_on_deeds"
       }
     ],
     "tags": [
@@ -1161,91 +1435,67 @@
       "stage_cartouche",
       "erasure",
       "doubt"
+    ],
+    "intent_rules": [
+      {
+        "condition": {
+          "kind": "self_status",
+          "status": "risen_downed",
+          "min_stacks": 1
+        },
+        "action": "rise",
+        "priority": 1000
+      }
     ]
   },
   {
     "id": "surveyor_of_the_errant_cord",
-    "name": "The Errant Cord",
+    "name": "Priest of the Four Sons",
     "max_hp": 248,
     "intent_pattern": "cycle",
     "intents": [
       {
-        "id": "drive_the_first_stake",
-        "name": "Drive the First Stake",
+        "id": "libation",
+        "name": "Libation",
         "intent_type": "attack",
         "actions": [
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 16
+            "amount": 18
           }
         ]
       },
       {
-        "id": "strike_the_cord",
-        "name": "Strike the Cord",
-        "intent_type": "attack",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 11
-          },
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 11
-          }
-        ]
-      },
-      {
-        "id": "disputed_ground",
-        "name": "Disputed Ground",
-        "intent_type": "mixed",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 20
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "entombed",
-            "amount": 1
-          }
-        ]
-      },
-      {
-        "id": "re_tension_the_measure",
-        "name": "Re-Tension the Measure",
+        "id": "seal",
+        "name": "Seal",
         "intent_type": "block",
         "actions": [
           {
             "type": "gain_block",
             "target": "owner",
-            "amount": 22
+            "amount": 24
           }
         ]
       },
       {
-        "id": "the_boundary_moves",
-        "name": "The Boundary Moves",
-        "intent_type": "mixed",
-        "special": true,
+        "id": "refill",
+        "name": "Refill",
+        "intent_type": "block",
         "actions": [
           {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 31
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "burdened",
-            "amount": 1
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 12
           }
         ]
+      },
+      {
+        "id": "rise",
+        "name": "Rise",
+        "intent_type": "buff",
+        "actions": [],
+        "special": true
       }
     ],
     "starting_statuses": [
@@ -1253,72 +1503,33 @@
         "status": "labyrinth_body"
       },
       {
-        "status": "the_errant_cord"
-      }
-    ],
-    "intent_rules": [
-      {
-        "condition": {
-          "kind": "self_counter",
-          "counter": "boundary_error",
-          "op": "ge",
-          "value": 2
-        },
-        "action": "the_boundary_moves",
-        "priority": 10
+        "status": "the_four_sons"
       }
     ],
     "tags": [
       "licensing_labyrinth",
       "elite",
-      "weighed",
-      "entombed",
-      "survey"
+      "jars",
+      "priest"
+    ],
+    "intent_rules": [
+      {
+        "condition": {
+          "kind": "self_status",
+          "status": "risen_downed",
+          "min_stacks": 1
+        },
+        "action": "rise",
+        "priority": 1000
+      }
     ]
   },
   {
     "id": "scarab_host_of_the_sealed_granary",
-    "name": "Scarab Host of the Sealed Granary",
+    "name": "Brood Mother",
     "max_hp": 255,
     "intent_pattern": "cycle",
     "intents": [
-      {
-        "id": "seal_the_jars",
-        "name": "Seal the Jars",
-        "intent_type": "block",
-        "actions": [
-          {
-            "type": "gain_block",
-            "target": "owner",
-            "amount": 20
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "burdened",
-            "amount": 1
-          }
-        ]
-      },
-      {
-        "id": "spoiled_grain",
-        "name": "Spoiled Grain",
-        "intent_type": "debuff",
-        "actions": [
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "poison",
-            "amount": 3
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "burdened",
-            "amount": 1
-          }
-        ]
-      },
       {
         "id": "black_swarm",
         "name": "Black Swarm",
@@ -1352,29 +1563,15 @@
         ]
       },
       {
-        "id": "through_every_crack",
-        "name": "Through Every Crack",
-        "intent_type": "mixed",
+        "id": "spoiled_grain",
+        "name": "Spoiled Grain",
+        "intent_type": "debuff",
         "actions": [
           {
-            "type": "deal_damage",
+            "type": "apply_status",
             "target": "player",
-            "amount": 6
-          },
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 6
-          },
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 6
-          },
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 6
+            "status": "poison",
+            "amount": 3
           },
           {
             "type": "apply_status",
@@ -1385,8 +1582,8 @@
         ]
       },
       {
-        "id": "granary_wall",
-        "name": "Granary Wall",
+        "id": "brood_wall",
+        "name": "Brood Wall",
         "intent_type": "block",
         "actions": [
           {
@@ -1402,113 +1599,91 @@
         "status": "labyrinth_body"
       },
       {
-        "status": "the_sealed_granary"
+        "status": "the_brood"
       },
       {
-        "status": "ration_seal"
-      },
-      {
-        "status": "pest_seal"
-      },
-      {
-        "status": "burden_seal"
+        "status": "until_hatch",
+        "stacks": 2
       }
     ],
     "tags": [
       "licensing_labyrinth",
       "elite",
-      "burdened",
-      "granary"
+      "summons",
+      "brood"
     ]
   },
   {
     "id": "rope_master_of_the_corvee",
-    "name": "Rope-Master of the Corvée",
-    "max_hp": 275,
+    "name": "The Taskmaster",
+    "max_hp": 261,
     "intent_pattern": "cycle",
     "intents": [
       {
-        "id": "tie_to_the_gang",
-        "name": "Tie to the Gang",
-        "intent_type": "debuff",
-        "actions": [
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "burdened",
-            "amount": 2
-          }
-        ]
-      },
-      {
-        "id": "no_rest_at_dawn",
-        "name": "No Rest at Dawn",
-        "intent_type": "mixed",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 15
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "fatigue",
-            "amount": 1
-          }
-        ]
-      },
-      {
-        "id": "rope_across_the_back",
-        "name": "Rope Across the Back",
+        "id": "whip",
+        "name": "Whip",
         "intent_type": "attack",
         "actions": [
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 8
+            "amount": 7
           },
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 8
+            "amount": 7
           },
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 8
+            "amount": 7
           }
         ]
       },
       {
-        "id": "count_the_missing_hands",
-        "name": "Count the Missing Hands",
+        "id": "crack_the_whip",
+        "name": "Crack the Whip",
         "intent_type": "block",
         "actions": [
           {
-            "type": "apply_status",
-            "target": "player",
-            "status": "paperwork",
-            "amount": 2
-          },
-          {
             "type": "gain_block",
-            "target": "owner",
-            "amount": 12
+            "target": "all_enemies",
+            "amount": 10
           }
         ]
       },
       {
-        "id": "call_the_missing_hands",
-        "name": "Call the Missing Hands",
-        "intent_type": "buff",
-        "special": true,
+        "id": "whip_again",
+        "name": "Whip",
+        "intent_type": "attack",
         "actions": [
           {
-            "type": "apply_status",
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 7
+          },
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 7
+          },
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 7
+          }
+        ]
+      },
+      {
+        "id": "stand_over",
+        "name": "Stand Over",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
             "target": "owner",
-            "status": "at_the_rope",
-            "amount": 1
+            "amount": 20
           }
         ]
       }
@@ -1518,51 +1693,37 @@
         "status": "labyrinth_body"
       },
       {
-        "status": "the_corvee"
-      }
-    ],
-    "intent_rules": [
-      {
-        "condition": {
-          "kind": "self_counter",
-          "counter": "labor_owed",
-          "op": "ge",
-          "value": 3
-        },
-        "action": "call_the_missing_hands",
-        "priority": 10
+        "status": "raising_the_obelisk"
       }
     ],
     "tags": [
       "licensing_labyrinth",
       "elite",
-      "burdened",
       "summons",
-      "corvee"
+      "taskmaster"
     ]
   },
   {
     "id": "mummified_overseer_of_the_linen_house",
-    "name": "Mummified Overseer of the Linen House",
+    "name": "The Embalmer",
     "max_hp": 318,
     "intent_pattern": "cycle",
     "intents": [
       {
-        "id": "natron_decree",
-        "name": "Natron Decree",
-        "intent_type": "debuff",
+        "id": "dry_hand_of_authority",
+        "name": "Dry Hand",
+        "intent_type": "attack",
         "actions": [
           {
-            "type": "apply_status",
+            "type": "deal_damage",
             "target": "player",
-            "status": "burdened",
-            "amount": 1
+            "amount": 25
           }
         ]
       },
       {
         "id": "bind_the_limbs",
-        "name": "Bind the Limbs",
+        "name": "Bind",
         "intent_type": "mixed",
         "actions": [
           {
@@ -1579,45 +1740,14 @@
         ]
       },
       {
-        "id": "preserve_the_error",
-        "name": "Preserve the Error",
-        "intent_type": "debuff",
-        "actions": [
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "paperwork",
-            "amount": 2
-          }
-        ]
-      },
-      {
-        "id": "dry_hand_of_authority",
-        "name": "Dry Hand of Authority",
-        "intent_type": "attack",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 25
-          }
-        ]
-      },
-      {
         "id": "wrapped_beyond_recognition",
-        "name": "Wrapped Beyond Recognition",
+        "name": "Wrapped",
         "intent_type": "block",
         "actions": [
           {
             "type": "gain_block",
             "target": "owner",
             "amount": 22
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "burdened",
-            "amount": 1
           }
         ]
       }
@@ -1638,25 +1768,13 @@
   },
   {
     "id": "sphinx_of_the_processional_measure",
-    "name": "Sphinx of the Processional Measure",
+    "name": "The Sphinx",
     "max_hp": 344,
     "intent_pattern": "cycle",
     "intents": [
       {
-        "id": "first_riddle",
-        "name": "First Riddle",
-        "intent_type": "block",
-        "actions": [
-          {
-            "type": "gain_block",
-            "target": "owner",
-            "amount": 12
-          }
-        ]
-      },
-      {
-        "id": "lions_answer",
-        "name": "Lion's Answer",
+        "id": "lions_paw",
+        "name": "Lion's Paw",
         "intent_type": "attack",
         "actions": [
           {
@@ -1667,8 +1785,8 @@
         ]
       },
       {
-        "id": "no_answer_is_silence",
-        "name": "No Answer Is Silence",
+        "id": "silence",
+        "name": "Silence",
         "intent_type": "mixed",
         "actions": [
           {
@@ -1685,54 +1803,14 @@
         ]
       },
       {
-        "id": "stone_along_the_causeway",
-        "name": "Stone Along the Causeway",
-        "intent_type": "mixed",
+        "id": "stone_riddle",
+        "name": "Stone Riddle",
+        "intent_type": "block",
         "actions": [
           {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 18
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "burdened",
-            "amount": 1
-          }
-        ]
-      },
-      {
-        "id": "name_on_the_procession_wall",
-        "name": "Name on the Procession Wall",
-        "intent_type": "debuff",
-        "actions": [
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "burdened",
-            "amount": 1
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "paperwork",
-            "amount": 2
-          }
-        ]
-      },
-      {
-        "id": "the_procession_has_heard_enough",
-        "name": "The Procession Has Heard Enough",
-        "intent_type": "attack",
-        "actions": [
-          {
-            "type": "damage_per_status",
-            "target": "player",
-            "status": "entombed",
-            "amount": 25,
-            "amount_per_stack": 3,
-            "cap": 12
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 22
           }
         ]
       }
@@ -1742,25 +1820,24 @@
         "status": "labyrinth_body"
       },
       {
-        "status": "the_processional_measure"
+        "status": "the_riddle"
       }
     ],
     "tags": [
       "licensing_labyrinth",
       "elite",
-      "weighed",
       "sphinx"
     ]
   },
   {
     "id": "pry_bar_veteran",
     "name": "Pry-Bar Veteran",
-    "max_hp": 112,
+    "max_hp": 104,
     "intent_pattern": "cycle",
     "intents": [
       {
         "id": "bronze_pry_bar",
-        "name": "Bronze Pry-Bar",
+        "name": "Pry",
         "intent_type": "attack",
         "actions": [
           {
@@ -1772,7 +1849,7 @@
       },
       {
         "id": "break_the_seal",
-        "name": "Break the Seal",
+        "name": "Break Seal",
         "intent_type": "mixed",
         "actions": [
           {
@@ -1789,17 +1866,35 @@
         ]
       },
       {
-        "id": "take_the_first_share",
-        "name": "Take the First Share",
-        "intent_type": "buff",
+        "id": "stolen_knife",
+        "name": "Knife",
+        "intent_type": "attack",
         "actions": [
           {
-            "type": "apply_status",
-            "target": "owner",
-            "status": "claim",
-            "amount": 1
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 10
+          },
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 10
           }
-        ]
+        ],
+        "special": true
+      },
+      {
+        "id": "stolen_idol",
+        "name": "Idol",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 21
+          }
+        ],
+        "special": true
       }
     ],
     "starting_statuses": [
@@ -1808,24 +1903,46 @@
       },
       {
         "status": "tombbreaker"
+      },
+      {
+        "status": "owns_pry_bar"
       }
     ],
     "tags": [
       "licensing_labyrinth",
       "elite",
-      "tombbreakers",
-      "claim"
+      "tombbreakers"
+    ],
+    "intent_rules": [
+      {
+        "condition": {
+          "kind": "self_status",
+          "status": "ready_knife",
+          "min_stacks": 1
+        },
+        "action": "stolen_knife",
+        "priority": 20
+      },
+      {
+        "condition": {
+          "kind": "self_status",
+          "status": "ready_idol",
+          "min_stacks": 1
+        },
+        "action": "stolen_idol",
+        "priority": 19
+      }
     ]
   },
   {
     "id": "lamp_thief",
     "name": "Lamp Thief",
-    "max_hp": 100,
+    "max_hp": 104,
     "intent_pattern": "cycle",
     "intents": [
       {
         "id": "snuff_the_lamp",
-        "name": "Snuff the Lamp",
+        "name": "Snuff",
         "intent_type": "debuff",
         "actions": [
           {
@@ -1838,7 +1955,7 @@
       },
       {
         "id": "knife_between_stones",
-        "name": "Knife Between Stones",
+        "name": "Knife",
         "intent_type": "attack",
         "actions": [
           {
@@ -1854,22 +1971,30 @@
         ]
       },
       {
-        "id": "find_another_passage",
-        "name": "Find Another Passage",
-        "intent_type": "mixed",
+        "id": "stolen_pry",
+        "name": "Pry-Bar",
+        "intent_type": "attack",
         "actions": [
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 10
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "trespass",
-            "amount": 1
+            "amount": 20
           }
-        ]
+        ],
+        "special": true
+      },
+      {
+        "id": "stolen_idol",
+        "name": "Idol",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 21
+          }
+        ],
+        "special": true
       }
     ],
     "starting_statuses": [
@@ -1878,42 +2003,46 @@
       },
       {
         "status": "tombbreaker"
+      },
+      {
+        "status": "owns_knife"
       }
     ],
     "tags": [
       "licensing_labyrinth",
       "elite",
-      "tombbreakers",
-      "trespass"
+      "tombbreakers"
+    ],
+    "intent_rules": [
+      {
+        "condition": {
+          "kind": "self_status",
+          "status": "ready_pry_bar",
+          "min_stacks": 1
+        },
+        "action": "stolen_pry",
+        "priority": 20
+      },
+      {
+        "condition": {
+          "kind": "self_status",
+          "status": "ready_idol",
+          "min_stacks": 1
+        },
+        "action": "stolen_idol",
+        "priority": 19
+      }
     ]
   },
   {
     "id": "curse_bearer",
     "name": "Curse-Bearer",
-    "max_hp": 108,
+    "max_hp": 104,
     "intent_pattern": "cycle",
     "intents": [
       {
-        "id": "load_the_gold",
-        "name": "Load the Gold",
-        "intent_type": "mixed",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 12
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "burdened",
-            "amount": 1
-          }
-        ]
-      },
-      {
         "id": "cursed_amulet",
-        "name": "Cursed Amulet",
+        "name": "Amulet",
         "intent_type": "debuff",
         "actions": [
           {
@@ -1925,14 +2054,14 @@
           {
             "type": "apply_status",
             "target": "player",
-            "status": "paperwork",
+            "status": "entombed",
             "amount": 1
           }
         ]
       },
       {
         "id": "throw_the_idol",
-        "name": "Throw the Idol",
+        "name": "Idol",
         "intent_type": "attack",
         "actions": [
           {
@@ -1941,32 +2070,10 @@
             "amount": 21
           }
         ]
-      }
-    ],
-    "starting_statuses": [
-      {
-        "status": "labyrinth_body"
       },
       {
-        "status": "tombbreaker"
-      }
-    ],
-    "tags": [
-      "licensing_labyrinth",
-      "elite",
-      "tombbreakers",
-      "curse"
-    ]
-  },
-  {
-    "id": "keeper_of_the_thirty_six_decans",
-    "name": "Keeper of the Thirty-Six Decans",
-    "max_hp": 365,
-    "intent_pattern": "cycle",
-    "intents": [
-      {
-        "id": "read_the_decan",
-        "name": "Read the Decan",
+        "id": "stolen_pry",
+        "name": "Pry-Bar",
         "intent_type": "attack",
         "actions": [
           {
@@ -1974,196 +2081,23 @@
             "target": "player",
             "amount": 20
           }
-        ]
+        ],
+        "special": true
       },
       {
-        "id": "move_the_star_peg",
-        "name": "Move the Star Peg",
-        "intent_type": "block",
-        "actions": [
-          {
-            "type": "gain_block",
-            "target": "owner",
-            "amount": 24
-          }
-        ]
-      },
-      {
-        "id": "night_without_error",
-        "name": "Night Without Error",
+        "id": "stolen_knife",
+        "name": "Knife",
         "intent_type": "attack",
         "actions": [
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 28
-          }
-        ]
-      },
-      {
-        "id": "black_horizon",
-        "name": "Black Horizon",
-        "intent_type": "debuff",
-        "actions": [
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "paperwork",
-            "amount": 2
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "panic",
-            "amount": 1
-          }
-        ]
-      },
-      {
-        "id": "star_reckoning",
-        "name": "Star Reckoning",
-        "intent_type": "attack",
-        "special": true,
-        "actions": [
-          {
-            "type": "damage_per_status",
-            "target": "player",
-            "status": "entombed",
-            "amount": 16,
-            "amount_per_stack": 4,
-            "cap": 20
-          }
-        ]
-      },
-      {
-        "id": "minor_reckoning",
-        "name": "Minor Reckoning",
-        "intent_type": "attack",
-        "special": true,
-        "actions": [
-          {
-            "type": "damage_per_status",
-            "target": "player",
-            "status": "entombed",
-            "amount": 10,
-            "amount_per_stack": 2,
-            "cap": 10
-          }
-        ]
-      }
-    ],
-    "starting_statuses": [
-      {
-        "status": "labyrinth_body"
-      },
-      {
-        "status": "the_thirty_six_decans"
-      }
-    ],
-    "intent_rules": [
-      {
-        "condition": {
-          "kind": "self_counter",
-          "counter": "reckoning_due",
-          "op": "ge",
-          "value": 1
-        },
-        "action": "star_reckoning",
-        "priority": 20
-      },
-      {
-        "condition": {
-          "kind": "self_counter",
-          "counter": "minor_reckoning_due",
-          "op": "ge",
-          "value": 1
-        },
-        "action": "minor_reckoning",
-        "priority": 10
-      }
-    ],
-    "tags": [
-      "licensing_labyrinth",
-      "elite",
-      "weighed",
-      "decans"
-    ]
-  },
-  {
-    "id": "colossus_of_the_endless_procession",
-    "name": "Colossus of the Endless Procession",
-    "max_hp": 388,
-    "intent_pattern": "cycle",
-    "intents": [
-      {
-        "id": "processional_measure",
-        "name": "Processional Measure",
-        "intent_type": "debuff",
-        "actions": [
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "weighed",
-            "amount": 2
-          }
-        ]
-      },
-      {
-        "id": "the_burden_advances",
-        "name": "The Burden Advances",
-        "intent_type": "mixed",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 18
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "burdened",
-            "amount": 2
-          }
-        ]
-      },
-      {
-        "id": "the_foot_descends",
-        "name": "The Foot Descends",
-        "intent_type": "attack",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 26
-          }
-        ]
-      },
-      {
-        "id": "shadow_of_the_procession",
-        "name": "Shadow of the Procession",
-        "intent_type": "block",
-        "actions": [
-          {
-            "type": "gain_block",
-            "target": "owner",
-            "amount": 24
-          }
-        ]
-      },
-      {
-        "id": "clear_the_causeway",
-        "name": "Clear the Causeway",
-        "intent_type": "attack",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 14
+            "amount": 10
           },
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 14
+            "amount": 10
           }
         ],
         "special": true
@@ -2174,87 +2108,199 @@
         "status": "labyrinth_body"
       },
       {
-        "status": "the_endless_procession"
+        "status": "tombbreaker"
       },
       {
-        "status": "stone_does_not_hurry"
+        "status": "owns_idol"
       }
     ],
     "tags": [
       "licensing_labyrinth",
       "elite",
-      "weighed",
-      "burdened",
-      "colossus"
+      "tombbreakers"
     ],
     "intent_rules": [
       {
         "condition": {
-          "kind": "self_counter",
-          "counter": "causeway_due",
-          "op": "ge",
-          "value": 1
+          "kind": "self_status",
+          "status": "ready_pry_bar",
+          "min_stacks": 1
         },
-        "action": "clear_the_causeway",
+        "action": "stolen_pry",
+        "priority": 20
+      },
+      {
+        "condition": {
+          "kind": "self_status",
+          "status": "ready_knife",
+          "min_stacks": 1
+        },
+        "action": "stolen_knife",
+        "priority": 19
+      }
+    ]
+  },
+  {
+    "id": "keeper_of_the_thirty_six_decans",
+    "name": "Coils of Apep",
+    "max_hp": 348,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "constrict",
+        "name": "Constrict",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 15
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "coil",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "strike",
+        "name": "Strike",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 25
+          }
+        ]
+      },
+      {
+        "id": "shed_skin",
+        "name": "Shed Skin",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 24
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "labyrinth_body"
+      },
+      {
+        "status": "the_coils"
+      }
+    ],
+    "tags": [
+      "licensing_labyrinth",
+      "elite",
+      "apep"
+    ]
+  },
+  {
+    "id": "colossus_of_the_endless_procession",
+    "name": "Colossus of Memnon",
+    "max_hp": 388,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "stride",
+        "name": "Stride",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 10
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "burdened",
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "id": "the_foot",
+        "name": "The Foot",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 18
+          }
+        ]
+      },
+      {
+        "id": "long_shadow",
+        "name": "Long Shadow",
+        "intent_type": "block",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 24
+          }
+        ]
+      },
+      {
+        "id": "dawn_song",
+        "name": "Dawn Song",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 8
+          }
+        ],
+        "special": true
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "labyrinth_body"
+      },
+      {
+        "status": "the_dawn_song"
+      },
+      {
+        "status": "until_dawn",
+        "stacks": 2
+      }
+    ],
+    "tags": [
+      "licensing_labyrinth",
+      "elite",
+      "burdened",
+      "memnon"
+    ],
+    "intent_rules": [
+      {
+        "condition": {
+          "kind": "self_status",
+          "status": "dawn_breaks",
+          "min_stacks": 1
+        },
+        "action": "dawn_song",
         "priority": 10
       }
     ]
   },
   {
     "id": "pharaoh_of_the_sealed_name",
-    "name": "The Pharaoh of the Sealed Name",
-    "max_hp": 630,
+    "name": "The Pharaoh",
+    "max_hp": 615,
     "intent_pattern": "cycle",
     "intents": [
-      {
-        "id": "speak_the_throne_name",
-        "name": "Speak the Throne Name",
-        "intent_type": "debuff",
-        "actions": [
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "burdened",
-            "amount": 1
-          }
-        ]
-      },
-      {
-        "id": "staff_of_the_two_lands",
-        "name": "Staff of the Two Lands",
-        "intent_type": "mixed",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 26
-          },
-          {
-            "type": "gain_block",
-            "target": "owner",
-            "amount": 18
-          }
-        ]
-      },
-      {
-        "id": "those_not_counted_kneel",
-        "name": "Those Not Counted Kneel",
-        "intent_type": "debuff",
-        "actions": [
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "burdened",
-            "amount": 1
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "paperwork",
-            "amount": 2
-          }
-        ]
-      },
       {
         "id": "golden_sandal",
         "name": "Golden Sandal",
@@ -2263,18 +2309,48 @@
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 15
+            "amount": 11
           },
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 15
+            "amount": 11
           }
         ]
       },
       {
-        "id": "royal_audience_ends",
-        "name": "Royal Audience Ends",
+        "id": "royal_decree",
+        "name": "Royal Decree",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "burdened",
+            "amount": 1
+          },
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 20
+          }
+        ]
+      },
+      {
+        "id": "smite",
+        "name": "Smite",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 24
+          }
+        ]
+      },
+      {
+        "id": "all_names_are_mine",
+        "name": "All Names Are Mine",
         "intent_type": "attack",
         "actions": [
           {
@@ -2282,24 +2358,15 @@
             "target": "player",
             "amount": 32
           }
-        ]
+        ],
+        "special": true
       },
       {
-        "id": "all_three_names_are_mine",
-        "name": "All Three Names Are Mine",
-        "intent_type": "attack",
-        "special": true,
-        "actions": [
-          {
-            "type": "damage_per_status",
-            "target": "player",
-            "status": "royal_authority",
-            "status_on": "owner",
-            "amount": 34,
-            "amount_per_stack": 2,
-            "cap": 8
-          }
-        ]
+        "id": "reel",
+        "name": "Reels from the Broken Name",
+        "intent_type": "buff",
+        "actions": [],
+        "special": true
       }
     ],
     "starting_statuses": [
@@ -2310,18 +2377,29 @@
         "status": "the_sealed_name"
       },
       {
-        "status": "cartouche_ward",
-        "stacks": 36
+        "status": "cartouche_ward"
+      },
+      {
+        "status": "the_throne_name"
       }
     ],
     "intent_rules": [
       {
         "condition": {
-          "kind": "health_percent",
-          "op": "le",
-          "percent": 14
+          "kind": "self_status",
+          "status": "name_broken",
+          "min_stacks": 1
         },
-        "action": "all_three_names_are_mine",
+        "action": "reel",
+        "priority": 1000
+      },
+      {
+        "condition": {
+          "kind": "self_status",
+          "status": "all_names_due",
+          "min_stacks": 1
+        },
+        "action": "all_names_are_mine",
         "priority": 10
       }
     ],
@@ -2334,108 +2412,43 @@
   },
   {
     "id": "weigher_of_the_unspoken_heart",
-    "name": "The Weigher of the Unspoken Heart",
-    "max_hp": 610,
+    "name": "The Weigher",
+    "max_hp": 600,
     "intent_pattern": "cycle",
     "intents": [
       {
-        "id": "place_the_heart",
-        "name": "Place the Heart",
-        "intent_type": "mixed",
+        "id": "read_the_heart",
+        "name": "Read the Heart",
+        "intent_type": "attack",
         "actions": [
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 15
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "burdened",
-            "amount": 1
+            "amount": 19
           }
         ]
       },
       {
-        "id": "read_the_deviation",
-        "name": "Read the Deviation",
-        "intent_type": "attack",
-        "actions": [
-          {
-            "type": "damage_per_counter",
-            "target": "player",
-            "counter": "balance",
-            "amount": 22,
-            "amount_per_stack": 4,
-            "cap": 12
-          }
-        ]
-      },
-      {
-        "id": "feathers_silence",
-        "name": "Feather's Silence",
+        "id": "tip_the_scale",
+        "name": "Tip the Scale",
         "intent_type": "block",
         "actions": [
           {
             "type": "gain_block",
             "target": "owner",
-            "amount": 24
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "doubt",
-            "amount": 1
+            "amount": 16
           }
         ]
       },
       {
-        "id": "weight_of_regret",
-        "name": "Weight of Regret",
-        "intent_type": "debuff",
-        "actions": [
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "paperwork",
-            "amount": 2
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "entombed",
-            "amount": 1
-          }
-        ]
-      },
-      {
-        "id": "the_crocodile_opens_one_eye",
-        "name": "The Crocodile Opens One Eye",
-        "intent_type": "mixed",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 30
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "entombed",
-            "amount": 1
-          }
-        ]
-      },
-      {
-        "id": "the_heart_has_spoken",
-        "name": "The Heart Has Spoken",
+        "id": "judgement",
+        "name": "Judgement",
         "intent_type": "attack",
-        "special": true,
         "actions": [
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 32
+            "amount": 27
           }
         ]
       }
@@ -2445,31 +2458,7 @@
         "status": "labyrinth_body"
       },
       {
-        "status": "the_unspoken_heart"
-      },
-      {
-        "status": "feathers_from_the_road"
-      }
-    ],
-    "intent_rules": [
-      {
-        "condition": {
-          "kind": "all_of",
-          "conditions": [
-            {
-              "kind": "self_status",
-              "status": "the_heart_remembers",
-              "min_stacks": 1
-            },
-            {
-              "kind": "health_percent",
-              "op": "le",
-              "percent": 19
-            }
-          ]
-        },
-        "action": "the_heart_has_spoken",
-        "priority": 10
+        "status": "the_great_scale"
       }
     ],
     "tags": [
@@ -2481,22 +2470,10 @@
   },
   {
     "id": "architect_of_the_impossible_pyramid",
-    "name": "The Architect of the Impossible Pyramid",
-    "max_hp": 640,
+    "name": "The Architect",
+    "max_hp": 631,
     "intent_pattern": "cycle",
     "intents": [
-      {
-        "id": "raise_the_ramp",
-        "name": "Raise the Ramp",
-        "intent_type": "block",
-        "actions": [
-          {
-            "type": "gain_block",
-            "target": "owner",
-            "amount": 30
-          }
-        ]
-      },
       {
         "id": "stone_sledge",
         "name": "Stone Sledge",
@@ -2505,43 +2482,36 @@
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 30
+            "amount": 26
           }
         ]
       },
       {
-        "id": "draft_another_thousand",
-        "name": "Draft Another Thousand",
-        "intent_type": "mixed",
+        "id": "raise_the_ramp",
+        "name": "Raise the Ramp",
+        "intent_type": "block",
         "actions": [
           {
-            "type": "apply_status",
-            "target": "player",
-            "status": "burdened",
-            "amount": 2
-          },
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 28
+          }
+        ]
+      },
+      {
+        "id": "draft_more_hands",
+        "name": "Draft More Hands",
+        "intent_type": "mixed",
+        "actions": [
           {
             "type": "deal_damage",
             "target": "player",
             "amount": 14
-          }
-        ]
-      },
-      {
-        "id": "revise_the_foundation",
-        "name": "Revise the Foundation",
-        "intent_type": "debuff",
-        "actions": [
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "burdened",
-            "amount": 1
           },
           {
             "type": "apply_status",
             "target": "player",
-            "status": "weighed",
+            "status": "burdened",
             "amount": 2
           }
         ]
@@ -2549,67 +2519,24 @@
       {
         "id": "the_angle_is_your_fault",
         "name": "The Angle Is Your Fault",
-        "intent_type": "mixed",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 32
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "paperwork",
-            "amount": 2
-          }
-        ]
-      },
-      {
-        "id": "night_shift_on_the_ramp",
-        "name": "Night Shift on the Ramp",
-        "intent_type": "block",
-        "actions": [
-          {
-            "type": "gain_block",
-            "target": "owner",
-            "amount": 18
-          }
-        ]
-      },
-      {
-        "id": "capstone_descends",
-        "name": "Capstone Descends",
-        "intent_type": "mixed",
-        "special": true,
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 42
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "entombed",
-            "amount": 2
-          },
-          {
-            "type": "gain_block",
-            "target": "owner",
-            "amount": 24
-          }
-        ]
-      },
-      {
-        "id": "place_the_eternal_capstone",
-        "name": "Place the Eternal Capstone",
         "intent_type": "attack",
-        "special": true,
         "actions": [
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 48
+            "amount": 29
+          }
+        ]
+      },
+      {
+        "id": "capstone",
+        "name": "The Capstone",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 36
           },
           {
             "type": "apply_status",
@@ -2617,7 +2544,8 @@
             "status": "entombed",
             "amount": 1
           }
-        ]
+        ],
+        "special": true
       }
     ],
     "starting_statuses": [
@@ -2626,54 +2554,16 @@
       },
       {
         "status": "the_impossible_pyramid"
-      },
-      {
-        "status": "monument",
-        "stacks": 2
       }
     ],
     "intent_rules": [
       {
         "condition": {
-          "kind": "all_of",
-          "conditions": [
-            {
-              "kind": "self_status",
-              "status": "the_plan_was_always_correct",
-              "min_stacks": 1
-            },
-            {
-              "kind": "self_status",
-              "status": "monument",
-              "min_stacks": 4
-            },
-            {
-              "kind": "health_percent",
-              "op": "le",
-              "percent": 16
-            },
-            {
-              "kind": "not",
-              "conditions": [
-                {
-                  "kind": "self_status",
-                  "status": "the_eternal_capstone_is_placed",
-                  "min_stacks": 1
-                }
-              ]
-            }
-          ]
-        },
-        "action": "place_the_eternal_capstone",
-        "priority": 20
-      },
-      {
-        "condition": {
           "kind": "self_status",
-          "status": "monument",
+          "status": "pyramid_course",
           "min_stacks": 6
         },
-        "action": "capstone_descends",
+        "action": "capstone",
         "priority": 10
       }
     ],
@@ -2686,123 +2576,74 @@
   },
   {
     "id": "lady_of_the_black_granaries",
-    "name": "The Lady of the Black Granaries",
-    "max_hp": 600,
+    "name": "Renenutet",
+    "max_hp": 585,
     "intent_pattern": "cycle",
     "intents": [
       {
-        "id": "seal_the_storehouse",
-        "name": "Seal the Storehouse",
+        "id": "seal_the_granary",
+        "name": "Seal the Granary",
         "intent_type": "block",
         "actions": [
           {
             "type": "gain_block",
             "target": "owner",
-            "amount": 28
+            "amount": 30
           }
         ]
       },
       {
-        "id": "nothing_leaves_uncounted",
-        "name": "Nothing Leaves Uncounted",
-        "intent_type": "debuff",
-        "actions": [
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "paperwork",
-            "amount": 3
-          }
-        ]
-      },
-      {
-        "id": "ration_the_living",
-        "name": "Ration the Living",
-        "intent_type": "debuff",
-        "actions": [
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "burdened",
-            "amount": 2
-          }
-        ]
-      },
-      {
-        "id": "the_hungry_crowd",
-        "name": "The Hungry Crowd",
+        "id": "cobra_strike",
+        "name": "Cobra Strike",
         "intent_type": "attack",
         "actions": [
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 8
-          },
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 8
-          },
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 8
-          },
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 8
+            "amount": 22
           }
         ]
       },
       {
-        "id": "open_one_jar",
-        "name": "Open One Jar",
+        "id": "hungry_coils",
+        "name": "Hungry Coils",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 7
+          },
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 7
+          },
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 7
+          }
+        ]
+      },
+      {
+        "id": "feed",
+        "name": "Feed (heals 7 per Grain)",
         "intent_type": "buff",
-        "actions": [
-          {
-            "type": "heal",
-            "target": "owner",
-            "amount": 18
-          }
-        ]
+        "actions": []
       },
       {
-        "id": "black_granary_staff",
-        "name": "Black Granary Staff",
+        "id": "harvest",
+        "name": "The Harvest",
         "intent_type": "attack",
         "actions": [
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 28
+            "amount": 39
           }
-        ]
-      },
-      {
-        "id": "the_empty_storehouse",
-        "name": "The Empty Storehouse",
-        "intent_type": "mixed",
-        "special": true,
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 38
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "burdened",
-            "amount": 1
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "burdened",
-            "amount": 1
-          }
-        ]
+        ],
+        "special": true
       }
     ],
     "starting_statuses": [
@@ -2810,21 +2651,17 @@
         "status": "labyrinth_body"
       },
       {
-        "status": "the_black_granaries"
-      },
-      {
-        "status": "black_granary_armour",
-        "stacks": 3
+        "status": "her_bounty"
       }
     ],
     "intent_rules": [
       {
         "condition": {
           "kind": "self_status",
-          "status": "famine",
-          "min_stacks": 3
+          "status": "renenutet_grain",
+          "min_stacks": 7
         },
-        "action": "the_empty_storehouse",
+        "action": "harvest",
         "priority": 10
       }
     ],
@@ -2837,20 +2674,19 @@
   },
   {
     "id": "first_scribe_of_the_house_of_life",
-    "name": "The First Scribe of the House of Life",
-    "max_hp": 580,
+    "name": "The First Scribe",
+    "max_hp": 569,
     "intent_pattern": "cycle",
     "intents": [
       {
-        "id": "dip_the_reed",
-        "name": "Dip the Reed",
-        "intent_type": "debuff",
+        "id": "reed_through_flesh",
+        "name": "Reed Through Flesh",
+        "intent_type": "attack",
         "actions": [
           {
-            "type": "apply_status",
+            "type": "deal_damage",
             "target": "player",
-            "status": "burdened",
-            "amount": 1
+            "amount": 24
           }
         ]
       },
@@ -2860,39 +2696,15 @@
         "intent_type": "mixed",
         "actions": [
           {
-            "type": "apply_status",
+            "type": "deal_damage",
             "target": "player",
-            "status": "paperwork",
-            "amount": 2
+            "amount": 14
           },
           {
-            "type": "deal_damage",
+            "type": "apply_status",
             "target": "player",
-            "amount": 15
-          }
-        ]
-      },
-      {
-        "id": "erase_the_honorific",
-        "name": "Erase the Honorific",
-        "intent_type": "attack",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 18
-          }
-        ]
-      },
-      {
-        "id": "reed_through_flesh",
-        "name": "Reed Through Flesh",
-        "intent_type": "attack",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 27
+            "status": "burdened",
+            "amount": 1
           }
         ]
       },
@@ -2904,31 +2716,6 @@
           {
             "type": "gain_block",
             "target": "owner",
-            "amount": 24
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "entombed",
-            "amount": 1
-          }
-        ]
-      },
-      {
-        "id": "correct_the_margin",
-        "name": "Correct the Margin",
-        "intent_type": "mixed",
-        "actions": []
-      },
-      {
-        "id": "the_text_is_now_canon",
-        "name": "The Text Is Now Canon",
-        "intent_type": "attack",
-        "special": true,
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
             "amount": 24
           }
         ]
@@ -2942,16 +2729,6 @@
         "status": "the_house_of_life"
       }
     ],
-    "intent_rules": [
-      {
-        "condition": {
-          "kind": "self_status",
-          "status": "the_text_is_now_canon"
-        },
-        "action": "the_text_is_now_canon",
-        "priority": 10
-      }
-    ],
     "tags": [
       "licensing_labyrinth",
       "boss",
@@ -2961,73 +2738,10 @@
   },
   {
     "id": "mother_of_natron_and_resin",
-    "name": "The Mother of Natron and Resin",
-    "max_hp": 610,
+    "name": "Selket",
+    "max_hp": 600,
     "intent_pattern": "cycle",
     "intents": [
-      {
-        "id": "pack_with_natron",
-        "name": "Pack with Natron",
-        "intent_type": "debuff",
-        "actions": [
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "entombed",
-            "amount": 1
-          }
-        ]
-      },
-      {
-        "id": "black_resin",
-        "name": "Black Resin",
-        "intent_type": "debuff",
-        "actions": [
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "poison",
-            "amount": 3
-          }
-        ]
-      },
-      {
-        "id": "bind_the_limbs",
-        "name": "Bind the Limbs",
-        "intent_type": "debuff",
-        "actions": [
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "burdened",
-            "amount": 1
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "entombed",
-            "amount": 1
-          }
-        ]
-      },
-      {
-        "id": "name_the_body",
-        "name": "Name the Body",
-        "intent_type": "mixed",
-        "actions": [
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "burdened",
-            "amount": 1
-          },
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 14
-          }
-        ]
-      },
       {
         "id": "funerary_hook",
         "name": "Funerary Hook",
@@ -3036,36 +2750,12 @@
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 14
+            "amount": 13
           },
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 14
-          }
-        ]
-      },
-      {
-        "id": "you_have_already_died",
-        "name": "You Have Already Died",
-        "intent_type": "mixed",
-        "actions": [
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "doubt",
-            "amount": 1
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "panic",
-            "amount": 1
-          },
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 16
+            "amount": 13
           }
         ]
       },
@@ -3077,42 +2767,34 @@
           {
             "type": "gain_block",
             "target": "owner",
-            "amount": 26
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "entombed",
-            "amount": 1
+            "amount": 24
           }
         ]
       },
       {
-        "id": "unseal_the_vessels",
-        "name": "Unseal the Vessels",
+        "id": "you_have_already_died",
+        "name": "You Have Already Died",
         "intent_type": "mixed",
-        "special": true,
-        "actions": [
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "entombed",
-            "amount": 1
-          }
-        ]
-      },
-      {
-        "id": "finish_the_preparation",
-        "name": "Finish the Preparation",
-        "intent_type": "attack",
-        "special": true,
         "actions": [
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 34
+            "amount": 18
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "doubt",
+            "amount": 1
           }
         ]
+      },
+      {
+        "id": "rise",
+        "name": "Rise",
+        "intent_type": "buff",
+        "actions": [],
+        "special": true
       }
     ],
     "starting_statuses": [
@@ -3120,71 +2802,18 @@
         "status": "labyrinth_body"
       },
       {
-        "status": "natron_and_resin"
+        "status": "selkets_vessels"
       }
     ],
     "intent_rules": [
       {
         "condition": {
           "kind": "self_status",
-          "status": "finish_the_preparation_announced",
+          "status": "risen_downed",
           "min_stacks": 1
         },
-        "action": "finish_the_preparation",
-        "priority": 30
-      },
-      {
-        "condition": {
-          "kind": "all_of",
-          "conditions": [
-            {
-              "kind": "self_status",
-              "status": "the_vessels_are_full",
-              "min_stacks": 1
-            },
-            {
-              "kind": "self_status",
-              "status": "three_jars_are_enough",
-              "min_stacks": 1
-            },
-            {
-              "kind": "self_status",
-              "status": "vessels_filled",
-              "min_stacks": 3
-            }
-          ]
-        },
-        "action": "unseal_the_vessels",
-        "priority": 20
-      },
-      {
-        "condition": {
-          "kind": "all_of",
-          "conditions": [
-            {
-              "kind": "self_status",
-              "status": "the_vessels_are_full",
-              "min_stacks": 1
-            },
-            {
-              "kind": "not",
-              "conditions": [
-                {
-                  "kind": "self_status",
-                  "status": "three_jars_are_enough",
-                  "min_stacks": 1
-                }
-              ]
-            },
-            {
-              "kind": "self_status",
-              "status": "vessels_filled",
-              "min_stacks": 4
-            }
-          ]
-        },
-        "action": "unseal_the_vessels",
-        "priority": 10
+        "action": "rise",
+        "priority": 1000
       }
     ],
     "tags": [
@@ -3196,181 +2825,69 @@
   },
   {
     "id": "queen_of_the_flood_reckoning",
-    "name": "The Queen of the Flood Reckoning",
-    "max_hp": 620,
+    "name": "Anuket of the Cataract",
+    "max_hp": 615,
     "intent_pattern": "cycle",
     "intents": [
       {
-        "id": "measure_the_fields_again",
-        "name": "Measure the Fields Again",
-        "intent_type": "debuff",
-        "actions": [
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "weighed",
-            "amount": 2
-          }
-        ]
-      },
-      {
-        "id": "open_the_eastern_sluice",
-        "name": "Open the Eastern Sluice (Water +1)",
-        "intent_type": "mixed",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 22
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "burdened",
-            "amount": 1
-          }
-        ]
-      },
-      {
-        "id": "close_the_western_sluice",
-        "name": "Close the Western Sluice (Water −1)",
-        "intent_type": "block",
-        "actions": [
-          {
-            "type": "gain_block",
-            "target": "owner",
-            "amount": 26
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "burdened",
-            "amount": 1
-          }
-        ]
-      },
-      {
-        "id": "record_the_lost_acreage",
-        "name": "Record the Lost Acreage",
-        "intent_type": "debuff",
-        "actions": [
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "paperwork",
-            "amount": 3
-          }
-        ]
-      },
-      {
-        "id": "harvest_under_authority",
-        "name": "Harvest Under Authority",
+        "id": "harvest",
+        "name": "Harvest",
         "intent_type": "attack",
         "actions": [
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 16
+            "amount": 14
           },
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 16
+            "amount": 14
           }
         ]
       },
       {
-        "id": "the_banks_break",
+        "id": "banks_break",
         "name": "The Banks Break",
         "intent_type": "attack",
         "actions": [
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 30
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "entombed",
-            "amount": 1
+            "amount": 26
           }
         ]
       },
       {
-        "id": "count_the_dry_years",
-        "name": "Count the Dry Years",
-        "intent_type": "attack",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 22
-          }
-        ]
-      },
-      {
-        "id": "count_the_drowned_fields",
-        "name": "Count the Drowned Fields",
-        "intent_type": "attack",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 22
-          }
-        ]
-      },
-      {
-        "id": "the_river_takes_the_boundary",
-        "name": "The River Takes the Boundary",
-        "intent_type": "attack",
-        "special": true,
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 38
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "entombed",
-            "amount": 2
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "burdened",
-            "amount": 1
-          }
-        ]
-      },
-      {
-        "id": "the_flood_no_longer_obeys",
-        "name": "The Flood No Longer Obeys",
-        "intent_type": "buff",
-        "special": true,
+        "id": "close_the_sluice",
+        "name": "Close the Sluice",
+        "intent_type": "block",
         "actions": [
           {
             "type": "gain_block",
             "target": "owner",
-            "amount": 14
+            "amount": 26
           }
         ]
       },
       {
-        "id": "the_flood_is_counted_anyway",
-        "name": "The Flood Is Counted Anyway",
+        "id": "the_river_takes",
+        "name": "The River Takes",
         "intent_type": "attack",
-        "special": true,
         "actions": [
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 36
+            "amount": 32
+          },
+          {
+            "type": "apply_status",
+            "target": "player",
+            "status": "entombed",
+            "amount": 1
           }
-        ]
+        ],
+        "special": true
       }
     ],
     "starting_statuses": [
@@ -3378,61 +2895,37 @@
         "status": "labyrinth_body"
       },
       {
-        "status": "the_flood_reckoning"
+        "status": "the_nilometer"
       },
       {
-        "status": "water_ordered_flood"
+        "status": "nile_level",
+        "stacks": 3
+      },
+      {
+        "status": "nile_ordered"
       }
     ],
     "intent_rules": [
       {
         "condition": {
           "kind": "self_status",
-          "status": "the_flood_stirs",
+          "status": "nile_black_flood",
           "min_stacks": 1
         },
-        "action": "the_flood_no_longer_obeys",
-        "priority": 50
-      },
-      {
-        "condition": {
-          "kind": "self_status",
-          "status": "water_black_flood",
-          "min_stacks": 1
-        },
-        "action": "the_river_takes_the_boundary",
-        "priority": 45
-      },
-      {
-        "condition": {
-          "kind": "all_of",
-          "conditions": [
-            {
-              "kind": "self_status",
-              "status": "the_flood_is_counted_anyway",
-              "min_stacks": 1
-            },
-            {
-              "kind": "self_status",
-              "status": "the_flood_no_longer_obeys",
-              "min_stacks": 1
-            }
-          ]
-        },
-        "action": "the_flood_is_counted_anyway",
-        "priority": 40
+        "action": "the_river_takes",
+        "priority": 10
       }
     ]
   },
   {
     "id": "jackal_of_the_western_gate",
-    "name": "Jackal of the Western Gate",
-    "max_hp": 110,
+    "name": "Anubis Jackal",
+    "max_hp": 99,
     "intent_pattern": "cycle",
     "intents": [
       {
         "id": "bite_at_the_gate",
-        "name": "Bite at the Gate",
+        "name": "Bite",
         "intent_type": "attack",
         "actions": [
           {
@@ -3444,7 +2937,7 @@
       },
       {
         "id": "drag_to_the_west",
-        "name": "Drag to the West",
+        "name": "Drag West",
         "intent_type": "mixed",
         "actions": [
           {
@@ -3462,7 +2955,7 @@
       },
       {
         "id": "stand_the_watch",
-        "name": "Stand the Watch",
+        "name": "Stand Watch",
         "intent_type": "block",
         "actions": [
           {
@@ -3471,6 +2964,13 @@
             "amount": 14
           }
         ]
+      },
+      {
+        "id": "rise",
+        "name": "Rise",
+        "intent_type": "buff",
+        "special": true,
+        "actions": []
       }
     ],
     "starting_statuses": [
@@ -3486,17 +2986,28 @@
       "normal",
       "stage_necropolis",
       "jackal"
+    ],
+    "intent_rules": [
+      {
+        "condition": {
+          "kind": "self_status",
+          "status": "risen_downed",
+          "min_stacks": 1
+        },
+        "action": "rise",
+        "priority": 1000
+      }
     ]
   },
   {
     "id": "assessor_of_the_forty_two",
-    "name": "Assessor of the Forty-Two",
-    "max_hp": 140,
+    "name": "The Forty-Second Judge",
+    "max_hp": 126,
     "intent_pattern": "cycle",
     "intents": [
       {
         "id": "read_the_charge",
-        "name": "Read the Charge",
+        "name": "Charge",
         "intent_type": "attack",
         "actions": [
           {
@@ -3508,7 +3019,7 @@
       },
       {
         "id": "question_the_heart",
-        "name": "Question the Heart",
+        "name": "Question",
         "intent_type": "mixed",
         "actions": [
           {
@@ -3519,14 +3030,14 @@
           {
             "type": "apply_status",
             "target": "player",
-            "status": "entombed",
+            "status": "burdened",
             "amount": 1
           }
         ]
       },
       {
         "id": "weigh_the_answer",
-        "name": "Weigh the Answer",
+        "name": "Weigh",
         "intent_type": "block",
         "actions": [
           {
@@ -3535,6 +3046,13 @@
             "amount": 18
           }
         ]
+      },
+      {
+        "id": "rise",
+        "name": "Rise",
+        "intent_type": "buff",
+        "special": true,
+        "actions": []
       }
     ],
     "starting_statuses": [
@@ -3542,10 +3060,10 @@
         "status": "labyrinth_body"
       },
       {
-        "status": "the_forty_two"
+        "status": "weighs_your_turn"
       },
       {
-        "status": "sin_of_rites"
+        "status": "the_forty_second_question"
       }
     ],
     "tags": [
@@ -3553,23 +3071,34 @@
       "normal",
       "stage_two_truths",
       "assessor"
+    ],
+    "intent_rules": [
+      {
+        "condition": {
+          "kind": "self_status",
+          "status": "risen_downed",
+          "min_stacks": 1
+        },
+        "action": "rise",
+        "priority": 1000
+      }
     ]
   },
   {
     "id": "curse_of_the_opened_tomb",
-    "name": "The Curse of the Opened Tomb",
+    "name": "The Restless King",
     "max_hp": 240,
     "intent_pattern": "cycle",
     "intents": [
       {
-        "id": "the_curse_strikes",
-        "name": "The Curse Strikes",
+        "id": "royal_blow",
+        "name": "Royal Blow",
         "intent_type": "attack",
         "actions": [
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 16
+            "amount": 22
           }
         ]
       },
@@ -3592,8 +3121,8 @@
         ]
       },
       {
-        "id": "seal_the_robbed",
-        "name": "Seal the Robbed",
+        "id": "sealed",
+        "name": "Sealed",
         "intent_type": "block",
         "actions": [
           {
@@ -3604,8 +3133,48 @@
         ]
       },
       {
-        "id": "wail_for_what_was_taken",
-        "name": "Wail for What Was Taken",
+        "id": "rise",
+        "name": "Rise",
+        "intent_type": "buff",
+        "actions": [],
+        "special": true
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "labyrinth_body"
+      },
+      {
+        "status": "king_risen"
+      }
+    ],
+    "tags": [
+      "licensing_labyrinth",
+      "elite",
+      "risen",
+      "king"
+    ],
+    "intent_rules": [
+      {
+        "condition": {
+          "kind": "self_status",
+          "status": "risen_downed",
+          "min_stacks": 1
+        },
+        "action": "rise",
+        "priority": 1000
+      }
+    ]
+  },
+  {
+    "id": "ammit_devourer_of_the_unworthy",
+    "name": "Ammit",
+    "max_hp": 250,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "rend_the_unworthy",
+        "name": "Rend",
         "intent_type": "attack",
         "actions": [
           {
@@ -3614,28 +3183,7 @@
             "amount": 22
           }
         ]
-      }
-    ],
-    "starting_statuses": [
-      {
-        "status": "labyrinth_body"
       },
-      {
-        "status": "the_tomb_remembers"
-      }
-    ],
-    "tags": [
-      "licensing_labyrinth",
-      "elite",
-      "entombed"
-    ]
-  },
-  {
-    "id": "ammit_devourer_of_the_unworthy",
-    "name": "Ammit, Devourer of the Unworthy",
-    "max_hp": 250,
-    "intent_pattern": "cycle",
-    "intents": [
       {
         "id": "weigh_the_dead",
         "name": "Weigh the Dead",
@@ -3645,24 +3193,18 @@
             "type": "deal_damage",
             "target": "player",
             "amount": 16
-          }
-        ]
-      },
-      {
-        "id": "rend_the_unworthy",
-        "name": "Rend the Unworthy",
-        "intent_type": "attack",
-        "actions": [
+          },
           {
-            "type": "deal_damage",
+            "type": "apply_status",
             "target": "player",
-            "amount": 22
+            "status": "burdened",
+            "amount": 1
           }
         ]
       },
       {
         "id": "crouch_by_the_scale",
-        "name": "Crouch by the Scale",
+        "name": "Crouch",
         "intent_type": "block",
         "actions": [
           {
@@ -3684,7 +3226,75 @@
     "tags": [
       "licensing_labyrinth",
       "elite",
-      "weighed"
+      "ammit"
+    ]
+  },
+  {
+    "id": "lioness_of_sekhmet",
+    "name": "The Lioness",
+    "max_hp": 261,
+    "intent_pattern": "cycle",
+    "intents": [
+      {
+        "id": "maul",
+        "name": "Maul",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 7
+          },
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 7
+          }
+        ]
+      },
+      {
+        "id": "pounce",
+        "name": "Pounce",
+        "intent_type": "attack",
+        "actions": [
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 22
+          }
+        ]
+      },
+      {
+        "id": "prowl",
+        "name": "Prowl",
+        "intent_type": "mixed",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "owner",
+            "amount": 20
+          },
+          {
+            "type": "apply_status",
+            "target": "owner",
+            "status": "rage",
+            "amount": 1
+          }
+        ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "labyrinth_body"
+      },
+      {
+        "status": "sekhmets_rage"
+      }
+    ],
+    "tags": [
+      "licensing_labyrinth",
+      "elite",
+      "lioness"
     ]
   }
 ]

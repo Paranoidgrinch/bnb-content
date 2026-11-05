@@ -3,7 +3,7 @@ using BnbContent.Converter;
 namespace BnbContent.Tests;
 
 // Act IV after the content cut of 2026-10-30, as the user approved it: twenty rows, six stages in a fixed order,
-// nineteen standard bodies (three or four a stage), ten elites and seven bosses — a third more than Act I, so
+// nineteen standard bodies (three or four a stage), eleven elites (since 2026-11-04) and seven bosses — a third more than Act I, so
 // every pool is bigger. This file is the acceptance gate for that shape.
 public class ActFourPoolTests
 {
@@ -71,9 +71,10 @@ public class ActFourPoolTests
         }
     }
 
-    // Ten elites, each authored as one of the act's elite identities, each standing in a stage.
+    // Eleven elites since 2026-11-04 (the Lioness joined), each authored as one of the act's elite identities,
+    // each standing in a stage.
     [Fact]
-    public void The_elite_pool_is_the_approved_ten()
+    public void The_elite_pool_is_the_approved_eleven()
     {
         string[] approved =
         [
@@ -82,7 +83,7 @@ public class ActFourPoolTests
             "labyrinth_elite_colossus_of_the_endless_procession",
             "labyrinth_elite_mummified_overseer_of_the_linen_house", "labyrinth_elite_the_tombbreakers_three",
             "labyrinth_elite_curse_of_the_opened_tomb", "labyrinth_elite_keeper_of_the_thirty_six_decans",
-            "labyrinth_elite_ammit_devourer_of_the_unworthy",
+            "labyrinth_elite_ammit_devourer_of_the_unworthy", ActFour.LionessEncounterId,
         ];
         var elites = WithRole("elite").ToList();
         Assert.Equal(approved.Order(), elites.Select(e => e.Id).Order());
@@ -94,12 +95,12 @@ public class ActFourPoolTests
             Assert.NotNull(ActStages.EliteStage(4, encounter.Id, encounter.Tags, encounter.EarliestDepthPercent));
         }
 
-        // Only the Tombbreakers field more than one body, and they field exactly three.
+        // Only the Three Robbers field more than one body, and they field exactly three.
         var many = Assert.Single(elites, e => e.Enemies.Count > 1);
         Assert.Equal("labyrinth_elite_the_tombbreakers_three", many.Id);
         Assert.Equal(3, many.Enemies.Count);
 
-        // The Rope-Master's hands are summoned, never fielded — the roster never names them.
+        // The Taskmaster's Haulers are summoned, never fielded — the roster never names them.
         Assert.DoesNotContain(ActFour.StoneHaulerSummonEnemyId, Data.Enemies.Select(e => e.Id));
         Assert.Contains(ActFour.StoneHaulerSummonEnemyId, ActFour.EliteIdentities);
     }

@@ -295,6 +295,12 @@ public static class ActTuning
     private static string? Kind(JsonObject o) =>
         o["kind"] is JsonValue kind && kind.GetValueKind() == JsonValueKind.String ? kind.GetValue<string>() : null;
 
-    private static string ScaleLabel(string label, int percent) =>
-        Regex.Replace(label, @"(\d+) dmg", m => $"{Scale(int.Parse(m.Groups[1].Value), percent)} dmg");
+    // The per-stack growth and its cap sit inside the same damage amount as the base, so they are scaled with it,
+    // and the telegraph says so ("20 dmg +4 per Burdened", not the authored +3).
+    private static string ScaleLabel(string label, int percent)
+    {
+        var scaled = Regex.Replace(label, @"(\d+) dmg", m => $"{Scale(int.Parse(m.Groups[1].Value), percent)} dmg");
+        scaled = Regex.Replace(scaled, @"dmg \+(\d+) per", m => $"dmg +{Scale(int.Parse(m.Groups[1].Value), percent)} per");
+        return Regex.Replace(scaled, @"\(max \+(\d+)\)", m => $"(max +{Scale(int.Parse(m.Groups[1].Value), percent)})");
+    }
 }

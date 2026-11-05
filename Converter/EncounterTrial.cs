@@ -33,7 +33,7 @@ public static class EncounterTrial
 {
     public const string InfirmaryId = "trial_infirmary";
     public const string ExtraPrefix = "trial:";
-    public static readonly int[] Acts = [1, 2, 3];
+    public static readonly int[] Acts = [1, 2, 3, 4];
 
     public static string SpoilsId(int act, int stage) => $"trial_{act}_spoils_{stage}";
 
@@ -46,13 +46,14 @@ public static class EncounterTrial
         "The Encounter Trial — every fight is read on its own.",
         "Encounter Trial only: after every fight you win, heal to full.",
         // A trial walks no act's opening, so the acts' after-fight ledgers (the Dragon's fees, the Signpost's
-        // purse, the Toll Frog's belly) ride here too.
+        // purse, the Toll Frog's belly, the Labyrinth's Tomb Gold and Feathers) ride here too.
         runPrograms:
         [
             RelicAuthoring.AfterEveryVictory(new ComputedHealRunEffect(RunExpr.MissingHealth)),
             MunicipalDragon.FeesProgram(),
             EncounterPassives.SignpostSpoilsProgram(),
             ActThree.FrogSpoilsProgram(),
+            .. ActFour.CutPrograms().Values,
         ]);
 
     // The stage packages, in order. Each is one stop with one choice; its effects ask one after another.
@@ -67,7 +68,9 @@ public static class EncounterTrial
             new UpgradeCardsRunEffect(RunSelectors.DeckCards.Upgradable().ChooseByPlayer(1, "improve one card, permanently", allowSkip: true));
         IRunEffectRequest Remove() =>
             new RemoveCardsRunEffect(RunSelectors.DeckCards.ChooseByPlayer(1, "remove one card from your deck", allowSkip: true));
-        return stage switch
+        // An act of more than four stages (Act IV has six) repeats the first three packages until its last stage.
+        var stages = ActStages.Order[act].Count;
+        return (stage == stages ? 4 : (stage - 1) % 3 + 1) switch
         {
             1 => [Card(1), Card(2), Improve()],
             2 => [Card(1), Card(2), Relic()],
@@ -76,7 +79,7 @@ public static class EncounterTrial
         };
     }
 
-    private static string SpoilsText(int stage) => stage switch
+    private static string SpoilsText(int act, int stage) => (stage == ActStages.Order[act].Count ? 4 : (stage - 1) % 3 + 1) switch
     {
         1 => "two card offers and one improvement",
         2 => "two card offers and one relic",
@@ -118,7 +121,7 @@ public static class EncounterTrial
                     new EventSituation("start",
                         $"Stage {stage} of {stages} is behind you. An average run would have gathered about this much by now.",
                     [
-                        new EventChoice("collect", Spoils(pools[act], act, stage), TextKey: $"Collect: {SpoilsText(stage)}"),
+                        new EventChoice("collect", Spoils(pools[act], act, stage), TextKey: $"Collect: {SpoilsText(act, stage)}"),
                     ]),
                 ]));
         }

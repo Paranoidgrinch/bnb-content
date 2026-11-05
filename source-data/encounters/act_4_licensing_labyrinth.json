@@ -1,7 +1,7 @@
 [
   {
     "id": "labyrinth_stelae_01",
-    "name": "The Surveyor Measures the Road",
+    "name": "Measuring the Field",
     "act": 4,
     "difficulty": "normal",
     "enemies": [
@@ -10,14 +10,13 @@
     "weight": 2,
     "tags": [
       "licensing_labyrinth",
-      "weighed_intro",
       "stage_stelae"
     ],
     "role": "combat"
   },
   {
     "id": "labyrinth_stelae_02",
-    "name": "The Crooked Standard",
+    "name": "Bent Measure",
     "act": 4,
     "difficulty": "normal",
     "enemies": [
@@ -26,14 +25,13 @@
     "weight": 2,
     "tags": [
       "licensing_labyrinth",
-      "weighed_intro",
       "stage_stelae"
     ],
     "role": "combat"
   },
   {
     "id": "labyrinth_stelae_duo_01",
-    "name": "Contradictory Measures",
+    "name": "Two Cubits",
     "act": 4,
     "difficulty": "hard",
     "enemies": [
@@ -50,7 +48,7 @@
   },
   {
     "id": "labyrinth_granary_01",
-    "name": "The Short Measure",
+    "name": "The Tithe",
     "act": 4,
     "difficulty": "normal",
     "enemies": [
@@ -66,7 +64,7 @@
   },
   {
     "id": "labyrinth_granary_02",
-    "name": "The Jar Seal Breaks",
+    "name": "The Swarm",
     "act": 4,
     "difficulty": "normal",
     "enemies": [
@@ -82,7 +80,7 @@
   },
   {
     "id": "labyrinth_granary_03",
-    "name": "Granary Theft",
+    "name": "Empty Granary",
     "act": 4,
     "difficulty": "normal",
     "enemies": [
@@ -98,7 +96,7 @@
   },
   {
     "id": "labyrinth_granary_duo_01",
-    "name": "Weighted Theft",
+    "name": "Sobek's Share",
     "act": 4,
     "difficulty": "hard",
     "enemies": [
@@ -115,7 +113,7 @@
   },
   {
     "id": "labyrinth_floodmark_03",
-    "name": "Rising Field",
+    "name": "Silt",
     "act": 4,
     "difficulty": "normal",
     "enemies": [
@@ -131,7 +129,7 @@
   },
   {
     "id": "labyrinth_yards_02",
-    "name": "The Stones Grow Heavier",
+    "name": "Stone for the Dead",
     "act": 4,
     "difficulty": "normal",
     "enemies": [
@@ -147,7 +145,7 @@
   },
   {
     "id": "labyrinth_yards_duo_01",
-    "name": "Break the Gang",
+    "name": "Deserters",
     "act": 4,
     "difficulty": "hard",
     "enemies": [
@@ -164,7 +162,7 @@
   },
   {
     "id": "labyrinth_monument_01",
-    "name": "The Capstone Is Already Above You",
+    "name": "The Capstone",
     "act": 4,
     "difficulty": "normal",
     "enemies": [
@@ -180,7 +178,7 @@
   },
   {
     "id": "labyrinth_linen_01",
-    "name": "Dry What Would Decay",
+    "name": "Salt Rite",
     "act": 4,
     "difficulty": "normal",
     "enemies": [
@@ -195,7 +193,7 @@
   },
   {
     "id": "labyrinth_linen_03",
-    "name": "Hooks Still Attached",
+    "name": "Half-Wrapped",
     "act": 4,
     "difficulty": "normal",
     "enemies": [
@@ -211,7 +209,7 @@
   },
   {
     "id": "labyrinth_vaults_01",
-    "name": "The Fourfold Office",
+    "name": "Four Jars",
     "act": 4,
     "difficulty": "normal",
     "enemies": [
@@ -227,7 +225,7 @@
   },
   {
     "id": "labyrinth_vaults_duo_01",
-    "name": "Wrapped Before Division",
+    "name": "The Wrapping Room",
     "act": 4,
     "difficulty": "hard",
     "enemies": [
@@ -243,7 +241,7 @@
   },
   {
     "id": "labyrinth_warrens_01",
-    "name": "This Entrance Is Legally Valid",
+    "name": "The False Door",
     "act": 4,
     "difficulty": "normal",
     "enemies": [
@@ -259,7 +257,7 @@
   },
   {
     "id": "labyrinth_warrens_02",
-    "name": "Every Object Requires a Form",
+    "name": "Tomb Gold",
     "act": 4,
     "difficulty": "normal",
     "enemies": [
@@ -275,7 +273,7 @@
   },
   {
     "id": "labyrinth_warrens_duo_01",
-    "name": "False-Door Contraband",
+    "name": "Robbers' Door",
     "act": 4,
     "difficulty": "hard",
     "enemies": [
@@ -308,7 +306,7 @@
   },
   {
     "id": "labyrinth_cartouche_01",
-    "name": "Erase the Favor",
+    "name": "Defaced",
     "act": 4,
     "difficulty": "normal",
     "enemies": [
@@ -324,7 +322,7 @@
   },
   {
     "id": "labyrinth_elite_surveyor_of_the_errant_cord",
-    "name": "The Errant Cord",
+    "name": "Priest of the Four Sons",
     "act": 4,
     "difficulty": "elite",
     "enemies": [
@@ -333,15 +331,14 @@
     "weight": 1,
     "tags": [
       "licensing_labyrinth",
-      "elite",
-      "weighed"
+      "elite"
     ],
     "role": "elite",
     "earliest_depth_percent": 18
   },
   {
     "id": "labyrinth_elite_scarab_host_of_the_sealed_granary",
-    "name": "Scarab Host of the Sealed Granary",
+    "name": "Brood Mother",
     "act": 4,
     "difficulty": "elite",
     "enemies": [
@@ -358,7 +355,7 @@
   },
   {
     "id": "labyrinth_elite_rope_master_of_the_corvee",
-    "name": "Rope-Master of the Corvée",
+    "name": "The Taskmaster",
     "act": 4,
     "difficulty": "elite",
     "enemies": [
@@ -375,7 +372,7 @@
   },
   {
     "id": "labyrinth_elite_mummified_overseer_of_the_linen_house",
-    "name": "Mummified Overseer of the Linen House",
+    "name": "The Embalmer",
     "act": 4,
     "difficulty": "elite",
     "enemies": [
@@ -391,7 +388,7 @@
   },
   {
     "id": "labyrinth_elite_sphinx_of_the_processional_measure",
-    "name": "Sphinx of the Processional Measure",
+    "name": "The Sphinx",
     "act": 4,
     "difficulty": "elite",
     "enemies": [
@@ -400,15 +397,14 @@
     "weight": 1,
     "tags": [
       "licensing_labyrinth",
-      "elite",
-      "weighed"
+      "elite"
     ],
     "role": "elite",
     "earliest_depth_percent": 47
   },
   {
     "id": "labyrinth_elite_the_tombbreakers_three",
-    "name": "The Tombbreakers Three",
+    "name": "The Three Robbers",
     "act": 4,
     "difficulty": "elite",
     "enemies": [
@@ -427,7 +423,7 @@
   },
   {
     "id": "labyrinth_elite_keeper_of_the_thirty_six_decans",
-    "name": "Keeper of the Thirty-Six Decans",
+    "name": "Coils of Apep",
     "act": 4,
     "difficulty": "elite",
     "enemies": [
@@ -436,15 +432,14 @@
     "weight": 1,
     "tags": [
       "licensing_labyrinth",
-      "elite",
-      "weighed"
+      "elite"
     ],
     "role": "elite",
     "earliest_depth_percent": 71
   },
   {
     "id": "labyrinth_elite_colossus_of_the_endless_procession",
-    "name": "Colossus of the Endless Procession",
+    "name": "Colossus of Memnon",
     "act": 4,
     "difficulty": "elite",
     "enemies": [
@@ -461,7 +456,7 @@
   },
   {
     "id": "labyrinth_boss_pharaoh_of_the_sealed_name",
-    "name": "The Pharaoh of the Sealed Name",
+    "name": "The Pharaoh",
     "act": 4,
     "difficulty": "boss",
     "enemies": [
@@ -476,7 +471,7 @@
   },
   {
     "id": "labyrinth_boss_weigher_of_the_unspoken_heart",
-    "name": "The Weigher of the Unspoken Heart",
+    "name": "The Weigher",
     "act": 4,
     "difficulty": "boss",
     "enemies": [
@@ -491,7 +486,7 @@
   },
   {
     "id": "labyrinth_boss_architect_of_the_impossible_pyramid",
-    "name": "The Architect of the Impossible Pyramid",
+    "name": "The Architect",
     "act": 4,
     "difficulty": "boss",
     "enemies": [
@@ -506,7 +501,7 @@
   },
   {
     "id": "labyrinth_boss_lady_of_the_black_granaries",
-    "name": "The Lady of the Black Granaries",
+    "name": "Renenutet",
     "act": 4,
     "difficulty": "boss",
     "enemies": [
@@ -521,7 +516,7 @@
   },
   {
     "id": "labyrinth_boss_first_scribe_of_the_house_of_life",
-    "name": "The First Scribe of the House of Life",
+    "name": "The First Scribe",
     "act": 4,
     "difficulty": "boss",
     "enemies": [
@@ -536,7 +531,7 @@
   },
   {
     "id": "labyrinth_boss_mother_of_natron_and_resin",
-    "name": "The Mother of Natron and Resin",
+    "name": "Selket",
     "act": 4,
     "difficulty": "boss",
     "enemies": [
@@ -551,7 +546,7 @@
   },
   {
     "id": "labyrinth_boss_queen_of_the_flood_reckoning",
-    "name": "The Queen of the Flood Reckoning",
+    "name": "Anuket of the Cataract",
     "act": 4,
     "difficulty": "boss",
     "enemies": [
@@ -587,7 +582,7 @@
   },
   {
     "id": "labyrinth_stelae_duo_02",
-    "name": "The Flood Against the Cord",
+    "name": "Flood Season",
     "act": 4,
     "difficulty": "normal",
     "enemies": [
@@ -601,13 +596,13 @@
     ],
     "role": "multi_combat",
     "enemy_health": [
-      70,
-      90
+      63,
+      81
     ]
   },
   {
     "id": "labyrinth_works_duo_01",
-    "name": "The Capstone and the Runaway",
+    "name": "The Last Course",
     "act": 4,
     "difficulty": "normal",
     "enemies": [
@@ -621,13 +616,13 @@
     ],
     "role": "multi_combat",
     "enemy_health": [
-      120,
-      85
+      108,
+      76
     ]
   },
   {
     "id": "labyrinth_linen_duo_02",
-    "name": "Natron for the Unfinished",
+    "name": "Salt and Linen",
     "act": 4,
     "difficulty": "normal",
     "enemies": [
@@ -641,13 +636,13 @@
     ],
     "role": "multi_combat",
     "enemy_health": [
-      110,
-      120
+      99,
+      108
     ]
   },
   {
     "id": "labyrinth_necropolis_duo_02",
-    "name": "The Jackal at the Loot",
+    "name": "Anubis Takes Notice",
     "act": 4,
     "difficulty": "normal",
     "enemies": [
@@ -661,13 +656,13 @@
     ],
     "role": "multi_combat",
     "enemy_health": [
-      110,
-      125
+      99,
+      112
     ]
   },
   {
     "id": "labyrinth_necropolis_duo_03",
-    "name": "The Jackal at the False Door",
+    "name": "The Door to the West",
     "act": 4,
     "difficulty": "normal",
     "enemies": [
@@ -681,13 +676,13 @@
     ],
     "role": "multi_combat",
     "enemy_health": [
-      110,
-      120
+      99,
+      108
     ]
   },
   {
     "id": "labyrinth_two_truths_01",
-    "name": "The Forty-Two Questions",
+    "name": "The Forty-Second Question",
     "act": 4,
     "difficulty": "normal",
     "enemies": [
@@ -702,7 +697,7 @@
   },
   {
     "id": "labyrinth_two_truths_duo_01",
-    "name": "The Ibis Before the Assessor",
+    "name": "The Hall of Two Truths",
     "act": 4,
     "difficulty": "normal",
     "enemies": [
@@ -716,13 +711,13 @@
     ],
     "role": "multi_combat",
     "enemy_health": [
-      125,
-      140
+      112,
+      126
     ]
   },
   {
     "id": "labyrinth_two_truths_duo_02",
-    "name": "Noon and the Moon",
+    "name": "Sun and Moon",
     "act": 4,
     "difficulty": "normal",
     "enemies": [
@@ -736,13 +731,13 @@
     ],
     "role": "multi_combat",
     "enemy_health": [
-      140,
-      125
+      126,
+      112
     ]
   },
   {
     "id": "labyrinth_elite_curse_of_the_opened_tomb",
-    "name": "The Curse of the Opened Tomb",
+    "name": "The Restless King",
     "act": 4,
     "difficulty": "elite",
     "enemies": [
@@ -757,11 +752,26 @@
   },
   {
     "id": "labyrinth_elite_ammit_devourer_of_the_unworthy",
-    "name": "Ammit, Devourer of the Unworthy",
+    "name": "Ammit",
     "act": 4,
     "difficulty": "elite",
     "enemies": [
       "ammit_devourer_of_the_unworthy"
+    ],
+    "weight": 1,
+    "tags": [
+      "licensing_labyrinth",
+      "elite"
+    ],
+    "role": "elite"
+  },
+  {
+    "id": "labyrinth_elite_lioness_of_sekhmet",
+    "name": "The Lioness",
+    "act": 4,
+    "difficulty": "elite",
+    "enemies": [
+      "lioness_of_sekhmet"
     ],
     "weight": 1,
     "tags": [

@@ -27,7 +27,12 @@ public static class LogOnlyStatuses
         "labyrinth_body",
         // once-per-turn and once-per-fight guards of enemy rules
         "eternal_cartouche_spent", "border_next",
-        "sinned_this_turn", "the_real_door", "door_slammed", "tomb_spoils_carried", "jackal_moves_to",
+        // Act IV's machinery: which bodies weigh, a rise in progress, the jar under every jar's own name
+        "weighs_your_turn", "rising", "canopic_jar", "natron_pending", "capstone_pending", "door_pending",
+        // …and its elites': whose tool is whose, a tool just swung, a coil already given this turn
+        "owns_pry_bar", "owns_knife", "owns_idol", "used_a_tool", "apep_loosened",
+        // …and its bosses': the vessel under every vessel's own name
+        "selket_vessel",
         // the Seizure Procession's machinery: the Lantern's rule says the whole of it in one sentence (2026-11-01)
         "lock_cart", "seizure_marshal",
         // the Sealed Door Ward's per-turn dampener: its One Remaining Seal says the whole rule (2026-11-01)
