@@ -39,6 +39,7 @@ public class EncounterTrialTests
     [InlineData(2, "archives_boss_")]
     [InlineData(3, "green_docket_boss_")]
     [InlineData(4, "labyrinth_boss_")]
+    [InlineData(5, "act_5_")]
     public void An_act_walks_every_stage_fight_then_every_boss(int act, string bossPrefix)
     {
         var trial = Trial(act);
@@ -55,9 +56,9 @@ public class EncounterTrialTests
         // straight after its stage's last fight.
         var spoils = trial.Map.Nodes.Where(n => n.Payload is EventRef).Select(n => ((EventRef)n.Payload!).Id.Value).ToList();
         var catchUp = Enumerable.Range(1, act - 1)
-            .SelectMany(earlier => Enumerable.Range(1, ActStages.Order[earlier].Count).Select(s => EncounterTrial.SpoilsId(earlier, s)).Append(EncounterTrial.BossSpoilsId(earlier)))
+            .SelectMany(earlier => Enumerable.Range(1, EncounterTrial.Stages(earlier)).Select(s => EncounterTrial.SpoilsId(earlier, s)).Append(EncounterTrial.BossSpoilsId(earlier)))
             .ToList();
-        Assert.Equal([.. catchUp, .. Enumerable.Range(1, ActStages.Order[act].Count).Select(s => EncounterTrial.SpoilsId(act, s))], spoils);
+        Assert.Equal([.. catchUp, .. Enumerable.Range(1, EncounterTrial.Stages(act)).Select(s => EncounterTrial.SpoilsId(act, s))], spoils);
         Assert.All(trial.Map.Nodes.Take(catchUp.Count), n => Assert.IsType<EventRef>(n.Payload));
         Assert.Contains(EncounterTrial.InfirmaryId, trial.Start!.StartingRelics);
         Assert.Equal(LieutenantCharacter.Start.Deck, trial.Start.Deck);
@@ -109,13 +110,14 @@ public class EncounterTrialTests
     [InlineData(2)]
     [InlineData(3)]
     [InlineData(4)]
+    [InlineData(5)]
     public void An_act_lists_every_fight_of_its_trial(int act)
     {
         var trial = Trial(act);
         var singles = Singles(act);
         var fights = trial.Map.Nodes.Where(n => n.Payload is EncounterRef).ToList();
         Assert.Equal(fights.Select(n => ((EncounterRef)n.Payload!).Id.Value), singles.Select(s => s.Encounter));
-        var stages = ActStages.Order[act].Count;
+        var stages = EncounterTrial.Stages(act);
         var pool = FightProbe.Shipped.Acts![act - 1].MapGeneration!.Encounters!;
         foreach (var single in singles)
         {
@@ -147,11 +149,12 @@ public class EncounterTrialTests
     [InlineData(2)]
     [InlineData(3)]
     [InlineData(4)]
+    [InlineData(5)]
     public void A_single_fight_opens_on_the_spoils_before_its_stage(int act)
     {
         var trial = Trial(act);
         var catchUp = Enumerable.Range(1, act - 1)
-            .SelectMany(earlier => Enumerable.Range(1, ActStages.Order[earlier].Count).Select(s => EncounterTrial.SpoilsId(earlier, s)).Append(EncounterTrial.BossSpoilsId(earlier)))
+            .SelectMany(earlier => Enumerable.Range(1, EncounterTrial.Stages(earlier)).Select(s => EncounterTrial.SpoilsId(earlier, s)).Append(EncounterTrial.BossSpoilsId(earlier)))
             .ToList();
         foreach (var single in Singles(act))
         {
@@ -171,7 +174,7 @@ public class EncounterTrialTests
         // Act I's first stage opens on nothing at all; a boss on every package of its act.
         if (act == 1)
             Assert.Single(Singles(act).First(s => s.Stage == 1).Walk.Map.Nodes);
-        Assert.Equal(catchUp.Count + ActStages.Order[act].Count + 1, Singles(act).First(s => s.Kind == "boss").Walk.Map.Nodes.Count);
+        Assert.Equal(catchUp.Count + EncounterTrial.Stages(act) + 1, Singles(act).First(s => s.Kind == "boss").Walk.Map.Nodes.Count);
     }
 
     // Walked by a bot: the packages, then the one fight, and the run is over — won or lost.
@@ -189,5 +192,66 @@ public class EncounterTrialTests
         Assert.Equal(1, result.Fights);
         Assert.NotEqual(RunResult.Ongoing, play.Session!.Run.Result);
         Assert.True(play.Session.Run.Deck.Count > LieutenantCharacter.Start.Deck.Count);
+    }
+
+    // ── Act V: no stages, the six gods ────────────────────────────────────────────────────────────────────
+
+    // The gauntlet has no stages: the catch-up of Acts I–IV, and then the six gods one after another, the
+    // Infirmary between them. Every god can also be met on its own, after the same packages.
+    [Fact]
+    public void Act_five_is_the_catch_up_and_then_all_six_gods()
+    {
+        Assert.Equal(0, EncounterTrial.Stages(5));
+        var trial = Trial(5);
+        var gods = FightProbe.Shipped.Acts![4].MapGeneration!.Encounters!.For(MapNodeKind.Boss)
+            .Select(e => e.Encounter.Value).Distinct().Order(StringComparer.Ordinal).ToList();
+        Assert.Equal(6, gods.Count);
+        var fights = trial.Map.Nodes.Where(n => n.Payload is EncounterRef).Select(n => ((EncounterRef)n.Payload!).Id.Value).ToList();
+        Assert.Equal(gods, fights);
+        // the catch-up first, all of it, then nothing but the gods
+        Assert.All(trial.Map.Nodes.Take(trial.Map.Nodes.Count - 6), n => Assert.IsType<EventRef>(n.Payload));
+        Assert.Equal(Enumerable.Range(1, 4).Sum(earlier => EncounterTrial.Stages(earlier) + 1),
+            trial.Map.Nodes.Count(n => n.Payload is EventRef));
+        Assert.All(Singles(5), single =>
+        {
+            Assert.Equal("boss", single.Kind);
+            Assert.Equal(1, single.Stage);
+            Assert.Equal(trial.Map.Nodes.Count(n => n.Payload is EventRef) + 1, single.Walk.Map.Nodes.Count);
+        });
+        Assert.Equal(gods, Singles(5).Select(s => s.Encounter));
+    }
+
+    // A bot walks the catch-up and into the first god (and the run ends there or later: a god at 400 HP of the
+    // Lieutenant's is not a fight the random bot is expected to win).
+    [Fact]
+    public async Task A_bot_walks_act_fives_catch_up_into_the_gods()
+    {
+        using var play = new RunPlayback(() => { });
+        play.Start(Walk(Trial(5), health: 400), seed: 4, interactive: true, characterId: LieutenantCharacter.Id);
+        Assert.Null(play.Error);
+        var result = await RunBot.Play(play, new BotOptions { Seed = 4, Budget = 4000 }, new DelegateBotLog(_ => { }));
+        Assert.True(result.Error is "" or "none", result.Error);
+        Assert.True(result.Fights >= 1, $"{result.Fights} fights, {result.Reason}");
+        Assert.True(play.Session!.Run.Deck.Count > LieutenantCharacter.Start.Deck.Count + 4);
+    }
+
+    // …and every god on its own, to the end of its fight: no god holds the bot in a turn or a prompt for ever.
+    [Theory]
+    [InlineData("act_5_nisaba_keeper_of_the_first_tablet")]
+    [InlineData("act_5_inanna_mistress_of_the_eanna_ledger")]
+    [InlineData("act_5_nanshe_keeper_of_the_just_ration")]
+    [InlineData("act_5_nanna_sin_lord_of_the_counted_moon")]
+    [InlineData("act_5_utu_witness_of_every_oath")]
+    [InlineData("act_5_enlil_voice_of_the_unalterable_decree")]
+    public async Task A_bot_walks_a_single_god_to_its_end(string god)
+    {
+        var single = Singles(5).Single(s => s.Encounter == god);
+        using var play = new RunPlayback(() => { });
+        play.Start(Walk(single.Walk, health: 400), seed: 5, interactive: true, characterId: LieutenantCharacter.Id);
+        Assert.Null(play.Error);
+        var result = await RunBot.Play(play, new BotOptions { Seed = 5, Budget = 4000 }, new DelegateBotLog(_ => { }));
+        Assert.True(result.Error is "" or "none", result.Error);
+        Assert.Equal(1, result.Fights);
+        Assert.NotEqual(RunResult.Ongoing, play.Session!.Run.Result);
     }
 }
