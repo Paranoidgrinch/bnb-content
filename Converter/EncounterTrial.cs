@@ -28,7 +28,8 @@ namespace BnbContent.Converter;
 // hands out, mends her fully after every fight won.
 //
 // The walk rides in the game document as Presentation.Game.Extra["trial:<act>"] — a RunTutorial in RunJson, which
-// the frontend walks the way it walks a lesson (map and start), on a save slot of its own.
+// the frontend walks the way it walks a lesson (map and start), on a save slot of its own. Beside it rides
+// Extra["trial.encounters:<act>"]: every fight of the walk on its own, with the packages before it (Singles).
 public static class EncounterTrial
 {
     public const string InfirmaryId = "trial_infirmary";
@@ -144,9 +145,14 @@ public static class EncounterTrial
 
     private static string Roman(int act) => act switch { 1 => "I", 2 => "II", 3 => "III", 4 => "IV", _ => act.ToString() };
 
-    public static RunTutorial Build(BabData data, MapGenerationSpec spec, int act, RunStart lieutenant)
+    // One fight of the walk, where it stands in it: its stage (the bosses' is the one after the last), its kind
+    // (normal, multi, elite, boss) and the node it is fought at.
+    private sealed record Fought(int Index, int Stage, MapNodeKind Kind, string Encounter);
+
+    private static (List<Node> Nodes, List<Fought> Fights) Walk(BabData data, MapGenerationSpec spec, int act)
     {
         var nodes = new List<Node>();
+        var fights = new List<Fought>();
         void Stop(string eventId) => nodes.Add(new Node(new NodeId($"trial{nodes.Count}"), StandardRunIds.EventNode,
             new EventRef(new EventId(eventId)), [MapNodeTags.Treasure]));
         // The acts before this one, as an average run would have come out of them.
@@ -156,31 +162,71 @@ public static class EncounterTrial
                 Stop(SpoilsId(earlier, stage));
             Stop(BossSpoilsId(earlier));
         }
-        void Fight(MapNodeKind kind, string encounter)
+        void Fight(int stage, MapNodeKind kind, string encounter)
         {
             // The room as the act realises it, minus its pay: a trial fight is a reading, not a step up.
             var content = MapNodeRealizer.Realize(spec, kind, new EncounterId(encounter));
             var bare = content.Payload is EncounterRef found ? new EncounterRef(found.Id) : content.Payload;
+            fights.Add(new Fought(nodes.Count, stage, kind, encounter));
             nodes.Add(new Node(new NodeId($"trial{nodes.Count}"), content.Type, bare, content.Tags));
         }
         var stages = ActStages.Order[act].Count;
         for (var stage = 1; stage <= stages; stage++)
         {
             foreach (var (kind, encounter) in Stage(data, spec, act, stage))
-                Fight(kind, encounter);
+                Fight(stage, kind, encounter);
             Stop(SpoilsId(act, stage));
         }
         foreach (var boss in spec.Encounters!.For(MapNodeKind.Boss).Select(e => e.Encounter.Value).Distinct().Order(StringComparer.Ordinal))
-            Fight(MapNodeKind.Boss, boss);
+            Fight(stages + 1, MapNodeKind.Boss, boss);
+        return (nodes, fights);
+    }
 
-        var start = lieutenant with { StartingRelics = [.. lieutenant.StartingRelics, InfirmaryId] };
-        return new RunTutorial(new RunMap(nodes), start);
+    private static RunStart Start(RunStart lieutenant) =>
+        lieutenant with { StartingRelics = [.. lieutenant.StartingRelics, InfirmaryId] };
+
+    public static RunTutorial Build(BabData data, MapGenerationSpec spec, int act, RunStart lieutenant) =>
+        new(new RunMap(Walk(data, spec, act).Nodes), Start(lieutenant));
+
+    // ── ONE FIGHT OF THE TRIAL, ON ITS OWN (user, 2026-11-05) ──────────────────────────────────────────────────
+    // A single encounter, met with the deck the full trial would bring to it: every package the full walk hands
+    // out before that fight's stage — the earlier acts' catch-up, then this act's stages before it, in the same
+    // order and from the same stops, the Infirmary held — and then that one fight. The full walk is cut, not
+    // rebuilt, so the two can never disagree: a stage-1 fight opens on the catch-up alone (nothing at all in
+    // Act I), a boss on every package of the act. The nodes keep the full walk's ids.
+    public const string EncountersPrefix = "trial.encounters:";
+
+    public static string EncountersKey(int act) => $"{EncountersPrefix}{act}";
+
+    // `Kind`: normal, multi, elite or boss. `Stage`: the act's stage the fight stands in; a boss's is the one
+    // after the last (Act IV: 7).
+    public sealed record Single(string Encounter, string Name, int Stage, string Kind, RunTutorial Walk);
+
+    public static string KindName(MapNodeKind kind) => kind switch
+    {
+        MapNodeKind.Combat => "normal",
+        MapNodeKind.MultiCombat => "multi",
+        MapNodeKind.Elite => "elite",
+        MapNodeKind.Boss => "boss",
+        _ => kind.ToString().ToLowerInvariant(),
+    };
+
+    public static IReadOnlyList<Single> Singles(BabData data, MapGenerationSpec spec, int act, RunStart lieutenant)
+    {
+        var (nodes, fights) = Walk(data, spec, act);
+        var start = Start(lieutenant);
+        var names = data.Encounters.ToDictionary(e => e.Id, e => e.Name, StringComparer.Ordinal);
+        return [.. fights.Select(f => new Single(f.Encounter, names.GetValueOrDefault(f.Encounter, f.Encounter), f.Stage, KindName(f.Kind),
+            new RunTutorial(new RunMap([.. nodes.Take(f.Index).Where(n => n.Payload is EventRef), nodes[f.Index]]), start)))];
     }
 
     public static IEnumerable<KeyValuePair<string, string>> Extra(BabData data, IReadOnlyDictionary<int, MapGenerationSpec> specs, RunStart lieutenant)
     {
         var options = RunJson.CreateOptions();
         foreach (var act in Acts)
+        {
             yield return new($"{ExtraPrefix}{act}", JsonSerializer.Serialize(Build(data, specs[act], act, lieutenant), options));
+            yield return new(EncountersKey(act), JsonSerializer.Serialize(Singles(data, specs[act], act, lieutenant), options));
+        }
     }
 }

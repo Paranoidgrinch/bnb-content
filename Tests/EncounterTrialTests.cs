@@ -16,6 +16,10 @@ public class EncounterTrialTests
         JsonSerializer.Deserialize<RunTutorial>(
             FightProbe.Shipped.Presentation.Game!.Extra[$"{EncounterTrial.ExtraPrefix}{act}"], RunJson.CreateOptions())!;
 
+    private static IReadOnlyList<EncounterTrial.Single> Singles(int act) =>
+        JsonSerializer.Deserialize<List<EncounterTrial.Single>>(
+            FightProbe.Shipped.Presentation.Game!.Extra[EncounterTrial.EncountersKey(act)], RunJson.CreateOptions())!;
+
     // What the frontend does with it (GameHost.StartTrial): the walk in place of the acts, the Lieutenant alone.
     private static RunBlueprint Walk(RunTutorial trial, int? health = null)
     {
@@ -95,5 +99,95 @@ public class EncounterTrialTests
         Assert.Contains(run.Relics, r => r.Id.Value == EncounterTrial.InfirmaryId);
         if (run.Result == RunResult.Ongoing && play.CombatDriver?.Current is null)
             Assert.Equal(run.Health.Max, run.Health.Current);
+    }
+
+    // ── ONE FIGHT ON ITS OWN (EncounterTrial.Singles) ──────────────────────────────────────────────────────────
+
+    // The list is the full walk's fights, every one of them, in its order, each with its name, stage and kind.
+    [Theory]
+    [InlineData(1)]
+    [InlineData(2)]
+    [InlineData(3)]
+    [InlineData(4)]
+    public void An_act_lists_every_fight_of_its_trial(int act)
+    {
+        var trial = Trial(act);
+        var singles = Singles(act);
+        var fights = trial.Map.Nodes.Where(n => n.Payload is EncounterRef).ToList();
+        Assert.Equal(fights.Select(n => ((EncounterRef)n.Payload!).Id.Value), singles.Select(s => s.Encounter));
+        var stages = ActStages.Order[act].Count;
+        var pool = FightProbe.Shipped.Acts![act - 1].MapGeneration!.Encounters!;
+        foreach (var single in singles)
+        {
+            Assert.Equal(FightProbe.Shipped.Presentation.Encounters[single.Encounter].FlavorText, single.Name);
+            Assert.False(string.IsNullOrWhiteSpace(single.Name));
+            var kind = single.Kind switch
+            {
+                "normal" => MapNodeKind.Combat,
+                "multi" => MapNodeKind.MultiCombat,
+                "elite" => MapNodeKind.Elite,
+                "boss" => MapNodeKind.Boss,
+                _ => throw new Xunit.Sdk.XunitException($"{single.Encounter}: kind {single.Kind}"),
+            };
+            Assert.Contains(pool.For(kind), e => e.Encounter.Value == single.Encounter);
+            Assert.InRange(single.Stage, 1, stages + 1);
+            Assert.Equal(kind == MapNodeKind.Boss, single.Stage == stages + 1);
+        }
+        // Stage by stage, and within a stage normal, multi, elite — the walk's own order.
+        Assert.Equal(singles.Select(s => s.Stage).Order(), singles.Select(s => s.Stage));
+        foreach (var stage in singles.GroupBy(s => s.Stage).Where(g => g.Key <= stages))
+            Assert.Equal(stage.Select(s => s.Kind).OrderBy(k => Array.IndexOf(["normal", "multi", "elite"], k)), stage.Select(s => s.Kind));
+        Assert.Equal(pool.For(MapNodeKind.Boss).Select(e => e.Encounter.Value).Distinct().Count(), singles.Count(s => s.Kind == "boss"));
+    }
+
+    // Before a fight of stage k: the earlier acts' catch-up and this act's packages 1 … k−1, from the very stops
+    // of the full walk; then the fight itself, as the full walk fields it, and nothing after it.
+    [Theory]
+    [InlineData(1)]
+    [InlineData(2)]
+    [InlineData(3)]
+    [InlineData(4)]
+    public void A_single_fight_opens_on_the_spoils_before_its_stage(int act)
+    {
+        var trial = Trial(act);
+        var catchUp = Enumerable.Range(1, act - 1)
+            .SelectMany(earlier => Enumerable.Range(1, ActStages.Order[earlier].Count).Select(s => EncounterTrial.SpoilsId(earlier, s)).Append(EncounterTrial.BossSpoilsId(earlier)))
+            .ToList();
+        foreach (var single in Singles(act))
+        {
+            var nodes = single.Walk.Map.Nodes;
+            var spoils = nodes.SkipLast(1).Select(n => Assert.IsType<EventRef>(n.Payload).Id.Value).ToList();
+            Assert.Equal([.. catchUp, .. Enumerable.Range(1, single.Stage - 1).Select(s => EncounterTrial.SpoilsId(act, s))], spoils);
+            var fight = trial.Map.Nodes.Single(n => n.Payload is EncounterRef r && r.Id.Value == single.Encounter);
+            Assert.Equal(fight.Id, nodes[^1].Id);
+            Assert.Equal(fight.Type, nodes[^1].Type);
+            Assert.Equal(fight.Tags, nodes[^1].Tags);
+            Assert.Null(Assert.IsType<EncounterRef>(nodes[^1].Payload).VictoryReward);
+            // The very stops of the full walk, by their own ids, and the same start with the Infirmary.
+            Assert.All(nodes.SkipLast(1), n => Assert.Contains(trial.Map.Nodes, t => t.Id == n.Id && t.Payload!.Equals(n.Payload)));
+            Assert.Equal(trial.Start!.Deck, single.Walk.Start!.Deck);
+            Assert.Equal(trial.Start.StartingRelics, single.Walk.Start.StartingRelics);
+        }
+        // Act I's first stage opens on nothing at all; a boss on every package of its act.
+        if (act == 1)
+            Assert.Single(Singles(act).First(s => s.Stage == 1).Walk.Map.Nodes);
+        Assert.Equal(catchUp.Count + ActStages.Order[act].Count + 1, Singles(act).First(s => s.Kind == "boss").Walk.Map.Nodes.Count);
+    }
+
+    // Walked by a bot: the packages, then the one fight, and the run is over — won or lost.
+    [Theory]
+    [InlineData(1)]
+    [InlineData(4)]
+    public async Task A_bot_walks_a_single_fight_to_its_end(int act)
+    {
+        var single = Singles(act).First(s => s.Stage == 2 && s.Kind == "normal");
+        using var play = new RunPlayback(() => { });
+        play.Start(Walk(single.Walk, health: 400), seed: 5, interactive: true, characterId: LieutenantCharacter.Id);
+        Assert.Null(play.Error);
+        var result = await RunBot.Play(play, new BotOptions { Seed = 5, Budget = 3000 }, new DelegateBotLog(_ => { }));
+        Assert.True(result.Error is "" or "none", result.Error);
+        Assert.Equal(1, result.Fights);
+        Assert.NotEqual(RunResult.Ongoing, play.Session!.Run.Result);
+        Assert.True(play.Session.Run.Deck.Count > LieutenantCharacter.Start.Deck.Count);
     }
 }
