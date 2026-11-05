@@ -172,4 +172,31 @@ public class ReadableBossStateTests
             Assert.NotEqual(status.NameKey?.Trim(), status.DescriptionKey?.Trim());
         });
     }
+
+    // ── Enlil ─────────────────────────────────────────────────────────────────────────────────────────────
+
+    [Fact]
+    public void Every_face_of_enlil_says_what_it_means()
+    {
+        var faces = BnbContent.Converter.Gods.Enlil.Statuses().ToList();
+        Assert.NotEmpty(faces);
+        Assert.All(faces, status =>
+        {
+            Assert.False(string.IsNullOrWhiteSpace(status.NameKey), status.Id);
+            Assert.False(string.IsNullOrWhiteSpace(status.DescriptionKey), status.Id);
+            Assert.NotEqual(status.NameKey?.Trim(), status.DescriptionKey?.Trim());
+        });
+    }
+
+    // The rule area's live line (the moon and the decree, now and next) is read off statuses the document tags.
+    [Fact]
+    public void The_rule_areas_live_statuses_are_tagged_and_stay_phases()
+    {
+        Assert.NotEmpty(ActFive.LiveStatuses());
+        Assert.All(ActFive.LiveStatuses(), id =>
+        {
+            Assert.Contains(ActFive.LiveTag, Game.Presentation.Statuses[id].Tags);
+            Assert.Contains(BossPhases.PhaseTag, Game.Presentation.Statuses[id].Tags);
+        });
+    }
 }

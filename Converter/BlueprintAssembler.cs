@@ -404,8 +404,15 @@ public static class BlueprintAssembler
                 // …and the log-only statuses that are authored here rather than ported (LogOnlyStatuses).
                 .Concat(LogOnlyStatuses.Ids.Where(id => data.Statuses.All(s => s.Id != id)).Select(id => KeyValuePair.Create(
                     id, new EntityPresentation { Tags = [LogOnlyStatuses.Tag] })))
+                // …and Act V's live rule-area statuses (the decree and the moon, now and next), which are phases too:
+                // their tags are merged, not replaced.
+                .Concat(ActFive.LiveStatuses().Select(id => KeyValuePair.Create(
+                    id, new EntityPresentation { Tags = [ActFive.LiveTag] })))
                 .GroupBy(e => e.Key)
-                .ToDictionary(g => g.Key, g => g.Last().Value),
+                .ToDictionary(g => g.Key, g => g.Last().Value with
+                {
+                    Tags = [.. g.SelectMany(e => e.Value.Tags).Distinct(StringComparer.Ordinal)],
+                }),
             // Every body in the game is a picture too, on the same terms as a card or a relic: the id is the
             // file name, `Art` is the path the frontend resolves, and an empty slot draws the stick figure
             // that stands there today. Two fields beyond the path, both of them things the frontend cannot

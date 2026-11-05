@@ -58,34 +58,18 @@ public class BossLengthTests(ITestOutputHelper output)
     [InlineData("labyrinth_boss_first_scribe_of_the_house_of_life", 80)]
     [InlineData("labyrinth_boss_mother_of_natron_and_resin", 80)]
     [InlineData("labyrinth_boss_queen_of_the_flood_reckoning", 80)]
-    // Act V. A god is longer still, and Nisaba is longer than her HP says: the Last Line cannot be shot
-    // through — it has to be REWRITTEN, four turns of it, before she can be killed at all. A walker that
-    // spends its reed every turn (which the greedy one does, because a sheet costs nothing and moves the
-    // table) gets there; one that does not is erased, and that is the fight working.
+    // Act V since the rework of 2026-11-05: 900–1100 HP a god, against the starting deck and a walker that never
+    // borrows from tomorrow. Measured on this walker: Utu 41 turns, Enlil 38, Nanshe 44, Nanna-Suen 47, Nisaba 66
+    // (her sentences keep coming and her Keeper sentence heals 80; the walker breaks only the Final Line), Inanna
+    // 66 (25 % off for her Robe and the walker's own Weak from the Golden Ring until she leaves them at a gate).
+    // 90 is a third above the slowest: room for the fight to change without the budget hiding one that stops ending.
     [InlineData("act_5_nisaba_keeper_of_the_first_tablet", 90)]
-    // Inanna guards almost nothing — the ledger is the fight, not a wall — so what makes her long is
-    // 760 HP against a starting deck, and what could make her endless is a walker that never pays: it
-    // runs up Arrears it will not settle and takes Demand the Arrears in the face for it, which is the
-    // fight working exactly as designed rather than a fight that has stopped ending. 32 turns of the 90.
     [InlineData("act_5_inanna_mistress_of_the_eanna_ledger", 90)]
-    // Nanshe is the one god who makes the walker SLOWER, which is exactly why she has the least HP of the
-    // three: the deck fighting her is rationed, and a fight that starves what is attacking it does not also
-    // need hit points to be long.
     [InlineData("act_5_nanshe_keeper_of_the_just_ration", 90)]
-    // Nanna-Sin is the one god who makes the walker FASTER — most nights hand it a free card back — which is
-    // why he carries the second-largest pool of the four and still has to be measured: an escalation that
-    // arrives in the orbit he dies in is an escalation nobody sees.
     [InlineData("act_5_nanna_sin_lord_of_the_counted_moon", 90)]
-    // Utu pays the walker to fight him — a Favor every turn, whether or not it keeps its word — so the deck
-    // in front of him is the strongest it is anywhere in the act, which is why he has less HP than the two
-    // gods either side of him. What has to be measured is the OTHER end: the greedy walker breaks nearly
-    // every Oath it swears, so this is the run in which Witness grows fastest, and a fight whose damage
-    // climbs with the player's own record is a fight that could stop ending from either direction.
     [InlineData("act_5_utu_witness_of_every_oath", 90)]
-    // Enlil is the one fight in the game where the greedy walker can be REFUSED. Under THE FOURTH WORK it
-    // runs out of legal plays with a full hand and Energy to spare, and under NO WORK SHALL FOLLOW ITS
-    // LIKENESS a deck of one kind of card can offer nothing at all — so this budget is also the proof that
-    // a refusal ends a turn rather than looping it, which no other boss in the pool can test.
+    // Enlil can REFUSE the walker (the fourth work is the last), so this is also the proof that a refusal ends a
+    // turn rather than looping it.
     [InlineData("act_5_enlil_voice_of_the_unalterable_decree", 90)]
     public void A_boss_dies_inside_the_turn_budget(string encounterId, int budget = TurnBudget)
     {

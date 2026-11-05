@@ -58,7 +58,7 @@ public static class EncounterPassives
         // …and the bosses': the Pharaoh's traitors and Selket's vessels fall with them, her last vessel wraps her.
         _ when ActFour.BossIdentities.Contains(enemyId) => ActFour.BossTriggers(enemyId),
         // Act V: Nisaba's sentences leave with her, and the reed turns when the Final Line breaks.
-        Gods.Nisaba.EnemyId => Gods.Nisaba.Triggers(),
+        Gods.Nisaba.EnemyId => ActFive.Triggers(enemyId),
         _ => Array.Empty<EncounterTriggerData>(),
     };
 
@@ -206,7 +206,8 @@ public static class EncounterPassives
         ],
         // Act V: Nanshe's tablet is worn by the PLAYER, because what it does is let them READ her whole
         // Distribution — all three days of intents at once. A sight is a faculty of the one who looks.
-        Gods.Nanshe.EnemyId => Gods.Nanshe.HeroOpening(),
+        // Act V: what a god puts on the player (Nanshe's tablet and Day I's portion, Enlil's first decree).
+        Gods.Nanshe.EnemyId or Gods.Enlil.EnemyId => ActFive.HeroOpening(enemyId),
         // Act II: the archive's rules live on the player, because it is the player's hand and the player's draw
         // they are about. Two misfiling enemies ask for the same marker and it merges, so a card is taken back
         // once however many shelves are in the room.

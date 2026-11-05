@@ -524,8 +524,8 @@
   },
   {
     "id": "enlil_voice_of_the_unalterable_decree",
-    "name": "Enlil, Voice of the Unalterable Decree",
-    "max_hp": 700,
+    "name": "Enlil, Lord of the Wind, Whose Word Cannot Be Unspoken",
+    "max_hp": 1100,
     "intent_pattern": "cycle",
     "intents": [
       {
@@ -536,7 +536,7 @@
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 30
+            "amount": 20
           }
         ]
       },
@@ -548,91 +548,59 @@
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 9
+            "amount": 8
           },
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 9
+            "amount": 8
           },
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 9
+            "amount": 8
           },
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 9
+            "amount": 8
           }
         ]
       },
       {
-        "id": "raise_e_kur",
-        "name": "Raise E-kur",
-        "intent_type": "mixed",
+        "id": "raise_the_e_kur",
+        "name": "Raise the E-kur · only 20 while no wall may rise above twenty",
+        "intent_type": "block",
         "actions": [
           {
             "type": "gain_block",
             "target": "self",
-            "amount": 48
-          },
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 14
+            "amount": 40
           }
         ]
       },
       {
         "id": "weight_of_kingship",
         "name": "Weight of Kingship",
-        "intent_type": "mixed",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 26
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "doubt",
-            "amount": 2
-          }
-        ]
-      },
-      {
-        "id": "the_assembly_falls_silent",
-        "name": "The Assembly Falls Silent",
-        "intent_type": "mixed",
-        "special": true,
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 34
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "paperwork",
-            "amount": 3
-          }
-        ]
-      },
-      {
-        "id": "three_words_are_enough",
-        "name": "Three Words Are Enough",
         "intent_type": "attack",
-        "special": true,
         "actions": [
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 44
+            "amount": 35
           }
         ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "enlil_the_ring_of_decrees"
+      },
+      {
+        "status": "enlil_decree_wall"
+      },
+      {
+        "status": "enlil_next_fourth"
       }
     ],
     "tags": [
@@ -642,39 +610,6 @@
       "enlil",
       "decree",
       "rules"
-    ],
-    "starting_statuses": [
-      {
-        "status": "the_word_of_enlil"
-      },
-      {
-        "status": "one_word"
-      },
-      {
-        "status": "next_the_fourth_work_shall_be_the_last"
-      }
-    ],
-    "intent_rules": [
-      {
-        "condition": {
-          "kind": "self_counter",
-          "counter": "enlil_final_move",
-          "op": "ge",
-          "value": 1
-        },
-        "action": "three_words_are_enough",
-        "priority": 30
-      },
-      {
-        "condition": {
-          "kind": "self_counter",
-          "counter": "enlil_silence_move",
-          "op": "ge",
-          "value": 1
-        },
-        "action": "the_assembly_falls_silent",
-        "priority": 20
-      }
     ]
   }
 ]

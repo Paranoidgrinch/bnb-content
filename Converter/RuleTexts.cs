@@ -160,13 +160,6 @@ public static class RuleTexts
                 "Her 4 vessels pour on you in turn, one each turn of hers; broken ones pour nothing. From half, or all broken, she rises once."),
             ["the_nilometer"] = (null,
                 "End your turn with 0 Energy and the Nile rises a step; with Energy left it falls. Each of the 5 levels does something."),
-
-            // ── Act V gods ─────────────────────────────────────────────────────────────────────────────────
-            ["the_word_of_enlil"] = (null,
-                "Each decree is shown a full turn before it starts, runs its count and ends. It binds him too."),
-            ["one_word"] = (null, "One decree at a time. The next one is already shown."),
-            ["next_the_fourth_work_shall_be_the_last"] = (null,
-                "Next decree: you can play at most 4 cards a turn. Starts at the end of your next turn."),
         };
 
     // Every status the rulebook names, with its name and text replaced.

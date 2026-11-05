@@ -1,26 +1,19 @@
-using System.Text.Json;
 using RogueDeck.Core.Combat;
-using RogueDeck.Sandbox.Composition;
+using RogueDeck.Run;
 using RogueDeck.Scenario.Authoring;
 
 namespace BnbContent.Converter;
 
-// ACT V — THE DIVINE LEDGER, all six gods written (V-1 … V-6, 2026-09-09).
+// ACT V — THE DIVINE LEDGER. Since the rework of 2026-11-05 (ACT_V_REWORK_PLAN.md) the six gods live in
+// Converter/Gods, one class each; this is the registry that hands them to the rest of the converter.
 //
 // The design's one SHARED rule for the whole act (boss master §Act V §4) is a UI rule: every god gets a
-// prominent DIVINE RULE AREA in the combat screen, always in the same place, filled completely differently by
-// each — the First Tablet, the Eanna Ledger, the Ration Tablet, the Lunar Calendar, the Oaths, the Decrees.
-// The player should read it and know at once: this is where the god says what reality currently means.
-//
-// That area needs somewhere to get its words from, and the engine is the wrong place for them — a rule area is
-// presentation, and the engine reads none of it. So it rides on the encounter's PRESENTATION (Extra), which is
-// exactly what that dictionary is for: the frontend keys its panel off `divineRuleTitle` + `divineRule`, and an
-// encounter without them shows no panel, which is every fight in Acts I–IV.
-//
-// At V-0 these lines were captions on ported placeholders — they said what each god IS. V-1 … V-6 replaced the
-// fights and rewrote every line to describe the live state its area actually shows (the tablet's written rows,
-// the ledger's claims, the moon's phase, the standing decree), which is where the area stopped being a caption.
-public static partial class ActFive
+// prominent DIVINE RULE AREA in the combat screen, always in the same place, filled differently by each.
+// It rides on the encounter's PRESENTATION (Extra): the frontend keys its panel off `divineRuleTitle` +
+// `divineRule`, and an encounter without them shows no panel, which is every fight in Acts I–IV. The live part
+// of the area (the decree now and next, the moon now and next) is read off the statuses tagged
+// `divine_now` (LiveTag) on the god's own body.
+public static class ActFive
 {
     public const int Act = 5;
 
@@ -28,6 +21,9 @@ public static partial class ActFive
     // side rather than a name only this file uses.
     public const string RuleTitleKey = "divineRuleTitle";
     public const string RuleTextKey = "divineRule";
+
+    // The presentation tag of a status the rule area reads live: the state of the rule now, and what comes next.
+    public const string LiveTag = "divine_now";
 
     public static IReadOnlyDictionary<string, (string Title, string Rule)> RuleAreas { get; } =
         new Dictionary<string, (string, string)>
@@ -52,11 +48,10 @@ public static partial class ActFive
                 "The Oath and the Saw",
                 "Each turn three oaths are in your hand; the Block is paid at once. Deal him less than you swore and he "
                 + "gains a Witness. His Saw of Judgment returns half of what you dealt him the turn before."),
-            [EnlilEncounterId] = (
-                "Decrees",
-                "What stands here is not a threat — it is the rule the fight is being played under. A decree "
-                + "is announced a full turn before it is real, runs the count beside it, and cannot be "
-                + "removed, shortened or bargained away. Where the wording is universal it binds him too."),
+            [Gods.Enlil.EncounterId] = (
+                "The Ring of Decrees",
+                "Eight decrees in a ring; exactly one is in force each round, and the next is always announced. "
+                + "Every decree binds him as it binds you, and nothing removes, shortens or changes one."),
         };
 
     // The presentation hints one encounter carries, empty for anything that is not a god.
@@ -65,13 +60,24 @@ public static partial class ActFive
             ? new Dictionary<string, string> { [RuleTitleKey] = area.Title, [RuleTextKey] = area.Rule }
             : new Dictionary<string, string>();
 
-    // Everything the act's gods put into the document. One line per god as they are built.
+    // The statuses the rule area shows live, in the order they are read.
+    public static IReadOnlyList<string> LiveStatuses() =>
+    [
+        .. Gods.NannaSuen.Ring.Select(p => Gods.NannaSuen.PhaseId(p.Key)),
+        .. Gods.NannaSuen.Ring.Select(p => Gods.NannaSuen.NextId(p.Key)),
+        .. Gods.Enlil.Ring.Select(d => Gods.Enlil.DecreeId(d.Key)),
+        .. Gods.Enlil.Ring.Select(d => Gods.Enlil.NextId(d.Key)),
+    ];
+
+    // Everything the act's gods put into the document.
     public static IReadOnlyList<StatusData> All() =>
-        [.. Gods.GodShapes.Words(), .. Gods.Nisaba.Statuses(), .. Gods.Inanna.Statuses(), .. Gods.Nanshe.Statuses(), .. Gods.NannaSuen.Statuses(),
-         .. Gods.Utu.Statuses(), .. EnlilStatuses()];
+    [
+        .. Gods.GodShapes.Words(), .. Gods.Nisaba.Statuses(), .. Gods.Inanna.Statuses(), .. Gods.Nanshe.Statuses(),
+        .. Gods.NannaSuen.Statuses(), .. Gods.Utu.Statuses(), .. Gods.Enlil.Statuses(),
+    ];
 
     public static IReadOnlyList<CardData> GivenCards() =>
-        [.. Gods.Nanshe.Cards(), .. Gods.NannaSuen.Cards(), .. Gods.Utu.Cards()];
+        [.. Gods.Nanshe.Cards(), .. Gods.NannaSuen.Cards(), .. Gods.Utu.Cards(), .. Gods.Enlil.Cards()];
 
     public static EffectProgram<EnemyActionContext>? Intent(string enemyId, string intentId) =>
         Gods.Nisaba.Intent(enemyId, intentId)
@@ -79,103 +85,20 @@ public static partial class ActFive
         ?? Gods.Nanshe.Intent(enemyId, intentId)
         ?? Gods.NannaSuen.Intent(enemyId, intentId)
         ?? Gods.Utu.Intent(enemyId, intentId)
-        ?? EnlilIntent(enemyId, intentId);
+        ?? Gods.Enlil.Intent(enemyId, intentId);
 
-    private const int WholeDeck = 256;
-
-    // ── shared idioms ─────────────────────────────────────────────────────────────────────────────────────
-
-    private static ConstantExpression<TContext> Const<TContext>(int value) where TContext : class => new(value);
-
-    private static ICombatExpression<TContext, int> Stacks<TContext>(
-        ICombatantTargetSelector body, string statusId) where TContext : class =>
-        new CombatantStatusStacksExpression<TContext>(body, new StatusDefinitionId(statusId));
-
-    private static ICombatExpression<TContext, bool> Has<TContext>(
-        ICombatantTargetSelector body, string statusId) where TContext : class =>
-        new TargetHasStatusExpression<TContext>(body, new StatusDefinitionId(statusId));
-
-    // "The body whose rule this is" — the one combatant wearing the tablet.
-    private static ICombatantTargetSelector Bearer(string ruleId) =>
-        CombatantTargetSelectors.FirstTarget(
-            CombatantTargetSelectors.WithStatus(
-                CombatantTargetSelectors.AllAliveCombatants, new StatusDefinitionId(ruleId)));
-
-    private static ICombatantTargetSelector Applicant { get; } =
-        CombatantTargetSelectors.FirstTarget(
-            CombatantTargetSelectors.WithStatus(
-                CombatantTargetSelectors.AllAliveCombatants,
-                new StatusDefinitionId(PassiveStatuses.ApplicantId)));
-
-    private static ICombatExpression<TContext, bool> PlayersTurn<TContext>() where TContext : class =>
-        new TargetHasStatusExpression<TContext>(
-            CombatantTargetSelectors.Source, new StatusDefinitionId(PassiveStatuses.ApplicantId));
-
-    private static IEffectNode<EnemyActionContext> Seq(params IEffectNode<EnemyActionContext>[] steps) =>
-        new CausalSequenceEffectNode<EnemyActionContext>(steps);
-
-    private static IEffectNode<EnemyActionContext> Hit(int damage) =>
-        new DealDamageNode<EnemyActionContext>(Applicant, Const<EnemyActionContext>(damage));
-
-    private static IEffectNode<EnemyActionContext> Guard(int block) =>
-        new GainBlockNode<EnemyActionContext>(
-            CombatantTargetSelectors.Source, Const<EnemyActionContext>(block));
-
-    private static IEffectNode<EnemyActionContext> Debuff(string statusId, int stacks) =>
-        new ApplyStatusNode<EnemyActionContext>(
-            Applicant, new StatusDefinitionId(statusId), Const<EnemyActionContext>(stacks));
-
-    private static StatusTriggerData Trigger<TContext>(
-        EffectProgram<TContext> program, string trigger,
-        StatusTriggerScope scope = StatusTriggerScope.Bearer) where TContext : class =>
-        new(trigger, JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<TContext>()), scope);
-
-    private static StatusData Face(string id, string name, string description, bool stacks) => new()
+    // What each god brings onto the player at the first bell.
+    public static IReadOnlyList<StartingStatusSpec> HeroOpening(string enemyId) => enemyId switch
     {
-        Id = id,
-        NameKey = name,
-        DescriptionKey = description,
-        Polarity = StatusPolarity.Neutral,
-        StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
-        UsesStacks = stacks,
-        Tags = [],
-        PassiveModifiers = [],
-        Triggers = [],
+        Gods.Nanshe.EnemyId => Gods.Nanshe.HeroOpening(),
+        Gods.Enlil.EnemyId => Gods.Enlil.HeroOpening(),
+        _ => [],
     };
 
-    private static StatusData Announcement(string id, string name, string description) =>
-        Face(id, name, description, stacks: false);
-
-    // A sentence's mark on the turn it was written about, and no longer: it comes off at the end of that
-    // turn whether it was felt or not.
-    private static StatusData Worn(
-        string id, string name, string description, StatusPolarity polarity, PassiveModifierData modifier) => new()
+    // What falls with what.
+    public static IReadOnlyList<EncounterTriggerData> Triggers(string enemyId) => enemyId switch
     {
-        Id = id,
-        NameKey = name,
-        DescriptionKey = description,
-        Polarity = polarity,
-        StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
-        UsesStacks = true,
-        Tags = [],
-        PassiveModifiers = [modifier],
-        Triggers =
-        [
-            Trigger(new EffectProgram<TurnEndedTriggeredEffectContext>(
-                new RemoveStatusNode<TurnEndedTriggeredEffectContext>(
-                    CombatantTargetSelectors.Source, new StatusDefinitionId(id))),
-                nameof(TriggerEvent.TurnEnded)),
-        ],
+        Gods.Nisaba.EnemyId => Gods.Nisaba.Triggers(),
+        _ => [],
     };
-
-    private static ICombatExpression<TContext, bool> At<TContext>(
-        ICombatExpression<TContext, int> value, ComparisonOperator op, int number) where TContext : class =>
-        new ComparisonExpression<TContext>(value, op, Const<TContext>(number));
-
-    private static IEffectNode<TContext> Steps<TContext>(IReadOnlyList<IEffectNode<TContext>> steps)
-        where TContext : class => new CausalSequenceEffectNode<TContext>(steps);
-
-    private static IEffectNode<TContext> Drop<TContext>(ICombatantTargetSelector body, string statusId)
-        where TContext : class =>
-        new RemoveStatusNode<TContext>(body, new StatusDefinitionId(statusId));
 }
