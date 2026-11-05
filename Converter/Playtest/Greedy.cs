@@ -124,11 +124,18 @@ public static class Greedy
         return candidates.Count == 0 ? null : candidates[rng.Next(candidates.Count)];
     }
 
-    // Whom to point a card at: the first enemy still on its feet.
+    // Whom to point a card at: the first enemy still on its feet. A body the fight asks to be broken before its
+    // countdown runs out (Nisaba's sentences) comes first, and one held at 1 HP by a rule that will not let it
+    // fall (Nisaba while her Final Line stands) comes last, as long as anything else stands to be hit.
     public static CombatantId? Enemy(InteractiveCombat combat)
     {
         ArgumentNullException.ThrowIfNull(combat);
-        return combat.State.Combatants
-            .FirstOrDefault(c => c.Id != combat.HeroId && c.TeamId == StandardCombatIds.EnemyTeam && c.IsAlive)?.Id;
+        var standing = combat.State.Combatants
+            .Where(c => c.Id != combat.HeroId && c.TeamId == StandardCombatIds.EnemyTeam && c.IsAlive).ToList();
+        return (standing.FirstOrDefault(c => c.Statuses.Any(s => s.Tags.Contains(new TagId(Gods.GodShapes.BreakFirstTag))))
+            ?? standing.FirstOrDefault(c => !HeldUp(c)) ?? standing.FirstOrDefault())?.Id;
     }
+
+    public static bool HeldUp(CombatantState body) =>
+        body.Health.Current <= 1 && body.Statuses.Any(s => s.Tags.Contains(new TagId(Gods.GodShapes.CannotFallTag)));
 }

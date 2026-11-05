@@ -33,6 +33,8 @@ public static class LogOnlyStatuses
         "owns_pry_bar", "owns_knife", "owns_idol", "used_a_tool", "apep_loosened",
         // …and its bosses': the vessel under every vessel's own name
         "selket_vessel",
+        // Act V's: the sentence under every sentence's own name
+        Gods.Nisaba.SentenceId,
         // the Seizure Procession's machinery: the Lantern's rule says the whole of it in one sentence (2026-11-01)
         "lock_cart", "seizure_marshal",
         // the Sealed Door Ward's per-turn dampener: its One Remaining Seal says the whole rule (2026-11-01)

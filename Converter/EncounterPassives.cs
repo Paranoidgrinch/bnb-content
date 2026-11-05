@@ -57,6 +57,8 @@ public static class EncounterPassives
         _ when ActFour.EliteIdentities.Contains(enemyId) => ActFour.EliteTriggers(enemyId),
         // …and the bosses': the Pharaoh's traitors and Selket's vessels fall with them, her last vessel wraps her.
         _ when ActFour.BossIdentities.Contains(enemyId) => ActFour.BossTriggers(enemyId),
+        // Act V: Nisaba's sentences leave with her, and the reed turns when the Final Line breaks.
+        Gods.Nisaba.EnemyId => Gods.Nisaba.Triggers(),
         _ => Array.Empty<EncounterTriggerData>(),
     };
 

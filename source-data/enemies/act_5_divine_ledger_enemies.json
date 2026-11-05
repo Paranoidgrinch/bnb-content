@@ -1,134 +1,113 @@
 [
   {
     "id": "nisaba_keeper_of_the_first_tablet",
-    "name": "Nisaba, Keeper of the First Tablet",
-    "max_hp": 620,
+    "name": "Nisaba, Lady of the Reed Stylus, Who Writes What Must Come",
+    "max_hp": 950,
     "intent_pattern": "cycle",
     "intents": [
       {
-        "id": "set_the_reed",
-        "name": "Set the Reed",
+        "id": "inscribe",
+        "name": "Inscribe a Sentence",
         "intent_type": "mixed",
         "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 16
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "paperwork",
-            "amount": 1
-          }
-        ]
-      },
-      {
-        "id": "measure_the_boundary",
-        "name": "Measure the Boundary",
-        "intent_type": "mixed",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 22
-          },
           {
             "type": "gain_block",
             "target": "self",
-            "amount": 14
+            "amount": 15
           }
         ]
       },
       {
-        "id": "count_the_unrevised",
-        "name": "Count the Unrevised",
+        "id": "strike_of_the_reed",
+        "name": "Strike of the Reed",
         "intent_type": "attack",
         "actions": [
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 10
+            "amount": 26
           }
         ]
       },
       {
         "id": "dry_the_clay",
-        "name": "Dry the Clay",
-        "intent_type": "block",
-        "actions": [
-          {
-            "type": "gain_block",
-            "target": "self",
-            "amount": 12
-          },
-          {
-            "type": "apply_status",
-            "target": "player",
-            "status": "doubt",
-            "amount": 2
-          }
-        ]
+        "name": "Dry the Clay · every sentence +30 HP",
+        "intent_type": "buff",
+        "actions": []
       },
       {
-        "id": "impress_the_seal",
-        "name": "Impress the Seal",
+        "id": "read_aloud",
+        "name": "Read Aloud · 14 per sentence",
         "intent_type": "attack",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 18
-          }
-        ]
-      },
-      {
-        "id": "open_the_lapis_tablet",
-        "name": "Open the Lapis Tablet",
-        "intent_type": "attack",
-        "special": true,
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 24
-          }
-        ]
-      },
-      {
-        "id": "write_the_last_line",
-        "name": "Write the Last Line",
-        "intent_type": "attack",
-        "special": true,
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 20
-          }
-        ]
+        "actions": []
       }
     ],
     "starting_statuses": [
       {
-        "status": "the_first_tablet"
+        "status": "nisaba_what_she_writes"
+      },
+      {
+        "status": "nisaba_not_yet_written"
       }
     ],
     "intent_rules": [
       {
         "condition": {
-          "kind": "self_status",
-          "status": "the_last_line_is_written"
+          "kind": "all_of",
+          "conditions": [
+            {
+              "kind": "self_status",
+              "status": "nisaba_the_final_line_is_written"
+            },
+            {
+              "kind": "any_of",
+              "conditions": [
+                {
+                  "kind": "self_counter",
+                  "counter": "nisaba_slot",
+                  "op": "eq",
+                  "value": 0
+                },
+                {
+                  "kind": "self_counter",
+                  "counter": "nisaba_slot",
+                  "op": "eq",
+                  "value": 2
+                }
+              ]
+            }
+          ]
         },
-        "action": "write_the_last_line",
+        "action": "strike_of_the_reed",
         "priority": 30
       },
       {
         "condition": {
           "kind": "self_status",
-          "status": "the_lapis_tablet_is_opened"
+          "status": "nisaba_the_final_line_is_written"
         },
-        "action": "open_the_lapis_tablet",
+        "action": "read_aloud",
+        "priority": 29
+      },
+      {
+        "condition": {
+          "kind": "all_of",
+          "conditions": [
+            {
+              "kind": "self_counter",
+              "counter": "nisaba_slot",
+              "op": "eq",
+              "value": 0
+            },
+            {
+              "kind": "self_counter",
+              "counter": "nisaba_standing",
+              "op": "ge",
+              "value": 3
+            }
+          ]
+        },
+        "action": "strike_of_the_reed",
         "priority": 20
       }
     ],

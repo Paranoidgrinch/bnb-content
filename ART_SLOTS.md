@@ -2,7 +2,7 @@
 
 Generated: `dotnet run --project Converter -- --art-slots ART_SLOTS.md`. **Do not edit by hand.**
 
-**860 pictures**: 458 cards, 256 relics, 142 bodies
+**853 pictures**: 451 cards, 256 relics, 142 bodies
 (every enemy, elite and boss) and 4 the player can be. Every one of them is filled today by a PLACEHOLDER — a plate with the file's own
 name and the word placeholder on it, written by `bnb-godot/tools/make-card-art.py`,
 `make-relic-art.py` and `make-enemy-art.py`. A painted picture replaces one by being saved over it, so
@@ -373,7 +373,7 @@ ever met in a boss room is drawn as a boss, even if it also turns up as filler.
 | `municipal_dragon` | The Municipal Dragon | 142 | 1 | The Municipal Dragon |
 | `nanna_sin_lord_of_the_counted_moon` | Nanna-Sin, Lord of the Counted Moon | 700 | 1 | The Counted Moon |
 | `nanshe_keeper_of_the_just_ration` | Nanshe, Keeper of the Just Ration | 600 | 1 | The Just Ration |
-| `nisaba_keeper_of_the_first_tablet` | Nisaba, Keeper of the First Tablet | 620 | 1 | The First Tablet |
+| `nisaba_keeper_of_the_first_tablet` | Nisaba, Lady of the Reed Stylus, Who Writes What Must Come | 950 | 1 | The Reed Stylus |
 | `notary_of_old_growth` | The Notary of Old Growth | 360 | 1 | The Notary of Old Growth |
 | `ombudsman_of_root_and_road` | The Ombudsman of Root and Road | 342 | 1 | The Ombudsman of Root and Road |
 | `pharaoh_of_the_sealed_name` | The Pharaoh | 615 | 1 | The Pharaoh |
@@ -524,7 +524,7 @@ Drawn like a body and facing RIGHT — the player stands on the left of the aren
 | `lieutenant` | The Lieutenant | New stripes on an old uniform, and always first through the door. |
 | `sorcerers_apprentice` | The Sorcerer's Apprentice | Knows every incantation, and not quite what happens when one is put after another. |
 
-## Cards — 458 pictures
+## Cards — 451 pictures
 
 No visual canon was ever written for the cards, so the row carries the card's own rules
 text instead of a brief. Act = the act that unlocks it; the starters, the Junk and the
@@ -986,7 +986,7 @@ cards a boss or a door hands over are never offered and have no act.
 | `lt_whistle` | Whistle | working | uncommon | Gain 3 Block. You may spend 1 Authority to draw 2 cards. |
 | `lt_witness` | Witness | working | common | Gain 4 Block. Your next Deed hit on a Challenged enemy this turn counts twice toward its Challenge. |
 
-### Given in play — 62
+### Given in play — 55
 
 Handed over by a boss, a door or an event rather than offered; never in a reward pool.
 
@@ -1027,13 +1027,6 @@ Handed over by a boss, a door or an event rather than offered; never in a reward
 | `redacted_leaf` | Redacted Leaf | Unplayable. Retain. Turn start: a card in your hand is Redacted, and this is spent. |
 | `renenutets_bounty` | Her Bounty | Lose 7 HP. Draw 4 cards. Gain 1 Energy. She stores 1 Grain. |
 | `renenutets_bounty_seventh_year` | Her Bounty | Lose 7 HP. Draw 7 cards. She stores 2 Grain. |
-| `revise_body_shall_bear` | Revise: Thirty-Six | Spend a Reed Mark: revise one step. 36 HP → 24 → 12 → none → she takes 18. |
-| `revise_guard_counted_nothing` | Revise: The Guard Counts Nothing | Spend a Reed Mark: revise one step. Block −18 → −12 → −6 → none → +6. |
-| `revise_hand_shall_hold_two` | Revise: The Hand Holds Two | Spend a Reed Mark: revise one step. Draw 3 fewer → 2 → 1 → none → draw 1 more. |
-| `revise_measures_withheld` | Revise: Three Measures | Spend a Reed Mark: revise one step. −3 Energy → −2 → −1 → none → a card −1 cost. |
-| `revise_the_last_line` | Revise: The Last Line | Spend a Reed Mark: revise the last line. At 4 she can die; at 5 it erases her. |
-| `revise_three_wounds` | Revise: Three Wounds | Spend a Reed Mark: revise one step. 3 Red Tape → 2 → 1 → none → one removed. |
-| `revise_two_works_broken` | Revise: Two Works | Spend a Reed Mark: revise one step. 2 cards Exhausted → 1 → none → one returns. |
 | `royal_grace_cup_action` | Royal Grace | Once a turn: gain 1 Energy, a card, or 10 Block. Every enemy gains 6 Block. |
 | `silver_name_tally_action` | Speak the Silver Name | Once a combat: remove an enemy's Block, gain 10 Block, refund your next card this turn. |
 | `sluice_gate_of_the_two_lands_action` | Work the Two Lands | Once a turn: lose 12 Block for 1 Energy, or spend 1 Energy for 12 Block. |

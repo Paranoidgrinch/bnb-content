@@ -136,8 +136,8 @@ public class BossLengthTests(ITestOutputHelper output)
                         $"'{encounterId}': turn {turn} played {plays} cards without ending — "
                         + $"last '{card.DefinitionId.value}'.");
 
-                    var enemy = combat.State.Combatants.FirstOrDefault(
-                        c => c.Id != combat.HeroId && c.TeamId == StandardCombatIds.EnemyTeam && c.IsAlive);
+                    // the walkers' own aim (Greedy.Enemy): the first enemy standing, passing over one held at 1 HP
+                    var enemy = BnbContent.Converter.Playtest.Greedy.Enemy(combat) is { } aim ? combat.State.GetCombatant(aim) : null;
                     var needsTarget = play.CardNeedsTarget.GetValueOrDefault(card.DefinitionId.value);
                     var stepsBefore = combat.Steps.Count;
                     tableBeforeThePlay = TableState(combat);

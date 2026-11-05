@@ -1,4 +1,6 @@
+using System.Text.Json;
 using RogueDeck.Core.Combat;
+using RogueDeck.Sandbox.Composition;
 using RogueDeck.Scenario.Authoring;
 
 namespace BnbContent.Converter;
@@ -30,11 +32,10 @@ public static partial class ActFive
     public static IReadOnlyDictionary<string, (string Title, string Rule)> RuleAreas { get; } =
         new Dictionary<string, (string, string)>
         {
-            ["act_5_nisaba_keeper_of_the_first_tablet"] = (
-                "The First Tablet",
-                "Three sentences about your future stand on the tablet, each with the turns left before it "
-                + "becomes true. You cannot dispel one — you edit it. A Reed Mark buys one revision, and a "
-                + "revised sentence still comes true, in smaller words."),
+            [Gods.Nisaba.EncounterId] = (
+                "The Reed Stylus",
+                "What she writes happens. Each sentence stands beside her as a body with a countdown: break it in "
+                + "time and it is erased, or it comes true. At 30 % only the Final Line is left — and it erases you."),
             ["act_5_inanna_mistress_of_the_eanna_ledger"] = (
                 "The Eanna Ledger",
                 "A card she claims is stamped PROPERTY OF EANNA. It stays yours, and its first play each turn "
@@ -70,17 +71,103 @@ public static partial class ActFive
 
     // Everything the act's gods put into the document. One line per god as they are built.
     public static IReadOnlyList<StatusData> All() =>
-        [.. NisabaStatuses(), .. InannaStatuses(), .. NansheStatuses(), .. NannaSinStatuses(),
+        [.. Gods.Nisaba.Statuses(), .. InannaStatuses(), .. NansheStatuses(), .. NannaSinStatuses(),
          .. UtuStatuses(), .. EnlilStatuses()];
 
     public static IReadOnlyList<CardData> GivenCards() =>
-        [.. NisabaReedCards(), .. InannaLedgerCards(), .. NansheRationCards(), .. NannaSinCards()];
+        [.. InannaLedgerCards(), .. NansheRationCards(), .. NannaSinCards()];
 
     public static EffectProgram<EnemyActionContext>? Intent(string enemyId, string intentId) =>
-        NisabaIntent(enemyId, intentId)
+        Gods.Nisaba.Intent(enemyId, intentId)
         ?? InannaIntent(enemyId, intentId)
         ?? NansheIntent(enemyId, intentId)
         ?? NannaSinIntent(enemyId, intentId)
         ?? UtuIntent(enemyId, intentId)
         ?? EnlilIntent(enemyId, intentId);
+
+    // ── shared idioms ─────────────────────────────────────────────────────────────────────────────────────
+
+    private static ConstantExpression<TContext> Const<TContext>(int value) where TContext : class => new(value);
+
+    private static ICombatExpression<TContext, int> Stacks<TContext>(
+        ICombatantTargetSelector body, string statusId) where TContext : class =>
+        new CombatantStatusStacksExpression<TContext>(body, new StatusDefinitionId(statusId));
+
+    private static ICombatExpression<TContext, bool> Has<TContext>(
+        ICombatantTargetSelector body, string statusId) where TContext : class =>
+        new TargetHasStatusExpression<TContext>(body, new StatusDefinitionId(statusId));
+
+    // "The body whose rule this is" — the one combatant wearing the tablet.
+    private static ICombatantTargetSelector Bearer(string ruleId) =>
+        CombatantTargetSelectors.FirstTarget(
+            CombatantTargetSelectors.WithStatus(
+                CombatantTargetSelectors.AllAliveCombatants, new StatusDefinitionId(ruleId)));
+
+    private static ICombatantTargetSelector Applicant { get; } =
+        CombatantTargetSelectors.FirstTarget(
+            CombatantTargetSelectors.WithStatus(
+                CombatantTargetSelectors.AllAliveCombatants,
+                new StatusDefinitionId(PassiveStatuses.ApplicantId)));
+
+    private static ICombatExpression<TContext, bool> PlayersTurn<TContext>() where TContext : class =>
+        new TargetHasStatusExpression<TContext>(
+            CombatantTargetSelectors.Source, new StatusDefinitionId(PassiveStatuses.ApplicantId));
+
+    private static IEffectNode<EnemyActionContext> Seq(params IEffectNode<EnemyActionContext>[] steps) =>
+        new CausalSequenceEffectNode<EnemyActionContext>(steps);
+
+    private static IEffectNode<EnemyActionContext> Hit(int damage) =>
+        new DealDamageNode<EnemyActionContext>(Applicant, Const<EnemyActionContext>(damage));
+
+    private static IEffectNode<EnemyActionContext> Guard(int block) =>
+        new GainBlockNode<EnemyActionContext>(
+            CombatantTargetSelectors.Source, Const<EnemyActionContext>(block));
+
+    private static IEffectNode<EnemyActionContext> Debuff(string statusId, int stacks) =>
+        new ApplyStatusNode<EnemyActionContext>(
+            Applicant, new StatusDefinitionId(statusId), Const<EnemyActionContext>(stacks));
+
+    private static StatusTriggerData Trigger<TContext>(
+        EffectProgram<TContext> program, string trigger,
+        StatusTriggerScope scope = StatusTriggerScope.Bearer) where TContext : class =>
+        new(trigger, JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<TContext>()), scope);
+
+    private static StatusData Face(string id, string name, string description, bool stacks) => new()
+    {
+        Id = id,
+        NameKey = name,
+        DescriptionKey = description,
+        Polarity = StatusPolarity.Neutral,
+        StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
+        UsesStacks = stacks,
+        Tags = [],
+        PassiveModifiers = [],
+        Triggers = [],
+    };
+
+    private static StatusData Announcement(string id, string name, string description) =>
+        Face(id, name, description, stacks: false);
+
+    // A sentence's mark on the turn it was written about, and no longer: it comes off at the end of that
+    // turn whether it was felt or not.
+    private static StatusData Worn(
+        string id, string name, string description, StatusPolarity polarity, PassiveModifierData modifier) => new()
+    {
+        Id = id,
+        NameKey = name,
+        DescriptionKey = description,
+        Polarity = polarity,
+        StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
+        UsesStacks = true,
+        Tags = [],
+        PassiveModifiers = [modifier],
+        Triggers =
+        [
+            Trigger(new EffectProgram<TurnEndedTriggeredEffectContext>(
+                new RemoveStatusNode<TurnEndedTriggeredEffectContext>(
+                    CombatantTargetSelectors.Source, new StatusDefinitionId(id))),
+                nameof(TriggerEvent.TurnEnded)),
+        ],
+    };
+
 }

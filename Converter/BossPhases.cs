@@ -76,15 +76,12 @@ public static class BossPhases
 
         // ── Act V ─────────────────────────────────────────────────────────────────────────────────────────
         //
-        // Nisaba's two later phases and the announcement that precedes each. The Last Line is not only a
-        // phase but the ONLY sentence left on the tablet, and the Indelible beside it is why the fight can
-        // no longer be ended by hitting her — both belong beside the telegraph rather than in the chip row,
-        // because a player reading the intent without them is reading a fight that is no longer happening.
-        ActFive.LapisAnnouncedId,
-        ActFive.LapisRecordId,
-        ActFive.LastLineAnnouncedId,
-        ActFive.LastLineId,
-        ActFive.IndelibleId,
+        // Nisaba (rework of 2026-11-05): the Lapis Record and the Final Line are her phases, and Indelible beside
+        // them is why the fight can no longer be ended by hitting her.
+        Gods.Nisaba.LapisRecordId,
+        Gods.Nisaba.FinalLineWrittenId,
+        Gods.Nisaba.IndelibleId,
+        Gods.Nisaba.NotYetWrittenId,
 
         // Inanna's two later phases and their announcements — and the Procession beside them, which is not a
         // phase but the clock the whole ledger is read against: a player who cannot see how many rounds are
