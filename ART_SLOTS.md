@@ -2,7 +2,7 @@
 
 Generated: `dotnet run --project Converter -- --art-slots ART_SLOTS.md`. **Do not edit by hand.**
 
-**853 pictures**: 451 cards, 256 relics, 142 bodies
+**851 pictures**: 449 cards, 256 relics, 142 bodies
 (every enemy, elite and boss) and 4 the player can be. Every one of them is filled today by a PLACEHOLDER — a plate with the file's own
 name and the word placeholder on it, written by `bnb-godot/tools/make-card-art.py`,
 `make-relic-art.py` and `make-enemy-art.py`. A painted picture replaces one by being saved over it, so
@@ -365,7 +365,7 @@ ever met in a boss room is drawn as a boss, even if it also turns up as filler.
 | `gcr_conclusion` | The Conclusion | 76 | 1 | The Grand Cross-Reference |
 | `gcr_premise` | The Premise | 68 | 1 | The Grand Cross-Reference |
 | `grandmother_clause` | Grandmother Clause | 350 | 1 | Grandmother Clause |
-| `inanna_mistress_of_the_eanna_ledger` | Inanna, Mistress of the Eanna Ledger | 760 | 1 | The Ledger of Eanna |
+| `inanna_mistress_of_the_eanna_ledger` | Inanna, Queen of Heaven, Who Descended to the Great Below | 1050 | 1 | The Seven Gates |
 | `lady_of_the_black_granaries` | Renenutet | 585 | 1 | Renenutet |
 | `living_charter` | The Living Charter | 134 | 1 | The Living Charter |
 | `lord_sealkeeper` | The Lord Sealkeeper | 136 | 1 | The Lord Sealkeeper |
@@ -524,7 +524,7 @@ Drawn like a body and facing RIGHT — the player stands on the left of the aren
 | `lieutenant` | The Lieutenant | New stripes on an old uniform, and always first through the door. |
 | `sorcerers_apprentice` | The Sorcerer's Apprentice | Knows every incantation, and not quite what happens when one is put after another. |
 
-## Cards — 451 pictures
+## Cards — 449 pictures
 
 No visual canon was ever written for the cards, so the row carries the card's own rules
 text instead of a brief. Act = the act that unlocks it; the starters, the Junk and the
@@ -986,7 +986,7 @@ cards a boss or a door hands over are never offered and have no act.
 | `lt_whistle` | Whistle | working | uncommon | Gain 3 Block. You may spend 1 Authority to draw 2 cards. |
 | `lt_witness` | Witness | working | common | Gain 4 Block. Your next Deed hit on a Challenged enemy this turn counts twice toward its Challenge. |
 
-### Given in play — 55
+### Given in play — 53
 
 Handed over by a boss, a door or an event rather than offered; never in a reward pool.
 
@@ -1003,7 +1003,6 @@ Handed over by a boss, a door or an event rather than offered; never in a reward
 | `correction_reed_action` | A Small Correction | Once a turn: discard a card, return one from discard costing 1 less. None there: draw 1. |
 | `counter_petition_twine_action` | Counter-Petition | Discard a card, draw a card, gain 1 Energy. Once a turn. |
 | `crooked_kindness` | Crooked Kindness | Lose 2 HP. Draw 2 cards. |
-| `dedicate_a_work` | Dedicate a Work | Give Eanna a card from hand for this fight: claimed settles 4 Temple Due, others 1, Junk 0. |
 | `draw_ahead` | Draw Ahead | Draw 1 card now, taken from a later day. |
 | `drink_from_the_cup` | Drink from the Cup | Gain 1 Energy. The Cup gains 2 Claims. Unplayed, it is gone at the end of the turn. |
 | `edict_of_the_open_audience_action` | Open the Audience | Once a combat: cards in your hand cost 0 this turn. |
@@ -1020,7 +1019,6 @@ Handed over by a boss, a door or an event rather than offered; never in a reward
 | `lavender_sachet_dear` | Lavender Sachet | Gain 12 Block. Discard 2 cards. Grandmother loses 6 HP. |
 | `missing_signature` | Missing Signature | Exhaust. Still in hand at turn end: 1 Paperwork on you. |
 | `notice_of_delay` | Notice of Delay | Retain. Exhaust. Still in hand at turn end: 1 Fatigue. |
-| `offer_the_surplus` | Offer the Surplus | Spend 1 Energy to settle 1 Temple Due. |
 | `pay_the_fee` | Pay the Fee | Pay 15 Gold after the fight; the Dragon hoards one more Permit. |
 | `petition_for_priority` | Petition for Priority | Move one place closer to the Counter. Take 1 Paperwork. One queue choice a turn. |
 | `pharaohs_tribute` | Tribute | Pay the Pharaoh his tribute. It does nothing else. |

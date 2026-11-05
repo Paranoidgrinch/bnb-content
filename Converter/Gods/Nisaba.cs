@@ -167,13 +167,13 @@ public static class Nisaba
         foreach (var s in Sentences)
             yield return Face(SentenceKindId(s.Key), s.Name, s.Text);
         yield return Face(ComesTrueId, "Comes True In",
-            "At the start of Nisaba's turn this counts down. At 0 the sentence comes true.", stacks: true) with { Tags = [BreakFirstTag] };
+            "At the start of Nisaba's turn this counts down. At 0 the sentence comes true.", stacks: true);
         yield return Face(LapisRecordId, "The Lapis Record",
             "From 65 % she writes two sentences at a time, and each has 90 HP.");
         yield return Face(FinalLineWrittenId, "The Final Line",
             "From 30 % only the Final Line stands. She strikes and reads it aloud in turn.");
         yield return Face(FinalLineId, FinalLineName,
-            "When its countdown runs out you die. Break it: she takes 100 damage, and Indelible is gone.");
+            "When its countdown runs out you die. Break it: she takes 100 damage, and Indelible is gone.") with { Tags = [BreakFirstTag] };
         yield return Indelible(IndelibleId, "Indelible", "While the Final Line stands she cannot fall below 1 HP.");
         yield return Indelible(NotYetWrittenId, "The Line Not Yet Written",
             "She cannot fall below 1 HP before the Final Line is written (at 30 %).");

@@ -125,7 +125,7 @@ public static class Greedy
     }
 
     // Whom to point a card at: the first enemy still on its feet. A body the fight asks to be broken before its
-    // countdown runs out (Nisaba's sentences) comes first, and one held at 1 HP by a rule that will not let it
+    // countdown runs out (Nisaba's Final Line) comes first, and one held at 1 HP by a rule that will not let it
     // fall (Nisaba while her Final Line stands) comes last, as long as anything else stands to be hit.
     public static CombatantId? Enemy(InteractiveCombat combat)
     {

@@ -36,11 +36,10 @@ public static partial class ActFive
                 "The Reed Stylus",
                 "What she writes happens. Each sentence stands beside her as a body with a countdown: break it in "
                 + "time and it is erased, or it comes true. At 30 % only the Final Line is left — and it erases you."),
-            ["act_5_inanna_mistress_of_the_eanna_ledger"] = (
-                "The Eanna Ledger",
-                "A card she claims is stamped PROPERTY OF EANNA. It stays yours, and its first play each turn "
-                + "costs 1 Energy less — and every use of it writes 1 Temple Due. At the Procession what is "
-                + "unpaid becomes Arrears, and Arrears do not go away."),
+            [Gods.Inanna.EncounterId] = (
+                "The Seven Gates",
+                "She comes down wearing the seven regalia of the Descent. Every 130 HP she loses she passes a gate, "
+                + "and you choose which of them she leaves there. With the last one gone she is the Queen of Battle."),
             [NansheEncounterId] = (
                 "The Ration Tablet",
                 "Three days to a Distribution, and all three portions are on the table before the first one "
@@ -71,19 +70,21 @@ public static partial class ActFive
 
     // Everything the act's gods put into the document. One line per god as they are built.
     public static IReadOnlyList<StatusData> All() =>
-        [.. Gods.Nisaba.Statuses(), .. InannaStatuses(), .. NansheStatuses(), .. NannaSinStatuses(),
+        [.. Gods.GodShapes.Words(), .. Gods.Nisaba.Statuses(), .. Gods.Inanna.Statuses(), .. NansheStatuses(), .. NannaSinStatuses(),
          .. UtuStatuses(), .. EnlilStatuses()];
 
     public static IReadOnlyList<CardData> GivenCards() =>
-        [.. InannaLedgerCards(), .. NansheRationCards(), .. NannaSinCards()];
+        [.. NansheRationCards(), .. NannaSinCards()];
 
     public static EffectProgram<EnemyActionContext>? Intent(string enemyId, string intentId) =>
         Gods.Nisaba.Intent(enemyId, intentId)
-        ?? InannaIntent(enemyId, intentId)
+        ?? Gods.Inanna.Intent(enemyId, intentId)
         ?? NansheIntent(enemyId, intentId)
         ?? NannaSinIntent(enemyId, intentId)
         ?? UtuIntent(enemyId, intentId)
         ?? EnlilIntent(enemyId, intentId);
+
+    private const int WholeDeck = 256;
 
     // ── shared idioms ─────────────────────────────────────────────────────────────────────────────────────
 

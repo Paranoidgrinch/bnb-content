@@ -113,15 +113,12 @@ public class ReadableBossStateTests
         });
     }
 
-    // ── Inanna's ledger ───────────────────────────────────────────────────────────────────────────────────
+    // ── Inanna ────────────────────────────────────────────────────────────────────────────────────────────
 
-    // The same rule for the second god, and she needs it more than the first: her state is spread over four
-    // rows and a mark on the cards themselves, and a player who cannot read "Temple Due 8, Procession in 2"
-    // off the screen is being asked to decide whether to pay a number they were never shown.
     [Fact]
-    public void Every_face_of_the_eanna_ledger_says_what_it_means()
+    public void Every_face_of_inanna_says_what_it_means()
     {
-        var faces = ActFive.InannaStatuses();
+        var faces = BnbContent.Converter.Gods.Inanna.Statuses().ToList();
         Assert.NotEmpty(faces);
         Assert.All(faces, status =>
         {
@@ -129,34 +126,6 @@ public class ReadableBossStateTests
             Assert.False(string.IsNullOrWhiteSpace(status.DescriptionKey), status.Id);
             Assert.NotEqual(status.NameKey?.Trim(), status.DescriptionKey?.Trim());
         });
-    }
-
-    // …and the hand is the readout of what may still be PAID. Both ways of settling stand in hand exactly
-    // while something is owed and never otherwise, because the only way the player learns the ledger is
-    // clear is that the sheets have stopped coming.
-    [Fact]
-    public void The_ledger_and_the_hand_never_disagree_about_what_may_be_paid()
-    {
-        var (play, _, enemy) = FightProbe.Start(
-            FightProbe.Solo(ActFive.InannaEnemyId, "claim_the_finest_work", 9),
-            deck: [.. Enumerable.Repeat(Deed, 12), .. Enumerable.Repeat(Working, 12)], health: 2000);
-
-        for (var turn = 0; turn < 8; turn++)
-        {
-            var owed = FightProbe.StacksOf(Hero(play), ActFive.TempleDueId) >= 1;
-            var hand = play.CombatDriver!.Current!.Hand
-                .Select(c => c.DefinitionId.value).ToHashSet(StringComparer.Ordinal);
-
-            Assert.Equal(owed, hand.Contains(ActFive.OfferSurplusCardId));
-            Assert.Equal(owed, hand.Contains(ActFive.DedicateWorkCardId));
-
-            while (play.CombatDriver.Current!.Hand.FirstOrDefault(c => c.DefinitionId.value == Deed) is { } deed)
-                play.CombatDriver.PlayCard(deed.Id, enemy);
-
-            play.CombatDriver.EndTurn();
-        }
-
-        play.Dispose();
     }
 
     // ── Nanshe's tablet ───────────────────────────────────────────────────────────────────────────────────

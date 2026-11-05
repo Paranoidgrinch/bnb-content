@@ -122,131 +122,109 @@
   },
   {
     "id": "inanna_mistress_of_the_eanna_ledger",
-    "name": "Inanna, Mistress of the Eanna Ledger",
-    "max_hp": 760,
+    "name": "Inanna, Queen of Heaven, Who Descended to the Great Below",
+    "max_hp": 1050,
     "intent_pattern": "cycle",
     "intents": [
       {
-        "id": "raise_the_standard",
-        "name": "Raise the Standard",
-        "intent_type": "mixed",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 20
-          },
-          {
-            "type": "gain_block",
-            "target": "self",
-            "amount": 8
-          }
-        ]
-      },
-      {
-        "id": "claim_the_finest_work",
-        "name": "Claim the Finest Work",
-        "intent_type": "mixed",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 14
-          }
-        ]
-      },
-      {
-        "id": "demand_the_arrears",
-        "name": "Demand the Arrears",
+        "id": "lioness_of_battle",
+        "name": "Lioness of Battle",
         "intent_type": "attack",
         "actions": [
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 10
+            "amount": 32
           }
         ]
       },
       {
-        "id": "claim_the_favored_work",
-        "name": "Claim the Favored Work",
-        "intent_type": "mixed",
+        "id": "arrows_of_the_morning_star",
+        "name": "Arrows of the Morning Star",
+        "intent_type": "attack",
         "actions": [
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 14
-          }
-        ]
-      },
-      {
-        "id": "adorn_eanna",
-        "name": "Adorn Eanna",
-        "intent_type": "debuff",
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 12
+            "amount": 6
           },
           {
-            "type": "apply_status",
+            "type": "deal_damage",
             "target": "player",
-            "status": "doubt",
+            "amount": 6
+          },
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 6
+          },
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 6
+          },
+          {
+            "type": "deal_damage",
+            "target": "player",
+            "amount": 6
+          }
+        ]
+      },
+      {
+        "id": "splendor_of_eanna",
+        "name": "Splendor of Eanna",
+        "intent_type": "buff",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "self",
+            "amount": 35
+          },
+          {
+            "type": "gain_strength",
+            "target": "self",
             "amount": 2
           }
         ]
       },
       {
-        "id": "claim_the_first_gift",
-        "name": "Claim the First Gift",
-        "intent_type": "mixed",
+        "id": "infatuation",
+        "name": "Infatuation · your attacks −25 % for 2 turns",
+        "intent_type": "debuff",
         "actions": [
           {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 12
+            "type": "gain_strength",
+            "target": "self",
+            "amount": 2
           }
         ]
+      }
+    ],
+    "starting_statuses": [
+      {
+        "status": "inanna_the_seven_gates"
       },
       {
-        "id": "call_the_procession",
-        "name": "Call the Procession",
-        "intent_type": "mixed",
-        "special": true,
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 16
-          }
-        ]
+        "status": "inanna_regalium_crown"
       },
       {
-        "id": "open_the_storehouse",
-        "name": "Open the Storehouse",
-        "intent_type": "attack",
-        "special": true,
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 26
-          }
-        ]
+        "status": "inanna_regalium_rod"
       },
       {
-        "id": "all_things_enter_eanna",
-        "name": "All Things Enter Eanna",
-        "intent_type": "attack",
-        "special": true,
-        "actions": [
-          {
-            "type": "deal_damage",
-            "target": "player",
-            "amount": 24
-          }
-        ]
+        "status": "inanna_regalium_necklace"
+      },
+      {
+        "status": "inanna_regalium_beads"
+      },
+      {
+        "status": "inanna_regalium_robe"
+      },
+      {
+        "status": "inanna_regalium_ring"
+      },
+      {
+        "status": "inanna_regalium_breastplate",
+        "stacks": 4
       }
     ],
     "tags": [
@@ -254,43 +232,8 @@
       "divine_ledger",
       "boss",
       "inanna",
-      "eanna",
-      "temple"
-    ],
-    "starting_statuses": [
-      {
-        "status": "the_eanna_ledger"
-      },
-      {
-        "status": "the_procession",
-        "stacks": 3
-      }
-    ],
-    "intent_rules": [
-      {
-        "condition": {
-          "kind": "self_status",
-          "status": "all_things_are_called"
-        },
-        "action": "all_things_enter_eanna",
-        "priority": 40
-      },
-      {
-        "condition": {
-          "kind": "self_status",
-          "status": "the_storehouse_is_opened"
-        },
-        "action": "open_the_storehouse",
-        "priority": 30
-      },
-      {
-        "condition": {
-          "kind": "self_status",
-          "status": "the_procession_is_called"
-        },
-        "action": "call_the_procession",
-        "priority": 20
-      }
+      "descent",
+      "gates"
     ]
   },
   {

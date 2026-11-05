@@ -18,7 +18,7 @@ public static class GodShapes
     // reads it to know that hitting that body moves nothing.
     public const string CannotFallTag = "cannot_fall";
 
-    // …and by a body the fight asks you to break before its countdown runs out (Nisaba's sentences).
+    // …and by a body the fight asks you to break before its countdown kills you (Nisaba's Final Line).
     public const string BreakFirstTag = "break_first";
 
     public static ConstantExpression<TContext> N<TContext>(int value) where TContext : class => new(value);
@@ -210,6 +210,26 @@ public static class GodShapes
         new AddExpression<DamageReceivedTriggeredEffectContext>(
             new EventAmountExpression<DamageReceivedTriggeredEffectContext>(),
             new EventBlockedAmountExpression<DamageReceivedTriggeredEffectContext>());
+
+    // ── the act's two shared words ───────────────────────────────────────────────────────────────────────
+    //
+    // The plan asks for Weak and Frail (Inanna's Golden Ring, Enlil's plague). This game had neither, so Act V
+    // brings them: one stack comes off at the end of each of your turns.
+    public const string WeakId = "weak";
+    public const string FrailId = "frail";
+
+    public static IEnumerable<StatusData> Words()
+    {
+        var self = CombatantTargetSelectors.Source;
+        yield return Face(WeakId, "Weak", "Your attacks deal 25 % less. One stack wears off at the end of your turn.",
+            StatusPolarity.Debuff, stacks: true,
+            modifiers: [Modifier(PassiveModifierPipeline.DamageDealt, PassiveModifierOperation.ScalePercent, 75, DamageKind.Direct)],
+            triggers: [Own("TurnEnded", AddStacks<TurnEndedTriggeredEffectContext>(self, WeakId, -1))]);
+        yield return Face(FrailId, "Frail", "You gain 25 % less Block. One stack wears off at the end of your turn.",
+            StatusPolarity.Debuff, stacks: true,
+            modifiers: [Modifier(PassiveModifierPipeline.BlockGain, PassiveModifierOperation.ScalePercent, 75)],
+            triggers: [Own("TurnEnded", AddStacks<TurnEndedTriggeredEffectContext>(self, FrailId, -1))]);
+    }
 
     // ── statuses ─────────────────────────────────────────────────────────────────────────────────────────
 

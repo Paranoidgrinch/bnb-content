@@ -83,15 +83,8 @@ public static class BossPhases
         Gods.Nisaba.IndelibleId,
         Gods.Nisaba.NotYetWrittenId,
 
-        // Inanna's two later phases and their announcements — and the Procession beside them, which is not a
-        // phase but the clock the whole ledger is read against: a player who cannot see how many rounds are
-        // left before collection cannot decide whether to pay at all.
-        ActFive.StorehouseAnnouncedId,
-        ActFive.StorehouseId,
-        ActFive.AllThingsAnnouncedId,
-        ActFive.AllThingsId,
-        ActFive.ProcessionCalledId,
-        ActFive.ProcessionId,
+        // Inanna: the seventh gate passed, the Queen of Battle.
+        Gods.Inanna.QueenOfBattleId,
 
         // Nanshe's two later phases and their announcements — and, beside them, the four DISTRIBUTION
         // PATTERNS, which are not phases either but are read at exactly the same moment and for the same

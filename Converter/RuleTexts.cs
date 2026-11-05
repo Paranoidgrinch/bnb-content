@@ -162,9 +162,6 @@ public static class RuleTexts
                 "End your turn with 0 Energy and the Nile rises a step; with Energy left it falls. Each of the 5 levels does something."),
 
             // ── Act V gods ─────────────────────────────────────────────────────────────────────────────────
-            ["the_eanna_ledger"] = (null,
-                "Claimed cards cost 1 less on their first play each turn, but each play adds 1 Temple Due."),
-            ["the_procession"] = (null, "Rounds until the ledger is collected. Unpaid Temple Due becomes Arrears."),
             ["the_just_ration"] = (null,
                 "Energy and draws beyond your normal share are taken from a later day. Return unspent ones to repay."),
             ["the_lunar_calendar"] = (null,
