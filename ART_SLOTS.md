@@ -2,7 +2,7 @@
 
 Generated: `dotnet run --project Converter -- --art-slots ART_SLOTS.md`. **Do not edit by hand.**
 
-**851 pictures**: 449 cards, 256 relics, 142 bodies
+**850 pictures**: 448 cards, 256 relics, 142 bodies
 (every enemy, elite and boss) and 4 the player can be. Every one of them is filled today by a PLACEHOLDER — a plate with the file's own
 name and the word placeholder on it, written by `bnb-godot/tools/make-card-art.py`,
 `make-relic-art.py` and `make-enemy-art.py`. A painted picture replaces one by being saved over it, so
@@ -372,7 +372,7 @@ ever met in a boss room is drawn as a boss, even if it also turns up as filler.
 | `mother_of_natron_and_resin` | Selket | 600 | 1 | Selket |
 | `municipal_dragon` | The Municipal Dragon | 142 | 1 | The Municipal Dragon |
 | `nanna_sin_lord_of_the_counted_moon` | Nanna-Sin, Lord of the Counted Moon | 700 | 1 | The Counted Moon |
-| `nanshe_keeper_of_the_just_ration` | Nanshe, Keeper of the Just Ration | 600 | 1 | The Just Ration |
+| `nanshe_keeper_of_the_just_ration` | Nanshe, Lady of the Just Measure, Who Reads the Dreams of Kings | 900 | 1 | The Just Measure |
 | `nisaba_keeper_of_the_first_tablet` | Nisaba, Lady of the Reed Stylus, Who Writes What Must Come | 950 | 1 | The Reed Stylus |
 | `notary_of_old_growth` | The Notary of Old Growth | 360 | 1 | The Notary of Old Growth |
 | `ombudsman_of_root_and_road` | The Ombudsman of Root and Road | 342 | 1 | The Ombudsman of Root and Road |
@@ -524,7 +524,7 @@ Drawn like a body and facing RIGHT — the player stands on the left of the aren
 | `lieutenant` | The Lieutenant | New stripes on an old uniform, and always first through the door. |
 | `sorcerers_apprentice` | The Sorcerer's Apprentice | Knows every incantation, and not quite what happens when one is put after another. |
 
-## Cards — 449 pictures
+## Cards — 448 pictures
 
 No visual canon was ever written for the cards, so the row carries the card's own rules
 text instead of a brief. Act = the act that unlocks it; the starters, the Junk and the
@@ -986,7 +986,7 @@ cards a boss or a door hands over are never offered and have no act.
 | `lt_whistle` | Whistle | working | uncommon | Gain 3 Block. You may spend 1 Authority to draw 2 cards. |
 | `lt_witness` | Witness | working | common | Gain 4 Block. Your next Deed hit on a Challenged enemy this turn counts twice toward its Challenge. |
 
-### Given in play — 53
+### Given in play — 52
 
 Handed over by a boss, a door or an event rather than offered; never in a reward pool.
 
@@ -1003,7 +1003,6 @@ Handed over by a boss, a door or an event rather than offered; never in a reward
 | `correction_reed_action` | A Small Correction | Once a turn: discard a card, return one from discard costing 1 less. None there: draw 1. |
 | `counter_petition_twine_action` | Counter-Petition | Discard a card, draw a card, gain 1 Energy. Once a turn. |
 | `crooked_kindness` | Crooked Kindness | Lose 2 HP. Draw 2 cards. |
-| `draw_ahead` | Draw Ahead | Draw 1 card now, taken from a later day. |
 | `drink_from_the_cup` | Drink from the Cup | Gain 1 Energy. The Cup gains 2 Claims. Unplayed, it is gone at the end of the turn. |
 | `edict_of_the_open_audience_action` | Open the Audience | Once a combat: cards in your hand cost 0 this turn. |
 | `erasure_tablet_action` | Erase the Line | Once a combat: every enemy's next action deals no damage; they gain 20 Block instead. |
@@ -1030,7 +1029,7 @@ Handed over by a boss, a door or an event rather than offered; never in a reward
 | `sluice_gate_of_the_two_lands_action` | Work the Two Lands | Once a turn: lose 12 Block for 1 Energy, or spend 1 Energy for 12 Block. |
 | `strike_down_the_article` | Strike Down the Article | Strike the Article for the next one. The Charter gains 8 Block. |
 | `summons_to_appear` | Summons to Appear | Retain. Exhaust. Still in hand at turn end: take 5 damage. |
-| `take_ahead` | Take Ahead | Gain 1 Energy now, taken from a later day. |
+| `take_from_tomorrow` | Take From Tomorrow | Retain. Gain 1 Energy and draw 1 card. Write 1 Debt: it comes off tomorrow's portion. Returns to your hand. |
 | `thorned_shawl` | Thorned Shawl | Lose 5 HP. Draw 2 cards. Grandmother loses 6 HP. |
 | `thorned_shawl_dear` | Thorned Shawl | Lose 5 HP. Draw 2 cards. Grandmother loses 6 HP. |
 | `tomb_curse` | Tomb Curse | Unplayable. Still in hand at the end of your turn: 1 Entombed. |

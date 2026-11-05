@@ -206,8 +206,7 @@ public static class EncounterPassives
         ],
         // Act V: Nanshe's tablet is worn by the PLAYER, because what it does is let them READ her whole
         // Distribution — all three days of intents at once. A sight is a faculty of the one who looks.
-        ActFive.NansheEnemyId =>
-            [new StartingStatusSpec(new StatusDefinitionId(ActFive.RationTabletId), 1)],
+        Gods.Nanshe.EnemyId => Gods.Nanshe.HeroOpening(),
         // Act II: the archive's rules live on the player, because it is the player's hand and the player's draw
         // they are about. Two misfiling enemies ask for the same marker and it merges, so a card is taken back
         // once however many shelves are in the room.

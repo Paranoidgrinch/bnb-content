@@ -162,8 +162,6 @@ public static class RuleTexts
                 "End your turn with 0 Energy and the Nile rises a step; with Energy left it falls. Each of the 5 levels does something."),
 
             // ── Act V gods ─────────────────────────────────────────────────────────────────────────────────
-            ["the_just_ration"] = (null,
-                "Energy and draws beyond your normal share are taken from a later day. Return unspent ones to repay."),
             ["the_lunar_calendar"] = (null,
                 "The moon's count picks a card each round (count II: your 2nd card). It returns when that count comes again."),
             ["oaths_beneath_the_sun"] = (null,

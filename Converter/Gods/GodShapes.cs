@@ -67,10 +67,14 @@ public static class GodShapes
         new RemoveStatusNode<TContext>(who, new StatusDefinitionId(status));
 
     // A stack count set to exactly `value` (0 removes the status).
+    // `value` may read the status itself: it is evaluated before anything is changed.
     public static IEffectNode<TContext> SetStacks<TContext>(ICombatantTargetSelector who, string status, ICombatExpression<TContext, int> value)
         where TContext : class =>
-        Do(Unmark<TContext>(who, status),
-            If(Above(value, 0), MarkBy(who, status, value)));
+        If(Above(value, 0),
+            If(Wears<TContext>(who, status),
+                new ModifyStatusStacksNode<TContext>(who, new StatusDefinitionId(status), Minus(value, StacksOn<TContext>(who, status))),
+                MarkBy(who, status, value)),
+            Unmark<TContext>(who, status));
 
     public static IEffectNode<TContext> AddStacks<TContext>(ICombatantTargetSelector who, string status, int delta) where TContext : class =>
         delta >= 0

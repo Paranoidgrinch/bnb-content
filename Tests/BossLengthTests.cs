@@ -128,7 +128,7 @@ public class BossLengthTests(ITestOutputHelper output)
                         ? pool.Current : 0;
                     var card = combat.Hand.FirstOrDefault(c =>
                         !refused.Contains(c.Id) && !barren.Contains(c.DefinitionId.value)
-                        && Affordable(play, combat, c, energy));
+                        && !BnbContent.Converter.Playtest.Greedy.Borrows(combat, c) && Affordable(play, combat, c, energy));
                     if (card is null)
                         break;
 

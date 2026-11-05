@@ -86,18 +86,11 @@ public static class BossPhases
         // Inanna: the seventh gate passed, the Queen of Battle.
         Gods.Inanna.QueenOfBattleId,
 
-        // Nanshe's two later phases and their announcements — and, beside them, the four DISTRIBUTION
-        // PATTERNS, which are not phases either but are read at exactly the same moment and for the same
-        // reason: the pattern is what her telegraph means, because it says what the other two days of it are.
-        ActFive.MeasureCountedNextId,
-        ActFive.CountEveryMeasureId,
-        ActFive.FinalCalledId,
-        ActFive.FinalDistributionId,
-        ActFive.DaysRemainId,
-        ActFive.ShelterId,
-        ActFive.LabourId,
-        ActFive.RestId,
-        ActFive.NeedId,
+        // Nanshe: the Lean Years and the Measure Made Equal, and beside them the day of her Distribution, which says
+        // which of her three moves the telegraph is.
+        Gods.Nanshe.LeanYearsId,
+        Gods.Nanshe.MeasureEqualId,
+        Gods.Nanshe.DayId,
 
         // Nanna-Sin's three later orbits — and, beside them, the ring itself. The phase, the count and the
         // move that returns are not phases either, but they are the three facts his telegraph is read

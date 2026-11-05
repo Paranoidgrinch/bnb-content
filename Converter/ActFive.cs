@@ -40,11 +40,10 @@ public static partial class ActFive
                 "The Seven Gates",
                 "She comes down wearing the seven regalia of the Descent. Every 130 HP she loses she passes a gate, "
                 + "and you choose which of them she leaves there. With the last one gone she is the Queen of Battle."),
-            [NansheEncounterId] = (
-                "The Ration Tablet",
-                "Three days to a Distribution, and all three portions are on the table before the first one "
-                + "begins. Your natural Energy and your natural draw are your share — anything you take "
-                + "beyond it comes out of a later day, and no day but the last falls below 1 and 1."),
+            [Gods.Nanshe.EncounterId] = (
+                "The Just Measure",
+                "Every day has its portion: 3 Energy and 5 cards. What you take from tomorrow comes off the next "
+                + "day, never below 1 and 1, and what is still owed after Day III is collected: 10 a point."),
             [NannaSinEncounterId] = (
                 "The Lunar Calendar",
                 "Eight phases, one a round, carrying the counts — · I · II · III · IV · III · II · I. The "
@@ -70,16 +69,16 @@ public static partial class ActFive
 
     // Everything the act's gods put into the document. One line per god as they are built.
     public static IReadOnlyList<StatusData> All() =>
-        [.. Gods.GodShapes.Words(), .. Gods.Nisaba.Statuses(), .. Gods.Inanna.Statuses(), .. NansheStatuses(), .. NannaSinStatuses(),
+        [.. Gods.GodShapes.Words(), .. Gods.Nisaba.Statuses(), .. Gods.Inanna.Statuses(), .. Gods.Nanshe.Statuses(), .. NannaSinStatuses(),
          .. UtuStatuses(), .. EnlilStatuses()];
 
     public static IReadOnlyList<CardData> GivenCards() =>
-        [.. NansheRationCards(), .. NannaSinCards()];
+        [.. Gods.Nanshe.Cards(), .. NannaSinCards()];
 
     public static EffectProgram<EnemyActionContext>? Intent(string enemyId, string intentId) =>
         Gods.Nisaba.Intent(enemyId, intentId)
         ?? Gods.Inanna.Intent(enemyId, intentId)
-        ?? NansheIntent(enemyId, intentId)
+        ?? Gods.Nanshe.Intent(enemyId, intentId)
         ?? NannaSinIntent(enemyId, intentId)
         ?? UtuIntent(enemyId, intentId)
         ?? EnlilIntent(enemyId, intentId);

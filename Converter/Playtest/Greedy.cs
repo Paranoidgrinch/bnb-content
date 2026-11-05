@@ -119,10 +119,17 @@ public static class Greedy
         var energy = hero.Resources.TryGetValue(StandardCombatIds.EnergyResource, out var pool) ? pool.Current : 0;
         var candidates = combat.Hand
             .Where(c => !refused.Contains(c.Id) && !barren.Contains(c.DefinitionId.value)
-                && Affordable(play, combat, c, energy))
+                && !Borrows(combat, c) && Affordable(play, combat, c, energy))
             .ToList();
         return candidates.Count == 0 ? null : candidates[rng.Next(candidates.Count)];
     }
+
+    // A card that lends against a later turn and comes straight back to the hand (Nanshe's Take From Tomorrow):
+    // by its own lights playing it once more is always worth it, so a walker that plays what it can would play it
+    // for ever. The walkers do not borrow.
+    public static bool Borrows(InteractiveCombat combat, CardInstance card) =>
+        combat.Registry.CardDefinitions.TryGetValue(card.DefinitionId, out var definition)
+        && definition.Tags.Contains(new TagId(Gods.Nanshe.BorrowTag));
 
     // Whom to point a card at: the first enemy still on its feet. A body the fight asks to be broken before its
     // countdown runs out (Nisaba's Final Line) comes first, and one held at 1 HP by a rule that will not let it
