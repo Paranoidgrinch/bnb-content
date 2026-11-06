@@ -167,6 +167,35 @@ public static class CardRating
         return rows;
     }
 
+    // EVERY card the game document carries, by id (the Lieutenant's, the upgrades "<id>+", the general pool) —
+    // the same reading as Rate, with the cost read off the card's own Energy cost. For the trial runner's package
+    // choices (LT_RUNNER_PLAN), which meet cards FinalCards does not list.
+    public sealed record Value(double PerEnergy, bool Attack);
+
+    public static IReadOnlyDictionary<string, Value> PerEnergyById(RunBlueprint game)
+    {
+        ArgumentNullException.ThrowIfNull(game);
+        var enemies = EnemiesInAFight(game);
+        using var document = JsonDocument.Parse(RunJson.ToJson(game, RunJson.CreateOptions(indented: false)));
+        var rated = new Dictionary<string, Value>(StringComparer.Ordinal);
+        foreach (var card in document.RootElement.GetProperty("Cards").EnumerateArray())
+        {
+            var id = card.GetProperty("Id").GetString()!;
+            var cost = 0;
+            if (card.TryGetProperty("Costs", out var costs) && costs.ValueKind == JsonValueKind.Array)
+                foreach (var c in costs.EnumerateArray())
+                    if (c.TryGetProperty("ResourceId", out var resource) && resource.TryGetProperty("value", out var name)
+                        && name.GetString() == StandardCombatIds.EnergyResource.value && c.TryGetProperty("Amount", out var amount)
+                        && amount.ValueKind == JsonValueKind.Number)
+                        cost += amount.GetInt32();
+            var reading = new Reading();
+            if (card.TryGetProperty("Program", out var program) && program.TryGetProperty("Root", out var root))
+                new Walker(reading, enemies, 0).Walk(root, 1);
+            rated[id] = new Value(PerEnergy(reading.Points, cost), reading.Damage > 0);
+        }
+        return rated;
+    }
+
     // How many enemies "every enemy" hits, asked of the encounters this game ships.
     private static double EnemiesInAFight(RunBlueprint game)
     {
