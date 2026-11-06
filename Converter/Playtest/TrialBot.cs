@@ -26,7 +26,7 @@ namespace BnbContent.Converter.Playtest;
 public sealed class TrialBot
 {
     public sealed record Options(
-        int Worlds = 4, int Horizon = 3, int Beam = 5, int PerTurn = 50, int PlaysDeep = 10, int TurnCap = 40,
+        int Worlds = 3, int Horizon = 3, int Beam = 4, int PerTurn = 50, int PlaysDeep = 10, int TurnCap = 40,
         int ChoiceCap = 4, int Replans = 6);
 
     public sealed record Outcome(
