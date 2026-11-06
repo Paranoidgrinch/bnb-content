@@ -39,6 +39,13 @@ public static class TrialRunner
 
     public sealed record Loadout(IReadOnlyList<string> Deck, IReadOnlyList<string> Relics, int MaxHealth);
 
+    // A package question as a path meets it: the stop it stands in (0-based), its place among the path's answers,
+    // the question, the run as it stands, what the bot has played so far on this path.
+    public sealed record Decision(int Stop, int Index, EntitySelectionRequest Request, RunState Run, IReadOnlyDictionary<string, int> Played);
+
+    // The answer and a note for the picks log.
+    public delegate (IReadOnlyList<int> Picks, string? Note) Chooser(Path path, Decision decision);
+
     public sealed record FightRow(
         int Act, int Stage, string Kind, string Encounter, int Path, int Seed, bool Won, bool Ended, int Lost, int Rounds,
         int Refused, int Replans, double Seconds, string? Error, IReadOnlyDictionary<string, int> Played, long Positions = 0);
@@ -95,17 +102,33 @@ public static class TrialRunner
         private readonly IReadOnlyList<Node> _stops;
         private readonly TrialPackages _packages;
         private readonly HashSet<string> _known;
+        private readonly Chooser? _choose;
+        private readonly IReadOnlyList<IReadOnlyList<int>>? _script;
         private int _started = -1;
 
         public List<string> Picks { get; } = [];
         public int StopsDone { get; private set; }
+        public int Seed { get; }
 
-        public Path(RunBlueprint shipped, TrialWalk walk, int seed, TrialPackages packages)
+        // Every answer given to a package question, in order: the path's whole history of choices. Replayed on a
+        // fresh path with the same seed, it walks the same run (TrialChoices builds a candidate's deck that way).
+        public List<IReadOnlyList<int>> Answers { get; } = [];
+
+        // The stop being opened or answered (0-based), -1 before the first.
+        public int Stop => _started;
+
+        // `choose` answers the package questions (null: the static rating, TrialPackages). `script` answers the
+        // first questions instead, in order.
+        public Path(RunBlueprint shipped, TrialWalk walk, int seed, TrialPackages packages, Chooser? choose = null,
+            IReadOnlyList<IReadOnlyList<int>>? script = null)
         {
             ArgumentNullException.ThrowIfNull(shipped);
             ArgumentNullException.ThrowIfNull(walk);
             _stops = walk.Stops;
             _packages = packages;
+            _choose = choose;
+            _script = script;
+            Seed = seed;
             _known = shipped.Cards.Select(c => c.Id).ToHashSet(StringComparer.Ordinal);
             _play = new RunPlayback(() => { });
             if (_stops.Count == 0)
@@ -163,8 +186,16 @@ public static class TrialRunner
                 }
                 else if (session.IsAwaitingEntities && session.PendingEntities is { } request)
                 {
-                    var picks = _packages.Pick(request, session.Run, played);
-                    Picks.Add($"{_stops[at].Id.Value}: {_packages.Describe(request, picks)}");
+                    string? note = null;
+                    IReadOnlyList<int> picks;
+                    if (_script is not null && Answers.Count < _script.Count)
+                        picks = _script[Answers.Count];
+                    else if (_choose is not null)
+                        (picks, note) = _choose(this, new Decision(at, Answers.Count, request, session.Run, played));
+                    else
+                        picks = _packages.Pick(request, session.Run, played);
+                    Answers.Add([.. picks]);
+                    Picks.Add($"{_stops[at].Id.Value}: {_packages.Describe(request, picks)}{(note is null ? "" : " · " + note)}");
                     session.PickEntities(picks);
                 }
                 else

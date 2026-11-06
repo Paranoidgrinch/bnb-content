@@ -31,7 +31,7 @@ public sealed class TrialPackages
 
     private bool Attack(string id) => _rating.TryGetValue(id, out var v) && v.Attack;
 
-    private static string Id(EntityArt art) => art.UpgradeLevel > 0 ? art.Id + "+" : art.Id;
+    public static string Id(EntityArt art) => art.UpgradeLevel > 0 ? art.Id + "+" : art.Id;
 
     private string DeckId(RunCardInstance card) =>
         card.UpgradeLevel > 0 && _rating.ContainsKey(card.DefinitionId.value + "+") ? card.DefinitionId.value + "+" : card.DefinitionId.value;
@@ -76,16 +76,7 @@ public sealed class TrialPackages
             case Kind.Relic:
                 return [0];
             case Kind.Improve:
-            {
-                var gains = Enumerable.Range(0, n)
-                    .Select(i => (i, Gain: _rating.ContainsKey(ids[i] + "+") ? Rate(ids[i] + "+") - Rate(ids[i]) : 0))
-                    .OrderByDescending(x => x.Gain).ThenBy(x => x.i).ToList();
-                if (gains[0].Gain > 0)
-                    return [gains[0].i];
-                var attack = Enumerable.Range(0, n).Where(i => Attack(ids[i]))
-                    .OrderByDescending(i => played.GetValueOrDefault(ids[i])).ThenBy(i => i).ToList();
-                return [attack.Count > 0 ? attack[0] : 0];
-            }
+                return [ImproveOrder(request, played)[0]];
             case Kind.Remove:
             {
                 var basics = Enumerable.Range(0, n).Where(i => StarterBasics.Contains(ids[i])).ToList();
@@ -95,6 +86,22 @@ public sealed class TrialPackages
             default:
                 return [.. Enumerable.Range(0, Math.Min(request.Count, n))];
         }
+    }
+
+    // The offered cards to improve, best first: those whose "+" gains by rating (most first), then the attacks the
+    // bot has played most on this progression, then the rest in offer order.
+    public IReadOnlyList<int> ImproveOrder(EntitySelectionRequest request, IReadOnlyDictionary<string, int> played)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+        ArgumentNullException.ThrowIfNull(played);
+        var n = request.Displays.Count;
+        var ids = Enumerable.Range(0, n).Select(i => request.ArtAt(i) is { } art ? Id(art) : "").ToList();
+        var gains = Enumerable.Range(0, n)
+            .Select(i => (i, Gain: _rating.ContainsKey(ids[i] + "+") ? Rate(ids[i] + "+") - Rate(ids[i]) : 0))
+            .Where(x => x.Gain > 0).OrderByDescending(x => x.Gain).ThenBy(x => x.i).Select(x => x.i);
+        var attacks = Enumerable.Range(0, n).Where(i => Attack(ids[i]))
+            .OrderByDescending(i => played.GetValueOrDefault(ids[i])).ThenBy(i => i);
+        return [.. gains.Concat(attacks).Concat(Enumerable.Range(0, n)).Distinct()];
     }
 
     public string Describe(EntitySelectionRequest request, IReadOnlyList<int> picks)
