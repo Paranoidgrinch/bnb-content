@@ -64,6 +64,18 @@ between stages, and the earlier acts' catch-up for later acts.
 - **Upgrade:** the card whose upgrade gains the most by rating. Otherwise the most-played attack.
 - **Removal:** the weakest card, a starter Strike or Defend first.
 
+**Since 2026-11-06 (evening): choices by play** (`Playtest/TrialChoices.cs`), because the static rating scores most
+Lieutenant cards 0:
+- Card offers (every card plus skip), relic offers (every relic plus none) and the improvement (the top 3 by the
+  heuristic above) are judged by playing each candidate deck through the next stage's fights with a cheap setting of
+  the same bot (K 1, beam 2, 3 seeds per fight), on evaluation seeds that never equal a measured fight's seed.
+- Score: mean health lost, plus 100 for a loss, plus 0.1 per round. The best wins. Within 0.5 of the best, the
+  learned table breaks the tie.
+- Removal stays heuristic. `--runner-static` brings back the old rating.
+- Learning: the gain of each candidate over none goes into `~/Desktop/bnb-balance/bots/lt-card-values.json` (with a
+  readable `.txt`), keyed by id with an act + deck-theme context. The table orders candidates and breaks ties; it
+  never replaces a play-out.
+
 **Variance across rewards:** P progressions (default 5) with different reward seeds. Each path plays every
 stage on the deck it built.
 
