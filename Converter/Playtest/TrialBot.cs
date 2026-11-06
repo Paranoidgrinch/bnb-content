@@ -76,7 +76,11 @@ public sealed class TrialBot
                     continue;
                 }
                 turns++;
-                log?.Invoke($"turn {turns}: hero {real.HeroHealth} block {real.HeroGuard} energy {real.HeroEnergy} · hand "
+                var me = real.State.GetCombatant(real.HeroId);
+                log?.Invoke($"turn {turns}: hero {real.HeroHealth} block {real.HeroGuard} energy {real.HeroEnergy} "
+                    + string.Join(" ", me.Statuses.Select(st => $"{st.DefinitionId.value}x{st.Stacks}"))
+                    + string.Concat(me.Resources.Where(r => r.Key != StandardCombatIds.EnergyResource && r.Value.Current != 0).Select(r => $" {r.Key.value}={r.Value.Current}"))
+                    + " · hand "
                     + string.Join(", ", real.Hand.Select(c => c.DefinitionId.value)) + " · "
                     + string.Join("; ", real.State.Combatants.Where(c => c.Id != real.HeroId && c.IsAlive)
                         .Select(c => $"{c.Id.value} {c.Health.Current}/{c.Health.Max} [{real.UpcomingIntentFor(c.Id)?.Label}] "
@@ -108,7 +112,10 @@ public sealed class TrialBot
                 }
                 if (real.IsOver)
                     break;
+                var hpBefore = real.HeroHealth;
+                var guardEnd = real.HeroGuard;
                 EndTurn(real);
+                log?.Invoke($"   end: block {guardEnd}, lost {hpBefore - real.HeroHealth}");
             }
         }
         catch (Exception ex) when (ex is InvalidOperationException or ArgumentException or KeyNotFoundException)
