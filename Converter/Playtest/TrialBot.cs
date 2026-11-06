@@ -25,9 +25,13 @@ namespace BnbContent.Converter.Playtest;
 // what is hidden get the same decisions. That is tested (TrialRunnerTests).
 public sealed class TrialBot
 {
+    // Policy: a learned reading of the table (PlayPolicy). With it, the beam is ranked by it, the rollouts play
+    // their turns by it (the cheapest of `RolloutPerTurn` lines) and a rollout still going at the horizon is priced
+    // by it. With Worlds = 0 and a policy, there are no rollouts: the turn whose end the policy prices lowest is played.
     public sealed record Options(
         int Worlds = 3, int Horizon = 3, int Beam = 4, int PerTurn = 50, int PlaysDeep = 10, int TurnCap = 40,
-        int ChoiceCap = 4, int Replans = 6);
+        int ChoiceCap = 4, int Replans = 6,
+        [property: System.Text.Json.Serialization.JsonIgnore] PlayPolicy? Policy = null, int RolloutPerTurn = 12);
 
     public sealed record Outcome(
         bool Won, bool Ended, int Lost, int Rounds, int Refused, int Replans, long Positions, double Seconds,
@@ -139,19 +143,32 @@ public sealed class TrialBot
         ArgumentNullException.ThrowIfNull(real);
         var dice = new Random(Worlds.Seed(_seed, real, "plan"));
         var world = Worlds.Sample(real, dice);
-        var leaves = Leaves(world);
+        var leaves = Leaves(world, _options.PerTurn);
         if (leaves.Count == 0)
             return [];
 
-        var heroMax = Math.Max(1, world.State.GetCombatant(world.HeroId).Health.Max);
-        var enemyMax = Math.Max(1, EnemyMax(world));
-        // The cheap reading: the turn ended on a copy of the planning world.
-        var ranked = leaves
-            .Select(leaf => (Leaf: leaf, Quick: Quick(leaf.State, heroMax, enemyMax)))
-            .OrderByDescending(x => x.Quick)
-            .Take(Math.Max(1, _options.Beam))
-            .Select(x => x.Leaf)
-            .ToList();
+        List<Leaf> ranked;
+        if (_options.Policy is { } policy)
+        {
+            // The learned reading: the turn ended on a copy of the planning world, priced by the policy.
+            var priced = leaves.Select((leaf, i) => (Leaf: leaf, Cost: PolicyCost(policy, leaf.State, real.HeroHealth), I: i))
+                .OrderBy(x => x.Cost).ThenBy(x => x.I).ToList();
+            if (_options.Worlds <= 0)
+                return priced[0].Leaf.Path;
+            ranked = [.. priced.Take(Math.Max(1, _options.Beam)).Select(x => x.Leaf)];
+        }
+        else
+        {
+            var heroMax = Math.Max(1, world.State.GetCombatant(world.HeroId).Health.Max);
+            var enemyMax = Math.Max(1, EnemyMax(world));
+            // The cheap reading: the turn ended on a copy of the planning world.
+            ranked = leaves
+                .Select(leaf => (Leaf: leaf, Quick: Quick(leaf.State, heroMax, enemyMax)))
+                .OrderByDescending(x => x.Quick)
+                .Take(Math.Max(1, _options.Beam))
+                .Select(x => x.Leaf)
+                .ToList();
+        }
 
         var worldSeeds = Enumerable.Range(0, Math.Max(1, _options.Worlds)).Select(_ => dice.Next()).ToArray();
         var rootHealth = real.HeroHealth;
@@ -176,13 +193,42 @@ public sealed class TrialBot
     private sealed record Leaf(InteractiveCombat State, IReadOnlyList<(Move Move, string Expected)> Path);
 
     // Every way this turn can be played on the planning world, as the position it stops in (before ending).
-    private List<Leaf> Leaves(InteractiveCombat world)
+    private List<Leaf> Leaves(InteractiveCombat world, int cap)
     {
         var leaves = new List<Leaf>();
         var seen = new HashSet<string>(StringComparer.Ordinal);
         seen.Add(Shape(world));
-        Walk(world, [], 0, leaves, seen, _options.PerTurn);
+        Walk(world, [], 0, leaves, seen, cap);
         return leaves;
+    }
+
+    // The policy's price of a turn ended in `ended`: the enemies answer on a copy, then the table is read.
+    private double PolicyCost(PlayPolicy policy, InteractiveCombat ended, int rootHealth)
+    {
+        var f = ended.ForkQuiet();
+        _positions++;
+        if (!f.IsOver && f.IsHeroTurn)
+            f.EndTurn();
+        return policy.Cost(ended, f, rootHealth);
+    }
+
+    // A rollout turn played by the policy: the cheapest of a few lines.
+    private InteractiveCombat PolicyTurn(PlayPolicy policy, InteractiveCombat w)
+    {
+        var leaves = Leaves(w, Math.Max(1, _options.RolloutPerTurn));
+        var rootHealth = w.HeroHealth;
+        var best = leaves[0].State;
+        var bestCost = double.MaxValue;
+        foreach (var leaf in leaves)
+        {
+            var cost = PolicyCost(policy, leaf.State, rootHealth);
+            if (cost < bestCost - 1e-9)
+            {
+                bestCost = cost;
+                best = leaf.State;
+            }
+        }
+        return best;
     }
 
     private void Walk(InteractiveCombat node, IReadOnlyList<(Move, string)> path, int depth, List<Leaf> leaves,
@@ -377,7 +423,7 @@ public sealed class TrialBot
                 continue;
             }
             turns++;
-            w = GreedyTurn(w);
+            w = _options.Policy is { } p ? PolicyTurn(p, w) : GreedyTurn(w);
             if (w.IsOver)
                 break;
             EndWith(w, []);
@@ -387,6 +433,8 @@ public sealed class TrialBot
         var lost = Math.Max(0, rootHealth - w.HeroHealth);
         if (w.Result == CombatResult.Victory)
             return lost + PerRound * turns;
+        if (_options.Policy is { } policy)
+            return policy.Cost(null, w, rootHealth) + PerRound * turns;
         var enemies = EnemyHealth(w);
         var dealt = Math.Max(1.0, (rootEnemies - enemies) / (double)turns);
         var rate = lost / (double)turns;
