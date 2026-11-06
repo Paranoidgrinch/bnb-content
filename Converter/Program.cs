@@ -85,6 +85,19 @@ var benchHealth = 70;
 string? benchStages = null;
 string? benchExtra = null;
 string? benchOnly = null;
+// THE LIEUTENANT TRIAL RUNNER (TrialRunner, LT_RUNNER_PLAN.md): --lt-runner [--acts 1,2,3,4,5] [--runner-seeds n]
+//      [--runner-paths n] [--runner-k n] [--runner-h n] [--runner-beam n] [--runner-perturn n] [--runner-out dir]
+//      [--runner-seed n] [--runner-only id,id] [--compare <trial-log.jsonl>] [--jobs n] — the encounter trial played
+//      by a determinized-search bot; output in ~/Desktop/bnb-balance/bots/.
+var ltRunner = args.Contains("--lt-runner");
+var runnerActs = "1";
+var runnerSeeds = 20;
+var runnerPaths = 5;
+var runnerBot = new TrialBot.Options();
+string? runnerOut = null;
+string? runnerCompare = null;
+string? runnerOnly = null;
+var runnerSeed = 20261106;
 for (var i = 0; i < args.Length - 1; i++)
 {
     switch (args[i])
@@ -136,6 +149,17 @@ for (var i = 0; i < args.Length - 1; i++)
         case "--apprentice-damage": ActTuning.ApprenticeDamagePercent = int.Parse(args[i + 1]); break;
         case "--apprentice-block": ActTuning.ApprenticeBlockPercent = int.Parse(args[i + 1]); break;
         case "--audit-only": auditOnly = args[i + 1]; break;
+        case "--acts": runnerActs = args[i + 1]; break;
+        case "--runner-seeds": runnerSeeds = int.Parse(args[i + 1]); break;
+        case "--runner-paths": runnerPaths = int.Parse(args[i + 1]); break;
+        case "--runner-k": runnerBot = runnerBot with { Worlds = int.Parse(args[i + 1]) }; break;
+        case "--runner-h": runnerBot = runnerBot with { Horizon = int.Parse(args[i + 1]) }; break;
+        case "--runner-beam": runnerBot = runnerBot with { Beam = int.Parse(args[i + 1]) }; break;
+        case "--runner-perturn": runnerBot = runnerBot with { PerTurn = int.Parse(args[i + 1]) }; break;
+        case "--runner-out": runnerOut = args[i + 1]; break;
+        case "--runner-seed": runnerSeed = int.Parse(args[i + 1]); break;
+        case "--runner-only": runnerOnly = args[i + 1]; break;
+        case "--compare": runnerCompare = args[i + 1]; break;
     }
 }
 
@@ -164,6 +188,11 @@ try
             };
         return SparringMatch.Run(blueprint, snapshot, Console.WriteLine);
     }
+    if (ltRunner)
+        return TrialRunner.Run(blueprint, new TrialRunner.Options(
+            [.. Split(runnerActs).Select(int.Parse)], runnerSeeds, runnerPaths, runnerBot, jobs,
+            runnerOut ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Desktop", "bnb-balance", "bots"),
+            runnerCompare, runnerSeed, Split(runnerOnly), args.Contains("--runner-verbose")), Console.WriteLine);
     if (calcCheck > 0)
         return CalcCheck.Run(blueprint, calcCheck, seed, Console.WriteLine);
     if (audit)
