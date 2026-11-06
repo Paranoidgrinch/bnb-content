@@ -88,7 +88,9 @@ string? benchOnly = null;
 // THE LIEUTENANT TRIAL RUNNER (TrialRunner, LT_RUNNER_PLAN.md): --lt-runner [--acts 1,2,3,4,5] [--runner-seeds n]
 //      [--runner-paths n] [--runner-k n] [--runner-h n] [--runner-beam n] [--runner-perturn n] [--runner-out dir]
 //      [--runner-seed n] [--runner-only id,id] [--compare <trial-log.jsonl>] [--jobs n] — the encounter trial played
-//      by a determinized-search bot; output in ~/Desktop/bnb-balance/bots/.
+//      by a determinized-search bot; output in ~/Desktop/bnb-balance/bots/. Package choices by play (TrialChoices):
+//      [--choice-k n] [--choice-beam n] [--choice-perturn n] [--choice-seeds n] [--choice-top n]
+//      [--runner-values <json>] (default bots/lt-card-values.json) [--no-learn] [--runner-static] (the old rating).
 var ltRunner = args.Contains("--lt-runner");
 var runnerActs = "1";
 var runnerSeeds = 20;
@@ -98,6 +100,9 @@ string? runnerOut = null;
 string? runnerCompare = null;
 string? runnerOnly = null;
 var runnerSeed = 20261106;
+// Package choices by play (TrialChoices), on by default; --runner-static for the old static rating.
+var runnerChoices = new TrialChoices.Options(TrialChoices.CheapBot);
+string? runnerValues = null;
 for (var i = 0; i < args.Length - 1; i++)
 {
     switch (args[i])
@@ -160,6 +165,12 @@ for (var i = 0; i < args.Length - 1; i++)
         case "--runner-seed": runnerSeed = int.Parse(args[i + 1]); break;
         case "--runner-only": runnerOnly = args[i + 1]; break;
         case "--compare": runnerCompare = args[i + 1]; break;
+        case "--choice-k": runnerChoices = runnerChoices with { Bot = runnerChoices.Bot with { Worlds = int.Parse(args[i + 1]) } }; break;
+        case "--choice-beam": runnerChoices = runnerChoices with { Bot = runnerChoices.Bot with { Beam = int.Parse(args[i + 1]) } }; break;
+        case "--choice-perturn": runnerChoices = runnerChoices with { Bot = runnerChoices.Bot with { PerTurn = int.Parse(args[i + 1]) } }; break;
+        case "--choice-seeds": runnerChoices = runnerChoices with { Seeds = int.Parse(args[i + 1]) }; break;
+        case "--choice-top": runnerChoices = runnerChoices with { Top = int.Parse(args[i + 1]) }; break;
+        case "--runner-values": runnerValues = args[i + 1]; break;
     }
 }
 
@@ -192,7 +203,11 @@ try
         return TrialRunner.Run(blueprint, new TrialRunner.Options(
             [.. Split(runnerActs).Select(int.Parse)], runnerSeeds, runnerPaths, runnerBot, jobs,
             runnerOut ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Desktop", "bnb-balance", "bots"),
-            runnerCompare, runnerSeed, Split(runnerOnly), args.Contains("--runner-verbose")), Console.WriteLine);
+            runnerCompare, runnerSeed, Split(runnerOnly), args.Contains("--runner-verbose"),
+            args.Contains("--runner-static") ? null : runnerChoices,
+            args.Contains("--runner-static") || args.Contains("--no-learn") ? null
+                : runnerValues ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Desktop", "bnb-balance", "bots", "lt-card-values.json")),
+            Console.WriteLine);
     if (calcCheck > 0)
         return CalcCheck.Run(blueprint, calcCheck, seed, Console.WriteLine);
     if (audit)

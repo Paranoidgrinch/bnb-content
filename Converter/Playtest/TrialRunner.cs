@@ -18,7 +18,9 @@ namespace BnbContent.Converter.Playtest;
 //
 //   the walk      exactly the trial's: its stops (the packages) in order, read from the shipped document's
 //                 Extra["trial:<act>"], each fight met with the deck the stops before it built (Singles' cut).
-//   the packages  the better option by the static card rating (TrialPackages).
+//   the packages  chosen by play (TrialChoices): each candidate deck plays the next stage with a cheap bot on the
+//                 evaluation's own seeds, and what it gained is learned across runs (CardValues). Without
+//                 Choices, the old static card rating (TrialPackages).
 //   a fight       played by TrialBot (determinized search; it never sees the draw order or a future roll) on N
 //                 fresh seeds with the same deck, each from full health (the Infirmary).
 //   variance      P progressions with different reward seeds; each plays every stage on the deck it built.
@@ -29,7 +31,8 @@ public static class TrialRunner
 {
     public sealed record Options(
         IReadOnlyList<int> Acts, int Seeds, int Paths, TrialBot.Options Bot, int Jobs, string OutDir,
-        string? Compare = null, int Seed = 20261106, IReadOnlyList<string>? Only = null, bool Verbose = false);
+        string? Compare = null, int Seed = 20261106, IReadOnlyList<string>? Only = null, bool Verbose = false,
+        TrialChoices.Options? Choices = null, string? ValuesPath = null);
 
     // One fight of the walk: where it stands (stage, kind), the node the trial fields it at, and how many of the
     // walk's stops come before it.
@@ -305,31 +308,48 @@ public static class TrialRunner
         Directory.CreateDirectory(options.OutDir);
         var name = $"lt-runner-act{string.Join("", options.Acts)}-{stamp}";
         var b = options.Bot;
+        var c = options.Choices;
         say($"lieutenant trial runner · acts {string.Join(",", options.Acts)} · {options.Paths} progression(s) × {options.Seeds} seed(s) "
             + $"per encounter · K {b.Worlds} worlds · H {b.Horizon} turns · beam {b.Beam} · {b.PerTurn} positions/turn · {options.Jobs} jobs");
+        say(c is null ? "packages: static card rating"
+            : $"packages: by play · K {c.Bot.Worlds} · H {c.Bot.Horizon} · beam {c.Bot.Beam} · perTurn {c.Bot.PerTurn} · {c.Seeds} seed(s) per fight · "
+              + $"top {c.Top} · learned values {options.ValuesPath ?? "off"}");
+        var values = CardValues.Load(options.ValuesPath);
+        var themes = c is null ? null : new DeckThemes(shipped);
+        var measured = TrialChoices.MeasuredSeeds(options.Seed, options.Acts, a => Walk(shipped, a).Fights.Count, options.Paths, options.Seeds);
+        var evalScheduler = new ConcurrentExclusiveSchedulerPair(TaskScheduler.Default, Math.Max(1, options.Jobs)).ConcurrentScheduler;
+        var evalParallel = new ParallelOptions { MaxDegreeOfParallelism = Math.Max(1, options.Jobs), TaskScheduler = evalScheduler };
 
         var rows = new ConcurrentBag<FightRow>();
         var picks = new Dictionary<string, List<string>>();
-        var timings = new List<(int Act, double Minutes, int Fights)>();
+        var timings = new List<(int Act, double Minutes, int Fights, double ChoiceMinutes, int Decisions, int EvalFights)>();
         var total = Stopwatch.StartNew();
         foreach (var act in options.Acts)
         {
             var clock = Stopwatch.StartNew();
             var walk = Walk(shipped, act);
             var fights = walk.Fights.Where(f => options.Only is not { Count: > 0 } only || only.Contains(f.Encounter)).ToList();
+            // The prior is the table as the act begins: every path reads the same, whatever the others learn meanwhile.
+            var prior = values.Copy();
+            var choices = Enumerable.Range(0, options.Paths)
+                .Select(p => c is null ? null : new TrialChoices(shipped, walk, packages, prior, c, options.Seed, measured, evalParallel, themes!)).ToList();
             var paths = Enumerable.Range(0, options.Paths)
-                .Select(p => new Path(shipped, walk, PathSeed(options.Seed, act, p), packages)).ToList();
+                .Select(p => new Path(shipped, walk, PathSeed(options.Seed, act, p), packages,
+                    choices[p] is { } chooser ? (path, d) => chooser.Choose(path, d, act, p) : null)).ToList();
+            var choiceClock = new Stopwatch();
             var played = Enumerable.Range(0, options.Paths).Select(_ => new Dictionary<string, int>(StringComparer.Ordinal)).ToList();
             var count = 0;
             foreach (var stage in fights.GroupBy(f => f.Stage).OrderBy(g => g.Key))
             {
                 // Each progression walks on to this stage: the stops before its fights, with what it has played.
                 var loadouts = new Loadout[options.Paths];
-                for (var p = 0; p < options.Paths; p++)
+                choiceClock.Start();
+                Parallel.For(0, options.Paths, new ParallelOptions { MaxDegreeOfParallelism = Math.Max(1, options.Paths) }, p =>
                 {
                     paths[p].Advance(stage.Min(f => f.StopsBefore), played[p], walk.Start);
                     loadouts[p] = paths[p].Loadout(walk.Start);
-                }
+                });
+                choiceClock.Stop();
                 var jobs = (from f in stage from p in Enumerable.Range(0, options.Paths) from n in Enumerable.Range(0, options.Seeds)
                             select (Fight: f, Path: p, N: n))
                     .OrderBy(j => j.Fight.Kind switch { "boss" => 0, "elite" => 1, "multi" => 2, _ => 3 }).ToList();
@@ -358,15 +378,26 @@ public static class TrialRunner
                 count += jobs.Count;
                 var broke = stageRows.Count(r => r.Error is not null);
                 say($"  act {act} stage {stage.Key}: {stage.Count()} encounter(s), {jobs.Count} fights, "
-                    + $"{clock.Elapsed.TotalMinutes:0.0} min so far{(broke > 0 ? $", {broke} BROKE" : "")}");
+                    + $"{clock.Elapsed.TotalMinutes:0.0} min so far ({choiceClock.Elapsed.TotalMinutes:0.0} choosing, "
+                    + $"{choices.Sum(x => x?.Decisions ?? 0)} decisions, {choices.Sum(x => x?.EvalFights ?? 0)} play-out fights)"
+                    + $"{(broke > 0 ? $", {broke} BROKE" : "")}");
             }
             for (var p = 0; p < options.Paths; p++)
             {
                 picks[$"act{act}/path{p}"] = paths[p].Picks;
                 paths[p].Dispose();
             }
-            timings.Add((act, clock.Elapsed.TotalMinutes, count));
-            say($"act {act}: {count} fights in {clock.Elapsed.TotalMinutes:0.0} min");
+            // What the act's paths learned, merged in a fixed order (path, then decision) and kept.
+            if (options.ValuesPath is { } valuesPath && c is not null)
+            {
+                foreach (var chooser in choices)
+                    foreach (var (_, learned) in chooser!.LearnedBy.OrderBy(kv => kv.Key))
+                        learned.ForEach(values.Add);
+                values.Save(valuesPath);
+            }
+            timings.Add((act, clock.Elapsed.TotalMinutes, count, choiceClock.Elapsed.TotalMinutes,
+                choices.Sum(x => x?.Decisions ?? 0), choices.Sum(x => x?.EvalFights ?? 0)));
+            say($"act {act}: {count} fights in {clock.Elapsed.TotalMinutes:0.0} min ({choiceClock.Elapsed.TotalMinutes:0.0} min choosing)");
         }
 
         var human = options.Compare is { } log ? Human(log) : null;
@@ -375,21 +406,30 @@ public static class TrialRunner
         text.AppendLine($"lieutenant trial runner · {DateTime.Now:yyyy-MM-dd HH:mm} · acts {string.Join(",", options.Acts)}");
         text.AppendLine($"{options.Paths} progression(s) × {options.Seeds} seed(s) · K {b.Worlds} · H {b.Horizon} · beam {b.Beam} · "
             + $"perTurn {b.PerTurn} · seed {options.Seed}");
-        foreach (var (act, minutes, n) in timings)
-            text.AppendLine($"act {act}: {n} fights, {minutes:0.0} min");
+        if (c is not null)
+            text.AppendLine($"packages by play · K {c.Bot.Worlds} · H {c.Bot.Horizon} · beam {c.Bot.Beam} · perTurn {c.Bot.PerTurn} · "
+                + $"{c.Seeds} seed(s) per fight · top {c.Top} · learned values {options.ValuesPath ?? "off"}");
+        foreach (var (act, minutes, n, choosing, decisions, evalFights) in timings)
+            text.AppendLine($"act {act}: {n} fights, {minutes:0.0} min ({choosing:0.0} min choosing: {decisions} decisions, {evalFights} play-out fights)");
         text.AppendLine();
         text.Append(table);
         File.WriteAllText(System.IO.Path.Combine(options.OutDir, name + ".txt"), text.ToString());
         File.WriteAllText(System.IO.Path.Combine(options.OutDir, name + ".json"), JsonSerializer.Serialize(new
         {
-            Options = new { options.Acts, options.Seeds, options.Paths, options.Bot, options.Seed, options.Compare },
-            Timings = timings.Select(t => new { t.Act, t.Minutes, t.Fights }),
+            Options = new { options.Acts, options.Seeds, options.Paths, options.Bot, options.Seed, options.Compare, options.Choices, options.ValuesPath },
+            Timings = timings.Select(t => new { t.Act, t.Minutes, t.Fights, t.ChoiceMinutes, t.Decisions, t.EvalFights }),
             Encounters = Summaries(rows.ToList(), human),
             Picks = picks,
             Fights = rows.OrderBy(r => r.Act).ThenBy(r => r.Stage).ThenBy(r => r.Encounter, StringComparer.Ordinal)
                 .ThenBy(r => r.Path).ThenBy(r => r.Seed),
         }, new JsonSerializerOptions { WriteIndented = true }));
         say(text.ToString());
+        if (options.ValuesPath is { } kept && c is not null)
+        {
+            values.Runs++;
+            values.Save(kept);
+            say($"learned values: {kept} (+ .txt)");
+        }
         say($"wrote {System.IO.Path.Combine(options.OutDir, name)}.txt/.json · {total.Elapsed.TotalMinutes:0.0} min in all");
         return rows.Any(r => r.Error is not null) ? 1 : 0;
     }
