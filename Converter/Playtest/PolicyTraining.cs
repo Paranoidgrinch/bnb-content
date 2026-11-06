@@ -30,7 +30,7 @@ public static class PolicyTraining
     public sealed record Options(
         IReadOnlyList<int> Acts, string Dir, int Gens = 20, int Pop = 16, int Elite = 4, int TrainSeeds = 12,
         int ValidSeeds = 16, int Decks = 4, int PerTurn = 30, int Seed = 20261106, int Jobs = 8, double Minutes = 0,
-        int SharedGens = 12, int SharedCases = 3, IReadOnlyList<string>? Only = null, bool Warm = false,
+        int SharedGens = 12, int SharedCases = 2, IReadOnlyList<string>? Only = null, bool Warm = false, int MinGens = 2,
         string? ModelPath = null, string? ValuesPath = null, int MeasuredPaths = 5, int MeasuredSeeds = 20, string? Compare = null);
 
     public sealed record Case(TrialRunner.TrialFight Fight, TrialRunner.Loadout Loadout, int Seed, int BotSeed);
@@ -116,10 +116,11 @@ public static class PolicyTraining
     }
 
     public static (PlayPolicy Policy, double TrainFit, int Gens) Cem(RunBlueprint shipped, int act, string name, PlayPolicy start,
-        IReadOnlyList<Case> cases, Options o, int gens, string? checkpoint, Func<bool> outOfTime, Action<string> say)
+        IReadOnlyList<Case> cases, Options o, int gens, string? checkpoint, Func<bool> outOfTime, Action<string> say, Func<bool>? hardOut = null)
     {
         var config = $"{o.Seed}|{o.Pop}|{o.Elite}|{o.PerTurn}|{cases.Count}|{start.Weights.Sum():0.0000}";
         var d = PlayPolicy.Count;
+        hardOut ??= () => false;
         Checkpoint ck;
         if (checkpoint is not null && File.Exists(checkpoint)
             && JsonSerializer.Deserialize<Checkpoint>(File.ReadAllText(checkpoint)) is { } saved && saved.Config == config)
@@ -139,7 +140,8 @@ public static class PolicyTraining
             ck.BestFit = Evaluate(shipped, act, [start], cases, o.PerTurn, o.Jobs)[0];
             ck.History.Add(ck.BestFit);
         }
-        while (ck.Gen < gens && !(ck.Gen >= 3 && outOfTime()))
+        // Past its share of the budget an encounter stops after MinGens; past the whole budget (+10 %) at once.
+        while (ck.Gen < gens && !(ck.Gen >= o.MinGens && outOfTime()) && !(o.Minutes > 0 && hardOut()))
         {
             var dice = new Random(Mix(o.Seed, act, Hash(name), ck.Gen, 0xce));
             var samples = new List<double[]> { ck.Mean.ToArray() };
@@ -199,6 +201,11 @@ public static class PolicyTraining
             var clock = Stopwatch.StartNew();
             var walk = TrialRunner.Walk(shipped, act);
             var fights = walk.Fights.Where(f => o.Only is not { Count: > 0 } only || only.Contains(f.Encounter)).ToList();
+            if (fights.Count == 0)
+            {
+                say($"act {act}: no encounter to train");
+                continue;
+            }
             say($"act {act}: {fights.Count} encounter(s) · decks by {(chooser.HasModel ? "the draft model" : "the learned table")} · "
                 + $"pop {o.Pop} · elite {o.Elite} · gens {o.Gens} (shared {o.SharedGens}) · {o.TrainSeeds} train / {o.ValidSeeds} valid seeds · "
                 + $"budget {(o.Minutes > 0 ? $"{o.Minutes:0} min" : "none")}");
@@ -216,10 +223,10 @@ public static class PolicyTraining
             // 1. the act's shared policy
             var sharedName = PolicyBook.SharedName(act);
             var sharedFile = PolicyBook.PathOf(o.Dir, sharedName);
-            var sharedConfig = $"shared|{o.Seed}|{o.Pop}|{o.SharedGens}|{o.SharedCases}|{o.PerTurn}|{fights.Count}";
+            var sharedConfig = $"shared|{o.Seed}|{o.Pop}|{o.SharedGens}|{o.SharedCases}|{o.PerTurn}|{fights.Count}" + (o.Warm ? "|warm" : "");
             var sharedRecord = PlayPolicy.Load(sharedFile);
             PlayPolicy shared;
-            if (sharedRecord is { Done: true } && sharedRecord.Config == sharedConfig && !o.Warm)
+            if (sharedRecord is { Done: true } && sharedRecord.Config == sharedConfig)
             {
                 shared = PlayPolicy.FromRecord(sharedRecord);
                 say($"  {sharedName}: kept ({sharedRecord.Generations} gens, valid {sharedRecord.ValidScore:0.00})");
@@ -229,7 +236,7 @@ public static class PolicyTraining
                 var start = sharedRecord is not null && o.Warm ? PlayPolicy.FromRecord(sharedRecord) : PlayPolicy.Default;
                 var cases = fights.SelectMany(f => train[f.Encounter].Take(o.SharedCases)).ToList();
                 var (p, fit, gens) = Cem(shipped, act, sharedName + (o.Warm ? "-warm" : ""), start, cases, o, o.SharedGens,
-                    Path.Combine(o.Dir, "ckpt", sharedName + (o.Warm ? "-warm" : "") + ".json"), () => Over(0.2), say);
+                    Path.Combine(o.Dir, "ckpt", sharedName + (o.Warm ? "-warm" : "") + ".json"), () => Over(0.2), say, () => Over(1.1));
                 shared = new PlayPolicy(p.Weights) { Name = sharedName };
                 var vcases = fights.SelectMany(f => valid[f.Encounter].Take(o.SharedCases)).ToList();
                 var v = Evaluate(shipped, act, [PlayPolicy.Default, shared], vcases, o.PerTurn, o.Jobs);
@@ -252,9 +259,9 @@ public static class PolicyTraining
             {
                 var f = fights[k];
                 var file = PolicyBook.PathOf(o.Dir, f.Encounter);
-                var config = $"enc|{o.Seed}|{o.Pop}|{o.Gens}|{o.TrainSeeds}|{o.PerTurn}";
+                var config = $"enc|{o.Seed}|{o.Pop}|{o.Gens}|{o.TrainSeeds}|{o.PerTurn}" + (o.Warm ? "|warm" : "");
                 var old = PlayPolicy.Load(file);
-                if (old is { Done: true } && old.Config == config && !o.Warm)
+                if (old is { Done: true } && old.Config == config)
                 {
                     lines.Add(Line(f, old, human?.GetValueOrDefault((act, f.Encounter))));
                     continue;
@@ -264,7 +271,7 @@ public static class PolicyTraining
                 var share = 0.2 + 0.75 * (k + 1) / fights.Count; // the budget left, shared out over what is left
                 var tag = f.Encounter + (o.Warm ? "-warm" : "");
                 var (p, fit, gens) = Cem(shipped, act, tag, start, train[f.Encounter], o, o.Gens,
-                    Path.Combine(o.Dir, "ckpt", tag + ".json"), () => Over(share), say);
+                    Path.Combine(o.Dir, "ckpt", tag + ".json"), () => Over(share), say, () => Over(1.1));
                 var rows = new List<TrialRunner.FightRow>();
                 var v = Evaluate(shipped, act, [PlayPolicy.Default, start, p], valid[f.Encounter], o.PerTurn, o.Jobs, rows);
                 var learned = rows.Skip(2 * valid[f.Encounter].Count).ToList();
