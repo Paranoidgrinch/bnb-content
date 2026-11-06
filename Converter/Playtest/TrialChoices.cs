@@ -30,8 +30,12 @@ namespace BnbContent.Converter.Playtest;
 // replaces the play-out of a candidate that is played.
 public sealed class TrialChoices
 {
+    // Book: the learned play policies the evaluation's bot plays with. Model: the fitted draft model (DeckModel); with
+    // it, candidates are ordered by what it predicts they gain in this deck, and only the best `Top` are played.
     public sealed record Options(TrialBot.Options Bot, int Seeds = 3, int Top = 99, int ImproveTop = 3,
-        double LossPenalty = 100, double PerRound = 0.1, double TieBand = 0.5);
+        double LossPenalty = 100, double PerRound = 0.1, double TieBand = 0.5,
+        [property: System.Text.Json.Serialization.JsonIgnore] PolicyBook? Book = null,
+        [property: System.Text.Json.Serialization.JsonIgnore] DeckModel? Model = null);
 
     // The same cheap setting by default: one world, a beam of two, a short turn search.
     public static TrialBot.Options CheapBot { get; } = new(Worlds: 1, Horizon: 3, Beam: 2, PerTurn: 30);
@@ -60,7 +64,10 @@ public sealed class TrialChoices
         _measured = measured ?? throw new ArgumentNullException(nameof(measured));
         _parallel = parallel ?? throw new ArgumentNullException(nameof(parallel));
         _themes = themes ?? throw new ArgumentNullException(nameof(themes));
+        _reader = options.Model is null ? null : new DeckModel.Reader(shipped, themes);
     }
+
+    private readonly DeckModel.Reader? _reader;
 
     // What one path learned, in the order it learned it. Read once the path is done (one path, one thread).
     public Dictionary<int, List<Learned>> LearnedBy { get; } = [];
@@ -92,6 +99,9 @@ public sealed class TrialChoices
 
         var ids = Enumerable.Range(0, request.Displays.Count).Select(i => request.ArtAt(i) is { } art ? TrialPackages.Id(art) : "").ToList();
         var label = kind switch { TrialPackages.Kind.Card => "card", TrialPackages.Kind.Relic => "relic", _ => "upgrade" };
+        var now = path.Loadout(_walk.Start);
+        var stage = NextFights(decision.Stop)[0].Stage;
+        double Prior(string kind, string id) => this.Prior(kind, id, now, act, stage);
         var offered = new List<Candidate>();
         if (kind == TrialPackages.Kind.Improve)
         {
@@ -145,7 +155,7 @@ public sealed class TrialChoices
             var (c, fight, n) = jobs[j];
             var row = TrialRunner.Fight(_shipped, fight, loadouts[c], act, pathIndex,
                 EvalSeed(_baseSeed, act, pathIndex, decision, fight.Index, n, _measured),
-                EvalBotSeed(_baseSeed, act, pathIndex, decision, fight.Index, n), _options.Bot);
+                EvalBotSeed(_baseSeed, act, pathIndex, decision, fight.Index, n), _options.Bot, book: _options.Book);
             scores[j] = row.Lost + (row.Won ? 0 : _options.LossPenalty) + _options.PerRound * row.Rounds;
         });
         Interlocked.Add(ref EvalFights, jobs.Count);
@@ -164,8 +174,17 @@ public sealed class TrialChoices
         return open.Where(c => scores[c] <= best + tieBand).OrderByDescending(c => prior[c]).ThenBy(c => scores[c]).ThenBy(c => c).First();
     }
 
-    private double Prior(string kind, string id) =>
-        _prior.Mean(kind, id) ?? (kind == "card" ? 0.01 * _packages.Rate(id) : 0);
+    // What a candidate is expected to gain: the draft model's prediction in this deck where it knows the id, else
+    // the learned table's mean, else a hundredth of the static rating.
+    private double Prior(string kind, string id, TrialRunner.Loadout now, int act, int stage)
+    {
+        if (_options.Model is { } model && _reader is not null && model.Knows(act, kind, id))
+        {
+            var after = DeckModel.After(now, kind, id);
+            return model.Gain(_reader, act, stage, now.Deck, now.Relics, after.Deck, after.Relics);
+        }
+        return _prior.Mean(kind, id) ?? (kind == "card" ? 0.01 * _packages.Rate(id) : 0);
+    }
 
     // The deck a candidate answer leaves: the path replayed on its seed with every answer so far plus this one, to
     // the end of the stop (⚠ a stop's picks reach the deck only when the stop closes). The stop's later questions
@@ -274,6 +293,10 @@ public sealed class DeckThemes
                 else
                     Statuses(p.Value, into);
     }
+
+    // The themes one card works with (an improved copy reads as its base where it has no entry of its own).
+    public IReadOnlyList<string> Of(string card) =>
+        _byCard.GetValueOrDefault(card) ?? _byCard.GetValueOrDefault(card.TrimEnd('+')) ?? [];
 
     public string Context(int act, IEnumerable<string> deck)
     {
