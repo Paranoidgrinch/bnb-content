@@ -103,6 +103,21 @@ var runnerSeed = 20261106;
 // Package choices by play (TrialChoices), on by default; --runner-static for the old static rating.
 var runnerChoices = new TrialChoices.Options(TrialChoices.CheapBot);
 string? runnerValues = null;
+// THE LEARNED PLAYER AND DRAFTER (PlayPolicy, PolicyTraining, DeckModel; overnight: tools/lt_overnight.sh):
+//      --policy-dir <dir> (the runner plays with the learned policies there; default for training bots/lt-policy)
+//      --deck-model <json> (the draft model orders the package candidates; default for training bots/lt-deck-model.json)
+//      --runner-rollout-perturn n (lines per rollout turn with a policy)
+//      --lt-train [--acts ..] [--runner-only ..] [--train-gens n] [--train-pop n] [--train-elite n] [--train-seeds n]
+//          [--valid-seeds n] [--train-decks n] [--train-perturn n] [--train-minutes m] [--shared-gens n] [--train-warm]
+//      --lt-decks [--acts ..] [--deck-progressions n] [--deck-seeds n] [--deck-epsilon x] [--deck-round n] [--deck-data <jsonl>]
+var bots = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Desktop", "bnb-balance", "bots");
+string? policyDir = null;
+string? deckModelPath = null;
+var ltTrain = args.Contains("--lt-train");
+var ltDecks = args.Contains("--lt-decks");
+var train = new PolicyTraining.Options([1], Path.Combine(bots, "lt-policy"), Warm: args.Contains("--train-warm"));
+var deckRound = new PolicyTraining.DeckOptions([1], 64, 2, 0.3, 1, Path.Combine(bots, "lt-deck-data.jsonl"),
+    Path.Combine(bots, "lt-deck-model.json"), Path.Combine(bots, "lt-policy"));
 for (var i = 0; i < args.Length - 1; i++)
 {
     switch (args[i])
@@ -171,6 +186,23 @@ for (var i = 0; i < args.Length - 1; i++)
         case "--choice-seeds": runnerChoices = runnerChoices with { Seeds = int.Parse(args[i + 1]) }; break;
         case "--choice-top": runnerChoices = runnerChoices with { Top = int.Parse(args[i + 1]) }; break;
         case "--runner-values": runnerValues = args[i + 1]; break;
+        case "--policy-dir": policyDir = args[i + 1]; break;
+        case "--deck-model": deckModelPath = args[i + 1]; break;
+        case "--runner-rollout-perturn": runnerBot = runnerBot with { RolloutPerTurn = int.Parse(args[i + 1]) }; break;
+        case "--train-gens": train = train with { Gens = int.Parse(args[i + 1]) }; break;
+        case "--train-pop": train = train with { Pop = int.Parse(args[i + 1]) }; break;
+        case "--train-elite": train = train with { Elite = int.Parse(args[i + 1]) }; break;
+        case "--train-seeds": train = train with { TrainSeeds = int.Parse(args[i + 1]) }; break;
+        case "--valid-seeds": train = train with { ValidSeeds = int.Parse(args[i + 1]) }; break;
+        case "--train-decks": train = train with { Decks = int.Parse(args[i + 1]) }; break;
+        case "--train-perturn": train = train with { PerTurn = int.Parse(args[i + 1]) }; deckRound = deckRound with { PerTurn = int.Parse(args[i + 1]) }; break;
+        case "--train-minutes": train = train with { Minutes = double.Parse(args[i + 1], System.Globalization.CultureInfo.InvariantCulture) }; break;
+        case "--shared-gens": train = train with { SharedGens = int.Parse(args[i + 1]) }; break;
+        case "--deck-progressions": deckRound = deckRound with { Progressions = int.Parse(args[i + 1]) }; break;
+        case "--deck-seeds": deckRound = deckRound with { Seeds = int.Parse(args[i + 1]) }; break;
+        case "--deck-epsilon": deckRound = deckRound with { Epsilon = double.Parse(args[i + 1], System.Globalization.CultureInfo.InvariantCulture) }; break;
+        case "--deck-round": deckRound = deckRound with { Round = int.Parse(args[i + 1]) }; break;
+        case "--deck-data": deckRound = deckRound with { DataPath = args[i + 1] }; break;
     }
 }
 
@@ -199,6 +231,36 @@ try
             };
         return SparringMatch.Run(blueprint, snapshot, Console.WriteLine);
     }
+    if (ltTrain)
+        return PolicyTraining.TrainPolicies(blueprint, train with
+        {
+            Acts = [.. Split(runnerActs).Select(int.Parse)],
+            Dir = policyDir ?? train.Dir,
+            Only = Split(runnerOnly),
+            Seed = runnerSeed,
+            Jobs = jobs,
+            ModelPath = deckModelPath ?? Path.Combine(bots, "lt-deck-model.json"),
+            ValuesPath = runnerValues ?? Path.Combine(bots, "lt-card-values.json"),
+            MeasuredPaths = runnerPaths,
+            MeasuredSeeds = runnerSeeds,
+            Compare = runnerCompare,
+        }, Console.WriteLine);
+    if (ltDecks)
+        return PolicyTraining.DeckRounds(blueprint, deckRound with
+        {
+            Acts = [.. Split(runnerActs).Select(int.Parse)],
+            PolicyDir = policyDir ?? deckRound.PolicyDir,
+            ModelPath = deckModelPath ?? deckRound.ModelPath,
+            Seed = runnerSeed,
+            Jobs = jobs,
+            ValuesPath = runnerValues ?? Path.Combine(bots, "lt-card-values.json"),
+        }, Console.WriteLine);
+    if (policyDir is not null || deckModelPath is not null)
+        runnerChoices = runnerChoices with
+        {
+            Book = policyDir is null ? null : new PolicyBook(policyDir),
+            Model = DeckModel.Load(deckModelPath),
+        };
     if (ltRunner)
         return TrialRunner.Run(blueprint, new TrialRunner.Options(
             [.. Split(runnerActs).Select(int.Parse)], runnerSeeds, runnerPaths, runnerBot, jobs,
@@ -206,7 +268,8 @@ try
             runnerCompare, runnerSeed, Split(runnerOnly), args.Contains("--runner-verbose"),
             args.Contains("--runner-static") ? null : runnerChoices,
             args.Contains("--runner-static") || args.Contains("--no-learn") ? null
-                : runnerValues ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Desktop", "bnb-balance", "bots", "lt-card-values.json")),
+                : runnerValues ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Desktop", "bnb-balance", "bots", "lt-card-values.json"),
+            policyDir is null ? null : new PolicyBook(policyDir), DeckModel.Load(deckModelPath)),
             Console.WriteLine);
     if (calcCheck > 0)
         return CalcCheck.Run(blueprint, calcCheck, seed, Console.WriteLine);

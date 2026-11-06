@@ -32,7 +32,8 @@ public static class TrialRunner
     public sealed record Options(
         IReadOnlyList<int> Acts, int Seeds, int Paths, TrialBot.Options Bot, int Jobs, string OutDir,
         string? Compare = null, int Seed = 20261106, IReadOnlyList<string>? Only = null, bool Verbose = false,
-        TrialChoices.Options? Choices = null, string? ValuesPath = null);
+        TrialChoices.Options? Choices = null, string? ValuesPath = null, PolicyBook? Policies = null, DeckModel? Model = null,
+        string? DeckData = null);
 
     // One fight of the walk: where it stands (stage, kind), the node the trial fields it at, and how many of the
     // walk's stops come before it.
@@ -254,9 +255,11 @@ public static class TrialRunner
     }
 
     public static FightRow Fight(RunBlueprint shipped, TrialFight fight, Loadout loadout, int act, int path, int seed,
-        int botSeed, TrialBot.Options bot, Action<string>? log = null)
+        int botSeed, TrialBot.Options bot, Action<string>? log = null, PolicyBook? book = null)
     {
         var clock = Stopwatch.StartNew();
+        if (book is not null)
+            bot = bot with { Policy = book.For(fight.Encounter, act) };
         try
         {
             var (play, real) = Open(Ring(shipped, fight, loadout), seed);
@@ -359,7 +362,7 @@ public static class TrialRunner
                     var lines = options.Verbose ? new List<string>() : null;
                     var row = Fight(shipped, job.Fight, loadouts[job.Path], act, job.Path,
                         FightSeed(options.Seed, act, job.Fight.Index, job.Path, job.N),
-                        BotSeed(options.Seed, act, job.Fight.Index, job.Path, job.N), options.Bot, lines is null ? null : lines.Add);
+                        BotSeed(options.Seed, act, job.Fight.Index, job.Path, job.N), options.Bot, lines is null ? null : lines.Add, options.Policies);
                     if (lines is not null)
                         lock (stageRows)
                         {
