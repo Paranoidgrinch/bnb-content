@@ -5,7 +5,7 @@ using RogueDeck.Scenario.Authoring;
 namespace BnbContent.Converter;
 
 // Act III's laws in one shape (user, 2026-11-03): an enemy's law is a sentence about your cards, breaking it gives
-// that enemy a Claim (+3 damage on its attacks, at most 3), and a law breaks at most once a turn. A Safe-Conduct
+// that enemy a Claim (+7 damage on its attacks, at most 3), and a law breaks at most once a turn. A Safe-Conduct
 // still refuses the breach, because the breach still arrives as a Trespass — which the customs turn into the Claim
 // the moment it lands (TrespassThreshold = 1).
 public static partial class ActThree

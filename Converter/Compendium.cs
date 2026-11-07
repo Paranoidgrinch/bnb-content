@@ -118,7 +118,7 @@ public static class Compendium
             "A pass that forgives the next law you break: no Claim.",
             "With 1 Safe-Conduct, the next law you break costs nothing and the Safe-Conduct is spent."),
         new("claim", "Claim",
-            "Won by an enemy each time you break its law: each adds 3 to its attacks. Nobody holds more than 3.",
+            "Won by an enemy each time you break its law: each adds 7 to its attacks. Nobody holds more than 3.",
             "You break the Hare's law twice: it holds 2 Claims, and its attacks deal 6 more."),
         new("overdue", "Overdue",
             "A debt to whoever gave it to you. At 2 from the same source, that source collects its price.",

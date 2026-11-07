@@ -36,6 +36,9 @@ public static partial class ActThree
 
     // At most three Claims to a party — the design's suggested ceiling, enforced where claims are made.
     public const int ClaimCeiling = 3;
+    // What one Claim adds to each of its holder's hits: 7 since the Act III trial of 2026-11-07 (user: "so that one
+    // really keeps to the laws"; it was 3, and a broken law cost next to nothing).
+    public const int ClaimDamage = 7;
 
     // How many Trespass from one source become that source's Claim: one since 2026-11-03 (user) — breaking a law
     // gives that party a Claim at once. The Trespass is still filed, so a Safe-Conduct can still refuse it.
@@ -83,7 +86,7 @@ public static partial class ActThree
     {
         Id = ClaimId,
         NameKey = "Claim",
-        DescriptionKey = "Won each time you break this party's law. Each Claim adds 3 to its attacks. At most 3.",
+        DescriptionKey = "Won each time you break this party's law. Each Claim adds 7 to its attacks. At most 3.",
         Polarity = StatusPolarity.Buff,
         StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
         UsesStacks = true,
@@ -92,7 +95,7 @@ public static partial class ActThree
         // party's blows heavier, on top of whatever its own rule reads into it.
         PassiveModifiers =
         [
-            new PassiveModifierData(PassiveModifierPipeline.DamageDealt, PassiveModifierOperation.AddPerStack, 3),
+            new PassiveModifierData(PassiveModifierPipeline.DamageDealt, PassiveModifierOperation.AddPerStack, ClaimDamage),
         ],
         Triggers = [],
     };
@@ -160,7 +163,7 @@ public static partial class ActThree
             ClearFromParties<TurnStartedTriggeredEffectContext>(LawBrokenThisTurnId));
 
         return Rule(GreenDocketCustomsId, "The Green Docket",
-            "Break an enemy's law and it gains a Claim: +3 damage on its attacks, at most 3. Each law breaks once a turn.",
+            "Break an enemy's law and it gains a Claim: +7 damage on its attacks, at most 3. Each law breaks once a turn.",
             [
                 new StatusTriggerData("StatusApplied", JsonSerializer.SerializeToElement(
                     program, CombatJson.CreateOptions<StatusAppliedTriggeredEffectContext>())),

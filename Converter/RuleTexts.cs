@@ -101,7 +101,7 @@ public static class RuleTexts
             ["isolated_in_the_margin"] = ("Isolated", "Does nothing and takes double damage. Moves to the next volume when its turns run out."),
 
             // ── Act III elites and bosses (reworked 2026-11-03: every rule a law, every broken law a Claim) ──
-            ["green_docket_body"] = (null, "Break an enemy's law and it gains a Claim: +3 damage on its attacks, at most 3."),
+            ["green_docket_body"] = (null, "Break an enemy's law and it gains a Claim: +7 damage on its attacks, at most 3."),
             ["pre_approved_violence"] = (null, "Odd rounds: violence approved, your Deeds and its attacks deal 50% more. Even rounds: every Deed breaks its law."),
             ["grandmother_web_threads"] = (null, "Every card you play spins a thread (6 at most); every Working cuts 2. On its turn each thread hits you for 3."),
             ["debt_before_passage"] = (null, "Your first hit each turn breaks its law. At half health it turns: 8 damage to itself per Claim, then your first hits deal double."),
