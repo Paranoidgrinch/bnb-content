@@ -318,16 +318,19 @@ public static class Obligations
                 N<T>.Seq(N<T>.Set(her, OlderOrder, N<T>.Counter(her, NewerOrder)), N<T>.Set(her, NewerOrder, 0))),
             N<T>.If(N<T>.Is(N<T>.Counter(her, NewerOrder), number), N<T>.Set(her, NewerOrder, 0)));
 
+    // Everyone carrying `status`, the fallen included: what a "take it off everybody" walks over. ⚠ Not every
+    // combatant: a fight that summons (Nisaba writes a body per sentence) keeps its gone bodies in the table, and a
+    // walk over all of them passed the engine's 32 targets (golden run, 2026-11-07: Arrest against Nisaba).
+    internal static ICombatantTargetSelector Bearers(string status) =>
+        CombatantTargetSelectors.WithStatus(CombatantTargetSelectors.AllCombatants, new StatusDefinitionId(status), includeFallen: true);
+
     // One Challenge in the whole fight: every other is withdrawn, without success or failure (§2.4).
-    private static IEffectNode<StatusAppliedTriggeredEffectContext> IssueChallenge(ChallengeSpec challenge)
-    {
-        var all = CombatantTargetSelectors.AllCombatants;
-        return SA.All(
+    private static IEffectNode<StatusAppliedTriggeredEffectContext> IssueChallenge(ChallengeSpec challenge) =>
+        SA.All(
         [
-            .. ChallengeList.Where(c => c.Id != challenge.Id).Select(c => SA.Each(all, SA.Remove(SA.It, c.Id))),
-            SA.Each(CombatantTargetSelectors.Except(all, SA.Event), SA.Remove(SA.It, challenge.Id)),
+            .. ChallengeList.Where(c => c.Id != challenge.Id).Select(c => SA.Each(Bearers(c.Id), SA.Remove(SA.It, c.Id))),
+            SA.Each(CombatantTargetSelectors.Except(Bearers(challenge.Id), SA.Event), SA.Remove(SA.It, challenge.Id)),
         ]);
-    }
 
     // ── Orders ───────────────────────────────────────────────────────────────────────────────────────────
 
@@ -335,7 +338,7 @@ public static class Obligations
 
     private static IEffectNode<T> Cleanup<T>(OrderSpec order) where T : class =>
         order.Kind == OrderKind.TwoEnemies
-            ? N<T>.Each(CombatantTargetSelectors.AllCombatants, N<T>.Remove(N<T>.It, DoubleFileMark))
+            ? N<T>.Each(Bearers(DoubleFileMark), N<T>.Remove(N<T>.It, DoubleFileMark))
             : N<T>.Nothing;
 
     private static IEffectNode<T> Kept<T>(OrderSpec order, ICombatantTargetSelector her) where T : class =>
@@ -452,7 +455,7 @@ public static class Obligations
         var her = Her;
         // `enemy` finds the bearer BY this Challenge, so it is marked before the Challenge comes off.
         return N<T>.Seq(
-            N<T>.Each(CombatantTargetSelectors.AllCombatants, N<T>.Remove(N<T>.It, LastWon)),
+            N<T>.Each(Bearers(LastWon), N<T>.Remove(N<T>.It, LastWon)),
             N<T>.Apply(enemy, LastWon, 1),
             N<T>.Remove(enemy, challenge.Id),
             challenge.Reward.Pay<T>(her),

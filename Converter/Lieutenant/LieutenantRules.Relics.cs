@@ -250,7 +250,7 @@ public static partial class LieutenantRules
                 AR.If(AR.AtLeast(AR.Count(CombatantTargetSelectors.WithStatus(CombatantTargetSelectors.AllAliveCombatants,
                         new StatusDefinitionId(EpauletteTarget))), 1),
                     AR.Hit(target, AR.Half(AR.Minus(AR.Counter(AR.Self, size), AR.Max(AR.C(0), AR.Stacks(AR.Self, Strength)))))),
-                AR.Each(CombatantTargetSelectors.AllCombatants, AR.Remove(AR.It, EpauletteTarget))))),
+                AR.Each(Obligations.Bearers(EpauletteTarget), AR.Remove(AR.It, EpauletteTarget))))),
             On(TriggerEvent.TurnEnded, TE.Set(TE.Self, ready, 0)),
         ]);
     }

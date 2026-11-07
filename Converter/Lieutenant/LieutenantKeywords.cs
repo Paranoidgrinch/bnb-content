@@ -88,7 +88,7 @@ public static class LieutenantKeywords
             D.Add(she, GuardExtraTotal,
                 D.Counter(she, GuardExtra)),
             D.Remove(she, OpenGuard),
-            D.Each(CombatantTargetSelectors.AllCombatants, D.Remove(D.It, Obligations.GuardStriker)),
+            D.Each(Obligations.Bearers(Obligations.GuardStriker), D.Remove(D.It, Obligations.GuardStriker)),
             D.Apply(D.Self, Obligations.GuardStriker, 1),
             D.Announce(she, GuardSpent),
             D.If(
