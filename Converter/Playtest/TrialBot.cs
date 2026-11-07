@@ -209,8 +209,21 @@ public sealed class TrialBot
         _positions++;
         if (!f.IsOver && f.IsHeroTurn)
             f.EndTurn();
-        return policy.Cost(ended, f, rootHealth);
+        return policy.Cost(ended, f, rootHealth) + ClaimDebt(f);
     }
+
+    // ── what a broken law will cost (Act III) ──────────────────────────────────────────────────────────────
+    // A Claim adds to every hit its holder lands for the rest of the fight, but a 3-turn horizon played by a
+    // law-blind cheap player sees at most a turn or two of it, and sees it in every line alike. So a fight still
+    // going is charged up front: every Claim standing on a living enemy, as ClaimDebtTurns more of its hits.
+    // (Measured with the user's own Act III decks, 2026-11-07: the bot lost 62 against the bosses, the user 39.)
+    public const int ClaimDebtTurns = 3;
+
+    private static double ClaimDebt(InteractiveCombat w) =>
+        w.IsOver ? 0 : w.State.Combatants
+            .Where(c => c.Id != w.HeroId && c.IsAlive && c.TeamId == StandardCombatIds.EnemyTeam)
+            .Sum(c => c.Statuses.Where(st => st.DefinitionId.value == ActThree.ClaimId).Sum(st => st.Stacks))
+            * (double)ActThree.ClaimDamage * ClaimDebtTurns;
 
     // A rollout turn played by the policy: the cheapest of a few lines.
     private InteractiveCombat PolicyTurn(PlayPolicy policy, InteractiveCombat w)
@@ -434,7 +447,7 @@ public sealed class TrialBot
         if (w.Result == CombatResult.Victory)
             return lost + PerRound * turns;
         if (_options.Policy is { } policy)
-            return policy.Cost(null, w, rootHealth) + PerRound * turns;
+            return policy.Cost(null, w, rootHealth) + ClaimDebt(w) + PerRound * turns;
         var enemies = EnemyHealth(w);
         var dealt = Math.Max(1.0, (rootEnemies - enemies) / (double)turns);
         var rate = lost / (double)turns;
@@ -442,7 +455,7 @@ public sealed class TrialBot
         var tail = rate * more;
         if (tail >= w.HeroHealth)
             return LossPenalty * 0.5 + rootHealth + PerRound * (turns + more);
-        return lost + tail + PerRound * (turns + more);
+        return lost + tail + ClaimDebt(w) + PerRound * (turns + more);
     }
 
     private void EndWith(InteractiveCombat w, IReadOnlyList<Answer> script)
@@ -524,7 +537,7 @@ public sealed class TrialBot
         {
             CombatResult.Victory => 1000.0 + f.HeroHealth,
             CombatResult.Defeat => -1000.0,
-            _ => (double)f.HeroHealth / heroMax - (double)EnemyHealth(f) / enemyMax + 0.002 * EnemyDebuffs(f),
+            _ => (double)f.HeroHealth / heroMax - (double)EnemyHealth(f) / enemyMax + 0.002 * EnemyDebuffs(f) - ClaimDebt(f) / heroMax,
         };
     }
 
