@@ -42,7 +42,9 @@ public class WholeRunTests
         // which erases rather than damages, and this walker's random deck cannot break 250 HP in four turns. On
         // 4713 the walk gets through the gauntlet, which keeps it a coverage instrument; her fight is covered by
         // GodNisabaTests. A content change that reshuffles the walk can make it fail again, and then the seed moves.
-        var report = RunWalker.Walk(Shipped(), seed: 4713, saveEvery: 5);
+        // → 4715 (Act III claims and normals, 2026-11-07): on 4713 the walk now meets Inanna with a deck that cannot
+        // pass her gates in 100 turns.
+        var report = RunWalker.Walk(Shipped(), seed: 4715, saveEvery: 5);
 
         Assert.True(report.Error is null, report.Error);
         Assert.Empty(report.Notes);

@@ -45,10 +45,12 @@ public static class ActTuning
         // Measured 2026-10-08 (ActBench over the ten playthroughs' decks, beam 6): the Act-III and Act-IV single
         // bodies died before they struck. The multi-fights are made of the same normal bodies, so they take the
         // damage too. Act IV sits above Act III in every role (user, 2026-10-08) — and against a stronger deck.
+        // Raised after the hand-played Act III trial of 2026-11-07 (user: the normal fights "can take more health and
+        // damage anyway"): normals cost 0.6 (target 5) and multi-fights 1.6 (target 10). Was normal 170/150, multi 100/100.
         [3] = new Dictionary<string, Factor>
         {
-            ["normal"] = new(170, 150),
-            ["multi"] = new(),
+            ["normal"] = new(195, 195),
+            ["multi"] = new(115, 130),
             ["elite"] = new(150, 160),
             ["boss"] = new(220, 230),
         },
