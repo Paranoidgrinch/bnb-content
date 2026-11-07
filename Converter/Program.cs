@@ -277,7 +277,7 @@ try
             policyDir is null ? null : new PolicyBook(policyDir), DeckModel.Load(deckModelPath)),
             Console.WriteLine);
     if (calcCheck > 0)
-        return CalcCheck.Run(blueprint, calcCheck, seed, Console.WriteLine);
+        return CalcCheck.Run(blueprint, calcCheck, seed, Console.WriteLine, Split(auditOnly));
     if (audit)
         return Audit.Run(blueprint, Split(auditOnly) is { Count: > 0 } picked ? picked : null, jobs, Console.WriteLine);
     if (mechanicAudit is not null)

@@ -43,7 +43,7 @@ public static class CalcCheck
         }
     }
 
-    public static int Run(RunBlueprint game, int fights, int seed, Action<string> say)
+    public static int Run(RunBlueprint game, int fights, int seed, Action<string> say, IReadOnlyCollection<string>? only = null)
     {
         ArgumentNullException.ThrowIfNull(game);
         ArgumentNullException.ThrowIfNull(say);
@@ -57,6 +57,7 @@ public static class CalcCheck
         var others = pool.Where(c => !c.Queued).Select(c => c.Id).ToList();
         var encounters = game.Encounters
             .Where(e => !e.Id.Value.StartsWith("tutorial", StringComparison.Ordinal))
+            .Where(e => only is not { Count: > 0 } || only.Contains(e.Id.Value))
             .Select(e => e.Id.Value).OrderBy(id => id, StringComparer.Ordinal).ToList();
 
         var tally = new Tally();
@@ -257,7 +258,7 @@ public static class CalcCheck
                 continue;
             tally.ChipsChecked++;
             if (printed != blow.Amount)
-                tally.Miss("intent chip ≠ blow",
+                tally.Miss(blow.Amount == 0 ? "intent chip, no blow" : "intent chip ≠ blow",
                     $"{intent.Label} | {encounter} turn {turn + 1}: chip {printed}, blow {blow.Amount}");
         }
     }
