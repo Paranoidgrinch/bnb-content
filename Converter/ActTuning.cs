@@ -96,6 +96,21 @@ public static class ActTuning
         // Act IV's per-encounter overrides went with the rescale of 2026-10-30: the role table alone sets it.
         // Act II: the Blank Death Certificate already cost 29 in the trial of 2026-11-02, so the act's buff passes it by.
         ["archives_necrology_01"] = new(100, 100),
+        // Act I, from the Lieutenant trial bot (user, 2026-11-07: its numbers are the yardstick now; it plays a little
+        // better than the hand-played trial). Measured 3 paths × 10 seeds per fight, bot HP lost before → after.
+        // The bosses that cost nothing: 01 5 → 20 (still loses 7 %, long fights), 02 3 → 17, 05 6 → 19.
+        ["city_boss_01"] = new(100, 145),
+        ["city_boss_02"] = new(130, 220),
+        ["city_boss_05"] = new(140, 200),
+        // The Delay normals cost under 1; the act's normal factor is 110/100, so health stays at 110. → 2-3.
+        ["city_normal_delay_04"] = new(110, 130),
+        ["city_normal_delay_05"] = new(110, 130),
+        ["city_normal_delay_07"] = new(110, 170),
+        // The two elites that cost 33-36 (target 10) → 12-13, and the two dear multi-fights 15-18 (target 6) → 6-7.
+        ["city_elite_appeal_01"] = new(90, 55),
+        ["city_elite_delay_01"] = new(85, 45),
+        ["city_normal_ordinance_08"] = new(85, 70),
+        ["city_normal_seal_08"] = new(80, 65),
     };
 
     // ── A QUESTION, NOT A TUNING: `--apprentice-damage N`, `--apprentice-block N` ──────────────────────────────

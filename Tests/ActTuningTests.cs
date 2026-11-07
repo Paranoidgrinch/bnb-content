@@ -80,13 +80,19 @@ public class ActTuningTests
     public void Nothing_outside_the_tuned_acts_moves_but_act_one_normal_health()
     {
         var data = BabData.Load(TestData.Directory);
-        // Act I's single fights carry 10 % more health (the trial of 2026-11-01), and nothing else of Act I moves.
-        var actOneNormals = data.Encounters.Where(e => e.Act == 1 && ActTuning.RoleOf(e) == "normal").ToList();
+        // Act I's single fights carry 10 % more health (the trial of 2026-11-01), the fights the trial bot measured carry
+        // their own factor (2026-11-07), and nothing else of Act I moves.
+        var own = data.Encounters.Where(e => e.Act == 1 && ActTuning.Encounters.ContainsKey(e.Id)).ToList();
+        Assert.NotEmpty(own);
+        foreach (var encounter in own)
+            Assert.Equal([.. Health(Authored, encounter.Id).Select(h => Scale(h, ActTuning.Encounters[encounter.Id].HealthPercent))],
+                Health(Shipped, encounter.Id));
+        var actOneNormals = data.Encounters.Where(e => e.Act == 1 && ActTuning.RoleOf(e) == "normal").Except(own).ToList();
         Assert.NotEmpty(actOneNormals);
         foreach (var encounter in actOneNormals)
             Assert.Equal([.. Health(Authored, encounter.Id).Select(h => Scale(h, 110))], Health(Shipped, encounter.Id));
         var tuned = new[] { 2, 3, 4 };
-        var outside = data.Encounters.Where(e => !tuned.Contains(e.Act)).Except(actOneNormals).ToList();
+        var outside = data.Encounters.Where(e => !tuned.Contains(e.Act)).Except(actOneNormals).Except(own).ToList();
         var bodies = outside.SelectMany(e => e.Enemies).ToHashSet(StringComparer.Ordinal);
         var inside = data.Encounters.Where(e => tuned.Contains(e.Act)).SelectMany(e => e.Enemies).ToHashSet(StringComparer.Ordinal);
         foreach (var encounter in outside)
