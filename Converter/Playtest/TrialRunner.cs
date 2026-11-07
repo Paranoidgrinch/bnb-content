@@ -33,7 +33,7 @@ public static class TrialRunner
         IReadOnlyList<int> Acts, int Seeds, int Paths, TrialBot.Options Bot, int Jobs, string OutDir,
         string? Compare = null, int Seed = 20261106, IReadOnlyList<string>? Only = null, bool Verbose = false,
         TrialChoices.Options? Choices = null, string? ValuesPath = null, PolicyBook? Policies = null, DeckModel? Model = null,
-        string? DeckData = null);
+        string? DeckData = null, string? HumanDecks = null);
 
     // One fight of the walk: where it stands (stage, kind), the node the trial fields it at, and how many of the
     // walk's stops come before it.
@@ -323,6 +323,7 @@ public static class TrialRunner
         var evalScheduler = new ConcurrentExclusiveSchedulerPair(TaskScheduler.Default, Math.Max(1, options.Jobs)).ConcurrentScheduler;
         var evalParallel = new ParallelOptions { MaxDegreeOfParallelism = Math.Max(1, options.Jobs), TaskScheduler = evalScheduler };
 
+        var humanDecks = options.HumanDecks is { } deckLog ? HumanLoadouts(deckLog) : null;
         var rows = new ConcurrentBag<FightRow>();
         var picks = new Dictionary<string, List<string>>();
         var timings = new List<(int Act, double Minutes, int Fights, double ChoiceMinutes, int Decisions, int EvalFights)>();
@@ -360,7 +361,8 @@ public static class TrialRunner
                 Parallel.ForEach(jobs, new ParallelOptions { MaxDegreeOfParallelism = Math.Max(1, options.Jobs) }, job =>
                 {
                     var lines = options.Verbose ? new List<string>() : null;
-                    var row = Fight(shipped, job.Fight, loadouts[job.Path], act, job.Path,
+                    var loadout = humanDecks?.GetValueOrDefault((act, job.Fight.Encounter)) ?? loadouts[job.Path];
+                    var row = Fight(shipped, job.Fight, loadout, act, job.Path,
                         FightSeed(options.Seed, act, job.Fight.Index, job.Path, job.N),
                         BotSeed(options.Seed, act, job.Fight.Index, job.Path, job.N), options.Bot, lines is null ? null : lines.Add, options.Policies);
                     if (lines is not null)
@@ -519,6 +521,17 @@ public static class TrialRunner
         }
         return sb.ToString();
     }
+
+    // `--runner-human-decks <log>`: the deck, relics and max health the user fought each encounter with, so the bot
+    // plays the very same fight — a bot that loses where the user lost nothing is told apart from a bot that drafted
+    // worse. The last entry wins where an encounter was fought twice.
+    public static Dictionary<(int, string), Loadout> HumanLoadouts(string path) =>
+        File.ReadAllLines(path).Where(l => l.Trim().Length > 0).Select(l => JsonDocument.Parse(l).RootElement.Clone())
+            .GroupBy(r => (r.GetProperty("act").GetInt32(), r.GetProperty("encounter").GetString()!))
+            .ToDictionary(g => g.Key, g => g.Last() is var r
+                ? new Loadout([.. r.GetProperty("deck").EnumerateArray().Select(c => c.GetString()!)],
+                    [.. r.GetProperty("relics").EnumerateArray().Select(c => c.GetString()!)], r.GetProperty("max").GetInt32())
+                : null!);
 
     // The user's hand-played trial log: per (act, encounter) mean lost (a lost fight costs everything), rounds, won/fought.
     public static Dictionary<(int, string), (double Lost, double Rounds, string Won)> Human(string path)
