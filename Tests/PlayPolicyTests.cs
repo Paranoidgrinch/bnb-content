@@ -193,6 +193,34 @@ public class PlayPolicyTests
         }
     }
 
+    // An upgrade is what the "+" adds to its card, not a second card that replaces the first: before, the starters'
+    // plain copies and their upgrades came out as mirror images of each other (2026-11-07).
+    [Fact]
+    public void The_draft_model_reads_an_upgrade_on_top_of_its_card_and_shares_values_across_acts()
+    {
+        var reader = new DeckModel.Reader(FightProbe.Shipped, new DeckThemes(FightProbe.Shipped));
+        var dice = new Random(7);
+        var rows = new List<DeckModel.Row>();
+        for (var r = 0; r < 300; r++)
+        {
+            var act = 1 + r % 2;
+            var upgraded = dice.Next(2) == 0;
+            var deck = new List<string> { "lt_buckler_up", "lt_buckler_up", upgraded ? "lt_watch_cut+" : "lt_watch_cut", "lt_watch_cut" };
+            var good = dice.Next(3);
+            deck.AddRange(Enumerable.Repeat("lt_gauntlet", good));
+            var score = 20 - 3.0 * good - (upgraded ? 5.0 : 0) + dice.NextDouble();
+            rows.Add(new DeckModel.Row(1, act, r, 2, [.. deck], ["trial_infirmary"], score, 4));
+        }
+        var model = DeckModel.Fit(rows, reader, lambda: 1.0, synergies: false, pooled: true);
+        Assert.True(model.Beta["up:a1:lt_watch_cut"] + model.Beta["up:*:lt_watch_cut"] < -3);
+        // the plain card did not change with the upgrade, so it does not read as its mirror
+        Assert.InRange(model.Beta["card:a1:lt_watch_cut"] + model.Beta["card:*:lt_watch_cut"], -1, 1);
+        // the shared term carries part of what both acts agree on
+        Assert.True(model.Beta["card:*:lt_gauntlet"] < -0.5, $"shared gauntlet {model.Beta["card:*:lt_gauntlet"]}");
+        Assert.Equal(["lt_buckler_up", "lt_watch_cut"], model.Starters[1]);
+        Assert.Contains("upgrades", model.Report());
+    }
+
     private static List<string> Describe(IReadOnlyList<(TrialBot.Move Move, string Expected)> plan) =>
         [.. plan.Select(p => $"{p.Move.Card?.value}|{p.Move.Action?.value}|{p.Move.Target?.value}|{string.Join(";", p.Move.Script)}")];
 }

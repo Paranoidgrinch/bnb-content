@@ -109,7 +109,7 @@ string? runnerValues = null;
 //      --runner-rollout-perturn n (lines per rollout turn with a policy)
 //      --lt-train [--acts ..] [--runner-only ..] [--train-gens n] [--train-pop n] [--train-elite n] [--train-seeds n]
 //          [--valid-seeds n] [--train-decks n] [--train-perturn n] [--train-minutes m] [--shared-gens n] [--train-warm]
-//      --lt-decks [--acts ..] [--deck-progressions n] [--deck-seeds n] [--deck-epsilon x] [--deck-round n] [--deck-data <jsonl>]
+//      --lt-decks [--acts ..] [--deck-progressions n] [--deck-seeds n] [--deck-epsilon x] [--deck-round n] [--deck-data <jsonl>] [--deck-lambda x] [--deck-synergies] [--deck-per-act]
 var bots = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Desktop", "bnb-balance", "bots");
 string? policyDir = null;
 string? deckModelPath = null;
@@ -201,6 +201,9 @@ for (var i = 0; i < args.Length - 1; i++)
         case "--train-mingens": train = train with { MinGens = int.Parse(args[i + 1]) }; break;
         case "--shared-cases": train = train with { SharedCases = int.Parse(args[i + 1]) }; break;
         case "--deck-progressions": deckRound = deckRound with { Progressions = int.Parse(args[i + 1]) }; break;
+        case "--deck-synergies": deckRound = deckRound with { Synergies = true }; break;
+        case "--deck-per-act": deckRound = deckRound with { Pooled = false }; break;
+        case "--deck-lambda": deckRound = deckRound with { Lambda = double.Parse(args[i + 1], System.Globalization.CultureInfo.InvariantCulture) }; break;
         case "--deck-seeds": deckRound = deckRound with { Seeds = int.Parse(args[i + 1]) }; break;
         case "--deck-epsilon": deckRound = deckRound with { Epsilon = double.Parse(args[i + 1], System.Globalization.CultureInfo.InvariantCulture) }; break;
         case "--deck-round": deckRound = deckRound with { Round = int.Parse(args[i + 1]) }; break;

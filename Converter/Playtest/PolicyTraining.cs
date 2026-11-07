@@ -313,7 +313,8 @@ public static class PolicyTraining
 
     public sealed record DeckOptions(
         IReadOnlyList<int> Acts, int Progressions, int Seeds, double Epsilon, int Round, string DataPath, string ModelPath,
-        string PolicyDir, int PerTurn = 30, int Seed = 20261106, int Jobs = 8, string? ValuesPath = null, double Lambda = 3.0);
+        string PolicyDir, int PerTurn = 30, int Seed = 20261106, int Jobs = 8, string? ValuesPath = null, double Lambda = 60,
+        bool Synergies = false, bool Pooled = true);
 
     public static int DeckRounds(RunBlueprint game, DeckOptions o, Action<string> say)
     {
@@ -367,9 +368,10 @@ public static class PolicyTraining
             }
         }
         var all = DeckModel.ReadRows(o.DataPath);
-        var model = DeckModel.Fit(all, reader, o.Lambda);
+        var model = DeckModel.Fit(all, reader, o.Lambda, o.Synergies, o.Pooled);
         model.Save(o.ModelPath);
-        say($"draft model: {all.Count} rows · rmse {model.Rmse:0.0} · {o.ModelPath} (+ .txt)");
+        var cv = DeckModel.CrossValidate(all, reader, o.Lambda, o.Synergies, o.Pooled);
+        say($"draft model: {all.Count} rows · rmse {model.Rmse:0.0} · held-out rmse {cv.Model:0.00} (stage means alone {cv.StageOnly:0.00}) · {o.ModelPath} (+ .txt)");
         return 0;
     }
 
