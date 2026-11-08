@@ -33,7 +33,7 @@ public static class TrialRunner
         IReadOnlyList<int> Acts, int Seeds, int Paths, TrialBot.Options Bot, int Jobs, string OutDir,
         string? Compare = null, int Seed = 20261106, IReadOnlyList<string>? Only = null, bool Verbose = false,
         TrialChoices.Options? Choices = null, string? ValuesPath = null, PolicyBook? Policies = null, DeckModel? Model = null,
-        string? DeckData = null, string? HumanDecks = null);
+        string? DeckData = null, string? HumanDecks = null, bool Chain = false);
 
     // One fight of the walk: where it stands (stage, kind), the node the trial fields it at, and how many of the
     // walk's stops come before it.
@@ -328,17 +328,26 @@ public static class TrialRunner
         var picks = new Dictionary<string, List<string>>();
         var timings = new List<(int Act, double Minutes, int Fights, double ChoiceMinutes, int Decisions, int EvalFights)>();
         var total = Stopwatch.StartNew();
+        // `--runner-chain` (2026-11-08): each act after the first starts from the decks the previous act's best
+        // progressions ended with, instead of the act's own preset deck — the best first, each path one of them.
+        List<Loadout>? chained = null;
         foreach (var act in options.Acts)
         {
             var clock = Stopwatch.StartNew();
-            var walk = Walk(shipped, act);
+            var actWalk = Walk(shipped, act);
+            var walks = Enumerable.Range(0, options.Paths)
+                .Select(p => chained is { Count: > 0 } best
+                    ? actWalk with { Start = Chained(actWalk.Start, best[p % best.Count]) }
+                    : actWalk)
+                .ToList();
+            var walk = actWalk;
             var fights = walk.Fights.Where(f => options.Only is not { Count: > 0 } only || only.Contains(f.Encounter)).ToList();
             // The prior is the table as the act begins: every path reads the same, whatever the others learn meanwhile.
             var prior = values.Copy();
             var choices = Enumerable.Range(0, options.Paths)
                 .Select(p => c is null ? null : new TrialChoices(shipped, walk, packages, prior, c, options.Seed, measured, evalParallel, themes!)).ToList();
             var paths = Enumerable.Range(0, options.Paths)
-                .Select(p => new Path(shipped, walk, PathSeed(options.Seed, act, p), packages,
+                .Select(p => new Path(shipped, walks[p], PathSeed(options.Seed, act, p), packages,
                     choices[p] is { } chooser ? (path, d) => chooser.Choose(path, d, act, p) : null)).ToList();
             var choiceClock = new Stopwatch();
             var played = Enumerable.Range(0, options.Paths).Select(_ => new Dictionary<string, int>(StringComparer.Ordinal)).ToList();
@@ -350,8 +359,8 @@ public static class TrialRunner
                 choiceClock.Start();
                 Parallel.For(0, options.Paths, new ParallelOptions { MaxDegreeOfParallelism = Math.Max(1, options.Paths) }, p =>
                 {
-                    paths[p].Advance(stage.Min(f => f.StopsBefore), played[p], walk.Start);
-                    loadouts[p] = paths[p].Loadout(walk.Start);
+                    paths[p].Advance(stage.Min(f => f.StopsBefore), played[p], walks[p].Start);
+                    loadouts[p] = paths[p].Loadout(walks[p].Start);
                 });
                 choiceClock.Stop();
                 var jobs = (from f in stage from p in Enumerable.Range(0, options.Paths) from n in Enumerable.Range(0, options.Seeds)
@@ -387,6 +396,17 @@ public static class TrialRunner
                     + $"{choices.Sum(x => x?.Decisions ?? 0)} decisions, {choices.Sum(x => x?.EvalFights ?? 0)} play-out fights)"
                     + $"{(broke > 0 ? $", {broke} BROKE" : "")}");
             }
+            // What each progression ended the act with, best first: fewest deaths, then least HP lost per fight.
+            var ended = Enumerable.Range(0, options.Paths).Select(p => paths[p].Loadout(walks[p].Start)).ToList();
+            var actRows = rows.Where(r => r.Act == act).ToList();
+            chained = [.. Enumerable.Range(0, options.Paths)
+                .OrderBy(p => actRows.Count(r => r.Path == p && !r.Won))
+                .ThenBy(p => actRows.Where(r => r.Path == p).Select(r => (double)r.Lost).DefaultIfEmpty(0).Average())
+                .Select(p => ended[p])];
+            if (options.Chain)
+                say($"  act {act}: best deck ({chained[0].Deck.Count} cards) {string.Join(",", chained[0].Deck)} · relics {string.Join(",", chained[0].Relics)}");
+            if (!options.Chain)
+                chained = null;
             for (var p = 0; p < options.Paths; p++)
             {
                 picks[$"act{act}/path{p}"] = paths[p].Picks;
@@ -521,6 +541,16 @@ public static class TrialRunner
         }
         return sb.ToString();
     }
+
+    // A previous act's ending loadout as this act's start.
+    private static RunStart Chained(RunStart start, Loadout from) =>
+        start with
+        {
+            Deck = [.. from.Deck.Select(id => new CardDefinitionId(id))],
+            StartingRelics = [.. from.Relics],
+            MaxHealth = from.MaxHealth,
+            StartingHealth = from.MaxHealth,
+        };
 
     // `--runner-human-decks <log>`: the deck, relics and max health the user fought each encounter with, so the bot
     // plays the very same fight — a bot that loses where the user lost nothing is told apart from a bot that drafted

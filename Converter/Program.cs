@@ -93,6 +93,7 @@ string? benchOnly = null;
 //      [--choice-k n] [--choice-beam n] [--choice-perturn n] [--choice-seeds n] [--choice-top n]
 //      [--runner-values <json>] (default bots/lt-card-values.json) [--no-learn] [--runner-static] (the old rating).
 //      [--runner-human-decks <trial-log.jsonl>] (every fight with the deck the user fought it with)
+//      [--runner-chain] (each act starts from the previous act's best ending decks instead of its preset deck)
 var ltRunner = args.Contains("--lt-runner");
 var runnerActs = "1";
 var runnerSeeds = 20;
@@ -101,6 +102,7 @@ var runnerBot = new TrialBot.Options();
 string? runnerOut = null;
 string? runnerCompare = null;
 string? runnerHumanDecks = null;
+var runnerChain = args.Contains("--runner-chain");
 string? runnerOnly = null;
 var runnerSeed = 20261106;
 // Package choices by play (TrialChoices), on by default; --runner-static for the old static rating.
@@ -281,7 +283,7 @@ try
             args.Contains("--runner-static") ? null : runnerChoices,
             args.Contains("--runner-static") || args.Contains("--no-learn") ? null
                 : runnerValues ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Desktop", "bnb-balance", "bots", "lt-card-values.json"),
-            policyDir is null ? null : new PolicyBook(policyDir), DeckModel.Load(deckModelPath), HumanDecks: runnerHumanDecks),
+            policyDir is null ? null : new PolicyBook(policyDir), DeckModel.Load(deckModelPath), HumanDecks: runnerHumanDecks, Chain: runnerChain),
             Console.WriteLine);
     if (calcCheck > 0)
         return CalcCheck.Run(blueprint, calcCheck, seed, Console.WriteLine, Split(auditOnly));
