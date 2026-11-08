@@ -184,20 +184,22 @@ Maßstab: 1 Energy ≈ 7 Block; 7 Ward Wax ≈ 16 Block über vier Züge ≈ 1,5
 | **Stay of Proceedings** | 3 | Rare | An enemy's next action does nothing. Exhaust. | kostet 2 | MTG: Fog / Counterspell | Fortune |
 | **Standing Stones** | 2 | Rare | Your Block does not expire at the start of your next 2 turns. Exhaust. | kostet 1 | MTG: Ivory Tower | Husk |
 
-### Flexibler Schaden
+### Flexibler Schaden (freigegeben 2026-11-08)
 
-| Karte | Kosten | Seltenheit | Text | Notiz | Hexe |
-|---|---|---|---|---|---|
-| **Thrown Inkpot** | 1 | Common | Deal 8 damage. Apply 1 Doubt. |  | Fang |
-| **Poppet Pin** | 0 | Common | Deal 4 damage. If you have played 2 or more cards this turn, deal 4 more. |  | Fang |
-| **Beadle's Cudgel** | 1 | Common | Deal 9 damage. If the enemy is Liable, draw 1 card. |  | Fang |
-| **Hailstones** | 1 | Common | Deal 4 damage to ALL enemies twice. |  | Fang |
-| **Volley of Quills** | 1 | Uncommon | Deal 3 damage to ALL enemies, once for each card in your hand. |  | Fang |
-| **Blunt Instrument** | 1 | Uncommon | Deal 14 damage. | bestehend (`blacklisted`) | Fang |
-| **Tallow Judgment** | 2 | Uncommon | Spend up to 8 Ward Wax. Deal 10 damage, +7 per Wax. | bestehend | Fang |
-| **Midnight Toll** | 2 | Uncommon | Deal 5 damage for each card you played this turn. Count at most 6. | MTG: Storm | Fang |
-| **Third and Final Writ** | 2 | Rare | Deal 12 damage. If the enemy has Doubt and Liable, deal it twice. Retain. |  | Fang |
-| **Dawn Summons** | 2 | Rare | Deal 16 damage. +10 if it is your first card this turn. | bestehend | Fang |
+Maßstab: 1 Energy ≈ 7 bis 8 Schaden.
+
+| Karte | Kosten | Seltenheit | Text | Upgrade | Notiz | Hexe |
+|---|---|---|---|---|---|---|
+| **Thrown Inkpot** | 1 | Common | Deal 8 damage. Apply 1 Doubt. | 11 damage |  | Fang |
+| **Poppet Pin** | 0 | Common | Deal 4 damage. If you have played 2 or more cards this turn, deal 4 more. | 6 und 6 | MTG: Prowess | Fang |
+| **Beadle's Cudgel** | 1 | Common | Deal 9 damage. If the enemy is Liable, draw 1 card. | 12 damage |  | Fang |
+| **Hailstones** | 1 | Common | Deal 4 damage to ALL enemies twice. | three times | MTG: Electrickery | Fang |
+| **Volley of Quills** | 1 | Uncommon | Deal 3 damage to ALL enemies, once for each card in your hand. | 4 per card | MTG: Sudden Impact | Fang |
+| **Blunt Instrument** | 1 | Uncommon | Deal 12 damage. | 16 damage | bestehend (`blacklisted`), war 14 | Fang |
+| **Tallow Judgment** | 2 | Uncommon | Spend up to 6 Ward Wax. Deal 10 damage, +5 per Wax. | 15 damage, +6 per Wax | bestehend, war bis 8 Wax und +7 | Fang |
+| **Midnight Toll** | 2 | Uncommon | Deal 5 damage for each card you played this turn. Count at most 6. | 6 per card | MTG: Storm | Fang |
+| **Third and Final Writ** | 2 | Rare | Deal 12 damage. If the enemy has Doubt and Liable, deal it twice. Retain. | 15 damage |  | Fang |
+| **Dawn Summons** | 2 | Rare | Deal 16 damage. +10 if it is your first card this turn. | 22, +12 | bestehend, Upgrade war 27; MTG: First Strike | Fang |
 
 **Synergie über allgemeine Größen, quer durch die Achsen:**
 - Handgröße bei Volley of Quills und Errand Rook
