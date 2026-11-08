@@ -157,7 +157,7 @@ public static partial class ActThree
             ]));
 
         return Rule(GreatTollFrogId, "Nothing Crosses for Free",
-            $"Each turn it eyes the dearest card in your hand. Pay {FrogFare} Gold, or at your turn's end it swallows that card and you break its law. Deal it {FrogSpitDamage} in one turn and it spits them all back.",
+            $"Eyes your dearest card each turn: pay {FrogFare} Gold or it swallows it and you break its law. {FrogSpitDamage} damage in a turn returns them.",
             [
                 AtTheOpeningHand(Frog, eye),
                 AtYourTurnsEnd(Frog, swallow),

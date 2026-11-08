@@ -2,7 +2,7 @@
 
 Generated: `dotnet run --project Converter -- --art-slots ART_SLOTS.md`. **Do not edit by hand.**
 
-**876 pictures**: 473 cards, 257 relics, 142 bodies
+**880 pictures**: 477 cards, 257 relics, 142 bodies
 (every enemy, elite and boss) and 4 the player can be. Every one of them is filled today by a PLACEHOLDER — a plate with the file's own
 name and the word placeholder on it, written by `bnb-godot/tools/make-card-art.py`,
 `make-relic-art.py` and `make-enemy-art.py`. A painted picture replaces one by being saved over it, so
@@ -525,7 +525,7 @@ Drawn like a body and facing RIGHT — the player stands on the left of the aren
 | `lieutenant` | The Lieutenant | New stripes on an old uniform, and always first through the door. |
 | `sorcerers_apprentice` | The Sorcerer's Apprentice | Knows every incantation, and not quite what happens when one is put after another. |
 
-## Cards — 473 pictures
+## Cards — 477 pictures
 
 No visual canon was ever written for the cards, so the row carries the card's own rules
 text instead of a brief. Act = the act that unlocks it; the starters, the Junk and the
@@ -1022,7 +1022,7 @@ cards a boss or a door hands over are never offered and have no act.
 | `lt_whistle` | Whistle | working | uncommon | Gain 3 Block. You may spend 1 Authority to draw 2 cards. |
 | `lt_witness` | Witness | working | common | Gain 4 Block. Your next Deed this turn counts toward your Challenge, whichever enemy it hits. |
 
-### Given in play — 57
+### Given in play — 61
 
 Handed over by a boss, a door or an event rather than offered; never in a reward pool.
 
@@ -1033,6 +1033,7 @@ Handed over by a boss, a door or an event rather than offered; never in a reward
 | `atrahasis_boat` | Atrahasis' Boat | Retain. This round the flood deals you half. Returns to your hand. |
 | `better_chair_cushion_action` | The Better Chair | Gain 14 Block. End the turn holding a real card, or lose 6 HP. |
 | `black_flood_vessel_action` | Empty the Vessel | Discard your hand, draw 7, and gain 2 Energy. Once a combat. |
+| `borrowed_hour` | Borrowed Hour | Gain 1 Energy. The Curator's next attack deals 6 more. Each Energy you leave unspent at the end of your turn returns 3 of it. |
 | `borrowed_lace` | Borrowed Lace | Gain 6 Block. Lent by the Bride: gone at the end of the turn. |
 | `borrowers_claim` | Borrower's Claim | Retain. Exhaust. Put a card from hand under your draw pile, draw 1. Held at turn end: 1 Paperwork. |
 | `cauldron_add` | Into the Pot | Put a card from hand into the cauldron instead of playing it. The first each turn is free. |
@@ -1060,6 +1061,8 @@ Handed over by a boss, a door or an event rather than offered; never in a reward
 | `redacted_leaf` | Redacted Leaf | Unplayable. Retain. Turn start: a card in your hand is Redacted, and this is spent. |
 | `renenutets_bounty` | Her Bounty | Lose 7 HP. Draw 4 cards. Gain 1 Energy. She stores 1 Grain. |
 | `renenutets_bounty_seventh_year` | Her Bounty | Lose 7 HP. Draw 7 cards. She stores 2 Grain. |
+| `requisition_slip` | Requisition Slip | Take the card the Second-Person Entry cited back from your discard pile into your hand. |
+| `return_slip` | Return Slip | Put a card from your hand on top of your draw pile and strike off 1 Overdue. While a Dead-Letter Ouroboros stands, that card costs 1 more. |
 | `royal_grace_cup_action` | Royal Grace | Once a turn: gain 1 Energy, a card, or 10 Block. Every enemy gains 6 Block. |
 | `silver_name_tally_action` | Speak the Silver Name | Once a combat: remove an enemy's Block, gain 10 Block, refund your next card this turn. |
 | `sluice_gate_of_the_two_lands_action` | Work the Two Lands | Once a turn: lose 12 Block for 1 Energy, or spend 1 Energy for 12 Block. |
@@ -1083,6 +1086,7 @@ Handed over by a boss, a door or an event rather than offered; never in a reward
 | `wand_inscribe` | Inscribe | Put a card from hand into a free wand slot instead of playing it. First each combat free, then 1 Focus. |
 | `wand_swap` | Swap | Two wand cards trade places. 1 Focus. |
 | `wand_withdraw` | Withdraw | A wand card goes to your discard. 1 Focus. |
+| `wheel_chock` | Wheel Chock | Exhaust a card from your hand. The Rolling Stacks Colossus rolls back 1 (up to 3). |
 | `wrong_form` | Wrong Form | Exhaust. Discard another card. |
 | `yield_your_place` | Yield Your Place | Move one place away from the Counter. Gain 6 Block. One queue choice a turn. |
 

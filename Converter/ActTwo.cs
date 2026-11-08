@@ -688,8 +688,8 @@ public static class ActTwo
         var you = E<CardPlayContext>.Self;
         var card = E<CardPlayContext>.Iterated;
         return EnemyRules.GivenCard(ReturnSlipId, "Return Slip",
-            "Put a card from your hand on top of your draw pile and strike off 1 Overdue. While a Dead-Letter "
-            + "Ouroboros stands, that card costs 1 more.",
+            "Put a card from your hand on top of your draw pile: 1 less Overdue. While an Ouroboros stands, "
+            + "that card costs 1 more.",
             E<CardPlayContext>.If(
                 E<CardPlayContext>.And(
                     E<CardPlayContext>.Is(E<CardPlayContext>.InZone(you, CardZone.Hand), ComparisonOperator.Greater, 1),
