@@ -101,20 +101,23 @@ Die übrigen 48 sind neu. Die Zahlen sind ein Balance-Entwurf; nach der Freigabe
 **Die letzte Spalte ist die Zutat der Hexe:** Fang, Hex, Husk, Hearth oder Fortune.
 
 
-### Energie
+### Energie (freigegeben 2026-11-08)
 
-| Karte | Kosten | Seltenheit | Text | Notiz | Hexe |
-|---|---|---|---|---|---|
-| **Stolen Hour** | 0 | Common | Gain 1 Energy. Exhaust. |  | Hearth |
-| **Banked Embers** | 1 | Common | Gain 2 Held Energy. Draw 1 card. |  | Hearth |
-| **Tallow Stub** | 0 | Common | Gain 1 Held Energy. Unread: gain 1 Held Energy. |  | Hearth |
-| **Second Wind** | 0 | Common | Gain 1 Energy. Draw 1 card. Exhaust. | bestehend (`sanctioned_charm`) | Hearth |
-| **Coin Under the Tongue** | 1 | Uncommon | Pledge. Draw 2 cards. The next card you play this turn costs 1 less. |  | Hearth |
-| **False Signature** | 0 | Uncommon | Your next card costs 1 less. The card after it costs 1 more. Exhaust. | bestehend | Fortune |
-| **Melted Down** | 0 | Uncommon | Exhaust a card from your hand. Gain Energy equal to its cost. | MTG: Opfern | Fortune |
-| **Wick Burnt Short** | 1 | Uncommon | Gain 2 Energy. At the start of your next turn, gain 1 Fatigue. |  | Hearth |
-| **Vigil Lamp** | 2 | Rare | Pledge. Retain. At the end of your turn, gain 7 Block for each Energy you have left. |  | Husk |
-| **Miser's Coffer** | 1 | Rare | Whenever you end your turn with Energy left, keep up to 2 of it as Held Energy. Exhaust. |  | Hearth |
+Maßstab: 1 Energy ≈ 7 Block oder 7 bis 8 Schaden, eine Karte auf der Hand ≈ ½ Energy, 1 Fatigue = 1 Energy
+weniger im nächsten Zug. Upgrades bringen netto etwa +½ bis +1.
+
+| Karte | Kosten | Seltenheit | Text | Upgrade | Notiz | Hexe |
+|---|---|---|---|---|---|---|
+| **Stolen Hour** | 0 | Common | Gain 2 Energy. Exhaust. | + Draw 1 card. |  | Hearth |
+| **Banked Embers** | 1 | Common | Gain 2 Held Energy. Draw 1 card. | 3 Held Energy |  | Hearth |
+| **Tallow Stub** | 0 | Common | Gain 1 Held Energy. Unread: gain 1 Held Energy. | 2 und 2 |  | Hearth |
+| **Second Wind** | 0 | Common | Gain 1 Energy. Draw 1 card. Exhaust. | Draw 2 | bestehend (`sanctioned_charm`) | Hearth |
+| **Coin Under the Tongue** | 1 | Uncommon | Pledge. Draw 2 cards. The next card you play this turn costs 1 less. | Draw 3 |  | Hearth |
+| **False Signature** | 0 | Uncommon | Your next card this turn costs 1 less. The card after it this turn costs 1 more. Exhaust. | 2 less | bestehend; beides gilt nur in diesem Zug | Fortune |
+| **Melted Down** | 0 | Uncommon | Exhaust a card from your hand. Gain Energy equal to its cost. | + Draw 1 card. | MTG: Opfern | Fortune |
+| **Wick Burnt Short** | 0 | Uncommon | Gain 2 Energy. At the start of your next turn, gain 1 Fatigue. | 3 Energy |  | Hearth |
+| **Vigil Lamp** | 0 | Rare | For the rest of this combat, at the end of your turn gain 8 Block for each Energy you have left. Exhaust. | 11 Block |  | Husk |
+| **Miser's Coffer** | 1 | Rare | Whenever you end your turn with Energy left, keep up to 2 of it as Held Energy. Exhaust. | kostet 0 |  | Hearth |
 
 ### Draw-Engine
 
