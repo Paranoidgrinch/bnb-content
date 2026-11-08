@@ -119,20 +119,20 @@ weniger im nächsten Zug. Upgrades bringen netto etwa +½ bis +1.
 | **Vigil Lamp** | 0 | Rare | For the rest of this combat, at the end of your turn gain 8 Block for each Energy you have left. Exhaust. | 11 Block |  | Husk |
 | **Miser's Coffer** | 1 | Rare | Whenever you end your turn with Energy left, keep up to 2 of it as Held Energy. Exhaust. | kostet 0 |  | Hearth |
 
-### Draw-Engine
+### Draw-Engine (freigegeben 2026-11-08)
 
-| Karte | Kosten | Seltenheit | Text | Notiz | Hexe |
-|---|---|---|---|---|---|
-| **Sieve and Shears** | 0 | Common | Look at the top 3 cards of your draw pile. Put any of them on the bottom. Draw 1 card. | MTG: Ponder | Hearth |
-| **Borrowed Candle** | 0 | Common | Draw 2 cards. Put a card from your hand on top of your draw pile. Exhaust. | bestehend; MTG: Brainstorm | Hearth |
-| **Lamplit Study** | 1 | Common | Draw 2 cards. Gain 3 Block. |  | Hearth |
-| **Dog-Eared Almanac** | 1 | Common | Retain. Draw 1 card. If this was in your hand since last turn, draw 2 more. |  | Hearth |
-| **Night Scrivener** | 1 | Uncommon | Draw 3 cards. Choose a card in your hand: it gains Retain this combat. |  | Hearth |
-| **Fresh Ledger** | 1 | Uncommon | Exhaust another card from your hand. Draw 2 cards. | bestehend (`crossed_sigil`) | Hearth |
-| **Wheat from Chaff** | 1 | Uncommon | Reveal the top 4 cards of your draw pile. Put either the attacks or the rest into your hand; discard the others. | MTG: Fact or Fiction | Fortune |
-| **Gathered Gossip** | 0 | Uncommon | Draw 1 card for each enemy. Exhaust. |  | Hearth |
-| **Errand Rook** | 2 | Rare | At the start of each of your turns, draw 1 more card. Whenever your hand is full, gain 3 Block. Exhaust. |  | Hearth |
-| **Moonlit Counterfeit** | 1 | Rare | Copy a card in your hand; your next card is free. Exhaust the original. Exhaust. | bestehend | Hearth |
+| Karte | Kosten | Seltenheit | Text | Upgrade | Notiz | Hexe |
+|---|---|---|---|---|---|---|
+| **Sieve and Shears** | 0 | Common | Look at the top 3 cards of your draw pile. Put any of them on the bottom. Draw 1 card. | Draw 2 | MTG: Ponder | Hearth |
+| **Borrowed Candle** | 0 | Common | Draw 3 cards. Put a card from your hand on top of your draw pile. Exhaust. | kein Exhaust | bestehend, war Draw 2; MTG: Brainstorm | Hearth |
+| **Lamplit Study** | 1 | Common | Draw 2 cards. Gain 5 Block. | 8 Block |  | Hearth |
+| **Dog-Eared Almanac** | 0 | Common | Retain. Draw 1 card. If this was in your hand since last turn, draw 2 more. | draw 3 more |  | Hearth |
+| **Night Scrivener** | 1 | Uncommon | Draw 3 cards. Choose a card in your hand: it gains Retain this combat. | Draw 4 |  | Hearth |
+| **Fresh Ledger** | 0 | Uncommon | Exhaust another card from your hand. Draw 2 cards. | Draw 3 | bestehend (`crossed_sigil`), war 1 Energy | Hearth |
+| **Wheat from Chaff** | 0 | Uncommon | Reveal the top 3 cards of your draw pile. Put either the attacks or the rest into your hand; discard the others. | Reveal 4 | MTG: Fact or Fiction | Fortune |
+| **Gathered Gossip** | 0 | Uncommon | Draw 1 card, plus 1 for each enemy. Exhaust. | Draw 2, plus 1 for each enemy |  | Hearth |
+| **Errand Rook** | 1 | Rare | At the start of each of your turns, draw 1 more card. Whenever your hand is full, gain 3 Block. Exhaust. | kostet 0 |  | Hearth |
+| **Moonlit Counterfeit** | 1 | Rare | Create a Temporary copy of a card in your hand. It costs 0. Exhaust. | kostet 0 | bestehend; das Original bleibt jetzt; MTG: Twincast | Hearth |
 
 ### Abwerfen und Erschöpfen
 
