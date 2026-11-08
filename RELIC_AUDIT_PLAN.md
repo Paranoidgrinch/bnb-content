@@ -3,8 +3,8 @@
 Auftrag (2026-11-08): Nach dem neuen Kartenpool die Relikte des Lieutenant, die allgemeinen Normal-Relikte und die
 Shop-Relikte ansehen. Danach folgt die Gesamtdurchsicht.
 
-Status: **Lieutenant und Normal-Relikte freigegeben (2026-11-08), Shop-Relikte zur Durchsicht.** Gebaut wird nach der
-letzten Freigabe.
+Status: **alle drei Gruppen freigegeben (2026-11-08).** Vor dem Bau folgt eine Gesamtdurchsicht (Karten, Relikte,
+Gegner) auf Langweiliges und Generisches.
 
 ---
 
@@ -104,6 +104,15 @@ ein Shop-Relikt.**
 - S2 Scrivener's Shears und Guest-Favor Token werden zu zwei neuen Tausch-Relikten passend zum Pool:
   - *Rushlight*: „Your first card each turn costs 0. Your hand holds 1 card less at the start of each turn."
   - *Tinder Pouch*: „Whenever a card is Exhausted, gain 2 Block. Rest sites heal 10 HP less."
+
+**Freigegeben (2026-11-08):**
+- Secondhand Reliquary → *Oilcloth Wrap* („Your hand is not discarded at the end of your turn. You draw 2 fewer cards
+  at the start of each turn.").
+- Scrivener's Shears → *Rushlight* („Your first card each turn costs 0. You draw 1 fewer card at the start of each
+  turn.").
+- Guest-Favor Token → *Tinder Pouch* („Whenever a card is Exhausted, gain 5 Block. Resting at a campfire heals 10 HP
+  less.") — 5 statt 2 Block (user).
+- **Bent Auction Gavel** gilt auch für Elite- und Boss-Relikte (user); Event- und gekaufte Relikte bleiben ausgenommen.
 
 ## 4 Außerhalb des Auftrags, aber gefunden
 
