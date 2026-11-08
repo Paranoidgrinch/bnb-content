@@ -441,8 +441,10 @@ public sealed class TrialBot
                 break;
             EndWith(w, []);
         }
+        // Among lost lines the one that lasts longer is better: priced as the shorter one, a hopeless turn was
+        // ended with 5 Energy and a full hand unplayed (Inanna, 2026-11-08).
         if (w.Result == CombatResult.Defeat || w.HeroHealth <= 0)
-            return LossPenalty + rootHealth + PerRound * turns;
+            return LossPenalty + rootHealth - turns;
         var lost = Math.Max(0, rootHealth - w.HeroHealth);
         if (w.Result == CombatResult.Victory)
             return lost + PerRound * turns;
@@ -536,7 +538,7 @@ public sealed class TrialBot
         return f.Result switch
         {
             CombatResult.Victory => 1000.0 + f.HeroHealth,
-            CombatResult.Defeat => -1000.0,
+            CombatResult.Defeat => -1000.0 - (double)EnemyHealth(f) / enemyMax,
             _ => (double)f.HeroHealth / heroMax - (double)EnemyHealth(f) / enemyMax + 0.002 * EnemyDebuffs(f) - ClaimDebt(f) / heroMax,
         };
     }

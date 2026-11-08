@@ -82,8 +82,9 @@ public sealed class PlayPolicy
     public double Cost(InteractiveCombat? ended, InteractiveCombat after, int rootHealth)
     {
         ArgumentNullException.ThrowIfNull(after);
+        // A loss that comes later is the better loss: it leaves more turns for the draw to turn the fight.
         if (after.Result == CombatResult.Defeat || after.HeroHealth <= 0)
-            return LossCost + rootHealth;
+            return LossCost + rootHealth - after.Round;
         var lost = Math.Max(0, rootHealth - after.HeroHealth);
         if (after.Result == CombatResult.Victory)
             return lost + PerRound * after.Round;
