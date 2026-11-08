@@ -40,7 +40,7 @@ public static class EliteRelics
             combatRule: EliteRelicRules.ChairOfTheNinthHour),
 
         Elite(EliteRelicRules.ContemptNailId, "Contempt Ledger Nail", "city_elite_enforcement_01",
-            "Every Censure you take is filed against the weakest enemy: 2 Paperwork.",
+            "Every negative status you take is filed against the weakest enemy: 1 Doubt.",
             combatRule: EliteRelicRules.ContemptLedgerNail),
 
         // The Seizure Procession identifies property, removes access to it, and turns that into force. Its

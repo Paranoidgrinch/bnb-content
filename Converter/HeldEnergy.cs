@@ -18,6 +18,7 @@ namespace BnbContent.Converter;
 public static class HeldEnergy
 {
     public const string Id = "held_energy";
+    public const string EmberBoxId = "ember_box";
 
     public static readonly StatusData Status = new()
     {
@@ -43,6 +44,12 @@ public static class HeldEnergy
                                 CombatantTargetSelectors.Source, new StatusDefinitionId(Id))),
                         new RemoveStatusNode<CardPlayedTriggeredEffectContext>(
                             CombatantTargetSelectors.Source, new StatusDefinitionId(Id)),
+                        // Ember Box (relic audit 2026-11-08): the arrival draws a card.
+                        new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
+                            new TargetHasStatusExpression<CardPlayedTriggeredEffectContext>(
+                                CombatantTargetSelectors.Source, new StatusDefinitionId(EmberBoxId)),
+                            new DrawCardsNode<CardPlayedTriggeredEffectContext>(
+                                CombatantTargetSelectors.Source, new ConstantExpression<CardPlayedTriggeredEffectContext>(1))),
                     ]))),
                 nameof(TriggerEvent.CardPlayed)),
         ],

@@ -27,6 +27,9 @@ public static class RelicRules
         BloodPriceToken, BlackthornBrooch, SootglassLens, RubricTablet, RefuseDocket, IndexVolvelle,
         WithheldHourglass, ConcordanceMedallion, ChanceryRibbon, IronAstrolabe, RebindingSpindle,
         DeferredSignet, BloodStampedBond, ThornCrownedReliquary, ChanceryScale,
+        // The relic audit (2026-11-08).
+        WitnessSlate, AshPan, RemembranceString, EmberBox, CharnelLedger, ExecutionersMeasure,
+        OilclothWrap, Rushlight, TinderPouch,
         // The shop relics of the sharpening pass (2026-10-21).
         WastebrokersFire, PriorityWindowFiling, SecondOpinion, AssentRibbon,
         GlassInkwell, IronThimble, StaleLoaf, PawnedWeddingRing,
@@ -49,7 +52,7 @@ public static class RelicRules
             new CausalSequenceEffectNode<CardsDrawnTriggeredEffectContext>(
             [
                 new DealDamageNode<CardsDrawnTriggeredEffectContext>(
-                    CombatantTargetSelectors.Source, new ConstantExpression<CardsDrawnTriggeredEffectContext>(6),
+                    CombatantTargetSelectors.Source, new ConstantExpression<CardsDrawnTriggeredEffectContext>(3),
                     ignoresBlock: true, kind: DamageKind.DamageOverTime),
                 HeldEnergy.Hold<CardsDrawnTriggeredEffectContext>(1),
                 Draw<CardsDrawnTriggeredEffectContext>(1),
@@ -156,9 +159,25 @@ public static class RelicRules
 
     // "The first time each turn you play a card with base cost 2 or more, gain 4 Block." Cost is not readable
     // from a card-play trigger, so it pays on the first card of each turn. See ADAPTATIONS.
-    public static readonly StatusData LeadCounterweight = FirstCardEachTurn(
-        "lead_counterweight", "Lead Counterweight", "The first card you play each turn guards you.",
-        Block<CardPlayedTriggeredEffectContext>(4));
+    // "Cards that cost 2 or more have Retain." Whatever reaches the hand is weighed as it arrives — the turn's
+    // draw, a card drawn or brought back later — and a heavy one is marked to stay (the mark lasts the fight).
+    public static readonly StatusData LeadCounterweight = Rule("lead_counterweight", "Lead Counterweight",
+        "Your heavy cards wait for their moment.",
+        [
+            Trigger(Model<CardsDrawnTriggeredEffectContext>(WeighTheHand()), nameof(TriggerEvent.CardsDrawn)),
+            Trigger(Model<CardMovedToZoneTriggeredEffectContext>(WeighTheHand()), nameof(TriggerEvent.CardMovedToZone)),
+        ]);
+
+    private static CombatNodeModel WeighTheHand() =>
+        CombatNodeModel.ForEachCard(CardAuthoring.You, CardZone.Hand,
+            CardAuthoring.Seq(
+                new CombatNodeModel("setCombatantCounter", CardAuthoring.You,
+                    new CombatAmountSpec("cardCost", ReadId: CardAuthoring.Energy.value, ReadCard: new CombatCardSpec("iterated")),
+                    CounterId: "lead_counterweight_cost", Relative: false),
+                CardAuthoring.If(new CombatConditionSpec("compare", CardAuthoring.You, ValueKind: "counter",
+                        Op: ComparisonOperator.GreaterOrEqual, Right: 2, Id: "lead_counterweight_cost"),
+                    new CombatNodeModel("markCardInstance", CardAuthoring.You, Card: new CombatCardSpec("iterated"),
+                        ToTag: StandardCombatIds.RetainedCardMark.value))));
 
     // "The first time each turn you play a Form, gain 2 Block and apply 1 additional Paperwork to its target."
     public static readonly StatusData FormkeepersSignet = FirstTaggedCardEachTurn(
@@ -298,9 +317,18 @@ public static class RelicRules
         "petitioners_token", "Petitioner's Token", Keywords.QueueResolved,
         "The first queued card to resolve each turn pays an Energy and a card.", draw: 1, energy: 1);
 
-    public static readonly StatusData AshenWaxKnife = FirstCountEachTurn(
-        "ashen_wax_knife", "Ashen Wax Knife", Keywords.Archived,
-        "The first card you burn each turn pays another.", draw: 1);
+    // Relic audit (2026-11-08): it counted only the Bureaucrat's Archive; now any card reaching the Exhausted pile.
+    public static readonly StatusData AshenWaxKnife = Rule("ashen_wax_knife", "Ashen Wax Knife",
+        "The first card you burn each turn pays another.",
+        [
+            Trigger(new EffectProgram<CardMovedToZoneTriggeredEffectContext>(
+                new ConditionalEffectNode<CardMovedToZoneTriggeredEffectContext>(
+                    new TriggerEventCardZoneExpression<CardMovedToZoneTriggeredEffectContext>(CardZone.ExhaustPile),
+                    OnceEachTurn<CardMovedToZoneTriggeredEffectContext>("ashen_wax_knife",
+                        Draw<CardMovedToZoneTriggeredEffectContext>(1)))),
+                nameof(TriggerEvent.CardMovedToZone)),
+            ClearLatch("ashen_wax_knife"),
+        ]);
 
     // "The first time each turn you apply Paperwork to an enemy already 5 deep, gain 1 Energy and draw 1."
     public static readonly StatusData ChanceryScale = Rule("chancery_scale", "Chancery Scale",
@@ -616,6 +644,173 @@ public static class RelicRules
         RunPrograms.On<NodeEnteredRunEvent>(
             new UpgradeCardsRunEffect(RunSelectors.DeckCards.Upgradable().Random(1)),
             new HealRunEffect(7));
+
+    // ── the relic audit (2026-11-08) ──────────────────────────────────────────────────────────────────────
+
+    // "The first time each turn you apply Liable, apply 1 more." The latch is set before the extra stack is
+    // filed, so the extra stack cannot answer itself.
+    public static readonly StatusData WitnessSlate = Rule("witness_slate", "Witness Slate",
+        "The first Liable you file each turn is witnessed twice.",
+        [
+            Trigger(new EffectProgram<StatusAppliedTriggeredEffectContext>(Witness<StatusAppliedTriggeredEffectContext>()),
+                nameof(TriggerEvent.StatusApplied), StatusTriggerScope.Anywhere),
+            Trigger(new EffectProgram<StatusMergedTriggeredEffectContext>(Witness<StatusMergedTriggeredEffectContext>()),
+                nameof(TriggerEvent.StatusMerged), StatusTriggerScope.Anywhere),
+            ClearLatch("witness_slate"),
+        ]);
+
+    private static IEffectNode<TContext> Witness<TContext>() where TContext : class =>
+        new ConditionalEffectNode<TContext>(
+            new AndExpression<TContext>(
+                new TriggerEventStatusIsExpression<TContext>(new StatusDefinitionId(Keywords.Liable)),
+                new NotExpression<TContext>(
+                    new TargetHasStatusExpression<TContext>(
+                        CombatantTargetSelectors.EventTarget, new StatusDefinitionId(Keywords.ApplicantMarker)))),
+            new ForEachTargetEffectNode<TContext>(
+                CombatantTargetSelectors.WithStatus(CombatantTargetSelectors.AllCombatants,
+                    new StatusDefinitionId("witness_slate")),
+                new ConditionalEffectNode<TContext>(
+                    CounterOn<TContext>(CombatantTargetSelectors.IterationTarget, "witness_slate", ComparisonOperator.Equal, 0),
+                    new CausalSequenceEffectNode<TContext>(
+                    [
+                        new SetCombatantCounterNode<TContext>(
+                            CombatantTargetSelectors.IterationTarget, new CounterId("witness_slate"),
+                            new ConstantExpression<TContext>(1), relative: false),
+                        new ApplyStatusNode<TContext>(
+                            CombatantTargetSelectors.EventTarget, new StatusDefinitionId(Keywords.Liable),
+                            new ConstantExpression<TContext>(1)),
+                    ]))));
+
+    // "The first time each combat your Exhausted pile holds 5 cards, gain 1 Energy and draw 1 card."
+    public static readonly StatusData AshPan = Rule("ash_pan", "Ash Pan",
+        "A full pan of ash warms the next hand.",
+        [
+            Trigger(new EffectProgram<CardMovedToZoneTriggeredEffectContext>(
+                new ConditionalEffectNode<CardMovedToZoneTriggeredEffectContext>(
+                    new AndExpression<CardMovedToZoneTriggeredEffectContext>(
+                        new ComparisonExpression<CardMovedToZoneTriggeredEffectContext>(
+                            new CombatantZoneCardCountExpression<CardMovedToZoneTriggeredEffectContext>(
+                                CombatantTargetSelectors.Source, CardZone.ExhaustPile),
+                            ComparisonOperator.GreaterOrEqual,
+                            new ConstantExpression<CardMovedToZoneTriggeredEffectContext>(5)),
+                        Counter<CardMovedToZoneTriggeredEffectContext>("ash_pan_done", ComparisonOperator.Equal, 0)),
+                    new CausalSequenceEffectNode<CardMovedToZoneTriggeredEffectContext>(
+                    [
+                        SetCounter<CardMovedToZoneTriggeredEffectContext>("ash_pan_done", 1),
+                        HeldEnergy.Hold<CardMovedToZoneTriggeredEffectContext>(1),
+                        Draw<CardMovedToZoneTriggeredEffectContext>(1),
+                    ]))),
+                nameof(TriggerEvent.CardMovedToZone)),
+        ]);
+
+    // "At the end of your turn, each card you Retain costs 1 less until it is played." The hand at the turn's
+    // end is exactly what was retained. A card kept turn after turn grows cheaper each time.
+    public static readonly StatusData RemembranceString = Rule("remembrance_string", "Remembrance String",
+        "What you keep becomes easier to do.",
+        [
+            Trigger(Model<TurnEndedTriggeredEffectContext>(
+                CombatNodeModel.ForEachCard(CardAuthoring.You, CardZone.Hand,
+                    new CombatNodeModel("setCardInstanceMarkCounter", CardAuthoring.You, CombatAmountSpec.FromConst(-1),
+                        Card: new CombatCardSpec("iterated"),
+                        CounterId: StandardCombatIds.CardCostDeltaCounter.value, Relative: true))),
+                nameof(TriggerEvent.TurnEnded)),
+        ]);
+
+    // Ember Box and Charnel Ledger are markers: Held Energy (HeldEnergy) and the Unread rule (GeneralPoolRules)
+    // look for them.
+    public static readonly StatusData EmberBox = Rule("ember_box", "Ember Box",
+        "Whenever Held Energy arrives, draw 1 card.", []);
+
+    public static readonly StatusData CharnelLedger = Rule("charnel_ledger", "Charnel Ledger",
+        "Unread effects happen twice.", []);
+
+    // "Whenever an enemy dies from exactly the damage it had left, gain 8 Gold." A hit is exact when nothing of
+    // what it asked for was wasted: requested − blocked = the HP it took, and the target is down. The fight
+    // counts such kills; the run pays for them when it is over.
+    public static CounterId ExactKills => new("executioners_measure_kills");
+
+    public static readonly StatusData ExecutionersMeasure = Rule("executioners_measure", "Executioner's Measure",
+        "A clean measure is paid for.",
+        [
+            Trigger(new EffectProgram<DamageReceivedTriggeredEffectContext>(
+                new ConditionalEffectNode<DamageReceivedTriggeredEffectContext>(
+                    new AndExpression<DamageReceivedTriggeredEffectContext>(
+                        new AndExpression<DamageReceivedTriggeredEffectContext>(
+                            new NotExpression<DamageReceivedTriggeredEffectContext>(
+                                new TargetHasStatusExpression<DamageReceivedTriggeredEffectContext>(
+                                    CombatantTargetSelectors.EventTarget,
+                                    new StatusDefinitionId(Keywords.ApplicantMarker))),
+                            new ComparisonExpression<DamageReceivedTriggeredEffectContext>(
+                                new CombatantCurrentHealthExpression<DamageReceivedTriggeredEffectContext>(
+                                    CombatantTargetSelectors.EventTarget),
+                                ComparisonOperator.Equal, new ConstantExpression<DamageReceivedTriggeredEffectContext>(0))),
+                        new AndExpression<DamageReceivedTriggeredEffectContext>(
+                            new ComparisonExpression<DamageReceivedTriggeredEffectContext>(
+                                new EventAmountExpression<DamageReceivedTriggeredEffectContext>(),
+                                ComparisonOperator.Greater, new ConstantExpression<DamageReceivedTriggeredEffectContext>(0)),
+                            new ComparisonExpression<DamageReceivedTriggeredEffectContext>(
+                                new SubtractExpression<DamageReceivedTriggeredEffectContext>(
+                                    new EventRequestedAmountExpression<DamageReceivedTriggeredEffectContext>(),
+                                    new EventBlockedAmountExpression<DamageReceivedTriggeredEffectContext>()),
+                                ComparisonOperator.Equal, new EventAmountExpression<DamageReceivedTriggeredEffectContext>()))),
+                    new ForEachTargetEffectNode<DamageReceivedTriggeredEffectContext>(
+                        CombatantTargetSelectors.WithStatus(CombatantTargetSelectors.AllCombatants,
+                            new StatusDefinitionId("executioners_measure")),
+                        new SetCombatantCounterNode<DamageReceivedTriggeredEffectContext>(
+                            CombatantTargetSelectors.IterationTarget, ExactKills,
+                            new ConstantExpression<DamageReceivedTriggeredEffectContext>(1), relative: true)))),
+                nameof(TriggerEvent.DamageTaken), StatusTriggerScope.Anywhere),
+        ]);
+
+    public static readonly ITriggeredRunEffectDefinition ExecutionersPay =
+        RunPrograms.On<CombatResolvedRunEvent>(
+        [
+            RunEffectTemplates.GainResource(StandardRunIds.Gold,
+                RunExpr.Multiply(RunEventValues.CombatCounter(ExactKills.ToString()), RunExpr.Const(8))),
+        ]);
+
+    // "Your hand is not discarded at the end of your turn. You draw 2 fewer cards at the start of each turn."
+    public static readonly StatusData OilclothWrap = Rule("oilcloth_wrap", "Oilcloth Wrap",
+        "Your hand is kept dry, and you are dealt less.", [],
+        passives: [new PassiveModifierData(PassiveModifierPipeline.TurnStartDraw, PassiveModifierOperation.AddFlat, -2,
+            RestrictDamageKind: null)],
+        tags: [StandardCombatIds.RetainHandTag.value]);
+
+    // "Your first card each turn costs 0. You draw 1 fewer card at the start of each turn." The free card is
+    // handed over with the turn's draw (the first turn's start comes before the relic's rule is worn), once a
+    // turn, and only if the last one was used.
+    public static readonly StatusData Rushlight = Rule("rushlight", "Rushlight",
+        "A quick light for the first thing you do.",
+        [
+            Trigger(new EffectProgram<CardsDrawnTriggeredEffectContext>(
+                OnceEachTurn<CardsDrawnTriggeredEffectContext>("rushlight",
+                    new ConditionalEffectNode<CardsDrawnTriggeredEffectContext>(
+                        new NotExpression<CardsDrawnTriggeredEffectContext>(
+                            new TargetHasStatusExpression<CardsDrawnTriggeredEffectContext>(
+                                CombatantTargetSelectors.Source, StandardCombatIds.FreeNextCardStatus)),
+                        // The engine's free card is a CHARGE, not a stack.
+                        new ApplyStatusNode<CardsDrawnTriggeredEffectContext>(
+                            CombatantTargetSelectors.Source, StandardCombatIds.FreeNextCardStatus,
+                            new ConstantExpression<CardsDrawnTriggeredEffectContext>(1), charges: 1)))),
+                nameof(TriggerEvent.CardsDrawn)),
+            ClearLatch("rushlight"),
+        ],
+        passives: [new PassiveModifierData(PassiveModifierPipeline.TurnStartDraw, PassiveModifierOperation.AddFlat, -1,
+            RestrictDamageKind: null)]);
+
+    // "Whenever a card is Exhausted, gain 5 Block." The campfire half lives on the rest (EventTemplates.Rest).
+    public static readonly StatusData TinderPouch = Rule("tinder_pouch", "Tinder Pouch",
+        "Every card burnt kindles a guard.",
+        [
+            Trigger(new EffectProgram<CardMovedToZoneTriggeredEffectContext>(
+                new ConditionalEffectNode<CardMovedToZoneTriggeredEffectContext>(
+                    new TriggerEventCardZoneExpression<CardMovedToZoneTriggeredEffectContext>(CardZone.ExhaustPile),
+                    Block<CardMovedToZoneTriggeredEffectContext>(5))),
+                nameof(TriggerEvent.CardMovedToZone)),
+        ]);
+
+    private static EffectProgram<TContext> Model<TContext>(CombatNodeModel model) where TContext : class =>
+        CombatProgramModel.Build<TContext>(model);
 
     // ── shapes ────────────────────────────────────────────────────────────────────────────────────────────
 

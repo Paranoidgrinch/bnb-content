@@ -18,7 +18,7 @@ public class SparringRingTests
     private const string Deed = "paper_cut";
     // A canonical relic whose whole rule is Block at the opening bell. It was the ported
     // `suspiciously_helpful_stapler` until 2026-09-10, when the 47 v2 demo relics left the game.
-    private const string Charm = "black_salt_charm";   // combat opening: gain 4 Block
+    private const string Charm = "rootbound_walking_staff";   // combat opening: 6 Block and 1 Held Energy
 
     // A PLAIN opponent for the tests that are about the LOADOUT rather than about a fight. A boss is the
     // wrong sparring partner for those: Nanna-Sin lays a card in the fighter's hand every morning and

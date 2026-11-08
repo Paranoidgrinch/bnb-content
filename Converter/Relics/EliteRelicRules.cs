@@ -164,20 +164,22 @@ public static class EliteRelicRules
                 nameof(TriggerEvent.CardsDrawn)),
         ]);
 
-    // The Iron Warrant records refusal as Contempt. Censure is what this game calls a refusal you carry, so
-    // the nail files it back out again.
+    // The Iron Warrant records refusal as Contempt. It used to file Censure back out; Censure left the game with
+    // the old general pool (relic audit 2026-11-08), so the nail now files whatever is done to you.
     public static string ContemptNailId => "contempt_ledger_nail";
 
     public static StatusData ContemptLedgerNail => Rule(
         ContemptNailId, "Contempt Ledger Nail",
-        "Every Censure you take is filed against the weakest enemy: 2 Paperwork.",
+        "Every negative status you take is filed against the weakest enemy: 1 Doubt.",
         [
             Trigger(new EffectProgram<StatusAppliedTriggeredEffectContext>(
                 new ConditionalEffectNode<StatusAppliedTriggeredEffectContext>(
-                    IsStatus<StatusAppliedTriggeredEffectContext>(Cards.Keywords.Censure),
+                    Cards.CardAuthoring.NegativeStatuses
+                        .Select(IsStatus<StatusAppliedTriggeredEffectContext>)
+                        .Aggregate((a, b) => new OrExpression<StatusAppliedTriggeredEffectContext>(a, b)),
                     new ApplyStatusNode<StatusAppliedTriggeredEffectContext>(
-                        Weakest, new StatusDefinitionId(Cards.Keywords.Paperwork),
-                        new ConstantExpression<StatusAppliedTriggeredEffectContext>(2)))),
+                        Weakest, new StatusDefinitionId(Cards.Keywords.Doubt),
+                        new ConstantExpression<StatusAppliedTriggeredEffectContext>(1)))),
                 nameof(TriggerEvent.StatusApplied)),
         ]);
 

@@ -37,13 +37,13 @@ public class AuditTests
         Assert.Contains(Audit.Judge(Game, lying, starterFloor: 0), f => f.Severity == "BUG");
     }
 
-    // A relic with a plain opening effect shows it: Black Salt Charm opens every fight with 4 Block.
+    // A relic with a plain opening effect shows it: Rootbound Walking Staff opens every fight with 6 Block.
     [Fact]
     public void A_relic_s_opening_block_is_seen_by_the_relic_fight()
     {
-        var audit = Audit.AuditRelic(Game, "black_salt_charm");
+        var audit = Audit.AuditRelic(Game, "rootbound_walking_staff");
         Assert.Null(audit.Quiet.Error);
-        Assert.Equal(4, audit.Quiet.Start.HeroBlock - audit.QuietBase.Start.HeroBlock);
+        Assert.Equal(6, audit.Quiet.Start.HeroBlock - audit.QuietBase.Start.HeroBlock);
         Assert.DoesNotContain(Audit.JudgeRelic(Game, audit), f => f.Severity == "UNUSED");
     }
 

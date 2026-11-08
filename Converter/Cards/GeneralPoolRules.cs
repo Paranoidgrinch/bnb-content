@@ -32,6 +32,9 @@ public static class GeneralPoolRules
     public const string LastEmberTag = "last_ember";
 
     public const string LastExhaustedMark = "last_exhausted";
+
+    // The Charnel Ledger relic (relic audit 2026-11-08) is a marker this rule looks for.
+    public const string CharnelLedgerId = "charnel_ledger";
     public const string ReadByFirelightMark = "read_by_firelight";
 
     public static CounterId AlmanacsHeld => new("almanacs_held");
@@ -122,22 +125,38 @@ public static class GeneralPoolRules
         var toExhaust = new TriggerEventCardZoneExpression<CardMovedToZoneTriggeredEffectContext>(CardZone.ExhaustPile);
 
         IEffectNode<CardMovedToZoneTriggeredEffectContext> unread = new SequenceEffectNode<CardMovedToZoneTriggeredEffectContext>(
-            Unreads().Select(u => (IEffectNode<CardMovedToZoneTriggeredEffectContext>)
+        [
+            .. Unreads().Select(u => (IEffectNode<CardMovedToZoneTriggeredEffectContext>)
                 new ConditionalEffectNode<CardMovedToZoneTriggeredEffectContext>(
                     new CardInstanceHasTagExpression<CardMovedToZoneTriggeredEffectContext>(
                         card, new TagId(GeneralPoolShapes.UnreadIdTag(u.CardId))),
-                    Node<CardMovedToZoneTriggeredEffectContext>(u.Effect))).ToArray());
+                    Node<CardMovedToZoneTriggeredEffectContext>(u.Effect))),
+            // Besom Guard: the broom goes back on top of the draw pile.
+            .. GeneralDefence.SweepsBack.Select(id => (IEffectNode<CardMovedToZoneTriggeredEffectContext>)
+                new ConditionalEffectNode<CardMovedToZoneTriggeredEffectContext>(
+                    new CardInstanceHasTagExpression<CardMovedToZoneTriggeredEffectContext>(
+                        card, new TagId(GeneralPoolShapes.UnreadIdTag(id))),
+                    new MoveCardToZoneNode<CardMovedToZoneTriggeredEffectContext>(
+                        You, card, CardZone.DrawPile, placement: ZonePlacement.Top))),
+        ]);
 
         return new EffectProgram<CardMovedToZoneTriggeredEffectContext>(
             new SequenceEffectNode<CardMovedToZoneTriggeredEffectContext>(
             [
-                // Unread: thrown away from the hand by an effect, not played.
+                // Unread: thrown away from the hand by an effect, not played — twice with the Charnel Ledger.
                 new ConditionalEffectNode<CardMovedToZoneTriggeredEffectContext>(
                     new AndExpression<CardMovedToZoneTriggeredEffectContext>(
                         Unplayed<CardMovedToZoneTriggeredEffectContext>(),
                         new CardInstanceHasTagExpression<CardMovedToZoneTriggeredEffectContext>(
                             card, new TagId(GeneralPoolShapes.UnreadTag))),
-                    unread),
+                    new SequenceEffectNode<CardMovedToZoneTriggeredEffectContext>(
+                    [
+                        unread,
+                        new ConditionalEffectNode<CardMovedToZoneTriggeredEffectContext>(
+                            new TargetHasStatusExpression<CardMovedToZoneTriggeredEffectContext>(
+                                You, new StatusDefinitionId(CharnelLedgerId)),
+                            unread),
+                    ])),
 
                 new ConditionalEffectNode<CardMovedToZoneTriggeredEffectContext>(toExhaust,
                     new SequenceEffectNode<CardMovedToZoneTriggeredEffectContext>(

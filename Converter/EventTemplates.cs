@@ -29,15 +29,20 @@ public static class EventTemplates
         ]),
     ]);
 
+    private static IRunExpression<int> RestHeal(int healPercent) =>
+        RunExpr.Divide(RunExpr.Add(RunExpr.Multiply(RunExpr.MaxHealth, RunExpr.Const(healPercent)), RunExpr.Const(99)),
+            RunExpr.Const(100));
+
     internal static EventScript Rest(int healPercent, ActRooms act) => new("start",
     [
         new EventSituation("start", act.RestText,
         [
             new EventChoice("rest",
             [
-                new ComputedHealRunEffect(RunExpr.Divide(
-                    RunExpr.Add(RunExpr.Multiply(RunExpr.MaxHealth, RunExpr.Const(healPercent)), RunExpr.Const(99)),
-                    RunExpr.Const(100))),
+                // The Tinder Pouch (relic audit 2026-11-08) takes 10 off the rest.
+                new ConditionalRunEffect(RunExpr.Flag(new RunFlagId(Relics.ShopRelics.TinderPouchFlag)),
+                    [new ComputedHealRunEffect(RunExpr.Max(RunExpr.Const(0), RunExpr.Add(RestHeal(healPercent), RunExpr.Const(-10))))],
+                    [new ComputedHealRunEffect(RestHeal(healPercent))]),
             ], TextKey: $"{act.RestChoiceText} (heal {healPercent}% of max HP)"),
             // The campfire's other half: the design gives a waiting room two actions (BnB_Run_Systems_Master
             // §3 — Authorized Leave *or* Submit an Amendment) and only the heal was ever built.

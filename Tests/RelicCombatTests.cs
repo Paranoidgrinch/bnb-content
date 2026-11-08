@@ -45,14 +45,15 @@ public class RelicCombatTests
         return (play, session, combat.State.Combatants.First(c => c.Id != combat.HeroId).Id);
     }
 
-    // "At combat start gain 4 Block." The plainest possible proof that a relic's rule reaches the fight.
+    // Rootbound Walking Staff opens the fight with 6 Block. The plainest proof that a relic's rule reaches the
+    // fight (Black Salt Charm, which did this before, left with the relic audit of 2026-11-08).
     [Fact]
     public void A_relic_hands_its_rule_to_the_fight_when_the_fight_opens()
     {
-        var (play, _, _) = WithRelic("black_salt_charm", "paper_cut", "paper_cut", "paper_cut");
+        var (play, _, _) = WithRelic("rootbound_walking_staff", "paper_cut", "paper_cut", "paper_cut");
 
-        Assert.Equal(4, Block(Hero(play)));
-        Assert.Equal(1, FightProbe.StacksOf(Hero(play), "black_salt_charm"));
+        Assert.Equal(6, Block(Hero(play)));
+        Assert.Equal(1, FightProbe.StacksOf(Hero(play), "rootbound_walking_staff"));
         play.Dispose();
     }
 
@@ -64,7 +65,7 @@ public class RelicCombatTests
             FightProbe.Solo(Quiet, QuietIntent, energy: 9), ["paper_cut", "paper_cut", "paper_cut"]);
 
         Assert.Equal(0, Block(Hero(play)));
-        Assert.Equal(0, FightProbe.StacksOf(Hero(play), "black_salt_charm"));
+        Assert.Equal(0, FightProbe.StacksOf(Hero(play), "rootbound_walking_staff"));
         play.Dispose();
     }
 
@@ -97,25 +98,6 @@ public class RelicCombatTests
 
         Play(play, session, "cursed_addendum", enemyId);   // the same turn: no bell
         Assert.Equal(health - 16, play.CombatDriver.Current!.State.GetCombatant(enemyId).Health.Current);
-        play.Dispose();
-    }
-
-    // "One card in your opening hand costs 1 less the first time you play it." The promise is written on the
-    // CARD, so it survives being held and is spent by that copy alone.
-    [Fact]
-    public void Index_volvelle_writes_its_discount_onto_a_card()
-    {
-        var (play, session, enemyId) = WithRelic("index_volvelle", Enumerable.Repeat("paper_cut", 12).ToArray());
-
-        var hand = play.CombatDriver!.Current!.Hand;
-        var marked = hand.Count(c => c.GetMarkCounter(StandardCombatIds.CardCostDeltaCounter) != 0);
-        Assert.Equal(1, marked);
-
-        var discounted = hand.First(c => c.GetMarkCounter(StandardCombatIds.CardCostDeltaCounter) != 0);
-        var energy = Hero(play).Resources[StandardCombatIds.EnergyResource].Current;
-        play.CombatDriver.PlayCard(discounted.Id, enemyId);
-        Assert.Null(session.Error);
-        Assert.Equal(energy, Hero(play).Resources[StandardCombatIds.EnergyResource].Current); // 1 − 1
         play.Dispose();
     }
 

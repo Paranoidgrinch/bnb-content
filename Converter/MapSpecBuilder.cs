@@ -309,7 +309,7 @@ public static class MapSpecBuilder
                         new FixedRewardSource(
                             [new RewardOffer($"relic-{relic.Id}", [.. ConversionPools.Grant(relic)])]),
                         1)
-                        { Kind = RewardKinds.Relic },
+                        { Kind = RewardKinds.Relic, Tags = [Relics.ShopRelics.EliteRelicReward] },
                 ]),
             ]), Granted: true);
         }
@@ -349,7 +349,7 @@ public static class MapSpecBuilder
                             // one of them at random, handed over without a choice.
                             three.Count),
                         1)
-                        { Kind = RewardKinds.Relic },
+                        { Kind = RewardKinds.Relic, Tags = [Relics.ShopRelics.BossRelicReward] },
                 ]),
             ]), Granted: true);
         }

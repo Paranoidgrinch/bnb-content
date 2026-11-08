@@ -44,12 +44,14 @@ public static class NormalRelics
             eligibility: Eligibility.Bureaucrat,
             combatRule: RelicRules.FormkeepersSignet),
 
-        Normal("moss_salve", "Moss Salve", Rarity.Common,
-            "After winning a combat in which you lost HP, heal up to 2 HP.",
-            runPrograms: [AfterEveryVictory(Heal(2))]),
+        // Relic audit (2026-11-08): replaces Moss Salve. Liable's own relic.
+        Normal("witness_slate", "Witness Slate", Rarity.Common,
+            "The first time each turn you apply Liable, apply 1 more.",
+            combatRule: RelicRules.WitnessSlate),
 
+        // Relic audit (2026-11-08): was the fourth Common ending in "gain 4 Block".
         Normal("lead_counterweight", "Lead Counterweight", Rarity.Common,
-            "The first time each turn you play a card with base cost 2 or more, gain 4 Block.",
+            "Cards that cost 2 or more have Retain.",
             combatRule: RelicRules.LeadCounterweight),
 
         Normal("hollow_wax_bead", "Hollow Wax Bead", Rarity.Common,
@@ -73,9 +75,10 @@ public static class NormalRelics
             "The first Deed you play each turn against an enemy that intends to Attack deals 4 additional damage.",
             combatRule: RelicRules.IronPrayerBead),
 
-        Normal("black_salt_charm", "Black Salt Charm", Rarity.Common,
-            "At combat start gain 4 Block.",
-            combatRule: RelicRules.BlackSaltCharm),
+        // Relic audit (2026-11-08): replaces Black Salt Charm. The Exhausted pile's own relic.
+        Normal("ash_pan", "Ash Pan", Rarity.Common,
+            "The first time each combat your Exhausted pile holds 5 cards, gain 1 Energy and draw 1 card.",
+            combatRule: RelicRules.AshPan),
 
         Normal("tarnished_bell", "Tarnished Bell", Rarity.Common,
             "The first time each turn you apply a negative status to an enemy, deal 4 damage to it.",
@@ -129,16 +132,15 @@ public static class NormalRelics
             "Heal 8 HP the first time you make a purchase in each shop.",
             runPrograms: [OnPurchase(Heal(8))]),
 
-        Normal("index_bone", "Index Bone", Rarity.Uncommon,
-            "At the start of your turn, draw 1 additional card.",
-            combatRule: RelicRules.IndexBone),
+        // Relic audit (2026-11-08): takes Index Bone's place, which became a Rare. Retain's own relic.
+        Normal("remembrance_string", "Remembrance String", Rarity.Uncommon,
+            "At the end of your turn, each card you Retain costs 1 less until it is played.",
+            combatRule: RelicRules.RemembranceString),
 
-        // "Whenever you leave a card reward without taking a card, gain 10 Gold and heal 1 HP." Skipping a
-        // reward is not something a run program can hear, so it pays after every victory instead — see
-        // ADAPTATIONS.
-        Normal("refusal_rosary", "Refusal Rosary", Rarity.Uncommon,
-            "After every victorious combat, gain 10 Gold and heal 1 HP.",
-            runPrograms: [AfterEveryVictory(Gold(10), Heal(1))]),
+        // Relic audit (2026-11-08): replaces Refusal Rosary. Held Energy's own relic; the draw is HeldEnergy's.
+        Normal("ember_box", "Ember Box", Rarity.Uncommon,
+            "Whenever Held Energy arrives, draw 1 card.",
+            combatRule: RelicRules.EmberBox),
 
         Normal("archive_censer", "Archive Censer", Rarity.Uncommon,
             "The first time each turn you Archive a card, gain 1 Energy.",
@@ -158,9 +160,11 @@ public static class NormalRelics
             "The first time each turn a single card grants at least 10 Block, deal 6 damage to all enemies.",
             combatRule: RelicRules.BlackthornBrooch),
 
+        // Relic audit (2026-11-08): was Levy Stamp's twin. The fight counts the exact kills, the run pays them.
         Normal("executioners_measure", "Executioner's Measure", Rarity.Uncommon,
-            "After every victorious combat, gain 15 Gold.",
-            runPrograms: [AfterEveryVictory(Gold(15))]),
+            "Whenever an enemy dies from exactly the damage it had left, gain 8 Gold.",
+            combatRule: RelicRules.ExecutionersMeasure,
+            runPrograms: [RelicRules.ExecutionersPay]),
 
         Normal("sootglass_lens", "Sootglass Lens", Rarity.Uncommon,
             "The first time each turn you apply a negative status to an enemy that already had one, draw 1 card.",
@@ -177,19 +181,26 @@ public static class NormalRelics
             combatRule: RelicRules.RefuseDocket),
 
         // ── Rare ──────────────────────────────────────────────────────────────────────────────────────────
-        Normal("index_volvelle", "Index Volvelle", Rarity.Rare,
-            "At combat start, one card in your hand costs 1 less Energy the first time you play it.",
-            combatRule: RelicRules.IndexVolvelle),
+        // Relic audit (2026-11-08): replaces Index Volvelle, a weak copy of Rebinding Spindle. Read by the
+        // Unread rule itself (GeneralPoolRules).
+        Normal("charnel_ledger", "Charnel Ledger", Rarity.Rare,
+            "Unread effects happen twice.",
+            combatRule: RelicRules.CharnelLedger),
+
+        // Relic audit (2026-11-08): stronger than most Rares, so it is one now.
+        Normal("index_bone", "Index Bone", Rarity.Rare,
+            "At the start of your turn, draw 1 additional card.",
+            combatRule: RelicRules.IndexBone),
 
         Normal("withheld_hourglass", "Withheld Hourglass", Rarity.Rare,
             "At the start of your turn, one card in your hand costs 0 Energy the first time you play it.",
             combatRule: RelicRules.WithheldHourglass),
 
+        // Relic audit (2026-11-08): was a grab-bag of an upgrade and a heal; now a token for the road's stops.
         Normal("road_claim_token", "Road-Claim Token", Rarity.Rare,
-            "When picked up, upgrade 1 card. After every victorious combat, heal 5 HP.",
-            pickup: [new UpgradeCardsRunEffect(
-                RunSelectors.DeckCards.Upgradable().ChooseByPlayer(1, "upgrade a card"))],
-            runPrograms: [AfterEveryVictory(Heal(5))]),
+            "Whenever you resolve an Event, heal 5 HP and upgrade a random card.",
+            runPrograms: [RunPrograms.On<EventChoiceMadeRunEvent>(
+                Heal(5), new UpgradeCardsRunEffect(RunSelectors.DeckCards.Upgradable().Random(1)))]),
 
         Normal("concordance_medallion", "Concordance Medallion", Rarity.Rare,
             "The first time each turn you apply Paperwork or Doubt to a single enemy, apply half of it to " +
@@ -211,10 +222,6 @@ public static class NormalRelics
             "Whenever you Rest at a Campfire, upgrade 1 random unupgraded card. Whenever you Smith, heal 7 HP.",
             runPrograms: [RelicRules.TwinEmberBrazier]),
 
-        Normal("gilded_tithe_chain", "Gilded Tithe Chain", Rarity.Rare,
-            "When picked up, gain 4 Max HP and heal 4. Every shop purchase grants 2 Max HP.",
-            pickup: [MaxHealth(4), Heal(4)],
-            runPrograms: [OnPurchase(MaxHealth(2))]),
 
         Normal("rebinding_spindle", "Rebinding Spindle", Rarity.Rare,
             "At the start of your turn, two cards in your hand cost 1 less Energy the first time they are played.",
@@ -226,7 +233,7 @@ public static class NormalRelics
             combatRule: RelicRules.DeferredSignet),
 
         Normal("blood_stamped_bond", "Blood-Stamped Bond", Rarity.Rare,
-            "At combat start, lose 6 HP and gain 1 Energy and 1 additional card on turn 1.",
+            "At combat start, lose 3 HP and gain 1 Energy and 1 additional card on turn 1.",
             combatRule: RelicRules.BloodStampedBond),
 
         Normal("thorn_crowned_reliquary", "Thorn-Crowned Reliquary", Rarity.Rare,

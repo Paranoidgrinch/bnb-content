@@ -34,19 +34,6 @@ public class ShopRelicLiveTests
         Assert.Contains(shop.Services!, service => service.Tags!.Contains(ShopRelics.Removal));
     }
 
-    // Secondhand Reliquary: one Normal Relic is 30% off, and buying a Normal Relic costs 5 HP — once.
-    [Fact]
-    public void A_secondhand_relic_is_cheaper_and_costs_blood()
-    {
-        var shop = CityShop();
-        var relic = OnOffer(shop, ShopRelics.NormalRelicShelf, "secondhand_reliquary")[0];
-        var run = Visit("secondhand_reliquary", shop, gold: 1000, relic.Entry.Id, "leave");
-
-        Assert.Equal(1000 - relic.Price, run.GetResource(Gold));
-        Assert.Equal((int)Math.Round(relic.Entry.Price * 0.7, MidpointRounding.AwayFromZero), relic.Price);
-        Assert.Equal(25, run.Health.Current); // 30 − 5
-    }
-
     // Crooked Display Case: a third relic on a two-relic shelf, and it is the dear one.
     [Fact]
     public void The_display_case_puts_out_one_more_relic_at_a_markup()
@@ -70,22 +57,6 @@ public class ShopRelicLiveTests
 
         Assert.Equal(75, run.GetResource(Gold));
         Assert.Equal(38, run.Health.Current); // 30 + 8
-    }
-
-    // Scrivener's Shears: the removal desk is half price, which only works if the relic and the service agree
-    // on what "removal" is called.
-    [Fact]
-    public void The_shears_halve_the_removal_desk()
-    {
-        var shop = CityShop();
-        var removal = shop.Services!.Single(service => service.Id == "remove-card");
-        var run = NewRun(1000);
-        run.AddRelic(Wearing("scriveners_shears"));
-
-        var shelf = new ShopShelf(run, shop);
-
-        Assert.Equal((int)Math.Round(removal.Price * 0.5, MidpointRounding.AwayFromZero),
-            shelf.PriceOf(removal));
     }
 
     // Debtor's Signet: a broke player walks out with the goods and a number owed.

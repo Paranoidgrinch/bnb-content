@@ -39,6 +39,9 @@ public static class ShopRelics
     public const string ShopRelicShelf = "relics-shop";
     public const string NormalRelicShelf = "relics-normal";
     public const string NormalRelic = "normal";
+    public const string EliteRelicReward = "elite-relic";
+    public const string BossRelicReward = "boss-relic";
+    public const string TinderPouchFlag = "tinder_pouch";
     public const string ShopRelic = "shop";
     public const string Removal = "removal";
     public const string Extra = "extra";
@@ -68,31 +71,11 @@ public static class ShopRelics
             combatRule: RelicRules.GlassInkwell),
 
         // ── 3 ─────────────────────────────────────────────────────────────────────────────────────────────
-        // The mark and the blood price are the same flag, so the relic can only ever cost you once per Act and
-        // only for the relic it actually made cheaper. The discount marks the first Normal Relic on the shelf;
-        // the 5 HP is charged when a Normal Relic is bought — see ADAPTATIONS.
-        Shop("secondhand_reliquary", "Secondhand Reliquary",
-            "The first time each Act you enter a Shop, one Normal Relic for sale is Secondhand: it costs 30% "
-            + "less, and buying it costs 5 HP.",
-            shopPrices:
-            [
-                new ShopPriceRule(
-                    new ShopPriceMatch(ShopEntryKinds.Relic, [NormalRelic]),
-                    PercentDelta: -30,
-                    Limit: ShopPriceRuleLimit.FirstMatchPerVisit,
-                    Condition: Unspent("secondhand_reliquary")),
-            ],
-            runPrograms:
-            [
-                RunPrograms.When<ShopItemPurchasedRunEvent>(
-                    RunExpr.And(
-                        RunExpr.And(
-                            RunEventValues.ShopItemIsKind(ShopEntryKinds.Relic),
-                            RunEventValues.ShopItemHasTag(NormalRelic)),
-                        Unspent("secondhand_reliquary")),
-                    new ApplyRunDamageRunEffect(5),
-                    Spend("secondhand_reliquary")),
-            ]),
+        // Relic audit (2026-11-08): replaces Secondhand Reliquary (once an Act, for one relic). A trade for the
+        // draw and Retain axes.
+        Shop("oilcloth_wrap", "Oilcloth Wrap",
+            "Your hand is not discarded at the end of your turn. You draw 2 fewer cards at the start of each turn.",
+            combatRule: RelicRules.OilclothWrap),
 
         // ── 4 ─────────────────────────────────────────────────────────────────────────────────────────────
         // An elite is an ordinary combat node wearing a tag; without the tag nothing downstream could tell this
@@ -121,12 +104,15 @@ public static class ShopRelics
         // ── 6 ─────────────────────────────────────────────────────────────────────────────────────────────
         // Rejecting a relic is not a refusal the engine has to model — it is simply another offer on the table.
         Shop("bent_auction_gavel", "Bent Auction Gavel",
-            "Whenever a random Normal Relic is offered as a reward, you may reject it and gain 65 Gold instead. "
-            + "Boss, Event and purchased relics are excluded.",
+            "Whenever a Normal, Elite or Boss relic is offered as a reward, you may reject it and gain 65 Gold "
+            + "instead. Event and purchased relics are excluded.",
             rewardRules:
             [
+                // Relic audit (2026-11-08): Elite and Boss relics too (user). Their rewards carry these tags
+                // (MapSpecBuilder).
                 new AddRewardOfferRule(
-                    new RewardMatch(RewardKinds.Relic, [NormalRelic], NoneTag: ["boss", "event", "purchased"]),
+                    new RewardMatch(RewardKinds.Relic, [NormalRelic, EliteRelicReward, BossRelicReward],
+                        NoneTag: ["event", "purchased"]),
                     new RewardOffer("sell-the-relic", [Gold(65)], RewardKinds.Resource, ["refusal"])),
             ]),
 
@@ -154,23 +140,11 @@ public static class ShopRelics
         // ── 9 ─────────────────────────────────────────────────────────────────────────────────────────────
         // The discount and the surcharge that follows it are two rules reading the same pair of flags, so the
         // shop always shows the price the next removal will actually cost.
-        Shop("scriveners_shears", "Scrivener's Shears",
-            "The first card removal you buy each Act costs 50% less; the next one that Act costs 25% more.",
-            shopPrices:
-            [
-                new ShopPriceRule(RemovalService, PercentDelta: -50, Condition: Unspent("shears_discount")),
-                new ShopPriceRule(RemovalService, PercentDelta: 25,
-                    Condition: RunExpr.And(Spent("shears_discount"), Unspent("shears_penalty"))),
-            ],
-            runPrograms:
-            [
-                RunPrograms.When<ShopItemPurchasedRunEvent>(
-                    RunEventValues.ShopItemHasTag(Removal),
-                    new ConditionalRunEffect(
-                        Unspent("shears_discount"),
-                        [Spend("shears_discount")],
-                        [Spend("shears_penalty")])),
-            ]),
+        // Relic audit (2026-11-08): replaces Scrivener's Shears (one cheaper removal an Act). A trade for the
+        // Energy axis.
+        Shop("rushlight", "Rushlight",
+            "Your first card each turn costs 0. You draw 1 fewer card at the start of each turn.",
+            combatRule: RelicRules.Rushlight),
 
         // ── 10 ────────────────────────────────────────────────────────────────────────────────────────────
         // "You may" is a reward you are allowed to walk away from. The card it sharpens is the one the shop
@@ -309,29 +283,12 @@ public static class ShopRelics
             ]),
 
         // ── 19 ────────────────────────────────────────────────────────────────────────────────────────────
-        // "Without entering combat" is not something the run can observe, so any resolved Event counts — see
-        // ADAPTATIONS.
-        Shop("guest_favor_token", "Guest-Favor Token",
-            "The first time each Act you resolve an Event, choose 25 Gold or upgrade a card in your deck.",
-            runPrograms:
-            [
-                RunPrograms.When<EventChoiceMadeRunEvent>(
-                    Unspent("guest_favor"),
-                    new OfferRewardRunEffect(
-                        new RewardId("guest-favor"),
-                        [
-                            new RewardOffer("guest-gold", [Gold(25)], RewardKinds.Resource),
-                            // The design's alternative is a special two-card reward; a relic definition has no
-                            // handle on the Act's card pool, so the favour sharpens a card you already carry
-                            // instead — see ADAPTATIONS.
-                            new RewardOffer("guest-upgrade",
-                                [new UpgradeCardsRunEffect(
-                                    RunSelectors.DeckCards.ChooseByPlayer(1, "upgrade a card"))],
-                                RewardKinds.Card),
-                        ],
-                        1),
-                    Spend("guest_favor")),
-            ]),
+        // Relic audit (2026-11-08): replaces Guest-Favor Token (25 Gold or an upgrade an Act). A trade for the
+        // Exhausted pile; the campfire reads the flag (EventTemplates.Rest).
+        Shop("tinder_pouch", "Tinder Pouch",
+            "Whenever a card is Exhausted, gain 5 Block. Resting at a campfire heals 10 HP less.",
+            pickup: [new SetFlagRunEffect(new RunFlagId(TinderPouchFlag), true)],
+            combatRule: RelicRules.TinderPouch),
 
         // ── 20 ────────────────────────────────────────────────────────────────────────────────────────────
         // Sharpening pass (2026-10-21): was Merchant Punchcard (a discount per visit). The id stays.
