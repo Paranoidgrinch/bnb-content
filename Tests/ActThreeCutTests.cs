@@ -42,30 +42,39 @@ public class ActThreeCutTests
 
     // ── Road ──────────────────────────────────────────────────────────────────────────────────────────────
 
-    // A Deed before any Working breaks the Hare's law (2026-11-03); the opening licence forgives the first.
+    // The Hare posts the cost of a card in your hand (2026-11-08, E10): with nothing but 1-cost cards the sign is 1,
+    // and opening with one of them keeps its law.
     [Fact]
-    public void A_deed_before_any_working_breaks_the_hares_law()
+    public void The_hare_posts_a_waymark_from_your_hand_and_a_card_of_that_cost_keeps_it()
     {
         var (play, session, hare) = Solo("permit_hare", "stamp_passage", [.. Enumerable.Repeat(Deed, 10)]);
+        Assert.Equal(1, FightProbe.StacksOf(Body(play, hare), ActThree.WaymarkSignId(1)));
+        Assert.Equal(0, FightProbe.StacksOf(Body(play, hare), ActThree.WaymarkSignId(0)));
         Play(play, session, Deed, hare);
-        Assert.Equal(0, Licences(play));
-        Assert.Equal(0, Claims(play, hare));
-        play.CombatDriver!.EndTurn();
         Play(play, session, Deed, hare);
-        Assert.Equal(1, Claims(play, hare));
-        // Once a turn: a second Deed breaks nothing more.
-        Play(play, session, Deed, hare);
-        Assert.Equal(1, Claims(play, hare));
+        Assert.Equal(1, Licences(play));
         play.Dispose();
     }
 
+    // Opening with a card of another cost breaks the law: the opening licence forgives the first, the second turn's
+    // breach is a Claim. Only the first card counts.
     [Fact]
-    public void A_working_first_keeps_the_hares_law()
+    public void Opening_with_another_cost_than_the_waymark_breaks_the_hares_law()
     {
-        var (play, session, hare) = Solo("permit_hare", "stamp_passage", [Working, Deed, Deed, Deed, Deed, .. Enumerable.Repeat(Deed, 5)]);
-        Play(play, session, Working, null);
-        Play(play, session, Deed, hare);
-        Assert.Equal(1, Licences(play));
+        var (play, session, hare) = Solo("permit_hare", "stamp_passage", [Heavy, Deed, Deed, Deed, Deed]);
+        string Wrong() => FightProbe.StacksOf(Body(play, hare), ActThree.WaymarkSignId(2)) > 0 ? Deed : Heavy;
+        string Right() => Wrong() == Deed ? Heavy : Deed;
+
+        Play(play, session, Wrong(), hare);
+        Assert.Equal(0, Licences(play));
+        play.CombatDriver!.EndTurn();
+        Assert.Null(session.Error);
+        Play(play, session, Wrong(), hare);
+        Assert.Equal(1, Claims(play, hare));
+        play.CombatDriver.EndTurn();
+        Play(play, session, Right(), hare);
+        Play(play, session, Wrong(), hare);
+        Assert.Equal(1, Claims(play, hare));
         play.Dispose();
     }
 

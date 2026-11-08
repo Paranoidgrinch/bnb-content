@@ -4,13 +4,18 @@ using RogueDeck.Scenario.Authoring;
 
 namespace BnbContent.Converter;
 
-// Act III, Stage 1 — The Road. Since 2026-11-03 (user): the Hare wants a Working before any Deed, the Path's arrow
-// names where your blows must go, and the Cairn throws back a stone for every hit it took.
+// Act III, Stage 1 — The Road. The Hare posts a waymark each turn (2026-11-08; it wanted a Working first until then,
+// which was the Queen Under the Hill's law), the Path's arrow names where your blows must go, and the Cairn throws
+// back a stone for every hit it took.
 public static partial class ActThree
 {
-    // ── Permit Hare — Permit First ────────────────────────────────────────────────────────────────────────
+    // ── Permit Hare — the Waymark ─────────────────────────────────────────────────────────────────────────
 
-    public const string NoHastyPassageId = "no_hasty_passage";
+    public const string WaymarkId = "waymark";
+    public const int WaymarkTop = 2;
+    // The sign it shows this turn: one chip per cost, so the chip itself says the number.
+    public static string WaymarkSignId(int cost) => $"waymark_{cost}";
+    private const string WaymarkPickMark = "waymark_pick";
 
     public const string EveryDetourLeavesAStoneId = "every_detour_leaves_a_stone";
     public const string DetourStoneId = "detour_stone";
@@ -42,13 +47,61 @@ public static partial class ActThree
             Parties,
             new RemoveStatusNode<TContext>(CombatantTargetSelectors.IterationTarget, new StatusDefinitionId(statusId)));
 
-    // Since 2026-11-03 (user): a Deed before any Working this turn breaks its law. The Quarry is gone.
-    public static StatusData NoHastyPassage() =>
-        LawOnPlay(NoHastyPassageId, "Permit First",
-            "Playing a Deed before any Working this turn breaks its law.",
+    // Since 2026-11-08 (content review E10): once your hand is dealt, the Hare reads the cost of one card in it at
+    // random and posts it as the waymark — 0, 1 or 2 (2 meaning 2 or more). Your first card that turn must cost
+    // exactly that, or you break its law. The sign is read off your own hand, so it can always be kept; the question
+    // is whether you want to open with that card.
+    public static StatusData Waymark()
+    {
+        var hare = Lawgiver(WaymarkId);
+        var pick = FirstMarked<CardsDrawnTriggeredEffectContext>(CardZone.Hand, WaymarkPickMark);
+        var picked = CardCost(pick);
+        IEffectNode<CardsDrawnTriggeredEffectContext> Post(int cost) =>
+            new ApplyStatusNode<CardsDrawnTriggeredEffectContext>(hare, new StatusDefinitionId(WaymarkSignId(cost)),
+                new ConstantExpression<CardsDrawnTriggeredEffectContext>(1));
+        var post = new CausalSequenceEffectNode<CardsDrawnTriggeredEffectContext>(
+        [
+            .. Enumerable.Range(0, WaymarkTop + 1).Select(cost => (IEffectNode<CardsDrawnTriggeredEffectContext>)
+                new RemoveStatusNode<CardsDrawnTriggeredEffectContext>(hare, new StatusDefinitionId(WaymarkSignId(cost)))),
+            new ConditionalEffectNode<CardsDrawnTriggeredEffectContext>(
+                Is(new CombatantZoneCardCountExpression<CardsDrawnTriggeredEffectContext>(Applicant, CardZone.Hand), ComparisonOperator.Greater, 0),
+                new CausalSequenceEffectNode<CardsDrawnTriggeredEffectContext>(
+                [
+                    MarkCard(new RandomCardInOwnerZoneExpression<CardsDrawnTriggeredEffectContext>(Applicant, CardZone.Hand), WaymarkPickMark),
+                    new ConditionalEffectNode<CardsDrawnTriggeredEffectContext>(Is(picked, ComparisonOperator.LessOrEqual, 0), Post(0),
+                        @else: new ConditionalEffectNode<CardsDrawnTriggeredEffectContext>(Is(picked, ComparisonOperator.Equal, 1), Post(1),
+                            @else: Post(2))),
+                    MarkCard(pick, WaymarkPickMark, remove: true),
+                ])),
+        ]);
+
+        // The first card of the turn, against the sign: a cost the sign does not show breaks the law.
+        ICombatExpression<CardPlayedTriggeredEffectContext, bool> Misses(int cost) =>
             new AndExpression<CardPlayedTriggeredEffectContext>(
-                PlayedIs(Cards.CardAuthoring.DeedTag),
-                Is(PlayedThisTurnTagged(Cards.CardAuthoring.WorkingTag), ComparisonOperator.Equal, 0)));
+                Wearing<CardPlayedTriggeredEffectContext>(hare, WaymarkSignId(cost)),
+                cost < WaymarkTop
+                    ? Is(PlayedCostValue, ComparisonOperator.NotEqual, cost)
+                    : Is(PlayedCostValue, ComparisonOperator.Less, WaymarkTop));
+        var offRoad = new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
+            new AndExpression<CardPlayedTriggeredEffectContext>(
+                Is(PlayedThisTurn, ComparisonOperator.Equal, 1),
+                new OrExpression<CardPlayedTriggeredEffectContext>(Misses(0),
+                    new OrExpression<CardPlayedTriggeredEffectContext>(Misses(1), Misses(2)))),
+            Breach<CardPlayedTriggeredEffectContext>(hare));
+
+        return Rule(WaymarkId, "Waymark",
+            "Each turn it posts a cost from your hand: 0, 1 or 2+. Open the turn with a card of another cost and you break its law.",
+            [AtTheOpeningHand(hare, post), WhenYouPlay(hare, offRoad)]);
+    }
+
+    public static IEnumerable<StatusData> WaymarkSigns() =>
+    [
+        .. Enumerable.Range(0, WaymarkTop + 1).Select(cost => Marker(WaymarkSignId(cost),
+            cost < WaymarkTop ? $"Waymark: {cost} Energy" : $"Waymark: {WaymarkTop}+ Energy",
+            cost < WaymarkTop
+                ? $"Your first card this turn must cost {cost}, or you break the Hare's law."
+                : $"Your first card this turn must cost {WaymarkTop} or more, or you break the Hare's law.")),
+    ];
 
     // ── Elsewhere Path — the Arrow ────────────────────────────────────────────────────────────────────────
     //

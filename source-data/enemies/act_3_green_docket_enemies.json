@@ -53,7 +53,7 @@
         "status": "green_docket_body"
       },
       {
-        "status": "no_hasty_passage"
+        "status": "waymark"
       }
     ],
     "tags": [

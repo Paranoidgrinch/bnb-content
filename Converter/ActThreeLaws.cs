@@ -129,6 +129,67 @@ public static partial class ActThree
     private static ICombatExpression<TContext, bool> Wears<TContext>(ICombatantTargetSelector who, string statusId)
         where TContext : class => Wearing<TContext>(who, statusId);
 
+    // ── what a law does to cards (the reworks of 2026-11-08: the Hare's waymark, the Witchling's cups, the
+    // Bride's rhyme and the Frog's meal all point at single copies in your hand) ─────────────────────────────
+
+    private const int ZoneWalkLimit = 200;
+
+    // Takes a mark off every copy of the player's that carries it, in the zones given.
+    private static IEffectNode<TContext> Unmark<TContext>(string mark, params CardZone[] zones) where TContext : class =>
+        new CausalSequenceEffectNode<TContext>(
+        [
+            .. zones.Select(zone => (IEffectNode<TContext>)new ForEachCardInZoneNode<TContext>(
+                Applicant, zone,
+                new MarkCardInstanceNode<TContext>(Applicant, new IteratedCardExpression<TContext>(), new TagId(mark), remove: true),
+                maxIterations: ZoneWalkLimit, markFilter: new TagId(mark))),
+        ]);
+
+    private static IEffectNode<TContext> MarkCard<TContext>(ICardInstanceExpression<TContext> card, string mark, bool remove = false)
+        where TContext : class =>
+        new MarkCardInstanceNode<TContext>(Applicant, card, new TagId(mark), remove);
+
+    private static ICardInstanceExpression<TContext> FirstMarked<TContext>(CardZone zone, string mark) where TContext : class =>
+        new FirstMarkedCardInOwnerZoneExpression<TContext>(Applicant, zone, new TagId(mark));
+
+    private static ICombatExpression<TContext, int> MarkedInZone<TContext>(CardZone zone, string mark) where TContext : class =>
+        new CombatantZoneCardCountExpression<TContext>(Applicant, zone, mark: new TagId(mark));
+
+    private static ICombatExpression<TContext, bool> CardHasMark<TContext>(ICardInstanceExpression<TContext> card, string mark)
+        where TContext : class =>
+        new CardInstanceHasMarkExpression<TContext>(card, new TagId(mark));
+
+    private static ICombatExpression<TContext, int> CardCost<TContext>(ICardInstanceExpression<TContext> card) where TContext : class =>
+        new CardInstanceBaseCostExpression<TContext>(card, StandardCombatIds.EnergyResource);
+
+    // The opening draw of the player's turn, while the lawgiver lives: when a law looks at the hand it was dealt.
+    private static StatusTriggerData AtTheOpeningHand(ICombatantTargetSelector lawgiver, IEffectNode<CardsDrawnTriggeredEffectContext> body) =>
+        new("CardsDrawn", JsonSerializer.SerializeToElement(
+            TheOpeningHand.Only(new EffectProgram<CardsDrawnTriggeredEffectContext>(
+                new ConditionalEffectNode<CardsDrawnTriggeredEffectContext>(
+                    new AndExpression<CardsDrawnTriggeredEffectContext>(
+                        PlayersTurn<CardsDrawnTriggeredEffectContext>(), Alive<CardsDrawnTriggeredEffectContext>(lawgiver)),
+                    body))),
+            CombatJson.CreateOptions<CardsDrawnTriggeredEffectContext>()), StatusTriggerScope.Anywhere);
+
+    // The end of the player's turn, while the lawgiver lives.
+    private static StatusTriggerData AtYourTurnsEnd(ICombatantTargetSelector lawgiver, IEffectNode<TurnEndedTriggeredEffectContext> body) =>
+        On("TurnEnded", new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
+            new AndExpression<TurnEndedTriggeredEffectContext>(
+                PlayersTurn<TurnEndedTriggeredEffectContext>(), Alive<TurnEndedTriggeredEffectContext>(lawgiver)),
+            body), StatusTriggerScope.Anywhere);
+
+    // The start of the player's turn (before the draw), while the lawgiver lives.
+    private static StatusTriggerData AtYourTurnsStart(ICombatantTargetSelector lawgiver, IEffectNode<TurnStartedTriggeredEffectContext> body) =>
+        On("TurnStarted", new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
+            new AndExpression<TurnStartedTriggeredEffectContext>(
+                PlayersTurn<TurnStartedTriggeredEffectContext>(), Alive<TurnStartedTriggeredEffectContext>(lawgiver)),
+            body), StatusTriggerScope.Anywhere);
+
+    // Every card the player plays while the lawgiver lives.
+    private static StatusTriggerData WhenYouPlay(ICombatantTargetSelector lawgiver, IEffectNode<CardPlayedTriggeredEffectContext> body) =>
+        On("CardPlayed", new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
+            Alive<CardPlayedTriggeredEffectContext>(lawgiver), body), StatusTriggerScope.Anywhere);
+
     private static StatusTriggerData On<TContext>(string trigger, IEffectNode<TContext> body,
         StatusTriggerScope scope = StatusTriggerScope.Bearer) where TContext : class =>
         new(trigger, JsonSerializer.SerializeToElement(new EffectProgram<TContext>(body), CombatJson.CreateOptions<TContext>()), scope);
