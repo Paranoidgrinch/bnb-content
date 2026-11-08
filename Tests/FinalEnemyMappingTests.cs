@@ -75,8 +75,8 @@ public class FinalEnemyMappingTests
     {
         var crier = Data.Enemies.Single(e => e.Id == "queue_crier_homunculus");
         Assert.Equal(31, crier.MaxHp);
-        // Its scaling lives in the intent; its own rule (Cutting the Line, 2026-11-01) is a status, not an intent rule.
-        Assert.Equal(["cutting_the_line"], crier.StartingStatuses!.Select(s => s.Status));
+        // Its scaling lives in the intent; its own rule (The Waiting Order, 2026-11-08) is a status, not an intent rule.
+        Assert.Equal([ActOne.WaitingOrderId], crier.StartingStatuses!.Select(s => s.Status));
         Assert.Null(crier.IntentRules);
 
         var actions = EnemyMapper.MapActions([crier]);

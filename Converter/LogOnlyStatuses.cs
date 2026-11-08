@@ -39,8 +39,6 @@ public static class LogOnlyStatuses
         "lock_cart", "seizure_marshal",
         // the Sealed Door Ward's per-turn dampener: its One Remaining Seal says the whole rule (2026-11-01)
         "seal_intact",
-        // the Fading Number Token's +3 while you are Fatigued: its rule says it (2026-11-01)
-        "fading_edge",
         // the spent ambush footing (AmbushFooting): its chip would say only that the chip before it is gone
         "ambush_footing_spent",
     };

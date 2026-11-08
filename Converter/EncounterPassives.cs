@@ -29,10 +29,10 @@ public static class EncounterPassives
         // the rule is found from the announcer's side (ActTwo.WriteInTheMargin).
         // Break the jar and the life it was holding is lost (ActTwo.BreakTheJar).
         "spare_life_jar" => [ActTwo.BreakTheJar()],
-        "exception_imp" => Loophole(),
-        "inverted_hourglass" => StolenSand(),
+        // Act I's reworked bodies (ActOne, CONTENT_REVIEW E1-E4); the Hourglass keeps banking its sand here.
+        "inverted_hourglass" => [.. StolenSand(), .. ActOne.Triggers(enemyId)!],
+        _ when ActOne.Triggers(enemyId) is { } city => city,
         "minute_moth" => [StolenMinute()],
-        "queue_crier_homunculus" => [CuttingTheLine()],
         "number_ticket_wisp" => YourNumberCameUp(),
         Elites.WaitingRoom.EnemyId => Elites.WaitingRoom.Triggers(),
         Testator.EnemyId => Testator.Triggers(),
@@ -462,67 +462,6 @@ public static class EncounterPassives
 
         return new EncounterTriggerData("TurnEnded",
             JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<TurnEndedTriggeredEffectContext>()));
-    }
-
-    // "Cutting the Line" (Queue-Crier Homunculus): the fourth card of a player turn cuts the line — 1 Panic. Exactly
-    // the fourth, so it is once a turn on its own; the loop over the Crier's enemies-of-the-player is the gate that
-    // it is on the table at all.
-    private static EncounterTriggerData CuttingTheLine()
-    {
-        var player = CombatantTargetSelectors.Source;
-        var program = new EffectProgram<CardPlayedTriggeredEffectContext>(
-            new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
-                new ComparisonExpression<CardPlayedTriggeredEffectContext>(
-                    new CardsPlayedThisTurnExpression<CardPlayedTriggeredEffectContext>(player),
-                    ComparisonOperator.Equal, new ConstantExpression<CardPlayedTriggeredEffectContext>(4)),
-                new ForEachTargetEffectNode<CardPlayedTriggeredEffectContext>(
-                    CombatantTargetSelectors.FirstTarget(CombatantTargetSelectors.AllEnemiesOfSourceWithStatus(
-                        new StatusDefinitionId(PassiveStatuses.CuttingTheLineId))),
-                    new ApplyStatusNode<CardPlayedTriggeredEffectContext>(
-                        player, new StatusDefinitionId("panic"), new ConstantExpression<CardPlayedTriggeredEffectContext>(1)))));
-        return new EncounterTriggerData("CardPlayed",
-            JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<CardPlayedTriggeredEffectContext>()));
-    }
-
-    // "Loophole" (Exception Imp): the first time each round the enemy side puts a debuff on the player, the Imp
-    // gains 1 Strength. (Until 2026-11-01 it also struck a stack of that debuff out — half a gift to the player,
-    // half to the Imp, which nobody could read; user: one clear sentence.) The loop over the Imp's allies of the
-    // SOURCE finds it only when its own side did the filing; the event's target has to be the player.
-    private static IReadOnlyList<EncounterTriggerData> Loophole() =>
-    [
-        LoopholeTrigger<StatusAppliedTriggeredEffectContext>("StatusApplied"),
-        LoopholeTrigger<StatusMergedTriggeredEffectContext>("StatusMerged"),
-    ];
-
-    private static EncounterTriggerData LoopholeTrigger<TContext>(string trigger) where TContext : class
-    {
-        var imp = CombatantTargetSelectors.IterationTarget;
-        var player = CombatantTargetSelectors.EventTarget;
-        var program = new EffectProgram<TContext>(
-            new ConditionalEffectNode<TContext>(
-                new AndExpression<TContext>(
-                    new TriggerEventStatusPolarityIsExpression<TContext>(StatusPolarity.Debuff),
-                    new ComparisonExpression<TContext>(
-                        new CombatantStatusStacksExpression<TContext>(player, new StatusDefinitionId(PassiveStatuses.ApplicantId)),
-                        ComparisonOperator.Greater,
-                        new ConstantExpression<TContext>(0))),
-                new ForEachTargetEffectNode<TContext>(
-                    CombatantTargetSelectors.AllAlliesOfSourceWithStatus(new StatusDefinitionId(PassiveStatuses.LoopholeId)),
-                    new ConditionalEffectNode<TContext>(
-                        new ComparisonExpression<TContext>(
-                            new CombatantCounterExpression<TContext>(imp, PassiveStatuses.LoopholeUsedCounter),
-                            ComparisonOperator.Equal,
-                            new ConstantExpression<TContext>(0)),
-                        new SequenceEffectNode<TContext>(new IEffectNode<TContext>[]
-                        {
-                            new SetCombatantCounterNode<TContext>(imp, PassiveStatuses.LoopholeUsedCounter,
-                                new ConstantExpression<TContext>(1), relative: false),
-                            new ApplyStatusNode<TContext>(imp, new StatusDefinitionId("strength"),
-                                new ConstantExpression<TContext>(1)),
-                        })))));
-
-        return new EncounterTriggerData(trigger,
-            JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<TContext>()));
     }
 
     // A body's mirror of one player status (the Wisp's Panic, the Hourglass's Fatigue).

@@ -199,30 +199,6 @@ public class EnemySignatureCombatTests
         Assert.Equal(1, fight.State.GetCombatant(fight.HeroId).GetCounter(EncounterPassives.SignpostConfusedCounter));
     }
 
-    // Exception Imp, "Loophole": the first debuff the enemy side files on the player each round gives the Imp 1
-    // Strength — the filing itself stands in full (since 2026-11-01).
-    [Fact]
-    public void The_imp_grows_on_the_first_debuff_each_round()
-    {
-        var probe = FightProbe.Roster("loophole",
-            ("exception_imp", "technicality", null),
-            ("filing_beetle", "mandatory_attachment", null));
-        var (play, session, _) = FightProbe.Start(probe);
-
-        var combat = play.CombatDriver!.Current!;
-        var impId = combat.State.Combatants.First(c => c.Id.value.StartsWith("exception_imp")).Id;
-
-        play.CombatDriver.EndTurn(); // the Beetle files 2 Paperwork
-        Assert.Null(session.Error);
-        Assert.Equal(2, FightProbe.StacksOf(Hero(play), "paperwork"));
-        Assert.Equal(1, FightProbe.StacksOf(Enemy(play, impId), "strength"));
-
-        // Second round: once more.
-        play.CombatDriver.EndTurn();
-        Assert.Null(session.Error);
-        Assert.Equal(2, FightProbe.StacksOf(Enemy(play, impId), "strength"));
-    }
-
     // Inverted Hourglass, "Stolen Sand": every time Fatigue actually costs the player Energy the Hourglass
     // banks a grain (max 3), and Turn the Glass cashes them in for 8 + 4 each.
     [Fact]
@@ -233,44 +209,26 @@ public class EnemySignatureCombatTests
         var probe = FightProbe.Roster("sand",
             ("inverted_hourglass", "turn_the_glass", null),
             ("fading_number_token", "unreadable_digit", null));
-        var (play, session, _) = FightProbe.Start(probe);
+        var (play, session, _) = FightProbe.Start(probe, Enumerable.Repeat("paper_cut", 10).ToList());
 
         var combat = play.CombatDriver!.Current!;
         var hourglassId = combat.State.Combatants.First(c => c.Id.value.StartsWith("inverted_hourglass")).Id;
         var heroBefore = combat.State.GetCombatant(combat.HeroId).Health.Current;
 
         // Round 1: nothing banked yet, so Turn the Glass is a plain 8. The Token then files the first Fatigue,
-        // which fires at the hero's next turn start → one grain.
-        play.CombatDriver.EndTurn();
+        // which fires at the hero's next turn start → one grain. Every turn spends its Energy: 2 kept would spill
+        // the sand (ActOneReworkTests).
+        Spend(play, session, hourglassId);
         Assert.Null(session.Error);
         Assert.Equal(heroBefore - 8, Hero(play).Health.Current);
         Assert.Equal(1, Enemy(play, hourglassId).GetCounter(PassiveStatuses.StolenSandCounter));
 
         // Round 2: 8 + 4 for the banked grain, and cashing in empties the glass.
         var beforeSecond = Hero(play).Health.Current;
-        play.CombatDriver.EndTurn();
+        Spend(play, session, hourglassId);
         Assert.Null(session.Error);
         Assert.Equal(beforeSecond - 12, Hero(play).Health.Current);
         Assert.Equal(1, Enemy(play, hourglassId).GetCounter(PassiveStatuses.StolenSandCounter)); // spent, then refilled
-    }
-
-    // Fading Number Token, "Your Number Is Fading": while the player carries Fatigue its attacks deal 3 more.
-    [Fact]
-    public void The_token_hits_harder_while_the_player_is_tired()
-    {
-        var probe = FightProbe.Solo("fading_number_token", "sharp_edge_token");
-        var (play, session, _) = FightProbe.Start(probe);
-
-        var before = Hero(play).Health.Current;
-        play.CombatDriver!.EndTurn(); // rested: Sharp Edge as printed
-        Assert.Null(session.Error);
-        var rested = before - Hero(play).Health.Current;
-
-        var tired = FightProbe.Start(FightProbe.SoloAgainstHero("fading_number_token", "sharp_edge_token", 3, ("fatigue", 2)));
-        var tiredBefore = Hero(tired.Play).Health.Current;
-        tired.Play.CombatDriver!.EndTurn();
-        Assert.Null(tired.Session.Error);
-        Assert.Equal(rested + 3, tiredBefore - Hero(tired.Play).Health.Current);
     }
 
     // Minute Moth, "Stolen Minute": every player turn that ends on exactly 0 Energy gives it 1 Strength and 3 Block
@@ -292,22 +250,6 @@ public class EnemySignatureCombatTests
         Assert.Null(session.Error);
         Assert.Equal(1, FightProbe.StacksOf(Enemy(play, mothId), "strength"));
         Assert.Equal(0, BlockOf(play, mothId));
-    }
-
-    // Queue-Crier Homunculus, "Cutting the Line": the fourth card of a turn cuts the line — 1 Panic, once a turn.
-    [Fact]
-    public void Playing_a_fourth_card_cuts_the_line()
-    {
-        var probe = FightProbe.Roster("cutting_the_line", energy: 9, ("queue_crier_homunculus", "move_everyone_back_one_place", 200));
-        var (play, session, crierId) = FightProbe.Start(probe, Enumerable.Repeat("paper_cut", 10).ToList());
-
-        for (var i = 0; i < 3; i++)
-            Cut(play, session, crierId);
-        Assert.Equal(0, FightProbe.StacksOf(Hero(play), "panic"));
-        Cut(play, session, crierId);
-        Assert.Equal(1, FightProbe.StacksOf(Hero(play), "panic"));
-        Cut(play, session, crierId);
-        Assert.Equal(1, FightProbe.StacksOf(Hero(play), "panic"));
     }
 
     private static void Spend(RunPlayback play, InteractiveRunSession session, CombatantId enemyId)

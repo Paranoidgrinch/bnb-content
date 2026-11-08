@@ -24,6 +24,8 @@ public static class RawIntentPrograms
             // Act II: an attack that also misfiles. Which SHELF did it decides where the card goes when it is
             // taken back, so the destination is written into the mark itself.
             "crabwise_shelf.mis_shelve" => Misfiling(11, ActTwo.MisfiledSidewaysMark, count: 2),
+            // Act I: the Imp's lapsing Block and the Hourglass's spillable glass (ActOne).
+            _ when ActOne.Intent(enemyId, intentId) is { } city => city,
             "lower_appellate_step.await_the_ruling" => AwaitTheRuling(),
             "middle_appellate_step.await_the_ruling" => AwaitTheRuling(),
             "upper_appellate_step.await_the_ruling" => AwaitTheRuling(),
