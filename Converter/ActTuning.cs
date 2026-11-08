@@ -47,10 +47,13 @@ public static class ActTuning
         // damage too. Act IV sits above Act III in every role (user, 2026-10-08) — and against a stronger deck.
         // Raised after the hand-played Act III trial of 2026-11-07 (user: the normal fights "can take more health and
         // damage anyway"): normals cost 0.6 (target 5) and multi-fights 1.6 (target 10). Was normal 170/150, multi 100/100.
+        // Damage back down on 2026-11-08, health kept (user: they "can have more health than in my run"; breaking a
+        // law stays a taboo at +7): with the user's own decks the bot lost 14 to a normal and 25 to a multi at 195/195
+        // and 115/130, against 3.6 and 5.9 on 0.5.3.
         [3] = new Dictionary<string, Factor>
         {
-            ["normal"] = new(195, 195),
-            ["multi"] = new(115, 130),
+            ["normal"] = new(195, 155),
+            ["multi"] = new(115, 105),
             ["elite"] = new(150, 160),
             ["boss"] = new(220, 230),
         },
