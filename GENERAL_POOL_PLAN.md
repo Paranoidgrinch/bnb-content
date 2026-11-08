@@ -4,8 +4,8 @@ Auftrag (2026-11-08): Der allgemeine Pool entstand, als es nur den Bureaucrat ga
 Er soll von allen Charakteren genutzt werden können, mit Synergien, ohne auf einen bestimmten zu wirken:
 Energiemanagement, Draw-Engine, Abwerfen, Gegner-Debuffs und so weiter. „Sei authentisch und kreativ.“
 
-Status: **Entwurf zur Durchsicht.** Gebaut wird erst, wenn die Regeln (§1–§3) und die 60 Karten (§4) freigegeben
-sind.
+Status: **freigegeben 2026-11-08.** Regeln (§1–§3) und alle 70 Karten mit Upgrades (§4) stehen; als Nächstes
+kommt der Bau.
 
 ---
 
@@ -27,10 +27,10 @@ sind.
 | # | Frage | Entscheidung |
 |---|---|---|
 | P1 | Lien, Citation, Blood Ink, Censure | **weg.** Ihre Karten verlassen das Spiel. Wo Relikte, Ereignisse oder Gegner sie noch nennen, wird das beim Bau mit umgestellt. |
-| P2 | Seltenheiten | **mit Commons.** 60 Karten: 24 Common, 24 Uncommon, 12 Rare, also 4 / 4 / 2 je Achse. |
+| P2 | Seltenheiten | **mit Commons.** 70 Karten: 26 Common, 29 Uncommon, 15 Rare. Die sechs Achsen haben je 4 / 4 / 2, die siebte (Exhausted-Stapel, nachgereicht) 2 / 5 / 3. |
 | P3 | Schwächer zuschlagen | **Doubt** (gibt es schon): die nächsten Angriffe machen 25 % weniger, ein Stapel je Angriff. Wird von einem Bureaucrat- zu einem allgemeinen Status. |
 | P4 | Mehr Schaden nehmen | **ein neuer Status**, es gibt noch keinen. Vorschlag §2. |
-| P5 | Achsen | die sechs aus §3, je 10 Karten |
+| P5 | Achsen | die sieben aus §3, je 10 Karten |
 
 ## 2 Die allgemeine Sprache
 
@@ -62,7 +62,7 @@ etwas bedeuten. Geprüft gegen alle Status, Karten und Relikte im Spiel (2026-11
 - Der Lieutenant will Deed-Treffer und Strength. Dazu passen Liable und Mehrfachtreffer.
 - Der Bureaucrat will Gegner, die lange leben und an Status leiden. Dazu passen Doubt, Liable und Retain.
 
-## 3 Die sechs Achsen
+## 3 Die sieben Achsen
 
 Jede Karte tut allein etwas Brauchbares. Die Synergie entsteht aus allgemeinen Größen wie Handgröße,
 Energie, Debuffs am Gegner oder Block, nie aus Charakter-Begriffen.
@@ -78,6 +78,9 @@ Energie, Debuffs am Gegner oder Block, nie aus Charakter-Begriffen.
 5. **Verteidigung.** Block-Werkzeuge mit Bedingung, Ward Wax, Block, der bleibt oder sich in etwas verwandelt.
 6. **Flexibler Schaden.** Flächenschaden, Bedingungsschaden, Finisher, Mehrfachtreffer (gut mit Strength und
    Liable).
+7. **Der Exhausted-Stapel** (nachgereicht 2026-11-08). Karten, die ihn füllen, die von einem vollen Stapel leben,
+   und Karten, die von dort zurückkehren. Der Stapel heißt im Spiel „Exhausted“; „Archive“ bleibt das Wort des
+   Bureaucrat.
 
 **Rahmen je Achse:** 4 Commons (einfach, sofort spielbar), 4 Uncommons (eine Bedingung oder Wahl),
 2 Rares (eine Engine oder ein Finisher).
@@ -85,7 +88,7 @@ Energie, Debuffs am Gegner oder Block, nie aus Charakter-Begriffen.
 **Akt-Sperre wie beim Bureaucrat:** Commons ab Akt I, Uncommons zu etwa 2/3 ab Akt I und der Rest ab Akt II,
 Rares gestaffelt über Akt II bis IV. **Upgrades** folgen den bisherigen Regeln.
 
-## 4 Die 60 Karten zur Durchsicht
+## 4 Die 70 Karten
 
 **Benennung im Ton des Spiels:** Kanzlei, Schreibstube und Hausmagie, also Kerzen, Siegel, Besen, Asche,
 alte Rechtsformeln und Volksmagie. Nichts Modernes, keine Halbsätze: Ein Name ist ein Ding, ein Akt oder eine
@@ -95,7 +98,7 @@ Karten, Relikte und Status im Spiel geprüft und kommen noch nicht vor.
 **MTG als Ideengeber,** in eigener Sprache: Ponder, Brainstorm, Looting, Cycling, Madness, Regrowth, Fact or
 Fiction, Threshold, Contagion, Fog und Storm. Die Spalte „Notiz“ nennt das Vorbild.
 
-**Bestand:** 12 der 60 sind bestehende, schon neutrale Karten (in der Notiz mit „bestehend“ markiert).
+**Bestand:** 12 der 70 sind bestehende, schon neutrale Karten (in der Notiz mit „bestehend“ markiert).
 Die übrigen 48 sind neu. Die Zahlen sind ein Balance-Entwurf; nach der Freigabe zieht der Bench sie nach.
 
 **Die letzte Spalte ist die Zutat der Hexe:** Fang, Hex, Husk, Hearth oder Fortune.
@@ -201,6 +204,21 @@ Maßstab: 1 Energy ≈ 7 bis 8 Schaden.
 | **Third and Final Writ** | 2 | Rare | Deal 12 damage. If the enemy has Doubt and Liable, deal it twice. Retain. | 15 damage |  | Fang |
 | **Dawn Summons** | 2 | Rare | Deal 16 damage. +10 if it is your first card this turn. | 22, +12 | bestehend, Upgrade war 27; MTG: First Strike | Fang |
 
+### Der Exhausted-Stapel (freigegeben 2026-11-08)
+
+| Karte | Kosten | Seltenheit | Text | Upgrade | Notiz | Hexe |
+|---|---|---|---|---|---|---|
+| **Bone Meal** | 0 | Common | Exhaust up to 2 cards from your discard pile. Gain 3 Block for each. | up to 3 | MTG: Delve / Scavenge | Husk |
+| **Cold Hearth** | 1 | Common | Gain 5 Block, plus 2 for each card in your Exhausted pile. Count at most 8. | 8 Block, plus 2 | MTG: Threshold | Husk |
+| **Read by Firelight** | 1 | Uncommon | Exhaust the top 2 cards of your draw pile. You may play them this turn. | top 3 | MTG: Light Up the Stage | Hearth |
+| **Raked from the Ashes** | 1 | Uncommon | Put a card from your Exhausted pile into your hand. It Exhausts when played. Exhaust. | kostet 0 | MTG: Regrowth aus dem Exil | Hearth |
+| **Ashen Effigy** | 4 | Uncommon | Costs 1 less for each 2 cards in your Exhausted pile. Deal 18 damage. | 24 damage | MTG: Delve, Gurmag Angler | Fang |
+| **Sifted Ashes** | 1 | Uncommon | Deal 5 damage, plus 4 for each kind of card in your Exhausted pile (attack, skill, power, curse, status). | plus 6 for each kind | MTG: Tarmogoyf | Fang |
+| **Corpse Candle** | 0 | Uncommon | Deal 5 damage. Exhaust. Whenever you Exhaust another card while this is Exhausted, return it to your hand. | 8 damage | MTG: Bloodghast; alter Name für das Irrlicht | Fang |
+| **Salamander in the Grate** | 2 | Rare | Deal 8 damage twice. Exhaust. At the start of your turn, if 6 or more cards are Exhausted, return this to your hand. | 10 damage twice | MTG: Escape, Arclight Phoenix | Fang |
+| **Last Ember** | 1 | Rare | Play the card you Exhausted most recently again, for free. Exhaust. | kostet 0 | MTG: Snapcaster Mage | Fortune |
+| **Unburied** | 2 | Rare | Shuffle every Exhausted card except curses and statuses into your draw pile. Gain 3 Block for each. Exhaust. | kostet 1 | MTG: Living Death | Husk |
+
 **Synergie über allgemeine Größen, quer durch die Achsen:**
 - Handgröße bei Volley of Quills und Errand Rook
 - Karten pro Zug bei Poppet Pin und Midnight Toll
@@ -228,7 +246,7 @@ Das klärt der Bau, bevor eine Karte gebaut wird.
 - **Ebenfalls weg,** obwohl neutral: Grand Dispensation, Wax Indemnity, Stone Levy. Sie passen in keine Achse
   besser als die neuen Karten.
 
-  Sie zählen zu den 60.
+  Sie zählen zu den 70.
 - **Wo alte Karten noch auftauchen**, wird alles mit umgestellt:
   - Golden-Läufe, Tests und Tutorial
   - Hexen-Familien und Apprentice-Proxys
