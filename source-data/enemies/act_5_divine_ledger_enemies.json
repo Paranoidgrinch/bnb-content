@@ -127,6 +127,35 @@
     "intent_pattern": "cycle",
     "intents": [
       {
+        "id": "splendor_of_eanna",
+        "name": "Splendor of Eanna",
+        "intent_type": "buff",
+        "actions": [
+          {
+            "type": "gain_block",
+            "target": "self",
+            "amount": 35
+          },
+          {
+            "type": "gain_strength",
+            "target": "self",
+            "amount": 2
+          }
+        ]
+      },
+      {
+        "id": "infatuation",
+        "name": "Infatuation · your attacks −25 % for 2 turns",
+        "intent_type": "debuff",
+        "actions": [
+          {
+            "type": "gain_strength",
+            "target": "self",
+            "amount": 2
+          }
+        ]
+      },
+      {
         "id": "lioness_of_battle",
         "name": "Lioness of Battle",
         "intent_type": "attack",
@@ -134,7 +163,7 @@
           {
             "type": "deal_damage",
             "target": "player",
-            "amount": 32
+            "amount": 20
           }
         ]
       },
@@ -167,35 +196,6 @@
             "type": "deal_damage",
             "target": "player",
             "amount": 6
-          }
-        ]
-      },
-      {
-        "id": "splendor_of_eanna",
-        "name": "Splendor of Eanna",
-        "intent_type": "buff",
-        "actions": [
-          {
-            "type": "gain_block",
-            "target": "self",
-            "amount": 35
-          },
-          {
-            "type": "gain_strength",
-            "target": "self",
-            "amount": 2
-          }
-        ]
-      },
-      {
-        "id": "infatuation",
-        "name": "Infatuation · your attacks −25 % for 2 turns",
-        "intent_type": "debuff",
-        "actions": [
-          {
-            "type": "gain_strength",
-            "target": "self",
-            "amount": 2
           }
         ]
       }

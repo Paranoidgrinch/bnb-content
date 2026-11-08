@@ -76,11 +76,12 @@ The seven gates of the Descent.
 6. *Golden Ring*: you gain 1 Weak each turn.
 7. *Breastplate "Come, Man, Come"*: Thorns 4.
 
-**Intents.**
-- *Lioness of Battle*: 32 damage.
-- *Arrows of the Morning Star*: 5×6.
+**Intents**, in a fixed cycle that opens with Splendor (changed 2026-11-08: with all regalia on, a 32 Lioness
+as her first move landed 37 twice and ended the fight in two rounds):
 - *Splendor of Eanna*: +35 Block, +2 Strength.
 - *Infatuation*: for 2 turns your attacks on her deal 25 % less, and she gains +2 Strength.
+- *Lioness of Battle*: 20 damage (was 32).
+- *Arrows of the Morning Star*: 5×6.
 
 **Finale, the seventh gate.** When the last regalium is gone she becomes *Queen of Battle*. Every intent
 attacks twice, and she gains +3 Strength each turn.

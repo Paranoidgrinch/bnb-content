@@ -126,7 +126,7 @@ public class GodInannaTests
         Assert.Equal(0, Worn(play));
         Assert.Equal(1, FightProbe.StacksOf(Her(play), Inanna.QueenOfBattleId));
 
-        // Every move twice (32 and 32), and 3 Strength at the end of her turn.
+        // Every move twice (20 and 20), and 3 Strength at the end of her turn.
         var hp = Hero(play).Health.Current;
         play.CombatDriver.EndTurn();
         Assert.Equal(2 * Inanna.LionessDamage, hp - Hero(play).Health.Current);
@@ -136,9 +136,9 @@ public class GodInannaTests
 
     // ── the seven, one by one ─────────────────────────────────────────────────────────────────────────────
 
-    // The Crown (+5) and the Twin Beads (the first attack twice): Lioness lands 37 twice.
+    // The Crown (+5) and the Twin Beads (the first attack twice): Lioness lands 25 twice.
     [Fact]
-    public void The_crown_and_the_twin_beads_make_her_lioness_land_37_twice()
+    public void The_crown_and_the_twin_beads_make_her_lioness_land_25_twice()
     {
         var (play, _) = Start("lioness_of_battle", card: Rite);
         var hp = Hero(play).Health.Current;

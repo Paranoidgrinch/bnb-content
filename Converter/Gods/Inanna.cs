@@ -12,6 +12,9 @@ namespace BnbContent.Converter.Gods;
 // passes a gate, and YOU choose which of the regalia she leaves there: a prompt names each one that is left and what
 // it does. A blow that takes her past several gates asks once for each. With the seventh gone she is the Queen of
 // Battle: every move twice, and 3 Strength more each turn.
+//
+// Her cycle opens with Splendor and Lioness is 20 (2026-11-08): with every regalium on, a 32 Lioness as her first
+// move landed 37 twice, and the bot's Lieutenant died in two rounds in 12 fights of 12.
 public static class Inanna
 {
     public const string EnemyId = "inanna_mistress_of_the_eanna_ledger";
@@ -32,7 +35,7 @@ public static class Inanna
     public const int Thorns = 4;
     public const int QueenStrength = 3;
 
-    public const int LionessDamage = 32;
+    public const int LionessDamage = 20;
     public const int ArrowHits = 5;
     public const int ArrowDamage = 6;
     public const int SplendorBlock = 35;
