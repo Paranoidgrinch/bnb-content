@@ -108,7 +108,7 @@ public class LieutenantCardTests
     }
 
     [Fact]
-    public void Marked_man_is_kept_by_the_two_hits_of_one_pike_butt_and_witness_counts_one_hit_twice()
+    public void Marked_man_is_kept_by_the_two_hits_of_one_pike_butt()
     {
         using (var f = F(Five("lt_marked_man", "lt_pike_butt")))
         {
@@ -117,14 +117,35 @@ public class LieutenantCardTests
             f.Play_("lt_pike_butt");
             Assert.Equal(1, Stacks(f.Me, LieutenantKeywords.Authority));
         }
-        using (var g = F(Five("lt_marked_man", "lt_witness", "lt_watch_cut")))
-        {
-            g.Play_("lt_marked_man");
-            g.Play_("lt_witness");
-            g.Play_("lt_watch_cut");
-            Assert.Equal(1, Stacks(g.Me, LieutenantKeywords.Authority));
-            Assert.Equal(0, Stacks(g.Me, LieutenantRules.Witness));
-        }
+        using var g = F(Five("lt_marked_man", "lt_watch_cut"));
+        g.Play_("lt_marked_man");
+        g.Play_("lt_watch_cut");            // one hit of two
+        Assert.Equal(0, Stacks(g.Me, LieutenantKeywords.Authority));
+    }
+
+    [Fact]
+    public void Witness_counts_a_deed_on_another_enemy_toward_the_challenge()
+    {
+        using var d = LieutenantDuel.Two(Five("lt_new_stripes", "lt_witness", "lt_watch_cut", "lt_watch_cut"));
+        d.P("lt_new_stripes", choose: 0);    // Challenge on the biter
+        d.P("lt_witness");
+        Assert.Equal(4, Block(d.Me));
+        d.P("lt_watch_cut", at: d.Other);    // struck the tablet: counted on the biter
+        Assert.Equal(1, Stacks(d.Me, LieutenantKeywords.Authority));
+        Assert.Equal(0, Stacks(d.Me, LieutenantRules.Witness));
+    }
+
+    [Fact]
+    public void Witness_is_spent_by_one_deed_whatever_it_hits()
+    {
+        using var d = LieutenantDuel.Two(Five("lt_marked_man", "lt_witness", "lt_watch_cut", "lt_watch_cut"));
+        d.P("lt_marked_man");                // on the biter: two more hits
+        d.P("lt_witness");
+        d.P("lt_watch_cut", at: d.Other);    // counted: 1 of 2, Witness spent
+        Assert.Equal(0, Stacks(d.Me, LieutenantRules.Witness));
+        d.P("lt_watch_cut", at: d.Other);    // no longer counted
+        Assert.Equal(0, Stacks(d.Me, LieutenantKeywords.Authority));
+        Assert.Equal(1, Stacks(d.It, Promises.MarkedMan.Id));
     }
 
     [Fact]

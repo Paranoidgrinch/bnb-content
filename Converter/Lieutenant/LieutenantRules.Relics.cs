@@ -15,7 +15,7 @@ using TS = BnbContent.Converter.Lieutenant.N<RogueDeck.Core.Combat.TurnStartedTr
 
 namespace BnbContent.Converter.Lieutenant;
 
-// The rules her eighteen relics put into every fight (§4). A relic's rule is a status on her from the first turn,
+// The rules her nineteen relics put into every fight (§4). A relic's rule is a status on her from the first turn,
 // as every relic's is; its id is the relic's own.
 public static partial class LieutenantRules
 {
@@ -36,9 +36,11 @@ public static partial class LieutenantRules
     public const string IronShackle = "lt_relic_iron_shackle";
     public const string BrandyFlask = "lt_relic_brandy_flask";
     public const string BadgeChain = "lt_relic_badge_chain";
-    public const string WornEpaulette = "lt_relic_worn_epaulette";
-    public const string WornEpauletteDiscount = "lt_worn_epaulette";
-    public const string SpurBuckle = "lt_relic_spur_buckle";
+    // Order of the Day and Promissory Note keep the ids they had as Worn Epaulette and Spur Buckle.
+    public const string OrderOfTheDay = "lt_relic_worn_epaulette";
+    public const string OrderOfTheDayDiscount = "lt_worn_epaulette";
+    public const string PromissoryNote = "lt_relic_spur_buckle";
+    public const string RegimentalDrum = "lt_relic_regimental_drum";
 
     // Commission's bridge to the run: her Authority as it stands, written down whenever it changes, so the
     // fight's last state can be read when it resolves.
@@ -79,12 +81,15 @@ public static partial class LieutenantRules
                     AR.Fresh(AR.Self, Latch(ChippedBuckler))),
                 AR.Seq(AR.Spend(AR.Self, Latch(ChippedBuckler)), AR.Block(AR.Self, 4)))),
         ]),
-        Relic(SplitChinstrap, "Split Chinstrap", "Once each enemy phase, when an enemy hit spends your Open Guard and takes none of your HP, gain 1 Authority at the start of your next turn.",
+        // Rewards reading the intents: Open Guard taken into a phase that never struck it. Armed when her turn ends
+        // with Open Guard, disarmed when a hit spends it, paid with the next hand.
+        Relic(SplitChinstrap, "Split Chinstrap", "At the start of your turn, if your Open Guard lapses unspent, draw 1 card.",
         [
-            On(TriggerEvent.RuleAnnounced, RA.If(RA.And(RA.Announced(GuardHeld), RA.Fresh(Her, Latch(SplitChinstrap))),
-                RA.Seq(RA.Spend(Her, Latch(SplitChinstrap)), RA.Set(Her, SplitChinstrap + "_owed", 1))), StatusTriggerScope.Anywhere),
-            On(TriggerEvent.TurnStarted, TS.If(TS.Is(TS.Counter(TS.Self, SplitChinstrap + "_owed"), 1),
-                TS.Seq(TS.Set(TS.Self, SplitChinstrap + "_owed", 0), GainAuthority<TurnStartedTriggeredEffectContext>(TS.Self, 1)))),
+            On(TriggerEvent.TurnEnded, TE.If(TE.Wears(TE.Self, OpenGuard),
+                TE.Set(TE.Self, SplitChinstrap + "_owed", 1), TE.Set(TE.Self, SplitChinstrap + "_owed", 0))),
+            On(TriggerEvent.RuleAnnounced, RA.If(RA.Announced(GuardSpent), RA.Set(Her, SplitChinstrap + "_owed", 0)), StatusTriggerScope.Anywhere),
+            On(TriggerEvent.CardsDrawn, CD.If(CD.Is(CD.Counter(CD.Self, SplitChinstrap + "_owed"), 1),
+                CD.Seq(CD.Set(CD.Self, SplitChinstrap + "_owed", 0), CD.Draw(CD.Self, 1)))),
         ]),
 
         // ── Uncommon ─────────────────────────────────────────────────────────────────────────────────────
@@ -93,21 +98,20 @@ public static partial class LieutenantRules
             On(TriggerEvent.RuleAnnounced, RA.If(RA.And(RA.Announced(StrengthPaid), RA.Fresh(Her, Latch(SwordKnot))),
                 RA.Seq(RA.Spend(Her, Latch(SwordKnot)), GainAuthority<RuleAnnouncedTriggeredEffectContext>(Her, 1))), StatusTriggerScope.Anywhere),
         ]),
-        Relic(WarrantCord, "Warrant Cord", "Once each turn, when your Challenge ends because its target fell before you kept it, gain 1 Authority.",
+        // MTG: Raid — a kept Challenge is a card more.
+        Relic(WarrantCord, "Warrant Cord", "The first time each turn you keep a Challenge, draw 1 card.",
         [
-            On(TriggerEvent.RuleAnnounced, RA.If(RA.And(RA.Announced(Obligations.ChallengeLost), RA.Fresh(Her, Latch(WarrantCord))),
-                RA.Seq(RA.Spend(Her, Latch(WarrantCord)), GainAuthority<RuleAnnouncedTriggeredEffectContext>(Her, 1))), StatusTriggerScope.Anywhere),
+            On(TriggerEvent.RuleAnnounced, RA.If(RA.And(RA.Announced(Obligations.ChallengeFulfilled), RA.Fresh(Her, Latch(WarrantCord))),
+                RA.Seq(RA.Spend(Her, Latch(WarrantCord)), RA.Draw(Her, 1))), StatusTriggerScope.Anywhere),
         ]),
-        // The wager is on the phase: an enemy struck her, and she is still standing when her turn comes.
-        Relic(ParadeSpur, "Parade Spur", "At the end of your turn, if you have Open Guard, you may gain 1 more. If you do and an enemy attacks you before your next turn, gain 1 Authority when it comes.",
+        // No question asked: the turn ends exposed, and the first enemy blow before her next turn pays as it lands.
+        Relic(ParadeSpur, "Parade Spur", "At the end of your turn, if you have Open Guard, gain 1 Authority the next time an enemy attacks you before your next turn.",
         [
             On(TriggerEvent.TurnEnded, TE.If(TE.Wears(TE.Self, OpenGuard),
-                TE.Choose(["Gain 1 more Open Guard and wager", "Not this time"],
-                    TE.Seq(TE.Apply(TE.Self, OpenGuard, 1), TE.Set(TE.Self, ParadeSpur + "_wager", 1)),
-                    TE.Nothing))),
-            On(TriggerEvent.TurnStarted, TS.If(TS.Is(TS.Counter(TS.Self, ParadeSpur + "_wager"), 1), TS.Seq(
-                TS.Set(TS.Self, ParadeSpur + "_wager", 0),
-                TS.If(TS.AtLeast(TS.Counter(TS.Self, PhaseHits), 1), GainAuthority<TurnStartedTriggeredEffectContext>(TS.Self, 1))))),
+                TE.Set(TE.Self, ParadeSpur + "_wager", 1), TE.Set(TE.Self, ParadeSpur + "_wager", 0))),
+            On(TriggerEvent.DamageTaken, D.If(D.And(ByAnEnemy<DamageReceivedTriggeredEffectContext>(), D.Is(D.Counter(D.Event, ParadeSpur + "_wager"), 1)),
+                D.Seq(D.Set(D.Event, ParadeSpur + "_wager", 0), GainAuthority<DamageReceivedTriggeredEffectContext>(D.Event, 1)))),
+            On(TriggerEvent.TurnStarted, TS.Set(TS.Self, ParadeSpur + "_wager", 0)),
         ]),
         // Read after the turn's own promises: one kept AT the end is announced after this has looked, so it waits.
         Relic(PayChest, "Pay Chest", "At the end of your turn, if you have 3 or more Authority, gain 5 Block.",
@@ -130,9 +134,13 @@ public static partial class LieutenantRules
         Discount(DentedGorgetDiscount, "Dented Gorget", Cards.CardAuthoring.DeedTag, 1, "Your first Deed this turn costs 1 less."),
 
         // ── Rare ─────────────────────────────────────────────────────────────────────────────────────────
-        // The canon's "you may Challenge": laid when no Challenge of hers is out, so it never displaces one.
-        Relic(TornStandard, "Torn Standard", "Once each turn, when an Order fails at its deadline and you have no Challenge out, Challenge the weakest enemy: hit it with a Deed by the end of your next turn (1 Authority).",
-            [On(TriggerEvent.RuleAnnounced, TornStandardAnswer(), StatusTriggerScope.Anywhere)]),
+        // A failed Order hardens her; the first kept Order each turn pays a little more (relic audit L3).
+        Relic(TornStandard, "Torn Standard", "Whenever an Order fails, gain 1 Strength. The first time each turn you keep an Order, gain 1 Authority.",
+        [
+            On(TriggerEvent.RuleAnnounced, RA.If(RA.Announced(Obligations.OrderFailed), RA.Apply(Her, Strength, 1)), StatusTriggerScope.Anywhere),
+            On(TriggerEvent.RuleAnnounced, RA.If(RA.And(RA.Announced(Obligations.OrderFulfilled), RA.Fresh(Her, Latch(TornStandard))),
+                RA.Seq(RA.Spend(Her, Latch(TornStandard)), GainAuthority<RuleAnnouncedTriggeredEffectContext>(Her, 1))), StatusTriggerScope.Anywhere),
+        ]),
         Relic(FullTang, "Full Tang", "The first time each turn you spend Strength on a card, deal 6 damage to the weakest enemy for each Strength spent (at most 3).",
         [
             On(TriggerEvent.RuleAnnounced, RA.If(RA.And(RA.Announced(StrengthPaid), RA.Fresh(Her, Latch(FullTang))),
@@ -143,8 +151,9 @@ public static partial class LieutenantRules
         ScarletEpauletteRule(),
         Status(EpauletteTarget, "Scarlet Epaulette", StatusPolarity.Neutral, "The Lieutenant's next blow falls here once more."),
         // Commission's stored Authority arrives through the relic's own openings (LieutenantRelics); the rule keeps
-        // the count the run reads when the fight resolves.
-        Relic(Commission, "Commission", "You begin each combat with 1 Authority, and with up to 2 more that you ended the last victory with.",
+        // the count the run reads when the fight resolves, and its presence raises her Authority cap to 8
+        // (LieutenantKeywords.CapOf, CardShapes.GainAuthority).
+        Relic(Commission, "Commission", "Your Authority cap is 8. You begin each combat with up to 3 Authority that you ended the last victory with.",
         [
             On(TriggerEvent.StatusApplied, SA.If(SA.StatusIs(Authority), SA.Set(SA.Event, AuthorityLeft, SA.Stacks(SA.Event, Authority)))),
             On(TriggerEvent.StatusMerged, SM.If(SM.StatusIs(Authority), SM.Set(SM.Event, AuthorityLeft, SM.Stacks(SM.Event, Authority)))),
@@ -187,42 +196,35 @@ public static partial class LieutenantRules
                     RA.Choose(["Turn 1 Authority into 1 Strength", "Keep the Authority"],
                         RA.Seq(RA.Adjust(Her, Authority, RA.C(-1)), RA.Apply(Her, Strength, 1)), RA.Nothing))), StatusTriggerScope.Anywhere),
         ]),
-        Relic(WornEpaulette, "Worn Epaulette", "The first time each turn you keep an Order, your next Working costs 1 less, this turn or the next.",
+        Relic(OrderOfTheDay, "Order of the Day", "The first time each turn you keep an Order, your next Working costs 1 less, this turn or the next.",
         [
             On(TriggerEvent.RuleAnnounced, RA.If(RA.And(RA.Announced(Obligations.OrderFulfilled),
-                    RA.And(RA.Fresh(Her, Latch(WornEpaulette)), RA.Not(RA.Wears(Her, WornEpauletteDiscount)))),
-                RA.Seq(RA.Spend(Her, Latch(WornEpaulette)), RA.Apply(Her, WornEpauletteDiscount, 1),
+                    RA.And(RA.Fresh(Her, Latch(OrderOfTheDay)), RA.Not(RA.Wears(Her, OrderOfTheDayDiscount)))),
+                RA.Seq(RA.Spend(Her, Latch(OrderOfTheDay)), RA.Apply(Her, OrderOfTheDayDiscount, 1),
                     MarkHand<RuleAnnouncedTriggeredEffectContext>(Cards.CardAuthoring.WorkingTag, -1))), StatusTriggerScope.Anywhere),
         ]),
-        Discount(WornEpauletteDiscount, "Worn Epaulette", Cards.CardAuthoring.WorkingTag, 1,
+        Discount(OrderOfTheDayDiscount, "Order of the Day", Cards.CardAuthoring.WorkingTag, 1,
             "Your next Working costs 1 less, this turn or the next.", intoNextTurn: true),
         // The surcharge is no card's payment: nothing that answers a Strength payment hears it (§2.7).
-        Relic(SpurBuckle, "Spur Buckle", "Once each turn, after a card spends your Strength, you may spend 1 more Strength to gain 1 Energy.",
+        Relic(PromissoryNote, "Promissory Note", "Once each turn, after a card spends your Strength, you may spend 1 more Strength to gain 1 Energy.",
         [
             On(TriggerEvent.RuleAnnounced, RA.If(RA.And(RA.Announced(StrengthPaid),
-                    RA.And(RA.Fresh(Her, Latch(SpurBuckle)), RA.AtLeast(RA.Stacks(Her, Strength), 1))),
-                RA.Seq(RA.Spend(Her, Latch(SpurBuckle)),
+                    RA.And(RA.Fresh(Her, Latch(PromissoryNote)), RA.AtLeast(RA.Stacks(Her, Strength), 1))),
+                RA.Seq(RA.Spend(Her, Latch(PromissoryNote)),
                     RA.Choose(["Spend 1 more Strength: gain 1 Energy", "Keep the Strength"],
                         RA.Seq(RA.Adjust(Her, Strength, RA.C(-1)), RA.GainEnergy(Her, 1)), RA.Nothing))), StatusTriggerScope.Anywhere),
         ]),
+        // The trade the shop's others make: more to work with, and the guard open from the first blow. Given with
+        // the first hand, once a fight, so the Open Guard is not lapsed by the first turn's own start.
+        Relic(RegimentalDrum, "Regimental Drum", "Start each combat with 1 Open Guard, 1 Authority and 1 Strength.",
+        [
+            On(TriggerEvent.CardsDrawn, CD.If(CD.Is(CD.Counter(CD.Self, RegimentalDrum + "_given"), 0), CD.Seq(
+                CD.Set(CD.Self, RegimentalDrum + "_given", 1),
+                CD.Apply(CD.Self, OpenGuard, 1),
+                GainAuthority<CardsDrawnTriggeredEffectContext>(CD.Self, 1),
+                CD.Apply(CD.Self, Strength, 1)))),
+        ]),
     ];
-
-    private static IEffectNode<RuleAnnouncedTriggeredEffectContext> TornStandardAnswer()
-    {
-        var c = Promises.TornStandard;
-        var target = CombatantTargetSelectors.LowestHealthEnemyOfSource;
-        var anyOut = RA.AnyOf([.. Promises.Challenges.Select(x => RA.AtLeast(
-            RA.Count(CombatantTargetSelectors.WithStatus(CombatantTargetSelectors.AllCombatants, new StatusDefinitionId(x.Id))), 1))]);
-        return RA.If(RA.And(RA.Announced(Obligations.OrderFailed), RA.And(RA.Not(anyOut), RA.Fresh(Her, Latch(TornStandard)))),
-            RA.Seq(
-                RA.Spend(Her, Latch(TornStandard)),
-                RA.Set(target, Obligations.Armed(c.Id), 1),
-                RA.Set(target, Obligations.ArmedRoundOf(c.Id), RA.Round),
-                RA.Set(target, Obligations.Progress(c.Id), 0),
-                RA.Set(target, Obligations.Grace(c.Id), 0),
-                RA.Set(target, Obligations.Remanded(c.Id), 0),
-                RA.Apply(target, c.Id, 1)));
-    }
 
     // Scarlet Epaulette: the first Open Guard each turn readies her next Deed to strike once more for half of what
     // its blow came to. Its hits only note the target and the size (set, not added: one card is one card); the

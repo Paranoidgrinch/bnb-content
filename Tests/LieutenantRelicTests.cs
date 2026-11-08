@@ -9,14 +9,14 @@ namespace BnbContent.Tests;
 public class LieutenantRelicTests
 {
     [Fact]
-    public void Her_eighteen_relics_are_three_five_four_and_six_and_hers_alone()
+    public void Her_nineteen_relics_are_three_five_four_and_seven_and_hers_alone()
     {
         var all = LieutenantRelics.All();
-        Assert.Equal(18, all.Count);
+        Assert.Equal(19, all.Count);
         Assert.Equal(3, all.Count(r => r.Rarity == Converter.Relics.RelicAuthoring.Rarity.Common));
         Assert.Equal(5, all.Count(r => r.Rarity == Converter.Relics.RelicAuthoring.Rarity.Uncommon));
         Assert.Equal(4, all.Count(r => r.Rarity == Converter.Relics.RelicAuthoring.Rarity.Rare));
-        Assert.Equal(6, all.Count(r => r.Pool == Converter.Relics.RelicAuthoring.Pool.Shop));
+        Assert.Equal(7, all.Count(r => r.Pool == Converter.Relics.RelicAuthoring.Pool.Shop));
         Assert.All(all, r => Assert.Equal(Converter.Relics.RelicAuthoring.Eligibility.Lieutenant, r.Eligibility));
         Assert.All(all, r => Assert.NotNull(r.CombatRule));
     }
@@ -44,15 +44,21 @@ public class LieutenantRelicTests
     }
 
     [Fact]
-    public void Split_chinstrap_pays_for_open_guard_that_cost_nothing()
+    public void Split_chinstrap_draws_when_open_guard_lapses_unspent()
     {
-        using var e = Armed("lt_relic_split_chinstrap", Five("lt_new_stripes"), Biter, BiteIntent);
-        e.P("lt_new_stripes", choose: 0);          // 1 Open Guard: 6 + 2
-        e.P("lt_buckler_up");                      // 5 + 2 with Open Guard
-        e.P("lt_buckler_up");
+        string[] deck = [.. Five("lt_new_stripes"), .. Enumerable.Repeat("lt_watch_cut", 10)];
+        // Nobody strikes: the Open Guard lapses unspent, and the next hand has a card more.
+        using (var d = Armed("lt_relic_split_chinstrap", deck))
+        {
+            d.P("lt_new_stripes", choose: 0);
+            d.End();
+            Assert.Equal(6, d.Hand);
+        }
+        // Struck: the Open Guard was spent, and the hand is the usual five.
+        using var e = Armed("lt_relic_split_chinstrap", deck, Biter, BiteIntent);
+        e.P("lt_new_stripes", choose: 0);
         e.End();
-        Assert.Equal(80, e.Me.Health.Current);
-        Assert.Equal(1, Authority(e));
+        Assert.Equal(5, e.Hand);
     }
 
     [Fact]
@@ -64,25 +70,33 @@ public class LieutenantRelicTests
     }
 
     [Fact]
-    public void Warrant_cord_pays_when_the_challenged_enemy_falls_too_soon()
+    public void Warrant_cord_draws_a_card_for_the_first_kept_challenge_each_turn()
     {
-        using var d = TwoArmed("lt_relic_warrant_cord", Five("lt_marked_man", "lt_watch_cut"), (LieutenantKeywords.Strength, 6));
-        d.P("lt_marked_man");                      // 11 of 24
-        d.P("lt_watch_cut");                       // 6 + 2 + 6: down, with one hit of two
-        Assert.False(d.It.IsAlive);
+        using var d = Armed("lt_relic_warrant_cord", [.. Five("lt_new_stripes", "lt_watch_cut", "lt_new_stripes", "lt_watch_cut"), "lt_buckler_up", "lt_buckler_up"]);
+        d.P("lt_new_stripes", choose: 0);
+        var hand = d.Hand;
+        d.P("lt_watch_cut");                       // kept: one played, one drawn
         Assert.Equal(1, Authority(d));
+        Assert.Equal(hand, d.Hand);
+        d.P("lt_new_stripes", choose: 0);
+        hand = d.Hand;
+        d.P("lt_watch_cut");                       // kept again, the same turn: no second card
+        Assert.Equal(hand - 1, d.Hand);
     }
 
     [Fact]
-    public void Parade_spur_wagers_on_an_attack_and_pays_when_one_came()
+    public void Parade_spur_pays_authority_when_an_attack_meets_the_open_guard()
     {
-        using var d = Armed("lt_relic_parade_spur", Five("lt_new_stripes"), Biter, BiteIntent);
-        d.P("lt_new_stripes", choose: 0);
-        d.Play.CombatDriver!.EndTurn();
-        Assert.NotNull(d.Play.CombatDriver.PendingOptionChoice);
-        d.Play.CombatDriver.SupplyOptionChoice([0]);
-        Assert.Null(d.Session.Error);
-        Assert.Equal(1, Authority(d));
+        using (var d = Armed("lt_relic_parade_spur", Five("lt_new_stripes"), Biter, BiteIntent))
+        {
+            d.P("lt_new_stripes", choose: 0);
+            d.End();                               // nothing to choose: the bite pays as it lands
+            Assert.Equal(1, Authority(d));
+        }
+        // No Open Guard at the end of the turn: nothing.
+        using var e = Armed("lt_relic_parade_spur", Five(), Biter, BiteIntent);
+        e.End();
+        Assert.Equal(0, Authority(e));
     }
 
     [Fact]
@@ -105,14 +119,22 @@ public class LieutenantRelicTests
     }
 
     [Fact]
-    public void Torn_standard_challenges_after_a_failed_order()
+    public void Torn_standard_hardens_a_failed_order_and_pays_the_first_kept_one()
     {
-        using var d = Armed("lt_relic_torn_standard", Five("lt_first_orders", "lt_watch_cut"));
-        d.P("lt_first_orders");
-        d.End();                                   // failed: the Challenge is laid
-        Assert.Equal(1, Stacks(d.It, Promises.TornStandard.Id));
-        d.P("lt_watch_cut");
-        Assert.Equal(1, Authority(d));
+        using (var d = Armed("lt_relic_torn_standard", Five("lt_first_orders", "lt_watch_cut", "lt_first_orders", "lt_watch_cut")))
+        {
+            d.P("lt_first_orders");
+            d.P("lt_watch_cut");                   // kept: 1 Authority, and 1 more for the first this turn
+            Assert.Equal(2, Authority(d));
+            d.P("lt_first_orders");
+            d.P("lt_watch_cut");                   // kept again: only the Order's own
+            Assert.Equal(3, Authority(d));
+            Assert.Equal(0, Strength(d));
+        }
+        using var e = Armed("lt_relic_torn_standard", Five("lt_first_orders"));
+        e.P("lt_first_orders");
+        e.End();                                   // failed: 1 Strength
+        Assert.Equal(1, Strength(e));
     }
 
     [Fact]
@@ -135,12 +157,26 @@ public class LieutenantRelicTests
     }
 
     [Fact]
-    public void Commission_begins_the_fight_with_authority_and_counts_what_is_left()
+    public void Commission_raises_the_cap_to_eight_and_counts_what_is_left()
     {
-        using var d = Armed("lt_relic_commission", Five("lt_signal"));
-        Assert.Equal(1, Authority(d));
-        d.P("lt_signal", choose: 0);
-        Assert.Equal(0, Counter(d.Me, LieutenantRules.AuthorityLeft));
+        using (var d = Armed("lt_relic_commission", Five("lt_signal"), hero: (LieutenantKeywords.Authority, 1)))
+        {
+            Assert.Equal(1, Authority(d));        // no Authority of its own any more
+            d.P("lt_signal", choose: 0);
+            Assert.Equal(0, Counter(d.Me, LieutenantRules.AuthorityLeft));
+        }
+        // 7 and a kept Challenge's 1: 8, past the usual 6.
+        using (var e = Armed("lt_relic_commission", Five("lt_new_stripes", "lt_watch_cut"), hero: (LieutenantKeywords.Authority, 7)))
+        {
+            e.P("lt_new_stripes", choose: 0);
+            e.P("lt_watch_cut");
+            Assert.Equal(8, Authority(e));
+        }
+        // Without it, 6 is the most.
+        using var f = One(Five("lt_new_stripes", "lt_watch_cut"), hero: (LieutenantKeywords.Authority, 6));
+        f.P("lt_new_stripes", choose: 0);
+        f.P("lt_watch_cut");
+        Assert.Equal(6, Authority(f));
     }
 
     [Fact]
@@ -192,7 +228,7 @@ public class LieutenantRelicTests
     }
 
     [Fact]
-    public void Worn_epaulette_makes_the_next_working_cheaper()
+    public void Order_of_the_day_makes_the_next_working_cheaper()
     {
         using var d = Armed("lt_relic_worn_epaulette", Five("lt_first_orders", "lt_watch_cut", "lt_buckler_up"));
         d.P("lt_first_orders");
@@ -203,7 +239,7 @@ public class LieutenantRelicTests
     }
 
     [Fact]
-    public void Spur_buckle_trades_one_more_strength_for_an_energy()
+    public void Promissory_note_trades_one_more_strength_for_an_energy()
     {
         using var d = Armed("lt_relic_spur_buckle", Five("lt_armguard"), hero: (LieutenantKeywords.Strength, 2));
         var energy = d.Energy;
@@ -214,5 +250,18 @@ public class LieutenantRelicTests
         Assert.Null(d.Session.Error);
         Assert.Equal(0, Strength(d));
         Assert.Equal(energy, d.Energy);                  // 1 paid for the card, 1 back
+    }
+
+    [Fact]
+    public void Regimental_drum_opens_the_fight_with_open_guard_authority_and_strength()
+    {
+        using var d = Armed("lt_relic_regimental_drum", Five());
+        Assert.Equal(1, Stacks(d.Me, LieutenantKeywords.OpenGuard));
+        Assert.Equal(1, Authority(d));
+        Assert.Equal(1, Strength(d));
+        d.End();                                   // once a fight: the next turn brings nothing more
+        Assert.Equal(0, Stacks(d.Me, LieutenantKeywords.OpenGuard));
+        Assert.Equal(1, Authority(d));
+        Assert.Equal(1, Strength(d));
     }
 }

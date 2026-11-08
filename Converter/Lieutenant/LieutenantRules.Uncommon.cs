@@ -37,8 +37,7 @@ public static partial class LieutenantRules
         ScarRite(),
         OverreachRite(),
         Status(OverreachCharge, "Overreach", StatusPolarity.Buff,
-            "Your next Deed this turn deals this much more damage with its first hit.",
-            triggers: UntilNextDeedResolves(OverreachCharge),
+            "Your Deeds deal this much more damage with their first hit.",
             passives:
             [
                 new PassiveModifierData(PassiveModifierPipeline.DamageDealt, PassiveModifierOperation.AddPerStack, 1,
@@ -105,29 +104,34 @@ public static partial class LieutenantRules
             ]);
     }
 
-    // Overreach: the first Open Guard she gains each turn — new or added to — charges her next Deed's first hit.
-    // The Rite's stacks are the bonus (6, or 9 upgraded).
+    // Overreach: her Deeds' first hit deals the Rite's stacks (4, or 6 upgraded) more for each Open Guard. The
+    // bonus is a charge on her whose stacks are Open Guard times the Rite, priced again whenever her Open Guard
+    // comes, grows, shrinks or goes (the card prices it as it is played, OverreachOut).
     private static StatusData OverreachRite()
     {
-        IEffectNode<T> Charge<T>() where T : class => N<T>.If(
-            N<T>.And(N<T>.StatusIs(OpenGuard), N<T>.Fresh(Her, Latch(Overreach))),
-            N<T>.Seq(N<T>.Spend(Her, Latch(Overreach)), N<T>.Apply(Her, OverreachCharge, N<T>.Stacks(Her, Overreach))));
+        IEffectNode<T> Price<T>() where T : class => N<T>.If(N<T>.StatusIs(OpenGuard), N<T>.Seq(
+            N<T>.Remove(Her, OverreachCharge),
+            N<T>.If(N<T>.AtLeast(N<T>.Stacks(Her, OpenGuard), 1),
+                N<T>.Apply(Her, OverreachCharge, new MultiplyExpression<T>(N<T>.Stacks(Her, OpenGuard), N<T>.Stacks(Her, Overreach))))));
         return Status(Overreach, "Overreach", StatusPolarity.Buff,
-            "The first time each turn you gain Open Guard, your next Deed this turn deals this much more damage with its first hit.",
+            "Your Deeds' first hit deals this much more damage for each Open Guard you have.",
             triggers:
             [
-                On(TriggerEvent.StatusApplied, Charge<StatusAppliedTriggeredEffectContext>()),
-                On(TriggerEvent.StatusMerged, Charge<StatusMergedTriggeredEffectContext>()),
+                On(TriggerEvent.StatusApplied, Price<StatusAppliedTriggeredEffectContext>()),
+                On(TriggerEvent.StatusMerged, Price<StatusMergedTriggeredEffectContext>()),
+                On(TriggerEvent.StatusRemoved, Price<StatusRemovedTriggeredEffectContext>()),
+                On(TriggerEvent.StatusStacksChanged, Price<StatusStacksChangedTriggeredEffectContext>()),
             ]);
     }
 
-    // Broken Nose: the first time each enemy phase Open Guard costs her HP she would have kept (§2.5).
+    // Broken Nose: the first time each enemy phase Open Guard costs her HP she would have kept (§2.5). Authority,
+    // where Scar gives Strength (content review A4).
     private static StatusData BrokenNoseRite() => Status(BrokenNose, "Broken Nose", StatusPolarity.Buff,
-        "The first time each enemy phase Open Guard costs you HP, gain 1 Authority and 2 Strength.",
+        "The first time each enemy phase Open Guard costs you HP, gain 2 Authority.",
         triggers:
         [
             On(TriggerEvent.RuleAnnounced, RA.If(RA.And(RA.Announced(GuardHurt), RA.Fresh(Her, Latch(BrokenNose))),
-                RA.Seq(RA.Spend(Her, Latch(BrokenNose)), GainAuthority<RuleAnnouncedTriggeredEffectContext>(Her, 1),
-                    RA.Apply(Her, Strength, 2))), StatusTriggerScope.Anywhere),
+                RA.Seq(RA.Spend(Her, Latch(BrokenNose)), GainAuthority<RuleAnnouncedTriggeredEffectContext>(Her, 2))),
+                StatusTriggerScope.Anywhere),
         ]);
 }

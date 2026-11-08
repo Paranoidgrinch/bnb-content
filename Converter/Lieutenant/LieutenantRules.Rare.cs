@@ -19,13 +19,14 @@ public static partial class LieutenantRules
     public const string ChainOfCommand = Obligations.ChainOfCommand;
     public const string ChainBase = "lt_chain_base";
     public const string Brevet = "lt_brevet";
+    public const string BrevetRite = "lt_brevet_rite";
     public const string ParadeGround = "lt_parade_ground";
     public const string ParadeBase = "lt_parade_base";
     public const string ParadeCap = "lt_parade_cap";
     public const string DrumMajor = "lt_drum_major";
     public const string Succession = "lt_succession";
     public const string Riposte = "lt_riposte";
-    public const string HiltKnot = "lt_hilt_knot";
+    public const string HardBargain = "lt_hilt_knot";
     public const string ForcedMarch = "lt_forced_march";
     public const string PikeSquare = "lt_pike_square";
     public const string Armsmaster = "lt_armsmaster";
@@ -43,16 +44,19 @@ public static partial class LieutenantRules
         ChainRite(),
         Status(Brevet, "Brevet", StatusPolarity.Buff, "The next Authority you spend this turn costs 1 less.",
             triggers: [On(TriggerEvent.TurnEnded, TE.Remove(TE.Self, Brevet))]),
+        // The Rite readies the turn's discount as each of her turns begins (CardShapes.MaySpendAuthority spends it).
+        Status(BrevetRite, "Brevet", StatusPolarity.Buff, "The first Authority you spend each turn costs 1 less.",
+            triggers: [On(TriggerEvent.TurnStarted, TS.Seq(TS.Remove(TS.Self, Brevet), TS.Apply(TS.Self, Brevet, 1)))]),
         ParadeGroundMark(),
         DrumMajorMark(),
         SuccessionRite(),
         RiposteRite(),
-        Status(HiltKnot, "Hilt Knot", StatusPolarity.Buff,
+        Status(HardBargain, "Hard Bargain", StatusPolarity.Buff,
             "The first time each turn you spend Strength on a card, draw 1 card and gain this much Block.",
             triggers:
             [
-                On(TriggerEvent.RuleAnnounced, RA.If(RA.And(RA.Announced(StrengthPaid), RA.Fresh(Her, Latch(HiltKnot))),
-                    RA.Seq(RA.Spend(Her, Latch(HiltKnot)), RA.Draw(Her, 1), RA.Block(Her, RA.Stacks(Her, HiltKnot)))), StatusTriggerScope.Anywhere),
+                On(TriggerEvent.RuleAnnounced, RA.If(RA.And(RA.Announced(StrengthPaid), RA.Fresh(Her, Latch(HardBargain))),
+                    RA.Seq(RA.Spend(Her, Latch(HardBargain)), RA.Draw(Her, 1), RA.Block(Her, RA.Stacks(Her, HardBargain)))), StatusTriggerScope.Anywhere),
             ]),
         Status(ForcedMarch, "Forced March", StatusPolarity.Neutral,
             "At the end of this turn, lose up to this much of the Strength you still have.",
@@ -162,6 +166,7 @@ public static partial class LieutenantRules
                                 RA.Set(heir, Obligations.Progress(next.Id), 0),
                                 RA.Set(heir, Obligations.Grace(next.Id), 0),
                                 RA.Set(heir, Obligations.Remanded(next.Id), 0),
+                                RA.Set(heir, Obligations.Copied(next.Id), 0),
                                 RA.Apply(heir, next.Id, 1)),
                             RA.Apply(Her, Obligations.Reinforcements, 1)))), StatusTriggerScope.Anywhere),
             ]);
@@ -276,17 +281,13 @@ public static partial class LieutenantRules
                 CD.Remove(CD.Self, Watchword))),
         ]);
 
-    // Watch Surgeon: once a round, a kept promise is paid for with 1 Authority as healing — if she is hurt and
-    // has it. (The canon's "you may"; nobody declines healing they can pay for, so it is not asked.)
+    // Watch Surgeon: every kept promise is a wound seen to (MTG: Soul Warden) — no toll, no limit a turn.
     private static StatusData WatchSurgeonRite() => Status(WatchSurgeon, "Watch Surgeon", StatusPolarity.Buff,
-        "The first time each turn you keep an Order or a Challenge, spend 1 Authority to heal this much, if you are hurt.",
+        "Whenever you keep an Order or a Challenge, heal this much HP.",
         triggers:
         [
             On(TriggerEvent.RuleAnnounced, RA.If(
-                RA.And(RA.Or(RA.Announced(Obligations.OrderFulfilled), RA.Announced(Obligations.ChallengeFulfilled)),
-                    RA.And(RA.Fresh(Her, Latch(WatchSurgeon)), RA.And(RA.AtLeast(RA.Stacks(Her, Authority), 1),
-                        RA.AtLeast(new CombatantMissingHealthExpression<RuleAnnouncedTriggeredEffectContext>(Her), 1)))),
-                RA.Seq(RA.Spend(Her, Latch(WatchSurgeon)), RA.Adjust(Her, Authority, RA.C(-1)), RA.Apply(Her, AuthorityPulse, 1),
-                    new HealNode<RuleAnnouncedTriggeredEffectContext>(Her, RA.Stacks(Her, WatchSurgeon)))), StatusTriggerScope.Anywhere),
+                RA.Or(RA.Announced(Obligations.OrderFulfilled), RA.Announced(Obligations.ChallengeFulfilled)),
+                new HealNode<RuleAnnouncedTriggeredEffectContext>(Her, RA.Stacks(Her, WatchSurgeon))), StatusTriggerScope.Anywhere),
         ]);
 }

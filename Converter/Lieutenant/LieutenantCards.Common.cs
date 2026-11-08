@@ -24,10 +24,11 @@ public static partial class LieutenantCards
     private static readonly BnbCard CutTheStrap = Common("lt_cut_the_strap", "Cut the Strap", DeedTag, 1,
         "Remove up to 8 Block from the target, then deal 8 damage.", Seq(TakeBlock(8), Damage(8)));
 
-    private static CombatNodeModel HeelTurnHit(int damage) => If(Has(OpenGuard), Repeat(2, Damage(damage)), Damage(damage));
+    private static CombatNodeModel VolteHit(int damage) => If(Has(OpenGuard), Repeat(2, Damage(damage)), Damage(damage));
 
-    private static readonly BnbCard HeelTurn = Common("lt_heel_turn", "Heel Turn", DeedTag, 0,
-        "Deal 4 damage. If you have Open Guard, deal 4 damage twice instead.", HeelTurnHit(4));
+    // Volte (once Heel Turn; the id stays): the fencer's turn of the body, the second cut behind the open guard.
+    private static readonly BnbCard Volte = Common("lt_heel_turn", "Volte", DeedTag, 0,
+        "Deal 4 damage. If you have Open Guard, deal 4 damage twice instead.", VolteHit(4));
 
     // One Open Guard for each enemy standing when the blow falls, at most 3.
     private static CombatNodeModel ClearTheSquareHit(int damage) => Seq(
@@ -46,11 +47,12 @@ public static partial class LieutenantCards
         "Gain 8 Block. If an enemy Attack took your HP last enemy phase, gain 1 Strength.",
         Seq(Block(8), If(HurtLastPhase, Apply(Strength, 1, You))));
 
-    private static CombatNodeModel BuckleUp(int block) =>
-        Seq(Apply(Strength, 1, You), Block(block), Apply(OpenGuard, 1, You), Apply(LieutenantRules.Buckle, 1, You));
+    private static CombatNodeModel GirdUp(int block) =>
+        Seq(Apply(Strength, 1, You), Block(block), Apply(OpenGuard, 1, You), Apply(LieutenantRules.Gird, 1, You));
 
-    private static readonly BnbCard Buckle = Common("lt_buckle", "Buckle", WorkingTag, 1,
-        "Gain 1 Strength, 5 Block and 1 Open Guard. If you keep an Order this turn, lose that Open Guard.", BuckleUp(5));
+    // Gird (once Buckle; the id stays).
+    private static readonly BnbCard Gird = Common("lt_buckle", "Gird", WorkingTag, 1,
+        "Gain 1 Strength, 5 Block and 1 Open Guard. If you keep an Order this turn, lose that Open Guard.", GirdUp(5));
 
     private static CombatNodeModel DrawDiscard(string self, int draw, int discard) =>
         Seq(Draw(draw), Repeat(discard, new CombatNodeModel("moveCardToZone", You,
@@ -84,8 +86,9 @@ public static partial class LieutenantCards
     private static readonly BnbCard Arrest = Common("lt_arrest", "Arrest", DeedTag, 1,
         $"Deal 8 damage. {Promises.Arrest.Text}", Seq(Damage(8), Issue(Promises.Arrest)));
 
+    // A witness to the deed: the next Deed counts toward the Challenge whichever enemy it hits (Obligations).
     private static readonly BnbCard Witness = Common("lt_witness", "Witness", WorkingTag, 0,
-        "Gain 4 Block. Your next Deed hit on a Challenged enemy this turn counts twice toward its Challenge.",
+        "Gain 4 Block. Your next Deed this turn counts toward your Challenge, whichever enemy it hits.",
         Seq(Block(4), Apply(LieutenantRules.Witness, 1, You)));
 
     private static CombatNodeModel SignalOut(int block) =>
@@ -137,14 +140,14 @@ public static partial class LieutenantCards
     [
         PikeButt, PikeButt.Upgraded("Deal 5 damage three times.", Repeat(3, Damage(5))),
         CutTheStrap, CutTheStrap.Upgraded("Remove up to 12 Block from the target, then deal 12 damage.", Seq(TakeBlock(12), Damage(12))),
-        HeelTurn, HeelTurn.Upgraded("Retain. Deal 5 damage. If you have Open Guard, deal 5 damage twice instead.",
-            HeelTurnHit(5), retainInHand: true),
+        Volte, Volte.Upgraded("Retain. Deal 5 damage. If you have Open Guard, deal 5 damage twice instead.",
+            VolteHit(5), retainInHand: true),
         ClearTheSquare, ClearTheSquare.Upgraded("Deal 15 damage to ALL enemies. Gain 1 Open Guard.",
             Seq(Damage(15, AllEnemies), Apply(OpenGuard, 1, You))),
         ClenchedJaw, ClenchedJaw.Upgraded("Gain 12 Block. If an enemy Attack took your HP last enemy phase, gain 1 Strength.",
             Seq(Block(12), If(HurtLastPhase, Apply(Strength, 1, You)))),
-        Buckle, Buckle.Upgraded("Gain 1 Strength, 8 Block and 1 Open Guard. If you keep an Order this turn, lose that Open Guard.",
-            BuckleUp(8)),
+        Gird, Gird.Upgraded("Gain 1 Strength, 8 Block and 1 Open Guard. If you keep an Order this turn, lose that Open Guard.",
+            GirdUp(8)),
         RollCall, RollCall.Upgraded($"Draw 2 cards, then discard 1. {Promises.RollCall.Text}",
             Seq(DrawDiscard(RollCall.Id, 2, 1), Issue(Promises.RollCall))),
         Gatehouse, Gatehouse.Upgraded($"Gain 13 Block. {Promises.GatehousePlus.Text}", Seq(Block(13), Issue(Promises.GatehousePlus))),
@@ -154,14 +157,15 @@ public static partial class LieutenantCards
         MarkedMan, MarkedMan.Upgraded($"Deal 10 damage. {Promises.MarkedManPlus.Text}", Seq(Damage(10), Issue(Promises.MarkedManPlus))),
         BracedPike, BracedPike.Upgraded($"Gain 13 Block. If the target intends to attack: {Promises.BracedPike.Text}", BracedPikeBrace(13)),
         Arrest, Arrest.Upgraded($"Deal 11 damage. {Promises.ArrestPlus.Text}", Seq(Damage(11), Issue(Promises.ArrestPlus))),
-        Witness, Witness.Upgraded("Gain 5 Block. Your next two Deed hits on a Challenged enemy this turn count twice toward its Challenge.",
-            Seq(Block(5), Apply(LieutenantRules.Witness, 2, You))),
+        Witness, Witness.Upgraded("Gain 6 Block. Your next two Deeds this turn count toward your Challenge, whichever enemy they hit.",
+            Seq(Block(6), Apply(LieutenantRules.Witness, 2, You))),
         Signal, Signal.Upgraded("Retain. Gain 3 Block. You may spend 1 Authority to gain 1 Energy.", SignalOut(3), retainInHand: true),
         SecondRank, SecondRank.Upgraded("Gain 10 Block. You may spend 1 Authority: your next Deed this turn costs 0.", SecondRankOut(10)),
         Whetstone, Whetstone.Upgraded("Gain 2 Strength. If you spent Strength earlier this turn, gain 1 more and draw 1 card.",
             Seq(Apply(Strength, 2, You), IfSpentStrength(Seq(Apply(Strength, 1, You), Draw(1))))),
         Armguard, Armguard.Upgraded("Gain 12 Block. You may spend 1 Strength to gain 4 Ward Wax.", ArmguardOut(12, 4)),
-        Headlong, Headlong.Upgraded("Your next two Deeds this turn cost 1 less.", Discount(LieutenantRules.Headlong, DeedTag, 1, 2)),
+        Headlong, Headlong.Upgraded("Gain 1 Open Guard. Your next two Deeds this turn cost 1 less. Draw 1 card.",
+            Seq(HeadlongOut(1), Draw(1))),
         SplitLip, SplitLip.Upgraded("Deal 13 damage. If this kills the target, draw 1 card and gain 1 Energy; otherwise gain 1 Open Guard.",
             Seq(Damage(13), If(new CombatConditionSpec("isAlive", Target), Apply(OpenGuard, 1, You), Seq(Draw(1), Energy_(1))))),
     ];

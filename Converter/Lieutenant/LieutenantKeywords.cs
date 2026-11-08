@@ -21,6 +21,8 @@ public static class LieutenantKeywords
     public const string Command = "lt_command";
 
     public const int AuthorityCap = 6;
+    // Commission (rare relic) raises the cap to 8.
+    public const int CommissionAuthorityCap = 8;
     public const int OpenGuardPercentPerStack = 25;
 
     // ── counters on her ──────────────────────────────────────────────────────────────────────────────────
@@ -55,11 +57,13 @@ public static class LieutenantKeywords
     public const string StrengthPulse = "lt_pulse_strength";
     public const string AuthorityPulse = "lt_pulse_authority";
     public const string AuthorityPaidLast = "lt_authority_paid_last";
+    // The round in which she last really paid Authority (Brevet: is this turn's first payment still to come?).
+    public const string AuthorityPaidRound = "lt_authority_paid_round";
 
     public static IReadOnlyList<StatusData> All() =>
     [
         Status(Authority, "Authority", StatusPolarity.Buff,
-            $"Earned by fulfilling Orders and Challenges; cards spend it. At most {AuthorityCap}. It does not fade, and " +
+            $"Earned by fulfilling Orders and Challenges; cards spend it. At most {AuthorityCap} ({CommissionAuthorityCap} with Commission). It does not fade, and " +
             "it is gone when the fight ends."),
         OpenGuardStatus(),
         Status(StrengthPulse, "Strength spent", StatusPolarity.Neutral, "You have just spent this much Strength."),
@@ -128,11 +132,15 @@ public static class LieutenantKeywords
 
     // ── Authority, from any rule ─────────────────────────────────────────────────────────────────────────
 
-    // Gain up to the cap; what would pass it is lost (§2.2).
+    // Gain up to the cap; what would pass it is lost (§2.2). The cap is 6, or 8 with Commission.
     internal static IEffectNode<T> GainAuthority<T>(ICombatantTargetSelector who, int amount) where T : class =>
         GainAuthority<T>(who, N<T>.C(amount));
 
+    internal static ICombatExpression<T, int> CapOf<T>(ICombatantTargetSelector who) where T : class =>
+        N<T>.Plus(N<T>.C(AuthorityCap), N<T>.Times(N<T>.Min(N<T>.C(1), N<T>.Stacks(who, LieutenantRules.Commission)),
+            CommissionAuthorityCap - AuthorityCap));
+
     internal static IEffectNode<T> GainAuthority<T>(ICombatantTargetSelector who, ICombatExpression<T, int> amount) where T : class =>
-        N<T>.If(N<T>.Cmp(N<T>.Stacks(who, Authority), ComparisonOperator.Less, N<T>.C(AuthorityCap)),
-            N<T>.Apply(who, Authority, N<T>.Min(amount, N<T>.Minus(N<T>.C(AuthorityCap), N<T>.Stacks(who, Authority)))));
+        N<T>.If(N<T>.Cmp(N<T>.Stacks(who, Authority), ComparisonOperator.Less, CapOf<T>(who)),
+            N<T>.Apply(who, Authority, N<T>.Min(amount, N<T>.Minus(CapOf<T>(who), N<T>.Stacks(who, Authority)))));
 }

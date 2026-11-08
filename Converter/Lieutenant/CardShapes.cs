@@ -23,18 +23,27 @@ internal static class CardShapes
         If(new CombatConditionSpec("isAlive", on), Seq(
             Clear(challenge.Id, on), Reset(Obligations.Armed(challenge.Id), on), Reset(Obligations.Progress(challenge.Id), on),
             Reset(Obligations.Grace(challenge.Id), on), Reset(Obligations.Remanded(challenge.Id), on),
-            Reset(Obligations.Redressed(challenge.Id), on),
+            Reset(Obligations.Copied(challenge.Id), on),
             Apply(challenge.Id, 1, on)));
 
     private static CombatNodeModel Reset(string counter, string on) =>
         new("setCombatantCounter", on, CombatAmountSpec.FromConst(0), CounterId: counter, Relative: false);
 
-    // Gain Authority up to the cap; the rest is lost (§2.2).
-    public static CombatNodeModel GainAuthority(int amount) =>
-        If(new CombatConditionSpec("compare", You, ValueKind: "statusStacks", Op: ComparisonOperator.Less,
-                Right: LieutenantKeywords.AuthorityCap, Id: Authority),
-            Apply(Authority, AtMost(CombatAmountSpec.Binary("sub",
-                CombatAmountSpec.FromConst(LieutenantKeywords.AuthorityCap), Stacks(Authority, You)), amount), You));
+    // Gain Authority up to the cap — 6, or 8 with Commission; the rest is lost (§2.2). The room left is
+    // written on a counter of its own first, since a condition compares against a constant.
+    private const string AuthorityRoom = "lt_scratch_authority_room";
+
+    public static CombatNodeModel GainAuthority(int amount)
+    {
+        var cap = Plus(CombatAmountSpec.FromConst(LieutenantKeywords.AuthorityCap),
+            Times(Once(Stacks(LieutenantRules.Commission, You)), LieutenantKeywords.CommissionAuthorityCap - LieutenantKeywords.AuthorityCap));
+        var room = new CombatAmountSpec("counter", SelectorKey: You, CounterId: AuthorityRoom);
+        return Seq(
+            new CombatNodeModel("setCombatantCounter", You, CombatAmountSpec.Binary("sub", cap, Stacks(Authority, You)),
+                CounterId: AuthorityRoom, Relative: false),
+            If(new CombatConditionSpec("compare", You, ValueKind: "counter", Op: ComparisonOperator.GreaterOrEqual, Right: 1, Id: AuthorityRoom),
+                Apply(Authority, AtMost(room, amount), You)));
+    }
 
     public static CombatConditionSpec Has(string status, int atLeast = 1, string on = You) => HasStacks(status, atLeast, on);
 

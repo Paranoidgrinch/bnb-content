@@ -20,11 +20,17 @@ public static partial class LieutenantCards
 
     // ── Act I ────────────────────────────────────────────────────────────────────────────────────────────
 
-    private static CombatNodeModel BrevetOut(int authority, int block) =>
-        Seq(GainAuthority(authority), Block(block), Apply(LieutenantRules.Brevet, 1, You));
+    // A Rite since the content review (A7): every turn's first Authority payment is 1 less. The Rite readies each
+    // turn's discount as the turn begins; the turn it is played, it is ready only if no Authority was spent yet.
+    private static CombatNodeModel BrevetOut(int authority) => Seq(
+        authority > 0 ? GainAuthority(authority) : Seq(),
+        Apply(LieutenantRules.BrevetRite, 1, You),
+        SetScratch(CombatAmountSpec.Binary("sub", new CombatAmountSpec("round"), MyCounter(LieutenantKeywords.AuthorityPaidRound))),
+        If(ScratchAtLeast(1), Seq(new CombatNodeModel("removeStatus", You, StatusId: LieutenantRules.Brevet),
+            Apply(LieutenantRules.Brevet, 1, You))));
 
-    private static readonly BnbCard Brevet = Rare("lt_brevet", "Brevet", WorkingTag, 1,
-        "Gain 1 Authority and 6 Block. The next Authority you spend this turn costs 1 less. Exhaust.", BrevetOut(1, 6), 1, [ExhaustTag]);
+    private static readonly BnbCard Brevet = Rare("lt_brevet", "Brevet", RiteTag, 1,
+        "The first Authority you spend each turn costs 1 less.", BrevetOut(0), 1);
 
     // "You may abandon an Order": the oldest goes, without failing (§2.3).
     private static CombatConditionSpec HasAnOrder => new("compare", You, ValueKind: "counter",
@@ -105,14 +111,12 @@ public static partial class LieutenantCards
     private static readonly BnbCard BlackGauntlet = Rare("lt_black_gauntlet", "Black Gauntlet", DeedTag, 1,
         $"Deal 11 damage. {Promises.BlackGauntlet.Text}", Seq(Damage(11), Issue(Promises.BlackGauntlet)), 2);
 
-    private static CombatNodeModel RedressOut(int block) => Seq(Block(block),
-        If(new CombatConditionSpec("isAlive", Target),
-            CombatNodeModel.ChooseOptions(1, ["Move your Challenge to the target", "Leave it where it is"],
-                [Apply(Obligations.RedressPulse, 1, Target), Seq()], "Redress")));
+    // The copies are laid by her standing status, which hears the request (Obligations.Redress).
+    private static CombatNodeModel RedressOut(int block) => Seq(Block(block), Apply(Obligations.RedressPulse, 1, You));
 
     private static readonly BnbCard Redress = Rare("lt_redress", "Redress", WorkingTag, 1,
-        "Gain 10 Block. You may move your Challenge to the target, if it fits it; its count starts again, its deadline stays. " +
-        "Once per Challenge; not Pursuit.", RedressOut(10), 2);
+        "Gain 8 Block. Copy your Challenge onto every other enemy; each copy is judged and pays on its own. Exhaust.",
+        RedressOut(8), 2, [ExhaustTag]);
 
     private static readonly BnbCard Riposte = Rare("lt_riposte", "Riposte", RiteTag, 1,
         "Gain 6 Block. Once each enemy phase, when a Challenged enemy has attacked you, deal it 5 damage plus your Strength.",
@@ -140,14 +144,15 @@ public static partial class LieutenantCards
     private static readonly BnbCard ForcedMarch = Rare("lt_forced_march", "Forced March", WorkingTag, 1,
         "Gain 3 Strength and 1 Open Guard. At the end of this turn, lose up to 3 of the Strength you still have.", ForcedMarchOut(3), 2);
 
-    // "If an Order failed at its deadline in your last turn or the enemy phase after it" — the round before this one.
+    // "You may let your Order fail now": the oldest Order fails — announced like any failure, so Torn Standard
+    // hears it — and the reprimand is the price.
     private static CombatNodeModel ReprimandOut(int block, int strength) => Seq(Block(block),
-        SetScratch(CombatAmountSpec.Binary("sub", new CombatAmountSpec("round"), MyCounter(Obligations.OrderFailedRound))),
-        If(new CombatConditionSpec("compare", You, ValueKind: "counter", Op: ComparisonOperator.Equal, Right: 1, Id: Scratch),
-            Seq(Apply(Strength, strength, You), Apply(OpenGuard, 1, You))));
+        If(HasAnOrder, CombatNodeModel.ChooseOptions(1,
+            [$"Let your Order fail: gain {strength} Strength and 1 Open Guard", "Keep your Order"],
+            [Seq(Apply(Obligations.FailPulse, 1, You), Apply(Strength, strength, You), Apply(OpenGuard, 1, You)), Seq()], "Reprimand")));
 
     private static readonly BnbCard Reprimand = Rare("lt_reprimand", "Reprimand", WorkingTag, 1,
-        "Gain 9 Block. If an Order failed at its deadline last turn, gain 2 Strength and 1 Open Guard.", ReprimandOut(9, 2), 2);
+        "Gain 9 Block. You may let your Order fail now: gain 2 Strength and 1 Open Guard.", ReprimandOut(9, 2), 2);
 
     // ── Act III ──────────────────────────────────────────────────────────────────────────────────────────
 
@@ -165,10 +170,11 @@ public static partial class LieutenantCards
         "Gain 1 Strength and 5 Block. Once each turn, when you keep a Challenge, Challenge another enemy: hit it with a Deed " +
         "before it acts (1 Authority). If there is none, draw 1 more card next turn.", SuccessionOut(1), 3);
 
-    private static CombatNodeModel HiltKnotOut(int block) => Seq(Apply(Strength, 1, You), Apply(LieutenantRules.HiltKnot, block, You));
+    private static CombatNodeModel HardBargainOut(int block) => Seq(Apply(Strength, 1, You), Apply(LieutenantRules.HardBargain, block, You));
 
-    private static readonly BnbCard HiltKnot = Rare("lt_hilt_knot", "Hilt Knot", RiteTag, 1,
-        "Gain 1 Strength. The first time each turn you spend Strength on a card, draw 1 card and gain 5 Block.", HiltKnotOut(5), 3);
+    // Hard Bargain (once Hilt Knot; the id stays).
+    private static readonly BnbCard HardBargain = Rare("lt_hilt_knot", "Hard Bargain", RiteTag, 1,
+        "Gain 1 Strength. The first time each turn you spend Strength on a card, draw 1 card and gain 5 Block.", HardBargainOut(5), 3);
 
     // The ward is set as the card is played: 4 and 2 (or 3) for each Strength she has then.
     private static CombatNodeModel PikeSquareOut(int block, int perStrength) => Seq(Block(block),
@@ -227,20 +233,19 @@ public static partial class LieutenantCards
         "start of your turn (at most 18).", BloodDebtOut(6, 18), 4);
 
     private static readonly BnbCard WatchSurgeon = Rare("lt_watch_surgeon", "Watch Surgeon", RiteTag, 1,
-        "Gain 8 Block. The first time each turn you keep an Order or a Challenge, spend 1 Authority to heal 2 HP, if you are hurt.",
+        "Gain 8 Block. Whenever you keep an Order or a Challenge, heal 2 HP.",
         Seq(Block(8), Apply(LieutenantRules.WatchSurgeon, 2, You)), 4);
 
-    private static CombatNodeModel FieldPardonOut(int block) => Seq(Block(block), GainAuthority(1),
-        MaySpendAuthority(3, "a standing Order or Challenge is kept", Apply(Obligations.PardonPulse, 1, You)));
+    // Every promise she has out is declared kept, each with its own reward (Obligations.Pardon).
+    private static CombatNodeModel FieldPardonOut(int block) => Seq(Block(block), Apply(Obligations.PardonPulse, 1, You));
 
     private static readonly BnbCard FieldPardon = Rare("lt_field_pardon", "Field Pardon", WorkingTag, 1,
-        "Gain 10 Block and 1 Authority. You may spend 3 Authority: one Order or Challenge you already had is kept. Exhaust.",
+        "Gain 10 Block. Every Order and Challenge you have out is kept now. Exhaust.",
         FieldPardonOut(10), 4, [ExhaustTag]);
 
     public static IReadOnlyList<BnbCard> Rares() =>
     [
-        Brevet, Brevet.Upgraded("Retain. Gain 1 Authority and 8 Block. The next Authority you spend this turn costs 1 less. Exhaust.", BrevetOut(1, 8),
-            retainInHand: true),
+        Brevet, Brevet.Upgraded("Gain 1 Authority. The first Authority you spend each turn costs 1 less.", BrevetOut(1)),
         Insubordination, Insubordination.Upgraded("Deal 15 damage. You may abandon your oldest Order to deal 15 damage again and gain 1 Open Guard.",
             InsubordinationHit(15)),
         ParadeGround, ParadeGround.Upgraded("Gain 12 Block. If you keep an Order before this turn ends, gain 5 Ward Wax for each Energy you end it with (at most 3).",
@@ -256,8 +261,8 @@ public static partial class LieutenantCards
         OpenVisor, OpenVisor.Upgraded("Gain 11 Block. If you have no Open Guard, you may gain 1. With Open Guard, your next Deed this turn ignores Block.",
             OpenVisorOut(11)),
         BlackGauntlet, BlackGauntlet.Upgraded($"Deal 16 damage. {Promises.BlackGauntlet.Text}", Seq(Damage(16), Issue(Promises.BlackGauntlet))),
-        Redress, Redress.Upgraded("Gain 15 Block. You may move your Challenge to the target, if it fits it; its count starts again, its deadline stays. " +
-            "Once per Challenge; not Pursuit.", RedressOut(15)),
+        Redress, Redress.Upgraded("Gain 12 Block. Copy your Challenge onto every other enemy; each copy is judged and pays on its own. Exhaust.",
+            RedressOut(12)),
         Riposte, Riposte.Upgraded("Gain 6 Block. Once each enemy phase, when a Challenged enemy has attacked you, deal it 8 damage plus your Strength.",
             Seq(Block(6), Apply(LieutenantRules.Riposte, 8, You))),
         Countercharge, Countercharge.Upgraded("Deal 11 damage. Then spend up to 2 Strength: for each, apply 1 Doubt and gain 1 Authority and 3 Block.",
@@ -269,7 +274,8 @@ public static partial class LieutenantCards
             ChainOut(10, 3)),
         Succession, Succession.Upgraded("Gain 2 Strength and 5 Block. Once each turn, when you keep a Challenge, Challenge another enemy: hit it with a Deed " +
             "before it acts (1 Authority). If there is none, draw 1 more card next turn.", SuccessionOut(2)),
-        HiltKnot, HiltKnot.Upgraded("Gain 1 Strength. The first time each turn you spend Strength on a card, draw 1 card and gain 8 Block.", HiltKnotOut(8)),
+        HardBargain, HardBargain.Upgraded("Gain 1 Strength. The first time each turn you spend Strength on a card, draw 1 card and gain 8 Block.",
+            HardBargainOut(8)),
         PikeSquare, PikeSquare.Upgraded("Gain 15 Block. This enemy phase, the first hit of each enemy action on you deals 4 less, and 3 less for each Strength " +
             "you have now; that enemy takes as much back (at most 12).", PikeSquareOut(15, 3)),
         RisingStar, RisingStar.Upgraded("Gain 2 Authority. The first time each turn spending Authority leaves you with exactly 0, gain 1 Strength and 4 Block.",
@@ -281,9 +287,9 @@ public static partial class LieutenantCards
         FullTilt, FullTilt.Upgraded("Deal 13 damage. You may spend 1 or 2 more Energy: for each, deal 13 damage again and gain 1 Open Guard.", FullTiltHit(13)),
         BloodDebt, BloodDebt.Upgraded("Gain 9 Block. The first time next enemy phase Open Guard costs you HP, the enemy that struck takes that much at the " +
             "start of your turn (at most 24).", BloodDebtOut(9, 24)),
-        WatchSurgeon, WatchSurgeon.Upgraded("Gain 8 Block. The first time each turn you keep an Order or a Challenge, spend 1 Authority to heal 3 HP, if you are hurt.",
+        WatchSurgeon, WatchSurgeon.Upgraded("Gain 8 Block. Whenever you keep an Order or a Challenge, heal 3 HP.",
             Seq(Block(8), Apply(LieutenantRules.WatchSurgeon, 3, You))),
-        FieldPardon, FieldPardon.Upgraded("Gain 15 Block and 1 Authority. You may spend 3 Authority: one Order or Challenge you already had is kept. Exhaust.",
-            FieldPardonOut(15)),
+        FieldPardon, FieldPardon.Upgraded("Retain. Gain 10 Block. Every Order and Challenge you have out is kept now. Exhaust.",
+            retainInHand: true),
     ];
 }
