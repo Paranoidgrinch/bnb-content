@@ -44,7 +44,7 @@ etwas bedeuten. Geprüft gegen alle Status, Karten und Relikte im Spiel (2026-11
 | **Ward Wax** | Abwehr | wie bisher | vorhanden |
 | **Held Energy** | Energie | Energie, die wartet und kommt, sobald man leer ist | vorhanden (`HeldEnergy.cs`) |
 | **Retain** | Hand | Bleibt am Zugende auf der Hand. | vorhanden |
-| **Unread:** | Auslöser | Wirkung, wenn die Karte die Hand verlässt, ohne gespielt zu werden: abgeworfen, erschöpft oder am Zugende. | **neu**, Vorschlag |
+| **Unread:** | Auslöser | Wirkung, wenn ein Karteneffekt die Karte aus der Hand abwirft oder erschöpft. Das normale Abwerfen am Zugende zählt nicht (wie Madness). | **neu**, freigegeben |
 | **Pledge** | Energie | Darf ohne genug Energie gespielt werden. Was fehlt, wird zu Fatigue im nächsten Zug. | **neu**, Vorschlag |
 
 **Prüfung gegen den Bestand:**
@@ -134,20 +134,20 @@ weniger im nächsten Zug. Upgrades bringen netto etwa +½ bis +1.
 | **Errand Rook** | 1 | Rare | At the start of each of your turns, draw 1 more card. Whenever your hand is full, gain 3 Block. Exhaust. | kostet 0 |  | Hearth |
 | **Moonlit Counterfeit** | 1 | Rare | Create a Temporary copy of a card in your hand. It costs 0. Exhaust. | kostet 0 | bestehend; das Original bleibt jetzt; MTG: Twincast | Hearth |
 
-### Abwerfen und Erschöpfen
+### Abwerfen und Erschöpfen (freigegeben 2026-11-08)
 
-| Karte | Kosten | Seltenheit | Text | Notiz | Hexe |
-|---|---|---|---|---|---|
-| **Spiteful Draft** | 1 | Common | Deal 7 damage. Unread: deal 7 damage to a random enemy. |  | Fang |
-| **Scattered Notes** | 0 | Common | Discard 1 card. Draw 2 cards. | MTG: Looting | Fortune |
-| **Ashen Receipt** | 1 | Common | Gain 6 Block. Unread: draw 1 card. | MTG: Cycling | Husk |
-| **Smouldering Correspondence** | 1 | Common | Draw 1 card. Unread: deal 5 damage to ALL enemies. | MTG: Madness | Fang |
-| **Hearth Kindling** | 1 | Uncommon | Discard any number of cards. Draw that many. Gain 2 Block for each. |  | Fortune |
-| **Ash Remembers** | 1 | Uncommon | Put a card from your discard pile into your hand. It costs 0 this turn. Exhaust. | MTG: Regrowth | Hearth |
-| **Weight of Paper** | 2 | Uncommon | Deal 6 damage, plus 2 for each card in your discard pile. Count at most 12. | MTG: Threshold | Fang |
-| **Burnt Offering** | 0 | Uncommon | Exhaust a card from your hand. Gain 8 Block. Draw 1 card. |  | Husk |
-| **Whispering Gallery** | 1 | Rare | Whenever a card leaves your hand without being played, a random enemy gets 1 Doubt. Exhaust. |  | Hex |
-| **Pyre of Old Records** | 1 | Rare | Whenever a card is exhausted, deal 4 damage to a random enemy and gain 2 Block. Exhaust. |  | Fang |
+| Karte | Kosten | Seltenheit | Text | Upgrade | Notiz | Hexe |
+|---|---|---|---|---|---|---|
+| **Spiteful Draft** | 1 | Common | Deal 7 damage. Unread: deal 7 damage to a random enemy. | 10 und 10 | MTG: Madness | Fang |
+| **Scattered Notes** | 0 | Common | Discard 1 card. Draw 2 cards. | Draw 3 | MTG: Looting | Fortune |
+| **Ashen Receipt** | 1 | Common | Gain 7 Block. Unread: draw 1 card. | 10 Block | MTG: Cycling | Husk |
+| **Smouldering Correspondence** | 1 | Common | Deal 5 damage to ALL enemies. Unread: deal 5 damage to ALL enemies. | 8 und 8 | MTG: Fiery Temper | Fang |
+| **Hearth Kindling** | 0 | Uncommon | Discard any number of cards. Draw that many. Gain 3 Block for each. | 4 Block each | MTG: Careful Consideration | Fortune |
+| **Ash Remembers** | 1 | Uncommon | Put a card from your discard pile into your hand. It costs 0 this turn. Exhaust. | kostet 0 | MTG: Regrowth | Hearth |
+| **Weight of Paper** | 2 | Uncommon | Deal 6 damage, plus 2 for each card in your discard pile. Count at most 12. | 10 damage, plus 2 for each | MTG: Threshold | Fang |
+| **Burnt Offering** | 0 | Uncommon | Exhaust a card from your hand. Gain 8 Block. Draw 1 card. | 11 Block | MTG: Village Rites | Husk |
+| **Whispering Gallery** | 1 | Rare | Whenever a card leaves your hand without being played, a random enemy gets 1 Doubt. Exhaust. | kostet 0 | zählt auch das Zugende; MTG: Waste Not | Hex |
+| **Pyre of Old Records** | 1 | Rare | Whenever a card is exhausted, deal 7 damage to a random enemy and gain 7 Block. Exhaust. | kostet 0 | MTG: Blood Artist | Fang |
 
 ### Gegner-Debuffs
 
