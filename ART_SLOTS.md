@@ -2,7 +2,7 @@
 
 Generated: `dotnet run --project Converter -- --art-slots ART_SLOTS.md`. **Do not edit by hand.**
 
-**874 pictures**: 472 cards, 256 relics, 142 bodies
+**875 pictures**: 472 cards, 257 relics, 142 bodies
 (every enemy, elite and boss) and 4 the player can be. Every one of them is filled today by a PLACEHOLDER — a plate with the file's own
 name and the word placeholder on it, written by `bnb-godot/tools/make-card-art.py`,
 `make-relic-art.py` and `make-enemy-art.py`. A painted picture replaces one by being saved over it, so
@@ -54,7 +54,7 @@ The relic briefs below are the design canon's own words
 `BnB_Elite_Relics_MASTER_AND_VISUAL_CANON.md` for #169–210). Frames, palettes and the label rule live
 there in full; only the object line is repeated here, because that is the line that differs per relic.
 
-## Relics — 256 pictures
+## Relics — 257 pictures
 
 The catalogue number is the design canon's, and it is not part of the file name: the id is.
 
@@ -138,18 +138,18 @@ The catalogue number is the design canon's, and it is not part of the file name:
 | — | `ar_tutors_cane` | Tutor's Cane | rare | The wand starts each combat with one more slot. |
 | — | `lt_relic_tin_fife` | Tin Fife | common | The first time each turn you issue an Order, draw 1 card, then put a card from your hand on the bottom of your draw pile. |
 | — | `lt_relic_chipped_buckler` | Chipped Buckler | common | The first time each turn a Deed of yours hits a Challenged enemy, gain 4 Block. |
-| — | `lt_relic_split_chinstrap` | Split Chinstrap | common | Once each enemy phase, when an enemy hit spends your Open Guard and takes none of your HP, gain 1 Authority at the start of your next turn. |
+| — | `lt_relic_split_chinstrap` | Split Chinstrap | common | At the start of your turn, if your Open Guard lapses unspent, draw 1 card. |
 | — | `lt_relic_sword_knot` | Sword Knot | uncommon | The first time each turn you spend Strength on a card, gain 1 Authority. |
-| — | `lt_relic_warrant_cord` | Warrant Cord | uncommon | Once each turn, when your Challenge ends because its target fell before you kept it, gain 1 Authority. |
-| — | `lt_relic_parade_spur` | Parade Spur | uncommon | At the end of your turn, if you have Open Guard, you may gain 1 more. If you do and an enemy attacks you before your next turn, gain 1 Authority when it comes. |
+| — | `lt_relic_warrant_cord` | Warrant Cord | uncommon | The first time each turn you keep a Challenge, draw 1 card. |
+| — | `lt_relic_parade_spur` | Parade Spur | uncommon | At the end of your turn, if you have Open Guard, gain 1 Authority the next time an enemy attacks you before your next turn. |
 | — | `lt_relic_pay_chest` | Pay Chest | uncommon | At the end of your turn, if you have 3 or more Authority, gain 5 Block. |
 | — | `lt_relic_dented_gorget` | Dented Gorget | uncommon | Once each enemy phase, when an enemy hit spends your Open Guard, your first Deed next turn costs 1 less. |
-| — | `lt_relic_torn_standard` | Torn Standard | rare | Once each turn, when an Order fails at its deadline and you have no Challenge out, Challenge the weakest enemy: hit it with a Deed by the end of your next turn (1 Authority). |
+| — | `lt_relic_torn_standard` | Torn Standard | rare | Whenever an Order fails, gain 1 Strength. The first time each turn you keep an Order, gain 1 Authority. |
 | — | `lt_relic_full_tang` | Full Tang | rare | The first time each turn you spend Strength on a card, deal 6 damage to the weakest enemy for each Strength spent (at most 3). |
 | — | `lt_relic_scarlet_epaulette` | Scarlet Epaulette | rare | The first time each turn you gain Open Guard, your next Deed this turn strikes its target once more for half of its blow. |
-| — | `lt_relic_commission` | Commission | rare | Begin each combat with 1 Authority. After a victory, keep up to 2 Authority you have left for the start of the next combat. |
+| — | `lt_relic_commission` | Commission | rare | Your Authority cap is 8. After a victory, keep up to 3 Authority you have left for the start of the next combat. |
 
-### Shop relics — 42
+### Shop relics — 43
 
 | # | code | title | rarity | the object |
 |---:|---|---|---|---|
@@ -193,8 +193,9 @@ The catalogue number is the design canon's, and it is not part of the file name:
 | — | `lt_relic_iron_shackle` | Iron Shackle | shop | The first time each turn you issue a Challenge, you may gain 1 Open Guard to apply 2 Doubt to its target. |
 | — | `lt_relic_brandy_flask` | Brandy Flask | shop | After a victorious combat, heal half the HP Open Guard cost you in it (at most 6). |
 | — | `lt_relic_badge_chain` | Badge Chain | shop | Once each turn, when you keep a Challenge, you may turn 1 of the Authority it gave you into 1 Strength. |
-| — | `lt_relic_worn_epaulette` | Worn Epaulette | shop | The first time each turn you keep an Order, your next Working costs 1 less, this turn or the next. |
-| — | `lt_relic_spur_buckle` | Spur Buckle | shop | Once each turn, after a card spends your Strength, you may spend 1 more Strength to gain 1 Energy. |
+| — | `lt_relic_worn_epaulette` | Order of the Day | shop | The first time each turn you keep an Order, your next Working costs 1 less, this turn or the next. |
+| — | `lt_relic_spur_buckle` | Promissory Note | shop | Once each turn, after a card spends your Strength, you may spend 1 more Strength to gain 1 Energy. |
+| — | `lt_relic_regimental_drum` | Regimental Drum | shop | Start each combat with 1 Open Guard, 1 Authority and 1 Strength. |
 
 ### Event relics — 26
 
@@ -938,17 +939,17 @@ cards a boss or a door hands over are never offered and have no act.
 |---|---|---|---|---|
 | `lt_against_the_wall` | Against the Wall | working | uncommon | Gain 7 Block. Order: end this turn with at least 14 Block. Success: 1 Authority. |
 | `lt_armguard` | Armguard | working | common | Gain 8 Block. You may spend 1 Strength to gain 4 Ward Wax. |
-| `lt_arms_drill` | Arms Drill | deed | uncommon | Deal 5 damage twice. You may spend 1 Strength to deal 5 damage a third time. |
+| `lt_arms_drill` | Arms Drill | deed | uncommon | Deal 5 damage twice. Spend up to 2 Strength: deal 5 damage once more for each. |
 | `lt_armsmaster` | Armsmaster | rite | rare | Gain 1 Strength and 8 Block. At the start of your turn, choose: gain 1 Strength, or your next payment of 2 or more Strength this turn costs 1 less. |
 | `lt_arrest` | Arrest | deed | common | Deal 8 damage. Challenge: defeat it by the end of your next turn. Success: 1 Authority, 1 Strength and draw 1 card. |
 | `lt_black_gauntlet` | Black Gauntlet | deed | rare | Deal 11 damage. Challenge: survive its next Attack, within its next two actions, then hit it with a Deed before it acts again. Success: 2 Authority and 2 Strength. |
 | `lt_blood_debt` | Blood Debt | working | rare | Gain 6 Block. The first time next enemy phase Open Guard costs you HP, the enemy that struck takes that much at the start of your turn (at most 18). |
 | `lt_bloody_cobbles` | Bloody Cobbles | deed | uncommon | Deal 9 damage; twice if an enemy Attack took your HP last enemy phase. Gain 1 Open Guard. |
 | `lt_braced_pike` | Braced Pike | working | common | Gain 9 Block. If the target intends to attack: Challenge: its next Attack, within its next two actions, takes none of your HP. Success: 1 Authority and 2 Strength. |
-| `lt_brevet` | Brevet | working | rare | Gain 1 Authority and 6 Block. The next Authority you spend this turn costs 1 less. Exhaust. |
-| `lt_broken_nose` | Broken Nose | rite | uncommon | The first time each enemy phase Open Guard costs you HP, gain 1 Authority and 2 Strength. |
+| `lt_brevet` | Brevet | rite | rare | The first Authority you spend each turn costs 1 less. |
+| `lt_broken_nose` | Broken Nose | rite | uncommon | The first time each enemy phase Open Guard costs you HP, gain 2 Authority. |
 | `lt_broken_pike` | Broken Pike | deed | uncommon | Deal 12 damage. Then you may spend 2 Strength: every other enemy takes 7 damage. |
-| `lt_buckle` | Buckle | working | common | Gain 1 Strength, 5 Block and 1 Open Guard. If you keep an Order this turn, lose that Open Guard. |
+| `lt_buckle` | Gird | working | common | Gain 1 Strength, 5 Block and 1 Open Guard. If you keep an Order this turn, lose that Open Guard. |
 | `lt_buckler_up` | Buckler Up | working | starter | Gain 5 Block. If you have Open Guard, gain 2 more. |
 | `lt_cadence` | Cadence | working | uncommon | Draw 1 card. Order: play exactly two more cards this turn. Success: 1 Authority. |
 | `lt_chain_of_command` | Chain of Command | rite | rare | Gain 7 Block. You may hold two Orders. If you keep two Orders in a turn, draw 2 more cards next turn. |
@@ -960,7 +961,7 @@ cards a boss or a door hands over are never offered and have no act.
 | `lt_dispatch` | Dispatch | working | uncommon | Gain 6 Block. You may spend 2 Authority to return a Deed from your discard pile to your hand. |
 | `lt_double_file` | Double File | working | uncommon | Draw 1 card. Gain 4 Block. Order: hit two different enemies with Deeds later this turn. Success: 1 Authority and 4 Block. |
 | `lt_drum_major` | Drum Major | working | rare | Gain 6 Block and draw 1 card. The first Order you keep before your next turn gives 1 Energy. |
-| `lt_field_pardon` | Field Pardon | working | rare | Gain 10 Block and 1 Authority. You may spend 3 Authority: one Order or Challenge you already had is kept. Exhaust. |
+| `lt_field_pardon` | Field Pardon | working | rare | Gain 10 Block. Every Order and Challenge you have out is kept now. Exhaust. |
 | `lt_first_orders` | First Orders | working | starter | Gain 4 Block. Order: play a Deed later this turn. Success: 1 Authority. |
 | `lt_flank` | Flank | deed | uncommon | Deal 10 damage. You may spend 1 Authority to deal 8 damage to another enemy. |
 | `lt_forced_march` | Forced March | working | rare | Gain 3 Strength and 1 Open Guard. At the end of this turn, lose up to 3 of the Strength you still have. |
@@ -971,41 +972,41 @@ cards a boss or a door hands over are never offered and have no act.
 | `lt_grip` | Grip | working | uncommon | Spend up to 2 Strength: for each, draw 1 card and gain 4 Block. If you spend none, gain 2 Block. |
 | `lt_headlong` | Headlong | working | common | Gain 2 Open Guard. Your next two Deeds this turn cost 1 less. |
 | `lt_heave` | Heave | deed | uncommon | Deal 10 damage. Then you may spend 2 Strength to deal 10 damage again. |
-| `lt_heel_turn` | Heel Turn | deed | common | Deal 4 damage. If you have Open Guard, deal 4 damage twice instead. |
-| `lt_hilt_knot` | Hilt Knot | rite | rare | Gain 1 Strength. The first time each turn you spend Strength on a card, draw 1 card and gain 5 Block. |
+| `lt_heel_turn` | Volte | deed | common | Deal 4 damage. If you have Open Guard, deal 4 damage twice instead. |
+| `lt_hilt_knot` | Hard Bargain | rite | rare | Gain 1 Strength. The first time each turn you spend Strength on a card, draw 1 card and gain 5 Block. |
 | `lt_insubordination` | Insubordination | deed | rare | Deal 10 damage. You may abandon your oldest Order to deal 10 damage again and gain 1 Open Guard. |
 | `lt_last_bell` | Last Bell | deed | common | Deal 9 damage. Order: end this turn with exactly 0 Energy. Success: 1 Authority. |
 | `lt_last_ditch` | Last Ditch | deed | rare | Deal 12 damage, plus 1 for every 3 HP you are missing (at most 12). You may gain 1 Open Guard to double that bonus. |
 | `lt_make_an_example` | Make an Example | deed | uncommon | Deal 14 damage. You may spend 1 Authority: every other enemy takes half the HP it lost. |
-| `lt_marked_man` | Marked Man | deed | common | Deal 7 damage. Challenge: hit it with Deeds twice more before it acts. Success: 1 Authority and 1 Strength. |
-| `lt_mind_the_gap` | Mind the Gap | deed | uncommon | Deal 10 damage. Order: end this turn with Open Guard and at least 8 Block. Success: 1 Authority. |
+| `lt_marked_man` | Marked Man | deed | common | Deal 7 damage. Challenge: hit it twice more before it acts. Success: 1 Authority and 1 Strength. |
+| `lt_mind_the_gap` | Hold the Breach | deed | uncommon | Deal 10 damage. Order: end this turn with Open Guard and at least 8 Block. Success: 1 Authority. |
 | `lt_new_stripes` | New Stripes | working | starter | Gain 1 Strength. You may gain 1 Open Guard to issue a Challenge: hit it with a Deed before it acts. Success: 1 Authority and 1 Strength. |
-| `lt_no_excuses` | No Excuses | deed | uncommon | Deal 10 damage. Order: the first card you play next turn is a Deed. Success: 1 Authority and 4 Block. |
+| `lt_no_excuses` | Standing Orders | deed | uncommon | Deal 10 damage. Order: the first card you play next turn is a Deed. Success: 1 Authority and 4 Block. |
 | `lt_no_running` | No Running | deed | uncommon | Deal 11 damage. If the target had Block: Challenge: a later Deed hit takes its HP before it acts. Success: 1 Authority, 1 Strength and draw 1 card. |
 | `lt_no_surrender` | No Surrender | working | uncommon | Gain 5 Block. Order: go into the next enemy phase with Open Guard; an enemy attacks you and no Attack damage gets through to your HP. Success: 2 Authority. |
-| `lt_on_your_feet` | On Your Feet | working | uncommon | Gain 8 Block. If the target intends to attack: Challenge: after its next Attack, within its next two actions, you still have Block. Success: 1 Authority, 1 Strength and draw 1 more next turn. |
+| `lt_on_your_feet` | On Your Feet | working | uncommon | Gain 8 Block. If an enemy Attack took your HP last enemy phase: Challenge: hit it with a Deed before it acts. Success: 1 Authority and 2 Strength. |
 | `lt_open_visor` | Open Visor | working | rare | Gain 7 Block. If you have no Open Guard, you may gain 1. With Open Guard, your next Deed this turn ignores Block. |
 | `lt_overhand` | Overhand | deed | uncommon | Deal 14 damage. With 3 or more Strength, this ignores up to 10 of the target's Block. |
-| `lt_overreach` | Overreach | rite | uncommon | The first time each turn you gain Open Guard, your next Deed this turn deals 6 more damage with its first hit. |
+| `lt_overreach` | Overreach | rite | uncommon | Your Deeds' first hit deals 4 more damage for each Open Guard you have. |
 | `lt_parade_ground` | Parade Ground | working | rare | Gain 10 Block. If you keep an Order before this turn ends, gain 5 Ward Wax for each Energy you end it with (at most 2). |
 | `lt_pike_butt` | Pike Butt | deed | common | Deal 5 damage twice. |
 | `lt_pike_square` | Pike Square | working | rare | Gain 12 Block. This enemy phase, the first hit of each enemy action on you deals 4 less, and 2 less for each Strength you have now; that enemy takes as much back (at most 12). |
 | `lt_poise` | Poise | working | uncommon | Gain 10 Block. You may spend 1 Authority: until your next Deed this turn has resolved, you gain no Open Guard. |
 | `lt_pursuit` | Pursuit | working | uncommon | Draw 1 card. Challenge: hit it with a Deed later this turn and again next turn. Success: 2 Authority and 1 Strength. |
 | `lt_recoil` | Recoil | working | uncommon | Gain 8 Block. If you go into the enemy phase with Open Guard and an enemy Attack takes your HP, draw 2 more cards next turn. |
-| `lt_redress` | Redress | working | rare | Gain 10 Block. You may move your Challenge to the target, if it fits it; its count starts again, its deadline stays. Once per Challenge; not Pursuit. |
+| `lt_redress` | Redress | working | rare | Gain 8 Block. Copy your Challenge onto every other enemy; each copy is judged and pays on its own. Exhaust. |
 | `lt_remand` | Remand | working | uncommon | Gain 7 Block. You may spend 1 Authority: your Challenge survives one more deadline (once per Challenge). |
-| `lt_reprimand` | Reprimand | working | rare | Gain 9 Block. If an Order failed at its deadline last turn, gain 2 Strength and 1 Open Guard. |
+| `lt_reprimand` | Reprimand | working | rare | Gain 9 Block. You may let your Order fail now: gain 2 Strength and 1 Open Guard. |
 | `lt_riposte` | Riposte | rite | rare | Gain 6 Block. Once each enemy phase, when a Challenged enemy has attacked you, deal it 5 damage plus your Strength. |
 | `lt_rising_star` | Rising Star | rite | rare | Gain 1 Authority. The first time each turn spending Authority leaves you with exactly 0, gain 1 Strength and 4 Block. |
 | `lt_roll_call` | Roll Call | working | common | Draw 1 card. Order: play a Deed and a Working later this turn. Success: 1 Authority. |
 | `lt_ruckus` | Ruckus | deed | uncommon | Deal 3 damage to ALL enemies. If it hits two or more, gain 1 Open Guard and draw 1 card. |
 | `lt_scabbard` | Scabbard | working | common | Gain 4 Block. Order: play no further Deed this turn and end it with Energy left. Success: 1 Authority. |
 | `lt_scar` | Scar | rite | uncommon | The first time each enemy phase an enemy Attack takes your HP, gain 2 Strength. |
-| `lt_second_blade` | Second Blade | deed | uncommon | Deal 6 damage twice. Challenge: hit it with two more Deeds before it acts. Success: 1 Authority and 2 Strength. |
+| `lt_second_blade` | Second Blade | deed | uncommon | Deal 6 damage twice. Challenge: hit it with two different Deeds before it acts. Success: 1 Authority and 2 Strength. |
 | `lt_second_rank` | Second Rank | working | common | Gain 7 Block. You may spend 1 Authority: your next Deed this turn costs 0. |
 | `lt_service_record` | Service Record | deed | rare | Deal 8 damage, plus 4 for each Challenge you have kept this combat (at most 4). |
-| `lt_shield_punch` | Shield Punch | deed | uncommon | Deal 7 damage. Gain 5 Block, plus 1 for each Strength. |
+| `lt_shield_punch` | Shield Boss | deed | uncommon | Deal 7 damage. Gain 5 Block, plus 1 for each Strength. |
 | `lt_signal` | Signal | working | common | Gain 2 Block. You may spend 1 Authority to gain 1 Energy. |
 | `lt_splintered_shield` | Splintered Shield | working | rare | Gain 14 Block. You may lose all your Block to gain 1 Strength, 1 Authority and 2 Open Guard. |
 | `lt_split_lip` | Split Lip | deed | common | Deal 9 damage. If this kills the target, draw 1 card; otherwise gain 1 Open Guard. |
@@ -1015,11 +1016,11 @@ cards a boss or a door hands over are never offered and have no act.
 | `lt_ultimatum` | Ultimatum | deed | uncommon | Deal 8 damage. You may spend 2 Authority to apply 2 Doubt. |
 | `lt_under_the_colours` | Under the Colours | rite | uncommon | The first time each turn you keep an Order, gain 1 Strength. |
 | `lt_watch_cut` | Watch Cut | deed | starter | Deal 6 damage. If the target is Challenged, deal 2 more. |
-| `lt_watch_surgeon` | Watch Surgeon | rite | rare | Gain 8 Block. The first time each turn you keep an Order or a Challenge, spend 1 Authority to heal 2 HP, if you are hurt. |
+| `lt_watch_surgeon` | Watch Surgeon | rite | rare | Gain 8 Block. Whenever you keep an Order or a Challenge, heal 2 HP. |
 | `lt_watchword` | Watchword | working | rare | Gain 5 Block. If you keep both an Order and a Challenge before your next turn, it begins with 1 Strength, 1 Authority and a card more. |
 | `lt_whetstone` | Whetstone | working | common | Gain 2 Strength. If you spent Strength earlier this turn, draw 1 card. |
 | `lt_whistle` | Whistle | working | uncommon | Gain 3 Block. You may spend 1 Authority to draw 2 cards. |
-| `lt_witness` | Witness | working | common | Gain 4 Block. Your next Deed hit on a Challenged enemy this turn counts twice toward its Challenge. |
+| `lt_witness` | Witness | working | common | Gain 4 Block. Your next Deed this turn counts toward your Challenge, whichever enemy it hits. |
 
 ### Given in play — 56
 
