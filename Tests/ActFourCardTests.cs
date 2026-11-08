@@ -176,25 +176,6 @@ public class ActFourCardTests
 
     // ── Candle Cathedral ──────────────────────────────────────────────────────────────────────────────────
 
-    // "Whenever Ward Wax grants Block, gain additional Block equal to half your Ward Wax, rounded up. Ward Wax
-    // no longer suffers its additional decay."
-    [Fact]
-    public void The_cathedral_pays_the_wax_half_again_and_stops_the_extra_decay()
-    {
-        var (play, session, enemy) = Fight(Deck(("candle_cathedral", 2), (Wax, 8)));
-
-        Install(play, session, "candle_cathedral");
-        Play(play, session, Wax, enemy);                   // 7 Ward Wax
-        Assert.Equal(7, FightProbe.StacksOf(Hero(play), Keywords.WardWax));
-
-        play.CombatDriver!.EndTurn();                      // the enemy hits: ordinarily 2 wax, here 1
-
-        Assert.Equal(6, FightProbe.StacksOf(Hero(play), Keywords.WardWax));
-        // …and the wax pays 6 + ceil(6 / 2) = 9 at the top of the turn.
-        Assert.Equal(9, Block(Hero(play)));
-        play.Dispose();
-    }
-
     // ── Absolute Interdict ────────────────────────────────────────────────────────────────────────────────
 
     // "The first time each turn Censure on a combatant would prevent Status stacks, 1 Censure prevents the

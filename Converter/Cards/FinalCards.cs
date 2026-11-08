@@ -12,17 +12,31 @@ namespace BnbContent.Converter.Cards;
 // some of them; they go when Phase D replaces those events.
 public static class FinalCards
 {
-    // Starters and Junk first; the 80 Bureaucrat and 50 general reward cards join them act by act.
+    // Starters and Junk first; the 80 Bureaucrat and 70 general reward cards join them.
+    //
+    // The general pool was rebuilt on 2026-11-08 (GENERAL_POOL_PLAN.md): the old one leaned on Lien, Citation,
+    // Blood Ink and Censure, which only the Bureaucrat ever set. Its classes (GeneralActI–III and
+    // ActIVCards.General) are kept as a record, but nothing of theirs is in the game any more.
     public static IReadOnlyList<BnbCard> All() =>
     [
         .. BureaucratStarter.All(),
         .. BureaucratActI.All(),
-        .. GeneralActI.All(),
         .. BureaucratActII.All(),
-        .. GeneralActII.All(),
         .. BureaucratActIII.All(),
-        .. GeneralActIII.All(),
-        .. ActIVCards.All(),
+        .. ActIVCards.Bureaucrat(),
+        .. General(),
+    ];
+
+    // The general pool, axis by axis.
+    public static IReadOnlyList<BnbCard> General() =>
+    [
+        .. GeneralEnergy.All(),
+        .. GeneralDraw.All(),
+        .. GeneralDiscard.All(),
+        .. GeneralDebuffs.All(),
+        .. GeneralDefence.All(),
+        .. GeneralDamage.All(),
+        .. GeneralExhausted.All(),
     ];
 
     public static IReadOnlyList<CardData> Compile() => All().Select(c => c.Compile()).ToList();
@@ -33,7 +47,7 @@ public static class FinalCards
     [
         .. Keywords.All(), .. BureaucratRites.All(), .. BureaucratArchive.All(),
         .. BureaucratHistory.All(), .. ActIVRites.All(), .. GeneralWax.All(),
-        .. GeneralRites.All(), .. GeneralForgery.All(), .. GeneralPrevention.All(),
+        .. GeneralRites.All(), .. GeneralForgery.All(), .. GeneralPrevention.All(), .. GeneralPoolRules.All(),
     ];
 
     // Ids the final pool owns — a ported card with one of these is dropped rather than duplicated.
@@ -49,8 +63,7 @@ public static class FinalCards
     // in neither, which is what the WHICH POOL a card belongs to means. It is not a field on the card because
     // it is not a property a card was given — it is which sheet it was written on, and that is the file it
     // lives in.
-    public static IReadOnlyList<BnbCard> GeneralPool(int act) => Offerable(
-        [.. GeneralActI.All(), .. GeneralActII.All(), .. GeneralActIII.All(), .. ActIVCards.General()], act);
+    public static IReadOnlyList<BnbCard> GeneralPool(int act) => Offerable(General(), act);
 
     public static IReadOnlyList<BnbCard> CharacterPool(int act) => Offerable(
         [.. BureaucratActI.All(), .. BureaucratActII.All(), .. BureaucratActIII.All(),

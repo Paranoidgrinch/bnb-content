@@ -4,8 +4,8 @@ Auftrag (2026-11-08): Der allgemeine Pool entstand, als es nur den Bureaucrat ga
 Er soll von allen Charakteren genutzt werden können, mit Synergien, ohne auf einen bestimmten zu wirken:
 Energiemanagement, Draw-Engine, Abwerfen, Gegner-Debuffs und so weiter. „Sei authentisch und kreativ.“
 
-Status: **freigegeben 2026-11-08.** Regeln (§1–§3) und alle 70 Karten mit Upgrades (§4) stehen; als Nächstes
-kommt der Bau.
+Status: **gebaut 2026-11-08** (§7). Regeln (§1–§3) und alle 70 Karten mit Upgrades (§4) sind im Spiel; die
+alten allgemeinen Karten sind als Code erhalten, aber aus dem Spiel.
 
 ---
 
@@ -259,3 +259,24 @@ Das klärt der Bau, bevor eine Karte gebaut wird.
   gestrichen.
 - Wo es passt, bekommen die sechs Achsen je 1–2 Relikte, zum Beispiel „Unread-Wirkungen lösen doppelt aus“
   oder „Liable hält einen Zug länger“.
+
+## 7 Bau (2026-11-08)
+
+- **Dateien:** `Converter/Cards/General{Energy,Draw,Discard,Debuffs,Defence,Damage,Exhausted}.cs`, die Regeln in
+  `GeneralPoolRules.cs`, die Bausteine in `GeneralPoolShapes.cs`. `FinalCards.General()` ist der Pool; die alten
+  Klassen (`GeneralActI–III`, `ActIVCards.General`) bleiben als Code, sind aber in keinem Pool mehr.
+- **Liable** ist ein Status in `Keywords` (Spiegel von Doubt). **Unread, Pledge, Held Energy** stehen im Glossar.
+- **Regeln für alle Helden** hängen am Applicant-Status, den jeder Held in jedem Kampf trägt: Unread, Corpse Candle,
+  Salamander, Last Ember, Ashen Effigy, Dog-Eared Almanac, Read by Firelight.
+- **Engine (RogueDeck-Core):** Pledge-Tag mit Fehlbetrag-Zähler, „unter den Stapel“ innerhalb einer Zone,
+  zufälliges Einmischen (`ZonePlacement.Random`), das Ereignis `HandDiscarded` für das Abwerfen am Zugende.
+- **Belohnungen:** Allgemeine Commons ziehen jetzt auf der normalen Seltenheitskurve (vorher Gewicht 0, weil es
+  keine gab). Der Anteil allgemeiner Karten an einer Belohnung steigt nach der bestehenden Halbierungsregel auf
+  knapp zwei Fünftel (vorher ein Viertel bis ein Drittel).
+- **Hexe und Apprentice:** Zutat je Karte aus §4, Stab-Wirkung neu geschrieben (`ApprenticeProxies`).
+- **Geprüft:** `GeneralPoolTests` spielt alle 140 Karten in echten Kämpfen und prüft die Mechaniken einzeln;
+  `--pool-trial <dir>` spielt jede Karte dreifach im Lieutenant-Deck gegen zwei Akt-I-Begegnungen und schreibt pro
+  Ausspielen die Änderungen und die Kampflog-Zeilen.
+- **Anpassungen:** Ash Remembers — „kostet 0 diesen Zug“ hält, bis die Karte gespielt wird. Errand Rook — das Spiel
+  kennt kein Handlimit; „voll“ heißt vorläufig 10 Karten (**offen**).
+

@@ -13,13 +13,16 @@ namespace BnbContent.Converter.Cards;
 //
 // Three statuses, because a passive modifier's PRESENCE is its condition and cannot be made conditional: the
 // discount, the bigger discount its upgrade gives, and the surcharge that follows. The discount hands the
-// surcharge over as it is spent, so the debt cannot be dodged by simply not playing anything else that turn —
-// it lasts the whole combat, as the card says.
+// surcharge over as it is spent. Since the general pool rebuild (user, 2026-11-08) both halves last this turn
+// only: a signature played as the second-to-last card is a clean saving.
+//
+// Coin Under the Tongue borrows the same discount without the surcharge.
 public static class GeneralForgery
 {
     public const string Discount = "false_signature_discount";
     public const string DiscountPlus = "false_signature_discount+";
     public const string Surcharge = "false_signature_surcharge";
+    public const string Coin = "coin_under_the_tongue_discount";
 
     // The signature itself carries this, so the discount can tell "the card that wrote me" from "the next
     // card" — a card play cannot otherwise be identified from inside a trigger.
@@ -29,14 +32,17 @@ public static class GeneralForgery
     [
         DiscountStatus(Discount, "False Signature", -1),
         DiscountStatus(DiscountPlus, "False Signature+", -2),
+        DiscountStatus(Coin, "Coin Under the Tongue", -1, surcharge: false),
         SurchargeStatus(),
     ];
 
-    private static StatusData DiscountStatus(string id, string name, int magnitude) => new()
+    private static StatusData DiscountStatus(string id, string name, int magnitude, bool surcharge = true) => new()
     {
         Id = id,
         NameKey = name,
-        DescriptionKey = $"Your next card costs {-magnitude} less Energy — and the one after it costs 1 more.",
+        DescriptionKey = surcharge
+            ? $"Your next card this turn costs {-magnitude} less Energy — and the one after it costs 1 more."
+            : $"Your next card this turn costs {-magnitude} less Energy.",
         Polarity = StatusPolarity.Neutral,
         StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
         UsesStacks = true,
@@ -57,9 +63,11 @@ public static class GeneralForgery
                 [
                     new RemoveStatusNode<CardPlayedTriggeredEffectContext>(
                         CombatantTargetSelectors.Source, new StatusDefinitionId(id)),
-                    new ApplyStatusNode<CardPlayedTriggeredEffectContext>(
-                        CombatantTargetSelectors.Source, new StatusDefinitionId(Surcharge),
-                        new ConstantExpression<CardPlayedTriggeredEffectContext>(1)),
+                    surcharge
+                        ? new ApplyStatusNode<CardPlayedTriggeredEffectContext>(
+                            CombatantTargetSelectors.Source, new StatusDefinitionId(Surcharge),
+                            new ConstantExpression<CardPlayedTriggeredEffectContext>(1))
+                        : new NoOpEffectNode<CardPlayedTriggeredEffectContext>(),
                 ]))), nameof(TriggerEvent.CardPlayed)),
 
             // Unspent by the end of the turn, the signature is simply worthless: "this turn".
@@ -74,7 +82,7 @@ public static class GeneralForgery
     {
         Id = Surcharge,
         NameKey = "Countersigned",
-        DescriptionKey = "Your next card costs 1 more Energy.",
+        DescriptionKey = "Your next card this turn costs 1 more Energy.",
         Polarity = StatusPolarity.Debuff,
         StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
         UsesStacks = true,
@@ -92,6 +100,12 @@ public static class GeneralForgery
                     new RemoveStatusNode<CardPlayedTriggeredEffectContext>(
                         CombatantTargetSelectors.Source, new StatusDefinitionId(Surcharge)))),
                 nameof(TriggerEvent.CardPlayed)),
+
+            // "this turn": an unpaid surcharge is forgiven when the turn ends.
+            Trigger(new EffectProgram<TurnEndedTriggeredEffectContext>(
+                new RemoveStatusNode<TurnEndedTriggeredEffectContext>(
+                    CombatantTargetSelectors.Source, new StatusDefinitionId(Surcharge))),
+                nameof(TriggerEvent.TurnEnded)),
         ],
     };
 

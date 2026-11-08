@@ -6,36 +6,40 @@ namespace BnbContent.Converter.Witch;
 // WHICH INGREDIENT EACH GENERAL CARD IS (hedge_witch_master.md §16.2; plan W6, table E4 approved 2026-10-04).
 // Direct damage → Fang · curses, enemy status engines, delayed damage → Hex · Block, Ward Wax, protection → Husk ·
 // recovery, cleansing, draw, plain usefulness → Hearth · denial, Censure, strange causality → Fortune.
+// The general pool rebuilt on 2026-11-08 brings its families from GENERAL_POOL_PLAN.md §4 (last column).
 // Written onto the card (and its upgrade) at assembly; it means something only to the Witch's cauldron.
 public static class WitchFamilies
 {
     public static readonly IReadOnlyDictionary<string, string> General = Table(
         (WitchActions.Fang,
         [
-            "grave_lien", "foreclosure", "forfeit_seal", "dawn_summons", "seizure_writ", "blood_tithe",
-            "vital_census", "exemplary_sentence", "black_tribunal", "grand_citation", "crown_repossession",
-            "tallow_judgment", "hemal_audit", "last_office", "blacklisted",
+            "ashen_effigy", "beadles_cudgel", "blacklisted", "corpse_candle", "dawn_summons", "hailstones",
+            "ill_wind", "midnight_toll", "poppet_pin", "pyre_of_old_records", "salamander_in_the_grate",
+            "sifted_ashes", "smouldering_correspondence", "spiteful_draft", "tallow_judgment",
+            "third_and_final_writ", "thrown_inkpot", "volley_of_quills", "weight_of_paper",
         ]),
         (WitchActions.Hex,
         [
-            "witchmark_citation", "blood_marginalia", "mortgage_sigil", "silent_hearing", "notary_beetle",
-            "usurers_moon", "sanguine_errata", "vein_register", "blood_redaction", "standing_citation",
-            "debt_ouroboros", "compound_indictment",
+            "bill_of_attainder", "compounded_grievance", "curdled_milk", "hares_mark", "lingering_malison",
+            "named_in_the_roll", "overlooking", "seed_of_misgiving", "spreading_rumour", "whispering_gallery",
         ]),
         (WitchActions.Husk,
         [
-            "waxen_surety", "contempt_finding", "tallow_reserve", "sealed_mantle", "wax_reliquary",
-            "consecrated_testament", "mortgaged_aegis", "votive_covenant", "candle_cathedral", "wax_indemnity",
-            "countermanded_grace",
+            "ashen_receipt", "barred_door", "besom_guard", "bone_meal", "burnt_offering", "cold_hearth",
+            "rowan_over_the_door", "salt_on_the_sill", "sealed_mantle", "standing_stones", "tallow_reserve",
+            "unburied", "vigil_lamp", "wax_reliquary", "waxen_surety",
         ]),
         (WitchActions.Hearth,
         [
-            "borrowed_candle", "false_signature", "proxy_curse", "moonlit_counterfeit", "grand_dispensation",
-            "sanctioned_charm", "crossed_sigil",
+            "ash_remembers", "banked_embers", "borrowed_candle", "coin_under_the_tongue", "crossed_sigil",
+            "dog_eared_almanac", "errand_rook", "gathered_gossip", "lamplit_study", "misers_coffer",
+            "moonlit_counterfeit", "night_scrivener", "raked_from_the_ashes", "read_by_firelight",
+            "sanctioned_charm", "sieve_and_shears", "stolen_hour", "tallow_stub", "wick_burnt_short",
         ]),
         (WitchActions.Fortune,
         [
-            "malediction_review", "reciprocal_edict", "oath_of_refusal", "sovereign_prohibition", "absolute_interdict",
+            "false_signature", "hearth_kindling", "last_ember", "melted_down", "scattered_notes",
+            "stay_of_proceedings", "wheat_from_chaff",
         ]));
 
     public static IReadOnlyList<CardData> Mark(IReadOnlyList<CardData> cards)

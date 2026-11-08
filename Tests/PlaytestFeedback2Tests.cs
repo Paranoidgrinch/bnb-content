@@ -92,8 +92,6 @@ public class PlaytestFeedback2Tests
     // A1 — Wax Reliquary and Wax Indemnity hold "until your next turn". They used to hold for the whole fight.
     [Theory]
     [InlineData("wax_reliquary", GeneralWax.WaxReliquary)]
-    [InlineData("wax_indemnity", GeneralWax.WaxIndemnity)]
-    [InlineData("wax_indemnity+", GeneralWax.WaxIndemnity + "+")]
     public void A_wax_rule_until_your_next_turn_lapses_when_it_comes(string card, string rule)
     {
         var (play, session, enemyId) = FightProbe.Start(

@@ -58,15 +58,6 @@ public class AuditTests
         Assert.Equal(1, audit.Quiet.AfterPlay.Energy - audit.QuietBase.AfterPlay.Energy + audit.Cost);
     }
 
-    // "Then remove 1 stack of ANOTHER negative Status": with nothing else on the target, its own Blood Ink stays.
-    [Fact]
-    public void Sanguine_errata_keeps_its_own_blood_ink_when_the_target_has_nothing_else()
-    {
-        var audit = Audit.AuditCard(Game, "sanguine_errata");
-        Assert.Null(audit.Quiet.Error);
-        Assert.Equal(5, audit.Quiet.AfterPlay.EnemyStatuses.GetValueOrDefault(Converter.Cards.Keywords.BloodInk));
-    }
-
     // Dubious Authority beside Strong Binder: the attack is blocked entirely and the Doubt is still spent by it —
     // so the Paperwork must come. It did not while the rule asked for damage dealt.
     [Fact]

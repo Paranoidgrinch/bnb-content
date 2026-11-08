@@ -7,136 +7,161 @@ using K = BnbContent.Converter.Cards.Keywords;
 
 namespace BnbContent.Converter.Apprentice;
 
-// WHAT EACH GENERAL CARD DOES IN THE WAND (master §11). The fifty general cards keep their play text, their upgrade
-// and everything the Bureaucrat and the Witch do with them; for the Apprentice each gets a small, hand-written wand
-// part — never its full card text replayed, never a Rite installed. Its upgrade carries the same proxy (§11.2).
-// "Copy" in the master is each atom's Copyable: what an Echo, a Keep or a Shape may take. Written onto the card at
-// assembly; it means something only to a wand.
+// WHAT EACH GENERAL CARD DOES IN THE WAND (master §11). The seventy general cards (the pool rebuilt on 2026-11-08,
+// GENERAL_POOL_PLAN.md) keep their play text, their upgrade and everything the Bureaucrat and the Witch do with
+// them; for the Apprentice each gets a small, hand-written wand part — never its full card text replayed, never a
+// Rite installed. Its upgrade carries the same proxy (§11.2). Energy in the wand is Exhaustion relief (Ground),
+// drawing comes after the cast. "Copy" in the master is each atom's Copyable: what an Echo, a Keep or a Shape may
+// take. Written onto the card at assembly; it means something only to a wand.
 public static class ApprenticeProxies
 {
     public static readonly IReadOnlyDictionary<string, WandImprint> General = new Dictionary<string, WandImprint>(StringComparer.Ordinal)
     {
-        // ADAPTATION: "if Censure prevented a status this turn" — no record of that is kept, so the proxy asks
-        // whether you carry Censure at all.
-        ["absolute_interdict"] = Speak(Guard(2).When(Lacks(K.Censure)).Private())
-            .GroundingWhen(2, Condition(HasStacks(K.Censure, 1, You))),
-        ["black_tribunal"] = Speak(Hit(Amount(Plus(Const(7), Times(AtMost(DistinctStatuses(NegativeStatuses), 5), 2))))),
+        ["ash_remembers"] = Speak(Do(Draw(1), afterCast: true)),
+        ["ashen_effigy"] = Speak(Hit(9)),
+        ["ashen_receipt"] = Speak(Guard(4)),
+        ["banked_embers"] = Speak(Gain(HeldEnergy.Id, 1), Do(Draw(1), afterCast: true)),
+        ["barred_door"] = Speak(Guard(8)),
+        ["beadles_cudgel"] = Speak(Hit(5)),
+        ["besom_guard"] = Speak(Guard(5)),
+        ["bill_of_attainder"] = Speak(Put(K.Doubt, 1), Put(K.Liable, 1)),
         ["blacklisted"] = Speak(Hit(7)),
-        ["blood_marginalia"] = Speak(Put(K.Citation, 2), Put(K.BloodInk, 1)),
-        ["blood_redaction"] = Shape(WandRule.Convert, amount: 2, cap: 2, status: K.BloodInk),
-        ["blood_tithe"] = Speak(Hit(Amount(Plus(Const(6), Times(Once(Stacks(K.BloodInk)), 3))))),
+        ["bone_meal"] = Speak(Guard(3)),
         ["borrowed_candle"] = Speak(Do(Draw(1), afterCast: true)),
-        ["candle_cathedral"] = Speak(Wax(3)),
-        ["compound_indictment"] = Speak(Do(Compound())),
-        // ADAPTATION: "if an enemy lost HP to a status earlier in this cast" — no record of that is kept, so it asks
-        // whether an enemy carries a status that costs it HP (Paperwork or Blood Ink).
-        ["consecrated_testament"] = Speak(
-            Wax(3).When(AnyEnemyBleeds).Private(),
-            Guard(2).When(new NotExpression<CardPlayContext>(AnyEnemyBleeds)).Private()),
-        ["contempt_finding"] = Speak(Do(CashCitation(2, blockEach: 3, hpEachToAll: 0))),
-        ["countermanded_grace"] = Speak(Guard(4)),
+        ["burnt_offering"] = Speak(Guard(5)),
+        ["coin_under_the_tongue"] = Speak(Do(Draw(1), afterCast: true)),
+        ["cold_hearth"] = Speak(Guard(Amount(Plus(Const(3), AtMost(CardsInZone(CardZone.ExhaustPile), 4))))),
+        ["compounded_grievance"] = Heighten(0, stacks: 2, filter: WandFilter.NegativeStatus),
+        ["corpse_candle"] = Speak(Hit(3)),
         ["crossed_sigil"] = Speak(Do(Draw(1), afterCast: true)),
-        ["crown_repossession"] = Speak(Hit(10).Private(), Do(TakeBlock(8)), Put(K.Lien, 2).Private()),
+        ["curdled_milk"] = Speak(Put(K.Doubt, 1, WandTargeting.AllEnemies)),
         ["dawn_summons"] = Speak(Hit(8).Plus(4, WandPosition.FirstSpeak)),
-        ["debt_ouroboros"] = Speak(Put(K.Lien, 3)),
-        ["exemplary_sentence"] = Speak(Do(CashCitation(2, blockEach: 0, hpEachToAll: 3))),
+        ["dog_eared_almanac"] = Speak(Do(Draw(1), afterCast: true)),
+        ["errand_rook"] = Speak(Do(Draw(1), afterCast: true)),
         ["false_signature"] = Heighten(25, stacks: 0, filter: WandFilter.DamageOrDefense, strain: 1),
-        ["foreclosure"] = Speak(Hit(5).Private(), Do(Cards.GeneralActI.ResolveLienNow(2))),
-        ["forfeit_seal"] = Speak(Hit(5), Put(K.Lien, 2).When(Condition(TargetGuarded)).Private()),
-        ["grand_citation"] = Speak(Hit(7, to: WandTargeting.AllEnemies), Do(CitedTakeMore(2))),
-        ["grand_dispensation"] = Speak(Do(CombatNodeModel.ChooseOptions(1,
-            ["Deal 10 damage", "Gain 10 Block"], [Damage(10), Block(10)], "Grand Dispensation"))),
-        ["grave_lien"] = Speak(Hit(6), Put(K.Lien, 4)),
-        ["hemal_audit"] = Speak(Hit(8).Private(), Do(CombatNodeModel.Repeat(CombatAmountSpec.FromConst(2), BiteBloodInk()))),
-        ["last_office"] = Speak(Hit(Amount(Times(AtMost(CombatAmountSpec.Binary("max", Const(0), Plus(Const(5),
-            CombatAmountSpec.Unary("neg", DistinctStatuses(NegativeStatuses)))), 3), 4)))),
-        ["malediction_review"] = Speak(Guard(5).Private(), Do(CombatNodeModel.ChooseOptions(1,
-            ["Gain 1 Censure", "Apply 1 Censure to the target"],
-            [Apply(K.Censure, 1, You), Apply(K.Censure, 1)], "Malediction Review"))),
+        ["gathered_gossip"] = Speak(Do(Draw(1), afterCast: true)),
+        ["hailstones"] = Speak(Hit(2, hits: 2, to: WandTargeting.AllEnemies)),
+        ["hares_mark"] = Speak(Put(K.Liable, 1), Put(K.Liable, 1).When(HasStacks(K.Doubt)).Private()),
+        ["hearth_kindling"] = Speak(Guard(3), Do(Draw(1), afterCast: true)),
+        ["ill_wind"] = Speak(Hit(4, to: WandTargeting.AllEnemies)),
+        ["lamplit_study"] = Speak(Guard(3), Do(Draw(1), afterCast: true)),
+        ["last_ember"] = Echo(50, WandFilter.Any),
+        ["lingering_malison"] = Heighten(0, stacks: 1, filter: WandFilter.NegativeStatus),
+        ["melted_down"] = Ground(1),
+        ["midnight_toll"] = Speak(Hit(6)),
+        ["misers_coffer"] = Speak(Gain(HeldEnergy.Id, 1)),
         ["moonlit_counterfeit"] = Echo(50, WandFilter.DamageOrDefense),
-        // ADAPTATION: the extra Lien for Block gained before its next turn is left to the card's play.
-        ["mortgage_sigil"] = Speak(Put(K.Lien, 2).Private()),
-        ["mortgaged_aegis"] = Speak(Guard(9).Private(), Gain(K.Lien, 2).Private()),
-        ["notary_beetle"] = Heighten(0, stacks: 1, filter: WandFilter.NegativeStatus),
-        ["oath_of_refusal"] = Speak(Gain(K.Censure, 2).Private(), Guard(3).Private()),
-        ["proxy_curse"] = Speak(Do(ProxyCurse())),
-        ["reciprocal_edict"] = Speak(Put(K.Censure, 2), Guard(2)),
+        ["named_in_the_roll"] = Speak(Put(K.Liable, 1)),
+        ["night_scrivener"] = Speak(Do(Draw(2), afterCast: true)),
+        ["overlooking"] = Speak(Put(K.Doubt, 1)),
+        ["poppet_pin"] = Speak(Hit(3)),
+        ["pyre_of_old_records"] = Speak(Hit(4), Guard(4)),
+        ["raked_from_the_ashes"] = Speak(Do(Draw(1), afterCast: true)),
+        ["read_by_firelight"] = Speak(Do(Draw(1), afterCast: true)),
+        ["rowan_over_the_door"] = Speak(Guard(4)),
+        ["salamander_in_the_grate"] = Speak(Hit(4, hits: 2)),
+        ["salt_on_the_sill"] = Speak(Guard(3), Put(K.Doubt, 1).When(TargetIntendsAttack)),
         ["sanctioned_charm"] = Speak(Do(Draw(1), afterCast: true)),
-        ["sanguine_errata"] = Speak(Put(K.BloodInk, 3).Private(), Do(RemoveOneOtherNegative())),
-        // The card's own Ward Wax promise, one Wax rather than three.
+        ["scattered_notes"] = Speak(Do(Draw(1), afterCast: true)),
         ["sealed_mantle"] = Speak(Guard(5).Private(), Do(Apply(Cards.GeneralRites.SealedMantle, 1, You))),
-        ["seizure_writ"] = Speak(Hit(7).Private(), Do(SeizeBlock(8, perLien: 4, lienCap: 2))),
-        ["silent_hearing"] = Speak(Put(K.Citation, 2), Guard(4).When(Condition(TargetIntendsAttack))),
-        ["sovereign_prohibition"] = Speak(Gain(K.Censure, 2).Private(), Put(K.Censure, 1, WandTargeting.AllEnemies).Private()),
-        ["standing_citation"] = Speak(Put(K.Citation, 3)),
+        ["seed_of_misgiving"] = Speak(Put(K.Doubt, 1), Guard(2)),
+        ["sieve_and_shears"] = Speak(Do(Draw(1), afterCast: true)),
+        ["sifted_ashes"] = Speak(Hit(5)),
+        ["smouldering_correspondence"] = Speak(Hit(3, to: WandTargeting.AllEnemies)),
+        ["spiteful_draft"] = Speak(Hit(4)),
+        ["spreading_rumour"] = Speak(Put(K.Liable, 1, WandTargeting.AllEnemies)),
+        ["standing_stones"] = Speak(Guard(5)),
+        ["stay_of_proceedings"] = Speak(Put(K.Doubt, 2)),
+        ["stolen_hour"] = Ground(2),
         ["tallow_judgment"] = Speak(Do(Judgment(3, 5, 3))),
-        ["tallow_reserve"] = Speak(Do(ReserveTallow(4, 2))),
-        ["usurers_moon"] = Speak(Put(K.Lien, 2), Put(K.Citation, 1)),
-        // ADAPTATION: "2 if another status lost a stack on it earlier this cast" — no record of that is kept: 1.
-        ["vein_register"] = Speak(Put(K.BloodInk, 1).Private()),
-        ["vital_census"] = Speak(Hit(6, to: WandTargeting.AllEnemies).Private(), Do(InkedLoseHp(2))),
-        ["votive_covenant"] = Speak(Wax(4)),
-        ["wax_indemnity"] = Speak(Wax(3).Private(), Do(new CombatNodeModel("heal", You, CombatAmountSpec.FromConst(1)))),
-        // ADAPTATION: its decay protection is left to the card's play.
+        ["tallow_reserve"] = Speak(Do(ReserveTallow(4, 3))),
+        ["tallow_stub"] = Speak(Gain(HeldEnergy.Id, 1)),
+        ["third_and_final_writ"] = Speak(Hit(7)),
+        ["thrown_inkpot"] = Speak(Hit(5), Put(K.Doubt, 1).Private()),
+        ["unburied"] = Speak(Guard(5)),
+        ["vigil_lamp"] = Speak(Guard(6)),
+        ["volley_of_quills"] = Speak(Hit(Amount(Times(AtMost(CardsInZone(CardZone.Hand), 5), 1)), to: WandTargeting.AllEnemies)),
         ["wax_reliquary"] = Speak(Wax(3).Private()),
         ["waxen_surety"] = Speak(Wax(4)),
-        ["witchmark_citation"] = Speak(Put(K.Citation, 3),
-            Do(Draw(1), afterCast: true).When(new NotExpression<CardPlayContext>(Condition(TargetIntendsAttack)))),
+        ["weight_of_paper"] = Speak(Hit(Amount(Plus(Const(3), AtMost(CardsInZone(CardZone.DiscardPile), 6))))),
+        ["wheat_from_chaff"] = Speak(Do(Draw(1), afterCast: true)),
+        ["whispering_gallery"] = Speak(Put(K.Doubt, 1, WandTargeting.AllEnemies)),
+        ["wick_burnt_short"] = Ground(2),
     };
 
     // The words for each proxy, as a card's "Wand:" line — shown on the card when the Apprentice holds it.
     public static readonly IReadOnlyDictionary<string, string> Text = new Dictionary<string, string>(StringComparer.Ordinal)
     {
-        ["absolute_interdict"] = "Speak: if you carry Censure, this cast's Exhaustion is 2 lower; otherwise gain 2 Block.",
-        ["black_tribunal"] = "Speak: deal 7 damage, +2 for each different negative status on the target (5 at most).",
+        ["ash_remembers"] = "Speak: after the cast, draw 1 card.",
+        ["ashen_effigy"] = "Speak: deal 9 damage.",
+        ["ashen_receipt"] = "Speak: gain 4 Block.",
+        ["banked_embers"] = "Speak: gain 1 Held Energy; after the cast, draw 1 card.",
+        ["barred_door"] = "Speak: gain 8 Block.",
+        ["beadles_cudgel"] = "Speak: deal 5 damage.",
+        ["besom_guard"] = "Speak: gain 5 Block.",
+        ["bill_of_attainder"] = "Speak: apply 1 Doubt and 1 Liable.",
         ["blacklisted"] = "Speak: deal 7 damage.",
-        ["blood_marginalia"] = "Speak: apply 2 Citation and 1 Blood Ink.",
-        ["blood_redaction"] = "Shape: the next Speak's negative status turns up to 2 of its stacks into 2 Blood Ink each.",
-        ["blood_tithe"] = "Speak: deal 6 damage, +3 if the target has Blood Ink.",
+        ["bone_meal"] = "Speak: gain 3 Block.",
         ["borrowed_candle"] = "Speak: after the cast, draw 1 card.",
-        ["candle_cathedral"] = "Speak: gain 3 Ward Wax.",
-        ["compound_indictment"] = "Speak: if the target carries 3 or more kinds of negative status, add 1 stack to each.",
-        ["consecrated_testament"] = "Speak: gain 3 Ward Wax if an enemy carries Paperwork or Blood Ink; otherwise gain 2 Block.",
-        ["contempt_finding"] = "Speak: remove up to 2 Citation from the target; gain 3 Block for each.",
-        ["countermanded_grace"] = "Speak: gain 4 Block.",
+        ["burnt_offering"] = "Speak: gain 5 Block.",
+        ["coin_under_the_tongue"] = "Speak: after the cast, draw 1 card.",
+        ["cold_hearth"] = "Speak: gain 3 Block, +1 for each Exhausted card (4 at most).",
+        ["compounded_grievance"] = "Heighten: the next Speak's first negative status gets 2 more stacks.",
+        ["corpse_candle"] = "Speak: deal 3 damage.",
         ["crossed_sigil"] = "Speak: after the cast, draw 1 card.",
-        ["crown_repossession"] = "Speak: deal 10 damage; remove up to 8 of its Block; apply 2 Lien.",
+        ["curdled_milk"] = "Speak: apply 1 Doubt to ALL enemies.",
         ["dawn_summons"] = "Speak: deal 8 damage, +4 if it is the cast's first Speak.",
-        ["debt_ouroboros"] = "Speak: apply 3 Lien.",
-        ["exemplary_sentence"] = "Speak: remove up to 2 Citation from the target; ALL enemies lose 3 HP for each.",
+        ["dog_eared_almanac"] = "Speak: after the cast, draw 1 card.",
+        ["errand_rook"] = "Speak: after the cast, draw 1 card.",
         ["false_signature"] = "Heighten: the next damaging or defensive Speak gives 25% more; adds 1 Exhaustion.",
-        ["foreclosure"] = "Speak: deal 5 damage; resolve up to 2 Lien on the target.",
-        ["forfeit_seal"] = "Speak: deal 5 damage; if the target has Block, apply 2 Lien.",
-        ["grand_citation"] = "Speak: deal 7 damage to ALL enemies; those with Citation take 2 more.",
-        ["grand_dispensation"] = "Speak: choose: deal 10 damage, or gain 10 Block.",
-        ["grave_lien"] = "Speak: deal 6 damage and apply 4 Lien.",
-        ["hemal_audit"] = "Speak: deal 8 damage, then trigger its Blood Ink up to 2 times.",
-        ["last_office"] = "Speak: deal 4 damage for each kind of negative status the target lacks, out of five (3 at most).",
-        ["malediction_review"] = "Speak: gain 5 Block; choose: gain 1 Censure, or apply 1 Censure to the target.",
+        ["gathered_gossip"] = "Speak: after the cast, draw 1 card.",
+        ["hailstones"] = "Speak: deal 2 damage to ALL enemies twice.",
+        ["hares_mark"] = "Speak: apply 1 Liable, 2 if the target has Doubt.",
+        ["hearth_kindling"] = "Speak: gain 3 Block; after the cast, draw 1 card.",
+        ["ill_wind"] = "Speak: deal 4 damage to ALL enemies.",
+        ["lamplit_study"] = "Speak: gain 3 Block; after the cast, draw 1 card.",
+        ["last_ember"] = "Echo: repeat the last Speak at 50%.",
+        ["lingering_malison"] = "Heighten: the next Speak's first negative status gets 1 more stack.",
+        ["melted_down"] = "Ground: 1 less Exhaustion.",
+        ["midnight_toll"] = "Speak: deal 6 damage.",
+        ["misers_coffer"] = "Speak: gain 1 Held Energy.",
         ["moonlit_counterfeit"] = "Echo: repeat the last damaging or defensive Speak at 50%.",
-        ["mortgage_sigil"] = "Speak: apply 2 Lien.",
-        ["mortgaged_aegis"] = "Speak: gain 9 Block and 2 Lien.",
-        ["notary_beetle"] = "Heighten: the next Speak's first negative status gets 1 more stack.",
-        ["oath_of_refusal"] = "Speak: gain 2 Censure and 3 Block.",
-        ["proxy_curse"] = "Speak: remove 1 negative stack from yourself; if you did, apply 2 Blood Ink to the target.",
-        ["reciprocal_edict"] = "Speak: apply 2 Censure; gain 2 Block.",
+        ["named_in_the_roll"] = "Speak: apply 1 Liable.",
+        ["night_scrivener"] = "Speak: after the cast, draw 2 cards.",
+        ["overlooking"] = "Speak: apply 1 Doubt.",
+        ["poppet_pin"] = "Speak: deal 3 damage.",
+        ["pyre_of_old_records"] = "Speak: deal 4 damage and gain 4 Block.",
+        ["raked_from_the_ashes"] = "Speak: after the cast, draw 1 card.",
+        ["read_by_firelight"] = "Speak: after the cast, draw 1 card.",
+        ["rowan_over_the_door"] = "Speak: gain 4 Block.",
+        ["salamander_in_the_grate"] = "Speak: deal 4 damage twice.",
+        ["salt_on_the_sill"] = "Speak: gain 3 Block; if the target intends to attack, apply 1 Doubt.",
         ["sanctioned_charm"] = "Speak: after the cast, draw 1 card.",
-        ["sanguine_errata"] = "Speak: apply 3 Blood Ink; remove 1 other negative stack from the target.",
+        ["scattered_notes"] = "Speak: after the cast, draw 1 card.",
         ["sealed_mantle"] = "Speak: gain 5 Block; if an enemy attacks and nothing gets through, gain Ward Wax.",
-        ["seizure_writ"] = "Speak: deal 7 damage; remove up to 8 of its Block and apply 1 Lien for every 4 removed (2 at most).",
-        ["silent_hearing"] = "Speak: apply 2 Citation; if the target intends to attack, gain 4 Block.",
-        ["sovereign_prohibition"] = "Speak: gain 2 Censure; apply 1 Censure to ALL enemies.",
-        ["standing_citation"] = "Speak: apply 3 Citation.",
+        ["seed_of_misgiving"] = "Speak: apply 1 Doubt; gain 2 Block.",
+        ["sieve_and_shears"] = "Speak: after the cast, draw 1 card.",
+        ["sifted_ashes"] = "Speak: deal 5 damage.",
+        ["smouldering_correspondence"] = "Speak: deal 3 damage to ALL enemies.",
+        ["spiteful_draft"] = "Speak: deal 4 damage.",
+        ["spreading_rumour"] = "Speak: apply 1 Liable to ALL enemies.",
+        ["standing_stones"] = "Speak: gain 5 Block.",
+        ["stay_of_proceedings"] = "Speak: apply 2 Doubt.",
+        ["stolen_hour"] = "Ground: 2 less Exhaustion.",
         ["tallow_judgment"] = "Speak: spend up to 3 Ward Wax; deal 5 damage, +3 for each.",
-        ["tallow_reserve"] = "Speak: lose up to 4 Block; if you lost 4, gain 2 Ward Wax.",
-        ["usurers_moon"] = "Speak: apply 2 Lien and 1 Citation.",
-        ["vein_register"] = "Speak: apply 1 Blood Ink.",
-        ["vital_census"] = "Speak: deal 6 damage to ALL enemies; those with Blood Ink lose 2 more HP.",
-        ["votive_covenant"] = "Speak: gain 4 Ward Wax.",
-        ["wax_indemnity"] = "Speak: gain 3 Ward Wax and heal 1 HP.",
+        ["tallow_reserve"] = "Speak: lose up to 4 Block; if you lost 4, gain 3 Ward Wax.",
+        ["tallow_stub"] = "Speak: gain 1 Held Energy.",
+        ["third_and_final_writ"] = "Speak: deal 7 damage.",
+        ["thrown_inkpot"] = "Speak: deal 5 damage and apply 1 Doubt.",
+        ["unburied"] = "Speak: gain 5 Block.",
+        ["vigil_lamp"] = "Speak: gain 6 Block.",
+        ["volley_of_quills"] = "Speak: deal 1 damage to ALL enemies for each card in your hand (5 at most).",
         ["wax_reliquary"] = "Speak: gain 3 Ward Wax.",
         ["waxen_surety"] = "Speak: gain 4 Ward Wax.",
-        ["witchmark_citation"] = "Speak: apply 3 Citation; if the target does not intend to attack, draw 1 card after the cast.",
+        ["weight_of_paper"] = "Speak: deal 3 damage, +1 for each card in your discard pile (6 at most).",
+        ["wheat_from_chaff"] = "Speak: after the cast, draw 1 card.",
+        ["whispering_gallery"] = "Speak: apply 1 Doubt to ALL enemies.",
+        ["wick_burnt_short"] = "Ground: 2 less Exhaustion.",
     };
 
     public const string WandTextKey = "wand";
@@ -163,9 +188,6 @@ public static class ApprenticeProxies
 
     private static CombatAmountSpec Const(int value) => CombatAmountSpec.FromConst(value);
 
-    private static ICombatExpression<CardPlayContext, bool> Lacks(string status) =>
-        new NotExpression<CardPlayContext>(Condition(HasStacks(status, 1, You)));
-
     private static CounterId Scratch => new("apprentice_proxy_scratch");
     private static CombatAmountSpec ScratchValue(string on = Target) => CombatAmountSpec.Counter(on, Scratch.value);
     private static CombatNodeModel SetScratch(CombatAmountSpec amount, string on = Target) =>
@@ -174,76 +196,6 @@ public static class ApprenticeProxies
         new("compare", on, ValueKind: "counter", Op: ComparisonOperator.GreaterOrEqual, Right: value, Id: Scratch.value);
 
     private static CombatConditionSpec TargetIntendsAttack => new("intends", Target, Id: nameof(IntentKind.Attack));
-
-    private static CombatConditionSpec TargetGuarded => new("compare", Target, ValueKind: "defensivePool",
-        Op: ComparisonOperator.GreaterOrEqual, Right: 1, Id: StandardCombatIds.BlockDefensivePool.value);
-
-    // "An enemy carries a status that costs it HP" — Paperwork or Blood Ink on any of them.
-    private static ICombatExpression<CardPlayContext, bool> AnyEnemyBleeds =>
-        new ComparisonExpression<CardPlayContext>(
-            Amount(Plus(
-                new CombatAmountSpec("countTargets", ReadSelector: new CombatSelectorSpec("enemiesWithStatus", K.Paperwork)),
-                new CombatAmountSpec("countTargets", ReadSelector: new CombatSelectorSpec("enemiesWithStatus", K.BloodInk)))),
-            ComparisonOperator.Greater, new ConstantExpression<CardPlayContext>(0));
-
-    private static CombatNodeModel Cleanse(int stacks) =>
-        new("modifySelectedStatusStacks", You, CombatAmountSpec.FromConst(-stacks),
-            Selection: new StatusSelectionSpec(StatusPolarityFilter.Debuff));
-
-    // "Add a stack to the negative statuses it carries — when it carries 3 kinds or more." ADAPTATION: the master
-    // caps it at 3 of them; a program cannot pick "the first three present", so each one it carries gets its stack.
-    private static CombatNodeModel Compound() =>
-        Seq(SetScratch(DistinctStatuses(NegativeStatuses)),
-            If(ScratchAtLeast(3), Seq([.. NegativeStatuses.Select(status => If(HasStacks(status), Apply(status, 1)))])));
-
-    // "Remove up to N Citation: gain B Block per stack; ALL enemies lose H HP per stack."
-    private static CombatNodeModel CashCitation(int most, int blockEach, int hpEachToAll) =>
-        Seq(
-            SetScratch(AtMost(Stacks(K.Citation), most)),
-            new CombatNodeModel("modifyStatusStacks", Target, CombatAmountSpec.Unary("neg", ScratchValue()), StatusId: K.Citation),
-            blockEach > 0 ? Block(Times(ScratchValue(), blockEach)) : Seq(),
-            hpEachToAll > 0
-                ? new CombatNodeModel("dealDamage", AllEnemies, Times(ScratchValue(), hpEachToAll),
-                    IgnoresBlock: true, DamageKind: DamageKind.DamageOverTime)
-                : Seq());
-
-    // "Remove up to N of its Block."
-    private static CombatNodeModel TakeBlock(int most) =>
-        new("modifyDefensivePool", Target,
-            CombatAmountSpec.Unary("neg", AtMost(new CombatAmountSpec("defensivePool", SelectorKey: Target,
-                ReadId: StandardCombatIds.BlockDefensivePool.value), most)),
-            PoolId: StandardCombatIds.BlockDefensivePool.value);
-
-    // "Remove up to N of its Block; 1 Lien for every P removed, at most C."
-    private static CombatNodeModel SeizeBlock(int most, int perLien, int lienCap) =>
-        Seq(
-            SetScratch(AtMost(new CombatAmountSpec("defensivePool", SelectorKey: Target,
-                ReadId: StandardCombatIds.BlockDefensivePool.value), most)),
-            new CombatNodeModel("modifyDefensivePool", Target, CombatAmountSpec.Unary("neg", ScratchValue()),
-                PoolId: StandardCombatIds.BlockDefensivePool.value),
-            Apply(K.Lien, AtMost(CombatAmountSpec.Binary("div", ScratchValue(), Const(perLien)), lienCap)));
-
-    // Every enemy carrying Citation takes N more.
-    private static CombatNodeModel CitedTakeMore(int more) =>
-        CombatNodeModel.ForEach(AllEnemies,
-            If(HasStacks(K.Citation, 1, "iterationTarget"), Damage(more, "iterationTarget")));
-
-    private static CombatNodeModel BiteBloodInk() =>
-        If(HasStacks(K.BloodInk),
-            Seq(
-                new CombatNodeModel("dealDamage", Target, Stacks(K.BloodInk), IgnoresBlock: true, DamageKind: DamageKind.DamageOverTime),
-                Remove(K.BloodInk, 1)));
-
-    // "Remove 1 negative stack from yourself; if one was removed, apply 2 Blood Ink to the target."
-    private static CombatNodeModel ProxyCurse() =>
-        Seq(
-            SetScratch(new CombatAmountSpec("stacksByPolarity", SelectorKey: You, Polarity: StatusPolarity.Debuff), You),
-            If(ScratchAtLeast(1, You), Seq(Cleanse(1), Apply(K.BloodInk, 2))));
-
-    // "Remove up to 1 other negative status stack from the target" — any of its debuffs but the Blood Ink just put on it.
-    private static CombatNodeModel RemoveOneOtherNegative() =>
-        NegativeStatuses.Where(s => s != K.BloodInk).Reverse()
-            .Aggregate(Seq(), (otherwise, status) => If(HasStacks(status), Remove(status, 1), otherwise));
 
     private static CombatNodeModel Judgment(int most, int damage, int per) =>
         Seq(
@@ -258,9 +210,4 @@ public static class ApprenticeProxies
             new CombatNodeModel("modifyDefensivePool", You, CombatAmountSpec.Unary("neg", AtMost(ScratchValue(You), price)),
                 PoolId: StandardCombatIds.BlockDefensivePool.value),
             If(ScratchAtLeast(price, You), Apply(K.WardWax, wax, You)));
-
-    private static CombatNodeModel InkedLoseHp(int hp) =>
-        CombatNodeModel.ForEach(AllEnemies,
-            If(HasStacks(K.BloodInk, 1, "iterationTarget"),
-                new CombatNodeModel("dealDamage", "iterationTarget", Const(hp), IgnoresBlock: true, DamageKind: DamageKind.DamageOverTime)));
 }

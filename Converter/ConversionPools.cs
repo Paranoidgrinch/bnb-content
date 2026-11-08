@@ -176,22 +176,20 @@ public sealed class ConversionPools
         var share = GeneralSlotShare(general.Count, own.Count);
         return
         [
-            .. CurveEntries(own, forCharacter, 1 - share, generalSide: false),
-            .. CurveEntries(general, forCharacter, share, generalSide: true),
+            .. CurveEntries(own, forCharacter, 1 - share),
+            .. CurveEntries(general, forCharacter, share),
         ];
     }
 
     private List<RunPool<RewardOffer>.Entry> CurveEntries(
-        IReadOnlyList<Cards.CardAuthoring.BnbCard> pool, string forCharacter, double sideShare, bool generalSide)
+        IReadOnlyList<Cards.CardAuthoring.BnbCard> pool, string forCharacter, double sideShare)
     {
         if (pool.Count == 0 || sideShare <= 0)
             return [];
         var (common, uncommon, rare) = RarityCurve[Math.Clamp(Act, 1, 5)];
-        // There are no general Commons: their share goes to the Uncommons, so a general slot is no likelier to be
-        // Rare than any other slot of the act.
-        var shares = generalSide
-            ? new Dictionary<string, int> { ["common"] = 0, ["uncommon"] = common + uncommon, ["rare"] = rare }
-            : new Dictionary<string, int> { ["common"] = common, ["uncommon"] = uncommon, ["rare"] = rare };
+        // Both sides draw on the act's own rarity curve. (Until the general pool was rebuilt on 2026-11-08 it had
+        // no Commons, and their share went to its Uncommons.)
+        var shares = new Dictionary<string, int> { ["common"] = common, ["uncommon"] = uncommon, ["rare"] = rare };
         // Anything the pool holds that carries an unknown rarity still has to be offerable, or a card would fall
         // out of the game by being labelled wrongly. It draws in the Common class.
         string ClassOf(Cards.CardAuthoring.BnbCard card) => shares.ContainsKey(card.Rarity) ? card.Rarity : "common";

@@ -2,7 +2,7 @@
 
 Generated: `dotnet run --project Converter -- --art-slots ART_SLOTS.md`. **Do not edit by hand.**
 
-**854 pictures**: 452 cards, 256 relics, 142 bodies
+**874 pictures**: 472 cards, 256 relics, 142 bodies
 (every enemy, elite and boss) and 4 the player can be. Every one of them is filled today by a PLACEHOLDER — a plate with the file's own
 name and the word placeholder on it, written by `bnb-godot/tools/make-card-art.py`,
 `make-relic-art.py` and `make-enemy-art.py`. A painted picture replaces one by being saved over it, so
@@ -524,7 +524,7 @@ Drawn like a body and facing RIGHT — the player stands on the left of the aren
 | `lieutenant` | The Lieutenant | New stripes on an old uniform, and always first through the door. |
 | `sorcerers_apprentice` | The Sorcerer's Apprentice | Knows every incantation, and not quite what happens when one is put after another. |
 
-## Cards — 452 pictures
+## Cards — 472 pictures
 
 No visual canon was ever written for the cards, so the row carries the card's own rules
 text instead of a brief. Act = the act that unlocks it; the starters, the Junk and the
@@ -643,75 +643,110 @@ cards a boss or a door hands over are never offered and have no act.
 | `stone_levy` | Stone Levy | deed | rare | Remove up to 20 of your Block. Deal 10 damage plus 2 damage for each Block removed. |
 | `temple_tally` | Temple Tally | rite | uncommon | Whenever an enemy reaches a new multiple of 5 Paperwork for the first time this combat, apply 1 Seal to it for each new multiple crossed. |
 
-### General — Act I — 19
+### General — Energy — 10
 
 | code | title | type | rarity | what it does |
 |---|---|---|---|---|
-| `blood_marginalia` | Blood Marginalia | working | uncommon | Apply 5 Citation and 3 Blood Ink. |
-| `borrowed_candle` | Borrowed Candle | working | uncommon | Draw 2 cards. Put one card from your hand on top of your draw pile. Exhaust. |
-| `contempt_finding` | Contempt Finding | working | uncommon | Remove all Citation from an enemy. Gain 2 Block per Citation removed. |
-| `dawn_summons` | Dawn Summons | deed | rare | Deal 16 damage. If this is the first card you play this turn, deal 10 additional damage. |
-| `false_signature` | False Signature | working | uncommon | Your next card this turn costs 1 less Energy. After it is played, the next card you play this combat costs 1 more. Exhaust. |
-| `foreclosure` | Foreclosure | deed | uncommon | Deal 6 damage. Then immediately resolve up to 5 Lien on the target. |
-| `forfeit_seal` | Forfeit Bond | deed | uncommon | Deal 7 damage. If the target still has Block after this attack, apply 4 Lien. |
-| `grave_lien` | Grave Lien | deed | uncommon | Deal 13 damage. Apply 9 Lien. |
-| `malediction_review` | Malediction Review | working | uncommon | Gain 6 Block. Choose one: gain 3 Censure; or apply 3 Censure to an enemy. |
-| `mortgage_sigil` | Mortgage Sigil | working | uncommon | Apply 3 Lien. The next time the target gains Block before the end of its next turn, apply 3 additional Lien. |
-| `notary_beetle` | Notary Beetle | rite | uncommon | The first time each turn you apply a negative Status to an enemy that does not already have that Status, apply 1 additional stack of it. |
-| `reciprocal_edict` | Reciprocal Edict | rite | rare | The first time each turn your Censure prevents a negative Status applied by an enemy, apply 3 Censure to that enemy. The first time each turn Censure prevents a positive Status on an enemy, gain 2 Censure. |
-| `sanctioned_charm` | Second Wind | working | uncommon | Gain 1 Energy. Draw 1 card. Exhaust. |
-| `sealed_mantle` | Sealed Mantle | working | uncommon | Gain 8 Block. If at least one enemy attacks during this enemy turn and you take no unblocked Attack damage, gain 3 Ward Wax. |
-| `silent_hearing` | Silent Hearing | working | uncommon | Apply 3 Citation. Until your next turn, if the target performs a damaging action, gain 7 Block. |
-| `tallow_reserve` | Tallow Reserve | working | uncommon | Requires at least 6 Block. Lose 6 Block. Gain 4 Ward Wax. Exhaust. |
-| `usurers_moon` | Usurer's Moon | rite | rare | Whenever Lien removes Block from an enemy, apply 1 Citation for every 2 Block removed, maximum 5 Citation per Lien resolution. |
-| `waxen_surety` | Waxen Surety | working | uncommon | Gain 7 Ward Wax. |
-| `witchmark_citation` | Witchmark Citation | working | uncommon | Apply 5 Citation. If the target currently intends a non-damaging action, draw 1 card. |
+| `banked_embers` | Banked Embers | working | common | Gain 2 Held Energy. Draw 1 card. |
+| `coin_under_the_tongue` | Coin Under the Tongue | working | uncommon | Pledge. Draw 2 cards. The next card you play this turn costs 1 less. |
+| `false_signature` | False Signature | working | uncommon | Your next card this turn costs 1 less. The card after it this turn costs 1 more. Exhaust. |
+| `melted_down` | Melted Down | working | uncommon | Exhaust a card from your hand. Gain Energy equal to its cost. |
+| `misers_coffer` | Miser's Coffer | rite | rare | Whenever you end your turn with Energy left, keep up to 2 of it as Held Energy. Exhaust. |
+| `sanctioned_charm` | Second Wind | working | common | Gain 1 Energy. Draw 1 card. Exhaust. |
+| `stolen_hour` | Stolen Hour | working | common | Gain 2 Energy. Exhaust. |
+| `tallow_stub` | Tallow Stub | working | common | Gain 1 Held Energy. Unread: gain 1 Held Energy. |
+| `vigil_lamp` | Vigil Lamp | rite | rare | For the rest of this combat, at the end of your turn gain 8 Block for each Energy you have left. Exhaust. |
+| `wick_burnt_short` | Wick Burnt Short | working | uncommon | Gain 2 Energy. At the start of your next turn, gain 1 Fatigue. |
 
-### General — Act II — 10
+### General — Draw — 10
 
 | code | title | type | rarity | what it does |
 |---|---|---|---|---|
-| `blacklisted` | Blunt Instrument | deed | uncommon | Deal 14 damage. |
-| `blood_redaction` | Blood Redaction | working | rare | Remove up to 6 stacks of a negative Status from an enemy. Apply 2 Blood Ink per stack removed. Exhaust. |
-| `countermanded_grace` | Steady Routine | rite | uncommon | At the start of each of your turns, gain 3 Block. |
+| `borrowed_candle` | Borrowed Candle | working | common | Draw 3 cards. Put a card from your hand on top of your draw pile. Exhaust. |
 | `crossed_sigil` | Fresh Ledger | working | uncommon | Exhaust another card from your hand. Draw 2 cards. |
-| `moonlit_counterfeit` | Moonlit Counterfeit | working | rare | Create a Temporary copy of a card in your hand; your next card this turn is free. Exhaust the original. Moonlit Counterfeit Exhausts. |
-| `proxy_curse` | Proxy Curse | working | uncommon | Remove up to 3 stacks of a negative Status from yourself. Apply 2 Blood Ink to an enemy per stack removed. |
-| `sanguine_errata` | Sanguine Errata | working | uncommon | Apply 5 Blood Ink. Then remove 1 stack of another negative Status from the target. |
-| `seizure_writ` | Seizure Writ | deed | rare | Deal 14 damage. Then remove all remaining Block from the target. For every 3 Block removed, apply 1 Lien, maximum 6 Lien. |
-| `standing_citation` | Standing Citation | rite | rare | The first time each turn Citation triggers on each enemy, that trigger does not remove a Citation stack. |
-| `vein_register` | Vein Register | rite | uncommon | The first time each turn another Status on an enemy loses a stack, apply 2 Blood Ink to it. |
+| `dog_eared_almanac` | Dog-Eared Almanac | working | common | Retain. Draw 1 card. If this was in your hand since last turn, draw 2 more. |
+| `errand_rook` | Errand Rook | rite | rare | At the start of each of your turns, draw 1 more card. Whenever your hand is full, gain 3 Block. Exhaust. |
+| `gathered_gossip` | Gathered Gossip | working | uncommon | Draw 1 card, plus 1 for each enemy. Exhaust. |
+| `lamplit_study` | Lamplit Study | working | common | Draw 2 cards. Gain 5 Block. |
+| `moonlit_counterfeit` | Moonlit Counterfeit | working | rare | Create a Temporary copy of a card in your hand. It costs 0. Exhaust. |
+| `night_scrivener` | Night Scrivener | working | uncommon | Draw 3 cards. Choose a card in your hand: it gains Retain this combat. |
+| `sieve_and_shears` | Sieve and Shears | working | common | Look at the top 3 cards of your draw pile. Put any of them on the bottom. Draw 1 card. |
+| `wheat_from_chaff` | Wheat from Chaff | working | uncommon | Reveal the top 3 cards of your draw pile. Put either the Deeds or the rest into your hand; discard the others. |
 
-### General — Act III — 10
-
-| code | title | type | rarity | what it does |
-|---|---|---|---|---|
-| `blood_tithe` | Blood Tithe | deed | uncommon | Deal 8 damage. If the target has Blood Ink, it loses HP equal to twice its Blood Ink, then loses 1 Blood Ink. |
-| `consecrated_testament` | Consecrated Testament | rite | uncommon | The first 3 times each turn an enemy loses HP because of a Status effect, gain 2 Ward Wax. |
-| `debt_ouroboros` | Debt Ouroboros | rite | rare | Whenever Lien takes Block, apply Lien equal to half of what it took, rounded down, maximum 4. |
-| `exemplary_sentence` | Exemplary Sentence | deed | rare | Remove up to 5 Citation from an enemy. For each removed, ALL enemies lose 4 HP. Then deal 12 damage to it. |
-| `mortgaged_aegis` | Mortgaged Aegis | working | uncommon | Gain 18 Block. At the start of your next turn, gain 8 Lien. |
-| `oath_of_refusal` | Oath of Refusal | rite | rare | The first 2 times each turn Censure prevents one or more Status stacks, record 1 Refusal. At the start of your next turn, draw 1 card per Refusal, maximum 2, and gain 1 Energy. Then clear them. |
-| `vital_census` | Vital Census | deed | uncommon | Deal 11 damage to ALL enemies. Every enemy with Blood Ink loses HP equal to its Blood Ink, then loses 1. |
-| `votive_covenant` | Votive Covenant | rite | rare | If you take no unblocked Attack damage during an enemy turn, Ward Wax does not decay. If you do, it loses 3 stacks instead of 2. |
-| `wax_indemnity` | Wax Indemnity | working | rare | Until your next turn, damage that gets through is answered by your Ward Wax: up to 4 Wax is spent, healing 3 HP each. |
-| `wax_reliquary` | Wax Reliquary | working | uncommon | Gain 5 Ward Wax. Until your next turn, Ward Wax cannot suffer its additional decay. |
-
-### General — Act IV — 11
+### General — Discard and Exhaust — 10
 
 | code | title | type | rarity | what it does |
 |---|---|---|---|---|
-| `absolute_interdict` | Absolute Interdict | rite | rare | The first time each turn Censure on a combatant would prevent Status stacks, 1 Censure prevents the entire application instead, however many stacks it carried. |
-| `black_tribunal` | Black Tribunal | deed | uncommon | Deal 14 damage, plus 8 damage for each different negative Status on the target. Count at most 5. |
-| `candle_cathedral` | Candle Cathedral | rite | uncommon | Whenever Ward Wax grants Block, gain additional Block equal to half your Ward Wax, rounded up. Ward Wax no longer suffers its additional decay. |
-| `compound_indictment` | Compound Indictment | working | rare | Requires at least 3 different negative Statuses on the target. Add 2 stacks to each negative Status it carries. Exhaust. |
-| `crown_repossession` | Crown Repossession | deed | rare | Deal 22 damage. Remove all remaining Block from the target; it loses HP equal to the Block removed, maximum 40. Apply 6 Lien. |
-| `grand_citation` | Grand Citation | deed | uncommon | Deal 14 damage to ALL enemies. Each enemy with Citation additionally loses HP equal to 3 times its Citation, then loses 1 Citation. |
-| `grand_dispensation` | Grand Dispensation | working | rare | Choose 2 different options: deal 24 damage to an enemy; gain 24 Block; draw 3 cards; gain 2 Energy. Exhaust. |
-| `hemal_audit` | Hemal Audit | deed | rare | Deal 18 damage. Then trigger Blood Ink repeatedly, up to 6 times or until no Blood Ink remains. |
-| `last_office` | Last Office | working | rare | Deal 40 damage and gain 15 Block, 8 damage and 3 Block less for each different negative Status the chosen enemy carries. Exhaust. |
-| `sovereign_prohibition` | Sovereign Prohibition | working | uncommon | Gain 5 Censure and 6 Block. Apply 5 Censure to ALL enemies. |
-| `tallow_judgment` | Tallow Judgment | deed | rare | Consume up to 8 Ward Wax. Deal 10 damage plus 7 damage per Ward Wax consumed. |
+| `ash_remembers` | Ash Remembers | working | uncommon | Put a card from your discard pile into your hand. It costs 0 this turn. Exhaust. |
+| `ashen_receipt` | Ashen Receipt | working | common | Gain 7 Block. Unread: draw 1 card. |
+| `burnt_offering` | Burnt Offering | working | uncommon | Exhaust a card from your hand. Gain 8 Block. Draw 1 card. |
+| `hearth_kindling` | Hearth Kindling | working | uncommon | Discard any number of cards. Draw that many. Gain 3 Block for each. |
+| `pyre_of_old_records` | Pyre of Old Records | rite | rare | Whenever a card is exhausted, deal 7 damage to a random enemy and gain 7 Block. Exhaust. |
+| `scattered_notes` | Scattered Notes | working | common | Discard 1 card. Draw 2 cards. |
+| `smouldering_correspondence` | Smouldering Correspondence | deed | common | Deal 5 damage to ALL enemies. Unread: deal 5 damage to ALL enemies. |
+| `spiteful_draft` | Spiteful Draft | deed | common | Deal 7 damage. Unread: deal 7 damage to a random enemy. |
+| `weight_of_paper` | Weight of Paper | deed | uncommon | Deal 6 damage, plus 2 for each card in your discard pile. Count at most 12. |
+| `whispering_gallery` | Whispering Gallery | rite | rare | Whenever a card leaves your hand without being played, a random enemy gets 1 Doubt. Exhaust. |
+
+### General — Debuffs — 10
+
+| code | title | type | rarity | what it does |
+|---|---|---|---|---|
+| `bill_of_attainder` | Bill of Attainder | rite | rare | Whenever you apply Doubt or Liable, apply 1 more. Exhaust. |
+| `compounded_grievance` | Compounded Grievance | working | rare | Double every debuff on an enemy. Exhaust. |
+| `curdled_milk` | Curdled Milk | working | common | Apply 3 Doubt to ALL enemies. |
+| `hares_mark` | Hare's Mark | working | uncommon | Apply 2 Liable. If the enemy has Doubt, apply 2 more. |
+| `ill_wind` | Ill Wind | deed | uncommon | Apply 1 Liable to ALL enemies, then deal 8 damage to ALL enemies. |
+| `lingering_malison` | Lingering Malison | working | uncommon | Every enemy with Doubt gets 1 more Doubt; every enemy with Liable gets 1 more Liable. Draw 1 card. |
+| `named_in_the_roll` | Named in the Roll | working | common | Apply 2 Liable. Draw 1 card. |
+| `overlooking` | Overlooking | working | common | Apply 1 Doubt and 1 Liable. |
+| `seed_of_misgiving` | Seed of Misgiving | working | common | Apply 2 Doubt. Gain 4 Block. |
+| `spreading_rumour` | Spreading Rumour | working | uncommon | Apply 1 Doubt and 1 Liable. Then every other enemy gets the Doubt and Liable this enemy has. |
+
+### General — Defence — 10
+
+| code | title | type | rarity | what it does |
+|---|---|---|---|---|
+| `barred_door` | Barred Door | working | common | Retain. Gain 14 Block. |
+| `besom_guard` | Besom Guard | working | common | Gain 8 Block. Unread: gain 4 Block. |
+| `rowan_over_the_door` | Rowan over the Door | working | uncommon | Gain 7 Block. Until your next turn, every enemy that attacks you gets 1 Doubt. |
+| `salt_on_the_sill` | Salt on the Sill | working | common | Gain 6 Block. Every enemy that intends to attack gets 1 Doubt. |
+| `sealed_mantle` | Sealed Mantle | working | uncommon | Gain 8 Block. If enemies attack this turn and nothing gets through, gain 3 Ward Wax. |
+| `standing_stones` | Standing Stones | working | rare | Your Block does not expire at the start of your next 2 turns. Exhaust. |
+| `stay_of_proceedings` | Stay of Proceedings | working | rare | An enemy's next action does nothing. Exhaust. |
+| `tallow_reserve` | Tallow Reserve | working | uncommon | Needs 6 Block. Lose 6 Block. Gain 6 Ward Wax. Exhaust. |
+| `wax_reliquary` | Wax Reliquary | working | uncommon | Gain 5 Ward Wax. Until your next turn, Ward Wax does not decay faster. |
+| `waxen_surety` | Waxen Surety | working | common | Gain 7 Ward Wax. |
+
+### General — Damage — 10
+
+| code | title | type | rarity | what it does |
+|---|---|---|---|---|
+| `beadles_cudgel` | Beadle's Cudgel | deed | common | Deal 9 damage. If the enemy is Liable, draw 1 card. |
+| `blacklisted` | Blunt Instrument | deed | uncommon | Deal 12 damage. |
+| `dawn_summons` | Dawn Summons | deed | rare | Deal 16 damage. +10 if it is your first card this turn. |
+| `hailstones` | Hailstones | deed | common | Deal 4 damage to ALL enemies twice. |
+| `midnight_toll` | Midnight Toll | deed | uncommon | Deal 5 damage for each card you played this turn. Count at most 6. |
+| `poppet_pin` | Poppet Pin | deed | common | Deal 4 damage. If you have played 2 or more cards this turn, deal 4 more. |
+| `tallow_judgment` | Tallow Judgment | deed | uncommon | Spend up to 6 Ward Wax. Deal 10 damage, +5 per Wax. |
+| `third_and_final_writ` | Third and Final Writ | deed | rare | Retain. Deal 12 damage. If the enemy has Doubt and Liable, deal it twice. |
+| `thrown_inkpot` | Thrown Inkpot | deed | common | Deal 8 damage. Apply 1 Doubt. |
+| `volley_of_quills` | Volley of Quills | deed | uncommon | Deal 3 damage to ALL enemies, once for each card in your hand. |
+
+### General — The Exhausted Pile — 10
+
+| code | title | type | rarity | what it does |
+|---|---|---|---|---|
+| `ashen_effigy` | Ashen Effigy | deed | uncommon | Costs 1 less for each 2 cards in your Exhausted pile. Deal 18 damage. |
+| `bone_meal` | Bone Meal | working | common | Exhaust up to 2 cards from your discard pile. Gain 5 Block for each. |
+| `cold_hearth` | Cold Hearth | working | common | Gain 6 Block, plus 3 for each card in your Exhausted pile. Count at most 8. |
+| `corpse_candle` | Corpse Candle | deed | uncommon | Deal 5 damage. Exhaust. Whenever you Exhaust another card while this is Exhausted, return it to your hand. |
+| `last_ember` | Last Ember | working | rare | Play the card you Exhausted most recently again, for free. Exhaust. |
+| `raked_from_the_ashes` | Raked from the Ashes | working | uncommon | Put a card from your Exhausted pile into your hand. It Exhausts when played. Exhaust. |
+| `read_by_firelight` | Read by Firelight | working | uncommon | Exhaust the top 2 cards of your draw pile. You may play them this turn. |
+| `salamander_in_the_grate` | Salamander in the Grate | deed | rare | Deal 8 damage twice. Exhaust. At the start of your turn, if 6 or more cards are Exhausted, return this to your hand. |
+| `sifted_ashes` | Sifted Ashes | deed | uncommon | Deal 5 damage, plus 4 for each kind of card in your Exhausted pile (Deed, Working, Rite, Junk). |
+| `unburied` | Unburied | working | rare | Shuffle every Exhausted card except Junk into your draw pile. Gain 3 Block for each. Exhaust. |
 
 ### Hedge Witch — 90
 

@@ -126,8 +126,11 @@ public class BrassBookmarkTests
     // was never let go.
     private static Fight Start(bool withRelic, string card)
     {
-        var blueprint = FightProbe.OneFight(
-            FightProbe.Solo(Quiet, QuietIntent, energy: 9), [.. Enumerable.Repeat(card, 24)]);
+        // Moonlit Counterfeit never copies itself (that would loop), so its deck carries something to copy.
+        IReadOnlyList<string> deck = card == Copy
+            ? [.. Enumerable.Range(0, 24).Select(i => i % 3 == 2 ? "paper_cut" : card)]
+            : [.. Enumerable.Repeat(card, 24)];
+        var blueprint = FightProbe.OneFight(FightProbe.Solo(Quiet, QuietIntent, energy: 9), deck);
         if (withRelic)
             blueprint = blueprint with
             {

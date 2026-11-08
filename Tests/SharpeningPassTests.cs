@@ -157,35 +157,6 @@ public class SharpeningPassTests
         string[] deck, string? character, params (string Status, int Stacks)[] enemyStatuses) =>
         FightProbe.Start(FightProbe.Solo(Quiet, QuietIntent, 9, enemyStatuses), deck, character: character);
 
-    // Last Office counts every negative status on its target, whoever put it there: a Hexed target takes one
-    // share less, for the Witch as for anyone (it used to read only five named Bureaucrat and general statuses).
-    [Fact]
-    public void Last_office_counts_the_witchs_hexed_too()
-    {
-        var (play, session, enemy) = Against(
-            ["last_office", "adders_nip", "adders_nip", "adders_nip", "adders_nip"],
-            BnbContent.Converter.Witch.WitchCharacter.Id, (BnbContent.Converter.Witch.WitchKeywords.Hexed, 3));
-        var before = Enemy(play, enemy).Health.Current;
-        Play(play, session, "last_office", enemy);
-        Assert.Equal(before - 32, Enemy(play, enemy).Health.Current);
-        Assert.Equal(12, Block(Hero(play)));
-        play.Dispose();
-    }
-
-    // Black Tribunal reads Hexed and Misfortune now: 14 + 8 for each of the two.
-    [Fact]
-    public void Black_tribunal_counts_the_witchs_statuses()
-    {
-        var (play, session, enemy) = Against(
-            ["black_tribunal", "adders_nip", "adders_nip", "adders_nip", "adders_nip"],
-            BnbContent.Converter.Witch.WitchCharacter.Id,
-            (BnbContent.Converter.Witch.WitchKeywords.Hexed, 3), (BnbContent.Converter.Witch.WitchKeywords.Misfortune, 2));
-        var before = Enemy(play, enemy).Health.Current;
-        Play(play, session, "black_tribunal", enemy);
-        Assert.Equal(before - 30, Enemy(play, enemy).Health.Current);
-        play.Dispose();
-    }
-
     // Continuance+ keeps up to 20 Block (it used to keep 12 and cost less).
     [Fact]
     public void Continuance_plus_keeps_twenty()
@@ -215,22 +186,12 @@ public class SharpeningPassTests
     }
 
     [Fact]
-    public void Blunt_instrument_hits_for_fourteen()
+    public void Blunt_instrument_hits_for_twelve()
     {
         var (play, session, enemy) = Fight(["blacklisted", "paper_cut", "paper_cut", "paper_cut", "paper_cut"]);
         var before = Enemy(play, enemy).Health.Current;
         Play(play, session, "blacklisted", enemy);
-        Assert.Equal(before - 14, Enemy(play, enemy).Health.Current);
-        play.Dispose();
-    }
-
-    [Fact]
-    public void Steady_routine_guards_every_turn()
-    {
-        var (play, session, enemy) = Fight(["countermanded_grace", "paper_cut", "paper_cut", "paper_cut", "paper_cut"]);
-        Play(play, session, "countermanded_grace", enemy);
-        play.CombatDriver!.EndTurn();
-        Assert.Equal(3, Block(Hero(play)));
+        Assert.Equal(before - 12, Enemy(play, enemy).Health.Current);
         play.Dispose();
     }
 
@@ -329,11 +290,11 @@ public class SharpeningPassTests
 
     // ── Rewards ────────────────────────────────────────────────────────────────────────────────────────────
 
-    // General cards take about a quarter of an Act-I reward and a third of an Act-IV one, for every character —
-    // the Witch's Act-IV offers were 60 % general before.
+    // General cards take a bounded share of every reward, for every character — the Witch's Act-IV offers were
+    // 60 % general before. With the 70-card pool (2026-11-08) the halving rule gives a little under two fifths.
     [Theory]
-    [InlineData(1, 0.22, 0.28)]
-    [InlineData(4, 0.29, 0.34)]
+    [InlineData(1, 0.36, 0.41)]
+    [InlineData(4, 0.35, 0.40)]
     public void General_cards_take_a_bounded_share_of_every_reward(int act, double low, double high)
     {
         var pools = BnbContent.Converter.ConversionPools.Build(act);

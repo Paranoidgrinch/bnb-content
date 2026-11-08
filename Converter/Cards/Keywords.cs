@@ -20,6 +20,7 @@ public static class Keywords
 {
     public const string Paperwork = "paperwork";
     public const string Doubt = "doubt";
+    public const string Liable = "liable";
     public const string Seal = "seal";
     public const string Ratified = "ratified";
 
@@ -89,6 +90,7 @@ public static class Keywords
     [
         PaperworkStatus(),
         DoubtStatus(),
+        LiableStatus(),
         SealStatus(),
         RatifiedStatus(),
         ArchivedStatus(),
@@ -175,6 +177,22 @@ public static class Keywords
                         new ConstantExpression<DamageDealtTriggeredEffectContext>(2)),
                     new ConstantExpression<DamageDealtTriggeredEffectContext>(3)),
                 new ConstantExpression<DamageDealtTriggeredEffectContext>(factor)));
+
+    // Liable (general pool, 2026-11-08): Doubt's mirror. The bearer takes a quarter more from attacks; the stacks
+    // are turns, one fading at the end of each of its own turns. Attacks only — Paperwork, Poison and the other
+    // HP losses are DamageOverTime and pass it by, as they pass Doubt.
+    private static StatusData LiableStatus() => Status(
+        Liable, "Liable", StatusPolarity.Debuff,
+        "Takes 25% more damage from attacks. One stack wears off at the end of its turn.",
+        passives:
+        [
+            new PassiveModifierData(PassiveModifierPipeline.DamageReceived,
+                PassiveModifierOperation.ScalePercent, 125, RestrictDamageKind: DamageKind.Direct),
+        ],
+        triggers:
+        [
+            Trigger(TurnEnded(ActFour.Fade<TurnEndedTriggeredEffectContext>(CombatantTargetSelectors.Source, Liable))),
+        ]);
 
     private static StatusData DoubtStatus() => Status(
         Doubt, "Doubt", StatusPolarity.Debuff,
@@ -817,6 +835,9 @@ public static class Keywords
                             ])),
                     ]))),
                 StatusTriggerScope.Anywhere),
+
+            // The general pool's listeners (GeneralPoolRules): every hero wears this, whoever they are.
+            .. GeneralPoolRules.ApplicantTriggers(),
         ],
     };
 

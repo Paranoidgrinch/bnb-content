@@ -249,7 +249,7 @@ public static class CardAuthoring
     // (2026-10-21), so Black Tribunal and Compound Indictment counted only the Bureaucrat's and the general ones.
     public static readonly string[] NegativeStatuses =
     [
-        Keywords.Paperwork, Keywords.Doubt, Keywords.Seal, Keywords.Lien, Keywords.Citation, Keywords.BloodInk,
+        Keywords.Paperwork, Keywords.Doubt, Keywords.Liable, Keywords.Seal, Keywords.Lien, Keywords.Citation, Keywords.BloodInk,
         Witch.WitchKeywords.Hexed, Witch.WitchKeywords.Misfortune, Apprentice.ApprenticeKeywords.Singe,
         "panic", "fatigue", "poison",
     ];

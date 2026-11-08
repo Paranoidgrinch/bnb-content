@@ -14,7 +14,7 @@ public class ApprenticeProxyTests
     [Fact]
     public void Every_general_card_and_its_upgrade_carries_its_proxy()
     {
-        Assert.Equal(50, ApprenticeProxies.General.Count);
+        Assert.Equal(70, ApprenticeProxies.General.Count);
         Assert.Equal(GeneralIds.Order(StringComparer.Ordinal), ApprenticeProxies.General.Keys.Order(StringComparer.Ordinal));
         var cards = FightProbe.Shipped.Cards.ToDictionary(c => c.Id, StringComparer.Ordinal);
         foreach (var id in GeneralIds)
@@ -46,31 +46,4 @@ public class ApprenticeProxyTests
         }
     }
 
-    [Fact]
-    public void Grave_lien_in_the_wand_speaks_its_small_proxy()
-    {
-        var (play, session, enemy) = Fight(["grave_lien", "ap_chalk_line", "ap_chalk_line", "ap_candle_stub", "ap_candle_stub"]);
-        Play(play, session, "ap_chalk_line", enemy);
-        Inscribe(play, session, "grave_lien", 0);
-        var before = Standing(Body(play, enemy));
-        Cast(play, session, enemy);
-        Assert.Equal(before - 6, Standing(Body(play, enemy)));
-        Assert.Equal(4, FightProbe.StacksOf(Body(play, enemy), BnbContent.Converter.Cards.Keywords.Lien));
-        play.Dispose();
-    }
-
-    // E38: Grand Dispensation's proxy is not repeatable — an Echo after it has nothing to copy.
-    [Fact]
-    public void Grand_dispensation_cannot_be_echoed()
-    {
-        var (play, session, enemy) = Fight(["grand_dispensation", "ap_flyleaf", "ap_chalk_line", "ap_chalk_line", "ap_candle_stub"]);
-        Play(play, session, "ap_chalk_line", enemy);
-        Play(play, session, "ap_chalk_line", enemy);
-        Inscribe(play, session, "grand_dispensation", 0);
-        Inscribe(play, session, "ap_flyleaf", 1);
-        var combat = Now(play);
-        var plan = WandCompiler.Compile(combat.State, combat.Registry, combat.HeroId, enemy);
-        Assert.True(plan.Steps[1].Fizzled);
-        play.Dispose();
-    }
 }

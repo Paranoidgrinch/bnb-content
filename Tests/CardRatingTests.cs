@@ -29,15 +29,15 @@ public class CardRatingTests
         Assert.DoesNotContain("if", wax.Read.Flags);
     }
 
-    // "Deal 14 damage, plus 8 for each different negative Status on the target. Count at most 5."
+    // "Spend up to 6 Ward Wax. Deal 10 damage, +5 per Wax."
     [Fact]
     public void A_scaling_card_is_ranked_by_what_it_does_with_no_set_up_and_shows_its_ceiling()
     {
-        var tribunal = Rows["black_tribunal"];
-        Assert.Equal(14, tribunal.Read.Damage);
-        Assert.Equal(7, tribunal.PerEnergy);
-        Assert.Equal(27, tribunal.MaxPerEnergy);
-        Assert.Contains("scales", tribunal.Read.Flags);
+        var judgment = Rows["tallow_judgment"];
+        Assert.Equal(10, judgment.Read.Damage);
+        Assert.Equal(5, judgment.PerEnergy);
+        Assert.True(judgment.MaxPerEnergy > judgment.PerEnergy);
+        Assert.Contains("scales", judgment.Read.Flags);
     }
 
     [Fact]

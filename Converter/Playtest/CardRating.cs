@@ -272,6 +272,10 @@ public static class CardRating
                 case "node.setCardInstanceMarkCounter":
                     into.Flags.Add("card-play");
                     return;
+                // Last Ember: another card's whole program, whichever it is — not something this card holds.
+                case "node.replayCardProgram":
+                    into.Flags.Add("replays");
+                    return;
                 case "node.setHealth":
                 case "node.randomTargets":
                     into.Flags.Add(kind["node.".Length..]);
