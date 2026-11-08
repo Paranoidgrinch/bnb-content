@@ -40,6 +40,7 @@ public class ActFourNormalsTests
     private const string Deed = "paper_cut";              // 1 Energy, Deed, 6 damage
     private const string Working = "cower_behind_a_desk"; // 1 Energy, Working, 5 Block
     private const string Permit = "permit_a38";           // 2 Energy, Working, 5 Paperwork on the target
+    private const string MultiHit = "threefold_injunction"; // 1 Energy, Deed, 3 damage 3 times
 
     private static (RunPlayback Play, InteractiveRunSession Session, CombatantId Id) Solo(
         string enemy, string intent, IReadOnlyList<string> deck, int hp = 200, int energy = 9) =>
@@ -168,21 +169,21 @@ public class ActFourNormalsTests
     [Fact]
     public void A_risen_body_is_downed_then_rises_on_its_turn_and_only_then_acts()
     {
-        var (play, session, mummy) = Solo("unfinished_mummy", "hook_drag", [Permit, Deed, Deed, Deed, Deed], hp: 10);
-        Play(play, session, Permit, mummy);
-        Play(play, session, Deed, mummy);
-        Play(play, session, Deed, mummy);
-        Assert.Equal(1, Body(play, mummy).Health.Current);
-        Assert.Equal(1, Stacks(Body(play, mummy), ActFour.RisenDownedId));
-        Play(play, session, Deed, mummy);
-        Assert.Equal(1, Body(play, mummy).Health.Current);
+        var (play, session, golem) = Solo("fallen_capstone_golem", "falling_dust", [Permit, Deed, Deed, Deed, Deed], hp: 10);
+        Play(play, session, Permit, golem);
+        Play(play, session, Deed, golem);
+        Play(play, session, Deed, golem);
+        Assert.Equal(1, Body(play, golem).Health.Current);
+        Assert.Equal(1, Stacks(Body(play, golem), ActFour.RisenDownedId));
+        Play(play, session, Deed, golem);
+        Assert.Equal(1, Body(play, golem).Health.Current);
 
         var hero = Hero(play).Health.Current;
         play.CombatDriver!.EndTurn();
-        Assert.Equal(4, Body(play, mummy).Health.Current);
-        Assert.Equal(0, Stacks(Body(play, mummy), ActFour.RisenDownedId));
-        Assert.Equal(0, Stacks(Body(play, mummy), "paperwork"));
-        Assert.Equal(0, Stacks(Body(play, mummy), ActFour.RisenId));
+        Assert.Equal(4, Body(play, golem).Health.Current);
+        Assert.Equal(0, Stacks(Body(play, golem), ActFour.RisenDownedId));
+        Assert.Equal(0, Stacks(Body(play, golem), "paperwork"));
+        Assert.Equal(0, Stacks(Body(play, golem), ActFour.RisenGolemId));
         Assert.Equal(hero, Hero(play).Health.Current);
 
         play.CombatDriver.EndTurn();
@@ -193,13 +194,27 @@ public class ActFourNormalsTests
     [Fact]
     public void A_risen_body_dies_for_good_the_second_time()
     {
-        var (play, session, mummy) = Solo("unfinished_mummy", "stillness", [.. Enumerable.Repeat(Deed, 5)], hp: 10);
-        Play(play, session, Deed, mummy);
-        Play(play, session, Deed, mummy);
+        var (play, session, golem) = Solo("fallen_capstone_golem", "set_support", [.. Enumerable.Repeat(Deed, 5)], hp: 10);
+        Play(play, session, Deed, golem);
+        Play(play, session, Deed, golem);
         play.CombatDriver!.EndTurn();
-        Play(play, session, Deed, mummy);
-        Assert.True(Gone(play, mummy));
+        Play(play, session, Deed, golem);
+        Assert.True(Gone(play, golem));
         play.Dispose();
+    }
+
+    // Rise is the Necropolis' and the Works' word since the content review (E16): four normals, no more.
+    [Fact]
+    public void Only_four_normal_bodies_rise()
+    {
+        var risen = new[] { ActFour.RisenId, ActFour.RisenGolemId, ActFour.RisenDoorId, ActFour.RisenFarmerId, ActFour.RisenKeeperId };
+        var rising = FightProbe.Game.Encounters.SelectMany(e => e.Enemies)
+            .Where(e => ActFour.Identities.Contains(e.Id) && (e.StartingStatuses ?? []).Any(s => risen.Contains(s.Status.value)))
+            .Select(e => e.Id).Distinct().OrderBy(id => id, StringComparer.Ordinal).ToList();
+        Assert.Equal(["fallen_capstone_golem", "false_door_finder", "fourfold_vessel_guardian", "silt_buried_farmer_shade"], rising);
+        var farmer = FightProbe.Game.Statuses.First(st => st.Id == ActFour.RisenFarmerId).NameKey;
+        var king = FightProbe.Game.Statuses.First(st => st.Id == ActFour.KingRisenId).NameKey;
+        Assert.NotEqual(king, farmer);
     }
 
     [Fact]
@@ -242,49 +257,210 @@ public class ActFourNormalsTests
         play2.Dispose();
     }
 
+    // ── the House of Linen and the Necropolis (content review E16–E18) ──────────────────────────────────
+
+    // Four layers; each swallows one hit whole. Fewer than three hits in a round and it wraps one more (at most
+    // four); three hits and it does not.
     [Fact]
-    public void The_risen_natron_priest_wears_a_crust_that_bites_back()
+    public void The_mummys_linen_swallows_a_hit_per_layer_and_is_rewrapped_unless_hit_three_times()
     {
-        var (play, session, priest) = Solo("natron_bearer", "pack_natron", [.. Enumerable.Repeat(Deed, 5)], hp: 20);
-        for (var i = 0; i < 4; i++)
-            Play(play, session, Deed, priest);
+        var (play, session, mummy) = Solo("unfinished_mummy", "hook_drag", [.. Enumerable.Repeat(Deed, 15)], hp: 200);
+        Assert.Equal(ActFour.LinenLayers, Stacks(Body(play, mummy), ActFour.LinenLayerId));
+        Play(play, session, Deed, mummy);
+        Play(play, session, Deed, mummy);
+        Assert.Equal(200, Body(play, mummy).Health.Current);
+        Assert.Equal(ActFour.LinenLayers - 2, Stacks(Body(play, mummy), ActFour.LinenLayerId));
+        Assert.Equal(2, Stacks(Body(play, mummy), ActFour.UnwindingId));
         play.CombatDriver!.EndTurn();
-        Assert.Equal(1, Stacks(Body(play, priest), ActFour.NatronCrustId));
-        var before = Hero(play).Health.Current;
-        Play(play, session, Deed, priest);
-        Assert.Equal(before - 3, Hero(play).Health.Current);
+        Assert.Equal(ActFour.LinenLayers - 1, Stacks(Body(play, mummy), ActFour.LinenLayerId));
+        Assert.Equal(0, Stacks(Body(play, mummy), ActFour.UnwindingId));
+
+        // Three hits: three layers torn off, and no new one.
+        Play(play, session, Deed, mummy);
+        Play(play, session, Deed, mummy);
+        Play(play, session, Deed, mummy);
+        Assert.Equal(200, Body(play, mummy).Health.Current);
+        Assert.Equal(0, Stacks(Body(play, mummy), ActFour.LinenLayerId));
+        play.CombatDriver.EndTurn();
+        Assert.Equal(0, Stacks(Body(play, mummy), ActFour.LinenLayerId));
+
+        // Bare: a hit lands in full, and only now does a single hit a round let it wrap again.
+        Play(play, session, Deed, mummy);
+        Assert.Equal(194, Body(play, mummy).Health.Current);
+        play.CombatDriver.EndTurn();
+        Assert.Equal(1, Stacks(Body(play, mummy), ActFour.LinenLayerId));
+        Assert.Equal(0, Stacks(Body(play, mummy), ActFour.RisenId));
+        play.Dispose();
+    }
+
+    // A multi-hit card spends one layer per hit, not one per card.
+    [Fact]
+    public void Every_hit_of_a_multi_hit_card_spends_its_own_layer()
+    {
+        var (play, session, mummy) = Solo("unfinished_mummy", "hook_drag", [.. Enumerable.Repeat(MultiHit, 5)], hp: 200);
+        Play(play, session, MultiHit, mummy);
+        Assert.Equal(ActFour.LinenLayers - 3, Stacks(Body(play, mummy), ActFour.LinenLayerId));
+        Assert.Equal(3, Stacks(Body(play, mummy), ActFour.UnwindingId));
+        Assert.Equal(200, Body(play, mummy).Health.Current);
+        play.Dispose();
+    }
+
+    // The Block you still have when its turn ends becomes its own: block what it hits for, not more.
+    [Fact]
+    public void The_natron_bearer_dries_your_leftover_block_into_its_own()
+    {
+        var (play, session, bearer) = Solo("natron_bearer", "drying_rite", [.. Enumerable.Repeat(Working, 5)]);
+        Play(play, session, Working, null);
+        Play(play, session, Working, null);
+        Play(play, session, Working, null);
+        play.CombatDriver!.EndTurn();
+        // 15 Block against its 13: 2 left over, and that is what it gains.
+        Assert.Equal(2, Block(Body(play, bearer)));
+        Assert.Equal(0, Stacks(Body(play, bearer), ActFour.RisenId));
+        play.Dispose();
+
+        var (play2, session2, bearer2) = Solo("natron_bearer", "pack_natron", [.. Enumerable.Repeat(Working, 5)]);
+        Play(play2, session2, Working, null);
+        Play(play2, session2, Working, null);
+        play2.CombatDriver!.EndTurn();
+        // It only packed natron (24): all 10 of yours dried into its own.
+        Assert.Equal(24 + 10, Block(Body(play2, bearer2)));
+        play2.Dispose();
+    }
+
+    // Every hit through your Block is Gold in its sack; after four of its turns it flees with them.
+    [Fact]
+    public void The_excavator_steals_gold_with_every_hit_and_flees_with_it_after_four_turns()
+    {
+        var (play, _, _) = FightProbe.Start(
+            FightProbe.Roster("excavator", 9, ("cursed_loot_bearer", "loot_swing", 200), ("false_door_finder", "stone_door", 200)),
+            [.. Enumerable.Repeat(Working, 10)], health: 300);
+        var robber = Find(play, "cursed_loot_bearer");
+        Assert.Equal(ActFour.RobberTurns, Stacks(Body(play, robber), ActFour.EscapeShaftId));
+        play.CombatDriver!.EndTurn();
+        Assert.Equal(ActFour.GoldPerHit, Stacks(Body(play, robber), ActFour.StolenGoldId));
+        Assert.Equal(ActFour.RobberTurns - 1, Stacks(Body(play, robber), ActFour.EscapeShaftId));
+        play.CombatDriver.EndTurn();
+        play.CombatDriver.EndTurn();
+        Assert.True(Body(play, robber).IsAlive);
+        play.CombatDriver.EndTurn();
+        Assert.False(Body(play, robber).IsAlive);
+        Assert.Equal(ActFour.RobberTurns * ActFour.GoldPerHit, Hero(play).Counters[ActFour.GoldCarriedOff]);
+        Assert.False(Hero(play).Counters.TryGetValue(ActFour.LootClaimed, out var claimed) && claimed > 0);
         play.Dispose();
     }
 
     [Fact]
-    public void Beside_the_jackal_an_ally_rises_once_until_the_jackal_falls()
+    public void A_blocked_hit_steals_nothing_and_killing_the_excavator_keeps_your_gold()
     {
-        var (play, _, _) = FightProbe.Start(
-            FightProbe.Roster("jackal", 9, ("jackal_of_the_western_gate", "stand_the_watch", 10), ("cursed_loot_bearer", "inventory_shield", 200)),
-            [.. Enumerable.Repeat(Deed, 5)], health: 300);
-        var robber = Find(play, "cursed_loot_bearer");
-        Assert.Equal(1, Stacks(Body(play, robber), ActFour.RisenByJackalId));
+        var (play, session, robber) = Solo("cursed_loot_bearer", "cursed_load", [Working, Working, Working, Working, Deed, Deed, Deed, Deed, Deed, Deed], hp: 12);
+        var hand = play.CombatDriver!.Current!.Hand.Count(c => c.DefinitionId.value == Working);
+        for (var i = 0; i < hand; i++)
+            Play(play, session, Working, null);
+        play.CombatDriver.EndTurn();
+        if (hand * 5 >= 16)
+            Assert.Equal(0, Stacks(Body(play, robber), ActFour.StolenGoldId));
+        while (play.CombatDriver.Current is not null && Body(play, robber).IsAlive
+               && play.CombatDriver.Current.Hand.Any(c => c.DefinitionId.value == Deed))
+            Play(play, session, Deed, robber);
+        Assert.True(Gone(play, robber));
         play.Dispose();
+    }
 
-        var (play2, session2, _) = FightProbe.Start(
-            FightProbe.Roster("jackal", 9, ("jackal_of_the_western_gate", "stand_the_watch", 10), ("cursed_loot_bearer", "inventory_shield", 200)),
-            [.. Enumerable.Repeat(Deed, 5)], health: 300);
-        var jackal = Find(play2, "jackal_of_the_western_gate");
-        Play(play2, session2, Deed, jackal);
-        Play(play2, session2, Deed, jackal);
-        Assert.False(Body(play2, jackal).IsAlive);
-        Assert.Equal(0, Stacks(Body(play2, Find(play2, "cursed_loot_bearer")), ActFour.RisenByJackalId));
-        play2.Dispose();
+    [Fact]
+    public void The_excavators_kill_is_counted_for_tomb_gold_and_nothing_is_carried_off()
+    {
+        var (play, session, _) = FightProbe.Start(
+            FightProbe.Roster("excavator_kill", 9, ("cursed_loot_bearer", "loot_swing", 12), ("false_door_finder", "stone_door", 200)),
+            [.. Enumerable.Repeat(Deed, 10)], health: 300);
+        var robber = Find(play, "cursed_loot_bearer");
+        play.CombatDriver!.EndTurn();
+        Assert.Equal(ActFour.GoldPerHit, Stacks(Body(play, robber), ActFour.StolenGoldId));
+        Play(play, session, Deed, robber);
+        Play(play, session, Deed, robber);
+        Assert.False(Body(play, robber).IsAlive);
+        Assert.Equal(1, Hero(play).Counters[ActFour.LootClaimed]);
+        Assert.False(Hero(play).Counters.TryGetValue(ActFour.GoldCarriedOff, out var gone) && gone > 0);
+        play.Dispose();
+    }
+
+    // A fallen ally leaves a husk; on its next turn the Jackal guides it west and the ally stands again (40 %).
+    [Fact]
+    public void A_fallen_ally_leaves_a_husk_and_the_jackal_raises_it_on_its_turn()
+    {
+        var (play, session, _) = FightProbe.Start(
+            FightProbe.Roster("jackal", 9, ("jackal_of_the_western_gate", "stand_the_watch", 200), ("cursed_loot_bearer", "loot_swing", 10)),
+            [.. Enumerable.Repeat(Deed, 10)], health: 300);
+        var jackal = Find(play, "jackal_of_the_western_gate");
+        var robber = Find(play, "cursed_loot_bearer");
+        Play(play, session, Deed, robber);
+        Play(play, session, Deed, robber);
+        Assert.False(Body(play, robber).IsAlive);
+        var husk = play.CombatDriver!.Current!.State.Combatants.Single(c => c.IsAlive && Stacks(c, ActFour.HuskId) > 0);
+        Assert.Equal(ActFour.HuskHealth, husk.Health.Max);
+        Assert.Equal(1, Stacks(Body(play, jackal), ActFour.GuidingWestId));
+        var intent = FightProbe.Game.EnemyActions.First(a => a.Id == "jackal_of_the_western_gate.westward_guidance");
+        Assert.StartsWith("Westward Guidance", intent.Intent.Label, StringComparison.Ordinal);
+
+        play.CombatDriver.EndTurn();
+        Assert.True(Body(play, robber).IsAlive);
+        Assert.Equal(4, Body(play, robber).Health.Current);
+        Assert.Equal(1, Stacks(Body(play, robber), ActFour.GuidedWestId));
+        Assert.DoesNotContain(play.CombatDriver.Current!.State.Combatants, c => c.IsAlive && Stacks(c, ActFour.HuskId) > 0);
+        Assert.Equal(0, Stacks(Body(play, jackal), ActFour.GuidingWestId));
+
+        // Guided once: the second fall is for good, and leaves no husk.
+        Play(play, session, Deed, robber);
+        Assert.False(Body(play, robber).IsAlive);
+        Assert.DoesNotContain(play.CombatDriver.Current!.State.Combatants, c => c.IsAlive && Stacks(c, ActFour.HuskId) > 0);
+        play.Dispose();
+    }
+
+    [Fact]
+    public void Destroying_the_husk_keeps_the_ally_down()
+    {
+        var (play, session, _) = FightProbe.Start(
+            FightProbe.Roster("jackal_husk", 9, ("jackal_of_the_western_gate", "stand_the_watch", 200), ("cursed_loot_bearer", "inventory_shield", 10)),
+            [.. Enumerable.Repeat(Deed, 10)], health: 300);
+        var jackal = Find(play, "jackal_of_the_western_gate");
+        var robber = Find(play, "cursed_loot_bearer");
+        Play(play, session, Deed, robber);
+        Play(play, session, Deed, robber);
+        var husk = play.CombatDriver!.Current!.State.Combatants.Single(c => c.IsAlive && Stacks(c, ActFour.HuskId) > 0).Id;
+        Play(play, session, Deed, husk);
+        Play(play, session, Deed, husk);
+        Assert.False(Body(play, husk).IsAlive);
+        Assert.Equal(0, Stacks(Body(play, jackal), ActFour.GuidingWestId));
+        play.CombatDriver.EndTurn();
+        Assert.False(Body(play, robber).IsAlive);
+        play.Dispose();
+    }
+
+    [Fact]
+    public void Killing_the_jackal_crumbles_the_husk()
+    {
+        var (play, session, _) = FightProbe.Start(
+            FightProbe.Roster("jackal_falls", 9, ("jackal_of_the_western_gate", "stand_the_watch", 10), ("cursed_loot_bearer", "inventory_shield", 10)),
+            [.. Enumerable.Repeat(Deed, 10)], health: 300);
+        var jackal = Find(play, "jackal_of_the_western_gate");
+        var robber = Find(play, "cursed_loot_bearer");
+        Play(play, session, Deed, robber);
+        Play(play, session, Deed, robber);
+        Assert.Contains(play.CombatDriver!.Current!.State.Combatants, c => c.IsAlive && Stacks(c, ActFour.HuskId) > 0);
+        Play(play, session, Deed, jackal);
+        Play(play, session, Deed, jackal);
+        Assert.True(Gone(play, jackal));
+        play.Dispose();
     }
 
     [Fact]
     public void In_a_duo_the_keeper_rises_while_its_ally_lives()
     {
         var (play, session, _) = FightProbe.Start(
-            FightProbe.Roster("keeper", 9, ("fourfold_vessel_guardian", "body_office", 10), ("unfinished_mummy", "stillness", 5)),
+            FightProbe.Roster("keeper", 9, ("fourfold_vessel_guardian", "body_office", 10), ("fallen_capstone_golem", "set_support", 5)),
             [.. Enumerable.Repeat(Deed, 10)], health: 300);
         var keeper = Find(play, "fourfold_vessel_guardian");
-        var mummy = Find(play, "unfinished_mummy");
+        var mummy = Find(play, "fallen_capstone_golem");
         Play(play, session, Deed, keeper);
         Play(play, session, Deed, keeper);
         Play(play, session, Deed, mummy);
@@ -292,7 +468,7 @@ public class ActFourNormalsTests
         play.CombatDriver!.EndTurn();
         Assert.Equal(4, Body(play, keeper).Health.Current);
         Assert.Equal(1, Stacks(Body(play, keeper), ActFour.RisenKeeperId));
-        // The Mummy rose once already; now it goes for good, and the Keeper has nothing left to rise for.
+        // The Golem rose once already; now it goes for good, and the Keeper has nothing left to rise for.
         Play(play, session, Deed, mummy);
         Assert.False(Body(play, mummy).IsAlive);
         Assert.Equal(0, Stacks(Body(play, keeper), ActFour.RisenKeeperId));

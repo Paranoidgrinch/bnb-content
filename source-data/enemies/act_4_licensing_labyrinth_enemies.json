@@ -822,7 +822,7 @@
         "status": "labyrinth_body"
       },
       {
-        "status": "risen_natron"
+        "status": "drying_of_the_body"
       }
     ],
     "tags": [
@@ -904,7 +904,11 @@
         "status": "labyrinth_body"
       },
       {
-        "status": "risen"
+        "status": "unfinished_wrapping"
+      },
+      {
+        "status": "linen_layer",
+        "stacks": 4
       }
     ],
     "tags": [
@@ -1103,7 +1107,7 @@
   {
     "id": "cursed_loot_bearer",
     "name": "Unlicensed Excavator",
-    "max_hp": 140,
+    "max_hp": 100,
     "intent_pattern": "cycle",
     "intents": [
       {
@@ -1162,6 +1166,10 @@
       },
       {
         "status": "every_object_requires_a_form"
+      },
+      {
+        "status": "escape_shaft",
+        "stacks": 4
       }
     ],
     "tags": [
@@ -2966,6 +2974,13 @@
         ]
       },
       {
+        "id": "westward_guidance",
+        "name": "Westward Guidance · the fallen ally rises",
+        "intent_type": "buff",
+        "special": true,
+        "actions": []
+      },
+      {
         "id": "rise",
         "name": "Rise",
         "intent_type": "buff",
@@ -2996,6 +3011,15 @@
         },
         "action": "rise",
         "priority": 1000
+      },
+      {
+        "condition": {
+          "kind": "self_status",
+          "status": "guiding_west",
+          "min_stacks": 1
+        },
+        "action": "westward_guidance",
+        "priority": 10
       }
     ]
   },

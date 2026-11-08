@@ -44,19 +44,15 @@ public static partial class ActFour
     // Risen.
     public const string RisingId = "rising";
     public const string RisenDownedId = "risen_downed";
-    public const string NatronPendingId = "natron_pending";
     public const string CapstonePendingId = "capstone_pending";
     public const string DoorPendingId = "door_pending";
     public const string RisenId = "risen";
-    public const string RisenNatronId = "risen_natron";
     public const string RisenGolemId = "risen_golem";
     public const string RisenDoorId = "risen_door";
     public const string RisenFarmerId = "risen_farmer";
     public const string RisenFarmerLastId = "risen_farmer_last";
     public const string RisenByKaId = "risen_by_ka";
-    public const string RisenByJackalId = "risen_by_jackal";
     public const string RisenKeeperId = "risen_keeper";
-    public const string NatronCrustId = "natron_crust";
     public const string CapstoneDueId = "capstone_due";
     public const string ThroughTheDoorId = "through_the_door";
 
@@ -112,6 +108,10 @@ public static partial class ActFour
             : Array.Empty<StartingStatusSpec>(),
         .. role == "combat" && roster.Count == 1 && Identities.Contains(roster[0])
             ? [new StartingStatusSpec(new StatusDefinitionId(CanopicRiteId), 1)]
+            : Array.Empty<StartingStatusSpec>(),
+        // Ammit lays one Feather of Truth down herself, so even a player who carries none has one answer to her.
+        .. roster.Contains(AmmitEnemyId)
+            ? [new StartingStatusSpec(new StatusDefinitionId(FeatherOfTruthId), 1)]
             : Array.Empty<StartingStatusSpec>(),
     ];
 
@@ -346,25 +346,20 @@ public static partial class ActFour
     [
         RisenStatus(RisenId, "Rises Again",
             "At its first death it is Downed; on its turn it rises with 40 % of its HP, free of debuffs.", Fall(RisePercent)),
-        RisenStatus(RisenNatronId, "Rises in Natron",
-            "At its first death it is Downed; on its turn it rises with 40 % of its HP and a natron crust.",
-            Fall(RisePercent, NatronPendingId)),
         RisenStatus(RisenGolemId, "Rises Under the Capstone",
-            "At its first death it is Downed; on its turn it rises with 40 % of its HP, and its next action is Capstone.",
+            "At its first death it is Downed; on its turn it rises with 40 % of its HP, and its next action is the Fall of the Pyramidion.",
             Fall(RisePercent, CapstonePendingId)),
         RisenStatus(RisenDoorId, "Through the False Door",
             "At its first death it is Downed; on its turn it returns with 40 % of its HP, 20 Block and 3 more on its attacks.",
             Fall(RisePercent, DoorPendingId)),
-        RisenStatus(RisenFarmerId, "Rises Twice",
+        // Not "Rises Twice": that is the Restless King's, and two bodies of one act must not share a rule's name.
+        RisenStatus(RisenFarmerId, "Twice from the Silt",
             "Twice it is Downed and rises again from the silt on its turn, each time with 25 % of its HP.",
             [.. Fall(FarmerRisePercent), Put(RisenFarmerLastId)]),
-        RisenStatus(RisenFarmerLastId, "Rises Once More",
+        RisenStatus(RisenFarmerLastId, "Once More from the Silt",
             "Downed once more, it rises from the silt one last time on its turn, with 25 % of its HP.", Fall(FarmerRisePercent)),
         RisenStatus(RisenByKaId, "Ka Jar",
             "While its Ka Jar stands it rises once more: Downed at death, it rises on its turn with 40 % of its HP.",
-            Fall(RisePercent)),
-        RisenStatus(RisenByJackalId, "Watched by Anubis",
-            "While the Jackal lives it rises once: Downed at death, it rises on its turn with 40 % of its HP.",
             Fall(RisePercent)),
         RisenStatus(RisenKeeperId, "Keeper of the Jars",
             "While one of its jars stands (in a duo: while its ally lives) every death only Downs it; it rises on its turn with 40 %.",
@@ -386,19 +381,9 @@ public static partial class ActFour
             Triggers = [],
         },
         Face(RisingId, "Rising", "How much of its HP it rises with, in percent.", stacks: true),
-        Face(NatronPendingId, "Natron Waiting", "It rises with a natron crust."),
-        Face(CapstonePendingId, "Capstone Waiting", "After it rises, its next action is Capstone."),
+        Face(CapstonePendingId, "Capstone Waiting", "After it rises, its next action is the Fall of the Pyramidion."),
         Face(DoorPendingId, "Door Waiting", "It returns with 20 Block and 3 more on its attacks."),
-        Face(NatronCrustId, "Natron Crust", "Each hit you land on it costs you 3 HP.", StatusPolarity.Buff,
-            triggers:
-            [
-                On("DamageTaken", new ConditionalEffectNode<DamageReceivedTriggeredEffectContext>(
-                    Wears<DamageReceivedTriggeredEffectContext>(CombatantTargetSelectors.Source, PassiveStatuses.ApplicantId),
-                    new DealDamageNode<DamageReceivedTriggeredEffectContext>(CombatantTargetSelectors.Source,
-                        N<DamageReceivedTriggeredEffectContext>(3), kind: DamageKind.DamageOverTime)),
-                    StatusTriggerScope.Bearer),
-            ]),
-        Face(CapstoneDueId, "Capstone Due", "It has risen: its next action is Capstone."),
+        Face(CapstoneDueId, "Capstone Due", "It has risen: its next action is the Fall of the Pyramidion."),
         Face(ThroughTheDoorId, "Through the Door", "It came back through the false door: its attacks deal 3 more.",
             StatusPolarity.Buff, modifiers:
             [new PassiveModifierData(PassiveModifierPipeline.DamageDealt, PassiveModifierOperation.AddFlat, 3, RestrictDamageKind: DamageKind.Direct)]),
@@ -429,7 +414,6 @@ public static partial class ActFour
             new RemoveStatusesByPolarityNode<EnemyActionContext>(self, StatusPolarity.Debuff),
             new RemoveStatusNode<EnemyActionContext>(self, new StatusDefinitionId(RisingId)),
             new RemoveStatusNode<EnemyActionContext>(self, new StatusDefinitionId(RisenDownedId)),
-            Pending(NatronPendingId, new ApplyStatusNode<EnemyActionContext>(self, new StatusDefinitionId(NatronCrustId), Const(1))),
             Pending(CapstonePendingId, new ApplyStatusNode<EnemyActionContext>(self, new StatusDefinitionId(CapstoneDueId), Const(1))),
             Pending(DoorPendingId,
                 new ApplyStatusNode<EnemyActionContext>(self, new StatusDefinitionId(ThroughTheDoorId), Const(1)),
@@ -547,7 +531,10 @@ public static partial class ActFour
     // Downings are heard as ENCOUNTER triggers (a bearer-scoped Downed on the downed body's own status is not
     // reliably heard, ActTwo.BreakTheJar), and the guards read `sourceIncludingDowned`. Every Act-IV normal body
     // brings the same set; each is idempotent, so a duo carrying them twice changes nothing.
-    public static IReadOnlyList<EncounterTriggerData> LabyrinthTriggers()
+    //
+    // The Western Gate's and the Excavator's rules are NOT idempotent (a husk is summoned, Gold is counted), so they
+    // come only with their own body: a duo carrying the shared set twice must not summon two husks.
+    public static IReadOnlyList<EncounterTriggerData> LabyrinthTriggers(string? enemyId = null)
     {
         var downed = CombatantTargetSelectors.SourceIncludingDowned;
         ICombatExpression<CombatantDownedTriggeredEffectContext, bool> Was(string status) =>
@@ -569,12 +556,11 @@ public static partial class ActFour
             new ConditionalEffectNode<CombatantDownedTriggeredEffectContext>(Was(LabyrinthBodyId),
                 new ForEachTargetEffectNode<CombatantDownedTriggeredEffectContext>(LivingJars,
                     new SetHealthNode<CombatantDownedTriggeredEffectContext>(CombatantTargetSelectors.IterationTarget, N<CombatantDownedTriggeredEffectContext>(0)))),
-            // The Jackal falls: Anubis stops watching.
-            new ConditionalEffectNode<CombatantDownedTriggeredEffectContext>(Was(JackalRuleId), TakeFromAll(RisenByJackalId)),
-            // The Robber falls: its loot is yours, as a card, after the fight.
-            new ConditionalEffectNode<CombatantDownedTriggeredEffectContext>(Was(LootRuleId),
-                new SetCombatantCounterNode<CombatantDownedTriggeredEffectContext>(Applicant, LootClaimed,
-                    N<CombatantDownedTriggeredEffectContext>(1), relative: true)),
+            // The Western Gate: a fallen ally leaves a husk for the Jackal to guide west; the husk or the Jackal
+            // falling ends it (ActFourNormals).
+            .. enemyId == "jackal_of_the_western_gate" ? [WesternGateDowned()] : Array.Empty<IEffectNode<CombatantDownedTriggeredEffectContext>>(),
+            // The Robber falls: killed, its loot is yours (as a card, after the fight); fled, your Gold goes with it.
+            .. enemyId == "cursed_loot_bearer" ? [TombRobberDowned()] : Array.Empty<IEffectNode<CombatantDownedTriggeredEffectContext>>(),
             // The Thief falls: the sack opens.
             new ConditionalEffectNode<CombatantDownedTriggeredEffectContext>(Was(ThiefRuleId), OpenTheSack()),
             // The Keeper rises only while a jar stands or, in a duo, while its ally lives.

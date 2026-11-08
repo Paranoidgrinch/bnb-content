@@ -409,24 +409,24 @@ ever met in a boss room is drawn as a boss, even if it also turns up as filler.
 | `iron_warrant_avatar` | Iron Warrant Avatar | 94 | 1 | The Warrant Becomes Iron |
 | `keeper_of_the_thirty_six_decans` | Coils of Apep | 348 | 1 | Coils of Apep |
 | `lamp_thief` | Lamp Thief | 104 | 1 | The Three Robbers |
-| `lioness_of_sekhmet` | The Lioness | 261 | 1 | The Lioness |
+| `lioness_of_sekhmet` | Lioness of Sekhmet | 261 | 1 | Lioness of Sekhmet |
 | `lock_cart` | Lock Cart | 32 | 1 | The Seizure Procession |
 | `lower_appellate_step` | Lower Appellate Step | 24 | 1 | The Appeal Climbs the Stairs |
 | `magistrate_of_thorns` | Magistrate of Thorns | 220 | 1 | Magistrate of Thorns |
 | `middle_appellate_step` | Middle Appellate Step | 30 | 1 | The Appeal Climbs the Stairs |
-| `mummified_overseer_of_the_linen_house` | The Embalmer | 318 | 1 | The Embalmer |
+| `mummified_overseer_of_the_linen_house` | Overseer of the Linen House | 318 | 1 | Overseer of the Linen House |
 | `obituary_with_three_endings` | The Obituary with Three Endings | 128 | 1 | The Obituary with Three Endings |
 | `portcullis_judicator` | Portcullis Judicator | 98 | 1 | The Gatehouse Drops the Portcullis |
 | `pry_bar_veteran` | Pry-Bar Veteran | 104 | 1 | The Three Robbers |
 | `red_tape_golem` | Red Tape Golem | 96 | 1 | The Red Tape Golem |
 | `reopening_hours_monolith` | Reopening-Hours Monolith | 92 | 1 | The Office That Reopens Itself |
 | `rolling_stacks_colossus` | The Rolling Stacks Colossus | 132 | 1 | The Rolling Stacks Colossus |
-| `rope_master_of_the_corvee` | The Taskmaster | 261 | 1 | The Taskmaster |
+| `rope_master_of_the_corvee` | Overseer of the Corvée Register | 261 | 1 | Overseer of the Corvée Register |
 | `scarab_host_of_the_sealed_granary` | Brood Mother | 255 | 1 | Brood Mother |
 | `second_appointment` | Second Appointment | 28 | 1 | The Three Appointments |
 | `second_line_bearer` | Second Line-Bearer | 27 | 1 | Ant Queen of the Proper Line |
 | `seizure_marshal` | Seizure Marshal | 40 | 1 | The Seizure Procession |
-| `sphinx_of_the_processional_measure` | The Sphinx | 344 | 1 | The Sphinx |
+| `sphinx_of_the_processional_measure` | Sphinx of the Processional Way | 344 | 1 | Sphinx of the Processional Way |
 | `stag_of_pre_approved_violence` | The Stag of Pre-Approved Violence | 138 | 1 | The Stag of Pre-Approved Violence |
 | `surveyor_of_forgotten_paths` | Surveyor of Forgotten Paths | 198 | 1 | Surveyor of Forgotten Paths |
 | `surveyor_of_the_errant_cord` | Priest of the Four Sons | 248 | 1 | Priest of the Four Sons |
@@ -442,7 +442,7 @@ ever met in a boss room is drawn as a boss, even if it also turns up as filler.
 |---|---|---:|---:|---|
 | `brass_maw_of_returns` | Brass Maw of Returns | 50 | 3 | Brass Maw of Returns |
 | `cairn_of_stray_paths` | Cairn of Stray Paths | 58 | 4 | Every Detour Leaves a Stone |
-| `cursed_loot_bearer` | Tomb Robber | 140 | 4 | Tomb Gold |
+| `cursed_loot_bearer` | Unlicensed Excavator | 100 | 4 | Tomb Gold |
 
 ### Standard bodies — 64
 
@@ -458,8 +458,8 @@ ever met in a boss room is drawn as a boss, even if it also turns up as filler.
 | `contradictory_signpost` | Contradictory Signpost | 49 | 2 | Mandatory in Every Direction |
 | `corridor_in_the_wrong_edition` | Corridor in the Wrong Edition | 60 | 2 | Corridor in the Wrong Edition |
 | `crabwise_shelf` | Crabwise Shelf | 56 | 2 | Crabwise Shelf |
-| `crocodile_of_the_short_measure` | Sobek's Tithe | 90 | 2 | The Tithe |
-| `crooked_rod_bearer` | Crooked Cubit | 79 | 2 | Bent Measure |
+| `crocodile_of_the_short_measure` | Crocodile of the Short Measure | 90 | 2 | The Tithe |
+| `crooked_rod_bearer` | Bearer of the Crooked Cubit | 79 | 2 | Bent Measure |
 | `crossroads_cup` | Crossroads Cup | 82 | 3 | A Cup at the Crossroads |
 | `dead_letter_ouroboros` | Dead-Letter Ouroboros | 47 | 3 | Dead-Letter Ouroboros |
 | `eclipse_scarab` | Eclipse Beetle | 157 | 2 | Black Noon |
@@ -475,12 +475,12 @@ ever met in a boss room is drawn as a boss, even if it also turns up as filler.
 | `form_rat_a` | Form Rat | 11 | 1 | Forms in the Gutter |
 | `form_rat_b` | Form Rat | 11 | 1 | Forms in the Gutter |
 | `form_rat_c` | Form Rat | 11 | 1 | Forms in the Gutter |
-| `fourfold_vessel_guardian` | Canopic Keeper | 153 | 2 | Four Jars |
+| `fourfold_vessel_guardian` | Keeper of the Four Vessels | 153 | 2 | Four Jars |
 | `hawthorn_tenant` | The Hawthorn Tenant | 83 | 3 | Thorn Lease |
-| `hungry_grain_thief` | Granary Thief | 86 | 2 | Empty Granary |
+| `hungry_grain_thief` | Pilferer of the Granary Rolls | 86 | 2 | Empty Granary |
 | `inverted_hourglass` | Inverted Hourglass | 51 | 2 | The Sand Runs Upward |
-| `jackal_of_the_western_gate` | Anubis Jackal | 99 | 2 | Anubis Takes Notice |
-| `jar_seal_scarab_swarm` | Scarab Swarm | 85 | 1 | The Swarm |
+| `jackal_of_the_western_gate` | Keeper of the Western Gate | 99 | 2 | Anubis Takes Notice |
+| `jar_seal_scarab_swarm` | Jar-Seal Scarabs | 85 | 1 | The Swarm |
 | `levy_constable` | Levy Constable | 44 | 1 | The Levy Comes Due |
 | `living_certificate` | Living Certificate | 28 | 1 | The Certificate Is Alive |
 | `margin_note_gnawer` | Margin-Note Gnawer | 33 | 1 | Correction in the Margin |
@@ -488,8 +488,8 @@ ever met in a boss room is drawn as a boss, even if it also turns up as filler.
 | `mnemonic_chain` | Mnemonic Chain | 93 | 1 | Mnemonic Chain |
 | `moon_cycle_ibis` | Thoth's Ibis | 140 | 2 | The Hall of Two Truths |
 | `municipal_gargoyle` | Municipal Gargoyle | 48 | 1 | Stone Ordinance |
-| `name_erasing_chisel_spirit` | The Chiseller | 149 | 1 | Defaced |
-| `natron_bearer` | Natron Priest | 130 | 2 | Salt Rite |
+| `name_erasing_chisel_spirit` | Eraser of Names | 149 | 1 | Defaced |
+| `natron_bearer` | Bearer of the Natron | 130 | 2 | Salt Rite |
 | `number_ticket_wisp` | Number-Ticket Wisp | 25 | 1 | Now Serving the Wrong Number |
 | `oath_candle` | Oath Candle | 39 | 2 | Witness at the Sealed Threshold |
 | `ordinance_tablet` | Ordinance Tablet | 46 | 1 | Subsection Carved in Stone |
@@ -499,13 +499,13 @@ ever met in a boss room is drawn as a boss, even if it also turns up as filler.
 | `reckoning_hedge` | Reckoning Hedge | 77 | 3 | Counter-Survey |
 | `reed_cord_surveyor` | Rope-Stretcher | 76 | 3 | Measuring the Field |
 | `roadside_witchling` | Roadside Witchling | 92 | 2 | The Witch at the Milestone |
-| `runaway_laborer` | Runaway Ushabti | 92 | 2 | Deserters |
+| `runaway_laborer` | Truant of the Corvée | 92 | 2 | Deserters |
 | `sealed_door_ward` | Sealed Door Ward | 56 | 2 | The Sealed Door |
 | `second_person_entry` | Second-Person Entry | 60 | 2 | Second-Person Entry |
 | `self_correcting_record` | Self-Correcting Record | 53 | 1 | The Record Corrects You |
-| `silt_buried_farmer_shade` | Drowned Farmer | 98 | 2 | Silt |
+| `silt_buried_farmer_shade` | Shade of the Silted Field | 98 | 2 | Silt |
 | `spare_life_jar` | Spare-Life Jar | 83 | 2 | Dead-Letter Revival |
-| `stone_hauler_ushabti` | Ushabti Hauler | 115 | 2 | Stone for the Dead |
+| `stone_hauler_ushabti` | Answerer of the Quarry | 115 | 2 | Stone for the Dead |
 | `streamside_oath_fish` | Streamside Oath-Fish | 84 | 2 | Oaths in Running Water |
 | `the_testator` | The Testator | 70 | 2 | The Last Will of Nobody in Particular |
 | `two_bank_toll_ford` | Two-Bank Toll Ford | 97 | 2 | Both Banks Demand Payment |
