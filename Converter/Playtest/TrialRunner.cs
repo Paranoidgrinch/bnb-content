@@ -345,7 +345,7 @@ public static class TrialRunner
             // The prior is the table as the act begins: every path reads the same, whatever the others learn meanwhile.
             var prior = values.Copy();
             var choices = Enumerable.Range(0, options.Paths)
-                .Select(p => c is null ? null : new TrialChoices(shipped, walk, packages, prior, c, options.Seed, measured, evalParallel, themes!)).ToList();
+                .Select(p => c is null ? null : new TrialChoices(shipped, walks[p], packages, prior, c, options.Seed, measured, evalParallel, themes!)).ToList();
             var paths = Enumerable.Range(0, options.Paths)
                 .Select(p => new Path(shipped, walks[p], PathSeed(options.Seed, act, p), packages,
                     choices[p] is { } chooser ? (path, d) => chooser.Choose(path, d, act, p) : null)).ToList();
