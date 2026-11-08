@@ -59,7 +59,7 @@ public static partial class ActThree
         }
     }
 
-    // The giving is the Witchling's, with two baskets: her plain gifts, or — once she insists — the dear ones.
+    // The giving (it was the Witchling's too until 2026-11-08), with two baskets: her plain gifts, or — once she insists — the dear ones.
     private static StatusData TheCourtesies()
     {
         var give = new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(

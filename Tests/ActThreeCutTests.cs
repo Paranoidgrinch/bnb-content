@@ -262,43 +262,110 @@ public class ActThreeCutTests
 
     // ── Covenants ─────────────────────────────────────────────────────────────────────────────────────────
 
+    private static bool Marked(RogueDeck.Core.Combat.CardInstance card, string mark) => card.Marks.Contains(new TagId(mark));
+
+    // The Witchling's shell game (2026-11-08, E11): three cards of the hand under her cups, one of them hexed.
     [Fact]
-    public void A_witchlings_gift_left_in_hand_breaks_her_law()
+    public void The_witchling_hides_a_hex_under_one_of_three_cups()
     {
-        var (play, session, _) = Solo("roadside_witchling", "warm_kettle", [.. Enumerable.Repeat(Working, 10)]);
-        Assert.Single(play.CombatDriver!.Current!.Hand, c => ActThree.WitchlingGiftCards().Any(g => g.Id == c.DefinitionId.value));
+        var (play, session, witch) = Solo("roadside_witchling", "warm_kettle", [.. Enumerable.Repeat(Deed, 10)]);
+        var hand = play.CombatDriver!.Current!.Hand;
+        Assert.Equal(ActThree.CupCount, hand.Count(c => Marked(c, ActThree.UnderACupMark)));
+        var hexed = Assert.Single(hand, c => Marked(c, ActThree.HexMark));
+        Assert.True(Marked(hexed, ActThree.UnderACupMark));
+
+        // A plain cup first: no bite, and her law is kept for the turn.
+        var plain = hand.First(c => Marked(c, ActThree.UnderACupMark) && !Marked(c, ActThree.HexMark));
+        var health = Hero(play).Health.Current;
+        play.CombatDriver.PlayCard(plain.Id, witch);
+        Assert.Null(session.Error);
+        Assert.Equal(health, Hero(play).Health.Current);
+        Assert.Equal(1, FightProbe.StacksOf(Body(play, witch), ActThree.CupLiftedId));
+
+        // The hexed one bites for 6.
+        play.CombatDriver.PlayCard(hexed.Id, witch);
+        Assert.Null(session.Error);
+        Assert.Equal(health - ActThree.HexDamage, Hero(play).Health.Current);
+        play.CombatDriver.EndTurn();
+        Assert.Null(session.Error);
+        Assert.Equal(1, Licences(play));
+        // A new hand, new cups.
+        Assert.Equal(ActThree.CupCount, play.CombatDriver.Current!.Hand.Count(c => Marked(c, ActThree.UnderACupMark)));
+        play.Dispose();
+    }
+
+    [Fact]
+    public void Leaving_all_three_cups_unturned_breaks_the_witchlings_law()
+    {
+        var (play, session, witch) = Solo("roadside_witchling", "warm_kettle", [.. Enumerable.Repeat(Deed, 10)]);
+        var free = play.CombatDriver!.Current!.Hand.Where(c => !Marked(c, ActThree.UnderACupMark)).ToList();
+        foreach (var card in free)
+            play.CombatDriver.PlayCard(card.Id, witch);
         play.CombatDriver.EndTurn();
         Assert.Null(session.Error);
         Assert.Equal(0, Licences(play));
         play.Dispose();
     }
 
+    // The Bride's rhyme (2026-11-08, E12): the first turn nothing is held over, so she asks for something new — any
+    // card of your deck drawn this turn — and it drops her Block; the second turn new again (after her Veil of Thorns).
     [Fact]
-    public void A_witchlings_gift_taken_keeps_her_law()
-    {
-        var (play, session, _) = Solo("roadside_witchling", "warm_kettle", [.. Enumerable.Repeat(Working, 10)]);
-        var gift = play.CombatDriver!.Current!.Hand.First(c => ActThree.WitchlingGiftCards().Any(g => g.Id == c.DefinitionId.value));
-        play.CombatDriver.PlayCard(gift.Id, null);
-        if (play.CombatDriver.PendingCardChoice is { } offered)
-            play.CombatDriver.SupplyCardChoice([offered[0].Id]);
-        play.CombatDriver.EndTurn();
-        Assert.Null(session.Error);
-        Assert.Equal(1, Licences(play));
-        play.Dispose();
-    }
-
-    [Fact]
-    public void A_second_card_of_one_cost_breaks_the_brides_law()
+    public void Giving_the_bride_her_line_drops_her_block_and_keeps_her_law()
     {
         var (play, session, bride) = Solo("blackthorn_bride", "veil_of_thorns", [.. Enumerable.Repeat(Deed, 10)]);
+        Assert.Equal(1, FightProbe.StacksOf(Body(play, bride), ActThree.RhymeLineId(1)));
         Play(play, session, Deed, bride);
-        Assert.Equal(1, Licences(play));
-        Play(play, session, Deed, bride);
-        Assert.Equal(0, Licences(play));
-        // A new turn, a new set of prices.
+        Assert.Equal(1, FightProbe.StacksOf(Body(play, bride), ActThree.RhymeKeptId));
         play.CombatDriver!.EndTurn();
+        Assert.Equal(1, Licences(play));
+        Assert.Equal(1, FightProbe.StacksOf(Body(play, bride), ActThree.RhymeLineId(1)));
+        Assert.True(Body(play, bride).DefensivePools[StandardCombatIds.BlockDefensivePool].Current > 0);
         Play(play, session, Deed, bride);
-        Assert.Equal(0, FightProbe.StacksOf(Body(play, bride), ActThree.ClaimId));
+        Assert.Equal(0, Body(play, bride).DefensivePools[StandardCombatIds.BlockDefensivePool].Current);
+
+        // Third turn: something borrowed. A card of your deck does not count; the lace she lends does.
+        play.CombatDriver.EndTurn();
+        Assert.Equal(1, FightProbe.StacksOf(Body(play, bride), ActThree.RhymeLineId(2)));
+        Play(play, session, Deed, bride);
+        Assert.Equal(0, FightProbe.StacksOf(Body(play, bride), ActThree.RhymeKeptId));
+        Play(play, session, ActThree.BorrowedLaceId, null);
+        Assert.Equal(1, FightProbe.StacksOf(Body(play, bride), ActThree.RhymeKeptId));
+
+        // Fourth: something blue, a Working; a Deed alone breaks her law at the turn's end.
+        play.CombatDriver.EndTurn();
+        Assert.Equal(1, FightProbe.StacksOf(Body(play, bride), ActThree.RhymeLineId(3)));
+        Play(play, session, Deed, bride);
+        play.CombatDriver.EndTurn();
+        Assert.Null(session.Error);
+        Assert.Equal(0, Licences(play));
+        play.Dispose();
+    }
+
+    // Something old: a card held over from last turn (the Almanac Retains itself). On the fifth turn the rhyme comes
+    // round to it; a freshly drawn card does not count, the held-over Almanac does.
+    [Fact]
+    public void Something_old_is_a_card_you_held_over()
+    {
+        var (play, session, bride) = Solo("blackthorn_bride", "veil_of_thorns", ["dog_eared_almanac", Deed, Deed, Deed, Deed]);
+        for (var turn = 1; turn < 5; turn++)
+            play.CombatDriver!.EndTurn();
+        Assert.Null(session.Error);
+        Assert.Equal(1, FightProbe.StacksOf(Body(play, bride), ActThree.RhymeLineId(0)));
+        Play(play, session, Deed, bride);
+        Assert.Equal(0, FightProbe.StacksOf(Body(play, bride), ActThree.RhymeKeptId));
+        Play(play, session, "dog_eared_almanac", null);
+        Assert.Equal(1, FightProbe.StacksOf(Body(play, bride), ActThree.RhymeKeptId));
+        play.Dispose();
+    }
+
+    // Refused on the first turn: the opening licence is spent.
+    [Fact]
+    public void Refusing_the_bride_her_line_breaks_her_law()
+    {
+        var (play, session, _) = Solo("blackthorn_bride", "veil_of_thorns", [.. Enumerable.Repeat(Working, 10)]);
+        play.CombatDriver!.EndTurn();
+        Assert.Null(session.Error);
+        Assert.Equal(0, Licences(play));
         play.Dispose();
     }
 

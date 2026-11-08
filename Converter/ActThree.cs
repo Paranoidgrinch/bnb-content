@@ -285,8 +285,10 @@ public static partial class ActThree
         TheDestination(),
         Attended(),
         ArrowPointsElsewhere(),
-        CourtesySafeConduct(),
-        APromiseMustBePaired(),
+        ThreeCups(),
+        CupLifted(),
+        BridalRhyme(),
+        .. BridalRhymeStatuses(),
         DrinkBeforeChoosing(),
         OathAccepted(),
         PaymentAccordingToCharter(),
@@ -302,7 +304,7 @@ public static partial class ActThree
 
     // The cards the act itself hands the player: never dealt into a deck, only pushed into a fight.
     public static IReadOnlyList<CardData> GivenCards() =>
-        [.. WitchlingGiftCards(), .. GrandmotherGiftCards(), DrinkFromTheCup(), .. FordTollCards()];
+        [.. GrandmotherGiftCards(), DrinkFromTheCup(), .. FordTollCards(), BorrowedLace()];
 
     // The standard roster: Road, Hedgerows, Tollwater, Covenants, three to a stage. Anything in here is a Green Docket body, which is how a fight
     // knows to open under the act's customs.
