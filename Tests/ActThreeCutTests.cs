@@ -210,16 +210,53 @@ public class ActThreeCutTests
         play.Dispose();
     }
 
-    // The Ford's pressure intent: the first breach is forgiven, the second is a Claim — and every Claim is 6 Block.
+    // The Ford posts its two tolls every turn (2026-11-08, E13). Paying in blood costs 5 HP, waves the other toll
+    // through, keeps its law, and halves its next blow (Flood Toll, 18 as authored).
     [Fact]
-    public void Every_claim_the_ford_gains_is_six_block()
+    public void Paying_one_of_the_fords_tolls_halves_its_next_attack_and_keeps_its_law()
     {
-        var (play, session, ford) = Solo("two_bank_toll_ford", "collect_both_banks", [.. Enumerable.Repeat(Working, 10)]);
-        play.CombatDriver!.EndTurn();
+        var (play, session, ford) = Solo("two_bank_toll_ford", "flood_toll", [.. Enumerable.Repeat(Working, 10)]);
+        var hand = play.CombatDriver!.Current!.Hand;
+        Assert.Single(hand, c => c.DefinitionId.value == ActThree.TollInKindId);
+        Assert.Single(hand, c => c.DefinitionId.value == ActThree.TollInBloodId);
+
+        var health = Hero(play).Health.Current;
+        Play(play, session, ActThree.TollInBloodId, null);
+        Assert.Equal(health - ActThree.TollInBloodHealth, Hero(play).Health.Current);
+        Assert.DoesNotContain(play.CombatDriver.Current!.Hand, c => c.DefinitionId.value == ActThree.TollInKindId);
+        Assert.Equal(1, FightProbe.StacksOf(Body(play, ford), ActThree.TollPaidId));
+
+        health = Hero(play).Health.Current;
+        play.CombatDriver.EndTurn();
+        Assert.Null(session.Error);
+        Assert.Equal(1, Licences(play));
+        Assert.Equal(health - 9, Hero(play).Health.Current);
+        Assert.Equal(0, FightProbe.StacksOf(Body(play, ford), ActThree.TollPaidId));
+        play.Dispose();
+    }
+
+    // Toll in Kind discards a card of your choosing (never the other toll). Paying neither breaks the law: the opening
+    // licence forgives the first, the second unpaid turn is a Claim.
+    [Fact]
+    public void Paying_neither_toll_breaks_the_fords_law()
+    {
+        var (play, session, ford) = Solo("two_bank_toll_ford", "close_the_crossing", [.. Enumerable.Repeat(Working, 10)]);
+        var cards = play.CombatDriver!.Current!.Hand.Count;
+        Play(play, session, ActThree.TollInKindId, null);
+        if (play.CombatDriver.PendingCardChoice is { } offered)
+        {
+            Assert.DoesNotContain(offered, c => c.DefinitionId.value == ActThree.TollInBloodId);
+            play.CombatDriver.SupplyCardChoice([offered[0].Id]);
+        }
+        Assert.Equal(cards - 3, play.CombatDriver.Current!.Hand.Count);
+        play.CombatDriver.EndTurn();
+        Assert.Equal(1, Licences(play));
+
+        play.CombatDriver.EndTurn();
+        Assert.Equal(0, Licences(play));
         play.CombatDriver.EndTurn();
         Assert.Null(session.Error);
         Assert.Equal(1, Claims(play, ford));
-        Assert.Equal(ActThree.FordBlockPerClaim, Body(play, ford).DefensivePools[StandardCombatIds.BlockDefensivePool].Current);
         play.Dispose();
     }
 

@@ -4,7 +4,8 @@ using RogueDeck.Scenario.Authoring;
 namespace BnbContent.Converter;
 
 // Act III, Stage 3 — Tollwater. Since 2026-11-03 (user): a snail that charges for a busy turn, a fish that leaves
-// you be once you have kept its law three turns running, and a ford that banks every right it is granted.
+// you be once you have kept its law three turns running, and (since 2026-11-08) a ford that asks a toll of you
+// every turn and lets you choose which bank to pay.
 public static partial class ActThree
 {
     public const string PaymentAccordingToCharterId = "payment_according_to_charter";
@@ -13,11 +14,18 @@ public static partial class ActThree
     public const string FishLowGuardId = "fish_law_low_guard";
     public const string OathKeptId = "oath_kept";
     public const string TollOnBothBanksId = "toll_on_both_banks";
+    public const string TollPaidId = "toll_paid";
+    public const string TollInKindId = "toll_in_kind";
+    public const string TollInBloodId = "toll_in_blood";
+    public const string FordTollTag = "ford_toll";
 
     public const int SnailCardLimit = 3;
     public const int OathTurnsToLeave = 3;
     public const int FishGuardLimit = 10;
-    public const int FordBlockPerClaim = 6;
+    public const int TollInBloodHealth = 5;
+    public const int TollPaidDamagePercent = 50;
+    // The round in which a toll was last paid, on the player.
+    public static CounterId FordTollRoundCounter => new("ford_toll_round");
 
     // ── Charter-Shell Snail ───────────────────────────────────────────────────────────────────────────────
     public static StatusData PaymentAccordingToCharter() =>
@@ -110,19 +118,78 @@ public static partial class ActThree
         ]));
     }
 
-    // ── Two-Bank Toll Ford ────────────────────────────────────────────────────────────────────────────────
+    // ── Two-Bank Toll Ford — the two tolls ────────────────────────────────────────────────────────────────
     //
-    // Every Claim granted the Ford is banked behind its walls: 6 Block.
+    // Since 2026-11-08 (content review E13; MTG's Tribute): every turn of yours the Ford puts its two tolls in your
+    // hand, Toll in Kind (discard a card) and Toll in Blood (lose 5 HP). Pay either and the other is waved through,
+    // and its next attack lands at half; pay neither and your turn ends with its law broken. The Claim-into-Block
+    // bank it had before is gone.
+    private static ICombatantTargetSelector Ford => Lawgiver(TollOnBothBanksId);
+
     public static StatusData TollOnBothBanks()
     {
-        IEffectNode<TContext> Bank<TContext>() where TContext : class =>
-            new ConditionalEffectNode<TContext>(
-                new TriggerEventStatusIsExpression<TContext>(new StatusDefinitionId(ClaimCreatedId)),
-                new GainBlockNode<TContext>(CombatantTargetSelectors.EventTarget, new ConstantExpression<TContext>(FordBlockPerClaim)));
-
-        return Rule(TollOnBothBanksId, "Toll on Both Banks", "Every Claim it gains also gives it 6 Block.",
-            [On("StatusApplied", Bank<StatusAppliedTriggeredEffectContext>()), On("StatusMerged", Bank<StatusMergedTriggeredEffectContext>())]);
+        IEffectNode<TurnStartedTriggeredEffectContext> Post(string toll) =>
+            new CreateCardInstanceNode<TurnStartedTriggeredEffectContext>(
+                CombatantTargetSelectors.Source, new CardDefinitionId(toll), CardZone.Hand,
+                new ConstantExpression<TurnStartedTriggeredEffectContext>(1));
+        var unpaid = new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
+            new ComparisonExpression<TurnEndedTriggeredEffectContext>(
+                CounterOn<TurnEndedTriggeredEffectContext>(Applicant, FordTollRoundCounter), ComparisonOperator.NotEqual,
+                new RoundNumberExpression<TurnEndedTriggeredEffectContext>()),
+            Breach<TurnEndedTriggeredEffectContext>(Ford));
+        return Rule(TollOnBothBanksId, "Toll on Both Banks",
+            $"Each turn it puts two tolls in your hand: discard a card, or lose {TollInBloodHealth} HP. Pay one and its next attack is halved; pay neither and you break its law.",
+            [
+                AtYourTurnsStart(Ford, new CausalSequenceEffectNode<TurnStartedTriggeredEffectContext>([Post(TollInKindId), Post(TollInBloodId)])),
+                AtYourTurnsEnd(Ford, unpaid),
+            ]);
     }
+
+    public static StatusData TollPaid() => new()
+    {
+        Id = TollPaidId,
+        NameKey = "Toll Paid",
+        DescriptionKey = "You paid its toll: its next attack deals half damage.",
+        Polarity = StatusPolarity.Debuff,
+        StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
+        UsesStacks = false,
+        Tags = [],
+        PassiveModifiers =
+        [
+            new PassiveModifierData(PassiveModifierPipeline.DamageDealt, PassiveModifierOperation.ScalePercent, TollPaidDamagePercent),
+        ],
+        Triggers = [],
+    };
+
+    // A toll paid: the other one is waved through, the price is taken, and the Ford is satisfied for this turn.
+    private static CardData Toll(string id, string name, string price, string otherId, IEffectNode<CardPlayContext> pay) =>
+        Gift(id, name, $"{price}. The Ford's next attack is halved. Pay one toll each turn, or you break its law.", FordTollTag,
+            Seq(
+                new ForEachCardInZoneNode<CardPlayContext>(CombatantTargetSelectors.Source, CardZone.Hand,
+                    new MoveCardToZoneNode<CardPlayContext>(CombatantTargetSelectors.Source, new IteratedCardExpression<CardPlayContext>(), CardZone.ExhaustPile),
+                    definitionFilter: new CardDefinitionId(otherId)),
+                pay,
+                new ApplyStatusNode<CardPlayContext>(Ford, new StatusDefinitionId(TollPaidId), N(1)),
+                new SetCombatantCounterNode<CardPlayContext>(CombatantTargetSelectors.Source, FordTollRoundCounter,
+                    new RoundNumberExpression<CardPlayContext>(), relative: false)));
+
+    public static IEnumerable<CardData> FordTollCards() =>
+    [
+        Toll(TollInKindId, "Toll in Kind", "Discard a card", TollInBloodId,
+            new MoveCardToZoneNode<CardPlayContext>(CombatantTargetSelectors.Source,
+                new ChosenCardInZoneExpression<CardPlayContext>(CardZone.Hand, "discard a card", excludeTag: new TagId(FordTollTag)),
+                CardZone.DiscardPile)),
+        Toll(TollInBloodId, "Toll in Blood", $"Lose {TollInBloodHealth} HP", TollInKindId, LoseHealth(TollInBloodHealth)),
+    ];
+
+    // The Ford's two blows: each spends a paid toll, so the halving lasts until the next attack and no longer.
+    private static EffectProgram<EnemyActionContext> FordStrike(int damage, bool trespass) =>
+        new(new CausalSequenceEffectNode<EnemyActionContext>(
+        [
+            new DealDamageNode<EnemyActionContext>(Applicant, new ConstantExpression<EnemyActionContext>(damage)),
+            .. trespass ? new[] { FileTrespass<EnemyActionContext>(CombatantTargetSelectors.Source) } : [],
+            new RemoveStatusNode<EnemyActionContext>(CombatantTargetSelectors.Source, new StatusDefinitionId(TollPaidId)),
+        ]));
 
     // The Act-III normal bodies whose intents are their own programs (the pressure intents are in ActThree.Intent).
     private static EffectProgram<EnemyActionContext>? NormalIntent(string enemyId, string intentId) =>
@@ -135,6 +202,8 @@ public static partial class ActThree
                 new DealDamageNode<EnemyActionContext>(Applicant, new ConstantExpression<EnemyActionContext>(12)),
                 nextLaw: FishNoDeedsId, lastLaw: FishLowGuardId),
             "cairn_of_stray_paths.loose_stone" => Stonefall(),
+            "two_bank_toll_ford.collect_both_banks" => FordStrike(13, trespass: true),
+            "two_bank_toll_ford.flood_toll" => FordStrike(18, trespass: false),
             _ => null,
         };
 }
