@@ -7,7 +7,7 @@
     "intents": [
       {
         "id": "reed_lash",
-        "name": "Lash",
+        "name": "Measuring Cord",
         "intent_type": "attack",
         "actions": [
           {
@@ -19,7 +19,7 @@
       },
       {
         "id": "set_the_measure",
-        "name": "Snap Cord",
+        "name": "Harvest-Tax Survey",
         "intent_type": "mixed",
         "actions": [
           {
@@ -37,7 +37,7 @@
       },
       {
         "id": "re_tension_cord",
-        "name": "Pull Taut",
+        "name": "Boundary Peg",
         "intent_type": "block",
         "actions": [
           {
@@ -86,13 +86,13 @@
   },
   {
     "id": "crooked_rod_bearer",
-    "name": "Crooked Cubit",
+    "name": "Bearer of the Crooked Cubit",
     "max_hp": 79,
     "intent_pattern": "cycle",
     "intents": [
       {
         "id": "rod_strike",
-        "name": "Rod Strike",
+        "name": "Royal Cubit",
         "intent_type": "attack",
         "actions": [
           {
@@ -104,7 +104,7 @@
       },
       {
         "id": "crooked_measure",
-        "name": "Bent Measure",
+        "name": "Short Cubit",
         "intent_type": "mixed",
         "actions": [
           {
@@ -122,7 +122,7 @@
       },
       {
         "id": "brace_the_standard",
-        "name": "Brace",
+        "name": "Standard of Measure",
         "intent_type": "block",
         "actions": [
           {
@@ -174,13 +174,13 @@
   },
   {
     "id": "crocodile_of_the_short_measure",
-    "name": "Sobek's Tithe",
+    "name": "Crocodile of the Short Measure",
     "max_hp": 90,
     "intent_pattern": "cycle",
     "intents": [
       {
         "id": "load_the_scale",
-        "name": "Weigh Down",
+        "name": "Tithe Assessment",
         "intent_type": "mixed",
         "actions": [
           {
@@ -201,7 +201,7 @@
       },
       {
         "id": "snap_at_the_deficit",
-        "name": "Jaws",
+        "name": "Jaws of the Shortfall",
         "intent_type": "attack",
         "actions": [
           {
@@ -216,7 +216,7 @@
       },
       {
         "id": "short_measure",
-        "name": "Wallow",
+        "name": "Basking Bank",
         "intent_type": "block",
         "actions": [
           {
@@ -263,13 +263,13 @@
   },
   {
     "id": "jar_seal_scarab_swarm",
-    "name": "Scarab Swarm",
+    "name": "Jar-Seal Scarabs",
     "max_hp": 85,
     "intent_pattern": "cycle",
     "intents": [
       {
         "id": "seal_swarm",
-        "name": "Swarm",
+        "name": "Thousand Seals",
         "intent_type": "attack",
         "actions": [
           {
@@ -291,7 +291,7 @@
       },
       {
         "id": "scuttle",
-        "name": "Scuttle",
+        "name": "Broken Jar Seal",
         "intent_type": "attack",
         "actions": [
           {
@@ -303,7 +303,7 @@
       },
       {
         "id": "seal_the_jar",
-        "name": "Burrow",
+        "name": "Sealed Jar",
         "intent_type": "block",
         "actions": [
           {
@@ -350,13 +350,13 @@
   },
   {
     "id": "hungry_grain_thief",
-    "name": "Granary Thief",
+    "name": "Pilferer of the Granary Rolls",
     "max_hp": 86,
     "intent_pattern": "cycle",
     "intents": [
       {
         "id": "sack_weight",
-        "name": "Snatch",
+        "name": "Gleaner's Sack",
         "intent_type": "mixed",
         "actions": [
           {
@@ -374,7 +374,7 @@
       },
       {
         "id": "feast_on_rations",
-        "name": "Shiv",
+        "name": "Ration Knife",
         "intent_type": "attack",
         "actions": [
           {
@@ -391,7 +391,7 @@
       },
       {
         "id": "hide_in_the_granary",
-        "name": "Hide in the Grain",
+        "name": "Grain Heap",
         "intent_type": "block",
         "actions": [
           {
@@ -438,13 +438,13 @@
   },
   {
     "id": "silt_buried_farmer_shade",
-    "name": "Drowned Farmer",
+    "name": "Shade of the Silted Field",
     "max_hp": 98,
     "intent_pattern": "cycle",
     "intents": [
       {
         "id": "keep_the_furrow",
-        "name": "Sickle",
+        "name": "Furrow Sickle",
         "intent_type": "attack",
         "actions": [
           {
@@ -456,7 +456,7 @@
       },
       {
         "id": "mud_pull",
-        "name": "Mud Pull",
+        "name": "Silt Undertow",
         "intent_type": "mixed",
         "actions": [
           {
@@ -474,7 +474,7 @@
       },
       {
         "id": "raise_the_bank",
-        "name": "Raise the Bank",
+        "name": "Flood Dyke",
         "intent_type": "block",
         "actions": [
           {
@@ -519,13 +519,13 @@
   },
   {
     "id": "runaway_laborer",
-    "name": "Runaway Ushabti",
+    "name": "Truant of the Corvée",
     "max_hp": 92,
     "intent_pattern": "cycle",
     "intents": [
       {
         "id": "desperate_swing",
-        "name": "Swing",
+        "name": "Deserter's Mattock",
         "intent_type": "attack",
         "actions": [
           {
@@ -537,7 +537,7 @@
       },
       {
         "id": "hide_behind_the_gang",
-        "name": "Duck Behind",
+        "name": "Shelter of the Work-Gang",
         "intent_type": "block",
         "actions": [
           {
@@ -585,13 +585,13 @@
   },
   {
     "id": "stone_hauler_ushabti",
-    "name": "Ushabti Hauler",
+    "name": "Answerer of the Quarry",
     "max_hp": 115,
     "intent_pattern": "cycle",
     "intents": [
       {
         "id": "haul_stone",
-        "name": "Haul",
+        "name": "Sledge Load",
         "intent_type": "mixed",
         "actions": [
           {
@@ -609,7 +609,7 @@
       },
       {
         "id": "stone_blow",
-        "name": "Stone Blow",
+        "name": "Dressed Stone",
         "intent_type": "attack",
         "actions": [
           {
@@ -624,7 +624,7 @@
       },
       {
         "id": "brace_the_stone",
-        "name": "Brace",
+        "name": "Ramp of Rubble",
         "intent_type": "block",
         "actions": [
           {
@@ -677,7 +677,7 @@
     "intents": [
       {
         "id": "falling_dust",
-        "name": "Dust Fall",
+        "name": "Limestone Dust",
         "intent_type": "mixed",
         "actions": [
           {
@@ -695,7 +695,7 @@
       },
       {
         "id": "set_support",
-        "name": "Shore Up",
+        "name": "Timber Shoring",
         "intent_type": "block",
         "actions": [
           {
@@ -707,7 +707,7 @@
       },
       {
         "id": "set_the_capstone",
-        "name": "Capstone",
+        "name": "Fall of the Pyramidion",
         "intent_type": "attack",
         "actions": [
           {
@@ -763,13 +763,13 @@
   },
   {
     "id": "natron_bearer",
-    "name": "Natron Priest",
+    "name": "Bearer of the Natron",
     "max_hp": 130,
     "intent_pattern": "cycle",
     "intents": [
       {
         "id": "drying_rite",
-        "name": "Dry Rite",
+        "name": "Natron Scour",
         "intent_type": "attack",
         "actions": [
           {
@@ -781,7 +781,7 @@
       },
       {
         "id": "natron_dust",
-        "name": "Salt Sting",
+        "name": "Wadi Salt",
         "intent_type": "mixed",
         "actions": [
           {
@@ -799,7 +799,7 @@
       },
       {
         "id": "pack_natron",
-        "name": "Pack Natron",
+        "name": "Natron Packing",
         "intent_type": "block",
         "actions": [
           {
@@ -851,7 +851,7 @@
     "intents": [
       {
         "id": "hook_drag",
-        "name": "Hook",
+        "name": "Brain Hook",
         "intent_type": "attack",
         "actions": [
           {
@@ -863,7 +863,7 @@
       },
       {
         "id": "incomplete_wrapping",
-        "name": "Unravel",
+        "name": "Trailing Bandage",
         "intent_type": "mixed",
         "actions": [
           {
@@ -881,7 +881,7 @@
       },
       {
         "id": "stillness",
-        "name": "Stillness",
+        "name": "Repose on the Bier",
         "intent_type": "block",
         "actions": [
           {
@@ -927,13 +927,13 @@
   },
   {
     "id": "fourfold_vessel_guardian",
-    "name": "Canopic Keeper",
+    "name": "Keeper of the Four Vessels",
     "max_hp": 153,
     "intent_pattern": "cycle",
     "intents": [
       {
         "id": "body_office",
-        "name": "Body",
+        "name": "Office of the Body",
         "intent_type": "mixed",
         "actions": [
           {
@@ -951,7 +951,7 @@
       },
       {
         "id": "breath_office",
-        "name": "Breath",
+        "name": "Office of the Breath",
         "intent_type": "mixed",
         "actions": [
           {
@@ -969,7 +969,7 @@
       },
       {
         "id": "blood_office",
-        "name": "Blood",
+        "name": "Office of the Blood",
         "intent_type": "mixed",
         "actions": [
           {
@@ -1031,7 +1031,7 @@
     "intents": [
       {
         "id": "certify_passage",
-        "name": "Knock",
+        "name": "Offering Formula",
         "intent_type": "attack",
         "actions": [
           {
@@ -1043,7 +1043,7 @@
       },
       {
         "id": "false_threshold",
-        "name": "Threshold",
+        "name": "False Threshold",
         "intent_type": "attack",
         "actions": [
           {
@@ -1102,13 +1102,13 @@
   },
   {
     "id": "cursed_loot_bearer",
-    "name": "Tomb Robber",
+    "name": "Unlicensed Excavator",
     "max_hp": 140,
     "intent_pattern": "cycle",
     "intents": [
       {
         "id": "cursed_load",
-        "name": "Gold Sack",
+        "name": "Sack of Grave Goods",
         "intent_type": "mixed",
         "actions": [
           {
@@ -1126,7 +1126,7 @@
       },
       {
         "id": "loot_swing",
-        "name": "Pry Bar",
+        "name": "Copper Crowbar",
         "intent_type": "attack",
         "actions": [
           {
@@ -1138,7 +1138,7 @@
       },
       {
         "id": "inventory_shield",
-        "name": "Duck",
+        "name": "Stolen Coffin Lid",
         "intent_type": "block",
         "actions": [
           {
@@ -1192,7 +1192,7 @@
     "intents": [
       {
         "id": "moon_peck",
-        "name": "Peck",
+        "name": "Scribe's Beak",
         "intent_type": "attack",
         "actions": [
           {
@@ -1278,7 +1278,7 @@
     "intents": [
       {
         "id": "solar_scar",
-        "name": "Scorch",
+        "name": "Solar Scar",
         "intent_type": "attack",
         "actions": [
           {
@@ -1367,13 +1367,13 @@
   },
   {
     "id": "name_erasing_chisel_spirit",
-    "name": "The Chiseller",
+    "name": "Eraser of Names",
     "max_hp": 149,
     "intent_pattern": "cycle",
     "intents": [
       {
         "id": "chisel_cut",
-        "name": "Chisel",
+        "name": "Mason's Chisel",
         "intent_type": "attack",
         "actions": [
           {
@@ -1385,7 +1385,7 @@
       },
       {
         "id": "chip_the_cartouche",
-        "name": "Deface",
+        "name": "Erasure of the Cartouche",
         "intent_type": "attack",
         "actions": [
           {
@@ -1456,7 +1456,7 @@
     "intents": [
       {
         "id": "libation",
-        "name": "Libation",
+        "name": "Libation of Cool Water",
         "intent_type": "attack",
         "actions": [
           {
@@ -1468,7 +1468,7 @@
       },
       {
         "id": "seal",
-        "name": "Seal",
+        "name": "Seal of the Necropolis",
         "intent_type": "block",
         "actions": [
           {
@@ -1480,7 +1480,7 @@
       },
       {
         "id": "refill",
-        "name": "Refill",
+        "name": "Refilling of the Jars",
         "intent_type": "block",
         "actions": [
           {
@@ -1615,13 +1615,13 @@
   },
   {
     "id": "rope_master_of_the_corvee",
-    "name": "The Taskmaster",
+    "name": "Overseer of the Corvée Register",
     "max_hp": 261,
     "intent_pattern": "cycle",
     "intents": [
       {
         "id": "whip",
-        "name": "Whip",
+        "name": "Daily Tally",
         "intent_type": "attack",
         "actions": [
           {
@@ -1643,7 +1643,7 @@
       },
       {
         "id": "crack_the_whip",
-        "name": "Crack the Whip",
+        "name": "Muster of the Gangs",
         "intent_type": "block",
         "actions": [
           {
@@ -1655,7 +1655,7 @@
       },
       {
         "id": "whip_again",
-        "name": "Whip",
+        "name": "Tally of Shortfalls",
         "intent_type": "attack",
         "actions": [
           {
@@ -1677,7 +1677,7 @@
       },
       {
         "id": "stand_over",
-        "name": "Stand Over",
+        "name": "Shade of the Overseer",
         "intent_type": "block",
         "actions": [
           {
@@ -1705,13 +1705,13 @@
   },
   {
     "id": "mummified_overseer_of_the_linen_house",
-    "name": "The Embalmer",
+    "name": "Overseer of the Linen House",
     "max_hp": 318,
     "intent_pattern": "cycle",
     "intents": [
       {
         "id": "dry_hand_of_authority",
-        "name": "Dry Hand",
+        "name": "Dry Hand of Authority",
         "intent_type": "attack",
         "actions": [
           {
@@ -1723,7 +1723,7 @@
       },
       {
         "id": "bind_the_limbs",
-        "name": "Bind",
+        "name": "Binding of the Limbs",
         "intent_type": "mixed",
         "actions": [
           {
@@ -1741,7 +1741,7 @@
       },
       {
         "id": "wrapped_beyond_recognition",
-        "name": "Wrapped",
+        "name": "Wrapping Beyond Recognition",
         "intent_type": "block",
         "actions": [
           {
@@ -1768,7 +1768,7 @@
   },
   {
     "id": "sphinx_of_the_processional_measure",
-    "name": "The Sphinx",
+    "name": "Sphinx of the Processional Way",
     "max_hp": 344,
     "intent_pattern": "cycle",
     "intents": [
@@ -1786,7 +1786,7 @@
       },
       {
         "id": "silence",
-        "name": "Silence",
+        "name": "Riddle's Silence",
         "intent_type": "mixed",
         "actions": [
           {
@@ -1837,7 +1837,7 @@
     "intents": [
       {
         "id": "bronze_pry_bar",
-        "name": "Pry",
+        "name": "Bronze Pry-Bar",
         "intent_type": "attack",
         "actions": [
           {
@@ -1849,7 +1849,7 @@
       },
       {
         "id": "break_the_seal",
-        "name": "Break Seal",
+        "name": "Broken Necropolis Seal",
         "intent_type": "mixed",
         "actions": [
           {
@@ -1867,7 +1867,7 @@
       },
       {
         "id": "stolen_knife",
-        "name": "Knife",
+        "name": "Flint Knife",
         "intent_type": "attack",
         "actions": [
           {
@@ -1885,7 +1885,7 @@
       },
       {
         "id": "stolen_idol",
-        "name": "Idol",
+        "name": "Cursed Idol",
         "intent_type": "attack",
         "actions": [
           {
@@ -1942,7 +1942,7 @@
     "intents": [
       {
         "id": "snuff_the_lamp",
-        "name": "Snuff",
+        "name": "Snuffed Lamp",
         "intent_type": "debuff",
         "actions": [
           {
@@ -1955,7 +1955,7 @@
       },
       {
         "id": "knife_between_stones",
-        "name": "Knife",
+        "name": "Flint Knife",
         "intent_type": "attack",
         "actions": [
           {
@@ -1972,7 +1972,7 @@
       },
       {
         "id": "stolen_pry",
-        "name": "Pry-Bar",
+        "name": "Bronze Pry-Bar",
         "intent_type": "attack",
         "actions": [
           {
@@ -1985,7 +1985,7 @@
       },
       {
         "id": "stolen_idol",
-        "name": "Idol",
+        "name": "Cursed Idol",
         "intent_type": "attack",
         "actions": [
           {
@@ -2042,7 +2042,7 @@
     "intents": [
       {
         "id": "cursed_amulet",
-        "name": "Amulet",
+        "name": "Amulet of the Opened Tomb",
         "intent_type": "debuff",
         "actions": [
           {
@@ -2061,7 +2061,7 @@
       },
       {
         "id": "throw_the_idol",
-        "name": "Idol",
+        "name": "Cursed Idol",
         "intent_type": "attack",
         "actions": [
           {
@@ -2073,7 +2073,7 @@
       },
       {
         "id": "stolen_pry",
-        "name": "Pry-Bar",
+        "name": "Bronze Pry-Bar",
         "intent_type": "attack",
         "actions": [
           {
@@ -2086,7 +2086,7 @@
       },
       {
         "id": "stolen_knife",
-        "name": "Knife",
+        "name": "Flint Knife",
         "intent_type": "attack",
         "actions": [
           {
@@ -2148,7 +2148,7 @@
     "intents": [
       {
         "id": "constrict",
-        "name": "Constrict",
+        "name": "Coil of the Serpent",
         "intent_type": "mixed",
         "actions": [
           {
@@ -2166,7 +2166,7 @@
       },
       {
         "id": "strike",
-        "name": "Strike",
+        "name": "Venom of Apep",
         "intent_type": "attack",
         "actions": [
           {
@@ -2178,7 +2178,7 @@
       },
       {
         "id": "shed_skin",
-        "name": "Shed Skin",
+        "name": "Shed Serpent-Skin",
         "intent_type": "block",
         "actions": [
           {
@@ -2211,7 +2211,7 @@
     "intents": [
       {
         "id": "stride",
-        "name": "Stride",
+        "name": "Processional Stride",
         "intent_type": "mixed",
         "actions": [
           {
@@ -2338,7 +2338,7 @@
       },
       {
         "id": "smite",
-        "name": "Smite",
+        "name": "Smiting of the Enemies",
         "intent_type": "attack",
         "actions": [
           {
@@ -2442,7 +2442,7 @@
       },
       {
         "id": "judgement",
-        "name": "Judgement",
+        "name": "Judgement of the Dead",
         "intent_type": "attack",
         "actions": [
           {
@@ -2831,7 +2831,7 @@
     "intents": [
       {
         "id": "harvest",
-        "name": "Harvest",
+        "name": "Flood Harvest",
         "intent_type": "attack",
         "actions": [
           {
@@ -2919,13 +2919,13 @@
   },
   {
     "id": "jackal_of_the_western_gate",
-    "name": "Anubis Jackal",
+    "name": "Keeper of the Western Gate",
     "max_hp": 99,
     "intent_pattern": "cycle",
     "intents": [
       {
         "id": "bite_at_the_gate",
-        "name": "Bite",
+        "name": "Toll of the Western Gate",
         "intent_type": "attack",
         "actions": [
           {
@@ -2937,7 +2937,7 @@
       },
       {
         "id": "drag_to_the_west",
-        "name": "Drag West",
+        "name": "Funeral Procession",
         "intent_type": "mixed",
         "actions": [
           {
@@ -2955,7 +2955,7 @@
       },
       {
         "id": "stand_the_watch",
-        "name": "Stand Watch",
+        "name": "Necropolis Watch",
         "intent_type": "block",
         "actions": [
           {
@@ -3007,7 +3007,7 @@
     "intents": [
       {
         "id": "read_the_charge",
-        "name": "Charge",
+        "name": "Reading of the Charge",
         "intent_type": "attack",
         "actions": [
           {
@@ -3019,7 +3019,7 @@
       },
       {
         "id": "question_the_heart",
-        "name": "Question",
+        "name": "Declaration of Innocence",
         "intent_type": "mixed",
         "actions": [
           {
@@ -3037,7 +3037,7 @@
       },
       {
         "id": "weigh_the_answer",
-        "name": "Weigh",
+        "name": "Deliberation of the Assessors",
         "intent_type": "block",
         "actions": [
           {
@@ -3122,7 +3122,7 @@
       },
       {
         "id": "sealed",
-        "name": "Sealed",
+        "name": "Sealed Sarcophagus",
         "intent_type": "block",
         "actions": [
           {
@@ -3174,7 +3174,7 @@
     "intents": [
       {
         "id": "rend_the_unworthy",
-        "name": "Rend",
+        "name": "Rending of the Unworthy",
         "intent_type": "attack",
         "actions": [
           {
@@ -3186,7 +3186,7 @@
       },
       {
         "id": "weigh_the_dead",
-        "name": "Weigh the Dead",
+        "name": "Weight of the Hippopotamus",
         "intent_type": "mixed",
         "actions": [
           {
@@ -3204,7 +3204,7 @@
       },
       {
         "id": "crouch_by_the_scale",
-        "name": "Crouch",
+        "name": "Vigil Beside the Scale",
         "intent_type": "block",
         "actions": [
           {
@@ -3231,13 +3231,13 @@
   },
   {
     "id": "lioness_of_sekhmet",
-    "name": "The Lioness",
+    "name": "Lioness of Sekhmet",
     "max_hp": 261,
     "intent_pattern": "cycle",
     "intents": [
       {
         "id": "maul",
-        "name": "Maul",
+        "name": "Claws of Sekhmet",
         "intent_type": "attack",
         "actions": [
           {
@@ -3254,7 +3254,7 @@
       },
       {
         "id": "pounce",
-        "name": "Pounce",
+        "name": "Leap of the Lioness",
         "intent_type": "attack",
         "actions": [
           {
@@ -3266,7 +3266,7 @@
       },
       {
         "id": "prowl",
-        "name": "Prowl",
+        "name": "Hunt in the Red Land",
         "intent_type": "mixed",
         "actions": [
           {

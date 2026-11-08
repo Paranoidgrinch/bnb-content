@@ -355,7 +355,7 @@
   },
   {
     "id": "labyrinth_elite_rope_master_of_the_corvee",
-    "name": "The Taskmaster",
+    "name": "Overseer of the Corvée Register",
     "act": 4,
     "difficulty": "elite",
     "enemies": [
@@ -372,7 +372,7 @@
   },
   {
     "id": "labyrinth_elite_mummified_overseer_of_the_linen_house",
-    "name": "The Embalmer",
+    "name": "Overseer of the Linen House",
     "act": 4,
     "difficulty": "elite",
     "enemies": [
@@ -388,7 +388,7 @@
   },
   {
     "id": "labyrinth_elite_sphinx_of_the_processional_measure",
-    "name": "The Sphinx",
+    "name": "Sphinx of the Processional Way",
     "act": 4,
     "difficulty": "elite",
     "enemies": [
@@ -767,7 +767,7 @@
   },
   {
     "id": "labyrinth_elite_lioness_of_sekhmet",
-    "name": "The Lioness",
+    "name": "Lioness of Sekhmet",
     "act": 4,
     "difficulty": "elite",
     "enemies": [

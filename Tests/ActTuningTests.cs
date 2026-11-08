@@ -28,9 +28,9 @@ public class ActTuningTests
         Assert.NotEqual(100, factor);
         var before = Action(Authored, "reed_cord_surveyor.reed_lash");
         var after = Action(Shipped, "reed_cord_surveyor.reed_lash");
-        Assert.Equal("Lash · 12 dmg", before.Intent.Label);
+        Assert.Equal("Measuring Cord · 12 dmg", before.Intent.Label);
         var expected = (int)Math.Round(12 * factor / 100.0, MidpointRounding.AwayFromZero);
-        Assert.Equal($"Lash · {expected} dmg", after.Intent.Label);
+        Assert.Equal($"Measuring Cord · {expected} dmg", after.Intent.Label);
         Assert.Contains($"\"Value\":{expected}", Json(after.Program!), StringComparison.Ordinal);
         Assert.DoesNotContain("\"Value\":12", Json(after.Program!), StringComparison.Ordinal);
     }
