@@ -35,6 +35,7 @@ var mapReport = 0;
 string? generator = null;
 string? artSlots = null;
 string? fightFile = null;
+string? poolTrial = null;
 string? fightEnemy = null;
 string? fightEncounter = null;
 string? fightIntent = null;
@@ -141,6 +142,7 @@ for (var i = 0; i < args.Length - 1; i++)
         case "--map-report": mapReport = int.Parse(args[i + 1]); break;
         case "--art-slots": artSlots = args[i + 1]; break;
         case "--fight": fightFile = args[i + 1]; break;
+        case "--pool-trial": poolTrial = args[i + 1]; break;
         case "--fight-enemy": fightEnemy = args[i + 1]; break;
         case "--fight-encounter": fightEncounter = args[i + 1]; break;
         case "--fight-intent": fightIntent = args[i + 1]; break;
@@ -219,6 +221,8 @@ try
     var data = BabData.Load(dataDir);
     var blueprint = BlueprintAssembler.Build(data, seed, witchHot);
 
+    if (poolTrial is not null)
+        return BnbContent.Converter.Playtest.PoolTrial.Run(blueprint, poolTrial, Console.WriteLine);
     if (fightFile is not null || fightEnemy is not null || fightEncounter is not null)
     {
         // A named file is the durable form — check it in beside the content and it is a regression test that
