@@ -105,7 +105,7 @@ public static class RuleTexts
             ["pre_approved_violence"] = (null, "Odd rounds: violence approved, your Deeds and its attacks deal 50% more. Even rounds: every Deed breaks its law."),
             ["grandmother_web_threads"] = (null, "Every card you play spins a thread (6 at most); every Working cuts 2. On its turn each thread hits you for 3."),
             ["debt_before_passage"] = (null, "Your first hit each turn breaks its law. At half health it turns: 8 damage to itself per Claim, then your first hits deal double."),
-            ["nothing_crosses_for_free"] = (null, "Each turn it swallows 5 of your Gold; +1 damage per 10 swallowed. Deal it 25 in one turn and it spits it all back."),
+            ["nothing_crosses_for_free"] = (null, "Each turn it eyes the dearest card in your hand. Pay 10 Gold, or at your turn's end it swallows that card and you break its law. Deal it 25 in one turn and it spits them all back."),
             ["the_proper_line"] = (null, "Hitting a Bearer while one ahead stands breaks her law. While any Bearer stands she takes half damage. Each fallen Bearer rises once."),
             ["line_bearer_first"] = (null, "First Line-Bearer of the procession. Hitting it while a Bearer ahead of it stands breaks the Queen's law."),
             ["line_bearer_second"] = (null, "Second Line-Bearer of the procession. Hitting it while a Bearer ahead of it stands breaks the Queen's law."),

@@ -97,28 +97,56 @@ public class ActThreeElitesAndBossesTests
 
     // ── Great Toll Frog ───────────────────────────────────────────────────────────────────────────────────
 
+    private static bool Marked(RogueDeck.Core.Combat.CardInstance card, string mark) => card.Marks.Contains(new TagId(mark));
+
+    // 2026-11-08 (E14): the Frog eyes the dearest card in hand (Permit A38, 2 Energy, over the 1-Energy Deeds) and
+    // puts its fare in your hand. Unpaid, the card is swallowed at the turn's end and the law is broken.
     [Fact]
-    public void The_frog_swallows_five_gold_a_turn_and_grows_heavy_with_it()
+    public void Unpaid_the_frog_swallows_the_dearest_card_and_its_law_is_broken()
     {
-        var (play, _, frog) = Fight("great_toll_frog", "swallow_the_offering", [.. Enumerable.Repeat(Working, 12)]);
-        play.CombatDriver!.EndTurn();
-        Assert.Equal(5, FightProbe.StacksOf(Body(play, frog), ActThree.SwallowedGoldId));
+        var (play, session, frog) = Fight("great_toll_frog", "swallow_the_offering", ["permit_a38", Deed, Deed, Deed, Deed]);
+        var hand = play.CombatDriver!.Current!.Hand;
+        var eyed = Assert.Single(hand, c => Marked(c, ActThree.EyedByTheFrogMark));
+        Assert.Equal("permit_a38", eyed.DefinitionId.value);
+        Assert.Single(hand, c => c.DefinitionId.value == ActThree.FrogsFareCardId);
+
         play.CombatDriver.EndTurn();
-        Assert.Equal(10, Hero(play).Counters[ActThree.FrogBellyCounter]);
-        Assert.Equal(1, FightProbe.StacksOf(Body(play, frog), ActThree.TollWeightId));
+        Assert.Null(session.Error);
+        Assert.Equal(0, Licences(play));
+        Assert.Equal(1, FightProbe.StacksOf(Body(play, frog), ActThree.SwallowedCardsId));
+        var state = play.CombatDriver.Current!.State;
+        var belly = state.GetCardZones(play.CombatDriver.Current.HeroId).GetCardsInZone(CardZone.BanishedPile);
+        Assert.Contains(belly, c => c.DefinitionId.value == "permit_a38" && Marked(c, ActThree.InTheFrogsBellyMark));
+        play.Dispose();
+    }
+
+    // Paying the fare lets the card be: nothing swallowed, the law kept, and the fare counted for after the fight.
+    [Fact]
+    public void Paying_the_frogs_fare_keeps_the_card_and_the_law()
+    {
+        var (play, session, frog) = Fight("great_toll_frog", "swallow_the_offering", ["permit_a38", Deed, Deed, Deed, Deed]);
+        Play(play, session, ActThree.FrogsFareCardId, null);
+        Assert.DoesNotContain(play.CombatDriver!.Current!.Hand, c => Marked(c, ActThree.EyedByTheFrogMark));
+        play.CombatDriver.EndTurn();
+        Assert.Null(session.Error);
+        Assert.Equal(1, Licences(play));
+        Assert.Equal(0, FightProbe.StacksOf(Body(play, frog), ActThree.SwallowedCardsId));
+        Assert.Equal(1, Hero(play).Counters[ActThree.FrogFareCounter]);
         play.Dispose();
     }
 
     [Fact]
-    public void Twenty_five_in_one_turn_and_it_spits_everything_back()
+    public void Twenty_five_in_one_turn_and_it_spits_the_swallowed_cards_back()
     {
         var (play, session, frog) = Fight("great_toll_frog", "tongue_of_collection", [.. Enumerable.Repeat(Deed, 12)]);
         play.CombatDriver!.EndTurn();
-        Assert.Equal(5, Hero(play).Counters[ActThree.FrogBellyCounter]);
+        Assert.Equal(1, FightProbe.StacksOf(Body(play, frog), ActThree.SwallowedCardsId));
+        var swallowed = play.CombatDriver.Current!.State.GetCardZones(play.CombatDriver.Current.HeroId)
+            .GetCardsInZone(CardZone.BanishedPile).Single(c => Marked(c, ActThree.InTheFrogsBellyMark)).Id;
         for (var i = 0; i < 5; i++)
             Play(play, session, Deed, frog);
-        Assert.Equal(0, Hero(play).Counters[ActThree.FrogBellyCounter]);
-        Assert.Equal(0, FightProbe.StacksOf(Body(play, frog), ActThree.SwallowedGoldId));
+        Assert.Equal(0, FightProbe.StacksOf(Body(play, frog), ActThree.SwallowedCardsId));
+        Assert.Contains(play.CombatDriver.Current!.Hand, c => c.Id == swallowed && !Marked(c, ActThree.InTheFrogsBellyMark));
         play.Dispose();
     }
 
