@@ -131,7 +131,7 @@ public static class RuleTexts
             ["the_riddle"] = (null,
                 "Each round she names Deeds or Workings: play more of those than the other for a Sign, else 1 Entombed. At 3 she is solved."),
             ["the_devourer_waits"] = (null,
-                "Your turn ends: Deeds equal to Workings earn a Feather, else 1 Unworthy. At 3 she devours: 40, minus 12 per Feather eaten."),
+                "Your turn ends: she devours the most expensive card left in your hand for this fight and gains 2 Strength. Feed her a Feather of Truth to spare it."),
             ["sekhmets_rage"] = (null,
                 "Every time you lose HP she gains 1 Rage. Block one of her attacks completely and she loses all Rage."),
             ["the_four_sons"] = (null,

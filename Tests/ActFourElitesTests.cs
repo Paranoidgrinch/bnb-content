@@ -144,24 +144,66 @@ public class ActFourElitesTests
 
     // ── Ammit ─────────────────────────────────────────────────────────────────────────────────────────────
 
+    // She devours the most expensive card left in your hand as your turn ends (+2 Strength) — unless you feed her a
+    // Feather of Truth, which she lays down herself as the fight opens (content review E19, 2026-11-08).
     [Fact]
-    public void A_balanced_turn_is_a_feather_and_at_three_unworthy_she_devours_it()
+    public void Ammit_devours_the_costliest_card_you_hold_unless_you_feed_her_a_feather()
     {
-        var (play, session, ammit) = Solo(ActFour.AmmitEnemyId, "crouch_by_the_scale",
-            [Deed, Working, Deed, Working, Deed]);
-        Play(play, session, Deed, ammit);
-        Play(play, session, Working, null);
-        play.CombatDriver!.EndTurn();
-        Assert.Equal(1, Stacks(Hero(play), ActFour.ScaleFeatherId));
+        var (play, _, ammit) = Solo(ActFour.AmmitEnemyId, "crouch_by_the_scale", [Permit, Deed, Deed, Working, Deed]);
+        Assert.Equal(1, Stacks(Hero(play), ActFour.FeatherOfTruthId));
 
+        // With a Feather in hand she asks: feed her, and the hand is spared.
+        play.CombatDriver!.EndTurn();
+        var options = Assert.IsAssignableFrom<IReadOnlyList<string>>(play.CombatDriver.PendingOptionChoice);
+        Assert.Contains("Feather", options[0], StringComparison.Ordinal);
+        play.CombatDriver.SupplyOptionChoice([0]);
+        Assert.Equal(0, Stacks(Hero(play), ActFour.FeatherOfTruthId));
+        Assert.Equal(0, Stacks(Body(play, ammit), ActFour.DevouredId));
+        Assert.Equal(0, Stacks(Body(play, ammit), "strength"));
+        // Her own Feather went first: the run's carried Feathers are untouched.
+        Assert.False(Hero(play).Counters.TryGetValue(ActFour.FeathersSpent, out var spent) && spent > 0);
+
+        // No Feather left: the most expensive card in hand (Permit A38, 2 Energy) is gone for the fight.
         play.CombatDriver.EndTurn();
-        play.CombatDriver.EndTurn();
-        Assert.Equal(2, Stacks(Body(play, ammit), ActFour.UnworthyId));
-        var before = Hero(play).Health.Current;
-        play.CombatDriver.EndTurn();
-        Assert.Equal(before - (ActFour.DevourDamage - ActFour.FeatherAppeasement), Hero(play).Health.Current);
-        Assert.Equal(0, Stacks(Hero(play), ActFour.ScaleFeatherId));
-        Assert.Equal(0, Stacks(Body(play, ammit), ActFour.UnworthyId));
+        Assert.Null(play.CombatDriver.PendingOptionChoice);
+        var combat = play.CombatDriver.Current!;
+        var banished = combat.State.GetCardZones(combat.HeroId).GetCardsInZone(CardZone.BanishedPile);
+        Assert.Single(banished);
+        Assert.DoesNotContain(combat.Hand, c => c.DefinitionId.value == Permit);
+        Assert.Equal(1, Stacks(Body(play, ammit), ActFour.DevouredId));
+        Assert.Equal(ActFour.DevourStrength, Stacks(Body(play, ammit), "strength"));
+        play.Dispose();
+    }
+
+    // Play the card she is eyeing and her eye moves on to the next most expensive card you still hold.
+    [Fact]
+    public void Playing_the_eyed_card_moves_her_eye_to_the_next_most_expensive()
+    {
+        var (play, session, ammit) = Solo(ActFour.AmmitEnemyId, "crouch_by_the_scale", [Permit, Deed, Deed, Working, Deed]);
+        Assert.Equal(1, Stacks(Hero(play), ActFour.AmmitsGazeId));
+        Play(play, session, Permit, ammit);
+        Assert.Equal(1, Stacks(Hero(play), ActFour.AmmitsGazeId));
+        play.CombatDriver!.EndTurn();
+        play.CombatDriver.SupplyOptionChoice([1]); // keep the Feather, let her eat
+        var combat = play.CombatDriver.Current!;
+        var banished = combat.State.GetCardZones(combat.HeroId).GetCardsInZone(CardZone.BanishedPile);
+        Assert.Single(banished);
+        Assert.NotEqual(Permit, banished[0].DefinitionId.value);
+        Assert.Equal(1, Stacks(Hero(play), ActFour.FeatherOfTruthId));
+        Assert.Equal(ActFour.DevourStrength, Stacks(Body(play, ammit), "strength"));
+        play.Dispose();
+    }
+
+    [Fact]
+    public void Ammit_finds_nothing_in_an_empty_hand()
+    {
+        var (play, session, ammit) = Solo(ActFour.AmmitEnemyId, "crouch_by_the_scale", [Deed, Deed, Deed, Deed, Deed]);
+        for (var i = 0; i < 5; i++)
+            Play(play, session, Deed, ammit);
+        play.CombatDriver!.EndTurn();
+        Assert.Null(play.CombatDriver.PendingOptionChoice);
+        Assert.Equal(1, Stacks(Hero(play), ActFour.FeatherOfTruthId));
+        Assert.Equal(0, Stacks(Body(play, ammit), ActFour.DevouredId));
         play.Dispose();
     }
 

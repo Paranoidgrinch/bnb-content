@@ -12,8 +12,17 @@ namespace BnbContent.Converter;
 //              through your Block is 1 Burdened), the Tomb Robber (its loot is a card).
 //   The Scale  the Rope-Stretcher, the Crooked Cubit, the Forty-Second Judge, the Eclipse Beetle, the Chiseller
 //              and, in duos, Thoth's Ibis.
-//   Risen      the Half-Wrapped Mummy, the Natron Priest, the Pyramidion Golem, the Drowned Farmer, the Canopic
-//              Keeper, the False-Door Ka, and whoever stands beside the Anubis Jackal.
+//   Risen      the Pyramidion Golem, the Shade of the Silted Field, the Keeper of the Four Vessels and the
+//              False-Door Ka — four, and no more (content review E16, 2026-11-08).
+//
+// Since that review the Necropolis and the House of Linen speak their own words instead of rising:
+//   the Half-Wrapped Mummy    Unfinished Wrapping: linen layers that swallow a hit each, one more each round
+//                             unless you hit it three times.
+//   the Bearer of the Natron  Drying of the Body: the Block you still have at the end of its turn becomes its own.
+//   the Unlicensed Excavator  Spoils of the Tomb: hits through your Block steal Gold; after four turns it flees
+//                             with them, killed first it gives them back.
+//   the Keeper of the Western Gate  The Western Way: a fallen ally leaves a husk, and the Jackal raises it on its
+//                             next turn unless the husk or the Jackal falls first.
 public static partial class ActFour
 {
     public const string SobeksTitheId = "sobeks_tithe";
@@ -33,6 +42,34 @@ public static partial class ActFour
     // Kept for Fade (ActFour.cs): no body preserves afflictions since 2026-11-04, so nothing is ever held.
     public const string DryWhatWouldDecayId = "dry_what_would_decay";
 
+    // The Half-Wrapped Mummy (content review E16): linen instead of rising.
+    public const string WrappingRuleId = "unfinished_wrapping";
+    public const string LinenLayerId = "linen_layer";
+    public const string UnwindingId = "unwinding";
+    public const int LinenLayers = 4;
+    public const int UnwindAt = 3;
+
+    // The Bearer of the Natron (E16): your leftover Block dries into its own.
+    public const string DryingRuleId = "drying_of_the_body";
+
+    // The Unlicensed Excavator (E17): Gold for every hit through your Block, and a shaft to flee down.
+    public const string EscapeShaftId = "escape_shaft";
+    public const string StolenGoldId = "stolen_gold";
+    public const string FledWithTheGoldId = "fled_with_the_gold";
+    public const int RobberTurns = 4;
+    public const int GoldPerHit = 20;
+    public static CounterId GoldCarriedOff => new("tomb_gold_carried_off");
+
+    // The Keeper of the Western Gate (E18): a fallen ally leaves a husk, and the Jackal guides it west.
+    public const string HuskId = "western_husk";
+    public const string HuskEnemyId = "western_husk";
+    public const string HuskName = "Wrapped Husk";
+    public const string GuidingWestId = "guiding_west";
+    public const string GuidedWestId = "guided_west";
+    public const string WestboundId = "westbound";
+    public const int HuskHealth = 8;
+    public const int WestwardRisePercent = 40;
+
     public const string FalseDoorEnemyId = "false_door";
     public const string TombGoldCardId = "tomb_gold";
     public const string TombRobberAloneEncounterId = "labyrinth_warrens_02";
@@ -49,6 +86,7 @@ public static partial class ActFour
             "eclipse_scarab.black_noon" => BlackNoon(23),
             "fallen_capstone_golem.set_the_capstone" => Capstone(23),
             "runaway_laborer.hide_behind_the_gang" => DuckBehind(16, 8),
+            "jackal_of_the_western_gate.westward_guidance" => WestwardGuidance(),
             _ when intentId == "rise" && Identities.Contains(enemyId) => RiseAction(),
             _ => null,
         };
@@ -108,7 +146,7 @@ public static partial class ActFour
                 MoveTheBookmark<TurnStartedTriggeredEffectContext>(ushabti, BurdenPaid, StonesQuarried),
             ]));
         return Face(StoneWorkId, "Compulsory Labour",
-            "Every Burdened surcharge you pay is a Stone. Its next Stone Blow deals 4 more per Stone and spends them.",
+            "Every Burdened surcharge you pay is a Stone. Its next Dressed Stone deals 4 more per Stone and spends them.",
             triggers: [On("TurnStarted", quarry, StatusTriggerScope.Bearer)]);
     }
 
@@ -198,43 +236,259 @@ public static partial class ActFour
             triggers: [On("TurnEnded", turn, StatusTriggerScope.Bearer)]);
     }
 
-    // The Anubis Jackal: at the first bell every ally that cannot rise yet is watched, and rises once.
-    private static StatusData GuardsTheWest()
+    // ── the House of Linen and the Necropolis (content review E16–E18, 2026-11-08) ─────────────────────────
+
+    // The Half-Wrapped Mummy: every layer of linen swallows one of your hits whole and is torn off doing it.
+    // It wears its own layers, so the player counts what is left on the body. A hit the linen ate deals
+    // nothing at all and is blocked by nothing — that is how the layer knows it was the one that took it.
+    private static StatusData LinenLayer() => new()
     {
+        Id = LinenLayerId,
+        NameKey = "Linen Layer",
+        DescriptionKey = "Each layer swallows one of your hits whole, and is torn off doing it.",
+        Polarity = StatusPolarity.Buff,
+        StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
+        UsesStacks = true,
+        Tags = [],
+        PassiveModifiers =
+        [
+            new PassiveModifierData(PassiveModifierPipeline.DamageReceived, PassiveModifierOperation.ScalePercent, 0,
+                Priority: 1000),
+        ],
+        Triggers =
+        [
+            On("DamageTaken", new ConditionalEffectNode<DamageReceivedTriggeredEffectContext>(
+                AllOf(
+                    Wears<DamageReceivedTriggeredEffectContext>(CombatantTargetSelectors.Source, PassiveStatuses.ApplicantId),
+                    Eq(new EventAmountExpression<DamageReceivedTriggeredEffectContext>(), N<DamageReceivedTriggeredEffectContext>(0)),
+                    Eq(new EventBlockedAmountExpression<DamageReceivedTriggeredEffectContext>(), N<DamageReceivedTriggeredEffectContext>(0)),
+                    Above(new EventRequestedAmountExpression<DamageReceivedTriggeredEffectContext>(), 0)),
+                new ModifyStatusStacksNode<DamageReceivedTriggeredEffectContext>(CombatantTargetSelectors.EventTarget,
+                    new StatusDefinitionId(LinenLayerId), N<DamageReceivedTriggeredEffectContext>(-1))),
+                StatusTriggerScope.Bearer),
+        ],
+    };
+
+    // …and the rule that keeps wrapping it: each of your hits this round is a turn of Unwinding on the body; as its
+    // own turn ends, fewer than three is one more layer (never more than four), and the count starts again.
+    private static StatusData UnfinishedWrapping()
+    {
+        var self = CombatantTargetSelectors.Source;
+        var hit = new ConditionalEffectNode<DamageReceivedTriggeredEffectContext>(
+            AllOf(
+                Wears<DamageReceivedTriggeredEffectContext>(CombatantTargetSelectors.Source, PassiveStatuses.ApplicantId),
+                Above(new EventRequestedAmountExpression<DamageReceivedTriggeredEffectContext>(), 0)),
+            new ApplyStatusNode<DamageReceivedTriggeredEffectContext>(CombatantTargetSelectors.EventTarget,
+                new StatusDefinitionId(UnwindingId), N<DamageReceivedTriggeredEffectContext>(1)));
+        var wrap = new CausalSequenceEffectNode<TurnEndedTriggeredEffectContext>(
+        [
+            new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
+                AllOf(
+                    new ComparisonExpression<TurnEndedTriggeredEffectContext>(StacksOn<TurnEndedTriggeredEffectContext>(self, UnwindingId),
+                        ComparisonOperator.Less, N<TurnEndedTriggeredEffectContext>(UnwindAt)),
+                    new ComparisonExpression<TurnEndedTriggeredEffectContext>(StacksOn<TurnEndedTriggeredEffectContext>(self, LinenLayerId),
+                        ComparisonOperator.Less, N<TurnEndedTriggeredEffectContext>(LinenLayers))),
+                new ApplyStatusNode<TurnEndedTriggeredEffectContext>(self, new StatusDefinitionId(LinenLayerId), N<TurnEndedTriggeredEffectContext>(1))),
+            new RemoveStatusNode<TurnEndedTriggeredEffectContext>(self, new StatusDefinitionId(UnwindingId)),
+        ]);
+        return Face(WrappingRuleId, "Unfinished Wrapping",
+            $"It starts with {LinenLayers} Linen Layers; each swallows one of your hits whole. At the end of its turn it "
+            + $"wraps one more (at most {LinenLayers}), unless you hit it {UnwindAt} or more times this round.",
+            triggers: [On("DamageTaken", hit, StatusTriggerScope.Bearer), On("TurnEnded", wrap, StatusTriggerScope.Bearer)]);
+    }
+
+    // The Bearer of the Natron: as its turn ends, the Block you still have — what its blow did not use up — dries
+    // into its own. Copied, not taken: a duo partner acting after it still meets your Block. Paid at the end of
+    // ITS turn because Block expires at the start of its owner's turn; gained any earlier it would be gone before
+    // it stood between you and the Bearer.
+    private static StatusData DryingOfTheBody()
+    {
+        var left = new CombatantDefensivePoolExpression<TurnEndedTriggeredEffectContext>(Applicant, StandardCombatIds.BlockDefensivePool);
+        return Face(DryingRuleId, "Drying of the Body",
+            "At the end of its turn the Block you still have dries into its own: it gains that much Block.",
+            triggers:
+            [
+                On("TurnEnded", new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(Above(left, 0),
+                    new GainBlockNode<TurnEndedTriggeredEffectContext>(CombatantTargetSelectors.Source, left)),
+                    StatusTriggerScope.Bearer),
+            ]);
+    }
+
+    // The Unlicensed Excavator: every hit of its that reaches you is Gold in its sack (Stolen Gold, on the body).
+    // Combat cannot reach the run's purse, so the Gold only leaves you if it flees: the fight writes down what went
+    // down the shaft and the run's ledger takes it after the fight (CutPrograms).
+    private static StatusData SpoilsOfTheTomb() => Face(LootRuleId, "Spoils of the Tomb",
+        $"Every hit of its that gets through your Block steals {GoldPerHit} Gold. Kill it before it flees and you keep "
+        + "your Gold, and Tomb Gold joins your deck. Alone, it brings no other reward.",
+        triggers:
+        [
+            On("DamageDealt", new ConditionalEffectNode<DamageDealtTriggeredEffectContext>(
+                AllOf(
+                    Above(new EventAmountExpression<DamageDealtTriggeredEffectContext>(), 0),
+                    Wears<DamageDealtTriggeredEffectContext>(CombatantTargetSelectors.EventTarget, PassiveStatuses.ApplicantId)),
+                new ApplyStatusNode<DamageDealtTriggeredEffectContext>(CombatantTargetSelectors.Source,
+                    new StatusDefinitionId(StolenGoldId), N<DamageDealtTriggeredEffectContext>(GoldPerHit))),
+                StatusTriggerScope.Bearer),
+        ]);
+
+    // Four of its turns, and down the shaft it goes with what it took (the fight's Downed rules settle the Gold).
+    private static StatusData EscapeShaft()
+    {
+        var self = CombatantTargetSelectors.Source;
+        var turn = new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
+            new ComparisonExpression<TurnEndedTriggeredEffectContext>(
+                StacksOn<TurnEndedTriggeredEffectContext>(self, EscapeShaftId), ComparisonOperator.LessOrEqual, N<TurnEndedTriggeredEffectContext>(1)),
+            new CausalSequenceEffectNode<TurnEndedTriggeredEffectContext>(
+            [
+                new RemoveStatusNode<TurnEndedTriggeredEffectContext>(self, new StatusDefinitionId(EscapeShaftId)),
+                new ApplyStatusNode<TurnEndedTriggeredEffectContext>(self, new StatusDefinitionId(FledWithTheGoldId), N<TurnEndedTriggeredEffectContext>(1)),
+                new SetCombatantLifecycleStateNode<TurnEndedTriggeredEffectContext>(self, CombatantLifecycleState.Downed),
+            ]),
+            @else: new ModifyStatusStacksNode<TurnEndedTriggeredEffectContext>(self, new StatusDefinitionId(EscapeShaftId), N<TurnEndedTriggeredEffectContext>(-1)));
+        return Face(EscapeShaftId, "Escape Shaft",
+            "Its turns until it slips down its shaft with the Gold it stole.", stacks: true,
+            triggers: [On("TurnEnded", turn, StatusTriggerScope.Bearer)]);
+    }
+
+    // The Excavator goes down: killed, your Gold stays yours and its loot is a card after the fight; fled, the
+    // Gold it carried is written down for the run to take, and there is no card.
+    private static IEffectNode<CombatantDownedTriggeredEffectContext> TombRobberDowned()
+    {
+        var downed = CombatantTargetSelectors.SourceIncludingDowned;
+        return new ConditionalEffectNode<CombatantDownedTriggeredEffectContext>(
+            Wears<CombatantDownedTriggeredEffectContext>(downed, LootRuleId),
+            new ConditionalEffectNode<CombatantDownedTriggeredEffectContext>(
+                Wears<CombatantDownedTriggeredEffectContext>(downed, FledWithTheGoldId),
+                new CausalSequenceEffectNode<CombatantDownedTriggeredEffectContext>(
+                [
+                    new SetCombatantCounterNode<CombatantDownedTriggeredEffectContext>(Applicant, GoldCarriedOff,
+                        StacksOn<CombatantDownedTriggeredEffectContext>(downed, StolenGoldId), relative: true),
+                    new SetCombatantCounterNode<CombatantDownedTriggeredEffectContext>(Applicant, LootClaimed,
+                        N<CombatantDownedTriggeredEffectContext>(0), relative: false),
+                ]),
+                @else: new SetCombatantCounterNode<CombatantDownedTriggeredEffectContext>(Applicant, LootClaimed,
+                    N<CombatantDownedTriggeredEffectContext>(1), relative: true)));
+    }
+
+    // The Keeper of the Western Gate: the rule itself says it; the work is in the Downed rules and the Guidance.
+    private static StatusData TheWesternWay() => Face(JackalRuleId, "The Western Way",
+        $"When an ally falls it leaves a {HuskName} ({HuskHealth} HP). On its next turn the Jackal guides the husk "
+        + $"west and the ally rises with {WestwardRisePercent} % of its HP. Destroy the husk first, or the Jackal.");
+
+    private static ICombatantTargetSelector LivingHusks { get; } =
+        CombatantTargetSelectors.WithStatus(CombatantTargetSelectors.AllAliveCombatants, new StatusDefinitionId(HuskId));
+
+    private static ICombatantTargetSelector FallenWith(string status) =>
+        CombatantTargetSelectors.WithStatus(CombatantTargetSelectors.AllCombatants, new StatusDefinitionId(status), includeFallen: true);
+
+    // A body the Jackal may still guide west: a fallen party that is not the Jackal, was not raised by it already,
+    // and did not leave the fight on its own feet (fled down a shaft, or ran from the corvée).
+    private static ICombatantTargetSelector GuidableFallen { get; } =
+        CombatantTargetSelectors.FirstTarget(
+            CombatantTargetSelectors.Except(
+                CombatantTargetSelectors.Downed(FallenWith(LabyrinthBodyId)),
+                CombatantTargetSelectors.Union(
+                    FallenWith(JackalRuleId), FallenWith(GuidedWestId), FallenWith(FledWithTheGoldId), FallenWith(FleeingId))));
+
+    // What falls at the Western Gate. An ally (while the Jackal stands): a husk, and the Jackal turns to guide it.
+    // A husk: if it was the last, the Jackal has nothing to guide. The Jackal: every husk crumbles with it.
+    private static IEffectNode<CombatantDownedTriggeredEffectContext> WesternGateDowned()
+    {
+        var downed = CombatantTargetSelectors.SourceIncludingDowned;
         var jackal = Bearer(JackalRuleId);
-        var body = CombatantTargetSelectors.IterationTarget;
-        var risenAlready = new[] { RisenId, RisenNatronId, RisenGolemId, RisenDoorId, RisenFarmerId, RisenKeeperId, RisenByJackalId }
-            .Select(id => Wears<TurnStartedTriggeredEffectContext>(body, id))
-            .Aggregate((a, b) => new OrExpression<TurnStartedTriggeredEffectContext>(a, b));
-        var watch = new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
-            AllOf(IsPlayersTurn<TurnStartedTriggeredEffectContext>(), Standing<TurnStartedTriggeredEffectContext>(jackal),
-                Eq<TurnStartedTriggeredEffectContext>(new RoundNumberExpression<TurnStartedTriggeredEffectContext>(), N<TurnStartedTriggeredEffectContext>(1))),
-            new ForEachTargetEffectNode<TurnStartedTriggeredEffectContext>(
-                CombatantTargetSelectors.WithoutStatus(Parties, new StatusDefinitionId(JackalRuleId)),
-                new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
-                    new NotExpression<TurnStartedTriggeredEffectContext>(risenAlready),
-                    new ApplyStatusNode<TurnStartedTriggeredEffectContext>(body, new StatusDefinitionId(RisenByJackalId), N<TurnStartedTriggeredEffectContext>(1)))));
-        return Face(JackalRuleId, "Watched by Anubis",
-            "While the Jackal lives, an ally that dies rises again with 40 % of its HP, once.",
-            triggers: [On("TurnStarted", watch)]);
+        ICombatExpression<CombatantDownedTriggeredEffectContext, bool> Was(string status) =>
+            Wears<CombatantDownedTriggeredEffectContext>(downed, status);
+        ICombatExpression<CombatantDownedTriggeredEffectContext, bool> Not(ICombatExpression<CombatantDownedTriggeredEffectContext, bool> e) =>
+            new NotExpression<CombatantDownedTriggeredEffectContext>(e);
+
+        return new CausalSequenceEffectNode<CombatantDownedTriggeredEffectContext>(
+        [
+            new ConditionalEffectNode<CombatantDownedTriggeredEffectContext>(
+                AllOf(Standing<CombatantDownedTriggeredEffectContext>(jackal), Was(LabyrinthBodyId), Not(Was(JackalRuleId)),
+                    Not(Was(GuidedWestId)), Not(Was(FledWithTheGoldId)), Not(Was(FleeingId))),
+                new CausalSequenceEffectNode<CombatantDownedTriggeredEffectContext>(
+                [
+                    new SummonCombatantNode<CombatantDownedTriggeredEffectContext>(
+                        StandardCombatIds.EnemyTeam, N<CombatantDownedTriggeredEffectContext>(HuskHealth),
+                        new CombatantDefinitionId(HuskEnemyId), HuskName,
+                        startingStatuses: [new StatusGrant(new StatusDefinitionId(HuskId), 1)]),
+                    new ApplyStatusNode<CombatantDownedTriggeredEffectContext>(jackal, new StatusDefinitionId(GuidingWestId),
+                        N<CombatantDownedTriggeredEffectContext>(1)),
+                ])),
+            new ConditionalEffectNode<CombatantDownedTriggeredEffectContext>(
+                AllOf(Was(HuskId), Eq(new CountTargetsExpression<CombatantDownedTriggeredEffectContext>(LivingHusks), N<CombatantDownedTriggeredEffectContext>(0))),
+                new ForEachTargetEffectNode<CombatantDownedTriggeredEffectContext>(
+                    CombatantTargetSelectors.WithStatus(CombatantTargetSelectors.AllAliveCombatants, new StatusDefinitionId(GuidingWestId)),
+                    new RemoveStatusNode<CombatantDownedTriggeredEffectContext>(CombatantTargetSelectors.IterationTarget, new StatusDefinitionId(GuidingWestId)))),
+            new ConditionalEffectNode<CombatantDownedTriggeredEffectContext>(Was(JackalRuleId),
+                new ForEachTargetEffectNode<CombatantDownedTriggeredEffectContext>(LivingHusks,
+                    new SetHealthNode<CombatantDownedTriggeredEffectContext>(CombatantTargetSelectors.IterationTarget, N<CombatantDownedTriggeredEffectContext>(0)))),
+        ]);
+    }
+
+    // Westward Guidance, the Jackal's whole turn while a husk waits: the fallen ally stands up (alive, at nothing
+    // yet — which is how it is told from everyone else standing: it is the one at 0 HP), is marked, rises to 40 %
+    // of its health free of debuffs, and the husk is spent. Raised once only (Guided West).
+    private static EffectProgram<EnemyActionContext> WestwardGuidance()
+    {
+        var self = CombatantTargetSelectors.Source;
+        var rising = Bearer(WestboundId);
+        var raise = new CausalSequenceEffectNode<EnemyActionContext>(
+        [
+            new SetCombatantLifecycleStateNode<EnemyActionContext>(GuidableFallen, CombatantLifecycleState.Alive),
+            new ApplyStatusNode<EnemyActionContext>(CombatantTargetSelectors.LowestHealth(Parties), new StatusDefinitionId(WestboundId), Const(1)),
+            new SetHealthNode<EnemyActionContext>(rising,
+                new MaxExpression<EnemyActionContext>(Const(1),
+                    new DivideExpression<EnemyActionContext>(
+                        new MultiplyExpression<EnemyActionContext>(new CombatantMaxHealthExpression<EnemyActionContext>(rising), Const(WestwardRisePercent)),
+                        Const(100)))),
+            new RemoveStatusesByPolarityNode<EnemyActionContext>(rising, StatusPolarity.Debuff),
+            new ApplyStatusNode<EnemyActionContext>(rising, new StatusDefinitionId(GuidedWestId), Const(1)),
+            new RemoveStatusNode<EnemyActionContext>(rising, new StatusDefinitionId(WestboundId)),
+            new ForEachTargetEffectNode<EnemyActionContext>(LivingHusks,
+                new SetHealthNode<EnemyActionContext>(CombatantTargetSelectors.IterationTarget, Const(0))),
+        ]);
+        return new(new CausalSequenceEffectNode<EnemyActionContext>(
+        [
+            new ConditionalEffectNode<EnemyActionContext>(
+                AllOf(Above(new CountTargetsExpression<EnemyActionContext>(LivingHusks), 0),
+                    Above(new CountTargetsExpression<EnemyActionContext>(GuidableFallen), 0)),
+                raise),
+            new RemoveStatusNode<EnemyActionContext>(self, new StatusDefinitionId(GuidingWestId)),
+        ]));
     }
 
     private static IEnumerable<StatusData> NormalStatuses() =>
     [
         Face(SobeksTitheId, "Sobek's Tithe", "Its attacks deal 4 more for every Burdened you carry."),
         StoneWork(),
-        Face(StoneId, "Stone", "Stones it hauled from your surcharges. Its next Stone Blow deals 4 more per Stone.",
+        Face(StoneId, "Stone", "Stones it hauled from your surcharges. Its next Dressed Stone deals 4 more per Stone.",
             StatusPolarity.Buff, stacks: true),
         GranaryThief(),
         Face(SnatchOwedId, "Snatching", "Cards it will take out of your next hand.", stacks: true),
         Face(SackId, "The Sack", "Cards it has stolen from you. Kill it and they come back to your hand.", stacks: true),
         TheSwarm(),
-        Face(LootRuleId, "Tomb Gold",
-            "Kill it and Tomb Gold joins your deck. Alone, it brings no other reward."),
-        Face(KeeperRuleId, "The Canopic Keeper",
+        SpoilsOfTheTomb(),
+        EscapeShaft(),
+        Face(StolenGoldId, "Stolen Gold",
+            "Gold it has taken from you. Kill it and you keep it; if it flees, the Gold goes with it.", stacks: true),
+        Face(FledWithTheGoldId, "Fled with the Gold", "It slipped down its shaft with the Gold it stole."),
+        Face(KeeperRuleId, "Keeper of the Four Vessels",
             "It always keeps two jars beside it."),
         Fleeing(),
-        GuardsTheWest(),
+        TheWesternWay(),
+        Face(GuidingWestId, "Guiding West",
+            "A husk lies waiting: on its turn the Jackal guides it west and the fallen ally rises with 40 % of its HP. "
+            + "Destroy the husk first, or the Jackal."),
+        Face(GuidedWestId, "Guided West", "The Jackal raised it once already; if it falls again, it stays down."),
+        Face(WestboundId, "Westbound", "Rising on the western road."),
+        Face(HuskId, HuskName,
+            "What a fallen ally left behind. Destroy it before the Jackal's turn, or the ally rises again."),
+        UnfinishedWrapping(),
+        LinenLayer(),
+        Face(UnwindingId, "Unwinding",
+            $"Your hits on it this round. At {UnwindAt} it gains no new linen layer this round.", stacks: true),
+        DryingOfTheBody(),
         Face(ApproachOfNoonId, "Eclipse", "Crooked turns it has seen. At 3 comes Black Noon, and the count starts again.",
             stacks: true),
     ];

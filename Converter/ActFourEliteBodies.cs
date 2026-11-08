@@ -9,11 +9,11 @@ namespace BnbContent.Converter;
 // Act IV's eleven elites since the rework of 2026-11-04 (user): each its own mechanic, one clear sentence, every
 // count a stack you can read. The elite penalty is Entombed (at 5 you lose a turn).
 //
-//   The Taskmaster            two Haulers drag an obelisk at you; at 4 it falls for 40.
+//   the Corvée Register       two Haulers drag an obelisk at you; at 4 it falls for 40.
 //   Colossus of Memnon        every third round dawn: up to 2 of your Burdened become Entombed.
 //   Coils of Apep             a coil a round, 1 card fewer drawn per coil; 20 damage in a turn loosens one.
-//   The Sphinx                Deeds or Workings, each round; three answers and she is solved.
-//   Ammit                     a balanced turn is a Feather, a crooked one Unworthy; at 3 she devours.
+//   the Sphinx                Deeds or Workings, each round; three answers and she is solved.
+//   Ammit                     she devours the most expensive card left in your hand, unless fed a Feather.
 //   The Lioness               every HP you lose is Rage; block one of her attacks fully and it is gone.
 //   Priest of the Four Sons   all four sons' jars, and every third round a broken one refilled.
 //   Brood Mother              three brood jars; every second round each hatches a Scarab.
@@ -76,7 +76,9 @@ public static partial class ActFour
     public const int SolvedRounds = 2;
 
     // Ammit
-    public const int AmmitDevoursAt = 3;
+    public const string DevouredId = "devoured";
+    public const string DevouredMark = "devoured_by_ammit";
+    public const int DevourStrength = 2;
 
     // The Lioness
     public const string LionessRuleId = "sekhmets_rage";
@@ -123,9 +125,9 @@ public static partial class ActFour
     public sealed record Tool(string Key, string Name, string OwnerId, string StolenIntent);
     public static readonly IReadOnlyList<Tool> Tools =
     [
-        new("pry_bar", "Pry-Bar", PryBarVeteranEnemyId, "stolen_pry"),
-        new("knife", "Knife", LampThiefEnemyId, "stolen_knife"),
-        new("idol", "Idol", CurseBearerEnemyId, "stolen_idol"),
+        new("pry_bar", "Bronze Pry-Bar", PryBarVeteranEnemyId, "stolen_pry"),
+        new("knife", "Flint Knife", LampThiefEnemyId, "stolen_knife"),
+        new("idol", "Cursed Idol", CurseBearerEnemyId, "stolen_idol"),
     ];
     public static string OwnsToolId(string key) => $"owns_{key}";
     public static string HoldsToolId(string key) => $"holds_{key}";
@@ -276,7 +278,7 @@ public static partial class ActFour
         yield return Face(ObeliskId, "Obelisk", "How far the obelisk has come. At 4 it falls on you for 40.", stacks: true);
         yield return Face(WhippedBackId, "Whipped Back", "Rounds until the fallen Haulers are whipped back in.", stacks: true);
         yield return Face(AtTheRopeId, "At the Rope",
-            "A Hauler dragging the obelisk. It does not attack, and it falls with the Taskmaster.");
+            "A Hauler dragging the obelisk. It does not attack, and it falls with the Overseer.");
     }
 
     // A Hauler falls: the whip comes in 2 rounds. The Taskmaster falls: the rope goes slack.
@@ -510,46 +512,131 @@ public static partial class ActFour
 
     // ── Ammit ─────────────────────────────────────────────────────────────────────────────────────────────
 
-    // At the end of your turn she weighs it: as many Deeds as Workings (one each at least) is a Feather, anything
-    // else is Unworthy. At 3 Unworthy she devours: 40, 12 less for each Feather she eats (at most 3).
+    // Ammit does not weigh (content review E19, 2026-11-08: six normals and the Weigher already do). She eats.
+    // She keeps her eye on the most expensive card in your hand (printed cost; she has no taste for the
+    // unplayable). Play that card and her eye moves on to the next most expensive one you hold; whatever she is
+    // eyeing when your turn ends, she devours: gone for the fight, and she gains 2 Strength. Hold a Feather of
+    // Truth and you are asked first: feed her the Feather instead, or let her have the card.
+    //
+    // ⚠ Why an eye and not a look at the hand as the turn ends: the engine discards the hand as the turn ends, and a
+    // rule hearing the turn end cannot be sure whether the hand is still there. So the choice is made while the hand
+    // is held — at the draw and after every play — and the discard only asks whether the eyed card went with it.
+    //
+    // The Feathers are the act's own: carried from its events into every fight, and she lays one down herself as
+    // the fight opens (HeroOpening). Hers is spent first, so the carried count only falls for Feathers of yours.
+    private static CounterId CostliestInHand => new("ammit_costliest");
+    private static CounterId ChosenForAmmit => new("ammit_chosen");
+    private static CounterId AmmitsFeatherSpent => new("ammit_feather_spent");
+    public const string SpatOutMark = "spat_out_by_ammit";
+    public const string AmmitsGazeId = "ammits_gaze";
+
+    // Put her eye on the most expensive edible card in hand that was not just played (the first of them on a tie).
+    private static IEffectNode<TContext> Eye<TContext>(ICombatantTargetSelector player) where TContext : class
+    {
+        var card = new IteratedCardExpression<TContext>();
+        var cost = new CardInstanceBaseCostExpression<TContext>(card, StandardCombatIds.EnergyResource);
+        var costliest = new CombatantCounterExpression<TContext>(player, CostliestInHand);
+        var edible = AllOf(
+            new NotExpression<TContext>(new CardInstanceHasTagExpression<TContext>(card, StandardCombatIds.UnplayableTag)),
+            new NotExpression<TContext>(new CardInstanceHasMarkExpression<TContext>(card, new TagId(SpatOutMark))));
+        IEffectNode<TContext> Set(CounterId counter, ICombatExpression<TContext, int> value) =>
+            new SetCombatantCounterNode<TContext>(player, counter, value, relative: false);
+        return new CausalSequenceEffectNode<TContext>(
+        [
+            Set(CostliestInHand, N<TContext>(-1)),
+            new ForEachCardInZoneNode<TContext>(player, CardZone.Hand,
+                new ConditionalEffectNode<TContext>(
+                    AllOf(edible, new ComparisonExpression<TContext>(cost, ComparisonOperator.Greater, costliest)),
+                    Set(CostliestInHand, cost))),
+            Set(ChosenForAmmit, N<TContext>(0)),
+            new ForEachCardInZoneNode<TContext>(player, CardZone.Hand,
+                new ConditionalEffectNode<TContext>(
+                    AllOf(edible, Eq(cost, costliest),
+                        Eq(new CombatantCounterExpression<TContext>(player, ChosenForAmmit), N<TContext>(0))),
+                    new CausalSequenceEffectNode<TContext>(
+                    [
+                        new MarkCardInstanceNode<TContext>(player, card, new TagId(DevouredMark)),
+                        Set(ChosenForAmmit, N<TContext>(1)),
+                    ]))),
+            new ConditionalEffectNode<TContext>(
+                Eq(new CombatantCounterExpression<TContext>(player, ChosenForAmmit), N<TContext>(1)),
+                new ConditionalEffectNode<TContext>(
+                    new NotExpression<TContext>(Wears<TContext>(player, AmmitsGazeId)), Mark<TContext>(player, AmmitsGazeId)),
+                @else: Unmark<TContext>(player, AmmitsGazeId)),
+        ]);
+    }
+
     private static IEnumerable<StatusData> AmmitStatuses()
     {
         var ammit = Bearer(AmmitRuleId);
-        var deeds = PlayedTagged<TurnEndedTriggeredEffectContext>(Cards.CardAuthoring.DeedTag);
-        var workings = PlayedTagged<TurnEndedTriggeredEffectContext>(Cards.CardAuthoring.WorkingTag);
-        var feathers = StacksOn<TurnEndedTriggeredEffectContext>(Applicant, ScaleFeatherId);
-        var eaten = new MinExpression<TurnEndedTriggeredEffectContext>(feathers, N<TurnEndedTriggeredEffectContext>(3));
+        var eye = new TagId(DevouredMark);
+        var spat = new TagId(SpatOutMark);
 
-        var devour = new CausalSequenceEffectNode<TurnEndedTriggeredEffectContext>(
+        // The draw: last turn's marks are wiped from the hand, and her eye falls on its most expensive card.
+        IEffectNode<CardsDrawnTriggeredEffectContext> Wipe(TagId mark) =>
+            new ForEachCardInZoneNode<CardsDrawnTriggeredEffectContext>(Applicant, CardZone.Hand,
+                new MarkCardInstanceNode<CardsDrawnTriggeredEffectContext>(Applicant,
+                    new IteratedCardExpression<CardsDrawnTriggeredEffectContext>(), mark, remove: true),
+                markFilter: mark);
+        var draw = new ConditionalEffectNode<CardsDrawnTriggeredEffectContext>(
+            AllOf(IsPlayersTurn<CardsDrawnTriggeredEffectContext>(), Standing<CardsDrawnTriggeredEffectContext>(ammit)),
+            new CausalSequenceEffectNode<CardsDrawnTriggeredEffectContext>(
+            [Wipe(eye), Wipe(spat), Eye<CardsDrawnTriggeredEffectContext>(Applicant)]));
+
+        // The eyed card is played: it got away, and her eye moves to the next most expensive card you hold.
+        var played = new TriggerEventCardInstanceExpression<CardPlayedTriggeredEffectContext>();
+        var escape = new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
+            AllOf(Standing<CardPlayedTriggeredEffectContext>(ammit),
+                new CardInstanceHasMarkExpression<CardPlayedTriggeredEffectContext>(played, eye)),
+            new CausalSequenceEffectNode<CardPlayedTriggeredEffectContext>(
+            [
+                new MarkCardInstanceNode<CardPlayedTriggeredEffectContext>(Applicant, played, eye, remove: true),
+                new MarkCardInstanceNode<CardPlayedTriggeredEffectContext>(Applicant, played, spat),
+                Eye<CardPlayedTriggeredEffectContext>(Applicant),
+            ]));
+
+        // The turn ends and the hand is discarded: an eyed card that went with it was held to the end. Heard as the
+        // discard itself, the one moment the hand has certainly gone to the pile.
+        var card = new FirstMarkedCardInOwnerZoneExpression<HandDiscardedTriggeredEffectContext>(Applicant, CardZone.DiscardPile, eye);
+        var heldToTheEnd = Above(new CombatantZoneCardCountExpression<HandDiscardedTriggeredEffectContext>(Applicant, CardZone.DiscardPile, mark: eye), 0);
+        var devour = new CausalSequenceEffectNode<HandDiscardedTriggeredEffectContext>(
         [
-            new DealDamageNode<TurnEndedTriggeredEffectContext>(Applicant,
-                new MaxExpression<TurnEndedTriggeredEffectContext>(N<TurnEndedTriggeredEffectContext>(0),
-                    new SubtractExpression<TurnEndedTriggeredEffectContext>(N<TurnEndedTriggeredEffectContext>(DevourDamage),
-                        new MultiplyExpression<TurnEndedTriggeredEffectContext>(eaten, N<TurnEndedTriggeredEffectContext>(FeatherAppeasement))))),
-            new ModifyStatusStacksNode<TurnEndedTriggeredEffectContext>(Applicant, new StatusDefinitionId(ScaleFeatherId),
-                new NegateExpression<TurnEndedTriggeredEffectContext>(eaten)),
-            Unmark<TurnEndedTriggeredEffectContext>(ammit, UnworthyId),
+            new MoveCardToZoneNode<HandDiscardedTriggeredEffectContext>(Applicant, card, CardZone.BanishedPile),
+            Mark<HandDiscardedTriggeredEffectContext>(ammit, "strength", DevourStrength),
+            Mark<HandDiscardedTriggeredEffectContext>(ammit, DevouredId),
         ]);
-        var weigh = new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
-            AllOf(IsPlayersTurn<TurnEndedTriggeredEffectContext>(), Standing<TurnEndedTriggeredEffectContext>(ammit)),
-            new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
-                AllOf(Eq(deeds, workings), Above(deeds, 0)),
-                new ApplyStatusNode<TurnEndedTriggeredEffectContext>(Applicant, new StatusDefinitionId(ScaleFeatherId), N<TurnEndedTriggeredEffectContext>(1)),
-                @else: new CausalSequenceEffectNode<TurnEndedTriggeredEffectContext>(
-                [
-                    Mark<TurnEndedTriggeredEffectContext>(ammit, UnworthyId),
-                    new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
-                        new ComparisonExpression<TurnEndedTriggeredEffectContext>(
-                            StacksOn<TurnEndedTriggeredEffectContext>(ammit, UnworthyId), ComparisonOperator.GreaterOrEqual,
-                            N<TurnEndedTriggeredEffectContext>(AmmitDevoursAt)),
-                        devour),
-                ])));
+        var feed = new CausalSequenceEffectNode<HandDiscardedTriggeredEffectContext>(
+        [
+            new MarkCardInstanceNode<HandDiscardedTriggeredEffectContext>(Applicant, card, eye, remove: true),
+            new ModifyStatusStacksNode<HandDiscardedTriggeredEffectContext>(Applicant, new StatusDefinitionId(FeatherOfTruthId), N<HandDiscardedTriggeredEffectContext>(-1)),
+            new ConditionalEffectNode<HandDiscardedTriggeredEffectContext>(
+                Eq(new CombatantCounterExpression<HandDiscardedTriggeredEffectContext>(ammit, AmmitsFeatherSpent), N<HandDiscardedTriggeredEffectContext>(0)),
+                new SetCombatantCounterNode<HandDiscardedTriggeredEffectContext>(ammit, AmmitsFeatherSpent, N<HandDiscardedTriggeredEffectContext>(1), relative: false),
+                @else: new SetCombatantCounterNode<HandDiscardedTriggeredEffectContext>(Applicant, FeathersSpent, N<HandDiscardedTriggeredEffectContext>(1), relative: true)),
+        ]);
+        var feast = new ConditionalEffectNode<HandDiscardedTriggeredEffectContext>(
+            AllOf(IsPlayersTurn<HandDiscardedTriggeredEffectContext>(), Standing<HandDiscardedTriggeredEffectContext>(ammit)),
+            new CausalSequenceEffectNode<HandDiscardedTriggeredEffectContext>(
+            [
+                new ConditionalEffectNode<HandDiscardedTriggeredEffectContext>(heldToTheEnd,
+                    new ConditionalEffectNode<HandDiscardedTriggeredEffectContext>(
+                        Above(StacksOn<HandDiscardedTriggeredEffectContext>(Applicant, FeatherOfTruthId), 0),
+                        new ChooseOptionsNode<HandDiscardedTriggeredEffectContext>(
+                            [feed, devour],
+                            ["Feed Ammit a Feather of Truth", "Let Ammit devour the card she is eyeing"],
+                            count: 1, purpose: "Ammit devours the most expensive card you held to the end of your turn"),
+                        @else: devour)),
+                Unmark<HandDiscardedTriggeredEffectContext>(Applicant, AmmitsGazeId),
+            ]));
 
-        yield return Face(AmmitRuleId, "The Devourer Waits",
-            "Your turn ends: Deeds equal to Workings earn a Feather, else 1 Unworthy. At 3 she devours: 40, minus 12 per Feather eaten.",
-            triggers: [On("TurnEnded", weigh)]);
-        yield return Face(UnworthyId, "Unworthy", "Crooked turns she has weighed. At 3 she devours you, and the count starts again.",
-            stacks: true);
+        yield return Face(AmmitRuleId, "Hunger of the Devourer",
+            $"At the end of your turn she devours the most expensive card still in your hand: it is gone for this fight, "
+            + $"and she gains {DevourStrength} Strength. Feed her a Feather of Truth and she spares the card.",
+            triggers: [On("CardsDrawn", draw), On("CardPlayed", escape), On("HandDiscarded", feast)]);
+        yield return Face(DevouredId, "Devoured", "Cards she has eaten from your hand this fight.", stacks: true);
+        yield return Face(AmmitsGazeId, "Ammit's Gaze",
+            "Ammit is eyeing the most expensive card in your hand. Play it and she eyes the next; whatever she eyes "
+            + "when your turn ends, she devours, unless you feed her a Feather of Truth.");
     }
 
     // ── The Lioness ───────────────────────────────────────────────────────────────────────────────────────

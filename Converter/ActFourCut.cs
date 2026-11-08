@@ -7,9 +7,10 @@ using BnbContent.Converter.Cards;
 
 namespace BnbContent.Converter;
 
-// Act IV's carried things: the Feathers the act's events hand out, Ammit's Shadow (an event fight), and the run's ledger —
-// Tomb Gold played in a fight is paid after it, and killing a Tomb Robber (or all Three Robbers) puts Tomb Gold in
-// your deck (since 2026-11-04; it was a curse). Ammit and the Restless King are in ActFourEliteBodies.
+// Act IV's carried things: the Feathers of Truth the act's events hand out (Ammit eats one instead of a card),
+// Ammit's Shadow (an event fight), and the run's ledger — Tomb Gold played in a fight is paid after it, killing the
+// Unlicensed Excavator (or all Three Robbers) puts Tomb Gold in your deck (since 2026-11-04; it was a curse), and
+// the Gold an Excavator fled with is taken (2026-11-08). Ammit and the Restless King are in ActFourEliteBodies.
 // The normal bodies that used to live here (the Jackal, the Assessor, the Loot Bearer, the False-Door Finder) are
 // in ActFourNormals.
 public static partial class ActFour
@@ -28,7 +29,6 @@ public static partial class ActFour
 
     public const string AmmitEnemyId = "ammit_devourer_of_the_unworthy";
     public const string AmmitRuleId = "the_devourer_waits";
-    public const string UnworthyId = "unworthy";
     public const string AmmitShadowId = "ammits_shadow";
 
     // Counters the fight leaves behind for the run (CombatCounter), and the run's own.
@@ -39,8 +39,6 @@ public static partial class ActFour
     public static readonly RunCounterId FeathersCarried = new("labyrinth_feathers_carried");
 
     public const int MaxCarriedFeathers = 6;
-    public const int DevourDamage = 40;
-    public const int FeatherAppeasement = 12;
 
     private static ICombatantTargetSelector Parties { get; } =
         CombatantTargetSelectors.WithStatus(
@@ -87,7 +85,9 @@ public static partial class ActFour
 
     public static IReadOnlyList<StatusData> CutStatuses() =>
     [
-        Face(FeatherOfTruthId, "Feather", "A turn found true, carried through the act from its events.",
+        // Not "Feather": that is the Scale's token (+5 on your next attack), and the two must not share a name.
+        Face(FeatherOfTruthId, "Feather of Truth",
+            "Carried through the act from its events. Ammit takes one instead of a card from your hand.",
             StatusPolarity.Buff, stacks: true),
         AmmitsShadow(),
     ];
@@ -142,6 +142,9 @@ public static partial class ActFour
                 // Tomb Gold played in the fight is paid now.
                 RunEffectTemplates.GainResource(StandardRunIds.Gold,
                     RunExpr.Multiply(RunEventValues.CombatCounter(TombGoldPlayed.ToString()), RunExpr.Const(TombGoldPay))),
+                // …and the Gold an Unlicensed Excavator carried down its shaft is gone now (E17).
+                RunEffectTemplates.GainResource(StandardRunIds.Gold,
+                    RunExpr.Subtract(RunExpr.Const(0), RunEventValues.CombatCounter(GoldCarriedOff.ToString()))),
             ]),
             [TombLedgerProgramId + "_tomb_gold"] = RunPrograms.When<CombatResolvedRunEvent>(
                 new RunComparisonExpression(

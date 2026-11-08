@@ -56,7 +56,7 @@ public static class EncounterPassives
         "living_charter" => LivingCharter.Triggers(),
         // Act IV: what falls with what — jars with their master, Anubis's watch with the Jackal, the sack with
         // the Thief (ActFour.LabyrinthTriggers). Every normal body brings it; it is idempotent.
-        _ when ActFour.Identities.Contains(enemyId) => ActFour.LabyrinthTriggers(),
+        _ when ActFour.Identities.Contains(enemyId) => ActFour.LabyrinthTriggers(enemyId),
         // …and the elites' own: the Taskmaster's gang, Apep's coils, the Priest's jars, the brood, the robbers.
         _ when ActFour.EliteIdentities.Contains(enemyId) => ActFour.EliteTriggers(enemyId),
         // …and the bosses': the Pharaoh's traitors and Selket's vessels fall with them, her last vessel wraps her.
