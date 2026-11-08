@@ -167,20 +167,22 @@ etwa 20 Schaden).
 | **Compounded Grievance** | 1 | Rare | Double every debuff on an enemy. Exhaust. | kostet 0 | MTG: Doubling Season | Hex |
 | **Bill of Attainder** | 1 | Rare | Whenever you apply Doubt or Liable, apply 1 more. Exhaust. | kostet 0 | MTG: Hardened Scales | Hex |
 
-### Verteidigung
+### Verteidigung (freigegeben 2026-11-08)
 
-| Karte | Kosten | Seltenheit | Text | Notiz | Hexe |
-|---|---|---|---|---|---|
-| **Besom Guard** | 1 | Common | Gain 8 Block. Unread: gain 4 Block. |  | Husk |
-| **Waxen Surety** | 1 | Common | Gain 7 Ward Wax. | bestehend | Husk |
-| **Salt on the Sill** | 1 | Common | Gain 6 Block. Every enemy that intends to attack gets 1 Doubt. |  | Husk |
-| **Barred Door** | 2 | Common | Retain. Gain 14 Block. |  | Husk |
-| **Tallow Reserve** | 0 | Uncommon | Needs 6 Block. Lose 6 Block. Gain 4 Ward Wax. Exhaust. | bestehend | Husk |
-| **Sealed Mantle** | 1 | Uncommon | Gain 8 Block. If enemies attack this turn and nothing gets through, gain 3 Ward Wax. | bestehend | Husk |
-| **Wax Reliquary** | 1 | Uncommon | Gain 5 Ward Wax. Until your next turn, Ward Wax does not decay faster. | bestehend | Husk |
-| **Rowan over the Door** | 1 | Uncommon | Gain 5 Block. Until your next turn, every enemy that attacks you gets 1 Doubt. |  | Husk |
-| **Stay of Proceedings** | 2 | Rare | An enemy's next action does nothing. Exhaust. | MTG: Fog / Counterspell | Fortune |
-| **Standing Stones** | 2 | Rare | Your Block does not expire at the start of your next 2 turns. Exhaust. |  | Husk |
+Maßstab: 1 Energy ≈ 7 Block; 7 Ward Wax ≈ 16 Block über vier Züge ≈ 1,5 Energy.
+
+| Karte | Kosten | Seltenheit | Text | Upgrade | Notiz | Hexe |
+|---|---|---|---|---|---|---|
+| **Besom Guard** | 1 | Common | Gain 8 Block. Unread: gain 4 Block. | 11 und 6 | MTG: Cycling | Husk |
+| **Waxen Surety** | 1 | Common | Gain 7 Ward Wax. | 10 Ward Wax | bestehend | Husk |
+| **Salt on the Sill** | 1 | Common | Gain 6 Block. Every enemy that intends to attack gets 1 Doubt. | 9 Block | MTG: Holy Day | Husk |
+| **Barred Door** | 2 | Common | Retain. Gain 14 Block. | 18 Block |  | Husk |
+| **Tallow Reserve** | 0 | Uncommon | Needs 6 Block. Lose 6 Block. Gain 6 Ward Wax. Exhaust. | 9 Ward Wax | bestehend, war 4 | Husk |
+| **Sealed Mantle** | 1 | Uncommon | Gain 8 Block. If enemies attack this turn and nothing gets through, gain 3 Ward Wax. | 12 und 4 | bestehend | Husk |
+| **Wax Reliquary** | 1 | Uncommon | Gain 5 Ward Wax. Until your next turn, Ward Wax does not decay faster. | 9 Ward Wax | bestehend | Husk |
+| **Rowan over the Door** | 1 | Uncommon | Gain 7 Block. Until your next turn, every enemy that attacks you gets 1 Doubt. | 10 Block |  | Husk |
+| **Stay of Proceedings** | 3 | Rare | An enemy's next action does nothing. Exhaust. | kostet 2 | MTG: Fog / Counterspell | Fortune |
+| **Standing Stones** | 2 | Rare | Your Block does not expire at the start of your next 2 turns. Exhaust. | kostet 1 | MTG: Ivory Tower | Husk |
 
 ### Flexibler Schaden
 
