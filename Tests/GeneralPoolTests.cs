@@ -115,13 +115,13 @@ public class GeneralPoolTests
     [Fact]
     public void Liable_adds_a_quarter_to_attacks_and_fades_at_the_end_of_its_turn()
     {
-        var (play, session, enemy) = Fight(9, "named_in_the_roll", "blacklisted", Filler, Filler, Filler);
+        var (play, session, enemy) = Fight(9, "named_in_the_roll", "beadles_cudgel", Filler, Filler, Filler);
         Play(play, session, "named_in_the_roll", enemy);
         Assert.Equal(2, FightProbe.StacksOf(Enemy(play, enemy), Keywords.Liable));
 
         var health = Enemy(play, enemy).Health.Current;
-        Play(play, session, "blacklisted", enemy);
-        Assert.Equal(health - 15, Enemy(play, enemy).Health.Current); // 12 × 1.25
+        Play(play, session, "beadles_cudgel", enemy);
+        Assert.Equal(health - 11, Enemy(play, enemy).Health.Current); // 9 × 1.25
 
         EndTurn(play, session);
         Assert.Equal(1, FightProbe.StacksOf(Enemy(play, enemy), Keywords.Liable));
@@ -142,10 +142,10 @@ public class GeneralPoolTests
     [Fact]
     public void A_pledge_is_played_short_and_the_shortfall_is_next_turns_fatigue()
     {
-        var (play, session, enemy) = Fight(3, "blacklisted", "blacklisted", "blacklisted", "coin_under_the_tongue", Filler);
-        Play(play, session, "blacklisted", enemy);
-        Play(play, session, "blacklisted", enemy);
-        Play(play, session, "blacklisted", enemy);
+        var (play, session, enemy) = Fight(3, "beadles_cudgel", "beadles_cudgel", "beadles_cudgel", "coin_under_the_tongue", Filler);
+        Play(play, session, "beadles_cudgel", enemy);
+        Play(play, session, "beadles_cudgel", enemy);
+        Play(play, session, "beadles_cudgel", enemy);
         Assert.Equal(0, Energy(play));
 
         Play(play, session, "coin_under_the_tongue", enemy);
@@ -193,7 +193,7 @@ public class GeneralPoolTests
     [Fact]
     public void Sieve_and_shears_sends_a_card_from_the_top_to_the_bottom()
     {
-        var deck = new[] { "sieve_and_shears", Filler, Filler, Filler, Filler, "blacklisted", Filler, Filler };
+        var deck = new[] { "sieve_and_shears", Filler, Filler, Filler, Filler, "beadles_cudgel", Filler, Filler };
         var (play, session, enemy) = Fight(9, deck);
         var top = Zone(play, CardZone.DrawPile)[0];
         Play(play, session, "sieve_and_shears", enemy);
@@ -269,13 +269,13 @@ public class GeneralPoolTests
     [Fact]
     public void A_moonlit_counterfeit_copy_is_free_and_the_original_stays()
     {
-        var (play, session, enemy) = Fight(9, "moonlit_counterfeit", "blacklisted", Filler, Filler, Filler);
+        var (play, session, enemy) = Fight(9, "moonlit_counterfeit", "beadles_cudgel", Filler, Filler, Filler);
         Play(play, session, "moonlit_counterfeit", enemy);
-        Pick(play, session, "blacklisted");
-        Assert.Equal(2, Driver(play).Current!.Hand.Count(c => c.DefinitionId.value == "blacklisted"));
+        Pick(play, session, "beadles_cudgel");
+        Assert.Equal(2, Driver(play).Current!.Hand.Count(c => c.DefinitionId.value == "beadles_cudgel"));
 
         var energy = Energy(play);
-        var copy = Driver(play).Current!.Hand.Last(c => c.DefinitionId.value == "blacklisted");
+        var copy = Driver(play).Current!.Hand.Last(c => c.DefinitionId.value == "beadles_cudgel");
         Driver(play).PlayCard(copy.Id, enemy);
         Assert.Null(session.Error);
         Assert.Equal(energy, Energy(play));
@@ -356,8 +356,8 @@ public class GeneralPoolTests
     [Fact]
     public void Last_ember_replays_the_newest_exhausted_card()
     {
-        var (play, session, enemy) = Fight(3, "blacklisted", "stolen_hour", "last_ember", Filler, Filler);
-        Play(play, session, "blacklisted", enemy);   // 3 → 2
+        var (play, session, enemy) = Fight(3, "beadles_cudgel", "stolen_hour", "last_ember", Filler, Filler);
+        Play(play, session, "beadles_cudgel", enemy);   // 3 → 2
         Play(play, session, "stolen_hour", enemy);   // +2
         Play(play, session, "last_ember", enemy);    // −1, then Stolen Hour again: +2 — 5 in all
         Assert.Equal(5, Energy(play) + FightProbe.StacksOf(Hero(play), HeldEnergy.Id));

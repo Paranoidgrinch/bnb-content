@@ -39,11 +39,12 @@ public static class GeneralDamage
         Volley(3),
         Rarity: "uncommon");
 
-    // Kept (blacklisted); 12 damage instead of 14 (2026-11-08).
+    // Kept (blacklisted). Content review (2026-11-08): no longer vanilla — a card thrown away buys a heavier blow,
+    // and the discard feeds Unread. MTG: Lightning Axe.
     private static readonly BnbCard BluntInstrument = new(
         "blacklisted", "Blunt Instrument", DeedTag, 1,
-        "Deal 12 damage.",
-        Damage(12),
+        "Discard a card. Deal 18 damage.",
+        Seq(GeneralDiscard.DiscardChosen(), Damage(18)),
         Rarity: "uncommon", Act: 2);
 
     // Kept; at most 6 Wax at +5 instead of 8 at +7, and an Uncommon now (2026-11-08).
@@ -84,7 +85,8 @@ public static class GeneralDamage
 
         VolleyOfQuills, VolleyOfQuills.Upgraded(
             "Deal 4 damage to ALL enemies, once for each card in your hand.", Volley(4)),
-        BluntInstrument, BluntInstrument.Upgraded("Deal 18 damage.", Damage(18)),
+        BluntInstrument, BluntInstrument.Upgraded("Discard a card. Deal 24 damage.",
+            Seq(GeneralDiscard.DiscardChosen(), Damage(24))),
         TallowJudgment, TallowJudgment.Upgraded("Spend up to 6 Ward Wax. Deal 15 damage, +7 per Wax.",
             Judgment(6, 15, 7)),
         MidnightToll, MidnightToll.Upgraded(

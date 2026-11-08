@@ -186,12 +186,15 @@ public class SharpeningPassTests
     }
 
     [Fact]
-    public void Blunt_instrument_hits_for_twelve()
+    public void Blunt_instrument_throws_a_card_away_for_eighteen()
     {
         var (play, session, enemy) = Fight(["blacklisted", "paper_cut", "paper_cut", "paper_cut", "paper_cut"]);
         var before = Enemy(play, enemy).Health.Current;
         Play(play, session, "blacklisted", enemy);
-        Assert.Equal(before - 12, Enemy(play, enemy).Health.Current);
+        var offered = Assert.IsAssignableFrom<IReadOnlyList<CardInstance>>(play.CombatDriver!.PendingCardChoice);
+        play.CombatDriver.SupplyCardChoice([offered[0].Id]);
+        Assert.Null(session.Error);
+        Assert.Equal(before - 18, Enemy(play, enemy).Health.Current);
         play.Dispose();
     }
 

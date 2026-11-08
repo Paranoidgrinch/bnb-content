@@ -11,9 +11,10 @@ public static class GeneralDefence
 {
     // ── Common ────────────────────────────────────────────────────────────────────────────────────────────
 
+    // Content review (2026-11-08): its Unread was Ashen Receipt's twin; now the broom sweeps itself back.
     private static readonly BnbCard BesomGuard = new(
         "besom_guard", "Besom Guard", WorkingTag, 1,
-        "Gain 8 Block. Unread: gain 4 Block.",
+        "Gain 8 Block. Unread: put this on top of your draw pile.",
         Block(8),
         Tags: Unread("besom_guard"));
 
@@ -77,7 +78,7 @@ public static class GeneralDefence
 
     public static IReadOnlyList<BnbCard> All() =>
     [
-        BesomGuard, BesomGuard.Upgraded("Gain 12 Block. Unread: gain 6 Block.", Block(12),
+        BesomGuard, BesomGuard.Upgraded("Gain 12 Block. Unread: put this on top of your draw pile.", Block(12),
             tags: Unread("besom_guard+")),
         WaxenSurety, WaxenSurety.Upgraded("Gain 10 Ward Wax.", Apply(Keywords.WardWax, 10, You)),
         SaltOnTheSill, SaltOnTheSill.Upgraded("Gain 9 Block. Every enemy that intends to attack gets 1 Doubt.",
@@ -101,11 +102,11 @@ public static class GeneralDefence
             "Your Block does not expire at the start of your next 2 turns. Exhaust.", cost: 1),
     ];
 
-    public static IReadOnlyList<(string CardId, CombatNodeModel Effect)> Unreads() =>
-    [
-        ("besom_guard", Block(4)),
-        ("besom_guard+", Block(6)),
-    ];
+    // Besom Guard's Unread moves the card itself, which a card-effect model cannot name: the rule does it
+    // (GeneralPoolRules, SweepsBack).
+    public static IReadOnlyList<(string CardId, CombatNodeModel Effect)> Unreads() => [];
+
+    public static readonly string[] SweepsBack = ["besom_guard", "besom_guard+"];
 
     // ── shapes ────────────────────────────────────────────────────────────────────────────────────────────
 

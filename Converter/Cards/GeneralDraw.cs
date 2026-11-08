@@ -23,10 +23,11 @@ public static class GeneralDraw
         Seq(Draw(3), PutBack()),
         Tags: [ExhaustTag]);
 
+    // Content review (2026-11-08): was "Draw 2 cards. Gain 5 Block." — now it pays off a big hand.
     private static readonly BnbCard LamplitStudy = new(
         "lamplit_study", "Lamplit Study", WorkingTag, 1,
-        "Draw 2 cards. Gain 5 Block.",
-        Seq(Draw(2), Block(5)));
+        "Draw 2 cards. Then gain 1 Block for each card in your hand.",
+        Study(2));
 
     private static readonly BnbCard DogEaredAlmanac = new(
         "dog_eared_almanac", "Dog-Eared Almanac", WorkingTag, 0,
@@ -85,7 +86,7 @@ public static class GeneralDraw
             Seq(Sieve(3), Draw(2))),
         BorrowedCandle, BorrowedCandle.Upgraded(
             "Draw 4 cards. Put a card from your hand on top of your draw pile. Exhaust.", Seq(Draw(4), PutBack())),
-        LamplitStudy, LamplitStudy.Upgraded("Draw 3 cards. Gain 7 Block.", Seq(Draw(3), Block(7))),
+        LamplitStudy, LamplitStudy.Upgraded("Draw 3 cards. Then gain 1 Block for each card in your hand.", Study(3)),
         DogEaredAlmanac, DogEaredAlmanac.Upgraded(
             "Retain. Draw 1 card. If this was in your hand since last turn, draw 3 more.", Almanac(3)),
 
@@ -123,6 +124,10 @@ public static class GeneralDraw
                     Seq(),
                 ],
                 "Sieve and Shears");
+
+    // The Study is still in the hand while it resolves; it does not count itself.
+    private static CombatNodeModel Study(int draw) =>
+        Seq(Draw(draw), Block(Max(Const(0), Minus(InZone(CardZone.Hand), Const(1)))));
 
     private static CombatNodeModel PutBack() =>
         new("moveCardToZone", You,
