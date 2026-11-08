@@ -29,6 +29,10 @@ public static class EncounterPassives
         // the rule is found from the announcer's side (ActTwo.WriteInTheMargin).
         // Break the jar and the life it was holding is lost (ActTwo.BreakTheJar).
         "spare_life_jar" => [ActTwo.BreakTheJar()],
+        // Act II's reworked bodies (CONTENT_REVIEW E5, E7-E9): the Entry's back-reference, the Colossus's chock and
+        // the Curator's borrowed hour are laid in the player's hand as the turn's draw arrives.
+        "second_person_entry" => ActTwo.EntryTriggers(),
+        Elites.RollingStacksColossus.EnemyId => Elites.RollingStacksColossus.Triggers(),
         // Act I's reworked bodies (ActOne, CONTENT_REVIEW E1-E4); the Hourglass keeps banking its sand here.
         "inverted_hourglass" => [.. StolenSand(), .. ActOne.Triggers(enemyId)!],
         _ when ActOne.Triggers(enemyId) is { } city => city,
@@ -213,6 +217,10 @@ public static class EncounterPassives
         // once however many shelves are in the room.
         "crabwise_shelf" =>
             [new StartingStatusSpec(new StatusDefinitionId(ActTwo.ArchiveRegulationsId), 1)],
+        // Overdue is payable to the Returns bodies (CONTENT_REVIEW E6): the slip and the refusal are the player's,
+        // so the player wears the window. The duo asks twice and it merges.
+        "brass_maw_of_returns" or "dead_letter_ouroboros" =>
+            [new StartingStatusSpec(new StatusDefinitionId(ActTwo.ReturnsWindowId), 1)],
         // The Warden reaches into the player's hand and two of its three keys are about the player's own
         // turn, so the player carries the rules that seal and release.
         Bosses.WardenOfSealedVolumes.EnemyId =>
@@ -220,7 +228,7 @@ public static class EncounterPassives
         // The Magistrate asks its question at the start of the player's turn, so the player carries it.
         ActThree.MagistrateEnemyId =>
             [new StartingStatusSpec(new StatusDefinitionId(ActThree.JudgmentOfferId), 1)],
-        // The Oracle's riddle is asked of the player's hand, so the player carries it.
+        // The Oracle clashes with the player's draw pile, and lets the player see its top card: the player carries it.
         Elites.BlackInkOracle.EnemyId =>
             [new StartingStatusSpec(new StatusDefinitionId(Elites.BlackInkOracle.OracleRulesId), 1)],
         // The Catalogue's ledger is the player's cards and the player's plays, so the player carries the rules.
@@ -378,7 +386,7 @@ public static class EncounterPassives
 
     // "Stolen Sand" (Inverted Hourglass): whenever Fatigue actually costs the player Energy, the Hourglass
     // banks a grain, up to 3. Fatigue spends exactly one stack when it fires (StatusMapper), so a DROP in the
-    // player's Fatigue IS the moment the Energy went — the mirror that tells the Imp which status moved tells
+    // player's Fatigue IS the moment the Energy went — a mirror of the player's Fatigue tells
     // the Hourglass when its own fired. NOTE: a status whose LAST stack is spent raises StatusExpired, not
     // StatusRemoved or StatusStacksChanged — the "it is finally gone" moment every mirror passive must listen for.
     private static IReadOnlyList<EncounterTriggerData> StolenSand() =>

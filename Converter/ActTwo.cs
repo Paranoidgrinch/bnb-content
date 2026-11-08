@@ -126,7 +126,7 @@ public static class ActTwo
     // "A Misfiled card does not enter the hand on its next draw; it goes to discard, you draw a replacement,
     // and the mark clears." The engine hands the cards over BEFORE anything can object — CardsDrawn fires with
     // the hand already holding them — so the archive takes its card back a beat after it arrives. Invisible in
-    // the numbers, visible in a combat log; the same beat-late shape Act I's Exception Imp uses.
+    // the numbers, visible in a combat log.
     //
     // Which shelf a card was misfiled BY changes where it goes, so the destination is written into the mark
     // rather than looked up from the marker's source: a program cannot ask who put a mark there, and "the
@@ -382,6 +382,15 @@ public static class ActTwo
         ChainCollect(),
         ArchiveCollection(),
         LearnedBite(),
+        ReturnsWindow(),
+    ];
+
+    // The cards Act II's bodies lay in the player's hand: the desk bell, and since 2026-11-08 (CONTENT_REVIEW
+    // E5-E9) the Entry's requisition, the Returns slip, the Colossus's chock and the Curator's borrowed hour.
+    public static IEnumerable<CardData> FightCards() =>
+    [
+        AskAtTheDesk(), RequisitionSlip(), ReturnSlip(),
+        Elites.RollingStacksColossus.WheelChock(), Bosses.CuratorOfMisplacedHours.BorrowedHour(),
     ];
 
     public const string CertificateReferenceMark = "referenced_certificate";
@@ -471,22 +480,16 @@ public static class ActTwo
                             new ConstantExpression<TurnStartedTriggeredEffectContext>(1))))),
             ]);
 
-    // "Whenever Brass Maw resolves its Delinquency: gain 1 Return Parcel, maximum 2." The parcels ride on the
-    // Maw's next direct attack and are spent by it.
+    // The Maw collects like every Act-II source (7 at 2 Overdue). What it does about being kept waiting moved to
+    // the refusal itself on 2026-11-08 (CONTENT_REVIEW E6): a turn that could have paid its Overdue with a Return
+    // Slip and did not hands it a Return Parcel (ReturnsWindow).
     private static StatusData BrassMawDelinquency() =>
         Delinquency(BrassMawDelinquencyId, "Return Intake",
-            "What it is owed comes back as a parcel.",
-            new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
-                new ComparisonExpression<TurnStartedTriggeredEffectContext>(
-                    new CombatantStatusStacksExpression<TurnStartedTriggeredEffectContext>(
-                        CombatantTargetSelectors.Source, new StatusDefinitionId(ReturnParcelId)),
-                    ComparisonOperator.Less,
-                    new ConstantExpression<TurnStartedTriggeredEffectContext>(2)),
-                new ApplyStatusNode<TurnStartedTriggeredEffectContext>(
-                    CombatantTargetSelectors.Source, new StatusDefinitionId(ReturnParcelId),
-                    new ConstantExpression<TurnStartedTriggeredEffectContext>(1))));
+            "At 2 Overdue owed to it, it collects them: 7 damage. Each turn you could pay its Overdue with a Return "
+            + "Slip and do not, it gains a Return Parcel (max 2): +6 on its next attack.");
 
-    // "+8 damage per Return Parcel (5 until 2026-11-03) on the next direct attack; after that attack, Return Parcel → 0." The same
+    // "+6 damage per Return Parcel (5 until 2026-11-03, 8 until 2026-11-08, when refusing began to hand them out
+    // every turn) on the next direct attack; after that attack, Return Parcel → 0." The same
     // shape Act I's Contempt uses: the modifier is the parcel's presence, the trigger is what spends it.
     private static StatusData ReturnParcel()
     {
@@ -502,7 +505,7 @@ public static class ActTwo
         {
             Id = ReturnParcelId,
             NameKey = "Return Parcel",
-            DescriptionKey = "Returned lateness, waiting to be spat back. Spent by the next direct attack.",
+            DescriptionKey = "Returned lateness, waiting to be spat back: +6 on its next attack, which spends it.",
             Polarity = StatusPolarity.Buff,
             StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
             UsesStacks = true,
@@ -510,7 +513,7 @@ public static class ActTwo
             PassiveModifiers =
             [
                 new PassiveModifierData(PassiveModifierPipeline.DamageDealt,
-                    PassiveModifierOperation.AddPerStack, 8, RestrictDamageKind: DamageKind.Direct),
+                    PassiveModifierOperation.AddPerStack, ReturnParcelDamage, RestrictDamageKind: DamageKind.Direct),
             ],
             Triggers =
             [
@@ -524,7 +527,8 @@ public static class ActTwo
     // source." 2 Overdue → collected → 0 → 1 again, so the loop never quite closes.
     private static StatusData OuroborosDelinquency() =>
         Delinquency(OuroborosDelinquencyId, "Return to Sender",
-            "Nothing it is owed ever finishes being owed.",
+            "At 2 Overdue owed to it, it collects them (7 damage), gains 6 Block and files 1 Overdue again. A card "
+            + "you return with a Return Slip while it stands costs 1 more.",
             new CausalSequenceEffectNode<TurnStartedTriggeredEffectContext>(
             [
                 new ApplyStatusNode<TurnStartedTriggeredEffectContext>(
@@ -549,11 +553,160 @@ public static class ActTwo
     private static CounterId LearnedCostCounter => new("alphabet_learned_cost");
     private static CounterId CitedThisDrawCounter => new("alphabet_cited");
 
-    // "Second-Person Entry cites you, again and again." The design chains the follow-up citation to the TYPE
-    // of the card that fulfilled the last one; here every draw is simply cited afresh. See ADAPTATIONS.
+    // ── E5 Second-Person Entry: the Back-Reference (CONTENT_REVIEW 2026-11-08) ──────────────────────────────
+    //
+    // After the player's draw it cites a card in their DISCARD pile (the citation mark the frontend already shows)
+    // and lays a Requisition Slip in hand: 1 Energy takes the cited card back into the hand. A turn that ends with
+    // the card still cited in the discard loses it to the Exhaust pile, and the Entry guards on it: 4 Block per
+    // Energy the card cost, raised at its own turn end so it stands through the player's next turn (Block raised
+    // earlier would be cleared as its own turn began). The Block owed is kept on the player — the one body both
+    // halves of the rule can name — and the Entry reads it off its opponent.
+    public const string RequisitionSlipId = "requisition_slip";
+    public const int BackReferenceBlockPerCost = 4;
+    private static CounterId EntryOwedBlockCounter => new("entry_owed_block");
+
     public static StatusData SecondPersonReference() =>
-        Reference(EntryReferenceId, "You Are Cited Again", EntryReferenceMark,
-            "One card in your hand is cited. Play it, or owe the Entry for it.");
+        Rule(EntryReferenceId, "Back-Reference",
+            "After your draw it cites a card in your discard pile. A Requisition Slip (1 Energy) takes it back into "
+            + "your hand; leave it and the card is exhausted, and the Entry gains 4 Block per Energy it cost.",
+            [
+                Watch("TurnEnded", new EffectProgram<TurnEndedTriggeredEffectContext>(
+                    E<TurnEndedTriggeredEffectContext>.Seq(
+                        E<TurnEndedTriggeredEffectContext>.Block(E<TurnEndedTriggeredEffectContext>.Self,
+                            E<TurnEndedTriggeredEffectContext>.Counter(Opponent, EntryOwedBlockCounter)),
+                        E<TurnEndedTriggeredEffectContext>.Set(Opponent, EntryOwedBlockCounter,
+                            E<TurnEndedTriggeredEffectContext>.C(0))))),
+            ]);
+
+    public static IReadOnlyList<EncounterTriggerData> EntryTriggers()
+    {
+        var self = E<CardsDrawnTriggeredEffectContext>.Self;
+        var cite = EnemyRules.Encounter("CardsDrawn",
+            E<CardsDrawnTriggeredEffectContext>.If(
+                E<CardsDrawnTriggeredEffectContext>.And(
+                    E<CardsDrawnTriggeredEffectContext>.Applicant,
+                    E<CardsDrawnTriggeredEffectContext>.Present(EntryReferenceId),
+                    E<CardsDrawnTriggeredEffectContext>.Is(
+                        E<CardsDrawnTriggeredEffectContext>.InZone(self, CardZone.DiscardPile), ComparisonOperator.Greater, 0)),
+                E<CardsDrawnTriggeredEffectContext>.Seq(
+                    E<CardsDrawnTriggeredEffectContext>.Mark(
+                        new RandomCardInOwnerZoneExpression<CardsDrawnTriggeredEffectContext>(self, CardZone.DiscardPile),
+                        EntryReferenceMark),
+                    E<CardsDrawnTriggeredEffectContext>.Give(RequisitionSlipId))));
+
+        var card = E<TurnEndedTriggeredEffectContext>.Iterated;
+        var me = E<TurnEndedTriggeredEffectContext>.Self;
+        IEffectNode<TurnEndedTriggeredEffectContext> Release(CardZone zone) =>
+            E<TurnEndedTriggeredEffectContext>.ForMarked(zone, EntryReferenceMark,
+                E<TurnEndedTriggeredEffectContext>.Mark(card, EntryReferenceMark, remove: true));
+        var lapse = EnemyRules.Encounter("TurnEnded",
+            E<TurnEndedTriggeredEffectContext>.If(E<TurnEndedTriggeredEffectContext>.Applicant,
+                E<TurnEndedTriggeredEffectContext>.Seq(
+                    E<TurnEndedTriggeredEffectContext>.ForMarked(CardZone.DiscardPile, EntryReferenceMark,
+                        E<TurnEndedTriggeredEffectContext>.Seq(
+                            E<TurnEndedTriggeredEffectContext>.Add(me, EntryOwedBlockCounter,
+                                E<TurnEndedTriggeredEffectContext>.Times(
+                                    E<TurnEndedTriggeredEffectContext>.CostOf(card), BackReferenceBlockPerCost)),
+                            E<TurnEndedTriggeredEffectContext>.Mark(card, EntryReferenceMark, remove: true),
+                            E<TurnEndedTriggeredEffectContext>.Move(card, CardZone.ExhaustPile))),
+                    // Shuffled back into the draw pile or already in hand: no longer the cited copy.
+                    Release(CardZone.DrawPile), Release(CardZone.Hand))));
+        return [cite, lapse];
+    }
+
+    public static CardData RequisitionSlip() => EnemyRules.GivenCard(RequisitionSlipId, "Requisition Slip",
+        "Take the card the Second-Person Entry cited back from your discard pile into your hand.",
+        E<CardPlayContext>.ForMarked(CardZone.DiscardPile, EntryReferenceMark, E<CardPlayContext>.Seq(
+            E<CardPlayContext>.Mark(E<CardPlayContext>.Iterated, EntryReferenceMark, remove: true),
+            E<CardPlayContext>.Move(E<CardPlayContext>.Iterated, CardZone.Hand))),
+        cost: 1);
+
+    // ── E6 Brass Maw and Dead-Letter Ouroboros: the Returns Window (CONTENT_REVIEW 2026-11-08) ─────────────────
+    //
+    // Overdue is payable. While the player owes any and a Maw or an Ouroboros stands, every turn lays a Return Slip
+    // in hand: put a card from the hand on top of the draw pile and 1 Overdue is struck off. A card returned while
+    // an Ouroboros stands comes back costing 1 more (the per-copy cost delta, spent by its next play). A turn that
+    // was offered the slip and ended still owing hands every Maw a Return Parcel.
+    //
+    // The rule is worn by the PLAYER (EncounterPassives.HeroOpeningStatuses): the duo asks for it twice and it
+    // merges, so one slip a turn however many returns bodies stand. The slip strikes off the oldest Overdue the
+    // player carries — a card play cannot spend another body's source-bound stacks by source (the acting source
+    // is the player), so in the Maw-and-Ouroboros duo it is the first filing that is paid, whoever filed it.
+    public const string ReturnsWindowId = "returns_window";
+    public const string ReturnSlipId = "return_slip";
+    public const string ReturnedMark = "returned_by_slip";
+    public const int ReturnParcelDamage = 6;
+    private static CounterId SlipOfferedCounter => new("return_slip_offered");
+    private static CounterId SlipUsedCounter => new("return_slip_used");
+
+    private static ICombatExpression<T, bool> ReturnsDesk<T>() where T : class =>
+        new OrExpression<T>(E<T>.Present(BrassMawDelinquencyId), E<T>.Present(OuroborosDelinquencyId));
+
+    private static StatusData ReturnsWindow()
+    {
+        var me = E<CardsDrawnTriggeredEffectContext>.Self;
+        var offer = E<CardsDrawnTriggeredEffectContext>.Seq(
+            E<CardsDrawnTriggeredEffectContext>.Set(me, SlipUsedCounter, E<CardsDrawnTriggeredEffectContext>.C(0)),
+            E<CardsDrawnTriggeredEffectContext>.Set(me, SlipOfferedCounter, E<CardsDrawnTriggeredEffectContext>.C(0)),
+            E<CardsDrawnTriggeredEffectContext>.If(
+                E<CardsDrawnTriggeredEffectContext>.And(
+                    E<CardsDrawnTriggeredEffectContext>.Is(
+                        E<CardsDrawnTriggeredEffectContext>.Stacks(me, OverdueId), ComparisonOperator.Greater, 0),
+                    ReturnsDesk<CardsDrawnTriggeredEffectContext>()),
+                E<CardsDrawnTriggeredEffectContext>.Seq(
+                    E<CardsDrawnTriggeredEffectContext>.Give(ReturnSlipId),
+                    E<CardsDrawnTriggeredEffectContext>.Set(me, SlipOfferedCounter, E<CardsDrawnTriggeredEffectContext>.C(1)))));
+
+        var you = E<TurnEndedTriggeredEffectContext>.Self;
+        var refuse = E<TurnEndedTriggeredEffectContext>.If(
+            E<TurnEndedTriggeredEffectContext>.And(
+                E<TurnEndedTriggeredEffectContext>.Is(
+                    E<TurnEndedTriggeredEffectContext>.Counter(you, SlipOfferedCounter), ComparisonOperator.Equal, 1),
+                E<TurnEndedTriggeredEffectContext>.Is(
+                    E<TurnEndedTriggeredEffectContext>.Counter(you, SlipUsedCounter), ComparisonOperator.Equal, 0),
+                E<TurnEndedTriggeredEffectContext>.Is(
+                    E<TurnEndedTriggeredEffectContext>.Stacks(you, OverdueId), ComparisonOperator.Greater, 0)),
+            E<TurnEndedTriggeredEffectContext>.Each(E<TurnEndedTriggeredEffectContext>.Wearers(BrassMawDelinquencyId),
+                E<TurnEndedTriggeredEffectContext>.If(
+                    E<TurnEndedTriggeredEffectContext>.Is(
+                        new IterationTargetStatusStacksExpression<TurnEndedTriggeredEffectContext>(
+                            new StatusDefinitionId(ReturnParcelId)),
+                        ComparisonOperator.Less, 2),
+                    E<TurnEndedTriggeredEffectContext>.Apply(E<TurnEndedTriggeredEffectContext>.It, ReturnParcelId))));
+
+        return Rule(ReturnsWindowId, "Returns Window",
+            "While you owe Overdue to a Brass Maw or a Dead-Letter Ouroboros, each turn brings a Return Slip: put a "
+            + "card from your hand on top of your draw pile to strike off 1 Overdue.",
+            [
+                EnemyRules.On("CardsDrawn", offer),
+                EnemyRules.On("TurnEnded", refuse),
+            ]);
+    }
+
+    public static CardData ReturnSlip()
+    {
+        var you = E<CardPlayContext>.Self;
+        var card = E<CardPlayContext>.Iterated;
+        return EnemyRules.GivenCard(ReturnSlipId, "Return Slip",
+            "Put a card from your hand on top of your draw pile and strike off 1 Overdue. While a Dead-Letter "
+            + "Ouroboros stands, that card costs 1 more.",
+            E<CardPlayContext>.If(
+                E<CardPlayContext>.And(
+                    E<CardPlayContext>.Is(E<CardPlayContext>.InZone(you, CardZone.Hand), ComparisonOperator.Greater, 1),
+                    E<CardPlayContext>.Is(E<CardPlayContext>.Stacks(you, OverdueId), ComparisonOperator.Greater, 0)),
+                E<CardPlayContext>.Seq(
+                    E<CardPlayContext>.Mark(new ChosenCardInZoneExpression<CardPlayContext>(CardZone.Hand,
+                        "Return Slip: choose a card to put on top of your draw pile"), ReturnedMark),
+                    E<CardPlayContext>.ForMarked(CardZone.Hand, ReturnedMark, E<CardPlayContext>.Seq(
+                        E<CardPlayContext>.If(E<CardPlayContext>.Present(OuroborosDelinquencyId),
+                            E<CardPlayContext>.Reprice(card, E<CardPlayContext>.C(1))),
+                        E<CardPlayContext>.Mark(card, ReturnedMark, remove: true),
+                        E<CardPlayContext>.Move(card, CardZone.DrawPile, ZonePlacement.Top))),
+                    new ModifySelectedStatusStacksNode<CardPlayContext>(you,
+                        new StatusSelectionSpec(StatusPolarityFilter.Debuff) { Definition = new StatusDefinitionId(OverdueId) },
+                        E<CardPlayContext>.C(-1)),
+                    E<CardPlayContext>.Set(you, SlipUsedCounter, E<CardPlayContext>.C(1)))));
+    }
 
     // "If the player plays two consecutive cards with the same Base Cost, remember that cost class; after the
     // next draw, cite a card of that cost." Two counters: what the last card cost, and what was learned.
@@ -648,45 +801,35 @@ public static class ActTwo
                         ]))),
             ]));
 
-    // "The player may fulfil the citation by playing the exact card, OR another card of the same Base Cost and
-    // the same type." The second path is answered where the citation is: compare what was played against the
-    // card still carrying the mark.
+    // ── E5 Orphan Citation: Source Reconstruction (CONTENT_REVIEW 2026-11-08) ─────────────────────────────────
+    //
+    // After the player's draw it shows the top 3 cards of their draw pile; the player takes one into the hand, and
+    // that card is cited — play it this turn or owe the Citation 1 Overdue (the ordinary Reference machinery). Until
+    // 2026-11-08 it cited a card in hand and accepted any card of the same price and type in its place.
+    public const int OrphanShows = 3;
+
     public static StatusData OrphanCitationReference()
     {
-        var citation = Reference(CitationReferenceId, "Reconstruct the Source", CitationReferenceMark,
-            "A card is cited; something enough like it will also do.");
+        var you = E<CardsDrawnTriggeredEffectContext>.Self;
+        var cite = E<CardsDrawnTriggeredEffectContext>.If(
+            E<CardsDrawnTriggeredEffectContext>.And(
+                // The turn's own hand: a card drawn later must not be cited again.
+                E<CardsDrawnTriggeredEffectContext>.Is(
+                    new CardDrawsThisTurnExpression<CardsDrawnTriggeredEffectContext>(you), ComparisonOperator.LessOrEqual, 1),
+                E<CardsDrawnTriggeredEffectContext>.Is(
+                    E<CardsDrawnTriggeredEffectContext>.InZone(you, CardZone.DrawPile), ComparisonOperator.Greater, 0)),
+            E<CardsDrawnTriggeredEffectContext>.Seq(
+                E<CardsDrawnTriggeredEffectContext>.Mark(new ChosenCardInZoneExpression<CardsDrawnTriggeredEffectContext>(
+                    CardZone.DrawPile,
+                    "Orphan Citation: take one of your top 3 cards into your hand. You must play it this turn.",
+                    top: OrphanShows), CitationReferenceMark),
+                E<CardsDrawnTriggeredEffectContext>.ForMarked(CardZone.DrawPile, CitationReferenceMark,
+                    E<CardsDrawnTriggeredEffectContext>.Move(E<CardsDrawnTriggeredEffectContext>.Iterated, CardZone.Hand))));
 
-        // Same price and same kind counts as the same citation.
-        var standIn = new EffectProgram<CardPlayedTriggeredEffectContext>(
-            new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
-                new AndExpression<CardPlayedTriggeredEffectContext>(
-                    IsTheApplicant<CardPlayedTriggeredEffectContext>(),
-                    new ComparisonExpression<CardPlayedTriggeredEffectContext>(
-                        PlayedCost<CardPlayedTriggeredEffectContext>(),
-                        ComparisonOperator.Equal,
-                        new CardInstanceBaseCostExpression<CardPlayedTriggeredEffectContext>(
-                            new FirstMarkedCardInOwnerZoneExpression<CardPlayedTriggeredEffectContext>(
-                                CombatantTargetSelectors.Source, CardZone.Hand,
-                                new TagId(CitationReferenceMark)),
-                            StandardCombatIds.EnergyResource))),
-                new ForEachCardInZoneNode<CardPlayedTriggeredEffectContext>(
-                    CombatantTargetSelectors.Source, CardZone.Hand,
-                    new MarkCardInstanceNode<CardPlayedTriggeredEffectContext>(
-                        CombatantTargetSelectors.Source,
-                        new IteratedCardExpression<CardPlayedTriggeredEffectContext>(),
-                        new TagId(CitationReferenceMark), remove: true),
-                    markFilter: new TagId(CitationReferenceMark))));
-
-        return citation with
-        {
-            Triggers =
-            [
-                .. citation.Triggers,
-                new StatusTriggerData("CardPlayed", JsonSerializer.SerializeToElement(
-                    standIn, CombatJson.CreateOptions<CardPlayedTriggeredEffectContext>()),
-                    StatusTriggerScope.Anywhere),
-            ],
-        };
+        return Reference(CitationReferenceId, "Source Reconstruction", CitationReferenceMark,
+            "After your draw it shows you the top 3 cards of your draw pile. Take one into your hand: you must play it "
+            + "this turn, or owe the Citation 1 Overdue.",
+            cite: cite);
     }
 
     // What the alphabet learned is kept on the PLAYER, not on the alphabet. Both moments it cares about — a

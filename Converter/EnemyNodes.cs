@@ -57,6 +57,10 @@ internal static class E<T> where T : class
         new SetCardInstanceMarkCounterNode<T>(Self, card, StandardCombatIds.CardCostDeltaCounter, delta, relative: true);
     public static IEffectNode<T> ForMarked(CardZone zone, string mark, IEffectNode<T> body) =>
         new ForEachCardInZoneNode<T>(Self, zone, body, markFilter: new TagId(mark));
+    public static IEffectNode<T> Move(ICardInstanceExpression<T> card, CardZone zone, ZonePlacement placement = ZonePlacement.Bottom) =>
+        new MoveCardToZoneNode<T>(Self, card, zone, placement: placement);
+    public static IEffectNode<T> Draw(int count) => new DrawCardsNode<T>(Self, C(count));
+    public static IEffectNode<T> Nothing => new SequenceEffectNode<T>([]);
     public static IEffectNode<T> Give(string cardId) =>
         new CreateCardInstanceNode<T>(Self, new CardDefinitionId(cardId), CardZone.Hand, C(1));
 

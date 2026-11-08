@@ -16,17 +16,24 @@ public class ActTwoNormalBuffTests
     private static CombatantState Enemy(RunPlayback play) =>
         play.CombatDriver!.Current!.State.Combatants.First(c => c.Id != play.CombatDriver.Current!.HeroId);
 
-    // A citation left unanswered twice: the Entry collects at its next turn — 7 damage, and no Paperwork.
+    // A citation left unanswered twice: the Orphan Citation collects at its next turn — 7 damage, and no Paperwork.
+    // (The Second-Person Entry carried this test until 2026-11-08, when it stopped filing Overdue.)
     [Fact]
     public void A_citer_collects_what_it_is_owed_as_seven_damage()
     {
-        using var play = FightProbe.Start(FightProbe.Solo("second_person_entry", "cross_reference"),
+        using var play = FightProbe.Start(FightProbe.Solo("orphan_citation", "missing_source"),
             deck: [.. Enumerable.Repeat("paper_cut", 16)], health: 400).Play;
-        play.CombatDriver!.EndTurn();
+        void Turn()
+        {
+            if (play.CombatDriver!.PendingCardChoice is { } offered)
+                play.CombatDriver.SupplyCardChoice([offered[0].Id]);
+            play.CombatDriver.EndTurn();
+        }
+        Turn();
         Assert.Equal(1, FightProbe.StacksOf(Hero(play), ActTwo.OverdueId));
-        play.CombatDriver.EndTurn();
-        play.CombatDriver.EndTurn();
-        Assert.Equal(400 - ActTwo.CollectionDamage, Hero(play).Health.Current);
+        Turn();
+        Turn();
+        Assert.Equal(400 - 3 * 4 - ActTwo.CollectionDamage, Hero(play).Health.Current); // three Missing Sources
         Assert.Equal(0, FightProbe.StacksOf(Hero(play), "paperwork"));
     }
 

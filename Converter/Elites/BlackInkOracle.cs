@@ -6,108 +6,102 @@ namespace BnbContent.Converter.Elites;
 
 // ── Black-Ink Oracle (Act II elite) ───────────────────────────────────────────────────────────────────────
 //
-// An oracle of lacquered plaques whose face is interrupted by strips of censoring ink. Every second turn, once
-// your hand is drawn, it blacks out the cost of the first card in it and asks you what it is: guess right and you
-// draw a card, guess wrong and you take 5 damage.
+// An oracle of lacquered plaques whose face is interrupted by strips of censoring ink. Every second turn, once your
+// hand is drawn, it CLASHES with you: you see the top card of your draw pile and may put it on the bottom first;
+// then it reveals one of its plates (cost 0, 1 or 2) against the card now on top. Higher cost wins — you draw that
+// card; lower loses — 5 damage; a tie is nothing.
 //
-// The cost is graded against the card's printed cost; the frontend is what blacks it out (the mark
-// `queried_by_the_oracle`), and the mark comes off once the question is answered.
+// The player wears the rules (EncounterPassives.HeroOpeningStatuses), and with them the sight of the top card of
+// their draw pile (Disclosure) — the decision is made looking at it. The plate is a fight-random roll, shown on
+// the Oracle as the plate it last revealed: the Oracle has no deck of its own.
 //
-// REWORKED 2026-11-03 (user, Act II trial: "die Idee ist cool, aber eher Kartenkosten raten: richtig kleiner
-// Bonus, falsch 5 Schaden, jede zweite Runde"): Black Ink, the Devouring, Reveal, Decline and the citation are gone.
+// REWORKED 2026-11-03 (user, Act II trial): Black Ink, the Devouring, Reveal, Decline and the citation are gone.
+// REWORKED 2026-11-08 (CONTENT_REVIEW E8): the cost quiz ("guess what this card costs") became a Clash, so the
+// player decides something instead of remembering a number. MTG: Clash (Lorwyn).
 public static class BlackInkOracle
 {
     public const string EnemyId = "black_ink_oracle";
 
     public const string TheOracleId = "the_black_ink_oracle";
     public const string OracleRulesId = "riddle_rules";
-    public const string QueriedMark = "queried_by_the_oracle";
 
     public const int WrongDamage = 5;
+    public const int Plates = 3;   // plates cost 0, 1 or 2
+    public static string PlateId(int cost) => $"oracle_plate_{cost}";
+    private static readonly string[] PlateNames = ["Plate of Nought", "Plate of One", "Plate of Two"];
 
-    // Whether the last turn was a Riddle: they alternate, from the first.
+    // Whether the last turn was a Clash: they alternate, from the first. The plate rolled is kept beside it.
     private static CounterId AskedCounter => new("oracle_asked");
+    public static CounterId PlateCounter => new("oracle_plate");
 
-    private static readonly ICombatantTargetSelector Opponent = CombatantTargetSelectors.LowestHealthEnemyOfSource;
     private static readonly ICombatantTargetSelector Self = CombatantTargetSelectors.Source;
-    private static readonly ICombatantTargetSelector Oracles =
-        CombatantTargetSelectors.AllEnemiesOfSourceWithStatus(new StatusDefinitionId(TheOracleId));
 
-    private const string RiddleText =
-        "Every second turn it hides the cost of a card in your hand. Guess it: right, draw 1; wrong, take 5 damage.";
+    private const string ClashText =
+        "Every second turn it Clashes: you see your top card and may put it on the bottom, then it reveals a plate "
+        + "(cost 0-2). Your top card costs more: draw it. Less: take 5 damage.";
 
     public static IEnumerable<StatusData> Statuses() =>
     [
-        Rule(TheOracleId, "The Black-Ink Oracle", RiddleText, []),
+        Rule(TheOracleId, "The Black-Ink Oracle", ClashText, []),
         Rules(),
+        .. Enumerable.Range(0, Plates).Select(cost => Rule(PlateId(cost), PlateNames[cost],
+            $"The plate it revealed in the last Clash: cost {cost}.", [])),
     ];
 
     private static StatusData Rules()
     {
-        var asked = new CombatantCounterExpression<CardsDrawnTriggeredEffectContext>(Self, AskedCounter);
-        var riddle = new ChooseOptionsNode<CardsDrawnTriggeredEffectContext>(
-            [Answer(0), Answer(1), Answer(2), AnswerThreeOrMore()],
-            ["it costs 0", "it costs 1", "it costs 2", "it costs 3 or more"],
-            count: 1, purpose: "the Oracle has blacked out the cost of a card in your hand: what does it cost?");
-        var program = new EffectProgram<CardsDrawnTriggeredEffectContext>(
-            new ConditionalEffectNode<CardsDrawnTriggeredEffectContext>(
-                new ComparisonExpression<CardsDrawnTriggeredEffectContext>(
-                    new CountTargetsExpression<CardsDrawnTriggeredEffectContext>(Oracles),
-                    ComparisonOperator.Greater, new ConstantExpression<CardsDrawnTriggeredEffectContext>(0)),
-                new ConditionalEffectNode<CardsDrawnTriggeredEffectContext>(
-                    new ComparisonExpression<CardsDrawnTriggeredEffectContext>(
-                        asked, ComparisonOperator.Equal, new ConstantExpression<CardsDrawnTriggeredEffectContext>(0)),
-                    new CausalSequenceEffectNode<CardsDrawnTriggeredEffectContext>(
-                    [
-                        new SetCombatantCounterNode<CardsDrawnTriggeredEffectContext>(
-                            Self, AskedCounter, new ConstantExpression<CardsDrawnTriggeredEffectContext>(1), relative: false),
-                        new ConditionalEffectNode<CardsDrawnTriggeredEffectContext>(
-                            new ComparisonExpression<CardsDrawnTriggeredEffectContext>(
-                                new CombatantZoneCardCountExpression<CardsDrawnTriggeredEffectContext>(Self, CardZone.Hand),
-                                ComparisonOperator.Greater, new ConstantExpression<CardsDrawnTriggeredEffectContext>(0)),
-                            new CausalSequenceEffectNode<CardsDrawnTriggeredEffectContext>(
-                            [
-                                new MarkCardInstanceNode<CardsDrawnTriggeredEffectContext>(
-                                    Self, new CardInZoneExpression<CardsDrawnTriggeredEffectContext>(CardZone.Hand, 0),
-                                    new TagId(QueriedMark)),
-                                riddle,
-                                new MarkCardInstanceNode<CardsDrawnTriggeredEffectContext>(
-                                    Self, Queried(), new TagId(QueriedMark), remove: true),
-                            ])),
-                    ]),
-                    @else: new SetCombatantCounterNode<CardsDrawnTriggeredEffectContext>(
-                        Self, AskedCounter, new ConstantExpression<CardsDrawnTriggeredEffectContext>(0), relative: false))));
+        var asked = E<CardsDrawnTriggeredEffectContext>.Counter(Self, AskedCounter);
+        var top = new CardInOwnerZoneExpression<CardsDrawnTriggeredEffectContext>(Self, CardZone.DrawPile);
+        var yours = E<CardsDrawnTriggeredEffectContext>.CostOf(top);
+        var plate = E<CardsDrawnTriggeredEffectContext>.Counter(Self, PlateCounter);
+        var it = E<CardsDrawnTriggeredEffectContext>.It;
 
-        return Rule(OracleRulesId, "The Oracle's Riddle", RiddleText,
+        var clash = E<CardsDrawnTriggeredEffectContext>.Seq(
+            // Option 0 keeps the card: a fight without a chooser leaves the pile as it is.
+            new ChooseOptionsNode<CardsDrawnTriggeredEffectContext>(
+                [E<CardsDrawnTriggeredEffectContext>.Nothing,
+                 E<CardsDrawnTriggeredEffectContext>.Move(top, CardZone.DrawPile, ZonePlacement.Bottom)],
+                ["keep it on top", "put it on the bottom"],
+                count: 1,
+                purpose: "Clash with the Oracle: your top card against its plate (cost 0-2), higher cost wins. "
+                    + "Win: draw it. Lose: 5 damage. Keep your top card, or put it on the bottom first?"),
+            E<CardsDrawnTriggeredEffectContext>.Set(Self, PlateCounter,
+                new RandomBelowExpression<CardsDrawnTriggeredEffectContext>(Plates)),
+            E<CardsDrawnTriggeredEffectContext>.Each(E<CardsDrawnTriggeredEffectContext>.Wearers(TheOracleId),
+                new SequenceEffectNode<CardsDrawnTriggeredEffectContext>(
+                [
+                    .. Enumerable.Range(0, Plates).Select(cost => E<CardsDrawnTriggeredEffectContext>.Remove(it, PlateId(cost))),
+                    .. Enumerable.Range(0, Plates).Select(cost => E<CardsDrawnTriggeredEffectContext>.If(
+                        E<CardsDrawnTriggeredEffectContext>.Is(plate, ComparisonOperator.Equal, cost),
+                        E<CardsDrawnTriggeredEffectContext>.Apply(it, PlateId(cost)))),
+                ])),
+            // Won: the card that won is drawn. Lost: 5 damage, the Oracle's, which no Strength of the player's touches.
+            E<CardsDrawnTriggeredEffectContext>.If(
+                E<CardsDrawnTriggeredEffectContext>.Is(yours, ComparisonOperator.Greater, plate),
+                E<CardsDrawnTriggeredEffectContext>.Draw(1),
+                E<CardsDrawnTriggeredEffectContext>.If(
+                    E<CardsDrawnTriggeredEffectContext>.Is(yours, ComparisonOperator.Less, plate),
+                    new DealDamageNode<CardsDrawnTriggeredEffectContext>(
+                        Self, E<CardsDrawnTriggeredEffectContext>.C(WrongDamage), kind: DamageKind.DamageOverTime))));
+
+        var program = new EffectProgram<CardsDrawnTriggeredEffectContext>(
+            E<CardsDrawnTriggeredEffectContext>.If(E<CardsDrawnTriggeredEffectContext>.Present(TheOracleId),
+                E<CardsDrawnTriggeredEffectContext>.If(
+                    E<CardsDrawnTriggeredEffectContext>.Is(asked, ComparisonOperator.Equal, 0),
+                    E<CardsDrawnTriggeredEffectContext>.Seq(
+                        E<CardsDrawnTriggeredEffectContext>.Set(Self, AskedCounter, E<CardsDrawnTriggeredEffectContext>.C(1)),
+                        E<CardsDrawnTriggeredEffectContext>.If(
+                            E<CardsDrawnTriggeredEffectContext>.Is(
+                                E<CardsDrawnTriggeredEffectContext>.InZone(Self, CardZone.DrawPile), ComparisonOperator.Greater, 0),
+                            clash)),
+                    E<CardsDrawnTriggeredEffectContext>.Set(Self, AskedCounter, E<CardsDrawnTriggeredEffectContext>.C(0)))));
+
+        return Rule(OracleRulesId, "The Oracle's Clash", ClashText,
             [
                 new StatusTriggerData("CardsDrawn", JsonSerializer.SerializeToElement(
                     TheOpeningHand.Only(program), CombatJson.CreateOptions<CardsDrawnTriggeredEffectContext>())),
-            ]);
+            ]) with { Disclosure = new DisclosureData(DrawPileCards: 1) };
     }
-
-    private static ICardInstanceExpression<CardsDrawnTriggeredEffectContext> Queried() =>
-        new FirstMarkedCardInOwnerZoneExpression<CardsDrawnTriggeredEffectContext>(
-            Self, CardZone.Hand, new TagId(QueriedMark));
-
-    private static ICombatExpression<CardsDrawnTriggeredEffectContext, int> QueriedCost() =>
-        new CardInstanceBaseCostExpression<CardsDrawnTriggeredEffectContext>(Queried(), StandardCombatIds.EnergyResource);
-
-    private static IEffectNode<CardsDrawnTriggeredEffectContext> Answer(int claimedCost) =>
-        Graded(new ComparisonExpression<CardsDrawnTriggeredEffectContext>(
-            QueriedCost(), ComparisonOperator.Equal, new ConstantExpression<CardsDrawnTriggeredEffectContext>(claimedCost)));
-
-    private static IEffectNode<CardsDrawnTriggeredEffectContext> AnswerThreeOrMore() =>
-        Graded(new ComparisonExpression<CardsDrawnTriggeredEffectContext>(
-            QueriedCost(), ComparisonOperator.GreaterOrEqual, new ConstantExpression<CardsDrawnTriggeredEffectContext>(3)));
-
-    // Right: a card. Wrong: 5 damage, the Oracle's, which no Strength of the player's touches.
-    private static IEffectNode<CardsDrawnTriggeredEffectContext> Graded(
-        ICombatExpression<CardsDrawnTriggeredEffectContext, bool> correct) =>
-        new ConditionalEffectNode<CardsDrawnTriggeredEffectContext>(
-            correct,
-            new DrawCardsNode<CardsDrawnTriggeredEffectContext>(Self, new ConstantExpression<CardsDrawnTriggeredEffectContext>(1)),
-            @else: new DealDamageNode<CardsDrawnTriggeredEffectContext>(
-                Self, new ConstantExpression<CardsDrawnTriggeredEffectContext>(WrongDamage), kind: DamageKind.DamageOverTime));
 
     // Its intents are plain and authored in the source data.
     public static EffectProgram<EnemyActionContext>? Intent(string intentId) => null;
