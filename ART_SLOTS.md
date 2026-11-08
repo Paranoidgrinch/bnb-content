@@ -2,7 +2,7 @@
 
 Generated: `dotnet run --project Converter -- --art-slots ART_SLOTS.md`. **Do not edit by hand.**
 
-**874 pictures**: 472 cards, 256 relics, 142 bodies
+**875 pictures**: 473 cards, 256 relics, 142 bodies
 (every enemy, elite and boss) and 4 the player can be. Every one of them is filled today by a PLACEHOLDER — a plate with the file's own
 name and the word placeholder on it, written by `bnb-godot/tools/make-card-art.py`,
 `make-relic-art.py` and `make-enemy-art.py`. A painted picture replaces one by being saved over it, so
@@ -524,7 +524,7 @@ Drawn like a body and facing RIGHT — the player stands on the left of the aren
 | `lieutenant` | The Lieutenant | New stripes on an old uniform, and always first through the door. |
 | `sorcerers_apprentice` | The Sorcerer's Apprentice | Knows every incantation, and not quite what happens when one is put after another. |
 
-## Cards — 472 pictures
+## Cards — 473 pictures
 
 No visual canon was ever written for the cards, so the row carries the card's own rules
 text instead of a brief. Act = the act that unlocks it; the starters, the Junk and the
@@ -1021,7 +1021,7 @@ cards a boss or a door hands over are never offered and have no act.
 | `lt_whistle` | Whistle | working | uncommon | Gain 3 Block. You may spend 1 Authority to draw 2 cards. |
 | `lt_witness` | Witness | working | common | Gain 4 Block. Your next Deed hit on a Challenged enemy this turn counts twice toward its Challenge. |
 
-### Given in play — 56
+### Given in play — 57
 
 Handed over by a boss, a door or an event rather than offered; never in a reward pool.
 
@@ -1030,15 +1030,14 @@ Handed over by a boss, a door or an event rather than offered; never in a reward
 | `ask_at_the_desk` | Ask at the Desk | Get the card behind the desk back now. It costs 1 more this time. |
 | `ask_for_expedited_service` | Ask for Expedited Service | This Service Window opens him 15% instead of 25%, but you stay at Position 1 after. |
 | `atrahasis_boat` | Atrahasis' Boat | Retain. This round the flood deals you half. Returns to your hand. |
-| `bent_penny` | Bent Penny | Gain 1 Energy. Gain 1 Doubt. |
 | `better_chair_cushion_action` | The Better Chair | Gain 14 Block. End the turn holding a real card, or lose 6 HP. |
 | `black_flood_vessel_action` | Empty the Vessel | Discard your hand, draw 7, and gain 2 Energy. Once a combat. |
+| `borrowed_lace` | Borrowed Lace | Gain 6 Block. Lent by the Bride: gone at the end of the turn. |
 | `borrowers_claim` | Borrower's Claim | Retain. Exhaust. Put a card from hand under your draw pile, draw 1. Held at turn end: 1 Paperwork. |
 | `cauldron_add` | Into the Pot | Put a card from hand into the cauldron instead of playing it. The first each turn is free. |
 | `cauldron_brew` | Brew | Brew the 3 ingredients. Three of one family: a concentrated brew. Otherwise each gives its own effect. |
 | `correction_reed_action` | A Small Correction | Once a turn: discard a card, return one from discard costing 1 less. None there: draw 1. |
 | `counter_petition_twine_action` | Counter-Petition | Discard a card, draw a card, gain 1 Energy. Once a turn. |
-| `crooked_kindness` | Crooked Kindness | Lose 2 HP. Draw 2 cards. |
 | `drink_from_the_cup` | Drink from the Cup | Gain 1 Energy. The Cup gains 2 Claims. Unplayed, it is gone at the end of the turn. |
 | `edict_of_the_open_audience_action` | Open the Audience | Once a combat: cards in your hand cost 0 this turn. |
 | `erasure_tablet_action` | Erase the Line | Once a combat: every enemy's next action deals no damage; they gain 20 Block instead. |
@@ -1069,8 +1068,11 @@ Handed over by a boss, a door or an event rather than offered; never in a reward
 | `swear_by_the_sun_40` | Swear by the Sun: 40 | Ethereal. Gain 20 Block now. Swear to deal Utu 40 damage this turn, or he gains a Witness. The other oaths are gone. |
 | `swear_by_the_sun_60` | Swear by the Sun: 60 | Ethereal. Gain 30 Block now. Swear to deal Utu 60 damage this turn, or he gains a Witness. The other oaths are gone. |
 | `take_from_tomorrow` | Take From Tomorrow | Retain. Gain 1 Energy and draw 1 card. Write 1 Debt: it comes off tomorrow's portion. Returns to your hand. |
+| `the_frogs_fare` | The Frog's Fare | Pay 10 Gold after the fight. The Frog lets the card it eyed be this turn. |
 | `thorned_shawl` | Thorned Shawl | Lose 5 HP. Draw 2 cards. Grandmother loses 6 HP. |
 | `thorned_shawl_dear` | Thorned Shawl | Lose 5 HP. Draw 2 cards. Grandmother loses 6 HP. |
+| `toll_in_blood` | Toll in Blood | Lose 5 HP. The Ford's next attack is halved. Pay one toll each turn, or you break its law. |
+| `toll_in_kind` | Toll in Kind | Discard a card. The Ford's next attack is halved. Pay one toll each turn, or you break its law. |
 | `tomb_curse` | Tomb Curse | Unplayable. Still in hand at the end of your turn: 1 Entombed. |
 | `tomb_gold` | Tomb Gold | Gain 25 Gold (paid after the fight). |
 | `unfinished_citation` | Unfinished Citation | Retain. Exhaust. Clear a Reference from a card in hand. Still in hand at turn end: 1 Paperwork. |
@@ -1080,7 +1082,6 @@ Handed over by a boss, a door or an event rather than offered; never in a reward
 | `wand_inscribe` | Inscribe | Put a card from hand into a free wand slot instead of playing it. First each combat free, then 1 Focus. |
 | `wand_swap` | Swap | Two wand cards trade places. 1 Focus. |
 | `wand_withdraw` | Withdraw | A wand card goes to your discard. 1 Focus. |
-| `warm_kettle_gift` | Warm Kettle | Gain 8 Block. Discard a card. |
 | `wrong_form` | Wrong Form | Exhaust. Discard another card. |
 | `yield_your_place` | Yield Your Place | Move one place away from the Counter. Gain 6 Block. One queue choice a turn. |
 
