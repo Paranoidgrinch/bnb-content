@@ -27,14 +27,16 @@ public static partial class LieutenantCards
     private static readonly BnbCard DoubleFile = Uncommon("lt_double_file", "Double File", WorkingTag, 1,
         $"Draw 1 card. Gain 4 Block. {Promises.DoubleFile.Text}", DoubleFileOut(4));
 
-    private static readonly BnbCard MindTheGap = Uncommon("lt_mind_the_gap", "Mind the Gap", DeedTag, 1,
-        $"Deal 10 damage. {Promises.MindTheGap.Text}", Seq(Damage(10), Issue(Promises.MindTheGap)));
+    // Hold the Breach (once Mind the Gap; the id stays).
+    private static readonly BnbCard HoldTheBreach = Uncommon("lt_mind_the_gap", "Hold the Breach", DeedTag, 1,
+        $"Deal 10 damage. {Promises.HoldTheBreach.Text}", Seq(Damage(10), Issue(Promises.HoldTheBreach)));
 
     private static readonly BnbCard Cadence = Uncommon("lt_cadence", "Cadence", WorkingTag, 0,
         $"Draw 1 card. {Promises.Cadence.Text}", Seq(Draw(1), Issue(Promises.Cadence)));
 
-    private static readonly BnbCard NoExcuses = Uncommon("lt_no_excuses", "No Excuses", DeedTag, 1,
-        $"Deal 10 damage. {Promises.NoExcuses.Text}", Seq(Damage(10), Issue(Promises.NoExcuses)));
+    // Standing Orders (once No Excuses; the id stays).
+    private static readonly BnbCard StandingOrders = Uncommon("lt_no_excuses", "Standing Orders", DeedTag, 1,
+        $"Deal 10 damage. {Promises.StandingOrders.Text}", Seq(Damage(10), Issue(Promises.StandingOrders)));
 
     private static readonly BnbCard NoSurrender = Uncommon("lt_no_surrender", "No Surrender", WorkingTag, 1,
         $"Gain 5 Block. {Promises.NoSurrender.Text}", Seq(Block(5), Issue(Promises.NoSurrender)));
@@ -46,9 +48,11 @@ public static partial class LieutenantCards
 
     private static CombatConditionSpec IntendsToAttack => new("intends", Target, Id: nameof(IntentKind.Attack));
 
+    // Back on her feet: knocked about last enemy phase, she answers the one that did it.
+    private static CombatNodeModel OnYourFeetOut(int block) => Seq(Block(block), If(HurtInLastPhase, Issue(Promises.OnYourFeet)));
+
     private static readonly BnbCard OnYourFeet = Uncommon("lt_on_your_feet", "On Your Feet", WorkingTag, 1,
-        $"Gain 8 Block. If the target intends to attack: {Promises.OnYourFeet.Text}",
-        Seq(Block(8), If(IntendsToAttack, Issue(Promises.OnYourFeet))));
+        $"Gain 8 Block. If an enemy Attack took your HP last enemy phase: {Promises.OnYourFeet.Text}", OnYourFeetOut(8));
 
     private static readonly BnbCard Pursuit = Uncommon("lt_pursuit", "Pursuit", WorkingTag, 1,
         $"Draw 1 card. {Promises.Pursuit.Text}", Seq(Draw(1), Issue(Promises.Pursuit)));
@@ -94,7 +98,7 @@ public static partial class LieutenantCards
         "Gain 6 Block. You may spend 2 Authority to return a Deed from your discard pile to your hand.", DispatchOut(6), act: 2);
 
     // Half the HP the blow really took, to every other enemy, as damage that is no Deed's (§2.1).
-    private static CombatNodeModel MakeAnExampleHit(int damage, bool free = false) => Seq(
+    private static CombatNodeModel MakeAnExampleHit(int damage, bool whole = false) => Seq(
         SetScratch(new CombatAmountSpec("currentHealth", SelectorKey: Target)),
         Damage(damage),
         SetScratch(CombatAmountSpec.Binary("sub", new CombatAmountSpec("counter", SelectorKey: You, CounterId: Scratch),
@@ -102,11 +106,15 @@ public static partial class LieutenantCards
         new CombatNodeModel("setCombatantCounter", You,
             new CombatAmountSpec("countTargets", ReadSelector: new CombatSelectorSpec("otherEnemies")), CounterId: Others),
         If(new CombatConditionSpec("compare", You, ValueKind: "counter", Op: ComparisonOperator.Greater, Right: 0, Id: Others),
-            free ? Spread() : MaySpendAuthority(1, "half the HP it lost to every other enemy", Spread())));
+            whole
+                ? MaySpendAuthority(1, "every other enemy takes the HP it lost", Spread(whole))
+                : MaySpendAuthority(1, "half the HP it lost to every other enemy", Spread(whole))));
 
-    private static CombatNodeModel Spread() =>
+    private static CombatNodeModel Spread(bool whole) =>
         new("dealDamage", "otherEnemies",
-            CombatAmountSpec.Binary("div", new CombatAmountSpec("counter", SelectorKey: You, CounterId: Scratch), CombatAmountSpec.FromConst(2)),
+            whole
+                ? new CombatAmountSpec("counter", SelectorKey: You, CounterId: Scratch)
+                : CombatAmountSpec.Binary("div", new CombatAmountSpec("counter", SelectorKey: You, CounterId: Scratch), CombatAmountSpec.FromConst(2)),
             DamageKind: DamageKind.DamageOverTime);
 
     private const string Others = "lt_scratch_others";
@@ -114,12 +122,12 @@ public static partial class LieutenantCards
     private static readonly BnbCard MakeAnExample = Uncommon("lt_make_an_example", "Make an Example", DeedTag, 2,
         "Deal 14 damage. You may spend 1 Authority: every other enemy takes half the HP it lost.", MakeAnExampleHit(14), act: 2);
 
-    private static CombatNodeModel FlankHit(int damage, int other, bool free = false)
+    private static CombatNodeModel FlankHit(int damage, int other)
     {
         var second = CombatNodeModel.RandomTargets("otherEnemies", CombatAmountSpec.FromConst(1), Damage(other, "iterationTarget"));
         return Seq(Damage(damage),
             SetScratch(new CombatAmountSpec("countTargets", ReadSelector: new CombatSelectorSpec("otherEnemies"))),
-            If(ScratchAtLeast(1), free ? second : MaySpendAuthority(1, $"deal {other} damage to another enemy", second)));
+            If(ScratchAtLeast(1), MaySpendAuthority(1, $"deal {other} damage to another enemy", second)));
     }
 
     private static readonly BnbCard Flank = Uncommon("lt_flank", "Flank", DeedTag, 1,
@@ -157,20 +165,30 @@ public static partial class LieutenantCards
     private static readonly BnbCard StandDown = Uncommon("lt_stand_down", "Stand Down", WorkingTag, 0,
         "Gain 4 Block. You may spend 1 Authority to withdraw your Challenge and draw 3 cards.", StandDownOut(4), act: 2);
 
-    private static CombatNodeModel ArmsDrillHit(int damage) =>
-        Seq(Repeat(2, Damage(damage)), MaySpendStrength(1, $"deal {damage} damage a third time", Damage(damage)));
+    // Multikicker: up to 2 Strength, one more blow for each.
+    private static CombatNodeModel ArmsDrillHit(int damage)
+    {
+        CombatNodeModel More(int n) => Seq(PayDeclared(n), Repeat(n, Damage(damage)));
+        var two = CombatNodeModel.ChooseOptions(1,
+            [$"Spend 2 Strength: deal {damage} damage twice more", $"Spend 1 Strength: deal {damage} damage once more", "Keep the Strength"],
+            [More(2), More(1), Seq()], "Arms Drill");
+        var one = CombatNodeModel.ChooseOptions(1,
+            [$"Spend 1 Strength: deal {damage} damage once more", "Keep the Strength"], [More(1), Seq()], "Arms Drill");
+        return Seq(Repeat(2, Damage(damage)), If(Has(Strength, 2), two, If(Has(Strength, 1), one)));
+    }
 
     private static readonly BnbCard ArmsDrill = Uncommon("lt_arms_drill", "Arms Drill", DeedTag, 1,
-        "Deal 5 damage twice. You may spend 1 Strength to deal 5 damage a third time.", ArmsDrillHit(5));
+        "Deal 5 damage twice. Spend up to 2 Strength: deal 5 damage once more for each.", ArmsDrillHit(5));
 
-    // "Ignores up to 10 of its Block": the Block is set aside for the blow and what the blow left of it returns.
-    private static CombatNodeModel OverhandHit(int damage, int strength = 3)
+    // "Ignores up to 10 of its Block" (or all of it): the Block is set aside for the blow and what the blow left
+    // of it returns.
+    private static CombatNodeModel OverhandHit(int damage, int strength = 3, int most = 10)
     {
         var block = StandardCombatIds.BlockDefensivePool.value;
         var setAside = new CombatAmountSpec("counter", SelectorKey: You, CounterId: Scratch);
         return If(Has(Strength, strength),
             Seq(
-                SetScratch(AtMost(new CombatAmountSpec("defensivePool", SelectorKey: Target, ReadId: block), 10)),
+                SetScratch(AtMost(new CombatAmountSpec("defensivePool", SelectorKey: Target, ReadId: block), most)),
                 new CombatNodeModel("modifyDefensivePool", Target, CombatAmountSpec.Unary("neg", setAside), PoolId: block),
                 Damage(damage),
                 If(new CombatConditionSpec("isAlive", Target),
@@ -201,11 +219,12 @@ public static partial class LieutenantCards
     private static readonly BnbCard Grip = Uncommon("lt_grip", "Grip", WorkingTag, 0,
         "Spend up to 2 Strength: for each, draw 1 card and gain 4 Block. If you spend none, gain 2 Block.", GripOut(4, 2), act: 2);
 
-    private static CombatNodeModel ShieldPunchHit(int damage, int block) =>
+    private static CombatNodeModel ShieldBossHit(int damage, int block) =>
         Seq(Damage(damage), Block(Plus(CombatAmountSpec.FromConst(block), Stacks(Strength, You))));
 
-    private static readonly BnbCard ShieldPunch = Uncommon("lt_shield_punch", "Shield Punch", DeedTag, 1,
-        "Deal 7 damage. Gain 5 Block, plus 1 for each Strength.", ShieldPunchHit(7, 5));
+    // Shield Boss (once Shield Punch; the id stays): the blow with the shield's iron centre.
+    private static readonly BnbCard ShieldBoss = Uncommon("lt_shield_punch", "Shield Boss", DeedTag, 1,
+        "Deal 7 damage. Gain 5 Block, plus 1 for each Strength.", ShieldBossHit(7, 5));
 
     private static CombatNodeModel BrokenPikeHit(int damage, int splash, int price = 2) => Seq(Damage(damage),
         MaySpendStrength(price, $"{splash} damage to every other enemy",
@@ -258,25 +277,32 @@ public static partial class LieutenantCards
     private static readonly BnbCard Scar = Uncommon("lt_scar", "Scar", RiteTag, 1,
         "The first time each enemy phase an enemy Attack takes your HP, gain 2 Strength.", Rite(LieutenantRules.Scar));
 
+    // The Rite's stacks are the damage for each Open Guard; the charge it keeps on her is priced at once, since a
+    // status never hears its own arrival (LieutenantRules.OverreachRite).
+    private static CombatNodeModel OverreachOut(int perGuard) => Seq(
+        Rite(LieutenantRules.Overreach, perGuard),
+        new CombatNodeModel("removeStatus", You, StatusId: LieutenantRules.OverreachCharge),
+        If(Has(OpenGuard), Apply(LieutenantRules.OverreachCharge,
+            CombatAmountSpec.Binary("mul", Stacks(OpenGuard, You), Stacks(LieutenantRules.Overreach, You)), You)));
+
     private static readonly BnbCard Overreach = Uncommon("lt_overreach", "Overreach", RiteTag, 1,
-        "The first time each turn you gain Open Guard, your next Deed this turn deals 6 more damage with its first hit.",
-        Rite(LieutenantRules.Overreach, 6), act: 2);
+        "Your Deeds' first hit deals 4 more damage for each Open Guard you have.", OverreachOut(4), act: 2);
 
     private static readonly BnbCard BrokenNose = Uncommon("lt_broken_nose", "Broken Nose", RiteTag, 1,
-        "The first time each enemy phase Open Guard costs you HP, gain 1 Authority and 2 Strength.", Rite(LieutenantRules.BrokenNose));
+        "The first time each enemy phase Open Guard costs you HP, gain 2 Authority.", Rite(LieutenantRules.BrokenNose));
 
     public static IReadOnlyList<BnbCard> Uncommons() =>
     [
         AgainstTheWall, AgainstTheWall.Upgraded($"Gain 10 Block. {Promises.AgainstTheWallPlus.Text}", Seq(Block(10), Issue(Promises.AgainstTheWallPlus))),
         DoubleFile, DoubleFile.Upgraded($"Draw 1 card. Gain 6 Block. {Promises.DoubleFile.Text}", DoubleFileOut(6)),
-        MindTheGap, MindTheGap.Upgraded($"Deal 14 damage. {Promises.MindTheGapPlus.Text}", Seq(Damage(14), Issue(Promises.MindTheGapPlus))),
+        HoldTheBreach, HoldTheBreach.Upgraded($"Deal 14 damage. {Promises.HoldTheBreachPlus.Text}", Seq(Damage(14), Issue(Promises.HoldTheBreachPlus))),
         Cadence, Cadence.Upgraded($"Draw 2 cards, then discard 1. {Promises.Cadence.Text}",
             Seq(DrawDiscard(Cadence.Id, 2, 1), Issue(Promises.Cadence))),
-        NoExcuses, NoExcuses.Upgraded($"Deal 14 damage. {Promises.NoExcusesPlus.Text}", Seq(Damage(14), Issue(Promises.NoExcusesPlus))),
+        StandingOrders, StandingOrders.Upgraded($"Deal 14 damage. {Promises.StandingOrdersPlus.Text}", Seq(Damage(14), Issue(Promises.StandingOrdersPlus))),
         NoSurrender, NoSurrender.Upgraded($"Gain 7 Block. {Promises.NoSurrenderPlus.Text}", Seq(Block(7), Issue(Promises.NoSurrenderPlus))),
         Gauntlet, Gauntlet.Upgraded($"Deal 13 damage. {Promises.GauntletPlus.Text}", Seq(Damage(13), Issue(Promises.GauntletPlus))),
-        OnYourFeet, OnYourFeet.Upgraded($"Gain 10 Block. If the target intends to attack: {Promises.OnYourFeetPlus.Text}",
-            Seq(Block(10), If(IntendsToAttack, Issue(Promises.OnYourFeetPlus)))),
+        OnYourFeet, OnYourFeet.Upgraded($"Gain 12 Block. If an enemy Attack took your HP last enemy phase: {Promises.OnYourFeet.Text}",
+            OnYourFeetOut(12)),
         Pursuit, Pursuit.Upgraded($"Draw 2 cards, then discard 1. {Promises.Pursuit.Text}",
             Seq(DrawDiscard(Pursuit.Id, 2, 1), Issue(Promises.Pursuit))),
         NoRunning, NoRunning.Upgraded($"Deal 16 damage. If the target had Block: {Promises.NoRunning.Text}", NoRunningHit(16)),
@@ -288,20 +314,21 @@ public static partial class LieutenantCards
         Whistle, Whistle.Upgraded("Gain 5 Block. You may spend 1 Authority to draw 2 cards.", WhistleOut(5)),
         Dispatch, Dispatch.Upgraded("Gain 9 Block. You may spend 2 Authority to return a Deed from your discard pile to your hand.",
             DispatchOut(9)),
-        MakeAnExample, MakeAnExample.Upgraded("Deal 18 damage. Every other enemy takes half the HP it lost.",
-            MakeAnExampleHit(18, free: true)),
+        MakeAnExample, MakeAnExample.Upgraded("Deal 18 damage. You may spend 1 Authority: every other enemy takes the HP it lost.",
+            MakeAnExampleHit(18, whole: true)),
         UnderTheColours, UnderTheColours.Upgraded("The first time each turn you keep an Order, gain 1 Strength and 3 Block.",
             Rite(LieutenantRules.UnderTheColoursPlus)),
-        Flank, Flank.Upgraded("Deal 14 damage. Deal 10 damage to another enemy.", FlankHit(14, 10, free: true)),
+        Flank, Flank.Upgraded("Deal 13 damage. You may spend 1 Authority to deal 13 damage to another enemy.", FlankHit(13, 13)),
         Ultimatum, Ultimatum.Upgraded("Deal 11 damage. You may spend 1 Authority to apply 2 Doubt.", UltimatumHit(11, price: 1)),
         Remand, Remand.Upgraded("Gain 11 Block. You may spend 1 Authority: your Challenge survives one more deadline (once per Challenge).",
             Seq(Block(11), IfChallengeOut(MaySpendAuthority(1, "extend your Challenge", Apply(Obligations.RemandPulse, 1, You))))),
         StandDown, StandDown.Upgraded("Gain 6 Block. You may spend 1 Authority to withdraw your Challenge and draw 3 cards.", StandDownOut(6)),
-        ArmsDrill, ArmsDrill.Upgraded("Deal 7 damage three times.", Repeat(3, Damage(7))),
-        Overhand, Overhand.Upgraded("Deal 18 damage. This ignores up to 10 of the target's Block.", OverhandHit(18, strength: 0)),
+        ArmsDrill, ArmsDrill.Upgraded("Deal 6 damage twice. Spend up to 2 Strength: deal 6 damage once more for each.", ArmsDrillHit(6)),
+        Overhand, Overhand.Upgraded("Deal 18 damage. With 2 or more Strength, this ignores all of the target's Block.",
+            OverhandHit(18, strength: 2, most: 999)),
         Heave, Heave.Upgraded("Deal 13 damage. Then you may spend 1 Strength to deal 13 damage again.", HeaveHit(13, price: 1)),
         Grip, Grip.Upgraded("Spend up to 2 Strength: for each, draw 1 card and gain 6 Block. If you spend none, gain 3 Block.", GripOut(6, 3)),
-        ShieldPunch, ShieldPunch.Upgraded("Deal 10 damage. Gain 8 Block, plus 1 for each Strength.", ShieldPunchHit(10, 8)),
+        ShieldBoss, ShieldBoss.Upgraded("Deal 10 damage. Gain 8 Block, plus 1 for each Strength.", ShieldBossHit(10, 8)),
         Scar, Scar.Upgraded("Gain 1 Strength. The first time each enemy phase an enemy Attack takes your HP, gain 2 Strength.",
             Seq(Apply(Strength, 1, You), Rite(LieutenantRules.Scar))),
         BrokenPike, BrokenPike.Upgraded("Deal 16 damage. Then you may spend 1 Strength: every other enemy takes 9 damage.", BrokenPikeHit(16, 9, price: 1)),
@@ -310,11 +337,10 @@ public static partial class LieutenantCards
             Seq(Block(12), Apply(LieutenantRules.Recoil, 1, You))),
         Ruckus, Ruckus.Upgraded("Deal 5 damage to ALL enemies. If it hits two or more, gain 1 Open Guard and draw 1 card.", RuckusHit(5)),
         Poise, Poise.Upgraded("Gain 15 Block. You may spend 1 Authority: until your next Deed this turn has resolved, you gain no Open Guard.", PoiseOut(15)),
-        Overreach, Overreach.Upgraded("The first time each turn you gain Open Guard, your next Deed this turn deals 9 more damage with its first hit.",
-            Rite(LieutenantRules.Overreach, 9)),
+        Overreach, Overreach.Upgraded("Your Deeds' first hit deals 6 more damage for each Open Guard you have.", OverreachOut(6)),
         BloodyCobbles, BloodyCobbles.Upgraded("Deal 13 damage; twice if an enemy Attack took your HP last enemy phase. Gain 1 Open Guard.",
             BloodyCobblesHit(13)),
-        BrokenNose, BrokenNose.Upgraded("Gain 1 Authority. The first time each enemy phase Open Guard costs you HP, gain 1 Authority and 2 Strength.",
+        BrokenNose, BrokenNose.Upgraded("Gain 1 Authority. The first time each enemy phase Open Guard costs you HP, gain 2 Authority.",
             Seq(GainAuthority(1), Rite(LieutenantRules.BrokenNose))),
     ];
 }

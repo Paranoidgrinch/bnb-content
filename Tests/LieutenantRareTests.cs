@@ -11,16 +11,31 @@ public class LieutenantRareTests
     private const string Wax = Converter.Cards.Keywords.WardWax;
 
     [Fact]
-    public void Brevet_makes_a_one_authority_price_free_and_free_is_no_payment()
+    public void Brevet_makes_each_turns_first_authority_price_one_less_and_free_is_no_payment()
     {
-        using var d = One(Five("lt_brevet", "lt_signal", "lt_rising_star"));
-        d.P("lt_rising_star");           // +1 Authority; pays when a payment leaves 0
-        d.P("lt_brevet");                // +1 Authority: 2
-        var energy = d.Energy;
-        d.P("lt_signal", choose: 0);     // free with Brevet: 1 Energy, Authority untouched
-        Assert.Equal(2, Authority(d));
-        Assert.Equal(energy + 1, d.Energy);
-        Assert.Equal(0, Strength(d));    // no payment, so Rising Star stays quiet
+        using (var d = One(Five("lt_brevet", "lt_signal", "lt_signal", "lt_rising_star")))
+        {
+            d.P("lt_rising_star");       // +1 Authority; pays when a payment leaves 0
+            d.P("lt_brevet");            // a Rite now: no Authority of its own
+            Assert.Equal(1, Authority(d));
+            var energy = d.Energy;
+            d.P("lt_signal", choose: 0); // free with Brevet: 1 Energy, Authority untouched
+            Assert.Equal(1, Authority(d));
+            Assert.Equal(energy + 1, d.Energy);
+            Assert.Equal(0, Strength(d)); // no payment, so Rising Star stays quiet
+            d.P("lt_signal", choose: 0); // the second price this turn is paid in full
+            Assert.Equal(0, Authority(d));
+            Assert.Equal(1, Strength(d));
+            d.End();
+            Assert.Equal(1, Stacks(d.Me, LieutenantRules.Brevet));   // ready again next turn
+        }
+        // Authority already spent this turn: the Rite waits for the next one.
+        using var e = One(Five("lt_signal", "lt_brevet"), hero: (LieutenantKeywords.Authority, 1));
+        e.P("lt_signal", choose: 0);
+        e.P("lt_brevet");
+        Assert.Equal(0, Stacks(e.Me, LieutenantRules.Brevet));
+        e.End();
+        Assert.Equal(1, Stacks(e.Me, LieutenantRules.Brevet));
     }
 
     [Fact]
@@ -136,14 +151,34 @@ public class LieutenantRareTests
     }
 
     [Fact]
-    public void Redress_moves_a_challenge_to_another_enemy_that_fits_it()
+    public void Redress_copies_the_challenge_onto_every_other_enemy_and_each_copy_pays()
+    {
+        using var d = Two(Five("lt_new_stripes", "lt_redress", "lt_watch_cut", "lt_watch_cut"));
+        d.P("lt_new_stripes", choose: 0);        // on the biter: 1 Strength
+        d.P("lt_redress");
+        Assert.Equal(8, Block(d.Me));
+        Assert.Equal(1, Stacks(d.It, Promises.NewStripes.Id));
+        Assert.Equal(1, Stacks(Body(d.Play, d.Other!.Value), Promises.NewStripes.Id));
+        d.P("lt_watch_cut", at: d.Other);        // the copy is kept, the first still stands
+        Assert.Equal(1, Authority(d));
+        Assert.Equal(0, Stacks(Body(d.Play, d.Other!.Value), Promises.NewStripes.Id));
+        Assert.Equal(1, Stacks(d.It, Promises.NewStripes.Id));
+        d.P("lt_watch_cut");                     // and now the first
+        Assert.Equal(2, Authority(d));
+        Assert.Equal(3, Strength(d));
+        Assert.Single(Now(d.Play).State.GetCardZones(Now(d.Play).HeroId).ExhaustPile);
+    }
+
+    [Fact]
+    public void Redress_copies_fail_on_their_own()
     {
         using var d = Two(Five("lt_new_stripes", "lt_redress", "lt_watch_cut"));
         d.P("lt_new_stripes", choose: 0);
-        d.P("lt_redress", choose: 0, at: d.Other);
-        Assert.Equal(0, Stacks(d.It, Promises.NewStripes.Id));
-        Assert.Equal(1, Stacks(Body(d.Play, d.Other!.Value), Promises.NewStripes.Id));
-        d.P("lt_watch_cut", at: d.Other);
+        d.P("lt_redress");
+        d.P("lt_watch_cut");                     // the biter's is kept
+        Assert.Equal(1, Authority(d));
+        d.End();                                 // the tablet acts: its copy fails, nothing more
+        Assert.Equal(0, Stacks(Body(d.Play, d.Other!.Value), Promises.NewStripes.Id));
         Assert.Equal(1, Authority(d));
     }
 
@@ -180,14 +215,32 @@ public class LieutenantRareTests
     }
 
     [Fact]
-    public void Reprimand_answers_an_order_that_failed_last_turn()
+    public void Reprimand_lets_an_order_fail_for_strength_and_open_guard()
     {
-        using var d = One(Five("lt_first_orders", "lt_reprimand"));
+        using (var d = One(Five("lt_first_orders", "lt_reprimand")))
+        {
+            d.P("lt_first_orders");
+            d.P("lt_reprimand", choose: 0);      // the Order fails now
+            Assert.Equal(0, Stacks(d.Me, Promises.FirstOrders.Id));
+            Assert.True(Counter(d.Me, Obligations.OrderFailedRound) > 0);
+            Assert.Equal(4 + 9, Block(d.Me));     // First Orders' and its own
+            Assert.Equal(2, Strength(d));
+            Assert.Equal(1, Stacks(d.Me, LieutenantKeywords.OpenGuard));
+        }
+        // No Order out: nothing is asked, only the Block.
+        using var e = One(Five("lt_reprimand"));
+        e.P("lt_reprimand");
+        Assert.Null(e.Play.CombatDriver!.PendingOptionChoice);
+        Assert.Equal(0, Strength(e));
+    }
+
+    [Fact]
+    public void Reprimand_feeds_torn_standard()
+    {
+        using var d = Armed("lt_relic_torn_standard", Five("lt_first_orders", "lt_reprimand"));
         d.P("lt_first_orders");
-        d.End();                                 // no Deed: failed
-        d.P("lt_reprimand");
-        Assert.Equal(2, Strength(d));
-        Assert.Equal(1, Stacks(d.Me, LieutenantKeywords.OpenGuard));
+        d.P("lt_reprimand", choose: 0);
+        Assert.Equal(3, Strength(d));            // 2 from the card, 1 from the relic
     }
 
     [Fact]
@@ -319,24 +372,47 @@ public class LieutenantRareTests
     }
 
     [Fact]
-    public void Watch_surgeon_heals_for_a_kept_promise_and_an_authority()
+    public void Watch_surgeon_heals_for_every_kept_promise_and_takes_no_authority()
     {
-        using var d = One(Five("lt_watch_surgeon", "lt_first_orders", "lt_watch_cut"), health: 70, hero: (LieutenantKeywords.Authority, 1));
+        using var d = One(Five("lt_watch_surgeon", "lt_first_orders", "lt_watch_cut", "lt_new_stripes", "lt_watch_cut"), health: 70);
         d.P("lt_watch_surgeon");
         d.P("lt_first_orders");
         d.P("lt_watch_cut");
         Assert.Equal(72, d.Me.Health.Current);
-        Assert.Equal(1, Authority(d));           // 1 + 1 kept − 1 spent
+        Assert.Equal(1, Authority(d));
+        d.P("lt_new_stripes", choose: 0);
+        d.P("lt_watch_cut");                     // a Challenge the same turn heals again
+        Assert.Equal(74, d.Me.Health.Current);
+        Assert.Equal(2, Authority(d));
     }
 
     [Fact]
-    public void Field_pardon_declares_a_standing_order_kept_once()
+    public void Field_pardon_declares_every_standing_promise_kept()
     {
-        using var d = One(Five("lt_first_orders", "lt_field_pardon"), hero: (LieutenantKeywords.Authority, 2));
+        using var d = One(Five("lt_first_orders", "lt_new_stripes", "lt_field_pardon"));
         d.P("lt_first_orders");
-        d.P("lt_field_pardon", choose: 0);       // +1 = 3, spend 3, the Order pays 1
+        d.P("lt_new_stripes", choose: 0);
+        d.P("lt_field_pardon");                  // nothing to pay: the Order and the Challenge are both kept
         Assert.Equal(0, Stacks(d.Me, Promises.FirstOrders.Id));
-        Assert.Equal(1, Authority(d));
+        Assert.Equal(0, Stacks(d.It, Promises.NewStripes.Id));
+        Assert.Equal(2, Authority(d));
+        Assert.Equal(2, Strength(d));            // the card's 1 and the Challenge's 1
         Assert.Equal(1, Counter(d.Me, Obligations.OrdersKept));
+        Assert.Equal(1, Counter(d.Me, Obligations.ChallengesWon));
+        Assert.Equal(4 + 10, Block(d.Me));       // First Orders' and its own
+    }
+
+    [Fact]
+    public void Field_pardon_keeps_both_orders_under_chain_of_command()
+    {
+        using var d = One(Five("lt_chain_of_command", "lt_first_orders", "lt_scabbard", "lt_field_pardon"));
+        d.P("lt_chain_of_command");
+        d.P("lt_first_orders");
+        d.P("lt_scabbard");
+        d.P("lt_field_pardon");
+        Assert.Equal(0, Stacks(d.Me, Promises.FirstOrders.Id));
+        Assert.Equal(0, Stacks(d.Me, Promises.Scabbard.Id));
+        Assert.Equal(2, Counter(d.Me, Obligations.OrdersKept));
+        Assert.Equal(2, Authority(d));
     }
 }

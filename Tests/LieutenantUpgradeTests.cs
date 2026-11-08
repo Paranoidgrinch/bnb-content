@@ -8,23 +8,27 @@ namespace BnbContent.Tests;
 public class LieutenantUpgradeTests
 {
     [Fact]
-    public void Witness_plus_doubles_two_hits()
+    public void Witness_plus_lets_two_deeds_on_another_enemy_count()
     {
-        using var d = One(Five("lt_witness+", "lt_marked_man", "lt_watch_cut"));
-        d.P("lt_marked_man");
+        using var d = Two(Five("lt_witness+", "lt_marked_man", "lt_watch_cut", "lt_watch_cut"));
+        d.P("lt_marked_man");           // the biter is Challenged
         d.P("lt_witness+");
-        d.P("lt_watch_cut");            // one hit, counted twice: kept
+        Assert.Equal(6, Block(d.Me));
+        d.P("lt_watch_cut", at: d.Other);
+        Assert.Equal(0, Authority(d));
+        d.P("lt_watch_cut", at: d.Other); // two Deeds on the tablet: kept on the biter
         Assert.Equal(1, Authority(d));
-        Assert.Equal(1, Stacks(d.Me, LieutenantRules.Witness));
+        Assert.Equal(0, Stacks(d.Me, LieutenantRules.Witness));
     }
 
     [Fact]
-    public void Make_an_example_plus_spreads_without_authority()
+    public void Make_an_example_plus_spreads_the_whole_loss_for_authority()
     {
-        using var d = Two(Five("lt_make_an_example+"));
+        using var d = Two(Five("lt_make_an_example+"), (LieutenantKeywords.Authority, 1));
         var other = Standing(Body(d.Play, d.Other!.Value));
-        d.P("lt_make_an_example+");     // 18: the biter's 24 lose 18
-        Assert.Equal(other - 9, Standing(Body(d.Play, d.Other!.Value)));
+        d.P("lt_make_an_example+", choose: 0); // 18: the biter's 24 lose 18, and so does the tablet
+        Assert.Equal(other - 18, Standing(Body(d.Play, d.Other!.Value)));
+        Assert.Equal(0, Authority(d));
     }
 
     [Fact]
@@ -37,12 +41,23 @@ public class LieutenantUpgradeTests
     }
 
     [Fact]
-    public void No_surrender_plus_does_not_need_open_guard()
+    public void No_surrender_plus_still_wants_open_guard_and_pays_a_card_more()
     {
-        using var d = One(Five("lt_no_surrender+", "lt_buckler_up"), Biter, BiteIntent);
-        d.P("lt_no_surrender+");
-        d.End();                         // 7 + 5 Block against 6
-        Assert.Equal(2, Authority(d));
+        string[] deck = [.. Five("lt_new_stripes", "lt_no_surrender+", "lt_buckler_up"), .. Enumerable.Repeat("lt_watch_cut", 10)];
+        using (var d = One(deck, Biter, BiteIntent))
+        {
+            d.P("lt_new_stripes", choose: 0); // 1 Open Guard
+            d.P("lt_no_surrender+");
+            d.P("lt_buckler_up");            // 7 + 7 Block against 6 and a quarter
+            d.End();
+            Assert.Equal(2, Authority(d));
+            Assert.Equal(1, Stacks(d.Me, Obligations.Reinforcements));
+        }
+        using var e = One(deck, Biter, BiteIntent);
+        e.P("lt_no_surrender+");
+        e.P("lt_buckler_up");
+        e.End();                             // no Open Guard: failed
+        Assert.Equal(0, Authority(e));
     }
 
     [Fact]
@@ -86,5 +101,59 @@ public class LieutenantUpgradeTests
         d.P("lt_pike_butt");
         Assert.Equal(1, Authority(d));
         Assert.Equal(1, Strength(d));
+    }
+
+    [Fact]
+    public void Headlong_plus_keeps_one_open_guard_and_draws_a_card()
+    {
+        using var d = One([.. Five("lt_headlong+", "lt_watch_cut", "lt_watch_cut", "lt_watch_cut"), "lt_watch_cut", "lt_watch_cut"]);
+        var hand = d.Hand;
+        d.P("lt_headlong+");
+        Assert.Equal(1, Stacks(d.Me, LieutenantKeywords.OpenGuard));
+        Assert.Equal(hand, d.Hand);              // one played, one drawn
+        var energy = d.Energy;
+        d.P("lt_watch_cut");
+        d.P("lt_watch_cut");
+        Assert.Equal(energy, d.Energy);
+    }
+
+    [Fact]
+    public void Flank_plus_still_asks_authority_for_the_second_blow()
+    {
+        using (var d = Two(Five("lt_flank+"), (LieutenantKeywords.Authority, 1)))
+        {
+            var other = Standing(Body(d.Play, d.Other!.Value));
+            d.P("lt_flank+", choose: 0);
+            Assert.Equal(other - 13, Standing(Body(d.Play, d.Other!.Value)));
+            Assert.Equal(0, Authority(d));
+        }
+        using var e = Two(Five("lt_flank+"));
+        var untouched = Standing(Body(e.Play, e.Other!.Value));
+        e.P("lt_flank+");                        // nothing to pay with: nothing asked
+        Assert.Equal(untouched, Standing(Body(e.Play, e.Other!.Value)));
+    }
+
+    [Fact]
+    public void Arms_drill_spends_up_to_two_strength_for_a_blow_each()
+    {
+        using (var d = One(Five("lt_arms_drill"), health: 100, hero: (LieutenantKeywords.Strength, 2)))
+        {
+            var before = Standing(d.It);
+            d.P("lt_arms_drill", choose: 0);     // 7 + 7, then 2 Strength spent: 5 + 5
+            Assert.Equal(before - 24, Standing(d.It));
+            Assert.Equal(0, Strength(d));
+        }
+        using var e = One(Five("lt_arms_drill+"), health: 100, hero: (LieutenantKeywords.Strength, 1));
+        var start = Standing(e.It);
+        e.P("lt_arms_drill+", choose: 0);        // 7 + 7, then 1 Strength spent: 6
+        Assert.Equal(start - 20, Standing(e.It));
+    }
+
+    [Fact]
+    public void Broken_nose_plus_brings_authority_with_it()
+    {
+        using var d = One(Five("lt_broken_nose+"));
+        d.P("lt_broken_nose+");
+        Assert.Equal(1, Authority(d));
     }
 }

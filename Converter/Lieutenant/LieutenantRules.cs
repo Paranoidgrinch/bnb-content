@@ -3,6 +3,7 @@ using RogueDeck.Sandbox.Composition;
 using RogueDeck.Scenario.Authoring;
 using static BnbContent.Converter.Lieutenant.LieutenantKeywords;
 using static BnbContent.Converter.Lieutenant.Statuses;
+using AR = BnbContent.Converter.Lieutenant.N<RogueDeck.Core.Combat.ActionResolvedTriggeredEffectContext>;
 using CP = BnbContent.Converter.Lieutenant.N<RogueDeck.Core.Combat.CardPlayedTriggeredEffectContext>;
 using CD = BnbContent.Converter.Lieutenant.N<RogueDeck.Core.Combat.CardsDrawnTriggeredEffectContext>;
 using RA = BnbContent.Converter.Lieutenant.N<RogueDeck.Core.Combat.RuleAnnouncedTriggeredEffectContext>;
@@ -16,16 +17,14 @@ namespace BnbContent.Converter.Lieutenant;
 public static partial class LieutenantRules
 {
     public const string Witness = Obligations.Witness;
-    public const string Buckle = "lt_buckle";
+    public const string Gird = "lt_buckle";
     public const string SecondRank = "lt_second_rank";
     public const string Headlong = "lt_headlong";
 
     public static IReadOnlyList<StatusData> All() =>
     [
-        Status(Witness, "Witness", StatusPolarity.Buff,
-            "Your next Deed hits on a Challenged enemy this turn count twice toward its Challenge, one hit for each stack.",
-            triggers: [On(TriggerEvent.TurnEnded, TE.Remove(TE.Self, Witness))]),
-        BuckleMark(),
+        WitnessMark(),
+        GirdMark(),
         Discount(SecondRank, "Second Rank", Cards.CardAuthoring.DeedTag, 99,
             "Your next Deed this turn costs 0."),
         Discount(Headlong, "Headlong", Cards.CardAuthoring.DeedTag, 1,
@@ -35,17 +34,34 @@ public static partial class LieutenantRules
         .. RelicRules(),
     ];
 
-    // Buckle: an Order kept before the end of this turn takes back the Open Guard the card gave.
-    private static StatusData BuckleMark() =>
-        Status(Buckle, "Buckle", StatusPolarity.Neutral,
+    // Witness: while it stands, a Deed of hers counts toward her Challenge whichever enemy it hits (the counting
+    // is the Challenge's own, Obligations.Count). One stack is one Deed: the close of a Deed's action uses it.
+    private static StatusData WitnessMark()
+    {
+        var spent = Witness + "_spent";
+        return Status(Witness, "Witness", StatusPolarity.Buff,
+            "Your next Deed this turn counts toward your Challenge, whichever enemy it hits; one Deed for each stack.",
+            triggers:
+            [
+                On(TriggerEvent.CardPlayed, CP.If(CP.CardTagged(Cards.CardAuthoring.DeedTag), CP.Set(CP.Self, spent, 1))),
+                On(TriggerEvent.ActionResolved, AR.If(AR.Is(AR.Counter(AR.Self, spent), 1),
+                    AR.Seq(AR.Set(AR.Self, spent, 0), AR.Adjust(AR.Self, Witness, AR.C(-1))))),
+                On(TriggerEvent.TurnEnded, TE.Seq(TE.Set(TE.Self, spent, 0), TE.Remove(TE.Self, Witness))),
+            ]);
+    }
+
+    // Gird (once Buckle; the id stays): an Order kept before the end of this turn takes back the Open Guard the
+    // card gave.
+    private static StatusData GirdMark() =>
+        Status(Gird, "Gird", StatusPolarity.Neutral,
             "If you keep an Order before the end of this turn, lose this much Open Guard.",
             triggers:
             [
                 On(TriggerEvent.RuleAnnounced, RA.If(RA.Announced(Obligations.OrderFulfilled),
-                    RA.Seq(RA.Adjust(RA.Self, OpenGuard, RA.Minus(RA.C(0), RA.Min(RA.Stacks(RA.Self, Buckle), RA.Stacks(RA.Self, OpenGuard)))),
-                        RA.Remove(RA.Self, Buckle)))),
+                    RA.Seq(RA.Adjust(RA.Self, OpenGuard, RA.Minus(RA.C(0), RA.Min(RA.Stacks(RA.Self, Gird), RA.Stacks(RA.Self, OpenGuard)))),
+                        RA.Remove(RA.Self, Gird)))),
                 // Read through her turn's end, so a promise kept AT the end still counts.
-                On(TriggerEvent.TurnStarted, TS.Remove(TS.Self, Buckle)),
+                On(TriggerEvent.TurnStarted, TS.Remove(TS.Self, Gird)),
             ]);
 
     // ── "your next Deed costs …" ─────────────────────────────────────────────────────────────────────────

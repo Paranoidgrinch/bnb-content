@@ -49,7 +49,7 @@ public class LieutenantUncommonTests
         using var d = One(Five("lt_no_excuses", "lt_watch_cut"));
         d.P("lt_no_excuses");
         d.End();
-        Assert.Equal(1, Stacks(d.Me, Promises.NoExcuses.Id));
+        Assert.Equal(1, Stacks(d.Me, Promises.StandingOrders.Id));
         d.P("lt_watch_cut");
         Assert.Equal(1, Authority(d));
         Assert.Equal(4, Block(d.Me));
@@ -87,16 +87,23 @@ public class LieutenantUncommonTests
     }
 
     [Fact]
-    public void On_your_feet_pays_a_card_next_turn_if_block_is_left()
+    public void On_your_feet_challenges_only_after_an_attack_took_her_hp()
     {
-        // Six cards, so a sixth can be drawn.
-        using var d = One([.. Five("lt_on_your_feet"), "lt_watch_cut"], enemy: Biter, intent: BiteIntent);
-        if (!Now(d.Play).Hand.Any(c => c.DefinitionId.value == "lt_on_your_feet"))
-            return;
-        d.P("lt_on_your_feet");    // 8 Block against 6
-        d.End();
-        Assert.Equal(1, Authority(d));
-        Assert.Equal(6, d.Hand);
+        // Untouched: Block, and no Challenge.
+        using (var d = One(Five("lt_on_your_feet"), enemy: Biter, intent: BiteIntent))
+        {
+            d.P("lt_on_your_feet");
+            Assert.Equal(8, Block(d.Me));
+            Assert.Equal(0, Stacks(d.It, Promises.OnYourFeet.Id));
+        }
+        // Bitten last enemy phase: back on her feet, a Deed before it acts pays 1 Authority and 2 Strength.
+        using var e = One(Five("lt_on_your_feet", "lt_watch_cut"), enemy: Biter, intent: BiteIntent);
+        e.End();                                   // 6 through, no Block; the same five come back
+        e.P("lt_on_your_feet");
+        Assert.Equal(1, Stacks(e.It, Promises.OnYourFeet.Id));
+        e.P("lt_watch_cut");
+        Assert.Equal(1, Authority(e));
+        Assert.Equal(2, Strength(e));
     }
 
     [Fact]
@@ -246,14 +253,33 @@ public class LieutenantUncommonTests
     }
 
     [Fact]
-    public void Overreach_charges_the_next_deed_after_open_guard()
+    public void Overreach_adds_four_to_every_deeds_first_hit_for_each_open_guard()
     {
-        using var d = One(Five("lt_overreach", "lt_new_stripes", "lt_watch_cut"));
+        using var d = One(Five("lt_overreach", "lt_headlong", "lt_watch_cut", "lt_pike_butt"), health: 200);
         d.P("lt_overreach");
-        d.P("lt_new_stripes", choose: 0);   // 1 Strength, Open Guard, a Challenge
         var before = Standing(d.It);
-        d.P("lt_watch_cut");                // 6 + 2 + 1 + 6
-        Assert.Equal(before - 15, Standing(d.It));
+        d.P("lt_watch_cut");                // no Open Guard: 6
+        Assert.Equal(before - 6, Standing(d.It));
+        d.P("lt_headlong");                 // 2 Open Guard
+        before = Standing(d.It);
+        d.P("lt_pike_butt");                // 5 + 8, then 5: the first hit only
+        Assert.Equal(before - 18, Standing(d.It));
+    }
+
+    [Fact]
+    public void Overreach_is_priced_as_it_is_played_and_lets_go_when_open_guard_lapses()
+    {
+        using var d = One(Five("lt_headlong", "lt_overreach+", "lt_watch_cut"), health: 200);
+        d.P("lt_headlong");                 // 2 Open Guard before the Rite
+        d.P("lt_overreach+");
+        var before = Standing(d.It);
+        d.P("lt_watch_cut");                // 6 + 2 × 6
+        Assert.Equal(before - 18, Standing(d.It));
+        d.End();                            // the Open Guard lapses, and the charge with it
+        Assert.Equal(0, Stacks(d.Me, LieutenantRules.OverreachCharge));
+        before = Standing(d.It);
+        d.P("lt_watch_cut");
+        Assert.Equal(before - 6, Standing(d.It));
     }
 
     [Fact]
@@ -263,8 +289,8 @@ public class LieutenantUncommonTests
         d.P("lt_broken_nose");
         d.P("lt_new_stripes", choose: 0);
         d.End();
-        Assert.Equal(1, Authority(d));
-        Assert.Equal(3, Strength(d));   // New Stripes' 1 and Broken Nose's 2
+        Assert.Equal(2, Authority(d));
+        Assert.Equal(1, Strength(d));   // New Stripes' 1; Broken Nose pays Authority only
     }
 
     [Fact]

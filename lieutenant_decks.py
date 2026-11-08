@@ -30,7 +30,7 @@ for act, names in {1: ['brevet', 'insubordination', 'parade_ground', 'drum_major
 RELICS = {'lt_relic_' + r for r in ['tin_fife', 'chipped_buckler', 'split_chinstrap', 'sword_knot', 'warrant_cord',
                                     'parade_spur', 'pay_chest', 'dented_gorget', 'torn_standard', 'full_tang',
                                     'scarlet_epaulette', 'commission', 'lead_knuckles', 'iron_shackle', 'brandy_flask',
-                                    'badge_chain', 'worn_epaulette', 'spur_buckle']}
+                                    'badge_chain', 'worn_epaulette', 'spur_buckle', 'regimental_drum']}
 
 BUDGET = {2: dict(adds=12, removes=3, ups=5, rares=2, relics=2),
           3: dict(adds=16, removes=4, ups=9, rares=3, relics=3)}
