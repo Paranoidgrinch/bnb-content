@@ -6,8 +6,8 @@ using RogueDeck.Sandbox.Run;
 
 namespace BnbContent.Tests;
 
-// The Rolling Stacks Colossus (user, 2026-11-03): its Distance drops by one each of its turns and at 0 it crushes
-// for 20, back at 3; 12 or more damage in one turn pushes it back one.
+// The Rolling Stacks Colossus: its Distance drops by one each of its turns and at 0 it crushes for 20, back at 3.
+// Since 2026-11-08 (CONTENT_REVIEW E7) rolling it back costs a card: a Wheel Chock exhausts one from the hand.
 public class RollingStacksColossusTests
 {
     private static CombatantState Hero(RunPlayback play) =>
@@ -17,6 +17,12 @@ public class RollingStacksColossusTests
         play.CombatDriver!.Current!.State.Combatants.First(c => c.Id != play.CombatDriver.Current!.HeroId);
 
     private static int Distance(RunPlayback play) => FightProbe.StacksOf(Colossus(play), RollingStacksColossus.DistanceId);
+
+    private static CardInstance? Chock(RunPlayback play) =>
+        play.CombatDriver!.Current!.Hand.FirstOrDefault(c => c.DefinitionId.value == RollingStacksColossus.WheelChockId);
+
+    private static IReadOnlyList<CardInstance> Exhausted(RunPlayback play) =>
+        play.CombatDriver!.Current!.State.GetCardZones(play.CombatDriver.Current!.HeroId).GetCardsInZone(CardZone.ExhaustPile);
 
     private static RunPlayback Fight(string intent = "close_the_remaining_passage", int energy = 3) =>
         FightProbe.Start(
@@ -37,34 +43,40 @@ public class RollingStacksColossusTests
         Assert.Equal(RollingStacksColossus.StartDistance, Distance(play));
     }
 
-    // Two Paper Cuts (12 health) push it back one step — once a turn, however much more follows; one alone does not.
+    // At its starting distance there is nothing to roll back, so no chock is offered.
     [Fact]
-    public void Twelve_damage_in_a_turn_pushes_it_back_once()
+    public void No_chock_while_it_stands_at_three()
+    {
+        using var play = Fight();
+        Assert.Null(Chock(play));
+        play.CombatDriver!.EndTurn();
+        Assert.NotNull(Chock(play));
+    }
+
+    // The chock exhausts the card the player chooses and rolls it back one step; damage no longer does.
+    [Fact]
+    public void A_wheel_chock_exhausts_a_card_and_rolls_it_back()
     {
         using var play = Fight("displace_the_ladder", energy: 9);
         play.CombatDriver!.EndTurn();
         play.CombatDriver.EndTurn();
         Assert.Equal(1, Distance(play));
+
         var colossus = Colossus(play).Id;
-        play.CombatDriver.PlayCard(play.CombatDriver.Current!.Hand[0].Id, colossus);
-        Assert.Equal(1, Distance(play));
-        play.CombatDriver.PlayCard(play.CombatDriver.Current!.Hand[0].Id, colossus);
+        play.CombatDriver.PlayCard(play.CombatDriver.Current!.Hand.First(c => c.DefinitionId.value == "paper_cut").Id, colossus);
+        play.CombatDriver.PlayCard(play.CombatDriver.Current!.Hand.First(c => c.DefinitionId.value == "paper_cut").Id, colossus);
+        Assert.Equal(1, Distance(play));                 // 12 damage pushes nothing any more
+
+        play.CombatDriver.PlayCard(Chock(play)!.Id, null);
+        var offered = play.CombatDriver.PendingCardChoice;
+        Assert.NotNull(offered);
+        var spent = offered![0].Id;
+        play.CombatDriver.SupplyCardChoice([spent]);
         Assert.Equal(2, Distance(play));
-        play.CombatDriver.PlayCard(play.CombatDriver.Current!.Hand[0].Id, colossus);
-        play.CombatDriver.PlayCard(play.CombatDriver.Current!.Hand[0].Id, colossus);
-        Assert.Equal(2, Distance(play));
-        // …and the count starts over with its turn.
+        Assert.Contains(Exhausted(play), c => c.Id == spent);
+        Assert.Null(Chock(play));                        // one a turn
+
         play.CombatDriver.EndTurn();
         Assert.Equal(1, Distance(play));
-    }
-
-    [Fact]
-    public void It_is_never_pushed_past_where_it_starts()
-    {
-        using var play = Fight("displace_the_ladder", energy: 9);
-        var colossus = Colossus(play).Id;
-        play.CombatDriver!.PlayCard(play.CombatDriver.Current!.Hand[0].Id, colossus);
-        play.CombatDriver.PlayCard(play.CombatDriver.Current!.Hand[0].Id, colossus);
-        Assert.Equal(RollingStacksColossus.StartDistance, Distance(play));
     }
 }

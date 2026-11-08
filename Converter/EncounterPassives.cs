@@ -29,10 +29,14 @@ public static class EncounterPassives
         // the rule is found from the announcer's side (ActTwo.WriteInTheMargin).
         // Break the jar and the life it was holding is lost (ActTwo.BreakTheJar).
         "spare_life_jar" => [ActTwo.BreakTheJar()],
-        "exception_imp" => Loophole(),
-        "inverted_hourglass" => StolenSand(),
+        // Act II's reworked bodies (CONTENT_REVIEW E5, E7-E9): the Entry's back-reference, the Colossus's chock and
+        // the Curator's borrowed hour are laid in the player's hand as the turn's draw arrives.
+        "second_person_entry" => ActTwo.EntryTriggers(),
+        Elites.RollingStacksColossus.EnemyId => Elites.RollingStacksColossus.Triggers(),
+        // Act I's reworked bodies (ActOne, CONTENT_REVIEW E1-E4); the Hourglass keeps banking its sand here.
+        "inverted_hourglass" => [.. StolenSand(), .. ActOne.Triggers(enemyId)!],
+        _ when ActOne.Triggers(enemyId) is { } city => city,
         "minute_moth" => [StolenMinute()],
-        "queue_crier_homunculus" => [CuttingTheLine()],
         "number_ticket_wisp" => YourNumberCameUp(),
         Elites.WaitingRoom.EnemyId => Elites.WaitingRoom.Triggers(),
         Testator.EnemyId => Testator.Triggers(),
@@ -213,6 +217,10 @@ public static class EncounterPassives
         // once however many shelves are in the room.
         "crabwise_shelf" =>
             [new StartingStatusSpec(new StatusDefinitionId(ActTwo.ArchiveRegulationsId), 1)],
+        // Overdue is payable to the Returns bodies (CONTENT_REVIEW E6): the slip and the refusal are the player's,
+        // so the player wears the window. The duo asks twice and it merges.
+        "brass_maw_of_returns" or "dead_letter_ouroboros" =>
+            [new StartingStatusSpec(new StatusDefinitionId(ActTwo.ReturnsWindowId), 1)],
         // The Warden reaches into the player's hand and two of its three keys are about the player's own
         // turn, so the player carries the rules that seal and release.
         Bosses.WardenOfSealedVolumes.EnemyId =>
@@ -220,7 +228,7 @@ public static class EncounterPassives
         // The Magistrate asks its question at the start of the player's turn, so the player carries it.
         ActThree.MagistrateEnemyId =>
             [new StartingStatusSpec(new StatusDefinitionId(ActThree.JudgmentOfferId), 1)],
-        // The Oracle's riddle is asked of the player's hand, so the player carries it.
+        // The Oracle clashes with the player's draw pile, and lets the player see its top card: the player carries it.
         Elites.BlackInkOracle.EnemyId =>
             [new StartingStatusSpec(new StatusDefinitionId(Elites.BlackInkOracle.OracleRulesId), 1)],
         // The Catalogue's ledger is the player's cards and the player's plays, so the player carries the rules.
@@ -378,7 +386,7 @@ public static class EncounterPassives
 
     // "Stolen Sand" (Inverted Hourglass): whenever Fatigue actually costs the player Energy, the Hourglass
     // banks a grain, up to 3. Fatigue spends exactly one stack when it fires (StatusMapper), so a DROP in the
-    // player's Fatigue IS the moment the Energy went — the mirror that tells the Imp which status moved tells
+    // player's Fatigue IS the moment the Energy went — a mirror of the player's Fatigue tells
     // the Hourglass when its own fired. NOTE: a status whose LAST stack is spent raises StatusExpired, not
     // StatusRemoved or StatusStacksChanged — the "it is finally gone" moment every mirror passive must listen for.
     private static IReadOnlyList<EncounterTriggerData> StolenSand() =>
@@ -462,67 +470,6 @@ public static class EncounterPassives
 
         return new EncounterTriggerData("TurnEnded",
             JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<TurnEndedTriggeredEffectContext>()));
-    }
-
-    // "Cutting the Line" (Queue-Crier Homunculus): the fourth card of a player turn cuts the line — 1 Panic. Exactly
-    // the fourth, so it is once a turn on its own; the loop over the Crier's enemies-of-the-player is the gate that
-    // it is on the table at all.
-    private static EncounterTriggerData CuttingTheLine()
-    {
-        var player = CombatantTargetSelectors.Source;
-        var program = new EffectProgram<CardPlayedTriggeredEffectContext>(
-            new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
-                new ComparisonExpression<CardPlayedTriggeredEffectContext>(
-                    new CardsPlayedThisTurnExpression<CardPlayedTriggeredEffectContext>(player),
-                    ComparisonOperator.Equal, new ConstantExpression<CardPlayedTriggeredEffectContext>(4)),
-                new ForEachTargetEffectNode<CardPlayedTriggeredEffectContext>(
-                    CombatantTargetSelectors.FirstTarget(CombatantTargetSelectors.AllEnemiesOfSourceWithStatus(
-                        new StatusDefinitionId(PassiveStatuses.CuttingTheLineId))),
-                    new ApplyStatusNode<CardPlayedTriggeredEffectContext>(
-                        player, new StatusDefinitionId("panic"), new ConstantExpression<CardPlayedTriggeredEffectContext>(1)))));
-        return new EncounterTriggerData("CardPlayed",
-            JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<CardPlayedTriggeredEffectContext>()));
-    }
-
-    // "Loophole" (Exception Imp): the first time each round the enemy side puts a debuff on the player, the Imp
-    // gains 1 Strength. (Until 2026-11-01 it also struck a stack of that debuff out — half a gift to the player,
-    // half to the Imp, which nobody could read; user: one clear sentence.) The loop over the Imp's allies of the
-    // SOURCE finds it only when its own side did the filing; the event's target has to be the player.
-    private static IReadOnlyList<EncounterTriggerData> Loophole() =>
-    [
-        LoopholeTrigger<StatusAppliedTriggeredEffectContext>("StatusApplied"),
-        LoopholeTrigger<StatusMergedTriggeredEffectContext>("StatusMerged"),
-    ];
-
-    private static EncounterTriggerData LoopholeTrigger<TContext>(string trigger) where TContext : class
-    {
-        var imp = CombatantTargetSelectors.IterationTarget;
-        var player = CombatantTargetSelectors.EventTarget;
-        var program = new EffectProgram<TContext>(
-            new ConditionalEffectNode<TContext>(
-                new AndExpression<TContext>(
-                    new TriggerEventStatusPolarityIsExpression<TContext>(StatusPolarity.Debuff),
-                    new ComparisonExpression<TContext>(
-                        new CombatantStatusStacksExpression<TContext>(player, new StatusDefinitionId(PassiveStatuses.ApplicantId)),
-                        ComparisonOperator.Greater,
-                        new ConstantExpression<TContext>(0))),
-                new ForEachTargetEffectNode<TContext>(
-                    CombatantTargetSelectors.AllAlliesOfSourceWithStatus(new StatusDefinitionId(PassiveStatuses.LoopholeId)),
-                    new ConditionalEffectNode<TContext>(
-                        new ComparisonExpression<TContext>(
-                            new CombatantCounterExpression<TContext>(imp, PassiveStatuses.LoopholeUsedCounter),
-                            ComparisonOperator.Equal,
-                            new ConstantExpression<TContext>(0)),
-                        new SequenceEffectNode<TContext>(new IEffectNode<TContext>[]
-                        {
-                            new SetCombatantCounterNode<TContext>(imp, PassiveStatuses.LoopholeUsedCounter,
-                                new ConstantExpression<TContext>(1), relative: false),
-                            new ApplyStatusNode<TContext>(imp, new StatusDefinitionId("strength"),
-                                new ConstantExpression<TContext>(1)),
-                        })))));
-
-        return new EncounterTriggerData(trigger,
-            JsonSerializer.SerializeToElement(program, CombatJson.CreateOptions<TContext>()));
     }
 
     // A body's mirror of one player status (the Wisp's Panic, the Hourglass's Fatigue).

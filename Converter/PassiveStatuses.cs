@@ -57,17 +57,15 @@ public static class PassiveStatuses
             "Each turn one card in your hand is the wrong edition: it works, then it is Misfiled."),
         Marker(NotThisCounterId, "Not This Counter",
             "Play two cards of the same type in one turn: it gains 5 Block (once a turn)."),
-        Loophole(),
+        .. ActOne.Statuses(),
         // The applicant marker itself is built in Cards/Keywords.cs: besides marking the player it keeps the
         // record of what got through each round, which several cards ask about and which therefore has to be
         // kept whether or not the player is wearing anything else.
         Marker(StolenSandId, "Stolen Sand",
-            "Each time Fatigue costs you Energy it banks a grain (max 3); Turn the Glass hits for 8 + 4 per grain."),
-        YourNumberIsFading(),
-        FadingEdge(),
+            "Each time Fatigue costs you Energy it banks a grain (max 3); Turn the Glass hits for 8 + 4 per grain. "
+            + "End your turn with 2 or more Energy unspent and the sand runs out: the grains are lost and its next "
+            + "Turn the Glass falls empty."),
         StolenMinute(),
-        Marker(CuttingTheLineId, "Cutting the Line",
-            "Play more than 3 cards in a turn and you cut the line: gain 1 Panic."),
         CorrectAgainstTheEvidence(),
         .. CardTypes.Select(Correction),
         Marker(YourNumberCameUpId, "Your Number Came Up",
@@ -730,9 +728,6 @@ public static class PassiveStatuses
     public const string StolenMinuteId = "stolen_minute_passive";
     public static CounterId StolenMinuteCounter => new("stolen_minute");
 
-    // Queue-Crier Homunculus: the marker its encounter trigger finds it by.
-    public const string CuttingTheLineId = "cutting_the_line";
-
     private static StatusData StolenMinute()
     {
         var self = CombatantTargetSelectors.Source;
@@ -752,76 +747,12 @@ public static class PassiveStatuses
             "Each turn you end on 0 Energy, it gains 1 Strength and 3 Block.", "TurnEnded", program);
     }
 
-    // "Your Number Is Fading" (Fading Number Token): while the player carries Fatigue its attacks deal 3 more.
-    // (Until 2026-11-01 it lost 3 HP a turn unless the player was Fatigued; user: rather a bonus than a decay.)
-    // Read as its own turn starts — just before it acts — into a sharpening status that carries the +3.
-    public const string FadingEdgeId = "fading_edge";
-
-    private static StatusData YourNumberIsFading()
-    {
-        var self = CombatantTargetSelectors.Source;
-        var program = new EffectProgram<TurnStartedTriggeredEffectContext>(
-            new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
-                new ComparisonExpression<TurnStartedTriggeredEffectContext>(
-                    new CombatantStatusStacksExpression<TurnStartedTriggeredEffectContext>(
-                        Opponent, new StatusDefinitionId("fatigue")),
-                    ComparisonOperator.Greater,
-                    new ConstantExpression<TurnStartedTriggeredEffectContext>(0)),
-                new ConditionalEffectNode<TurnStartedTriggeredEffectContext>(
-                    new ComparisonExpression<TurnStartedTriggeredEffectContext>(
-                        new CombatantStatusStacksExpression<TurnStartedTriggeredEffectContext>(
-                            self, new StatusDefinitionId(FadingEdgeId)),
-                        ComparisonOperator.Equal,
-                        new ConstantExpression<TurnStartedTriggeredEffectContext>(0)),
-                    new ApplyStatusNode<TurnStartedTriggeredEffectContext>(
-                        self, new StatusDefinitionId(FadingEdgeId),
-                        new ConstantExpression<TurnStartedTriggeredEffectContext>(1))),
-                new RemoveStatusNode<TurnStartedTriggeredEffectContext>(self, new StatusDefinitionId(FadingEdgeId))));
-
-        return Passive("your_number_is_fading", "Your Number Is Fading",
-            "While you have Fatigue, it deals 3 more damage.",
-            "TurnStarted", program);
-    }
-
-    private static StatusData FadingEdge() => new()
-    {
-        Id = FadingEdgeId,
-        NameKey = "Sharpened by Fatigue",
-        DescriptionKey = "You have Fatigue: its attacks deal 3 more.",
-        Polarity = StatusPolarity.Buff,
-        StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
-        UsesStacks = false,
-        Tags = [],
-        PassiveModifiers =
-        [
-            new PassiveModifierData(PassiveModifierPipeline.DamageDealt, PassiveModifierOperation.AddFlat, 3),
-        ],
-        Triggers = [],
-    };
-
     // The hero carries this in every fight (EncounterMapper) so a program can ask "did this happen to the
     // player?" — selectors are structural and cannot name a side.
     public const string ApplicantId = "the_applicant";
 
-    // Exception Imp: the marker its encounter trigger finds it by, plus the once-per-round latch it clears at
-    // round end (like the Oath Candle's, and for the same reason — RoundEnded triggers have no bearer filter).
+    // Exception Imp: the Loophole (ActOne, E1 of the 2026-11-08 review).
     public const string LoopholeId = "loophole";
-    public static CounterId LoopholeUsedCounter => new("loophole_used");
-
-    private static StatusData Loophole()
-    {
-        var carriers = CombatantTargetSelectors.WithStatus(
-            CombatantTargetSelectors.AllCombatants, new StatusDefinitionId(LoopholeId));
-
-        var program = new EffectProgram<RoundEndedTriggeredEffectContext>(
-            new SetCombatantCounterNode<RoundEndedTriggeredEffectContext>(
-                carriers, LoopholeUsedCounter,
-                new ConstantExpression<RoundEndedTriggeredEffectContext>(0), relative: false));
-
-        return Passive(LoopholeId, "Loophole",
-            "The first time each round its side puts a debuff on you, it gains 1 Strength.",
-            "RoundEnded", program);
-    }
 
     // Contradictory Signpost: a pure marker so its encounter trigger can write the route counter to the
     // Signpost and nobody else (see EncounterPassives.BothDirectionsMandatory).

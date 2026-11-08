@@ -1,5 +1,6 @@
 using System.Text.Json;
 using RogueDeck.Core.Combat;
+using RogueDeck.Run;
 using RogueDeck.Scenario.Authoring;
 
 namespace BnbContent.Converter.Elites;
@@ -7,10 +8,13 @@ namespace BnbContent.Converter.Elites;
 // ── The Rolling Stacks Colossus (Act II elite) ────────────────────────────────────────────────────────────
 //
 // Shelving walls on stone rollers, coming at you. Its Distance counts down by one at each of its turns, and at 0
-// it crushes you for 20 and rolls back to 3. Hit it for 12 or more in one turn and you push it back one.
+// it crushes you for 20 and rolls back to 3. Each turn it is closer than 3 the player gets a Wheel Chock: exhaust a
+// card from the hand and it rolls back 1.
 //
 // REWORKED 2026-11-03 (user, Act II trial): the Compression from skipped misfilings, the Open Aisle cards and the
 // displaced Ladder are gone — "Misfile an Entire Section" promised 23 and only misfiled two unseen cards.
+// REWORKED 2026-11-08 (CONTENT_REVIEW E7): rolling it back costs a card instead of 12 damage in one turn — the
+// burst answer was the Return Bell's countdown-and-delay again, right after it.
 public static class RollingStacksColossus
 {
     public const string EnemyId = "rolling_stacks_colossus";
@@ -18,11 +22,7 @@ public static class RollingStacksColossus
 
     public const int StartDistance = 3;
     public const int CrushDamage = 20;
-    public const int PushBack = 12;   // damage in one turn
-
-    // The health it has lost since its last turn, and whether that has pushed it back already.
-    private static CounterId TakenCounter => new("colossus_taken");
-    private static CounterId PushedCounter => new("colossus_pushed");
+    public const string WheelChockId = "wheel_chock";
 
     private static readonly ICombatantTargetSelector Opponent = CombatantTargetSelectors.LowestHealthEnemyOfSource;
 
@@ -50,45 +50,14 @@ public static class RollingStacksColossus
                 ]),
                 @else: new ModifyStatusStacksNode<TurnStartedTriggeredEffectContext>(
                     self, distance, new ConstantExpression<TurnStartedTriggeredEffectContext>(-1))),
-            new SetCombatantCounterNode<TurnStartedTriggeredEffectContext>(
-                self, TakenCounter, new ConstantExpression<TurnStartedTriggeredEffectContext>(0), relative: false),
-            new SetCombatantCounterNode<TurnStartedTriggeredEffectContext>(
-                self, PushedCounter, new ConstantExpression<TurnStartedTriggeredEffectContext>(0), relative: false),
-        ]));
-
-        // A blow that draws blood counts toward the push; the twelfth point pushes it back once (never past 3).
-        // In a damage program the struck body is the event's target.
-        var struck = CombatantTargetSelectors.EventTarget;
-        ComparisonExpression<DamageReceivedTriggeredEffectContext> Is(
-            ICombatExpression<DamageReceivedTriggeredEffectContext, int> left, ComparisonOperator op, int right) =>
-            new(left, op, new ConstantExpression<DamageReceivedTriggeredEffectContext>(right));
-        var blow = new EffectProgram<DamageReceivedTriggeredEffectContext>(new CausalSequenceEffectNode<DamageReceivedTriggeredEffectContext>(
-        [
-            new SetCombatantCounterNode<DamageReceivedTriggeredEffectContext>(
-                struck, TakenCounter, new EventAmountExpression<DamageReceivedTriggeredEffectContext>(), relative: true),
-            new ConditionalEffectNode<DamageReceivedTriggeredEffectContext>(
-                new AndExpression<DamageReceivedTriggeredEffectContext>(
-                    Is(new CombatantCounterExpression<DamageReceivedTriggeredEffectContext>(struck, TakenCounter),
-                        ComparisonOperator.GreaterOrEqual, PushBack),
-                    Is(new CombatantCounterExpression<DamageReceivedTriggeredEffectContext>(struck, PushedCounter),
-                        ComparisonOperator.Equal, 0)),
-                new CausalSequenceEffectNode<DamageReceivedTriggeredEffectContext>(
-                [
-                    new SetCombatantCounterNode<DamageReceivedTriggeredEffectContext>(
-                        struck, PushedCounter, new ConstantExpression<DamageReceivedTriggeredEffectContext>(1), relative: false),
-                    new ConditionalEffectNode<DamageReceivedTriggeredEffectContext>(
-                        Is(new CombatantStatusStacksExpression<DamageReceivedTriggeredEffectContext>(struck, distance),
-                            ComparisonOperator.Less, StartDistance),
-                        new ModifyStatusStacksNode<DamageReceivedTriggeredEffectContext>(
-                            struck, distance, new ConstantExpression<DamageReceivedTriggeredEffectContext>(1))),
-                ])),
         ]));
 
         return new StatusData
         {
             Id = DistanceId,
             NameKey = "Distance",
-            DescriptionKey = "Drops by 1 each turn; at 0 it crushes you for 20. Deal 12+ damage in one turn to push it back 1.",
+            DescriptionKey = "Drops by 1 each turn; at 0 it crushes you for 20. While it is closer than 3, each turn "
+                + "brings a Wheel Chock: exhaust a card from your hand to roll it back 1.",
             Polarity = StatusPolarity.Neutral,
             StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
             UsesStacks = true,
@@ -98,11 +67,43 @@ public static class RollingStacksColossus
             [
                 new StatusTriggerData("TurnStarted", JsonSerializer.SerializeToElement(
                     turn, CombatJson.CreateOptions<TurnStartedTriggeredEffectContext>())),
-                new StatusTriggerData("DamageTaken", JsonSerializer.SerializeToElement(
-                    blow, CombatJson.CreateOptions<DamageReceivedTriggeredEffectContext>())),
             ],
         };
     }
+
+    // The chock arrives with the turn's hand, whenever the Colossus is closer than where it starts.
+    public static IReadOnlyList<EncounterTriggerData> Triggers() =>
+    [
+        EnemyRules.Encounter("CardsDrawn",
+            E<CardsDrawnTriggeredEffectContext>.If(
+                E<CardsDrawnTriggeredEffectContext>.And(
+                    E<CardsDrawnTriggeredEffectContext>.Applicant,
+                    // Some Colossus stands closer than 3: its steps add up to less than three for each of them.
+                    E<CardsDrawnTriggeredEffectContext>.Is(
+                        new SumOverTargetsExpression<CardsDrawnTriggeredEffectContext>(
+                            E<CardsDrawnTriggeredEffectContext>.Wearers(DistanceId),
+                            new IterationTargetStatusStacksExpression<CardsDrawnTriggeredEffectContext>(new StatusDefinitionId(DistanceId))),
+                        ComparisonOperator.Less,
+                        E<CardsDrawnTriggeredEffectContext>.Times(
+                            E<CardsDrawnTriggeredEffectContext>.CountOf(E<CardsDrawnTriggeredEffectContext>.Wearers(DistanceId)),
+                            StartDistance))),
+                E<CardsDrawnTriggeredEffectContext>.Give(WheelChockId))),
+    ];
+
+    // Exhaust a card from the hand: every Colossus closer than 3 rolls back one step.
+    public static CardData WheelChock() => EnemyRules.GivenCard(WheelChockId, "Wheel Chock",
+        "Exhaust a card from your hand. The Rolling Stacks Colossus rolls back 1 (up to 3).",
+        E<CardPlayContext>.If(
+            E<CardPlayContext>.Is(E<CardPlayContext>.InZone(E<CardPlayContext>.Self, CardZone.Hand), ComparisonOperator.Greater, 1),
+            E<CardPlayContext>.Seq(
+                E<CardPlayContext>.Move(new ChosenCardInZoneExpression<CardPlayContext>(CardZone.Hand,
+                    "Wheel Chock: choose a card to exhaust"), CardZone.ExhaustPile),
+                E<CardPlayContext>.Each(E<CardPlayContext>.Wearers(DistanceId),
+                    E<CardPlayContext>.If(
+                        E<CardPlayContext>.Is(
+                            new IterationTargetStatusStacksExpression<CardPlayContext>(new StatusDefinitionId(DistanceId)),
+                            ComparisonOperator.Less, StartDistance),
+                        E<CardPlayContext>.AddStacks(E<CardPlayContext>.It, DistanceId, E<CardPlayContext>.C(1)))))));
 
     // Its intents are plain and authored in the source data.
     public static EffectProgram<EnemyActionContext>? Intent(string intentId) => null;

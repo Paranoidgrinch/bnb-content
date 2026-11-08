@@ -54,25 +54,80 @@ public class ActTwoStageOneTests
         play.Dispose();
     }
 
-    // "Whenever Brass Maw resolves its Delinquency: gain 1 Return Parcel." The parcels ride on its next direct
-    // attack, +8 each, and that attack spends them all.
+    // ── the Returns Window (CONTENT_REVIEW E6, 2026-11-08): Overdue is payable ───────────────────────────────
+
+    private static CardInstance? Slip(RunPlayback play) =>
+        play.CombatDriver!.Current!.Hand.FirstOrDefault(c => c.DefinitionId.value == ActTwo.ReturnSlipId);
+
+    private static IReadOnlyList<CardInstance> DrawPile(RunPlayback play) =>
+        play.CombatDriver!.Current!.State.GetCardZones(play.CombatDriver.Current!.HeroId).GetCardsInZone(CardZone.DrawPile);
+
+    // A turn that is offered the slip and ends still owing hands the Maw a Return Parcel: +6 on its next attack,
+    // which spends it.
     [Fact]
-    public void The_maw_spits_back_what_it_collected()
+    public void Refusing_to_pay_the_maw_feeds_its_next_bite()
     {
         var (play, _, enemyId) = FightProbe.Start(
-            FightProbe.Solo("brass_maw_of_returns", "return_intake"));
-
-        play.CombatDriver!.EndTurn();
-        play.CombatDriver.EndTurn(); // two Overdue standing
+            FightProbe.Solo("brass_maw_of_returns", "return_intake"), health: 400);
+        Assert.Null(Slip(play));                         // nothing owed yet
+        play.CombatDriver!.EndTurn();                    // Return Intake: 9 damage + 1 Overdue
+        Assert.NotNull(Slip(play));
 
         var before = Hero(play).Health.Current;
-        // The Maw's turn: Delinquency collects and hands it a parcel, and the attack that follows in the SAME
-        // turn is the "next direct attack" the parcel was waiting for.
-        play.CombatDriver.EndTurn();
+        play.CombatDriver.EndTurn();                     // refused: a parcel, spent by this turn's Intake
+        Assert.Equal(before - 9 - ActTwo.ReturnParcelDamage, Hero(play).Health.Current);
+        Assert.Equal(0, FightProbe.StacksOf(Enemy(play, enemyId), ActTwo.ReturnParcelId));
+        play.Dispose();
+    }
 
-        // 7 for the collection, then 9 base + 8 for the parcel (user, 2026-11-03).
-        Assert.Equal(before - ActTwo.CollectionDamage - 17, Hero(play).Health.Current);
-        Assert.Equal(0, FightProbe.StacksOf(Enemy(play, enemyId), ActTwo.ReturnParcelId)); // and spent by it
+    // Paying: the chosen card goes on top of the draw pile and 1 Overdue is struck off — and nothing is fed.
+    [Fact]
+    public void A_return_slip_puts_a_card_back_and_strikes_off_an_overdue()
+    {
+        // Intake files the Overdue, then the Shutter files nothing — so a parcel, had one been fed, would stand.
+        var (play, session, enemyId) = FightProbe.Start(
+            FightProbe.SoloCycle("brass_maw_of_returns", "return_intake", "brass_shutter"),
+            deck: [.. Enumerable.Repeat("paper_cut", 12)], health: 400);
+        play.CombatDriver!.EndTurn();                    // 1 Overdue
+        Assert.Equal(1, FightProbe.StacksOf(Hero(play), ActTwo.OverdueId));
+
+        play.CombatDriver.PlayCard(Slip(play)!.Id, null);
+        Assert.Null(session.Error);
+        var offered = play.CombatDriver.PendingCardChoice;
+        Assert.NotNull(offered);
+        var returned = offered![0].Id;
+        play.CombatDriver.SupplyCardChoice([returned]);
+        Assert.Null(session.Error);
+
+        Assert.Equal(returned, DrawPile(play)[0].Id);
+        Assert.Equal(0, FightProbe.StacksOf(Hero(play), ActTwo.OverdueId));
+        Assert.Equal(0, DrawPile(play)[0].GetMarkCounter(StandardCombatIds.CardCostDeltaCounter)); // no Ouroboros here
+
+        play.CombatDriver.EndTurn();                     // Shutter; nothing to feed the Maw
+        Assert.Equal(0, FightProbe.StacksOf(Enemy(play, enemyId), ActTwo.ReturnParcelId));
+        play.Dispose();
+    }
+
+    // Paid to the Ouroboros, the returned card comes back costing 1 more.
+    [Fact]
+    public void A_card_returned_to_the_ouroboros_costs_one_more()
+    {
+        var (play, session, _) = FightProbe.Start(
+            FightProbe.Solo("dead_letter_ouroboros", "forwarding_loop"),
+            deck: [.. Enumerable.Repeat("paper_cut", 12)], health: 400);
+        play.CombatDriver!.EndTurn();
+        play.CombatDriver.PlayCard(Slip(play)!.Id, null);
+        var returned = play.CombatDriver.PendingCardChoice![0].Id;
+        play.CombatDriver.SupplyCardChoice([returned]);
+        Assert.Null(session.Error);
+        Assert.Equal(1, DrawPile(play)[0].GetMarkCounter(StandardCombatIds.CardCostDeltaCounter));
+
+        play.CombatDriver.EndTurn();                     // it is drawn again next turn…
+        var card = play.CombatDriver.Current!.Hand.First(c => c.Id == returned);
+        var energy = Hero(play).Resources[StandardCombatIds.EnergyResource].Current;
+        play.CombatDriver.PlayCard(card.Id, play.CombatDriver.Current!.State.Combatants.First(c => c.Id != play.CombatDriver.Current.HeroId).Id);
+        Assert.Null(session.Error);
+        Assert.Equal(energy - 2, Hero(play).Resources[StandardCombatIds.EnergyResource].Current); // …at 2
         play.Dispose();
     }
 

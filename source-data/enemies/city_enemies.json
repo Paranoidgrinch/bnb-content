@@ -127,6 +127,11 @@
         ]
       }
     ],
+    "starting_statuses": [
+      {
+        "status": "red_tape_binding"
+      }
+    ],
     "tags": [
       "city",
       "elite",
@@ -1396,7 +1401,7 @@
     ],
     "starting_statuses": [
       {
-        "status": "cutting_the_line"
+        "status": "the_waiting_order"
       }
     ],
     "tags": [
@@ -1864,7 +1869,7 @@
     ],
     "starting_statuses": [
       {
-        "status": "your_number_is_fading"
+        "status": "fading_ink"
       }
     ],
     "tags": [

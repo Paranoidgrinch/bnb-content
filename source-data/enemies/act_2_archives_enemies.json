@@ -283,9 +283,6 @@
     ],
     "starting_statuses": [
       {
-        "status": "archive_collection"
-      },
-      {
         "status": "second_person_reference"
       }
     ],
