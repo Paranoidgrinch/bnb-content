@@ -1,7 +1,18 @@
 # Gesamtdurchsicht vor dem finalen Umbau (2026-11-08)
 
 Geprüft auf: langweilig, passt nicht, klingt generisch, unkreativ, doppelt, Falle. Jeder Fund mit aktuellem Text und
-Vorschlag. Nur echte Funde; was gut ist, steht nicht hier. Status: **zur Durchsicht.**
+Vorschlag. Nur echte Funde; was gut ist, steht nicht hier.
+
+Status: **entschieden (2026-11-08), wird gebaut.** Alles wie vorgeschlagen, mit diesen Ausnahmen (user):
+- **A6 Overreach** wäre so zu schwach: 4 Schaden pro Open Guard (+: 6).
+- **B2 Pay Chest** und **D4 Backroom Kettle** bleiben wie sie sind (es gibt noch keine Consumables).
+- **E15:** keine Halbsätze als Namen („klingt sloppy"). Moves und Gegner heißen nach Dingen, Ämtern, Riten oder
+  Titeln (z. B. *Mouth-Opening Rite*, *Daily Tally*, *Boundary Cord*, *Overseer of the Linen House*), nicht nach
+  Befehlen oder Satzfetzen.
+- **E16:** Wiederauferstehen ist nicht schlimm; nur auf etwa 4 Normals reduzieren. Mummy und Natron Priest bekommen
+  ihre neue Mechanik, die anderen behalten Rise.
+- **F:** Iron Warrant und Contempt Ledger Nail fliegen raus.
+- Der Querschnitt (Burst-Gegenmittel, Countdowns) ist Beobachtung, kein Bauauftrag.
 
 ---
 
