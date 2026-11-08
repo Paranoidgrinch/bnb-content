@@ -86,7 +86,8 @@ Energie, Debuffs am Gegner oder Block, nie aus Charakter-Begriffen.
 2 Rares (eine Engine oder ein Finisher).
 
 **Akt-Sperre wie beim Bureaucrat:** Commons ab Akt I, Uncommons zu etwa 2/3 ab Akt I und der Rest ab Akt II,
-Rares gestaffelt über Akt II bis IV. **Upgrades** folgen den bisherigen Regeln.
+Rares gestaffelt über Akt II bis IV. **Upgrades** heben die Werte um etwa +50 % (user, 2026-11-08), gerundet
+auf ganze Zahlen; wo ein Wert bei 1 steht, springt er auf 2. Eine Kostensenkung um 1 gilt als gleichwertig.
 
 ## 4 Die 70 Karten
 
@@ -111,7 +112,7 @@ weniger im nächsten Zug. Upgrades bringen netto etwa +½ bis +1.
 
 | Karte | Kosten | Seltenheit | Text | Upgrade | Notiz | Hexe |
 |---|---|---|---|---|---|---|
-| **Stolen Hour** | 0 | Common | Gain 2 Energy. Exhaust. | + Draw 1 card. |  | Hearth |
+| **Stolen Hour** | 0 | Common | Gain 2 Energy. Exhaust. | Gain 3 Energy |  | Hearth |
 | **Banked Embers** | 1 | Common | Gain 2 Held Energy. Draw 1 card. | 3 Held Energy |  | Hearth |
 | **Tallow Stub** | 0 | Common | Gain 1 Held Energy. Unread: gain 1 Held Energy. | 2 und 2 |  | Hearth |
 | **Second Wind** | 0 | Common | Gain 1 Energy. Draw 1 card. Exhaust. | Draw 2 | bestehend (`sanctioned_charm`) | Hearth |
@@ -119,16 +120,16 @@ weniger im nächsten Zug. Upgrades bringen netto etwa +½ bis +1.
 | **False Signature** | 0 | Uncommon | Your next card this turn costs 1 less. The card after it this turn costs 1 more. Exhaust. | 2 less | bestehend; beides gilt nur in diesem Zug | Fortune |
 | **Melted Down** | 0 | Uncommon | Exhaust a card from your hand. Gain Energy equal to its cost. | + Draw 1 card. | MTG: Opfern | Fortune |
 | **Wick Burnt Short** | 0 | Uncommon | Gain 2 Energy. At the start of your next turn, gain 1 Fatigue. | 3 Energy |  | Hearth |
-| **Vigil Lamp** | 0 | Rare | For the rest of this combat, at the end of your turn gain 8 Block for each Energy you have left. Exhaust. | 11 Block |  | Husk |
-| **Miser's Coffer** | 1 | Rare | Whenever you end your turn with Energy left, keep up to 2 of it as Held Energy. Exhaust. | kostet 0 |  | Hearth |
+| **Vigil Lamp** | 0 | Rare | For the rest of this combat, at the end of your turn gain 8 Block for each Energy you have left. Exhaust. | 12 Block |  | Husk |
+| **Miser's Coffer** | 1 | Rare | Whenever you end your turn with Energy left, keep up to 2 of it as Held Energy. Exhaust. | keep up to 3 |  | Hearth |
 
 ### Draw-Engine (freigegeben 2026-11-08)
 
 | Karte | Kosten | Seltenheit | Text | Upgrade | Notiz | Hexe |
 |---|---|---|---|---|---|---|
 | **Sieve and Shears** | 0 | Common | Look at the top 3 cards of your draw pile. Put any of them on the bottom. Draw 1 card. | Draw 2 | MTG: Ponder | Hearth |
-| **Borrowed Candle** | 0 | Common | Draw 3 cards. Put a card from your hand on top of your draw pile. Exhaust. | kein Exhaust | bestehend, war Draw 2; MTG: Brainstorm | Hearth |
-| **Lamplit Study** | 1 | Common | Draw 2 cards. Gain 5 Block. | 8 Block |  | Hearth |
+| **Borrowed Candle** | 0 | Common | Draw 3 cards. Put a card from your hand on top of your draw pile. Exhaust. | Draw 4 | bestehend, war Draw 2; MTG: Brainstorm | Hearth |
+| **Lamplit Study** | 1 | Common | Draw 2 cards. Gain 5 Block. | Draw 3, 7 Block |  | Hearth |
 | **Dog-Eared Almanac** | 0 | Common | Retain. Draw 1 card. If this was in your hand since last turn, draw 2 more. | draw 3 more |  | Hearth |
 | **Night Scrivener** | 1 | Uncommon | Draw 3 cards. Choose a card in your hand: it gains Retain this combat. | Draw 4 |  | Hearth |
 | **Fresh Ledger** | 0 | Uncommon | Exhaust another card from your hand. Draw 2 cards. | Draw 3 | bestehend (`crossed_sigil`), war 1 Energy | Hearth |
@@ -147,8 +148,8 @@ weniger im nächsten Zug. Upgrades bringen netto etwa +½ bis +1.
 | **Smouldering Correspondence** | 1 | Common | Deal 5 damage to ALL enemies. Unread: deal 5 damage to ALL enemies. | 8 und 8 | MTG: Fiery Temper | Fang |
 | **Hearth Kindling** | 0 | Uncommon | Discard any number of cards. Draw that many. Gain 3 Block for each. | 4 Block each | MTG: Careful Consideration | Fortune |
 | **Ash Remembers** | 1 | Uncommon | Put a card from your discard pile into your hand. It costs 0 this turn. Exhaust. | kostet 0 | MTG: Regrowth | Hearth |
-| **Weight of Paper** | 2 | Uncommon | Deal 6 damage, plus 2 for each card in your discard pile. Count at most 12. | 10 damage, plus 2 for each | MTG: Threshold | Fang |
-| **Burnt Offering** | 0 | Uncommon | Exhaust a card from your hand. Gain 8 Block. Draw 1 card. | 11 Block | MTG: Village Rites | Husk |
+| **Weight of Paper** | 2 | Uncommon | Deal 6 damage, plus 2 for each card in your discard pile. Count at most 12. | 9 damage, plus 3 for each | MTG: Threshold | Fang |
+| **Burnt Offering** | 0 | Uncommon | Exhaust a card from your hand. Gain 8 Block. Draw 1 card. | 12 Block | MTG: Village Rites | Husk |
 | **Whispering Gallery** | 1 | Rare | Whenever a card leaves your hand without being played, a random enemy gets 1 Doubt. Exhaust. | kostet 0 | zählt auch das Zugende; MTG: Waste Not | Hex |
 | **Pyre of Old Records** | 1 | Rare | Whenever a card is exhausted, deal 7 damage to a random enemy and gain 7 Block. Exhaust. | kostet 0 | MTG: Blood Artist | Fang |
 
@@ -159,14 +160,14 @@ etwa 20 Schaden).
 
 | Karte | Kosten | Seltenheit | Text | Upgrade | Notiz | Hexe |
 |---|---|---|---|---|---|---|
-| **Seed of Misgiving** | 1 | Common | Apply 2 Doubt. Gain 4 Block. | 3 Doubt |  | Hex |
+| **Seed of Misgiving** | 1 | Common | Apply 2 Doubt. Gain 4 Block. | 3 Doubt, 6 Block |  | Hex |
 | **Named in the Roll** | 1 | Common | Apply 2 Liable. Draw 1 card. | 3 Liable | MTG: Marked for Death | Hex |
 | **Overlooking** | 0 | Common | Apply 1 Doubt and 1 Liable. | 2 Doubt and 1 Liable | „overlook“: altes Wort für den bösen Blick | Hex |
 | **Curdled Milk** | 1 | Common | Apply 3 Doubt to ALL enemies. | 4 Doubt |  | Hex |
 | **Hare's Mark** | 1 | Uncommon | Apply 2 Liable. If the enemy has Doubt, apply 2 more. | 3, and 3 more |  | Hex |
 | **Lingering Malison** | 0 | Uncommon | Every enemy with Doubt gets 1 more Doubt; every enemy with Liable gets 1 more Liable. Draw 1 card. | Draw 2 | MTG: Proliferate | Hex |
 | **Spreading Rumour** | 1 | Uncommon | Apply 1 Doubt and 1 Liable. Then every other enemy gets the Doubt and Liable this enemy has. | 2 Doubt and 2 Liable | MTG: Contagion | Hex |
-| **Ill Wind** | 2 | Uncommon | Apply 1 Liable to ALL enemies, then deal 8 damage to ALL enemies. | 11 damage | MTG: Pestilence | Fang |
+| **Ill Wind** | 2 | Uncommon | Apply 1 Liable to ALL enemies, then deal 8 damage to ALL enemies. | 12 damage | MTG: Pestilence | Fang |
 | **Compounded Grievance** | 1 | Rare | Double every debuff on an enemy. Exhaust. | kostet 0 | MTG: Doubling Season | Hex |
 | **Bill of Attainder** | 1 | Rare | Whenever you apply Doubt or Liable, apply 1 more. Exhaust. | kostet 0 | MTG: Hardened Scales | Hex |
 
@@ -176,13 +177,13 @@ Maßstab: 1 Energy ≈ 7 Block; 7 Ward Wax ≈ 16 Block über vier Züge ≈ 1,5
 
 | Karte | Kosten | Seltenheit | Text | Upgrade | Notiz | Hexe |
 |---|---|---|---|---|---|---|
-| **Besom Guard** | 1 | Common | Gain 8 Block. Unread: gain 4 Block. | 11 und 6 | MTG: Cycling | Husk |
+| **Besom Guard** | 1 | Common | Gain 8 Block. Unread: gain 4 Block. | 12 und 6 | MTG: Cycling | Husk |
 | **Waxen Surety** | 1 | Common | Gain 7 Ward Wax. | 10 Ward Wax | bestehend | Husk |
 | **Salt on the Sill** | 1 | Common | Gain 6 Block. Every enemy that intends to attack gets 1 Doubt. | 9 Block | MTG: Holy Day | Husk |
-| **Barred Door** | 2 | Common | Retain. Gain 14 Block. | 18 Block |  | Husk |
+| **Barred Door** | 2 | Common | Retain. Gain 14 Block. | 21 Block |  | Husk |
 | **Tallow Reserve** | 0 | Uncommon | Needs 6 Block. Lose 6 Block. Gain 6 Ward Wax. Exhaust. | 9 Ward Wax | bestehend, war 4 | Husk |
 | **Sealed Mantle** | 1 | Uncommon | Gain 8 Block. If enemies attack this turn and nothing gets through, gain 3 Ward Wax. | 12 und 4 | bestehend | Husk |
-| **Wax Reliquary** | 1 | Uncommon | Gain 5 Ward Wax. Until your next turn, Ward Wax does not decay faster. | 9 Ward Wax | bestehend | Husk |
+| **Wax Reliquary** | 1 | Uncommon | Gain 5 Ward Wax. Until your next turn, Ward Wax does not decay faster. | 8 Ward Wax | bestehend | Husk |
 | **Rowan over the Door** | 1 | Uncommon | Gain 7 Block. Until your next turn, every enemy that attacks you gets 1 Doubt. | 10 Block |  | Husk |
 | **Stay of Proceedings** | 3 | Rare | An enemy's next action does nothing. Exhaust. | kostet 2 | MTG: Fog / Counterspell | Fortune |
 | **Standing Stones** | 2 | Rare | Your Block does not expire at the start of your next 2 turns. Exhaust. | kostet 1 | MTG: Ivory Tower | Husk |
@@ -193,29 +194,29 @@ Maßstab: 1 Energy ≈ 7 bis 8 Schaden.
 
 | Karte | Kosten | Seltenheit | Text | Upgrade | Notiz | Hexe |
 |---|---|---|---|---|---|---|
-| **Thrown Inkpot** | 1 | Common | Deal 8 damage. Apply 1 Doubt. | 11 damage |  | Fang |
+| **Thrown Inkpot** | 1 | Common | Deal 8 damage. Apply 1 Doubt. | 12 damage |  | Fang |
 | **Poppet Pin** | 0 | Common | Deal 4 damage. If you have played 2 or more cards this turn, deal 4 more. | 6 und 6 | MTG: Prowess | Fang |
-| **Beadle's Cudgel** | 1 | Common | Deal 9 damage. If the enemy is Liable, draw 1 card. | 12 damage |  | Fang |
+| **Beadle's Cudgel** | 1 | Common | Deal 9 damage. If the enemy is Liable, draw 1 card. | 13 damage |  | Fang |
 | **Hailstones** | 1 | Common | Deal 4 damage to ALL enemies twice. | three times | MTG: Electrickery | Fang |
 | **Volley of Quills** | 1 | Uncommon | Deal 3 damage to ALL enemies, once for each card in your hand. | 4 per card | MTG: Sudden Impact | Fang |
-| **Blunt Instrument** | 1 | Uncommon | Deal 12 damage. | 16 damage | bestehend (`blacklisted`), war 14 | Fang |
-| **Tallow Judgment** | 2 | Uncommon | Spend up to 6 Ward Wax. Deal 10 damage, +5 per Wax. | 15 damage, +6 per Wax | bestehend, war bis 8 Wax und +7 | Fang |
-| **Midnight Toll** | 2 | Uncommon | Deal 5 damage for each card you played this turn. Count at most 6. | 6 per card | MTG: Storm | Fang |
-| **Third and Final Writ** | 2 | Rare | Deal 12 damage. If the enemy has Doubt and Liable, deal it twice. Retain. | 15 damage |  | Fang |
-| **Dawn Summons** | 2 | Rare | Deal 16 damage. +10 if it is your first card this turn. | 22, +12 | bestehend, Upgrade war 27; MTG: First Strike | Fang |
+| **Blunt Instrument** | 1 | Uncommon | Deal 12 damage. | 18 damage | bestehend (`blacklisted`), war 14 | Fang |
+| **Tallow Judgment** | 2 | Uncommon | Spend up to 6 Ward Wax. Deal 10 damage, +5 per Wax. | 15 damage, +7 per Wax | bestehend, war bis 8 Wax und +7 | Fang |
+| **Midnight Toll** | 2 | Uncommon | Deal 5 damage for each card you played this turn. Count at most 6. | 7 per card | MTG: Storm | Fang |
+| **Third and Final Writ** | 2 | Rare | Deal 12 damage. If the enemy has Doubt and Liable, deal it twice. Retain. | 18 damage |  | Fang |
+| **Dawn Summons** | 2 | Rare | Deal 16 damage. +10 if it is your first card this turn. | 24, +15 | bestehend, Upgrade war 27; MTG: First Strike | Fang |
 
 ### Der Exhausted-Stapel (freigegeben 2026-11-08)
 
 | Karte | Kosten | Seltenheit | Text | Upgrade | Notiz | Hexe |
 |---|---|---|---|---|---|---|
-| **Bone Meal** | 0 | Common | Exhaust up to 2 cards from your discard pile. Gain 3 Block for each. | up to 3 | MTG: Delve / Scavenge | Husk |
-| **Cold Hearth** | 1 | Common | Gain 5 Block, plus 2 for each card in your Exhausted pile. Count at most 8. | 8 Block, plus 2 | MTG: Threshold | Husk |
+| **Bone Meal** | 0 | Common | Exhaust up to 2 cards from your discard pile. Gain 5 Block for each. | up to 3 | MTG: Delve / Scavenge | Husk |
+| **Cold Hearth** | 1 | Common | Gain 6 Block, plus 3 for each card in your Exhausted pile. Count at most 8. | 8 Block, plus 5 | MTG: Threshold | Husk |
 | **Read by Firelight** | 1 | Uncommon | Exhaust the top 2 cards of your draw pile. You may play them this turn. | top 3 | MTG: Light Up the Stage | Hearth |
 | **Raked from the Ashes** | 1 | Uncommon | Put a card from your Exhausted pile into your hand. It Exhausts when played. Exhaust. | kostet 0 | MTG: Regrowth aus dem Exil | Hearth |
-| **Ashen Effigy** | 4 | Uncommon | Costs 1 less for each 2 cards in your Exhausted pile. Deal 18 damage. | 24 damage | MTG: Delve, Gurmag Angler | Fang |
-| **Sifted Ashes** | 1 | Uncommon | Deal 5 damage, plus 4 for each kind of card in your Exhausted pile (attack, skill, power, curse, status). | plus 6 for each kind | MTG: Tarmogoyf | Fang |
+| **Ashen Effigy** | 4 | Uncommon | Costs 1 less for each 2 cards in your Exhausted pile. Deal 18 damage. | 27 damage | MTG: Delve, Gurmag Angler | Fang |
+| **Sifted Ashes** | 1 | Uncommon | Deal 5 damage, plus 4 for each kind of card in your Exhausted pile (attack, skill, power, curse, status). | 8 damage, plus 6 for each kind | MTG: Tarmogoyf | Fang |
 | **Corpse Candle** | 0 | Uncommon | Deal 5 damage. Exhaust. Whenever you Exhaust another card while this is Exhausted, return it to your hand. | 8 damage | MTG: Bloodghast; alter Name für das Irrlicht | Fang |
-| **Salamander in the Grate** | 2 | Rare | Deal 8 damage twice. Exhaust. At the start of your turn, if 6 or more cards are Exhausted, return this to your hand. | 10 damage twice | MTG: Escape, Arclight Phoenix | Fang |
+| **Salamander in the Grate** | 2 | Rare | Deal 8 damage twice. Exhaust. At the start of your turn, if 6 or more cards are Exhausted, return this to your hand. | 12 damage twice | MTG: Escape, Arclight Phoenix | Fang |
 | **Last Ember** | 1 | Rare | Play the card you Exhausted most recently again, for free. Exhaust. | kostet 0 | MTG: Snapcaster Mage | Fortune |
 | **Unburied** | 2 | Rare | Shuffle every Exhausted card except curses and statuses into your draw pile. Gain 3 Block for each. Exhaust. | kostet 1 | MTG: Living Death | Husk |
 
