@@ -3,7 +3,8 @@
 Auftrag (2026-11-08): Nach dem neuen Kartenpool die Relikte des Lieutenant, die allgemeinen Normal-Relikte und die
 Shop-Relikte ansehen. Danach folgt die Gesamtdurchsicht.
 
-Status: **Befund und Vorschläge zur Durchsicht.** Gebaut wird erst nach Freigabe, Gruppe für Gruppe.
+Status: **Lieutenant und Normal-Relikte freigegeben (2026-11-08), Shop-Relikte zur Durchsicht.** Gebaut wird nach der
+letzten Freigabe.
 
 ---
 
@@ -41,13 +42,15 @@ ein Shop-Relikt.**
 | Spur Buckle | Shop | Strength ausgegeben: 1 weitere Strength für 1 Energy | gut |
 
 **Vorschläge:**
-- L1 **Warrant Cord** einfacher und öfter spürbar: „Whenever an enemy you have Challenged dies, gain 1 Authority."
+- L1 **Warrant Cord** (freigegeben, Option C; MTG: Raid): „The first time each turn you keep a Challenge, draw 1 card."
+  Der Tod eines Challenge-Ziels wäre zu selten: Multikämpfe sind rar (user).
 - L2 **Parade Spur** ohne Rückfrage: „At the end of your turn, if you have Open Guard, gain 1 Authority the next time
   an enemy attacks you before your next turn."
 - L3 **Torn Standard** als echter Rare: „Whenever an Order fails, gain 1 Strength. The first time each turn you keep
   an Order, gain 1 Authority."
 - L4 **Ein sechstes Shop-Relikt**, Tausch-Art wie die anderen: *Regimental Drum* — „Start each combat with 1 Open
-  Guard and 1 Authority."
+  Guard, 1 Authority and 1 Strength." (Strength auf Wunsch des Users dazu.)
+- L2 und L3 freigegeben wie vorgeschlagen.
 
 ## 2 Allgemeine Normal-Relikte
 
@@ -77,6 +80,15 @@ ein Shop-Relikt.**
   - *Ember Box* (U): „Whenever Held Energy arrives, draw 1 card."
   - *Remembrance String* (U): „At the end of your turn, each card you Retain costs 1 less until it is played."
   - *Charnel Ledger* (R): „Unread effects happen twice."
+
+**Freigegeben (2026-11-08):**
+- Common: Moss Salve → *Witness Slate* („The first time each turn you apply Liable, apply 1 more."), Black Salt Charm →
+  *Ash Pan* („The first time each combat your Exhausted pile holds 5 cards, gain 1 Energy and draw 1 card.").
+- Uncommon: Index Bone wird Rare; Refusal Rosary → *Ember Box* („Whenever Held Energy arrives, draw 1 card."); neu
+  *Remembrance String* („At the end of your turn, each card you Retain costs 1 less until it is played.").
+- Rare: Index Volvelle → *Charnel Ledger* („Unread effects happen twice."); Gilded Tithe Chain fällt weg; Index Bone
+  kommt dazu. **Blood-Stamped Bond** verliert nur noch 3 HP statt 6 (user: „das passiert immerhin jeden Kampf").
+- Alles andere bleibt.
 
 ## 3 Shop-Relikte
 
