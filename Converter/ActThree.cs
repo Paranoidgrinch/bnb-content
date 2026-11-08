@@ -240,7 +240,6 @@ public static partial class ActThree
             "reckoning_hedge.measure_back" => Pressure(10),
             "errant_boundary_stone.move_the_marker" => Pressure(11),
             "hawthorn_tenant.enforce_the_plot" => Pressure(12),
-            "two_bank_toll_ford.collect_both_banks" => Pressure(13),
             "blackthorn_bride.thorn_vow" => Pressure(14),
             "crossroads_cup.spill_at_the_crossroads" => Pressure(11),
             "roadside_witchling.roadside_hex" => Pressure(13),
@@ -271,7 +270,8 @@ public static partial class ActThree
         Claim(),
         ClaimCreated(),
         GreenDocketCustoms(),
-        NoHastyPassage(),
+        Waymark(),
+        .. WaymarkSigns(),
         EveryDetourLeavesAStone(),
         DetourStone(),
         CurrentSurvey(),
@@ -285,8 +285,10 @@ public static partial class ActThree
         TheDestination(),
         Attended(),
         ArrowPointsElsewhere(),
-        CourtesySafeConduct(),
-        APromiseMustBePaired(),
+        ThreeCups(),
+        CupLifted(),
+        BridalRhyme(),
+        .. BridalRhymeStatuses(),
         DrinkBeforeChoosing(),
         OathAccepted(),
         PaymentAccordingToCharter(),
@@ -296,12 +298,13 @@ public static partial class ActThree
         LawBrokenThisTurn(),
         OathKept(),
         TollOnBothBanks(),
+        TollPaid(),
         .. EliteStatuses(),
     ];
 
     // The cards the act itself hands the player: never dealt into a deck, only pushed into a fight.
     public static IReadOnlyList<CardData> GivenCards() =>
-        [.. WitchlingGiftCards(), .. GrandmotherGiftCards(), DrinkFromTheCup()];
+        [.. GrandmotherGiftCards(), DrinkFromTheCup(), .. FordTollCards(), BorrowedLace(), .. FrogCards()];
 
     // The standard roster: Road, Hedgerows, Tollwater, Covenants, three to a stage. Anything in here is a Green Docket body, which is how a fight
     // knows to open under the act's customs.

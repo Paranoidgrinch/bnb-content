@@ -4,41 +4,93 @@ using RogueDeck.Scenario.Authoring;
 
 namespace BnbContent.Converter;
 
-// Act III, Stage 4 — The Covenants. Since 2026-11-03 (user): a witch whose gifts must be taken, a bride who wants
-// one of each, and a cup whose every drink is a debt.
+// Act III, Stage 4 — The Covenants. Since 2026-11-08 (content review E11/E12): a witch who plays the shell game
+// with your hand, a bride who asks for one line of the old rhyme each turn, and (since 2026-11-03) a cup whose every
+// drink is a debt. The Witchling's gifts went because they were the Grandmother Clause's law a stage early; the
+// Bride's one-card-per-cost because it was the Reckoning Hedge's.
 public static partial class ActThree
 {
-    public const string CourtesySafeConductId = "courtesy_safe_conduct";
-    public const string PromiseMustBePairedId = "a_promise_must_be_paired";
     public const string DrinkBeforeChoosingId = "drink_before_choosing";
     public const string CrossroadsDrinkCardId = "drink_from_the_cup";
 
-    // The gifts a hedge-witch gives (user, 2026-11-03): free, small, and each with a little sting in it.
-    public const string GiftTag = "roadside_gift";
-    public const string CrookedKindnessId = "crooked_kindness";
-    public const string BentPennyId = "bent_penny";
-    public const string WarmKettleId = "warm_kettle_gift";
-    private static readonly string[] WitchlingGifts = [CrookedKindnessId, BentPennyId, WarmKettleId];
-
     public const int CupClaims = 2;
 
-    // ── Roadside Witchling — the gift with strings ────────────────────────────────────────────────────────
+    // ── Roadside Witchling — the Three Cups ───────────────────────────────────────────────────────────────
     //
-    // Every turn of yours she puts one of her three gifts in your hand, in turn. A gift still in your hand when
-    // the turn ends is an insult: her law is broken, and the gift is gone either way.
-    public static StatusData CourtesySafeConduct() =>
-        GiftGiver(CourtesySafeConductId, "A Gift with Strings",
-            "Each turn she gives you a gift. Still holding it at turn end breaks her law.",
-            WitchlingGifts, GiftTag);
+    // Once your hand is dealt she puts three of its cards under her cups, and a hex under one of them. Play the hexed
+    // one and it bites: 6 damage, and now you know. Leave all three cups unturned this turn and you break her law.
+    // The cups are a visible mark on the cards; the hex is a second mark that the screen does not show.
+    public const string ThreeCupsId = "the_three_cups";
+    public const string UnderACupMark = "under_a_cup";
+    public const string HexMark = "witchling_hex";
+    public const string CupLiftedId = "cup_lifted";
+    public const int CupCount = 3;
+    public const int HexDamage = 6;
+    private const string CupPickMark = "cup_pick";
 
-    // A giver of gifts: the gift of this round, in rotation, and the insult of a gift left in hand.
-    public static StatusData GiftGiver(string id, string name, string text, IReadOnlyList<string> gifts, string tag) =>
-        Rule(id, name, text,
+    public static StatusData ThreeCups()
+    {
+        var witch = Lawgiver(ThreeCupsId);
+        var hand = new CombatantZoneCardCountExpression<CardsDrawnTriggeredEffectContext>(Applicant, CardZone.Hand);
+        var cups = MarkedInZone<CardsDrawnTriggeredEffectContext>(CardZone.Hand, UnderACupMark);
+        var pick = FirstMarked<CardsDrawnTriggeredEffectContext>(CardZone.Hand, CupPickMark);
+        var random = new RandomCardInOwnerZoneExpression<CardsDrawnTriggeredEffectContext>(Applicant, CardZone.Hand);
+        var deal = new CausalSequenceEffectNode<CardsDrawnTriggeredEffectContext>(
         [
-            On("TurnStarted", GiveAGift(Lawgiver(id), gifts), StatusTriggerScope.Anywhere),
-            On("TurnEnded", AGiftRefused(Lawgiver(id), tag), StatusTriggerScope.Anywhere),
+            Unmark<CardsDrawnTriggeredEffectContext>(UnderACupMark, CardZone.Hand, CardZone.DiscardPile, CardZone.DrawPile),
+            Unmark<CardsDrawnTriggeredEffectContext>(HexMark, CardZone.Hand, CardZone.DiscardPile, CardZone.DrawPile),
+            new RemoveStatusNode<CardsDrawnTriggeredEffectContext>(witch, new StatusDefinitionId(CupLiftedId)),
+            new ConditionalEffectNode<CardsDrawnTriggeredEffectContext>(
+                Is(hand, ComparisonOperator.Greater, 0),
+                new CausalSequenceEffectNode<CardsDrawnTriggeredEffectContext>(
+                [
+                    // The hexed cup first, then the other two around it.
+                    MarkCard(random, CupPickMark),
+                    MarkCard(pick, UnderACupMark),
+                    MarkCard(pick, HexMark),
+                    MarkCard(pick, CupPickMark, remove: true),
+                    new RepeatUntilEffectNode<CardsDrawnTriggeredEffectContext>(
+                        new ComparisonExpression<CardsDrawnTriggeredEffectContext>(cups, ComparisonOperator.GreaterOrEqual,
+                            new MinExpression<CardsDrawnTriggeredEffectContext>(hand, new ConstantExpression<CardsDrawnTriggeredEffectContext>(CupCount))),
+                        MarkCard(random, UnderACupMark), maxIterations: 32),
+                ])),
         ]);
 
+        var played = ThePlayedCard;
+        var lift = new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
+            CardHasMark(played, UnderACupMark),
+            new CausalSequenceEffectNode<CardPlayedTriggeredEffectContext>(
+            [
+                new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
+                    CardHasMark(played, HexMark),
+                    new DealDamageNode<CardPlayedTriggeredEffectContext>(
+                        Applicant, new ConstantExpression<CardPlayedTriggeredEffectContext>(HexDamage), kind: DamageKind.Reflected)),
+                new ApplyStatusNode<CardPlayedTriggeredEffectContext>(witch, new StatusDefinitionId(CupLiftedId),
+                    new ConstantExpression<CardPlayedTriggeredEffectContext>(1)),
+                MarkCard(played, HexMark, remove: true),
+                MarkCard(played, UnderACupMark, remove: true),
+            ]));
+
+        var reckon = new CausalSequenceEffectNode<TurnEndedTriggeredEffectContext>(
+        [
+            new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
+                new AndExpression<TurnEndedTriggeredEffectContext>(
+                    new NotExpression<TurnEndedTriggeredEffectContext>(Wearing<TurnEndedTriggeredEffectContext>(witch, CupLiftedId)),
+                    Is(MarkedInZone<TurnEndedTriggeredEffectContext>(CardZone.Hand, UnderACupMark), ComparisonOperator.Greater, 0)),
+                Breach<TurnEndedTriggeredEffectContext>(witch)),
+            Unmark<TurnEndedTriggeredEffectContext>(UnderACupMark, CardZone.Hand),
+            Unmark<TurnEndedTriggeredEffectContext>(HexMark, CardZone.Hand),
+        ]);
+
+        return Rule(ThreeCupsId, "The Three Cups",
+            $"Each turn she puts {CupCount} cards in your hand under her cups; one hides a hex that deals {HexDamage} damage to you when played. Play none of them and you break her law.",
+            [AtTheOpeningHand(witch, deal), WhenYouPlay(witch, lift), AtYourTurnsEnd(witch, reckon)]);
+    }
+
+    public static StatusData CupLifted() =>
+        Marker(CupLiftedId, "Cup Lifted", "You played a card from under her cups this turn: her law is kept.");
+
+    // The gift-giving that only the Grandmother Clause does now (the Witchling gave gifts until 2026-11-08).
     // The player's turn opens: the gift of this round, in turn.
     private static IEffectNode<TurnStartedTriggeredEffectContext> GiveAGift(ICombatantTargetSelector giver, IReadOnlyList<string> gifts)
     {
@@ -99,45 +151,137 @@ public static partial class ActThree
 
     private static ConstantExpression<CardPlayContext> N(int value) => new(value);
 
-    public static IEnumerable<CardData> WitchlingGiftCards() =>
+    // ── The Blackthorn Bride — the Bridal Rhyme ───────────────────────────────────────────────────────────
+    //
+    // "Something old, something new, something borrowed, something blue": each turn of yours she asks for one line,
+    // in that order, and her chip says which. Old is a card you held over from last turn, new a card of your deck
+    // drawn this turn, borrowed a card the fight made for you (on her borrowed turns she lends you one), blue a
+    // Working. Give her that line and she lets her Block fall; end the turn without it and you break her law. With
+    // nothing held over she asks for something new instead.
+    //
+    // What a card is gets written on the copies, because the engine keeps no history of a card: once the first
+    // hand is dealt every card of your deck is marked as your own, and every card the fight creates is marked as made
+    // in it (either mark alone would miss a card that a rule created in the same instant); and at each turn's end
+    // the cards of your own still in hand are marked as held over, the mark wiped again from every card that was
+    // discarded after all. (A turn-start reading of the hand was tried first: the draw can land before it.)
+    public const string BridalRhymeId = "the_bridal_rhyme";
+    public const string RhymeKeptId = "rhyme_kept";
+    public const string OwnCardMark = "of_your_own_deck";
+    public const string MadeInTheFightMark = "made_in_the_fight";
+    public const string HeldOverMark = "held_over";
+    public const string BorrowedLaceId = "borrowed_lace";
+    public const string BridalLoanTag = "bridal_loan";
+    public const int BorrowedLaceBlock = 6;
+    private static readonly string[] RhymeLines = ["something_old", "something_new", "something_borrowed", "something_blue"];
+    public static string RhymeLineId(int line) => RhymeLines[line];
+
+    public static StatusData BridalRhyme()
+    {
+        var bride = Lawgiver(BridalRhymeId);
+        var round = new RoundNumberExpression<CardsDrawnTriggeredEffectContext>();
+        var line = new RemainderExpression<CardsDrawnTriggeredEffectContext>(
+            new SubtractExpression<CardsDrawnTriggeredEffectContext>(round, new ConstantExpression<CardsDrawnTriggeredEffectContext>(1)),
+            new ConstantExpression<CardsDrawnTriggeredEffectContext>(RhymeLines.Length));
+        IEffectNode<TContext> MarkAll<TContext>(CardZone zone, string mark, string? onlyMarked = null) where TContext : class =>
+            new ForEachCardInZoneNode<TContext>(Applicant, zone,
+                MarkCard(new IteratedCardExpression<TContext>(), mark),
+                maxIterations: ZoneWalkLimit, markFilter: onlyMarked is null ? null : new TagId(onlyMarked));
+        IEffectNode<CardsDrawnTriggeredEffectContext> Ask(int index) =>
+            new ApplyStatusNode<CardsDrawnTriggeredEffectContext>(bride, new StatusDefinitionId(RhymeLineId(index)),
+                new ConstantExpression<CardsDrawnTriggeredEffectContext>(1));
+        var lend = new CreateCardInstanceNode<CardsDrawnTriggeredEffectContext>(
+            Applicant, new CardDefinitionId(BorrowedLaceId), CardZone.Hand, new ConstantExpression<CardsDrawnTriggeredEffectContext>(1));
+        var ask = new CausalSequenceEffectNode<CardsDrawnTriggeredEffectContext>(
+        [
+            new ConditionalEffectNode<CardsDrawnTriggeredEffectContext>(
+                Is(round, ComparisonOperator.Equal, 1),
+                new CausalSequenceEffectNode<CardsDrawnTriggeredEffectContext>(
+                [
+                    MarkAll<CardsDrawnTriggeredEffectContext>(CardZone.Hand, OwnCardMark),
+                    MarkAll<CardsDrawnTriggeredEffectContext>(CardZone.DrawPile, OwnCardMark),
+                    MarkAll<CardsDrawnTriggeredEffectContext>(CardZone.DiscardPile, OwnCardMark),
+                ])),
+            .. Enumerable.Range(0, RhymeLines.Length).Select(index => (IEffectNode<CardsDrawnTriggeredEffectContext>)
+                new RemoveStatusNode<CardsDrawnTriggeredEffectContext>(bride, new StatusDefinitionId(RhymeLineId(index)))),
+            new RemoveStatusNode<CardsDrawnTriggeredEffectContext>(bride, new StatusDefinitionId(RhymeKeptId)),
+            new ConditionalEffectNode<CardsDrawnTriggeredEffectContext>(
+                new AndExpression<CardsDrawnTriggeredEffectContext>(
+                    Is(line, ComparisonOperator.Equal, 0),
+                    Is(MarkedInZone<CardsDrawnTriggeredEffectContext>(CardZone.Hand, HeldOverMark), ComparisonOperator.Greater, 0)),
+                Ask(0),
+                @else: new ConditionalEffectNode<CardsDrawnTriggeredEffectContext>(Is(line, ComparisonOperator.LessOrEqual, 1), Ask(1),
+                    @else: new ConditionalEffectNode<CardsDrawnTriggeredEffectContext>(Is(line, ComparisonOperator.Equal, 2),
+                        new CausalSequenceEffectNode<CardsDrawnTriggeredEffectContext>([Ask(2), lend]),
+                        @else: Ask(3)))),
+        ]);
+
+        // Made in the fight: the first copy of whatever is created (a creation names a set; the rest are caught by
+        // lacking the own-deck mark, unless they were made in the very first turn).
+        var made = MarkCard(new TriggerEventCardInstanceExpression<CardInstanceCreatedTriggeredEffectContext>(), MadeInTheFightMark);
+
+        // The turn's end: what of your own stays in hand is held over; whatever was discarded after all is not.
+        var holdOver = new CausalSequenceEffectNode<TurnEndedTriggeredEffectContext>(
+        [
+            Unmark<TurnEndedTriggeredEffectContext>(HeldOverMark, CardZone.Hand, CardZone.DrawPile, CardZone.DiscardPile),
+            MarkAll<TurnEndedTriggeredEffectContext>(CardZone.Hand, HeldOverMark, onlyMarked: OwnCardMark),
+        ]);
+        var letGo = Unmark<HandDiscardedTriggeredEffectContext>(HeldOverMark, CardZone.DiscardPile, CardZone.ExhaustPile);
+
+        var played = ThePlayedCard;
+        ICombatExpression<CardPlayedTriggeredEffectContext, bool> Asked(int index, ICombatExpression<CardPlayedTriggeredEffectContext, bool> fits) =>
+            new AndExpression<CardPlayedTriggeredEffectContext>(Wearing<CardPlayedTriggeredEffectContext>(bride, RhymeLineId(index)), fits);
+        var given = new OrExpression<CardPlayedTriggeredEffectContext>(
+            new OrExpression<CardPlayedTriggeredEffectContext>(
+                Asked(0, CardHasMark(played, HeldOverMark)),
+                Asked(1, new AndExpression<CardPlayedTriggeredEffectContext>(
+                    new AndExpression<CardPlayedTriggeredEffectContext>(CardHasMark(played, OwnCardMark),
+                        new NotExpression<CardPlayedTriggeredEffectContext>(CardHasMark(played, MadeInTheFightMark))),
+                    new NotExpression<CardPlayedTriggeredEffectContext>(CardHasMark(played, HeldOverMark))))),
+            new OrExpression<CardPlayedTriggeredEffectContext>(
+                Asked(2, new OrExpression<CardPlayedTriggeredEffectContext>(CardHasMark(played, MadeInTheFightMark),
+                    new NotExpression<CardPlayedTriggeredEffectContext>(CardHasMark(played, OwnCardMark)))),
+                Asked(3, PlayedIs(Cards.CardAuthoring.WorkingTag))));
+        var keep = new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
+            new AndExpression<CardPlayedTriggeredEffectContext>(
+                new NotExpression<CardPlayedTriggeredEffectContext>(Wearing<CardPlayedTriggeredEffectContext>(bride, RhymeKeptId)), given),
+            new CausalSequenceEffectNode<CardPlayedTriggeredEffectContext>(
+            [
+                new ApplyStatusNode<CardPlayedTriggeredEffectContext>(bride, new StatusDefinitionId(RhymeKeptId),
+                    new ConstantExpression<CardPlayedTriggeredEffectContext>(1)),
+                new ModifyDefensivePoolNode<CardPlayedTriggeredEffectContext>(bride, StandardCombatIds.BlockDefensivePool,
+                    new NegateExpression<CardPlayedTriggeredEffectContext>(
+                        new CombatantDefensivePoolExpression<CardPlayedTriggeredEffectContext>(bride, StandardCombatIds.BlockDefensivePool))),
+            ]));
+
+        var refused = new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
+            new NotExpression<TurnEndedTriggeredEffectContext>(Wearing<TurnEndedTriggeredEffectContext>(bride, RhymeKeptId)),
+            Breach<TurnEndedTriggeredEffectContext>(bride));
+
+        return Rule(BridalRhymeId, "The Bridal Rhyme",
+            "Each turn she asks for something old (a card held over), new (drawn this turn), borrowed (made in the fight) or blue (a Working). Play it and she drops her Block; refuse and you break her law.",
+            [
+                AtTheOpeningHand(bride, ask),
+                WhenYouPlay(bride, keep),
+                AtYourTurnsEnd(bride, new CausalSequenceEffectNode<TurnEndedTriggeredEffectContext>([refused, holdOver])),
+                On("HandDiscarded", new ConditionalEffectNode<HandDiscardedTriggeredEffectContext>(
+                    PlayersTurn<HandDiscardedTriggeredEffectContext>(), letGo), StatusTriggerScope.Anywhere),
+                On("CardInstanceCreated", new ConditionalEffectNode<CardInstanceCreatedTriggeredEffectContext>(
+                    Alive<CardInstanceCreatedTriggeredEffectContext>(bride), made), StatusTriggerScope.Anywhere),
+            ]);
+    }
+
+    public static IEnumerable<StatusData> BridalRhymeStatuses() =>
     [
-        Gift(CrookedKindnessId, "Crooked Kindness", "Lose 2 HP. Draw 2 cards.", GiftTag,
-            Seq(LoseHealth(2), new DrawCardsNode<CardPlayContext>(CombatantTargetSelectors.Source, N(2)))),
-        Gift(BentPennyId, "Bent Penny", "Gain 1 Energy. Gain 1 Doubt.", GiftTag,
-            Seq(new GainResourceNode<CardPlayContext>(CombatantTargetSelectors.Source, StandardCombatIds.EnergyResource, N(1)),
-                new ApplyStatusNode<CardPlayContext>(CombatantTargetSelectors.Source, new StatusDefinitionId(Cards.Keywords.Doubt), N(1)))),
-        Gift(WarmKettleId, "Warm Kettle", "Gain 8 Block. Discard a card.", GiftTag,
-            Seq(new GainBlockNode<CardPlayContext>(CombatantTargetSelectors.Source, N(8)), DiscardChosen(1))),
+        Marker(RhymeLineId(0), "Something Old", "Play a card you held over from last turn, or you break the Bride's law."),
+        Marker(RhymeLineId(1), "Something New", "Play a card of your deck drawn this turn, or you break the Bride's law."),
+        Marker(RhymeLineId(2), "Something Borrowed", "Play a card made in this fight (she lent you Borrowed Lace), or you break the Bride's law."),
+        Marker(RhymeLineId(3), "Something Blue", "Play a Working this turn, or you break the Bride's law."),
+        Marker(RhymeKeptId, "Rhyme Kept", "You gave her the line she asked for: her Block fell, and her law is kept this turn."),
     ];
 
-    // ── The Blackthorn Bride — one of each ────────────────────────────────────────────────────────────────
-    //
-    // Since 2026-11-03 (user): each turn at most one card of each cost — a second card of a cost already played
-    // this turn breaks her law. What has been played is remembered on the player, one counter per cost (3 and
-    // more are one cost).
-    private static CounterId BrideCost(int cost) => new($"bride_cost_{cost}");
-
-    public static StatusData APromiseMustBePaired()
-    {
-        var player = CombatantTargetSelectors.Source;
-        ICombatExpression<CardPlayedTriggeredEffectContext, bool> CostIs(int cost) =>
-            cost < 3 ? Is(PlayedCostValue, ComparisonOperator.Equal, cost) : Is(PlayedCostValue, ComparisonOperator.GreaterOrEqual, 3);
-        ICombatExpression<CardPlayedTriggeredEffectContext, bool> Again(int cost) =>
-            new AndExpression<CardPlayedTriggeredEffectContext>(CostIs(cost),
-                Is(CounterOn<CardPlayedTriggeredEffectContext>(player, BrideCost(cost)), ComparisonOperator.Greater, 0));
-        var again = new OrExpression<CardPlayedTriggeredEffectContext>(
-            new OrExpression<CardPlayedTriggeredEffectContext>(Again(0), Again(1)),
-            new OrExpression<CardPlayedTriggeredEffectContext>(Again(2), Again(3)));
-        var remember = new CausalSequenceEffectNode<CardPlayedTriggeredEffectContext>(
-            [.. Enumerable.Range(0, 4).Select(cost => (IEffectNode<CardPlayedTriggeredEffectContext>)
-                new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(CostIs(cost),
-                    SetCounter<CardPlayedTriggeredEffectContext>(player, BrideCost(cost), 1)))]);
-        var forget = new CausalSequenceEffectNode<TurnStartedTriggeredEffectContext>(
-            [.. Enumerable.Range(0, 4).Select(cost => SetCounter<TurnStartedTriggeredEffectContext>(CombatantTargetSelectors.Source, BrideCost(cost), 0))]);
-        return LawOnPlay(PromiseMustBePairedId, "One of Each",
-            "Each turn, play at most one card of each cost. A second card of the same cost breaks her law.",
-            again, also: remember, atTurnStart: forget);
-    }
+    public static CardData BorrowedLace() =>
+        Gift(BorrowedLaceId, "Borrowed Lace", $"Gain {BorrowedLaceBlock} Block. Lent by the Bride: gone at the end of the turn.", BridalLoanTag,
+            new GainBlockNode<CardPlayContext>(CombatantTargetSelectors.Source, N(BorrowedLaceBlock)), cost: 1);
 
     // ── Crossroads Cup — Drink Before Choosing ────────────────────────────────────────────────────────────
     //

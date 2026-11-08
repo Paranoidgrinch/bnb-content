@@ -2,7 +2,7 @@
 
 Generated: `dotnet run --project Converter -- --art-slots ART_SLOTS.md`. **Do not edit by hand.**
 
-**875 pictures**: 472 cards, 257 relics, 142 bodies
+**876 pictures**: 473 cards, 257 relics, 142 bodies
 (every enemy, elite and boss) and 4 the player can be. Every one of them is filled today by a PLACEHOLDER — a plate with the file's own
 name and the word placeholder on it, written by `bnb-godot/tools/make-card-art.py`,
 `make-relic-art.py` and `make-enemy-art.py`. A painted picture replaces one by being saved over it, so
@@ -74,12 +74,10 @@ The catalogue number is the design canon's, and it is not part of the file name:
 | 10 | `ashen_wax_knife` | Ashen Wax Knife | uncommon | A short wax-and-paper knife with a rounded wooden handle and a broad, slightly asymmetrical blade appropriate for scraping and cutting sealing wax. The blade tip is darkened by soot. |
 | 11 | `quiet_readers_cord` | Quiet Reader's Cord | uncommon | A looped reading cord with two modest tassels, tied in a low central knot. It should resemble a cord used to mark or hold pages in a large bound volume. |
 | 12 | `archive_key` | Archive Key | uncommon | A large iron archive key with a quatrefoil bow and a long plain shaft. The bit is shaped like two staggered shelf teeth rather than a domestic door key. |
-| 13 | `index_volvelle` | Index Volvelle | rare | A circular paper-and-brass volvelle made from two concentric parchment discs fixed by a central rivet. One slim pointer arm rotates over handwritten index marks. |
 | 14 | `withheld_hourglass` | Withheld Hourglass | rare | A narrow wooden-framed hourglass with a small cord tied tightly around its waist, visually 'holding' the sand in the upper bulb. The glass itself is plain and period-appropriate. |
 | 15 | `road_claim_token` | Road-Claim Token | rare | A thick old travel token with an irregular round edge. Its face shows a winding road ending at a small boundary stake and two tiny milestone marks. |
 | 16 | `concordance_medallion` | Concordance Medallion | rare | A hanging medallion containing two mirrored parchment leaves that touch at the center, joined by one small linking bar. The outer ring is plain and bureaucratic rather than jeweled. |
 | 17 | `chancery_ribbon` | Chancery Ribbon | rare | A broad old chancery ribbon folded into a formal rosette with two long tails. Tiny lines of script are visible only on the tails, as if the ribbon itself carries authority. |
-| 18 | `moss_salve` | Moss Salve | common | A small lidded ceramic salve pot with a rough hand-thrown profile. A short sprig of moss lies across the front and a little ointment is visible under the half-open lid. |
 | 19 | `lead_counterweight` | Lead Counterweight | common | A compact bell-shaped lead weight with a thick iron loop. The surface is pitted and carries one old tally line rather than a printed mass label. |
 | 20 | `hollow_wax_bead` | Hollow Wax Bead | common | A thick ring-shaped wax bead with a very large central hole and one softened drip at the lower edge. It should look hand-formed, slightly lopsided, and tactile. |
 | 21 | `binders_awl` | Binder's Awl | common | A short wooden-handled binder's awl with a narrow steel spike. Beside the spike is a tiny strip of parchment pierced by two stitch holes, grounding it in bookbinding rather than weaponry. |
@@ -87,17 +85,14 @@ The catalogue number is the design canon's, and it is not part of the file name:
 | 23 | `petitioners_token` | Petitioner's Token | common | A modest round petition token, slightly thinner than a coin, with a raised open hand holding a tiny rolled petition. Avoid crowns or generic heraldry. |
 | 24 | `redaction_knife` | Redaction Knife | uncommon | A broad scraping knife used to lift ink from parchment: short blade, rounded back, plain horn handle. One portion of the blade edge is stained dark from scraped ink. |
 | 25 | `alms_basin` | Alms Basin | uncommon | A shallow pewter alms basin with a rolled lip and small foot ring. Three old coins rest inside, but the vessel remains dominant. |
-| 26 | `index_bone` | Index Bone | uncommon | A slender carved bone index pointer shaped like an elongated finger bone, with three incised reference ticks along one side. It should resemble an old scholarly pointer, not an anatomical specimen display. |
-| 27 | `refusal_rosary` | Refusal Rosary | uncommon | A loop of plain prayer beads with one bead deliberately missing and a small palm-out refusal charm hanging at the join. Keep it old, austere, and handmade. |
+| 26 | `index_bone` | Index Bone | rare | A slender carved bone index pointer shaped like an elongated finger bone, with three incised reference ticks along one side. It should resemble an old scholarly pointer, not an anatomical specimen display. |
 | 28 | `archive_censer` | Archive Censer | uncommon | A small hanging censer on three chains with a rounded perforated body. The smoke rises in a squared, shelf-like curl rather than a normal spiral. |
 | 29 | `seal_makers_die` | Seal-Maker's Die | uncommon | A stout cylindrical metal die with a wide flat striking head and a reversed floral seal pattern cut into the lower face. It should look like a craftsman's hand tool, not a rubber stamp. |
 | 30 | `iron_astrolabe` | Iron Astrolabe | rare | A compact iron astrolabe with a thick outer ring, one pierced star plate, and a single movable rule. Keep the geometry simple enough to draw repeatedly. |
 | 31 | `twin_ember_brazier` | Twin-Ember Brazier | rare | A squat portable brazier with two distinct fire bowls sharing one base. Each flame is small and simple; the metal body has only a few punched air holes. |
-| 32 | `gilded_tithe_chain` | Gilded Tithe Chain | rare | A short ceremonial chain of heavy links with three small coin-like tithe weights spaced along it. The links are slightly oversized and handmade. |
 | 33 | `rebinding_spindle` | Rebinding Spindle | rare | A broad wooden binding spindle tightly wound with book thread, crossed by two slim binding needles. A short loose end curls outward. |
 | 34 | `deferred_signet` | Deferred Signet | rare | A heavy signet ring whose oval face contains a tiny suspended hourglass held inside a raised frame. The ring itself is plain and old-fashioned. |
 | 35 | `iron_prayer_bead` | Iron Prayer Bead | common | One dense iron prayer bead on a very short cord, oversized compared with ordinary rosary beads. A simple vertical groove and a tiny punched dot decorate it. |
-| 36 | `black_salt_charm` | Black Salt Charm | common | A small linen sachet tied with twine, visibly leaking coarse black salt from one corner. A tiny hand-painted ward line sits on the cloth. |
 | 37 | `tarnished_bell` | Tarnished Bell | common | A small old hand bell with a thick lip, visible clapper, and uneven patina. One hairline crack runs upward from the rim. |
 | 38 | `grave_coin` | Grave Coin | common | A worn burial coin with a chipped rim and a simple closed-eye or skull relief at the center. It should feel ancient and handled rather than decorative. |
 | 39 | `bruise_cup` | Bruise Cup | common | A small dented pewter cup with a low stem. A dark violet stain pools along one side of the interior, as if the metal itself bruised. |
@@ -112,6 +107,11 @@ The catalogue number is the design canon's, and it is not part of the file name:
 | 48 | `thorn_crowned_reliquary` | Thorn-Crowned Reliquary | rare | A small domed reliquary surrounded at its roofline by a literal crown of black thorns. The reliquary body is simple enough that the thorn ring dominates. |
 | 49 | `blank_folio` | Blank Folio | rare | A thick closed folio with absolutely no title, crest, clasp, or writing on the cover. One pale page corner protrudes where something was removed. |
 | 50 | `chancery_scale` | Chancery Scale | rare | A narrow two-pan chancery balance with a quill-shaped central pointer and shallow document-sized pans. The beam is elegant but not ornate. |
+| — | `witness_slate` | Witness Slate | common | The first time each turn you apply Liable, apply 1 more. |
+| — | `ash_pan` | Ash Pan | common | The first time each combat your Exhausted pile holds 5 cards, gain 1 Energy and draw 1 card. |
+| — | `remembrance_string` | Remembrance String | uncommon | At the end of your turn, each card you Retain costs 1 less until it is played. |
+| — | `ember_box` | Ember Box | uncommon | Whenever Held Energy arrives, draw 1 card. |
+| — | `charnel_ledger` | Charnel Ledger | rare | Unread effects happen twice. |
 | — | `rowan_pin` | Rowan Pin | common | The first time each turn a card goes into the cauldron, gain 3 Block. |
 | — | `three_knot_cord` | Three-Knot Cord | common | Whenever a Hex bursts, that enemy gains 1 Hexed. |
 | — | `found_button` | Found Button | common | Whenever a Misfortune roll fails, gain 4 Block. |
@@ -154,12 +154,10 @@ The catalogue number is the design canon's, and it is not part of the file name:
 | # | code | title | rarity | the object |
 |---:|---|---|---|---|
 | 51 | `pawnbrokers_loupe` | Pawnbroker's Loupe | shop | A folding jeweler's loupe with a large circular lens and a smaller protective cover hinged beneath it. Place one tiny old coin under the lens. |
-| 53 | `secondhand_reliquary` | Secondhand Reliquary | shop | A worn little reliquary repaired with one mismatched metal patch and tied with an old handwritten price tag. The form should look valuable but obviously used. |
 | 54 | `bounty_hook` | Bounty Hook | shop | A strong curved copper hook with a small waxed bounty tag tied near the eye. The hook is blunt enough to look like gear rather than a weapon. |
 | 56 | `bent_auction_gavel` | Bent Auction Gavel | shop | An old wooden auction gavel whose handle visibly bows sideways, banded once with copper. The head is simple and heavy. |
 | 57 | `wastebrokers_permit` | Wastebroker's Permit | shop | A dirty folded permit with frayed corners, a salvager's hook emblem, and several hand-written tally marks. One edge is reinforced with copper staples or binding tabs. |
 | 58 | `filing_fee_stamp` | Filing-Fee Stamp | shop | A square wooden fee stamp with a copper band around the base and a tiny old coin wedged beneath one corner of the stamping plate. The face bears only a simple fee tally. |
-| 59 | `scriveners_shears` | Scrivener's Shears | shop | Small ornate paper shears with copper finger loops and one blade engraved with a single crossed-out line. They should resemble historical desk scissors, not modern office scissors. |
 | 60 | `apprentices_whetstone` | Apprentice's Whetstone | shop | A plain rectangular sharpening stone sitting in a shallow wooden tray, with one deep worn groove where blades have repeatedly passed. No industrial holder. |
 | 61 | `backroom_kettle` | Backroom Kettle | shop | A squat copper kettle with a high swinging handle, short spout, and heavily soot-darkened underside. The lid knob resembles an old coin. |
 | 62 | `crooked_display_case` | Crooked Display Case | shop | A small glass-front cabinet on short feet, built from dark wood with copper corner brackets. One shelf is visibly slanted and the whole case leans slightly. |
@@ -169,9 +167,11 @@ The catalogue number is the design canon's, and it is not part of the file name:
 | 66 | `priority_window_pass` | Priority Window Pass | shop | A stiff hand-lettered pass with an arched service-window cutout punched near the top and a small ribbon hole. The shape should resemble an old permit card, not a modern ticket. |
 | 67 | `twin_lock_chest_key` | Twin-Lock Chest Key | shop | A large copper-and-iron key with a double-loop bow and two distinct sets of teeth on the bit. The shaft is slightly too long, emphasizing its special access function. |
 | 68 | `appraisers_chalk` | Appraiser's Chalk | shop | Two short sticks of white appraisal chalk tied together with thin copper wire. One stick bears a small star cut into its end. |
-| 69 | `guest_favor_token` | Guest-Favor Token | shop | A broad copper guest token with a laurel half-wreath on one side and a tiny split relief: coin on one half, paired cards/pages on the other. |
 | — | `copper_receipt_roll` | Glass Inkwell | shop | Your attacks deal 25% more damage. Attacks against you deal 25% more damage. |
+| — | `oilcloth_wrap` | Oilcloth Wrap | shop | Your hand is not discarded at the end of your turn. You draw 2 fewer cards at the start of each turn. |
 | — | `witchmarket_purse` | Iron Thimble | shop | Every attack hit against you deals 1 less damage. Every Block you gain is 1 less. |
+| — | `rushlight` | Rushlight | shop | Your first card each turn costs 0. You draw 1 fewer card at the start of each turn. |
+| — | `tinder_pouch` | Tinder Pouch | shop | Whenever a card is Exhausted, gain 5 Block. Resting at a campfire heals 10 HP less. |
 | — | `merchant_punchcard` | Stale Loaf | shop | Your first turn each combat has 2 less Energy. Every later turn, gain 1 Energy. |
 | — | `warranty_tag` | Pawned Wedding Ring | shop | When picked up, lose 7 Max HP. Start each combat with 2 Strength. |
 | — | `indemnity_stamp` | Long-Form Ledger | shop | Every card reward shows one more card to choose from. Everything in a Shop costs 10% more. |
@@ -525,7 +525,7 @@ Drawn like a body and facing RIGHT — the player stands on the left of the aren
 | `lieutenant` | The Lieutenant | New stripes on an old uniform, and always first through the door. |
 | `sorcerers_apprentice` | The Sorcerer's Apprentice | Knows every incantation, and not quite what happens when one is put after another. |
 
-## Cards — 472 pictures
+## Cards — 473 pictures
 
 No visual canon was ever written for the cards, so the row carries the card's own rules
 text instead of a brief. Act = the act that unlocks it; the starters, the Junk and the
@@ -668,7 +668,7 @@ cards a boss or a door hands over are never offered and have no act.
 | `dog_eared_almanac` | Dog-Eared Almanac | working | common | Retain. Draw 1 card. If this was in your hand since last turn, draw 2 more. |
 | `errand_rook` | Errand Rook | rite | rare | At the start of each of your turns, draw 1 more card. Whenever your hand is full, gain 3 Block. Exhaust. |
 | `gathered_gossip` | Gathered Gossip | working | uncommon | Draw 1 card, plus 1 for each enemy. Exhaust. |
-| `lamplit_study` | Lamplit Study | working | common | Draw 2 cards. Gain 5 Block. |
+| `lamplit_study` | Lamplit Study | working | common | Draw 2 cards. Then gain 1 Block for each card in your hand. |
 | `moonlit_counterfeit` | Moonlit Counterfeit | working | rare | Create a Temporary copy of a card in your hand. It costs 0. Exhaust. |
 | `night_scrivener` | Night Scrivener | working | uncommon | Draw 3 cards. Choose a card in your hand: it gains Retain this combat. |
 | `sieve_and_shears` | Sieve and Shears | working | common | Look at the top 3 cards of your draw pile. Put any of them on the bottom. Draw 1 card. |
@@ -709,7 +709,7 @@ cards a boss or a door hands over are never offered and have no act.
 | code | title | type | rarity | what it does |
 |---|---|---|---|---|
 | `barred_door` | Barred Door | working | common | Retain. Gain 14 Block. |
-| `besom_guard` | Besom Guard | working | common | Gain 8 Block. Unread: gain 4 Block. |
+| `besom_guard` | Besom Guard | working | common | Gain 8 Block. Unread: put this on top of your draw pile. |
 | `rowan_over_the_door` | Rowan over the Door | working | uncommon | Gain 7 Block. Until your next turn, every enemy that attacks you gets 1 Doubt. |
 | `salt_on_the_sill` | Salt on the Sill | working | common | Gain 6 Block. Every enemy that intends to attack gets 1 Doubt. |
 | `sealed_mantle` | Sealed Mantle | working | uncommon | Gain 8 Block. If enemies attack this turn and nothing gets through, gain 3 Ward Wax. |
@@ -724,7 +724,7 @@ cards a boss or a door hands over are never offered and have no act.
 | code | title | type | rarity | what it does |
 |---|---|---|---|---|
 | `beadles_cudgel` | Beadle's Cudgel | deed | common | Deal 9 damage. If the enemy is Liable, draw 1 card. |
-| `blacklisted` | Blunt Instrument | deed | uncommon | Deal 12 damage. |
+| `blacklisted` | Blunt Instrument | deed | uncommon | Discard a card. Deal 18 damage. |
 | `dawn_summons` | Dawn Summons | deed | rare | Deal 16 damage. +10 if it is your first card this turn. |
 | `hailstones` | Hailstones | deed | common | Deal 4 damage to ALL enemies twice. |
 | `midnight_toll` | Midnight Toll | deed | uncommon | Deal 5 damage for each card you played this turn. Count at most 6. |
@@ -1022,7 +1022,7 @@ cards a boss or a door hands over are never offered and have no act.
 | `lt_whistle` | Whistle | working | uncommon | Gain 3 Block. You may spend 1 Authority to draw 2 cards. |
 | `lt_witness` | Witness | working | common | Gain 4 Block. Your next Deed this turn counts toward your Challenge, whichever enemy it hits. |
 
-### Given in play — 56
+### Given in play — 57
 
 Handed over by a boss, a door or an event rather than offered; never in a reward pool.
 
@@ -1031,15 +1031,14 @@ Handed over by a boss, a door or an event rather than offered; never in a reward
 | `ask_at_the_desk` | Ask at the Desk | Get the card behind the desk back now. It costs 1 more this time. |
 | `ask_for_expedited_service` | Ask for Expedited Service | This Service Window opens him 15% instead of 25%, but you stay at Position 1 after. |
 | `atrahasis_boat` | Atrahasis' Boat | Retain. This round the flood deals you half. Returns to your hand. |
-| `bent_penny` | Bent Penny | Gain 1 Energy. Gain 1 Doubt. |
 | `better_chair_cushion_action` | The Better Chair | Gain 14 Block. End the turn holding a real card, or lose 6 HP. |
 | `black_flood_vessel_action` | Empty the Vessel | Discard your hand, draw 7, and gain 2 Energy. Once a combat. |
+| `borrowed_lace` | Borrowed Lace | Gain 6 Block. Lent by the Bride: gone at the end of the turn. |
 | `borrowers_claim` | Borrower's Claim | Retain. Exhaust. Put a card from hand under your draw pile, draw 1. Held at turn end: 1 Paperwork. |
 | `cauldron_add` | Into the Pot | Put a card from hand into the cauldron instead of playing it. The first each turn is free. |
 | `cauldron_brew` | Brew | Brew the 3 ingredients. Three of one family: a concentrated brew. Otherwise each gives its own effect. |
 | `correction_reed_action` | A Small Correction | Once a turn: discard a card, return one from discard costing 1 less. None there: draw 1. |
 | `counter_petition_twine_action` | Counter-Petition | Discard a card, draw a card, gain 1 Energy. Once a turn. |
-| `crooked_kindness` | Crooked Kindness | Lose 2 HP. Draw 2 cards. |
 | `drink_from_the_cup` | Drink from the Cup | Gain 1 Energy. The Cup gains 2 Claims. Unplayed, it is gone at the end of the turn. |
 | `edict_of_the_open_audience_action` | Open the Audience | Once a combat: cards in your hand cost 0 this turn. |
 | `erasure_tablet_action` | Erase the Line | Once a combat: every enemy's next action deals no damage; they gain 20 Block instead. |
@@ -1070,8 +1069,11 @@ Handed over by a boss, a door or an event rather than offered; never in a reward
 | `swear_by_the_sun_40` | Swear by the Sun: 40 | Ethereal. Gain 20 Block now. Swear to deal Utu 40 damage this turn, or he gains a Witness. The other oaths are gone. |
 | `swear_by_the_sun_60` | Swear by the Sun: 60 | Ethereal. Gain 30 Block now. Swear to deal Utu 60 damage this turn, or he gains a Witness. The other oaths are gone. |
 | `take_from_tomorrow` | Take From Tomorrow | Retain. Gain 1 Energy and draw 1 card. Write 1 Debt: it comes off tomorrow's portion. Returns to your hand. |
+| `the_frogs_fare` | The Frog's Fare | Pay 10 Gold after the fight. The Frog lets the card it eyed be this turn. |
 | `thorned_shawl` | Thorned Shawl | Lose 5 HP. Draw 2 cards. Grandmother loses 6 HP. |
 | `thorned_shawl_dear` | Thorned Shawl | Lose 5 HP. Draw 2 cards. Grandmother loses 6 HP. |
+| `toll_in_blood` | Toll in Blood | Lose 5 HP. The Ford's next attack is halved. Pay one toll each turn, or you break its law. |
+| `toll_in_kind` | Toll in Kind | Discard a card. The Ford's next attack is halved. Pay one toll each turn, or you break its law. |
 | `tomb_curse` | Tomb Curse | Unplayable. Still in hand at the end of your turn: 1 Entombed. |
 | `tomb_gold` | Tomb Gold | Gain 25 Gold (paid after the fight). |
 | `unfinished_citation` | Unfinished Citation | Retain. Exhaust. Clear a Reference from a card in hand. Still in hand at turn end: 1 Paperwork. |
@@ -1081,7 +1083,6 @@ Handed over by a boss, a door or an event rather than offered; never in a reward
 | `wand_inscribe` | Inscribe | Put a card from hand into a free wand slot instead of playing it. First each combat free, then 1 Focus. |
 | `wand_swap` | Swap | Two wand cards trade places. 1 Focus. |
 | `wand_withdraw` | Withdraw | A wand card goes to your discard. 1 Focus. |
-| `warm_kettle_gift` | Warm Kettle | Gain 8 Block. Discard a card. |
 | `wrong_form` | Wrong Form | Exhaust. Discard another card. |
 | `yield_your_place` | Yield Your Place | Move one place away from the Counter. Gain 6 Block. One queue choice a turn. |
 
