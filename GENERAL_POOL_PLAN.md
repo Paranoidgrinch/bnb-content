@@ -149,20 +149,23 @@ weniger im nächsten Zug. Upgrades bringen netto etwa +½ bis +1.
 | **Whispering Gallery** | 1 | Rare | Whenever a card leaves your hand without being played, a random enemy gets 1 Doubt. Exhaust. | kostet 0 | zählt auch das Zugende; MTG: Waste Not | Hex |
 | **Pyre of Old Records** | 1 | Rare | Whenever a card is exhausted, deal 7 damage to a random enemy and gain 7 Block. Exhaust. | kostet 0 | MTG: Blood Artist | Fang |
 
-### Gegner-Debuffs
+### Gegner-Debuffs (freigegeben 2026-11-08)
 
-| Karte | Kosten | Seltenheit | Text | Notiz | Hexe |
-|---|---|---|---|---|---|
-| **Seed of Misgiving** | 1 | Common | Apply 2 Doubt. Gain 4 Block. |  | Hex |
-| **Named in the Roll** | 1 | Common | Apply 2 Liable. Draw 1 card. |  | Hex |
-| **Overlooking** | 0 | Common | Apply 1 Doubt and 1 Liable. | „overlook“: altes Wort für den bösen Blick | Hex |
-| **Curdled Milk** | 1 | Common | Apply 2 Doubt to ALL enemies. |  | Hex |
-| **Hare's Mark** | 1 | Uncommon | Apply 2 Liable. If the enemy has Doubt, apply 2 more. |  | Hex |
-| **Lingering Malison** | 1 | Uncommon | Choose an enemy: its Doubt and Liable do not wear off until the end of its next turn. Draw 1 card. |  | Hex |
-| **Spreading Rumour** | 1 | Uncommon | Every other enemy gets the Doubt and Liable this enemy has. | MTG: Contagion | Hex |
-| **Ill Wind** | 2 | Uncommon | Deal 8 damage to ALL enemies. Apply 1 Liable to each. |  | Fang |
-| **Compounded Grievance** | 2 | Rare | Double every debuff on an enemy. Exhaust. |  | Hex |
-| **Bill of Attainder** | 1 | Rare | Whenever you apply Doubt or Liable, apply 1 more. Exhaust. |  | Hex |
+Maßstab: 1 Doubt ≈ 0,4 Energy (ein Viertel von einem 12er-Angriff), 1 Liable ≈ 0,6 Energy (ein Zug mit +25 % auf
+etwa 20 Schaden).
+
+| Karte | Kosten | Seltenheit | Text | Upgrade | Notiz | Hexe |
+|---|---|---|---|---|---|---|
+| **Seed of Misgiving** | 1 | Common | Apply 2 Doubt. Gain 4 Block. | 3 Doubt |  | Hex |
+| **Named in the Roll** | 1 | Common | Apply 2 Liable. Draw 1 card. | 3 Liable | MTG: Marked for Death | Hex |
+| **Overlooking** | 0 | Common | Apply 1 Doubt and 1 Liable. | 2 Doubt and 1 Liable | „overlook“: altes Wort für den bösen Blick | Hex |
+| **Curdled Milk** | 1 | Common | Apply 3 Doubt to ALL enemies. | 4 Doubt |  | Hex |
+| **Hare's Mark** | 1 | Uncommon | Apply 2 Liable. If the enemy has Doubt, apply 2 more. | 3, and 3 more |  | Hex |
+| **Lingering Malison** | 0 | Uncommon | Every enemy with Doubt gets 1 more Doubt; every enemy with Liable gets 1 more Liable. Draw 1 card. | Draw 2 | MTG: Proliferate | Hex |
+| **Spreading Rumour** | 1 | Uncommon | Apply 1 Doubt and 1 Liable. Then every other enemy gets the Doubt and Liable this enemy has. | 2 Doubt and 2 Liable | MTG: Contagion | Hex |
+| **Ill Wind** | 2 | Uncommon | Apply 1 Liable to ALL enemies, then deal 8 damage to ALL enemies. | 11 damage | MTG: Pestilence | Fang |
+| **Compounded Grievance** | 1 | Rare | Double every debuff on an enemy. Exhaust. | kostet 0 | MTG: Doubling Season | Hex |
+| **Bill of Attainder** | 1 | Rare | Whenever you apply Doubt or Liable, apply 1 more. Exhaust. | kostet 0 | MTG: Hardened Scales | Hex |
 
 ### Verteidigung
 
