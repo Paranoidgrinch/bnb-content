@@ -22,6 +22,8 @@ namespace BnbContent.Converter.Playtest;
 //                 uses, so no measured fight's luck leaks into a choice. Every candidate meets the same seeds.
 //   score         mean over those fights of health lost + a large penalty for a loss + a little per round.
 //   choice        the best score; within `TieBand` of it, the learned table breaks the tie, then the offer order.
+//   card skip     a card is only taken when it beats skipping by `SkipMargin` (2026-11-09): the best of three noisy
+//                 candidates beats "none" by luck alone, and a deck that takes every such card ends Act IV at 64.
 //
 // LEARNING. For each candidate played, gain = score(none) − score(candidate): how much the deck with it beat the
 // deck without it. It is recorded per card / relic / improvement id, with a light context (the act and the two
@@ -33,7 +35,7 @@ public sealed class TrialChoices
     // Book: the learned play policies the evaluation's bot plays with. Model: the fitted draft model (DeckModel); with
     // it, candidates are ordered by what it predicts they gain in this deck, and only the best `Top` are played.
     public sealed record Options(TrialBot.Options Bot, int Seeds = 3, int Top = 99, int ImproveTop = 3,
-        double LossPenalty = 100, double PerRound = 0.1, double TieBand = 0.5,
+        double LossPenalty = 100, double PerRound = 0.1, double TieBand = 0.5, double SkipMargin = 4,
         [property: System.Text.Json.Serialization.JsonIgnore] PolicyBook? Book = null,
         [property: System.Text.Json.Serialization.JsonIgnore] DeckModel? Model = null);
 
@@ -128,6 +130,10 @@ public sealed class TrialChoices
         if (!all.Any(c => c.Choosable))
             return (heuristic, null);
         var pick = Best(mean, [.. all.Select(c => c.Choosable)], [.. all.Select(c => c.Prior)], _options.TieBand);
+        var declined = kind == TrialPackages.Kind.Card && none.Choosable && pick != all.Count - 1
+            && mean[pick] > mean[^1] - _options.SkipMargin;
+        if (declined)
+            pick = all.Count - 1;
 
         var context = _themes.Context(act, baseline.Deck);
         var noneScore = mean[^1];
@@ -136,7 +142,7 @@ public sealed class TrialChoices
             learned.Add(new Learned(all[c].Kind, all[c].Id, act, context, noneScore - mean[c], fights.Count * _options.Seeds));
         var note = "play " + string.Join(", ", Enumerable.Range(0, all.Count)
             .Select(c => $"{(all[c].Picks.Count == 0 ? "none" : all[c].Id)} {mean[c].ToString("0.0", CultureInfo.InvariantCulture)}"))
-            + $" on stage {fights[0].Stage} ×{_options.Seeds} · {context}";
+            + $" on stage {fights[0].Stage} ×{_options.Seeds} · {context}" + (declined ? $" · skipped (under {_options.SkipMargin:0.#})" : "");
         return (all[pick].Picks, note);
     }
 

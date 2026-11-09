@@ -90,7 +90,7 @@ string? benchOnly = null;
 //      [--runner-paths n] [--runner-k n] [--runner-h n] [--runner-beam n] [--runner-perturn n] [--runner-out dir]
 //      [--runner-seed n] [--runner-only id,id] [--compare <trial-log.jsonl>] [--jobs n] — the encounter trial played
 //      by a determinized-search bot; output in ~/Desktop/bnb-balance/bots/. Package choices by play (TrialChoices):
-//      [--choice-k n] [--choice-beam n] [--choice-perturn n] [--choice-seeds n] [--choice-top n]
+//      [--choice-k n] [--choice-beam n] [--choice-perturn n] [--choice-seeds n] [--choice-top n] [--choice-skip-margin x]
 //      [--runner-values <json>] (default bots/lt-card-values.json) [--no-learn] [--runner-static] (the old rating).
 //      [--runner-human-decks <trial-log.jsonl>] (every fight with the deck the user fought it with)
 //      [--runner-chain] (each act starts from the previous act's best ending decks instead of its preset deck)
@@ -192,6 +192,7 @@ for (var i = 0; i < args.Length - 1; i++)
         case "--choice-perturn": runnerChoices = runnerChoices with { Bot = runnerChoices.Bot with { PerTurn = int.Parse(args[i + 1]) } }; break;
         case "--choice-seeds": runnerChoices = runnerChoices with { Seeds = int.Parse(args[i + 1]) }; break;
         case "--choice-top": runnerChoices = runnerChoices with { Top = int.Parse(args[i + 1]) }; break;
+        case "--choice-skip-margin": runnerChoices = runnerChoices with { SkipMargin = double.Parse(args[i + 1], System.Globalization.CultureInfo.InvariantCulture) }; break;
         case "--runner-values": runnerValues = args[i + 1]; break;
         case "--policy-dir": policyDir = args[i + 1]; break;
         case "--deck-model": deckModelPath = args[i + 1]; break;
