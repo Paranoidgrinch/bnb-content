@@ -355,7 +355,8 @@ public static class BlueprintAssembler
         var enemyRoles = EnemyRole.Of(data);
         return new()
         {
-            Cards = Cards.FinalCards.All().Concat(Witch.WitchCards.All()).Concat(Apprentice.ApprenticeCards.All()).ToDictionary(
+            Cards = Cards.FinalCards.All().Concat(Witch.WitchCards.All()).Concat(Apprentice.ApprenticeCards.All())
+                .Concat(Lieutenant.LieutenantCards.All()).ToDictionary(
                 c => c.Id,
                 c => new EntityPresentation
                 {

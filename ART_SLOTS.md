@@ -1062,7 +1062,7 @@ Handed over by a boss, a door or an event rather than offered; never in a reward
 | `renenutets_bounty` | Her Bounty | Lose 7 HP. Draw 4 cards. Gain 1 Energy. She stores 1 Grain. |
 | `renenutets_bounty_seventh_year` | Her Bounty | Lose 7 HP. Draw 7 cards. She stores 2 Grain. |
 | `requisition_slip` | Requisition Slip | Take the card the Second-Person Entry cited back from your discard pile into your hand. |
-| `return_slip` | Return Slip | Put a card from your hand on top of your draw pile and strike off 1 Overdue. While a Dead-Letter Ouroboros stands, that card costs 1 more. |
+| `return_slip` | Return Slip | Put a card from your hand on top of your draw pile: 1 less Overdue. While an Ouroboros stands, that card costs 1 more. |
 | `royal_grace_cup_action` | Royal Grace | Once a turn: gain 1 Energy, a card, or 10 Block. Every enemy gains 6 Block. |
 | `silver_name_tally_action` | Speak the Silver Name | Once a combat: remove an enemy's Block, gain 10 Block, refund your next card this turn. |
 | `sluice_gate_of_the_two_lands_action` | Work the Two Lands | Once a turn: lose 12 Block for 1 Energy, or spend 1 Energy for 12 Block. |
