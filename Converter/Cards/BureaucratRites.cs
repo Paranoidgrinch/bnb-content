@@ -72,8 +72,8 @@ public static class BureaucratRites
         Retention(Continuance, "Continuance", 12),
         Retention(Continuance + "+", "Continuance+", 20),
 
-        Allowance(ViolenceAllowance, "Violence Allowance"),
-        Allowance(ViolenceAllowance + "+", "Violence Allowance+"),
+        Allowance(ViolenceAllowance, "Use of Force"),
+        Allowance(ViolenceAllowance + "+", "Use of Force+"),
         AllowanceReadyStatus(),
 
         Presumption(),
@@ -275,7 +275,7 @@ public static class BureaucratRites
             tags: [StandardCombatIds.RetainBlockTag.value]);
     }
 
-    // ── Violence Allowance ────────────────────────────────────────────────────────────────────────────────
+    // ── Use of Force ────────────────────────────────────────────────────────────────────────────────
     // "The first Deed you play each turn costs 1 less Energy."
     //
     // Two statuses, because a passive modifier cannot be conditional — its PRESENCE is the condition. The
@@ -325,14 +325,14 @@ public static class BureaucratRites
         ],
     };
 
-    // ── Presumption of Error ──────────────────────────────────────────────────────────────────────────────
+    // ── Presumption ──────────────────────────────────────────────────────────────────────────────
     // "The next time that enemy consumes Doubt by attacking, apply 1 Doubt to it after the Attack resolves."
     // A mark ON THE ENEMY, so it is per-enemy, and spent the first time it answers. "By attacking" is asked as a
     // HIT, not as damage — a blocked attack spends Doubt too (see Dubious Authority, 2026-09-28).
     private static StatusData Presumption() => new()
     {
         Id = PresumptionOfError,
-        NameKey = "Presumption of Error",
+        NameKey = "Presumption",
         DescriptionKey = "The next time this character spends Doubt attacking, it gains 1 Doubt.",
         Polarity = StatusPolarity.Debuff,
         StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,

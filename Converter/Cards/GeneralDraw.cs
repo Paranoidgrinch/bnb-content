@@ -30,7 +30,7 @@ public static class GeneralDraw
         Study(2));
 
     private static readonly BnbCard DogEaredAlmanac = new(
-        "dog_eared_almanac", "Dog-Eared Almanac", WorkingTag, 0,
+        "dog_eared_almanac", "Almanac", WorkingTag, 0,
         "Retain. Draw 1 card. If this was in your hand since last turn, draw 2 more.",
         Almanac(2),
         Tags: [GeneralPoolRules.AlmanacTag], RetainInHand: true);
@@ -74,7 +74,7 @@ public static class GeneralDraw
 
     // Kept; the original now stays in hand and the copy is free (2026-11-08).
     private static readonly BnbCard MoonlitCounterfeit = new(
-        "moonlit_counterfeit", "Moonlit Counterfeit", WorkingTag, 1,
+        "moonlit_counterfeit", "Counterfeit", WorkingTag, 1,
         "Create a Temporary copy of a card in your hand. It costs 0. Exhaust.",
         Counterfeit(),
         Rarity: "rare", Act: 3, Tags: [ExhaustTag, CounterfeitTag]);

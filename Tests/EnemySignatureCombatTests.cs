@@ -273,7 +273,7 @@ public class EnemySignatureCombatTests
     [Fact]
     public void The_record_corrects_against_the_card_type_that_hurt_it()
     {
-        // Summary Judgment: a 20-damage Deed, so the 10-damage study threshold is crossed and the type is
+        // Verdict: a 20-damage Deed, so the 10-damage study threshold is crossed and the type is
         // unambiguous. It was a 12-damage ported Working until the leftovers left; the Record reads the canon
         // taxonomy either way, which is why only the numbers and the type here moved.
         var probe = FightProbe.Solo("self_correcting_record", "correct_against_you", energy: 9);
@@ -287,7 +287,7 @@ public class EnemySignatureCombatTests
         Disposal(play, session, recordId);
         Assert.Equal(53 - 20 - 16, Enemy(play, recordId).Health.Current); // corrected: 4 less
         Assert.Equal(0, FightProbe.StacksOf(Enemy(play, recordId), "correction_deed")); // and spent
-        // (Summary Judgment deals 20 since playtest feedback 2: a third one would end the fight.)
+        // (Verdict deals 20 since playtest feedback 2: a third one would end the fight.)
     }
 
     private static void Disposal(RunPlayback play, InteractiveRunSession session, CombatantId enemyId)

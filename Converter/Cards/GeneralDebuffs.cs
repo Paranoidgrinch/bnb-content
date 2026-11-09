@@ -63,7 +63,7 @@ public static class GeneralDebuffs
     // ── Rare ──────────────────────────────────────────────────────────────────────────────────────────────
 
     private static readonly BnbCard CompoundedGrievance = new(
-        "compounded_grievance", "Compounded Grievance", WorkingTag, 1,
+        "compounded_grievance", "Escalation", WorkingTag, 1,
         "Double every debuff on an enemy. Exhaust.",
         DoubleDebuffs(),
         Rarity: "rare", Act: 4, Tags: [ExhaustTag]);

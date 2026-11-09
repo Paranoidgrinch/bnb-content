@@ -57,7 +57,7 @@ public static class GeneralDefence
         Rarity: "uncommon", Act: 2);
 
     private static readonly BnbCard RowanOverTheDoor = new(
-        "rowan_over_the_door", "Rowan over the Door", WorkingTag, 1,
+        "rowan_over_the_door", "Rowan Sprig", WorkingTag, 1,
         "Gain 7 Block. Until your next turn, every enemy that attacks you gets 1 Doubt.",
         Seq(Block(7), Apply(GeneralPoolRules.Rowan, 1, You)),
         Rarity: "uncommon");
@@ -65,7 +65,7 @@ public static class GeneralDefence
     // ── Rare ──────────────────────────────────────────────────────────────────────────────────────────────
 
     private static readonly BnbCard StayOfProceedings = new(
-        "stay_of_proceedings", "Stay of Proceedings", WorkingTag, 3,
+        "stay_of_proceedings", "Recess", WorkingTag, 3,
         "An enemy's next action does nothing. Exhaust.",
         Apply(GeneralPoolRules.Stayed, 1),
         Rarity: "rare", Act: 4, Tags: [ExhaustTag]);

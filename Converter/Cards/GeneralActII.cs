@@ -60,9 +60,9 @@ public static class GeneralActII
     // original." The copy is free through one free play rather than a price on the card itself; the original
     // is a second prompt, and the upgrade simply spares it. See ADAPTATIONS.
     private static readonly BnbCard MoonlitCounterfeit = new(
-        "moonlit_counterfeit", "Moonlit Counterfeit", WorkingTag, 1,
+        "moonlit_counterfeit", "Counterfeit", WorkingTag, 1,
         "Create a Temporary copy of a card in your hand; your next card this turn is free. Exhaust the " +
-        "original. Moonlit Counterfeit Exhausts.",
+        "original. Counterfeit Exhausts.",
         Seq(Counterfeit(), ExhaustChosen()),
         Rarity: "rare", Act: Act, Tags: [ExhaustTag]);
 

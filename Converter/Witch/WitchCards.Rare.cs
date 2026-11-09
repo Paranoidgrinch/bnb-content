@@ -29,19 +29,19 @@ public static partial class WitchCards
         "A Husk card in the cauldron turns into an Adder's Nip. Deal 9 damage.", Seq(Turn(1), Damage(9)), "rare", act: 3);
 
     private static readonly BnbCard TheHareRunsLast = Witch(
-        "the_hare_runs_last", "The Hare Runs Last", DeedTag, 1, WitchActions.Fang,
+        "the_hare_runs_last", "Hare's Run", DeedTag, 1, WitchActions.Fang,
         "Deal 8 damage. If its Hex bursts at the end of its next turn, it takes 8 damage again after the burst.",
         Seq(Damage(8), Apply(WitchRules.HareRunsLast, 8)), "rare");
 
     // ── Hex ───────────────────────────────────────────────────────────────────────────────────────────────
 
     private static readonly BnbCard CallTheThirdNight = Witch(
-        "call_the_third_night", "Call the Third Night", WorkingTag, 2, WitchActions.Hex,
+        "call_the_third_night", "Witching Hour", WorkingTag, 2, WitchActions.Hex,
         "The target's Hex bursts now: it loses 3 HP for each Hexed. Its Threefold count starts again.",
         ThirdNightNow(), "rare");
 
     private static readonly BnbCard NameWrittenBackwards = Witch(
-        "name_written_backwards", "Name Written Backwards", WorkingTag, 1, WitchActions.Hex,
+        "name_written_backwards", "Reversed Name", WorkingTag, 1, WitchActions.Hex,
         "Double the target's Hexed. Its Threefold count starts again.", Backwards(0), "rare", act: 2);
 
     private static readonly BnbCard HexInTheRafters = Witch(
@@ -98,12 +98,12 @@ public static partial class WitchCards
         Seq(Soup(), Draw(1)), "rare", act: 3);
 
     private static readonly BnbCard KeepTheDrippings = Witch(
-        "keep_the_drippings", "Keep the Drippings", RiteTag, 1, WitchActions.Hearth,
+        "keep_the_drippings", "Drippings", RiteTag, 1, WitchActions.Hearth,
         "Hearth healing that the combat-heal cap would waste becomes Ward Wax instead.",
         Apply(WitchRules.KeepTheDrippings, 1, You), "rare", act: 4);
 
     private static readonly BnbCard NeverWashThePot = Witch(
-        "never_wash_the_pot", "Never Wash the Pot", RiteTag, 2, WitchActions.Hearth,
+        "never_wash_the_pot", "Seasoned Pot", RiteTag, 2, WitchActions.Hearth,
         "After each Brew, keep one of its ingredients in the cauldron.",
         Apply(WitchRules.NeverWashThePot, 1, You), "rare", act: 4);
 
@@ -115,12 +115,12 @@ public static partial class WitchCards
     // ── Fortune ───────────────────────────────────────────────────────────────────────────────────────────
 
     private static readonly BnbCard LoadedKnucklebones = Witch(
-        "loaded_knucklebones", "Loaded Knucklebones", WorkingTag, 1, WitchActions.Fortune,
+        "loaded_knucklebones", "Loaded Bones", WorkingTag, 1, WitchActions.Fortune,
         "Apply 3 Misfortune. Its next roll is rolled twice; either may land.",
         Seq(Apply(WitchKeywords.Misfortune, 3), Apply(WitchRules.Loaded, 1)), "rare");
 
     private static readonly BnbCard SevenYearsBadLuck = Witch(
-        "seven_years_bad_luck", "Seven Years' Bad Luck", WorkingTag, 2, WitchActions.Fortune,
+        "seven_years_bad_luck", "Seven Years", WorkingTag, 2, WitchActions.Fortune,
         "Apply 8 Misfortune. Until it lands, every roll the target wins leaves half the Misfortune behind.",
         Seq(Apply(WitchKeywords.Misfortune, 8), Apply(WitchRules.SevenYears, 1)), "rare", act: 2);
 
@@ -134,7 +134,7 @@ public static partial class WitchCards
         "Remove all Misfortune from an enemy. Gain 2 Block for each, and draw 1 card for every 4.", Borrow(2), "rare");
 
     private static readonly BnbCard TheBlackCatSatDown = Witch(
-        "the_black_cat_sat_down", "The Black Cat Sat Down", WorkingTag, 2, WitchActions.Fortune,
+        "the_black_cat_sat_down", "Crossed Path", WorkingTag, 2, WitchActions.Fortune,
         "The target's next action fails. Lose 4 HP. Shuffle 2 Mirror Shards into your draw pile. Exhaust.",
         SatDown(), "rare", tags: [ExhaustTag], act: 4);
 

@@ -70,14 +70,14 @@ public static class GeneralPoolRules
                 new PassiveModifierData(PassiveModifierPipeline.TurnStartDraw, PassiveModifierOperation.AddPerStack, 1,
                     RestrictDamageKind: null),
             ]),
-        Rite(WhisperingGallery, "Whispering Gallery",
+        Rite(WhisperingGallery, "Whispers",
             "Whenever a card leaves your hand without being played, a random enemy gets 1 Doubt.",
             [
                 Trigger(Model<CardMovedToZoneTriggeredEffectContext>(Whisper(), when: Unplayed<CardMovedToZoneTriggeredEffectContext>()),
                     nameof(TriggerEvent.CardMovedToZone)),
                 Trigger(WhisperEach(), nameof(TriggerEvent.HandDiscarded)),
             ]),
-        Rite(PyreOfOldRecords, "Pyre of Old Records",
+        Rite(PyreOfOldRecords, "Record Pyre",
             "Whenever a card is exhausted, deal 7 damage to a random enemy and gain 7 Block.",
             [Trigger(Model<CardMovedToZoneTriggeredEffectContext>(Pyre(),
                 when: new TriggerEventCardZoneExpression<CardMovedToZoneTriggeredEffectContext>(CardZone.ExhaustPile)),
@@ -223,7 +223,7 @@ public static class GeneralPoolRules
     // The turn's end: the hand has been discarded, so what is left in it was retained.
     private static CombatNodeModel TurnEnds() =>
         Seq(
-            // Dog-Eared Almanac: how many are waiting for next turn.
+            // Almanac: how many are waiting for next turn.
             new CombatNodeModel("setCombatantCounter", CardAuthoring.You, CardsTagged(AlmanacTag),
                 CounterId: AlmanacsHeld.value, Relative: false),
             // Read by Firelight: what was not played goes where it was promised.
@@ -292,7 +292,7 @@ public static class GeneralPoolRules
     private static StatusData RowanStatus() => new()
     {
         Id = Rowan,
-        NameKey = "Rowan over the Door",
+        NameKey = "Rowan Sprig",
         DescriptionKey = "Until your next turn, every enemy that attacks you gets 1 Doubt.",
         Polarity = StatusPolarity.Buff,
         StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,
@@ -318,7 +318,7 @@ public static class GeneralPoolRules
     private static StatusData StayedStatus() => new()
     {
         Id = Stayed,
-        NameKey = "Stay of Proceedings",
+        NameKey = "Recess",
         DescriptionKey = "This character's next action does nothing.",
         Polarity = StatusPolarity.Debuff,
         StackingBehavior = StatusStackingBehavior.MergeWithExistingInstance,

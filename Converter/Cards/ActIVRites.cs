@@ -7,7 +7,7 @@ namespace BnbContent.Converter.Cards;
 
 // Act IV's Rites, from both pools. Five of the six change what an existing keyword DOES, so they are markers
 // the keyword itself looks for — the same shape as Red Ink Doctrine inside the Paperwork tick. Only the
-// Processional Calendar acts on its own.
+// Procession acts on its own.
 public static class ActIVRites
 {
     public const string TempleTally = "temple_tally";
@@ -29,8 +29,8 @@ public static class ActIVRites
     [
         Tally(TempleTally, "Temple Tally"),
         Tally(TempleTally + "+", "Temple Tally+"),
-        Calendar(ProcessionalCalendar, "Processional Calendar"),
-        Calendar(ProcessionalCalendar + "+", "Processional Calendar+"),
+        Calendar(ProcessionalCalendar, "Procession"),
+        Calendar(ProcessionalCalendar + "+", "Procession+"),
 
         // Read by the Seal→Ratify conversion (CardAuthoring.Ratify).
         Marker(HieraticMeasure, "Hieratic Measure",
@@ -95,7 +95,7 @@ public static class ActIVRites
         ]);
     }
 
-    // ── Processional Calendar ─────────────────────────────────────────────────────────────────────────────
+    // ── Procession ─────────────────────────────────────────────────────────────────────────────
     // "At the end of your turn, if you have at least 2 Queued cards, resolve your oldest Queued card."
     private static StatusData Calendar(string id, string name) => Rite(id, name,
         "At the end of your turn, a backlog of two or more resolves its oldest card early.",

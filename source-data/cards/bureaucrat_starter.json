@@ -36,7 +36,7 @@
   },
   {
     "id": "cower_behind_a_desk",
-    "name": "Cower Behind a Desk",
+    "name": "Under the Desk",
     "class": "bureaucrat",
     "type": "action",
     "cost": 1,
@@ -54,7 +54,7 @@
   },
   {
     "id": "cower_behind_a_desk_plus",
-    "name": "Cower Behind a Desk+",
+    "name": "Under the Desk+",
     "class": "bureaucrat",
     "type": "action",
     "cost": 1,

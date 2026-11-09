@@ -60,7 +60,7 @@ public static class BureaucratActII
         Rarity: "uncommon", Act: Act);
 
     private static readonly BnbCard ClutterConcordance = new(
-        "clutter_concordance", "Clutter Concordance", DeedTag, 1,
+        "clutter_concordance", "Clutter", DeedTag, 1,
         "Deal 6 damage, plus 3 damage for each different Junk type currently present across your discard and " +
         "Exhaust piles.",
         Damage(Plus(CombatAmountSpec.FromConst(6), Times(JunkTypesLyingAround(), 3))),

@@ -18,7 +18,7 @@ public static class BureaucratStarter
         Rarity: "starter");
 
     public static readonly BnbCard CowerBehindADesk = new(
-        "cower_behind_a_desk", "Cower Behind a Desk", WorkingTag, 1,
+        "cower_behind_a_desk", "Under the Desk", WorkingTag, 1,
         "Gain 5 Block.",
         Block(5),
         Rarity: "starter");

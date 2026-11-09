@@ -74,11 +74,11 @@ when its instruction runs.
 | `ap_lectern` | **Lectern** · Working, Exhaust · 2 · U | Gain **3 Rote**. | `SPEAK`: after the cast, gain **2 Rote**; then this card burns. | cost **1** / **3 Rote** |
 | `ap_lead_type` | **Lead Type** · Working · 1 · U | Gain **7** Block. Draw 1 card. | `SHAPE—Join`: the next two damaging Speaks become one hit of both together, **+6**. | **10** / **+9** |
 | `ap_scorch_mark` | **Scorch Mark** · Deed · 2 · U | Deal **8** damage to ALL enemies. | `SPEAK`: deal **4** damage to ALL enemies. | **11** / **6** |
-| `ap_borrowed_grimoire` | **The Borrowed Grimoire** · Working, Exhaust · 2 · R | Whenever you cast this combat, gain **1 Rote**. | `SPEAK`: after the cast, gain **3 Rote**; then this card burns. | cost **1** / **4 Rote** |
-| `ap_bell_book` | **Bell, Book and Candle** · Deed · 2 · R | Deal **6** damage 3 times; each hit then applies **1 Singe**. | `SPEAK`: deal **4** damage 3 times. | **8** × 3 / **5** × 3 |
-| `ap_long_recitation` | **The Long Recitation** · Working · 2 · R | For each card in the wand, deal **4** damage and gain **3** Block. | `SPEAK`: deal **2** damage for each cast this combat (at most 20). | **5** / **4** each; wand **3** each (at most 30) |
+| `ap_borrowed_grimoire` | **Grimoire** · Working, Exhaust · 2 · R | Whenever you cast this combat, gain **1 Rote**. | `SPEAK`: after the cast, gain **3 Rote**; then this card burns. | cost **1** / **4 Rote** |
+| `ap_bell_book` | **Bell and Book** · Deed · 2 · R | Deal **6** damage 3 times; each hit then applies **1 Singe**. | `SPEAK`: deal **4** damage 3 times. | **8** × 3 / **5** × 3 |
+| `ap_long_recitation` | **Litany** · Working · 2 · R | For each card in the wand, deal **4** damage and gain **3** Block. | `SPEAK`: deal **2** damage for each cast this combat (at most 20). | **5** / **4** each; wand **3** each (at most 30) |
 | `ap_warding_primer` | **Warding Primer** · Working, Exhaust · 2 · R | Gain **3 Poise** and **8** Block. | `KEEP—Shield Seal`: the next defensive Speak is stored at **150%** and rises before the first enemy hit this enemy turn. | cost **1** / **200%** |
-| `ap_examiners_bell` | **The Examiner's Bell** · Working, Exhaust · 1 · R | At the end of each of your turns in which you cast twice or more, gain **2 Rote**. | `SPEAK`: deal **6** damage, **6** more if you have already cast this turn. | cost **0** / **9**, 6 more |
+| `ap_examiners_bell` | **Examiner's Bell** · Working, Exhaust · 1 · R | At the end of each of your turns in which you cast twice or more, gain **2 Rote**. | `SPEAK`: deal **6** damage, **6** more if you have already cast this turn. | cost **0** / **9**, 6 more |
 
 ### 3.3 Act III — 1 Common, 3 Uncommon, 5 Rare
 
@@ -102,9 +102,9 @@ when its instruction runs.
 | `ap_compendium` | **Compendium** · Working · 1 · U | Gain **1 Rote** and **1 Poise**. Draw 2 cards. | `ECHO`: repeat the last Speak at **75%**. | draw **3** / **100%** |
 | `ap_final_draft` | **Final Draft** · Deed · 2 · U | Deal **14** damage, **+1** for each Rote and Poise you have. | `SPEAK`: deal **8** damage. | **18** / **11** |
 | `ap_magnum_opus` | **The Magnum Opus** · Working, Exhaust · 3 · R | Double your Rote and Poise. | `SPEAK`: after the cast, gain **1 Rote** for each card in the wand; then this card burns. | cost **2** / same |
-| `ap_sorcerers_staff` | **The Sorcerer's Staff** · Working, Exhaust · 2 · R | The wand has one more slot (6 at most) and a **2** higher Exhaustion cap this combat. Gain **2 Focus**. | `SPEAK`: deal **10** damage. | cost **1** / **14** |
-| `ap_unfinished_spell` | **The Unfinished Spell** · Deed · 1 · R | Deal **6** damage, **+6** for each card in the wand. | `SPEAK`: deal **3** damage for each Speak resolved this combat (at most 24). | **8**, +8 / **4** each (at most 32) |
-| `ap_apprentices_oath` | **The Apprentice's Oath** · Working, Exhaust · 1 · R | Whenever you cast this combat, deal **3** damage to ALL enemies and gain **3** Block. | `SPEAK`: deal **3** damage to ALL enemies and gain **3** Block. | cost **0** / **5** and **5** |
+| `ap_sorcerers_staff` | **Great Staff** · Working, Exhaust · 2 · R | The wand has one more slot (6 at most) and a **2** higher Exhaustion cap this combat. Gain **2 Focus**. | `SPEAK`: deal **10** damage. | cost **1** / **14** |
+| `ap_unfinished_spell` | **Draft Spell** · Deed · 1 · R | Deal **6** damage, **+6** for each card in the wand. | `SPEAK`: deal **3** damage for each Speak resolved this combat (at most 24). | **8**, +8 / **4** each (at most 32) |
+| `ap_apprentices_oath` | **Indenture** · Working, Exhaust · 1 · R | Whenever you cast this combat, deal **3** damage to ALL enemies and gain **3** Block. | `SPEAK`: deal **3** damage to ALL enemies and gain **3** Block. | cost **0** / **5** and **5** |
 
 ### 3.5 Coverage after the expansion
 
@@ -114,7 +114,7 @@ when its instruction runs.
 - **Several casts a turn (new decision):** Tuning Fork, Examiner's Bell, Thunderclap.
 - **Exhaustion as a payoff (new):** Banked Fire spends the wand's heat on every enemy and cools it for the next cast.
 - **Singe, still ammunition:** Kindling, Ember Tongs (reads it), Soot Mark, Wildfire (doubles it), Burning Glass,
-  Bell, Book and Candle.
+  Bell and Book.
 - **Area damage (thin before):** Scorch Mark, Thunderclap, Apprentice's Oath, Burning Glass (Singe on all).
 - **Defence that scales:** Poise, Standing Stone, Millstone, Bookend, Sealing Wax, Rain Barrel.
 

@@ -176,19 +176,19 @@ public static partial class ApprenticeCards
         Speak(Hit(4, to: WandTargeting.AllEnemies)), "uncommon", act: 2);
 
     private static readonly BnbCard BorrowedGrimoire = Card(
-        "ap_borrowed_grimoire", "The Borrowed Grimoire", RiteTag, 2,
+        "ap_borrowed_grimoire", "Grimoire", RiteTag, 2,
         "Whenever you cast this combat, gain 1 Rote. Exhaust.", Apply(ApprenticeRules.GrimoireRule, 1, You),
         "Burn: after the cast, gain 3 Rote; then this card is exhausted.",
         Lesson(Later(Apply(Rote, 3, You))), "rare", [ExhaustTag], act: 2);
 
     private static readonly BnbCard BellBook = Card(
-        "ap_bell_book", "Bell, Book and Candle", DeedTag, 2,
+        "ap_bell_book", "Bell and Book", DeedTag, 2,
         "Deal 6 damage 3 times; each hit then applies 1 Singe.", Repeat(3, Seq(Damage(6), Apply(Singe, 1))),
         "Speak: deal 4 damage 3 times.",
         Speak(Hit(4, 3)), "rare", act: 2);
 
     private static readonly BnbCard LongRecitation = Card(
-        "ap_long_recitation", "The Long Recitation", WorkingTag, 2,
+        "ap_long_recitation", "Litany", WorkingTag, 2,
         "Deal 4 damage and gain 3 Block for each card in the wand.",
         Seq(Damage(Times(WandValue(WandField.Occupied), 4)), Block(Times(WandValue(WandField.Occupied), 3))),
         "Speak: deal 2 damage for each cast this combat (at most 20).",
@@ -202,7 +202,7 @@ public static partial class ApprenticeCards
         Keep(150, WandFilter.Defense, WandStoreTrigger.NextEnemyAttack), "rare", [ExhaustTag], act: 2);
 
     private static readonly BnbCard ExaminersBell = Card(
-        "ap_examiners_bell", "The Examiner's Bell", RiteTag, 1,
+        "ap_examiners_bell", "Examiner's Bell", RiteTag, 1,
         "At the end of each of your turns in which you cast twice or more, gain 2 Rote. Exhaust.",
         Apply(ApprenticeRules.ExaminersBellRule, 1, You),
         "Speak: deal 6 damage, 6 more if you have already cast this turn.",
@@ -296,20 +296,20 @@ public static partial class ApprenticeCards
         Lesson(Later(Apply(Rote, WandValue(WandField.Occupied), You))), "rare", [ExhaustTag], act: 4);
 
     private static readonly BnbCard SorcerersStaff = Card(
-        "ap_sorcerers_staff", "The Sorcerer's Staff", WorkingTag, 2,
+        "ap_sorcerers_staff", "Great Staff", WorkingTag, 2,
         "The wand has one more slot (6 at most) and a 2 higher Exhaustion cap this combat. Gain 2 Focus. Exhaust.",
         Seq(WandMove(WandAction.Extend, 1), WandMove(WandAction.RaiseCap, 2), GainFocus(2)),
         "Speak: deal 10 damage.",
         Speak(Hit(10)), "rare", [ExhaustTag], act: 4);
 
     private static readonly BnbCard UnfinishedSpell = Card(
-        "ap_unfinished_spell", "The Unfinished Spell", DeedTag, 1,
+        "ap_unfinished_spell", "Draft Spell", DeedTag, 1,
         "Deal 6 damage, 6 more for each card in the wand.", Damage(Plus(Const(6), Times(WandValue(WandField.Occupied), 6))),
         "Speak: deal 3 damage for each Speak resolved this combat (at most 24).",
         Speak(Hit(Amount(AtMost(Times(WandValue(WandField.SpeaksThisCombat), 3), 24)))), "rare", act: 4);
 
     private static readonly BnbCard ApprenticesOath = Card(
-        "ap_apprentices_oath", "The Apprentice's Oath", RiteTag, 1,
+        "ap_apprentices_oath", "Indenture", RiteTag, 1,
         "Whenever you cast this combat, deal 3 damage to ALL enemies and gain 3 Block. Exhaust.",
         Apply(ApprenticeRules.OathRule, 1, You),
         "Speak: deal 3 damage to ALL enemies and gain 3 Block.",

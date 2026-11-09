@@ -128,7 +128,7 @@ Starting resources: **70 HP, 3 Energy**.
 | Card | Qty. | Type | Cost | Base | Upgrade | Tags |
 |---|---:|---|---:|---|---|---|
 | **Paper Cut** | 4 | Deed | 1 | Deal 6 damage. | Deal 8 damage. | Damage |
-| **Cower Behind a Desk** | 4 | Working | 1 | Gain 5 Block. | Gain 7 Block. | Block |
+| **Under the Desk** | 4 | Working | 1 | Gain 5 Block. | Gain 7 Block. | Block |
 | **Strong Binder** | 1 | Working | 1 | Gain 7 Block. Apply 1 Doubt. | Gain 9 Block. Apply 2 Doubt. | Block, Doubt, Argument |
 | **Permit A38** | 1 | Working | 2 | Apply 5 Paperwork. | Costs 1 Energy. | Paperwork, Form, Permit |
 
@@ -140,7 +140,7 @@ Starting resources: **70 HP, 3 Energy**.
 |---:|---|:---:|---|---:|---|---|---|
 | 1 | **Waxing Authority** | I | Deed | 1 | Deal 5 damage. Apply 1 Seal. | Deal 7 damage. Apply 1 Seal. | Damage, Seal |
 | 2 | **Form of Ill Intent** | I | Working | 1 | Apply 3 Paperwork. If the target intends to Attack, also apply 1 Doubt. | Apply 4 Paperwork. If the target intends to Attack, also apply 1 Doubt. | Paperwork, Doubt, Intent |
-| 3 | **Protective Adjournment** | I | Working | 1 | Queue: Gain 11 Block. | Queue: Gain 14 Block. | Queue, Block |
+| 3 | **Adjournment** | I | Working | 1 | Queue: Gain 11 Block. | Queue: Gain 14 Block. | Queue, Block |
 | 4 | **Secure Misfiling** | I | Working | 0 | Add 1 Misfiled Paper to your discard pile. Draw 1 card. | Add 1 Misfiled Paper to your discard pile. Draw 2 cards. | Junk, Draw |
 | 5 | **Cauldron Copy** | I | Deed | 1 | Deal 9 damage. Add 1 Duplicate Copy to your discard pile. | Deal 12 damage. Add 1 Duplicate Copy to your discard pile. | Damage, Junk |
 | 6 | **Occult Precedent** | I | Working | 1 | Gain 7 Block. If any enemy has Paperwork, gain 2 additional Block. | Gain 9 Block. If any enemy has Paperwork, gain 2 additional Block. | Block, Paperwork |
@@ -179,15 +179,15 @@ Starting resources: **70 HP, 3 Energy**.
 | 34 | **Smudged Index** | II | Working | 1 | Look at the top 4 cards of your draw pile. Archive one. Put the others back in any order. Gain 4 Block. | Look at the top 5 cards. Gain 6 Block. | Archive, Draw-Pile, Block, Control |
 | 35 | **Hedge Hospitality** | III | Working | 1 | Gain 7 Block. Until your next turn, the first enemy that deals unblocked Attack damage to you gains 4 Paperwork. | Gain 9 Block; apply 5 Paperwork instead. | Block, Paperwork, Retaliation |
 | 36 | **Clerk's Familiar** | I | Rite | 1 | The first time each turn you create a Junk card, gain 4 Block. | Gain 5 Block instead. | Junk, Block |
-| 37 | **Presumption of Error** | I | Working | 1 | Apply 1 Doubt. The next time that enemy consumes Doubt by attacking, apply 1 Doubt to it after the Attack resolves. Exhaust. | Costs 0 Energy. | Doubt, Exhaust |
+| 37 | **Presumption** | I | Working | 1 | Apply 1 Doubt. The next time that enemy consumes Doubt by attacking, apply 1 Doubt to it after the Attack resolves. Exhaust. | Costs 0 Energy. | Doubt, Exhaust |
 | 38 | **Tallow Budget** | I | Working | 0 | Gain 1 Energy. Add 1 Red Tape to your hand. Exhaust. | Add the Red Tape to your discard pile instead. | Energy, Junk, Exhaust |
-| 39 | **Clutter Concordance** | II | Deed | 1 | Deal 5 damage, plus 2 damage for each different Junk type currently present across your discard and Exhaust piles. | Base damage becomes 7. | Damage, Junk, Collection |
+| 39 | **Clutter** | II | Deed | 1 | Deal 5 damage, plus 2 damage for each different Junk type currently present across your discard and Exhaust piles. | Base damage becomes 7. | Damage, Junk, Collection |
 | 40 | **Witness Knot** | III | Working | 1 | Apply 1 Doubt to an enemy. If it attacks before your next turn, apply 2 Paperwork to all other enemies. | Apply 3 Paperwork to all other enemies instead. | Doubt, Paperwork, Multi-Enemy |
-| 41 | **Conditional Approval** | I | Deed | 1 | Deal 6 damage. If the target does not intend to Attack, apply 2 Seal; otherwise apply 1 Seal. | Deal 8 damage. | Damage, Seal, Intent |
-| 42 | **Wastepaper Bastion** | I | Working | 1 | Gain 4 Block, plus 2 Block for each Junk card in your hand. | Gain 5 Block, plus 3 Block for each Junk card in your hand. | Block, Junk, Hand |
+| 41 | **Proviso** | I | Deed | 1 | Deal 6 damage. If the target does not intend to Attack, apply 2 Seal; otherwise apply 1 Seal. | Deal 8 damage. | Damage, Seal, Intent |
+| 42 | **Paper Bastion** | I | Working | 1 | Gain 4 Block, plus 2 Block for each Junk card in your hand. | Gain 5 Block, plus 3 Block for each Junk card in your hand. | Block, Junk, Hand |
 | 43 | **Formal Dissent** | I | Working | 0 | Remove 1 Doubt from an enemy. Gain 1 Energy. Exhaust. | Also draw 1 card. | Doubt, Energy, Exhaust |
 | 44 | **Marginalia** | II | Working | 1 | Choose another non-Rite, non-Temporary persistent card from your Exhaust pile. Create a Temporary copy in your hand. It costs 1 more Energy this turn and Exhausts when played. Marginalia Exhausts. | The created copy does not cost 1 additional Energy. | Exhaust, Copy, Temporary, Recursion |
-| 45 | **Processional Calendar** | IV | Rite | 1 | At the end of your turn, if you have at least 2 Queued cards, resolve your oldest Queued card. | Costs 0 Energy. | Queue, Tempo |
+| 45 | **Procession** | IV | Rite | 1 | At the end of your turn, if you have at least 2 Queued cards, resolve your oldest Queued card. | Costs 0 Energy. | Queue, Tempo |
 | 46 | **Hex Circular** | I | Deed | 2 | Deal 7 damage to ALL enemies. Apply 1 Doubt to ALL enemies. | Deal 9 damage to ALL enemies. | Damage, AoE, Doubt |
 | 47 | **Pending Matters** | I | Rite | 1 | The first time each turn a Queued card resolves, gain 3 Block. | Gain 4 Block instead. | Queue, Block |
 | 48 | **Notary's Tithe** | I | Working | 0 | Remove 1 Seal from an enemy. Draw 2 cards. Exhaust. | Draw 3 cards instead. | Seal, Draw, Exhaust |
@@ -208,11 +208,11 @@ Starting resources: **70 HP, 3 Energy**.
 | 58 | **Skeleton Staff** | I | Rite | 2 | At the end of your turn, you may Queue one non-Rite card from your hand with base Energy cost 2 or less for 0 Energy. Add 1 Red Tape to your discard pile. | May choose a non-Rite card with base Energy cost 3 or less. | Queue, Energy, Junk |
 | 59 | **Ghost Register** | II | Rite | 2 | The first non-Junk, non-Temporary persistent card you Archive each turn is recorded. At the start of your next turn, add a Temporary copy of it to your hand. It costs 0 Energy and Exhausts when played. | Costs 1 Energy. | Archive, Copy, Temporary, Recursion |
 | 60 | **Hearth Compact** | III | Rite | 2 | Whenever an enemy with Doubt attacks and deals no unblocked damage, the Doubt stack that would normally be consumed is retained. | Costs 1 Energy. | Doubt, Block, Rule Change |
-| 61 | **Summary Judgment** | I | Deed | 2 | Deal 16 damage. If the target has at least 6 Paperwork, trigger its Paperwork immediately, then remove 3 Paperwork. | Deal 19 damage. | Damage, Paperwork, Burst |
+| 61 | **Verdict** | I | Deed | 2 | Deal 16 damage. If the target has at least 6 Paperwork, trigger its Paperwork immediately, then remove 3 Paperwork. | Deal 19 damage. | Damage, Paperwork, Burst |
 | 62 | **Candle Tribunal** | I | Deed | 2 | Deal 5 damage 3 times. If the target is Ratified, repeat this attack. | Deal 6 damage 3 times. | Damage, Multi-Hit, Ratify, Burst |
 | 63 | **Archive Pyre** | II | Deed | 2 | Archive all Junk cards in your hand. Deal 9 damage to ALL enemies, plus 5 damage for each Junk Archived this way. | Base damage becomes 12. | Archive, Junk, Damage, AoE |
 | 64 | **Due Recompense** | III | Deed | 2 | Deal 14 damage, plus 5 damage for each Doubt on the target. Count at most 6 Doubt. Then remove all Doubt from the target. | Base damage becomes 18. | Damage, Doubt, Conversion, Burst |
-| 65 | **Cartouche Reckoning** | IV | Deed | 3 | Deal 18 damage. Then, up to 3 times: if the target has at least 10 Paperwork, remove 10 Paperwork and repeat this attack. | Deal 21 damage per hit. | Damage, Paperwork, Conversion, Burst |
+| 65 | **Reckoning** | IV | Deed | 3 | Deal 18 damage. Then, up to 3 times: if the target has at least 10 Paperwork, remove 10 Paperwork and repeat this attack. | Deal 21 damage per hit. | Damage, Paperwork, Conversion, Burst |
 | 66 | **Rebuttal** | I | Deed | 1 | Deal 9 damage. Gain 4 Block per Doubt already on the target, maximum 12 Block. Then apply 1 Doubt. | Deal 12 damage. | Damage, Block, Doubt |
 | 67 | **Privy Seal** | I | Working | 1 | Requires at least 1 Seal. Remove all Seals from an enemy and Ratify it immediately. Draw 1 card. Exhaust. | Does not Exhaust. | Seal, Ratify, Draw, Exhaust |
 | 68 | **Funeral Index** | II | Deed | 2 | Deal 5 damage for each card you have Archived this combat. Count at most 8 cards. Exhaust. | Deal 6 damage per Archived card. | Damage, Archive, Scaling, Exhaust |
@@ -223,11 +223,11 @@ Starting resources: **70 HP, 3 Energy**.
 | 73 | **Null Catalogue** | II | Working | 1 | Choose up to 2 cards in your discard pile. Archive them. Draw 1 card for each card Archived this way. Exhaust. | Costs 0 Energy. | Archive, Discard, Draw, Exhaust |
 | 74 | **Hedge Covenant** | III | Rite | 2 | Whenever Doubt reduces Attack damage, after that Attack has fully resolved, gain Block equal to half the prevented damage, rounded up. | Costs 1 Energy. | Doubt, Block, Conversion |
 | 75 | **Stone Levy** | IV | Deed | 2 | Remove up to 20 of your Block. Deal 10 damage plus 2 damage for each Block removed. | May remove up to 25 Block. | Damage, Block, Conversion, Burst |
-| 76 | **Violence Allowance** | I | Rite | 2 | The first Deed you play each turn costs 1 less Energy (minimum 0). | Costs 1 Energy. | Deed, Energy |
+| 76 | **Use of Force** | I | Rite | 2 | The first Deed you play each turn costs 1 less Energy (minimum 0). | Costs 1 Energy. | Deed, Energy |
 | 77 | **Stay of Execution** | I | Working | 1 | Choose an enemy with Paperwork. Its Paperwork does not trigger at the end of its next turn. Gain 2 Block per current Paperwork on that enemy, maximum 20 Block. | Maximum becomes 28 Block. | Paperwork, Block, Delay |
 | 78 | **Guest Right** | III | Rite | 2 | Once per turn, when an enemy with at least 3 Doubt would deal unblocked Attack damage, remove 3 Doubt and reduce that remaining damage to 0. | Costs 1 Energy. | Doubt, Damage Prevention, Rule Change |
 | 79 | **Grievance Ledger** | III | Deed | 2 | Deal 10 damage, plus 6 damage for each time this enemy has attacked during this combat. Count at most 4 attacks. | The bonus becomes 8 damage per counted attack. | Damage, History, Scaling |
-| 80 | **Fivefold Compliance** | IV | Deed | 3 | Deal 12 damage, then repeat once for each fulfilled clause: target has at least 10 Paperwork; target has at least 3 Doubt; target is Ratified; you have at least 2 different Junk types in your Exhaust pile; you currently have at least 1 Queued card. | Deal 15 damage per hit. | Damage, Paperwork, Doubt, Ratify, Junk, Queue, Hybrid, Burst |
+| 80 | **Compliance** | IV | Deed | 3 | Deal 12 damage, then repeat once for each fulfilled clause: target has at least 10 Paperwork; target has at least 3 Doubt; target is Ratified; you have at least 2 different Junk types in your Exhaust pile; you currently have at least 1 Queued card. | Deal 15 damage per hit. | Damage, Paperwork, Doubt, Ratify, Junk, Queue, Hybrid, Burst |
 
 ## 7. Build Architecture
 

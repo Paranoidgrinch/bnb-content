@@ -535,7 +535,7 @@ cards a boss or a door hands over are never offered and have no act.
 
 | code | title | type | rarity | what it does |
 |---|---|---|---|---|
-| `cower_behind_a_desk` | Cower Behind a Desk | working | starter | Gain 5 Block. |
+| `cower_behind_a_desk` | Under the Desk | working | starter | Gain 5 Block. |
 | `duplicate_copy` | Duplicate Copy | junk | junk | Exhaust. No other effect. |
 | `misfiled_paper` | Misfiled Paper | junk | junk | Draw 1 card. Exhaust. |
 | `paper_cut` | Paper Cut | deed | starter | Deal 6 damage. |
@@ -559,7 +559,7 @@ cards a boss or a door hands over are never offered and have no act.
 | `cinder_warrant` | Cinder Warrant | deed | uncommon | Deal 8 damage. Archive a Junk card from your hand; if you do, repeat this attack. |
 | `clerical_discretion` | Clerical Discretion | working | uncommon | Gain 5 Block. Choose one: apply 1 Doubt; or apply 1 Seal. |
 | `clerks_familiar` | Clerk's Familiar | rite | uncommon | The first time each turn you create a Junk card, gain 4 Block. |
-| `conditional_approval` | Conditional Approval | deed | uncommon | Deal 6 damage. If the target does not intend to Attack, apply 2 Seal; otherwise apply 1 Seal. |
+| `conditional_approval` | Proviso | deed | uncommon | Deal 6 damage. If the target does not intend to Attack, apply 2 Seal; otherwise apply 1 Seal. |
 | `continuance` | Continuance | rite | rare | At the end of your turn, retain up to 12 Block. |
 | `counter_ward` | Counter Ward | working | uncommon | Gain 6 Block. Your next card this turn costs 1 less Energy. |
 | `cursed_addendum` | Cursed Addendum | deed | common | Deal 6 damage. Apply 2 Paperwork. |
@@ -578,9 +578,9 @@ cards a boss or a door hands over are never offered and have no act.
 | `occult_precedent` | Occult Precedent | working | common | Gain 8 Block. If any enemy has Paperwork, gain 2 additional Block. |
 | `pending_matters` | Pending Matters | rite | uncommon | The first time each turn a Queued card resolves, gain 4 Block. |
 | `petty_objection` | Petty Objection | working | common | Gain 5 Block. If the target intends to Attack, apply 2 Doubt. |
-| `presumption_of_error` | Presumption of Error | working | uncommon | Apply 1 Doubt. The next time that enemy consumes Doubt by attacking, apply 1 Doubt to it after the Attack resolves. Exhaust. |
+| `presumption_of_error` | Presumption | working | uncommon | Apply 1 Doubt. The next time that enemy consumes Doubt by attacking, apply 1 Doubt to it after the Attack resolves. Exhaust. |
 | `privy_seal` | Privy Seal | working | rare | Requires at least 1 Seal. Remove all Seals from an enemy and Ratify it immediately. Draw 1 card. Exhaust. |
-| `protective_adjournment` | Protective Adjournment | working | common | Queue: Gain 11 Block. |
+| `protective_adjournment` | Adjournment | working | common | Queue: Gain 11 Block. |
 | `rebuttal` | Rebuttal | deed | rare | Deal 9 damage. Gain 4 Block per Doubt already on the target, maximum 12 Block. Then apply 1 Doubt. |
 | `red_ink_doctrine` | Red Ink Doctrine | rite | rare | After an enemy takes HP loss from its Paperwork, if it survives, apply 2 Paperwork to it. |
 | `seal_dividend` | Seal Dividend | rite | uncommon | The first time each turn you Ratify an enemy, draw 1 card. |
@@ -588,11 +588,11 @@ cards a boss or a door hands over are never offered and have no act.
 | `secure_misfiling` | Secure Misfiling | working | common | Add 1 Misfiled Paper to your discard pile. Draw 1 card. |
 | `skeleton_staff` | Skeleton Staff | working | rare | Queue a card from your hand for free. Add 1 Red Tape to your discard pile. |
 | `stay_of_execution` | Stay of Execution | working | rare | Choose an enemy with Paperwork. Its Paperwork does not trigger at the end of its next turn. Gain 2 Block per current Paperwork on that enemy, maximum 20 Block. |
-| `summary_judgment` | Summary Judgment | deed | rare | Deal 20 damage. If the target has at least 6 Paperwork, trigger its Paperwork immediately, then remove 3 Paperwork. |
+| `summary_judgment` | Verdict | deed | rare | Deal 20 damage. If the target has at least 6 Paperwork, trigger its Paperwork immediately, then remove 3 Paperwork. |
 | `tallow_budget` | Tallow Budget | working | uncommon | Gain 1 Energy. Add 1 Red Tape to your hand. Exhaust. |
-| `threefold_injunction` | Triplicate Injunction | deed | uncommon | Deal 3 damage 3 times. If the target is Ratified, each hit also applies 1 Paperwork. |
-| `violence_allowance` | Violence Allowance | rite | rare | The first Deed you play each turn costs 1 less Energy. |
-| `wastepaper_bastion` | Wastepaper Bastion | working | uncommon | Gain 5 Block, plus 2 Block for each Junk card in your hand and discard pile. |
+| `threefold_injunction` | In Triplicate | deed | uncommon | Deal 3 damage 3 times. If the target is Ratified, each hit also applies 1 Paperwork. |
+| `violence_allowance` | Use of Force | rite | rare | The first Deed you play each turn costs 1 less Energy. |
+| `wastepaper_bastion` | Paper Bastion | working | uncommon | Gain 5 Block, plus 2 Block for each Junk card in your hand and discard pile. |
 | `waxing_authority` | Waxing Authority | deed | common | Deal 6 damage. Apply 1 Seal. |
 
 ### Bureaucrat — Act II — 14
@@ -602,7 +602,7 @@ cards a boss or a door hands over are never offered and have no act.
 | `archive_pyre` | Archive Pyre | deed | rare | Archive all Junk cards in your hand. Deal 12 damage to ALL enemies, plus 5 damage for each Junk Archived this way. |
 | `binding_fee` | Binding Fee | working | uncommon | Archive a non-Junk card from your hand. Apply Paperwork equal to 3 plus its base Energy cost. |
 | `broom_dispatch` | Broom Dispatch | working | common | Apply 2 Paperwork to ALL enemies. |
-| `clutter_concordance` | Clutter Concordance | deed | uncommon | Deal 6 damage, plus 3 damage for each different Junk type currently present across your discard and Exhaust piles. |
+| `clutter_concordance` | Clutter | deed | uncommon | Deal 6 damage, plus 3 damage for each different Junk type currently present across your discard and Exhaust piles. |
 | `cross_filing` | Cross-Filing | working | common | Apply 4 Paperwork to an enemy. If another enemy is present, move 2 of it to them. |
 | `dead_letter_office` | Dead Letter Office | working | uncommon | For each different Junk type in your discard and Exhaust piles, apply 2 Paperwork to ALL enemies. Exhaust. |
 | `errata_furnace` | Errata Furnace | working | common | Archive a Junk card from your hand. Apply 4 Paperwork to a random enemy. |
@@ -635,12 +635,12 @@ cards a boss or a door hands over are never offered and have no act.
 
 | code | title | type | rarity | what it does |
 |---|---|---|---|---|
-| `cartouche_reckoning` | Cartouche Reckoning | deed | rare | Deal 18 damage. Then, up to 3 times: if the target has at least 10 Paperwork, remove 10 Paperwork and repeat this attack. |
+| `cartouche_reckoning` | Reckoning | deed | rare | Deal 18 damage. Then, up to 3 times: if the target has at least 10 Paperwork, remove 10 Paperwork and repeat this attack. |
 | `final_attestation` | Final Attestation | deed | common | Deal 8 damage. If the target is Ratified, gain 1 Energy. |
-| `fivefold_compliance` | Fivefold Compliance | deed | rare | Deal 15 damage, then repeat once for each fulfilled clause: the target has at least 10 Paperwork; at least 3 Doubt; is Ratified; you hold 2 different Junk types in your Exhaust pile; you have a Queued card. |
+| `fivefold_compliance` | Compliance | deed | rare | Deal 15 damage, then repeat once for each fulfilled clause: the target has at least 10 Paperwork; at least 3 Doubt; is Ratified; you hold 2 different Junk types in your Exhaust pile; you have a Queued card. |
 | `hieratic_measure` | Hieratic Measure | rite | uncommon | Whenever you Ratify an enemy, immediately trigger its current Paperwork once, then remove 3 Paperwork from it. |
 | `monumental_writ` | Monumental Writ | deed | rare | Queue: Deal 24 damage, plus 12 for each other card still in your Queue when this resolves. Count at most 3. |
-| `processional_calendar` | Processional Calendar | rite | uncommon | At the end of your turn, if you have at least 2 Queued cards, resolve your oldest Queued card. |
+| `processional_calendar` | Procession | rite | uncommon | At the end of your turn, if you have at least 2 Queued cards, resolve your oldest Queued card. |
 | `stone_levy` | Stone Levy | deed | rare | Remove up to 20 of your Block. Deal 10 damage plus 2 damage for each Block removed. |
 | `temple_tally` | Temple Tally | rite | uncommon | Whenever an enemy reaches a new multiple of 5 Paperwork for the first time this combat, apply 1 Seal to it for each new multiple crossed. |
 
@@ -649,7 +649,7 @@ cards a boss or a door hands over are never offered and have no act.
 | code | title | type | rarity | what it does |
 |---|---|---|---|---|
 | `banked_embers` | Banked Embers | working | common | Gain 2 Held Energy. Draw 1 card. |
-| `coin_under_the_tongue` | Coin Under the Tongue | working | uncommon | Pledge. Draw 2 cards. The next card you play this turn costs 1 less. |
+| `coin_under_the_tongue` | Charon's Obol | working | uncommon | Pledge. Draw 2 cards. The next card you play this turn costs 1 less. |
 | `false_signature` | False Signature | working | uncommon | Your next card this turn costs 1 less. The card after it this turn costs 1 more. Exhaust. |
 | `melted_down` | Melted Down | working | uncommon | Exhaust a card from your hand. Gain Energy equal to its cost. |
 | `misers_coffer` | Miser's Coffer | rite | rare | Whenever you end your turn with Energy left, keep up to 2 of it as Held Energy. Exhaust. |
@@ -665,11 +665,11 @@ cards a boss or a door hands over are never offered and have no act.
 |---|---|---|---|---|
 | `borrowed_candle` | Borrowed Candle | working | common | Draw 3 cards. Put a card from your hand on top of your draw pile. Exhaust. |
 | `crossed_sigil` | Fresh Ledger | working | uncommon | Exhaust another card from your hand. Draw 2 cards. |
-| `dog_eared_almanac` | Dog-Eared Almanac | working | common | Retain. Draw 1 card. If this was in your hand since last turn, draw 2 more. |
+| `dog_eared_almanac` | Almanac | working | common | Retain. Draw 1 card. If this was in your hand since last turn, draw 2 more. |
 | `errand_rook` | Errand Rook | rite | rare | At the start of each of your turns, draw 1 more card. Whenever your hand is full, gain 3 Block. Exhaust. |
 | `gathered_gossip` | Gathered Gossip | working | uncommon | Draw 1 card, plus 1 for each enemy. Exhaust. |
 | `lamplit_study` | Lamplit Study | working | common | Draw 2 cards. Then gain 1 Block for each card in your hand. |
-| `moonlit_counterfeit` | Moonlit Counterfeit | working | rare | Create a Temporary copy of a card in your hand. It costs 0. Exhaust. |
+| `moonlit_counterfeit` | Counterfeit | working | rare | Create a Temporary copy of a card in your hand. It costs 0. Exhaust. |
 | `night_scrivener` | Night Scrivener | working | uncommon | Draw 3 cards. Choose a card in your hand: it gains Retain this combat. |
 | `sieve_and_shears` | Sieve and Shears | working | common | Look at the top 3 cards of your draw pile. Put any of them on the bottom. Draw 1 card. |
 | `wheat_from_chaff` | Wheat from Chaff | working | uncommon | Reveal the top 3 cards of your draw pile. Put either the Deeds or the rest into your hand; discard the others. |
@@ -682,19 +682,19 @@ cards a boss or a door hands over are never offered and have no act.
 | `ashen_receipt` | Ashen Receipt | working | common | Gain 7 Block. Unread: draw 1 card. |
 | `burnt_offering` | Burnt Offering | working | uncommon | Exhaust a card from your hand. Gain 8 Block. Draw 1 card. |
 | `hearth_kindling` | Hearth Kindling | working | uncommon | Discard any number of cards. Draw that many. Gain 3 Block for each. |
-| `pyre_of_old_records` | Pyre of Old Records | rite | rare | Whenever a card is exhausted, deal 7 damage to a random enemy and gain 7 Block. Exhaust. |
+| `pyre_of_old_records` | Record Pyre | rite | rare | Whenever a card is exhausted, deal 7 damage to a random enemy and gain 7 Block. Exhaust. |
 | `scattered_notes` | Scattered Notes | working | common | Discard 1 card. Draw 2 cards. |
-| `smouldering_correspondence` | Smouldering Correspondence | deed | common | Deal 5 damage to ALL enemies. Unread: deal 5 damage to ALL enemies. |
+| `smouldering_correspondence` | Burning Letter | deed | common | Deal 5 damage to ALL enemies. Unread: deal 5 damage to ALL enemies. |
 | `spiteful_draft` | Spiteful Draft | deed | common | Deal 7 damage. Unread: deal 7 damage to a random enemy. |
 | `weight_of_paper` | Weight of Paper | deed | uncommon | Deal 6 damage, plus 2 for each card in your discard pile. Count at most 12. |
-| `whispering_gallery` | Whispering Gallery | rite | rare | Whenever a card leaves your hand without being played, a random enemy gets 1 Doubt. Exhaust. |
+| `whispering_gallery` | Whispers | rite | rare | Whenever a card leaves your hand without being played, a random enemy gets 1 Doubt. Exhaust. |
 
 ### General — Debuffs — 10
 
 | code | title | type | rarity | what it does |
 |---|---|---|---|---|
 | `bill_of_attainder` | Bill of Attainder | rite | rare | Whenever you apply Doubt or Liable, apply 1 more. Exhaust. |
-| `compounded_grievance` | Compounded Grievance | working | rare | Double every debuff on an enemy. Exhaust. |
+| `compounded_grievance` | Escalation | working | rare | Double every debuff on an enemy. Exhaust. |
 | `curdled_milk` | Curdled Milk | working | common | Apply 3 Doubt to ALL enemies. |
 | `hares_mark` | Hare's Mark | working | uncommon | Apply 2 Liable. If the enemy has Doubt, apply 2 more. |
 | `ill_wind` | Ill Wind | deed | uncommon | Apply 1 Liable to ALL enemies, then deal 8 damage to ALL enemies. |
@@ -710,11 +710,11 @@ cards a boss or a door hands over are never offered and have no act.
 |---|---|---|---|---|
 | `barred_door` | Barred Door | working | common | Retain. Gain 14 Block. |
 | `besom_guard` | Besom Guard | working | common | Gain 8 Block. Unread: put this on top of your draw pile. |
-| `rowan_over_the_door` | Rowan over the Door | working | uncommon | Gain 7 Block. Until your next turn, every enemy that attacks you gets 1 Doubt. |
+| `rowan_over_the_door` | Rowan Sprig | working | uncommon | Gain 7 Block. Until your next turn, every enemy that attacks you gets 1 Doubt. |
 | `salt_on_the_sill` | Salt on the Sill | working | common | Gain 6 Block. Every enemy that intends to attack gets 1 Doubt. |
 | `sealed_mantle` | Sealed Mantle | working | uncommon | Gain 8 Block. If enemies attack this turn and nothing gets through, gain 3 Ward Wax. |
 | `standing_stones` | Standing Stones | working | rare | Your Block does not expire at the start of your next 2 turns. Exhaust. |
-| `stay_of_proceedings` | Stay of Proceedings | working | rare | An enemy's next action does nothing. Exhaust. |
+| `stay_of_proceedings` | Recess | working | rare | An enemy's next action does nothing. Exhaust. |
 | `tallow_reserve` | Tallow Reserve | working | uncommon | Needs 6 Block. Lose 6 Block. Gain 6 Ward Wax. Exhaust. |
 | `wax_reliquary` | Wax Reliquary | working | uncommon | Gain 5 Ward Wax. Until your next turn, Ward Wax does not decay faster. |
 | `waxen_surety` | Waxen Surety | working | common | Gain 7 Ward Wax. |
@@ -730,7 +730,7 @@ cards a boss or a door hands over are never offered and have no act.
 | `midnight_toll` | Midnight Toll | deed | uncommon | Deal 5 damage for each card you played this turn. Count at most 6. |
 | `poppet_pin` | Poppet Pin | deed | common | Deal 4 damage. If you have played 2 or more cards this turn, deal 4 more. |
 | `tallow_judgment` | Tallow Judgment | deed | uncommon | Spend up to 6 Ward Wax. Deal 10 damage, +5 per Wax. |
-| `third_and_final_writ` | Third and Final Writ | deed | rare | Retain. Deal 12 damage. If the enemy has Doubt and Liable, deal it twice. |
+| `third_and_final_writ` | Final Writ | deed | rare | Retain. Deal 12 damage. If the enemy has Doubt and Liable, deal it twice. |
 | `thrown_inkpot` | Thrown Inkpot | deed | common | Deal 8 damage. Apply 1 Doubt. |
 | `volley_of_quills` | Volley of Quills | deed | uncommon | Deal 3 damage to ALL enemies, once for each card in your hand. |
 
@@ -743,9 +743,9 @@ cards a boss or a door hands over are never offered and have no act.
 | `cold_hearth` | Cold Hearth | working | common | Gain 6 Block, plus 3 for each card in your Exhausted pile. Count at most 8. |
 | `corpse_candle` | Corpse Candle | deed | uncommon | Deal 5 damage. Exhaust. Whenever you Exhaust another card while this is Exhausted, return it to your hand. |
 | `last_ember` | Last Ember | working | rare | Play the card you Exhausted most recently again, for free. Exhaust. |
-| `raked_from_the_ashes` | Raked from the Ashes | working | uncommon | Put a card from your Exhausted pile into your hand. It Exhausts when played. Exhaust. |
+| `raked_from_the_ashes` | From the Ashes | working | uncommon | Put a card from your Exhausted pile into your hand. It Exhausts when played. Exhaust. |
 | `read_by_firelight` | Read by Firelight | working | uncommon | Exhaust the top 2 cards of your draw pile. You may play them this turn. |
-| `salamander_in_the_grate` | Salamander in the Grate | deed | rare | Deal 8 damage twice. Exhaust. At the start of your turn, if 6 or more cards are Exhausted, return this to your hand. |
+| `salamander_in_the_grate` | Salamander | deed | rare | Deal 8 damage twice. Exhaust. At the start of your turn, if 6 or more cards are Exhausted, return this to your hand. |
 | `sifted_ashes` | Sifted Ashes | deed | uncommon | Deal 5 damage, plus 4 for each kind of card in your Exhausted pile (Deed, Working, Rite, Junk). |
 | `unburied` | Unburied | working | rare | Shuffle every Exhausted card except Junk into your draw pile. Gain 3 Block for each. Exhaust. |
 
@@ -753,7 +753,7 @@ cards a boss or a door hands over are never offered and have no act.
 
 | code | title | type | rarity | what it does |
 |---|---|---|---|---|
-| `adder_in_the_sleeve` | Adder in the Sleeve | deed | uncommon | Retain. Deal 5 damage, and 3 more for each turn it has waited in your hand (at most 9 more). |
+| `adder_in_the_sleeve` | Sleeve Adder | deed | uncommon | Retain. Deal 5 damage, and 3 more for each turn it has waited in your hand (at most 9 more). |
 | `adders_nip` | Adder's Nip | deed | starter | Deal 6 damage. |
 | `bad_penny` | Bad Penny | working | uncommon | Apply 5 Misfortune. If its roll fails, 3 Misfortune stays for its next action. |
 | `badgers_temper` | Badger's Temper | deed | uncommon | Deal 7 damage. If the target intends to Attack, deal 4 more. |
@@ -766,15 +766,15 @@ cards a boss or a door hands over are never offered and have no act.
 | `bramble_switch` | Bramble Switch | deed | common | Deal 7 damage. If the target is Hexed, deal 3 more. |
 | `briar_sweep` | Briar Sweep | deed | common | Deal 9 damage to ALL enemies. |
 | `broken_mirror` | Broken Mirror | working | uncommon | Apply 10 Misfortune. Shuffle a Mirror Shard into your draw pile. |
-| `call_the_third_night` | Call the Third Night | working | rare | The target's Hex bursts now: it loses 3 HP for each Hexed. Its Threefold count starts again. |
+| `call_the_third_night` | Witching Hour | working | rare | The target's Hex bursts now: it loses 3 HP for each Hexed. Its Threefold count starts again. |
 | `carrion_flight` | Carrion Flight | deed | rare | Deal 3 damage 6 times. Once the target has fallen, the rest strike a random enemy. |
-| `cast_the_knucklebones` | Cast the Knucklebones | working | uncommon | Choose one: apply 5 Misfortune; or apply 0 to 12 Misfortune, at random. |
+| `cast_the_knucklebones` | Knucklebones | working | uncommon | Choose one: apply 5 Misfortune; or apply 0 to 12 Misfortune, at random. |
 | `charm_backwards` | Charm Backwards | working | uncommon | Apply 8 Hexed. Its Threefold count goes back by 1. |
 | `clamp_the_lid` | Clamp the Lid | working | uncommon | Gain 7 Block. If the cauldron is Sheltering, gain 4 Ward Wax. |
 | `comfrey_poultice` | Comfrey Poultice | working | uncommon | Heal 3 HP lost this combat. If you are at or below half your HP, heal 7 instead. |
 | `crooked_finger` | Crooked Finger | working | starter | Apply 4 Hexed. |
 | `crooked_horseshoe` | Crooked Horseshoe | working | common | Apply 6 Misfortune. |
-| `cross_your_fingers` | Cross Your Fingers | working | uncommon | Apply 5 Misfortune. If its roll fails, you gain 6 Block before its action. |
+| `cross_your_fingers` | Crossed Fingers | working | uncommon | Apply 5 Misfortune. If its roll fails, you gain 6 Block before its action. |
 | `crows_peck` | Crow's Peck | deed | common | Deal 3 damage. If the target is at or below half its HP, deal 6 instead. |
 | `dead_mans_hex` | Dead Man's Hex | working | uncommon | Apply 5 Hexed. When the target dies, the healthiest other enemy takes on half its Hexed. |
 | `evil_eye` | Evil Eye | working | common | Deal 3 damage. Apply 3 Hexed. |
@@ -789,24 +789,24 @@ cards a boss or a door hands over are never offered and have no act.
 | `hex_in_the_rafters` | Hex in the Rafters | rite | rare | The first Hex burst each enemy turn gives every other enemy 3 Hexed. |
 | `honey_and_onion` | Honey and Onion | working | uncommon | Heal 2 HP lost this combat. Remove 2 stacks of negative Statuses from yourself. |
 | `horn_spoon` | Horn Spoon | working | uncommon | Gain 6 Block. In the cauldron, whatever is brewed also gives 3 Ward Wax. |
-| `horseshoe_over_the_door` | Horseshoe Over the Door | rite | uncommon | The first time each turn you apply Misfortune to an enemy, it gains 2 more. |
+| `horseshoe_over_the_door` | Horseshoe | rite | uncommon | The first time each turn you apply Misfortune to an enemy, it gains 2 more. |
 | `hot_broth` | Hot Broth | working | common | Gain 6 Block. Heal 1 HP lost this combat. |
 | `ironwood` | Ironwood | rite | rare | The first time each turn an attack gets through your Block, gain 4 Ward Wax. |
-| `keep_the_drippings` | Keep the Drippings | rite | rare | Hearth healing that the combat-heal cap would waste becomes Ward Wax instead. |
+| `keep_the_drippings` | Drippings | rite | rare | Hearth healing that the combat-heal cap would waste becomes Ward Wax instead. |
 | `knock_on_wood` | Knock on Wood | working | common | Gain 3 Block. If any enemy has Misfortune, gain 3 more. |
 | `knotted_cord` | Knotted Cord | working | uncommon | Apply 2 Hexed. In the cauldron, it counts as two Hex. |
 | `last_breath_hex` | Last-Breath Hex | working | rare | Apply 6 Hexed. When the target dies, every other enemy takes on half its Hexed, rounded up, and its Threefold count. |
-| `loaded_knucklebones` | Loaded Knucklebones | working | rare | Apply 3 Misfortune. Its next roll is rolled twice; either may land. |
+| `loaded_knucklebones` | Loaded Bones | working | rare | Apply 3 Misfortune. Its next roll is rolled twice; either may land. |
 | `magpies_luck` | Magpie's Luck | working | uncommon | Apply 5 Misfortune. If it makes the target's action fail, draw 2 more cards next turn. |
 | `midwifes_hands` | Midwife's Hands | rite | uncommon | The first time you fall to a third of your HP or below this combat, heal 8 HP lost this combat. |
 | `mirror_shard` | Mirror Shard | junk | junk | Unplayable. Seven years, it says. |
 | `mugwort_poultice` | Mugwort Poultice | working | common | Heal 6 HP lost this combat. Exhaust. |
 | `murder_of_crows` | Murder of Crows | deed | uncommon | Deal 2 damage to a random enemy 4 times. |
 | `muttered_name` | Muttered Name | working | common | Apply 3 Hexed to ALL enemies. |
-| `nail_in_the_doorpost` | Nail in the Doorpost | rite | uncommon | The first time each turn you apply Hexed to an enemy, the healthiest other enemy gains 2 Hexed. |
-| `name_written_backwards` | Name Written Backwards | working | rare | Double the target's Hexed. Its Threefold count starts again. |
+| `nail_in_the_doorpost` | Doorpost Nail | rite | uncommon | The first time each turn you apply Hexed to an enemy, the healthiest other enemy gains 2 Hexed. |
+| `name_written_backwards` | Reversed Name | working | rare | Double the target's Hexed. Its Threefold count starts again. |
 | `nettle_tea` | Nettle Tea | working | starter | Gain 4 Block. Heal 1 HP lost this combat. |
-| `never_wash_the_pot` | Never Wash the Pot | rite | rare | After each Brew, keep one of its ingredients in the cauldron. |
+| `never_wash_the_pot` | Seasoned Pot | rite | rare | After each Brew, keep one of its ingredients in the cauldron. |
 | `ninth_life` | Ninth Life | rite | rare | After the first Misfortune that lands this combat, that enemy is left 4 Misfortune. |
 | `oakskin` | Oakskin | working | uncommon | Gain 6 Block. If the cauldron is Brewing, gain 4 more. |
 | `old_grudge` | Old Grudge | working | common | Apply 10 Hexed. |
@@ -816,7 +816,7 @@ cards a boss or a door hands over are never offered and have no act.
 | `scar_bark` | Scar-Bark | working | rare | Gain 5 Block, and 1 more for each HP attacks took from you last enemy turn (at most 15 more). |
 | `set_the_bone` | Set the Bone | working | common | Gain 11 Block. Heal 3 HP lost this combat. |
 | `seven_magpies` | Seven Magpies | working | uncommon | Apply 3 Misfortune to ALL enemies. If only one enemy stands, it gains 3 more. |
-| `seven_years_bad_luck` | Seven Years' Bad Luck | working | rare | Apply 8 Misfortune. Until it lands, every roll the target wins leaves half the Misfortune behind. |
+| `seven_years_bad_luck` | Seven Years | working | rare | Apply 8 Misfortune. Until it lands, every roll the target wins leaves half the Misfortune behind. |
 | `shed_skin` | Shed Skin | working | common | Gain 5 Block. Remove 1 stack of a negative Status from yourself. |
 | `shut_the_lid` | Shut the Lid | working | rare | Gain 8 Block. Until your next turn the cauldron shelters you however full it is, and nothing goes in or out. |
 | `slough_off` | Slough Off | working | uncommon | Gain 6 Block. Remove 1 stack of a negative Status from yourself; if you did, draw 1 card. |
@@ -833,12 +833,12 @@ cards a boss or a door hands over are never offered and have no act.
 | `taste_the_broth` | Taste the Broth | working | uncommon | Take a card from the cauldron back into your hand. Heal 2 HP lost this combat. |
 | `teeth_in_the_dark` | Teeth in the Dark | deed | rare | Deal 6 damage, and 4 more for each card in the cauldron. |
 | `tell_the_bees` | Tell the Bees | rite | uncommon | Once each turn, when an enemy dies, heal 3 HP lost this combat. |
-| `the_black_cat_sat_down` | The Black Cat Sat Down | working | rare | The target's next action fails. Lose 4 HP. Shuffle 2 Mirror Shards into your draw pile. Exhaust. |
-| `the_hare_runs_last` | The Hare Runs Last | deed | rare | Deal 8 damage. If its Hex bursts at the end of its next turn, it takes 8 damage again after the burst. |
+| `the_black_cat_sat_down` | Crossed Path | working | rare | The target's next action fails. Lose 4 HP. Shuffle 2 Mirror Shards into your draw pile. Exhaust. |
+| `the_hare_runs_last` | Hare's Run | deed | rare | Deal 8 damage. If its Hex bursts at the end of its next turn, it takes 8 damage again after the burst. |
 | `third_bell` | Third Bell | working | uncommon | Apply 3 Hexed. If its Hex bursts at the end of its next turn, every other enemy gains 3 Hexed. |
 | `third_knock` | Third Knock | working | common | Apply 3 Hexed. If its Hex bursts at the end of its next turn, apply 3 more. |
 | `thorn_hedge` | Thorn Hedge | working | common | Gain 6 Block. The first enemy to attack you this turn takes 4 damage. |
-| `thrice_spoken_name` | Thrice-Spoken Name | working | uncommon | Apply 4 Hexed. If its Hex bursts at the end of its next turn, it loses HP equal to its Hexed once more. |
+| `thrice_spoken_name` | Thrice Named | working | uncommon | Apply 4 Hexed. If its Hex bursts at the end of its next turn, it loses HP equal to its Hexed once more. |
 | `turnskin` | Turnskin | deed | rare | A Husk card in the cauldron turns into an Adder's Nip. Deal 9 damage. |
 | `two_teeth` | Two Teeth | deed | common | Deal 4 damage twice. |
 | `winter_bark` | Winter Bark | working | rare | Gain 16 Block. After the enemy turn, up to 6 of your unused Block becomes Ward Wax. |
@@ -848,15 +848,15 @@ cards a boss or a door hands over are never offered and have no act.
 
 | code | title | type | rarity | what it does |
 |---|---|---|---|---|
-| `ap_apprentices_oath` | The Apprentice's Oath | rite | rare | Whenever you cast this combat, deal 3 damage to ALL enemies and gain 3 Block. Exhaust. Wand: Speak: deal 3 damage to ALL enemies and gain 3 Block. |
+| `ap_apprentices_oath` | Indenture | rite | rare | Whenever you cast this combat, deal 3 damage to ALL enemies and gain 3 Block. Exhaust. Wand: Speak: deal 3 damage to ALL enemies and gain 3 Block. |
 | `ap_banked_fire` | Banked Fire | deed | rare | Deal 5 damage to ALL enemies, 3 more for each Exhaustion the wand has. Then the wand's Exhaustion drops to 0. Wand: Heighten: the next damaging Speak deals 150% more; 2 more Exhaustion. |
-| `ap_bell_book` | Bell, Book and Candle | deed | rare | Deal 6 damage 3 times; each hit then applies 1 Singe. Wand: Speak: deal 4 damage 3 times. |
+| `ap_bell_book` | Bell and Book | deed | rare | Deal 6 damage 3 times; each hit then applies 1 Singe. Wand: Speak: deal 4 damage 3 times. |
 | `ap_blotting_sand` | Blotting Sand | working | common | Remove 1 stack of a negative status from yourself. Gain 5 Block. Wand: Shape — Remedy: the next Speak that would debuff an enemy does not; instead remove up to 2 negative stacks from yourself, gaining 3 Block for each. |
 | `ap_bookend` | Bookend | working | uncommon | Gain 8 Block, 4 more if the wand is full. Wand: Speak: gain 4 Block, 2 more for each card in the wand. |
-| `ap_borrowed_grimoire` | The Borrowed Grimoire | rite | rare | Whenever you cast this combat, gain 1 Rote. Exhaust. Wand: Burn: after the cast, gain 3 Rote; then this card is exhausted. |
+| `ap_borrowed_grimoire` | Grimoire | rite | rare | Whenever you cast this combat, gain 1 Rote. Exhaust. Wand: Burn: after the cast, gain 3 Rote; then this card is exhausted. |
 | `ap_borrowed_stone` | Borrowed Stone | working | uncommon | Spend 1 Grit to gain 1 Energy and 2 Focus. With no Grit, gain 8 Block. Wand: Speak: gain 4 Block, +2 for each wand card exhausted this combat (+8 at most); with two or more, this cast's Exhaustion is 1 lower. |
 | `ap_burning_glass` | Burning Glass | rite | rare | Whenever you cast this combat, apply 1 Singe to ALL enemies. Exhaust. Wand: Burn: apply 3 Singe; then this card is exhausted. |
-| `ap_candle_both_ends` | Candle at Both Ends | deed | uncommon | Exhaust another card from your hand: draw 3 cards and gain 1 Focus. With no other card, deal 9 damage instead. Wand: Burn: repeat the last damaging Speak at 150%, then this card is exhausted. With none before it, deal 9 damage. |
+| `ap_candle_both_ends` | Double Wick | deed | uncommon | Exhaust another card from your hand: draw 3 cards and gain 1 Focus. With no other card, deal 9 damage instead. Wand: Burn: repeat the last damaging Speak at 150%, then this card is exhausted. With none before it, deal 9 damage. |
 | `ap_candle_stub` | Candle Stub | deed | starter | Deal 6 damage. Apply 1 Singe. Wand: Speak: deal 5 damage; in the first slot cast, also apply 1 Singe. |
 | `ap_chalk_circle` | Chalk Circle | working | common | Gain 9 Block. If you do not cast this turn, gain 1 Grit at the end of it. Wand: Ground: this cast's Exhaustion is 2 lower. |
 | `ap_chalk_line` | Chalk Line | working | starter | Gain 6 Block and 1 Grit. Wand: Speak: gain 6 Block; if another Speak follows, this cast's Exhaustion is 1 lower. |
@@ -870,28 +870,28 @@ cards a boss or a door hands over are never offered and have no act.
 | `ap_drill_book` | Drill Book | deed | common | Deal 6 damage, 2 more for each cast this combat (at most 10 more). Wand: Speak: deal 3 damage, 1 more for each cast this combat (at most 8 more). |
 | `ap_dust_mote` | Dust Mote | working | common | Gain 7 Block. If you inscribed a card this turn, draw 1 card. Wand: Speak: deal 4 damage, +3 for each card inscribed since your last cast (+6 at most). |
 | `ap_ember_tongs` | Ember Tongs | deed | uncommon | Deal 4 damage, 3 more for each Singe on the target (at most 15 more). Wand: Speak: deal 2 damage, 2 more for each Singe on the target (at most 10 more). |
-| `ap_examiners_bell` | The Examiner's Bell | rite | rare | At the end of each of your turns in which you cast twice or more, gain 2 Rote. Exhaust. Wand: Speak: deal 6 damage, 6 more if you have already cast this turn. |
+| `ap_examiners_bell` | Examiner's Bell | rite | rare | At the end of each of your turns in which you cast twice or more, gain 2 Rote. Exhaust. Wand: Speak: deal 6 damage, 6 more if you have already cast this turn. |
 | `ap_final_draft` | Final Draft | deed | uncommon | Deal 14 damage, 2 more for each Rote and each Poise you have. Wand: Speak: deal 8 damage. |
 | `ap_final_examination` | Final Examination | deed | rare | Spend any amount of your Focus: deal 6 damage, +4 for each, and gain 4 Block, +3 for each. Wand: Order — Oral Exam: when casting, choose whether this section reads forward or backward; backward adds 1 Exhaustion. |
 | `ap_firebreak` | Firebreak | working | uncommon | Remove up to 3 Singe from the target and gain 1 Grit for each. If none was removed, gain 6 Block. Wand: Ground: if a direct hit spent Singe earlier in this cast, its Exhaustion is 3 lower and you gain 1 Grit; otherwise 1 lower. |
 | `ap_flyleaf` | Flyleaf | working | starter | Draw 1 card, then discard 1. Gain 1 Gust. Wand: Echo: repeat the last Speak at 50%, rounded up. |
 | `ap_folded_leaf` | Folded Leaf | working | common | Put a card from your discard pile on top of your draw pile. Gain 1 Gust. Wand: Keep: the next Speak is stored instead of spoken, and goes first in your next successful cast. |
 | `ap_footnote` | Footnote | working | uncommon | Choose: draw 1 card; or lower the wand's Exhaustion by 2. Wand: Clause — Final Breath: if paying for the cast left you no Focus, the next single-hit damaging Speak becomes two hits of 60%. |
-| `ap_fourfold_lesson` | The Fourfold Lesson | working | rare | Deal 7 damage and apply 1 Singe. Gain 1 Flow, 1 Grit and 1 Gust. Wand: Clause — Fourfold: at the end of the section, count this turn's elements (Singe applied; Flow, Grit, Gust gained). 2: gain 5 Block. 3: also 2 less Exhaustion. 4: also 1 Focus after the cast. |
+| `ap_fourfold_lesson` | Fourfold Lesson | working | rare | Deal 7 damage and apply 1 Singe. Gain 1 Flow, 1 Grit and 1 Gust. Wand: Clause — Fourfold: at the end of the section, count this turn's elements (Singe applied; Flow, Grit, Gust gained). 2: gain 5 Block. 3: also 2 less Exhaustion. 4: also 1 Focus after the cast. |
 | `ap_glass_rod` | Glass Rod | deed | rare | Your next cast this combat deals and gives 50% more, and adds 3 Exhaustion. Draw 1 card. Exhaust. Wand: Shape — Prism: the next damaging or defensive Speak lands as both damage and Block, each at 70%. Then this card burns. With nothing to shape, gain 8 Block; it still burns. |
 | `ap_ink_blot` | Ink Blot | working | starter | Draw 2 cards, then discard 1. Gain 1 Flow. Wand: Heighten: the next Speak deals or gives 50% more (a status-only Speak: 1 more stack). |
 | `ap_ink_dish` | Ink Dish | working | common | Look at the top 3 cards of your draw pile and put 1 into your hand. If it costs 2 or more, gain 1 Flow. Wand: Speak — Reservoir: after the cast, gain 1 Flow. |
 | `ap_inkhorn` | Inkhorn | working | uncommon | Gain 2 Focus. Draw 1 card. Wand: Speak: after the cast, gain 1 Focus. |
 | `ap_kiln_shelf` | Kiln Shelf | working | uncommon | Raise the wand's Exhaustion cap by 2 this combat (12 at most). At 12, gain 12 Block instead. Exhaust. Wand: Ground — Cap: the heavy part of this cast's Exhaustion is at most 2; if it would have been more, the cast costs 1 more Focus. |
 | `ap_kindling` | Paper Spill | deed | uncommon | Deal 4 damage twice; each hit then applies 1 Singe. Wand: Speak: deal 3 damage twice. |
-| `ap_last_word` | The Master's Last Word | deed | rare | Spend any amount of your Focus: deal 10 damage, +5 for each. With 4 or more spent, gain 3 Grit. Exhaust. Wand: Stop — Final Word: runs last. One hit of 6 for each kind of instruction before it (5 at most); each hit after the first costs 1 leftover Focus. 2 more Exhaustion. |
+| `ap_last_word` | Last Word | deed | rare | Spend any amount of your Focus: deal 10 damage, +5 for each. With 4 or more spent, gain 3 Grit. Exhaust. Wand: Stop — Final Word: runs last. One hit of 6 for each kind of instruction before it (5 at most); each hit after the first costs 1 leftover Focus. 2 more Exhaustion. |
 | `ap_lead_type` | Lead Type | working | uncommon | Gain 7 Block. Draw 1 card. Wand: Shape — Join: the next two damaging Speaks become one hit of both together, +6. |
 | `ap_lectern` | Lectern | working | uncommon | Gain 3 Rote and 3 Poise. Exhaust. Wand: Burn: after the cast, gain 2 Rote; then this card is exhausted. |
 | `ap_lessons_ash` | Lessons in Ash | working | rare | Exhaust up to 2 other cards from your hand: draw 1 card and gain 1 Focus for each. Wand: Keep — Ash Trace: your next Burn Out this combat also deals 8 damage. |
-| `ap_long_recitation` | The Long Recitation | working | rare | Deal 4 damage and gain 3 Block for each card in the wand. Wand: Speak: deal 2 damage for each cast this combat (at most 20). |
+| `ap_long_recitation` | Litany | working | rare | Deal 4 damage and gain 3 Block for each card in the wand. Wand: Speak: deal 2 damage for each cast this combat (at most 20). |
 | `ap_magnum_opus` | The Magnum Opus | working | rare | Double your Rote and Poise. Exhaust. Wand: Burn: after the cast, gain 1 Rote for each card in the wand; then this card is exhausted. |
 | `ap_masons_dust` | Mason's Dust | working | common | Spend 1 Grit to gain 5 Ward Wax. If you cannot, gain 1 Grit instead. Wand: Speak: spend up to 2 Grit and gain 3 Ward Wax for each; with no Grit, gain 6 Block. |
-| `ap_masters_correction` | Master's Correction | working | rare | Choose: another card in your hand costs 1 less the next time you play it; or inscribe a card from your hand for free. Then draw 1 card. Wand: Order — Errata: the next Speak may speak as another installed card's Speak instead (you choose when casting). |
+| `ap_masters_correction` | Margin Note | working | rare | Choose: another card in your hand costs 1 less the next time you play it; or inscribe a card from your hand for free. Then draw 1 card. Wand: Order — Errata: the next Speak may speak as another installed card's Speak instead (you choose when casting). |
 | `ap_masters_hat` | The Master's Hat | rite | rare | At the start of each of your turns, gain 1 Focus and 1 Rote. Exhaust. Wand: Burn: after the cast, gain 2 Focus; then this card is exhausted. |
 | `ap_millstone` | The Millstone | working | rare | Gain 6 Block for each Grit you have (at least 6), then lose all Grit. Wand: Speak: gain 3 Block for each cast this combat (at most 30). |
 | `ap_moss_poultice` | Slate Sponge | working | common | Gain 9 Block. Remove 1 stack of a negative status from yourself. Wand: Speak: gain 6 Block; in the first slot cast, also remove 1 negative stack from yourself. |
@@ -912,7 +912,7 @@ cards a boss or a door hands over are never offered and have no act.
 | `ap_slide_rule` | Slide Rule | working | common | Gain 8 Block. If the wand holds 4 or more cards, draw 1 card. Wand: Ground: 2 less Exhaustion, or 4 less when 4 or more instructions run. |
 | `ap_snuffer` | Snuffer | deed | common | Spend up to 3 Singe on the target; deal 4 damage for each. Wand: Ground — Quench: spend up to 2 Singe on the target; this cast's Exhaustion is 2 lower for each. |
 | `ap_soot_mark` | Soot Mark | deed | uncommon | Apply 4 Singe. Wand: Speak: apply 2 Singe to ALL enemies. |
-| `ap_sorcerers_staff` | The Sorcerer's Staff | working | rare | The wand has one more slot (6 at most) and a 2 higher Exhaustion cap this combat. Gain 2 Focus. Exhaust. Wand: Speak: deal 10 damage. |
+| `ap_sorcerers_staff` | Great Staff | working | rare | The wand has one more slot (6 at most) and a 2 higher Exhaustion cap this combat. Gain 2 Focus. Exhaust. Wand: Speak: deal 10 damage. |
 | `ap_spare_notch` | Spare Notch | working | common | The wand has one more slot this combat (6 at most). At 6, gain 8 Block instead. Exhaust. Wand: Ground: this cast's Exhaustion is 1 lower, or 3 lower when 5 or more instructions run. |
 | `ap_split_wick` | Split Wick | deed | uncommon | Deal 4 damage twice. Wand: Shape — Fork: the next damaging Speak becomes two hits of 60% each, each its own hit for Singe. |
 | `ap_spring_tide` | Spring Tide | working | rare | Gain 4 Flow and 2 Poise. Exhaust. Wand: Speak: after the cast, gain 2 Flow and 1 Poise. |
@@ -923,7 +923,7 @@ cards a boss or a door hands over are never offered and have no act.
 | `ap_torn_flyleaf` | Torn Flyleaf | working | uncommon | Take a wand card back into your hand for free, then draw 1 card. Wand: Order — Slip: after the cast, this card moves into the nearest free slot to its right; if it moved, gain 1 Focus. |
 | `ap_tracing_paper` | Tracing Paper | working | uncommon | Gain 6 Block. Draw 1 card. Wand: Echo: repeat the last damaging Speak at full strength; then this card burns. |
 | `ap_tuning_fork` | Tuning Fork | working | rare | Gain 2 Focus. Draw 2 cards. Wand: Echo: repeat the last Speak at 150%. |
-| `ap_unfinished_spell` | The Unfinished Spell | deed | rare | Deal 6 damage, 6 more for each card in the wand. Wand: Speak: deal 3 damage for each Speak resolved this combat (at most 24). |
+| `ap_unfinished_spell` | Draft Spell | deed | rare | Deal 6 damage, 6 more for each card in the wand. Wand: Speak: deal 3 damage for each Speak resolved this combat (at most 24). |
 | `ap_warding_primer` | Warding Primer | working | rare | Gain 3 Poise and 8 Block. Exhaust. Wand: Keep — Shield Seal: store the next defensive Speak at 150%. It rises before the first enemy attack this enemy turn. |
 | `ap_watermark` | Watermark | working | uncommon | Choose: gain 2 Flow; or spend 1 Flow to lower the wand's Exhaustion by 3 and gain 1 Gust. Wand: Heighten — Contrast: if the Speak before was of another kind (damage, defence, status) than the next, the next gets 50% more; otherwise gain 1 Flow after the cast. |
 | `ap_wax_drop` | Wax Drop | working | common | Apply 2 Singe to ALL enemies. Wand: Heighten — Brand: the next damaging Speak applies 1 Singe to each enemy it hits (3 in all at most). |
@@ -931,7 +931,7 @@ cards a boss or a door hands over are never offered and have no act.
 | `ap_wick_trimmer` | Wick Trimmer | working | common | Choose: Exhaust another card from your hand and draw 2 cards; or gain 7 Block. Wand: Burn: gain 7 Block; this cast's Exhaustion is 2 lower; this card is exhausted after the cast. |
 | `ap_wildfire` | Wildfire | deed | uncommon | The target gains as much Singe again as it has (at most 8). Wand: Speak: the target gains as much Singe again as it has (at most 4). |
 | `ap_windblown_leaf` | Windblown Leaf | working | common | Put a card from your hand at the bottom of your draw pile, then draw 2 cards. Gain 1 Gust. Wand: Shape — Scatter: the next single-target damaging Speak hits ALL enemies at 60%. |
-| `ap_wrong_way_round` | The Wrong Way Round | working | uncommon | Draw 2 cards, then two wand cards trade places for free; if they did, gain 1 Gust. Wand: Order: the rest of the cast runs backwards, once; with 2 or more left to turn, its Exhaustion is 1 lower. |
+| `ap_wrong_way_round` | Widdershins | working | uncommon | Draw 2 cards, then two wand cards trade places for free; if they did, gain 1 Gust. Wand: Order: the rest of the cast runs backwards, once; with 2 or more left to turn, its Exhaustion is 1 lower. |
 
 ### Lieutenant — 84
 
@@ -1029,7 +1029,7 @@ Handed over by a boss, a door or an event rather than offered; never in a reward
 | code | title | what it does |
 |---|---|---|
 | `ask_at_the_desk` | Ask at the Desk | Get the card behind the desk back now. It costs 1 more this time. |
-| `ask_for_expedited_service` | Ask for Expedited Service | This Service Window opens him 15% instead of 25%, but you stay at Position 1 after. |
+| `ask_for_expedited_service` | Express Service | This Service Window opens him 15% instead of 25%, but you stay at Position 1 after. |
 | `atrahasis_boat` | Atrahasis' Boat | Retain. This round the flood deals you half. Returns to your hand. |
 | `better_chair_cushion_action` | The Better Chair | Gain 14 Block. End the turn holding a real card, or lose 6 HP. |
 | `black_flood_vessel_action` | Empty the Vessel | Discard your hand, draw 7, and gain 2 Energy. Once a combat. |
@@ -1064,7 +1064,7 @@ Handed over by a boss, a door or an event rather than offered; never in a reward
 | `requisition_slip` | Requisition Slip | Take the card the Second-Person Entry cited back from your discard pile into your hand. |
 | `return_slip` | Return Slip | Put a card from your hand on top of your draw pile: 1 less Overdue. While an Ouroboros stands, that card costs 1 more. |
 | `royal_grace_cup_action` | Royal Grace | Once a turn: gain 1 Energy, a card, or 10 Block. Every enemy gains 6 Block. |
-| `silver_name_tally_action` | Speak the Silver Name | Once a combat: remove an enemy's Block, gain 10 Block, refund your next card this turn. |
+| `silver_name_tally_action` | Silver Name | Once a combat: remove an enemy's Block, gain 10 Block, refund your next card this turn. |
 | `sluice_gate_of_the_two_lands_action` | Work the Two Lands | Once a turn: lose 12 Block for 1 Energy, or spend 1 Energy for 12 Block. |
 | `strike_down_the_article` | Strike Down the Article | Strike the Article for the next one. The Charter gains 8 Block. |
 | `summons_to_appear` | Summons to Appear | Retain. Exhaust. Still in hand at turn end: take 5 damage. |

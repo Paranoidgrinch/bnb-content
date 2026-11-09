@@ -338,7 +338,7 @@ public static class WitchActions
         string status, ICombatExpression<CardPlayContext, int> stacks, ICombatantTargetSelector to) =>
         new ApplyStatusNode<CardPlayContext>(to, new StatusDefinitionId(status), stacks);
 
-    // A card kept in the pot after a Brew carries a mark counter (Never Wash the Pot, Yesterday's Jar); the reserve
+    // A card kept in the pot after a Brew carries a mark counter (Seasoned Pot, Yesterday's Jar); the reserve
     // carries its mark. Everything else goes to the discard pile, and both marks are wiped.
     private static CounterId Kept => new("kept_in_the_pot");
 
@@ -372,7 +372,7 @@ public static class WitchActions
             new TargetHasStatusExpression<CardPlayContext>(You, new StatusDefinitionId(WitchRules.ShutTheLid)));
 
     // Hearth: heal HP lost during THIS combat only — never above the HP she began the fight on (§3.4). What the cap
-    // would waste may become Ward Wax first (Keep the Drippings).
+    // would waste may become Ward Wax first (Drippings).
     public static IEffectNode<CardPlayContext> Heal(ICombatExpression<CardPlayContext, int> amount) =>
         WitchRules.Heal(You, amount);
 }

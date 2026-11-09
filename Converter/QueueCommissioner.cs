@@ -514,7 +514,7 @@ public static class QueueCommissioner
     private static CardData ExpediteCard() => new()
     {
         Id = ExpediteCardId,
-        NameKey = "Ask for Expedited Service",
+        NameKey = "Express Service",
         DescriptionKey =
             "This Service Window opens the Commissioner by 15 % instead of 25 %, but afterwards you stand at "
             + "Position 1 instead of going back into the queue.",

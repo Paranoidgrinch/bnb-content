@@ -24,7 +24,7 @@ public static class ActIVCards
         "to it for each new multiple crossed.");
 
     private static readonly BnbCard ProcessionalCalendar = Rite(
-        "processional_calendar", "Processional Calendar", ActIVRites.ProcessionalCalendar, 1,
+        "processional_calendar", "Procession", ActIVRites.ProcessionalCalendar, 1,
         "At the end of your turn, if you have at least 2 Queued cards, resolve your oldest Queued card.");
 
     private static readonly BnbCard HieraticMeasure = Rite(
@@ -33,7 +33,7 @@ public static class ActIVCards
         "Paperwork from it.");
 
     private static readonly BnbCard CartoucheReckoning = new(
-        "cartouche_reckoning", "Cartouche Reckoning", DeedTag, 3,
+        "cartouche_reckoning", "Reckoning", DeedTag, 3,
         "Deal 18 damage. Then, up to 3 times: if the target has at least 10 Paperwork, remove 10 Paperwork " +
         "and repeat this attack.",
         Reckoning(18),
@@ -56,7 +56,7 @@ public static class ActIVCards
         Rarity: "rare", Act: Act);
 
     private static readonly BnbCard FivefoldCompliance = new(
-        "fivefold_compliance", "Fivefold Compliance", DeedTag, 3,
+        "fivefold_compliance", "Compliance", DeedTag, 3,
         "Deal 15 damage, then repeat once for each fulfilled clause: the target has at least 10 Paperwork; " +
         "at least 3 Doubt; is Ratified; you hold 2 different Junk types in your Exhaust pile; you have a " +
         "Queued card.",

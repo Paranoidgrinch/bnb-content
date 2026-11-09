@@ -234,7 +234,7 @@ public static partial class WitchCards
                     CombatAmountSpec.Binary("sub", CombatAmountSpec.FromConst(1), Once(Stacks(WitchRules.CauldronHot, You))))));
 
     // Hearth: "heal N HP lost during this combat" — never above the HP the fight began on (§3.4). What the cap
-    // would waste may become Ward Wax first (Keep the Drippings), asked before the heal moves the numbers.
+    // would waste may become Ward Wax first (Drippings), asked before the heal moves the numbers.
     public static CombatNodeModel Heal(int amount) => Heal(CombatAmountSpec.FromConst(amount));
 
     // Once a fight, Grandam's Ember lets a heal the cap would cut reach the HP lost before the fight — the same rule

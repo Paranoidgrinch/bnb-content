@@ -147,7 +147,7 @@ public static class WitchHiddenRecipes
     private static IEffectNode<CardPlayContext> Step(int by) =>
         new SetCombatantCounterNode<CardPlayContext>(Target, WitchKeywords.ThreefoldStep, Const(by), relative: true);
 
-    // The third night, called (as Call the Third Night calls it).
+    // The third night, called (as Witching Hour calls it).
     private static IEffectNode<CardPlayContext> BurstNow() => Seq(
         new DealDamageNode<CardPlayContext>(Target,
             new MultiplyExpression<CardPlayContext>(

@@ -117,7 +117,7 @@ public class ActFourCardTests
         play.Dispose();
     }
 
-    // ── Processional Calendar ─────────────────────────────────────────────────────────────────────────────
+    // ── Procession ─────────────────────────────────────────────────────────────────────────────
 
     // "At the end of your turn, if you have at least 2 Queued cards, resolve your oldest Queued card." A
     // queued card ordinarily resolves at the START of the player's next turn; the Calendar spends the oldest

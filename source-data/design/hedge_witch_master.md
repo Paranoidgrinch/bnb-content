@@ -457,7 +457,7 @@ Effect:
 Theme: bite + stinging herb + poultice.
 
 ### 2. Everpot
-**Taste the Broth + Put the Kettle On + Never Wash the Pot**
+**Taste the Broth + Put the Kettle On + Seasoned Pot**
 
 Effect:
 - after Brewing, keep one ingredient;
@@ -482,7 +482,7 @@ Effect:
 - advance the target’s Threefold Hex by one step.
 
 ### 5. The Night Answers
-**Third Knock + Thrice-Spoken Name + Call the Third Night**
+**Third Knock + Thrice Named + Witching Hour**
 
 Effect:
 - apply Hexed;
@@ -523,7 +523,7 @@ Effect:
 - Cauldron is closed/frozen during that period.
 
 ### 10. Adder's Kiss
-**Adder's Nip + Adder in the Sleeve + Two Teeth**
+**Adder's Nip + Sleeve Adder + Two Teeth**
 
 Effect:
 - a sequence of Fang hits;
@@ -544,14 +544,14 @@ Effect:
 - successful Misfortune grants a small tempo/reward effect.
 
 ### 13. Nine Lives
-**Black Cat + Ninth Life + The Black Cat Sat Down**
+**Black Cat + Ninth Life + Crossed Path**
 
 Effect:
 - extremely strong next Misfortune;
 - some bad luck remains after a successful cancellation.
 
 ### 14. Against the Evil Eye
-**Evil Eye + Knock on Wood + Horseshoe Over the Door**
+**Evil Eye + Knock on Wood + Horseshoe**
 
 Effect:
 - remove a negative Status from the Witch;
@@ -796,7 +796,7 @@ Uncommons introduce build direction, Cauldron handling, timing manipulation, and
 ### Badger's Temper
 Attack. If the target intends to Attack, make a second smaller hit.
 
-### Adder in the Sleeve
+### Sleeve Adder
 Retain. Becomes stronger or cheaper the longer it remains in hand.
 
 ### Murder of Crows
@@ -816,7 +816,7 @@ Attack that becomes stronger while the Cauldron is Sheltering.
 
 ## Hex — 7
 
-### Thrice-Spoken Name
+### Thrice Named
 Apply Hexed. If the target is already at 2/3, apply more.
 
 ### Charm Backwards
@@ -828,7 +828,7 @@ Apply Hexed. If the target dies, transfer part of that Hexed to another enemy.
 ### Sour the Milk
 Apply Hexed plus a small existing negative Status/debuff.
 
-### Nail in the Doorpost
+### Doorpost Nail
 **Rite.** First time each turn you apply Hexed to one enemy, apply a smaller amount to another enemy.
 
 ### Third Bell
@@ -891,16 +891,16 @@ Small heal/Block. Next Ingredient this turn that would cost Energy costs 0.
 
 ## Fortune — 7
 
-### Cross Your Fingers
+### Crossed Fingers
 Apply Misfortune. If the roll fails, gain a small defensive consolation afterward.
 
 ### Bad Penny
 Apply Misfortune. If it fails, part of it remains for the following enemy action.
 
-### Cast the Knucklebones
+### Knucklebones
 Choose between a smaller reliable Misfortune application or a larger more variable one.
 
-### Horseshoe Over the Door
+### Horseshoe
 **Rite.** First time each turn you apply Misfortune, increase it slightly.
 
 ### Magpie's Luck
@@ -932,15 +932,15 @@ Attack that scales with the number of Ingredients currently in the Cauldron.
 ### Turnskin
 Transform one Husk Ingredient already in the Cauldron into Fang, then attack.
 
-### The Hare Runs Last
+### Hare's Run
 Attack. If the target’s Hex triggers this enemy turn, repeat the attack after the Hex burst.
 
 ## Hex — 5
 
-### Call the Third Night
+### Witching Hour
 Immediately trigger the target’s current Threefold Hex, then begin a fresh cycle.
 
-### Name Written Backwards
+### Reversed Name
 Greatly increase/double the target’s Hexed, but reset its Threefold step to 0/3.
 
 ### Hex in the Rafters
@@ -979,10 +979,10 @@ Remove several/all negative Statuses from the Witch and heal combat HP based on 
 ### Stone Soup
 Choose a Dregs/Junk card in hand. For this Brew, it may count as a chosen Ingredient family.
 
-### Keep the Drippings
+### Drippings
 **Rite.** Combat healing that would be wasted at the combat-heal cap becomes defensive value, preferably Ward Wax.
 
-### Never Wash the Pot
+### Seasoned Pot
 **Rite.** After a Brew, choose one of its Ingredients to remain in the Cauldron.
 
 ### For What Ails You
@@ -990,10 +990,10 @@ Flexible practical cure. Choose from a set such as combat heal, cleanse, Draw, o
 
 ## Fortune — 5
 
-### Loaded Knucklebones
+### Loaded Bones
 The next Misfortune roll is rolled twice; either success cancels the action.
 
-### Seven Years' Bad Luck
+### Seven Years
 If Misfortune fails, a meaningful portion remains for the next enemy action.
 
 ### Ninth Life
@@ -1002,7 +1002,7 @@ If Misfortune fails, a meaningful portion remains for the next enemy action.
 ### Borrowed Luck
 Remove Misfortune from an enemy to cash its probability out into guaranteed value such as Block, Energy, or Draw.
 
-### The Black Cat Sat Down
+### Crossed Path
 Expensive/Exhausting signature effect. Make the next action of an enemy effectively 100% Misfortune, with a real price such as HP loss or Dregs/Junk.
 
 ---
@@ -1336,7 +1336,7 @@ The following earlier working names were deliberately replaced because they were
 | Tortoiseshell Spoon | **Horn Spoon** | older, plainer household material |
 | Murder of Crows (Rare duplicate) | **Carrion Flight** | removes duplicate |
 | Turn the Hide | **Turnskin** | folk-shapeshifting flavor |
-| The Third Night Comes Early | **Call the Third Night** | shorter and active |
+| The Third Night Comes Early | **Witching Hour** | shorter and active |
 | The House Is Cursed | **Hex in the Rafters** | concrete domestic image |
 | Last Words at the Gate | **Last-Breath Hex** | clear folk-cursing image |
 | A Curse With Roots | **Bane-Root** | compact plant/curse fusion |
@@ -1344,7 +1344,7 @@ The following earlier working names were deliberately replaced because they were
 | Cauldron Belly | **Full Pot** | plain folk phrase |
 | Never Crack | **Ironwood** | material/plant image |
 | Granny's Cure-All | **Granny's Physic** | period-appropriate medicine word |
-| Never Waste Broth | **Keep the Drippings** | household action |
+| Never Waste Broth | **Drippings** | household action |
 | A Remedy for Everything | **For What Ails You** | oral/folk idiom |
 | Black Cat's Ninth Life | **Ninth Life** | compact |
 | Lucky Button | **Found Button** | less generic |

@@ -16,7 +16,7 @@ namespace BnbContent.Converter.Cards;
 // surcharge over as it is spent. Since the general pool rebuild (user, 2026-11-08) both halves last this turn
 // only: a signature played as the second-to-last card is a clean saving.
 //
-// Coin Under the Tongue borrows the same discount without the surcharge.
+// Charon's Obol borrows the same discount without the surcharge.
 public static class GeneralForgery
 {
     public const string Discount = "false_signature_discount";
@@ -32,7 +32,7 @@ public static class GeneralForgery
     [
         DiscountStatus(Discount, "False Signature", -1),
         DiscountStatus(DiscountPlus, "False Signature+", -2),
-        DiscountStatus(Coin, "Coin Under the Tongue", -1, surcharge: false),
+        DiscountStatus(Coin, "Charon's Obol", -1, surcharge: false),
         SurchargeStatus(),
     ];
 

@@ -53,7 +53,7 @@ public class BlackInkOracleTests
     [InlineData(1)]
     public void The_higher_cost_wins(int option)
     {
-        // Paper Cut costs 1, Summary Judgment 2: either can be the card that clashes.
+        // Paper Cut costs 1, Verdict 2: either can be the card that clashes.
         using var play = Fight([.. Enumerable.Repeat("paper_cut", 8), .. Enumerable.Repeat("summary_judgment", 8)]);
         var clashing = DrawPile(play)[option];           // kept on top, or the one under it
         var cost = clashing.DefinitionId.value == "summary_judgment" ? 2 : 1;

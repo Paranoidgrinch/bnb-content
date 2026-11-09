@@ -38,7 +38,7 @@ public static class GeneralEnergy
     // ── Uncommon ──────────────────────────────────────────────────────────────────────────────────────────
 
     private static readonly BnbCard CoinUnderTheTongue = new(
-        "coin_under_the_tongue", "Coin Under the Tongue", WorkingTag, 1,
+        "coin_under_the_tongue", "Charon's Obol", WorkingTag, 1,
         "Pledge. Draw 2 cards. The next card you play this turn costs 1 less.",
         Seq(Pledged(), Draw(2), Apply(GeneralForgery.Coin, 1, You)),
         Rarity: "uncommon", Tags: [PledgeTag, GeneralForgery.ForgeryTag]);

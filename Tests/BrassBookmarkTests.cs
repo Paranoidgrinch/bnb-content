@@ -14,7 +14,7 @@ namespace BnbContent.Tests;
 // nobody takes off would make the card permanent instead of lending it one turn.
 //
 // A card reaches a hand it was not drawn into two ways, and the relic has to hear both: a card MOVED there
-// (Palimpsest Order, out of the discard pile) and a card MADE there (Moonlit Counterfeit's copy).
+// (Palimpsest Order, out of the discard pile) and a card MADE there (Counterfeit's copy).
 public class BrassBookmarkTests
 {
     private const string Relic = "brass_bookmark";
@@ -126,7 +126,7 @@ public class BrassBookmarkTests
     // was never let go.
     private static Fight Start(bool withRelic, string card)
     {
-        // Moonlit Counterfeit never copies itself (that would loop), so its deck carries something to copy.
+        // Counterfeit never copies itself (that would loop), so its deck carries something to copy.
         IReadOnlyList<string> deck = card == Copy
             ? [.. Enumerable.Range(0, 24).Select(i => i % 3 == 2 ? "paper_cut" : card)]
             : [.. Enumerable.Repeat(card, 24)];

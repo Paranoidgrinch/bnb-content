@@ -10,7 +10,7 @@ namespace BnbContent.Converter.Apprentice;
 public static partial class ApprenticeCards
 {
     private static readonly BnbCard MastersCorrection = Card(
-        "ap_masters_correction", "Master's Correction", WorkingTag, 1,
+        "ap_masters_correction", "Margin Note", WorkingTag, 1,
         "Choose: another card in your hand costs 1 less the next time you play it; or inscribe a card from your hand " +
         "for free. Then draw 1 card.",
         Correction("ap_masters_correction", 1),
@@ -45,7 +45,7 @@ public static partial class ApprenticeCards
         Recall(1), "rare", [ExhaustTag]);
 
     private static readonly BnbCard FourfoldLesson = Card(
-        "ap_fourfold_lesson", "The Fourfold Lesson", WorkingTag, 2,
+        "ap_fourfold_lesson", "Fourfold Lesson", WorkingTag, 2,
         "Deal 7 damage and apply 1 Singe. Gain 1 Flow, 1 Grit and 1 Gust.", Fourfold(7, 1),
         "Clause — Fourfold: at the end of the section, count this turn's elements (Singe applied; Flow, Grit, Gust " +
         "gained). 2: gain 5 Block. 3: also 2 less Exhaustion. 4: also 1 Focus after the cast.",
@@ -59,7 +59,7 @@ public static partial class ApprenticeCards
         Order(WandRule.Rotate), "rare");
 
     private static readonly BnbCard LastWord = Card(
-        "ap_last_word", "The Master's Last Word", DeedTag, 2,
+        "ap_last_word", "Last Word", DeedTag, 2,
         "Spend any amount of your Focus: deal 10 damage, +5 for each. With 4 or more spent, gain 3 Grit. Exhaust.",
         LastWordPlay(5),
         "Stop — Final Word: runs last. One hit of 6 for each kind of instruction before it (5 at most); each hit " +
@@ -128,7 +128,7 @@ public static partial class ApprenticeCards
                         CounterId: StandardCombatIds.CardCostDeltaCounter.value, Relative: false),
                     WandMove(WandAction.Inscribe, free: true),
                 ],
-                "Master's Correction"),
+                "Margin Note"),
             Draw(1));
 
     private static CombatNodeModel Examination(int damagePer) =>

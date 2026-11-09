@@ -29,7 +29,7 @@ public static class GeneralDiscard
         Tags: Unread("ashen_receipt"));
 
     private static readonly BnbCard SmoulderingCorrespondence = new(
-        "smouldering_correspondence", "Smouldering Correspondence", DeedTag, 1,
+        "smouldering_correspondence", "Burning Letter", DeedTag, 1,
         "Deal 5 damage to ALL enemies. Unread: deal 5 damage to ALL enemies.",
         DamageAll(5),
         Tags: Unread("smouldering_correspondence"));
@@ -65,13 +65,13 @@ public static class GeneralDiscard
     // ── Rare ──────────────────────────────────────────────────────────────────────────────────────────────
 
     private static readonly BnbCard WhisperingGallery = new(
-        "whispering_gallery", "Whispering Gallery", RiteTag, 1,
+        "whispering_gallery", "Whispers", RiteTag, 1,
         "Whenever a card leaves your hand without being played, a random enemy gets 1 Doubt. Exhaust.",
         InstallRite(GeneralPoolRules.WhisperingGallery),
         Rarity: "rare", Act: 3);
 
     private static readonly BnbCard PyreOfOldRecords = new(
-        "pyre_of_old_records", "Pyre of Old Records", RiteTag, 1,
+        "pyre_of_old_records", "Record Pyre", RiteTag, 1,
         "Whenever a card is exhausted, deal 7 damage to a random enemy and gain 7 Block. Exhaust.",
         InstallRite(GeneralPoolRules.PyreOfOldRecords),
         Rarity: "rare", Act: 2);
@@ -118,7 +118,7 @@ public static class GeneralDiscard
     // ── shapes ────────────────────────────────────────────────────────────────────────────────────────────
 
     // A discard by a card effect: one card at a time, through moveCardToZone, so the move is heard (Unread,
-    // Whispering Gallery) — the end-of-turn discard is a different event.
+    // Whispers) — the end-of-turn discard is a different event.
     public static CombatNodeModel DiscardChosen() =>
         new("moveCardToZone", You,
             Card: new CombatCardSpec("chosen", CardZone.Hand, Purpose: "choose a card to discard"),

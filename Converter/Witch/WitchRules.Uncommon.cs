@@ -12,9 +12,9 @@ public static partial class WitchRules
 {
     // ── enemy marks: read by Hexed's burst and by Misfortune's roll ───────────────────────────────────────
     public const string ThirdBell = "third_bell";             // Third Bell: its burst spreads this much Hexed
-    public const string ThriceSpoken = "thrice_spoken";       // Thrice-Spoken Name: its burst echoes once more
+    public const string ThriceSpoken = "thrice_spoken";       // Thrice Named: its burst echoes once more
     public const string DeadMansHex = "dead_mans_hex";        // Dead Man's Hex: dying, it passes its Hexed on
-    public const string CrossedFingers = "crossed_fingers";   // Cross Your Fingers: a failed roll pays her Block
+    public const string CrossedFingers = "crossed_fingers";   // Crossed Fingers: a failed roll pays her Block
     public const string BadPenny = "bad_penny";               // Bad Penny: a failed roll leaves this behind
     public const string MagpiesLuck = "magpies_luck";         // Magpie's Luck: a roll that lands pays her cards
 
@@ -41,7 +41,7 @@ public static partial class WitchRules
     private static IReadOnlyList<StatusData> UncommonRules() =>
     [
         EnemyMark(ThirdBell, "Third Bell", "When this character's Hex bursts this turn, every other enemy gains this much Hexed."),
-        EnemyMark(ThriceSpoken, "Thrice-Spoken Name", "When this character's Hex bursts this turn, it loses HP equal to its Hexed once more."),
+        EnemyMark(ThriceSpoken, "Thrice Named", "When this character's Hex bursts this turn, it loses HP equal to its Hexed once more."),
         DeadMansHexMark(),
         EnemyMark(CrossedFingers, "Crossed Fingers", "If this character's Misfortune roll fails, the Witch gains this much Block."),
         EnemyMark(BadPenny, "Bad Penny", "If this character's Misfortune roll fails, this much Misfortune stays for its next action."),
@@ -51,9 +51,9 @@ public static partial class WitchRules
         Retaliation(HawthornWall, "Hawthorn Wall", "Every enemy that attacks you this turn gains this much Hexed.",
             (who, stacks) => new ApplyStatusNode<ActionResolvedTriggeredEffectContext>(
                 who, new StatusDefinitionId(WitchKeywords.Hexed), stacks)),
-        FirstEachTurn(NailInTheDoorpost, "Nail in the Doorpost", WitchKeywords.Hexed, NailLatch, spread: true,
+        FirstEachTurn(NailInTheDoorpost, "Doorpost Nail", WitchKeywords.Hexed, NailLatch, spread: true,
             "The first time each turn you apply Hexed to an enemy, another enemy gains this much Hexed."),
-        FirstEachTurn(HorseshoeOverTheDoor, "Horseshoe Over the Door", WitchKeywords.Misfortune, HorseshoeLatch, spread: false,
+        FirstEachTurn(HorseshoeOverTheDoor, "Horseshoe", WitchKeywords.Misfortune, HorseshoeLatch, spread: false,
             "The first time each turn you apply Misfortune to an enemy, it gains this much more."),
         MagpieDrawStatus(),
         ProperSupperStatus(),
@@ -73,7 +73,7 @@ public static partial class WitchRules
                     new ApplyStatusNode<TurnEndedTriggeredEffectContext>(
                         CombatantTargetSelectors.IterationTarget, new StatusDefinitionId(WitchKeywords.Hexed),
                         StacksOf<TurnEndedTriggeredEffectContext>(Self, ThirdBell)))),
-            // Thrice-Spoken Name (sharpening pass 2026-10-21; it was Third Knock's text with bigger numbers): the
+            // Thrice Named (sharpening pass 2026-10-21; it was Third Knock's text with bigger numbers): the
             // name said a third time is one more loss of its Hexed, as status HP loss like the burst itself.
             IfWears<TurnEndedTriggeredEffectContext>(Self, ThriceSpoken,
                 new DealDamageNode<TurnEndedTriggeredEffectContext>(Self,
@@ -317,7 +317,7 @@ public static partial class WitchRules
         ]);
     }
 
-    // Her habits: at the end of each of her turns, an Adder in the Sleeve still in her hand has waited a turn. One
+    // Her habits: at the end of each of her turns, a Sleeve Adder still in her hand has waited a turn. One
     // count however many copies wait — the count is hers, not the card's, and playing one starts it again.
     private static StatusData HabitsStatus() => new()
     {
@@ -369,7 +369,7 @@ public static partial class WitchRules
 
     // Hearth healing — from a card, a brew or a rule: HP lost this combat only (§3.4). Once a fight, Grandam's
     // Ember lets a heal that would be capped reach the HP lost before the fight; otherwise what the cap would waste
-    // may become Ward Wax first (Keep the Drippings).
+    // may become Ward Wax first (Drippings).
     public static IEffectNode<TContext> Heal<TContext>(ICombatantTargetSelector who, ICombatExpression<TContext, int> amount)
         where TContext : class =>
         new ConditionalEffectNode<TContext>(

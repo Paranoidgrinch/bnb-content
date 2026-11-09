@@ -29,7 +29,7 @@ public static partial class ApprenticeCards
         Shape(WandRule.Crossfire), "uncommon");
 
     private static readonly BnbCard WrongWayRound = Card(
-        "ap_wrong_way_round", "The Wrong Way Round", WorkingTag, 1,
+        "ap_wrong_way_round", "Widdershins", WorkingTag, 1,
         "Draw 2 cards, then two wand cards trade places for free; if they did, gain 1 Gust.", WrongWay(2),
         "Order: the rest of the cast runs backwards, once; with 2 or more left to turn, its Exhaustion is 1 lower.",
         Order(WandRule.Reverse, amount: 1), "uncommon");
@@ -65,7 +65,7 @@ public static partial class ApprenticeCards
         Clause(WandRule.FinalBreath, percent: 60, amount: 2), "uncommon");
 
     private static readonly BnbCard CandleAtBothEnds = Card(
-        "ap_candle_both_ends", "Candle at Both Ends", DeedTag, 1,
+        "ap_candle_both_ends", "Double Wick", DeedTag, 1,
         "Exhaust another card from your hand: draw 3 cards and gain 1 Focus. With no other card, deal 9 damage instead.",
         BothEnds("ap_candle_both_ends", 3, 9),
         "Burn: repeat the last damaging Speak at 150%, then this card is exhausted. With none before it, deal 9 damage.",

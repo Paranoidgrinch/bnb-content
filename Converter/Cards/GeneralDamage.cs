@@ -63,7 +63,7 @@ public static class GeneralDamage
     // ── Rare ──────────────────────────────────────────────────────────────────────────────────────────────
 
     private static readonly BnbCard ThirdAndFinalWrit = new(
-        "third_and_final_writ", "Third and Final Writ", DeedTag, 2,
+        "third_and_final_writ", "Final Writ", DeedTag, 2,
         "Retain. Deal 12 damage. If the enemy has Doubt and Liable, deal it twice.",
         Writ(12),
         Rarity: "rare", Act: 3, RetainInHand: true);

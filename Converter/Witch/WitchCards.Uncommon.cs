@@ -16,7 +16,7 @@ public static partial class WitchCards
         "Deal 7 damage. If the target intends to Attack, deal 4 more.", Temper(7, 4), "uncommon");
 
     private static readonly BnbCard AdderInTheSleeve = Witch(
-        "adder_in_the_sleeve", "Adder in the Sleeve", DeedTag, 1, WitchActions.Fang,
+        "adder_in_the_sleeve", "Sleeve Adder", DeedTag, 1, WitchActions.Fang,
         "Retain. Deal 5 damage, and 3 more for each turn it has waited in your hand (at most 9 more).",
         Sleeve(5, 3), "uncommon", act: 2) with { RetainInHand = true };
 
@@ -44,7 +44,7 @@ public static partial class WitchCards
     // ── Hex ───────────────────────────────────────────────────────────────────────────────────────────────
 
     private static readonly BnbCard ThriceSpokenName = Witch(
-        "thrice_spoken_name", "Thrice-Spoken Name", WorkingTag, 1, WitchActions.Hex,
+        "thrice_spoken_name", "Thrice Named", WorkingTag, 1, WitchActions.Hex,
         "Apply 4 Hexed. If its Hex bursts at the end of its next turn, it loses HP equal to its Hexed once more.",
         Seq(Apply(WitchKeywords.Hexed, 4), Apply(WitchRules.ThriceSpoken, 1)), "uncommon");
 
@@ -63,7 +63,7 @@ public static partial class WitchCards
         "Apply 4 Hexed. Another negative Status on the target gains 1 stack.", Sour(4, 1), "uncommon");
 
     private static readonly BnbCard NailInTheDoorpost = Witch(
-        "nail_in_the_doorpost", "Nail in the Doorpost", RiteTag, 1, WitchActions.Hex,
+        "nail_in_the_doorpost", "Doorpost Nail", RiteTag, 1, WitchActions.Hex,
         "The first time each turn you apply Hexed to an enemy, the healthiest other enemy gains 2 Hexed.",
         Apply(WitchRules.NailInTheDoorpost, 2, You), "uncommon", act: 2);
 
@@ -153,7 +153,7 @@ public static partial class WitchCards
     // ── Fortune ───────────────────────────────────────────────────────────────────────────────────────────
 
     private static readonly BnbCard CrossYourFingers = Witch(
-        "cross_your_fingers", "Cross Your Fingers", WorkingTag, 1, WitchActions.Fortune,
+        "cross_your_fingers", "Crossed Fingers", WorkingTag, 1, WitchActions.Fortune,
         "Apply 5 Misfortune. If its roll fails, you gain 6 Block before its action.",
         Seq(Apply(WitchKeywords.Misfortune, 5), Apply(WitchRules.CrossedFingers, 6)), "uncommon");
 
@@ -163,11 +163,11 @@ public static partial class WitchCards
         Seq(Apply(WitchKeywords.Misfortune, 5), Apply(WitchRules.BadPenny, 3)), "uncommon");
 
     private static readonly BnbCard CastTheKnucklebones = Witch(
-        "cast_the_knucklebones", "Cast the Knucklebones", WorkingTag, 1, WitchActions.Fortune,
+        "cast_the_knucklebones", "Knucklebones", WorkingTag, 1, WitchActions.Fortune,
         "Choose one: apply 5 Misfortune; or apply 0 to 12 Misfortune, at random.", Knucklebones(5, 12), "uncommon");
 
     private static readonly BnbCard HorseshoeOverTheDoor = Witch(
-        "horseshoe_over_the_door", "Horseshoe Over the Door", RiteTag, 1, WitchActions.Fortune,
+        "horseshoe_over_the_door", "Horseshoe", RiteTag, 1, WitchActions.Fortune,
         "The first time each turn you apply Misfortune to an enemy, it gains 2 more.",
         Apply(WitchRules.HorseshoeOverTheDoor, 2, You), "uncommon", act: 2);
 

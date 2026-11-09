@@ -132,7 +132,7 @@ public static class ActThreeBossRelicCards
     // engine has no per-enemy outgoing-damage reduction, and what the holder feels is the same ten points.
     // The free card is the price of the next card refunded, which is how every "costs 0" in this pool works.
     private static CardData SilverName() =>
-        Action(TallyId, "Speak the Silver Name",
+        Action(TallyId, "Silver Name",
             "Once a combat: one enemy's guard is gone, you gain 10 Block against what it was about to do, "
             + "and the next card you play this turn is refunded.",
             TallyTag,

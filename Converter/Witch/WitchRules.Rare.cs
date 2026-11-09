@@ -43,11 +43,11 @@ public static partial class WitchRules
 
     private static IReadOnlyList<StatusData> RareRules() =>
     [
-        EnemyMark(HareRunsLast, "The Hare Runs Last", "When this character's Hex bursts this turn, it takes this much damage after."),
+        EnemyMark(HareRunsLast, "Hare's Run", "When this character's Hex bursts this turn, it takes this much damage after."),
         LastBreathHexMark(),
-        EnemyMark(Loaded, "Loaded Knucklebones", "This character's next Misfortune roll is rolled twice; either may land."),
-        EnemyMark(SevenYears, "Seven Years' Bad Luck", "Until its Misfortune lands, every roll it wins leaves half the Misfortune behind."),
-        EnemyMark(BlackCatSatDown, "The Black Cat Sat Down", "This character's next Misfortune roll cannot fail."),
+        EnemyMark(Loaded, "Loaded Bones", "This character's next Misfortune roll is rolled twice; either may land."),
+        EnemyMark(SevenYears, "Seven Years", "Until its Misfortune lands, every roll it wins leaves half the Misfortune behind."),
+        EnemyMark(BlackCatSatDown, "Crossed Path", "This character's next Misfortune roll cannot fail."),
         EnemyMark(NineLivesLeft, "Nine Lives", "When this character's Misfortune lands, it is left this much Misfortune."),
         Rite(HexInTheRafters, "Hex in the Rafters",
             "The first Hex burst each enemy turn gives every other enemy this much Hexed.",
@@ -60,9 +60,9 @@ public static partial class WitchRules
                 nameof(TriggerEvent.TurnStarted))]),
         WinterBarkMark(),
         IronwoodRite(),
-        Rite(KeepTheDrippings, "Keep the Drippings",
+        Rite(KeepTheDrippings, "Drippings",
             "Hearth healing that the combat-heal cap would waste becomes Ward Wax instead.", []),
-        Rite(NeverWashThePot, "Never Wash the Pot", "After each Brew, keep one of its ingredients in the cauldron.", []),
+        Rite(NeverWashThePot, "Seasoned Pot", "After each Brew, keep one of its ingredients in the cauldron.", []),
         Rite(NinthLife, "Ninth Life",
             "After the first Misfortune that lands this combat, that enemy is left this much Misfortune.", []),
         WolfWaitsStatus(),
@@ -278,7 +278,7 @@ public static partial class WitchRules
 
     // ── what her cauldron and her healing ask (WitchActions, WitchCards) ──────────────────────────────────
 
-    // Keep the Drippings: the part of a Hearth heal the cap would waste, as Ward Wax — asked BEFORE the heal.
+    // Drippings: the part of a Hearth heal the cap would waste, as Ward Wax — asked BEFORE the heal.
     public static IEffectNode<TContext> Drippings<TContext>(ICombatantTargetSelector who, ICombatExpression<TContext, int> amount)
         where TContext : class =>
         new ConditionalEffectNode<TContext>(

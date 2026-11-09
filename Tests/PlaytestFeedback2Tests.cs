@@ -209,7 +209,7 @@ public class PlaytestFeedback2Tests
         play.Dispose();
     }
 
-    // F — Cower Behind a Desk+: 6 Block now, 3 more when the next turn begins (facet E, Promised Block).
+    // F — Under the Desk+: 6 Block now, 3 more when the next turn begins (facet E, Promised Block).
     [Fact]
     public void Cower_plus_promises_block_for_the_next_turn()
     {

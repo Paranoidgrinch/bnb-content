@@ -56,7 +56,7 @@ public static class Act1Bench
         // ⚠⚠ ADDING A CARD MEASURED NOTHING (2026-09-27, discarded): one more card shuffles into a different
         // order, so "the same shuffle" was a different fight and the pairs were not pairs — and every card came
         // out a little negative, the deck diluted. So the card TAKES A SLOT: a Deed replaces a Paper Cut, anything
-        // else a Cower Behind a Desk, at the same place in the deck list. The shuffle is a function of the seed
+        // else an Under the Desk, at the same place in the deck list. The shuffle is a function of the seed
         // and the number of cards, not of which cards they are, so the new card is drawn exactly when the one it
         // replaced would have been — every pair is the same fight but for that card. The bench checks that
         // (`coupled`), fight by fight, rather than trusting it.

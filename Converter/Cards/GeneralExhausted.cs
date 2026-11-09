@@ -31,7 +31,7 @@ public static class GeneralExhausted
         Rarity: "uncommon");
 
     private static readonly BnbCard RakedFromTheAshes = new(
-        "raked_from_the_ashes", "Raked from the Ashes", WorkingTag, 1,
+        "raked_from_the_ashes", "From the Ashes", WorkingTag, 1,
         "Put a card from your Exhausted pile into your hand. It Exhausts when played. Exhaust.",
         Rake(),
         Rarity: "uncommon", Act: 2, Tags: [ExhaustTag]);
@@ -57,7 +57,7 @@ public static class GeneralExhausted
     // ── Rare ──────────────────────────────────────────────────────────────────────────────────────────────
 
     private static readonly BnbCard SalamanderInTheGrate = new(
-        "salamander_in_the_grate", "Salamander in the Grate", DeedTag, 2,
+        "salamander_in_the_grate", "Salamander", DeedTag, 2,
         "Deal 8 damage twice. Exhaust. At the start of your turn, if 6 or more cards are Exhausted, return this " +
         "to your hand.",
         Repeat(2, Damage(8)),

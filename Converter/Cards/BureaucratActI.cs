@@ -91,11 +91,11 @@ public static class BureaucratActI
         Seq(Damage(6), Apply(Keywords.Paperwork, 2)),
         Rarity: "common");
 
-    // The two Queue Commons: played now, felt next turn. Protective Adjournment pays far more Block than a
+    // The two Queue Commons: played now, felt next turn. Adjournment pays far more Block than a
     // 1-Energy Working has any right to, and Deferred Hex far more damage, because both make the player spend
     // a turn without them.
     private static readonly BnbCard ProtectiveAdjournment = new(
-        "protective_adjournment", "Protective Adjournment", WorkingTag, 1,
+        "protective_adjournment", "Adjournment", WorkingTag, 1,
         "Queue: Gain 11 Block.",
         Block(11),
         Rarity: "common", Queued: true);
@@ -155,7 +155,7 @@ public static class BureaucratActI
     // "Deal 3 damage 3 times. If the target is Ratified, each hit also applies 1 Paperwork." Asked per hit,
     // because Ratified can end mid-card only if something else removes it — and per-hit is what the text says.
     private static readonly BnbCard ThreefoldInjunction = new(
-        "threefold_injunction", "Triplicate Injunction", DeedTag, 1,
+        "threefold_injunction", "In Triplicate", DeedTag, 1,
         "Deal 3 damage 3 times. If the target is Ratified, each hit also applies 1 Paperwork.",
         Repeat(3, Seq(Damage(3), If(HasStacks(Keywords.Ratified), Apply(Keywords.Paperwork, 1)))),
         Rarity: "uncommon");
@@ -175,7 +175,7 @@ public static class BureaucratActI
         Rarity: "uncommon");
 
     private static readonly BnbCard PresumptionOfError = new(
-        "presumption_of_error", "Presumption of Error", WorkingTag, 0,
+        "presumption_of_error", "Presumption", WorkingTag, 0,
         "Apply 1 Doubt. The next time that enemy consumes Doubt by attacking, apply 1 Doubt to it after the " +
         "Attack resolves. Exhaust.",
         Seq(Apply(Keywords.Doubt, 1), Apply(BureaucratRites.PresumptionOfError, 1)),
@@ -190,13 +190,13 @@ public static class BureaucratActI
     // "If the target does not intend to Attack, apply 2 Seal; otherwise apply 1 Seal." — the telegraph read
     // straight off the enemy, which is what the engine's intent projection is for.
     private static readonly BnbCard ConditionalApproval = new(
-        "conditional_approval", "Conditional Approval", DeedTag, 1,
+        "conditional_approval", "Proviso", DeedTag, 1,
         "Deal 6 damage. If the target does not intend to Attack, apply 2 Seal; otherwise apply 1 Seal.",
         Seq(Damage(6), If(Intends(IntentKind.Attack), ApplySeal(1), ApplySeal(2))),
         Rarity: "uncommon");
 
     private static readonly BnbCard WastepaperBastion = new(
-        "wastepaper_bastion", "Wastepaper Bastion", WorkingTag, 1,
+        "wastepaper_bastion", "Paper Bastion", WorkingTag, 1,
         "Gain 5 Block, plus 2 Block for each Junk card in your hand and discard pile.",
         Block(Plus(CombatAmountSpec.FromConst(5),
             Times(Plus(CardsTagged(JunkTag), CardsTagged(JunkTag, CardZone.DiscardPile)), 2))),
@@ -252,7 +252,7 @@ public static class BureaucratActI
     // The allowance is in force from the moment the Rite is played, so the card hands out the first one
     // itself; the Rite renews it at every turn start after that.
     private static readonly BnbCard ViolenceAllowance = new(
-        "violence_allowance", "Violence Allowance", RiteTag, 2,
+        "violence_allowance", "Use of Force", RiteTag, 2,
         "The first Deed you play each turn costs 1 less Energy.",
         Seq(InstallRite(BureaucratRites.ViolenceAllowance), Apply(BureaucratRites.AllowanceReady, 1, You)),
         Rarity: "rare");
@@ -271,7 +271,7 @@ public static class BureaucratActI
         Rarity: "rare");
 
     private static readonly BnbCard SummaryJudgment = new(
-        "summary_judgment", "Summary Judgment", DeedTag, 2,
+        "summary_judgment", "Verdict", DeedTag, 2,
         "Deal 20 damage. If the target has at least 6 Paperwork, trigger its Paperwork immediately, then " +
         "remove 3 Paperwork.",
         Seq(Damage(20),

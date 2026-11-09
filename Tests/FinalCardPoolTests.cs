@@ -143,8 +143,8 @@ public class FinalCardPoolTests
 
         string[] expected =
         [
-            "Cartouche Reckoning", "Final Attestation", "Fivefold Compliance", "Hieratic Measure",
-            "Monumental Writ", "Processional Calendar", "Stone Levy", "Temple Tally",
+            "Reckoning", "Final Attestation", "Compliance", "Hieratic Measure",
+            "Monumental Writ", "Procession", "Stone Levy", "Temple Tally",
         ];
 
         Assert.Equal(

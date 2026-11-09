@@ -149,7 +149,7 @@ These are horizontal, character-unspecific tools. They must not become mandatory
 | 3 | **Usurer's Moon** | I | Rite | 1 | Whenever Lien removes Block from an enemy, apply 1 Citation for every 3 Block removed, maximum 3 Citation per Lien resolution. | Apply 1 Citation for every 2 Block removed instead; maximum remains 3. | Lien, Citation, Engine |
 | 4 | **Blood Redaction** | II | Working | 1 | Choose one negative Status on an enemy other than Blood Ink. Remove up to 6 stacks of it. Apply the same number of Blood Ink. Exhaust. | Up to 8 stacks. | Blood Ink, Status Conversion, Exhaust |
 | 5 | **Votive Covenant** | III | Rite | 2 | If you take no unblocked Attack damage during an enemy turn, Ward Wax does not decay after that turn. If you do take unblocked Attack damage, Ward Wax loses 3 stacks instead of 2. | Costs 1 Energy. | Ward Wax, Rule Change, Risk |
-| 6 | **Moonlit Counterfeit** | II | Working | 1 | Choose a non-Rite card in your hand. Create a Temporary copy of it that costs 0 this turn. Exhaust the original. Moonlit Counterfeit Exhausts. | Put the original into your discard pile instead of Exhausting it. | Copy, Temporary, Exhaust |
+| 6 | **Counterfeit** | II | Working | 1 | Choose a non-Rite card in your hand. Create a Temporary copy of it that costs 0 this turn. Exhaust the original. Counterfeit Exhausts. | Put the original into your discard pile instead of Exhausting it. | Copy, Temporary, Exhaust |
 | 7 | **Seizure Writ** | II | Deed | 2 | Deal 12 damage. Then remove all remaining Block from the target. For every 3 Block removed this way, apply 1 Lien, maximum 6 Lien. | Deal 15 damage and require only 2 Block removed per Lien. | Damage, Block, Lien |
 | 8 | **Standing Citation** | II | Rite | 2 | The first time each turn Citation triggers on each enemy, that trigger does not remove a Citation stack. | Costs 1 Energy. | Citation, Rule Change |
 | 9 | **Exemplary Sentence** | III | Deed | 2 | Choose an enemy. Remove up to 5 Citation from it. For each Citation removed, ALL enemies lose 4 HP. Then deal 12 damage to the chosen enemy. | Deal 15 damage to the chosen enemy and 5 HP loss to ALL enemies per Citation removed. | Citation, AoE, Burst |
@@ -173,7 +173,7 @@ The general pool uses the same BnB-wide **Temporary** rule as the Bureaucrat poo
 - it is not a persistent deck instance;
 - where a creating card says the copy Exhausts, it Exhausts after resolving.
 
-This rule is especially important for **Moonlit Counterfeit** and for future character interactions.
+This rule is especially important for **Counterfeit** and for future character interactions.
 
 ## 8. Cross-Pool Guardrails
 
@@ -214,7 +214,7 @@ The following are not structural blockers but should receive focused simulation/
 - **Ward Wax:** whether preservation engines become effectively permanent Block loops, especially with `Votive Covenant` and `Candle Cathedral`.
 - **Lien:** whether enemy Block patterns make Lien too binary across the encounter roster.
 - **Citation:** whether pure-attack enemies make too many Citation cards dead picks, and whether Utility-heavy bosses are punished disproportionately.
-- **Moonlit Counterfeit:** universal scaling with future high-cost character cards.
+- **Counterfeit:** universal scaling with future high-cost character cards.
 - **Grand Dispensation:** universal pick rate despite Exhaust.
 - **Last Office:** tracking complexity and whether the combat-history condition is sufficiently readable in UI.
 

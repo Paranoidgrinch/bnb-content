@@ -259,7 +259,7 @@ loader. What the master asks for and the port does differently:
   boss's side neither the position nor Priority can be read at all.
 - **The Administrative Choice is two cards** (Petition for Priority, Yield Your Place) dealt in at the turn's
   start and exhausted at its end; HOLD POSITION is simply playing neither. A latch enforces "one per turn".
-- **The Phase-II Service Window choice is one card** (Ask for Expedited Service): taking it swaps the 25/30 %
+- **The Phase-II Service Window choice is one card** (Express Service): taking it swaps the 25/30 %
   opening for 15 % and leaves the player at Position 1 instead of sending them back into the queue.
 - **Phase-II intents rotate on a beat counter** rather than per-intent cooldowns, and "Last Number of the Day"
   is announced as a status on the player one full action before it lands, as the design requires.
@@ -409,7 +409,7 @@ exactly as the FINAL_AUDIT enemy pools did. Where the keywords now differ from w
 - **Counter Ward**'s rider is "your next card this turn costs 1 less", not "the next card you QUEUE". A cost
   modifier can be narrowed to a card TAG, so this could be tightened later by tagging Queue cards; as written
   the player simply spends the discount on what they meant to.
-- **Dubious Authority** (and Presumption of Error) answers Doubt leaving an enemy that has already landed a HIT
+- **Dubious Authority** (and Presumption) answers Doubt leaving an enemy that has already landed a HIT
   this turn, which is how "consumed after an enemy attacks" is told apart from a card that merely removes Doubt
   (Formal Dissent). Until 2026-09-28 this asked for damage dealt, and a blow the hero blocked entirely dealt none —
   the rule never fired beside the cards that give Block AND Doubt (engine: `hitsThisTurn`).
@@ -422,7 +422,7 @@ exactly as the FINAL_AUDIT enemy pools did. Where the keywords now differ from w
   arbitrary card is a real effect now (`queueCard`), which is what the card is for.
 - **Blank Warrant**'s "no Paperwork, Doubt, or Seal" checks Paperwork only. A condition compares one value at
   a time, and Paperwork is the one the Bureaucrat almost always has on a target it has touched.
-- **Violence Allowance** is two statuses: the Rite that keeps the books and the allowance that carries the
+- **Use of Force** is two statuses: the Rite that keeps the books and the allowance that carries the
   discount, because a passive modifier cannot be conditional — its presence is the condition. The discount is
   narrowed to Deeds by card tag, so nothing else is cheapened while it waits.
 
@@ -461,7 +461,7 @@ exactly as the FINAL_AUDIT enemy pools did. Where the keywords now differ from w
 - **Ghost Register** lets the player choose which Archived card comes back, because a rule that hears "the
   archive count went up" cannot point at the card that caused it. The copy arrives with one free play rather
   than costing 0, for want of per-instance card costs.
-- **Moonlit Counterfeit** asks twice — once for the card to copy, once for the original to Exhaust — and its
+- **Counterfeit** asks twice — once for the card to copy, once for the original to Exhaust — and its
   upgrade simply spares the original. The copy is free through one free play.
 - **Sanguine Errata** removes a stack the engine picks by rule (a polarity-filtered selection) rather than by
   prompt. Since 2026-09-28 the pick leaves Blood Ink out (`StatusSelectionSpec.Except`), as "another" asks; a
@@ -1786,7 +1786,7 @@ door in Act III.
 
 Bought as an engine seam rather than patched in content, because no rule an author writes should be able to
 kill the process, and the trap is generic — any card that resolves the Queue is one "queue a card" away from
-it, the Act IV Processional Calendar included. `CombatState` now knows which queued cards are mid-resolution
+it, the Act IV Procession included. `CombatState` now knows which queued cards are mid-resolution
 (`IsResolvingQueuedCard`), and `QueueResolution` passes over them: a card resolves once per window, and
 "your oldest Queued card" means the oldest that is not the one asking. Night Docket keeps working exactly as
 written from the hand, and a queued Night Docket now reaches the card *below* it — once. Pinned by
@@ -4432,7 +4432,7 @@ Canon: `source-data/design/sorcerers_apprentice_master.md` (v0.4). Its mechanics
 - **Rubbing** offers any non-Temporary card of the discard pile (a choice can leave out one tag, not "Workings
   other than Rubbing"); its upgrade draws a card instead of making the copy cheaper (a created copy has no price
   mark).
-- **Master's Correction**'s discount waits for the card's next play rather than expiring at the end of the turn.
+- **Margin Note**'s discount waits for the card's next play rather than expiring at the end of the turn.
 - **Temporary copies** (Rubbing, Second Hand) are copies marked `temporary_copy`: they Exhaust when played and
   when they leave the wand.
 - **Firebreak's Ground** is planned at its smaller relief and settled to the larger one when a hit really spent

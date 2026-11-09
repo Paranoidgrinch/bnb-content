@@ -79,7 +79,7 @@ public class SharpeningPassTests
         play.Dispose();
     }
 
-    // Wastepaper Bastion counts the Junk in the discard pile as well as the hand.
+    // Paper Bastion counts the Junk in the discard pile as well as the hand.
     [Fact]
     public void Wastepaper_bastion_counts_the_junk_in_the_discard_pile()
     {
@@ -90,7 +90,7 @@ public class SharpeningPassTests
         play.Dispose();
     }
 
-    // Presumption of Error costs nothing; its upgrade applies 2 Doubt instead of costing less.
+    // Presumption costs nothing; its upgrade applies 2 Doubt instead of costing less.
     [Fact]
     public void Presumption_of_error_is_free_and_its_upgrade_doubts_twice()
     {
