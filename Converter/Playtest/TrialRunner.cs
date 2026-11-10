@@ -328,6 +328,39 @@ public static class TrialRunner
         var picks = new Dictionary<string, List<string>>();
         var timings = new List<(int Act, double Minutes, int Fights, double ChoiceMinutes, int Decisions, int EvalFights)>();
         var total = Stopwatch.StartNew();
+        // The results so far, written after EVERY act (2026-11-10): a run of many hours that is stopped, or that
+        // takes longer than anyone wants to wait, still leaves what it measured. Each write replaces the last;
+        // the header says which acts it holds.
+        string Write(bool final)
+        {
+            var human = options.Compare is { } log ? Human(log) : null;
+            var table = Table(rows.ToList(), human, options);
+            var text = new StringBuilder();
+            var done = timings.Select(t => t.Act).ToList();
+            text.AppendLine($"lieutenant trial runner · {DateTime.Now:yyyy-MM-dd HH:mm} · acts {string.Join(",", options.Acts)}"
+                + (final ? "" : $" · PARTIAL: acts {string.Join(",", done)} done"));
+            text.AppendLine($"{options.Paths} progression(s) × {options.Seeds} seed(s) · K {b.Worlds} · H {b.Horizon} · beam {b.Beam} · "
+                + $"perTurn {b.PerTurn} · seed {options.Seed}");
+            if (c is not null)
+                text.AppendLine($"packages by play · K {c.Bot.Worlds} · H {c.Bot.Horizon} · beam {c.Bot.Beam} · perTurn {c.Bot.PerTurn} · "
+                    + $"{c.Seeds} seed(s) per fight · top {c.Top} · learned values {options.ValuesPath ?? "off"}");
+            foreach (var (act, minutes, n, choosing, decisions, evalFights) in timings)
+                text.AppendLine($"act {act}: {n} fights, {minutes:0.0} min ({choosing:0.0} min choosing: {decisions} decisions, {evalFights} play-out fights)");
+            text.AppendLine();
+            text.Append(table);
+            File.WriteAllText(System.IO.Path.Combine(options.OutDir, name + ".txt"), text.ToString());
+            File.WriteAllText(System.IO.Path.Combine(options.OutDir, name + ".json"), JsonSerializer.Serialize(new
+            {
+                Options = new { options.Acts, options.Seeds, options.Paths, options.Bot, options.Seed, options.Compare, options.Choices, options.ValuesPath },
+                Timings = timings.Select(t => new { t.Act, t.Minutes, t.Fights, t.ChoiceMinutes, t.Decisions, t.EvalFights }),
+                Encounters = Summaries(rows.ToList(), human),
+                Picks = picks,
+                Fights = rows.OrderBy(r => r.Act).ThenBy(r => r.Stage).ThenBy(r => r.Encounter, StringComparer.Ordinal)
+                    .ThenBy(r => r.Path).ThenBy(r => r.Seed),
+            }, new JsonSerializerOptions { WriteIndented = true }));
+            return text.ToString();
+        }
+
         // `--runner-chain` (2026-11-08): each act after the first starts from the decks the previous act's best
         // progressions ended with, instead of the act's own preset deck — the best first, each path one of them.
         List<Loadout>? chained = null;
@@ -345,7 +378,7 @@ public static class TrialRunner
             // The prior is the table as the act begins: every path reads the same, whatever the others learn meanwhile.
             var prior = values.Copy();
             var choices = Enumerable.Range(0, options.Paths)
-                .Select(p => c is null ? null : new TrialChoices(shipped, walks[p], packages, prior, c, options.Seed, measured, evalParallel, themes!)).ToList();
+                .Select(p => c is null ? null : new TrialChoices(shipped, walks[p], packages, prior, c, options.Seed, measured, evalParallel, themes!) { Say = say }).ToList();
             var paths = Enumerable.Range(0, options.Paths)
                 .Select(p => new Path(shipped, walks[p], PathSeed(options.Seed, act, p), packages,
                     choices[p] is { } chooser ? (path, d) => chooser.Choose(path, d, act, p) : null)).ToList();
@@ -423,32 +456,14 @@ public static class TrialRunner
             timings.Add((act, clock.Elapsed.TotalMinutes, count, choiceClock.Elapsed.TotalMinutes,
                 choices.Sum(x => x?.Decisions ?? 0), choices.Sum(x => x?.EvalFights ?? 0)));
             say($"act {act}: {count} fights in {clock.Elapsed.TotalMinutes:0.0} min ({choiceClock.Elapsed.TotalMinutes:0.0} min choosing)");
+            if (act != options.Acts.Last())
+            {
+                Write(final: false);
+                say($"  results so far: {System.IO.Path.Combine(options.OutDir, name)}.txt/.json");
+            }
         }
 
-        var human = options.Compare is { } log ? Human(log) : null;
-        var table = Table(rows.ToList(), human, options);
-        var text = new StringBuilder();
-        text.AppendLine($"lieutenant trial runner · {DateTime.Now:yyyy-MM-dd HH:mm} · acts {string.Join(",", options.Acts)}");
-        text.AppendLine($"{options.Paths} progression(s) × {options.Seeds} seed(s) · K {b.Worlds} · H {b.Horizon} · beam {b.Beam} · "
-            + $"perTurn {b.PerTurn} · seed {options.Seed}");
-        if (c is not null)
-            text.AppendLine($"packages by play · K {c.Bot.Worlds} · H {c.Bot.Horizon} · beam {c.Bot.Beam} · perTurn {c.Bot.PerTurn} · "
-                + $"{c.Seeds} seed(s) per fight · top {c.Top} · learned values {options.ValuesPath ?? "off"}");
-        foreach (var (act, minutes, n, choosing, decisions, evalFights) in timings)
-            text.AppendLine($"act {act}: {n} fights, {minutes:0.0} min ({choosing:0.0} min choosing: {decisions} decisions, {evalFights} play-out fights)");
-        text.AppendLine();
-        text.Append(table);
-        File.WriteAllText(System.IO.Path.Combine(options.OutDir, name + ".txt"), text.ToString());
-        File.WriteAllText(System.IO.Path.Combine(options.OutDir, name + ".json"), JsonSerializer.Serialize(new
-        {
-            Options = new { options.Acts, options.Seeds, options.Paths, options.Bot, options.Seed, options.Compare, options.Choices, options.ValuesPath },
-            Timings = timings.Select(t => new { t.Act, t.Minutes, t.Fights, t.ChoiceMinutes, t.Decisions, t.EvalFights }),
-            Encounters = Summaries(rows.ToList(), human),
-            Picks = picks,
-            Fights = rows.OrderBy(r => r.Act).ThenBy(r => r.Stage).ThenBy(r => r.Encounter, StringComparer.Ordinal)
-                .ThenBy(r => r.Path).ThenBy(r => r.Seed),
-        }, new JsonSerializerOptions { WriteIndented = true }));
-        say(text.ToString());
+        say(Write(final: true));
         if (options.ValuesPath is { } kept && c is not null)
         {
             values.Runs++;

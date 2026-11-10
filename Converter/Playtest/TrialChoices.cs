@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Globalization;
 using System.Text;
 using System.Text.Json;
@@ -77,6 +78,10 @@ public sealed class TrialChoices
     public int EvalFights;
     public int Decisions;
 
+    // One line per decision as it is made (2026-11-10): where a stage's choosing stands, which can take hours
+    // in the late acts. Null says nothing.
+    public Action<string>? Say { get; init; }
+
     // The fights a choice at `stop` is judged on: the stage of the first fight after it; past the last fight, the
     // last stage (the bosses).
     public IReadOnlyList<TrialRunner.TrialFight> NextFights(int stop)
@@ -125,8 +130,11 @@ public sealed class TrialChoices
         var baseline = request.AllowSkip ? Probe(path, decision, []) : Without(loadouts[0], label, played[0].Id);
         loadouts.Add(baseline);
         var fights = NextFights(decision.Stop);
+        var clock = Stopwatch.StartNew();
         var mean = Scores(loadouts, fights, act, pathIndex, decision.Index);
-        Interlocked.Increment(ref Decisions);
+        var made = Interlocked.Increment(ref Decisions);
+        Say?.Invoke($"    act {act} path {pathIndex} decision {made} ({label}): {loadouts.Count} decks × {fights.Count} fight(s) × "
+            + $"{_options.Seeds} on stage {fights[0].Stage} · {clock.Elapsed.TotalSeconds:0} s");
         if (!all.Any(c => c.Choosable))
             return (heuristic, null);
         var pick = Best(mean, [.. all.Select(c => c.Choosable)], [.. all.Select(c => c.Prior)], _options.TieBand);
