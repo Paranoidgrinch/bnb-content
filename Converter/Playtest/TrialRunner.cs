@@ -368,6 +368,9 @@ public static class TrialRunner
         {
             var clock = Stopwatch.StartNew();
             var actWalk = Walk(shipped, act);
+            // Act V is the boss gauntlet (2026-11-11): in a chain nothing is chosen there any more, every fight is
+            // played with the previous act's best deck as it ended. Walking on with choices hung for hours.
+            var fixedDeck = options.Chain && act == 5 && chained is { Count: > 0 } ? chained[0] : null;
             var walks = Enumerable.Range(0, options.Paths)
                 .Select(p => chained is { Count: > 0 } best
                     ? actWalk with { Start = Chained(actWalk.Start, best[p % best.Count]) }
@@ -378,7 +381,7 @@ public static class TrialRunner
             // The prior is the table as the act begins: every path reads the same, whatever the others learn meanwhile.
             var prior = values.Copy();
             var choices = Enumerable.Range(0, options.Paths)
-                .Select(p => c is null ? null : new TrialChoices(shipped, walks[p], packages, prior, c, options.Seed, measured, evalParallel, themes!) { Say = say }).ToList();
+                .Select(p => c is null || fixedDeck is not null ? null : new TrialChoices(shipped, walks[p], packages, prior, c, options.Seed, measured, evalParallel, themes!) { Say = say }).ToList();
             var paths = Enumerable.Range(0, options.Paths)
                 .Select(p => new Path(shipped, walks[p], PathSeed(options.Seed, act, p), packages,
                     choices[p] is { } chooser ? (path, d) => chooser.Choose(path, d, act, p) : null)).ToList();
@@ -392,6 +395,11 @@ public static class TrialRunner
                 choiceClock.Start();
                 Parallel.For(0, options.Paths, new ParallelOptions { MaxDegreeOfParallelism = Math.Max(1, options.Paths) }, p =>
                 {
+                    if (fixedDeck is not null)
+                    {
+                        loadouts[p] = fixedDeck;
+                        return;
+                    }
                     paths[p].Advance(stage.Min(f => f.StopsBefore), played[p], walks[p].Start);
                     loadouts[p] = paths[p].Loadout(walks[p].Start);
                 });
@@ -430,7 +438,7 @@ public static class TrialRunner
                     + $"{(broke > 0 ? $", {broke} BROKE" : "")}");
             }
             // What each progression ended the act with, best first: fewest deaths, then least HP lost per fight.
-            var ended = Enumerable.Range(0, options.Paths).Select(p => paths[p].Loadout(walks[p].Start)).ToList();
+            var ended = Enumerable.Range(0, options.Paths).Select(p => fixedDeck ?? paths[p].Loadout(walks[p].Start)).ToList();
             var actRows = rows.Where(r => r.Act == act).ToList();
             chained = [.. Enumerable.Range(0, options.Paths)
                 .OrderBy(p => actRows.Count(r => r.Path == p && !r.Won))
