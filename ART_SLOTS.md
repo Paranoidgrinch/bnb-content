@@ -2,7 +2,7 @@
 
 Generated: `dotnet run --project Converter -- --art-slots ART_SLOTS.md`. **Do not edit by hand.**
 
-**880 pictures**: 477 cards, 257 relics, 142 bodies
+**884 pictures**: 477 cards, 261 relics, 142 bodies
 (every enemy, elite and boss) and 4 the player can be. Every one of them is filled today by a PLACEHOLDER — a plate with the file's own
 name and the word placeholder on it, written by `bnb-godot/tools/make-card-art.py`,
 `make-relic-art.py` and `make-enemy-art.py`. A painted picture replaces one by being saved over it, so
@@ -54,7 +54,7 @@ The relic briefs below are the design canon's own words
 `BnB_Elite_Relics_MASTER_AND_VISUAL_CANON.md` for #169–210). Frames, palettes and the label rule live
 there in full; only the object line is repeated here, because that is the line that differs per relic.
 
-## Relics — 257 pictures
+## Relics — 261 pictures
 
 The catalogue number is the design canon's, and it is not part of the file name: the id is.
 
@@ -197,7 +197,7 @@ The catalogue number is the design canon's, and it is not part of the file name:
 | — | `lt_relic_spur_buckle` | Promissory Note | shop | Once each turn, after a card spends your Strength, you may spend 1 more Strength to gain 1 Energy. |
 | — | `lt_relic_regimental_drum` | Regimental Drum | shop | Start each combat with 1 Open Guard, 1 Authority and 1 Strength. |
 
-### Event relics — 26
+### Event relics — 30
 
 | # | code | title | rarity | the object |
 |---:|---|---|---|---|
@@ -227,6 +227,10 @@ The catalogue number is the design canon's, and it is not part of the file name:
 | 98 | `funerary_linen_coil` | Funerary Linen Coil | event | A compact roll of funerary linen with one long frayed strip unwinding downward. Faint violet funerary marks appear only on the outer wrap. |
 | 99 | `mercy_counterweight` | Mercy Counterweight | event | A small hanging counterweight engraved with a feather on one face and a single shallow crack on the other. A tiny loop allows it to hang from a scale. |
 | — | `trial_infirmary` | The Infirmary | event | Encounter Trial only: after every fight you win, heal to full. |
+| — | `mod_overtime` | Overtime | event | Run modifier. Enemies start every fight with 1 Strength per act. |
+| — | `mod_inherited_debt` | Inherited Debt | event | Run modifier. You started with two curses in your deck. |
+| — | `mod_glass_seal` | Glass Seal | event | Run modifier. You deal double damage, but have half your max HP. |
+| — | `mod_signing_bonus` | Signing Bonus | event | Run modifier. You started with a random rare relic. |
 
 ### Boss relics — 66
 

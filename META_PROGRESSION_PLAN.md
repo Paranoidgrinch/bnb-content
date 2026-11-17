@@ -130,7 +130,7 @@ Werte: Muschelwert / Freischaltpreis in Muscheln.
 | **Statute of Limitations** | schlecht | ab Runde 8 eines Kampfes werden Gegner wütend (+3 Strength pro Runde) | +1 | 2 |
 | **Spite Filing** | schlecht | ein Gegner, der fällt, verursacht 5 Schaden am Helden | +1 | 2 |
 | **Strict Filing** | schlecht | Kartenbelohnungen bieten 2 statt 3 Karten | +1 | 1 |
-| **Inherited Debt** | schlecht | Start mit 0 Gold und einem Fluch im Deck | +1 | 1 |
+| **Inherited Debt** | schlecht | Start mit zwei Flüchen im Deck (alle starten ohnehin mit 0 Gold) | +1 | 1 |
 | **Glass Seal** | anders | du verursachst doppelten Schaden, hast aber halbe Max-HP | 0 | 2 |
 | **Single Department** | anders | jeder Akt zieht seine normalen Kämpfe aus nur einer Gegnerfamilie | 0 | 1 |
 | **Mixed Departments** | anders | normale Kämpfe aus allen Akten bis zum aktuellen, angepasst an den Akt | 0 | 2 |
@@ -188,3 +188,21 @@ Gestrichen: **Audit Season** (Elite-Regel auf jeder normalen Begegnung) — kaum
 5. Modifikator-Tab auf dem Charakter-Bildschirm, mit Live-Ertrag.
 6. Die 15 Modifikatoren, in Gruppen zu je vier, jeweils mit Probe.
 7. Lauf-Logs und History zeigen Modifikatoren und Stufe.
+
+## 7 Stand (2026-11-18)
+
+Gebaut:
+- **Muscheln** (bnb-godot `Shells.cs`): Auszahlung, Deckel, Siegesserie je Charakter, erster Sieg öffnet das
+  Fach, Niederlage und aufgegebener Lauf beenden die Serie; Kontoauszug in `user://shell-statement.json`.
+- **Schließfach** (`SafeDepositPanel.cs`, Hauptmenü „Safe Deposit Box“): Muschelfach, Kontoauszug,
+  Modifikator-Register mit Kaufen.
+- **Modifikator-Tab** auf dem Blatt „Start a new run“: Schalter für gekaufte Modifikatoren, Ertrag live;
+  der Tagesrun läuft ohne Modifikatoren.
+- **Wirkung als Relikt** `mod_<id>` (bnb-content `Converter/Relics/ModifierRelics.cs`): ein Lauf startet mit den
+  Relikten seiner Modifikatoren. Fertig: Overtime, Inherited Debt, Glass Seal, Signing Bonus. Die übrigen 11
+  stehen im Laden als „In preparation“ und lassen sich erst kaufen, wenn ihr Relikt existiert.
+- Probe `--smoke-shells`.
+
+Offen: die übrigen 11 Modifikatoren; Strict Filing und Sealed Envelopes brauchen eine Belohnungsregel „weniger
+Angebote“ bzw. verdeckte Karten, Second Opinion ein Neu-Ziehen, Single/Mixed Departments die Kartengenerierung.
+

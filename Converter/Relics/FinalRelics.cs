@@ -24,6 +24,7 @@ public static class FinalRelics
         .. Apprentice.ApprenticeRelics.All(),
         .. Lieutenant.LieutenantRelics.All(),
         EncounterTrial.Infirmary,
+        .. ModifierRelics.All(NormalRelics.All()),
     ];
 
     public static IReadOnlyList<RelicData> Compile() => All().Select(r => r.Compile()).ToList();
@@ -32,7 +33,7 @@ public static class FinalRelics
     public static IReadOnlyList<StatusData> Statuses() =>
         [.. RelicRules.All(), .. ShopRelicRules.All(), .. EventRelicRules.All(), .. ActTwoEventRelicRules.All(),
          .. BossRelicRules.All(), .. ActThreeEventRelicRules.All(), .. ActFourEventRelicRules.All(),
-         .. EliteRelicRules.All()];
+         .. EliteRelicRules.All(), .. ModifierRelics.Statuses()];
 
     // What a given pool offers a given character. Character-specific relics are only eligible while that
     // character is played; everything else is open to everyone.
