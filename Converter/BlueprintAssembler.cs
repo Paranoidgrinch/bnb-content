@@ -21,6 +21,7 @@ public static class BlueprintAssembler
         // is one walk across all of them: the engine lays every act out at run start (RunSetup.BuildActPlan,
         // its own seed per act) and advances by itself when an act's boss falls.
         var pools = data.Acts.ToDictionary(a => a.Act, a => ConversionPools.Build(a.Act));
+        Relics.ModifierRelics.UsePools(pools);
         // The events an act AUTHORS (Act I's fifteen), built before its map so the map can draw from them.
         var authored = data.Acts.ToDictionary(
             a => a.Act, a => Events.AuthoredEvents.For(a.Act, pools[a.Act], new Random(seed + a.Act)));
@@ -483,7 +484,7 @@ public static class BlueprintAssembler
                 FlavorText = GameTitle,
                 // The compendium's plain words and examples (Compendium.cs): a wiki is about the GAME, so its
                 // words hang off the game's own entry.
-                Extra = Compendium.Extra().Concat(Tutorial.Extra()).Concat(CharacterUnlocks.Extra())
+                Extra = Compendium.Extra().Concat(Tutorial.Extra()).Concat(CharacterUnlocks.Extra()).Concat(Progression.Extra())
                     .Concat(trials)
                     .ToDictionary(p => p.Key, p => p.Value),
             },

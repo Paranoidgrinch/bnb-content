@@ -2,7 +2,7 @@
 
 Generated: `dotnet run --project Converter -- --art-slots ART_SLOTS.md`. **Do not edit by hand.**
 
-**884 pictures**: 477 cards, 261 relics, 142 bodies
+**893 pictures**: 477 cards, 270 relics, 142 bodies
 (every enemy, elite and boss) and 4 the player can be. Every one of them is filled today by a PLACEHOLDER — a plate with the file's own
 name and the word placeholder on it, written by `bnb-godot/tools/make-card-art.py`,
 `make-relic-art.py` and `make-enemy-art.py`. A painted picture replaces one by being saved over it, so
@@ -54,7 +54,7 @@ The relic briefs below are the design canon's own words
 `BnB_Elite_Relics_MASTER_AND_VISUAL_CANON.md` for #169–210). Frames, palettes and the label rule live
 there in full; only the object line is repeated here, because that is the line that differs per relic.
 
-## Relics — 261 pictures
+## Relics — 270 pictures
 
 The catalogue number is the design canon's, and it is not part of the file name: the id is.
 
@@ -197,7 +197,7 @@ The catalogue number is the design canon's, and it is not part of the file name:
 | — | `lt_relic_spur_buckle` | Promissory Note | shop | Once each turn, after a card spends your Strength, you may spend 1 more Strength to gain 1 Energy. |
 | — | `lt_relic_regimental_drum` | Regimental Drum | shop | Start each combat with 1 Open Guard, 1 Authority and 1 Strength. |
 
-### Event relics — 30
+### Event relics — 39
 
 | # | code | title | rarity | the object |
 |---:|---|---|---|---|
@@ -228,8 +228,17 @@ The catalogue number is the design canon's, and it is not part of the file name:
 | 99 | `mercy_counterweight` | Mercy Counterweight | event | A small hanging counterweight engraved with a feather on one face and a single shallow crack on the other. A tiny loop allows it to hang from a scale. |
 | — | `trial_infirmary` | The Infirmary | event | Encounter Trial only: after every fight you win, heal to full. |
 | — | `mod_overtime` | Overtime | event | Run modifier. Enemies start every fight with 1 Strength per act. |
+| — | `mod_statute_of_limitations` | Statute of Limitations | event | Run modifier. From round 8 of a fight, enemies gain 3 Strength every round. |
+| — | `mod_spite_filing` | Spite Filing | event | Run modifier. Every enemy that falls deals 5 damage to you. |
+| — | `mod_strict_filing` | Strict Filing | event | Run modifier. Card rewards offer one card fewer. |
 | — | `mod_inherited_debt` | Inherited Debt | event | Run modifier. You started with two curses in your deck. |
 | — | `mod_glass_seal` | Glass Seal | event | Run modifier. You deal double damage, but have half your max HP. |
+| — | `mod_paper_trail` | Paper Trail | event | Run modifier. You gain double gold; cards, relics and potions in shops cost double. |
+| — | `mod_clerical_error` | Clerical Error | event | Run modifier. Each turn one random card in your hand costs 0 and another costs 1 more. |
+| — | `mod_sealed_envelopes` | Sealed Envelopes | event | Run modifier. Card rewards are face down, but offer one card more. |
+| — | `mod_bureaucratic_sacrifice` | Bureaucratic Sacrifice | event | Run modifier. No card rewards; each enemy that falls leaves a card to choose with a chance of 1 in 4. |
+| — | `mod_requisition_form` | Requisition Form | event | Run modifier. At the start of every act, choose one of ten cards from your pool. |
+| — | `mod_second_opinion` | Second Opinion | event | Run modifier. Every card reward can be drawn anew once. |
 | — | `mod_signing_bonus` | Signing Bonus | event | Run modifier. You started with a random rare relic. |
 
 ### Boss relics — 66

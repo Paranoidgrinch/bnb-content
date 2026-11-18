@@ -194,15 +194,21 @@ Gestrichen: **Audit Season** (Elite-Regel auf jeder normalen Begegnung) — kaum
 Gebaut:
 - **Muscheln** (bnb-godot `Shells.cs`): Auszahlung, Deckel, Siegesserie je Charakter, erster Sieg öffnet das
   Fach, Niederlage und aufgegebener Lauf beenden die Serie; Kontoauszug in `user://shell-statement.json`.
-- **Schließfach** (`SafeDepositPanel.cs`, Hauptmenü „Safe Deposit Box“): Muschelfach, Kontoauszug,
-  Modifikator-Register mit Kaufen.
-- **Modifikator-Tab** auf dem Blatt „Start a new run“: Schalter für gekaufte Modifikatoren, Ertrag live;
-  der Tagesrun läuft ohne Modifikatoren.
-- **Wirkung als Relikt** `mod_<id>` (bnb-content `Converter/Relics/ModifierRelics.cs`): ein Lauf startet mit den
-  Relikten seiner Modifikatoren. Fertig: Overtime, Inherited Debt, Glass Seal, Signing Bonus. Die übrigen 11
-  stehen im Laden als „In preparation“ und lassen sich erst kaufen, wenn ihr Relikt existiert.
-- Probe `--smoke-shells`.
-
-Offen: die übrigen 11 Modifikatoren; Strict Filing und Sealed Envelopes brauchen eine Belohnungsregel „weniger
-Angebote“ bzw. verdeckte Karten, Second Opinion ein Neu-Ziehen, Single/Mixed Departments die Kartengenerierung.
-
+- **Schließfach** (`SafeDepositPanel.cs`, Hauptmenü „Safe Deposit Box“) mit zwei Reitern:
+  - **Drawers**: Stufe, XP-Balken, Register (Karten/Relikte im Besitz), eine Schublade je Stufe 2–13;
+    erreichte Mappen werden mit „Break the seal“ geöffnet.
+  - **Shell compartment**: Muscheln, Kontoauszug, Modifikator-Register mit Kaufen.
+- **Modifikator-Tab** auf dem Blatt „Start a new run“: Schalter, Ertrag live; der Tagesrun läuft ohne.
+- **Wirkung als Relikt** `mod_<id>` (bnb-content `Converter/Relics/ModifierRelics.cs`). Fertig: 13 von 15.
+  Abweichungen vom Entwurf: Inherited Debt = zwei Flüche (alle starten ohnehin mit 0 Gold); Requisition Form =
+  zu Beginn jedes Akts eine Wahl aus zehn Karten des eigenen Pools (der ganze Pool passt nicht auf den
+  Belohnungsbildschirm). **Offen: Single Department und Mixed Departments** — sie brauchen Eingriffe in die
+  Kartengenerierung (Stufenregeln, Gegner-HP je Akt) und stehen im Laden als „In preparation“.
+- **Kartenprogression** (bnb-content `Converter/Progression.cs` → `Extra["progression:lieutenant"]`, bnb-godot
+  `CardProgression.cs`): Startset 30 Karten + 10 Relikte, 12 Booster wie in der Tabelle, die übrigen 9 Relikte
+  in den Boostern ihrer Mechanik (statt Relikt-Kisten). XP: Raum 1, Elite 3, Boss 10, Sieg 15; Stufe n→n+1
+  kostet 30 + 15·(n−1), zusammen 1350. Normale Läufe sperren nicht besessene Karten und Relikte
+  (Core `CharacterContent.IsLocked`, Flags `locked:<id>`); Trials, Tagesrun, Bench und Golden spielen den vollen Pool.
+- Engine (RogueDeck-Core): gesperrte Inhalte, `DropOffersRule`, `RedrawOfferRule`, verdeckte Angebote
+  (`face_down`), `combat.fallenCount`.
+- Proben `--smoke-shells`, `--smoke-progression`; Abschlussbericht zeigt XP und Muscheln.
