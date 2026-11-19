@@ -79,9 +79,12 @@ public static class RunWalker
     // `mapGenerator` is MapGenerators.RuleBased or .Strategic, and null means the run's own default, which is
     // the rule-based one. It is only passed at the START: a save carries the generator it was laid out with, so
     // the resume below is already walking the right maps without being told (plan §4b).
+    // `characterId` picks the hero (null: the blueprint's first). `attach` is handed the playback after the start and
+    // after every reload (a RunDiagnostics hangs itself on it). `maxActs` ends the walk when the run enters that act + 1.
     public static Report Walk(
         RunBlueprint blueprint, int seed, int stepBudget = 30000, int saveEvery = 0,
-        Action<string>? progress = null, string? mapGenerator = null)
+        Action<string>? progress = null, string? mapGenerator = null, string? characterId = null,
+        Action<RunPlayback>? attach = null, int maxActs = 0)
     {
         ArgumentNullException.ThrowIfNull(blueprint);
         var rng = new Random(seed);
@@ -91,8 +94,10 @@ public static class RunWalker
         var steps = 0;
 
         var play = new RunPlayback(() => { });
-        play.Start(blueprint, seed, interactive: true, mapGenerator: mapGenerator);
+        play.Start(blueprint, seed, interactive: true, characterId: characterId, mapGenerator: mapGenerator);
         using var _ = play;
+        if (play.Error is null)
+            attach?.Invoke(play);
         if (play.Error is { } startError)
             return new Report(seed, RunResult.Ongoing, startError, stops, notes, steps,
                 MapGenerators.Name(play.Session?.Run.GeneratedMapGenerator ?? mapGenerator));
@@ -145,6 +150,8 @@ public static class RunWalker
             }
             if (session.IsComplete)
                 break;
+            if (maxActs > 0 && session.Run.ActNumber > maxActs)
+                break;
             Note();
 
             if (session.IsAwaitingNodeChoice)
@@ -184,8 +191,12 @@ public static class RunWalker
             else if (session.IsAwaitingInterlude)
             {
                 interludes++;
-                if (saveEvery > 0 && interludes % saveEvery == 0 && !Reload(ref play, ref session, blueprint, notes))
-                    break;
+                if (saveEvery > 0 && interludes % saveEvery == 0)
+                {
+                    if (!Reload(ref play, ref session, blueprint, notes))
+                        break;
+                    attach?.Invoke(play);
+                }
                 session.Continue();
                 meter.Answered();
             }

@@ -65,6 +65,11 @@ string? actBench = null;
 // THE MECHANIC AUDIT (MechanicAudit, 2026-10-30): --mechanic-audit <snapshots.json> --bench-acts 1,2,3,4 [--audit-per n]
 //      [--bench-only id,id] — the planner's line through every encounter replayed on a traced fork, every rule counted.
 string? mechanicAudit = null;
+// THE RUN AUDIT (Playtest/RunAudit.cs): --run-audit <dir> [--audit-relics a,b] [--audit-acts n] [--character id]
+string? runAudit = null;
+string? auditRelics = null;
+var auditActs = 2;
+var auditCharacter = "lieutenant";
 var auditPer = 2;
 string? benchActs = null;
 string? benchRuns = null;
@@ -168,6 +173,10 @@ for (var i = 0; i < args.Length - 1; i++)
         case "--family-normals": familyNormals = int.Parse(args[i + 1]); break;
         case "--act-bench": actBench = args[i + 1]; break;
         case "--mechanic-audit": mechanicAudit = args[i + 1]; break;
+        case "--run-audit": runAudit = args[i + 1]; break;
+        case "--audit-relics": auditRelics = args[i + 1]; break;
+        case "--audit-acts": auditActs = int.Parse(args[i + 1]); break;
+        case "--character": auditCharacter = args[i + 1]; break;
         case "--audit-per": auditPer = int.Parse(args[i + 1]); break;
         case "--bench-acts": benchActs = args[i + 1]; break;
         case "--bench-runs": benchRuns = args[i + 1]; break;
@@ -320,6 +329,13 @@ try
         return MapStats(blueprint, seed, maps);
     if (mapReport > 0)
         return MapReport(blueprint, seed, mapReport);
+    if (runAudit is not null)
+    {
+        var auditJson = RunJson.CreateOptions(indented: false);
+        var shipped = RunJson.BlueprintFromJson(RunJson.ToJson(blueprint, auditJson), auditJson);
+        return RunAudit.Run(shipped, runAudit, auditRelics?.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries),
+            auditActs, auditCharacter, seed, jobs);
+    }
     if (walk != 0)
         return Playtest(blueprint, seed, 1, generator, jobs, walk);
     if (playtest > 0)
