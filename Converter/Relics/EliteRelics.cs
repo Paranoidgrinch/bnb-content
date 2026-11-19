@@ -49,7 +49,13 @@ public static class EliteRelics
         // the shelf asks what the player is carrying as it is built, so this cannot miss its moment.
         Elite("inventory_lantern_glass", "Inventory Lantern Glass", "city_elite_enforcement_02",
             "Every shop will strike one card from your deck for nothing.",
-            shopServices: [ShopService.RemoveCard(StandardRunIds.Gold, 0)]),
+            // ⚠ Its own service id: under the shop's "remove-card" the shelf took it for the shop's own service and
+            // dropped it (ShopShelf does not double a service it already lists) — the lantern never showed
+            // (playtest 2026-11-19, found with the run log).
+            shopServices: [ShopService.RemoveCard(StandardRunIds.Gold, 0, id: "lantern-remove-card") with
+            {
+                TextKey = "event.shop.lantern-remove-card",
+            }]),
 
         Elite(EliteRelicRules.GateChainId, "Gate-Chain Counterweight", "city_elite_enforcement_03",
             "Deal 20 or more damage in one turn and your first card next turn costs 1 less.",

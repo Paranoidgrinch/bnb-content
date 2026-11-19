@@ -639,10 +639,17 @@ public static class RelicRules
     // ── run programs ──────────────────────────────────────────────────────────────────────────────────────
 
     // "Whenever you Rest at a Campfire, upgrade 1 random unupgraded card. Whenever you Smith, heal 7 HP."
-    // Both halves happen on entering a rest node, since which action was taken is the node's own business.
-    public static readonly ITriggeredRunEffectDefinition TwinEmberBrazier =
-        RunPrograms.On<NodeEnteredRunEvent>(
-            new UpgradeCardsRunEffect(RunSelectors.DeckCards.Upgradable().Random(1)),
+    // Read off the campfire's own choice (EventTemplates.Rest: "rest" heals, "amend" improves a card), at a room
+    // tagged rest. ⚠ It used to answer every NodeEntered — an upgrade and 7 HP in every room of the run
+    // (playtest 2026-11-19, found with the run log).
+    public static readonly ITriggeredRunEffectDefinition TwinEmberBrazierRest =
+        RunPrograms.When<EventChoiceMadeRunEvent>(
+            new EventChoiceIsExpression("rest", MapNodeTags.Rest),
+            new UpgradeCardsRunEffect(RunSelectors.DeckCards.Upgradable().Random(1)));
+
+    public static readonly ITriggeredRunEffectDefinition TwinEmberBrazierSmith =
+        RunPrograms.When<EventChoiceMadeRunEvent>(
+            new EventChoiceIsExpression("amend", MapNodeTags.Rest),
             new HealRunEffect(7));
 
     // ── the relic audit (2026-11-08) ──────────────────────────────────────────────────────────────────────

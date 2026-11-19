@@ -198,8 +198,11 @@ public static class NormalRelics
 
         // Relic audit (2026-11-08): was a grab-bag of an upgrade and a heal; now a token for the road's stops.
         Normal("road_claim_token", "Road-Claim Token", Rarity.Rare,
-            "Whenever you resolve an Event, heal 5 HP and upgrade a random card.",
-            runPrograms: [RunPrograms.On<EventChoiceMadeRunEvent>(
+            "Whenever you enter an Event, heal 5 HP and upgrade a random card.",
+            // ⚠ Once per Event room. It used to answer every EventChoiceMade — a treasure opened, a campfire rested
+            // or left, and every step of a two-step event (playtest 2026-11-19, found with the run audit).
+            runPrograms: [RunPrograms.When<NodeEnteredRunEvent>(
+                new EventNodeHasTagExpression(MapNodeTags.Event),
                 Heal(5), new UpgradeCardsRunEffect(RunSelectors.DeckCards.Upgradable().Random(1)))]),
 
         Normal("concordance_medallion", "Concordance Medallion", Rarity.Rare,
@@ -220,7 +223,7 @@ public static class NormalRelics
 
         Normal("twin_ember_brazier", "Twin-Ember Brazier", Rarity.Rare,
             "Whenever you Rest at a Campfire, upgrade 1 random unupgraded card. Whenever you Smith, heal 7 HP.",
-            runPrograms: [RelicRules.TwinEmberBrazier]),
+            runPrograms: [RelicRules.TwinEmberBrazierRest, RelicRules.TwinEmberBrazierSmith]),
 
 
         Normal("rebinding_spindle", "Rebinding Spindle", Rarity.Rare,
