@@ -30,6 +30,8 @@ public static class LogOnlyStatuses
         // Act IV's machinery: which bodies weigh, a rise in progress, the jar under every jar's own name
         "weighs_your_turn", "rising", "canopic_jar", "capstone_pending", "door_pending", "westbound",
         "fled_with_the_gold",
+        // Act III's tally of Claims granted outright (read by rules, never by the player)
+        "claim_created",
         // …and its elites': whose tool is whose, a tool just swung, a coil already given this turn
         "owns_pry_bar", "owns_knife", "owns_idol", "used_a_tool", "apep_loosened",
         // …and its bosses': the vessel under every vessel's own name

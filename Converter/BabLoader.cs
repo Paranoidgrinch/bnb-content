@@ -19,6 +19,10 @@ public sealed class BabData
     // the authored sentence. A card not named keeps its own. The mechanics are the programs'; only the words change.
     public IReadOnlyDictionary<string, string> CardTexts { get; init; } = new Dictionary<string, string>();
 
+    // Hand-written outcome lines for event choices whose effects cannot say it themselves (playtest 2026-11-19),
+    // keyed "event/situation/choice". The game reads them as Presentation.Game.Extra["event-outcomes"].
+    public IReadOnlyDictionary<string, string> EventOutcomes { get; init; } = new Dictionary<string, string>();
+
     public static readonly JsonSerializerOptions JsonOptions = new()
     {
         PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower,
@@ -33,9 +37,11 @@ public sealed class BabData
             relatives.SelectMany(r => Read<List<T>>(Path.Combine(dataDirectory, r))).ToList();
 
         var cardTexts = Path.Combine(dataDirectory, "cards/card_texts.json");
+        var eventOutcomes = Path.Combine(dataDirectory, "events/event_outcomes.json");
         return new BabData
         {
             CardTexts = File.Exists(cardTexts) ? Read<Dictionary<string, string>>(cardTexts) : new Dictionary<string, string>(),
+            EventOutcomes = File.Exists(eventOutcomes) ? Read<Dictionary<string, string>>(eventOutcomes) : new Dictionary<string, string>(),
             Acts =
             [
                 One<BabActManifest>("acts/act_1_city.json"),

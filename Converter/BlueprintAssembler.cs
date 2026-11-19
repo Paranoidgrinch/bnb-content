@@ -486,6 +486,7 @@ public static class BlueprintAssembler
                 // words hang off the game's own entry.
                 Extra = Compendium.Extra().Concat(Tutorial.Extra()).Concat(CharacterUnlocks.Extra()).Concat(Progression.Extra())
                     .Concat(trials)
+                    .Append(new KeyValuePair<string, string>("event-outcomes", System.Text.Json.JsonSerializer.Serialize(data.EventOutcomes)))
                     .ToDictionary(p => p.Key, p => p.Value),
             },
         };
