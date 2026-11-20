@@ -30,13 +30,26 @@ public static class RunAudit
             r => $"{r.DisplayName}: {shipped.Presentation.Relics.GetValueOrDefault(r.Id)?.FlavorText}", StringComparer.Ordinal);
         Console.WriteLine($"run audit: {relics.Count} relic(s), acts 1-{acts}, as {character}, seed {seed} -> {outDir}");
 
+        var owners = BnbContent.Converter.Relics.FinalRelics.All()
+            .Where(r => r.Eligibility != BnbContent.Converter.Relics.RelicAuthoring.Eligibility.General)
+            .ToDictionary(r => r.Id, r => r.Eligibility switch
+            {
+                BnbContent.Converter.Relics.RelicAuthoring.Eligibility.Bureaucrat => ConversionPools.BureaucratId,
+                BnbContent.Converter.Relics.RelicAuthoring.Eligibility.HedgeWitch => BnbContent.Converter.Witch.WitchCharacter.Id,
+                BnbContent.Converter.Relics.RelicAuthoring.Eligibility.Apprentice => BnbContent.Converter.Apprentice.ApprenticeCharacter.Id,
+                _ => BnbContent.Converter.Lieutenant.LieutenantCharacter.Id,
+            }, StringComparer.Ordinal);
+
         // The walk without any added relic: what a shop and a reward look like on this seed by default.
         var baseline = WalkWith(tester, null, Path.Combine(outDir, "_baseline.log"), acts, character, seed);
         var summaries = new string[relics.Count];
         Parallel.For(0, relics.Count, new ParallelOptions { MaxDegreeOfParallelism = Math.Max(1, jobs) }, i =>
         {
             var id = relics[i];
-            var log = WalkWith(tester, id, Path.Combine(outDir, id + ".log"), acts, character, seed);
+            // A character's own relic is walked as that character (a Witch relic counting Misfortune needs the
+            // Witch's cards); a general one as the character asked for.
+            var who = owners.TryGetValue(id, out var own) ? own : character;
+            var log = WalkWith(tester, id, Path.Combine(outDir, id + ".log"), acts, who, seed);
             summaries[i] = Summarize(id, texts.GetValueOrDefault(id, ""), log, baseline);
             Console.WriteLine($"  {i + 1}/{relics.Count} {id}");
         });
@@ -60,7 +73,10 @@ public static class RunAudit
         var blueprint = relic is null ? tester : WithRelic(tester, relic);
         var lines = new List<string>();
         var diagnostics = new RunDiagnostics(lines.Add);
+        // The walker's slow-turn lines ("turn 40: ... — who is still standing") go into the log too: they are what
+        // says whether a fight that never ends is slow or stuck.
         var report = RunWalker.Walk(blueprint, seed, characterId: character, mapGenerator: MapGenerators.Strategic,
+            progress: line => { if (line.TrimStart().StartsWith("turn", StringComparison.Ordinal)) lines.Add("  ~ " + line.Trim()); },
             attach: play => diagnostics.Attach(play, $"audit walk · relic {relic ?? "(none)"} · seed {seed}"),
             maxActs: acts);
         diagnostics.Detach();

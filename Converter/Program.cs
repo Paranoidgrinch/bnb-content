@@ -67,6 +67,8 @@ string? actBench = null;
 string? mechanicAudit = null;
 // THE RUN AUDIT (Playtest/RunAudit.cs): --run-audit <dir> [--audit-relics a,b] [--audit-acts n] [--character id]
 string? runAudit = null;
+string? relicCombatAudit = null;
+var auditFights = 6;
 string? auditRelics = null;
 var auditActs = 2;
 var auditCharacter = "lieutenant";
@@ -174,6 +176,8 @@ for (var i = 0; i < args.Length - 1; i++)
         case "--act-bench": actBench = args[i + 1]; break;
         case "--mechanic-audit": mechanicAudit = args[i + 1]; break;
         case "--run-audit": runAudit = args[i + 1]; break;
+        case "--relic-combat-audit": relicCombatAudit = args[i + 1]; break;
+        case "--audit-fights": auditFights = int.Parse(args[i + 1]); break;
         case "--audit-relics": auditRelics = args[i + 1]; break;
         case "--audit-acts": auditActs = int.Parse(args[i + 1]); break;
         case "--character": auditCharacter = args[i + 1]; break;
@@ -329,6 +333,9 @@ try
         return MapStats(blueprint, seed, maps);
     if (mapReport > 0)
         return MapReport(blueprint, seed, mapReport);
+    if (relicCombatAudit is not null)
+        return RelicCombatAudit.Run(blueprint, relicCombatAudit,
+            auditRelics?.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries), auditFights, seed, jobs);
     if (runAudit is not null)
     {
         var auditJson = RunJson.CreateOptions(indented: false);

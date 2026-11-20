@@ -119,10 +119,21 @@ public static class Greedy
         var energy = hero.Resources.TryGetValue(StandardCombatIds.EnergyResource, out var pool) ? pool.Current : 0;
         var candidates = combat.Hand
             .Where(c => !refused.Contains(c.Id) && !barren.Contains(c.DefinitionId.value)
-                && !Borrows(combat, c) && Affordable(play, combat, c, energy))
+                && !Borrows(combat, c) && !BurnsTheDeck(combat, c) && Affordable(play, combat, c, energy))
             .ToList();
         return candidates.Count == 0 ? null : candidates[rng.Next(candidates.Count)];
     }
+
+    // A card that EXHAUSTS OTHER CARDS out of the draw or discard pile (Bone Meal, Read by Firelight). Played on every
+    // turn of a long fight by a player that plays whatever it can, it eats the whole deck: the walks of 2026-11-19
+    // ended with 0-4 cards and no attack left, against an enemy an immortal hero could neither kill nor die to.
+    // The walkers leave them in hand.
+    public static bool BurnsTheDeck(InteractiveCombat combat, CardInstance card) =>
+        combat.Registry.CardDefinitions.TryGetValue(card.DefinitionId, out var definition)
+        && definition.DescriptionKey is { } text
+        && (text.Contains("Exhaust a card", StringComparison.Ordinal)
+            || text.Contains("Exhaust up to", StringComparison.Ordinal)
+            || text.Contains("Exhaust the top", StringComparison.Ordinal));
 
     // A card that lends against a later turn and comes straight back to the hand (Nanshe's Take From Tomorrow):
     // by its own lights playing it once more is always worth it, so a walker that plays what it can would play it

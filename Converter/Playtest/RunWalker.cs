@@ -337,7 +337,15 @@ public static class RunWalker
             if (session.Error is not null || play.Error is not null)
                 return true;
         }
-        notes.Add($"{node}: a fight did not end in 100 turns");
+        // WHY it did not end, said with it: who still stands, and what the hero is holding and carrying.
+        var stuck = driver.Current;
+        var heroState = stuck is null ? "" : stuck.State.GetCombatant(stuck.HeroId) is { } h
+            ? $"; hero {h.Health.Current}/{h.Health.Max}, hand {stuck.Hand.Count} "
+              + $"[{string.Join(",", stuck.Hand.Select(c => c.DefinitionId.value))}], energy {stuck.HeroEnergy}, "
+              + $"statuses [{string.Join(",", h.Statuses.Select(x => $"{x.DefinitionId.value}:{x.Stacks}"))}]; "
+              + $"enemy statuses [{string.Join(" | ", stuck.State.Combatants.Where(c => c.Id != stuck.HeroId && c.IsAlive).Select(c => string.Join(",", c.Statuses.Select(x => $"{x.DefinitionId.value}:{x.Stacks}"))))}]"
+            : "";
+        notes.Add($"{node}: a fight did not end in 100 turns — {Greedy.Standing(stuck)}{heroState}");
         return false;
     }
 
