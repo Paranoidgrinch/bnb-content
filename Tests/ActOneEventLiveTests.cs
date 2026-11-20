@@ -285,6 +285,22 @@ public class ActOneEventLiveTests
             .DefensivePools[StandardCombatIds.BlockDefensivePool].Current);
     }
 
+    // Regression (playtest 2026-11-19): the protection's "10 more when you are hurt" went to the ATTACKER (the
+    // source of the blow) and the protection was never taken off you — every hit gave the enemy 10 Block.
+    [Fact]
+    public void Witness_protection_is_spent_on_you_the_first_time_you_are_hurt()
+    {
+        using var story = EventStory.Enter("witness_queue", "cross_examine", Starter,
+            enemy: "queue_crier_homunculus", intent: "recite_the_waiting_order");
+        var enemy = story.Fight.State.Combatants.First(c => c.Id != story.Fight.HeroId).Id;
+
+        story.PassTurns(2);
+
+        Assert.Equal(0, HeroStacks(story, ActOneEventObjects.WitnessProtection));
+        var pools = story.Fight.State.GetCombatant(enemy).DefensivePools;
+        Assert.True(!pools.TryGetValue(StandardCombatIds.BlockDefensivePool, out var guard) || guard.Current < 10);
+    }
+
     // ── 11. The Clerk's Tea Break ─────────────────────────────────────────────────────────────────────────
 
     [Fact]
