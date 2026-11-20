@@ -22,7 +22,7 @@ public static class RelicRules
     [
         BrassBookmark, ConservatorsThread, SunWarmedWaystone, FiveNotchBead, FormkeepersSignet,
         LeadCounterweight, HollowWaxBead, BindersAwl, PetitionersToken, IronPrayerBead, BlackSaltCharm,
-        TarnishedBell, BruiseCup, VotiveCandle, RootboundStaff, EmergencyInkwell, AshenWaxKnife,
+        TarnishedBell, BruiseCup, VotiveCandle, GraveCoin, EmergencyInkwell, AshenWaxKnife,
         QuietReadersCord, ArchiveKey, RedactionKnife, IndexBone, ArchiveCenser, SealMakersDie,
         BloodPriceToken, BlackthornBrooch, SootglassLens, RubricTablet, RefuseDocket, IndexVolvelle,
         WithheldHourglass, ConcordanceMedallion, ChanceryRibbon, IronAstrolabe, RebindingSpindle,
@@ -46,6 +46,35 @@ public static class RelicRules
         Once("black_salt_charm", "Black Salt Charm", "Guards you as the fight opens.",
             Block<CardsDrawnTriggeredEffectContext>(4), nameof(TriggerEvent.CardsDrawn));
 
+    // "Whenever an enemy dies while affected by a negative status, gain 4 Gold." The fight counts such deaths as
+    // they happen (the one who fell is the source of its fall, still readable); the run pays when it is over.
+    // ⚠ It used to pay 4 after every victory, debuff or not (relic audit 2026-11-20).
+    public static CounterId DebuffedDeaths => new("grave_coin_deaths");
+
+    public static readonly StatusData GraveCoin = Rule("grave_coin", "Grave Coin",
+        "Whoever dies under your curses pays for the burial.",
+        [Trigger(new EffectProgram<CombatantDownedTriggeredEffectContext>(
+            new ConditionalEffectNode<CombatantDownedTriggeredEffectContext>(
+                new AndExpression<CombatantDownedTriggeredEffectContext>(
+                    new NotExpression<CombatantDownedTriggeredEffectContext>(
+                        new TargetHasStatusExpression<CombatantDownedTriggeredEffectContext>(
+                            CombatantTargetSelectors.SourceIncludingDowned, new StatusDefinitionId(Keywords.ApplicantMarker))),
+                    new ComparisonExpression<CombatantDownedTriggeredEffectContext>(
+                        new CombatantStacksByPolarityExpression<CombatantDownedTriggeredEffectContext>(
+                            CombatantTargetSelectors.SourceIncludingDowned, StatusPolarity.Debuff),
+                        ComparisonOperator.Greater, new ConstantExpression<CombatantDownedTriggeredEffectContext>(0))),
+                new ForEachTargetEffectNode<CombatantDownedTriggeredEffectContext>(
+                    CombatantTargetSelectors.WithStatus(CombatantTargetSelectors.AllCombatants, new StatusDefinitionId("grave_coin")),
+                    new SetCombatantCounterNode<CombatantDownedTriggeredEffectContext>(
+                        CombatantTargetSelectors.IterationTarget, DebuffedDeaths,
+                        new ConstantExpression<CombatantDownedTriggeredEffectContext>(1), relative: true)))),
+            nameof(TriggerEvent.Downed), StatusTriggerScope.Anywhere)]);
+
+    public static readonly ITriggeredRunEffectDefinition GraveCoinPay =
+        RunPrograms.When<CombatResolvedRunEvent>(RunEventValues.CombatWasVictory,
+            RunEffectTemplates.GainResource(StandardRunIds.Gold,
+                RunExpr.Multiply(RunEventValues.CombatCounter(DebuffedDeaths.ToString()), RunExpr.Const(4))));
+
     // "Lose 6 HP; gain 1 Energy and 1 extra card on turn 1."
     public static readonly StatusData BloodStampedBond =
         Once("blood_stamped_bond", "Blood-Stamped Bond", "Signed in blood, once per fight.",
@@ -58,15 +87,26 @@ public static class RelicRules
                 Draw<CardsDrawnTriggeredEffectContext>(1),
             ]), nameof(TriggerEvent.CardsDrawn));
 
-    // "At the start of your next combat after a non-combat node, gain 1 Energy and 6 Block." Every combat
-    // gets it — the map bookkeeping that would restrict it to combats following a rest is not worth a run
-    // program of its own. See ADAPTATIONS.
-    public static readonly StatusData RootboundStaff =
-        Once("rootbound_walking_staff", "Rootbound Walking Staff", "The road rested you.",
-            new CausalSequenceEffectNode<CardsDrawnTriggeredEffectContext>(
-                [HeldEnergy.Hold<CardsDrawnTriggeredEffectContext>(1),
-                 Block<CardsDrawnTriggeredEffectContext>(6)]),
-            nameof(TriggerEvent.CardsDrawn));
+    // "At the start of your next combat after a non-combat node, gain 1 Energy and 6 Block." The road decides, so the
+    // run does it: a non-combat room owes the next fight an opening (RootboundStaffRoad). ⚠ It used to open EVERY fight
+    // (relic audit 2026-11-20) — "the map bookkeeping is not worth a run program" no longer holds.
+    public static RunCounterId RootboundOwed => new("rootbound_walking_staff_owed");
+
+    public static IReadOnlyList<ITriggeredRunEffectDefinition> RootboundStaffRoad =>
+    [
+        // A fight entered while owed: the opening, and the debt is paid.
+        RunPrograms.When<NodeEnteredRunEvent>(
+            RunExpr.And(new EventBoolValueExpression(RunEventFields.NodeIsCombat),
+                RunExpr.Equal(RunExpr.Counter(RootboundOwed), RunExpr.Const(1))),
+            RunEffectTemplates.Literal(Openings.NextCombat(
+                new CombatNodeModel("applyStatus", "source", CombatAmountSpec.FromConst(1), StatusId: HeldEnergy.Id),
+                new CombatNodeModel("gainBlock", "source", CombatAmountSpec.FromConst(6)))),
+            RunEffectTemplates.ChangeCounter(RootboundOwed, RunExpr.Const(-1))),
+        // Any other room: owed (set, never added).
+        RunPrograms.When<NodeEnteredRunEvent>(
+            RunExpr.Not(new EventBoolValueExpression(RunEventFields.NodeIsCombat)),
+            RunEffectTemplates.ChangeCounter(RootboundOwed, RunExpr.Subtract(RunExpr.Const(1), RunExpr.Counter(RootboundOwed)))),
+    ];
 
     // "At the start of your turn, draw 1 additional card."
     public static readonly StatusData IndexBone = Rule("index_bone", "Index Bone",
@@ -76,17 +116,19 @@ public static class RelicRules
                 Draw<CardsDrawnTriggeredEffectContext>(1))), nameof(TriggerEvent.CardsDrawn)),
          ClearLatch("index_bone")]);
 
-    // "Once per turn, after your normal draw, discard 1 card and draw 1 card." Discarding a card the player
-    // would have picked is not something a rule can ask for, so the oldest card in hand goes. See ADAPTATIONS.
+    // "Once per turn, after your normal draw, discard 1 card and draw 1 card." The player picks the card, as the
+    // text says. ⚠ It used to throw away the oldest card in hand, unasked (relic audit 2026-11-20): the engine could
+    // not ask then; it can now (Tin Fife asks the same way).
     public static readonly StatusData RedactionKnife = Rule("redaction_knife", "Redaction Knife",
-        "After your draw, the oldest card in your hand is traded for a fresh one.",
+        "After your draw, discard a card of your choice and draw a fresh one.",
         [Trigger(new EffectProgram<CardsDrawnTriggeredEffectContext>(
             OnceEachTurn<CardsDrawnTriggeredEffectContext>("redaction_knife",
                 new CausalSequenceEffectNode<CardsDrawnTriggeredEffectContext>(
                 [
                     new MoveCardToZoneNode<CardsDrawnTriggeredEffectContext>(
                         CombatantTargetSelectors.Source,
-                        new CardInZoneExpression<CardsDrawnTriggeredEffectContext>(CardZone.Hand, 0),
+                        new ChosenCardInZoneExpression<CardsDrawnTriggeredEffectContext>(CardZone.Hand,
+                            "discard a card to draw a fresh one"),
                         CardZone.DiscardPile),
                     Draw<CardsDrawnTriggeredEffectContext>(1),
                 ]))), nameof(TriggerEvent.CardsDrawn)),
@@ -102,26 +144,20 @@ public static class RelicRules
                  Draw<CardsDrawnTriggeredEffectContext>(1)]),
             nameof(TriggerEvent.CardsDrawn));
 
-    // "If you end your turn with at least 1 unspent Energy, gain 5 Block." The Block is granted after the
-    // next draw, since Block gained at a turn's end is swept away by that turn's own end.
+    // "If you end your turn with at least 1 unspent Energy, gain 5 Block." Granted as the turn ends, so it stands
+    // against the blows that follow. ⚠ It used to be paid after the NEXT draw (relic audit 2026-11-20): the Block came a
+    // round late and was gone before the enemy it was meant for ever struck. A turn's end Block holds until the next
+    // turn starts, as Pay Chest's always has.
     public static readonly StatusData SunWarmedWaystone = Rule("sun_warmed_waystone", "Sun-Warmed Waystone",
-        "Ending a turn with Energy to spare guards you next turn.",
+        "Ending a turn with Energy to spare guards you.",
         [Trigger(new EffectProgram<TurnEndedTriggeredEffectContext>(
             new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
                 new ComparisonExpression<TurnEndedTriggeredEffectContext>(
                     new CombatantCurrentResourceExpression<TurnEndedTriggeredEffectContext>(
                         CombatantTargetSelectors.Source, StandardCombatIds.EnergyResource),
                     ComparisonOperator.Greater, new ConstantExpression<TurnEndedTriggeredEffectContext>(0)),
-                SetCounter<TurnEndedTriggeredEffectContext>("waystone_owed", 1))),
-            nameof(TriggerEvent.TurnEnded)),
-         Trigger(new EffectProgram<CardsDrawnTriggeredEffectContext>(
-            new ConditionalEffectNode<CardsDrawnTriggeredEffectContext>(
-                Counter<CardsDrawnTriggeredEffectContext>("waystone_owed", ComparisonOperator.Greater, 0),
-                new CausalSequenceEffectNode<CardsDrawnTriggeredEffectContext>(
-                [
-                    Block<CardsDrawnTriggeredEffectContext>(5),
-                    SetCounter<CardsDrawnTriggeredEffectContext>("waystone_owed", 0),
-                ]))), nameof(TriggerEvent.CardsDrawn))]);
+                Block<TurnEndedTriggeredEffectContext>(5))),
+            nameof(TriggerEvent.TurnEnded))]);
 
     // "If you end your turn having played 2 or fewer cards, draw 1 additional card next turn."
     public static readonly StatusData QuietReadersCord = Rule("quiet_readers_cord", "Quiet Reader's Cord",
@@ -151,11 +187,35 @@ public static class RelicRules
             CombatantTargetSelectors.LowestHealthEnemyOfSource,
             new ConstantExpression<CardPlayedTriggeredEffectContext>(6)));
 
-    // "Every third 0-cost card played draws 1 card." Counted over every card rather than only free ones —
-    // a trigger cannot read the cost of the card that fired it. See ADAPTATIONS.
-    public static readonly StatusData HollowWaxBead = EveryNthCard("hollow_wax_bead", "Hollow Wax Bead", 3,
-        "Every third card you play draws you another.",
-        Draw<CardPlayedTriggeredEffectContext>(1));
+    // "Every third 0-cost card played during combat draws 1 card, at most once per turn." The played card's PRINTED
+    // cost decides what counts (a card made free by a discount is not a 0-cost card). ⚠ It counted every card played
+    // and drew on every third, any number of times a turn (relic audit 2026-11-20): the text was an adaptation the
+    // engine has since outgrown.
+    public static readonly StatusData HollowWaxBead = Rule("hollow_wax_bead", "Hollow Wax Bead",
+        "Every third free card you play draws you another, once a turn.",
+        [Trigger(new EffectProgram<CardPlayedTriggeredEffectContext>(
+            new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
+                new ComparisonExpression<CardPlayedTriggeredEffectContext>(
+                    new CardCostExpression<CardPlayedTriggeredEffectContext>(
+                        new TriggerEventCardInstanceExpression<CardPlayedTriggeredEffectContext>(),
+                        StandardCombatIds.EnergyResource),
+                    ComparisonOperator.Equal, new ConstantExpression<CardPlayedTriggeredEffectContext>(0)),
+                new CausalSequenceEffectNode<CardPlayedTriggeredEffectContext>(
+                [
+                    new SetCombatantCounterNode<CardPlayedTriggeredEffectContext>(
+                        CombatantTargetSelectors.Source, new CounterId("hollow_wax_bead"),
+                        new ConstantExpression<CardPlayedTriggeredEffectContext>(1), relative: true),
+                    new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
+                        new ComparisonExpression<CardPlayedTriggeredEffectContext>(
+                            new RemainderExpression<CardPlayedTriggeredEffectContext>(
+                                new CombatantCounterExpression<CardPlayedTriggeredEffectContext>(
+                                    CombatantTargetSelectors.Source, new CounterId("hollow_wax_bead")),
+                                new ConstantExpression<CardPlayedTriggeredEffectContext>(3)),
+                            ComparisonOperator.Equal, new ConstantExpression<CardPlayedTriggeredEffectContext>(0)),
+                        OnceEachTurn<CardPlayedTriggeredEffectContext>("hollow_wax_bead_turn",
+                            Draw<CardPlayedTriggeredEffectContext>(1))),
+                ]))), nameof(TriggerEvent.CardPlayed)),
+         ClearLatch("hollow_wax_bead_turn")]);
 
     // "The first time each turn you play a card with base cost 2 or more, gain 4 Block." Cost is not readable
     // from a card-play trigger, so it pays on the first card of each turn. See ADAPTATIONS.
@@ -209,17 +269,12 @@ public static class RelicRules
         "Once a fight, an empty pool refills by one.",
         [Trigger(new EffectProgram<CardPlayedTriggeredEffectContext>(
             new ConditionalEffectNode<CardPlayedTriggeredEffectContext>(
-                new AndExpression<CardPlayedTriggeredEffectContext>(
-                    Counter<CardPlayedTriggeredEffectContext>("inkwell_used", ComparisonOperator.Equal, 0),
-                    new ComparisonExpression<CardPlayedTriggeredEffectContext>(
-                        new CombatantCurrentResourceExpression<CardPlayedTriggeredEffectContext>(
-                            CombatantTargetSelectors.Source, StandardCombatIds.EnergyResource),
-                        ComparisonOperator.Equal, new ConstantExpression<CardPlayedTriggeredEffectContext>(0))),
-                new CausalSequenceEffectNode<CardPlayedTriggeredEffectContext>(
-                [
-                    Energy<CardPlayedTriggeredEffectContext>(1),
-                    SetCounter<CardPlayedTriggeredEffectContext>("inkwell_used", 1),
-                ]))), nameof(TriggerEvent.CardPlayed))]);
+                new ComparisonExpression<CardPlayedTriggeredEffectContext>(
+                    new CombatantCurrentResourceExpression<CardPlayedTriggeredEffectContext>(
+                        CombatantTargetSelectors.Source, StandardCombatIds.EnergyResource),
+                    ComparisonOperator.Equal, new ConstantExpression<CardPlayedTriggeredEffectContext>(0)),
+                OnceEachTurn<CardPlayedTriggeredEffectContext>("inkwell_used",
+                    Energy<CardPlayedTriggeredEffectContext>(1)))), nameof(TriggerEvent.CardPlayed))]);
 
     // ── status and damage watchers ────────────────────────────────────────────────────────────────────────
 
@@ -231,11 +286,20 @@ public static class RelicRules
         new DealDamageNode<StatusMergedTriggeredEffectContext>(
             CombatantTargetSelectors.EventTarget, new ConstantExpression<StatusMergedTriggeredEffectContext>(4)));
 
-    // "The first time each turn you apply a negative status to an enemy that already had one, draw 1 card."
-    // Told apart from the Bell by watching MERGES only: a status landing on one already there.
+    // "The first time each turn you apply a negative status to an enemy that already had one, draw 1 card." A merge
+    // is a debuff onto the same debuff; a fresh one counts when the enemy carries more debuff than it just received.
+    // ⚠ It used to hear merges only (relic audit 2026-11-20): Liable filed onto an enemy already in Doubt drew nothing.
     public static readonly StatusData SootglassLens = Rule("sootglass_lens", "Sootglass Lens",
         "Filing on top of a filing tells you something.",
-        [Trigger(new EffectProgram<StatusMergedTriggeredEffectContext>(
+        [Trigger(new EffectProgram<StatusAppliedTriggeredEffectContext>(
+            OnEnemyFiling<StatusAppliedTriggeredEffectContext>("sootglass_lens",
+                Draw<StatusAppliedTriggeredEffectContext>(1),
+                new ComparisonExpression<StatusAppliedTriggeredEffectContext>(
+                    new CombatantStacksByPolarityExpression<StatusAppliedTriggeredEffectContext>(
+                        CombatantTargetSelectors.EventTarget, StatusPolarity.Debuff),
+                    ComparisonOperator.Greater, new EventAmountExpression<StatusAppliedTriggeredEffectContext>()))),
+            nameof(TriggerEvent.StatusApplied), StatusTriggerScope.Anywhere),
+         Trigger(new EffectProgram<StatusMergedTriggeredEffectContext>(
             OnEnemyFiling<StatusMergedTriggeredEffectContext>("sootglass_lens",
                 Draw<StatusMergedTriggeredEffectContext>(1))),
             nameof(TriggerEvent.StatusMerged), StatusTriggerScope.Anywhere),
@@ -247,21 +311,20 @@ public static class RelicRules
         [Trigger(new EffectProgram<DamageReceivedTriggeredEffectContext>(
             new ConditionalEffectNode<DamageReceivedTriggeredEffectContext>(
                 new AndExpression<DamageReceivedTriggeredEffectContext>(
-                    new ComparisonExpression<DamageReceivedTriggeredEffectContext>(
-                        new EventAmountExpression<DamageReceivedTriggeredEffectContext>(),
-                        ComparisonOperator.Greater,
-                        new ConstantExpression<DamageReceivedTriggeredEffectContext>(0)),
-                    CounterOn<DamageReceivedTriggeredEffectContext>(
-                        CombatantTargetSelectors.EventTarget, "bruise_cup", ComparisonOperator.Equal, 0)),
-                new CausalSequenceEffectNode<DamageReceivedTriggeredEffectContext>(
-                [
-                    new GainBlockNode<DamageReceivedTriggeredEffectContext>(
-                        CombatantTargetSelectors.EventTarget,
-                        new ConstantExpression<DamageReceivedTriggeredEffectContext>(4)),
-                    new SetCombatantCounterNode<DamageReceivedTriggeredEffectContext>(
-                        CombatantTargetSelectors.EventTarget, new CounterId("bruise_cup"),
-                        new ConstantExpression<DamageReceivedTriggeredEffectContext>(1), relative: false),
-                ]))), nameof(TriggerEvent.DamageTaken)),
+                    new AndExpression<DamageReceivedTriggeredEffectContext>(
+                        new ComparisonExpression<DamageReceivedTriggeredEffectContext>(
+                            new EventAmountExpression<DamageReceivedTriggeredEffectContext>(),
+                            ComparisonOperator.Greater,
+                            new ConstantExpression<DamageReceivedTriggeredEffectContext>(0)),
+                        // "An ENEMY causes you": in a blow the source is the striker. ⚠ Your own price (Blood-Price
+                        // Token, Blood-Stamped Bond) used to spend the cup at every turn's start (relic audit 2026-11-20).
+                        new NotExpression<DamageReceivedTriggeredEffectContext>(
+                            new TargetHasStatusExpression<DamageReceivedTriggeredEffectContext>(
+                                CombatantTargetSelectors.Source, new StatusDefinitionId(Keywords.ApplicantMarker)))),
+                    Claim<DamageReceivedTriggeredEffectContext>(CombatantTargetSelectors.EventTarget, "bruise_cup")),
+                new GainBlockNode<DamageReceivedTriggeredEffectContext>(
+                    CombatantTargetSelectors.EventTarget,
+                    new ConstantExpression<DamageReceivedTriggeredEffectContext>(4)))), nameof(TriggerEvent.DamageTaken)),
          ClearLatch("bruise_cup")]);
 
     // "Whenever you gain Block, deal a quarter of it to the enemy with the most HP, at most 10 per gain."
@@ -289,14 +352,10 @@ public static class RelicRules
                         new EventAmountExpression<BlockGainedTriggeredEffectContext>(),
                         ComparisonOperator.GreaterOrEqual,
                         new ConstantExpression<BlockGainedTriggeredEffectContext>(10)),
-                    Counter<BlockGainedTriggeredEffectContext>("blackthorn", ComparisonOperator.Equal, 0)),
-                new CausalSequenceEffectNode<BlockGainedTriggeredEffectContext>(
-                [
-                    new DealDamageNode<BlockGainedTriggeredEffectContext>(
-                        CombatantTargetSelectors.AllEnemiesOfSource,
-                        new ConstantExpression<BlockGainedTriggeredEffectContext>(6)),
-                    SetCounter<BlockGainedTriggeredEffectContext>("blackthorn", 1),
-                ]))), nameof(TriggerEvent.BlockGained)),
+                    Claim<BlockGainedTriggeredEffectContext>(CombatantTargetSelectors.Source, "blackthorn")),
+                new DealDamageNode<BlockGainedTriggeredEffectContext>(
+                    CombatantTargetSelectors.AllEnemiesOfSource,
+                    new ConstantExpression<BlockGainedTriggeredEffectContext>(6)))), nameof(TriggerEvent.BlockGained)),
          ClearLatch("blackthorn")]);
 
     // ── Bureaucrat keyword watchers ───────────────────────────────────────────────────────────────────────
@@ -432,33 +491,26 @@ public static class RelicRules
             nameof(TriggerEvent.CardsDrawn)),
          ClearLatch("refuse_docket")]);
 
-    // "The first time each turn a card leaves your hand without being played, gain 4 Block." A card leaving
-    // unplayed is not an event a rule can hear, so it pays at the turn's end when the hand is discarded —
-    // the moment that is almost always about. See ADAPTATIONS.
-    //
-    // The hand is READ as it stands, at the draw and after each card played, because a turn-end program no
-    // longer has one: the engine's discard handler is registered ahead of the turn-end triggers, so the test
-    // this rule used to make ("is anything still in hand?") was answered "no" every single time.
+    // "The first time each turn a card leaves your hand without being played, gain 4 Block." Heard the way Whispering
+    // Gallery hears it: a card moved out of the hand that was not played this turn (a discard, an exhaust), or the
+    // hand thrown away at the turn's end. ⚠ It used to look only at the turn's end and pay with the NEXT draw (relic
+    // audit 2026-11-20): a discard mid-turn paid nothing, and the Block came a round late.
     public static readonly StatusData ConservatorsThread = Rule(
         "conservators_thread", "Conservator's Thread",
-        "What you set aside at the end of a turn guards you next turn.",
-        [Trigger(new EffectProgram<CardsDrawnTriggeredEffectContext>(
-            RecordHand<CardsDrawnTriggeredEffectContext>()), nameof(TriggerEvent.CardsDrawn)),
-         Trigger(new EffectProgram<CardPlayedTriggeredEffectContext>(
-            RecordHand<CardPlayedTriggeredEffectContext>()), nameof(TriggerEvent.CardPlayed)),
-         Trigger(new EffectProgram<TurnEndedTriggeredEffectContext>(
-            new ConditionalEffectNode<TurnEndedTriggeredEffectContext>(
-                Counter<TurnEndedTriggeredEffectContext>("thread_hand", ComparisonOperator.Greater, 0),
-                SetCounter<TurnEndedTriggeredEffectContext>("thread_owed", 1))),
-            nameof(TriggerEvent.TurnEnded)),
-         Trigger(new EffectProgram<CardsDrawnTriggeredEffectContext>(
-            new ConditionalEffectNode<CardsDrawnTriggeredEffectContext>(
-                Counter<CardsDrawnTriggeredEffectContext>("thread_owed", ComparisonOperator.Greater, 0),
-                new CausalSequenceEffectNode<CardsDrawnTriggeredEffectContext>(
-                [
-                    Block<CardsDrawnTriggeredEffectContext>(4),
-                    SetCounter<CardsDrawnTriggeredEffectContext>("thread_owed", 0),
-                ]))), nameof(TriggerEvent.CardsDrawn))]);
+        "A card set aside unplayed guards you.",
+        [Trigger(new EffectProgram<CardMovedToZoneTriggeredEffectContext>(
+            new ConditionalEffectNode<CardMovedToZoneTriggeredEffectContext>(
+                GeneralPoolRules.Unplayed<CardMovedToZoneTriggeredEffectContext>(),
+                OnceEachTurn<CardMovedToZoneTriggeredEffectContext>("conservators_thread",
+                    Block<CardMovedToZoneTriggeredEffectContext>(4)))), nameof(TriggerEvent.CardMovedToZone)),
+         Trigger(new EffectProgram<HandDiscardedTriggeredEffectContext>(
+            new ConditionalEffectNode<HandDiscardedTriggeredEffectContext>(
+                new ComparisonExpression<HandDiscardedTriggeredEffectContext>(
+                    new EventAmountExpression<HandDiscardedTriggeredEffectContext>(),
+                    ComparisonOperator.Greater, new ConstantExpression<HandDiscardedTriggeredEffectContext>(0)),
+                OnceEachTurn<HandDiscardedTriggeredEffectContext>("conservators_thread",
+                    Block<HandDiscardedTriggeredEffectContext>(4)))), nameof(TriggerEvent.HandDiscarded)),
+         ClearLatch("conservators_thread")]);
 
     // "The first Deed you play each turn against an enemy that intends to Attack deals 4 more." The bonus is
     // a once-per-action damage passive on the ENEMY, handed to whoever is telegraphing an attack.
@@ -610,6 +662,17 @@ public static class RelicRules
                 new RemoveStatusNode<TurnEndedTriggeredEffectContext>(
                     CombatantTargetSelectors.Source, new StatusDefinitionId(NextDeedStrongerId))),
                 nameof(TriggerEvent.TurnEnded)),
+            // "The FIRST Deed you play each turn": the Deed that struck a marked enemy has used the promise, and every
+            // other enemy's mark goes with it. ⚠ It used to stay all turn (relic audit 2026-11-20): every Deed at an
+            // attacker hit for 4 more. In a blow the source is the striker, so its enemies are the marked side.
+            Trigger(new EffectProgram<DamageReceivedTriggeredEffectContext>(
+                new ConditionalEffectNode<DamageReceivedTriggeredEffectContext>(
+                    new TriggerEventSourceCardHasTagExpression<DamageReceivedTriggeredEffectContext>(new TagId(CardAuthoring.DeedTag)),
+                    new ForEachTargetEffectNode<DamageReceivedTriggeredEffectContext>(
+                        CombatantTargetSelectors.AllEnemiesOfSource,
+                        new RemoveStatusNode<DamageReceivedTriggeredEffectContext>(
+                            CombatantTargetSelectors.IterationTarget, new StatusDefinitionId(NextDeedStrongerId))))),
+                nameof(TriggerEvent.DamageTaken)),
         ],
     };
 
@@ -669,27 +732,23 @@ public static class RelicRules
             ClearLatch("witness_slate"),
         ]);
 
+    // ⚠ Liable filed on EVERY enemy by one card used to be witnessed on each of them (relic audit 2026-11-20): the
+    // latch was read before the first extra stack was written. And it is YOUR Liable — in a filing the source is
+    // whoever filed it.
     private static IEffectNode<TContext> Witness<TContext>() where TContext : class =>
         new ConditionalEffectNode<TContext>(
             new AndExpression<TContext>(
-                new TriggerEventStatusIsExpression<TContext>(new StatusDefinitionId(Keywords.Liable)),
-                new NotExpression<TContext>(
-                    new TargetHasStatusExpression<TContext>(
-                        CombatantTargetSelectors.EventTarget, new StatusDefinitionId(Keywords.ApplicantMarker)))),
-            new ForEachTargetEffectNode<TContext>(
-                CombatantTargetSelectors.WithStatus(CombatantTargetSelectors.AllCombatants,
-                    new StatusDefinitionId("witness_slate")),
-                new ConditionalEffectNode<TContext>(
-                    CounterOn<TContext>(CombatantTargetSelectors.IterationTarget, "witness_slate", ComparisonOperator.Equal, 0),
-                    new CausalSequenceEffectNode<TContext>(
-                    [
-                        new SetCombatantCounterNode<TContext>(
-                            CombatantTargetSelectors.IterationTarget, new CounterId("witness_slate"),
-                            new ConstantExpression<TContext>(1), relative: false),
-                        new ApplyStatusNode<TContext>(
-                            CombatantTargetSelectors.EventTarget, new StatusDefinitionId(Keywords.Liable),
-                            new ConstantExpression<TContext>(1)),
-                    ]))));
+                new AndExpression<TContext>(
+                    new TriggerEventStatusIsExpression<TContext>(new StatusDefinitionId(Keywords.Liable)),
+                    new TargetHasStatusExpression<TContext>(CombatantTargetSelectors.Source, new StatusDefinitionId("witness_slate"))),
+                new AndExpression<TContext>(
+                    new NotExpression<TContext>(
+                        new TargetHasStatusExpression<TContext>(
+                            CombatantTargetSelectors.EventTarget, new StatusDefinitionId(Keywords.ApplicantMarker))),
+                    Claim<TContext>(CombatantTargetSelectors.Source, "witness_slate"))),
+            new ApplyStatusNode<TContext>(
+                CombatantTargetSelectors.EventTarget, new StatusDefinitionId(Keywords.Liable),
+                new ConstantExpression<TContext>(1)));
 
     // "The first time each combat your Exhausted pile holds 5 cards, gain 1 Energy and draw 1 card."
     public static readonly StatusData AshPan = Rule("ash_pan", "Ash Pan",
@@ -703,10 +762,9 @@ public static class RelicRules
                                 CombatantTargetSelectors.Source, CardZone.ExhaustPile),
                             ComparisonOperator.GreaterOrEqual,
                             new ConstantExpression<CardMovedToZoneTriggeredEffectContext>(5)),
-                        Counter<CardMovedToZoneTriggeredEffectContext>("ash_pan_done", ComparisonOperator.Equal, 0)),
+                        Claim<CardMovedToZoneTriggeredEffectContext>(CombatantTargetSelectors.Source, "ash_pan_done")),
                     new CausalSequenceEffectNode<CardMovedToZoneTriggeredEffectContext>(
                     [
-                        SetCounter<CardMovedToZoneTriggeredEffectContext>("ash_pan_done", 1),
                         HeldEnergy.Hold<CardMovedToZoneTriggeredEffectContext>(1),
                         Draw<CardMovedToZoneTriggeredEffectContext>(1),
                     ]))),
@@ -830,10 +888,7 @@ public static class RelicRules
         Rule(id, name, description,
         [
             Trigger(new EffectProgram<CardsDrawnTriggeredEffectContext>(
-                new ConditionalEffectNode<CardsDrawnTriggeredEffectContext>(
-                    Counter<CardsDrawnTriggeredEffectContext>(id + "_done", ComparisonOperator.Equal, 0),
-                    new CausalSequenceEffectNode<CardsDrawnTriggeredEffectContext>(
-                        [body, SetCounter<CardsDrawnTriggeredEffectContext>(id + "_done", 1)]))),
+                OnceEachTurn<CardsDrawnTriggeredEffectContext>(id + "_done", body)),
                 trigger),
         ]);
 
@@ -931,33 +986,30 @@ public static class RelicRules
         new ConditionalEffectNode<TContext>(
             new AndExpression<TContext>(
                 new TriggerEventStatusIsExpression<TContext>(new StatusDefinitionId(counted)),
-                Counter<TContext>(id, ComparisonOperator.Equal, 0)),
-            new CausalSequenceEffectNode<TContext>([body, SetCounter<TContext>(id, 1)]));
+                Claim<TContext>(CombatantTargetSelectors.Source, id)),
+            body);
 
-    // A negative status landing on an ENEMY, answered once a turn by whoever wears the relic.
-    private static IEffectNode<TContext> OnEnemyFiling<TContext>(string id, IEffectNode<TContext> body)
-        where TContext : class =>
-        new ConditionalEffectNode<TContext>(
+    // A negative status the WEARER files on an ENEMY, answered once a turn. In a filing the source is whoever filed it.
+    // ⚠ It used to answer any status landing on any enemy, filed by anyone (relic audit 2026-11-20): the neutral mark
+    // Iron Prayer Bead puts on an attacker rang the Bell at every turn's start, and an enemy's own buffs did too.
+    private static IEffectNode<TContext> OnEnemyFiling<TContext>(string id, IEffectNode<TContext> body,
+        ICombatExpression<TContext, bool>? also = null)
+        where TContext : class
+    {
+        ICombatExpression<TContext, bool> when = new AndExpression<TContext>(
             new AndExpression<TContext>(
+                new TargetHasStatusExpression<TContext>(CombatantTargetSelectors.Source, new StatusDefinitionId(id)),
                 new NotExpression<TContext>(
                     new TargetHasStatusExpression<TContext>(
                         CombatantTargetSelectors.EventTarget,
-                        new StatusDefinitionId(Keywords.ApplicantMarker))),
-                Wearers<TContext>(id, 0)),
-            new ForEachTargetEffectNode<TContext>(
-                CombatantTargetSelectors.WithStatus(CombatantTargetSelectors.AllCombatants,
-                    new StatusDefinitionId(id)),
-                // The latch is read AND written on the wearer itself: who "source" means differs from event to
-                // event, but the wearer is unambiguous, and it is the wearer whose once-a-turn promise this is.
-                new ConditionalEffectNode<TContext>(
-                    CounterOn<TContext>(CombatantTargetSelectors.IterationTarget, id, ComparisonOperator.Equal, 0),
-                    new CausalSequenceEffectNode<TContext>(
-                    [
-                        body,
-                        new SetCombatantCounterNode<TContext>(
-                            CombatantTargetSelectors.IterationTarget, new CounterId(id),
-                            new ConstantExpression<TContext>(1), relative: false),
-                    ]))));
+                        new StatusDefinitionId(Keywords.ApplicantMarker)))),
+            new TriggerEventStatusPolarityIsExpression<TContext>(StatusPolarity.Debuff));
+        if (also is not null)
+            when = new AndExpression<TContext>(when, also);
+        // The claim last: a filing that does not count must not spend the turn's one.
+        return new ConditionalEffectNode<TContext>(
+            new AndExpression<TContext>(when, Claim<TContext>(CombatantTargetSelectors.Source, id)), body);
+    }
 
     // "No wearer has used it yet this turn."
     private static ICombatExpression<TContext, bool> Wearers<TContext>(string id, int used)
@@ -993,12 +1045,11 @@ public static class RelicRules
                     new NotExpression<TContext>(
                         new TargetHasStatusExpression<TContext>(
                             CombatantTargetSelectors.EventTarget, new StatusDefinitionId("concordance_medallion")))),
-                Counter<TContext>("concordance", ComparisonOperator.Equal, 0)),
+                Claim<TContext>(CombatantTargetSelectors.Source, "concordance")),
             new CausalSequenceEffectNode<TContext>(
             [
-                // The latch first: the spread is itself a filing of Paperwork or Doubt by the wearer, and must not
-                // answer itself.
-                SetCounter<TContext>("concordance", 1),
+                // The latch is claimed as it is read: the spread is itself a filing of Paperwork or Doubt by the
+                // wearer, and must not answer itself.
                 Spread(Keywords.Paperwork),
                 Spread(Keywords.Doubt),
             ]));
@@ -1020,11 +1071,19 @@ public static class RelicRules
             CombatantTargetSelectors.Source, new StatusDefinitionId(NextCardCheaperId),
             new ConstantExpression<TContext>(1));
 
+    // The latch is CLAIMED as it is read (ClaimLatchExpression): one effect that raises the same event twice — a
+    // double blow, a filing on every enemy — must not find it open twice (relic audit 2026-11-20).
     private static IEffectNode<TContext> OnceEachTurn<TContext>(string id, IEffectNode<TContext> body)
         where TContext : class =>
-        new ConditionalEffectNode<TContext>(
-            Counter<TContext>(id, ComparisonOperator.Equal, 0),
-            new CausalSequenceEffectNode<TContext>([body, SetCounter<TContext>(id, 1)]));
+        OnceOn(CombatantTargetSelectors.Source, id, body);
+
+    private static IEffectNode<TContext> OnceOn<TContext>(ICombatantTargetSelector holder, string id, IEffectNode<TContext> body)
+        where TContext : class =>
+        new ConditionalEffectNode<TContext>(Claim<TContext>(holder, id), body);
+
+    private static ICombatExpression<TContext, bool> Claim<TContext>(ICombatantTargetSelector holder, string id)
+        where TContext : class =>
+        new ClaimLatchExpression<TContext>(holder, new CounterId(id));
 
     private static ICombatExpression<TContext, bool> Counter<TContext>(
         string id, ComparisonOperator op, int value) where TContext : class =>

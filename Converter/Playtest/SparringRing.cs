@@ -102,7 +102,7 @@ public static class SparringRing
         IReadOnlyList<string>? deck = null, int? health = null,
         int? maxHealth = null, int? energy = null,
         IReadOnlyList<string>? relics = null, IReadOnlyList<string>? consumables = null,
-        string? character = null)
+        string? character = null, int? gold = null)
     {
         ArgumentNullException.ThrowIfNull(game);
         ArgumentNullException.ThrowIfNull(fight);
@@ -157,6 +157,18 @@ public static class SparringRing
                 Resources = new Dictionary<string, int>(start.Resources, StringComparer.Ordinal)
                 {
                     [StandardCombatIds.EnergyResource.value] = pool,
+                },
+            };
+            touched = true;
+        }
+
+        if (gold is { } purse)
+        {
+            start = start with
+            {
+                Resources = new Dictionary<string, int>(start.Resources, StringComparer.Ordinal)
+                {
+                    [StandardRunIds.Gold.Value] = purse,
                 },
             };
             touched = true;

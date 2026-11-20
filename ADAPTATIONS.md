@@ -507,16 +507,17 @@ relic's line asks for something the engine cannot see.
 
 ### The 50 Normal relics
 
-- **Redaction Knife** discards the oldest card in hand instead of a chosen one, for the same reason — the cost
-  has to be paid without stopping to ask.
+- ~~**Redaction Knife** discards the oldest card in hand instead of a chosen one~~ — since the relic audit of
+  2026-11-20 the player picks the card, as the text says (a rule can ask now; Tin Fife asks the same way).
 - **Binder's Awl** pays on the next draw after the draw pile runs dry, not at the shuffle itself; a reshuffle
   is not an event a rule can hear.
-- **Hollow Wax Bead** and **Lead Counterweight** cannot read what a card cost, so they pay a flat amount rather
-  than scaling with the card that triggered them.
+- ~~**Hollow Wax Bead** and **Lead Counterweight** cannot read what a card cost~~ — both read the printed cost now
+  (relic audit 2026-11-20 for the Bead: only 0-cost cards count, and it draws at most once a turn).
 - **Concordance Medallion** and **Chancery Ribbon** spread a flat 1 to the other enemies instead of matching
   what was just filed: a rule sees THAT a status landed, not how many stacks it carried onto that target.
-- **Rootbound Staff** fires every combat rather than once per rest cycle — a relic's rule is installed fresh at
-  every opening bell and keeps no memory between fights.
+- ~~**Rootbound Staff** fires every combat~~ — since the relic audit of 2026-11-20 the RUN keeps the memory: a
+  non-combat room owes the next fight its opening (a run counter and `Openings.NextCombat`), and a fight straight
+  after a fight gets nothing.
 - **Blood-Price Token** takes its 3 HP rather than offering the trade; a rule cannot raise a yes/no prompt
   outside a card's own choose-one.
 - **Refusal Rosary** pays after every victory instead of on the refusal itself, because a refused enforcement
@@ -4463,3 +4464,19 @@ with it:
 - **Numbers:** Singe spends for +3 and Grit softens a hit by 3 (master: 2); Candle Stub's Speak, Chalk Line,
   Chalk Circle, Mason's Dust, Penny Whistle, Wick Trimmer, Pinprick and Dust Mote above the master's drafts
   (expansion §6 lists each). Balance drafts, set by the family bench against the Bureaucrat's families.
+
+## The relic audit of 2026-11-20 (Normal pool and the Lieutenant's relics)
+
+Every relic of the general Normal pool and all nineteen of the Lieutenant's are held to their text by scenario tests
+(NormalRelicBehaviourTests, RunRelicBehaviourTests, LieutenantRelicEdgeTests). What remains an adaptation:
+
+- **"The first time each turn" is claimed as it is read** (Core `ClaimLatchExpression`), not written by a queued
+  counter: one effect that raises the same event several times — a blow that strikes twice, a debuff filed on every
+  enemy — otherwise ran every trigger before the first one's latch had landed, and paid two or three times.
+- **Bruise Cup's Block comes after the enemy action that drew it**, not between the hits of one multi-hit action:
+  triggered effects wait for the action to finish. It meets the NEXT enemy's blows that turn.
+- **Conservator's Thread** hears a card leaving the hand unplayed the way Whispering Gallery does (a move out of
+  the hand that was not a play this turn, or the hand thrown away at the turn's end).
+- **Sootglass Lens** counts a fresh debuff as landing on "one already there" when the enemy now carries more debuff
+  stacks than it just received.
+

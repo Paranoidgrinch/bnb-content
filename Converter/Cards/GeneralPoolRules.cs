@@ -195,7 +195,7 @@ public static class GeneralPoolRules
             ]));
     }
 
-    private static ICombatExpression<TContext, bool> Unplayed<TContext>() where TContext : class
+    internal static ICombatExpression<TContext, bool> Unplayed<TContext>() where TContext : class
     {
         var card = new TriggerEventCardInstanceExpression<TContext>();
         return new AndExpression<TContext>(

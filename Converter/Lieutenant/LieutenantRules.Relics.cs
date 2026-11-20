@@ -109,8 +109,11 @@ public static partial class LieutenantRules
         [
             On(TriggerEvent.TurnEnded, TE.If(TE.Wears(TE.Self, OpenGuard),
                 TE.Set(TE.Self, ParadeSpur + "_wager", 1), TE.Set(TE.Self, ParadeSpur + "_wager", 0))),
-            On(TriggerEvent.DamageTaken, D.If(D.And(ByAnEnemy<DamageReceivedTriggeredEffectContext>(), D.Is(D.Counter(D.Event, ParadeSpur + "_wager"), 1)),
-                D.Seq(D.Set(D.Event, ParadeSpur + "_wager", 0), GainAuthority<DamageReceivedTriggeredEffectContext>(D.Event, 1)))),
+            // The wager is CLAIMED as it is read (back to 0): a double blow found it standing twice and paid twice
+            // (relic audit 2026-11-20).
+            On(TriggerEvent.DamageTaken, D.If(D.And(ByAnEnemy<DamageReceivedTriggeredEffectContext>(),
+                    new ClaimLatchExpression<DamageReceivedTriggeredEffectContext>(D.Event, new CounterId(ParadeSpur + "_wager"), D.C(0))),
+                GainAuthority<DamageReceivedTriggeredEffectContext>(D.Event, 1))),
             On(TriggerEvent.TurnStarted, TS.Set(TS.Self, ParadeSpur + "_wager", 0)),
         ]),
         // Read after the turn's own promises: one kept AT the end is announced after this has looked, so it waits.
@@ -169,8 +172,9 @@ public static partial class LieutenantRules
         Relic(LeadKnuckles, "Lead Knuckles", "Once each turn, when you play a Deed with Open Guard, you may Exhaust another card from your hand to deal 8 more damage to its target.",
         [
             On(TriggerEvent.CardPlayed, CP.If(CP.And(CP.CardTagged(Cards.CardAuthoring.DeedTag),
-                    CP.And(CP.Wears(CP.Self, OpenGuard), CP.And(CP.Fresh(CP.Self, Latch(LeadKnuckles)),
-                        CP.AtLeast(new CombatantZoneCardCountExpression<CardPlayedTriggeredEffectContext>(CP.Self, CardZone.Hand), 1)))),
+                    CP.And(CP.Wears(CP.Self, OpenGuard), CP.And(
+                        CP.AtLeast(new CombatantZoneCardCountExpression<CardPlayedTriggeredEffectContext>(CP.Self, CardZone.Hand), 1),
+                        CP.Fresh(CP.Self, Latch(LeadKnuckles))))),
                 CP.Choose(["Exhaust a card from your hand: 8 more damage", "Keep your hand"],
                     CP.Seq(CP.Spend(CP.Self, Latch(LeadKnuckles)),
                         new MoveCardToZoneNode<CardPlayedTriggeredEffectContext>(CP.Self,
@@ -191,7 +195,7 @@ public static partial class LieutenantRules
         Relic(BadgeChain, "Badge Chain", "Once each turn, when you keep a Challenge, you may turn 1 of the Authority it gave you into 1 Strength.",
         [
             On(TriggerEvent.RuleAnnounced, RA.If(RA.And(RA.Announced(Obligations.ChallengeFulfilled),
-                    RA.And(RA.Fresh(Her, Latch(BadgeChain)), RA.AtLeast(RA.Stacks(Her, Authority), 1))),
+                    RA.And(RA.AtLeast(RA.Stacks(Her, Authority), 1), RA.Fresh(Her, Latch(BadgeChain)))),
                 RA.Seq(RA.Spend(Her, Latch(BadgeChain)),
                     RA.Choose(["Turn 1 Authority into 1 Strength", "Keep the Authority"],
                         RA.Seq(RA.Adjust(Her, Authority, RA.C(-1)), RA.Apply(Her, Strength, 1)), RA.Nothing))), StatusTriggerScope.Anywhere),
@@ -199,7 +203,7 @@ public static partial class LieutenantRules
         Relic(OrderOfTheDay, "Order of the Day", "The first time each turn you keep an Order, your next Working costs 1 less, this turn or the next.",
         [
             On(TriggerEvent.RuleAnnounced, RA.If(RA.And(RA.Announced(Obligations.OrderFulfilled),
-                    RA.And(RA.Fresh(Her, Latch(OrderOfTheDay)), RA.Not(RA.Wears(Her, OrderOfTheDayDiscount)))),
+                    RA.And(RA.Not(RA.Wears(Her, OrderOfTheDayDiscount)), RA.Fresh(Her, Latch(OrderOfTheDay)))),
                 RA.Seq(RA.Spend(Her, Latch(OrderOfTheDay)), RA.Apply(Her, OrderOfTheDayDiscount, 1),
                     MarkHand<RuleAnnouncedTriggeredEffectContext>(Cards.CardAuthoring.WorkingTag, -1))), StatusTriggerScope.Anywhere),
         ]),
@@ -209,7 +213,7 @@ public static partial class LieutenantRules
         Relic(PromissoryNote, "Promissory Note", "Once each turn, after a card spends your Strength, you may spend 1 more Strength to gain 1 Energy.",
         [
             On(TriggerEvent.RuleAnnounced, RA.If(RA.And(RA.Announced(StrengthPaid),
-                    RA.And(RA.Fresh(Her, Latch(PromissoryNote)), RA.AtLeast(RA.Stacks(Her, Strength), 1))),
+                    RA.And(RA.AtLeast(RA.Stacks(Her, Strength), 1), RA.Fresh(Her, Latch(PromissoryNote)))),
                 RA.Seq(RA.Spend(Her, Latch(PromissoryNote)),
                     RA.Choose(["Spend 1 more Strength: gain 1 Energy", "Keep the Strength"],
                         RA.Seq(RA.Adjust(Her, Strength, RA.C(-1)), RA.GainEnergy(Her, 1)), RA.Nothing))), StatusTriggerScope.Anywhere),

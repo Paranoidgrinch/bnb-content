@@ -95,9 +95,12 @@ internal static class N<T> where T : class
         new TargetIntendsExpression<T>(who, nameof(IntentKind.Attack));
     public static ICombatExpression<T, bool> OncePerAction(string key) => new ClaimOnceThisActionExpression<T>(key);
 
-    // "Not yet this round": a latch is a counter holding the round it was last spent in.
+    // "Not yet this round": a latch is a counter holding the round it was last spent in. CLAIMED as it is read
+    // (ClaimLatchExpression), so one effect raising the same event twice — a double blow, a Challenge copied onto every
+    // enemy — finds it open once (relic audit 2026-11-20). Put it LAST in an And: a rule whose other conditions
+    // failed must not spend its turn. Spend afterwards writes the same stamp again and does no harm.
     public static ICombatExpression<T, bool> Fresh(ICombatantTargetSelector who, string latch) =>
-        Cmp(Counter(who, latch), ComparisonOperator.NotEqual, Round);
+        new ClaimLatchExpression<T>(who, new CounterId(latch), Round);
     public static IEffectNode<T> Spend(ICombatantTargetSelector who, string latch) => Set(who, latch, Round);
 
     // ── effects ──────────────────────────────────────────────────────────────────────────────────────────

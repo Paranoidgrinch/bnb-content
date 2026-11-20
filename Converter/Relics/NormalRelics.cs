@@ -15,6 +15,8 @@ namespace BnbContent.Converter.Relics;
 // (RelicAuthoring.Rule); everything between fights is a run program.
 public static class NormalRelics
 {
+    private static RunCounterId AlmsPaid => new("alms_basin_paid");
+
     public static IReadOnlyList<BnbRelic> All() =>
     [
         // ── Common ────────────────────────────────────────────────────────────────────────────────────────
@@ -86,7 +88,8 @@ public static class NormalRelics
 
         Normal("grave_coin", "Grave Coin", Rarity.Common,
             "Whenever an enemy dies while affected by a negative status, gain 4 Gold.",
-            runPrograms: [AfterEveryVictory(Gold(4))]),
+            combatRule: RelicRules.GraveCoin,
+            runPrograms: [RelicRules.GraveCoinPay]),
 
         Normal("bruise_cup", "Bruise Cup", Rarity.Common,
             "The first time each turn an enemy causes you to lose HP, gain 4 Block.",
@@ -100,12 +103,14 @@ public static class NormalRelics
         // ── Uncommon ──────────────────────────────────────────────────────────────────────────────────────
         Normal("rootbound_walking_staff", "Rootbound Walking Staff", Rarity.Uncommon,
             "At the start of your next combat after a non-combat node, gain 1 Energy and 6 Block.",
-            combatRule: RelicRules.RootboundStaff),
+            runPrograms: RelicRules.RootboundStaffRoad),
 
         Normal("counterfeit_toll_writ", "Counterfeit Toll Writ", Rarity.Uncommon,
             "When picked up, gain 30 Gold. Every shop purchase refunds 10 Gold.",
             pickup: [Gold(30)],
-            runPrograms: [OnPurchase(Gold(10))]),
+            // Never more than was paid: a free removal (Inventory Lantern Glass) refunds nothing.
+            runPrograms: [RunPrograms.On<ShopItemPurchasedRunEvent>(RunEffectTemplates.GainResource(StandardRunIds.Gold,
+                RunExpr.Min(RunExpr.Const(10), RunEventValues.ShopCurrencyPaid)))]),
 
         Normal("emergency_inkwell", "Emergency Inkwell", Rarity.Uncommon,
             "Once per combat, after playing a card, if you have no Energy left, gain 1 Energy.",
@@ -130,7 +135,17 @@ public static class NormalRelics
 
         Normal("alms_basin", "Alms Basin", Rarity.Uncommon,
             "Heal 8 HP the first time you make a purchase in each shop.",
-            runPrograms: [OnPurchase(Heal(8))]),
+            // ⚠ It healed on EVERY purchase (relic audit 2026-11-20). A latch the purchase sets and the next room clears.
+            runPrograms:
+            [
+                RunPrograms.When<ShopItemPurchasedRunEvent>(
+                    RunExpr.Equal(RunExpr.Counter(AlmsPaid), RunExpr.Const(0)),
+                    RunEffectTemplates.Heal(RunExpr.Const(8)),
+                    RunEffectTemplates.ChangeCounter(AlmsPaid, RunExpr.Const(1))),
+                RunPrograms.When<NodeEnteredRunEvent>(
+                    RunExpr.GreaterThan(RunExpr.Counter(AlmsPaid), RunExpr.Const(0)),
+                    RunEffectTemplates.ChangeCounter(AlmsPaid, RunExpr.Subtract(RunExpr.Const(0), RunExpr.Counter(AlmsPaid)))),
+            ]),
 
         // Relic audit (2026-11-08): takes Index Bone's place, which became a Rare. Retain's own relic.
         Normal("remembrance_string", "Remembrance String", Rarity.Uncommon,
