@@ -45,15 +45,15 @@ public class RelicCombatTests
         return (play, session, combat.State.Combatants.First(c => c.Id != combat.HeroId).Id);
     }
 
-    // Rootbound Walking Staff opens the fight with 6 Block. The plainest proof that a relic's rule reaches the
-    // fight (Black Salt Charm, which did this before, left with the relic audit of 2026-11-08).
+    // Binder's Awl pays an Energy with the first draw. The plainest proof that a relic's rule reaches the fight
+    // (Rootbound Walking Staff did this until the relic audit of 2026-11-20 gave its opening to the road).
     [Fact]
     public void A_relic_hands_its_rule_to_the_fight_when_the_fight_opens()
     {
-        var (play, _, _) = WithRelic("rootbound_walking_staff", "paper_cut", "paper_cut", "paper_cut");
+        var (play, _, _) = WithRelic("binders_awl", "paper_cut", "paper_cut", "paper_cut");
 
-        Assert.Equal(6, Block(Hero(play)));
-        Assert.Equal(1, FightProbe.StacksOf(Hero(play), "rootbound_walking_staff"));
+        Assert.Equal(1, FightProbe.StacksOf(Hero(play), "held_energy"));
+        Assert.Equal(1, FightProbe.StacksOf(Hero(play), "binders_awl"));
         play.Dispose();
     }
 
@@ -64,8 +64,8 @@ public class RelicCombatTests
         var (play, _, _) = FightProbe.Start(
             FightProbe.Solo(Quiet, QuietIntent, energy: 9), ["paper_cut", "paper_cut", "paper_cut"]);
 
-        Assert.Equal(0, Block(Hero(play)));
-        Assert.Equal(0, FightProbe.StacksOf(Hero(play), "rootbound_walking_staff"));
+        Assert.Equal(0, FightProbe.StacksOf(Hero(play), "held_energy"));
+        Assert.Equal(0, FightProbe.StacksOf(Hero(play), "binders_awl"));
         play.Dispose();
     }
 

@@ -26,7 +26,7 @@ public class HeldEnergyTests
     // Every relic that promises Energy up front now holds it — and holding it is visible on the table.
     [Theory]
     [InlineData("blood_stamped_bond")]
-    [InlineData("rootbound_walking_staff")]
+    [InlineData("binders_awl")]
     public void A_relic_that_promises_energy_up_front_holds_it_instead(string relicId)
     {
         var (play, _, _) = WithRelic(relicId);
@@ -65,21 +65,7 @@ public class HeldEnergyTests
         play.Dispose();
     }
 
-    // The Conservator's Thread asked "is anything still in hand?" at the turn's end — where the answer is
-    // always no, because the engine discards the hand before the turn-end triggers run. It reads what the
-    // hand HELD now, and pays for it.
-    [Fact]
-    public void The_conservators_thread_pays_for_a_hand_it_can_no_longer_see()
-    {
-        var (play, session, _) = WithRelic("conservators_thread");
-
-        play.CombatDriver!.EndTurn();      // cards left behind
-        Assert.Null(session.Error);
-
-        // The Block is granted after the NEXT draw, since Block gained at a turn's end is swept away.
-        Assert.Equal(4, Block(Hero(play)));
-        play.Dispose();
-    }
+    // The Conservator's Thread is held to its text in NormalRelicBehaviourTests (relic audit 2026-11-20).
 
     private static int Block(CombatantState combatant) =>
         combatant.DefensivePools.TryGetValue(StandardCombatIds.BlockDefensivePool, out var pool) ? pool.Current : 0;

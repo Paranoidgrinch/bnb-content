@@ -37,13 +37,14 @@ public class AuditTests
         Assert.Contains(Audit.Judge(Game, lying, starterFloor: 0), f => f.Severity == "BUG");
     }
 
-    // A relic with a plain opening effect shows it: Rootbound Walking Staff opens every fight with 6 Block.
+    // A relic with a plain opening effect shows it: Binder's Awl opens every fight with a card more (Rootbound
+    // Walking Staff did this until 2026-11-20, when its opening went to the road).
     [Fact]
     public void A_relic_s_opening_block_is_seen_by_the_relic_fight()
     {
-        var audit = Audit.AuditRelic(Game, "rootbound_walking_staff");
+        var audit = Audit.AuditRelic(Game, "binders_awl");
         Assert.Null(audit.Quiet.Error);
-        Assert.Equal(6, audit.Quiet.Start.HeroBlock - audit.QuietBase.Start.HeroBlock);
+        Assert.Equal(1, audit.Quiet.Start.Hand - audit.QuietBase.Start.Hand);
         Assert.DoesNotContain(Audit.JudgeRelic(Game, audit), f => f.Severity == "UNUSED");
     }
 

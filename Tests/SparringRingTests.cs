@@ -18,7 +18,7 @@ public class SparringRingTests
     private const string Deed = "paper_cut";
     // A canonical relic whose whole rule is Block at the opening bell. It was the ported
     // `suspiciously_helpful_stapler` until 2026-09-10, when the 47 v2 demo relics left the game.
-    private const string Charm = "rootbound_walking_staff";   // combat opening: 6 Block and 1 Held Energy
+    private const string Charm = "binders_awl";   // combat opening: 1 Held Energy and a card more (Rootbound Staff's opening is the road's since 2026-11-20)
 
     // A PLAIN opponent for the tests that are about the LOADOUT rather than about a fight. A boss is the
     // wrong sparring partner for those: Nanna-Sin lays a card in the fighter's hand every morning and
@@ -71,10 +71,10 @@ public class SparringRingTests
         Assert.Equal(Charm, worn.Id.Value);
         Assert.True(worn.Enabled);
 
-        // …and it is not decoration: the charm's whole rule is 4 Block at the first bell, so the fighter
-        // who brought it starts the fight behind more of it than the one who did not.
-        Assert.True(Guard(armed.Play) > Guard(bare.Play),
-            $"the relic granted no Block: {Guard(armed.Play)} vs {Guard(bare.Play)}");
+        // …and it is not decoration: the awl pays an Energy with the first draw, so the fighter who brought it
+        // holds one the other does not.
+        Assert.True(FightProbe.StacksOf(Hero(armed.Play), "held_energy") > FightProbe.StacksOf(Hero(bare.Play), "held_energy"),
+            "the relic held no Energy");
 
         bare.Play.Dispose();
         armed.Play.Dispose();
