@@ -1052,8 +1052,11 @@ public static partial class BossRelicRules
         [
             Trigger(new EffectProgram<CardsDrawnTriggeredEffectContext>(
                 new ConditionalEffectNode<CardsDrawnTriggeredEffectContext>(
+                    // ⚠ The ROUND, not the turn: TurnNumber counts turns within a round and is 1 on every one of
+                    // yours, so "after the first" was never true and the watch paid nothing (playtest 2026-11-19,
+                    // combat audit).
                     new ComparisonExpression<CardsDrawnTriggeredEffectContext>(
-                        new TurnNumberExpression<CardsDrawnTriggeredEffectContext>(),
+                        new RoundNumberExpression<CardsDrawnTriggeredEffectContext>(),
                         ComparisonOperator.Greater,
                         new ConstantExpression<CardsDrawnTriggeredEffectContext>(1)),
                     new ConditionalEffectNode<CardsDrawnTriggeredEffectContext>(

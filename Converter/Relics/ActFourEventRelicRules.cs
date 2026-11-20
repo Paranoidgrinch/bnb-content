@@ -451,7 +451,9 @@ public static class ActFourEventRelicRules
     // exactly the same move out of exactly the same hand. Nothing in the move says which it was.
     //
     // So the coil writes it down: playing a card stamps that copy with the turn it was played on, and a card
-    // arriving in the pile on the turn of its own stamp is a card that was played. Deliberate disposal — an
+    // arriving in the pile on the turn of its own stamp is a card that was played. ⚠ Stamped with the ROUND: the
+    // turn number is 1 on every turn of yours, so a card played on an earlier turn and put away later read as
+    // "just played" and was never wrapped (playtest 2026-11-19). Deliberate disposal — an
     // Archive, a discard-for-cost, a banish — carries no stamp for this turn and is answered.
     public static StatusData FuneraryLinenCoil => Rule(
         CoilId, "Funerary Linen Coil",
@@ -461,7 +463,7 @@ public static class ActFourEventRelicRules
             Trigger(new EffectProgram<CardPlayedTriggeredEffectContext>(
                 new SetCardInstanceMarkCounterNode<CardPlayedTriggeredEffectContext>(
                     You, new TriggerEventCardInstanceExpression<CardPlayedTriggeredEffectContext>(),
-                    PlayedOn, new TurnNumberExpression<CardPlayedTriggeredEffectContext>())),
+                    PlayedOn, new RoundNumberExpression<CardPlayedTriggeredEffectContext>())),
                 nameof(TriggerEvent.CardPlayed)),
             Trigger(Wraps<CardMovedToZoneTriggeredEffectContext>(),
                 nameof(TriggerEvent.CardMovedToZone)),
@@ -482,7 +484,7 @@ public static class ActFourEventRelicRules
                         new NotExpression<TContext>(
                             new ComparisonExpression<TContext>(
                                 new CardInstanceMarkCounterExpression<TContext>(card, PlayedOn),
-                                ComparisonOperator.Equal, new TurnNumberExpression<TContext>()))),
+                                ComparisonOperator.Equal, new RoundNumberExpression<TContext>()))),
                     new AndExpression<TContext>(
                         new NotExpression<TContext>(
                             new CardInstanceHasTagExpression<TContext>(

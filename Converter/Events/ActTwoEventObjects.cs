@@ -453,31 +453,38 @@ public static class ActTwoEventObjects
         UnfinishedReturn, "Borrowed Back",
         "What the window lends, it lends whole: a life caught at its end comes back at a third of itself.",
         [
+            // ⚠ The one caught at its end is the one HIT — the event's target. The source of a blow is whoever
+            // struck it (you), and the rule used to read and heal the striker (playtest 2026-11-19, rule scan).
             Trigger(new EffectProgram<DamageReceivedTriggeredEffectContext>(
                 new ConditionalEffectNode<DamageReceivedTriggeredEffectContext>(
                     new AndExpression<DamageReceivedTriggeredEffectContext>(
                         new ComparisonExpression<DamageReceivedTriggeredEffectContext>(
                             new CombatantCurrentHealthExpression<DamageReceivedTriggeredEffectContext>(
-                                CombatantTargetSelectors.Source),
+                                CombatantTargetSelectors.EventTarget),
                             ComparisonOperator.LessOrEqual,
                             new ConstantExpression<DamageReceivedTriggeredEffectContext>(1)),
-                        Unspent<DamageReceivedTriggeredEffectContext>(UnfinishedLifeSpent)),
+                        new ComparisonExpression<DamageReceivedTriggeredEffectContext>(
+                            new CombatantCounterExpression<DamageReceivedTriggeredEffectContext>(
+                                CombatantTargetSelectors.EventTarget, UnfinishedLifeSpent),
+                            ComparisonOperator.Equal, new ConstantExpression<DamageReceivedTriggeredEffectContext>(0))),
                     new CausalSequenceEffectNode<DamageReceivedTriggeredEffectContext>(
                     [
                         new HealNode<DamageReceivedTriggeredEffectContext>(
-                            CombatantTargetSelectors.Source,
+                            CombatantTargetSelectors.EventTarget,
                             new MaxExpression<DamageReceivedTriggeredEffectContext>(
                                 new ConstantExpression<DamageReceivedTriggeredEffectContext>(0),
                                 new SubtractExpression<DamageReceivedTriggeredEffectContext>(
                                     new DivideExpression<DamageReceivedTriggeredEffectContext>(
                                         new MultiplyExpression<DamageReceivedTriggeredEffectContext>(
                                             new CombatantMaxHealthExpression<DamageReceivedTriggeredEffectContext>(
-                                                CombatantTargetSelectors.Source),
+                                                CombatantTargetSelectors.EventTarget),
                                             new ConstantExpression<DamageReceivedTriggeredEffectContext>(30)),
                                         new ConstantExpression<DamageReceivedTriggeredEffectContext>(100)),
                                     new CombatantCurrentHealthExpression<DamageReceivedTriggeredEffectContext>(
-                                        CombatantTargetSelectors.Source)))),
-                        Spend<DamageReceivedTriggeredEffectContext>(UnfinishedLifeSpent),
+                                        CombatantTargetSelectors.EventTarget)))),
+                        new SetCombatantCounterNode<DamageReceivedTriggeredEffectContext>(
+                            CombatantTargetSelectors.EventTarget, UnfinishedLifeSpent,
+                            new ConstantExpression<DamageReceivedTriggeredEffectContext>(1), relative: false),
                     ]))),
                 nameof(TriggerEvent.DamageTaken)),
         ]);

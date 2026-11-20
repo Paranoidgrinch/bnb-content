@@ -34,18 +34,16 @@ public static class ShopRelicRules
         "filing_fee_stamp_rule", "Filing-Fee Stamp",
         "A fee is due on every heavily papered corpse.",
         [
+            // The corpse is read BEFORE the walk over the wearers: inside that walk the context is the wearer's.
             Trigger(new EffectProgram<CombatantDownedTriggeredEffectContext>(
-                    OnEveryWearer<CombatantDownedTriggeredEffectContext>(
-                        new ConditionalEffectNode<CombatantDownedTriggeredEffectContext>(
+                    new ConditionalEffectNode<CombatantDownedTriggeredEffectContext>(
+                        Papered<CombatantDownedTriggeredEffectContext>(10),
+                        OnEveryWearer<CombatantDownedTriggeredEffectContext>(Award<CombatantDownedTriggeredEffectContext>(10),
+                            "filing_fee_stamp_rule"),
+                        @else: new ConditionalEffectNode<CombatantDownedTriggeredEffectContext>(
                             Papered<CombatantDownedTriggeredEffectContext>(5),
-                            new CausalSequenceEffectNode<CombatantDownedTriggeredEffectContext>(
-                            [
-                                Award<CombatantDownedTriggeredEffectContext>(6),
-                                new ConditionalEffectNode<CombatantDownedTriggeredEffectContext>(
-                                    Papered<CombatantDownedTriggeredEffectContext>(10),
-                                    Award<CombatantDownedTriggeredEffectContext>(4)),
-                            ])),
-                        "filing_fee_stamp_rule")),
+                            OnEveryWearer<CombatantDownedTriggeredEffectContext>(Award<CombatantDownedTriggeredEffectContext>(6),
+                                "filing_fee_stamp_rule")))),
                 nameof(TriggerEvent.Downed), StatusTriggerScope.Anywhere),
         ]);
 
@@ -86,10 +84,13 @@ public static class ShopRelicRules
                 CombatantTargetSelectors.AllCombatants, new StatusDefinitionId(id)),
             body);
 
+    // ⚠ The one who fell is DOWN: the event-target selector only ever answers the living, so it read every corpse
+    // as 0 Paperwork and the stamp never paid (playtest 2026-11-19, run audit + FilingFeeStampProbe). In a fall the
+    // source is the one who fell, and this selector still sees it.
     private static ICombatExpression<TContext, bool> Papered<TContext>(int at) where TContext : class =>
         new ComparisonExpression<TContext>(
             new CombatantStatusStacksExpression<TContext>(
-                CombatantTargetSelectors.EventTarget, new StatusDefinitionId(Keywords.Paperwork)),
+                CombatantTargetSelectors.SourceIncludingDowned, new StatusDefinitionId(Keywords.Paperwork)),
             ComparisonOperator.GreaterOrEqual, new ConstantExpression<TContext>(at));
 
     private static IEffectNode<TContext> Award<TContext>(int gold) where TContext : class =>

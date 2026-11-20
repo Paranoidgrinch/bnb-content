@@ -181,8 +181,13 @@ public static class ActThreeEventRelicRules
         [
             Trigger(new EffectProgram<DamageReceivedTriggeredEffectContext>(
                 new ConditionalEffectNode<DamageReceivedTriggeredEffectContext>(
+                    // The latch is the WEARER's (the event's target): on "You" (= Source, the attacker) every
+                    // further enemy that struck was named a Respondent too.
                     new AndExpression<DamageReceivedTriggeredEffectContext>(
-                        Unspent<DamageReceivedTriggeredEffectContext>(LeafFound),
+                        new ComparisonExpression<DamageReceivedTriggeredEffectContext>(
+                            new CombatantCounterExpression<DamageReceivedTriggeredEffectContext>(
+                                CombatantTargetSelectors.EventTarget, LeafFound),
+                            ComparisonOperator.Equal, new ConstantExpression<DamageReceivedTriggeredEffectContext>(0)),
                         new ComparisonExpression<DamageReceivedTriggeredEffectContext>(
                             new EventAmountExpression<DamageReceivedTriggeredEffectContext>(),
                             ComparisonOperator.Greater,
@@ -192,7 +197,9 @@ public static class ActThreeEventRelicRules
                         new ApplyStatusNode<DamageReceivedTriggeredEffectContext>(
                             CombatantTargetSelectors.Source, new StatusDefinitionId(RespondentId),
                             new ConstantExpression<DamageReceivedTriggeredEffectContext>(1)),
-                        Spend<DamageReceivedTriggeredEffectContext>(LeafFound),
+                        new SetCombatantCounterNode<DamageReceivedTriggeredEffectContext>(
+                            CombatantTargetSelectors.EventTarget, LeafFound,
+                            new ConstantExpression<DamageReceivedTriggeredEffectContext>(1), relative: false),
                     ]))),
                 nameof(TriggerEvent.DamageTaken)),
             Trigger(new EffectProgram<CardsDrawnTriggeredEffectContext>(

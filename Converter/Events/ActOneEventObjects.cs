@@ -240,14 +240,17 @@ public static class ActOneEventObjects
                         CombatantTargetSelectors.Source,
                         new ConstantExpression<CardsDrawnTriggeredEffectContext>(10)))),
                 nameof(TriggerEvent.CardsDrawn)),
+            // ⚠ The one hurt is the event's TARGET; the source of a blow is the enemy that dealt it. The rule used to
+            // give the attacker the 10 Block and try to take the protection off it — so it never came off you, and
+            // every hit you took gave the enemy 10 Block (playtest 2026-11-19, rule scan).
             Trigger(new EffectProgram<DamageReceivedTriggeredEffectContext>(
                 new CausalSequenceEffectNode<DamageReceivedTriggeredEffectContext>(
                 [
                     new GainBlockNode<DamageReceivedTriggeredEffectContext>(
-                        CombatantTargetSelectors.Source,
+                        CombatantTargetSelectors.EventTarget,
                         new ConstantExpression<DamageReceivedTriggeredEffectContext>(10)),
                     new RemoveStatusNode<DamageReceivedTriggeredEffectContext>(
-                        CombatantTargetSelectors.Source, new StatusDefinitionId(WitnessProtection)),
+                        CombatantTargetSelectors.EventTarget, new StatusDefinitionId(WitnessProtection)),
                 ])),
                 nameof(TriggerEvent.DamageTaken)),
         ]);

@@ -45,6 +45,11 @@ public static class EliteRelicRules
     // in its brief and never after its elite's rule. `EliteRelicTests.No_elite_relic_takes_a_name_the_game_
     // already_uses` is the guard.
     private static ICombatantTargetSelector You => CombatantTargetSelectors.Source;
+    // The one wearing the rule: what "you" means in a reaction to something that happened to somebody else.
+    private static ICombatantTargetSelector Wearer(string ruleId) =>
+        CombatantTargetSelectors.FirstTarget(
+            CombatantTargetSelectors.WithStatus(CombatantTargetSelectors.AllAliveCombatants, new StatusDefinitionId(ruleId)));
+
     private static ICombatantTargetSelector Weakest => CombatantTargetSelectors.LowestHealthEnemyOfSource;
 
     // ══ ACT I ═════════════════════════════════════════════════════════════════════════════════════════════
@@ -60,14 +65,27 @@ public static class EliteRelicRules
         [
             // Anywhere, because the death being listened for is somebody else's. A relic on the player that
             // only heard the player being downed would fire once, at the end of a fight it had already lost.
+            // ⚠ In a reaction to a fall the SOURCE is the one who fell: "You" (= Source) handed the Energy and the card
+            // to the dead enemy (playtest 2026-11-19, found with the combat audit). Everything goes to the wearer,
+            // and only an ENEMY's fall counts.
             Trigger(new EffectProgram<CombatantDownedTriggeredEffectContext>(
                 new ConditionalEffectNode<CombatantDownedTriggeredEffectContext>(
-                    Unspent<CombatantDownedTriggeredEffectContext>(ClimbedUsed),
+                    new AndExpression<CombatantDownedTriggeredEffectContext>(
+                        new NotExpression<CombatantDownedTriggeredEffectContext>(
+                            new TargetHasStatusExpression<CombatantDownedTriggeredEffectContext>(
+                                CombatantTargetSelectors.Source, new StatusDefinitionId(ClimbedId))),
+                        new ComparisonExpression<CombatantDownedTriggeredEffectContext>(
+                            new CombatantCounterExpression<CombatantDownedTriggeredEffectContext>(Wearer(ClimbedId), ClimbedUsed),
+                            ComparisonOperator.Equal, new ConstantExpression<CombatantDownedTriggeredEffectContext>(0))),
                     new CausalSequenceEffectNode<CombatantDownedTriggeredEffectContext>(
                     [
-                        Spend<CombatantDownedTriggeredEffectContext>(ClimbedUsed),
-                        HeldEnergy.Hold<CombatantDownedTriggeredEffectContext>(1),
-                        Draw<CombatantDownedTriggeredEffectContext>(1),
+                        new SetCombatantCounterNode<CombatantDownedTriggeredEffectContext>(
+                            Wearer(ClimbedId), ClimbedUsed, new ConstantExpression<CombatantDownedTriggeredEffectContext>(1)),
+                        new ApplyStatusNode<CombatantDownedTriggeredEffectContext>(
+                            Wearer(ClimbedId), new StatusDefinitionId(HeldEnergy.Id),
+                            new ConstantExpression<CombatantDownedTriggeredEffectContext>(1)),
+                        new DrawCardsNode<CombatantDownedTriggeredEffectContext>(
+                            Wearer(ClimbedId), new ConstantExpression<CombatantDownedTriggeredEffectContext>(1)),
                     ]))),
                 nameof(TriggerEvent.Downed), StatusTriggerScope.Anywhere),
         ]);
@@ -177,8 +195,12 @@ public static class EliteRelicRules
                     Cards.CardAuthoring.NegativeStatuses
                         .Select(IsStatus<StatusAppliedTriggeredEffectContext>)
                         .Aggregate((a, b) => new OrExpression<StatusAppliedTriggeredEffectContext>(a, b)),
+                    // ⚠ The enemies of the one the status landed on (you), not of its SOURCE: the source of a
+                    // status you take is the enemy that filed it, and "the weakest enemy of the source" was you —
+                    // the nail filed Doubt against its own bearer (playtest 2026-11-19, found with the combat audit).
                     new ApplyStatusNode<StatusAppliedTriggeredEffectContext>(
-                        Weakest, new StatusDefinitionId(Cards.Keywords.Doubt),
+                        CombatantTargetSelectors.LowestHealth(CombatantTargetSelectors.AllEnemiesOfEventTarget),
+                        new StatusDefinitionId(Cards.Keywords.Doubt),
                         new ConstantExpression<StatusAppliedTriggeredEffectContext>(1)))),
                 nameof(TriggerEvent.StatusApplied)),
         ]);
@@ -326,15 +348,20 @@ public static class EliteRelicRules
         DrawerId, "Drawer Within a Drawer",
         "The first card you exhaust each fight comes back to your discard pile.",
         [
-            Trigger(new EffectProgram<CardExhaustedTriggeredEffectContext>(
-                new ConditionalEffectNode<CardExhaustedTriggeredEffectContext>(
-                    Unspent<CardExhaustedTriggeredEffectContext>(DrawerUsed),
-                    new CausalSequenceEffectNode<CardExhaustedTriggeredEffectContext>(
+            // ⚠ The engine builds no "card exhausted" context: a program written for one ran on EVERY card move, so
+            // the first draw of the fight spent the drawer before anything was burnt (playtest 2026-11-19, combat
+            // audit: one return in eight fights). It now asks the move where the card went.
+            Trigger(new EffectProgram<CardMovedToZoneTriggeredEffectContext>(
+                new ConditionalEffectNode<CardMovedToZoneTriggeredEffectContext>(
+                    new AndExpression<CardMovedToZoneTriggeredEffectContext>(
+                        new TriggerEventCardZoneExpression<CardMovedToZoneTriggeredEffectContext>(CardZone.ExhaustPile),
+                        Unspent<CardMovedToZoneTriggeredEffectContext>(DrawerUsed)),
+                    new CausalSequenceEffectNode<CardMovedToZoneTriggeredEffectContext>(
                     [
-                        Spend<CardExhaustedTriggeredEffectContext>(DrawerUsed),
-                        new MoveCardToZoneNode<CardExhaustedTriggeredEffectContext>(
+                        Spend<CardMovedToZoneTriggeredEffectContext>(DrawerUsed),
+                        new MoveCardToZoneNode<CardMovedToZoneTriggeredEffectContext>(
                             You,
-                            new CardInZoneExpression<CardExhaustedTriggeredEffectContext>(CardZone.ExhaustPile, 0),
+                            new CardInZoneExpression<CardMovedToZoneTriggeredEffectContext>(CardZone.ExhaustPile, 0),
                             CardZone.DiscardPile),
                     ]))),
                 nameof(TriggerEvent.CardMovedToZone)),
@@ -350,15 +377,29 @@ public static class EliteRelicRules
         AntlerTineId, "Pre-Approved Antler Tine",
         "The first Safe-Conduct you spend each fight is not spent.",
         [
-            Trigger(new EffectProgram<StatusChargesReducedTriggeredEffectContext>(
-                new ConditionalEffectNode<StatusChargesReducedTriggeredEffectContext>(
-                    Unspent<StatusChargesReducedTriggeredEffectContext>(TineUsed),
-                    new CausalSequenceEffectNode<StatusChargesReducedTriggeredEffectContext>(
+            // ⚠ Only a Safe-Conduct that is SPENT (loses a stack). The rule used to answer the first stack change of
+            // ANY status in the fight — a Doubt wearing off spent the tine and handed out a Safe-Conduct
+            // (playtest 2026-11-19, rule scan). The program is written for the stacks-change event it hears.
+            Trigger(new EffectProgram<StatusStacksChangedTriggeredEffectContext>(
+                new ConditionalEffectNode<StatusStacksChangedTriggeredEffectContext>(
+                    new AndExpression<StatusStacksChangedTriggeredEffectContext>(
+                        new AndExpression<StatusStacksChangedTriggeredEffectContext>(
+                            new TriggerEventStatusIsExpression<StatusStacksChangedTriggeredEffectContext>(
+                                new StatusDefinitionId(ActThree.SafeConductId)),
+                            new ComparisonExpression<StatusStacksChangedTriggeredEffectContext>(
+                                new EventAmountExpression<StatusStacksChangedTriggeredEffectContext>(),
+                                ComparisonOperator.Less,
+                                new ConstantExpression<StatusStacksChangedTriggeredEffectContext>(0))),
+                        new ComparisonExpression<StatusStacksChangedTriggeredEffectContext>(
+                            new CombatantCounterExpression<StatusStacksChangedTriggeredEffectContext>(Wearer(AntlerTineId), TineUsed),
+                            ComparisonOperator.Equal, new ConstantExpression<StatusStacksChangedTriggeredEffectContext>(0))),
+                    new CausalSequenceEffectNode<StatusStacksChangedTriggeredEffectContext>(
                     [
-                        Spend<StatusChargesReducedTriggeredEffectContext>(TineUsed),
-                        new ApplyStatusNode<StatusChargesReducedTriggeredEffectContext>(
-                            You, new StatusDefinitionId(ActThree.SafeConductId),
-                            new ConstantExpression<StatusChargesReducedTriggeredEffectContext>(1)),
+                        new SetCombatantCounterNode<StatusStacksChangedTriggeredEffectContext>(
+                            Wearer(AntlerTineId), TineUsed, new ConstantExpression<StatusStacksChangedTriggeredEffectContext>(1)),
+                        new ApplyStatusNode<StatusStacksChangedTriggeredEffectContext>(
+                            Wearer(AntlerTineId), new StatusDefinitionId(ActThree.SafeConductId),
+                            new ConstantExpression<StatusStacksChangedTriggeredEffectContext>(1)),
                     ]))),
                 nameof(TriggerEvent.StatusStacksChanged)),
         ]);
@@ -377,9 +418,19 @@ public static class EliteRelicRules
                         You, new StatusDefinitionId(ActThree.SafeConductId),
                         new ConstantExpression<CardsDrawnTriggeredEffectContext>(1)))),
                 nameof(TriggerEvent.CardsDrawn)),
-            Trigger(new EffectProgram<StatusChargesReducedTriggeredEffectContext>(
-                new GainBlockNode<StatusChargesReducedTriggeredEffectContext>(
-                    You, new ConstantExpression<StatusChargesReducedTriggeredEffectContext>(3))),
+            // ⚠ Only a Safe-Conduct SPENT: the rule used to pay 3 Block on every stack change of every status the
+            // wearer carried (playtest 2026-11-19, rule scan).
+            Trigger(new EffectProgram<StatusStacksChangedTriggeredEffectContext>(
+                new ConditionalEffectNode<StatusStacksChangedTriggeredEffectContext>(
+                    new AndExpression<StatusStacksChangedTriggeredEffectContext>(
+                        new TriggerEventStatusIsExpression<StatusStacksChangedTriggeredEffectContext>(
+                            new StatusDefinitionId(ActThree.SafeConductId)),
+                        new ComparisonExpression<StatusStacksChangedTriggeredEffectContext>(
+                            new EventAmountExpression<StatusStacksChangedTriggeredEffectContext>(),
+                            ComparisonOperator.Less,
+                            new ConstantExpression<StatusStacksChangedTriggeredEffectContext>(0))),
+                    new GainBlockNode<StatusStacksChangedTriggeredEffectContext>(
+                        Wearer(MendedThreadId), new ConstantExpression<StatusStacksChangedTriggeredEffectContext>(3)))),
                 nameof(TriggerEvent.StatusStacksChanged)),
         ]);
 
@@ -391,20 +442,38 @@ public static class EliteRelicRules
         TollStoneId, "Toll-Stone from the Wrong Bank",
         "The first restitution you pay each fight also gives 6 Block.",
         [
-            Trigger(new EffectProgram<StatusAppliedTriggeredEffectContext>(
-                new ConditionalEffectNode<StatusAppliedTriggeredEffectContext>(
-                    new AndExpression<StatusAppliedTriggeredEffectContext>(
-                        Unspent<StatusAppliedTriggeredEffectContext>(TollUsed),
-                        IsStatus<StatusAppliedTriggeredEffectContext>(ActThree.ClaimId)),
-                    new CausalSequenceEffectNode<StatusAppliedTriggeredEffectContext>(
-                    [
-                        Spend<StatusAppliedTriggeredEffectContext>(TollUsed),
-                        new GainBlockNode<StatusAppliedTriggeredEffectContext>(
-                            CombatantTargetSelectors.EventTarget,
-                            new ConstantExpression<StatusAppliedTriggeredEffectContext>(6)),
-                    ]))),
-                nameof(TriggerEvent.StatusApplied)),
+            // ⚠ A Claim is laid on the ENEMY party that claims against you, never on you: under Bearer scope the
+            // stone only heard statuses landing on its wearer and never paid; it now hears Claims anywhere and
+            // pays the wearer (playtest 2026-11-19, combat audit over Act III).
+            Trigger(ClaimAgainstYou<StatusAppliedTriggeredEffectContext>(TollStoneId, TollUsed, 6),
+                nameof(TriggerEvent.StatusApplied), StatusTriggerScope.Anywhere),
+            Trigger(ClaimAgainstYou<StatusMergedTriggeredEffectContext>(TollStoneId, TollUsed, 6),
+                nameof(TriggerEvent.StatusMerged), StatusTriggerScope.Anywhere),
         ]);
+
+    // A Claim landing on (or stacking up on) somebody who is not the wearer — the party claiming against you —
+    // pays the wearer Block; with a latch, only the first each fight.
+    private static EffectProgram<TContext> ClaimAgainstYou<TContext>(string ruleId, CounterId? latch, int block)
+        where TContext : class
+    {
+        ICombatExpression<TContext, bool> when = new AndExpression<TContext>(
+            new TriggerEventStatusIsExpression<TContext>(new StatusDefinitionId(ActThree.ClaimId)),
+            new NotExpression<TContext>(
+                new TargetHasStatusExpression<TContext>(CombatantTargetSelectors.EventTarget, new StatusDefinitionId(ruleId))));
+        if (latch is { } l)
+            when = new AndExpression<TContext>(when,
+                new ComparisonExpression<TContext>(
+                    new CombatantCounterExpression<TContext>(Wearer(ruleId), l),
+                    ComparisonOperator.Equal, new ConstantExpression<TContext>(0)));
+        IEffectNode<TContext> pay = new GainBlockNode<TContext>(Wearer(ruleId), new ConstantExpression<TContext>(block));
+        if (latch is { } spent)
+            pay = new CausalSequenceEffectNode<TContext>(
+            [
+                new SetCombatantCounterNode<TContext>(Wearer(ruleId), spent, new ConstantExpression<TContext>(1)),
+                pay,
+            ]);
+        return new EffectProgram<TContext>(new ConditionalEffectNode<TContext>(when, pay));
+    }
 
     // Every payment becomes ammunition unless change is left behind. The coin is the change.
     public static string ThroatCoinId => "coin_left_in_the_throat";
@@ -416,13 +485,11 @@ public static class EliteRelicRules
             // ADAPTATION: the design's "gain 2 Gold" cannot be paid inside a fight — Gold is a RUN resource
             // and no combat effect reaches it. The coin pays in the currency a fight has instead, and the
             // relic's run half (a purse at every victory) carries the Gold.
-            Trigger(new EffectProgram<StatusAppliedTriggeredEffectContext>(
-                new ConditionalEffectNode<StatusAppliedTriggeredEffectContext>(
-                    IsStatus<StatusAppliedTriggeredEffectContext>(ActThree.ClaimId),
-                    new GainBlockNode<StatusAppliedTriggeredEffectContext>(
-                        CombatantTargetSelectors.EventTarget,
-                        new ConstantExpression<StatusAppliedTriggeredEffectContext>(2)))),
-                nameof(TriggerEvent.StatusApplied)),
+            // ⚠ Claims are laid on the enemy party, not on you: see ClaimAgainstYou (the coin never paid).
+            Trigger(ClaimAgainstYou<StatusAppliedTriggeredEffectContext>(ThroatCoinId, null, 2),
+                nameof(TriggerEvent.StatusApplied), StatusTriggerScope.Anywhere),
+            Trigger(ClaimAgainstYou<StatusMergedTriggeredEffectContext>(ThroatCoinId, null, 2),
+                nameof(TriggerEvent.StatusMerged), StatusTriggerScope.Anywhere),
         ]);
 
     // The Queen's formation, kept by choice.
@@ -539,19 +606,27 @@ public static class EliteRelicRules
         ClawId, "Sekhmet's Claw",
         "The first time you lose HP each fight, gain 2 Strength.",
         [
+            // ⚠ The one who LOST the HP is the event's target; the source of a blow you take is the enemy that dealt
+            // it. Under "You" (= Source) the claw latched on the attacker and gave IT the 2 Strength (playtest
+            // 2026-11-19, found with the combat audit).
             Trigger(new EffectProgram<DamageReceivedTriggeredEffectContext>(
                 new ConditionalEffectNode<DamageReceivedTriggeredEffectContext>(
                     new AndExpression<DamageReceivedTriggeredEffectContext>(
-                        Unspent<DamageReceivedTriggeredEffectContext>(ClawUsed),
+                        new ComparisonExpression<DamageReceivedTriggeredEffectContext>(
+                            new CombatantCounterExpression<DamageReceivedTriggeredEffectContext>(
+                                CombatantTargetSelectors.EventTarget, ClawUsed),
+                            ComparisonOperator.Equal, new ConstantExpression<DamageReceivedTriggeredEffectContext>(0)),
                         new ComparisonExpression<DamageReceivedTriggeredEffectContext>(
                             new EventAmountExpression<DamageReceivedTriggeredEffectContext>(),
                             ComparisonOperator.Greater,
                             new ConstantExpression<DamageReceivedTriggeredEffectContext>(0))),
                     new CausalSequenceEffectNode<DamageReceivedTriggeredEffectContext>(
                     [
-                        Spend<DamageReceivedTriggeredEffectContext>(ClawUsed),
+                        new SetCombatantCounterNode<DamageReceivedTriggeredEffectContext>(
+                            CombatantTargetSelectors.EventTarget, ClawUsed,
+                            new ConstantExpression<DamageReceivedTriggeredEffectContext>(1)),
                         new ApplyStatusNode<DamageReceivedTriggeredEffectContext>(
-                            You, new StatusDefinitionId("strength"),
+                            CombatantTargetSelectors.EventTarget, new StatusDefinitionId("strength"),
                             new ConstantExpression<DamageReceivedTriggeredEffectContext>(2)),
                     ]))),
                 nameof(TriggerEvent.DamageTaken)),
@@ -670,12 +745,19 @@ public static class EliteRelicRules
         WickId, "The Lamp Thief's Wick",
         "When an enemy falls, 2 Block for every enemy still standing.",
         [
+            // ⚠ The one who fell is the SOURCE here: the rule used to count the fallen enemy's enemies (you) and give
+            // ITS corpse the Block (playtest 2026-11-19, combat audit). Now: for each of the fallen one's allies still
+            // standing, the wearer guards 2 — and only when the one who fell was not the wearer's own side.
             Trigger(new EffectProgram<CombatantDownedTriggeredEffectContext>(
-                new ForEachTargetEffectNode<CombatantDownedTriggeredEffectContext>(
-                    CombatantTargetSelectors.AllEnemiesOfSource,
-                    new GainBlockNode<CombatantDownedTriggeredEffectContext>(
-                        CombatantTargetSelectors.Source,
-                        new ConstantExpression<CombatantDownedTriggeredEffectContext>(2)))),
+                new ConditionalEffectNode<CombatantDownedTriggeredEffectContext>(
+                    new NotExpression<CombatantDownedTriggeredEffectContext>(
+                        new TargetHasStatusExpression<CombatantDownedTriggeredEffectContext>(
+                            CombatantTargetSelectors.Source, new StatusDefinitionId(WickId))),
+                    new ForEachTargetEffectNode<CombatantDownedTriggeredEffectContext>(
+                        CombatantTargetSelectors.AllAlliesOfSource,
+                        new GainBlockNode<CombatantDownedTriggeredEffectContext>(
+                            Wearer(WickId),
+                            new ConstantExpression<CombatantDownedTriggeredEffectContext>(2))))),
                 nameof(TriggerEvent.Downed), StatusTriggerScope.Anywhere),
         ]);
 

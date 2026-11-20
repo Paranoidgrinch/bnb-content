@@ -382,6 +382,9 @@ public static class RelicRules
         [Trigger(new EffectProgram<StatusAppliedTriggeredEffectContext>(
             SpreadFiling<StatusAppliedTriggeredEffectContext>()),
             nameof(TriggerEvent.StatusApplied), StatusTriggerScope.Anywhere),
+         Trigger(new EffectProgram<StatusMergedTriggeredEffectContext>(
+            SpreadFiling<StatusMergedTriggeredEffectContext>()),
+            nameof(TriggerEvent.StatusMerged), StatusTriggerScope.Anywhere),
          ClearLatch("concordance")]);
 
     // The first queued card to RESOLVE each turn seals the weakest enemy. ⚠ The design wrote "its target", and the
@@ -966,25 +969,40 @@ public static class RelicRules
             ComparisonOperator.Greater, new ConstantExpression<TContext>(used));
 
     // "Apply half of what you filed to every other enemy." A flat 1, since the rule cannot read the amount.
-    private static IEffectNode<TContext> SpreadFiling<TContext>() where TContext : class =>
-        new ConditionalEffectNode<TContext>(
+    // "The first time each turn you apply Paperwork or Doubt to a single enemy, apply half of it to every other
+    // enemy, rounded down but never less than 1."
+    // ⚠ Rebuilt 2026-11-19 (combat audit): it answered ANY filing — an enemy filing Paperwork on its ally made
+    // "the enemies of the source" (you) take Paperwork — and it always spread 1 Paperwork to every enemy,
+    // the target included, for Doubt as well, and never for a filing onto a pile already there. Now: only what
+    // the WEARER files on an enemy, the same status, half of it (at least 1), on every OTHER enemy.
+    private static IEffectNode<TContext> SpreadFiling<TContext>() where TContext : class
+    {
+        IEffectNode<TContext> Spread(string status) =>
+            new ConditionalEffectNode<TContext>(
+                new TriggerEventStatusIsExpression<TContext>(new StatusDefinitionId(status)),
+                new ApplyStatusNode<TContext>(
+                    CombatantTargetSelectors.OtherEnemiesOfSource, new StatusDefinitionId(status),
+                    new MaxExpression<TContext>(
+                        new ConstantExpression<TContext>(1),
+                        new DivideExpression<TContext>(new EventAmountExpression<TContext>(), new ConstantExpression<TContext>(2)))));
+        return new ConditionalEffectNode<TContext>(
             new AndExpression<TContext>(
                 new AndExpression<TContext>(
+                    new TargetHasStatusExpression<TContext>(
+                        CombatantTargetSelectors.Source, new StatusDefinitionId("concordance_medallion")),
                     new NotExpression<TContext>(
                         new TargetHasStatusExpression<TContext>(
-                            CombatantTargetSelectors.EventTarget,
-                            new StatusDefinitionId(Keywords.ApplicantMarker))),
-                    new OrExpression<TContext>(
-                        new TriggerEventStatusIsExpression<TContext>(new StatusDefinitionId(Keywords.Paperwork)),
-                        new TriggerEventStatusIsExpression<TContext>(new StatusDefinitionId(Keywords.Doubt)))),
+                            CombatantTargetSelectors.EventTarget, new StatusDefinitionId("concordance_medallion")))),
                 Counter<TContext>("concordance", ComparisonOperator.Equal, 0)),
             new CausalSequenceEffectNode<TContext>(
             [
-                new ApplyStatusNode<TContext>(
-                    CombatantTargetSelectors.AllEnemiesOfSource, new StatusDefinitionId(Keywords.Paperwork),
-                    new ConstantExpression<TContext>(1)),
+                // The latch first: the spread is itself a filing of Paperwork or Doubt by the wearer, and must not
+                // answer itself.
                 SetCounter<TContext>("concordance", 1),
+                Spread(Keywords.Paperwork),
+                Spread(Keywords.Doubt),
             ]));
+    }
 
     // Write a one-shot price onto N cards in hand.
     private static IEffectNode<TContext> Cheapen<TContext>(int cards, int by) where TContext : class =>
